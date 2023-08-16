@@ -2,220 +2,152 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9397277D7E9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 03:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB01177DD61
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 11:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241155AbjHPB5o (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Aug 2023 21:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
+        id S243354AbjHPJfa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 16 Aug 2023 05:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241164AbjHPB5S (ORCPT
+        with ESMTP id S243390AbjHPJfB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:57:18 -0400
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8AB2129;
-        Tue, 15 Aug 2023 18:57:16 -0700 (PDT)
-Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id 01EA612206;
-        Wed, 16 Aug 2023 04:57:15 +0300 (EEST)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id DEFEA12205;
-        Wed, 16 Aug 2023 04:57:14 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-        by ink.ssi.bg (Postfix) with ESMTPSA id 79BC73C07D0;
-        Wed, 16 Aug 2023 04:57:08 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-        t=1692151028; bh=YazX7hVaynCeD2nwGa3M0l3D0RDVSOrt/lYw/EJ1QRo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=eZLapMqeEf+5uOZxUXQugARRBsrR51Ljy0Es5RuwTZ+zKzXcv/H8adOcEBdf2UsOO
-         rxofGphD6tVPrVZG/xlQKA4egEJTuPJpkmt6kHxsngt+W1VLLvzPyBPGxlIaNinytA
-         F24zNmmgLR5aRHcSIXuqDa0MpNk50ImRfDMjQRlU=
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 37FHWIOo168669;
-        Tue, 15 Aug 2023 20:32:18 +0300
-Received: (from root@localhost)
-        by ja.home.ssi.bg (8.17.1/8.17.1/Submit) id 37FHWIZd168668;
-        Tue, 15 Aug 2023 20:32:18 +0300
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Simon Horman <horms@verge.net.au>
-Cc:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, Dust Li <dust.li@linux.alibaba.com>,
-        Jiejian Wu <jiejian@linux.alibaba.com>,
-        Jiri Wiesner <jwiesner@suse.de>
-Subject: [PATCH RFC net-next 14/14] ipvs: add conn_lfactor and svc_lfactor sysctl vars
-Date:   Tue, 15 Aug 2023 20:30:31 +0300
-Message-ID: <20230815173031.168344-15-ja@ssi.bg>
+        Wed, 16 Aug 2023 05:35:01 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA9826BF;
+        Wed, 16 Aug 2023 02:34:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQjdp5Mlkz4f3knx;
+        Wed, 16 Aug 2023 17:34:38 +0800 (CST)
+Received: from vm-fedora-38.huawei.com (unknown [10.67.174.164])
+        by APP4 (Coremail) with SMTP id gCh0CgDndqkvmNxklrBbAw--.13304S2;
+        Wed, 16 Aug 2023 17:34:41 +0800 (CST)
+From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, coreteam@netfilter.org,
+        bridge@lists.linux-foundation.org, gongruiqi1@huawei.com
+Subject: [PATCH net-next v4] netfilter: ebtables: fix fortify warnings in size_entry_mwt()
+Date:   Wed, 16 Aug 2023 17:32:48 +0800
+Message-ID: <20230816093248.1459951-1-gongruiqi@huaweicloud.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230815173031.168344-1-ja@ssi.bg>
-References: <20230815173031.168344-1-ja@ssi.bg>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgDndqkvmNxklrBbAw--.13304S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF1xJw4DJrWfCrWxuF48Zwb_yoW5ury8pF
+        1qka45trW8J3yakw4rJ3WvvF1ruw4kWa43ArW7C34F9FyjqFyDXa9akryjka4DGws09F43
+        tFs0vFW3KrWDJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UdxhLUUUUU=
+X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Allow the default load factor for the connection and service tables
-to be configured.
+From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
 
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+When compiling with gcc 13 and CONFIG_FORTIFY_SOURCE=y, the following
+warning appears:
+
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘size_entry_mwt’ at net/bridge/netfilter/ebtables.c:2118:2:
+./include/linux/fortify-string.h:592:25: error: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Werror=attribute-warning]
+  592 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The compiler is complaining:
+
+memcpy(&offsets[1], &entry->watchers_offset,
+                       sizeof(offsets) - sizeof(offsets[0]));
+
+where memcpy reads beyond &entry->watchers_offset to copy
+{watchers,target,next}_offset altogether into offsets[]. Silence the
+warning by wrapping these three up via struct_group().
+
+Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- Documentation/networking/ipvs-sysctl.rst | 31 ++++++++++
- net/netfilter/ipvs/ip_vs_ctl.c           | 72 ++++++++++++++++++++++++
- 2 files changed, 103 insertions(+)
 
-diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-index 3fb5fa142eef..61fdc0ec4c39 100644
---- a/Documentation/networking/ipvs-sysctl.rst
-+++ b/Documentation/networking/ipvs-sysctl.rst
-@@ -29,6 +29,28 @@ backup_only - BOOLEAN
- 	If set, disable the director function while the server is
- 	in backup mode to avoid packet loops for DR/TUN methods.
+v4: fix a typo in commit msg; designate to net-next; cc more netdev
+maintainers.
+
+v3: use sizeof(entry->offsets) as memcpy()'s size, as Gustavo suggested.
+
+v2: fix HDRTEST error by replacing struct_group() with __struct_group(),
+since it's a uapi header.
+
+ include/uapi/linux/netfilter_bridge/ebtables.h | 14 ++++++++------
+ net/bridge/netfilter/ebtables.c                |  3 +--
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/include/uapi/linux/netfilter_bridge/ebtables.h b/include/uapi/linux/netfilter_bridge/ebtables.h
+index a494cf43a755..b0caad82b693 100644
+--- a/include/uapi/linux/netfilter_bridge/ebtables.h
++++ b/include/uapi/linux/netfilter_bridge/ebtables.h
+@@ -182,12 +182,14 @@ struct ebt_entry {
+ 	unsigned char sourcemsk[ETH_ALEN];
+ 	unsigned char destmac[ETH_ALEN];
+ 	unsigned char destmsk[ETH_ALEN];
+-	/* sizeof ebt_entry + matches */
+-	unsigned int watchers_offset;
+-	/* sizeof ebt_entry + matches + watchers */
+-	unsigned int target_offset;
+-	/* sizeof ebt_entry + matches + watchers + target */
+-	unsigned int next_offset;
++	__struct_group(/* no tag */, offsets, /* no attrs */,
++		/* sizeof ebt_entry + matches */
++		unsigned int watchers_offset;
++		/* sizeof ebt_entry + matches + watchers */
++		unsigned int target_offset;
++		/* sizeof ebt_entry + matches + watchers + target */
++		unsigned int next_offset;
++	);
+ 	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
+ };
  
-+conn_lfactor - INTEGER
-+	4 - default
-+	Valid range: -8 (smaller table) .. 8 (larger table)
-+
-+	Controls the sizing of the connection hash table based on the
-+	load factor (number of connections per table buckets).
-+	As result, the table grows if load increases and shrinks when
-+	load decreases in the range of 2^8 - 2^conn_tab_bits (module
-+	parameter).
-+	The value is a shift count where positive values select
-+	buckets = (connection hash nodes << value) while negative
-+	values select buckets = (connection hash nodes >> value). The
-+	positive values reduce the collisions and reduce the time for
-+	lookups but increase the table size. Negative values will
-+	tolerate load above 100% when using smaller table is
-+	preferred. If using NAT connections consider increasing the
-+	value with one because they add two nodes in the hash table.
-+
-+	Example:
-+	4: grow if load goes above 6% (buckets = nodes * 16)
-+	-2: grow if load goes above 400% (buckets = nodes / 4)
-+
- conn_reuse_mode - INTEGER
- 	1 - default
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index 757ec46fc45a..aa23479b20b2 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -2115,8 +2115,7 @@ static int size_entry_mwt(const struct ebt_entry *entry, const unsigned char *ba
+ 		return ret;
  
-@@ -219,6 +241,15 @@ secure_tcp - INTEGER
- 	The value definition is the same as that of drop_entry and
- 	drop_packet.
+ 	offsets[0] = sizeof(struct ebt_entry); /* matches come first */
+-	memcpy(&offsets[1], &entry->watchers_offset,
+-			sizeof(offsets) - sizeof(offsets[0]));
++	memcpy(&offsets[1], &entry->offsets, sizeof(entry->offsets));
  
-+svc_lfactor - INTEGER
-+	3 - default
-+	Valid range: -8 (smaller table) .. 8 (larger table)
-+
-+	Controls the sizing of the service hash table based on the
-+	load factor (number of services per table buckets). The table
-+	will grow and shrink in the range of 2^4 - 2^20.
-+	See conn_lfactor for explanation.
-+
- sync_threshold - vector of 2 INTEGERs: sync_threshold, sync_period
- 	default 3 50
- 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 5b2a5e3bf309..ca21f4c64a45 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2427,6 +2427,60 @@ static int ipvs_proc_run_estimation(struct ctl_table *table, int write,
- 	return ret;
- }
- 
-+static int ipvs_proc_conn_lfactor(struct ctl_table *table, int write,
-+				  void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct netns_ipvs *ipvs = table->extra2;
-+	int *valp = table->data;
-+	int val = *valp;
-+	int ret;
-+
-+	struct ctl_table tmp_table = {
-+		.data = &val,
-+		.maxlen = sizeof(int),
-+	};
-+
-+	ret = proc_dointvec(&tmp_table, write, buffer, lenp, ppos);
-+	if (write && ret >= 0) {
-+		if (val < -8 || val > 8) {
-+			ret = -EINVAL;
-+		} else {
-+			*valp = val;
-+			if (rcu_dereference_protected(ipvs->conn_tab, 1))
-+				mod_delayed_work(system_unbound_wq,
-+						 &ipvs->conn_resize_work, 0);
-+		}
-+	}
-+	return ret;
-+}
-+
-+static int ipvs_proc_svc_lfactor(struct ctl_table *table, int write,
-+				 void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct netns_ipvs *ipvs = table->extra2;
-+	int *valp = table->data;
-+	int val = *valp;
-+	int ret;
-+
-+	struct ctl_table tmp_table = {
-+		.data = &val,
-+		.maxlen = sizeof(int),
-+	};
-+
-+	ret = proc_dointvec(&tmp_table, write, buffer, lenp, ppos);
-+	if (write && ret >= 0) {
-+		if (val < -8 || val > 8) {
-+			ret = -EINVAL;
-+		} else {
-+			*valp = val;
-+			if (rcu_dereference_protected(ipvs->svc_table, 1))
-+				mod_delayed_work(system_unbound_wq,
-+						 &ipvs->svc_resize_work, 0);
-+		}
-+	}
-+	return ret;
-+}
-+
- /*
-  *	IPVS sysctl table (under the /proc/sys/net/ipv4/vs/)
-  *	Do not change order or insert new entries without
-@@ -2615,6 +2669,18 @@ static struct ctl_table vs_vars[] = {
- 		.mode		= 0644,
- 		.proc_handler	= ipvs_proc_est_nice,
- 	},
-+	{
-+		.procname	= "conn_lfactor",
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= ipvs_proc_conn_lfactor,
-+	},
-+	{
-+		.procname	= "svc_lfactor",
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= ipvs_proc_svc_lfactor,
-+	},
- #ifdef CONFIG_IP_VS_DEBUG
- 	{
- 		.procname	= "debug_level",
-@@ -4850,6 +4916,12 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	tbl[idx].extra2 = ipvs;
- 	tbl[idx++].data = &ipvs->sysctl_est_nice;
- 
-+	tbl[idx].extra2 = ipvs;
-+	tbl[idx++].data = &ipvs->sysctl_conn_lfactor;
-+
-+	tbl[idx].extra2 = ipvs;
-+	tbl[idx++].data = &ipvs->sysctl_svc_lfactor;
-+
- #ifdef CONFIG_IP_VS_DEBUG
- 	/* Global sysctls must be ro in non-init netns */
- 	if (!net_eq(net, &init_net))
+ 	if (state->buf_kern_start) {
+ 		buf_start = state->buf_kern_start + state->buf_kern_offset;
 -- 
 2.41.0
-
 
