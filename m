@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC43A780BEF
+	by mail.lfdr.de (Postfix) with ESMTP id 0E463780BED
 	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Aug 2023 14:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359616AbjHRMik (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Aug 2023 08:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
+        id S1359605AbjHRMii (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Aug 2023 08:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376969AbjHRMib (ORCPT
+        with ESMTP id S1376967AbjHRMia (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:38:31 -0400
+        Fri, 18 Aug 2023 08:38:30 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3500A35AD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3515C35B8
         for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 05:38:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,24 +21,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=qOssS47vHqBZp3ok358wBx4rvqg2lSQCcXbfE2RnPAw=; b=Yd1PCuFeG3lubFsnydfSDdjGvF
-        ICgrN1RKXnhS8f+sMYddXS7YMCggkc+pv7S7BC9wjkFi2n+DJsv/9KnT+YD3qEokM5jJprMLhZNkJ
-        wnzMSGATPAplScRHF8T4Y2ICaIjh46WNnco5h3UnTkJRJHff7z6U/XFVkX/CwOE2DeYJDO2z0iYGm
-        fWFZca5IZ2PEbYyUHcU6P1EIbBDpzGxuRiIyJE7a8AL7WUUiCxvivmTwJ3OP/jGDf2/zyLVSX01F0
-        iRpo7+SRnF+nkRHbIaPGFRh2gQD8lVpdxWeL3RYnMjTR/PIpUFXyhxQ9h9cFj0gtUpSE1Bp0YBoEg
-        VumUdzqg==;
+        bh=1M8yCF0H0CM5LGdhWtskvLY0bB1nDoh/VISRJGE1AfU=; b=RQLsxyADGZlJJuRoMHZOKJF7qd
+        OzJTloaeZeFIHxU1jcNaXPo9TRx2fx7CsdUmMxMWydgLkqqo7asoY15dhN7zmEMDYsDrRQ1p4K6lp
+        KXLOZPC9apertodARe9kkh2FtVcriCijsvGoYB49ryFcJXM0GtHnPosf1CZ8wIK0R4MgRgS/ryBRW
+        sePNPsPTQlh39whOK2qHTj5mibYeIOw/D8mezFTqhek1ijnUN5kHvelgQNvjBFA1603Q+xWgQsbPw
+        CRXyJnL5l/SElXnb2/Fwxe6JVci7GLhzlcExj7lR2ikKEbphe1XWOW1UkSVACa2N0bPyazTF5+PAi
+        oNGv2org==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <jeremy@azazel.net>)
-        id 1qWykC-005x0b-2x
+        id 1qWykC-005x0b-35
         for netfilter-devel@vger.kernel.org;
         Fri, 18 Aug 2023 13:38:24 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 4/5] build: don't hard-code `AM_DEFAULT_VERBOSITY` in Makefile.iptrules
-Date:   Fri, 18 Aug 2023 13:38:17 +0100
-Message-Id: <20230818123818.2739947-5-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 5/5] build: define `AM_V_GEN` where it is needed
+Date:   Fri, 18 Aug 2023 13:38:18 +0100
+Message-Id: <20230818123818.2739947-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230818123818.2739947-1-jeremy@azazel.net>
 References: <20230818123818.2739947-1-jeremy@azazel.net>
@@ -57,35 +57,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently it is set to zero, which means that the default in
-Makefile.iptrules is not consistent with that in the other Makefiles,
-and passing `--disable-silent-rules` to configure cannot be used to
-change it.
-
-Set it to `@AM_DEFAULT_VERBOSITY@` instead, which will be expanded to the
-appropriate default value.
+`AM_V_GEN` is used when generating the man-pages.  Defining it in
+Makefile.iptrules is of no use.  Move the definition to the appropriate
+Makefile.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- Makefile.iptrules.in | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Makefile.iptrules.in | 3 ---
+ Makefile.mans.in     | 5 +++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/Makefile.iptrules.in b/Makefile.iptrules.in
-index 28feeb477e35..b0588d45f026 100644
+index b0588d45f026..7e5816451736 100644
 --- a/Makefile.iptrules.in
 +++ b/Makefile.iptrules.in
-@@ -15,9 +15,9 @@ LDFLAGS         = @LDFLAGS@
- 
- libxtables_CFLAGS = @libxtables_CFLAGS@
- libxtables_LIBS   = @libxtables_LIBS@
--AM_DEPFLAGS     = -Wp,-MMD,$(@D)/.$(@F).d,-MT,$@
-+AM_DEPFLAGS       = -Wp,-MMD,$(@D)/.$(@F).d,-MT,$@
- 
--AM_DEFAULT_VERBOSITY = 0
-+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+@@ -20,13 +20,10 @@ AM_DEPFLAGS       = -Wp,-MMD,$(@D)/.$(@F).d,-MT,$@
+ AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
  am__v_CC_0           = @echo "  CC      " $@;
  am__v_CCLD_0         = @echo "  CCLD    " $@;
- am__v_GEN_0          = @echo "  GEN     " $@;
+-am__v_GEN_0          = @echo "  GEN     " $@;
+ am__v_CC_            = ${am__v_CC_@AM_DEFAULT_V@}
+ am__v_CCLD_          = ${am__v_CCLD_@AM_DEFAULT_V@}
+-am__v_GEN_           = ${am__v_GEN_@AM_DEFAULT_V@}
+ AM_V_CC              = ${am__v_CC_@AM_V@}
+ AM_V_CCLD            = ${am__v_CCLD_@AM_V@}
+-AM_V_GEN             = ${am__v_GEN_@AM_V@}
+ 
+ include ${XA_TOPSRCDIR}/mconfig
+ -include ${XA_TOPSRCDIR}/mconfig.*
+diff --git a/Makefile.mans.in b/Makefile.mans.in
+index 63424f7d558a..60459cb98c83 100644
+--- a/Makefile.mans.in
++++ b/Makefile.mans.in
+@@ -8,6 +8,11 @@ wcman_targets := $(shell find "${srcdir}/extensions" -name 'libxt_[A-Z]*.man' -p
+ wlist_matches := $(patsubst ${srcdir}/libxt_%.man,%,${wcman_matches})
+ wlist_targets := $(patsubst ${srcdir}/libxt_%.man,%,${wcman_targets})
+ 
++AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
++am__v_GEN_0          = @echo "  GEN     " $@;
++am__v_GEN_           = ${am__v_GEN_@AM_DEFAULT_V@}
++AM_V_GEN             = ${am__v_GEN_@AM_V@}
++
+ .PHONY: FORCE
+ 
+ FORCE:
 -- 
 2.40.1
 
