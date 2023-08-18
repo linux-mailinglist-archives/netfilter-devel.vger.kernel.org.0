@@ -2,44 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 018C9780BF0
+	by mail.lfdr.de (Postfix) with ESMTP id 54CBD780BF1
 	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Aug 2023 14:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359608AbjHRMij (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Aug 2023 08:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
+        id S1359638AbjHRMil (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Aug 2023 08:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376972AbjHRMib (ORCPT
+        with ESMTP id S1376971AbjHRMib (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 18 Aug 2023 08:38:31 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EDA30F1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3540E3A80
         for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 05:38:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=4Zr7GJ96T4ENzY8cBqbodR9At3M8UH4ghGbjN6ykfSU=; b=j/iO7EsYhePM6qO77zRCNvBX6J
-        DcVZnYvlUhmJX3ozoNdHqShIURgaK7whFXbDJ+bMrAqncUJvcx5pnbtR01usxqHssFLu0oA0O1xcq
-        a/ZrrCwshcuANzjPtq04VI599590GW/w+aKlNmkajB9Y88BVKHxCrgd9riZoogyrPgWec1vk9IkaJ
-        B+4FbmRH2V6f4yQGOQqm2sOGralAtQR4w2PpAi2np1EsqgqJbAbC39z6bQAQjm5i4tQuMbOlhTWi6
-        P6pV3HLFBNc2jW64OCHCT5ft4TEHTtGguJ3OrVj6s/eAM071pUFv7fs5KkKAut78NwvJLBDPRGgXH
-        UG03UHyg==;
+        bh=cIMw5EQOKJV6T5MMzV+OMjOEbkClR0c6h8FVgzprxA0=; b=nwRW7hMRkMZOypXnegjewxxha8
+        r/S9P3j99lYYM7141dluYit0BKLTIHTpVjvG3JG4puWR0boi0OBhojh/Il/7l9h34tkYGmopjJwE5
+        aYQMwjCrVEtndV+JtyugGX30001UyA3X+03ARr0GADqO3yhXcGfHZIg5JDduonYrlsVgvvYEGAddP
+        uFhHMybtbfA3CTG6F7Gj72LVGg6HuhkbCV2LKiAPnAuQMIR4mQd7axw0YVrkupt75JZE94UzkiCQz
+        Vow3tXcENlFgljeJWtsYBgj+e73J++sumoAaxK1IcAqWDizcyhi4cREwQwqR9ZqzkUh7QILf5TxOy
+        rF0gMY/Q==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <jeremy@azazel.net>)
-        id 1qWykC-005x0b-2O
+        id 1qWykC-005x0b-2X
         for netfilter-devel@vger.kernel.org;
         Fri, 18 Aug 2023 13:38:24 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 0/5] Autoools silent-rules fixes
-Date:   Fri, 18 Aug 2023 13:38:13 +0100
-Message-Id: <20230818123818.2739947-1-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 1/5] build: use `$(top_srcdir)` when including Makefile.extra
+Date:   Fri, 18 Aug 2023 13:38:14 +0100
+Message-Id: <20230818123818.2739947-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230818123818.2739947-1-jeremy@azazel.net>
+References: <20230818123818.2739947-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
@@ -55,28 +57,51 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The build system attempts to extend and make use of the `AM_V_*`
-variables that automake provides to control the verbosity of the build.
-However, there are bugs in the implementation which render it only
-partially effective.  This patch-set updates some of the variable
-definitions and fixes the bugs.
+It's less fragile than using hard-coded relative paths.
 
-The first patch is an unrelated `include` tweak.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ extensions/ACCOUNT/Makefile.am | 2 +-
+ extensions/Makefile.am         | 2 +-
+ extensions/pknock/Makefile.am  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Jeremy Sowden (5):
-  build: use `$(top_srcdir)` when including Makefile.extra
-  build: replace `AM_V_silent` with `AM_V_at`
-  build: update `AM_V_*` definitions to match autotools
-  build: don't hard-code `AM_DEFAULT_VERBOSITY` in Makefile.iptrules
-  build: define `AM_V_GEN` where it is needed
-
- Makefile.iptrules.in           | 24 +++++++++---------------
- Makefile.mans.in               |  5 +++++
- extensions/ACCOUNT/Makefile.am |  2 +-
- extensions/Makefile.am         |  8 ++++----
- extensions/pknock/Makefile.am  |  2 +-
- 5 files changed, 20 insertions(+), 21 deletions(-)
-
+diff --git a/extensions/ACCOUNT/Makefile.am b/extensions/ACCOUNT/Makefile.am
+index 65a956697b20..473a739f981a 100644
+--- a/extensions/ACCOUNT/Makefile.am
++++ b/extensions/ACCOUNT/Makefile.am
+@@ -3,7 +3,7 @@
+ AM_CPPFLAGS = ${regular_CPPFLAGS} -I${abs_top_srcdir}/extensions
+ AM_CFLAGS   = ${regular_CFLAGS} ${libxtables_CFLAGS}
+ 
+-include ../../Makefile.extra
++include $(top_srcdir)/Makefile.extra
+ 
+ sbin_PROGRAMS = iptaccount
+ iptaccount_LDADD = libxt_ACCOUNT_cl.la
+diff --git a/extensions/Makefile.am b/extensions/Makefile.am
+index a487fd8c141a..eebb82fd2f22 100644
+--- a/extensions/Makefile.am
++++ b/extensions/Makefile.am
+@@ -26,4 +26,4 @@ install-exec-local: modules_install
+ 
+ clean-local: clean_modules
+ 
+-include ../Makefile.extra
++include $(top_srcdir)/Makefile.extra
+diff --git a/extensions/pknock/Makefile.am b/extensions/pknock/Makefile.am
+index 35528709aa15..5fcae4794230 100644
+--- a/extensions/pknock/Makefile.am
++++ b/extensions/pknock/Makefile.am
+@@ -3,7 +3,7 @@
+ AM_CPPFLAGS = ${regular_CPPFLAGS} -I${abs_top_srcdir}/extensions
+ AM_CFLAGS   = ${regular_CFLAGS} ${libxtables_CFLAGS}
+ 
+-include ../../Makefile.extra
++include $(top_srcdir)/Makefile.extra
+ 
+ sbin_PROGRAMS = pknlusr
+ dist_man_MANS = pknlusr.8
 -- 
 2.40.1
 
