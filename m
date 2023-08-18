@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DC6780DB1
+	by mail.lfdr.de (Postfix) with ESMTP id 1556A780DAF
 	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Aug 2023 16:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377651AbjHROMc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Aug 2023 10:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
+        id S1377653AbjHROMb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Aug 2023 10:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377650AbjHROM0 (ORCPT
+        with ESMTP id S1377630AbjHROMZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:12:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADC130FE
-        for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 07:11:39 -0700 (PDT)
+        Fri, 18 Aug 2023 10:12:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD53E359D
+        for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 07:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692367899;
+        s=mimecast20190719; t=1692367900;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M1Fh6VHkrpEfquhm7JcKcKgMF5Nn95aaWF0vdR16D5E=;
-        b=QlPIQ8Y94DxzwNZ4KZsHBlHdBST8D5dXI32cq912mA1i6Qe///li2JJfIeaYt3o65+gHWn
-        repLWTsOS0NSx84rc8QW60+/chK2DbX8Lq7cVE0gWNvovrUAQJZAJqX4+GPjv1MQWPqkN1
-        SPhzETtP7kLb7OSQzE2IoaiWh0hB6fI=
+        bh=cTJL6GHB8mjJkjEvSFynSx7zBj4Lv2luQlNbQExs4iU=;
+        b=Gz+em1qeVzxF0AYra+hb0mL/bGLADgFhwiG39DyuhJK4mOTshaz7MG8qYrrOLLkLmwKAxs
+        6KBYIZ+Zdtg85wXRVlZNbgVVjTU42d+SpAIKunLQfOEXoEmRH4Bv6B+IZv1V8epOL8TPwM
+        TPX+JOWta2poSB5FibAIF/iVt+B5zzU=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-610-tqwrKDYAOfCJLszP-wdCtg-1; Fri, 18 Aug 2023 10:11:37 -0400
-X-MC-Unique: tqwrKDYAOfCJLszP-wdCtg-1
+ us-mta-287-9XvKCvx9Nmq87w9W81MYIg-1; Fri, 18 Aug 2023 10:11:38 -0400
+X-MC-Unique: 9XvKCvx9Nmq87w9W81MYIg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 70E25185A78B
-        for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 14:11:37 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3DC5C8007A4
+        for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 14:11:38 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E46E340C6E8A;
-        Fri, 18 Aug 2023 14:11:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF35840C6F4E;
+        Fri, 18 Aug 2023 14:11:37 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [nft PATCH v3 2/3] nftutils: add wrappers for getprotoby{name,number}_r(), getservbyport_r()
-Date:   Fri, 18 Aug 2023 16:08:20 +0200
-Message-ID: <20230818141124.859037-3-thaller@redhat.com>
+Subject: [nft PATCH v3 3/3] src: use wrappers for getprotoby{name,number}_r(), getservbyport_r()
+Date:   Fri, 18 Aug 2023 16:08:21 +0200
+Message-ID: <20230818141124.859037-4-thaller@redhat.com>
 In-Reply-To: <20230818141124.859037-1-thaller@redhat.com>
 References: <20230818141124.859037-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -51,171 +51,200 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We should aim to use the thread-safe variants of getprotoby{name,number}
-and getservbyport(). However, they may not be available with other libc,
-so it requires a configure check. As that is cumbersome, add wrappers
-that do that at one place.
+These wrappers are thread-safe, if libc provides the reentrant versions.
+Use them.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- configure.ac   |  4 +++
- src/nftutils.c | 97 ++++++++++++++++++++++++++++++++++++++++++++++++++
- src/nftutils.h | 16 +++++++++
- 3 files changed, 117 insertions(+)
+ src/datatype.c | 33 +++++++++++++++++----------------
+ src/json.c     | 22 +++++++++++-----------
+ src/rule.c     |  7 ++++---
+ 3 files changed, 32 insertions(+), 30 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index b0201ac3528e..42f0dc4cf392 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -108,6 +108,10 @@ AC_DEFINE([HAVE_LIBJANSSON], [1], [Define if you have libjansson])
- ])
- AM_CONDITIONAL([BUILD_JSON], [test "x$with_json" != xno])
+diff --git a/src/datatype.c b/src/datatype.c
+index da802a18bccd..381320eaf842 100644
+--- a/src/datatype.c
++++ b/src/datatype.c
+@@ -29,6 +29,7 @@
+ #include <netlink.h>
+ #include <json.h>
+ #include <misspell.h>
++#include "nftutils.h"
  
-+AC_CHECK_DECLS([getprotobyname_r, getprotobynumber_r, getservbyport_r], [], [], [[
-+#include <netdb.h>
-+]])
-+
- AC_CONFIG_FILES([					\
- 		Makefile				\
- 		libnftables.pc				\
-diff --git a/src/nftutils.c b/src/nftutils.c
-index 758283d1b650..13f879ddc5c7 100644
---- a/src/nftutils.c
-+++ b/src/nftutils.c
-@@ -3,3 +3,100 @@
- #include <config.h>
+ #include <netinet/ip_icmp.h>
  
- #include "nftutils.h"
+@@ -697,12 +698,11 @@ const struct datatype ip6addr_type = {
+ static void inet_protocol_type_print(const struct expr *expr,
+ 				      struct output_ctx *octx)
+ {
+-	struct protoent *p;
+-
+ 	if (!nft_output_numeric_proto(octx)) {
+-		p = getprotobynumber(mpz_get_uint8(expr->value));
+-		if (p != NULL) {
+-			nft_print(octx, "%s", p->p_name);
++		char name[NFT_PROTONAME_MAXSIZE];
 +
-+#include <netdb.h>
-+#include <string.h>
-+#include <stdint.h>
-+
-+/* Buffer size used for getprotobynumber_r() and similar. The manual comments
-+ * that a buffer of 1024 should be sufficient "for most applications"(??), so
-+ * let's double it.  It still fits reasonably on the stack, so no need to
-+ * choose a smaller one. */
-+#define NETDB_BUFSIZE 2048
-+
-+bool nft_getprotobynumber(int proto, char *out_name, size_t name_len)
-+{
-+	const struct protoent *result;
-+
-+#if HAVE_DECL_GETPROTOBYNUMBER_R
-+	struct protoent result_buf;
-+	char buf[NETDB_BUFSIZE];
-+	int r;
-+
-+	r = getprotobynumber_r(proto,
-+	                       &result_buf,
-+	                       buf,
-+	                       sizeof(buf),
-+	                       (struct protoent **) &result);
-+	if (r != 0 || result != &result_buf)
-+		result = NULL;
-+#else
-+	result = getprotobynumber(proto);
-+#endif
-+
-+	if (!result)
-+		return false;
-+
-+	if (strlen(result->p_name) >= name_len)
-+		return false;
-+	strcpy(out_name, result->p_name);
-+	return true;
-+}
-+
-+int nft_getprotobyname(const char *name)
-+{
-+	const struct protoent *result;
-+
-+#if HAVE_DECL_GETPROTOBYNAME_R
-+	struct protoent result_buf;
-+	char buf[NETDB_BUFSIZE];
-+	int r;
-+
-+	r = getprotobyname_r(name,
-+	                     &result_buf,
-+	                     buf,
-+	                     sizeof(buf),
-+	                     (struct protoent **) &result);
-+	if (r != 0 || result != &result_buf)
-+		result = NULL;
-+#else
-+	result = getprotobyname(name);
-+#endif
-+
-+	if (!result)
-+		return -1;
-+
-+	if (result->p_proto < 0 || result->p_proto > UINT8_MAX)
-+		return -1;
-+	return (uint8_t) result->p_proto;
-+}
-+
-+bool nft_getservbyport(int port, const char *proto, char *out_name, size_t name_len)
-+{
-+	const struct servent *result;
-+
-+#if HAVE_DECL_GETSERVBYPORT_R
-+	struct servent result_buf;
-+	char buf[NETDB_BUFSIZE];
-+	int r;
-+
-+	r = getservbyport_r(port,
-+	                    proto,
-+	                    &result_buf,
-+	                    buf,
-+	                    sizeof(buf),
-+	                    (struct servent**) &result);
-+	if (r != 0 || result != &result_buf)
-+		result = NULL;
-+#else
-+	result = getservbyport(port, proto);
-+#endif
-+
-+	if (!result)
-+		return false;
-+
-+	if (strlen(result->s_name) >= name_len)
-+		return false;
-+	strcpy(out_name, result->s_name);
-+	return true;
-+}
-diff --git a/src/nftutils.h b/src/nftutils.h
-index 9ad68d55ce47..cb584b9ca32b 100644
---- a/src/nftutils.h
-+++ b/src/nftutils.h
-@@ -2,4 +2,20 @@
- #ifndef NFTUTILS_H
- #define NFTUTILS_H
++		if (nft_getprotobynumber(mpz_get_uint8(expr->value), name, sizeof(name))) {
++			nft_print(octx, "%s", name);
+ 			return;
+ 		}
+ 	}
+@@ -711,15 +711,15 @@ static void inet_protocol_type_print(const struct expr *expr,
  
-+#include <stdbool.h>
-+#include <stddef.h>
+ static void inet_protocol_type_describe(struct output_ctx *octx)
+ {
+-	struct protoent *p;
+ 	uint8_t protonum;
+ 
+ 	for (protonum = 0; protonum < UINT8_MAX; protonum++) {
+-		p = getprotobynumber(protonum);
+-		if (!p)
++		char name[NFT_PROTONAME_MAXSIZE];
 +
-+/* The maximum buffer size for (struct protoent).p_name. It is excessively large,
-+ * while still reasonably fitting on the stack. Arbitrarily chosen. */
-+#define NFT_PROTONAME_MAXSIZE 1024
++		if (!nft_getprotobynumber(protonum, name, sizeof(name)))
+ 			continue;
+ 
+-		nft_print(octx, "\t%-30s\t%u\n", p->p_name, protonum);
++		nft_print(octx, "\t%-30s\t%u\n", name, protonum);
+ 	}
+ }
+ 
+@@ -727,7 +727,6 @@ static struct error_record *inet_protocol_type_parse(struct parse_ctx *ctx,
+ 						     const struct expr *sym,
+ 						     struct expr **res)
+ {
+-	struct protoent *p;
+ 	uint8_t proto;
+ 	uintmax_t i;
+ 	char *end;
+@@ -740,11 +739,13 @@ static struct error_record *inet_protocol_type_parse(struct parse_ctx *ctx,
+ 
+ 		proto = i;
+ 	} else {
+-		p = getprotobyname(sym->identifier);
+-		if (p == NULL)
++		int r;
 +
-+bool nft_getprotobynumber(int number, char *out_name, size_t name_len);
-+int nft_getprotobyname(const char *name);
++		r = nft_getprotobyname(sym->identifier);
++		if (r < 0)
+ 			return error(&sym->location, "Could not resolve protocol name");
+ 
+-		proto = p->p_proto;
++		proto = r;
+ 	}
+ 
+ 	*res = constant_expr_alloc(&sym->location, &inet_protocol_type,
+@@ -768,12 +769,12 @@ const struct datatype inet_protocol_type = {
+ static void inet_service_print(const struct expr *expr, struct output_ctx *octx)
+ {
+ 	uint16_t port = mpz_get_be16(expr->value);
+-	const struct servent *s = getservbyport(port, NULL);
++	char name[NFT_SERVNAME_MAXSIZE];
+ 
+-	if (s == NULL)
++	if (!nft_getservbyport(port, NULL, name, sizeof(name)))
+ 		nft_print(octx, "%hu", ntohs(port));
+ 	else
+-		nft_print(octx, "\"%s\"", s->s_name);
++		nft_print(octx, "\"%s\"", name);
+ }
+ 
+ void inet_service_type_print(const struct expr *expr, struct output_ctx *octx)
+diff --git a/src/json.c b/src/json.c
+index a119dfc4f1eb..57a597bce467 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -15,6 +15,7 @@
+ #include <netlink.h>
+ #include <rule.h>
+ #include <rt.h>
++#include "nftutils.h"
+ 
+ #include <netdb.h>
+ #include <netinet/icmp6.h>
+@@ -297,10 +298,10 @@ static json_t *chain_print_json(const struct chain *chain)
+ 
+ static json_t *proto_name_json(uint8_t proto)
+ {
+-	const struct protoent *p = getprotobynumber(proto);
++	char name[NFT_PROTONAME_MAXSIZE];
+ 
+-	if (p)
+-		return json_string(p->p_name);
++	if (nft_getprotobynumber(proto, name, sizeof(name)))
++		return json_string(name);
+ 	return json_integer(proto);
+ }
+ 
+@@ -1093,12 +1094,11 @@ json_t *boolean_type_json(const struct expr *expr, struct output_ctx *octx)
+ json_t *inet_protocol_type_json(const struct expr *expr,
+ 				struct output_ctx *octx)
+ {
+-	struct protoent *p;
+-
+ 	if (!nft_output_numeric_proto(octx)) {
+-		p = getprotobynumber(mpz_get_uint8(expr->value));
+-		if (p != NULL)
+-			return json_string(p->p_name);
++		char name[NFT_PROTONAME_MAXSIZE];
 +
-+/* The maximum buffer size for (struct servent).s_name. It is excessively large,
-+ * while still reasonably fitting on the stack. Arbitrarily chosen. */
-+#define NFT_SERVNAME_MAXSIZE 1024
-+
-+bool nft_getservbyport(int port, const char *proto, char *out_name, size_t name_len);
-+
- #endif /* NFTUTILS_H */
++		if (nft_getprotobynumber(mpz_get_uint8(expr->value), name, sizeof(name)))
++			return json_string(name);
+ 	}
+ 	return integer_type_json(expr, octx);
+ }
+@@ -1106,13 +1106,13 @@ json_t *inet_protocol_type_json(const struct expr *expr,
+ json_t *inet_service_type_json(const struct expr *expr, struct output_ctx *octx)
+ {
+ 	uint16_t port = mpz_get_be16(expr->value);
+-	const struct servent *s = NULL;
++	char name[NFT_SERVNAME_MAXSIZE];
+ 
+ 	if (!nft_output_service(octx) ||
+-	    (s = getservbyport(port, NULL)) == NULL)
++	    !nft_getservbyport(port, NULL, name, sizeof(name)))
+ 		return json_integer(ntohs(port));
+ 
+-	return json_string(s->s_name);
++	return json_string(name);
+ }
+ 
+ json_t *mark_type_json(const struct expr *expr, struct output_ctx *octx)
+diff --git a/src/rule.c b/src/rule.c
+index 99c4f0bb8b00..b59fcd3a9fa8 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -27,6 +27,7 @@
+ #include <cache.h>
+ #include <owner.h>
+ #include <intervals.h>
++#include "nftutils.h"
+ 
+ #include <libnftnl/common.h>
+ #include <libnftnl/ruleset.h>
+@@ -1666,10 +1667,10 @@ struct obj *obj_lookup_fuzzy(const char *obj_name,
+ 
+ static void print_proto_name_proto(uint8_t l4, struct output_ctx *octx)
+ {
+-	const struct protoent *p = getprotobynumber(l4);
++	char name[NFT_PROTONAME_MAXSIZE];
+ 
+-	if (p)
+-		nft_print(octx, "%s", p->p_name);
++	if (nft_getprotobynumber(l4, name, sizeof(name)))
++		nft_print(octx, "%s", name);
+ 	else
+ 		nft_print(octx, "%d", l4);
+ }
 -- 
 2.41.0
 
