@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CBD780BF1
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Aug 2023 14:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93BC780BEC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Aug 2023 14:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359638AbjHRMil (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Aug 2023 08:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S1359597AbjHRMii (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Aug 2023 08:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376971AbjHRMib (ORCPT
+        with ESMTP id S1376968AbjHRMia (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:38:31 -0400
+        Fri, 18 Aug 2023 08:38:30 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3540E3A80
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE3A2D68
         for <netfilter-devel@vger.kernel.org>; Fri, 18 Aug 2023 05:38:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,24 +21,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=cIMw5EQOKJV6T5MMzV+OMjOEbkClR0c6h8FVgzprxA0=; b=nwRW7hMRkMZOypXnegjewxxha8
-        r/S9P3j99lYYM7141dluYit0BKLTIHTpVjvG3JG4puWR0boi0OBhojh/Il/7l9h34tkYGmopjJwE5
-        aYQMwjCrVEtndV+JtyugGX30001UyA3X+03ARr0GADqO3yhXcGfHZIg5JDduonYrlsVgvvYEGAddP
-        uFhHMybtbfA3CTG6F7Gj72LVGg6HuhkbCV2LKiAPnAuQMIR4mQd7axw0YVrkupt75JZE94UzkiCQz
-        Vow3tXcENlFgljeJWtsYBgj+e73J++sumoAaxK1IcAqWDizcyhi4cREwQwqR9ZqzkUh7QILf5TxOy
-        rF0gMY/Q==;
+        bh=P+dm+xjKXCXaULBDUltSQn3zGeRu/EgRm9wAEXa+G/A=; b=EWl3jAFNrWvOAoaTbh2QP88Z0Q
+        BExCqIspK8az/b54+SxdsGLRWIKwvB6UbnGdz2g4FBR7hCVwTOvaveIM3faM4prYHLkRrPA3ZVgUM
+        xuSc9nL8NocoYzssbcuSigB/I7gK7iPNi7qXQmf1/r1tyIzUxxzknOFRaXR1Y+R8EJYG44CFvpY1U
+        3jfQJED/V4kkjJSiNTzSwFdvuu3oRj+dqilwHM94Ig4bbISZOyPXgQob6DX4qiJ6vI/Q7YrXBex2e
+        fzz1EkfcLsueaxY6PFwxemlFmxRioCRrjyD6l2R+drSIs4FlqgbwNOzmBpDN0McyjP8AH+sCM7Hzf
+        nX5RsmnQ==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <jeremy@azazel.net>)
-        id 1qWykC-005x0b-2X
+        id 1qWykC-005x0b-2f
         for netfilter-devel@vger.kernel.org;
         Fri, 18 Aug 2023 13:38:24 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 1/5] build: use `$(top_srcdir)` when including Makefile.extra
-Date:   Fri, 18 Aug 2023 13:38:14 +0100
-Message-Id: <20230818123818.2739947-2-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 2/5] build: replace `AM_V_silent` with `AM_V_at`
+Date:   Fri, 18 Aug 2023 13:38:15 +0100
+Message-Id: <20230818123818.2739947-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230818123818.2739947-1-jeremy@azazel.net>
 References: <20230818123818.2739947-1-jeremy@azazel.net>
@@ -57,51 +57,56 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It's less fragile than using hard-coded relative paths.
+`AM_V_silent` was buggy and defined in the wrong place.  Replace it with
+`AM_V_at`, which is provided by automake for the same purpose.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/ACCOUNT/Makefile.am | 2 +-
- extensions/Makefile.am         | 2 +-
- extensions/pknock/Makefile.am  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Makefile.iptrules.in   | 3 ---
+ extensions/Makefile.am | 6 +++---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/extensions/ACCOUNT/Makefile.am b/extensions/ACCOUNT/Makefile.am
-index 65a956697b20..473a739f981a 100644
---- a/extensions/ACCOUNT/Makefile.am
-+++ b/extensions/ACCOUNT/Makefile.am
-@@ -3,7 +3,7 @@
- AM_CPPFLAGS = ${regular_CPPFLAGS} -I${abs_top_srcdir}/extensions
- AM_CFLAGS   = ${regular_CFLAGS} ${libxtables_CFLAGS}
+diff --git a/Makefile.iptrules.in b/Makefile.iptrules.in
+index fcac8856283d..f2f202ada360 100644
+--- a/Makefile.iptrules.in
++++ b/Makefile.iptrules.in
+@@ -21,15 +21,12 @@ AM_DEFAULT_VERBOSITY = 0
+ am__v_CC_0           = @echo "  CC    " $@;
+ am__v_CCLD_0         = @echo "  CCLD  " $@;
+ am__v_GEN_0          = @echo "  GEN   " $@;
+-am__v_SILENT_0       = @
+ am__v_CC_            = ${am__v_CC_${AM_DEFAULT_VERBOSITY}}
+ am__v_CCLD_          = ${am__v_CCLD_${AM_DEFAULT_VERBOSITY}}
+ am__v_GEN_           = ${am__v_GEN_${AM_DEFAULT_VERBOSITY}}
+-am__v_SILENT_        = ${am__v_SILENT_${AM_DEFAULT_VERBOSITY}}
+ AM_V_CC              = ${am__v_CC_${V}}
+ AM_V_CCLD            = ${am__v_CCLD_${V}}
+ AM_V_GEN             = ${am__v_GEN_${V}}
+-AM_V_silent          = ${am__v_GEN_${V}}
  
--include ../../Makefile.extra
-+include $(top_srcdir)/Makefile.extra
- 
- sbin_PROGRAMS = iptaccount
- iptaccount_LDADD = libxt_ACCOUNT_cl.la
+ include ${XA_TOPSRCDIR}/mconfig
+ -include ${XA_TOPSRCDIR}/mconfig.*
 diff --git a/extensions/Makefile.am b/extensions/Makefile.am
-index a487fd8c141a..eebb82fd2f22 100644
+index eebb82fd2f22..b99712dfcd38 100644
 --- a/extensions/Makefile.am
 +++ b/extensions/Makefile.am
-@@ -26,4 +26,4 @@ install-exec-local: modules_install
+@@ -12,13 +12,13 @@ _kcall = -C ${kbuilddir} M=${abs_srcdir}
+ modules:
+ 	@echo -n "Xtables-addons ${PACKAGE_VERSION} - Linux "
+ 	@if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} --no-print-directory -s kernelrelease; fi;
+-	${AM_V_silent}if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} modules; fi;
++	${AM_V_at}if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} modules; fi;
  
- clean-local: clean_modules
+ modules_install:
+-	${AM_V_silent}if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} INSTALL_MOD_PATH=${DESTDIR} ext-mod-dir='$${INSTALL_MOD_DIR}' modules_install; fi;
++	${AM_V_at}if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} INSTALL_MOD_PATH=${DESTDIR} ext-mod-dir='$${INSTALL_MOD_DIR}' modules_install; fi;
  
--include ../Makefile.extra
-+include $(top_srcdir)/Makefile.extra
-diff --git a/extensions/pknock/Makefile.am b/extensions/pknock/Makefile.am
-index 35528709aa15..5fcae4794230 100644
---- a/extensions/pknock/Makefile.am
-+++ b/extensions/pknock/Makefile.am
-@@ -3,7 +3,7 @@
- AM_CPPFLAGS = ${regular_CPPFLAGS} -I${abs_top_srcdir}/extensions
- AM_CFLAGS   = ${regular_CFLAGS} ${libxtables_CFLAGS}
+ clean_modules:
+-	${AM_V_silent}if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} clean; fi;
++	${AM_V_at}if [ -n "${kbuilddir}" ]; then ${MAKE} ${_kcall} clean; fi;
  
--include ../../Makefile.extra
-+include $(top_srcdir)/Makefile.extra
+ all-local: modules
  
- sbin_PROGRAMS = pknlusr
- dist_man_MANS = pknlusr.8
 -- 
 2.40.1
 
