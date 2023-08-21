@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F69783145
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Aug 2023 21:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB0C78318A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Aug 2023 21:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjHUTnL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Aug 2023 15:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S229564AbjHUTnK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Aug 2023 15:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHUTnI (ORCPT
+        with ESMTP id S230057AbjHUTnI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 21 Aug 2023 15:43:08 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F4F10B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883110F
         for <netfilter-devel@vger.kernel.org>; Mon, 21 Aug 2023 12:43:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,24 +21,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=oQDue8zyDolGI9XhEATRWpIVTGX6wrP0RuXSx/UrrpI=; b=EgfFdq52D9Iu2J4M19CFeaWnoa
-        0lQzi0pgGJFqtqw+JXzOxTNrW8RuJ6+CUU9Cz7C/nwaiut+e6zld7BJkzJQF1wtCeijuRZGq7hrv4
-        +44ZhItdOJfSLFl49mGcDgulOPmJtvJc/Iy0A1Kh/QZbp5utvEgl8TJuUWfo7qOg5XvGZXlMZtp/M
-        DeKcOhf3HqksSVcrgoD9AZV11R7dzmqmZhlQMhLouuDzW4Biyo2hO7Wf4WBgV8xvjgQfy81PnlMCA
-        TvQqwOuDX7o7PJWzdqUR6tWVNlY4R5HO9DITYaF3yHW/Rr51XSa72KhjEMRM8qxbYPTqXScc9kJ1t
-        LCmVrVlA==;
+        bh=j6pnHhB1b4PzKZCswkxS7sARXwqw4EeOeyVgyKKFpvg=; b=rBBoh6BW6OPHKzcSQ0vntVqSJR
+        v2x+6oIbrcut3TR3YYb55K4Pk4rtJ9iOZV10phzkX2CMGVdAUMgrNP+2gm7MOduFKVlaTN+1QkwZj
+        /+f/Geq/DaLJV6xhH81zFrOAkLAQmb0hb7r/9fT2VcbywarIRdyjWF5RYVyPLgabW9HHHZzMVfTla
+        m1QfbaxC6YKzBrjEV855U8eN+vXhSIc2i7WuWplOTzvjl34BDPJZiZ1he6VG7UeSeyXPCvqY77IP9
+        fbyZjw9dUg4f0k1U6pNJ2GljrFJ3EdVTOQ3NMghsni4XtKUrIGrA/Ah6wb3ob8gkdnOd8aeamzlwO
+        GuumdsaA==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <jeremy@azazel.net>)
-        id 1qYAnn-00909U-2Z
+        id 1qYAnn-00909U-2j
         for netfilter-devel@vger.kernel.org;
         Mon, 21 Aug 2023 20:43:03 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 v3 08/11] gprint, oprint: add support for printing ipv6 addresses
-Date:   Mon, 21 Aug 2023 20:42:34 +0100
-Message-Id: <20230821194237.51139-9-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v3 09/11] sqlite3: correct binding of ipv4 addresses and 64-bit integers
+Date:   Mon, 21 Aug 2023 20:42:35 +0100
+Message-Id: <20230821194237.51139-10-jeremy@azazel.net>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230821194237.51139-1-jeremy@azazel.net>
 References: <20230821194237.51139-1-jeremy@azazel.net>
@@ -56,80 +56,65 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hitherto we have bound ipv4 addresses as 64-bit ints and 64-bit ints as
+32-bit.
+
+Move a `ULOGD_RET_BOOL` case for consistency and fix some nearby
+formatting.
+
+Fix some nearby formatting.
+
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/ulogd_output_GPRINT.c | 16 ++++++++++++++--
- output/ulogd_output_OPRINT.c | 21 ++++++++++++++++-----
- 2 files changed, 30 insertions(+), 7 deletions(-)
+ output/sqlite3/ulogd_output_SQLITE3.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/output/ulogd_output_GPRINT.c b/output/ulogd_output_GPRINT.c
-index 093d3ea2b254..37829fa49e9d 100644
---- a/output/ulogd_output_GPRINT.c
-+++ b/output/ulogd_output_GPRINT.c
-@@ -155,7 +155,10 @@ static int gprint_interp(struct ulogd_pluginstance *upi)
- 			size += ret;
- 			break;
- 		case ULOGD_RET_IPADDR: {
-+			struct in6_addr ipv6addr;
- 			struct in_addr ipv4addr;
-+			int family;
-+			void *addr;
+diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
+index 0a9ad67edcff..3a823892a2dd 100644
+--- a/output/sqlite3/ulogd_output_SQLITE3.c
++++ b/output/sqlite3/ulogd_output_SQLITE3.c
+@@ -145,6 +145,10 @@ sqlite3_interp(struct ulogd_pluginstance *pi)
+ 		}
  
- 			ret = snprintf(buf+size, rem, "%s=", key->name);
- 			if (ret < 0)
-@@ -163,8 +166,17 @@ static int gprint_interp(struct ulogd_pluginstance *upi)
- 			rem -= ret;
- 			size += ret;
- 
--			ipv4addr.s_addr = key->u.value.ui32;
--			if (!inet_ntop(AF_INET, &ipv4addr, buf + size, rem))
-+			if (key->len == sizeof(ipv6addr)) {
-+				memcpy(ipv6addr.s6_addr, key->u.value.ui128,
-+				       sizeof(ipv6addr.s6_addr));
-+				addr = &ipv6addr;
-+				family = AF_INET6;
-+			} else {
-+				ipv4addr.s_addr = key->u.value.ui32;
-+				addr = &ipv4addr;
-+				family = AF_INET;
-+			}
-+			if (!inet_ntop(family, addr, buf + size, rem))
- 				break;
- 			ret = strlen(buf + size);
- 
-diff --git a/output/ulogd_output_OPRINT.c b/output/ulogd_output_OPRINT.c
-index b5586e850aa4..13934ff19efb 100644
---- a/output/ulogd_output_OPRINT.c
-+++ b/output/ulogd_output_OPRINT.c
-@@ -76,12 +76,23 @@ static int oprint_interp(struct ulogd_pluginstance *upi)
- 			fprintf(opi->of, "%" PRIu64 "\n", ret->u.value.ui64);
- 			break;
- 		case ULOGD_RET_IPADDR: {
--			char addrbuf[INET_ADDRSTRLEN + 1] = "";
-+			char addrbuf[INET6_ADDRSTRLEN + 1] = "";
-+			struct in6_addr ipv6addr;
- 			struct in_addr ipv4addr;
--
--			ipv4addr.s_addr = ret->u.value.ui32;
--			if (!inet_ntop(AF_INET, &ipv4addr, addrbuf,
--				       sizeof(addrbuf)))
-+			int family;
-+			void *addr;
+ 		switch (f->key->type) {
++		case ULOGD_RET_BOOL:
++			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.b);
++			break;
 +
-+			if (ret->len == sizeof(ipv6addr)) {
-+				memcpy(ipv6addr.s6_addr, ret->u.value.ui128,
-+				       sizeof(ipv6addr.s6_addr));
-+				addr = &ipv6addr;
-+				family = AF_INET6;
-+			} else {
-+				ipv4addr.s_addr = ret->u.value.ui32;
-+				addr = &ipv4addr;
-+				family = AF_INET;
-+			}
-+			if (!inet_ntop(family, addr, addrbuf, sizeof(addrbuf)))
- 				break;
+ 		case ULOGD_RET_INT8:
+ 			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.i8);
+ 			break;
+@@ -158,7 +162,7 @@ sqlite3_interp(struct ulogd_pluginstance *pi)
+ 			break;
  
- 			fprintf(opi->of, "%s\n", addrbuf);
+ 		case ULOGD_RET_INT64:
+-			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.i64);
++			ret = sqlite3_bind_int64(priv->p_stmt, i, k_ret->u.value.i64);
+ 			break;
+ 			
+ 		case ULOGD_RET_UINT8:
+@@ -174,17 +178,16 @@ sqlite3_interp(struct ulogd_pluginstance *pi)
+ 			break;
+ 
+ 		case ULOGD_RET_IPADDR:
+-		case ULOGD_RET_UINT64:
+-			ret = sqlite3_bind_int64(priv->p_stmt, i, k_ret->u.value.ui64);
++			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.ui32);
+ 			break;
+ 
+-		case ULOGD_RET_BOOL:
+-			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.b);
++		case ULOGD_RET_UINT64:
++			ret = sqlite3_bind_int64(priv->p_stmt, i, k_ret->u.value.ui64);
+ 			break;
+ 
+ 		case ULOGD_RET_STRING:
+ 			ret = sqlite3_bind_text(priv->p_stmt, i, k_ret->u.value.ptr,
+-									strlen(k_ret->u.value.ptr), SQLITE_STATIC);
++						strlen(k_ret->u.value.ptr), SQLITE_STATIC);
+ 			break;
+ 
+ 		default:
 -- 
 2.40.1
 
