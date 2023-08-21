@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48895783123
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Aug 2023 21:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EC378311A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Aug 2023 21:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjHUTnK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S230054AbjHUTnK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 21 Aug 2023 15:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjHUTnH (ORCPT
+        with ESMTP id S230055AbjHUTnH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 21 Aug 2023 15:43:07 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18855F3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B57FA
         for <netfilter-devel@vger.kernel.org>; Mon, 21 Aug 2023 12:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=jZ9O6CRbiBKsWabEkLnyd26dau9cMzRFsGDcEYwuE+s=; b=fUDWTxclPlCRUh6AcrO2npOFLL
-        NX/OfyE5d22hZqr3J+d9XOpchUafFRQ4q85/6NM1Jrv02bNfc1M4t1gKYzPiyN9LHqaGwNUZCs8eW
-        EqXt7xWAaikJSB5Xem8LfdL9IIPc8She+jxcdNIRRi5T9sJ2Nek3pxxuPmjEmosL7RIduQC/IDZvg
-        8Tiawnw44jf3biuOLjDkVm2LOfyZMktKTrQIxLvMFpxo91jTRTCXP8ChkEfvcga9zi7+iyx9oCeCv
-        PAmsDk8DdgO+KL0gZkfFM0Ps6UTok5H8pY1D/ZrfeGxJPb81NSuJFuy2Xhk5IxocLO6KKu/7DisBy
-        KbZkcq3Q==;
+        bh=xepZXcBmAG+zA4wwNaJiFAO0f+rneMnWUY3TeepppPc=; b=CF6QY6VhTFscLDCwf4YvzBxWx1
+        1Ydyg8VzymnmDgiHMBjQjj+kCWJ+7F3aGW4mptOrJTwlYMlT8Rtp2LsU1aIzfo7raGEb0s0LjHf3I
+        Y+YZD0rlXj4ihGx25xYYh2PdDLP2s1z8mhnVmQlbVKBEUOnp8+3ygf61w+l9XSWau3e9HSA+HznrP
+        7MDc8zhI6C5cWA5yPMdBvRSMUSJ78ubwk+ADde2iQHx7ZuiVM0mAGvKQGmNsglVNC26TcAJi1R7N5
+        J6BE7BXPKtzOsfJbNafckQhGagSYd+T8Z8XQUGEg+4N/gZMLCcRTdQo/u/whD64vaN+tvxay+bA91
+        U9TGa5/g==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <jeremy@azazel.net>)
-        id 1qYAnn-00909U-1y;
+        id 1qYAnn-00909U-27
+        for netfilter-devel@vger.kernel.org;
         Mon, 21 Aug 2023 20:43:03 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Cc:     Robert O'Brien <robrien@foxtrot-research.com>
-Subject: [PATCH ulogd2 v3 04/11] raw2packet_BASE: store ARP address values as integers
-Date:   Mon, 21 Aug 2023 20:42:30 +0100
-Message-Id: <20230821194237.51139-5-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v3 05/11] ip2hbin: store ipv6 address as integer
+Date:   Mon, 21 Aug 2023 20:42:31 +0100
+Message-Id: <20230821194237.51139-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230821194237.51139-1-jeremy@azazel.net>
 References: <20230821194237.51139-1-jeremy@azazel.net>
@@ -56,49 +56,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Keys of type `ULOGD_RET_IPADDR` may be ipv4 or ipv6.  ARP protocol
-addresses are 32-bits (i.e., ipv4).  By using `okey_set_u32` we keep
-track of the size and allow downstream plug-ins to handle them
-correctly.
+By using `okey_set_u128` we keep track of the address size and
+downstream plug-ins can distinguish the address family.
 
-Reported-by: Robert O'Brien <robrien@foxtrot-research.com>
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- filter/raw2packet/ulogd_raw2packet_BASE.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ filter/ulogd_filter_IP2HBIN.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/filter/raw2packet/ulogd_raw2packet_BASE.c b/filter/raw2packet/ulogd_raw2packet_BASE.c
-index 14423486a880..09e931349acf 100644
---- a/filter/raw2packet/ulogd_raw2packet_BASE.c
-+++ b/filter/raw2packet/ulogd_raw2packet_BASE.c
-@@ -896,18 +896,23 @@ static int _interp_arp(struct ulogd_pluginstance *pi, uint32_t len)
- 	struct ulogd_key *ret = pi->output.keys;
- 	const struct ether_arp *arph =
- 		ikey_get_ptr(&pi->input.keys[INKEY_RAW_PCKT]);
-+	uint32_t arp_spa, arp_tpa;
- 
- 	if (len < sizeof(struct ether_arp))
- 		return ULOGD_IRET_OK;
- 
--	okey_set_u16(&ret[KEY_ARP_HTYPE], ntohs(arph->arp_hrd));
--	okey_set_u16(&ret[KEY_ARP_PTYPE], ntohs(arph->arp_pro));
-+	okey_set_u16(&ret[KEY_ARP_HTYPE],  ntohs(arph->arp_hrd));
-+	okey_set_u16(&ret[KEY_ARP_PTYPE],  ntohs(arph->arp_pro));
- 	okey_set_u16(&ret[KEY_ARP_OPCODE], ntohs(arph->arp_op));
- 
- 	okey_set_ptr(&ret[KEY_ARP_SHA], (void *)&arph->arp_sha);
--	okey_set_ptr(&ret[KEY_ARP_SPA], (void *)&arph->arp_spa);
- 	okey_set_ptr(&ret[KEY_ARP_THA], (void *)&arph->arp_tha);
--	okey_set_ptr(&ret[KEY_ARP_TPA], (void *)&arph->arp_tpa);
-+
-+	memcpy(&arp_spa, arph->arp_spa, sizeof(arp_spa));
-+	memcpy(&arp_tpa, arph->arp_tpa, sizeof(arp_tpa));
-+
-+	okey_set_u32(&ret[KEY_ARP_SPA], arp_spa);
-+	okey_set_u32(&ret[KEY_ARP_TPA], arp_tpa);
- 
- 	return ULOGD_IRET_OK;
- }
+diff --git a/filter/ulogd_filter_IP2HBIN.c b/filter/ulogd_filter_IP2HBIN.c
+index 2711f9c3e12a..081616edbc51 100644
+--- a/filter/ulogd_filter_IP2HBIN.c
++++ b/filter/ulogd_filter_IP2HBIN.c
+@@ -157,15 +157,14 @@ static int interp_ip2hbin(struct ulogd_pluginstance *pi)
+ 		if (pp_is_valid(inp, i)) {
+ 			switch (convfamily) {
+ 			case AF_INET:
+-				okey_set_u32(&ret[i-START_KEY],
+-					ntohl(ikey_get_u32(&inp[i])));
++				okey_set_u32(&ret[i - START_KEY],
++					     ntohl(ikey_get_u32(&inp[i])));
+ 				break;
+ 			case AF_INET6:
+-				okey_set_ptr(&ret[i-START_KEY],
+-					(struct in6_addr *)ikey_get_u128(&inp[i]));
++				okey_set_u128(&ret[i - START_KEY],
++					      ikey_get_u128(&inp[i]));
+ 				break;
+ 			default:
+-				;
+ 				break;
+ 			}
+ 		}
 -- 
 2.40.1
 
