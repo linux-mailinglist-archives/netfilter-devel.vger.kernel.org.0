@@ -2,22 +2,22 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FFE785C15
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Aug 2023 17:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C1C785C16
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Aug 2023 17:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236174AbjHWP1s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Aug 2023 11:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
+        id S237208AbjHWP1t (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Aug 2023 11:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237279AbjHWP1l (ORCPT
+        with ESMTP id S237330AbjHWP1q (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:27:41 -0400
+        Wed, 23 Aug 2023 11:27:46 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A25CEF;
-        Wed, 23 Aug 2023 08:27:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F16CD9;
+        Wed, 23 Aug 2023 08:27:45 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qYplg-0001lD-AZ; Wed, 23 Aug 2023 17:27:36 +0200
+        id 1qYplk-0001la-DY; Wed, 23 Aug 2023 17:27:40 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netdev@vger.kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>,
@@ -25,10 +25,10 @@ Cc:     Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         <netfilter-devel@vger.kernel.org>,
-        Stefano Brivio <sbrivio@redhat.com>
-Subject: [PATCH net 5/6] netfilter: nf_tables: fix out of memory error handling
-Date:   Wed, 23 Aug 2023 17:26:53 +0200
-Message-ID: <20230823152711.15279-6-fw@strlen.de>
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH net 6/6] netfilter: nf_tables: defer gc run if previous batch is still pending
+Date:   Wed, 23 Aug 2023 17:26:54 +0200
+Message-ID: <20230823152711.15279-7-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230823152711.15279-1-fw@strlen.de>
 References: <20230823152711.15279-1-fw@strlen.de>
@@ -43,58 +43,74 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Several instances of pipapo_resize() don't propagate allocation failures,
-this causes a crash when fault injection is enabled for gfp_kernel slabs.
+Don't queue more gc work, else we may queue the same elements multiple
+times.
 
-Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
+If an element is flagged as dead, this can mean that either the previous
+gc request was invalidated/discarded by a transaction or that the previous
+request is still pending in the system work queue.
+
+The latter will happen if the gc interval is set to a very low value,
+e.g. 1ms, and system work queue is backlogged.
+
+The sets refcount is 1 if no previous gc requeusts are queued, so add
+a helper for this and skip gc run if old requests are pending.
+
+Add a helper for this and skip the gc run in this case.
+
+Fixes: f6c383b8c31a ("netfilter: nf_tables: adapt set backend to use GC transaction API")
 Signed-off-by: Florian Westphal <fw@strlen.de>
-Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+Reviewed-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_pipapo.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ include/net/netfilter/nf_tables.h | 5 +++++
+ net/netfilter/nft_set_hash.c      | 3 +++
+ net/netfilter/nft_set_rbtree.c    | 3 +++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index 3757fcc55723..6af9c9ed4b5c 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -902,12 +902,14 @@ static void pipapo_lt_bits_adjust(struct nft_pipapo_field *f)
- static int pipapo_insert(struct nft_pipapo_field *f, const uint8_t *k,
- 			 int mask_bits)
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index ffcbdf08380f..dd40c75011d2 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -587,6 +587,11 @@ static inline void *nft_set_priv(const struct nft_set *set)
+ 	return (void *)set->data;
+ }
+ 
++static inline bool nft_set_gc_is_pending(const struct nft_set *s)
++{
++	return refcount_read(&s->refs) != 1;
++}
++
+ static inline struct nft_set *nft_set_container_of(const void *priv)
  {
--	int rule = f->rules++, group, ret, bit_offset = 0;
-+	int rule = f->rules, group, ret, bit_offset = 0;
+ 	return (void *)priv - offsetof(struct nft_set, data);
+diff --git a/net/netfilter/nft_set_hash.c b/net/netfilter/nft_set_hash.c
+index cef5df846000..524763659f25 100644
+--- a/net/netfilter/nft_set_hash.c
++++ b/net/netfilter/nft_set_hash.c
+@@ -326,6 +326,9 @@ static void nft_rhash_gc(struct work_struct *work)
+ 	nft_net = nft_pernet(net);
+ 	gc_seq = READ_ONCE(nft_net->gc_seq);
  
--	ret = pipapo_resize(f, f->rules - 1, f->rules);
-+	ret = pipapo_resize(f, f->rules, f->rules + 1);
- 	if (ret)
- 		return ret;
- 
-+	f->rules++;
++	if (nft_set_gc_is_pending(set))
++		goto done;
 +
- 	for (group = 0; group < f->groups; group++) {
- 		int i, v;
- 		u8 mask;
-@@ -1052,7 +1054,9 @@ static int pipapo_expand(struct nft_pipapo_field *f,
- 			step++;
- 			if (step >= len) {
- 				if (!masks) {
--					pipapo_insert(f, base, 0);
-+					err = pipapo_insert(f, base, 0);
-+					if (err < 0)
-+						return err;
- 					masks = 1;
- 				}
- 				goto out;
-@@ -1235,6 +1239,9 @@ static int nft_pipapo_insert(const struct net *net, const struct nft_set *set,
- 		else
- 			ret = pipapo_expand(f, start, end, f->groups * f->bb);
+ 	gc = nft_trans_gc_alloc(set, gc_seq, GFP_KERNEL);
+ 	if (!gc)
+ 		goto done;
+diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
+index f9d4c8fcbbf8..c6435e709231 100644
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -611,6 +611,9 @@ static void nft_rbtree_gc(struct work_struct *work)
+ 	nft_net = nft_pernet(net);
+ 	gc_seq  = READ_ONCE(nft_net->gc_seq);
  
-+		if (ret < 0)
-+			return ret;
++	if (nft_set_gc_is_pending(set))
++		goto done;
 +
- 		if (f->bsize > bsize_max)
- 			bsize_max = f->bsize;
- 
+ 	gc = nft_trans_gc_alloc(set, gc_seq, GFP_KERNEL);
+ 	if (!gc)
+ 		goto done;
 -- 
 2.41.0
 
