@@ -2,22 +2,22 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 708CD785C17
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Aug 2023 17:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FFE785C15
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Aug 2023 17:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237226AbjHWP1u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Aug 2023 11:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
+        id S236174AbjHWP1s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Aug 2023 11:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbjHWP1i (ORCPT
+        with ESMTP id S237279AbjHWP1l (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Aug 2023 11:27:38 -0400
+        Wed, 23 Aug 2023 11:27:41 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F83CF1;
-        Wed, 23 Aug 2023 08:27:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A25CEF;
+        Wed, 23 Aug 2023 08:27:39 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qYplc-0001ko-8E; Wed, 23 Aug 2023 17:27:32 +0200
+        id 1qYplg-0001lD-AZ; Wed, 23 Aug 2023 17:27:36 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netdev@vger.kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>,
@@ -25,10 +25,10 @@ Cc:     Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH net 4/6] netfilter: nf_tables: use correct lock to protect gc_list
-Date:   Wed, 23 Aug 2023 17:26:52 +0200
-Message-ID: <20230823152711.15279-5-fw@strlen.de>
+        Stefano Brivio <sbrivio@redhat.com>
+Subject: [PATCH net 5/6] netfilter: nf_tables: fix out of memory error handling
+Date:   Wed, 23 Aug 2023 17:26:53 +0200
+Message-ID: <20230823152711.15279-6-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230823152711.15279-1-fw@strlen.de>
 References: <20230823152711.15279-1-fw@strlen.de>
@@ -43,34 +43,58 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+Several instances of pipapo_resize() don't propagate allocation failures,
+this causes a crash when fault injection is enabled for gfp_kernel slabs.
 
-Use nf_tables_gc_list_lock spinlock, not nf_tables_destroy_list_lock to
-protect the gc list.
-
-Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
 Signed-off-by: Florian Westphal <fw@strlen.de>
+Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- net/netfilter/nf_tables_api.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index a255456efae4..eb8b1167dced 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -9456,9 +9456,9 @@ static void nft_trans_gc_work(struct work_struct *work)
- 	struct nft_trans_gc *trans, *next;
- 	LIST_HEAD(trans_gc_list);
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 3757fcc55723..6af9c9ed4b5c 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -902,12 +902,14 @@ static void pipapo_lt_bits_adjust(struct nft_pipapo_field *f)
+ static int pipapo_insert(struct nft_pipapo_field *f, const uint8_t *k,
+ 			 int mask_bits)
+ {
+-	int rule = f->rules++, group, ret, bit_offset = 0;
++	int rule = f->rules, group, ret, bit_offset = 0;
  
--	spin_lock(&nf_tables_destroy_list_lock);
-+	spin_lock(&nf_tables_gc_list_lock);
- 	list_splice_init(&nf_tables_gc_list, &trans_gc_list);
--	spin_unlock(&nf_tables_destroy_list_lock);
-+	spin_unlock(&nf_tables_gc_list_lock);
+-	ret = pipapo_resize(f, f->rules - 1, f->rules);
++	ret = pipapo_resize(f, f->rules, f->rules + 1);
+ 	if (ret)
+ 		return ret;
  
- 	list_for_each_entry_safe(trans, next, &trans_gc_list, list) {
- 		list_del(&trans->list);
++	f->rules++;
++
+ 	for (group = 0; group < f->groups; group++) {
+ 		int i, v;
+ 		u8 mask;
+@@ -1052,7 +1054,9 @@ static int pipapo_expand(struct nft_pipapo_field *f,
+ 			step++;
+ 			if (step >= len) {
+ 				if (!masks) {
+-					pipapo_insert(f, base, 0);
++					err = pipapo_insert(f, base, 0);
++					if (err < 0)
++						return err;
+ 					masks = 1;
+ 				}
+ 				goto out;
+@@ -1235,6 +1239,9 @@ static int nft_pipapo_insert(const struct net *net, const struct nft_set *set,
+ 		else
+ 			ret = pipapo_expand(f, start, end, f->groups * f->bb);
+ 
++		if (ret < 0)
++			return ret;
++
+ 		if (f->bsize > bsize_max)
+ 			bsize_max = f->bsize;
+ 
 -- 
 2.41.0
 
