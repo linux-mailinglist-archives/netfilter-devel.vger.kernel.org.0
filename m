@@ -2,81 +2,104 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3247853AB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Aug 2023 11:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29735785475
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Aug 2023 11:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbjHWJR3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Aug 2023 05:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        id S231658AbjHWJnN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Aug 2023 05:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbjHWJPQ (ORCPT
+        with ESMTP id S233419AbjHWJlo (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Aug 2023 05:15:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311035252
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Aug 2023 02:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692781595;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9c+TgxZa7cnrCJBQLGvPaOLfSuQltahIaqxXjSxqF0g=;
-        b=b3gir6vMty9ivEJAbVa/sjuoIz1dP5dEFsJSItHOz7M/AzBy4FP9eXVDKSk6BTEaW4FUIZ
-        E8mxdzSnRWMyvh/ixCKe6iVDiuEW2H0GlS+rmK1fWWCT0gmfsN81ALSkEMkA61HCxqKC7J
-        PQxGKS+xzXPhOfMjE1iEnsdDN2bxAwM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-435-YKgENhSqP4aI-no2RKgcow-1; Wed, 23 Aug 2023 05:06:31 -0400
-X-MC-Unique: YKgENhSqP4aI-no2RKgcow-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E42E101A528;
-        Wed, 23 Aug 2023 09:06:31 +0000 (UTC)
-Received: from elisabeth (unknown [10.39.208.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5558340D283A;
-        Wed, 23 Aug 2023 09:06:30 +0000 (UTC)
-Date:   Wed, 23 Aug 2023 11:06:28 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
+        Wed, 23 Aug 2023 05:41:44 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10C659D7
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Aug 2023 02:11:00 -0700 (PDT)
+Received: from [78.30.34.192] (port=38394 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qYjt9-0044MV-C1; Wed, 23 Aug 2023 11:10:57 +0200
+Date:   Wed, 23 Aug 2023 11:10:54 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Florian Westphal <fw@strlen.de>
-Cc:     <netfilter-devel@vger.kernel.org>
+Cc:     netfilter-devel@vger.kernel.org,
+        Stefano Brivio <sbrivio@redhat.com>
 Subject: Re: [PATCH nf] netfilter: nft_set_pipapo: fix out of memory error
  handling
-Message-ID: <20230823110628.56a553d3@elisabeth>
-In-Reply-To: <20230823072752.16361-1-fw@strlen.de>
+Message-ID: <ZOXNHp3U5o1pSTno@calendula>
 References: <20230823072752.16361-1-fw@strlen.de>
-Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230823072752.16361-1-fw@strlen.de>
+X-Spam-Score: -1.8 (-)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, 23 Aug 2023 09:27:47 +0200
-Florian Westphal <fw@strlen.de> wrote:
-
+On Wed, Aug 23, 2023 at 09:27:47AM +0200, Florian Westphal wrote:
 > Several instances of pipapo_resize() don't propagate allocation failures,
 > this causes a crash when fault injection is used with
 > 
 >  echo Y > /sys/kernel/debug/failslab/ignore-gfp-wait
-
-Oops, I didn't think about that. Thanks.
-
+> 
 > Cc: Stefano Brivio <sbrivio@redhat.com>
+
+Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
+
 > Signed-off-by: Florian Westphal <fw@strlen.de>
-
-Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
-
--- 
-Stefano
-
+> ---
+>  net/netfilter/nft_set_pipapo.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+> index 3757fcc55723..6af9c9ed4b5c 100644
+> --- a/net/netfilter/nft_set_pipapo.c
+> +++ b/net/netfilter/nft_set_pipapo.c
+> @@ -902,12 +902,14 @@ static void pipapo_lt_bits_adjust(struct nft_pipapo_field *f)
+>  static int pipapo_insert(struct nft_pipapo_field *f, const uint8_t *k,
+>  			 int mask_bits)
+>  {
+> -	int rule = f->rules++, group, ret, bit_offset = 0;
+> +	int rule = f->rules, group, ret, bit_offset = 0;
+>  
+> -	ret = pipapo_resize(f, f->rules - 1, f->rules);
+> +	ret = pipapo_resize(f, f->rules, f->rules + 1);
+>  	if (ret)
+>  		return ret;
+>  
+> +	f->rules++;
+> +
+>  	for (group = 0; group < f->groups; group++) {
+>  		int i, v;
+>  		u8 mask;
+> @@ -1052,7 +1054,9 @@ static int pipapo_expand(struct nft_pipapo_field *f,
+>  			step++;
+>  			if (step >= len) {
+>  				if (!masks) {
+> -					pipapo_insert(f, base, 0);
+> +					err = pipapo_insert(f, base, 0);
+> +					if (err < 0)
+> +						return err;
+>  					masks = 1;
+>  				}
+>  				goto out;
+> @@ -1235,6 +1239,9 @@ static int nft_pipapo_insert(const struct net *net, const struct nft_set *set,
+>  		else
+>  			ret = pipapo_expand(f, start, end, f->groups * f->bb);
+>  
+> +		if (ret < 0)
+> +			return ret;
+> +
+>  		if (f->bsize > bsize_max)
+>  			bsize_max = f->bsize;
+>  
+> -- 
+> 2.41.0
+> 
