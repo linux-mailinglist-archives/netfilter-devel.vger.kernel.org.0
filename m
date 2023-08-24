@@ -2,87 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15783786D8F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Aug 2023 13:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1234786E4A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Aug 2023 13:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234681AbjHXLQ3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Aug 2023 07:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
+        id S238996AbjHXLrU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Aug 2023 07:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241017AbjHXLQR (ORCPT
+        with ESMTP id S241142AbjHXLqy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Aug 2023 07:16:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA4619B7
-        for <netfilter-devel@vger.kernel.org>; Thu, 24 Aug 2023 04:15:16 -0700 (PDT)
+        Thu, 24 Aug 2023 07:46:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCE81736
+        for <netfilter-devel@vger.kernel.org>; Thu, 24 Aug 2023 04:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692875715;
+        s=mimecast20190719; t=1692877574;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e1GJw+Z0LNBBeYh8k7YLTGKXrfeJv5XcQd8j1CWgCU0=;
-        b=B8egjBafQjzihOZMcML7wuak55Bg0e8C15bB+vQ7mhkSC26Yvvi7bvgWbt4d+qIbfXUnej
-        9AQdFm7DUFuXXgZ7gO7xid+JJRcbEcRFPA28jcA056vI2yKNjKnrgt3hL7QgIUJcpSRjMe
-        X5+/EcEdozSI6BFw0LkD+nVr3yDJh0Q=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-286-GiSYTU3fN7-nLS2CNgivcg-1; Thu, 24 Aug 2023 07:15:13 -0400
-X-MC-Unique: GiSYTU3fN7-nLS2CNgivcg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A02DC853068
-        for <netfilter-devel@vger.kernel.org>; Thu, 24 Aug 2023 11:15:13 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F8B2C1602B;
-        Thu, 24 Aug 2023 11:15:13 +0000 (UTC)
+        bh=AzIih3JvCE9DGHO93tElU7vDOT/6ETH+VEsIZT4s4u8=;
+        b=A657N6j2IwahdgPhD9sQAEekCZBJizcssaJA676qnr+FNsxh1U+gjJD/LZsZxXTxi9N5er
+        CPCGPlKIFtxovochs0t2+pkjzal6YuQPAW8EgNoLIEJmSbOEiw+TpdJiAjFpcT1Xk2vrkK
+        k1pkrCrNkFFw1LB8Z5PMdXp4w5yu0h8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-307-r9-h0C_rNsivrO8uJ8n3oQ-1; Thu, 24 Aug 2023 07:46:12 -0400
+X-MC-Unique: r9-h0C_rNsivrO8uJ8n3oQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe805a8826so12748585e9.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 24 Aug 2023 04:46:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692877571; x=1693482371;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AzIih3JvCE9DGHO93tElU7vDOT/6ETH+VEsIZT4s4u8=;
+        b=MRu30ulHMO5mJwSnncjdIaW884t6er0L0sPbuA+Coz4zdZuvtiCRPD6MfAmAmkZhws
+         f56kRI5gBWz0XoFOGuYGbA79DmYTlC6OeCgBilrk7CFkXTjBsSTLg7+zngoe4FModZ8O
+         bVtzonA1ndnF5e7n5XRxMdw/saofNKLVvf8p4Pz+FjIKVewXtsIUv6eLRWzeiXEynq0n
+         eAl8msXJYWlrnDqspWxBOLwNOpETXQMdf3XBCmBCQJ/COEcUY2605KtANOh/ytvgs16q
+         uMkDo0VUgNrCi+bJ/zyYbZCKGDFLKLyElb8ZjY0ZctstwBWLZWTKvlFyMiKJh0t5mn5o
+         hKig==
+X-Gm-Message-State: AOJu0YxuGZZUgffHcuzAFa/KXV4TYrXAcQtgfyu9iSKcoUEAPIk/UhLp
+        ju2FnLW2bCInGHWEE7Yvj6jkumWMA5K73sWigoLSbNi5p0GOFKawMg+GDFTawPfJMuqByyESujG
+        wFd/28bIUoUWUzSx/j2YtCMIQ7pDdoWK3+VkqCECYGL2hs4xx0C8rjvfVcIKiwD2Hk9NBe0phIK
+        V4c6Zc4DWnCFo=
+X-Received: by 2002:a05:600c:3b05:b0:3f6:8a3:8e59 with SMTP id m5-20020a05600c3b0500b003f608a38e59mr12101977wms.1.1692877571228;
+        Thu, 24 Aug 2023 04:46:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHA4w0UVlLgbpXEKLXF/fztZVQIbx5ejmKzAGUDUL6PumEIwaQSe9LyG9IKmag0eDYxoMJU1g==
+X-Received: by 2002:a05:600c:3b05:b0:3f6:8a3:8e59 with SMTP id m5-20020a05600c3b0500b003f608a38e59mr12101965wms.1.1692877570823;
+        Thu, 24 Aug 2023 04:46:10 -0700 (PDT)
+Received: from [10.0.0.196] ([37.186.167.86])
+        by smtp.gmail.com with ESMTPSA id u6-20020a7bc046000000b003fedcd02e2asm2402865wmc.35.2023.08.24.04.46.09
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 04:46:10 -0700 (PDT)
+Message-ID: <5abb46169719717e3761a5833deb87a7fcaee52b.camel@redhat.com>
+Subject: Re: [PATCH nft 4/6] configure: use AC_USE_SYSTEM_EXTENSIONS to get
+ _GNU_SOURCE
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 6/6] configure: drop AM_PROG_CC_C_O autoconf check
-Date:   Thu, 24 Aug 2023 13:13:34 +0200
-Message-ID: <20230824111456.2005125-7-thaller@redhat.com>
-In-Reply-To: <20230824111456.2005125-1-thaller@redhat.com>
+Date:   Thu, 24 Aug 2023 13:46:09 +0200
+In-Reply-To: <20230824111456.2005125-5-thaller@redhat.com>
 References: <20230824111456.2005125-1-thaller@redhat.com>
+         <20230824111456.2005125-5-thaller@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This macro is obsolete since automake 1.14 (2013). It might have been
-unnecessary even before, in practice only gcc/clang are supported
-compilers.
+On Thu, 2023-08-24 at 13:13 +0200, Thomas Haller wrote:
+>=20
+> diff --git a/configure.ac b/configure.ac
+> index 42f0dc4cf392..9d859307adaa 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -45,6 +45,9 @@ fi
+> =C2=A0AM_PROG_AR
+> =C2=A0LT_INIT([disable-static])
+> =C2=A0AM_PROG_CC_C_O
+> +
+> +AC_USE_SYSTEM_EXTENSIONS
 
-[1] https://www.gnu.org/software/automake/manual/html_node/Public-Macros.html#index-AM_005fPROG_005fCC_005fC_005fO
-[2] https://lists.gnu.org/archive/html/info-gnu/2013-06/msg00009.html
+AC_USE_SYSTEM_EXTENTIONS needs to move up, right after AC_PROG_CC.
+I will fix that in v2.
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- configure.ac | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/configure.ac b/configure.ac
-index 9d859307adaa..7c714adccb58 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -44,7 +44,6 @@ fi
- 
- AM_PROG_AR
- LT_INIT([disable-static])
--AM_PROG_CC_C_O
- 
- AC_USE_SYSTEM_EXTENSIONS
- 
--- 
-2.41.0
+Thomas
 
