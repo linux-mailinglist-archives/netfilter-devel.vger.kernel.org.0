@@ -2,53 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6E77885CD
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Aug 2023 13:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEB3788616
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Aug 2023 13:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238257AbjHYLct (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 25 Aug 2023 07:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S232230AbjHYLjx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 25 Aug 2023 07:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244535AbjHYLcl (ORCPT
+        with ESMTP id S229766AbjHYLjL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 25 Aug 2023 07:32:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59D426A1
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 04:31:37 -0700 (PDT)
+        Fri, 25 Aug 2023 07:39:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123851FD7
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 04:38:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692963060;
+        s=mimecast20190719; t=1692963503;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kMwS+1m5hJK7DoNd1ffupw5JCpMlHJOVR76zi7NX1wc=;
-        b=Ew0VBBrdRnEodHk3HkFVNm/ZZq+q1Jxtij2odBp/LV/clH5W7H8mjlG6kUqJ+1adBJ37Yw
-        0QPvJJLE1KQeLZK2mxz/W8UbgxTcyzJ4ZYu9lT4c4ZWq1P8vsaHc++dnGWsavQ22gbQVpi
-        XFBYcgTD+Ew9u4WviSQiLvCPOYlyg7I=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-203-CV0isUg5P6eLDJNXzP9bVw-1; Fri, 25 Aug 2023 07:30:58 -0400
-X-MC-Unique: CV0isUg5P6eLDJNXzP9bVw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kVIIJpTSGHHOu9O+t098LWc17CSZzEbXRTkwP+WKG3s=;
+        b=i2yBG/w78r16Zddz5PDnjechevob4YORSQrnueZodcXw0BQ7kGLXjR/oEoAP6vtZeWHAoM
+        MddZSJgd1vJ5t/kUve1L4L0BsuLedGbZpl0cRuDDzdg+RbR+Yl9flfNYq9vNX3/1sBFKmp
+        Gj/W45O5GlWyoRgqvcozvwIanT5ErXg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-54-L0Dm5LAyO-yW23ZRKkvL6Q-1; Fri, 25 Aug 2023 07:38:21 -0400
+X-MC-Unique: L0Dm5LAyO-yW23ZRKkvL6Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4CD2A1C0725A
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 11:30:58 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7F2EB858EED
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 11:38:21 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 94DC540C6F4C;
-        Fri, 25 Aug 2023 11:30:57 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 94789112131E;
+        Fri, 25 Aug 2023 11:38:20 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 6/6] build: drop recursive make for "doc/Makefile.am"
-Date:   Fri, 25 Aug 2023 13:27:38 +0200
-Message-ID: <20230825113042.2607496-7-thaller@redhat.com>
-In-Reply-To: <20230825113042.2607496-1-thaller@redhat.com>
-References: <20230825113042.2607496-1-thaller@redhat.com>
+Subject: [PATCH nft v2 0/6] cleanup base includes and add <nft.h> header
+Date:   Fri, 25 Aug 2023 13:36:28 +0200
+Message-ID: <20230825113810.2620133-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -59,147 +56,85 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- Makefile.am     | 60 ++++++++++++++++++++++++++++++++++++++++++++-----
- configure.ac    |  1 -
- doc/Makefile.am | 30 -------------------------
- 3 files changed, 55 insertions(+), 36 deletions(-)
- delete mode 100644 doc/Makefile.am
+Changes to v1:
+- rename <nftdefault.h> to <nft.h>
+- move AC_USE_SYSTEM_EXTENSIONS earlier in configure.ac. It must be
+  called before other compiler steps.
+- reword commit messages.
 
-diff --git a/Makefile.am b/Makefile.am
-index 4af2d1f88b46..3f7a8ca9bc9f 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -31,6 +31,8 @@ lib_LTLIBRARIES =
- noinst_LTLIBRARIES =
- sbin_PROGRAMS =
- check_PROGRAMS =
-+dist_man_MANS =
-+CLEANFILES =
- 
- ###############################################################################
- 
-@@ -284,11 +286,6 @@ src_nft_LDADD = src/libnftables.la
- 
- ###############################################################################
- 
--SUBDIRS = doc
--
--###############################################################################
--
--
- check_PROGRAMS += examples/nft-buffer
- 
- examples_nft_buffer_AM_CPPFLAGS = -I$(srcdir)/include
-@@ -301,6 +298,59 @@ examples_nft_json_file_LDADD = src/libnftables.la
- 
- ###############################################################################
- 
-+if BUILD_MAN
-+
-+dist_man_MANS += \
-+	doc/nft.8 \
-+	doc/libnftables-json.5 \
-+	doc/libnftables.3 \
-+	$(NULL)
-+
-+A2X_OPTS_MANPAGE = \
-+	-L \
-+	--doctype manpage \
-+	--format manpage \
-+	-D "${builddir}/doc" \
-+	$(NULL)
-+
-+ASCIIDOC_MAIN = doc/nft.txt
-+
-+ASCIIDOC_INCLUDES = \
-+	doc/data-types.txt \
-+	doc/payload-expression.txt \
-+	doc/primary-expression.txt \
-+	doc/stateful-objects.txt \
-+	doc/statements.txt \
-+	$(NULL)
-+
-+ASCIIDOCS = \
-+	$(ASCIIDOC_MAIN) \
-+	$(ASCIIDOC_INCLUDES) \
-+	$(NULL)
-+
-+EXTRA_DIST += \
-+	$(ASCIIDOCS) \
-+	doc/libnftables-json.adoc \
-+	doc/libnftables.adoc \
-+	$(NULL)
-+
-+CLEANFILES += doc/*~
-+
-+doc/nft.8: $(ASCIIDOCS)
-+	$(AM_V_GEN)$(A2X) $(A2X_OPTS_MANPAGE) $<
-+
-+.adoc.3:
-+	$(AM_V_GEN)$(A2X) $(A2X_OPTS_MANPAGE) $<
-+
-+.adoc.5:
-+	$(AM_V_GEN)$(A2X) $(A2X_OPTS_MANPAGE) $<
-+
-+MAINTAINERCLEANFILES = ${dist_man_MANS}
-+
-+endif
-+
-+###############################################################################
-+
- dist_pkgdata_DATA = \
- 	files/nftables/all-in-one.nft \
- 	files/nftables/arp-filter.nft \
-diff --git a/configure.ac b/configure.ac
-index b5cc2587253b..f1e38e9d697d 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -115,7 +115,6 @@ AC_CHECK_DECLS([getprotobyname_r, getprotobynumber_r, getservbyport_r], [], [],
- AC_CONFIG_FILES([					\
- 		Makefile				\
- 		libnftables.pc				\
--		doc/Makefile				\
- 		])
- AC_OUTPUT
- 
-diff --git a/doc/Makefile.am b/doc/Makefile.am
-deleted file mode 100644
-index b43cb08d2d14..000000000000
---- a/doc/Makefile.am
-+++ /dev/null
-@@ -1,30 +0,0 @@
--if BUILD_MAN
--dist_man_MANS = nft.8 libnftables-json.5 libnftables.3
--
--A2X_OPTS_MANPAGE = -L --doctype manpage --format manpage -D ${builddir}
--
--ASCIIDOC_MAIN = nft.txt
--ASCIIDOC_INCLUDES = \
--       data-types.txt \
--       payload-expression.txt \
--       primary-expression.txt \
--       stateful-objects.txt \
--       statements.txt
--ASCIIDOCS = ${ASCIIDOC_MAIN} ${ASCIIDOC_INCLUDES}
--
--EXTRA_DIST = ${ASCIIDOCS} libnftables-json.adoc libnftables.adoc
--
--CLEANFILES = \
--	*~
--
--nft.8: ${ASCIIDOCS}
--	${AM_V_GEN}${A2X} ${A2X_OPTS_MANPAGE} $<
--
--.adoc.3:
--	${AM_V_GEN}${A2X} ${A2X_OPTS_MANPAGE} $<
--
--.adoc.5:
--	${AM_V_GEN}${A2X} ${A2X_OPTS_MANPAGE} $<
--
--MAINTAINERCLEANFILES = ${dist_man_MANS}
--endif
+Thomas Haller (6):
+  meta: define _GNU_SOURCE to get strptime() from <time.h>
+  src: add <nft.h> header and include it as first
+  include: don't define _GNU_SOURCE in public header
+  configure: use AC_USE_SYSTEM_EXTENSIONS to get _GNU_SOURCE
+  include: include <std{bool,int}.h> via <nft.h>
+  configure: drop AM_PROG_CC_C_O autoconf check
+
+ configure.ac                   |  4 +++-
+ include/Makefile.am            |  3 ++-
+ include/cli.h                  |  1 -
+ include/datatype.h             |  1 -
+ include/dccpopt.h              |  1 -
+ include/expression.h           |  1 -
+ include/gmputil.h              |  2 --
+ include/nft.h                  | 10 ++++++++++
+ include/nftables.h             |  1 -
+ include/nftables/libnftables.h |  1 -
+ include/rule.h                 |  1 -
+ include/utils.h                |  3 ---
+ src/cache.c                    |  2 ++
+ src/cli.c                      |  3 ++-
+ src/cmd.c                      |  2 ++
+ src/ct.c                       |  2 ++
+ src/datatype.c                 |  2 ++
+ src/dccpopt.c                  |  3 ++-
+ src/erec.c                     |  4 ++--
+ src/evaluate.c                 |  3 ++-
+ src/expression.c               |  3 ++-
+ src/exthdr.c                   |  3 ++-
+ src/fib.c                      |  2 ++
+ src/gmputil.c                  |  2 ++
+ src/hash.c                     |  2 ++
+ src/iface.c                    |  2 ++
+ src/intervals.c                |  2 ++
+ src/ipopt.c                    |  3 ++-
+ src/json.c                     |  3 ++-
+ src/libnftables.c              |  3 +++
+ src/main.c                     |  2 ++
+ src/mergesort.c                |  3 ++-
+ src/meta.c                     |  8 +++-----
+ src/mini-gmp.c                 |  2 ++
+ src/misspell.c                 |  2 ++
+ src/mnl.c                      |  2 ++
+ src/monitor.c                  |  2 ++
+ src/netlink.c                  |  2 ++
+ src/netlink_delinearize.c      |  3 ++-
+ src/netlink_linearize.c        |  2 ++
+ src/nfnl_osf.c                 |  2 ++
+ src/nftutils.c                 |  3 +--
+ src/nftutils.h                 |  1 -
+ src/numgen.c                   |  2 ++
+ src/optimize.c                 |  3 ++-
+ src/osf.c                      |  2 ++
+ src/owner.c                    |  2 ++
+ src/parser_json.c              |  4 ++--
+ src/payload.c                  |  3 ++-
+ src/print.c                    |  2 ++
+ src/proto.c                    |  3 ++-
+ src/rt.c                       |  3 ++-
+ src/rule.c                     |  3 ++-
+ src/scanner.l                  |  2 ++
+ src/sctp_chunk.c               |  2 ++
+ src/segtree.c                  |  2 ++
+ src/socket.c                   |  2 ++
+ src/statement.c                |  3 ++-
+ src/tcpopt.c                   |  3 ++-
+ src/utils.c                    |  2 ++
+ src/xfrm.c                     |  2 ++
+ src/xt.c                       |  2 ++
+ 62 files changed, 114 insertions(+), 42 deletions(-)
+ create mode 100644 include/nft.h
+
 -- 
 2.41.0
 
