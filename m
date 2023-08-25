@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED6078889C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Aug 2023 15:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF0B78889E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Aug 2023 15:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245117AbjHYNbP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 25 Aug 2023 09:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S245120AbjHYNbQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 25 Aug 2023 09:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245109AbjHYNan (ORCPT
+        with ESMTP id S245123AbjHYNao (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 25 Aug 2023 09:30:43 -0400
+        Fri, 25 Aug 2023 09:30:44 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19061FF0
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 06:29:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ACE1FF6
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 06:29:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692970194;
+        s=mimecast20190719; t=1692970195;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H9gm7bnO3TXq8PO3S0oYrOmTmAFx9i/qKNpwPGO6ZNk=;
-        b=PE+rWSEmOTSNGtIhYoj/od4Qyec2IwUvEyNTlzGTNcI65zSZPcyVvaTh/6e20cYqLf5pVU
-        FLdnJZoggNNaZ586jbIYAGiHTgODFbwmVTIbRAFMeZ0TW2qmgogRguUiwWOfye1l0cgset
-        dpMIBYjQP13M0wThmRGGPpfRHig4MV4=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-696-N6rakhzUNUqsikCDl60NRw-1; Fri, 25 Aug 2023 09:29:53 -0400
-X-MC-Unique: N6rakhzUNUqsikCDl60NRw-1
+        bh=fUy8wbGjbDCvWCgHHM8h/nJIHrJRjdw+UPs0RJEb0ao=;
+        b=MHg4CJQ/JXz5ank1K+HmRrrur5L2ACAqdOYspH5IzVOZvLdsbdaRyUOXOtmEGB9Cy6UIPO
+        VQZSDrrWL8BDMs0VumU09eA2agT9Q1QPkOkreUGwi2QU14Lqk6GyYlwRTdGBZ0SCZ4eWyq
+        h9Gnh9UIN8TKO9dA+usbjZvgrmY+1HQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-82-8IInivqmOQygfqRv-ZD-xg-1; Fri, 25 Aug 2023 09:29:54 -0400
+X-MC-Unique: 8IInivqmOQygfqRv-ZD-xg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6403728040B3
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 13:29:53 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E516185A793
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Aug 2023 13:29:54 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D592D2166B26;
-        Fri, 25 Aug 2023 13:29:52 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A08AB2166B26;
+        Fri, 25 Aug 2023 13:29:53 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 1/4] evaluate: add and use parse_ctx_init() helper method
-Date:   Fri, 25 Aug 2023 15:24:17 +0200
-Message-ID: <20230825132942.2733840-2-thaller@redhat.com>
+Subject: [PATCH nft 2/4] src: add ops_cache struct for caching information during parsing
+Date:   Fri, 25 Aug 2023 15:24:18 +0200
+Message-ID: <20230825132942.2733840-3-thaller@redhat.com>
 In-Reply-To: <20230825132942.2733840-1-thaller@redhat.com>
 References: <20230825132942.2733840-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,79 +59,153 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Another field to parse_ctx will be added, that should be initialized.
-As initializing the parse_ctx struct gets more involved, move the
-duplicated code to a separate function.
+The "ops_cache" will be used for caching the current timestamp
+(time(NULL)) for the duration of one operation. It will ensure that all
+decisions regarding the time, are based on the same timestamp.
 
-Having a dedicated function, also  makes it easier to grep of all the
-places where a parse context gets set up.
+Add the struct for that. The content will be added next.
+
+There is already "struct nft_cache", but that seems to have a
+different purpose. Hence, instead of extending "struct nft_cache",
+add a new "struct ops_cache".
+
+The difficulty is invalidating the cache and find the right places
+to call nft_ctx_reset_ops_cache().
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- src/evaluate.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ include/datatype.h |  8 ++++++++
+ include/nftables.h |  3 +++
+ src/evaluate.c     |  5 +++--
+ src/libnftables.c  | 17 +++++++++++++++++
+ 4 files changed, 31 insertions(+), 2 deletions(-)
 
+diff --git a/include/datatype.h b/include/datatype.h
+index 9ce7359cd340..79d996edd348 100644
+--- a/include/datatype.h
++++ b/include/datatype.h
+@@ -120,6 +120,13 @@ enum byteorder {
+ 
+ struct expr;
+ 
++struct ops_cache {
++};
++
++#define CTX_CACHE_INIT() \
++	{ \
++	}
++
+ /**
+  * enum datatype_flags
+  *
+@@ -182,6 +189,7 @@ struct datatype *dtype_clone(const struct datatype *orig_dtype);
+ struct parse_ctx {
+ 	struct symbol_tables	*tbl;
+ 	const struct input_ctx	*input;
++	struct ops_cache	*ops_cache;
+ };
+ 
+ extern struct error_record *symbol_parse(struct parse_ctx *ctx,
+diff --git a/include/nftables.h b/include/nftables.h
+index 219a10100206..b0a7f2f874ca 100644
+--- a/include/nftables.h
++++ b/include/nftables.h
+@@ -6,6 +6,7 @@
+ #include <utils.h>
+ #include <cache.h>
+ #include <nftables/libnftables.h>
++#include <datatype.h>
+ 
+ struct cookie {
+ 	FILE *fp;
+@@ -47,6 +48,7 @@ struct output_ctx {
+ 		struct cookie error_cookie;
+ 	};
+ 	struct symbol_tables tbl;
++	struct ops_cache *ops_cache;
+ };
+ 
+ static inline bool nft_output_reversedns(const struct output_ctx *octx)
+@@ -136,6 +138,7 @@ struct nft_ctx {
+ 	struct output_ctx	output;
+ 	bool			check;
+ 	struct nft_cache	cache;
++	struct ops_cache	ops_cache;
+ 	uint32_t		flags;
+ 	uint32_t		optimize_flags;
+ 	struct parser_state	*state;
 diff --git a/src/evaluate.c b/src/evaluate.c
-index 1ae2ef0de10c..fdd2433b4780 100644
+index fdd2433b4780..ea910786f3e4 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -40,6 +40,20 @@
- #include <utils.h>
- #include <xt.h>
+@@ -43,8 +43,9 @@
+ static struct parse_ctx *parse_ctx_init(struct parse_ctx *parse_ctx, const struct eval_ctx *ctx)
+ {
+ 	struct parse_ctx tmp = {
+-		.tbl	= &ctx->nft->output.tbl,
+-		.input	= &ctx->nft->input,
++		.tbl		= &ctx->nft->output.tbl,
++		.input		= &ctx->nft->input,
++		.ops_cache	= &ctx->nft->ops_cache,
+ 	};
  
-+static struct parse_ctx *parse_ctx_init(struct parse_ctx *parse_ctx, const struct eval_ctx *ctx)
+ 	/* "tmp" only exists, so we can search for "/struct parse_ctx .*=/" and find the location
+diff --git a/src/libnftables.c b/src/libnftables.c
+index 9c802ec95f27..e520bac76dfa 100644
+--- a/src/libnftables.c
++++ b/src/libnftables.c
+@@ -19,6 +19,15 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++static void nft_ctx_reset_ops_cache(struct nft_ctx *ctx)
 +{
-+	struct parse_ctx tmp = {
-+		.tbl	= &ctx->nft->output.tbl,
-+		.input	= &ctx->nft->input,
-+	};
++	ctx->ops_cache = (struct ops_cache) CTX_CACHE_INIT();
 +
-+	/* "tmp" only exists, so we can search for "/struct parse_ctx .*=/" and find the location
-+	 * where the parse context gets initialized. */
-+
-+	*parse_ctx = tmp;
-+	return parse_ctx;
++	/* The cache is also referenced by the output context. Set
++	 * up the pointer. */
++	ctx->output.ops_cache = &ctx->ops_cache;
 +}
 +
- struct proto_ctx *eval_proto_ctx(struct eval_ctx *ctx)
+ static int nft_netlink(struct nft_ctx *nft,
+ 		       struct list_head *cmds, struct list_head *msgs)
  {
- 	uint8_t idx = ctx->inner_desc ? 1 : 0;
-@@ -278,15 +292,14 @@ static int flowtable_not_found(struct eval_ctx *ctx, const struct location *loc,
-  */
- static int expr_evaluate_symbol(struct eval_ctx *ctx, struct expr **expr)
- {
--	struct parse_ctx parse_ctx = {
--		.tbl	= &ctx->nft->output.tbl,
--		.input	= &ctx->nft->input,
--	};
-+	struct parse_ctx parse_ctx;
- 	struct error_record *erec;
- 	struct table *table;
- 	struct set *set;
- 	struct expr *new;
+@@ -37,6 +46,8 @@ static int nft_netlink(struct nft_ctx *nft,
+ 	if (list_empty(cmds))
+ 		goto out;
  
-+	parse_ctx_init(&parse_ctx, ctx);
++	nft_ctx_reset_ops_cache(nft);
 +
- 	switch ((*expr)->symtype) {
- 	case SYMBOL_VALUE:
- 		datatype_set(*expr, ctx->ectx.dtype);
-@@ -3454,13 +3467,12 @@ static int stmt_evaluate_reject_default(struct eval_ctx *ctx,
+ 	batch_seqnum = mnl_batch_begin(ctx.batch, mnl_seqnum_alloc(&seqnum));
+ 	list_for_each_entry(cmd, cmds, list) {
+ 		ctx.seqnum = cmd->seqnum = mnl_seqnum_alloc(&seqnum);
+@@ -522,6 +533,8 @@ static int nft_evaluate(struct nft_ctx *nft, struct list_head *msgs,
+ 	unsigned int flags;
+ 	int err = 0;
  
- static int stmt_evaluate_reject_icmp(struct eval_ctx *ctx, struct stmt *stmt)
- {
--	struct parse_ctx parse_ctx = {
--		.tbl	= &ctx->nft->output.tbl,
--		.input	= &ctx->nft->input,
--	};
-+	struct parse_ctx parse_ctx;
- 	struct error_record *erec;
- 	struct expr *code;
- 
-+	parse_ctx_init(&parse_ctx, ctx);
++	nft_ctx_reset_ops_cache(nft);
 +
- 	erec = symbol_parse(&parse_ctx, stmt->reject.expr, &code);
- 	if (erec != NULL) {
- 		erec_queue(erec, ctx->msgs);
+ 	filter = nft_cache_filter_init();
+ 	if (nft_cache_evaluate(nft, cmds, msgs, filter, &flags) < 0) {
+ 		nft_cache_filter_fini(filter);
+@@ -630,6 +643,8 @@ err:
+ 	if (rc || nft->check)
+ 		nft_cache_release(&nft->cache);
+ 
++	nft_ctx_reset_ops_cache(nft);
++
+ 	return rc;
+ }
+ 
+@@ -740,6 +755,8 @@ err:
+ 
+ 	scope_release(nft->state->scopes[0]);
+ 
++	nft_ctx_reset_ops_cache(nft);
++
+ 	return rc;
+ }
+ 
 -- 
 2.41.0
 
