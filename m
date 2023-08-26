@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 735B978980D
+	by mail.lfdr.de (Postfix) with ESMTP id D323378980E
 	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Aug 2023 18:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjHZQcx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S229922AbjHZQcx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sat, 26 Aug 2023 12:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjHZQcr (ORCPT
+        with ESMTP id S229929AbjHZQcr (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 26 Aug 2023 12:32:47 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC881172D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7018170F
         for <netfilter-devel@vger.kernel.org>; Sat, 26 Aug 2023 09:32:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,24 +21,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=T0kKHMIWhzE/ppvYpDTI/bJ/sc7WJm2xQIpkTbtUYcg=; b=WpWWPeqAM24tTPShvgJlH4BNrj
-        vSPWFPXPK+CjsABF/Wn+kqMjek5xoKnNGwnfJYo6TS9KK9oiPpy1cM8S9Umtqwb/HvcO/Qmg3fNAq
-        DR9Tzk1VdhwmDFD+2WOKLxBODKpIooV3DUodpX2du4lkKeQYT8sewWUVR4aX2egQmyAHPXrllms4t
-        5N02ZVOx4x5oT5WpHcJNiSrRyrNbpXacyNgxk2Y5l7rrTyaH1+bdgjNNHM9/aSCiL6OX9yxXA/ha6
-        QDN3TTtg9fRMok4xnjN2F71EF8EuHk2rWclqdG8g6cmtV9EcrnywptDil4dMIX0IO0EKGVKS4wb8/
-        ROASRFyw==;
+        bh=WkeZsXsiSEUKmiVwiDPEP62KziCvr2e7usw1y3m9QwI=; b=Rh+6462yrPiktDIcfvv0YOIKYM
+        5j+3Ce3lzOglvMa1STSczl8484YDUL+uECnHJ3BwTVRpOTn5PfnaVxgLW4EXjUJ+CZ0ZzCXPgfc6z
+        lEOC7NeOI0RBnKqchdc9KGKAJm1YhmimgkUxtbeL575g6JPR8O2l6WcTEualVSu/yZfdu0N2seZFY
+        xLkvDr1IS3/4T4v3n608NbgkK/CnmPLImMh9oPaSgRUqKFQf3770Hrycf5KlsGwWbe8vdM7fFzkSi
+        1U862TBzICaqTYRJKzUMvcQri90l4JcpN8P8yPa+bfYPKNg1UbxTHb6IwmMyWOWvmXXDQg1jnKxW4
+        fdT1KPKQ==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <jeremy@azazel.net>)
-        id 1qZwDJ-00DpTC-0q
+        id 1qZwDJ-00DpTC-0z
         for netfilter-devel@vger.kernel.org;
         Sat, 26 Aug 2023 17:32:41 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH conntrack-tools 2/4] build: stop suppressing warnings for generated sources
-Date:   Sat, 26 Aug 2023 17:32:24 +0100
-Message-Id: <20230826163226.1104220-3-jeremy@azazel.net>
+Subject: [PATCH conntrack-tools 3/4] read_config_yy: correct `yyerror` prototype
+Date:   Sat, 26 Aug 2023 17:32:25 +0100
+Message-Id: <20230826163226.1104220-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230826163226.1104220-1-jeremy@azazel.net>
 References: <20230826163226.1104220-1-jeremy@azazel.net>
@@ -56,29 +56,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Contrary to the comment that yacc and lex generate dirty code, none of
-the warnings being suppressed are in the generated code.  Stop suppressing
-them in order to fix the code.
+Change it to take a `const char *`.  It doesn't modify the string and yacc
+passes string literals, so cause compiler warnings.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/Makefile.am | 3 ---
- 1 file changed, 3 deletions(-)
+ src/read_config_yy.y | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 4ea573abc12d..352aa37c9fa4 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -103,9 +103,6 @@ if HAVE_SYSTEMD
- conntrackd_SOURCES += systemd.c
- endif
+diff --git a/src/read_config_yy.y b/src/read_config_yy.y
+index f06c6afff7cb..be927c049056 100644
+--- a/src/read_config_yy.y
++++ b/src/read_config_yy.y
+@@ -47,7 +47,7 @@ extern char *yytext;
+ extern int   yylineno;
  
--# yacc and lex generate dirty code
--read_config_yy.o read_config_lex.o: AM_CFLAGS += -Wno-incompatible-pointer-types -Wno-discarded-qualifiers
--
- conntrackd_LDADD = ${LIBMNL_LIBS} ${LIBNETFILTER_CONNTRACK_LIBS} \
- 		   ${libdl_LIBS} ${LIBNFNETLINK_LIBS}
+ int yylex (void);
+-int yyerror (char *msg);
++int yyerror (const char *msg);
+ void yyrestart (FILE *input_file);
  
+ struct ct_conf conf;
+@@ -1681,7 +1681,7 @@ helper_policy_expect_timeout: T_HELPER_EXPECT_TIMEOUT T_NUMBER
+ %%
+ 
+ int __attribute__((noreturn))
+-yyerror(char *msg)
++yyerror(const char *msg)
+ {
+ 	dlog(LOG_ERR, "parsing config file in line (%d), symbol '%s': %s",
+ 	     yylineno, yytext, msg);
 -- 
 2.40.1
 
