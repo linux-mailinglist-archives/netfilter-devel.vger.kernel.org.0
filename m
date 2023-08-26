@@ -2,161 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE34789810
-	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Aug 2023 18:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1461E789820
+	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Aug 2023 18:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjHZQcy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 26 Aug 2023 12:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        id S229757AbjHZQhM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 26 Aug 2023 12:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjHZQcu (ORCPT
+        with ESMTP id S230137AbjHZQgw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 26 Aug 2023 12:32:50 -0400
-Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9A0171A
-        for <netfilter-devel@vger.kernel.org>; Sat, 26 Aug 2023 09:32:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=kZ7RQ9HpOgaOAAvpxFzYq/VP4NfeZzhiZEGshOzY/YA=; b=K17lOxygXAbXC+AlmO8MtoXOv2
-        uo3JUN7cRrapuLoFMehRQ/GUmhxVXmI4rFeV5jHIh6c6VQB5rUMQhu68LP9ae0+NBYqvQgaYH5Vkc
-        R3qaqNVfY3ArFXxgkdeLUhvLNg3y61ZJWfMGs+dfVJNn3DV2ELFf5ZWnWzszMPMsaQ9/p9CGSjabD
-        Rduv3xB7yPBNAA7l127Tz46iL3G4krqYfrSpYUdRI7gRM5XO4qy/6DlY91kdmUmUNcFCy7vWJ0oJM
-        KxEvlI1CAGZMTEmGSTN4JsyalPvghqOP78aE3Z2rgSbuAoHZfW4miKhRX2TKLinFQxQkzupZi0YmQ
-        A5Elc33Q==;
-Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
-        by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <jeremy@azazel.net>)
-        id 1qZwDJ-00DpTC-18
-        for netfilter-devel@vger.kernel.org;
-        Sat, 26 Aug 2023 17:32:41 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH conntrack-tools 4/4] read_config_yy: correct arguments passed to `inet_aton`
-Date:   Sat, 26 Aug 2023 17:32:26 +0100
-Message-Id: <20230826163226.1104220-5-jeremy@azazel.net>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230826163226.1104220-1-jeremy@azazel.net>
-References: <20230826163226.1104220-1-jeremy@azazel.net>
+        Sat, 26 Aug 2023 12:36:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21D61991;
+        Sat, 26 Aug 2023 09:36:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 418ED616E6;
+        Sat, 26 Aug 2023 16:36:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50245C433C7;
+        Sat, 26 Aug 2023 16:36:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693067809;
+        bh=Bw8aXWJjlayr4JFwZwbqJJnYZJRH6/I9kF9alThINnM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FJbwLHRQkJCvnOxlkzE9v6BH95R2CNXEOUcB/mcsoMILwR6DOZ5srlpeE4XL6gY0e
+         YZo+icE1dGDIcER8Mt0x8OWQm53yacn4zkB963DnVkydBrLG5F+22or4UmjMASnWpD
+         HcaUdYBCw5M39/ZsnPJD6yp3pXkbVOIBT63nl5xo=
+Date:   Sat, 26 Aug 2023 18:36:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Julian Anastasov <ja@ssi.bg>
+Cc:     stable@vger.kernel.org, Simon Horman <horms@verge.net.au>,
+        lvs-devel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, Junwei Hu <hujunwei4@huawei.com>,
+        Sishuai Gong <sishuai.system@gmail.com>
+Subject: Re: [PATCH -stable,4.14.y,4.19.y 0/1] ipvs: backport 1b90af292e71
+ and 5310760af1d4
+Message-ID: <2023082639-hacking-yoga-85c0@gregkh>
+References: <2023082114-remix-cable-0852@gregkh>
+ <20230824115354.61669-1-ja@ssi.bg>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_FAIL,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824115354.61669-1-ja@ssi.bg>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`inet_aton` expects a `struct in_addr *`.  In a number of calls, we pass
-pointers to structs or unions which contain a `struct in_addr` member.  Pass
-pointers to the members instead.  In another call, we pass a pointer to a
-uint32_t.  Cast it.
+On Thu, Aug 24, 2023 at 02:53:53PM +0300, Julian Anastasov wrote:
+> 	Hello,
+> 
+> 	This patchset contains backport for
+> commit 1b90af292e71b20d03b837d39406acfbdc5d4b2a. It applies
+> to linux-4.14.y and linux-4.19.y and differs from original commit
+> for the zero/one values used for extra1/extra2.
+> 
+> 	When applied, the concerned commit
+> 5310760af1d4fbea1452bfc77db5f9a680f7ae47 can be cherry-picked and
+> it will apply cleanly on top of 1b90af292e71.
+> 
+> Junwei Hu (1):
+>   ipvs: Improve robustness to the ipvs sysctl
+> 
+>  net/netfilter/ipvs/ip_vs_ctl.c | 70 +++++++++++++++++-----------------
+>  1 file changed, 36 insertions(+), 34 deletions(-)
+> 
+> -- 
+> 2.41.0
+> 
+> 
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- src/read_config_yy.y | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+Now queued up, thanks.
 
-diff --git a/src/read_config_yy.y b/src/read_config_yy.y
-index be927c049056..d9b02ab37c5a 100644
---- a/src/read_config_yy.y
-+++ b/src/read_config_yy.y
-@@ -246,9 +246,11 @@ multicast_options :
- 
- multicast_option : T_IPV4_ADDR T_IP
- {
-+	struct channel_conf *channel_conf = &conf.channel[conf.channel_num];
-+
- 	__max_dedicated_links_reached();
- 
--	if (!inet_aton($2, &conf.channel[conf.channel_num].u.mcast.in)) {
-+	if (!inet_aton($2, &channel_conf->u.mcast.in.inet_addr)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4 address", $2);
- 		free($2);
- 		break;
-@@ -310,9 +312,11 @@ multicast_option : T_IPV6_ADDR T_IP
- 
- multicast_option : T_IPV4_IFACE T_IP
- {
-+	struct channel_conf *channel_conf = &conf.channel[conf.channel_num];
-+
- 	__max_dedicated_links_reached();
- 
--	if (!inet_aton($2, &conf.channel[conf.channel_num].u.mcast.ifa)) {
-+	if (!inet_aton($2, &channel_conf->u.mcast.ifa.interface_addr)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4 address", $2);
- 		free($2);
- 		break;
-@@ -423,9 +427,11 @@ udp_options :
- 
- udp_option : T_IPV4_ADDR T_IP
- {
-+	struct channel_conf *channel_conf = &conf.channel[conf.channel_num];
-+
- 	__max_dedicated_links_reached();
- 
--	if (!inet_aton($2, &conf.channel[conf.channel_num].u.udp.server.ipv4)) {
-+	if (!inet_aton($2, &channel_conf->u.udp.server.ipv4.inet_addr)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4 address", $2);
- 		free($2);
- 		break;
-@@ -456,9 +462,11 @@ udp_option : T_IPV6_ADDR T_IP
- 
- udp_option : T_IPV4_DEST_ADDR T_IP
- {
-+	struct channel_conf *channel_conf = &conf.channel[conf.channel_num];
-+
- 	__max_dedicated_links_reached();
- 
--	if (!inet_aton($2, &conf.channel[conf.channel_num].u.udp.client)) {
-+	if (!inet_aton($2, &channel_conf->u.udp.client.inet_addr)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4 address", $2);
- 		free($2);
- 		break;
-@@ -574,9 +582,11 @@ tcp_options :
- 
- tcp_option : T_IPV4_ADDR T_IP
- {
-+	struct channel_conf *channel_conf = &conf.channel[conf.channel_num];
-+
- 	__max_dedicated_links_reached();
- 
--	if (!inet_aton($2, &conf.channel[conf.channel_num].u.tcp.server.ipv4)) {
-+	if (!inet_aton($2, &channel_conf->u.tcp.server.ipv4.inet_addr)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4 address", $2);
- 		free($2);
- 		break;
-@@ -607,9 +617,11 @@ tcp_option : T_IPV6_ADDR T_IP
- 
- tcp_option : T_IPV4_DEST_ADDR T_IP
- {
-+	struct channel_conf *channel_conf = &conf.channel[conf.channel_num];
-+
- 	__max_dedicated_links_reached();
- 
--	if (!inet_aton($2, &conf.channel[conf.channel_num].u.tcp.client)) {
-+	if (!inet_aton($2, &channel_conf->u.tcp.client.inet_addr)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4 address", $2);
- 		free($2);
- 		break;
-@@ -1239,7 +1251,7 @@ filter_address_item : T_IPV4_ADDR T_IP
- 		}
- 	}
- 
--	if (!inet_aton($2, &ip.ipv4)) {
-+	if (!inet_aton($2, (struct in_addr *) &ip.ipv4)) {
- 		dlog(LOG_WARNING, "%s is not a valid IPv4, ignoring", $2);
- 		free($2);
- 		break;
--- 
-2.40.1
-
+greg k-h
