@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B0A78B384
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Aug 2023 16:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D912678B38D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Aug 2023 16:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjH1Or4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Aug 2023 10:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
+        id S231956AbjH1OsD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Aug 2023 10:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjH1Or3 (ORCPT
+        with ESMTP id S231963AbjH1Ori (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Aug 2023 10:47:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8521B8
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Aug 2023 07:46:29 -0700 (PDT)
+        Mon, 28 Aug 2023 10:47:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4B71BD
+        for <netfilter-devel@vger.kernel.org>; Mon, 28 Aug 2023 07:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1693233989;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=g1a0qAVXzzOpOAh190r+iAm0feWg4ifaSlMiSPDYl1A=;
-        b=gkNsjb230W43M8TCReyR5zBask6OK4JJBuWHFHjTTVyjtME4OBLV9yMxzq3dctPNWOVtxG
-        pu8z+BNP9QqRD+gsZF44q0y4BY909jMcbQq+YXg4+fC7eUidrCX42ygJlwd1K7Ut4bxf3s
-        LxEk5Samp8o/0TOKm6Iwe+UPouA59xI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-563-xjqjP2ZsOFW_IH7M7yXrVQ-1; Mon, 28 Aug 2023 10:46:27 -0400
-X-MC-Unique: xjqjP2ZsOFW_IH7M7yXrVQ-1
+        bh=xUv3KVyLC5NXVhKP2vrfX0Hv/4XlZL+W+sMQCD8xOJE=;
+        b=YF4XwKlsHeRAuZHKkxDs51DZk2K0go9cJd+PuU3DUGEpWONWYiOJzczIQ6PP7a6SS+iXw5
+        zUCQ7I00V8kKbw24u7kFVlyey4CtFvEHOeFl+wYV87Ab0gTRoQtlhxAcohaBfWM9LhMngP
+        VxzYv1eC4i2B/hB4dVS9nAMQfKu+Ew0=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-612-v5246Me8OIK7IEeJYlCuQg-1; Mon, 28 Aug 2023 10:46:28 -0400
+X-MC-Unique: v5246Me8OIK7IEeJYlCuQg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0A863802C1E
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C8D263C10149
         for <netfilter-devel@vger.kernel.org>; Mon, 28 Aug 2023 14:46:27 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7F09F40D2839;
-        Mon, 28 Aug 2023 14:46:26 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 46EB040D2839;
+        Mon, 28 Aug 2023 14:46:27 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 7/8] utils: add _NFT_PRAGMA_WARNING_DISABLE()/_NFT_PRAGMA_WARNING_REENABLE helpers
-Date:   Mon, 28 Aug 2023 16:43:57 +0200
-Message-ID: <20230828144441.3303222-8-thaller@redhat.com>
+Subject: [PATCH nft 8/8] datatype: suppress "-Wformat-nonliteral" warning in integer_type_print()
+Date:   Mon, 28 Aug 2023 16:43:58 +0200
+Message-ID: <20230828144441.3303222-9-thaller@redhat.com>
 In-Reply-To: <20230828144441.3303222-1-thaller@redhat.com>
 References: <20230828144441.3303222-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,65 +59,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Taken from libnl3 ([1]), which is LGPL-2.1-only licensed.
+    datatype.c:455:22: error: format string is not a string literal [-Werror,-Wformat-nonliteral]
+            nft_gmp_print(octx, fmt, expr->value);
+                                ^~~
 
-[1] https://github.com/thom311/libnl/blob/main/include/base/nl-base-utils.h#L44
+Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- include/utils.h | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ src/datatype.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/utils.h b/include/utils.h
-index 873147fb54ec..9475bbbee6a0 100644
---- a/include/utils.h
-+++ b/include/utils.h
-@@ -9,6 +9,47 @@
- #include <list.h>
- #include <gmputil.h>
+diff --git a/src/datatype.c b/src/datatype.c
+index 4d0e44eeb500..12fe7141709d 100644
+--- a/src/datatype.c
++++ b/src/datatype.c
+@@ -452,7 +452,9 @@ static void integer_type_print(const struct expr *expr, struct output_ctx *octx)
+ 		}
+ 	} while ((dtype = dtype->basetype));
  
-+/*****************************************************************************/
-+
-+#define _NFT_STRINGIFY_ARG(contents) #contents
-+#define _NFT_STRINGIFY(macro_or_string) _NFT_STRINGIFY_ARG(macro_or_string)
-+
-+/*****************************************************************************/
-+
-+#if defined(__GNUC__)
-+#define _NFT_PRAGMA_WARNING_DO(warning) \
-+	_NFT_STRINGIFY(GCC diagnostic ignored warning)
-+#elif defined(__clang__)
-+#define _NFT_PRAGMA_WARNING_DO(warning) \
-+	_NFT_STRINGIFY(clang diagnostic ignored warning)
-+#endif
-+
-+#if defined(__GNUC__) && \
-+	(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-+#define _NFT_PRAGMA_WARNING_DISABLE(warning)                 \
-+	_Pragma("GCC diagnostic push")                       \
-+		_Pragma(_NFT_PRAGMA_WARNING_DO("-Wpragmas")) \
-+			_Pragma(_NFT_PRAGMA_WARNING_DO(warning))
-+#elif defined(__clang__)
-+#define _NFT_PRAGMA_WARNING_DISABLE(warning)                                \
-+	_Pragma("clang diagnostic push")                                    \
-+		_Pragma(_NFT_PRAGMA_WARNING_DO("-Wunknown-warning-option")) \
-+			_Pragma(_NFT_PRAGMA_WARNING_DO(warning))
-+#else
-+#define _NFT_PRAGMA_WARNING_DISABLE(warning)
-+#endif
-+
-+#if defined(__GNUC__) && \
-+	(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-+#define _NFT_PRAGMA_WARNING_REENABLE _Pragma("GCC diagnostic pop")
-+#elif defined(__clang__)
-+#define _NFT_PRAGMA_WARNING_REENABLE _Pragma("clang diagnostic pop")
-+#else
-+#define _NFT_PRAGMA_WARNING_REENABLE
-+#endif
-+
-+/*****************************************************************************/
-+
- #ifdef HAVE_VISIBILITY_HIDDEN
- #       define __visible        __attribute__((visibility("default")))
- #       define EXPORT_SYMBOL(x) typeof(x) (x) __visible;
++	_NFT_PRAGMA_WARNING_DISABLE("-Wformat-nonliteral")
+ 	nft_gmp_print(octx, fmt, expr->value);
++	_NFT_PRAGMA_WARNING_REENABLE
+ }
+ 
+ static struct error_record *integer_type_parse(struct parse_ctx *ctx,
 -- 
 2.41.0
 
