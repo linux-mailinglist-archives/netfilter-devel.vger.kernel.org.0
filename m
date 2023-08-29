@@ -2,87 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C521278C48D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Aug 2023 14:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D10578C4E4
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Aug 2023 15:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235632AbjH2MyQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Aug 2023 08:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        id S231316AbjH2NHp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Aug 2023 09:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235624AbjH2Mxr (ORCPT
+        with ESMTP id S235901AbjH2NHU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:53:47 -0400
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C7E1B3
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 05:53:44 -0700 (PDT)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-565c824a23bso4520054a12.3
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 05:53:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693313624; x=1693918424;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kZ+os1R67rvUTPDMXhUIVv3XfDBA28er5i/NIXAH+4E=;
-        b=D+Z6K0d3GOijw8+jzor5muENqmVDk0B3fVOIQPM1TwcvJK5BJ8ZZux2BMmLeBPcpQy
-         CTXTUPvRvdS1IC7Jf+1lEghuS5mxAach1htPpWcvscy8VVg8hYxd4c8/rYp4tJmPiDvD
-         4SD0Ygr4Smk6V7CphkUKAbLgl4QMvUUMEgrHuX0LO2cRtuZFg2LyP5y3ic6yQBPPvEgN
-         LAXQHGJ1apHu85vdgZOrZffMDTImMY4yM4UEXaVUHUrcpMUNY7ch6ibXuVVxmC3Km2cB
-         gw50HOgF/XKHzyKpTx7N5hpZR0+H6/t7r7WmVsSApobk9lKbE6+FnnjbpxvL1pVBB+1S
-         b/Qg==
-X-Gm-Message-State: AOJu0YyQvS9L1jyRxZBvg/KZ0owP5gnny0nUPcazzWFL/p5SrzkHmqqW
-        hHAdfHUatdOZuNrdSCQHbqonL39xf47mc2GYkxAK1mmGLMTf
-X-Google-Smtp-Source: AGHT+IFP5qJvkOXATmmjLWH1Dmw1i2i2kEaQWhoEF3X9kvCWXv4ZGMx9dwBMr5sQqFYphvWueCMJPze7rs5rf0LpDMsV4hrv5KuG
-MIME-Version: 1.0
-X-Received: by 2002:a63:3c13:0:b0:564:2c32:360a with SMTP id
- j19-20020a633c13000000b005642c32360amr5780569pga.12.1693313624329; Tue, 29
- Aug 2023 05:53:44 -0700 (PDT)
-Date:   Tue, 29 Aug 2023 05:53:44 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001254e506040f4d07@google.com>
-Subject: [syzbot] Monthly netfilter report (Aug 2023)
-From:   syzbot <syzbot+list815e32c42e38d564bf0e@syzkaller.appspotmail.com>
-To:     fw@strlen.de, kadlec@netfilter.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 29 Aug 2023 09:07:20 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 06:07:18 PDT
+Received: from mail.inliniac.net (static-27.netfusion.at [83.215.238.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0578A99
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 06:07:17 -0700 (PDT)
+Received: by mail.inliniac.net (Postfix, from userid 108)
+        id AC7C645B; Tue, 29 Aug 2023 15:00:09 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_20,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from localhost.localdomain (77-174-216-85.fixed.kpn.net [77.174.216.85])
+        (Authenticated sender: victor)
+        by mail.inliniac.net (Postfix) with ESMTPSA id 8696B104;
+        Tue, 29 Aug 2023 15:00:06 +0200 (CEST)
+From:   Victor Julien <victor@inliniac.net>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Victor Julien <victor@inliniac.net>
+Subject: [PATCH] doc: fix example of xt_cpu
+Date:   Tue, 29 Aug 2023 14:59:32 +0200
+Message-Id: <20230829125932.31735-1-victor@inliniac.net>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello netfilter maintainers/developers,
+REDIRECT uses --to-ports instead of --to-port.
 
-This is a 31-day syzbot report for the netfilter subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/netfilter
+Fixes: 2d59208943a3 ("extension: add xt_cpu match")
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 7 issues are still open and 156 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 144     Yes   KASAN: slab-out-of-bounds Read in do_csum
-                  https://syzkaller.appspot.com/bug?extid=4a9f9820bd8d302e22f7
-<2> 25      Yes   INFO: rcu detected stall in gc_worker (3)
-                  https://syzkaller.appspot.com/bug?extid=eec403943a2a2455adaa
-<3> 4       Yes   INFO: rcu detected stall in tcp_setsockopt
-                  https://syzkaller.appspot.com/bug?extid=1a11c39caf29450eac9f
-
+Signed-off-by: Victor Julien <victor@inliniac.net>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ extensions/libxt_cpu.man | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/extensions/libxt_cpu.man b/extensions/libxt_cpu.man
+index d9ea5c2f..c89ef08a 100644
+--- a/extensions/libxt_cpu.man
++++ b/extensions/libxt_cpu.man
+@@ -7,9 +7,9 @@ multiqueue NICs to spread network traffic on different queues.
+ Example:
+ .PP
+ iptables \-t nat \-A PREROUTING \-p tcp \-\-dport 80 \-m cpu \-\-cpu 0 
+-\-j REDIRECT \-\-to\-port 8080
++\-j REDIRECT \-\-to\-ports 8080
+ .PP
+ iptables \-t nat \-A PREROUTING \-p tcp \-\-dport 80 \-m cpu \-\-cpu 1 
+-\-j REDIRECT \-\-to\-port 8081
++\-j REDIRECT \-\-to\-ports 8081
+ .PP
+ Available since Linux 2.6.36.
+-- 
+2.34.1
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
