@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21B178C4AB
+	by mail.lfdr.de (Postfix) with ESMTP id 9140778C4AA
 	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Aug 2023 15:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjH2NAM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Aug 2023 09:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
+        id S229593AbjH2NAL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Aug 2023 09:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235917AbjH2NAB (ORCPT
+        with ESMTP id S235908AbjH2M76 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Aug 2023 09:00:01 -0400
+        Tue, 29 Aug 2023 08:59:58 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5547EBF
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 05:58:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06BC1BD
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 05:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693313906;
+        s=mimecast20190719; t=1693313907;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EbcaJr7nv6tGt5PHyQB5xkLt/62dNeuVdFNVNA7WZv8=;
-        b=g7OAnmLbgHYJOTxzQ6QEscZC9mq/NWe7SjOrNGSp2dTgGnFwQt+p8rWXA1UPsxDXgo5ri3
-        1SqmiwX1UNFfef4E9Gh9BunyFnFE/dgdEFY34WPBZNpeM2dD4gvr7u2fDxi61ESqEQ4ucR
-        UaEX1j8qZwwLsnTypYxAv1ACBdsC3dI=
+        bh=pZdzI8OrS2Hjao1GfLBIVYRYk8Mi/f6x/grUOT1rTSY=;
+        b=UJAvMTSN6d2mYREHSvfjNMYoMYNVSHVYvzavJ/pVxXn/hMZcLqOQwIkU44wri6hBkp1mmf
+        QCvrCM/JALnPrqCnp1zEy7Z+TQxhiGU9tH9WGdK2u82+JKqZwN4I3y8jsDxWCLzJPBaUvh
+        +tHAxAWKyOOiaXRAgS5efFNzMARnHqI=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-9-6_q9jgOBPAmixmAId-lF3A-1; Tue, 29 Aug 2023 08:58:25 -0400
-X-MC-Unique: 6_q9jgOBPAmixmAId-lF3A-1
+ us-mta-39-49QE5EjKPPq3W1B2Tqz1wA-1; Tue, 29 Aug 2023 08:58:26 -0400
+X-MC-Unique: 49QE5EjKPPq3W1B2Tqz1wA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D183D85CBE5
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 12:58:24 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7A03858EED
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 12:58:25 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5295D40C2063;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 195FD40C2063;
         Tue, 29 Aug 2023 12:58:24 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v2 6/8] evaluate: don't needlessly clear full string buffer in stmt_evaluate_log_prefix()
-Date:   Tue, 29 Aug 2023 14:53:35 +0200
-Message-ID: <20230829125809.232318-7-thaller@redhat.com>
+Subject: [PATCH nft v2 7/8] src: suppress "-Wunused-but-set-variable" warning with "parser_bison.c"
+Date:   Tue, 29 Aug 2023 14:53:36 +0200
+Message-ID: <20230829125809.232318-8-thaller@redhat.com>
 In-Reply-To: <20230829125809.232318-1-thaller@redhat.com>
 References: <20230829125809.232318-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,34 +59,32 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Clang warns:
+
+    parser_bison.c:7606:9: error: variable 'nft_nerrs' set but not used [-Werror,-Wunused-but-set-variable]
+        int yynerrs = 0;
+            ^
+    parser_bison.c:72:25: note: expanded from macro 'yynerrs'
+    #define yynerrs         nft_nerrs
+                            ^
+
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- src/evaluate.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ src/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 71e94a51cc2f..bfe3638bfe54 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -4128,7 +4128,8 @@ static int stmt_evaluate_queue(struct eval_ctx *ctx, struct stmt *stmt)
- 
- static int stmt_evaluate_log_prefix(struct eval_ctx *ctx, struct stmt *stmt)
- {
--	char prefix[NF_LOG_PREFIXLEN] = {}, tmp[NF_LOG_PREFIXLEN] = {};
-+	char tmp[NF_LOG_PREFIXLEN] = {};
-+	char prefix[NF_LOG_PREFIXLEN];
- 	size_t len = sizeof(prefix);
- 	size_t offset = 0;
- 	struct expr *expr;
-@@ -4136,6 +4137,8 @@ static int stmt_evaluate_log_prefix(struct eval_ctx *ctx, struct stmt *stmt)
- 	if (stmt->log.prefix->etype != EXPR_LIST)
- 		return 0;
- 
-+	prefix[0] = '\0';
-+
- 	list_for_each_entry(expr, &stmt->log.prefix->expressions, list) {
- 		int ret;
- 
+diff --git a/src/Makefile.am b/src/Makefile.am
+index ad22a918c120..63a4ef43dae3 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -88,6 +88,7 @@ libparser_la_CFLAGS = ${AM_CFLAGS} \
+ 		      -Wno-missing-prototypes \
+ 		      -Wno-missing-declarations \
+ 		      -Wno-implicit-function-declaration \
++		      -Wno-unused-but-set-variable \
+ 		      -Wno-nested-externs \
+ 		      -Wno-undef \
+ 		      -Wno-redundant-decls
 -- 
 2.41.0
 
