@@ -2,92 +2,126 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E6478C4A6
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Aug 2023 15:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2717C78C4A7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Aug 2023 15:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbjH2M7j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Aug 2023 08:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
+        id S235849AbjH2M7n (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Aug 2023 08:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjH2M7J (ORCPT
+        with ESMTP id S231961AbjH2M7M (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Aug 2023 08:59:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2011B1
+        Tue, 29 Aug 2023 08:59:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B571B3
         for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 05:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693313903;
+        s=mimecast20190719; t=1693313904;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5lBKzBe0uosZW+EhC+FeSfCr673pkk4U9J6Y1dd7o0Y=;
-        b=JX2nQq1kKq+sxqR9aysnIoTEJdSq79jvq6+joph7PVbIWa4+Kgw+bzsL0gs4y8mT+McnwD
-        Ltu9tNymdhaGfKa9G9qIiZxZCmfpezzfCNTfHipWwoJYmGX8AIJ8YA3mZDuDm1N0NVBBwj
-        Qk9fbhvZou08yJJpxmFy8exuwUicwb8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-619-6i3YXnpkMZKMPAh4I8BWWw-1; Tue, 29 Aug 2023 08:58:22 -0400
-X-MC-Unique: 6i3YXnpkMZKMPAh4I8BWWw-1
+        bh=PcZVcxRmn3GNyHxkEAfh4k2No7fPJOwWAslxk4zVVMM=;
+        b=Muoy8crBYn1R17QtNFK1sFSU8BnZTAW3J4r7zPbJSuZEZt87Estb6UIXV8uRurqsowJV81
+        P8lacrmXJtGhM5M4tk38hLljOl3j2UmYDL//2Tuee/wYJe+kMPdditLdmpT9UAkaupXzpi
+        kEXGB8Uyggqzupr4LvU/SE920GSz4Ig=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-428-hU3DPDQqN1ac1hJIWlyqoQ-1; Tue, 29 Aug 2023 08:58:22 -0400
+X-MC-Unique: hU3DPDQqN1ac1hJIWlyqoQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BCAD38D40A3
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 12:58:21 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 848DF3C0F677
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Aug 2023 12:58:22 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 35DB940C2063;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0465340C2070;
         Tue, 29 Aug 2023 12:58:21 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v2 2/8] netlink: avoid "-Wenum-conversion" warning in parser_bison.y
-Date:   Tue, 29 Aug 2023 14:53:31 +0200
-Message-ID: <20230829125809.232318-3-thaller@redhat.com>
+Subject: [PATCH nft v2 3/8] datatype: avoid cast-align warning with struct sockaddr result from getaddrinfo()
+Date:   Tue, 29 Aug 2023 14:53:32 +0200
+Message-ID: <20230829125809.232318-4-thaller@redhat.com>
 In-Reply-To: <20230829125809.232318-1-thaller@redhat.com>
 References: <20230829125809.232318-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Clang warns:
+With CC=clang we get
 
-    parser_bison.y:3658:83: error: implicit conversion from enumeration type 'enum nft_nat_types' to different enumeration type 'enum nft_nat_etypes' [-Werror,-Wenum-conversion]
-                                            { (yyval.stmt) = nat_stmt_alloc(&(yyloc), NFT_NAT_SNAT); }
-                                                             ~~~~~~~~~~~~~~           ^~~~~~~~~~~~
-    parser_bison.y:3659:83: error: implicit conversion from enumeration type 'enum nft_nat_types' to different enumeration type 'enum nft_nat_etypes' [-Werror,-Wenum-conversion]
-                                            { (yyval.stmt) = nat_stmt_alloc(&(yyloc), NFT_NAT_DNAT); }
-                                                             ~~~~~~~~~~~~~~           ^~~~~~~~~~~~
+    datatype.c:625:11: error: cast from 'struct sockaddr *' to 'struct sockaddr_in *' increases required alignment from 2 to 4 [-Werror,-Wcast-align]
+                    addr = ((struct sockaddr_in *)ai->ai_addr)->sin_addr;
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    datatype.c:690:11: error: cast from 'struct sockaddr *' to 'struct sockaddr_in6 *' increases required alignment from 2 to 4 [-Werror,-Wcast-align]
+                    addr = ((struct sockaddr_in6 *)ai->ai_addr)->sin6_addr;
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    datatype.c:826:11: error: cast from 'struct sockaddr *' to 'struct sockaddr_in *' increases required alignment from 2 to 4 [-Werror,-Wcast-align]
+                    port = ((struct sockaddr_in *)ai->ai_addr)->sin_port;
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Fix that by casting to (void*) first. Also, add an assertion that the
+type is as expected.
+
+For inet_service_type_parse(), differentiate between AF_INET and
+AF_INET6. It might not have been a problem in practice, because the
+struct offsets of sin_port/sin6_port are identical.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- src/parser_bison.y | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/datatype.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 5637829332ce..9e7f5c829c54 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -3655,8 +3655,8 @@ reject_opts		:       /* empty */
- nat_stmt		:	nat_stmt_alloc	nat_stmt_args
- 			;
+diff --git a/src/datatype.c b/src/datatype.c
+index dd6a5fbf5df8..df2e500502fa 100644
+--- a/src/datatype.c
++++ b/src/datatype.c
+@@ -622,7 +622,8 @@ static struct error_record *ipaddr_type_parse(struct parse_ctx *ctx,
+ 			return error(&sym->location,
+ 				     "Hostname resolves to multiple addresses");
+ 		}
+-		addr = ((struct sockaddr_in *)ai->ai_addr)->sin_addr;
++		assert(ai->ai_addr->sa_family == AF_INET);
++		addr = ((struct sockaddr_in *) (void *) ai->ai_addr)->sin_addr;
+ 		freeaddrinfo(ai);
+ 	}
  
--nat_stmt_alloc		:	SNAT	{ $$ = nat_stmt_alloc(&@$, NFT_NAT_SNAT); }
--			|	DNAT	{ $$ = nat_stmt_alloc(&@$, NFT_NAT_DNAT); }
-+nat_stmt_alloc		:	SNAT	{ $$ = nat_stmt_alloc(&@$, __NFT_NAT_SNAT); }
-+			|	DNAT	{ $$ = nat_stmt_alloc(&@$, __NFT_NAT_DNAT); }
- 			;
+@@ -687,7 +688,9 @@ static struct error_record *ip6addr_type_parse(struct parse_ctx *ctx,
+ 			return error(&sym->location,
+ 				     "Hostname resolves to multiple addresses");
+ 		}
+-		addr = ((struct sockaddr_in6 *)ai->ai_addr)->sin6_addr;
++
++		assert(ai->ai_addr->sa_family == AF_INET6);
++		addr = ((struct sockaddr_in6 *)(void *)ai->ai_addr)->sin6_addr;
+ 		freeaddrinfo(ai);
+ 	}
  
- tproxy_stmt		:	TPROXY TO stmt_expr
+@@ -823,7 +826,12 @@ static struct error_record *inet_service_type_parse(struct parse_ctx *ctx,
+ 			return error(&sym->location, "Could not resolve service: %s",
+ 				     gai_strerror(err));
+ 
+-		port = ((struct sockaddr_in *)ai->ai_addr)->sin_port;
++		if (ai->ai_addr->sa_family == AF_INET)
++			port = ((struct sockaddr_in *)(void *)ai->ai_addr)->sin_port;
++		else {
++			assert(ai->ai_addr->sa_family == AF_INET6);
++			port = ((struct sockaddr_in6 *)(void *)ai->ai_addr)->sin6_port;
++		}
+ 		freeaddrinfo(ai);
+ 	}
+ 
 -- 
 2.41.0
 
