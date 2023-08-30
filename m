@@ -2,43 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CC978DB43
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Aug 2023 20:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262ED78DB5E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Aug 2023 20:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbjH3Sit (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Aug 2023 14:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
+        id S238749AbjH3SjH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Aug 2023 14:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242390AbjH3IYD (ORCPT
+        with ESMTP id S242458AbjH3Igm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Aug 2023 04:24:03 -0400
+        Wed, 30 Aug 2023 04:36:42 -0400
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0194DFB
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Aug 2023 01:24:00 -0700 (PDT)
-Received: from [78.30.34.192] (port=51132 helo=gnumonks.org)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E684D1AE
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Aug 2023 01:36:39 -0700 (PDT)
+Received: from [78.30.34.192] (port=56496 helo=gnumonks.org)
         by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <pablo@gnumonks.org>)
-        id 1qbGUW-000zKN-EB; Wed, 30 Aug 2023 10:23:59 +0200
-Date:   Wed, 30 Aug 2023 10:23:55 +0200
+        id 1qbGgk-0011Zd-RR; Wed, 30 Aug 2023 10:36:37 +0200
+Date:   Wed, 30 Aug 2023 10:36:34 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Thomas Haller <thaller@redhat.com>
-Cc:     NetFilter <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft 5/5] datatype: check against negative "type" argument
- in datatype_lookup()
-Message-ID: <ZO78m/9YMRtk0oY/@calendula>
-References: <20230829185509.374614-1-thaller@redhat.com>
- <20230829185509.374614-6-thaller@redhat.com>
- <ZO5Cnmck5tKCvVFE@calendula>
- <ZO5DsA4eCnYkEWxC@calendula>
- <c452805919f688f15a95e52139c8686e1a6571a1.camel@redhat.com>
- <ZO7zuKiWk3x7E5bS@calendula>
- <29aee24e1fb3e7b273b48ee3d735f182c62a0d92.camel@redhat.com>
+To:     Jorge Ortiz <jorge.ortiz.escribano@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org, jortiz@teldat.com, fw@strlen.de
+Subject: Re: [nft PATCH] evaluate: place byteorder conversion after numgen
+ for IP address datatypes
+Message-ID: <ZO7/kuB9rxbU08Qx@calendula>
+References: <20230828190910.51041-1-jorge.ortiz.escribano@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <29aee24e1fb3e7b273b48ee3d735f182c62a0d92.camel@redhat.com>
-X-Spam-Score: -1.9 (-)
+In-Reply-To: <20230828190910.51041-1-jorge.ortiz.escribano@gmail.com>
+X-Spam-Score: -1.8 (-)
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
@@ -48,63 +42,343 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 10:08:50AM +0200, Thomas Haller wrote:
-[...]
-> I don't think it suffices. The following fail the assertion (or would
-> access out of bounds).
+On Mon, Aug 28, 2023 at 09:09:10PM +0200, Jorge Ortiz wrote:
+> The numgen extension generates numbers in little-endian.
+> This can be very tricky when trying to combine it with IP addresses, which use big endian.
+> This change adds a new byteorder operation to convert data type endianness.
 > 
+> Before this patch:
+> $ sudo nft -d netlink add rule nat snat_chain snat to numgen inc mod 7 offset 0x0a000001
+> ip nat snat_chain
+>   [ numgen reg 1 = inc mod 7 offset 167772161 ]
+>   [ nat snat ip addr_min reg 1 ]
 > 
-> diff --git c/include/datatype.h i/include/datatype.h
-> index 9ce7359cd340..7d3b6b20d27c 100644
-> --- c/include/datatype.h
-> +++ i/include/datatype.h
-> @@ -98,7 +98,8 @@ enum datatypes {
->      TYPE_TIME_HOUR,
->      TYPE_TIME_DAY,
->      TYPE_CGROUPV2,
-> -    __TYPE_MAX
-> +    __TYPE_MAX,
-> +    __TYPE_FORCE_SIGNED = -1,
+> After this patch:
+> $ sudo nft -d netlink add rule nat snat_chain snat to numgen inc mod 7 offset 0x0a000001
+> ip nat snat_chain
+>   [ numgen reg 1 = inc mod 7 offset 167772161 ]
+>   [ byteorder reg 1 = hton(reg 1, 4, 4) ]
+>   [ nat snat ip addr_min reg 1 ]
+> 
+> Regression tests have been modified to include these new cases.
 
-I don't expect to ever have a negative defined here.
+Missing Signed-off-by: tag. Maybe I add it before applying?
 
->  };
->  #define TYPE_MAX        (__TYPE_MAX - 1)
->  
-> diff --git c/src/datatype.c i/src/datatype.c
-> index ba1192c83595..1ff8a4a08551 100644
-> --- c/src/datatype.c
-> +++ i/src/datatype.c
-> @@ -89,6 +89,7 @@ const struct datatype *datatype_lookup(enum datatypes
-> type)
->  
->      if (type > TYPE_MAX)
->           return NULL;
-> +    assert(type != (enum datatypes) -1);
->      return datatypes[type];
->  }
->  
-> diff --git c/src/libnftables.c i/src/libnftables.c
-> index 9c802ec95f27..7e60d1a18d39 100644
-> --- c/src/libnftables.c
-> +++ i/src/libnftables.c
-> @@ -203,6 +203,8 @@ struct nft_ctx *nft_ctx_new(uint32_t flags)
->  #endif
+> ---
+>  src/evaluate.c                   |  4 ++
+>  tests/py/ip/numgen.t             |  2 +
+>  tests/py/ip/numgen.t.json        | 73 +++++++++++++++++++------
+>  tests/py/ip/numgen.t.json.output | 92 ++++++++++++++++++++++++++------
+>  tests/py/ip/numgen.t.payload     | 13 ++++-
+>  5 files changed, 152 insertions(+), 32 deletions(-)
+> 
+> diff --git a/src/evaluate.c b/src/evaluate.c
+> index 1ae2ef0d..fda72c34 100644
+> --- a/src/evaluate.c
+> +++ b/src/evaluate.c
+> @@ -2830,6 +2830,10 @@ static int __stmt_evaluate_arg(struct eval_ctx *ctx, struct stmt *stmt,
+>  		return byteorder_conversion(ctx, expr, byteorder);
+>  	case EXPR_PREFIX:
+>  		return stmt_prefix_conversion(ctx, expr, byteorder);
+> +	case EXPR_NUMGEN:
+> +		if (dtype->type == TYPE_IPADDR)
+> +			return byteorder_conversion(ctx, expr, byteorder);
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> diff --git a/tests/py/ip/numgen.t b/tests/py/ip/numgen.t
+> index 29a6a105..2a881460 100644
+> --- a/tests/py/ip/numgen.t
+> +++ b/tests/py/ip/numgen.t
+> @@ -5,3 +5,5 @@ ct mark set numgen inc mod 2;ok
+>  ct mark set numgen inc mod 2 offset 100;ok
+>  dnat to numgen inc mod 2 map { 0 : 192.168.10.100, 1 : 192.168.20.200 };ok
+>  dnat to numgen inc mod 10 map { 0-5 : 192.168.10.100, 6-9 : 192.168.20.200};ok
+> +dnat to numgen inc mod 7 offset 167772161;ok
+> +dnat to numgen inc mod 255 offset 167772161;ok
+> diff --git a/tests/py/ip/numgen.t.json b/tests/py/ip/numgen.t.json
+> index 9902c2cf..77bc0a78 100644
+> --- a/tests/py/ip/numgen.t.json
+> +++ b/tests/py/ip/numgen.t.json
+> @@ -10,7 +10,8 @@
+>              "value": {
+>                  "numgen": {
+>                      "mod": 2,
+> -                    "mode": "inc"
+> +                    "mode": "inc",
+> +                    "offset": 0
+>                  }
+>              }
+>          }
+> @@ -43,12 +44,6 @@
+>          "dnat": {
+>              "addr": {
+>                  "map": {
+> -                    "key": {
+> -                        "numgen": {
+> -                            "mod": 2,
+> -                            "mode": "inc"
+> -                        }
+> -                    },
+>                      "data": {
+>                          "set": [
+>                              [
+> @@ -60,6 +55,13 @@
+>                                  "192.168.20.200"
+>                              ]
+>                          ]
+> +                    },
+> +                    "key": {
+> +                        "numgen": {
+> +                            "mod": 2,
+> +                            "mode": "inc",
+> +                            "offset": 0
+> +                        }
+>                      }
+>                  }
+>              }
+> @@ -73,23 +75,34 @@
+>          "dnat": {
+>              "addr": {
+>                  "map": {
+> -                    "key": {
+> -                        "numgen": {
+> -                            "mod": 10,
+> -                            "mode": "inc"
+> -                        }
+> -                    },
+>                      "data": {
+>                          "set": [
+>                              [
+> -                                { "range": [ 0, 5 ] },
+> +                                {
+> +                                    "range": [
+> +                                        0,
+> +                                        5
+> +                                    ]
+> +                                },
+>                                  "192.168.10.100"
+>                              ],
+>                              [
+> -                                { "range": [ 6, 9 ] },
+> +                                {
+> +                                    "range": [
+> +                                        6,
+> +                                        9
+> +                                    ]
+> +                                },
+>                                  "192.168.20.200"
+>                              ]
+>                          ]
+> +                    },
+> +                    "key": {
+> +                        "numgen": {
+> +                            "mod": 10,
+> +                            "mode": "inc",
+> +                            "offset": 0
+> +                        }
+>                      }
+>                  }
+>              }
+> @@ -97,3 +110,33 @@
 >      }
+>  ]
 >  
-> +    datatype_lookup(-1);
+> +# dnat to numgen inc mod 7 offset 167772161
+> +[
+> +    {
+> +        "dnat": {
+> +            "addr": {
+> +                "numgen": {
+> +                    "mod": 7,
+> +                    "mode": "inc",
+> +                    "offset": 167772161
+> +                }
+> +            }
+> +        }
+> +    }
+> +]
 > +
->      ctx = xzalloc(sizeof(struct nft_ctx));
->      nft_init(ctx);
+> +# dnat to numgen inc mod 255 offset 167772161
+> +[
+> +    {
+> +        "dnat": {
+> +            "addr": {
+> +                "numgen": {
+> +                    "mod": 255,
+> +                    "mode": "inc",
+> +                    "offset": 167772161
+> +                }
+> +            }
+> +        }
+> +    }
+> +]
+> +
+> diff --git a/tests/py/ip/numgen.t.json.output b/tests/py/ip/numgen.t.json.output
+> index b54121ca..77bc0a78 100644
+> --- a/tests/py/ip/numgen.t.json.output
+> +++ b/tests/py/ip/numgen.t.json.output
+> @@ -18,19 +18,32 @@
+>      }
+>  ]
 >  
-> 
-> 
-> 
-> If you expect that "type" is always valid, then there is no need to
-> check against >TYPE_MAX. If you expect that it might be invalid, it
-> seems prudent to also check against negative values.
-> 
-> 
-> 
-> Thomas
+> +# ct mark set numgen inc mod 2 offset 100
+> +[
+> +    {
+> +        "mangle": {
+> +            "key": {
+> +                "ct": {
+> +                    "key": "mark"
+> +                }
+> +            },
+> +            "value": {
+> +                "numgen": {
+> +                    "mod": 2,
+> +                    "mode": "inc",
+> +                    "offset": 100
+> +                }
+> +            }
+> +        }
+> +    }
+> +]
+> +
+>  # dnat to numgen inc mod 2 map { 0 : 192.168.10.100, 1 : 192.168.20.200 }
+>  [
+>      {
+>          "dnat": {
+>              "addr": {
+>                  "map": {
+> -                    "key": {
+> -                        "numgen": {
+> -                            "mod": 2,
+> -                            "mode": "inc",
+> -                            "offset": 0
+> -                        }
+> -                    },
+>                      "data": {
+>                          "set": [
+>                              [
+> @@ -42,6 +55,13 @@
+>                                  "192.168.20.200"
+>                              ]
+>                          ]
+> +                    },
+> +                    "key": {
+> +                        "numgen": {
+> +                            "mod": 2,
+> +                            "mode": "inc",
+> +                            "offset": 0
+> +                        }
+>                      }
+>                  }
+>              }
+> @@ -55,24 +75,34 @@
+>          "dnat": {
+>              "addr": {
+>                  "map": {
+> -                    "key": {
+> -                        "numgen": {
+> -                            "mod": 10,
+> -                            "mode": "inc",
+> -                            "offset": 0
+> -                        }
+> -                    },
+>                      "data": {
+>                          "set": [
+>                              [
+> -                                { "range": [ 0, 5 ] },
+> +                                {
+> +                                    "range": [
+> +                                        0,
+> +                                        5
+> +                                    ]
+> +                                },
+>                                  "192.168.10.100"
+>                              ],
+>                              [
+> -                                { "range": [ 6, 9 ] },
+> +                                {
+> +                                    "range": [
+> +                                        6,
+> +                                        9
+> +                                    ]
+> +                                },
+>                                  "192.168.20.200"
+>                              ]
+>                          ]
+> +                    },
+> +                    "key": {
+> +                        "numgen": {
+> +                            "mod": 10,
+> +                            "mode": "inc",
+> +                            "offset": 0
+> +                        }
+>                      }
+>                  }
+>              }
+> @@ -80,3 +110,33 @@
+>      }
+>  ]
+>  
+> +# dnat to numgen inc mod 7 offset 167772161
+> +[
+> +    {
+> +        "dnat": {
+> +            "addr": {
+> +                "numgen": {
+> +                    "mod": 7,
+> +                    "mode": "inc",
+> +                    "offset": 167772161
+> +                }
+> +            }
+> +        }
+> +    }
+> +]
+> +
+> +# dnat to numgen inc mod 255 offset 167772161
+> +[
+> +    {
+> +        "dnat": {
+> +            "addr": {
+> +                "numgen": {
+> +                    "mod": 255,
+> +                    "mode": "inc",
+> +                    "offset": 167772161
+> +                }
+> +            }
+> +        }
+> +    }
+> +]
+> +
+> diff --git a/tests/py/ip/numgen.t.payload b/tests/py/ip/numgen.t.payload
+> index 3349c68b..34960093 100644
+> --- a/tests/py/ip/numgen.t.payload
+> +++ b/tests/py/ip/numgen.t.payload
+> @@ -7,7 +7,7 @@ ip test-ip4 pre
+>  __map%d x b
+>  __map%d x 0
+>          element 00000000  : 640aa8c0 0 [end]    element 00000001  : c814a8c0 0 [end]
+> -ip test-ip4 pre 
+> +ip test-ip4 pre
+>    [ numgen reg 1 = inc mod 2 ]
+>    [ lookup reg 1 set __map%d dreg 1 ]
+>    [ nat dnat ip addr_min reg 1 ]
+> @@ -27,3 +27,14 @@ ip test-ip4 pre
+>    [ numgen reg 1 = inc mod 2 offset 100 ]
+>    [ ct set mark with reg 1 ]
+>  
+> +# dnat to numgen inc mod 7 offset 167772161
+> +ip test-ip4 pre
+> +  [ numgen reg 1 = inc mod 7 offset 167772161 ]
+> +  [ byteorder reg 1 = hton(reg 1, 4, 4) ]
+> +  [ nat dnat ip addr_min reg 1 ]
+> +
+> +# dnat to numgen inc mod 255 offset 167772161
+> +ip test-ip4 pre
+> +  [ numgen reg 1 = inc mod 255 offset 167772161 ]
+> +  [ byteorder reg 1 = hton(reg 1, 4, 4) ]
+> +  [ nat dnat ip addr_min reg 1 ]
+> -- 
+> 2.34.1
 > 
