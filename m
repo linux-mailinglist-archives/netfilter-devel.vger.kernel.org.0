@@ -2,163 +2,190 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CBB78DB67
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Aug 2023 20:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04CA78DB45
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Aug 2023 20:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238777AbjH3SjK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Aug 2023 14:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S237386AbjH3Siu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Aug 2023 14:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243704AbjH3Lc5 (ORCPT
+        with ESMTP id S245279AbjH3PCp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Aug 2023 07:32:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4065E132
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Aug 2023 04:32:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693395127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rvu27TlrAc1rcNAwhQbfj9o/8n+6467T3Dg8V7XpsZ0=;
-        b=JoHDDBKTAsPgxhXMaZfoy/JHaQoCwhwc3biW2qUVI++ujSbHLgLU1sPlEqBeZhHG6tqRQP
-        MPsCQoCKn9aVQwhW2xXvcYsoMk9aQDu8F1JLF/YSRw3S8hB5/KIhwerrKk+rIOuS1l6taX
-        FLC8UQGk/kLep7pCANkneANNEy/TEBw=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-322-FXmzS_71MA6giDEjE0mDjA-1; Wed, 30 Aug 2023 07:32:05 -0400
-X-MC-Unique: FXmzS_71MA6giDEjE0mDjA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 657383C0FC95
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Aug 2023 11:32:05 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.193.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D41DD6466B;
-        Wed, 30 Aug 2023 11:32:04 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft] tests/shell: allow running tests as non-root users
-Date:   Wed, 30 Aug 2023 13:31:48 +0200
-Message-ID: <20230830113153.877968-1-thaller@redhat.com>
+        Wed, 30 Aug 2023 11:02:45 -0400
+Received: from px.funlab.cc (px.funlab.cc [IPv6:2a01:4f8:c010:6bd5::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998DF1A2;
+        Wed, 30 Aug 2023 08:02:41 -0700 (PDT)
+Received: from [192.168.1.40] (unknown [83.27.115.100])
+        (Authenticated sender: doka@funlab.cc)
+        by px.funlab.cc (Postfix) with ESMTPSA id 116E6602BA;
+        Wed, 30 Aug 2023 18:02:39 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=funlab.cc; s=dkim;
+        t=1693407759; bh=wLWCndZBolb584JQz+iw/o1bq04QE7Zr3wQ9bkJ9P3o=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=KUXFBHTAZ+YMZmxMa0nunbW7rosTHmwDlcNs0M1AtpkTiAtY0gAVqPCLHiclbLckW
+         +zMF2uGKz5NUGHseT47Pz2xUfS3B2ppn9BAMUU4CHEQpKKrxilzp//JlkyWXbhYcNQ
+         ZFqk0vwCjCyrHP2oQurScFy5okjtMS6IBeFXWSIchIK97azV8MFdtvfmvKsO9KXjhq
+         Kgpet42bfs2PY9uX5UWJ9OI2ah/FB18fnvmMAO7h42ljlRxb5i4qpKnYBMAhD+IY2p
+         aphfJUiy6R/oa4qYuQXsqxV2A34E3w3FmUWk1oEEHJQgfZqBwHb76xpoiZLlVI93nC
+         suEilXdrEbsEQ==
+Message-ID: <49f87e48-7898-97d5-0140-1dab840ce0f2@funlab.cc>
+Date:   Wed, 30 Aug 2023 17:02:28 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Cc:     doka@funlab.cc, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Netfilter <netfilter-devel@vger.kernel.org>
+Subject: Re: [Networking] ERSPAN decapsulation drops DHCP unicast packets
+Content-Language: en-US
+To:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-kernel@vger.kernel.org
+References: <eaf3d0d8-fca2-029e-9c57-ddae31f17726@funlab.cc>
+ <ZOqv7E9/Qn2T1GwD@debian.me> <4b5b5ce0-e7a0-db7d-f23f-dde4b041f2fe@funlab.cc>
+From:   Volodymyr Litovka <doka@funlab.cc>
+In-Reply-To: <4b5b5ce0-e7a0-db7d-f23f-dde4b041f2fe@funlab.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Allow to opt-out from the have-real-root check via
+Hi colleagues,
 
-  NFT_TEST_ROOTLESS=1 ./run-tests.sh
+sorry bothering you, but can anyone shed light on this issue? This stops 
+me and I will be glad to hear, where I'm wrong and/or where try to look 
+into the problem.
 
-For that to be useful, we must also unshare the PID and user namespace
-and map the root user inside that namespace.
+Thank you very much.
 
-With that, inside the namespace we look like root. Including having
-CAP_NET_ADMIN for the new net namespace. This allows to run the tests as
-rootless and most tests will pass.
-
-Note that some tests will fail as rootless. For example, the socket
-buffers are limited by /proc/sys/net/core/{wmem_max,rmem_max}, which is
-not namespaced. When running as real-root, nftables can raise them
-beyond those limits and the tests will pass. Rootless cannot do that and
-the test may fail.
-
-Test that don't work without real root should check for
-[ "$NFT_TEST_HAVE_REALROOT" != 1 ] and skip gracefully.
-
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- tests/shell/run-tests.sh | 57 +++++++++++++++++++++++++++++++---------
- 1 file changed, 45 insertions(+), 12 deletions(-)
-
-diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index b66ef4fa4d1f..96dd0b0c2fd6 100755
---- a/tests/shell/run-tests.sh
-+++ b/tests/shell/run-tests.sh
-@@ -1,9 +1,18 @@
- #!/bin/bash
- 
--# Configuration
--TESTDIR="./$(dirname $0)/testcases"
--SRC_NFT="$(dirname $0)/../../src/nft"
--DIFF=$(which diff)
-+# Environment variables for the user:
-+# NFT=<path>                   Path to the nft executable.
-+# NFT_TEST_ROOTLESS=0|1:       Whether the test allows to run as rootless. Usually the test
-+#                              will require real root permissions. You can set NFT_TEST_ROOTLESS=1
-+#                              to run rootless in a separate namespace.
-+# NFT_TEST_HAVE_REALROOT=0|1:  To indicate whether the test has real root permissions.
-+#                              Usually, you don't need this and it gets autodetected.
-+#                              Note that without real root, certain tests may not work.
-+#                              For example, due to limited /proc/sys/net/core/{wmem_max,rmem_max}.
-+#                              Such test should check for [ "$NFT_TEST_HAVE_REALROOT" != 1 ] and
-+#                              skip (not fail) in such an environment.
-+# NFT_TEST_NO_UNSHARE=0|1:     Usually, the test will run in a separate namespace.
-+#                              You can opt-out from that by setting NFT_TEST_NO_UNSHARE=1.
- 
- msg_error() {
- 	echo "E: $1 ..." >&2
-@@ -18,18 +27,42 @@ msg_info() {
- 	echo "I: $1"
- }
- 
--if [ "$(id -u)" != "0" ] ; then
-+if [ "$NFT_TEST_HAVE_REALROOT" = "" ] ; then
-+	# The caller can set NFT_TEST_HAVE_REALROOT to indicate us whether we
-+	# have real root. They usually don't need, and we detect it now based
-+	# on `id -u`. Note that we may unshare below, so the check inside the
-+	# new namespace won't be conclusive. We thus only detect once and export
-+	# the result.
-+	export NFT_TEST_HAVE_REALROOT="$(test "$(id -u)" = "0" && echo 1 || echo 0)"
-+fi
-+
-+if [ "$NFT_TEST_HAVE_REALROOT" != 1 -a "$NFT_TEST_ROOTLESS" != 1 ] ; then
-+	# By default, we require real-root, unless the user explicitly opts-in
-+	# to proceed via NFT_TEST_ROOTLESS=1.
- 	msg_error "this requires root!"
- fi
- 
--if [ "${1}" != "run" ]; then
--	if unshare -f -n true; then
--		unshare -n "${0}" run $@
--		exit $?
--	fi
--	msg_warn "cannot run in own namespace, connectivity might break"
-+if [ "$NFT_TEST_NO_UNSHARE" = 1 ]; then
-+	# The user opts-out from unshare. Proceed without.
-+	:
-+elif [ "$_NFT_TEST_IS_UNSHARED" = 1 ]; then
-+	# We are inside the unshared environment. Don't unshare again.
-+	# Continue.
-+	:
-+else
-+	# Unshare. This works both as rootless and with real root. Inside
-+	# the user namespace we will map the root user, so we appear to have
-+	# root. Check for [ "$NFT_TEST_HAVE_REALROOT" != 1 ] to know when
-+	# not having real root.
-+	export _NFT_TEST_IS_UNSHARED=1
-+	unshare -f --map-root-user -U -p -n "$0" "$@"
-+	exit $?
- fi
--shift
-+
-+# Configuration
-+TESTDIR="./$(dirname $0)/testcases"
-+SRC_NFT="$(dirname $0)/../../src/nft"
-+DIFF=$(which diff)
- 
- [ -z "$NFT" ] && NFT=$SRC_NFT
- ${NFT} > /dev/null 2>&1
+On 8/27/23 10:34, Volodymyr Litovka wrote:
+> Hi Bagas,
+>
+> this tested on:
+>
+> - 5.19.0-42 on Intel 82599ES 10-Gigabit SFI/SFP+ Network Connection
+>   -- this is host hardware
+> - 6.2.0-32 on Virtio network device (under KVM 6.2 on host hardware 
+> above)
+> - 6.5.0-060500rc7 on Virtio network device (under KVM 6.2 on host 
+> hardware above)
+>
+> Result is the same for all cases.
+>
+> Thank you.
+>
+> On 8/27/23 04:07, Bagas Sanjaya wrote:
+>> On Sat, Aug 26, 2023 at 09:55:30PM +0200, Volodymyr Litovka wrote:
+>>> Hi colleagues,
+>>>
+>>> I'm trying to catch and process (in 3rd party analytics app) DHCP 
+>>> packets
+>>> from ERSPAN session, but cannot do this due to absence of DHCP unicast
+>>> packets after decapsulation.
+>>>
+>>> The model is pretty simple: there is PHY interface (enp2s0) which 
+>>> receive
+>>> ERSPAN traffic and erspan-type interface to get decapsulated packets
+>>> (inspan, created using command "ip link add inspan type erspan seq 
+>>> key 10
+>>> local 10.171.165.65 erspan_ver 1", where 10.171.165.65 is ERSPAN 
+>>> target).
+>>> Then I'm going to rewrite headers in the proper ways (nftable's netdev
+>>> family) and forward packets to the pool of workers.
+>>>
+>>> Having this, I'm expecting everything, which is encapsulated inside 
+>>> ERSPAN,
+>>> on 'inspan' interface. And there is _almost_ everything except DHCP 
+>>> unicast
+>>> packets - tcpdump shows about 1kps on this interface of decapsulated
+>>> packets, but no DHCP unicast (see below traces).
+>>>
+>>> To avoid any interactions, I removed and disabled everything that 
+>>> can catch
+>>> DHCP in userspace - systemd-networkd, netplan, dhcp-client. There is 
+>>> no DHCP
+>>> server and ifupdown - for test purposes, I'm bringing networking 
+>>> manually.
+>>> Apparmor disabled as well. Kernel (Linux 5.19.0-42-generic
+>>> #43~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC) compiled without CONFIG_IP_PNP
+>>> (according to /boot/config-5.19.0-42-generic). Nothing in userspace 
+>>> listens
+>>> on UDP/68 and UDP/67:
+>> Can you reproduce this on latest mainline?
+>>
+>>> # netstat -tunlpa
+>>> Active Internet connections (servers and established)
+>>> Proto Recv-Q Send-Q Local Address           Foreign Address
+>>> State       PID/Program name
+>>> tcp        0      0 0.0.0.0:22 0.0.0.0:* LISTEN      544/sshd:
+>>> /usr/sbin
+>>> tcp6       0      0 :::22 :::*                    LISTEN 544/sshd:
+>>> /usr/sbin
+>>>
+>>> I have no ideas, why this is happening. Decapsulation itself works, but
+>>> particular kind of packets get lost.
+>>>
+>>> I will appreciate if anyone can help me understand where is the bug 
+>>> - in my
+>>> configuration or somewhere inside the kernel?
+>>>
+>>> Evidence of traffic presence/absence is below.
+>>>
+>>> Thank you.
+>>>
+>>> Encapsulated ERSPAN session (udp and port 67/68) contains lot of 
+>>> different
+>>> kinds of DHCP packets:
+>>>
+>>> # tcpdump -s0 -w- -i enp2s0 'proto gre and ether[73:1]=17 and
+>>> (ether[84:2]=67 or ether[84:2]=68)' | tshark -r- -l
+>>>   [ ... ]
+>>>      7   0.001942  0.0.0.0 → 255.255.255.255 DHCP 392 DHCP Discover -
+>>> Transaction ID 0x25c096fc
+>>>      8   0.003432  z.z.z.z → a.a.a.a         DHCP 418 DHCP ACK      -
+>>> Transaction ID 0x5515126a
+>>>      9   0.005170  m.m.m.m → z.z.z.z         DHCP 435 DHCP Discover -
+>>> Transaction ID 0xa7b7
+>>>     10   0.005171  m.m.m.m → z.z.z.z         DHCP 435 DHCP Discover -
+>>> Transaction ID 0xa7b7
+>>>     11   0.015399  n.n.n.n → z.z.z.z         DHCP 690 DHCP Request  -
+>>> Transaction ID 0x54955233
+>>>     12   0.025537  z.z.z.z → n.n.n.n         DHCP 420 DHCP ACK      -
+>>> Transaction ID 0x54955233
+>>>     13   0.030313  z.z.z.z → m.m.m.m         DHCP 413 DHCP Offer    -
+>>> Transaction ID 0xa7b7
+>>>
+>>> but decapsulated traffic (which I'm seeing on inspan interface) 
+>>> contains
+>>> just the following:
+>>>
+>>> # tcpdump -i inspan 'port 67 or port 68'
+>>> listening on inspan, link-type EN10MB (Ethernet), snapshot length 
+>>> 262144
+>>> bytes
+>>> 17:23:36.540721 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP,
+>>> Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+>>> 17:23:39.760036 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP,
+>>> Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+>>> 17:23:44.135711 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP,
+>>> Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+>>> 17:23:52.008504 IP 0.0.0.0.bootpc > 255.255.255.255.bootps: BOOTP/DHCP,
+>>> Request from 00:1a:64:33:8d:fa (oui Unknown), length 300
+>>>
+>> What hardware?
+>>
 -- 
-2.41.0
+Volodymyr Litovka
+   "Vision without Execution is Hallucination." -- Thomas Edison
 
