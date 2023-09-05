@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA1F792991
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEC0792972
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344617AbjIEQ1M (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Sep 2023 12:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
+        id S1352152AbjIEQ0d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 5 Sep 2023 12:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354480AbjIEMAd (ORCPT
+        with ESMTP id S1354487AbjIEMBT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:00:33 -0400
+        Tue, 5 Sep 2023 08:01:19 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929151B6
-        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 04:59:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D271AD
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 04:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693915191;
+        s=mimecast20190719; t=1693915193;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2K4pQMG/Jrn4JmdokCCyaNI8v8+zkqTXNxOvwi0WYso=;
-        b=WPB27pMibynP8+1nUq0WHGfHXTf9LptzVV2jGV3fOya6e6z7s6wm60uD9zg0DlecLniHpX
-        ILEs34y8wVCbLVNyFT7e+lz5R8LYBuVUgcbSxE7DiVw4RizHSb9tllUWfzRAySju/Bjw12
-        lbhv3nivU4rlIBD9IbQ1RYS+1Vfwhzk=
+        bh=wWEonDPBuQbsbd3f7uY3ICDBxehDxTzezF05b3hqxUU=;
+        b=HEr4Sm9C9k62hUGh1vqwkq6FmwqyU4AsGXCSk1fN19WD3lP0Vk6H/30uVykQvsemvE851X
+        D1ePjnDM6ektD22McAje2+V0jkroPb82hR1TZqaHNzPQDluMwPs2l3TF1Uhdt3FwYoHSYd
+        k/0EHqEg4gIsKlUJzS2trd8HPnkRwN0=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-464-Fkdglk3SP_GvVLwzKf-cpw-1; Tue, 05 Sep 2023 07:59:50 -0400
-X-MC-Unique: Fkdglk3SP_GvVLwzKf-cpw-1
+ us-mta-226-FogjuI8LNISLB4K1LE9K1g-1; Tue, 05 Sep 2023 07:59:51 -0400
+X-MC-Unique: FogjuI8LNISLB4K1LE9K1g-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 090FC3C0FC84
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C4FC228EA6F7
         for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 11:59:50 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E23E1121314;
-        Tue,  5 Sep 2023 11:59:49 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 454A61121314;
+        Tue,  5 Sep 2023 11:59:50 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v4 04/17] tests/shell: export NFT_TEST_BASEDIR and NFT_TEST_TMPDIR for tests
-Date:   Tue,  5 Sep 2023 13:58:33 +0200
-Message-ID: <20230905115936.607599-5-thaller@redhat.com>
+Subject: [PATCH nft v4 05/17] tests/shell: normalize boolean configuration in environment variables
+Date:   Tue,  5 Sep 2023 13:58:34 +0200
+Message-ID: <20230905115936.607599-6-thaller@redhat.com>
 In-Reply-To: <20230905115936.607599-1-thaller@redhat.com>
 References: <20230905115936.607599-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,131 +59,62 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Let the test wrapper prepare and export two environment variables for
-the test:
+Previously, we would honor "y" as opt-in, and all other values meant
+false.
 
-- "$NFT_TEST_BASEDIR" is just the top directory where the test scripts
-  lie.
+- accept alternatives to "y", like "1" or "true".
 
-- "$NFT_TEST_TMPDIR" is a `mktemp` directory created by "run-tests.sh"
-  and removed at the end. Tests may use that to leave data there.
-  This directory will be used for various things, like the "nft" wrapper
-  in valgrind mode, the results of the tests and possibly as cache for
-  feature detection.
-
-The "$NFT_TEST_TMPDIR" was already used before with the "VALGRIND=y"
-mode. It's only renamed and got an extended purpose.
-
-Also drop the unnecessary first detection of "$DIFF" and the "$SRC_NFT"
-variable.
-
-Also, note that the mktemp creates the temporary directory under /tmp.
-Which is commonly a tempfs. The user can override that by exporting
-TMPDIR.
+- normalize the value, to either be "y" or "n".
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/run-tests.sh | 57 +++++++++++++++++++++++++---------------
- 1 file changed, 36 insertions(+), 21 deletions(-)
+ tests/shell/run-tests.sh | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index 0a2598f10bed..03b4cd4f5805 100755
+index 03b4cd4f5805..84975a65243f 100755
 --- a/tests/shell/run-tests.sh
 +++ b/tests/shell/run-tests.sh
-@@ -25,17 +25,18 @@ usage() {
- 	echo " -K              : sets KMEMLEAK=y"
- 	echo
- 	echo "ENVIRONMENT VARIABLES:"
--	echo " NFT=<PATH>   : Path to nft executable"
--	echo " VERBOSE=*|y  : Enable verbose output"
--	echo " DUMPGEN=*|y  : Regenerate dump files"
--	echo " VALGRIND=*|y : Run \$NFT in valgrind"
--	echo " KMEMLEAK=*|y : Check for kernel memleaks"
-+	echo " NFT=<PATH>    : Path to nft executable"
-+	echo " VERBOSE=*|y   : Enable verbose output"
-+	echo " DUMPGEN=*|y   : Regenerate dump files"
-+	echo " VALGRIND=*|y  : Run \$NFT in valgrind"
-+	echo " KMEMLEAK=*|y  : Check for kernel memleaks"
-+	echo " TMPDIR=<PATH> : select a different base directory for the result data"
+@@ -13,6 +13,24 @@ msg_info() {
+ 	echo "I: $1"
  }
  
--# Configuration
--BASEDIR="$(dirname "$0")"
--SRC_NFT="$BASEDIR/../../src/nft"
--DIFF=$(which diff)
-+NFT_TEST_BASEDIR="$(dirname "$0")"
-+
-+# Export the base directory. It may be used by tests.
-+export NFT_TEST_BASEDIR
- 
- if [ "$(id -u)" != "0" ] ; then
- 	msg_error "this requires root!"
-@@ -99,7 +100,7 @@ find_tests() {
- }
- 
- if [ "${#TESTS[@]}" -eq 0 ] ; then
--	TESTS=( $(find_tests "$BASEDIR/testcases/") )
-+	TESTS=( $(find_tests "$NFT_TEST_BASEDIR/testcases/") )
- 	test "${#TESTS[@]}" -gt 0 || msg_error "Could not find tests"
- fi
- 
-@@ -120,7 +121,7 @@ if [ "$DO_LIST_TESTS" = y ] ; then
- 	exit 0
- fi
- 
--[ -z "$NFT" ] && NFT=$SRC_NFT
-+[ -z "$NFT" ] && NFT="$NFT_TEST_BASEDIR/../../src/nft"
- ${NFT} > /dev/null 2>&1
- ret=$?
- if [ ${ret} -eq 126 ] || [ ${ret} -eq 127 ]; then
-@@ -139,6 +140,26 @@ if [ ! -x "$DIFF" ] ; then
- 	DIFF=true
- fi
- 
-+cleanup_on_exit() {
-+	test -z "$NFT_TEST_TMPDIR" || rm -rf "$NFT_TEST_TMPDIR"
++bool_y() {
++	case "$1" in
++		y|Y|yes|Yes|YES|1|true)
++			printf y
++			;;
++		'')
++			if [ $# -ge 2 ] ; then
++				printf "%s" "$2"
++			else
++				printf n
++			fi
++			;;
++		*)
++			printf n
++			;;
++	esac
 +}
-+trap cleanup_on_exit EXIT
 +
-+_TMPDIR="${TMPDIR:-/tmp}"
-+
-+NFT_TEST_TMPDIR="$(mktemp --tmpdir="$_TMPDIR" -d "nft-test.$(date '+%Y%m%d-%H%M%S.%3N').XXXXXX")" ||
-+	msg_error "Failure to create temp directory in \"$_TMPDIR\""
-+chmod 755 "$NFT_TEST_TMPDIR"
-+
-+NFT_TEST_LATEST="$_TMPDIR/nft-test.latest.$USER"
-+
-+ln -snf "$NFT_TEST_TMPDIR" "$NFT_TEST_LATEST"
-+
-+# export the tmp directory for tests. They may use it, but create
-+# distinct files! It will be deleted on EXIT.
-+export NFT_TEST_TMPDIR
-+
-+
- kernel_cleanup() {
- 	$NFT flush ruleset
- 	$MODPROBE -raq \
-@@ -193,16 +214,10 @@ EOF
- }
- 
- if [ "$VALGRIND" == "y" ]; then
--	tmpd=$(mktemp -d)
--	chmod 755 $tmpd
--
--	msg_info "writing valgrind logs to $tmpd"
--
--	printscript "$NFT" "$tmpd" >${tmpd}/nft
--	trap "rm ${tmpd}/nft" EXIT
--	chmod a+x ${tmpd}/nft
--
--	NFT="${tmpd}/nft"
-+	msg_info "writing valgrind logs to $NFT_TEST_TMPDIR"
-+	printscript "$NFT" "$NFT_TEST_TMPDIR" > "$NFT_TEST_TMPDIR/nft"
-+	chmod a+x "$NFT_TEST_TMPDIR/nft"
-+	NFT="$NFT_TEST_TMPDIR/nft"
+ usage() {
+ 	echo " $0 [OPTIONS]"
+ 	echo
+@@ -51,10 +69,10 @@ if [ "${1}" != "run" ]; then
  fi
+ shift
  
- echo ""
+-VERBOSE="$VERBOSE"
+-DUMPGEN="$DUMPGEN"
+-VALGRIND="$VALGRIND"
+-KMEMLEAK="$KMEMLEAK"
++VERBOSE="$(bool_y "$VERBOSE")"
++DUMPGEN="$(bool_y "$DUMPGEN")"
++VALGRIND="$(bool_y "$VALGRIND")"
++KMEMLEAK="$(bool_y "$KMEMLEAK")"
+ DO_LIST_TESTS=
+ 
+ TESTS=()
 -- 
 2.41.0
 
