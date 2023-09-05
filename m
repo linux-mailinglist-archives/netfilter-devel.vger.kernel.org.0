@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD58792998
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82C779297D
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352354AbjIEQ1V (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Sep 2023 12:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
+        id S1352246AbjIEQ0j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 5 Sep 2023 12:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354495AbjIEMB0 (ORCPT
+        with ESMTP id S1354493AbjIEMB0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 5 Sep 2023 08:01:26 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3498CD2
-        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 04:59:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7EBCDB
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 04:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1693915198;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KND6FCgPwD2nL9/6/c7S0s/lZ6Bh+Jt+n5fyW+tsvOI=;
-        b=GXey9sJT8/9CioscwnsR/HRoS18rbxYx9ncWzkJyrnVNWtn/q9vJADeq5caCmSyHkbs8HX
-        oMrbRsN8bmx+6Ptk73Ocu8VrNwTsAZ0j6t6FYF7d/4f/D8rNuJdA4X0FxDHB4TwysOjI/l
-        XWBmCMq6iydQoJcr+OkM/w5bM+t0ZkY=
+        bh=0IVLCwt6vJgEJHnMncfFpOO/FpHOH4pbxA9voePpa7Y=;
+        b=Dfs3eh+daWSMMmoWVCyzUn3cSuAw7fLCYmKPvJ/v7OI+/29d+sQw31wv55shDWDQQ3XFrQ
+        kdQSXy/SoXXPQzUE3ZiR+iRXe0SQXGCD6XlijkxfFNCWsejid+XTw+GkEm0EuLzs4PjZxp
+        qaZZ8kbt14g3brBKn8zGsJLf7yp7Sb4=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-371-0OysH7plPQ65kx1NVtY4PA-1; Tue, 05 Sep 2023 07:59:56 -0400
-X-MC-Unique: 0OysH7plPQ65kx1NVtY4PA-1
+ us-mta-637-A2tvquEaP_22N2KSPDDvAQ-1; Tue, 05 Sep 2023 07:59:57 -0400
+X-MC-Unique: A2tvquEaP_22N2KSPDDvAQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C99B382254B
-        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 11:59:56 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 13FC7382254E
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 11:59:57 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C17C71121314;
-        Tue,  5 Sep 2023 11:59:55 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 887D61121314;
+        Tue,  5 Sep 2023 11:59:56 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v4 12/17] tests/shell: move taint check to "test-wrapper.sh"
-Date:   Tue,  5 Sep 2023 13:58:41 +0200
-Message-ID: <20230905115936.607599-13-thaller@redhat.com>
+Subject: [PATCH nft v4 13/17] tests/shell: support running tests in parallel
+Date:   Tue,  5 Sep 2023 13:58:42 +0200
+Message-ID: <20230905115936.607599-14-thaller@redhat.com>
 In-Reply-To: <20230905115936.607599-1-thaller@redhat.com>
 References: <20230905115936.607599-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,116 +59,178 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We will run tests in parallel. That means, we have multiple tests data and results
-in fly. That becomes simpler, if we move more result data to the
-test-wrapper and out of "run-tests.sh".
+Add option to enable running jobs in parallel. The purpose is to speed
+up the run time of the tests.
+
+The global cleanup (removal of kernel modules) interferes with parallel
+jobs (or even with, unrelated jobs on the system). By setting
+NFT_TEST_JOBS= to a positive number, that cleanup is skipped.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/helpers/test-wrapper.sh | 18 +++++++++++++++---
- tests/shell/run-tests.sh            | 16 ++++------------
- 2 files changed, 19 insertions(+), 15 deletions(-)
+ tests/shell/run-tests.sh | 86 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 73 insertions(+), 13 deletions(-)
 
-diff --git a/tests/shell/helpers/test-wrapper.sh b/tests/shell/helpers/test-wrapper.sh
-index bdbe2c370c6b..1390985c7f32 100755
---- a/tests/shell/helpers/test-wrapper.sh
-+++ b/tests/shell/helpers/test-wrapper.sh
-@@ -11,11 +11,15 @@ TESTDIR="$(dirname "$TEST")"
- 
- printf '%s\n' "$TEST" > "$NFT_TEST_TESTTMPDIR/name"
- 
-+read tainted_before < /proc/sys/kernel/tainted
-+
- rc_test=0
- "$TEST" &> "$NFT_TEST_TESTTMPDIR/testout.log" || rc_test=$?
- 
- $NFT list ruleset > "$NFT_TEST_TESTTMPDIR/ruleset-after"
- 
-+read tainted_after < /proc/sys/kernel/tainted
-+
- DUMPPATH="$TESTDIR/dumps"
- DUMPFILE="$DUMPPATH/$TESTBASE.nft"
- 
-@@ -45,6 +49,10 @@ if [ "$rc_test" -ne 77 -a -f "$DUMPFILE" ] ; then
- 	fi
- fi
- 
-+if [ "$tainted_before" != "$tainted_after" ]; then
-+	echo "$tainted_after" > "$NFT_TEST_TESTTMPDIR/rc-failed-tainted"
-+fi
-+
- rc_exit="$rc_test"
- if [ -n "$rc_dump" ] && [ "$rc_dump" -ne 0 ] ; then
- 	echo "$DUMPFILE" > "$NFT_TEST_TESTTMPDIR/rc-failed-dump"
-@@ -53,13 +61,17 @@ if [ -n "$rc_dump" ] && [ "$rc_dump" -ne 0 ] ; then
- 		# Special exit code to indicate dump diff.
- 		rc_exit=124
- 	fi
--elif [ "$rc_test" -eq 0 ] ; then
--	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-ok"
- elif [ "$rc_test" -eq 77 ] ; then
- 	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-skipped"
-+elif [ "$rc_test" -eq 0 -a "$tainted_before" = "$tainted_after" ] ; then
-+	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-ok"
- else
- 	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-failed"
--	if [ "$rc_test" -eq 124 ] ; then
-+	if [ "$rc_test" -eq 0 -a "$tainted_before" != "$tainted_after" ] ; then
-+		# Special exit code to indicate tainted.
-+		rc_exit=123
-+	elif [ "$rc_test" -eq 124 -o "$rc_test" -eq 123 ] ; then
-+		# These exit codes are reserved
- 		rc_exit=125
- 	fi
- fi
 diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index f88e244f9625..d9ec22f11830 100755
+index d9ec22f11830..d157f14eb9a5 100755
 --- a/tests/shell/run-tests.sh
 +++ b/tests/shell/run-tests.sh
-@@ -356,15 +356,6 @@ echo ""
- ok=0
- skipped=0
- failed=0
--taint=0
--
--check_taint()
--{
--	read taint_now < /proc/sys/kernel/tainted
--	if [ $taint -ne $taint_now ] ; then
--		msg_warn "[FAILED]	kernel is tainted: $taint  -> $taint_now"
--	fi
--}
+@@ -59,6 +59,7 @@ usage() {
+ 	echo " -R|--without-realroot : sets NFT_TEST_HAS_REALROOT=n"
+ 	echo " -U|--no-unshare  : sets NFT_TEST_UNSHARE_CMD="
+ 	echo " -k|--keep-logs   : sets NFT_TEST_KEEP_LOGS=y"
++	echo " -j|--jobs        : sets NFT_TEST_JOBS=12"
+ 	echo
+ 	echo "ENVIRONMENT VARIABLES:"
+ 	echo " NFT=<PATH>    : Path to nft executable"
+@@ -88,6 +89,11 @@ usage() {
+ 	echo "                 Test may consider this."
+ 	echo "                 This is only honored when \$NFT_TEST_UNSHARE_CMD= is set. Otherwise it's detected."
+ 	echo " NFT_TEST_KEEP_LOGS=*|y: Keep the temp directory. On success, it will be deleted by default."
++	echo " NFT_TEST_JOBS=<NUM}>: by default, run test sequentially. Set to an integer > 1 to"
++	echo "                 run jobs in parallel. Leaving this unset or at zero means to run jobs sequentially"
++	echo "                 and perform global cleanups between tests (remove kernel modules). Setting this"
++	echo "                 to a positive number (including \"1\") means to disable such global cleanups."
++	echo "                 Parallel jobs requires unshare and does not work with NFT_TEST_NO_UNSHARE=."
+ 	echo " TMPDIR=<PATH> : select a different base directory for the result data"
+ }
  
- kmem_runs=0
- kmemleak_found=0
-@@ -406,7 +397,10 @@ check_kmemleak()
+@@ -103,6 +109,7 @@ KMEMLEAK="$(bool_y "$KMEMLEAK")"
+ NFT_TEST_KEEP_LOGS="$(bool_y "$NFT_TEST_KEEP_LOGS")"
+ NFT_TEST_HAS_REALROOT="$NFT_TEST_HAS_REALROOT"
+ NFT_TEST_NO_UNSHARE="$NFT_TEST_NO_UNSHARE"
++NFT_TEST_JOBS="$NFT_TEST_JOBS"
+ DO_LIST_TESTS=
+ 
+ TESTS=()
+@@ -139,6 +146,9 @@ while [ $# -gt 0 ] ; do
+ 		-U|--no-unshare)
+ 			NFT_TEST_NO_UNSHARE=y
+ 			;;
++		-j|--jobs)
++			NFT_TEST_JOBS=12
++			;;
+ 		--)
+ 			TESTS+=( "$@" )
+ 			shift $#
+@@ -242,6 +252,14 @@ fi
+ # If tests wish, they can know whether they are unshared via this variable.
+ export NFT_TEST_HAS_UNSHARED
+ 
++# normalize the jobs number to be an integer.
++case "$NFT_TEST_JOBS" in
++	''|*[!0-9]*) NFT_TEST_JOBS=0 ;;
++esac
++if [ -z "$NFT_TEST_UNSHARE_CMD" -a "$NFT_TEST_JOBS" -gt 1 ] ; then
++	NFT_TEST_JOBS=1
++fi
++
+ [ -z "$NFT" ] && NFT="$NFT_TEST_BASEDIR/../../src/nft"
+ ${NFT} > /dev/null 2>&1
+ ret=$?
+@@ -257,11 +275,14 @@ msg_info "conf: NFT_TEST_HAS_REALROOT=$(printf '%q' "$NFT_TEST_HAS_REALROOT")"
+ msg_info "conf: NFT_TEST_UNSHARE_CMD=$(printf '%q' "$NFT_TEST_UNSHARE_CMD")"
+ msg_info "conf: NFT_TEST_HAS_UNSHARED=$(printf '%q' "$NFT_TEST_HAS_UNSHARED")"
+ msg_info "conf: NFT_TEST_KEEP_LOGS=$(printf '%q' "$NFT_TEST_KEEP_LOGS")"
++msg_info "conf: NFT_TEST_JOBS=$NFT_TEST_JOBS"
+ msg_info "conf: TMPDIR=$(printf '%q' "$_TMPDIR")"
+ 
+-MODPROBE="$(which modprobe)"
+-if [ ! -x "$MODPROBE" ] ; then
+-	msg_error "no modprobe binary found"
++if [ "$NFT_TEST_JOBS" -eq 0 ] ; then
++	MODPROBE="$(which modprobe)"
++	if [ ! -x "$MODPROBE" ] ; then
++		msg_error "no modprobe binary found"
++	fi
+ fi
+ 
+ DIFF="$(which diff)"
+@@ -291,6 +312,11 @@ msg_info "info: NFT_TEST_BASEDIR=$(printf '%q' "$NFT_TEST_BASEDIR")"
+ msg_info "info: NFT_TEST_TMPDIR=$(printf '%q' "$NFT_TEST_TMPDIR")"
+ 
+ kernel_cleanup() {
++	if [ "$NFT_TEST_JOBS" -ne 0 ] ; then
++		# When we run jobs in parallel (even with only one "parallel"
++		# job via `NFT_TEST_JOBS=1`), we skip such global cleanups.
++		return
++	fi
+ 	if [ "$NFT_TEST_HAS_UNSHARED" != y ] ; then
+ 		$NFT flush ruleset
+ 	fi
+@@ -463,28 +489,62 @@ print_test_result() {
  	fi
  }
  
--check_taint
-+read kernel_tainted < /proc/sys/kernel/tainted
-+if [ "$kernel_tainted" -ne 0 ] ; then
-+	msg_warn "[FAILED]	kernel is tainted"
-+fi
- 
- print_test_header() {
- 	local msglevel="$1"
-@@ -471,7 +465,6 @@ print_test_result() {
- 
++declare -A JOBS_TEMPDIR
++declare -A JOBS_PIDLIST
++
++job_start() {
++	local testfile="$1"
++
++	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
++		print_test_header I "$testfile" "EXECUTING" ""
++	fi
++
++	NFT_TEST_TESTTMPDIR="${JOBS_TEMPDIR["$testfile"]}" \
++	NFT="$NFT" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
++	local rc_got=$?
++
++	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
++		echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
++	fi
++
++	return "$rc_got"
++}
++
++job_wait()
++{
++	local num_jobs="$1"
++
++	while [ "$JOBS_N_RUNNING" -gt 0 -a "$JOBS_N_RUNNING" -ge "$num_jobs" ] ; do
++		wait -n -p JOBCOMPLETED
++		local rc_got="$?"
++		testfile2="${JOBS_PIDLIST[$JOBCOMPLETED]}"
++		print_test_result "${JOBS_TEMPDIR["$testfile2"]}" "$testfile2" "$rc_got"
++		((JOBS_N_RUNNING--))
++		check_kmemleak
++	done
++}
++
  TESTIDX=0
++JOBS_N_RUNNING=0
  for testfile in "${TESTS[@]}" ; do
--	read taint < /proc/sys/kernel/tainted
++	job_wait "$NFT_TEST_JOBS"
++
  	kernel_cleanup
  
  	((TESTIDX++))
-@@ -489,7 +482,6 @@ for testfile in "${TESTS[@]}" ; do
  
- 	print_test_result "$NFT_TEST_TESTTMPDIR" "$testfile" "$rc_got"
+-	# We also create and export a test-specific temporary directory.
+ 	NFT_TEST_TESTTMPDIR="$NFT_TEST_TMPDIR/test-${testfile//\//-}.$TESTIDX"
+ 	mkdir "$NFT_TEST_TESTTMPDIR"
+ 	chmod 755 "$NFT_TEST_TESTTMPDIR"
+-	export NFT_TEST_TESTTMPDIR
+-
+-	print_test_header I "$testfile" "EXECUTING" ""
+-	NFT="$NFT" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
+-	rc_got=$?
+-	echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
+-
+-	print_test_result "$NFT_TEST_TESTTMPDIR" "$testfile" "$rc_got"
++	JOBS_TEMPDIR["$testfile"]="$NFT_TEST_TESTTMPDIR"
  
--	check_taint
- 	check_kmemleak
+-	check_kmemleak
++	job_start "$testfile" &
++	JOBS_PIDLIST[$!]="$testfile"
++	((JOBS_N_RUNNING++))
  done
  
++job_wait 0
++
+ echo ""
+ 
+ # kmemleak may report suspected leaks
 -- 
 2.41.0
 
