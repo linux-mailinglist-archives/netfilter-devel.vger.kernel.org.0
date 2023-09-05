@@ -2,66 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5832792987
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A1E792964
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243824AbjIEQ1E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Sep 2023 12:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        id S1351873AbjIEQ0T (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 5 Sep 2023 12:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354628AbjIENDy (ORCPT
+        with ESMTP id S1354713AbjIENoN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:03:54 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B21A12E
-        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 06:03:51 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qdVif-0000Xy-Bs; Tue, 05 Sep 2023 15:03:49 +0200
-Date:   Tue, 5 Sep 2023 15:03:49 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 2/5] tests: shell: let netdev_chain_0 test indicate
- SKIP if kernel requires netdev device
-Message-ID: <ZPcnNa34zSMghioa@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+        Tue, 5 Sep 2023 09:44:13 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE06E198
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Sep 2023 06:44:08 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qdWLe-0007QI-Kc; Tue, 05 Sep 2023 15:44:06 +0200
+Date:   Tue, 5 Sep 2023 15:44:06 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft 1/5] tests: add feature probing
+Message-ID: <20230905134406.GA28401@breakpoint.cc>
 References: <20230904090640.3015-1-fw@strlen.de>
- <20230904090640.3015-3-fw@strlen.de>
+ <20230904090640.3015-2-fw@strlen.de>
+ <ZPcmZ4nqfG43SuM9@orbyte.nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904090640.3015-3-fw@strlen.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZPcmZ4nqfG43SuM9@orbyte.nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 11:06:31AM +0200, Florian Westphal wrote:
-> This test case only works on kernel 6.4+.
-> Add feature probe for this and then exit early.
+Phil Sutter <phil@nwl.cc> wrote:
+> On Mon, Sep 04, 2023 at 11:06:30AM +0200, Florian Westphal wrote:
+> > Running selftests on older kernels makes some of them fail very early
+> > because some tests use features that are not available on older
+> > kernels, e.g. -stable releases.
+> > 
+> > Known examples:
+> > - inner header matching
+> > - anonymous chains
+> > - elem delete from packet path
+> > 
+> > Also, some test cases might fail because a feature isn't
+> > compiled in, such as netdev chains for example.
+> > 
+> > This adds a feature-probing to the shell tests.
+> > 
+> > Simply drop a 'nft -f' compatible file with a .nft suffix into
+> > tests/shell/features.
+> > 
+> > run-tests.sh will load it via --check and will add
+> > 
+> > NFT_TESTS_HAVE_${filename}=$?
 > 
-> We don't want to indicate a test failure, as this test doesn't apply
-> on older kernels.
+> Maybe make this:
 > 
-> But we should not indicate sucess either, else we might be fooled
-> in case something went wrong during feature probe.
+> | truefalse=(true false)
+> | NFT_TESTS_HAVE_${filename}=${truefalse[$?]}
 > 
-> Add a special return value, 123, and let run-tests.sh count this
-> as 'SKIPPED'.
+> [...]
+> 
+> > [ $NFT_HAVE_chain_binding -eq 1 ] && test_chain_binding
+> 
+> So this becomes:
+> 
+> | $NFT_HAVE_chain_binding && test_chain_binding
+> 
+> Use of true/false appears to work in dash, so might be POSIX sh
+> compatible?
 
-I suggest we adhere to Gnu automake convention:
-
-"[...] an exit status of 0
-from a test script will denote a success, an exit status of 77 a skipped
-test, an exit status of 99 a hard error, and any other exit status will
-denote a failure."[1]
-
-Cheers, Phil
-
-[1] https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html
+Can do that, but if [ false ] evaluates to true...
