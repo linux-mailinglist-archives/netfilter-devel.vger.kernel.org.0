@@ -2,103 +2,146 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54389792971
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 18:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE97B792D09
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Sep 2023 20:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352096AbjIEQ0c (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Sep 2023 12:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
+        id S238318AbjIESFw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 5 Sep 2023 14:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354847AbjIEPCa (ORCPT
+        with ESMTP id S238252AbjIESFj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:02:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5F6F18D;
-        Tue,  5 Sep 2023 08:02:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEA4E106F;
-        Tue,  5 Sep 2023 08:03:04 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 397863F64C;
-        Tue,  5 Sep 2023 08:02:25 -0700 (PDT)
-Message-ID: <0dea99d9-3334-3fd3-3776-074ecace0259@arm.com>
-Date:   Tue, 5 Sep 2023 16:02:19 +0100
+        Tue, 5 Sep 2023 14:05:39 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DC49008;
+        Tue,  5 Sep 2023 09:53:07 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 174B732001AB;
+        Tue,  5 Sep 2023 12:38:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 05 Sep 2023 12:38:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1693931884; x=1694018284; bh=21
+        1jhUVDutOPYWl/TUpiZdIjCc0S5zbUfDCJu+M5WtQ=; b=gDMHhI6eKdFawWqdov
+        3iCOnAADb0iEyR+A2dTtKMs5yNoi+R820jDShvv1fyT2HGWad8pQiEwCWhlaNWoQ
+        GlGwMXnlBsPIP8kqNcM8oULek0UG/Q3CLUmxhQHLVYcaTuoFmP75L6jjygOP72Di
+        6O5D879awH1Br8hMG5HPobqiyG7pzbkdfhFpv7HVe+uaqTc2mD8U1O6uzgpmjPuY
+        easeFu9rMFPeqerD3XbHiqQYDS6iQ7GBbE4rbnAEau5Gy1P4L+xN1vK6Rwejaiqi
+        twjpJqqfenH96ohjladwkiSeqpD77GoSaD0939XC69O/XipC85iuw7RIUhbA0yjI
+        N7Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1693931884; x=1694018284; bh=211jhUVDutOPY
+        Wl/TUpiZdIjCc0S5zbUfDCJu+M5WtQ=; b=ISEKd62joyIdwKbrd5C8utIydRrzJ
+        syzxlsH6i2ic6TT+fsBTvJNKdf9Vplpe1+e7sP6x0Ov0GJZiiYZAyr410kUO71HO
+        wchOeOdyQ5DeCaATg2Od7iz7CROszj56IW5Er5kI0ICLqYWJZvEBHL+aF31YgzHO
+        Lxr7ZR5Q14ruTElgWuog86gq8cG4oIUhim/itWAFitoP1DUo0qTic503Yj+cr110
+        /092egBYW903nS7hKItlWfYuOgA0THPMtKXFcilVxJr1zB3rp1TyV5FPU83PEnBB
+        WqaveDOy2JDgwGgA9gj/msR1XEhZ3/BHiaZ2puMAY434VWd72ocwyKsfw==
+X-ME-Sender: <xms:bFn3ZL-aV8hTm7XsLdLTp4Dn3mHMsSEP6ovGEgszee4hEkboN9JLfg>
+    <xme:bFn3ZHuZXpQhuY5IGdjXfJaTgnYOwrZV4SwwAbqhS0ay0T5jQq6rY4yobF9s4cLr4
+    2ljJkzmG8f5SCiA7g>
+X-ME-Received: <xmr:bFn3ZJAz8Egxu7gzyLJNTszuD6nHzhofkcF68ymds5kcDVaPOXaeP-Nc0JvWCPOqeNDEDoN5J9Naf9C6YB-L82vkeC-2_Z6a2EFJRKA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehuddgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:bFn3ZHfAPIp0Lnej5eB6PeOofxboA1HmGJo8HzBSbzlcvpH5IY8fuQ>
+    <xmx:bFn3ZAOhwExOvcbwdNdRdvW_vB3vswyVteirryymvt2BtuUI9cjvDw>
+    <xmx:bFn3ZJncV0gQxRVw-y9uqss9Z72bh5OZFvHv1HF-FqbED18RpS4d1g>
+    <xmx:bFn3ZMAtbfd8GVfs_yiKUQZk7W6VVtCp8J4yCGFFV94ib-YtqOomoQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 5 Sep 2023 12:38:03 -0400 (EDT)
+Date:   Tue, 5 Sep 2023 10:38:02 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     David Wang <00107082@163.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
+ definition from macro to enum
+Message-ID: <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
+References: <20230904130201.14632-1-00107082@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [syzbot] [arm?] [netfilter?] KASAN: slab-out-of-bounds Read in
- do_csum
-Content-Language: en-GB
-To:     Will Deacon <will@kernel.org>,
-        syzbot <syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com>
-Cc:     catalin.marinas@arm.com, fw@strlen.de, kadlec@netfilter.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-References: <000000000000e0e94c0603f8d213@google.com>
- <20230905143711.GB3322@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230905143711.GB3322@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230904130201.14632-1-00107082@163.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 05/09/2023 3:37 pm, Will Deacon wrote:
-> [+Robin as he's had fun with the checksum code in the past]
+Hi David,
+
+On Mon, Sep 04, 2023 at 09:02:02PM +0800, David Wang wrote:
+> As BPF_PROG_TYPE_NETFILTER was added in 6.4, a netfilter
+> bpf program can attach to netfilter hooks, process package
+> and return verdict back to netfilter. But those verdict
+> codes are defined as macro, which could not be compiled
+> into BTF with btf.c. libbpf, and maybe other bpf tools,
+> would extract information from BTF and generate a
+> common header "vmlinux.h". With macro definition, netfilter
+> bpf program would have to redefine those macro again,
+> besides including "vmlinux.h".
 > 
-> On Mon, Aug 28, 2023 at 03:04:44AM -0700, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    908f31f2a05b Merge branch 'for-next/core', remote-tracking..
->> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
->> console output: https://syzkaller.appspot.com/x/log.txt?x=155e0463280000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=c1058fe68f4b7b2c
->> dashboard link: https://syzkaller.appspot.com/bug?extid=4a9f9820bd8d302e22f7
->> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
->> userspace arch: arm64
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bc548d280000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135bba3b280000
->>
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/87d095820229/disk-908f31f2.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/a1bf67af9675/vmlinux-908f31f2.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/7784a88b37e8/Image-908f31f2.gz.xz
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com
->>
->> netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
->> netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
->> ==================================================================
->> BUG: KASAN: slab-out-of-bounds in do_csum+0x44/0x254 arch/arm64/lib/csum.c:39
->> Read of size 4294966928 at addr ffff0000d7ac0170 by task syz-executor412/5975
-
-Yup, that looks suspiciously "-368"-shaped...
-
-> Judging by the UBSAN errors:
+> This code change netfilter hook verdict code definition to
+> enum, this way,  make it into BTF.
 > 
-> | shift exponent 3008 is too large for 64-bit type 'u64' (aka 'unsigned long long')
+> Signed-off-by: David Wang <00107082@163.com>
+> ---
+>  include/uapi/linux/netfilter.h | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 > 
-> We're probably being passed a negative 'len' argument. It looks like the
-> generic version in lib/checksum.c rejects that early, so maybe we should
-> do the same in the arch code?
+> diff --git a/include/uapi/linux/netfilter.h b/include/uapi/linux/netfilter.h
+> index 5a79ccb76701..d2f5dfab20dc 100644
+> --- a/include/uapi/linux/netfilter.h
+> +++ b/include/uapi/linux/netfilter.h
+> @@ -8,13 +8,15 @@
+>  #include <linux/in6.h>
+>  
+>  /* Responses from hook functions. */
+> -#define NF_DROP 0
+> -#define NF_ACCEPT 1
+> -#define NF_STOLEN 2
+> -#define NF_QUEUE 3
+> -#define NF_REPEAT 4
+> -#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
+> -#define NF_MAX_VERDICT NF_STOP
+> +enum {
+> +	NF_DROP        = 0,
+> +	NF_ACCEPT      = 1,
+> +	NF_STOLEN      = 2,
+> +	NF_QUEUE       = 3,
+> +	NF_REPEAT      = 4,
+> +	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
+> +	NF_MAX_VERDICT = NF_STOP,
+> +};
 
-Hmm, indeed I can offer no explanation as to why I put "if (len == 0)" 
-there rather than "if (len <= 0)" like literally every other C 
-implementation* :/
+Switching from macro to enum works for almost all use cases, but not
+all. If someone if #ifdefing the symbols (which is plausible) this
+change would break them.
 
-Cheers,
-Robin.
+I think I've seen some other networking code define both enums and
+macros. But it was a little ugly. Not sure if that is acceptable here or
+not.
 
+[...]
 
-*apart from Loongarch who didn't exist at the time, but appear to have 
-dutifully copy-pasted the same bug.
+Thanks,
+Daniel
