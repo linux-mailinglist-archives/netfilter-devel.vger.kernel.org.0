@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 339D3793C20
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAC2793C18
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238123AbjIFMC4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Sep 2023 08:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238846AbjIFMCx (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
+        id S231265AbjIFMCx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Wed, 6 Sep 2023 08:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236265AbjIFMCw (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 6 Sep 2023 08:02:52 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7303E1717
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6170B1709
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694001690;
+        s=mimecast20190719; t=1694001689;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E8Eqzv9sCArFOcMO5aaXZQDVTMWRsqHsRUseiMFxWC8=;
-        b=Dj9Hw296OiPeHHXSxY/Be0L+vqDG7DCRdnXczRSGEiIjtYmU0DAT75cfdalESxYUzdOOvc
-        9E06RUdhBM0BM24ugbiRQ7QM9zoaHsIK4oQ4rd9CD66MDbdMocC5wihKo+NGGLRo8n7gVx
-        mtOaNnuXE4bc8/4dI/HIeIFwcsde+Ss=
+        bh=KCGks3n7nH4svMKWiidYkkMe/28AGt2qDhqtIlrMidg=;
+        b=iaXALO5hpoftc29mSkgv5wnF1O9Afu65TfkNiQYuUHI4IFrj/osQfj0XJK0xmzaZV4V0xi
+        igglb592DX0PgHVzGmLBhQuKSR8zDavNaVjGZKsjfcU5H0aVMI7PBVo70Z+MZW1F5nMi3k
+        vwp97RaUdGtqR0VGo9b7uSuIMbHW0rQ=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-584--iTnEYTtM_K6COpsCnRmAQ-1; Wed, 06 Sep 2023 08:01:28 -0400
-X-MC-Unique: -iTnEYTtM_K6COpsCnRmAQ-1
+ us-mta-540-U7G-xtnZOE-iT1_XXfcmfg-1; Wed, 06 Sep 2023 08:01:28 -0400
+X-MC-Unique: U7G-xtnZOE-iT1_XXfcmfg-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1B5A9182BEA1
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D82EC101CA88
         for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 12:01:27 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 900F7C15BB8;
-        Wed,  6 Sep 2023 12:01:26 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 589E7C15BB8;
+        Wed,  6 Sep 2023 12:01:27 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v5 09/19] tests/shell: support --keep-logs option (NFT_TEST_KEEP_LOGS=y) to preserve test output
-Date:   Wed,  6 Sep 2023 13:52:12 +0200
-Message-ID: <20230906120109.1773860-10-thaller@redhat.com>
+Subject: [PATCH nft v5 10/19] tests/shell: move the dump diff handling inside "test-wrapper.sh"
+Date:   Wed,  6 Sep 2023 13:52:13 +0200
+Message-ID: <20230906120109.1773860-11-thaller@redhat.com>
 In-Reply-To: <20230906120109.1773860-1-thaller@redhat.com>
 References: <20230906120109.1773860-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,94 +59,176 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The test output is now all collected in the temporary directory. On
-success, that directory is deleted. Add an option to always preserve
-that directory.
+This fits there better. At this point, we are  still inside the unshared
+namespace and right after the test. The test-wrapper.sh should compare
+(and generate) the dumps.
+
+Also change behavior for DUMPGEN=y.
+
+- Previously it would only rewrite the dump if the dumpfile didn't
+  exist yet. Now instead, always rewrite the file with DUMPGEN=y.
+  The mode of operation is anyway, that the developer afterwards
+  checks `git diff|status` to pick up the changes. There should be
+  no changes to existing files (as existing tests are supposed to
+  pass). So a diff there either means something went wrong (and we
+  should see it) or it just means the dumps correctly should be
+  regenerated.
+
+- also, only generate the file if the "dumps/" directory exists. This
+  allows to write tests that don't have a dump file and don't get it
+  automatically generated.
+
+The test wrapper will return a special error code 124 to indicate that
+the test passed, but the dumps file differed.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/run-tests.sh | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ tests/shell/helpers/test-wrapper.sh | 56 +++++++++++++++++++++++++----
+ tests/shell/run-tests.sh            | 45 +++++++++--------------
+ 2 files changed, 66 insertions(+), 35 deletions(-)
 
-diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index fec9e7743226..efc4f127b797 100755
---- a/tests/shell/run-tests.sh
-+++ b/tests/shell/run-tests.sh
-@@ -36,6 +36,7 @@ usage() {
- 	echo " -K              : Sets KMEMLEAK=y."
- 	echo " -R|--without-realroot : Sets NFT_TEST_HAS_REALROOT=n."
- 	echo " -U|--no-unshare : Sets NFT_TEST_UNSHARE_CMD=\"\"."
-+	echo " -k|--keep-logs  : Sets NFT_TEST_KEEP_LOGS=y."
- 	echo " --              : Separate options from tests."
- 	echo " [TESTS...]      : Other options are treated as test names,"
- 	echo "                   that is, executables that are run by the runner."
-@@ -68,6 +69,7 @@ usage() {
- 	echo " NFT_TEST_HAS_UNSHARED=*|y : To indicate to the test whether the test run will be unshared."
- 	echo "                 Test may consider this."
- 	echo "                 This is only honored when \$NFT_TEST_UNSHARE_CMD= is set. Otherwise it's detected."
-+	echo " NFT_TEST_KEEP_LOGS=*|y: Keep the temp directory. On success, it will be deleted by default."
- 	echo " TMPDIR=<PATH> : select a different base directory for the result data."
- }
+diff --git a/tests/shell/helpers/test-wrapper.sh b/tests/shell/helpers/test-wrapper.sh
+index 0cf37f408003..dd5ce7ace7ad 100755
+--- a/tests/shell/helpers/test-wrapper.sh
++++ b/tests/shell/helpers/test-wrapper.sh
+@@ -6,20 +6,62 @@
+ # For some printf debugging, you can also patch this file.
  
-@@ -80,6 +82,7 @@ VERBOSE="$(bool_y "$VERBOSE")"
- DUMPGEN="$(bool_y "$DUMPGEN")"
- VALGRIND="$(bool_y "$VALGRIND")"
- KMEMLEAK="$(bool_y "$KMEMLEAK")"
-+NFT_TEST_KEEP_LOGS="$(bool_y "$NFT_TEST_KEEP_LOGS")"
- NFT_TEST_HAS_REALROOT="$NFT_TEST_HAS_REALROOT"
- DO_LIST_TESTS=
+ TEST="$1"
++TESTBASE="$(basename "$TEST")"
++TESTDIR="$(dirname "$TEST")"
  
-@@ -105,6 +108,9 @@ while [ $# -gt 0 ] ; do
- 			usage
- 			exit 0
- 			;;
-+		-k|--keep-logs)
-+			NFT_TEST_KEEP_LOGS=y
-+			;;
- 		-L|--list-tests)
- 			DO_LIST_TESTS=y
- 			;;
-@@ -229,7 +235,9 @@ if [ ! -x "$DIFF" ] ; then
- fi
+ printf '%s\n' "$TEST" > "$NFT_TEST_TESTTMPDIR/name"
  
- cleanup_on_exit() {
--	test -z "$NFT_TEST_TMPDIR" || rm -rf "$NFT_TEST_TMPDIR"
-+	if [ "$NFT_TEST_KEEP_LOGS" != y -a -n "$NFT_TEST_TMPDIR" ] ; then
-+		rm -rf "$NFT_TEST_TMPDIR"
-+	fi
- }
- trap cleanup_on_exit EXIT
+ rc_test=0
+ "$TEST" |& tee "$NFT_TEST_TESTTMPDIR/testout.log" || rc_test=$?
  
-@@ -245,14 +253,15 @@ msg_info "conf: KMEMLEAK=$(printf '%q' "$KMEMLEAK")"
- msg_info "conf: NFT_TEST_HAS_REALROOT=$(printf '%q' "$NFT_TEST_HAS_REALROOT")"
- msg_info "conf: NFT_TEST_UNSHARE_CMD=$(printf '%q' "$NFT_TEST_UNSHARE_CMD")"
- msg_info "conf: NFT_TEST_HAS_UNSHARED=$(printf '%q' "$NFT_TEST_HAS_UNSHARED")"
-+msg_info "conf: NFT_TEST_KEEP_LOGS=$(printf '%q' "$NFT_TEST_KEEP_LOGS")"
- msg_info "conf: TMPDIR=$(printf '%q' "$_TMPDIR")"
- 
- NFT_TEST_LATEST="$_TMPDIR/nft-test.latest.$USER"
- 
- ln -snf "$NFT_TEST_TMPDIR" "$NFT_TEST_LATEST"
- 
--# export the tmp directory for tests. They may use it, but create
--# distinct files! It will be deleted on EXIT.
-+# export the tmp directory for tests. They may use it, but create distinct
-+# files! On success, it will be deleted on EXIT. See also "--keep-logs"
- export NFT_TEST_TMPDIR
- 
- echo
-@@ -460,4 +469,11 @@ msg_info "results: [OK] $ok [SKIPPED] $skipped [FAILED] $failed [TOTAL] $((ok+sk
- 
- kernel_cleanup
- 
-+if [ "$failed" -gt 0 -o "$NFT_TEST_KEEP_LOGS" = y ] ; then
-+	msg_info "check the temp directory \"$NFT_TEST_TMPDIR\" (\"$NFT_TEST_LATEST\")"
-+	msg_info "   ls -lad \"$NFT_TEST_LATEST\"/*/*"
-+	msg_info "   grep -R ^ \"$NFT_TEST_LATEST\"/"
-+	NFT_TEST_TMPDIR=
+-if [ "$rc_test" -eq 0 ] ; then
+-	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc_test-ok"
++$NFT list ruleset > "$NFT_TEST_TESTTMPDIR/ruleset-after"
++
++DUMPPATH="$TESTDIR/dumps"
++DUMPFILE="$DUMPPATH/$TESTBASE.nft"
++
++dump_written=
++rc_dump=
++
++# The caller can request a re-geneating of the dumps, by setting
++# DUMPGEN=y.
++#
++# This only will happen if the command completed with success.
++#
++# It also will only happen for tests, that have a "$DUMPPATH" directory. There
++# might be tests, that don't want to have dumps created. The existence of the
++# directory controls that.
++if [ "$rc_test" -eq 0 -a "$DUMPGEN" = y -a -d "$DUMPPATH" ] ; then
++	dump_written=y
++	cat "$NFT_TEST_TESTTMPDIR/ruleset-after" > "$DUMPFILE"
 +fi
 +
- [ "$failed" -eq 0 ]
++if [ "$rc_test" -ne 77 -a -f "$DUMPFILE" ] ; then
++	rc_dump=0
++	if [ "$dump_written" != y ] ; then
++		$DIFF -u "$DUMPFILE" "$NFT_TEST_TESTTMPDIR/ruleset-after" &> "$NFT_TEST_TESTTMPDIR/ruleset-diff" || rc_dump=$?
++		if [ "$rc_dump" -eq 0 ] ; then
++			rm -f "$NFT_TEST_TESTTMPDIR/ruleset-diff"
++		fi
++	fi
++fi
++
++rc_exit="$rc_test"
++if [ -n "$rc_dump" ] && [ "$rc_dump" -ne 0 ] ; then
++	echo "$DUMPFILE" > "$NFT_TEST_TESTTMPDIR/rc-failed-dump"
++	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-failed"
++	if [ "$rc_exit" -eq 0 ] ; then
++		# Special exit code to indicate dump diff.
++		rc_exit=124
++	fi
++elif [ "$rc_test" -eq 0 ] ; then
++	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-ok"
+ elif [ "$rc_test" -eq 77 ] ; then
+-	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc_test-skipped"
++	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-skipped"
+ else
+-	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc_test-failed"
++	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-failed"
++	if [ "$rc_test" -eq 124 ] ; then
++		rc_exit=125
++	fi
+ fi
+ 
+-$NFT list ruleset > "$NFT_TEST_TESTTMPDIR/ruleset-after"
+-
+-exit "$rc_test"
++exit "$rc_exit"
+diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
+index efc4f127b797..66205ea9f120 100755
+--- a/tests/shell/run-tests.sh
++++ b/tests/shell/run-tests.sh
+@@ -47,7 +47,9 @@ usage() {
+ 	echo "                 does not work, so the usage is limited and the command cannot contain"
+ 	echo "                 spaces."
+ 	echo " VERBOSE=*|y   : Enable verbose output."
+-	echo " DUMPGEN=*|y   : Regenerate dump files."
++	echo " DUMPGEN=*|y   : Regenerate dump files. Dump files are only recreated if the"
++	echo "                 test completes successfully and the \"dumps\" directory for the"
++	echo "                 test exits."
+ 	echo " VALGRIND=*|y  : Run \$NFT in valgrind."
+ 	echo " KMEMLEAK=*|y  : Check for kernel memleaks."
+ 	echo " NFT_TEST_HAS_REALROOT=*|y : To indicate whether the test has real root permissions."
+@@ -400,38 +402,25 @@ for testfile in "${TESTS[@]}" ; do
+ 	export NFT_TEST_TESTTMPDIR
+ 
+ 	msg_info "[EXECUTING]	$testfile"
+-	test_output="$(NFT="$NFT" DIFF=$DIFF $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile" 2>&1)"
++	test_output="$(NFT="$NFT" DIFF=$DIFF DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile" 2>&1)"
+ 	rc_got=$?
+ 	echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
+ 
+-	if [ "$rc_got" -eq 0 ] ; then
+-		# FIXME: this should move inside test-wrapper.sh.
+-		# check nft dump only for positive tests
+-		dumppath="$(dirname ${testfile})/dumps"
+-		dumpfile="${dumppath}/$(basename ${testfile}).nft"
+-		rc_spec=0
+-		if [ "$rc_got" -eq 0 ] && [ -f ${dumpfile} ]; then
+-			test_output=$(${DIFF} -u ${dumpfile} <(cat "$NFT_TEST_TESTTMPDIR/ruleset-after") 2>&1)
+-			rc_spec=$?
+-		fi
+-
+-		if [ "$rc_spec" -eq 0 ]; then
+-			msg_info "[OK]		$testfile"
+-			[ "$VERBOSE" == "y" ] && [ ! -z "$test_output" ] && echo "$test_output"
+-			((ok++))
++	if [ -s "$NFT_TEST_TESTTMPDIR/ruleset-diff" ] ; then
++		test_output="$test_output$(cat "$NFT_TEST_TESTTMPDIR/ruleset-diff")"
++	fi
+ 
+-			if [ "$DUMPGEN" == "y" ] && [ "$rc_got" == 0 ] && [ ! -f "${dumpfile}" ]; then
+-				mkdir -p "${dumppath}"
+-				cat "$NFT_TEST_TESTTMPDIR/ruleset-after" > "${dumpfile}"
+-			fi
++	if [ "$rc_got" -eq 0 ] ; then
++		((ok++))
++		msg_info "[OK]		$testfile"
++		[ "$VERBOSE" == "y" ] && [ ! -z "$test_output" ] && echo "$test_output"
++	elif [ "$rc_got" -eq 124 ] ; then
++		((failed++))
++		if [ "$VERBOSE" == "y" ] ; then
++			msg_warn "[DUMP FAIL]	$testfile: dump diff detected"
++			[ ! -z "$test_output" ] && echo "$test_output"
+ 		else
+-			((failed++))
+-			if [ "$VERBOSE" == "y" ] ; then
+-				msg_warn "[DUMP FAIL]	$testfile: dump diff detected"
+-				[ ! -z "$test_output" ] && echo "$test_output"
+-			else
+-				msg_warn "[DUMP FAIL]	$testfile"
+-			fi
++			msg_warn "[DUMP FAIL]	$testfile"
+ 		fi
+ 	elif [ "$rc_got" -eq 77 ] ; then
+ 		((skipped++))
 -- 
 2.41.0
 
