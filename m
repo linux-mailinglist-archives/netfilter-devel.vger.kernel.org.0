@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0492A793C17
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C17793C1E
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbjIFMCw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Sep 2023 08:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
+        id S238985AbjIFMCz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Sep 2023 08:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbjIFMCw (ORCPT
+        with ESMTP id S238945AbjIFMCx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:02:52 -0400
+        Wed, 6 Sep 2023 08:02:53 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E82CF2
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2767CFD
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694001685;
+        s=mimecast20190719; t=1694001687;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vm/EVH9a7hNrvVDVDPKcIALHfCryVHtKFF3s/nOf1go=;
-        b=B4KMAW2Blc5eqoKLEx1EYXQASWuWQNqls0vdQtX+4cGV3xAb/0wq53HUdXV9TDWg3hvzpt
-        3+JSUbkvtzwvoLio3Di3T61xfqk92M+i13MxPx69AIgRv+DTaW3fRZXBZ1WakVu7h+GYWp
-        Yy3Cl1sOWsHU5GZ2MAdLzFPtkfEZ7co=
+        bh=L76fzBSARcujw3nkNiwXECPdRLmnZdMz2+RjTi1KzTo=;
+        b=AmKGDSdIlLgIR/JpbYeI8Mvlm45urqFaliX0RT6xw0jI8b451qwRwxtwKfcCjnEb0amJM5
+        nxR1j2zDNCsCBdDGwtoDf/xYVtgyd+M9wDa9U5jMWOHEiOykhyUdD2lCfmvCYNALEy0t0c
+        tzWrM72swxLxmVqK+jAot4MBIXir9bc=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-336-jHcFPPebNKeQqJCo1c-R4Q-1; Wed, 06 Sep 2023 08:01:24 -0400
-X-MC-Unique: jHcFPPebNKeQqJCo1c-R4Q-1
+ us-mta-130--y0osvupNCOhAIoY69F9-Q-1; Wed, 06 Sep 2023 08:01:25 -0400
+X-MC-Unique: -y0osvupNCOhAIoY69F9-Q-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DB90238149B9
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 12:01:23 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A3BC11C07256
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 12:01:24 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5C03DC15BB8;
-        Wed,  6 Sep 2023 12:01:23 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23FB9C03292;
+        Wed,  6 Sep 2023 12:01:24 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v5 05/19] tests/shell: normalize boolean configuration in environment variables
-Date:   Wed,  6 Sep 2023 13:52:08 +0200
-Message-ID: <20230906120109.1773860-6-thaller@redhat.com>
+Subject: [PATCH nft v5 06/19] tests/shell: print test configuration
+Date:   Wed,  6 Sep 2023 13:52:09 +0200
+Message-ID: <20230906120109.1773860-7-thaller@redhat.com>
 In-Reply-To: <20230906120109.1773860-1-thaller@redhat.com>
 References: <20230906120109.1773860-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -59,55 +59,56 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Previously, we would honor "y" as opt-in, and all other values meant
-false.
-
-- accept alternatives to "y", like "1" or "true".
-
-- normalize the value, to either be "y" or "n".
+As the script can be configured via environment variables or command
+line option, it's useful to show the environment variables that we
+received or set during the test setup.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/run-tests.sh | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ tests/shell/run-tests.sh | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index 65aa041febb2..905fa0c10309 100755
+index 905fa0c10309..2c6eaea3636f 100755
 --- a/tests/shell/run-tests.sh
 +++ b/tests/shell/run-tests.sh
-@@ -13,6 +13,17 @@ msg_info() {
- 	echo "I: $1"
- }
- 
-+bool_y() {
-+	case "$1" in
-+		y|Y|yes|Yes|YES|1|true|True|TRUE)
-+			printf y
-+			;;
-+		*)
-+			printf n
-+			;;
-+	esac
-+}
-+
- usage() {
- 	echo " $0 [OPTIONS] [TESTS...]"
- 	echo
-@@ -57,10 +68,10 @@ if [ "${1}" != "run" ]; then
+@@ -138,13 +138,13 @@ if [ "$DO_LIST_TESTS" = y ] ; then
+ 	exit 0
  fi
- shift
  
--VERBOSE="$VERBOSE"
--DUMPGEN="$DUMPGEN"
--VALGRIND="$VALGRIND"
--KMEMLEAK="$KMEMLEAK"
-+VERBOSE="$(bool_y "$VERBOSE")"
-+DUMPGEN="$(bool_y "$DUMPGEN")"
-+VALGRIND="$(bool_y "$VALGRIND")"
-+KMEMLEAK="$(bool_y "$KMEMLEAK")"
- DO_LIST_TESTS=
++_TMPDIR="${TMPDIR:-/tmp}"
++
+ [ -z "$NFT" ] && NFT="$NFT_TEST_BASEDIR/../../src/nft"
+ ${NFT} > /dev/null 2>&1
+ ret=$?
+ if [ ${ret} -eq 126 ] || [ ${ret} -eq 127 ]; then
+-	msg_error "cannot execute nft command: ${NFT}"
+-else
+-	msg_info "using nft command: ${NFT}"
++	msg_error "cannot execute nft command: $NFT"
+ fi
  
- TESTS=()
+ MODPROBE="$(which modprobe)"
+@@ -162,12 +162,17 @@ cleanup_on_exit() {
+ }
+ trap cleanup_on_exit EXIT
+ 
+-_TMPDIR="${TMPDIR:-/tmp}"
+-
+ NFT_TEST_TMPDIR="$(mktemp --tmpdir="$_TMPDIR" -d "nft-test.$(date '+%Y%m%d-%H%M%S.%3N').XXXXXX")" ||
+ 	msg_error "Failure to create temp directory in \"$_TMPDIR\""
+ chmod 755 "$NFT_TEST_TMPDIR"
+ 
++msg_info "conf: NFT=$(printf '%q' "$NFT")"
++msg_info "conf: VERBOSE=$(printf '%q' "$VERBOSE")"
++msg_info "conf: DUMPGEN=$(printf '%q' "$DUMPGEN")"
++msg_info "conf: VALGRIND=$(printf '%q' "$VALGRIND")"
++msg_info "conf: KMEMLEAK=$(printf '%q' "$KMEMLEAK")"
++msg_info "conf: TMPDIR=$(printf '%q' "$_TMPDIR")"
++
+ NFT_TEST_LATEST="$_TMPDIR/nft-test.latest.$USER"
+ 
+ ln -snf "$NFT_TEST_TMPDIR" "$NFT_TEST_LATEST"
 -- 
 2.41.0
 
