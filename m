@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2DC793C22
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA344793C19
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240376AbjIFMC4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Sep 2023 08:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
+        id S232725AbjIFMCx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Sep 2023 08:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237430AbjIFMCz (ORCPT
+        with ESMTP id S237482AbjIFMCw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:02:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D544171D
+        Wed, 6 Sep 2023 08:02:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F60A171C
         for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1694001691;
@@ -21,153 +21,170 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ls6kQXZKUqselUpJ+TaOqzGcVyfdbrMgR7zl/GMSdUQ=;
-        b=dGx9Pjr0dMrHlPno/qmmxG4j6yt3vJ/s4sQEeXYPWPDQEFR6UK4MPF5FE+GzzoT+c9FWXT
-        CTh91Q0fMy9pwhVyz4ZtvEEaNtJGAiU/g1bFfxl96AqFFBzW4YfEN3B6g4SXIKf/k9ugtW
-        GZkLpAFNgduxrUx1zMYzEkY36L0WyDg=
+        bh=PGB/K+C2d64egT6NuCepohOwy8me2B5hLXUQZTGGOiQ=;
+        b=Vg359wxJ/Vy3jsYwe7Af8yWnBPSh+0Mvqe0NslPrU6rpdU/y9+BOsKA/sf0kf0eYiyAiuT
+        zhkk9KoSzn7VNr9plBE0UKDAXSuJEb12JsyM6/qhXHqMqEmp1R439TLOuus/J8N4Ij23EL
+        1IEHbQoH8qn/kVIuX/uZp7MzvkTcqKk=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-616-kHhSrkVjNLKGdxdV2ZQW6g-1; Wed, 06 Sep 2023 08:01:29 -0400
-X-MC-Unique: kHhSrkVjNLKGdxdV2ZQW6g-1
+ us-mta-461-ogbjb16zMHGVV042RAfwSA-1; Wed, 06 Sep 2023 08:01:30 -0400
+X-MC-Unique: ogbjb16zMHGVV042RAfwSA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6884C8AA800
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 12:01:29 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 35D48800969
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 12:01:30 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DCCDBC15BB8;
-        Wed,  6 Sep 2023 12:01:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9F89C15BB8;
+        Wed,  6 Sep 2023 12:01:29 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v5 12/19] tests/shell: move taint check to "test-wrapper.sh"
-Date:   Wed,  6 Sep 2023 13:52:15 +0200
-Message-ID: <20230906120109.1773860-13-thaller@redhat.com>
+Subject: [PATCH nft v5 13/19] tests/shell: move valgrind wrapper script to separate script
+Date:   Wed,  6 Sep 2023 13:52:16 +0200
+Message-ID: <20230906120109.1773860-14-thaller@redhat.com>
 In-Reply-To: <20230906120109.1773860-1-thaller@redhat.com>
 References: <20230906120109.1773860-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We will run tests in parallel. That means, we have multiple tests data and results
-in fly. That becomes simpler, if we move more result data to the
-test-wrapper and out of "run-tests.sh".
+Previously, in valgrind mode we would generate one script, which had
+"$NFT" variable and the temp directory hard coded.
+
+Soon, we will run jobs in parallel, so they would need at least
+different temp directories. Also, we want to put the valgrind results
+are inside "$NFT_TEST_TESTTMPDIR", along the test data.
+
+Extract the wrapper script to a separate script. It does not need to be
+generated ad-hoc, instead it uses the environment variables "$NFT_REAL" and
+"$NFT_TEST_TESTTMPDIR", as "run-tests.sh" prepares them.
+
+Also, add a "$NFT_REAL" variable for the actual NFT binary. We wrap the
+"$NFT" variable with VALGRIND=y or the user may pass "NFT='valgrind
+nft'". We should have access to the real binary. That might be useful
+for example to call `ldd "$NFT_REAL" | grep libjansson` to check for
+JSON support.
+
+Also, we use libtool. So quite possible the nft binary is actually a
+shell script. Calling valgrind on that script results in a lot of leak
+reports from shell (and slows down the command). Instead, use `libtool
+--mode=execute`.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/helpers/test-wrapper.sh | 18 +++++++++++++++---
- tests/shell/run-tests.sh            | 16 ++++------------
- 2 files changed, 19 insertions(+), 15 deletions(-)
+ tests/shell/helpers/nft-valgrind-wrapper.sh | 17 +++++++++
+ tests/shell/run-tests.sh                    | 41 ++++-----------------
+ 2 files changed, 24 insertions(+), 34 deletions(-)
+ create mode 100755 tests/shell/helpers/nft-valgrind-wrapper.sh
 
-diff --git a/tests/shell/helpers/test-wrapper.sh b/tests/shell/helpers/test-wrapper.sh
-index bdbe2c370c6b..fee55e5f9df5 100755
---- a/tests/shell/helpers/test-wrapper.sh
-+++ b/tests/shell/helpers/test-wrapper.sh
-@@ -11,11 +11,15 @@ TESTDIR="$(dirname "$TEST")"
- 
- printf '%s\n' "$TEST" > "$NFT_TEST_TESTTMPDIR/name"
- 
-+read tainted_before < /proc/sys/kernel/tainted
+diff --git a/tests/shell/helpers/nft-valgrind-wrapper.sh b/tests/shell/helpers/nft-valgrind-wrapper.sh
+new file mode 100755
+index 000000000000..9da50d4d9d1d
+--- /dev/null
++++ b/tests/shell/helpers/nft-valgrind-wrapper.sh
+@@ -0,0 +1,17 @@
++#!/bin/bash -e
 +
- rc_test=0
- "$TEST" &> "$NFT_TEST_TESTTMPDIR/testout.log" || rc_test=$?
- 
- $NFT list ruleset > "$NFT_TEST_TESTTMPDIR/ruleset-after"
- 
-+read tainted_after < /proc/sys/kernel/tainted
++SUFFIX="$(date '+%Y%m%d-%H%M%S.%6N')"
 +
- DUMPPATH="$TESTDIR/dumps"
- DUMPFILE="$DUMPPATH/$TESTBASE.nft"
- 
-@@ -45,6 +49,10 @@ if [ "$rc_test" -ne 77 -a -f "$DUMPFILE" ] ; then
- 	fi
- fi
- 
-+if [ "$tainted_before" != "$tainted_after" ] ; then
-+	echo "$tainted_after" > "$NFT_TEST_TESTTMPDIR/rc-failed-tainted"
-+fi
++rc=0
++libtool \
++	--mode=execute \
++	valgrind \
++		--log-file="$NFT_TEST_TESTTMPDIR/valgrind.$SUFFIX.%p.log" \
++		--trace-children=yes \
++		--leak-check=full \
++		--show-leak-kinds=all \
++		"$NFT_REAL" \
++		"$@" \
++	|| rc=$?
 +
- rc_exit="$rc_test"
- if [ -n "$rc_dump" ] && [ "$rc_dump" -ne 0 ] ; then
- 	echo "$DUMPFILE" > "$NFT_TEST_TESTTMPDIR/rc-failed-dump"
-@@ -53,13 +61,17 @@ if [ -n "$rc_dump" ] && [ "$rc_dump" -ne 0 ] ; then
- 		# Special exit code to indicate dump diff.
- 		rc_exit=124
- 	fi
--elif [ "$rc_test" -eq 0 ] ; then
--	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-ok"
- elif [ "$rc_test" -eq 77 ] ; then
- 	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-skipped"
-+elif [ "$rc_test" -eq 0 -a "$tainted_before" = "$tainted_after" ] ; then
-+	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-ok"
- else
- 	echo "$rc_test" > "$NFT_TEST_TESTTMPDIR/rc-failed"
--	if [ "$rc_test" -eq 124 ] ; then
-+	if [ "$rc_test" -eq 0 -a "$tainted_before" != "$tainted_after" ] ; then
-+		# Special exit code to indicate tainted.
-+		rc_exit=123
-+	elif [ "$rc_test" -eq 124 -o "$rc_test" -eq 123 ] ; then
-+		# These exit codes are reserved
- 		rc_exit=125
- 	fi
- fi
++exit $rc
 diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index f52df85b0e43..92c63e354b96 100755
+index 92c63e354b96..b49877fe473e 100755
 --- a/tests/shell/run-tests.sh
 +++ b/tests/shell/run-tests.sh
-@@ -351,15 +351,6 @@ echo ""
- ok=0
- skipped=0
- failed=0
--taint=0
--
--check_taint()
--{
--	read taint_now < /proc/sys/kernel/tainted
--	if [ $taint -ne $taint_now ] ; then
--		msg_warn "[FAILED]	kernel is tainted: $taint  -> $taint_now"
--	fi
--}
+@@ -61,6 +61,8 @@ usage() {
+ 	echo "                 it can be a command with parameters. Note that in this mode quoting"
+ 	echo "                 does not work, so the usage is limited and the command cannot contain"
+ 	echo "                 spaces."
++	echo " NFT_REAL=<CMD> : Real nft comand. Usually this is just the same as \$NFT,"
++	echo "                 however, you may set NFT='valgrind nft' and NFT_REAL to the real command."
+ 	echo " VERBOSE=*|y   : Enable verbose output."
+ 	echo " DUMPGEN=*|y   : Regenerate dump files. Dump files are only recreated if the"
+ 	echo "                 test completes successfully and the \"dumps\" directory for the"
+@@ -262,7 +264,10 @@ NFT_TEST_TMPDIR="$(mktemp --tmpdir="$_TMPDIR" -d "nft-test.$(date '+%Y%m%d-%H%M%
+ 	msg_error "Failure to create temp directory in \"$_TMPDIR\""
+ chmod 755 "$NFT_TEST_TMPDIR"
  
- kmem_runs=0
- kmemleak_found=0
-@@ -401,7 +392,10 @@ check_kmemleak()
- 	fi
++NFT_REAL="${NFT_REAL-$NFT}"
++
+ msg_info "conf: NFT=$(printf '%q' "$NFT")"
++msg_info "conf: NFT_REAL=$(printf '%q' "$NFT_REAL")"
+ msg_info "conf: VERBOSE=$(printf '%q' "$VERBOSE")"
+ msg_info "conf: DUMPGEN=$(printf '%q' "$DUMPGEN")"
+ msg_info "conf: VALGRIND=$(printf '%q' "$VALGRIND")"
+@@ -311,40 +316,8 @@ kernel_cleanup() {
+ 	nft_xfrm
  }
  
--check_taint
-+read kernel_tainted < /proc/sys/kernel/tainted
-+if [ "$kernel_tainted" -ne 0 ] ; then
-+	msg_warn "[FAILED]	kernel is tainted"
-+fi
+-printscript() { # (cmd, tmpd)
+-	cat <<EOF
+-#!/bin/bash
+-
+-CMD="$1"
+-
+-# note: valgrind man page warns about --log-file with --trace-children, the
+-# last child executed overwrites previous reports unless %p or %q is used.
+-# Since libtool wrapper calls exec but none of the iptables tools do, this is
+-# perfect for us as it effectively hides bash-related errors
+-
+-valgrind --log-file=$2/valgrind.log --trace-children=yes \
+-	 --leak-check=full --show-leak-kinds=all \$CMD "\$@"
+-RC=\$?
+-
+-# don't keep uninteresting logs
+-if grep -q 'no leaks are possible' $2/valgrind.log; then
+-	rm $2/valgrind.log
+-else
+-	mv $2/valgrind.log $2/valgrind_\$\$.log
+-fi
+-
+-# drop logs for failing commands for now
+-[ \$RC -eq 0 ] || rm $2/valgrind_\$\$.log
+-
+-exit \$RC
+-EOF
+-}
+-
+ if [ "$VALGRIND" == "y" ]; then
+-	msg_info "writing valgrind logs to $NFT_TEST_TMPDIR"
+-	printscript "$NFT" "$NFT_TEST_TMPDIR" > "$NFT_TEST_TMPDIR/nft"
+-	chmod a+x "$NFT_TEST_TMPDIR/nft"
+-	NFT="$NFT_TEST_TMPDIR/nft"
++	NFT="$NFT_TEST_BASEDIR/helpers/nft-valgrind-wrapper.sh"
+ fi
  
- print_test_header() {
- 	local msglevel="$1"
-@@ -463,7 +457,6 @@ print_test_result() {
+ echo ""
+@@ -468,7 +441,7 @@ for testfile in "${TESTS[@]}" ; do
+ 	export NFT_TEST_TESTTMPDIR
  
- TESTIDX=0
- for testfile in "${TESTS[@]}" ; do
--	read taint < /proc/sys/kernel/tainted
- 	kernel_cleanup
- 
- 	((TESTIDX++))
-@@ -481,7 +474,6 @@ for testfile in "${TESTS[@]}" ; do
- 
- 	print_test_result "$NFT_TEST_TESTTMPDIR" "$testfile" "$rc_got"
- 
--	check_taint
- 	check_kmemleak
- done
+ 	print_test_header I "$testfile" "EXECUTING" ""
+-	NFT="$NFT" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
++	NFT="$NFT" NFT_REAL="$NFT_REAL" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
+ 	rc_got=$?
+ 	echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
  
 -- 
 2.41.0
