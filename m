@@ -2,190 +2,243 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA344793C19
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EF2793C23
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Sep 2023 14:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbjIFMCx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Sep 2023 08:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        id S236265AbjIFMDA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Sep 2023 08:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237482AbjIFMCw (ORCPT
+        with ESMTP id S237430AbjIFMDA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:02:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F60A171C
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:32 -0700 (PDT)
+        Wed, 6 Sep 2023 08:03:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496C91723
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694001691;
+        s=mimecast20190719; t=1694001692;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PGB/K+C2d64egT6NuCepohOwy8me2B5hLXUQZTGGOiQ=;
-        b=Vg359wxJ/Vy3jsYwe7Af8yWnBPSh+0Mvqe0NslPrU6rpdU/y9+BOsKA/sf0kf0eYiyAiuT
-        zhkk9KoSzn7VNr9plBE0UKDAXSuJEb12JsyM6/qhXHqMqEmp1R439TLOuus/J8N4Ij23EL
-        1IEHbQoH8qn/kVIuX/uZp7MzvkTcqKk=
+        bh=dYBnHXPHQiS/0PoPimR0nX5moMiVw8D6QiwiV3fUlg4=;
+        b=IglG8WH6+RpSPi2jwVXI6/E1dMJ3s3kF70zzjbpF/ZHquABuMpLZwrlwQSvph0qVNUUGlH
+        UZQkwL9tT7HEjMXVeJOtG80oZ2sRG5lEhdMoVVBALd7VkCDvvcqPo9VcsBas7xQ7N0EQeM
+        xDk8r2czgDEF6Ct9qo9JeSD5hpHgiqY=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-461-ogbjb16zMHGVV042RAfwSA-1; Wed, 06 Sep 2023 08:01:30 -0400
-X-MC-Unique: ogbjb16zMHGVV042RAfwSA-1
+ us-mta-632-jyp3Qv9INeGaF15mfX6Sdw-1; Wed, 06 Sep 2023 08:01:31 -0400
+X-MC-Unique: jyp3Qv9INeGaF15mfX6Sdw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 35D48800969
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F26EE8015AA
         for <netfilter-devel@vger.kernel.org>; Wed,  6 Sep 2023 12:01:30 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9F89C15BB8;
-        Wed,  6 Sep 2023 12:01:29 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 72F24C15BB8;
+        Wed,  6 Sep 2023 12:01:30 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v5 13/19] tests/shell: move valgrind wrapper script to separate script
-Date:   Wed,  6 Sep 2023 13:52:16 +0200
-Message-ID: <20230906120109.1773860-14-thaller@redhat.com>
+Subject: [PATCH nft v5 14/19] tests/shell: support running tests in parallel
+Date:   Wed,  6 Sep 2023 13:52:17 +0200
+Message-ID: <20230906120109.1773860-15-thaller@redhat.com>
 In-Reply-To: <20230906120109.1773860-1-thaller@redhat.com>
 References: <20230906120109.1773860-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Previously, in valgrind mode we would generate one script, which had
-"$NFT" variable and the temp directory hard coded.
+Add option to enable running jobs in parallel. The purpose is to speed
+up the run time of the tests.
 
-Soon, we will run jobs in parallel, so they would need at least
-different temp directories. Also, we want to put the valgrind results
-are inside "$NFT_TEST_TESTTMPDIR", along the test data.
+The global cleanup (removal of kernel modules) interferes with parallel
+jobs (or even with, unrelated jobs on the system). By setting
+NFT_TEST_JOBS= to a positive number, that cleanup is skipped.
 
-Extract the wrapper script to a separate script. It does not need to be
-generated ad-hoc, instead it uses the environment variables "$NFT_REAL" and
-"$NFT_TEST_TESTTMPDIR", as "run-tests.sh" prepares them.
-
-Also, add a "$NFT_REAL" variable for the actual NFT binary. We wrap the
-"$NFT" variable with VALGRIND=y or the user may pass "NFT='valgrind
-nft'". We should have access to the real binary. That might be useful
-for example to call `ldd "$NFT_REAL" | grep libjansson` to check for
-JSON support.
-
-Also, we use libtool. So quite possible the nft binary is actually a
-shell script. Calling valgrind on that script results in a lot of leak
-reports from shell (and slows down the command). Instead, use `libtool
---mode=execute`.
+This option is too good to miss. Hence parallel execution is enabled by
+default, and you have to opt-out from it.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/helpers/nft-valgrind-wrapper.sh | 17 +++++++++
- tests/shell/run-tests.sh                    | 41 ++++-----------------
- 2 files changed, 24 insertions(+), 34 deletions(-)
- create mode 100755 tests/shell/helpers/nft-valgrind-wrapper.sh
+ tests/shell/run-tests.sh | 86 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 73 insertions(+), 13 deletions(-)
 
-diff --git a/tests/shell/helpers/nft-valgrind-wrapper.sh b/tests/shell/helpers/nft-valgrind-wrapper.sh
-new file mode 100755
-index 000000000000..9da50d4d9d1d
---- /dev/null
-+++ b/tests/shell/helpers/nft-valgrind-wrapper.sh
-@@ -0,0 +1,17 @@
-+#!/bin/bash -e
-+
-+SUFFIX="$(date '+%Y%m%d-%H%M%S.%6N')"
-+
-+rc=0
-+libtool \
-+	--mode=execute \
-+	valgrind \
-+		--log-file="$NFT_TEST_TESTTMPDIR/valgrind.$SUFFIX.%p.log" \
-+		--trace-children=yes \
-+		--leak-check=full \
-+		--show-leak-kinds=all \
-+		"$NFT_REAL" \
-+		"$@" \
-+	|| rc=$?
-+
-+exit $rc
 diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index 92c63e354b96..b49877fe473e 100755
+index b49877fe473e..1af1c0f3013f 100755
 --- a/tests/shell/run-tests.sh
 +++ b/tests/shell/run-tests.sh
-@@ -61,6 +61,8 @@ usage() {
- 	echo "                 it can be a command with parameters. Note that in this mode quoting"
- 	echo "                 does not work, so the usage is limited and the command cannot contain"
- 	echo "                 spaces."
-+	echo " NFT_REAL=<CMD> : Real nft comand. Usually this is just the same as \$NFT,"
-+	echo "                 however, you may set NFT='valgrind nft' and NFT_REAL to the real command."
- 	echo " VERBOSE=*|y   : Enable verbose output."
- 	echo " DUMPGEN=*|y   : Regenerate dump files. Dump files are only recreated if the"
- 	echo "                 test completes successfully and the \"dumps\" directory for the"
-@@ -262,7 +264,10 @@ NFT_TEST_TMPDIR="$(mktemp --tmpdir="$_TMPDIR" -d "nft-test.$(date '+%Y%m%d-%H%M%
- 	msg_error "Failure to create temp directory in \"$_TMPDIR\""
- chmod 755 "$NFT_TEST_TMPDIR"
- 
-+NFT_REAL="${NFT_REAL-$NFT}"
-+
- msg_info "conf: NFT=$(printf '%q' "$NFT")"
-+msg_info "conf: NFT_REAL=$(printf '%q' "$NFT_REAL")"
- msg_info "conf: VERBOSE=$(printf '%q' "$VERBOSE")"
- msg_info "conf: DUMPGEN=$(printf '%q' "$DUMPGEN")"
- msg_info "conf: VALGRIND=$(printf '%q' "$VALGRIND")"
-@@ -311,40 +316,8 @@ kernel_cleanup() {
- 	nft_xfrm
+@@ -52,6 +52,7 @@ usage() {
+ 	echo " -R|--without-realroot : Sets NFT_TEST_HAS_REALROOT=n."
+ 	echo " -U|--no-unshare : Sets NFT_TEST_UNSHARE_CMD=\"\"."
+ 	echo " -k|--keep-logs  : Sets NFT_TEST_KEEP_LOGS=y."
++	echo " -s|--sequential : Sets NFT_TEST_JOBS=0, which also enables global cleanups."
+ 	echo " --              : Separate options from tests."
+ 	echo " [TESTS...]      : Other options are treated as test names,"
+ 	echo "                   that is, executables that are run by the runner."
+@@ -89,6 +90,11 @@ usage() {
+ 	echo "                 Test may consider this."
+ 	echo "                 This is only honored when \$NFT_TEST_UNSHARE_CMD= is set. Otherwise it's detected."
+ 	echo " NFT_TEST_KEEP_LOGS=*|y: Keep the temp directory. On success, it will be deleted by default."
++	echo " NFT_TEST_JOBS=<NUM}>: number of jobs for parallel execution. Defaults to \"12\" for parallel run."
++	echo "                 Setting this to \"0\" or \"1\", means to run jobs sequentially."
++	echo "                 Setting this to \"0\" means also to perform global cleanups between tests (remove"
++	echo "                 kernel modules)."
++	echo "                 Parallel jobs requires unshare and are disabled with NFT_TEST_UNSHARE_CMD=\"\"."
+ 	echo " TMPDIR=<PATH> : select a different base directory for the result data."
  }
  
--printscript() { # (cmd, tmpd)
--	cat <<EOF
--#!/bin/bash
--
--CMD="$1"
--
--# note: valgrind man page warns about --log-file with --trace-children, the
--# last child executed overwrites previous reports unless %p or %q is used.
--# Since libtool wrapper calls exec but none of the iptables tools do, this is
--# perfect for us as it effectively hides bash-related errors
--
--valgrind --log-file=$2/valgrind.log --trace-children=yes \
--	 --leak-check=full --show-leak-kinds=all \$CMD "\$@"
--RC=\$?
--
--# don't keep uninteresting logs
--if grep -q 'no leaks are possible' $2/valgrind.log; then
--	rm $2/valgrind.log
--else
--	mv $2/valgrind.log $2/valgrind_\$\$.log
--fi
--
--# drop logs for failing commands for now
--[ \$RC -eq 0 ] || rm $2/valgrind_\$\$.log
--
--exit \$RC
--EOF
--}
--
- if [ "$VALGRIND" == "y" ]; then
--	msg_info "writing valgrind logs to $NFT_TEST_TMPDIR"
--	printscript "$NFT" "$NFT_TEST_TMPDIR" > "$NFT_TEST_TMPDIR/nft"
--	chmod a+x "$NFT_TEST_TMPDIR/nft"
--	NFT="$NFT_TEST_TMPDIR/nft"
-+	NFT="$NFT_TEST_BASEDIR/helpers/nft-valgrind-wrapper.sh"
+@@ -103,6 +109,7 @@ VALGRIND="$(bool_y "$VALGRIND")"
+ KMEMLEAK="$(bool_y "$KMEMLEAK")"
+ NFT_TEST_KEEP_LOGS="$(bool_y "$NFT_TEST_KEEP_LOGS")"
+ NFT_TEST_HAS_REALROOT="$NFT_TEST_HAS_REALROOT"
++NFT_TEST_JOBS="${NFT_TEST_JOBS:-12}"
+ DO_LIST_TESTS=
+ 
+ TESTS=()
+@@ -139,6 +146,9 @@ while [ $# -gt 0 ] ; do
+ 		-U|--no-unshare)
+ 			NFT_TEST_UNSHARE_CMD=
+ 			;;
++		-s|--sequential)
++			NFT_TEST_JOBS=0
++			;;
+ 		--)
+ 			TESTS+=( "$@" )
+ 			shift $#
+@@ -236,6 +246,14 @@ fi
+ # If tests wish, they can know whether they are unshared via this variable.
+ export NFT_TEST_HAS_UNSHARED
+ 
++# normalize the jobs number to be an integer.
++case "$NFT_TEST_JOBS" in
++	''|*[!0-9]*) NFT_TEST_JOBS=12 ;;
++esac
++if [ -z "$NFT_TEST_UNSHARE_CMD" -a "$NFT_TEST_JOBS" -gt 1 ] ; then
++	NFT_TEST_JOBS=1
++fi
++
+ [ -z "$NFT" ] && NFT="$NFT_TEST_BASEDIR/../../src/nft"
+ ${NFT} > /dev/null 2>&1
+ ret=$?
+@@ -243,9 +261,11 @@ if [ ${ret} -eq 126 ] || [ ${ret} -eq 127 ]; then
+ 	msg_error "cannot execute nft command: $NFT"
  fi
  
- echo ""
-@@ -468,7 +441,7 @@ for testfile in "${TESTS[@]}" ; do
- 	export NFT_TEST_TESTTMPDIR
+-MODPROBE="$(which modprobe)"
+-if [ ! -x "$MODPROBE" ] ; then
+-	msg_error "no modprobe binary found"
++if [ "$NFT_TEST_JOBS" -eq 0 ] ; then
++	MODPROBE="$(which modprobe)"
++	if [ ! -x "$MODPROBE" ] ; then
++		msg_error "no modprobe binary found"
++	fi
+ fi
  
- 	print_test_header I "$testfile" "EXECUTING" ""
--	NFT="$NFT" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
+ DIFF="$(which diff)"
+@@ -276,6 +296,7 @@ msg_info "conf: NFT_TEST_HAS_REALROOT=$(printf '%q' "$NFT_TEST_HAS_REALROOT")"
+ msg_info "conf: NFT_TEST_UNSHARE_CMD=$(printf '%q' "$NFT_TEST_UNSHARE_CMD")"
+ msg_info "conf: NFT_TEST_HAS_UNSHARED=$(printf '%q' "$NFT_TEST_HAS_UNSHARED")"
+ msg_info "conf: NFT_TEST_KEEP_LOGS=$(printf '%q' "$NFT_TEST_KEEP_LOGS")"
++msg_info "conf: NFT_TEST_JOBS=$NFT_TEST_JOBS"
+ msg_info "conf: TMPDIR=$(printf '%q' "$_TMPDIR")"
+ 
+ NFT_TEST_LATEST="$_TMPDIR/nft-test.latest.$USER"
+@@ -291,6 +312,11 @@ msg_info "info: NFT_TEST_BASEDIR=$(printf '%q' "$NFT_TEST_BASEDIR")"
+ msg_info "info: NFT_TEST_TMPDIR=$(printf '%q' "$NFT_TEST_TMPDIR")"
+ 
+ kernel_cleanup() {
++	if [ "$NFT_TEST_JOBS" -ne 0 ] ; then
++		# When we run jobs in parallel (even with only one "parallel"
++		# job via `NFT_TEST_JOBS=1`), we skip such global cleanups.
++		return
++	fi
+ 	if [ "$NFT_TEST_HAS_UNSHARED" != y ] ; then
+ 		$NFT flush ruleset
+ 	fi
+@@ -428,28 +454,62 @@ print_test_result() {
+ 	fi
+ }
+ 
++declare -A JOBS_TEMPDIR
++declare -A JOBS_PIDLIST
++
++job_start() {
++	local testfile="$1"
++
++	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
++		print_test_header I "$testfile" "EXECUTING" ""
++	fi
++
++	NFT_TEST_TESTTMPDIR="${JOBS_TEMPDIR["$testfile"]}" \
 +	NFT="$NFT" NFT_REAL="$NFT_REAL" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
- 	rc_got=$?
- 	echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
++	local rc_got=$?
++
++	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
++		echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
++	fi
++
++	return "$rc_got"
++}
++
++job_wait()
++{
++	local num_jobs="$1"
++
++	while [ "$JOBS_N_RUNNING" -gt 0 -a "$JOBS_N_RUNNING" -ge "$num_jobs" ] ; do
++		wait -n -p JOBCOMPLETED
++		local rc_got="$?"
++		testfile2="${JOBS_PIDLIST[$JOBCOMPLETED]}"
++		print_test_result "${JOBS_TEMPDIR["$testfile2"]}" "$testfile2" "$rc_got"
++		((JOBS_N_RUNNING--))
++		check_kmemleak
++	done
++}
++
+ TESTIDX=0
++JOBS_N_RUNNING=0
+ for testfile in "${TESTS[@]}" ; do
++	job_wait "$NFT_TEST_JOBS"
++
+ 	kernel_cleanup
  
+ 	((TESTIDX++))
+ 
+-	# We also create and export a test-specific temporary directory.
+ 	NFT_TEST_TESTTMPDIR="$NFT_TEST_TMPDIR/test-${testfile//\//-}.$TESTIDX"
+ 	mkdir "$NFT_TEST_TESTTMPDIR"
+ 	chmod 755 "$NFT_TEST_TESTTMPDIR"
+-	export NFT_TEST_TESTTMPDIR
+-
+-	print_test_header I "$testfile" "EXECUTING" ""
+-	NFT="$NFT" NFT_REAL="$NFT_REAL" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
+-	rc_got=$?
+-	echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
+-
+-	print_test_result "$NFT_TEST_TESTTMPDIR" "$testfile" "$rc_got"
++	JOBS_TEMPDIR["$testfile"]="$NFT_TEST_TESTTMPDIR"
+ 
+-	check_kmemleak
++	job_start "$testfile" &
++	JOBS_PIDLIST[$!]="$testfile"
++	((JOBS_N_RUNNING++))
+ done
+ 
++job_wait 0
++
+ echo ""
+ 
+ # kmemleak may report suspected leaks
 -- 
 2.41.0
 
