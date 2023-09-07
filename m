@@ -2,29 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B84F797AD7
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Sep 2023 19:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07717797C9F
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Sep 2023 21:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237129AbjIGRw7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 7 Sep 2023 13:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        id S233118AbjIGTTj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 7 Sep 2023 15:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjIGRw4 (ORCPT
+        with ESMTP id S233772AbjIGTTj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:52:56 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BAB22CF
-        for <netfilter-devel@vger.kernel.org>; Thu,  7 Sep 2023 10:52:34 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: nf_tables: disallow rule removal from chain binding
-Date:   Thu,  7 Sep 2023 09:42:12 +0200
-Message-Id: <20230907074212.105544-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 7 Sep 2023 15:19:39 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBFCBC
+        for <netfilter-devel@vger.kernel.org>; Thu,  7 Sep 2023 12:19:33 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1qeCHp-0000Ig-UN; Thu, 07 Sep 2023 12:30:57 +0200
+Date:   Thu, 7 Sep 2023 12:30:57 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH net 6/6] netfilter: nf_tables: Unbreak audit log reset
+Message-ID: <ZPmmYayuzmMPJXqu@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+References: <20230906162525.11079-1-fw@strlen.de>
+ <20230906162525.11079-7-fw@strlen.de>
+ <ZPjyB48c+y6P9MOZ@orbyte.nwl.cc>
+ <ZPkAIUSuc0lZl3yu@strlen.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPkAIUSuc0lZl3yu@strlen.de>
 X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -32,84 +53,23 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Chain binding only requires the rule addition/insertion command within
-the same transaction. Removal of rules from chain bindings within the
-same transaction makes no sense, userspace does not utilize this
-feature. Replace nft_chain_is_bound() check to nft_chain_binding() in
-rule deletion commands.
+On Thu, Sep 07, 2023 at 12:41:37AM +0200, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > On Wed, Sep 06, 2023 at 06:25:12PM +0200, Florian Westphal wrote:
+> > > From: Pablo Neira Ayuso <pablo@netfilter.org>
+> > > 
+> > > Deliver audit log from __nf_tables_dump_rules(), table dereference at
+> > > the end of the table list loop might point to the list head, leading to
+> > > this crash.
+> > 
+> > There are a few issues with this patch, can we please drop it from this
+> > MR for now?
+> 
+> If this were a change that *adds* a kernel crash, then, sure.
+> But this fixes a crash, so I see no reason to keep it back.
+> 
+> Please do an incremental followup instead.
 
-Rule flush command can also safely rely on this nft_chain_binding()
-check because unbound chains are not allowed since 62e1e94b246e
-("netfilter: nf_tables: reject unbound chain set before commit phase").
+ACK, I'll do that instead.
 
-Fixes: d0e2c7de92c7 ("netfilter: nf_tables: add NFT_CHAIN_BINDING")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-Supersedes:
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230906221219.1378-1-pablo@netfilter.org/
-
- net/netfilter/nf_tables_api.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4696be5615d3..4d75d9174885 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1432,7 +1432,7 @@ static int nft_flush_table(struct nft_ctx *ctx)
- 		if (!nft_is_active_next(ctx->net, chain))
- 			continue;
- 
--		if (nft_chain_is_bound(chain))
-+		if (nft_chain_binding(chain))
- 			continue;
- 
- 		ctx->chain = chain;
-@@ -1477,7 +1477,7 @@ static int nft_flush_table(struct nft_ctx *ctx)
- 		if (!nft_is_active_next(ctx->net, chain))
- 			continue;
- 
--		if (nft_chain_is_bound(chain))
-+		if (nft_chain_binding(chain))
- 			continue;
- 
- 		ctx->chain = chain;
-@@ -2910,6 +2910,9 @@ static int nf_tables_delchain(struct sk_buff *skb, const struct nfnl_info *info,
- 		return PTR_ERR(chain);
- 	}
- 
-+	if (nft_chain_binding(chain))
-+		return -EOPNOTSUPP;
-+
- 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, chain, nla);
- 
- 	if (nla[NFTA_CHAIN_HOOK]) {
-@@ -4078,7 +4081,7 @@ static int nf_tables_delrule(struct sk_buff *skb, const struct nfnl_info *info,
- 			NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_CHAIN]);
- 			return PTR_ERR(chain);
- 		}
--		if (nft_chain_is_bound(chain))
-+		if (nft_chain_binding(chain))
- 			return -EOPNOTSUPP;
- 	}
- 
-@@ -4112,7 +4115,7 @@ static int nf_tables_delrule(struct sk_buff *skb, const struct nfnl_info *info,
- 		list_for_each_entry(chain, &table->chains, list) {
- 			if (!nft_is_active_next(net, chain))
- 				continue;
--			if (nft_chain_is_bound(chain))
-+			if (nft_chain_binding(chain))
- 				continue;
- 
- 			ctx.chain = chain;
-@@ -11070,7 +11073,7 @@ static void __nft_release_table(struct net *net, struct nft_table *table)
- 	ctx.family = table->family;
- 	ctx.table = table;
- 	list_for_each_entry(chain, &table->chains, list) {
--		if (nft_chain_is_bound(chain))
-+		if (nft_chain_binding(chain))
- 			continue;
- 
- 		ctx.chain = chain;
--- 
-2.30.2
-
+Thanks, Phil
