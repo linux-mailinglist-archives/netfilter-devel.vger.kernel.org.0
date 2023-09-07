@@ -2,100 +2,115 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C1D797C2D
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Sep 2023 20:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66723797DB7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Sep 2023 23:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344277AbjIGSon (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 7 Sep 2023 14:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
+        id S239307AbjIGVHB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 7 Sep 2023 17:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344279AbjIGSom (ORCPT
+        with ESMTP id S236624AbjIGVHA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:44:42 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4FA132;
-        Thu,  7 Sep 2023 11:44:37 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qeJzS-0001hz-Iq; Thu, 07 Sep 2023 20:44:30 +0200
-Date:   Thu, 7 Sep 2023 20:44:30 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     David Wang <00107082@163.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
- definition from macro to enum
-Message-ID: <20230907184430.GF20947@breakpoint.cc>
-References: <20230904130201.14632-1-00107082@163.com>
- <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
- <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
+        Thu, 7 Sep 2023 17:07:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88BC1BCA
+        for <netfilter-devel@vger.kernel.org>; Thu,  7 Sep 2023 14:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694120771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MZIIm7kJnzJEFLvPMdN+mrkjJ1Kri6ODax67BC6tRr0=;
+        b=e8c1ez6iN5HHov/Grx+1xtm+w9C+4fw/o7R1ntGvn23GU0U5oDMgjQYDX+wqtHBMm5AOZ8
+        kOzoZ60mDu0WE19qeeI6ux6My7U+F6DzVTEFRGE+sD2czECJXV5EbSY+qVqu7EgfMwYUbG
+        /1GDO7gbUCNQrSqFIktx6TRb+qoxoS4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-90-7t-jNLq_Ngup6Xsm61Ik4w-1; Thu, 07 Sep 2023 17:06:09 -0400
+X-MC-Unique: 7t-jNLq_Ngup6Xsm61Ik4w-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 494D185651F
+        for <netfilter-devel@vger.kernel.org>; Thu,  7 Sep 2023 21:06:09 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B6A994060E1;
+        Thu,  7 Sep 2023 21:06:08 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft 1/2] tests/shell: honor .nodump file for tests without nft dumps
+Date:   Thu,  7 Sep 2023 23:05:54 +0200
+Message-ID: <20230907210558.2410789-1-thaller@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-David Wang <00107082@163.com> wrote:
-> At 2023-09-06 00:38:02, "Daniel Xu" <dxu@dxuuu.xyz> wrote:
-> >Hi David,
-> >
-> >On Mon, Sep 04, 2023 at 09:02:02PM +0800, David Wang wrote:
-> 
-> >>  #include <linux/in6.h>
-> >>  
-> >>  /* Responses from hook functions. */
-> >> -#define NF_DROP 0
-> >> -#define NF_ACCEPT 1
-> >> -#define NF_STOLEN 2
-> >> -#define NF_QUEUE 3
-> >> -#define NF_REPEAT 4
-> >> -#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
-> >> -#define NF_MAX_VERDICT NF_STOP
-> >> +enum {
-> >> +	NF_DROP        = 0,
-> >> +	NF_ACCEPT      = 1,
-> >> +	NF_STOLEN      = 2,
-> >> +	NF_QUEUE       = 3,
-> >> +	NF_REPEAT      = 4,
-> >> +	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
-> >> +	NF_MAX_VERDICT = NF_STOP,
-> >> +};
-> >
-> >Switching from macro to enum works for almost all use cases, but not
-> >all. If someone if #ifdefing the symbols (which is plausible) this
-> >change would break them.
-> >
-> >I think I've seen some other networking code define both enums and
-> >macros. But it was a little ugly. Not sure if that is acceptable here or
-> >not.
-> >
-> >[...]
-> >
-> >Thanks,
-> >Daniel
-> 
-> 
-> Thanks for the review~
-> I do not have a strong reasoning to deny the possibility of breaking unexpected usage of this macros,
-> 
-> but I also agree that it is ugly to use both enum and macro at the same time.
-> 
-> Kind of don't know how to proceed from here now...
+For many tests, the dump is not stable or useful to test. Those tests
+don't have a .nft file in the dumps directory, and don't have it
+checked.
 
-I don't see anyone doing #ifdef tests on these, so I suggest we
-give your patch a try and see if anything breaks.
+DUMPGEN=y generates a new dump file, if the "dumps/" directory exists.
+Omitting that directory is a way to prevent the generation of the file.
+However, many such tests share their directory with tests that do have dumps.
 
-Technically only ACCEPT and DROP can be used by bpf
-programs but splitting it in
-enum-for-accept-drop-and-define-for-the-rest looks even more silly.
+When running tests with DUMPGEN=y, a lot of new files get generated.
+Those files are not meant to be compared or committed to git.
+
+Whether a test has a dump file, is part of the test. The absence of the
+dump file should also be indicated and committed to git.
+
+Add a way to opt-out from such generating such dumps by having .nodump
+files instead of the .nft dump.
+
+Later we should add unit tests that checks that no test has both a .nft
+and a .nodump file in git, that the .nodump file is always empty, and
+that every .nft/.nodump file has a corresponding test committed to git.
+
+Signed-off-by: Thomas Haller <thaller@redhat.com>
+---
+ tests/shell/helpers/test-wrapper.sh | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/tests/shell/helpers/test-wrapper.sh b/tests/shell/helpers/test-wrapper.sh
+index 43b3aa09ef26..006ead554aeb 100755
+--- a/tests/shell/helpers/test-wrapper.sh
++++ b/tests/shell/helpers/test-wrapper.sh
+@@ -49,6 +49,7 @@ read tainted_after < /proc/sys/kernel/tainted
+ 
+ DUMPPATH="$TESTDIR/dumps"
+ DUMPFILE="$DUMPPATH/$TESTBASE.nft"
++NODUMPFILE="$DUMPPATH/$TESTBASE.nodump"
+ 
+ dump_written=
+ rc_dump=
+@@ -60,9 +61,14 @@ rc_dump=
+ #
+ # It also will only happen for tests, that have a "$DUMPPATH" directory. There
+ # might be tests, that don't want to have dumps created. The existence of the
+-# directory controls that.
+-if [ "$rc_test" -eq 0 -a "$DUMPGEN" = y -a -d "$DUMPPATH" ] ; then
++# directory controls that. Tests that have a "$NODUMPFILE" file, don't get a dump generated.
++if [ "$rc_test" -eq 0 -a "$DUMPGEN" = y -a -d "$DUMPPATH" -a ! -f "$NODUMPFILE" ] ; then
+ 	dump_written=y
++	if [ ! -f "$DUMPFILE" ] ; then
++		# No dumpfile exists yet. We generate both a .nft and a .nodump
++		# file. The user can pick which one to commit to git.
++		: > "$NODUMPFILE"
++	fi
+ 	cat "$NFT_TEST_TESTTMPDIR/ruleset-after" > "$DUMPFILE"
+ fi
+ 
+-- 
+2.41.0
+
