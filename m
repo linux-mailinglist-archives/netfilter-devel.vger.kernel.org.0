@@ -2,50 +2,51 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07717797C9F
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Sep 2023 21:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AD0797B97
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Sep 2023 20:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbjIGTTj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 7 Sep 2023 15:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        id S1343916AbjIGSWL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 7 Sep 2023 14:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbjIGTTj (ORCPT
+        with ESMTP id S1343829AbjIGSWD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 7 Sep 2023 15:19:39 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBFCBC
-        for <netfilter-devel@vger.kernel.org>; Thu,  7 Sep 2023 12:19:33 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qeCHp-0000Ig-UN; Thu, 07 Sep 2023 12:30:57 +0200
-Date:   Thu, 7 Sep 2023 12:30:57 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH net 6/6] netfilter: nf_tables: Unbreak audit log reset
-Message-ID: <ZPmmYayuzmMPJXqu@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20230906162525.11079-1-fw@strlen.de>
- <20230906162525.11079-7-fw@strlen.de>
- <ZPjyB48c+y6P9MOZ@orbyte.nwl.cc>
- <ZPkAIUSuc0lZl3yu@strlen.de>
+        Thu, 7 Sep 2023 14:22:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B7FB9
+        for <netfilter-devel@vger.kernel.org>; Thu,  7 Sep 2023 11:21:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6F010C4163C;
+        Thu,  7 Sep 2023 10:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694083223;
+        bh=21RQWXpD02TqS/zvxOy7m9s2aew4LtFlQ1gyV19ttEY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IgNs5oYqwpwZb5e1uUlRRGApxXIAGIG4DNJsaCoJPBaW7Ix/P0ZCaTizkeX7ZccBi
+         bxQ2DmkK+mEW+6/csnDtJ+4zooo35ZQk8m6ZKoamNtsaCL3P/y6NVdIO/dPELyPdxj
+         Wy0EJezKcTPCgzIShSwq3ba+bRzCyZIQj6pwgbpHDHwRtyUpq6XVCKMIM3kllJ4Nas
+         ge2xSwmYET9NkkDs/uOJj6MfNgIHZ0tqycGFcFfZtzkL8+bORPzuznASzkMRePAdyq
+         Ax84thvbTI3tvALaUzvi0XdhkcABrKnCTApejz8louYLtZvZtxDlYEr0OBZIdBxlQw
+         MQNXP0akxImMQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 551C5C4166F;
+        Thu,  7 Sep 2023 10:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPkAIUSuc0lZl3yu@strlen.de>
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/6] netfilter: nftables: exthdr: fix 4-byte stack OOB
+ write
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169408322334.9013.1006951814262380531.git-patchwork-notify@kernel.org>
+Date:   Thu, 07 Sep 2023 10:40:23 +0000
+References: <20230906162525.11079-2-fw@strlen.de>
+In-Reply-To: <20230906162525.11079-2-fw@strlen.de>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,23 +54,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 12:41:37AM +0200, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > On Wed, Sep 06, 2023 at 06:25:12PM +0200, Florian Westphal wrote:
-> > > From: Pablo Neira Ayuso <pablo@netfilter.org>
-> > > 
-> > > Deliver audit log from __nf_tables_dump_rules(), table dereference at
-> > > the end of the table list loop might point to the list head, leading to
-> > > this crash.
-> > 
-> > There are a few issues with this patch, can we please drop it from this
-> > MR for now?
-> 
-> If this were a change that *adds* a kernel crash, then, sure.
-> But this fixes a crash, so I see no reason to keep it back.
-> 
-> Please do an incremental followup instead.
+Hello:
 
-ACK, I'll do that instead.
+This series was applied to netdev/net.git (main)
+by Florian Westphal <fw@strlen.de>:
 
-Thanks, Phil
+On Wed,  6 Sep 2023 18:25:07 +0200 you wrote:
+> If priv->len is a multiple of 4, then dst[len / 4] can write past
+> the destination array which leads to stack corruption.
+> 
+> This construct is necessary to clean the remainder of the register
+> in case ->len is NOT a multiple of the register size, so make it
+> conditional just like nft_payload.c does.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/6] netfilter: nftables: exthdr: fix 4-byte stack OOB write
+    https://git.kernel.org/netdev/net/c/fd94d9dadee5
+  - [net,2/6] netfilter: nfnetlink_osf: avoid OOB read
+    https://git.kernel.org/netdev/net/c/f4f8a7803119
+  - [net,3/6] netfilter: nf_tables: uapi: Describe NFTA_RULE_CHAIN_ID
+    https://git.kernel.org/netdev/net/c/fdc04cc2d5fd
+  - [net,4/6] netfilter: nft_set_rbtree: skip sync GC for new elements in this transaction
+    https://git.kernel.org/netdev/net/c/2ee52ae94baa
+  - [net,5/6] netfilter: ipset: add the missing IP_SET_HASH_WITH_NET0 macro for ip_set_hash_netportnet.c
+    https://git.kernel.org/netdev/net/c/050d91c03b28
+  - [net,6/6] netfilter: nf_tables: Unbreak audit log reset
+    https://git.kernel.org/netdev/net/c/9b5ba5c9c510
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
