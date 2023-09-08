@@ -2,31 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1ED798CBC
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Sep 2023 20:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72F8798ED9
+	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Sep 2023 21:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343947AbjIHSSH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 8 Sep 2023 14:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
+        id S1344440AbjIHTMd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 8 Sep 2023 15:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343810AbjIHSR4 (ORCPT
+        with ESMTP id S244751AbjIHTMY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:17:56 -0400
+        Fri, 8 Sep 2023 15:12:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04821FEF;
-        Fri,  8 Sep 2023 11:17:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23B60C116B6;
-        Fri,  8 Sep 2023 18:15:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAEAE43;
+        Fri,  8 Sep 2023 12:12:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFDDC32778;
+        Fri,  8 Sep 2023 18:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196905;
+        s=k20201202; t=1694197036;
         bh=liMbP5RMQjvARMjT61+20zvhPE+McbXIwRmdFix/leU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cR1e03UwHfaGWs6YxtdZORwS5+JFhjqGHQJ694DDTGfvk3BFYtY6MxxwD/wELK1P2
-         ofDonRqihP/z1+RHCR461O6jC8gBN7h9h01g7ZJVXssRsbiM96Ymd2OWagedKd8zYM
-         PS64jtW9ciKW6YwREhhvF8ytISVTWDIrtqDUZz96AJHuC8hM3OqiDHupobwxVn8n1F
-         WBIUb1WU5uXv3T2+HzJqRcc31OVKmmAJPs2lg1shxlHxgQyXrW9u8Iq5vOokFiU/UY
-         iH7IjJ6bnvPrhFprsgDQJSDisShuNhcR0iqBKTVeaCtD/B1gsy+XuzBdjOYO9njKzY
-         bQcFB3EmvV9zw==
+        b=KShTskjBSEmHNHrVnu90QULPrg5EIsel2UXzzyfZjMKSA5CA3XN661LFfPsUict/5
+         yis3u2+gekFo8iaoKCWnqhxxDMTYUmRz6YunVmKD6nIy/Pjy0EujYdyibBfZ8PUTU7
+         INCLaxBVzZFQXjbdLFYcxjEt1SSOysjlUiGZHENiTFZ/okAVhUenSRdGdS4iLWyHxu
+         0d3aBC3yj//H6G/otagM7OjhXP85RJO2k7FNXhU8IAUIuIkiUiKSG2VVt7iO9C44X9
+         aak4P+WCNvngeKMzCSBAmYkmfP+eXmmQD+bNo2aQNhVNOf3XpzogasHildHJrRTF/h
+         nAM8hIrB9Bd5g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
@@ -39,17 +39,17 @@ Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
         pabeni@redhat.com, netfilter-devel@vger.kernel.org,
         coreteam@netfilter.org, bridge@lists.linux-foundation.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 33/45] netfilter: ebtables: fix fortify warnings in size_entry_mwt()
-Date:   Fri,  8 Sep 2023 14:13:14 -0400
-Message-Id: <20230908181327.3459042-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 30/41] netfilter: ebtables: fix fortify warnings in size_entry_mwt()
+Date:   Fri,  8 Sep 2023 14:15:44 -0400
+Message-Id: <20230908181555.3459640-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
-References: <20230908181327.3459042-1-sashal@kernel.org>
+In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
+References: <20230908181555.3459640-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
