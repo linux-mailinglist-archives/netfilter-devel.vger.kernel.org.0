@@ -2,31 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73811798DB3
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Sep 2023 20:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEF2798EEB
+	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Sep 2023 21:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240546AbjIHSXq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 8 Sep 2023 14:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
+        id S236650AbjIHTRV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 8 Sep 2023 15:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344480AbjIHSWu (ORCPT
+        with ESMTP id S231321AbjIHTRU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:22:50 -0400
+        Fri, 8 Sep 2023 15:17:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FD43A88;
-        Fri,  8 Sep 2023 11:19:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75814C433BF;
-        Fri,  8 Sep 2023 18:19:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C5CA9;
+        Fri,  8 Sep 2023 12:17:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C257EC43142;
+        Fri,  8 Sep 2023 18:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197196;
-        bh=X0jbyBkErnFvtcxeoHao+vqypF8h09Ocizozo+uSAzc=;
+        s=k20201202; t=1694197240;
+        bh=/H9l6lorHQfgkgSlQnFmbCyvnxmwEZQEYDSD2f3FJkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RlFsnLGZnnZ6fXcfCM+YY2cFo3mmmmcLL6Sk0r1LMjLdP5itePkpDpq1zXRrqQFPI
-         fnm14HX2r6xv0lvW2hhYPQ0TkX44x3loaZ7LydpRcyQoXl0QHRInbCxMgjmBn2i4sc
-         I2sNLYhMm3JMlPd3/Msb4o2gSNFZrMuSQkvYW5XiL79ykK7Gl+qcmR1dq/O43EurVN
-         eMRMFlpt04gOmJ21wWFiarUKJ8lu+3q1Z1yDPWJZfdpDJoWn0bnHp6F7fcl+nEhYeQ
-         rMw7c0Ca9MDPwA05fJs3KdEjv+k4Q3ffx7koYu6vwx1EwIPsAv1G6sePvvC9pdAhrO
-         9vTmZQ9j/1cdw==
+        b=okrbgLvpCTlKGACMYUj2Hap7uBniVM2drANkWTp7LIYTjldJ7SK64x6u1Yhl8DAAt
+         yWrlw4Ddi9fCy/VzC87l3e6ewsOD7LFxC0arD7JnIXdNKWIAWnIBH63cQDTzqNFXLF
+         mM7s5ys0A8rpWSShwaKBMApfaH9q9utcUlTEUx4XrHCm6cT2KUmPGHGh6gH3aXqYso
+         Rg5WCOnj7Osop40lOBeUHlwzZUTwRRsGwSIqNjU5DgAZuVcu/rgpiuSJwZKSuSkBzd
+         Qe6YVdN4piErgxLblFozc0KwsV8R57UfG4wXwuAlhaaZXn58olWxfNpT/0I4314NWl
+         bOuJo8EnA37Bg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
@@ -39,17 +39,17 @@ Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
         pabeni@redhat.com, netfilter-devel@vger.kernel.org,
         coreteam@netfilter.org, bridge@lists.linux-foundation.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 12/15] netfilter: ebtables: fix fortify warnings in size_entry_mwt()
-Date:   Fri,  8 Sep 2023 14:19:15 -0400
-Message-Id: <20230908181920.3460520-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 11/14] netfilter: ebtables: fix fortify warnings in size_entry_mwt()
+Date:   Fri,  8 Sep 2023 14:19:58 -0400
+Message-Id: <20230908182003.3460721-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908181920.3460520-1-sashal@kernel.org>
-References: <20230908181920.3460520-1-sashal@kernel.org>
+In-Reply-To: <20230908182003.3460721-1-sashal@kernel.org>
+References: <20230908182003.3460721-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.131
+X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -120,10 +120,10 @@ index a494cf43a7552..b0caad82b6937 100644
  };
  
 diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index a09b2fc11c80e..c0389199c0dcb 100644
+index 8335b7e4bcf6f..bab14186f9ad5 100644
 --- a/net/bridge/netfilter/ebtables.c
 +++ b/net/bridge/netfilter/ebtables.c
-@@ -2114,8 +2114,7 @@ static int size_entry_mwt(const struct ebt_entry *entry, const unsigned char *ba
+@@ -2001,8 +2001,7 @@ static int size_entry_mwt(const struct ebt_entry *entry, const unsigned char *ba
  		return ret;
  
  	offsets[0] = sizeof(struct ebt_entry); /* matches come first */
