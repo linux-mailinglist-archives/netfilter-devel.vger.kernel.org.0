@@ -2,114 +2,121 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 689FF798964
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Sep 2023 16:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255237989AB
+	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Sep 2023 17:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237187AbjIHO7d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 8 Sep 2023 10:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
+        id S238645AbjIHPOb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 8 Sep 2023 11:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjIHO73 (ORCPT
+        with ESMTP id S244378AbjIHPOa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:59:29 -0400
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240961BF9;
-        Fri,  8 Sep 2023 07:59:25 -0700 (PDT)
-Received: from [78.30.34.192] (port=41710 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qecx6-00AVHA-Hv; Fri, 08 Sep 2023 16:59:23 +0200
-Date:   Fri, 8 Sep 2023 16:59:19 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, audit@vger.kernel.org
-Subject: Re: [nf PATCH v2] netfilter: nf_tables: Fix entries val in rule
- reset audit log
-Message-ID: <ZPs2x/HchrNwSYTC@calendula>
-References: <20230908081033.30806-1-phil@nwl.cc>
- <ZPspHp8JTF8I214i@calendula>
- <ZPsy2edp9OAhPKjQ@orbyte.nwl.cc>
+        Fri, 8 Sep 2023 11:14:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFEF1BFF
+        for <netfilter-devel@vger.kernel.org>; Fri,  8 Sep 2023 08:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694186018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=03RAaNPum9wqQwKX1Qo2cGRN9nzU+fCaA4wLyZAXbPo=;
+        b=EnaGOftqmTefosEozm3ZMh6YZW0Mbr4yYsytQds+pQ7rGGyikqoGwINdg3RzzUCKSjGXJP
+        5b4eKBF5pN5CAkkxnXxyIEkenp0WVxu4rvZiOIuGwSMWxYqD4RJxV7dwMXxpExDuQBQ1fQ
+        e8DfZcCCbT4nfN8rQaRKGATzmKazsFU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-511-qaI0Hc-CM_KvN_67qPEgqA-1; Fri, 08 Sep 2023 11:13:35 -0400
+X-MC-Unique: qaI0Hc-CM_KvN_67qPEgqA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C575D856DED;
+        Fri,  8 Sep 2023 15:13:34 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1EE18493110;
+        Fri,  8 Sep 2023 15:13:33 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft 0/2] tests/shell: add mechanism for skipping (for no JSON and slow)
+Date:   Fri,  8 Sep 2023 17:07:23 +0200
+Message-ID: <20230908151323.1161159-1-thaller@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZPsy2edp9OAhPKjQ@orbyte.nwl.cc>
-X-Spam-Score: -1.9 (-)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 04:42:33PM +0200, Phil Sutter wrote:
-> On Fri, Sep 08, 2023 at 04:01:02PM +0200, Pablo Neira Ayuso wrote:
-> > Hi Phil,
-> > 
-> > On Fri, Sep 08, 2023 at 10:10:33AM +0200, Phil Sutter wrote:
-> > > The value in idx and the number of rules handled in that particular
-> > > __nf_tables_dump_rules() call is not identical. The former is a cursor
-> > > to pick up from if multiple netlink messages are needed, so its value is
-> > > ever increasing.
-> > 
-> > My (buggy) intention was to display this audit log once per chain, at
-> > the end of the chain dump.
-> 
-> Ah, I wasn't aware you did that on purpose.
-> 
-> > > Fixing this is not just a matter of subtracting s_idx
-> > > from it, though: When resetting rules in multiple chains,
-> > > __nf_tables_dump_rules() is called for each and cb->args[0] is not
-> > > adjusted in between.
-> > > 
-> > > The audit notification in __nf_tables_dump_rules() had another problem:
-> > > If nf_tables_fill_rule_info() failed (e.g. due to buffer exhaustion), no
-> > > notification was sent - despite the rules having been reset already.
-> > 
-> > Hm. that should not happen, when nf_tables_fill_rule_info() fails,
-> > that means buffer is full and userspace will invoke recvmsg() again.
-> > The next buffer resumes from the last entry that could not fit into
-> > the buffer.
-> 
-> I didn't explicitly test for this case, but __nf_tables_dump_rules()
-> calls nf_tables_fill_rule_info() in a loop for reach rule. If it fails,
-> the function immediately returns 1 without calling
-> audit_log_rule_reset(). So while the last (failing) rule dump/reset will
-> be repeated after the detour to user space, the preceding rules
-> successfully dumped/reset slip through.
+Add a mechanism to skip tests. Two cases are implemented:
 
-I see, note that "failing" in this case means, "dump is still in
-progress" and "userspace will invoke recvmsg() again to resume from
-where we stopped.
+- skip thest that require JSON support, if nft binary is build without.
 
-> > > To catch all the above and return to a single (if possible) notification
-> > > per table again, move audit logging back into the caller but into the
-> > > table loop instead of past it to avoid the potential null-pointer
-> > > deref.
-> > > 
-> > > This requires to trigger the notification in two spots. Care has to be
-> > > taken in the second case as cb->args[0] is also not updated in between
-> > > tables. This requires a helper variable as either it is the first table
-> > > (with potential non-zero cb->args[0] cursor) or a consecutive one (with
-> > > idx holding the current cursor already).
-> > 
-> > Your intention is to trigger one single audit log per table, right?
-> > Did you test a chain with a large ruleset that needs several buffers
-> > to be delivered to userspace in the netlink dump?
-> 
-> Yes, see the last part in the proposed kselftest[1]: Resetting rules in
-> a chain with 503 rules causes three notifications to be sent, for 189,
-> 188 and 126 rules each.
-> 
-> > I would be inclined to do this once per-chain, so this can be extended
-> > later on to display the chain. Yes, that means this will send one
-> > audit log per chain, but this is where follow up updates will go?
-> 
-> If you prefer that, no problem. I'll prepare a v3 then.
+- the user can choose to skip long-running tests via the (-Q|--quick) option.
+  Most tests are fast, so by skipping 8 of 373 tests, I can run the
+  test suite in 7 seconds.
 
-If patch is smaller and we agree that chains are useful to be in the
-audit log (in follow up updates), then I'd suggest to go for a v3, yes.
+This is inspired and related to Florian's "feature probing" patchset.
+And done with the intent, that those patches could integrate in a
+common mechanism. Florian's patches are NOT obsoleted by this
+(although, they would require rebase/adjustment).
 
-Thanks.
+Changes/notes compared to Florian's approach:
+
+- Florian's patchset mostly called the variable NFT_HAVE_xxx (although,
+  the commit message also called it NFT_TEST_HAVE_xxx). I choose
+  NFT_TEST_HAVE_* name to make it clear that the environment variables are
+  related to the tests.
+
+- The evalution of NFT_TEST_HAVE_json=y|n is hard coded in "run-test.sh"
+  because it seems special enough. But we certainly can combine that with
+  the generic mechanism to load features from the "features/" directory.
+
+- NFT_TEST_HAVE_xxx can also be set by the user. That overrides the
+  feature detection. The point is to force the detection for manual
+  testing.
+
+- let "test-wrapper.sh" can parse tags like
+
+    # NFT_TEST_REQUIRES(NFT_TEST_HAVE_json)
+    # NFT_TEST_SKIP(NFT_TEST_SKIP_slow)
+
+  to simplify marking tests with the skip/requires option.
+
+Thomas Haller (2):
+  tests/shell: skip tests if nft does not support JSON mode
+  tests/shell: add "--quick" option to skip slow tests (via
+    NFT_TEST_SKIP_slow=y)
+
+ tests/shell/helpers/test-wrapper.sh           | 51 ++++++++++++++++-
+ tests/shell/run-tests.sh                      | 56 ++++++++++++++++++-
+ .../shell/testcases/json/0001set_statements_0 |  2 +
+ tests/shell/testcases/json/0002table_map_0    |  2 +
+ .../testcases/json/0003json_schema_version_0  |  2 +
+ .../testcases/json/0004json_schema_version_1  |  2 +
+ .../shell/testcases/json/0005secmark_objref_0 |  2 +
+ tests/shell/testcases/json/0006obj_comment_0  |  2 +
+ tests/shell/testcases/json/netdev             |  9 ++-
+ .../listing/0021ruleset_json_terse_0          | 13 ++++-
+ .../maps/0004interval_map_create_once_0       |  8 +++
+ .../testcases/maps/0018map_leak_timeout_0     |  2 +
+ tests/shell/testcases/maps/vmap_timeout       |  2 +
+ .../testcases/sets/0043concatenated_ranges_0  |  2 +
+ .../testcases/sets/0044interval_overlap_0     |  2 +
+ .../testcases/sets/0044interval_overlap_1     |  2 +
+ tests/shell/testcases/sets/automerge_0        |  2 +
+ tests/shell/testcases/transactions/0049huge_0 | 14 ++++-
+ tests/shell/testcases/transactions/30s-stress |  2 +
+ 19 files changed, 168 insertions(+), 9 deletions(-)
+
+-- 
+2.41.0
+
