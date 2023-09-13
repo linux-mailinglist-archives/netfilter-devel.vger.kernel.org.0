@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEF779EFEE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Sep 2023 19:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DFF79EFE3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Sep 2023 19:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbjIMRH7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 13 Sep 2023 13:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S231511AbjIMRIL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 13 Sep 2023 13:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjIMRHs (ORCPT
+        with ESMTP id S231303AbjIMRH4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:07:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1889619BF
-        for <netfilter-devel@vger.kernel.org>; Wed, 13 Sep 2023 10:07:07 -0700 (PDT)
+        Wed, 13 Sep 2023 13:07:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C4DC1BC3
+        for <netfilter-devel@vger.kernel.org>; Wed, 13 Sep 2023 10:07:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694624826;
+        s=mimecast20190719; t=1694624827;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nbgsravjMRQJrHA9O6u2Vz9+5HrMqDGOb95E0774IXs=;
-        b=QJR+DwUIqQek1v8Fkj2Ufs8yQRSVITVrPPjEe139tsXiZboSUsmVsUdjKB8Geq5Ff2SrWF
-        lXMUWOBnxRld5GGSFksoISYJpRePOURVX3dvr9sgVmaNVshF9CccGjllX3Nruy7/Gd0eXH
-        7ey9+SbNNH5dPQr02Z7V5vo813/VngQ=
+        bh=2T7VFAmM/quqKm6Za4kHtKgULpoOWD4R2z1FsfOnznY=;
+        b=Rv9i2Q8tOLSXc6aG90j8rS0FuCkTks/wgTthHjyVkINWin73OTqqmHPpf+Ou+qv2LsGYaI
+        jGLhPPdllcC8TAaubF+ejE7kWFLrHYq4o2r8IvvB0I30AScP/+XZD3npiBJCjyoFRNNFBx
+        oF82IxrhBJH5L84rPq5ymoaDtRQtcb8=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-313-vttAvmbiPn-aaCJe9086Kg-1; Wed, 13 Sep 2023 13:07:04 -0400
-X-MC-Unique: vttAvmbiPn-aaCJe9086Kg-1
+ us-mta-588-6o3L84jFPuaJq3yk_YPy5A-1; Wed, 13 Sep 2023 13:07:04 -0400
+X-MC-Unique: 6o3L84jFPuaJq3yk_YPy5A-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A51621875045
-        for <netfilter-devel@vger.kernel.org>; Wed, 13 Sep 2023 17:07:03 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D091803470
+        for <netfilter-devel@vger.kernel.org>; Wed, 13 Sep 2023 17:07:04 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23D5A40C6EA8;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E04FB40C6EA8;
         Wed, 13 Sep 2023 17:07:03 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 4/6] tests/shell: special handle base path starting with "./"
-Date:   Wed, 13 Sep 2023 19:05:07 +0200
-Message-ID: <20230913170649.439394-5-thaller@redhat.com>
+Subject: [PATCH nft 5/6] tests/shell: in find_tests() use C locale for sorting tests names
+Date:   Wed, 13 Sep 2023 19:05:08 +0200
+Message-ID: <20230913170649.439394-6-thaller@redhat.com>
 In-Reply-To: <20230913170649.439394-1-thaller@redhat.com>
 References: <20230913170649.439394-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -53,39 +53,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When we auto detect the tests with `tests/shell/run-tests.sh -L`, then
-commonly the NFT_TEST_BASEDIR starts with a redundant "./". That's a bit
-ugly.
-
-Instead, special handle that case and remove the prefix. The effect is
-that `tests/shell/run-tests.sh -L` shows
-
-  tests/shell/testcases/bitwise/0040mark_binop_0
-
-instead of
-
-  ./tests/shell/testcases/bitwise/0040mark_binop_0
+It makes more sense, that the sort order does not depend on the user's
+locale.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/run-tests.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tests/shell/run-tests.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
-index f20a2bec9e9b..dae775bdf3dd 100755
+index dae775bdf3dd..bdca0ee1fa0b 100755
 --- a/tests/shell/run-tests.sh
 +++ b/tests/shell/run-tests.sh
-@@ -267,7 +267,9 @@ find_tests() {
+@@ -263,7 +263,7 @@ while [ $# -gt 0 ] ; do
+ done
+ 
+ find_tests() {
+-	find "$1" -type f -executable | sort
++	find "$1" -type f -executable | LANG=C sort
  }
  
  if [ "${#TESTS[@]}" -eq 0 ] ; then
--	TESTS=( $(find_tests "$NFT_TEST_BASEDIR/testcases/") )
-+	d="$NFT_TEST_BASEDIR/testcases/"
-+	d="${d#./}"
-+	TESTS=( $(find_tests "$d") )
- 	test "${#TESTS[@]}" -gt 0 || msg_error "Could not find tests"
- fi
- 
 -- 
 2.41.0
 
