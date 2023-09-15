@@ -2,121 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3DB7A1FB0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Sep 2023 15:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4368D7A2285
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Sep 2023 17:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235229AbjIONUa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 15 Sep 2023 09:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S230424AbjIOPgo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 15 Sep 2023 11:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235214AbjIONUa (ORCPT
+        with ESMTP id S236141AbjIOPgR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 15 Sep 2023 09:20:30 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691571713
-        for <netfilter-devel@vger.kernel.org>; Fri, 15 Sep 2023 06:20:25 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1qh8kC-0003bn-1k; Fri, 15 Sep 2023 15:20:24 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>,
-        "Lee, Cherie-Anne" <cherie.lee@starlabs.sg>,
-        Bing-Jhong Billy Jheng <billy@starlabs.sg>, info@starlabs.sg
-Subject: [PATCH nft] tests: add test for dormant on/off/on bug
-Date:   Fri, 15 Sep 2023 15:20:05 +0200
-Message-ID: <20230915132014.37025-1-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
+        Fri, 15 Sep 2023 11:36:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2294310E
+        for <netfilter-devel@vger.kernel.org>; Fri, 15 Sep 2023 08:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694792128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JfdT5jLqVDjur8CcHtxnycJPX/qFbgT4BsSNJRrbaLw=;
+        b=NIA010ulePd+iX0AE1eazkNMkXiwEIuxZZDUKfku/zgtbvR9Uu5L3oDvl9ys4cqK+WYRgV
+        nORcV2yOD8+hrBaCEluyRgTpTwek/8O3e+c36mvg7xbmjOK2KFgaCmmpWq62u8h0SX1LYz
+        zOamWvADOL558zjFPEZkeMIfJRToFFQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-516-XOYgG0NINzuZguaWwIcI9g-1; Fri, 15 Sep 2023 11:35:26 -0400
+X-MC-Unique: XOYgG0NINzuZguaWwIcI9g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7085685828C
+        for <netfilter-devel@vger.kernel.org>; Fri, 15 Sep 2023 15:35:26 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E263B2026D4B;
+        Fri, 15 Sep 2023 15:35:25 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft 0/2] tests/shell: add feature probing via "features/*.nft" files
+Date:   Fri, 15 Sep 2023 17:32:34 +0200
+Message-ID: <20230915153515.1315886-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Disallow enabling/disabling a table in a single transaction.
-Make sure we still allow one update, either to dormant, or
-from active to dormant.
+This is based on
 
-Reported-by: "Lee, Cherie-Anne" <cherie.lee@starlabs.sg>
-Cc: Bing-Jhong Billy Jheng <billy@starlabs.sg>
-Cc: info@starlabs.sg
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- .../transactions/dumps/table_onoff.nft        |  8 ++++
- .../shell/testcases/transactions/table_onoff  | 44 +++++++++++++++++++
- 2 files changed, 52 insertions(+)
- create mode 100644 tests/shell/testcases/transactions/dumps/table_onoff.nft
- create mode 100755 tests/shell/testcases/transactions/table_onoff
+  Subject:	[PATCH nft 1/5] tests: add feature probing
+  Date:	Mon,  4 Sep 2023 11:06:30 +0200
 
-diff --git a/tests/shell/testcases/transactions/dumps/table_onoff.nft b/tests/shell/testcases/transactions/dumps/table_onoff.nft
-new file mode 100644
-index 000000000000..038be1c071ad
---- /dev/null
-+++ b/tests/shell/testcases/transactions/dumps/table_onoff.nft
-@@ -0,0 +1,8 @@
-+table ip t {
-+	flags dormant
-+
-+	chain c {
-+		type filter hook input priority filter; policy accept;
-+		ip daddr 127.0.0.42 counter packets 0 bytes 0
-+	}
-+}
-diff --git a/tests/shell/testcases/transactions/table_onoff b/tests/shell/testcases/transactions/table_onoff
-new file mode 100755
-index 000000000000..831d4614c1f2
---- /dev/null
-+++ b/tests/shell/testcases/transactions/table_onoff
-@@ -0,0 +1,44 @@
-+#!/bin/bash
-+
-+# attempt to re-awaken a table that is flagged dormant within
-+# same transaction
-+$NFT -f - <<EOF
-+add table ip t
-+add table ip t { flags dormant; }
-+add chain ip t c { type filter hook input priority 0; }
-+add table ip t
-+delete table ip t
-+EOF
-+
-+if [ $? -eq 0 ]; then
-+	exit 1
-+fi
-+
-+set -e
-+
-+ip link set lo up
-+
-+# add a dormant table, then wake it up in same
-+# transaction.
-+$NFT -f - <<EOF
-+add table ip t { flags dormant; }
-+add chain ip t c { type filter hook input priority 0; }
-+add rule ip t c ip daddr 127.0.0.42 counter
-+add table ip t
-+EOF
-+
-+# check table is indeed active.
-+ping -c 1 127.0.0.42
-+$NFT list chain ip t c | grep "counter packets 1"
-+$NFT delete table ip t
-+
-+# allow to flag table dormant.
-+$NFT -f - <<EOF
-+add table ip t
-+add chain ip t c { type filter hook input priority 0; }
-+add rule ip t c ip daddr 127.0.0.42 counter
-+add table ip t { flags dormant; }
-+EOF
-+
-+ping -c 1 127.0.0.42
-+# expect run-tests.sh to complain if counter isn't 0.
+Changes compared to Florian's patch:
+
+- The variables are called "NFT_TEST_HAVE_feat" instead of "NFT_HAVE_feat".
+
+- The code is rewritten to fit into the latest changes of "run-tests.sh".
+
+- The user may set NFT_TEST_HAVE_feat=y|n to force a feature for testing
+  and override the detection.
+
+- Print the feature detection in a different style.
+
+Thomas Haller (2):
+  tests/shell: add feature probing via "features/*.nft" files
+  tests/shell: colorize NFT_TEST_SKIP_/NFT_TEST_HAVE_ in test output
+
+ tests/shell/run-tests.sh | 40 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
+
 -- 
 2.41.0
 
