@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF877A4703
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Sep 2023 12:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434A77A46FC
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Sep 2023 12:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241122AbjIRKb0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 18 Sep 2023 06:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        id S239700AbjIRKbW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 18 Sep 2023 06:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241293AbjIRKa7 (ORCPT
+        with ESMTP id S240944AbjIRKav (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:30:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321C6115
+        Mon, 18 Sep 2023 06:30:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9FE109
         for <netfilter-devel@vger.kernel.org>; Mon, 18 Sep 2023 03:30:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1695033006;
@@ -21,38 +21,38 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I5qYzvMPosfU/uwPbGbaa8awj1oagjeI410P5th8zJE=;
-        b=M0/ZtYwNFgkjqqErfrokxYQz//B5bpouoValFcES5VAIeuEpTV1BDM41PVoofP7xywctfl
-        3O0KvFMChx/hymXjunIjzy++52cUihEdeRhweiKS+rrCfTzBJP1chp9d9ygzV2bxNku9aU
-        aEgwEjLWNoNx3wNVPQonPgoGOlEOXx8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-586-RfGUL4AYNbmgNmt-W9cVFQ-1; Mon, 18 Sep 2023 06:30:04 -0400
-X-MC-Unique: RfGUL4AYNbmgNmt-W9cVFQ-1
+        bh=IXvyT3IZWtfWmeeJYU1wyD0nzlAB24NdUbTo7qEApKQ=;
+        b=MkbHpAQcNlRdnWMMifMeRudDuDs0UHgChNdssxrWHeHDRghhmtmh5f6z8hW9A9q9Sczeu/
+        C1AIOKooY0n/UxgZAgVgDYMz4MXscBxbthd0R2Ld6ucnyOfZclTl1q7zvnFoVSpKp1HGio
+        Ac+iHq1AQ8zMXd1qMoBE1Sb7YPmtark=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-569-k8ev3CszMZ6p2MbWMMYWuA-1; Mon, 18 Sep 2023 06:30:04 -0400
+X-MC-Unique: k8ev3CszMZ6p2MbWMMYWuA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A41B43C025BF;
-        Mon, 18 Sep 2023 10:30:03 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8AB5C811E7B;
+        Mon, 18 Sep 2023 10:30:04 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 03031C15BB8;
-        Mon, 18 Sep 2023 10:30:02 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DED05C15BB8;
+        Mon, 18 Sep 2023 10:30:03 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>, Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 06/14] tests/shell: skip some tests if kernel lacks netdev egress support
-Date:   Mon, 18 Sep 2023 12:28:20 +0200
-Message-ID: <20230918102947.2125883-7-thaller@redhat.com>
+Subject: [PATCH nft 07/14] tests/shell: skip inet ingress tests if kernel lacks support
+Date:   Mon, 18 Sep 2023 12:28:21 +0200
+Message-ID: <20230918102947.2125883-8-thaller@redhat.com>
 In-Reply-To: <20230918102947.2125883-1-thaller@redhat.com>
 References: <20230918102947.2125883-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,66 +61,77 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Florian Westphal <fw@strlen.de>
 
+Split the bridge autoremove test to a new file.
+
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tests/shell/features/netdev_egress.nft            | 7 +++++++
- tests/shell/testcases/chains/0021prio_0           | 7 ++++++-
- tests/shell/testcases/chains/0042chain_variable_0 | 5 +++++
- 3 files changed, 18 insertions(+), 1 deletion(-)
- create mode 100644 tests/shell/features/netdev_egress.nft
+ tests/shell/features/inet_ingress.nft                    | 7 +++++++
+ tests/shell/testcases/chains/0043chain_ingress_0         | 9 ++-------
+ .../testcases/chains/dumps/netdev_chain_autoremove.nft   | 0
+ tests/shell/testcases/chains/netdev_chain_autoremove     | 9 +++++++++
+ 4 files changed, 18 insertions(+), 7 deletions(-)
+ create mode 100644 tests/shell/features/inet_ingress.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_autoremove.nft
+ create mode 100755 tests/shell/testcases/chains/netdev_chain_autoremove
 
-diff --git a/tests/shell/features/netdev_egress.nft b/tests/shell/features/netdev_egress.nft
+diff --git a/tests/shell/features/inet_ingress.nft b/tests/shell/features/inet_ingress.nft
 new file mode 100644
-index 000000000000..67d706d86c5f
+index 000000000000..944a5c77d27b
 --- /dev/null
-+++ b/tests/shell/features/netdev_egress.nft
++++ b/tests/shell/features/inet_ingress.nft
 @@ -0,0 +1,7 @@
-+# 42df6e1d221d ("netfilter: Introduce egress hook")
-+# v5.16-rc1~159^2~167^2~10
-+table netdev t {
-+	chain c {
-+		type filter hook egress devices = { lo } priority 0; policy accept;
-+	}
++# d3519cb89f6d ("netfilter: nf_tables: add inet ingress support")
++# v5.10-rc1~107^2~17^2~1
++table inet t {
++        chain c {
++                type filter hook ingress device "lo" priority filter; policy accept;
++        }
 +}
-diff --git a/tests/shell/testcases/chains/0021prio_0 b/tests/shell/testcases/chains/0021prio_0
-index d450dc0b6c34..ceda15583520 100755
---- a/tests/shell/testcases/chains/0021prio_0
-+++ b/tests/shell/testcases/chains/0021prio_0
-@@ -69,7 +69,7 @@ done
- family=netdev
- echo "add table $family x"
- gen_chains $family ingress filter lo
--gen_chains $family egress filter lo
-+[ "$NFT_TEST_HAVE_netdev_egress" != n ] && gen_chains $family egress filter lo
+diff --git a/tests/shell/testcases/chains/0043chain_ingress_0 b/tests/shell/testcases/chains/0043chain_ingress_0
+index bff464687a6f..a6973b99e514 100755
+--- a/tests/shell/testcases/chains/0043chain_ingress_0
++++ b/tests/shell/testcases/chains/0043chain_ingress_0
+@@ -1,7 +1,8 @@
+ #!/bin/bash
  
- family=bridge
- echo "add table $family x"
-@@ -83,3 +83,8 @@ gen_chains $family postrouting srcnat
+-set -e
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_inet_ingress)
  
- ) >$tmpfile
- $NFT -f $tmpfile
++set -e
+ RULESET="table inet filter {
+ 	chain ingress {
+ 		type filter hook ingress device \"lo\" priority filter; policy accept;
+@@ -14,11 +15,5 @@ RULESET="table inet filter {
+ 	}
+ }"
+ 
+-# Test auto-removal of chain hook on netns removal
+-unshare -n bash -c "ip link add br0 type bridge; \
+- $NFT add table netdev test; \
+- $NFT add chain netdev test ingress { type filter hook ingress device \"br0\" priority 0\; policy drop\; } ; \
+-" || exit 1
+-
+ $NFT -f - <<< "$RULESET" && exit 0
+ exit 1
+diff --git a/tests/shell/testcases/chains/dumps/netdev_chain_autoremove.nft b/tests/shell/testcases/chains/dumps/netdev_chain_autoremove.nft
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/tests/shell/testcases/chains/netdev_chain_autoremove b/tests/shell/testcases/chains/netdev_chain_autoremove
+new file mode 100755
+index 000000000000..21f3ad2966cb
+--- /dev/null
++++ b/tests/shell/testcases/chains/netdev_chain_autoremove
+@@ -0,0 +1,9 @@
++#!/bin/bash
 +
-+if [ "$NFT_TEST_HAVE_netdev_egress" = n ]; then
-+	echo "Ran a modified version of the test due to NFT_TEST_HAVE_netdev_egress=n"
-+	exit 77
-+fi
-diff --git a/tests/shell/testcases/chains/0042chain_variable_0 b/tests/shell/testcases/chains/0042chain_variable_0
-index f71b04155e44..1ea44e85c71f 100755
---- a/tests/shell/testcases/chains/0042chain_variable_0
-+++ b/tests/shell/testcases/chains/0042chain_variable_0
-@@ -24,6 +24,11 @@ table netdev filter2 {
- 
- $NFT -f - <<< $EXPECTED
- 
-+if [ "$NFT_TEST_HAVE_netdev_egress" = n ] ; then
-+	echo "Skip parts of the test due to NFT_TEST_HAVE_netdev_egress=n"
-+	exit 77
-+fi
++set -e
 +
- EXPECTED="define if_main = { lo, dummy0 }
- define lan_interfaces = { lo }
- 
++# Test auto-removal of chain hook on netns removal
++unshare -n bash -e -c "ip link add br0 type bridge; \
++ $NFT add table netdev test; \
++ $NFT add chain netdev test ingress { type filter hook ingress device \"br0\" priority 0\; policy drop\; } ; \
++"
 -- 
 2.41.0
 
