@@ -2,340 +2,274 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C50F7A470E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Sep 2023 12:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2042D7A48A4
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Sep 2023 13:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241127AbjIRKb7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 18 Sep 2023 06:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
+        id S231615AbjIRLm6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 18 Sep 2023 07:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241268AbjIRKbo (ORCPT
+        with ESMTP id S241795AbjIRLml (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 18 Sep 2023 06:31:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F07218C
-        for <netfilter-devel@vger.kernel.org>; Mon, 18 Sep 2023 03:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695033012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FgeIj1p3O8nezsM998IKPWjieVL8BXKKqqBnAnHhRVc=;
-        b=YIMZ9AZFvFJH6pa5i2hYpmYVBtip+kG8UFSpEwJ6xGyQ14vKe7ppTEo70KBplf2J4JcOF4
-        GtfVHWQIroK7RzpaEiCdZ3LkEUmjcHV7GuXe885jJplNiE06X3vGyXOhORgQU1so+7vPk2
-        oGz3KbtYfXKO74iDpmK6reDnwpX/tYA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-121-4PVOVXfMMp6AuId70pkb-Q-1; Mon, 18 Sep 2023 06:30:10 -0400
-X-MC-Unique: 4PVOVXfMMp6AuId70pkb-Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 99A2E1C05144
-        for <netfilter-devel@vger.kernel.org>; Mon, 18 Sep 2023 10:30:10 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 183E1C15BB8;
-        Mon, 18 Sep 2023 10:30:09 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 14/14] tests/shell: check diff in "maps/typeof_maps_0" and "sets/typeof_sets_0" test
-Date:   Mon, 18 Sep 2023 12:28:28 +0200
-Message-ID: <20230918102947.2125883-15-thaller@redhat.com>
-In-Reply-To: <20230918102947.2125883-1-thaller@redhat.com>
-References: <20230918102947.2125883-1-thaller@redhat.com>
+        Mon, 18 Sep 2023 07:42:41 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8456A11B
+        for <netfilter-devel@vger.kernel.org>; Mon, 18 Sep 2023 04:42:31 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft,v2] evaluate: expand sets and maps before evaluation
+Date:   Mon, 18 Sep 2023 13:42:27 +0200
+Message-Id: <20230918114227.114971-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-These tests run different variants based on NFT_TEST_HAVE_osf support.
-Consequently, we cannot check the pre-generated diff.
+3975430b12d9 ("src: expand table command before evaluation") moved
+ruleset expansion before evaluation, except for sets and maps. For
+sets and maps there is still a post_expand() phase.
 
-Instead, construct what we expect dynamically in the script, and compare
-the ruleset against that.
+This patch moves sets and map expansion to allocate an independent
+CMD_OBJ_SETELEMS command to add elements to named set and maps which is
+evaluated, this consolidates the ruleset expansion to happen always
+before the evaluation step for all objects, except for anonymous sets
+and maps.
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
+This approach avoids an interference with the set interval code which
+detects overlaps and merges of adjacents ranges. This set interval
+routine uses set->init to maintain a cache of existing elements. Then,
+the post_expand() phase incorrectly expands set->init cache and it
+triggers a bogus ENOENT errors due to incorrect bytecode (placing
+element addition before set creation) in combination with user declared
+sets using the flat syntax notation.
+
+Since the evaluation step (coming after the expansion) creates
+implicit/anonymous sets and maps, those are not expanded anymore. These
+anonymous sets still need to be evaluated from set_evaluate() path and
+the netlink bytecode generation path, ie. do_add_set(), needs to deal
+with anonymous sets.
+
+Fixes: 3975430b12d9 ("src: expand table command before evaluation")
+Reported-by: Jann Haber <jannh@selfnet.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tests/shell/testcases/maps/typeof_maps_0 |  75 ++++++++++---
- tests/shell/testcases/sets/typeof_sets_0 | 133 ++++++++++++++++++++---
- 2 files changed, 177 insertions(+), 31 deletions(-)
+v2: - do not evaluate anonymous set twice in set_evaluate()
+    - remove check for empty anonymous set
 
-diff --git a/tests/shell/testcases/maps/typeof_maps_0 b/tests/shell/testcases/maps/typeof_maps_0
-index 263390d51a5d..98517fd52506 100755
---- a/tests/shell/testcases/maps/typeof_maps_0
-+++ b/tests/shell/testcases/maps/typeof_maps_0
-@@ -4,18 +4,24 @@
- # without typeof, this is 'type string' and 'type integer',
- # but neither could be used because it lacks size information.
+ src/cmd.c                                     | 15 -------
+ src/evaluate.c                                | 42 +++++++++++--------
+ src/libnftables.c                             |  7 ----
+ src/rule.c                                    |  8 +++-
+ .../testcases/sets/0073flat_interval_set      | 11 +++++
+ .../testcases/sets/0074nested_interval_set    |  6 +++
+ .../sets/dumps/0073flat_interval_set.nft      | 11 +++++
+ .../sets/dumps/0074nested_interval_set.nft    | 11 +++++
+ 8 files changed, 71 insertions(+), 40 deletions(-)
+ create mode 100755 tests/shell/testcases/sets/0073flat_interval_set
+ create mode 100755 tests/shell/testcases/sets/0074nested_interval_set
+ create mode 100644 tests/shell/testcases/sets/dumps/0073flat_interval_set.nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0074nested_interval_set.nft
+
+diff --git a/src/cmd.c b/src/cmd.c
+index 5e90fdcbd99a..358dd1f9364e 100644
+--- a/src/cmd.c
++++ b/src/cmd.c
+@@ -402,21 +402,6 @@ void nft_cmd_expand(struct cmd *cmd)
+ 		nft_cmd_expand_chain(chain, &new_cmds);
+ 		list_splice(&new_cmds, &cmd->list);
+ 		break;
+-	default:
+-		break;
+-	}
+-}
+-
+-void nft_cmd_post_expand(struct cmd *cmd)
+-{
+-	struct list_head new_cmds;
+-	struct set *set;
+-	struct cmd *new;
+-	struct handle h;
+-
+-	init_list_head(&new_cmds);
+-
+-	switch (cmd->obj) {
+ 	case CMD_OBJ_SET:
+ 	case CMD_OBJ_MAP:
+ 		set = cmd->set;
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 90e7bff62cce..a537dcfd52b3 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -4595,6 +4595,29 @@ static int set_expr_evaluate_concat(struct eval_ctx *ctx, struct expr **expr)
+ 	return 0;
+ }
  
--OSFMAP=""
--OSFRULE=""
--if [ "$NFT_TEST_HAVE_osf" != n ] ; then
--	OSFMAP="map m1 {
--		typeof osf name : ct mark
--		elements = { "Linux" : 0x00000001 }
--	}"
--	OSFRULE="ct mark set osf name map @m1"
-+set -e
++static int elems_evaluate(struct eval_ctx *ctx, struct set *set)
++{
++	ctx->set = set;
++	if (set->init != NULL) {
++		__expr_set_context(&ctx->ectx, set->key->dtype,
++				   set->key->byteorder, set->key->len, 0);
++		if (expr_evaluate(ctx, &set->init) < 0)
++			return -1;
++		if (set->init->etype != EXPR_SET)
++			return expr_error(ctx->msgs, set->init, "Set %s: Unexpected initial type %s, missing { }?",
++					  set->handle.set.name, expr_name(set->init));
++	}
 +
-+die() {
-+	printf '%s\n' "$*"
-+	exit 1
++	if (set_is_interval(ctx->set->flags) &&
++	    !(ctx->set->flags & NFT_SET_CONCAT) &&
++	    interval_set_eval(ctx, ctx->set, set->init) < 0)
++		return -1;
++
++	ctx->set = NULL;
++
++	return 0;
 +}
 +
-+INPUT_OSF_CT="
-+		ct mark set osf name map @m1"
-+if [ "$NFT_TEST_HAVE_osf" = n ] ; then
-+	INPUT_OSF_CT=
- fi
- 
--EXPECTED="table inet t {
--	$OSFMAP
-+INPUT="table inet t {
-+	map m1 {
-+		typeof osf name : ct mark
-+		elements = { Linux : 0x00000001 }
-+	}
- 
- 	map m2 {
- 		typeof vlan id : mark
-@@ -39,8 +45,7 @@ EXPECTED="table inet t {
- 		elements = { 23 . eth0 : accept }
+ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
+ {
+ 	struct set *existing_set = NULL;
+@@ -4693,23 +4716,6 @@ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
  	}
  
--	chain c {
--		$OSFRULE
-+	chain c {$INPUT_OSF_CT
- 		ether type vlan meta mark set vlan id map @m2
- 		meta mark set ip saddr . ip daddr map @m3
- 		iifname . ip protocol . th dport vmap @m4
-@@ -49,10 +54,48 @@ EXPECTED="table inet t {
+ 	set->existing_set = existing_set;
+-	ctx->set = set;
+-	if (set->init != NULL) {
+-		__expr_set_context(&ctx->ectx, set->key->dtype,
+-				   set->key->byteorder, set->key->len, 0);
+-		if (expr_evaluate(ctx, &set->init) < 0)
+-			return -1;
+-		if (set->init->etype != EXPR_SET)
+-			return expr_error(ctx->msgs, set->init, "Set %s: Unexpected initial type %s, missing { }?",
+-					  set->handle.set.name, expr_name(set->init));
+-	}
+-
+-	if (set_is_interval(ctx->set->flags) &&
+-	    !(ctx->set->flags & NFT_SET_CONCAT) &&
+-	    interval_set_eval(ctx, ctx->set, set->init) < 0)
+-		return -1;
+-
+-	ctx->set = NULL;
+ 
+ 	return 0;
+ }
+@@ -5182,6 +5188,8 @@ static int cmd_evaluate_add(struct eval_ctx *ctx, struct cmd *cmd)
+ 	case CMD_OBJ_SET:
+ 		handle_merge(&cmd->set->handle, &cmd->handle);
+ 		return set_evaluate(ctx, cmd->set);
++	case CMD_OBJ_SETELEMS:
++		return elems_evaluate(ctx, cmd->set);
+ 	case CMD_OBJ_RULE:
+ 		handle_merge(&cmd->rule->handle, &cmd->handle);
+ 		return rule_evaluate(ctx, cmd->rule, cmd->op);
+diff --git a/src/libnftables.c b/src/libnftables.c
+index c5f5729409d1..7d36577dbf5f 100644
+--- a/src/libnftables.c
++++ b/src/libnftables.c
+@@ -562,13 +562,6 @@ static int nft_evaluate(struct nft_ctx *nft, struct list_head *msgs,
+ 	if (err < 0 || nft->state->nerrs)
+ 		return -1;
+ 
+-	list_for_each_entry(cmd, cmds, list) {
+-		if (cmd->op != CMD_ADD)
+-			continue;
+-
+-		nft_cmd_post_expand(cmd);
+-	}
+-
+ 	return 0;
+ }
+ 
+diff --git a/src/rule.c b/src/rule.c
+index 1e9e6c1a92c2..faa12afb3a07 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -1458,7 +1458,13 @@ static int do_add_set(struct netlink_ctx *ctx, struct cmd *cmd,
+ 			return -1;
  	}
- }"
  
--set -e
--$NFT -f - <<< $EXPECTED
-+EXPECTED="table inet t {
-+	map m1 {
-+		typeof osf name : ct mark
-+		elements = { \"Linux\" : 0x00000001 }
-+	}
+-	return mnl_nft_set_add(ctx, cmd, flags);
++	if (mnl_nft_set_add(ctx, cmd, flags) < 0)
++		return -1;
 +
-+	map m2 {
-+		typeof vlan id : meta mark
-+		elements = { 1 : 0x00000001, 4095 : 0x00004095 }
-+	}
++	if (set_is_anonymous(set->flags))
++		return __do_add_elements(ctx, cmd, set, set->init, flags);
 +
-+	map m3 {
-+		typeof ip saddr . ip daddr : meta mark
-+		elements = { 1.2.3.4 . 5.6.7.8 : 0x00000001,
-+			     2.3.4.5 . 6.7.8.9 : 0x00000002 }
-+	}
-+
-+	map m4 {
-+		typeof iifname . ip protocol . th dport : verdict
-+		elements = { \"eth0\" . tcp . 22 : accept }
-+	}
-+
-+	map m5 {
-+		typeof ipsec in reqid . iifname : verdict
-+		elements = { 23 . \"eth0\" : accept }
-+	}
-+
-+	chain c {$INPUT_OSF_CT
-+		meta mark set vlan id map @m2
-+		meta mark set ip saddr . ip daddr map @m3
-+		iifname . ip protocol . th dport vmap @m4
-+		iifname . ip protocol . th dport vmap { \"eth0\" . tcp . 22 : accept, \"eth1\" . udp . 67 : drop }
-+		ipsec in reqid . iifname vmap @m5
-+	}
-+}"
-+
-+$NFT -f - <<< "$INPUT" || die $'nft command failed to process input:\n'">$INPUT<"
-+
-+$DIFF -u <($NFT list ruleset) - <<<"$EXPECTED" || die $'diff failed between ruleset and expected data.\nExpected:\n'">$EXPECTED<"
-+
++	return 0;
+ }
  
- if [ "$NFT_TEST_HAVE_osf" = n ] ; then
--	echo "Partial test due to NFT_TEST_HAVE_osf=n. Skip"
--	exit 77
-+    echo "Partial test due to NFT_TEST_HAVE_osf=n. Skip"
-+    exit 77
- fi
-diff --git a/tests/shell/testcases/sets/typeof_sets_0 b/tests/shell/testcases/sets/typeof_sets_0
-index 6ed0c354bc25..c1c0f51f399c 100755
---- a/tests/shell/testcases/sets/typeof_sets_0
-+++ b/tests/shell/testcases/sets/typeof_sets_0
-@@ -4,21 +4,35 @@
- # s1 and s2 are identical, they just use different
- # ways for declaration.
- 
--OSFSET=""
--OSFCHAIN=""
--if [ "$NFT_TEST_HAVE_osf" != n ] ; then
--	OSFSET="set s1 {
+ static int do_command_add(struct netlink_ctx *ctx, struct cmd *cmd, bool excl)
+diff --git a/tests/shell/testcases/sets/0073flat_interval_set b/tests/shell/testcases/sets/0073flat_interval_set
+new file mode 100755
+index 000000000000..0630595f1599
+--- /dev/null
++++ b/tests/shell/testcases/sets/0073flat_interval_set
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
 +set -e
 +
-+die() {
-+	printf '%s\n' "$*"
-+	exit 1
++EXPECTED="flush ruleset
++add table inet filter
++add map inet filter testmap { type ipv4_addr : counter; flags interval;}
++add counter inet filter TEST
++add element inet filter testmap { 192.168.0.0/24 : \"TEST\" }"
++
++$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/sets/0074nested_interval_set b/tests/shell/testcases/sets/0074nested_interval_set
+new file mode 100755
+index 000000000000..e7f65fc56eef
+--- /dev/null
++++ b/tests/shell/testcases/sets/0074nested_interval_set
+@@ -0,0 +1,6 @@
++#!/bin/bash
++
++set -e
++
++dumpfile=$(dirname $0)/dumps/$(basename $0).nft
++$NFT -f "$dumpfile"
+diff --git a/tests/shell/testcases/sets/dumps/0073flat_interval_set.nft b/tests/shell/testcases/sets/dumps/0073flat_interval_set.nft
+new file mode 100644
+index 000000000000..20f537411c68
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/0073flat_interval_set.nft
+@@ -0,0 +1,11 @@
++table inet filter {
++	counter TEST {
++		packets 0 bytes 0
++	}
++
++	map testmap {
++		type ipv4_addr : counter
++		flags interval
++		elements = { 192.168.0.0/24 : "TEST" }
++	}
 +}
-+
-+INPUT_OSF_SET="
-+	set s1 {
- 		typeof osf name
- 		elements = { \"Linux\" }
--	}"
--	OSFCHAIN="chain c1 {
-+	}
-+"
-+INPUT_OSF_CHAIN="
-+	chain c1 {
- 		osf name @s1 accept
--	}"
--fi
-+	}
-+"
- 
--EXPECTED="table inet t {
--	$OSFSET
-+if [ "$NFT_TEST_HAVE_osf" = n ] ; then
-+	if [ "$((RANDOM % 2))" -eq 1 ] ; then
-+		# Regardless of $NFT_TEST_HAVE_osf, we can define the set.
-+		# Randomly do so.
-+		INPUT_OSF_SET=
-+	fi
-+	INPUT_OSF_CHAIN=
-+fi
- 
-+INPUT="table inet t {$INPUT_OSF_SET
- 	set s2 {
- 		typeof vlan id
- 		elements = { 2, 3, 103 }
-@@ -68,9 +82,7 @@ EXPECTED="table inet t {
- 		typeof vlan id . ip saddr
- 		elements = { 3567 . 1.2.3.4 }
- 	}
--
--	$OSFCHAIN
--
-+$INPUT_OSF_CHAIN
- 	chain c2 {
- 		ether type vlan vlan id @s2 accept
- 	}
-@@ -108,8 +120,99 @@ EXPECTED="table inet t {
- 	}
- }"
- 
--set -e
--$NFT -f - <<< $EXPECTED
-+EXPECTED="table inet t {$INPUT_OSF_SET
-+	set s2 {
-+		typeof vlan id
-+		elements = { 2, 3, 103 }
+diff --git a/tests/shell/testcases/sets/dumps/0074nested_interval_set.nft b/tests/shell/testcases/sets/dumps/0074nested_interval_set.nft
+new file mode 100644
+index 000000000000..20f537411c68
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/0074nested_interval_set.nft
+@@ -0,0 +1,11 @@
++table inet filter {
++	counter TEST {
++		packets 0 bytes 0
 +	}
 +
-+	set s3 {
-+		typeof meta ibrpvid
-+		elements = { 2, 3, 103 }
++	map testmap {
++		type ipv4_addr : counter
++		flags interval
++		elements = { 192.168.0.0/24 : "TEST" }
 +	}
-+
-+	set s4 {
-+		typeof frag frag-off
-+		elements = { 1, 1024 }
-+	}
-+
-+	set s5 {
-+		typeof ip option ra value
-+		elements = { 1, 1024 }
-+	}
-+
-+	set s6 {
-+		typeof tcp option maxseg size
-+		elements = { 1, 1024 }
-+	}
-+
-+	set s7 {
-+		typeof sctp chunk init num-inbound-streams
-+		elements = { 1, 4 }
-+	}
-+
-+	set s8 {
-+		typeof ip version
-+		elements = { 4, 6 }
-+	}
-+
-+	set s9 {
-+		typeof ip hdrlength
-+		elements = { 0, 1, 2, 3, 4,
-+			     15 }
-+	}
-+
-+	set s10 {
-+		typeof iifname . ip saddr . ipsec in reqid
-+		elements = { \"eth0\" . 10.1.1.2 . 42 }
-+	}
-+
-+	set s11 {
-+		typeof vlan id . ip saddr
-+		elements = { 3567 . 1.2.3.4 }
-+	}
-+$INPUT_OSF_CHAIN
-+	chain c2 {
-+		vlan id @s2 accept
-+	}
-+
-+	chain c4 {
-+		frag frag-off @s4 accept
-+	}
-+
-+	chain c5 {
-+		ip option ra value @s5 accept
-+	}
-+
-+	chain c6 {
-+		tcp option maxseg size @s6 accept
-+	}
-+
-+	chain c7 {
-+		sctp chunk init num-inbound-streams @s7 accept
-+	}
-+
-+	chain c8 {
-+		ip version @s8 accept
-+	}
-+
-+	chain c9 {
-+		ip hdrlength @s9 accept
-+	}
-+
-+	chain c10 {
-+		iifname . ip saddr . ipsec in reqid @s10 accept
-+	}
-+
-+	chain c11 {
-+		vlan id . ip saddr @s11 accept
-+	}
-+}"
-+
-+
-+$NFT -f - <<< "$INPUT" || die $'nft command failed to process input:\n'">$INPUT<"
-+
-+$DIFF -u <($NFT list ruleset) - <<<"$EXPECTED" || die $'diff failed between ruleset and expected data.\nExpected:\n'">$EXPECTED<"
- 
- if [ "$NFT_TEST_HAVE_osf" = n ] ; then
- 	echo "Partial test due to NFT_TEST_HAVE_osf=n. Skip"
++}
 -- 
-2.41.0
+2.30.2
 
