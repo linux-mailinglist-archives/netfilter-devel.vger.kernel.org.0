@@ -2,1055 +2,669 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413427A830B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 15:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738197A8311
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 15:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbjITNRB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Sep 2023 09:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        id S229648AbjITNRG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Sep 2023 09:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234521AbjITNRA (ORCPT
+        with ESMTP id S234706AbjITNRE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:17:00 -0400
+        Wed, 20 Sep 2023 09:17:04 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7BFAD
-        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 06:16:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FFAB4
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 06:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695215769;
+        s=mimecast20190719; t=1695215770;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eRsfe05GlKzLRbQx7rV54W0y+O4NV0ksvTxHpzKuehk=;
-        b=hPRwMC8RSZ+SdKpEuDhQs5iSf5YqDwbH37CEupfvT42uqZUwL2StTUF768ZB+YdOlInrWq
-        l0Seo7+sXTA7o+Vxaab6JqUyVGGYt5aBM4v92QHFuzSPqcieTcL5pQ7kgDkizz6BpPlQEZ
-        Jl3lOAvpuzNDRIwzdhhnm5ipDeRqg5s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-232-c5qfedEFPzqGhzyvPD6NJg-1; Wed, 20 Sep 2023 09:16:08 -0400
-X-MC-Unique: c5qfedEFPzqGhzyvPD6NJg-1
+        bh=lpLjnsZb+Ro6a0o4lQLCLTY/W+ePzdDV8uz+VuigkuA=;
+        b=ayVDLi3rscVMNT3FZQkoYDPFggBYdmLktQcMQBhOybN1B3eD4oZXXKBy/JxDEFaD2rFCUl
+        JLzjeCk4CZEWTIijdfV+Maii6eAJDMBlRP2BCbM6sUDvRDC+U8x00zG7M4VldMZz5/wG1/
+        rtGaG87+VZ9W32QWQUWhakS6Z39T2KI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-380-6l7kVLtgNT29N2FNeYfj7A-1; Wed, 20 Sep 2023 09:16:08 -0400
+X-MC-Unique: 6l7kVLtgNT29N2FNeYfj7A-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DECB0381258F
-        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 13:16:07 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A58EE185A79C
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 13:16:08 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E396C15BB8;
-        Wed, 20 Sep 2023 13:16:06 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 24539C15BB8;
+        Wed, 20 Sep 2023 13:16:08 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 3/4] all: add free_const() and use it instead of xfree()
-Date:   Wed, 20 Sep 2023 15:13:40 +0200
-Message-ID: <20230920131554.204899-4-thaller@redhat.com>
+Subject: [PATCH nft 4/4] all: remove xfree() and use plain free()
+Date:   Wed, 20 Sep 2023 15:13:41 +0200
+Message-ID: <20230920131554.204899-5-thaller@redhat.com>
 In-Reply-To: <20230920131554.204899-1-thaller@redhat.com>
 References: <20230920131554.204899-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Almost everywhere xmalloc() and friends is used instead of malloc().
-This is almost everywhere paired with xfree().
+xmalloc() (and similar x-functions) are used for allocation.  They wrap
+malloc()/realloc() but will abort the program on ENOMEM.
 
-xfree() has two problems. First, it brings the wrong notion that
-xmalloc() should be paired with xfree(), as if xmalloc() would not use
-the plain malloc() allocator. In practices, xfree() just wraps free(),
-and it wouldn't make sense any other way. xfree() should go away. This
-will be addressed in the next commit.
+The meaning of xmalloc() is that it wraps malloc() but aborts on
+failure. I don't think it should have the notion, that this were
+potentially a different allocator that requires its own xfree().
 
-The problem addressed by this commit is that xfree() accepts a const
-pointer. Paired with the practice of almost always using xfree() instead
-of free(), all our calls to xfree() cast away constness of the pointer,
-regardless whether that is necessary. Declaring a pointer as const
-should help us to catch wrong uses. If the xfree() function always casts
-aways const, the compiler doesn't help.
+Even if the original intent was that the allocator is abstracted (and
+possibly not backed by standard malloc()), then that doesn't seem a good
+idea. Nowadays libc allocators are pretty good, and we would need a very
+special use cases to switch to something else. In other words, this will
+never happen.
 
-There are many places that rightly cast away const during free. But not
-all of them. Add a free_const() macro, which is like free(), but accepts
-const pointers. We should always make an intentional choice whether to
-use free() or free_const(). Having a free_const() macro makes this very
-common choice clearer, instead of adding a (void*) cast at many places.
+Also there were a few places, where a xmalloc() was already "wrongly"
+paired with free() (for example, iface_cache_release(), exit_cookie(),
+nft_run_cmd_from_buffer()).
 
-Note that we now pair xmalloc() allocations with a free() call (instead
-of xfree(). That inconsistency will be resolved in the next commit.
+Or note how pid2name() returns an allocated string from fscanf(), which
+needs to be freed with free() (and not xfree()). This requirement
+bubbles up via the callers portid2name() and name_by_portid(). This was
+actually handled correctly and the buffer was freed with free(). But it
+shows that mixing different allocators is cumbersome to get right.  Of
+course, we won't have different allocators and xfree() serves no actual
+purpose.
+
+Note that xfree() also used to accept const pointers. That seems a bad
+to do unconditionally for all deallocations. Instead prefer to use plain
+free(). To free a const pointer use free_const() which just wraps free,
+as the name indicates.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- include/nft.h      |   6 ++
- src/ct.c           |   2 +-
- src/datatype.c     |   8 +--
- src/evaluate.c     |   8 +--
- src/expression.c   |   4 +-
- src/libnftables.c  |  12 ++--
- src/mnl.c          |  12 ++--
- src/optimize.c     |   2 +-
- src/parser_bison.y | 144 ++++++++++++++++++++++-----------------------
- src/rule.c         |  36 ++++++------
- src/scanner.l      |   4 +-
- src/statement.c    |   2 +-
- src/xt.c           |   2 +-
- 13 files changed, 124 insertions(+), 118 deletions(-)
+ include/utils.h         |  1 -
+ src/cache.c             |  6 +++---
+ src/datatype.c          |  4 ++--
+ src/erec.c              |  6 +++---
+ src/evaluate.c          |  4 ++--
+ src/expression.c        |  2 +-
+ src/json.c              |  2 +-
+ src/libnftables.c       | 12 ++++++------
+ src/meta.c              |  4 ++--
+ src/misspell.c          |  2 +-
+ src/mnl.c               |  4 ++--
+ src/netlink_linearize.c |  4 ++--
+ src/optimize.c          | 10 +++++-----
+ src/parser_bison.y      | 12 ++++++------
+ src/rule.c              | 32 ++++++++++++++++----------------
+ src/scanner.l           |  2 +-
+ src/segtree.c           |  4 ++--
+ src/statement.c         |  2 +-
+ src/utils.c             |  5 -----
+ src/xt.c                |  8 ++++----
+ 20 files changed, 60 insertions(+), 66 deletions(-)
 
-diff --git a/include/nft.h b/include/nft.h
-index 9384054c11c8..bba637da0bf5 100644
---- a/include/nft.h
-+++ b/include/nft.h
-@@ -8,4 +8,10 @@
- #include <stdint.h>
- #include <stdlib.h>
+diff --git a/include/utils.h b/include/utils.h
+index 36a28f893667..e18fabec56ba 100644
+--- a/include/utils.h
++++ b/include/utils.h
+@@ -142,7 +142,6 @@ extern void __memory_allocation_error(const char *filename, uint32_t line) __nor
+ #define memory_allocation_error()		\
+ 	__memory_allocation_error(__FILE__, __LINE__);
  
-+/* Just free(), but casts to a (void*). This is for places where
-+ * we have a const pointer that we know we want to free. We could just
-+ * do the (void*) cast, but free_const() makes it clear that this is
-+ * something we frequently need to do and it's intentional. */
-+#define free_const(ptr) free((void *)(ptr))
-+
- #endif /* NFTABLES_NFT_H */
-diff --git a/src/ct.c b/src/ct.c
-index 6760b08570de..6bd62965e610 100644
---- a/src/ct.c
-+++ b/src/ct.c
-@@ -571,7 +571,7 @@ static void flow_offload_stmt_print(const struct stmt *stmt,
+-extern void xfree(const void *ptr);
+ extern void *xmalloc(size_t size);
+ extern void *xmalloc_array(size_t nmemb, size_t size);
+ extern void *xrealloc(void *ptr, size_t size);
+diff --git a/src/cache.c b/src/cache.c
+index 4e89fe1338f3..b7f46c001d6e 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -126,9 +126,9 @@ void nft_cache_filter_fini(struct nft_cache_filter *filter)
+ 		struct nft_filter_obj *obj, *next;
  
- static void flow_offload_stmt_destroy(struct stmt *stmt)
- {
--	xfree(stmt->flow.table_name);
-+	free_const(stmt->flow.table_name);
+ 		list_for_each_entry_safe(obj, next, &filter->obj[i].head, list)
+-			xfree(obj);
++			free(obj);
+ 	}
+-	xfree(filter);
++	free(filter);
  }
  
- static const struct stmt_ops flow_offload_stmt_ops = {
+ static void cache_filter_add(struct nft_cache_filter *filter,
+@@ -1279,7 +1279,7 @@ void cache_init(struct cache *cache)
+ 
+ void cache_free(struct cache *cache)
+ {
+-	xfree(cache->ht);
++	free(cache->ht);
+ }
+ 
+ void cache_add(struct cache_item *item, struct cache *cache, uint32_t hash)
 diff --git a/src/datatype.c b/src/datatype.c
-index 8015f3869ece..4827c42855ec 100644
+index 4827c42855ec..147083ea8b33 100644
 --- a/src/datatype.c
 +++ b/src/datatype.c
-@@ -907,8 +907,8 @@ void rt_symbol_table_free(const struct symbol_table *tbl)
- 	const struct symbolic_constant *s;
+@@ -1267,7 +1267,7 @@ void datatype_free(const struct datatype *ptr)
  
- 	for (s = tbl->symbols; s->identifier != NULL; s++)
--		xfree(s->identifier);
--	xfree(tbl);
-+		free_const(s->identifier);
-+	free_const(tbl);
+ 	free_const(dtype->name);
+ 	free_const(dtype->desc);
+-	xfree(dtype);
++	free(dtype);
  }
  
- void mark_table_init(struct nft_ctx *ctx)
-@@ -1265,8 +1265,8 @@ void datatype_free(const struct datatype *ptr)
- 	if (--dtype->refcnt > 0)
- 		return;
+ const struct datatype *concat_type_alloc(uint32_t type)
+@@ -1514,7 +1514,7 @@ static void cgroupv2_type_print(const struct expr *expr,
+ 	else
+ 		nft_print(octx, "%" PRIu64, id);
  
--	xfree(dtype->name);
--	xfree(dtype->desc);
-+	free_const(dtype->name);
-+	free_const(dtype->desc);
- 	xfree(dtype);
+-	xfree(cgroup_path);
++	free(cgroup_path);
  }
  
+ static struct error_record *cgroupv2_type_parse(struct parse_ctx *ctx,
+diff --git a/src/erec.c b/src/erec.c
+index 8cadaa8069d1..195c0ad696c6 100644
+--- a/src/erec.c
++++ b/src/erec.c
+@@ -44,8 +44,8 @@ void erec_add_location(struct error_record *erec, const struct location *loc)
+ 
+ void erec_destroy(struct error_record *erec)
+ {
+-	xfree(erec->msg);
+-	xfree(erec);
++	free(erec->msg);
++	free(erec);
+ }
+ 
+ __attribute__((format(printf, 3, 0)))
+@@ -204,7 +204,7 @@ void erec_print(struct output_ctx *octx, const struct error_record *erec,
+ 		}
+ 		pbuf[end] = '\0';
+ 		fprintf(f, "%s", pbuf);
+-		xfree(pbuf);
++		free(pbuf);
+ 	}
+ 	fprintf(f, "\n");
+ }
 diff --git a/src/evaluate.c b/src/evaluate.c
-index e5c7e03a927f..51e35ac5d922 100644
+index 51e35ac5d922..aa0fb530649a 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -4014,7 +4014,7 @@ static int stmt_evaluate_chain(struct eval_ctx *ctx, struct stmt *stmt)
- 		memset(&h, 0, sizeof(h));
- 		handle_merge(&h, &chain->handle);
- 		h.family = ctx->rule->handle.family;
--		xfree(h.table.name);
-+		free_const(h.table.name);
- 		h.table.name = xstrdup(ctx->rule->handle.table.name);
- 		h.chain.location = stmt->location;
- 		h.chain_id = chain->handle.chain_id;
-@@ -4034,9 +4034,9 @@ static int stmt_evaluate_chain(struct eval_ctx *ctx, struct stmt *stmt)
- 			struct handle h2 = {};
- 
- 			handle_merge(&rule->handle, &ctx->rule->handle);
--			xfree(rule->handle.table.name);
-+			free_const(rule->handle.table.name);
- 			rule->handle.table.name = xstrdup(ctx->rule->handle.table.name);
--			xfree(rule->handle.chain.name);
-+			free_const(rule->handle.chain.name);
- 			rule->handle.chain.name = NULL;
- 			rule->handle.chain_id = chain->handle.chain_id;
- 			if (rule_evaluate(&rule_ctx, rule, CMD_INVALID) < 0)
-@@ -5134,7 +5134,7 @@ static int ct_timeout_evaluate(struct eval_ctx *ctx, struct obj *obj)
- 
- 		ct->timeout[ts->timeout_index] = ts->timeout_value;
- 		list_del(&ts->head);
--		xfree(ts->timeout_str);
-+		free_const(ts->timeout_str);
- 		xfree(ts);
- 	}
- 
-diff --git a/src/expression.c b/src/expression.c
-index 87d5a9fcbe09..b7b8cbf8777f 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -315,7 +315,7 @@ static void symbol_expr_clone(struct expr *new, const struct expr *expr)
- 
- static void symbol_expr_destroy(struct expr *expr)
- {
--	xfree(expr->identifier);
-+	free_const(expr->identifier);
+@@ -3241,7 +3241,7 @@ static int stmt_reject_gen_dependency(struct eval_ctx *ctx, struct stmt *stmt,
+ 	 */
+ 	list_add(&nstmt->list, &ctx->rule->stmts);
+ out:
+-	xfree(payload);
++	free(payload);
+ 	return ret;
  }
  
- static const struct expr_ops symbol_expr_ops = {
-@@ -1336,7 +1336,7 @@ static void set_elem_expr_destroy(struct expr *expr)
- {
- 	struct stmt *stmt, *next;
+@@ -5135,7 +5135,7 @@ static int ct_timeout_evaluate(struct eval_ctx *ctx, struct obj *obj)
+ 		ct->timeout[ts->timeout_index] = ts->timeout_value;
+ 		list_del(&ts->head);
+ 		free_const(ts->timeout_str);
+-		xfree(ts);
++		free(ts);
+ 	}
  
--	xfree(expr->comment);
-+	free_const(expr->comment);
- 	expr_free(expr->key);
- 	list_for_each_entry_safe(stmt, next, &expr->stmt_list, list)
- 		stmt_free(stmt);
+ 	return 0;
+diff --git a/src/expression.c b/src/expression.c
+index b7b8cbf8777f..53d142bfb03a 100644
+--- a/src/expression.c
++++ b/src/expression.c
+@@ -95,7 +95,7 @@ void expr_free(struct expr *expr)
+ 	 */
+ 	if (expr->etype != EXPR_INVALID)
+ 		expr_destroy(expr);
+-	xfree(expr);
++	free(expr);
+ }
+ 
+ void expr_print(const struct expr *expr, struct output_ctx *octx)
+diff --git a/src/json.c b/src/json.c
+index 446575c2afc0..271f0c947314 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -84,7 +84,7 @@ static json_t *set_dtype_json(const struct expr *key)
+ 			json_array_append_new(root, jtok);
+ 		tok = strtok_r(NULL, " .", &tok_safe);
+ 	}
+-	xfree(namedup);
++	free(namedup);
+ 	return root;
+ }
+ 
 diff --git a/src/libnftables.c b/src/libnftables.c
-index 1ca5a6f48c4c..817949eeedec 100644
+index 817949eeedec..dbd0d6100889 100644
 --- a/src/libnftables.c
 +++ b/src/libnftables.c
-@@ -154,8 +154,8 @@ void nft_ctx_clear_vars(struct nft_ctx *ctx)
- 	unsigned int i;
- 
- 	for (i = 0; i < ctx->num_vars; i++) {
--		xfree(ctx->vars[i].key);
--		xfree(ctx->vars[i].value);
-+		free_const(ctx->vars[i].key);
-+		free_const(ctx->vars[i].value);
+@@ -158,7 +158,7 @@ void nft_ctx_clear_vars(struct nft_ctx *ctx)
+ 		free_const(ctx->vars[i].value);
  	}
  	ctx->num_vars = 0;
- 	xfree(ctx->vars);
-@@ -710,12 +710,12 @@ err:
+-	xfree(ctx->vars);
++	free(ctx->vars);
+ }
  
- 		list_for_each_entry_safe(indesc, next, &nft->vars_ctx.indesc_list, list) {
+ EXPORT_SYMBOL(nft_ctx_add_include_path);
+@@ -182,9 +182,9 @@ EXPORT_SYMBOL(nft_ctx_clear_include_paths);
+ void nft_ctx_clear_include_paths(struct nft_ctx *ctx)
+ {
+ 	while (ctx->num_include_paths)
+-		xfree(ctx->include_paths[--ctx->num_include_paths]);
++		free(ctx->include_paths[--ctx->num_include_paths]);
+ 
+-	xfree(ctx->include_paths);
++	free(ctx->include_paths);
+ 	ctx->include_paths = NULL;
+ }
+ 
+@@ -343,9 +343,9 @@ void nft_ctx_free(struct nft_ctx *ctx)
+ 	nft_ctx_clear_vars(ctx);
+ 	nft_ctx_clear_include_paths(ctx);
+ 	scope_free(ctx->top_scope);
+-	xfree(ctx->state);
++	free(ctx->state);
+ 	nft_exit(ctx);
+-	xfree(ctx);
++	free(ctx);
+ }
+ 
+ EXPORT_SYMBOL(nft_ctx_set_output);
+@@ -712,7 +712,7 @@ err:
  			if (indesc->name)
--				xfree(indesc->name);
-+				free_const(indesc->name);
+ 				free_const(indesc->name);
  
- 			xfree(indesc);
+-			xfree(indesc);
++			free(indesc);
  		}
  	}
--	xfree(nft->vars_ctx.buf);
-+	free_const(nft->vars_ctx.buf);
- 
- 	if (!rc &&
- 	    nft_output_json(&nft->output) &&
-@@ -766,12 +766,12 @@ int nft_run_cmd_from_filename(struct nft_ctx *nft, const char *filename)
- 
- 	if (nft->optimize_flags) {
- 		ret = nft_run_optimized_file(nft, filename);
--		xfree(nft->stdin_buf);
-+		free_const(nft->stdin_buf);
- 		return ret;
+ 	free_const(nft->vars_ctx.buf);
+diff --git a/src/meta.c b/src/meta.c
+index d8fc5f585e74..bee111fbd473 100644
+--- a/src/meta.c
++++ b/src/meta.c
+@@ -100,13 +100,13 @@ static struct error_record *tchandle_type_parse(struct parse_ctx *ctx,
+ 		handle = strtoull(sym->identifier, NULL, 0);
  	}
+ out:
+-	xfree(str);
++	free(str);
+ 	*res = constant_expr_alloc(&sym->location, sym->dtype,
+ 				   BYTEORDER_HOST_ENDIAN,
+ 				   sizeof(handle) * BITS_PER_BYTE, &handle);
+ 	return NULL;
+ err:
+-	xfree(str);
++	free(str);
+ 	return error(&sym->location, "Could not parse %s", sym->dtype->desc);
+ }
  
- 	ret = __nft_run_cmd_from_filename(nft, filename);
--	xfree(nft->stdin_buf);
-+	free_const(nft->stdin_buf);
+diff --git a/src/misspell.c b/src/misspell.c
+index b48ab9cd3342..8cac39f1936b 100644
+--- a/src/misspell.c
++++ b/src/misspell.c
+@@ -73,7 +73,7 @@ static unsigned int string_distance(const char *a, const char *b)
+ 
+ 	ret = DISTANCE(len_a, len_b);
+ 
+-	xfree(distance);
++	free(distance);
  
  	return ret;
  }
 diff --git a/src/mnl.c b/src/mnl.c
-index 67bb44a6eb0d..5b11676c81ac 100644
+index 5b11676c81ac..f5707df39ffe 100644
 --- a/src/mnl.c
 +++ b/src/mnl.c
-@@ -777,9 +777,9 @@ static void nft_dev_array_free(const struct nft_dev *dev_array)
- 	int i = 0;
- 
- 	while (dev_array[i].ifname != NULL)
--		xfree(dev_array[i++].ifname);
-+		free_const(dev_array[i++].ifname);
- 
--	xfree(dev_array);
-+	free_const(dev_array);
- }
- 
- static void mnl_nft_chain_devs_build(struct nlmsghdr *nlh, struct cmd *cmd)
-@@ -2176,10 +2176,10 @@ static struct basehook *basehook_alloc(void)
- static void basehook_free(struct basehook *b)
+@@ -243,7 +243,7 @@ static void mnl_err_list_node_add(struct list_head *err_list, int error,
+ void mnl_err_list_free(struct mnl_err *err)
  {
- 	list_del(&b->list);
--	xfree(b->module_name);
--	xfree(b->hookfn);
--	xfree(b->chain);
--	xfree(b->table);
-+	free_const(b->module_name);
-+	free_const(b->hookfn);
-+	free_const(b->chain);
-+	free_const(b->table);
- 	xfree(b);
+ 	list_del(&err->head);
+-	xfree(err);
++	free(err);
  }
  
+ static void mnl_set_sndbuffer(struct netlink_ctx *ctx)
+@@ -2180,7 +2180,7 @@ static void basehook_free(struct basehook *b)
+ 	free_const(b->hookfn);
+ 	free_const(b->chain);
+ 	free_const(b->table);
+-	xfree(b);
++	free(b);
+ }
+ 
+ static void basehook_list_add_tail(struct basehook *b, struct list_head *head)
+diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
+index 53a318aa2e62..d7ece045131a 100644
+--- a/src/netlink_linearize.c
++++ b/src/netlink_linearize.c
+@@ -1744,9 +1744,9 @@ void netlink_linearize_fini(struct netlink_linearize_ctx *lctx)
+ 
+ 	for (i = 0; i < NFT_EXPR_LOC_HSIZE; i++) {
+ 		list_for_each_entry_safe(eloc, next, &lctx->expr_loc_htable[i], hlist)
+-			xfree(eloc);
++			free(eloc);
+ 	}
+-	xfree(lctx->expr_loc_htable);
++	free(lctx->expr_loc_htable);
+ }
+ 
+ void netlink_linearize_rule(struct netlink_ctx *ctx,
 diff --git a/src/optimize.c b/src/optimize.c
-index 9c1704831693..2e1079116cd0 100644
+index 2e1079116cd0..6b8ddbf3c6f6 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -1195,7 +1195,7 @@ static void merge_rules(const struct optimize_ctx *ctx,
+@@ -1348,16 +1348,16 @@ static int chain_optimize(struct nft_ctx *nft, struct list_head *rules)
  	}
+ 	ret = 0;
+ 	for (i = 0; i < ctx->num_rules; i++)
+-		xfree(ctx->stmt_matrix[i]);
++		free(ctx->stmt_matrix[i]);
  
- 	if (ctx->rule[from]->comment) {
--		xfree(ctx->rule[from]->comment);
-+		free_const(ctx->rule[from]->comment);
- 		ctx->rule[from]->comment = NULL;
- 	}
+-	xfree(ctx->stmt_matrix);
+-	xfree(merge);
++	free(ctx->stmt_matrix);
++	free(merge);
+ err:
+ 	for (i = 0; i < ctx->num_stmts; i++)
+ 		stmt_free(ctx->stmt[i]);
  
+-	xfree(ctx->rule);
+-	xfree(ctx);
++	free(ctx->rule);
++	free(ctx);
+ 
+ 	return ret;
+ }
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index bfd53ab3b63a..2bbd028c1477 100644
+index 2bbd028c1477..6122e416a686 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -153,13 +153,13 @@ static struct expr *ifname_expr_alloc(const struct location *location,
- 	struct expr *expr;
- 
- 	if (length == 0) {
--		xfree(name);
-+		free_const(name);
- 		erec_queue(error(location, "empty interface name"), queue);
- 		return NULL;
- 	}
- 
- 	if (length > 16) {
--		xfree(name);
-+		free_const(name);
- 		erec_queue(error(location, "interface name too long"), queue);
- 		return NULL;
- 	}
-@@ -167,7 +167,7 @@ static struct expr *ifname_expr_alloc(const struct location *location,
- 	expr = constant_expr_alloc(location, &ifname_type, BYTEORDER_HOST_ENDIAN,
- 				   length * BITS_PER_BYTE, name);
- 
--	xfree(name);
-+	free_const(name);
- 
- 	return expr;
- }
-@@ -357,7 +357,7 @@ int nft_lex(void *, void *, void *);
- %token <string> STRING		"string"
- %token <string> QUOTED_STRING	"quoted string"
- %token <string> ASTERISK_STRING	"string with a trailing asterisk"
--%destructor { xfree($$); }	STRING QUOTED_STRING ASTERISK_STRING
-+%destructor { free_const($$); }	STRING QUOTED_STRING ASTERISK_STRING
- 
- %token LL_HDR			"ll"
- %token NETWORK_HDR		"nh"
-@@ -672,7 +672,7 @@ int nft_lex(void *, void *, void *);
- %type <limit_rate>		limit_rate_bytes
- 
- %type <string>			identifier type_identifier string comment_spec
--%destructor { xfree($$); }	identifier type_identifier string comment_spec
-+%destructor { free_const($$); }	identifier type_identifier string comment_spec
- 
- %type <val>			time_spec time_spec_or_num_s quota_used
- 
-@@ -707,7 +707,7 @@ int nft_lex(void *, void *, void *);
- %type <val32>			int_num	chain_policy
- %type <prio_spec>		extended_prio_spec prio_spec
- %type <string>			extended_prio_name quota_unit	basehook_device_name
--%destructor { xfree($$); }	extended_prio_name quota_unit	basehook_device_name
-+%destructor { free_const($$); }	extended_prio_name quota_unit	basehook_device_name
+@@ -710,7 +710,7 @@ int nft_lex(void *, void *, void *);
+ %destructor { free_const($$); }	extended_prio_name quota_unit	basehook_device_name
  
  %type <expr>			dev_spec
- %destructor { xfree($$); }	dev_spec
-@@ -926,7 +926,7 @@ int nft_lex(void *, void *, void *);
+-%destructor { xfree($$); }	dev_spec
++%destructor { free($$); }	dev_spec
  
- %type <val>			markup_format
- %type <string>			monitor_event
--%destructor { xfree($$); }	monitor_event
-+%destructor { free_const($$); }	monitor_event
- %type <val>			monitor_object	monitor_format
+ %type <table>			table_block_alloc table_block
+ %destructor { close_scope(state); table_free($$); }	table_block_alloc
+@@ -737,7 +737,7 @@ int nft_lex(void *, void *, void *);
+ %destructor { obj_free($$); }	obj_block_alloc
  
- %type <val>			synproxy_ts	synproxy_sack
-@@ -1051,10 +1051,10 @@ close_scope_xt		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_XT); }
- common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
- 			{
- 				if (scanner_include_file(nft, scanner, $2, &@$) < 0) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
--				xfree($2);
-+				free_const($2);
- 			}
- 			|	DEFINE		identifier	'='	initializer_expr	stmt_separator
- 			{
-@@ -1064,19 +1064,19 @@ common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
- 					erec_queue(error(&@2, "redefinition of symbol '%s'", $2),
- 						   state->msgs);
- 					expr_free($4);
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
+ %type <list>			stmt_list stateful_stmt_list set_elem_stmt_list
+-%destructor { stmt_list_free($$); xfree($$); } stmt_list stateful_stmt_list set_elem_stmt_list
++%destructor { stmt_list_free($$); free($$); } stmt_list stateful_stmt_list set_elem_stmt_list
+ %type <stmt>			stmt match_stmt verdict_stmt set_elem_stmt
+ %destructor { stmt_free($$); }	stmt match_stmt verdict_stmt set_elem_stmt
+ %type <stmt>			counter_stmt counter_stmt_alloc stateful_stmt last_stmt
+@@ -963,7 +963,7 @@ int nft_lex(void *, void *, void *);
+ %type <val>			ct_l4protoname ct_obj_type ct_cmd_type
  
- 				symbol_bind(scope, $2, $4);
--				xfree($2);
-+				free_const($2);
- 			}
- 			|	REDEFINE	identifier	'='	initializer_expr	stmt_separator
- 			{
- 				struct scope *scope = current_scope(state);
+ %type <list>			timeout_states timeout_state
+-%destructor { xfree($$); }	timeout_states timeout_state
++%destructor { free($$); }	timeout_states timeout_state
  
- 				symbol_bind(scope, $2, $4);
--				xfree($2);
-+				free_const($2);
- 			}
- 			|	UNDEFINE	identifier	stmt_separator
- 			{
-@@ -1085,10 +1085,10 @@ common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
- 				if (symbol_unbind(scope, $2) < 0) {
- 					erec_queue(error(&@2, "undefined symbol '%s'", $2),
- 						   state->msgs);
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
--				xfree($2);
-+				free_const($2);
- 			}
- 			|	error		stmt_separator
- 			{
-@@ -1877,21 +1877,21 @@ table_options		:	FLAGS		STRING
- 			{
- 				if (strcmp($2, "dormant") == 0) {
- 					$<table>0->flags |= TABLE_F_DORMANT;
--					xfree($2);
-+					free_const($2);
- 				} else if (strcmp($2, "owner") == 0) {
- 					$<table>0->flags |= TABLE_F_OWNER;
--					xfree($2);
-+					free_const($2);
- 				} else {
- 					erec_queue(error(&@2, "unknown table option %s", $2),
- 						   state->msgs);
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 			}
- 			|	comment_spec
- 			{
- 				if (already_set($<table>0->comment, &@$, state)) {
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
- 				$<table>0->comment = $1;
-@@ -2062,7 +2062,7 @@ chain_block		:	/* empty */	{ $$ = $<chain>-1; }
- 			|	chain_block	comment_spec	stmt_separator
- 			{
- 				if (already_set($1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$1->comment = $2;
-@@ -2188,7 +2188,7 @@ set_block		:	/* empty */	{ $$ = $<set>-1; }
- 			|	set_block	comment_spec	stmt_separator
- 			{
- 				if (already_set($1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$1->comment = $2;
-@@ -2305,7 +2305,7 @@ map_block		:	/* empty */	{ $$ = $<set>-1; }
- 			|	map_block	comment_spec	stmt_separator
- 			{
- 				if (already_set($1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$1->comment = $2;
-@@ -2344,10 +2344,10 @@ flowtable_block		:	/* empty */	{ $$ = $<flowtable>-1; }
- 				if ($$->hook.name == NULL) {
- 					erec_queue(error(&@3, "unknown chain hook"),
- 						   state->msgs);
--					xfree($3);
-+					free_const($3);
- 					YYERROR;
- 				}
--				xfree($3);
-+				free_const($3);
- 
- 				$$->priority = $4;
- 			}
-@@ -2421,12 +2421,12 @@ data_type_atom_expr	:	type_identifier
- 				if (dtype == NULL) {
- 					erec_queue(error(&@1, "unknown datatype %s", $1),
- 						   state->msgs);
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
- 				$$ = constant_expr_alloc(&@1, dtype, dtype->byteorder,
- 							 dtype->size, NULL);
+ %type <val>			xfrm_state_key	xfrm_state_proto_key xfrm_dir	xfrm_spnum
+ %type <expr>			xfrm_expr
+@@ -3019,7 +3019,7 @@ rule_alloc		:	stmt_list
+ 				list_for_each_entry(i, $1, list)
+ 					$$->num_stmts++;
+ 				list_splice_tail($1, &$$->stmts);
 -				xfree($1);
-+				free_const($1);
- 			}
- 			|	TIME
- 			{
-@@ -2463,7 +2463,7 @@ counter_block		:	/* empty */	{ $$ = $<obj>-1; }
- 			|	counter_block	  comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2480,7 +2480,7 @@ quota_block		:	/* empty */	{ $$ = $<obj>-1; }
- 			|	quota_block	comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2497,7 +2497,7 @@ ct_helper_block		:	/* empty */	{ $$ = $<obj>-1; }
- 			|       ct_helper_block     comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2518,7 +2518,7 @@ ct_timeout_block	:	/*empty */
- 			|       ct_timeout_block     comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2535,7 +2535,7 @@ ct_expect_block		:	/*empty */	{ $$ = $<obj>-1; }
- 			|       ct_expect_block     comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2552,7 +2552,7 @@ limit_block		:	/* empty */	{ $$ = $<obj>-1; }
- 			|       limit_block     comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2569,7 +2569,7 @@ secmark_block		:	/* empty */	{ $$ = $<obj>-1; }
- 			|       secmark_block     comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2586,7 +2586,7 @@ synproxy_block		:	/* empty */	{ $$ = $<obj>-1; }
- 			|       synproxy_block     comment_spec
- 			{
- 				if (already_set($<obj>1->comment, &@2, state)) {
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$<obj>1->comment = $2;
-@@ -2607,12 +2607,12 @@ hook_spec		:	TYPE		close_scope_type	STRING		HOOK		STRING		dev_spec	prio_spec
- 				if (chain_type == NULL) {
- 					erec_queue(error(&@3, "unknown chain type"),
- 						   state->msgs);
--					xfree($3);
-+					free_const($3);
- 					YYERROR;
- 				}
- 				$<chain>0->type.loc = @3;
- 				$<chain>0->type.str = xstrdup(chain_type);
--				xfree($3);
-+				free_const($3);
- 
- 				$<chain>0->loc = @$;
- 				$<chain>0->hook.loc = @5;
-@@ -2620,10 +2620,10 @@ hook_spec		:	TYPE		close_scope_type	STRING		HOOK		STRING		dev_spec	prio_spec
- 				if ($<chain>0->hook.name == NULL) {
- 					erec_queue(error(&@5, "unknown chain hook"),
- 						   state->msgs);
--					xfree($5);
-+					free_const($5);
- 					YYERROR;
- 				}
--				xfree($5);
-+				free_const($5);
- 
- 				$<chain>0->dev_expr	= $6;
- 				$<chain>0->priority	= $7;
-@@ -2670,7 +2670,7 @@ extended_prio_spec	:	int_num
- 								BYTEORDER_HOST_ENDIAN,
- 								strlen($1) * BITS_PER_BYTE,
- 								$1);
--				xfree($1);
-+				free_const($1);
- 				$$ = spec;
- 			}
- 			|	extended_prio_name PLUS NUM
-@@ -2683,7 +2683,7 @@ extended_prio_spec	:	int_num
- 								BYTEORDER_HOST_ENDIAN,
- 								strlen(str) * BITS_PER_BYTE,
- 								str);
--				xfree($1);
-+				free_const($1);
- 				$$ = spec;
- 			}
- 			|	extended_prio_name DASH NUM
-@@ -2696,7 +2696,7 @@ extended_prio_spec	:	int_num
- 								BYTEORDER_HOST_ENDIAN,
- 								strlen(str) * BITS_PER_BYTE,
- 								str);
--				xfree($1);
-+				free_const($1);
- 				$$ = spec;
- 			}
- 			;
-@@ -2781,7 +2781,7 @@ time_spec		:	STRING
- 				uint64_t res;
- 
- 				erec = time_parse(&@1, $1, &res);
--				xfree($1);
-+				free_const($1);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -2982,7 +2982,7 @@ comment_spec		:	COMMENT		string
- 					erec_queue(error(&@2, "comment too long, %d characters maximum allowed",
- 							 NFTNL_UDATA_COMMENT_MAXLEN),
- 						   state->msgs);
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 				$$ = $2;
-@@ -3083,8 +3083,8 @@ stmt			:	verdict_stmt
- xt_stmt			:	XT	STRING	string
- 			{
- 				$$ = NULL;
--				xfree($2);
--				xfree($3);
-+				free_const($2);
-+				free_const($3);
- 				erec_queue(error(&@$, "unsupported xtables compat expression, use iptables-nft with this ruleset"),
- 					   state->msgs);
- 				YYERROR;
-@@ -3242,7 +3242,7 @@ log_arg			:	PREFIX			string
- 					expr = constant_expr_alloc(&@$, &string_type,
- 								   BYTEORDER_HOST_ENDIAN,
- 								   (strlen($2) + 1) * BITS_PER_BYTE, $2);
--					xfree($2);
-+					free_const($2);
- 					$<stmt>0->log.prefix = expr;
- 					$<stmt>0->log.flags |= STMT_LOG_PREFIX;
- 					break;
-@@ -3316,7 +3316,7 @@ log_arg			:	PREFIX			string
- 									   state->msgs);
- 							}
- 							expr_free(expr);
--							xfree($2);
-+							free_const($2);
- 							YYERROR;
- 						}
- 						item = variable_expr_alloc(&@$, scope, sym);
-@@ -3346,7 +3346,7 @@ log_arg			:	PREFIX			string
- 					}
- 				}
- 
--				xfree($2);
-+				free_const($2);
- 				$<stmt>0->log.prefix	 = expr;
- 				$<stmt>0->log.flags 	|= STMT_LOG_PREFIX;
- 			}
-@@ -3399,10 +3399,10 @@ level_type		:	string
- 				else {
- 					erec_queue(error(&@1, "invalid log level"),
- 						   state->msgs);
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
--				xfree($1);
-+				free_const($1);
++				free($1);
  			}
  			;
  
-@@ -3492,7 +3492,7 @@ quota_used		:	/* empty */	{ $$ = 0; }
- 				uint64_t rate;
+@@ -4532,7 +4532,7 @@ set_elem_expr_alloc	:	set_elem_key_expr	set_elem_stmt_list
+ 			{
+ 				$$ = set_elem_expr_alloc(&@1, $1);
+ 				list_splice_tail($2, &$$->stmt_list);
+-				xfree($2);
++				free($2);
+ 			}
+ 			|	set_elem_key_expr
+ 			{
+@@ -4844,7 +4844,7 @@ ct_timeout_config	:	PROTOCOL	ct_l4protoname	stmt_separator
  
- 				erec = data_unit_parse(&@$, $3, &rate);
--				xfree($3);
-+				free_const($3);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -3507,7 +3507,7 @@ quota_stmt		:	QUOTA	quota_mode NUM quota_unit quota_used	close_scope_quota
- 				uint64_t rate;
- 
- 				erec = data_unit_parse(&@$, $4, &rate);
+ 				ct = &$<obj>0->ct_timeout;
+ 				list_splice_tail($4, &ct->timeout_list);
 -				xfree($4);
-+				free_const($4);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -3551,7 +3551,7 @@ limit_rate_bytes	:	NUM     STRING
- 				uint64_t rate, unit;
- 
- 				erec = rate_parse(&@$, $2, &rate, &unit);
--				xfree($2);
-+				free_const($2);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -3573,7 +3573,7 @@ limit_bytes		:	NUM	BYTES		{ $$ = $1; }
- 				uint64_t rate;
- 
- 				erec = data_unit_parse(&@$, $2, &rate);
--				xfree($2);
-+				free_const($2);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -3602,7 +3602,7 @@ reject_with_expr	:	STRING
++				free($4);
+ 			}
+ 			|	L3PROTOCOL	family_spec_explicit	stmt_separator
  			{
- 				$$ = symbol_expr_alloc(&@$, SYMBOL_VALUE,
- 						       current_scope(state), $1);
--				xfree($1);
-+				free_const($1);
- 			}
- 			|	integer_expr	{ $$ = $1; }
- 			;
-@@ -4266,12 +4266,12 @@ variable_expr		:	'$'	identifier
- 						erec_queue(error(&@2, "unknown identifier '%s'", $2),
- 							   state->msgs);
- 					}
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
- 
- 				$$ = variable_expr_alloc(&@$, scope, sym);
--				xfree($2);
-+				free_const($2);
- 			}
- 			;
- 
-@@ -4281,7 +4281,7 @@ symbol_expr		:	variable_expr
- 				$$ = symbol_expr_alloc(&@$, SYMBOL_VALUE,
- 						       current_scope(state),
- 						       $1);
--				xfree($1);
-+				free_const($1);
- 			}
- 			;
- 
-@@ -4294,7 +4294,7 @@ set_ref_symbol_expr	:	AT	identifier	close_scope_at
- 				$$ = symbol_expr_alloc(&@$, SYMBOL_SET,
- 						       current_scope(state),
- 						       $2);
--				xfree($2);
-+				free_const($2);
- 			}
- 			;
- 
-@@ -4391,10 +4391,10 @@ osf_ttl			:	/* empty */
- 				else {
- 					erec_queue(error(&@2, "invalid ttl option"),
- 						   state->msgs);
--					xfree($2);
-+					free_const($2);
- 					YYERROR;
- 				}
--				xfree($2);
-+				free_const($2);
- 			}
- 			;
- 
-@@ -4558,7 +4558,7 @@ set_elem_option		:	TIMEOUT			time_spec
- 			|	comment_spec
- 			{
- 				if (already_set($<expr>0->comment, &@1, state)) {
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
- 				$<expr>0->comment = $1;
-@@ -4640,7 +4640,7 @@ set_elem_stmt		:	COUNTER	close_scope_counter
- 				uint64_t rate;
- 
- 				erec = data_unit_parse(&@$, $4, &rate);
--				xfree($4);
-+				free_const($4);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -4673,7 +4673,7 @@ set_elem_expr_option	:	TIMEOUT			time_spec
- 			|	comment_spec
- 			{
- 				if (already_set($<expr>0->comment, &@1, state)) {
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
- 				$<expr>0->comment = $1;
-@@ -4725,7 +4725,7 @@ quota_config		:	quota_mode NUM quota_unit quota_used
- 				uint64_t rate;
- 
- 				erec = data_unit_parse(&@$, $3, &rate);
--				xfree($3);
-+				free_const($3);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -4754,10 +4754,10 @@ secmark_config		:	string
- 				ret = snprintf(secmark->ctx, sizeof(secmark->ctx), "%s", $1);
- 				if (ret <= 0 || ret >= (int)sizeof(secmark->ctx)) {
- 					erec_queue(error(&@1, "invalid context '%s', max length is %u\n", $1, (int)sizeof(secmark->ctx)), state->msgs);
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
--				xfree($1);
-+				free_const($1);
- 			}
- 			;
- 
-@@ -4794,7 +4794,7 @@ ct_helper_config		:	TYPE	QUOTED_STRING	PROTOCOL	ct_l4protoname	stmt_separator	cl
- 					erec_queue(error(&@2, "invalid name '%s', max length is %u\n", $2, (int)sizeof(ct->name)), state->msgs);
- 					YYERROR;
- 				}
--				xfree($2);
-+				free_const($2);
- 
- 				ct->l4proto = $4;
- 			}
-@@ -5189,7 +5189,7 @@ chain_expr		:	variable_expr
- 							 BYTEORDER_HOST_ENDIAN,
- 							 strlen($1) * BITS_PER_BYTE,
- 							 $1);
--				xfree($1);
-+				free_const($1);
- 			}
- 			;
- 
-@@ -5207,7 +5207,7 @@ meta_expr		:	META	meta_key	close_scope_meta
- 				unsigned int key;
- 
- 				erec = meta_key_parse(&@$, $2, &key);
--				xfree($2);
-+				free_const($2);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -5284,7 +5284,7 @@ meta_stmt		:	META	meta_key	SET	stmt_expr	close_scope_meta
- 				unsigned int key;
- 
- 				erec = meta_key_parse(&@$, $2, &key);
--				xfree($2);
-+				free_const($2);
- 				if (erec != NULL) {
- 					erec_queue(erec, state->msgs);
- 					YYERROR;
-@@ -5595,10 +5595,10 @@ payload_base_spec	:	LL_HDR		{ $$ = PROTO_BASE_LL_HDR; }
- 					$$ = PROTO_BASE_INNER_HDR;
- 				} else {
- 					erec_queue(error(&@1, "unknown raw payload base"), state->msgs);
--					xfree($1);
-+					free_const($1);
- 					YYERROR;
- 				}
--				xfree($1);
-+				free_const($1);
- 			}
- 			;
- 
 diff --git a/src/rule.c b/src/rule.c
-index faa12afb3a07..6e02cca06d42 100644
+index 6e02cca06d42..e1a4d6b74f3b 100644
 --- a/src/rule.c
 +++ b/src/rule.c
-@@ -105,11 +105,11 @@ int timeout_str2num(uint16_t l4proto, struct timeout_state *ts)
- 
- void handle_free(struct handle *h)
- {
--	xfree(h->table.name);
--	xfree(h->chain.name);
--	xfree(h->set.name);
--	xfree(h->flowtable.name);
--	xfree(h->obj.name);
-+	free_const(h->table.name);
-+	free_const(h->chain.name);
-+	free_const(h->set.name);
-+	free_const(h->flowtable.name);
-+	free_const(h->obj.name);
+@@ -201,7 +201,7 @@ void set_free(struct set *set)
+ 		stmt_free(stmt);
+ 	expr_free(set->key);
+ 	expr_free(set->data);
+-	xfree(set);
++	free(set);
  }
  
- void handle_merge(struct handle *dst, const struct handle *src)
-@@ -195,7 +195,7 @@ void set_free(struct set *set)
- 
- 	expr_free(set->init);
- 	if (set->comment)
--		xfree(set->comment);
-+		free_const(set->comment);
- 	handle_free(&set->handle);
- 	list_for_each_entry_safe(stmt, next, &set->stmt_list, list)
- 		stmt_free(stmt);
-@@ -480,7 +480,7 @@ void rule_free(struct rule *rule)
- 		return;
+ struct set *set_lookup_fuzzy(const char *set_name,
+@@ -481,7 +481,7 @@ void rule_free(struct rule *rule)
  	stmt_list_free(&rule->stmts);
  	handle_free(&rule->handle);
--	xfree(rule->comment);
-+	free_const(rule->comment);
- 	xfree(rule);
+ 	free_const(rule->comment);
+-	xfree(rule);
++	free(rule);
  }
  
-@@ -558,7 +558,7 @@ void scope_release(const struct scope *scope)
- 	list_for_each_entry_safe(sym, next, &scope->symbols, list) {
- 		assert(sym->refcnt == 1);
+ void rule_print(const struct rule *rule, struct output_ctx *octx)
+@@ -560,14 +560,14 @@ void scope_release(const struct scope *scope)
  		list_del(&sym->list);
--		xfree(sym->identifier);
-+		free_const(sym->identifier);
+ 		free_const(sym->identifier);
  		expr_free(sym->expr);
- 		xfree(sym);
+-		xfree(sym);
++		free(sym);
  	}
-@@ -598,7 +598,7 @@ struct symbol *symbol_get(const struct scope *scope, const char *identifier)
- static void symbol_put(struct symbol *sym)
+ }
+ 
+ void scope_free(struct scope *scope)
  {
+ 	scope_release(scope);
+-	xfree(scope);
++	free(scope);
+ }
+ 
+ void symbol_bind(struct scope *scope, const char *identifier, struct expr *expr)
+@@ -600,7 +600,7 @@ static void symbol_put(struct symbol *sym)
  	if (--sym->refcnt == 0) {
--		xfree(sym->identifier);
-+		free_const(sym->identifier);
+ 		free_const(sym->identifier);
  		expr_free(sym->expr);
- 		xfree(sym);
+-		xfree(sym);
++		free(sym);
  	}
-@@ -731,14 +731,14 @@ void chain_free(struct chain *chain)
- 		rule_free(rule);
- 	handle_free(&chain->handle);
- 	scope_release(&chain->scope);
--	xfree(chain->type.str);
-+	free_const(chain->type.str);
+ }
+ 
+@@ -735,11 +735,11 @@ void chain_free(struct chain *chain)
  	expr_free(chain->dev_expr);
  	for (i = 0; i < chain->dev_array_len; i++)
--		xfree(chain->dev_array[i]);
-+		free_const(chain->dev_array[i]);
- 	xfree(chain->dev_array);
+ 		free_const(chain->dev_array[i]);
+-	xfree(chain->dev_array);
++	free(chain->dev_array);
  	expr_free(chain->priority.expr);
  	expr_free(chain->policy);
--	xfree(chain->comment);
-+	free_const(chain->comment);
- 	xfree(chain);
+ 	free_const(chain->comment);
+-	xfree(chain);
++	free(chain);
  }
  
-@@ -1152,7 +1152,7 @@ void table_free(struct table *table)
- 	if (--table->refcnt > 0)
- 		return;
- 	if (table->comment)
--		xfree(table->comment);
-+		free_const(table->comment);
- 	list_for_each_entry_safe(chain, next, &table->chains, list)
- 		chain_free(chain);
- 	list_for_each_entry_safe(chain, next, &table->chain_bindings, cache.list)
-@@ -1349,7 +1349,7 @@ struct monitor *monitor_alloc(uint32_t format, uint32_t type, const char *event)
+ struct chain *chain_binding_lookup(const struct table *table,
+@@ -1182,7 +1182,7 @@ void table_free(struct table *table)
+ 	cache_free(&table->set_cache);
+ 	cache_free(&table->obj_cache);
+ 	cache_free(&table->ft_cache);
+-	xfree(table);
++	free(table);
+ }
  
+ struct table *table_get(struct table *table)
+@@ -1331,7 +1331,7 @@ struct markup *markup_alloc(uint32_t format)
+ 
+ void markup_free(struct markup *m)
+ {
+-	xfree(m);
++	free(m);
+ }
+ 
+ struct monitor *monitor_alloc(uint32_t format, uint32_t type, const char *event)
+@@ -1350,7 +1350,7 @@ struct monitor *monitor_alloc(uint32_t format, uint32_t type, const char *event)
  void monitor_free(struct monitor *m)
  {
--	xfree(m->event);
-+	free_const(m->event);
- 	xfree(m);
+ 	free_const(m->event);
+-	xfree(m);
++	free(m);
  }
  
-@@ -1405,7 +1405,7 @@ void cmd_free(struct cmd *cmd)
+ void cmd_free(struct cmd *cmd)
+@@ -1404,9 +1404,9 @@ void cmd_free(struct cmd *cmd)
+ 			BUG("invalid command object type %u\n", cmd->obj);
  		}
  	}
- 	xfree(cmd->attr);
--	xfree(cmd->arg);
-+	free_const(cmd->arg);
- 	xfree(cmd);
+-	xfree(cmd->attr);
++	free(cmd->attr);
+ 	free_const(cmd->arg);
+-	xfree(cmd);
++	free(cmd);
  }
  
-@@ -1643,14 +1643,14 @@ void obj_free(struct obj *obj)
- {
- 	if (--obj->refcnt > 0)
- 		return;
--	xfree(obj->comment);
-+	free_const(obj->comment);
- 	handle_free(&obj->handle);
- 	if (obj->type == NFT_OBJECT_CT_TIMEOUT) {
- 		struct timeout_state *ts, *next;
- 
+ #include <netlink.h>
+@@ -1651,10 +1651,10 @@ void obj_free(struct obj *obj)
  		list_for_each_entry_safe(ts, next, &obj->ct_timeout.timeout_list, head) {
  			list_del(&ts->head);
--			xfree(ts->timeout_str);
-+			free_const(ts->timeout_str);
- 			xfree(ts);
+ 			free_const(ts->timeout_str);
+-			xfree(ts);
++			free(ts);
  		}
  	}
-@@ -2063,7 +2063,7 @@ void flowtable_free(struct flowtable *flowtable)
+-	xfree(obj);
++	free(obj);
+ }
  
+ struct obj *obj_lookup_fuzzy(const char *obj_name,
+@@ -2064,9 +2064,9 @@ void flowtable_free(struct flowtable *flowtable)
  	if (flowtable->dev_array != NULL) {
  		for (i = 0; i < flowtable->dev_array_len; i++)
--			xfree(flowtable->dev_array[i]);
-+			free_const(flowtable->dev_array[i]);
- 		xfree(flowtable->dev_array);
+ 			free_const(flowtable->dev_array[i]);
+-		xfree(flowtable->dev_array);
++		free(flowtable->dev_array);
  	}
- 	xfree(flowtable);
+-	xfree(flowtable);
++	free(flowtable);
+ }
+ 
+ static void flowtable_print_declaration(const struct flowtable *flowtable,
 diff --git a/src/scanner.l b/src/scanner.l
-index 1aae1ecb09ef..c04a58dddc89 100644
+index c04a58dddc89..1bbb5e0a2075 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -1196,8 +1196,8 @@ void *scanner_init(struct parser_state *state)
- static void input_descriptor_destroy(const struct input_descriptor *indesc)
- {
- 	if (indesc->name)
--		xfree(indesc->name);
--	xfree(indesc);
-+		free_const(indesc->name);
-+	free_const(indesc);
- }
+@@ -1219,7 +1219,7 @@ void scanner_destroy(struct nft_ctx *nft)
+ 	struct parser_state *state = yyget_extra(nft->scanner);
  
- static void input_descriptor_list_destroy(struct parser_state *state)
+ 	input_descriptor_list_destroy(state);
+-	xfree(state->startcond_active);
++	free(state->startcond_active);
+ 
+ 	yylex_destroy(nft->scanner);
+ }
+diff --git a/src/segtree.c b/src/segtree.c
+index 0a12a0cd5151..1cd19b513cb4 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -633,6 +633,6 @@ out:
+ 	if (catchall)
+ 		compound_expr_add(set, catchall);
+ 
+-	xfree(ranges);
+-	xfree(elements);
++	free(ranges);
++	free(elements);
+ }
 diff --git a/src/statement.c b/src/statement.c
-index 721739498e2e..1ea24f01e376 100644
+index 1ea24f01e376..5561ceec837f 100644
 --- a/src/statement.c
 +++ b/src/statement.c
-@@ -184,7 +184,7 @@ static void meter_stmt_destroy(struct stmt *stmt)
- 	expr_free(stmt->meter.key);
- 	expr_free(stmt->meter.set);
- 	stmt_free(stmt->meter.stmt);
--	xfree(stmt->meter.name);
-+	free_const(stmt->meter.name);
+@@ -52,7 +52,7 @@ void stmt_free(struct stmt *stmt)
+ 		return;
+ 	if (stmt->ops->destroy)
+ 		stmt->ops->destroy(stmt);
+-	xfree(stmt);
++	free(stmt);
  }
  
- static const struct stmt_ops meter_stmt_ops = {
+ void stmt_list_free(struct list_head *list)
+diff --git a/src/utils.c b/src/utils.c
+index caedebda183b..e5b3d5626b98 100644
+--- a/src/utils.c
++++ b/src/utils.c
+@@ -25,11 +25,6 @@ void __noreturn __memory_allocation_error(const char *filename, uint32_t line)
+ 	exit(NFT_EXIT_NOMEM);
+ }
+ 
+-void xfree(const void *ptr)
+-{
+-	free((void *)ptr);
+-}
+-
+ void *xmalloc(size_t size)
+ {
+ 	void *ptr;
 diff --git a/src/xt.c b/src/xt.c
-index bb87e86e02af..9114009e10dd 100644
+index 9114009e10dd..a56c44049043 100644
 --- a/src/xt.c
 +++ b/src/xt.c
-@@ -125,7 +125,7 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
+@@ -79,7 +79,7 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
  
+ 			rc = mt->xlate(xl, &params);
+ 		}
+-		xfree(m);
++		free(m);
+ 		break;
+ 	case NFT_XT_WATCHER:
+ 	case NFT_XT_TARGET:
+@@ -109,14 +109,14 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
+ 
+ 			rc = tg->xlate(xl, &params);
+ 		}
+-		xfree(t);
++		free(t);
+ 		break;
+ 	}
+ 
+ 	if (rc == 1)
+ 		nft_print(octx, "%s", xt_xlate_get(xl));
+ 	xt_xlate_free(xl);
+-	xfree(entry);
++	free(entry);
+ #endif
+ 	if (!rc)
+ 		nft_print(octx, "xt %s \"%s\"",
+@@ -126,7 +126,7 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
  void xt_stmt_destroy(struct stmt *stmt)
  {
--	xfree(stmt->xt.name);
-+	free_const(stmt->xt.name);
- 	xfree(stmt->xt.info);
+ 	free_const(stmt->xt.name);
+-	xfree(stmt->xt.info);
++	free(stmt->xt.info);
  }
  
+ #ifdef HAVE_LIBXTABLES
 -- 
 2.41.0
 
