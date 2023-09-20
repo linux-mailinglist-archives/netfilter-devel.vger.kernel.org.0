@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583057A8E0A
+	by mail.lfdr.de (Postfix) with ESMTP id CA5BD7A8E0D
 	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 22:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjITU5l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Sep 2023 16:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+        id S229826AbjITU5m (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Sep 2023 16:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjITU5k (ORCPT
+        with ESMTP id S229606AbjITU5k (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 20 Sep 2023 16:57:40 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483ED91
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC9ECA
         for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 13:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WGZ6a679fwvCCCReBxV/nkmR+0ZQYJj3IXsQklk+bWk=; b=cLM0KPFWkYzWdgEGnfWuIrpEdc
-        JJASIjl0NNisO4zZizMxryhU/E7E4F6QFVtsJz4w3TzeRFfSE/H5SYaZtHhwvcsMbtaPWCiLo8JaW
-        xp+OpARXxHKjcaqozQygl62lpjYdev3vp2IdNDTzEUxB+VxIQcjPPWvBiq/LWpzKJH/AhJ5mt8zwt
-        2kwxDBvvk+lndezCzsf+BPeO1CWpgjZfDFA3q45dhxMPTZLD9Q6udVACSSM7ubn59BBoA0p2G1vHy
-        wP1DNGGdn26jFpo+RXlSs9jckoj6XxPoT8vEXc3McYpjZNj367iXzyLqytxtqRNSEILdq1z9D+yi0
-        tzPD6mLQ==;
+        bh=LpCqGovgqpGRp0yYhc/iJRqd6A+6F7LBbM6V3t2YweQ=; b=S+S+WUJH2gkHNMPPzXcJFjNHXM
+        xx8YSCG2J5x4G+bxU8+WXxXMm6Neu5RjaVhz4LOd6dBFZFMmdIr57cws/k4uFI8FptuZtKs+lyBMC
+        XwQ/poB9gGlF/P7C2WwupCBYWjTJWuNoMx3AmODQOBlYo1eTPuSX0vFhzbaHRQ41qJiwLy2ykpuy0
+        2KQ9Qb1EoCjNTTHf3Dgn5nzcyHYunvieZVWfCVDVfZ2SrKZSHYc7IkLBGZFdwRW6CLykMM4OQ2a6u
+        RAd1Vp3xUx3Fj7SIqWtZzr+r208+6RkcyFJT2vCKyX4sIlryhaNt55pHi6YlBDbkWmkjprVoh+R8q
+        +N+cjeqg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qj4GJ-0007pz-HC; Wed, 20 Sep 2023 22:57:31 +0200
+        id 1qj4GK-0007qA-3F; Wed, 20 Sep 2023 22:57:32 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 7/9] parser_json: Wrong check in json_parse_ct_timeout_policy()
-Date:   Wed, 20 Sep 2023 22:57:25 +0200
-Message-ID: <20230920205727.22103-8-phil@nwl.cc>
+Subject: [nft PATCH 8/9] parser_json: Catch nonsense ops in match statement
+Date:   Wed, 20 Sep 2023 22:57:26 +0200
+Message-ID: <20230920205727.22103-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920205727.22103-1-phil@nwl.cc>
 References: <20230920205727.22103-1-phil@nwl.cc>
@@ -51,29 +51,42 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The conditional around json_unpack() was meant to accept a missing
-policy attribute. But the accidentally inverted check made the function
-either ignore a given policy or access uninitialized memory.
+Since expr_op_symbols array includes binary operators and more, simply
+checking the given string matches any of the elements is not sufficient.
 
-Fixes: c82a26ebf7e9f ("json: Add ct timeout support")
+Fixes: 586ad210368b7 ("libnftables: Implement JSON parser")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/parser_json.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/parser_json.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/src/parser_json.c b/src/parser_json.c
-index 8ec11083f463c..e33c470c7e224 100644
+index e33c470c7e224..15bb79a52bcc0 100644
 --- a/src/parser_json.c
 +++ b/src/parser_json.c
-@@ -3415,7 +3415,7 @@ static int json_parse_ct_timeout_policy(struct json_ctx *ctx,
- 	json_t *tmp, *val;
- 	const char *key;
+@@ -1725,13 +1725,18 @@ static struct stmt *json_parse_match_stmt(struct json_ctx *ctx,
+ 		    !strcmp(opstr, expr_op_symbols[op]))
+ 			break;
+ 	}
+-	if (op == __OP_MAX) {
++	switch (op) {
++	case OP_EQ ... OP_NEG:
++		break;
++	case __OP_MAX:
+ 		if (!strcmp(opstr, "in")) {
+ 			op = OP_IMPLICIT;
+-		} else {
+-			json_error(ctx, "Unknown relational op '%s'.", opstr);
+-			return NULL;
++			break;
+ 		}
++		/* fall through */
++	default:
++		json_error(ctx, "Invalid relational op '%s'.", opstr);
++		return NULL;
+ 	}
  
--	if (!json_unpack(root, "{s:o}", "policy", &tmp))
-+	if (json_unpack(root, "{s:o}", "policy", &tmp))
- 		return 0;
- 
- 	if (!json_is_object(tmp)) {
+ 	left = json_parse_expr(ctx, jleft);
 -- 
 2.41.0
 
