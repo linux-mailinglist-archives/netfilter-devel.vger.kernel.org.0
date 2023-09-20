@@ -2,92 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 418627A865C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 16:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7A27A8690
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 16:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjITOUR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Sep 2023 10:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        id S234561AbjITObA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Sep 2023 10:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbjITOUR (ORCPT
+        with ESMTP id S234641AbjITOa7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:20:17 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75B8AD;
-        Wed, 20 Sep 2023 07:20:11 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qiy3l-0003mT-7u; Wed, 20 Sep 2023 16:20:09 +0200
-Date:   Wed, 20 Sep 2023 16:20:09 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Sam James <sam@gentoo.org>
-Cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Jan Engelhardt <jengelh@inai.de>,
-        Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: [PATCH] build: Fix double-prefix w/ pkgconfig
-Message-ID: <ZQr/mYzd1cM2gIrX@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>, Sam James <sam@gentoo.org>,
-        netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Jan Engelhardt <jengelh@inai.de>, Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>
-References: <20230920133418.1893675-1-sam@gentoo.org>
+        Wed, 20 Sep 2023 10:30:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76038AD
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 07:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695220212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=b7j2L1ldlqazx+H6iA6L0qZxgG5xpwP/wZoq1frTRe8=;
+        b=Eh4uInGTVlbak1eHRc99TfZLhkVg4Fo4KT97jcLVnAuFI87AUEfLvpdcbLlQ5dCHOBmyBN
+        rf3MbLaB88fNPkVmznUSFyNTeAX1B+mNIoInRUO7z2tVEHsYytOR1sP6Z0pwphfBu4J9wY
+        o20cnqPXVmM0I0IIKGN3nr/B+TeS/gM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-575-Nx7moyimNHiedM-zAFJiGQ-1; Wed, 20 Sep 2023 10:30:10 -0400
+X-MC-Unique: Nx7moyimNHiedM-zAFJiGQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0BCD01C08974
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 14:30:10 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FD6F1004145;
+        Wed, 20 Sep 2023 14:30:09 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft 0/9] various cleanups related to enums and struct datatype
+Date:   Wed, 20 Sep 2023 16:26:01 +0200
+Message-ID: <20230920142958.566615-1-thaller@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230920133418.1893675-1-sam@gentoo.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 02:34:17PM +0100, Sam James wrote:
-> First, apologies - 326932be0c4f47756f9809cad5a103ac310f700d clearly introduced
-> a double prefix and I can't tell you what my thought process was 9 months ago
-> but it was obviously wrong (my guess is I rebased some old patch and didn't
-> think properly, no idea).
+Various loosely related patches in the hope to improve something.
 
-Not much use having this in the commit message. Maybe state the actual
-problem you're trying to solve instead?
+Thomas Haller (9):
+  src: fix indentation/whitespace
+  include: fix missing definitions in <cache.h>/<headers.h>
+  datatype: drop flags field from datatype
+  datatype: use "enum byteorder" instead of int in set_datatype_alloc()
+  payload: use enum icmp_hdr_field_type in
+    payload_may_dependency_kill_icmp()
+  netlink: handle invalid etype in set_make_key()
+  expression: cleanup expr_ops_by_type() and handle u32 input
+  datatype: use __attribute__((packed)) instead of enum bitfields
+  proto: add missing proto_definitions for PROTO_DESC_GENEVE
 
-> Anyway, let's just drop the extraneous pkgconfigdir definition and use the
-> proper one from pkg.m4 via PKG_INSTALLDIR.
-> 
-> Fixes: 326932be0c4f47756f9809cad5a103ac310f700d
-> Signed-off-by: Sam James <sam@gentoo.org>
-> ---
->  configure.ac    | 1 +
->  lib/Makefile.am | 1 -
->  2 files changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/configure.ac b/configure.ac
-> index cad93af..6c26645 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -14,6 +14,7 @@ LT_CONFIG_LTDL_DIR([libltdl])
->  LTDL_INIT([nonrecursive])
->  
->  PKG_PROG_PKG_CONFIG
-> +PKG_INSTALLDIR
->  
->  dnl Shortcut: Linux supported alone
->  case "$host" in
-> diff --git a/lib/Makefile.am b/lib/Makefile.am
-> index 50d937d..a9edf95 100644
-> --- a/lib/Makefile.am
-> +++ b/lib/Makefile.am
-> @@ -46,7 +46,6 @@ EXTRA_libipset_la_SOURCES = \
->  
->  EXTRA_DIST = $(IPSET_SETTYPE_LIST) libipset.map
->  
-> -pkgconfigdir = $(prefix)/$(libdir)/pkgconfig
->  pkgconfig_DATA = libipset.pc
->  
->  dist_man_MANS = libipset.3
-> -- 
-> 2.42.0
-> 
-> 
+ include/cache.h           |  9 +++++++++
+ include/datatype.h        | 27 +++++++++++----------------
+ include/expression.h      | 10 ++++++----
+ include/headers.h         |  2 ++
+ include/proto.h           | 11 +++++++----
+ src/datatype.c            | 22 +++++++++-------------
+ src/evaluate.c            |  2 +-
+ src/expression.c          | 23 +++++++++++------------
+ src/meta.c                |  6 +++---
+ src/netlink.c             |  6 ++++--
+ src/netlink_delinearize.c |  2 +-
+ src/payload.c             | 10 ++++------
+ src/proto.c               |  3 ++-
+ src/rt.c                  |  2 +-
+ src/segtree.c             |  5 ++---
+ 15 files changed, 73 insertions(+), 67 deletions(-)
+
+-- 
+2.41.0
+
