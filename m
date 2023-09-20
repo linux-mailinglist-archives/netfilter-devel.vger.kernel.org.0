@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9320F7A868E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 16:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BA17A8695
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 16:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbjITObA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Sep 2023 10:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
+        id S234933AbjITObI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Sep 2023 10:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234577AbjITOa7 (ORCPT
+        with ESMTP id S234577AbjITObH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Sep 2023 10:30:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0892DCE
-        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 07:30:16 -0700 (PDT)
+        Wed, 20 Sep 2023 10:31:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90640DC
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 07:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695220216;
+        s=mimecast20190719; t=1695220218;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=v1WFp6fDfHducrutMAkxH4TQ/YcOMS0wSwZD/kyQHmU=;
-        b=h93o7SpfwHq72mO413VJGJhIx9pvOMTMgnPPJxfozC/wVrPR5HtYm5fiwDdzrTFd2DLITt
-        Gj+YmuhbS8tw06Jx76dYYPYhSlI/1ekzyqUvVVpGBonAM/3jY/uE03JGCPtOGIJVXTvUZQ
-        hnCFK4Ok1uE5FBcPan1U8iIlQ9uahc0=
+        bh=zQh0BXkoAISyWhHgK1gPnvdSusXVryCBQEBcFr1yO5s=;
+        b=PbngZGXqbtHe04Hc92cWIiux7ClFO2ccHHZt9nZVuBhCkum4ej7CuUqqlssNWTXzGbCswV
+        rnMyKhUsJOJvYiXtP0m/Ner7zQyVA8YZ1UfQMpAjKYK60LKiAV/KjYL5Bwmt1Bl5r5ZemO
+        cMm83gfYUB7uM2S25Gs3gxtFPPWGRUY=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-282-b_r_hsOHNQO251NfwT839Q-1; Wed, 20 Sep 2023 10:30:14 -0400
-X-MC-Unique: b_r_hsOHNQO251NfwT839Q-1
+ us-mta-133-675enwkXP36XsUTVXPPsfw-1; Wed, 20 Sep 2023 10:30:15 -0400
+X-MC-Unique: 675enwkXP36XsUTVXPPsfw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 537AD811E8F
-        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 14:30:14 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1C43D101AA6E
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 14:30:15 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C683610EE859;
-        Wed, 20 Sep 2023 14:30:13 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8E1781004145;
+        Wed, 20 Sep 2023 14:30:14 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 5/9] payload: use enum icmp_hdr_field_type in payload_may_dependency_kill_icmp()
-Date:   Wed, 20 Sep 2023 16:26:06 +0200
-Message-ID: <20230920142958.566615-6-thaller@redhat.com>
+Subject: [PATCH nft 6/9] netlink: handle invalid etype in set_make_key()
+Date:   Wed, 20 Sep 2023 16:26:07 +0200
+Message-ID: <20230920142958.566615-7-thaller@redhat.com>
 In-Reply-To: <20230920142958.566615-1-thaller@redhat.com>
 References: <20230920142958.566615-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -51,7 +51,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,40 +59,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Don't mix icmp_dep (enum icmp_hdr_field_type) and the uint8_t icmp_type.
+It's not clear to me, what ensures that the etype is always valid.
+Handle a NULL.
+
+Fixes: 6e48df5329ea ('src: add "typeof" build/parse/print support')
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- src/payload.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ src/netlink.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/src/payload.c b/src/payload.c
-index a02942b3382a..cb8edfac0338 100644
---- a/src/payload.c
-+++ b/src/payload.c
-@@ -802,18 +802,16 @@ static uint8_t icmp_dep_to_type(enum icmp_hdr_field_type t)
- static bool payload_may_dependency_kill_icmp(struct payload_dep_ctx *ctx, struct expr *expr)
- {
- 	const struct expr *dep = payload_dependency_get(ctx, expr->payload.base);
--	uint8_t icmp_type;
-+	enum icmp_hdr_field_type icmp_dep;
+diff --git a/src/netlink.c b/src/netlink.c
+index 2489e9864151..70ebf382b14f 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -896,6 +896,8 @@ static struct expr *set_make_key(const struct nftnl_udata *attr)
  
--	icmp_type = expr->payload.tmpl->icmp_dep;
--	if (icmp_type == PROTO_ICMP_ANY)
-+	icmp_dep = expr->payload.tmpl->icmp_dep;
-+	if (icmp_dep == PROTO_ICMP_ANY)
- 		return false;
+ 	etype = nftnl_udata_get_u32(ud[NFTNL_UDATA_SET_TYPEOF_EXPR]);
+ 	ops = expr_ops_by_type(etype);
++	if (!ops)
++		return NULL;
  
- 	if (dep->left->payload.desc != expr->payload.desc)
- 		return false;
- 
--	icmp_type = icmp_dep_to_type(expr->payload.tmpl->icmp_dep);
--
--	return ctx->icmp_type == icmp_type;
-+	return ctx->icmp_type == icmp_dep_to_type(icmp_dep);
- }
- 
- static bool payload_may_dependency_kill_ll(struct payload_dep_ctx *ctx, struct expr *expr)
+ 	expr = ops->parse_udata(ud[NFTNL_UDATA_SET_TYPEOF_DATA]);
+ 	if (!expr)
 -- 
 2.41.0
 
