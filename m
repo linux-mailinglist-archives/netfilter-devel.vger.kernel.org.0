@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06C47A8E0E
+	by mail.lfdr.de (Postfix) with ESMTP id 583057A8E0A
 	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Sep 2023 22:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjITU5m (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Sep 2023 16:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
+        id S229999AbjITU5l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Sep 2023 16:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjITU5k (ORCPT
+        with ESMTP id S229826AbjITU5k (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 20 Sep 2023 16:57:40 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637E0CE
-        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 13:57:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483ED91
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Sep 2023 13:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ElU7Pr63tVEOxBtHuAk/cugvBWTjZ+s4vvKG9FGbfvU=; b=RDei1YpveXs/ZG8Iowtalu/LOc
-        9K03Qafc4VLaq+sOB17Ej8B6GQHWOXm6WdSQhTs9HKl9c+c7/lOLNo0FH9b8co7LsS3KHMr3HFRYv
-        5Z3kvh2DmCL9llot2r6dk9oZrCYogmPqWRitD/Qwq+aHN+f7Wg3D/IK4a+md9X+98q2wANTqHH/v5
-        gKy08R3qArXX1V1yLFKdb/Nx2/K/Q7DE45B7AUkGKMKbv3GhDuQDJwML5/+QjiKeaDRPzAOyBIzQ6
-        UOsiuLje0Y0WIlKMqlvx/hLKNOBddEkBy4cSkPHyAYLbwbAARIHWD5hUFXKEmYBehAmyUPLfaujgi
-        YEFckG4A==;
+        bh=WGZ6a679fwvCCCReBxV/nkmR+0ZQYJj3IXsQklk+bWk=; b=cLM0KPFWkYzWdgEGnfWuIrpEdc
+        JJASIjl0NNisO4zZizMxryhU/E7E4F6QFVtsJz4w3TzeRFfSE/H5SYaZtHhwvcsMbtaPWCiLo8JaW
+        xp+OpARXxHKjcaqozQygl62lpjYdev3vp2IdNDTzEUxB+VxIQcjPPWvBiq/LWpzKJH/AhJ5mt8zwt
+        2kwxDBvvk+lndezCzsf+BPeO1CWpgjZfDFA3q45dhxMPTZLD9Q6udVACSSM7ubn59BBoA0p2G1vHy
+        wP1DNGGdn26jFpo+RXlSs9jckoj6XxPoT8vEXc3McYpjZNj367iXzyLqytxtqRNSEILdq1z9D+yi0
+        tzPD6mLQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qj4GK-0007qK-Lq; Wed, 20 Sep 2023 22:57:32 +0200
+        id 1qj4GJ-0007pz-HC; Wed, 20 Sep 2023 22:57:31 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 6/9] parser_json: Fix synproxy object mss/wscale parsing
-Date:   Wed, 20 Sep 2023 22:57:24 +0200
-Message-ID: <20230920205727.22103-7-phil@nwl.cc>
+Subject: [nft PATCH 7/9] parser_json: Wrong check in json_parse_ct_timeout_policy()
+Date:   Wed, 20 Sep 2023 22:57:25 +0200
+Message-ID: <20230920205727.22103-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230920205727.22103-1-phil@nwl.cc>
 References: <20230920205727.22103-1-phil@nwl.cc>
@@ -51,43 +51,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The fields are 16 and 8 bits in size, introduce temporary variables to
-parse into.
+The conditional around json_unpack() was meant to accept a missing
+policy attribute. But the accidentally inverted check made the function
+either ignore a given policy or access uninitialized memory.
 
-Fixes: f44ab88b1088e ("src: add synproxy stateful object support")
+Fixes: c82a26ebf7e9f ("json: Add ct timeout support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/parser_json.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ src/parser_json.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/parser_json.c b/src/parser_json.c
-index 2b244783c442d..8ec11083f463c 100644
+index 8ec11083f463c..e33c470c7e224 100644
 --- a/src/parser_json.c
 +++ b/src/parser_json.c
-@@ -3447,7 +3447,7 @@ static struct cmd *json_parse_cmd_add_object(struct json_ctx *ctx,
- {
- 	const char *family, *tmp, *rate_unit = "packets", *burst_unit = "bytes";
- 	uint32_t l3proto = NFPROTO_UNSPEC;
--	int inv = 0, flags = 0, i;
-+	int inv = 0, flags = 0, i, j;
- 	struct handle h = { 0 };
- 	struct obj *obj;
- 	json_t *jflags;
-@@ -3634,11 +3634,12 @@ static struct cmd *json_parse_cmd_add_object(struct json_ctx *ctx,
- 	case CMD_OBJ_SYNPROXY:
- 		obj->type = NFT_OBJECT_SYNPROXY;
- 		if (json_unpack_err(ctx, root, "{s:i, s:i}",
--				    "mss", &obj->synproxy.mss,
--				    "wscale", &obj->synproxy.wscale)) {
-+				    "mss", &i, "wscale", &j)) {
- 			obj_free(obj);
- 			return NULL;
- 		}
-+		obj->synproxy.mss = i;
-+		obj->synproxy.wscale = j;
- 		obj->synproxy.flags |= NF_SYNPROXY_OPT_MSS;
- 		obj->synproxy.flags |= NF_SYNPROXY_OPT_WSCALE;
- 		if (!json_unpack(root, "{s:o}", "flags", &jflags)) {
+@@ -3415,7 +3415,7 @@ static int json_parse_ct_timeout_policy(struct json_ctx *ctx,
+ 	json_t *tmp, *val;
+ 	const char *key;
+ 
+-	if (!json_unpack(root, "{s:o}", "policy", &tmp))
++	if (json_unpack(root, "{s:o}", "policy", &tmp))
+ 		return 0;
+ 
+ 	if (!json_is_object(tmp)) {
 -- 
 2.41.0
 
