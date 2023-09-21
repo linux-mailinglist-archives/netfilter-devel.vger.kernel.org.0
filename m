@@ -2,31 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FED7A965B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 19:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96E57A960E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 19:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjIURCZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Sep 2023 13:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
+        id S229696AbjIUQ6x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Sep 2023 12:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjIURCH (ORCPT
+        with ESMTP id S229542AbjIUQ6w (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Sep 2023 13:02:07 -0400
+        Thu, 21 Sep 2023 12:58:52 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF2D2117
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 09:59:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0202CE6
+        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 09:58:09 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qjFMy-0004MB-7a; Thu, 21 Sep 2023 10:49:08 +0200
+        id 1qjK6M-0005Kk-RM; Thu, 21 Sep 2023 15:52:18 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH 3/3] tests: shell: add feature probe for sctp chunk matching
-Date:   Thu, 21 Sep 2023 10:48:46 +0200
-Message-ID: <20230921084849.634-4-fw@strlen.de>
+Subject: [RFC nf] netfilter: nf_tables: nft_set_rbtree: invalidate greater range element on removal
+Date:   Thu, 21 Sep 2023 15:52:09 +0200
+Message-ID: <20230921135212.31288-1-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230921084849.634-1-fw@strlen.de>
-References: <20230921084849.634-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
@@ -38,83 +36,149 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Skip the relavant parts of the test if nft_exthdr lacks sctp support.
+nft_rbtree_gc_elem() walks back and removes the end interval element that
+comes before the expired element.
+
+There is a small chance that we've cached this element as 'rbe_ge'.
+If this happens, we hold and test a pointer that has been queued for
+freeing.
+
+It also causes spurious insertion failures:
+
+$ cat nft-test.20230921-143934.826.dMBwHt/test-testcases-sets-0044interval_overlap_0.1/testout.log
+Error: Could not process rule: File exists
+add element t s {  0 -  2 }
+                   ^^^^^^
+Failed to insert  0 -  2 given:
+table ip t {
+        set s {
+                type inet_service
+                flags interval,timeout
+                timeout 2s
+                gc-interval 2s
+        }
+}
+
+The set (rbtree) is empty. The 'failure' doesn't happen when userspace
+retries immediately.
+
+Reason is that when we try to insert, the tree may hold an expired
+element that collides with the range we're adding.
+While we do evict/erase this element, we can trip over this check:
+
+if (rbe_ge && nft_rbtree_interval_end(rbe_ge) && nft_rbtree_interval_end(new))
+      return -ENOTEMPTY;
+
+But rbe_ge was already erased/collected by the synchronous gc, we should
+not have done this check.
+
+Because the pointer is stale, next attempt won't find it and insertion
+can succeed.
+
+I'd feel better if the entire procedure would be re-tried to make sure
+we do not mask/skip an earlier colliding element post invalidation
+of rbe_ge.
+
+Caching the old rbe_ge would work, but would make this even more
+messy.
+
+Any comments?
+
+Main agenda here is to not just fix the spurious failure but to
+get rid of the async gc worker.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- tests/shell/features/sctp_chunks.nft     |  7 +++++++
- tests/shell/testcases/sets/typeof_sets_0 | 26 +++++++++++++++---------
- 2 files changed, 23 insertions(+), 10 deletions(-)
- create mode 100644 tests/shell/features/sctp_chunks.nft
+ net/netfilter/nft_set_rbtree.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
-diff --git a/tests/shell/features/sctp_chunks.nft b/tests/shell/features/sctp_chunks.nft
-new file mode 100644
-index 000000000000..520afd64bd2e
---- /dev/null
-+++ b/tests/shell/features/sctp_chunks.nft
-@@ -0,0 +1,7 @@
-+# 133dc203d77d ("netfilter: nft_exthdr: Support SCTP chunks")
-+# v5.14-rc1~119^2~373^2~15
-+table ip t {
-+	chain c {
-+		sctp chunk init 0
-+	}
-+}
-diff --git a/tests/shell/testcases/sets/typeof_sets_0 b/tests/shell/testcases/sets/typeof_sets_0
-index c1c0f51f399c..35c572c1e537 100755
---- a/tests/shell/testcases/sets/typeof_sets_0
-+++ b/tests/shell/testcases/sets/typeof_sets_0
-@@ -23,6 +23,16 @@ INPUT_OSF_CHAIN="
- 	}
- "
+diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
+index 487572dcd614..836f3a71e15b 100644
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -233,10 +233,9 @@ static void nft_rbtree_gc_remove(struct net *net, struct nft_set *set,
+ 	rb_erase(&rbe->node, &priv->root);
+ }
  
-+INPUT_SCTP_CHAIN="
-+	chain c7 {
-+		sctp chunk init num-inbound-streams @s7 accept
-+	}
-+"
+-static int nft_rbtree_gc_elem(const struct nft_set *__set,
+-			      struct nft_rbtree *priv,
+-			      struct nft_rbtree_elem *rbe,
+-			      u8 genmask)
++static const struct nft_rbtree_elem *
++nft_rbtree_gc_elem(const struct nft_set *__set, struct nft_rbtree *priv,
++		   struct nft_rbtree_elem *rbe, u8 genmask)
+ {
+ 	struct nft_set *set = (struct nft_set *)__set;
+ 	struct rb_node *prev = rb_prev(&rbe->node);
+@@ -246,7 +245,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+ 
+ 	gc = nft_trans_gc_alloc(set, 0, GFP_ATOMIC);
+ 	if (!gc)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	/* search for end interval coming before this element.
+ 	 * end intervals don't carry a timeout extension, they
+@@ -261,6 +260,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+ 		prev = rb_prev(prev);
+ 	}
+ 
++	rbe_prev = NULL;
+ 	if (prev) {
+ 		rbe_prev = rb_entry(prev, struct nft_rbtree_elem, node);
+ 		nft_rbtree_gc_remove(net, set, priv, rbe_prev);
+@@ -272,7 +272,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+ 		 */
+ 		gc = nft_trans_gc_queue_sync(gc, GFP_ATOMIC);
+ 		if (WARN_ON_ONCE(!gc))
+-			return -ENOMEM;
++			return ERR_PTR(-ENOMEM);
+ 
+ 		nft_trans_gc_elem_add(gc, rbe_prev);
+ 	}
+@@ -280,13 +280,13 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+ 	nft_rbtree_gc_remove(net, set, priv, rbe);
+ 	gc = nft_trans_gc_queue_sync(gc, GFP_ATOMIC);
+ 	if (WARN_ON_ONCE(!gc))
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	nft_trans_gc_elem_add(gc, rbe);
+ 
+ 	nft_trans_gc_queue_sync_done(gc);
+ 
+-	return 0;
++	return rbe_prev;
+ }
+ 
+ static bool nft_rbtree_update_first(const struct nft_set *set,
+@@ -314,7 +314,7 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ 	struct nft_rbtree *priv = nft_set_priv(set);
+ 	u8 cur_genmask = nft_genmask_cur(net);
+ 	u8 genmask = nft_genmask_next(net);
+-	int d, err;
++	int d;
+ 
+ 	/* Descend the tree to search for an existing element greater than the
+ 	 * key value to insert that is greater than the new element. This is the
+@@ -363,10 +363,14 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ 		 */
+ 		if (nft_set_elem_expired(&rbe->ext) &&
+ 		    nft_set_elem_active(&rbe->ext, cur_genmask)) {
+-			err = nft_rbtree_gc_elem(set, priv, rbe, genmask);
+-			if (err < 0)
+-				return err;
++			const struct nft_rbtree_elem *removed_end;
 +
-+if [ "$NFT_TEST_HAVE_sctp_chunks" = n ] ; then
-+	INPUT_SCTP_CHAIN=
-+fi
-+
- if [ "$NFT_TEST_HAVE_osf" = n ] ; then
- 	if [ "$((RANDOM % 2))" -eq 1 ] ; then
- 		# Regardless of $NFT_TEST_HAVE_osf, we can define the set.
-@@ -98,11 +108,7 @@ $INPUT_OSF_CHAIN
- 	chain c6 {
- 		tcp option maxseg size @s6 accept
- 	}
--
--	chain c7 {
--		sctp chunk init num-inbound-streams @s7 accept
--	}
--
-+$INPUT_SCTP_CHAIN
- 	chain c8 {
- 		ip version @s8 accept
- 	}
-@@ -187,11 +193,7 @@ $INPUT_OSF_CHAIN
- 	chain c6 {
- 		tcp option maxseg size @s6 accept
- 	}
--
--	chain c7 {
--		sctp chunk init num-inbound-streams @s7 accept
--	}
--
-+$INPUT_SCTP_CHAIN
- 	chain c8 {
- 		ip version @s8 accept
- 	}
-@@ -218,3 +220,7 @@ if [ "$NFT_TEST_HAVE_osf" = n ] ; then
- 	echo "Partial test due to NFT_TEST_HAVE_osf=n. Skip"
- 	exit 77
- fi
-+if [ "$NFT_TEST_HAVE_sctp_chunks" = n ] ; then
-+	echo "Partial test due to NFT_TEST_HAVE_sctp_chunks=n. Skip"
-+	exit 77
-+fi
++			removed_end = nft_rbtree_gc_elem(set, priv, rbe, genmask);
++			if (IS_ERR(removed_end))
++				return PTR_ERR(removed_end);
+ 
++			if (removed_end == rbe_ge)
++				rbe_ge = NULL;
+ 			continue;
+ 		}
+ 
 -- 
 2.41.0
 
