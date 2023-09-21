@@ -2,110 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525687AA0C2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 22:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BE57AA025
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 22:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbjIUUsF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Sep 2023 16:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
+        id S231716AbjIUUdN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Sep 2023 16:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbjIUUru (ORCPT
+        with ESMTP id S230477AbjIUUcy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Sep 2023 16:47:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AA37E4E4
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 10:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695317763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7L/Yzv6HMqOR9bct7nj3Jb7bGoexyEhbypyyoWQ6koA=;
-        b=EFKNCVQm68XViqqpzqEQxM617vxX4aUD5J64VZyMkIYMu0AM4v7L4axIbEiO4w54KZUgYM
-        Xp1s2VCrA/D2lQR7nhC0vcatX8/1YsagxNoNoJh/WEp2OuoziIA8uoqXAZ1rdkQxdPDcU1
-        8P8OlDLWWssaDwg+36yk5DA065dblss=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-vUu4ihp7Pwea1FTPug7Mkg-1; Thu, 21 Sep 2023 05:08:23 -0400
-X-MC-Unique: vUu4ihp7Pwea1FTPug7Mkg-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31ff3e943e0so16158f8f.0
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 02:08:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695287302; x=1695892102;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7L/Yzv6HMqOR9bct7nj3Jb7bGoexyEhbypyyoWQ6koA=;
-        b=f1sLyXfuad5tX/rmCGprQf/zoQeKULbMv51daxkmvx/EB89BMFRB9Gq855+DUNtkiz
-         hHfcV1pobZHza+wR+kLJfrM4rkaiG97rk59toEeVoZNgcvJF4LaLrtIZkjsOXjTi7Hga
-         qmLFzqHcakzGRWyivDU2PNep8wtLFcgPfm9kQol9IgbLIYhIi2uP+6igYYi3C24Y5K+n
-         GOAcKVIf0N5yczhAGCM8FN8Z6oTyDKfYv6st235oVD2zADXpJBxSqgCUbe+y3lc5f2K0
-         IyPTPCYYXfIqSuoVmllkemNzBxSotkOC8FRMSLp1EjdWFc/c4BjJlra0LAdYkCSTReHU
-         sLCA==
-X-Gm-Message-State: AOJu0YwC8MmcYLdnWtqKFZqMdiX3S7YTnHTbuDeAqOBs2A3UDlUPTu7v
-        aVnv/WP36xcG7hHcQcBucsKhb/tlQhpKLm+DosCqURoytsvtkgNxX1Vojio0u7j0ItDZ/Ufwz/f
-        VFmyFUj2uc3WNg2k6Vt+tXEx6aD58pmm+jg9e
-X-Received: by 2002:a5d:4fcd:0:b0:321:547b:f060 with SMTP id h13-20020a5d4fcd000000b00321547bf060mr4002944wrw.1.1695287301983;
-        Thu, 21 Sep 2023 02:08:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGKJpATv7qud8ZIQizMun7Ed5aJba2m6fdDKobC3LDsscg8q1YZBK2G2D3zbDYnaOIw+0kvhg==
-X-Received: by 2002:a5d:4fcd:0:b0:321:547b:f060 with SMTP id h13-20020a5d4fcd000000b00321547bf060mr4002928wrw.1.1695287301644;
-        Thu, 21 Sep 2023 02:08:21 -0700 (PDT)
-Received: from [10.0.0.196] ([37.186.167.86])
-        by smtp.gmail.com with ESMTPSA id o9-20020a5d6849000000b0031989784d96sm1181983wrw.76.2023.09.21.02.08.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 02:08:21 -0700 (PDT)
-Message-ID: <4adc5da36ee141a73a0131c02fcc652f235c144b.camel@redhat.com>
-Subject: Re: [PATCH nft 3/4] all: add free_const() and use it instead of
- xfree()
-From:   Thomas Haller <thaller@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Date:   Thu, 21 Sep 2023 11:08:20 +0200
-In-Reply-To: <ZQt3Gm5HWLKkOEB5@orbyte.nwl.cc>
-References: <20230920131554.204899-1-thaller@redhat.com>
-         <20230920131554.204899-4-thaller@redhat.com>
-         <ZQr+F7ChyFfArBYQ@orbyte.nwl.cc> <ZQsYf3moTtXQytXX@calendula>
-         <ZQsitnx/cPf2cPk0@orbyte.nwl.cc>
-         <754c07f7fc0a44d3619e51993c7a891a064ccdae.camel@redhat.com>
-         <ZQs4eu74k86+7FK0@orbyte.nwl.cc>
-         <f56d6b485b7154c8b8c24765ced9d222eabbd211.camel@redhat.com>
-         <ZQt3Gm5HWLKkOEB5@orbyte.nwl.cc>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 21 Sep 2023 16:32:54 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DFC7960A
+        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 10:34:52 -0700 (PDT)
+Received: from [78.30.34.192] (port=50182 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qjKWI-009mRI-2B; Thu, 21 Sep 2023 16:19:08 +0200
+Date:   Thu, 21 Sep 2023 16:19:05 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Thomas Haller <thaller@redhat.com>
+Cc:     NetFilter <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH nft 7/9] expression: cleanup expr_ops_by_type() and
+ handle u32 input
+Message-ID: <ZQxQ2bDCBBZGGfAR@calendula>
+References: <20230920142958.566615-1-thaller@redhat.com>
+ <20230920142958.566615-8-thaller@redhat.com>
+ <ZQs2Pmq6J5ZdXDQb@calendula>
+ <47d61eebc85999dbd2f5b7a038b00723dea70cae.camel@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <47d61eebc85999dbd2f5b7a038b00723dea70cae.camel@redhat.com>
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, 2023-09-21 at 00:50 +0200, Phil Sutter wrote:
-> On Wed, Sep 20, 2023 at 09:48:40PM +0200, Thomas Haller wrote:
-> >=20
-> > datatype_free() in the patch uses+requires free_const() twice:
-> >=20
-> > =C2=BB=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7free_const(dtype->name)=
-;
-> > =C2=BB=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7free_const(dtype->desc)=
-;
-> > =C2=BB=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7free(dtype);
->=20
-> Ah, I see. The only reason why these are allocated is
-> concat_type_alloc(), BTW. If it didn't exist, dtype_clone() could
-> just
-> copy the pointers and datatype_free() would ignore them.
+On Wed, Sep 20, 2023 at 09:28:29PM +0200, Thomas Haller wrote:
+> On Wed, 2023-09-20 at 20:13 +0200, Pablo Neira Ayuso wrote:
+> > On Wed, Sep 20, 2023 at 04:26:08PM +0200, Thomas Haller wrote:
+> > > 
+> > > -const struct expr_ops *expr_ops_by_type(enum expr_types value)
+> > > +const struct expr_ops *expr_ops_by_type_u32(uint32_t value)
+> > >  {
+> > > -       /* value might come from unreliable source, such as "udata"
+> > > -        * annotation of set keys.  Avoid BUG() assertion.
+> > > -        */
+> > > -       if (value == EXPR_INVALID || value > EXPR_MAX)
+> > > +       if (value > (uint32_t) EXPR_MAX)
+> > 
+> > I think this still allows a third party to set EXPR_INVALID in the
+> > netlink userdata attribute, right?
+> > 
+> > >                 return NULL;
+> > > -
+> > >         return __expr_ops_by_type(value);
+> > >  }
+> 
+> Yes, it still allows that. It's handled by the following
+> __expr_ops_by_type(), which returns NULL for invalid types (like
+> EXPR_INVALID).
 
+Oh indeed.
 
-Good point. It's easy to avoid cloning the strings for some particular
-cases. Patch will follow.
+> The check "if (value > (uint32_t) EXPR_MAX)" is only here to ensure
+> that nothing is lost while casting the uint32_t "value" to the enum
+> expr_types.
 
-Thomas
-
+Is this cast really required? This is to handle the hypothetical case
+where EXPR_MAX ever gets a negative value?
