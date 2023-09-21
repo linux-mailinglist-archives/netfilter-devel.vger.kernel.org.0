@@ -2,93 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C937AA1CC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 23:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D037AA483
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Sep 2023 00:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjIUVHB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Sep 2023 17:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S233018AbjIUWL0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Sep 2023 18:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbjIUVFj (ORCPT
+        with ESMTP id S232577AbjIUWLB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:05:39 -0400
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3656DE04
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 10:32:35 -0700 (PDT)
-Received: from [78.30.34.192] (port=50184 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qjKaF-009oVU-Jc; Thu, 21 Sep 2023 16:23:13 +0200
-Date:   Thu, 21 Sep 2023 16:23:10 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Thomas Haller <thaller@redhat.com>
-Cc:     NetFilter <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft 3/9] datatype: drop flags field from datatype
-Message-ID: <ZQxRziOfXho5SZ7e@calendula>
-References: <20230920142958.566615-1-thaller@redhat.com>
- <20230920142958.566615-4-thaller@redhat.com>
- <ZQs1msEk15D687Rn@calendula>
- <546258d1a67ca455e0f7fdcce4c58c587324e798.camel@redhat.com>
+        Thu, 21 Sep 2023 18:11:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825008333F
+        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 10:37:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 00A1BC4AF5C;
+        Thu, 21 Sep 2023 09:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695288023;
+        bh=/M9gDZgRl0G96EDpzfP/SP+62+5bj7V8RhOws+XasC8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X+LNU8qSah75ovGBsLbjtQezeyXFimrCInAwLL1U4iSf09M5vi8iKlz3B6gEpWAOt
+         i1TzCyI+bFcfmPaWlMi2u6ooscLB2q/flnbGHJHOqzJaiVv6i3c/QBoeuWpM6cCAH4
+         zdfntK5TH56pPzlY5/IUhmejs4g1uUaQ4mvmdJ670cXLIY4SRC7luUOhn+i6qO7sfl
+         52WKqze82IZa76Q2b9khbjY5zp3VCmvpXItqZKvLUPVIImknnKMjMqZU2TgUaSV22O
+         pQ0MPedJSOIogHyOBLQqxa/o0KGJrHRyHZadNd+WEyJRmk91kBq2eYxTjlSecA+LpO
+         eaD+75OF5hrcw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC6A6C595C0;
+        Thu, 21 Sep 2023 09:20:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <546258d1a67ca455e0f7fdcce4c58c587324e798.camel@redhat.com>
-X-Spam-Score: -1.8 (-)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net 1/3] netfilter: nf_tables: disable toggling dormant table
+ state more than once
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169528802289.18364.6481033051092265766.git-patchwork-notify@kernel.org>
+Date:   Thu, 21 Sep 2023 09:20:22 +0000
+References: <20230920084156.4192-2-fw@strlen.de>
+In-Reply-To: <20230920084156.4192-2-fw@strlen.de>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org, cherie.lee@starlabs.sg,
+        billy@starlabs.sg, info@starlabs.sg
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 09:23:46PM +0200, Thomas Haller wrote:
-> On Wed, 2023-09-20 at 20:10 +0200, Pablo Neira Ayuso wrote:
-> > On Wed, Sep 20, 2023 at 04:26:04PM +0200, Thomas Haller wrote:
-> > > Flags are not always bad. For example, as a function argument they
-> > > allow
-> > > easier extension in the future. But with datatype's "flags"
-> > > argument and
-> > > enum datatype_flags there are no advantages of this approach.
-> > > 
-> > > - replace DTYPE_F_PREFIX with a "bool f_prefix" field. This could
-> > > even
-> > >   be a bool:1 bitfield if we cared to represent the information
-> > > with
-> > >   one bit only. For now it's not done because that would not help
-> > > reducing
-> > >   the size of the struct, so a bitfield is less preferable.
-> > > 
-> > > - instead of DTYPE_F_ALLOC, use the refcnt of zero to represent
-> > > static
-> > >   instances. Drop this redundant flag.
-> > 
-> > Not sure I want to rely on refcnt to zero to identify dynamic
-> > datatypes. I think we need to consolidate datatype_set() to be used
-> > not only where this deals with dynamic datatypes, it might help
-> > improve traceability of datatype assignment.
+Hello:
+
+This series was applied to netdev/net.git (main)
+by Florian Westphal <fw@strlen.de>:
+
+On Wed, 20 Sep 2023 10:41:49 +0200 you wrote:
+> nft -f -<<EOF
+> add table ip t
+> add table ip t { flags dormant; }
+> add chain ip t c { type filter hook input priority 0; }
+> add table ip t
+> EOF
 > 
-> I don't understand. Could you elaborate about datatype_set()?
+> [...]
 
-I wonder if we could use datatype_set() to attach static datatypes
-too, instead of manually attaching datatypes, such as:
+Here is the summary with links:
+  - [net,1/3] netfilter: nf_tables: disable toggling dormant table state more than once
+    https://git.kernel.org/netdev/net/c/c9bd26513b3a
+  - [net,2/3] netfilter: nf_tables: fix memleak when more than 255 elements expired
+    https://git.kernel.org/netdev/net/c/cf5000a7787c
+  - [net,3/3] netfilter: ipset: Fix race between IPSET_CMD_CREATE and IPSET_CMD_SWAP
+    https://git.kernel.org/netdev/net/c/7433b6d2afd5
 
-        expr->dtype = &integer_type;
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-in case of future extensions, using consistently this helper function
-will help to identify datatype attachments.
 
-> Btw, for dynamically allocated instances the refcnt is always positive,
-> and for static ones it's always zero. The DTYPE_F_ALLOC flag is
-> redundant.
-
-That is a correct observation, but a (hipothetical) subtle bug in
-refcnt might lead to a dynamic datatype get to refcnt to zero, and
-that might be harder to track?
-
-Let me have a look if I can come up with some counter proposal to get
-rid of this flag, I would prefer not to infer the datatype class from
-reference counter value.
