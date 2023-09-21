@@ -2,183 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96E57A960E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 19:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7E27AA3C2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 23:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbjIUQ6x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Sep 2023 12:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
+        id S230091AbjIUV5Y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Sep 2023 17:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjIUQ6w (ORCPT
+        with ESMTP id S232910AbjIUV5O (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Sep 2023 12:58:52 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0202CE6
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 Sep 2023 09:58:09 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1qjK6M-0005Kk-RM; Thu, 21 Sep 2023 15:52:18 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [RFC nf] netfilter: nf_tables: nft_set_rbtree: invalidate greater range element on removal
-Date:   Thu, 21 Sep 2023 15:52:09 +0200
-Message-ID: <20230921135212.31288-1-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
+        Thu, 21 Sep 2023 17:57:14 -0400
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117797AF47;
+        Thu, 21 Sep 2023 10:34:43 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.kfki.hu (Postfix) with ESMTP id DD8CACC02C9;
+        Thu, 21 Sep 2023 08:57:02 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Thu, 21 Sep 2023 08:57:00 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 98DB7CC011C;
+        Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id 9B6733431A9; Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id 98CD4343155;
+        Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+To:     Jan Engelhardt <jengelh@inai.de>, Sam James <sam@gentoo.org>
+cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [ANNOUNCE] ipset 7.18 released
+In-Reply-To: <382279q3-6on5-32rq-po59-6r18os6934n9@vanv.qr>
+Message-ID: <62d31829-d130-2e80-e7c-d3da4f19e90@netfilter.org>
+References: <55c2bf9d-ec58-8db-e457-8a36ebbbc4c0@blackhole.kfki.hu> <382279q3-6on5-32rq-po59-6r18os6934n9@vanv.qr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft_rbtree_gc_elem() walks back and removes the end interval element that
-comes before the expired element.
+Hi Jan,
 
-There is a small chance that we've cached this element as 'rbe_ge'.
-If this happens, we hold and test a pointer that has been queued for
-freeing.
+On Wed, 20 Sep 2023, Jan Engelhardt wrote:
 
-It also causes spurious insertion failures:
+> 
+> On Tuesday 2023-09-19 20:26, Jozsef Kadlecsik wrote:
+> >
+> >I'm happy to announce ipset 7.18, which brings a few fixes, backports, 
+> >tests suite fixes and json output support.
+> 
+> The installation of the pkgconfig file is now broken.
+> 
+> >  - lib/Makefile.am: fix pkgconfig dir (Sam James)
+> 
+> Aaaaagh.. that change completely broke installation and must be reverted.
+> 
+> [   44s] RPM build errors:
+> [   44s]     Installed (but unpackaged) file(s) found:
+> [   44s]    /usr/usr/lib64/pkgconfig/libipset.pc
 
-$ cat nft-test.20230921-143934.826.dMBwHt/test-testcases-sets-0044interval_overlap_0.1/testout.log
-Error: Could not process rule: File exists
-add element t s {  0 -  2 }
-                   ^^^^^^
-Failed to insert  0 -  2 given:
-table ip t {
-        set s {
-                type inet_service
-                flags interval,timeout
-                timeout 2s
-                gc-interval 2s
-        }
-}
+Thanks for quickly noticing the issue - the new release is already out.
 
-The set (rbtree) is empty. The 'failure' doesn't happen when userspace
-retries immediately.
+Even two persons can make mistakes.
 
-Reason is that when we try to insert, the tree may hold an expired
-element that collides with the range we're adding.
-While we do evict/erase this element, we can trip over this check:
-
-if (rbe_ge && nft_rbtree_interval_end(rbe_ge) && nft_rbtree_interval_end(new))
-      return -ENOTEMPTY;
-
-But rbe_ge was already erased/collected by the synchronous gc, we should
-not have done this check.
-
-Because the pointer is stale, next attempt won't find it and insertion
-can succeed.
-
-I'd feel better if the entire procedure would be re-tried to make sure
-we do not mask/skip an earlier colliding element post invalidation
-of rbe_ge.
-
-Caching the old rbe_ge would work, but would make this even more
-messy.
-
-Any comments?
-
-Main agenda here is to not just fix the spurious failure but to
-get rid of the async gc worker.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nft_set_rbtree.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
-
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 487572dcd614..836f3a71e15b 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -233,10 +233,9 @@ static void nft_rbtree_gc_remove(struct net *net, struct nft_set *set,
- 	rb_erase(&rbe->node, &priv->root);
- }
- 
--static int nft_rbtree_gc_elem(const struct nft_set *__set,
--			      struct nft_rbtree *priv,
--			      struct nft_rbtree_elem *rbe,
--			      u8 genmask)
-+static const struct nft_rbtree_elem *
-+nft_rbtree_gc_elem(const struct nft_set *__set, struct nft_rbtree *priv,
-+		   struct nft_rbtree_elem *rbe, u8 genmask)
- {
- 	struct nft_set *set = (struct nft_set *)__set;
- 	struct rb_node *prev = rb_prev(&rbe->node);
-@@ -246,7 +245,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
- 
- 	gc = nft_trans_gc_alloc(set, 0, GFP_ATOMIC);
- 	if (!gc)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	/* search for end interval coming before this element.
- 	 * end intervals don't carry a timeout extension, they
-@@ -261,6 +260,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
- 		prev = rb_prev(prev);
- 	}
- 
-+	rbe_prev = NULL;
- 	if (prev) {
- 		rbe_prev = rb_entry(prev, struct nft_rbtree_elem, node);
- 		nft_rbtree_gc_remove(net, set, priv, rbe_prev);
-@@ -272,7 +272,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
- 		 */
- 		gc = nft_trans_gc_queue_sync(gc, GFP_ATOMIC);
- 		if (WARN_ON_ONCE(!gc))
--			return -ENOMEM;
-+			return ERR_PTR(-ENOMEM);
- 
- 		nft_trans_gc_elem_add(gc, rbe_prev);
- 	}
-@@ -280,13 +280,13 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
- 	nft_rbtree_gc_remove(net, set, priv, rbe);
- 	gc = nft_trans_gc_queue_sync(gc, GFP_ATOMIC);
- 	if (WARN_ON_ONCE(!gc))
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	nft_trans_gc_elem_add(gc, rbe);
- 
- 	nft_trans_gc_queue_sync_done(gc);
- 
--	return 0;
-+	return rbe_prev;
- }
- 
- static bool nft_rbtree_update_first(const struct nft_set *set,
-@@ -314,7 +314,7 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 	struct nft_rbtree *priv = nft_set_priv(set);
- 	u8 cur_genmask = nft_genmask_cur(net);
- 	u8 genmask = nft_genmask_next(net);
--	int d, err;
-+	int d;
- 
- 	/* Descend the tree to search for an existing element greater than the
- 	 * key value to insert that is greater than the new element. This is the
-@@ -363,10 +363,14 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 		 */
- 		if (nft_set_elem_expired(&rbe->ext) &&
- 		    nft_set_elem_active(&rbe->ext, cur_genmask)) {
--			err = nft_rbtree_gc_elem(set, priv, rbe, genmask);
--			if (err < 0)
--				return err;
-+			const struct nft_rbtree_elem *removed_end;
-+
-+			removed_end = nft_rbtree_gc_elem(set, priv, rbe, genmask);
-+			if (IS_ERR(removed_end))
-+				return PTR_ERR(removed_end);
- 
-+			if (removed_end == rbe_ge)
-+				rbe_ge = NULL;
- 			continue;
- 		}
- 
--- 
-2.41.0
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
