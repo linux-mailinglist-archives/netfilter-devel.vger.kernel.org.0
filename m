@@ -2,42 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7E27AA3C2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 23:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44DA7AA0CB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Sep 2023 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbjIUV5Y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Sep 2023 17:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
+        id S232460AbjIUUso (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Sep 2023 16:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232910AbjIUV5O (ORCPT
+        with ESMTP id S232462AbjIUUs1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Sep 2023 17:57:14 -0400
+        Thu, 21 Sep 2023 16:48:27 -0400
 Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117797AF47;
-        Thu, 21 Sep 2023 10:34:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E455F8921F;
+        Thu, 21 Sep 2023 10:39:41 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id DD8CACC02C9;
-        Thu, 21 Sep 2023 08:57:02 +0200 (CEST)
+        by smtp2.kfki.hu (Postfix) with ESMTP id 488B2CC02CC;
+        Thu, 21 Sep 2023 09:02:52 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
 Received: from smtp2.kfki.hu ([127.0.0.1])
         by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Thu, 21 Sep 2023 08:57:00 +0200 (CEST)
+        with ESMTP; Thu, 21 Sep 2023 09:02:50 +0200 (CEST)
 Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 98DB7CC011C;
-        Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+        by smtp2.kfki.hu (Postfix) with ESMTP id 11272CC02CB;
+        Thu, 21 Sep 2023 09:02:50 +0200 (CEST)
 Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 9B6733431A9; Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+        id 0B15B3431A9; Thu, 21 Sep 2023 09:02:50 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id 98CD4343155;
-        Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
-Date:   Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
+        by blackhole.kfki.hu (Postfix) with ESMTP id 08CFA343155;
+        Thu, 21 Sep 2023 09:02:50 +0200 (CEST)
+Date:   Thu, 21 Sep 2023 09:02:50 +0200 (CEST)
 From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     Jan Engelhardt <jengelh@inai.de>, Sam James <sam@gentoo.org>
-cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [ANNOUNCE] ipset 7.18 released
-In-Reply-To: <382279q3-6on5-32rq-po59-6r18os6934n9@vanv.qr>
-Message-ID: <62d31829-d130-2e80-e7c-d3da4f19e90@netfilter.org>
-References: <55c2bf9d-ec58-8db-e457-8a36ebbbc4c0@blackhole.kfki.hu> <382279q3-6on5-32rq-po59-6r18os6934n9@vanv.qr>
+To:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: [ANNOUNCE] ipset 7.19 released
+Message-ID: <c2818bd0-257c-6eb5-7a85-a1a0f0a7629d@netfilter.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -49,34 +46,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Jan,
+Hi,
 
-On Wed, 20 Sep 2023, Jan Engelhardt wrote:
+The installation of the pkgconfig file of libipset was broken in 7.18, 
+thus a new release was needed. The only modification in the new package is 
+the fixed install path.
 
-> 
-> On Tuesday 2023-09-19 20:26, Jozsef Kadlecsik wrote:
-> >
-> >I'm happy to announce ipset 7.18, which brings a few fixes, backports, 
-> >tests suite fixes and json output support.
-> 
-> The installation of the pkgconfig file is now broken.
-> 
-> >  - lib/Makefile.am: fix pkgconfig dir (Sam James)
-> 
-> Aaaaagh.. that change completely broke installation and must be reverted.
-> 
-> [   44s] RPM build errors:
-> [   44s]     Installed (but unpackaged) file(s) found:
-> [   44s]    /usr/usr/lib64/pkgconfig/libipset.pc
+Userspace changes:
+  - build: Fix the double-prefix in pkgconfig (Sam James)
 
-Thanks for quickly noticing the issue - the new release is already out.
+Kernel part changes:
+  none
 
-Even two persons can make mistakes.
+You can download the source code of ipset from:
+        https://ipset.netfilter.org
+        git://git.netfilter.org/ipset.git
 
 Best regards,
 Jozsef
 -
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+E-mail:  kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key: https://wigner.hu/~kadlec/pgp_public_key.txt
+Address: Wigner Research Centre for Physics
+         H-1525 Budapest 114, POB. 49, Hungary
