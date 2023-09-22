@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573497AB6C5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Sep 2023 19:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A3A7AB6C8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Sep 2023 19:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbjIVRBm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Sep 2023 13:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
+        id S232697AbjIVRBp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 Sep 2023 13:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232828AbjIVRBi (ORCPT
+        with ESMTP id S232846AbjIVRBi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 22 Sep 2023 13:01:38 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B0111A6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 879C91A2;
         Fri, 22 Sep 2023 10:01:32 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
         sashal@kernel.org
-Subject: [PATCH -stable,5.10 14/17] netfilter: nft_set_rbtree: use read spinlock to avoid datapath contention
-Date:   Fri, 22 Sep 2023 19:01:15 +0200
-Message-Id: <20230922170118.152420-15-pablo@netfilter.org>
+Subject: [PATCH -stable,5.10 15/17] netfilter: nft_set_pipapo: stop GC iteration if GC transaction allocation fails
+Date:   Fri, 22 Sep 2023 19:01:16 +0200
+Message-Id: <20230922170118.152420-16-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230922170118.152420-1-pablo@netfilter.org>
 References: <20230922170118.152420-1-pablo@netfilter.org>
@@ -35,42 +35,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-commit 96b33300fba880ec0eafcf3d82486f3463b4b6da upstream.
+commit 6d365eabce3c018a80f6e0379b17df2abb17405e upstream.
 
-rbtree GC does not modify the datastructure, instead it collects expired
-elements and it enqueues a GC transaction. Use a read spinlock instead
-to avoid data contention while GC worker is running.
+nft_trans_gc_queue_sync() enqueues the GC transaction and it allocates a
+new one. If this allocation fails, then stop this GC sync run and retry
+later.
 
-Fixes: f6c383b8c31a ("netfilter: nf_tables: adapt set backend to use GC transaction API")
+Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_rbtree.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 535076b4de53..cc32e19b4041 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -624,8 +624,7 @@ static void nft_rbtree_gc(struct work_struct *work)
- 	if (!gc)
- 		goto done;
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 80440ac5d44c..fbfcc3275cad 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -1595,7 +1595,7 @@ static void pipapo_gc(const struct nft_set *_set, struct nft_pipapo_match *m)
  
--	write_lock_bh(&priv->lock);
--	write_seqcount_begin(&priv->count);
-+	read_lock_bh(&priv->lock);
- 	for (node = rb_first(&priv->root); node != NULL; node = rb_next(node)) {
+ 			gc = nft_trans_gc_queue_sync(gc, GFP_ATOMIC);
+ 			if (!gc)
+-				break;
++				return;
  
- 		/* Ruleset has been updated, try later. */
-@@ -672,8 +671,7 @@ static void nft_rbtree_gc(struct work_struct *work)
- 		nft_trans_gc_elem_add(gc, rbe);
- 	}
- try_later:
--	write_seqcount_end(&priv->count);
--	write_unlock_bh(&priv->lock);
-+	read_unlock_bh(&priv->lock);
- 
- 	if (gc)
- 		nft_trans_gc_queue_async_done(gc);
+ 			nft_pipapo_gc_deactivate(net, set, e);
+ 			pipapo_drop(m, rulemap);
 -- 
 2.30.2
 
