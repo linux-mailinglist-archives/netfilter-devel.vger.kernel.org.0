@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26BB7ABD3E
+	by mail.lfdr.de (Postfix) with ESMTP id 03CD47ABD3C
 	for <lists+netfilter-devel@lfdr.de>; Sat, 23 Sep 2023 03:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjIWByF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Sep 2023 21:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjIWByE (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
+        id S230394AbjIWByE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 22 Sep 2023 21:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbjIWByD (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 22 Sep 2023 21:54:03 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA431AC;
-        Fri, 22 Sep 2023 18:53:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ABE1A7;
+        Fri, 22 Sep 2023 18:53:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=zGOM7c7YTLL046Z9FRcYNmfcXcdduAMm47qShBuXyZk=; b=QNU5Bpp3+jEe53CDBwA7VFNMqi
-        D+4UuYMeOWgSQEhokzC5Qtu/jioSLXF22VjSpR6XzMhiVvR6V3CqYHf+sU7hMvcBBV59ErFk9ncPF
-        QKuJwm0ygJ0imu+/ZSd4ALPSeB45NQZaRVPfwvTQ/JNixUhBS1pfei+S5DG619g2/5Cd+olBBflck
-        RwTdNplVb8eyGb0h6hG6i0ca0cSPC6L6pwF2EhhjjBeXM7FZjocFhwfgUbV4/92FTTw3L1aLPl4vA
-        RDcCj4vUHdBWKiNXAmWUr3d9X8xhXHb6vk+D2ovS0lxxRgZpMOghCHYhhNKgB2pUlg1zuAumT6NY7
-        4b+AKDAQ==;
+        bh=EaKFmFHbm5xmI3F54ocKFF5jRBegT8cI9v52BYDBThw=; b=KYR+ZBpOE0Ay8Y8FsYphhjZQCk
+        CWgHj35hi/IPuYaE7J4UeU8AcjtavUBSyCIN1VuM6/Ev8eYCyVTMCT6Vi9rCl5M1gNN77ZcCLGa/I
+        72YKQAHhXtoOaIYsXzPVsHdAk/XxG/QIaCoF9wA8fc4qblOpLAA45yLaDxg7g/P0W5bORxVUuqPlR
+        Ow++CusDHshla1OsLAHH8x71KUA7yTyrkcgfsW6NlT2EO4qq7c2jry6vQ+PXz0GIlvK+VREFN8KLh
+        8A+uuYFmwUjKlGh4DLP3k8rO/IcyCXcw8TEZNZ89/LNnwLaeBqaEkursuEOtMHY5hsujIc9UhCU0k
+        924OrSxA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qjrqF-00028j-9r; Sat, 23 Sep 2023 03:53:55 +0200
+        id 1qjrqF-00028m-L1; Sat, 23 Sep 2023 03:53:55 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
         audit@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
         Richard Guy Briggs <rgb@redhat.com>
-Subject: [nf PATCH 1/3] selftests: netfilter: Extend nft_audit.sh
-Date:   Sat, 23 Sep 2023 03:53:49 +0200
-Message-ID: <20230923015351.15707-2-phil@nwl.cc>
+Subject: [nf PATCH 2/3] netfilter: nf_tables: Deduplicate nft_register_obj audit logs
+Date:   Sat, 23 Sep 2023 03:53:50 +0200
+Message-ID: <20230923015351.15707-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230923015351.15707-1-phil@nwl.cc>
 References: <20230923015351.15707-1-phil@nwl.cc>
@@ -53,162 +53,120 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add tests for sets and elements and deletion of all kinds. Also
-reorder rule reset tests: By moving the bulk rule add command up, the
-two 'reset rules' tests become identical.
+When adding/updating an object, the transaction handler emits suitable
+audit log entries already, the one in nft_obj_notify() is redundant. To
+fix that (and retain the audit logging from objects' 'update' callback),
+Introduce an "audit log free" variant for internal use.
 
-While at it, fix for a failing bulk rule add test's error status getting
-lost due to its use in a pipe. Avoid this by using a temporary file.
-
-Headings in diff output for failing tests contain no useful data, strip
-them.
-
+Fixes: c520292f29b80 ("audit: log nftables configuration change events once per table")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- .../testing/selftests/netfilter/nft_audit.sh  | 97 ++++++++++++++++---
- 1 file changed, 81 insertions(+), 16 deletions(-)
+ net/netfilter/nf_tables_api.c                 | 44 ++++++++++++-------
+ .../testing/selftests/netfilter/nft_audit.sh  | 20 +++++++++
+ 2 files changed, 48 insertions(+), 16 deletions(-)
 
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 0e5d9bdba82b8..48d50df950a18 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8046,24 +8046,14 @@ static int nf_tables_delobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 	return nft_delobj(&ctx, obj);
+ }
+ 
+-void nft_obj_notify(struct net *net, const struct nft_table *table,
+-		    struct nft_object *obj, u32 portid, u32 seq, int event,
+-		    u16 flags, int family, int report, gfp_t gfp)
++static void
++__nft_obj_notify(struct net *net, const struct nft_table *table,
++		 struct nft_object *obj, u32 portid, u32 seq, int event,
++		 u16 flags, int family, int report, gfp_t gfp)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(gfp, "%s:%u",
+-			      table->name, nft_net->base_seq);
+-
+-	audit_log_nfcfg(buf,
+-			family,
+-			obj->handle,
+-			event == NFT_MSG_NEWOBJ ?
+-				 AUDIT_NFT_OP_OBJ_REGISTER :
+-				 AUDIT_NFT_OP_OBJ_UNREGISTER,
+-			gfp);
+-	kfree(buf);
+ 
+ 	if (!report &&
+ 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
+@@ -8086,13 +8076,35 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
+ err:
+ 	nfnetlink_set_err(net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
+ }
++
++void nft_obj_notify(struct net *net, const struct nft_table *table,
++		    struct nft_object *obj, u32 portid, u32 seq, int event,
++		    u16 flags, int family, int report, gfp_t gfp)
++{
++	struct nftables_pernet *nft_net = nft_pernet(net);
++	char *buf = kasprintf(gfp, "%s:%u",
++			      table->name, nft_net->base_seq);
++
++	audit_log_nfcfg(buf,
++			family,
++			obj->handle,
++			event == NFT_MSG_NEWOBJ ?
++				 AUDIT_NFT_OP_OBJ_REGISTER :
++				 AUDIT_NFT_OP_OBJ_UNREGISTER,
++			gfp);
++	kfree(buf);
++
++	__nft_obj_notify(net, table, obj, portid, seq, event,
++			 flags, family, report, gfp);
++}
+ EXPORT_SYMBOL_GPL(nft_obj_notify);
+ 
+ static void nf_tables_obj_notify(const struct nft_ctx *ctx,
+ 				 struct nft_object *obj, int event)
+ {
+-	nft_obj_notify(ctx->net, ctx->table, obj, ctx->portid, ctx->seq, event,
+-		       ctx->flags, ctx->family, ctx->report, GFP_KERNEL);
++	__nft_obj_notify(ctx->net, ctx->table, obj, ctx->portid,
++			 ctx->seq, event, ctx->flags, ctx->family,
++			 ctx->report, GFP_KERNEL);
+ }
+ 
+ /*
 diff --git a/tools/testing/selftests/netfilter/nft_audit.sh b/tools/testing/selftests/netfilter/nft_audit.sh
-index 83c271b1c7352..0b3255e7b3538 100755
+index 0b3255e7b3538..bb34329e02a7f 100755
 --- a/tools/testing/selftests/netfilter/nft_audit.sh
 +++ b/tools/testing/selftests/netfilter/nft_audit.sh
-@@ -12,10 +12,11 @@ nft --version >/dev/null 2>&1 || {
- }
+@@ -85,6 +85,26 @@ do_test "nft add set t1 s2 $setblock; add set t1 s3 { $settype; }" \
+ do_test "nft add element t1 s3 $setelem" \
+ "table=t1 family=2 entries=3 op=nft_register_setelem"
  
- logfile=$(mktemp)
-+rulefile=$(mktemp)
- echo "logging into $logfile"
- ./audit_logread >"$logfile" &
- logread_pid=$!
--trap 'kill $logread_pid; rm -f $logfile' EXIT
-+trap 'kill $logread_pid; rm -f $logfile $rulefile' EXIT
- exec 3<"$logfile"
++# adding counters
++
++do_test 'nft add counter t1 c1' \
++'table=t1 family=2 entries=1 op=nft_register_obj'
++
++do_test 'nft add counter t2 c1; add counter t2 c2' \
++'table=t2 family=2 entries=2 op=nft_register_obj'
++
++# adding/updating quotas
++
++do_test 'nft add quota t1 q1 { 10 bytes }' \
++'table=t1 family=2 entries=1 op=nft_register_obj'
++
++do_test 'nft add quota t2 q1 { 10 bytes }; add quota t2 q2 { 10 bytes }' \
++'table=t2 family=2 entries=2 op=nft_register_obj'
++
++# changing the quota value triggers obj update path
++do_test 'nft add quota t1 q1 { 20 bytes }' \
++'table=t1 family=2 entries=1 op=nft_register_obj'
++
+ # resetting rules
  
- do_test() { # (cmd, log)
-@@ -26,12 +27,14 @@ do_test() { # (cmd, log)
- 	res=$(diff -a -u <(echo "$2") - <&3)
- 	[ $? -eq 0 ] && { echo "OK"; return; }
- 	echo "FAIL"
--	echo "$res"
--	((RC++))
-+	grep -v '^\(---\|+++\|@@\)' <<< "$res"
-+	((RC--))
- }
- 
- nft flush ruleset
- 
-+# adding tables, chains and rules
-+
- for table in t1 t2; do
- 	do_test "nft add table $table" \
- 	"table=$table family=2 entries=1 op=nft_register_table"
-@@ -62,6 +65,28 @@ for table in t1 t2; do
- 	"table=$table family=2 entries=6 op=nft_register_rule"
- done
- 
-+for ((i = 0; i < 500; i++)); do
-+	echo "add rule t2 c3 counter accept comment \"rule $i\""
-+done >$rulefile
-+do_test "nft -f $rulefile" \
-+'table=t2 family=2 entries=500 op=nft_register_rule'
-+
-+# adding sets and elements
-+
-+settype='type inet_service; counter'
-+setelem='{ 22, 80, 443 }'
-+setblock="{ $settype; elements = $setelem; }"
-+do_test "nft add set t1 s $setblock" \
-+"table=t1 family=2 entries=4 op=nft_register_set"
-+
-+do_test "nft add set t1 s2 $setblock; add set t1 s3 { $settype; }" \
-+"table=t1 family=2 entries=5 op=nft_register_set"
-+
-+do_test "nft add element t1 s3 $setelem" \
-+"table=t1 family=2 entries=3 op=nft_register_setelem"
-+
-+# resetting rules
-+
  do_test 'nft reset rules t1 c2' \
- 'table=t1 family=2 entries=3 op=nft_reset_rule'
- 
-@@ -70,19 +95,6 @@ do_test 'nft reset rules table t1' \
- table=t1 family=2 entries=3 op=nft_reset_rule
- table=t1 family=2 entries=3 op=nft_reset_rule'
- 
--do_test 'nft reset rules' \
--'table=t1 family=2 entries=3 op=nft_reset_rule
--table=t1 family=2 entries=3 op=nft_reset_rule
--table=t1 family=2 entries=3 op=nft_reset_rule
--table=t2 family=2 entries=3 op=nft_reset_rule
--table=t2 family=2 entries=3 op=nft_reset_rule
--table=t2 family=2 entries=3 op=nft_reset_rule'
--
--for ((i = 0; i < 500; i++)); do
--	echo "add rule t2 c3 counter accept comment \"rule $i\""
--done | do_test 'nft -f -' \
--'table=t2 family=2 entries=500 op=nft_register_rule'
--
- do_test 'nft reset rules t2 c3' \
- 'table=t2 family=2 entries=189 op=nft_reset_rule
- table=t2 family=2 entries=188 op=nft_reset_rule
-@@ -105,4 +117,57 @@ table=t2 family=2 entries=180 op=nft_reset_rule
- table=t2 family=2 entries=188 op=nft_reset_rule
- table=t2 family=2 entries=135 op=nft_reset_rule'
- 
-+# resetting sets and elements
-+
-+elem=(22 ,80 ,443)
-+relem=""
-+for i in {1..3}; do
-+	relem+="${elem[((i - 1))]}"
-+	do_test "nft reset element t1 s { $relem }" \
-+	"table=t1 family=2 entries=$i op=nft_reset_setelem"
-+done
-+
-+do_test 'nft reset set t1 s' \
-+'table=t1 family=2 entries=3 op=nft_reset_setelem'
-+
-+# deleting rules
-+
-+readarray -t handles < <(nft -a list chain t1 c1 | \
-+			 sed -n 's/.*counter.* handle \(.*\)$/\1/p')
-+
-+do_test "nft delete rule t1 c1 handle ${handles[0]}" \
-+'table=t1 family=2 entries=1 op=nft_unregister_rule'
-+
-+cmd='delete rule t1 c1 handle'
-+do_test "nft $cmd ${handles[1]}; $cmd ${handles[2]}" \
-+'table=t1 family=2 entries=2 op=nft_unregister_rule'
-+
-+do_test 'nft flush chain t1 c2' \
-+'table=t1 family=2 entries=3 op=nft_unregister_rule'
-+
-+do_test 'nft flush table t2' \
-+'table=t2 family=2 entries=509 op=nft_unregister_rule'
-+
-+# deleting chains
-+
-+do_test 'nft delete chain t2 c2' \
-+'table=t2 family=2 entries=1 op=nft_unregister_chain'
-+
-+# deleting sets and elements
-+
-+do_test 'nft delete element t1 s { 22 }' \
-+'table=t1 family=2 entries=1 op=nft_unregister_setelem'
-+
-+do_test 'nft delete element t1 s { 80, 443 }' \
-+'table=t1 family=2 entries=2 op=nft_unregister_setelem'
-+
-+do_test 'nft flush set t1 s2' \
-+'table=t1 family=2 entries=3 op=nft_unregister_setelem'
-+
-+do_test 'nft delete set t1 s2' \
-+'table=t1 family=2 entries=1 op=nft_unregister_set'
-+
-+do_test 'nft delete set t1 s3' \
-+'table=t1 family=2 entries=1 op=nft_unregister_set'
-+
- exit $RC
 -- 
 2.41.0
 
