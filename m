@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C627ABD21
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 Sep 2023 03:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AD67ABD1D
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 Sep 2023 03:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjIWBiX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Sep 2023 21:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjIWBiW (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
+        id S229968AbjIWBiW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 22 Sep 2023 21:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbjIWBiV (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 22 Sep 2023 21:38:21 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7095F7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F54F1
         for <netfilter-devel@vger.kernel.org>; Fri, 22 Sep 2023 18:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=FQvs1l8XkemU9ANIbDEtuqNbrPAxsxDJXIXd3kKdm8U=; b=k1vy2imDSqXpdplPYZBoUYIERL
-        VockQjjjxwThm2GGkCPOFr9MrsqFqS9gEC33VYK+8+96ZTuBO+Vv5bj7CyMXwJOmhrUZNURmL3H56
-        MuoRUY/yaHlem70COWfZ1BKmVGGQ0DVkVkdBI257Hk4/i5SD6HWfC93UIa24PwMFRYcafJtdKXZXp
-        pS3kR5A1REp+agVcMRtCu0JYI7emvC/YTXJ+5ADC32G9+C64T2WCVEHCXhFiUEnI7afdZiJJRqqtz
-        VsiL0df7RHFe1kArrrCz70OJpVUknMqhPrpaNcbz19jlAjnwOSy88R8w0nKU2oooSJTSTDbdD8le3
-        GXhqCwZQ==;
+        bh=28+B2Fzg+l17g5rPixYKnxdNpmTyQ4uwa4b2nEkvXlw=; b=ZQ+XNqT/Cnc6yp/Bmdp6JGNbwW
+        XEc1Zubf6QytYyl0NV0V3uZyGDIrUPmp+kTrjcwedhpZJxF1LKV0GP4cuCvcp2izUG22yL3WtkrZT
+        og8Bo8RRf31/zTHXwwVu4hjXgr7XQGoA7B4q0qeY1pJKCZzKi63oQKv/VQhsC7bp+L+nGyFgvXSTv
+        bdYsbsMCoVMKkXhTzHV/qJm1ZYzgnfPDjkMxvow8zDbndx4ezGd6nFvAIZRXe4XEDVAWiVIS5ge7W
+        UnK8kVu/Samx+UviiLh22eWmVYOBiTlSLB4up7m7jvyL2jg8gzx04QFW/kZf1d1EFLfGCTM1s7GAm
+        wKV22/dQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qjrb2-0001w8-4x; Sat, 23 Sep 2023 03:38:12 +0200
+        id 1qjrb1-0001w1-QC; Sat, 23 Sep 2023 03:38:11 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: [nf PATCH 1/5] netfilter: nf_tables: Don't allocate nft_rule_dump_ctx
-Date:   Sat, 23 Sep 2023 03:38:03 +0200
-Message-ID: <20230923013807.11398-2-phil@nwl.cc>
+Subject: [nf PATCH 2/5] netfilter: nf_tables: Add locking for NFT_MSG_GETRULE_RESET requests
+Date:   Sat, 23 Sep 2023 03:38:04 +0200
+Message-ID: <20230923013807.11398-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230923013807.11398-1-phil@nwl.cc>
 References: <20230923013807.11398-1-phil@nwl.cc>
@@ -51,208 +51,247 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Eliminate the direct use of netlink_callback::args when dumping rules by
-casting nft_rule_dump_ctx over netlink_callback::ctx as suggested in
-the struct's comment.
+Rule reset is not protected by the commit mutex, so multiple reset
+requests could run for the same data. Expressions' dump'n'reset routines
+are not concurrency-safe, though. With nft_counter for instance, if
+nft_counter_do_dump() runs twice at the same time, the old value may be
+subtracted twice and thus the value underruns.
 
-The value for 's_idx' has to be stored inside nft_rule_dump_ctx now, so
-move the local 'idx' variable into it, too. Finally, make it hold the
-'reset' boolean as well.
-
-Note how this patch removes the zeroing of netlink_callback::args[1-5] -
-none of the rule dump callbacks seem to make use of them.
+Solve this via introduction of a reset spinlock which ensures exclusive
+access. To avoid conditional lock/unlock calls, introduce a dedicated
+callback for nfnetlink, and for the asynchronous netlink dump (which by
+itself must run unlocked).
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/netfilter/nf_tables_api.c | 81 ++++++++++++++---------------------
- 1 file changed, 32 insertions(+), 49 deletions(-)
+ include/net/netfilter/nf_tables.h |   1 +
+ net/netfilter/nf_tables_api.c     | 138 ++++++++++++++++++++++--------
+ 2 files changed, 104 insertions(+), 35 deletions(-)
 
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 7c816359d5a98..bd6849f4c46e3 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1732,6 +1732,7 @@ struct nftables_pernet {
+ 	struct list_head	module_list;
+ 	struct list_head	notify_list;
+ 	struct mutex		commit_mutex;
++	spinlock_t		reset_lock;
+ 	u64			table_handle;
+ 	unsigned int		base_seq;
+ 	unsigned int		gc_seq;
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4356189360fb8..511508407867d 100644
+index 511508407867d..4bccd15a67105 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -3441,20 +3441,21 @@ static void audit_log_rule_reset(const struct nft_table *table,
- }
- 
- struct nft_rule_dump_ctx {
-+	unsigned int s_idx;
- 	char *table;
- 	char *chain;
-+	bool reset;
- };
- 
- static int __nf_tables_dump_rules(struct sk_buff *skb,
- 				  unsigned int *idx,
- 				  struct netlink_callback *cb,
- 				  const struct nft_table *table,
--				  const struct nft_chain *chain,
--				  bool reset)
-+				  const struct nft_chain *chain)
- {
-+	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
- 	struct net *net = sock_net(skb->sk);
- 	const struct nft_rule *rule, *prule;
--	unsigned int s_idx = cb->args[0];
- 	unsigned int entries = 0;
- 	int ret = 0;
- 	u64 handle;
-@@ -3463,12 +3464,9 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
- 	list_for_each_entry_rcu(rule, &chain->rules, list) {
- 		if (!nft_is_active(net, rule))
- 			goto cont_skip;
--		if (*idx < s_idx)
-+		if (*idx < ctx->s_idx)
- 			goto cont;
--		if (*idx > s_idx) {
--			memset(&cb->args[1], 0,
--					sizeof(cb->args) - sizeof(cb->args[0]));
--		}
-+
- 		if (prule)
- 			handle = prule->handle;
- 		else
-@@ -3479,7 +3477,7 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
- 					NFT_MSG_NEWRULE,
- 					NLM_F_MULTI | NLM_F_APPEND,
- 					table->family,
--					table, chain, rule, handle, reset) < 0) {
-+					table, chain, rule, handle, ctx->reset) < 0) {
- 			ret = 1;
- 			break;
- 		}
-@@ -3491,7 +3489,7 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
- 		(*idx)++;
- 	}
- 
--	if (reset && entries)
-+	if (ctx->reset && entries)
- 		audit_log_rule_reset(table, cb->seq, entries);
- 
- 	return ret;
-@@ -3501,17 +3499,13 @@ static int nf_tables_dump_rules(struct sk_buff *skb,
- 				struct netlink_callback *cb)
- {
- 	const struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
--	const struct nft_rule_dump_ctx *ctx = cb->data;
-+	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
- 	struct nft_table *table;
- 	const struct nft_chain *chain;
- 	unsigned int idx = 0;
- 	struct net *net = sock_net(skb->sk);
- 	int family = nfmsg->nfgen_family;
- 	struct nftables_pernet *nft_net;
--	bool reset = false;
--
--	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETRULE_RESET)
--		reset = true;
- 
- 	rcu_read_lock();
- 	nft_net = nft_pernet(net);
-@@ -3521,10 +3515,10 @@ static int nf_tables_dump_rules(struct sk_buff *skb,
- 		if (family != NFPROTO_UNSPEC && family != table->family)
- 			continue;
- 
--		if (ctx && ctx->table && strcmp(ctx->table, table->name) != 0)
-+		if (ctx->table && strcmp(ctx->table, table->name) != 0)
- 			continue;
- 
--		if (ctx && ctx->table && ctx->chain) {
-+		if (ctx->table && ctx->chain) {
- 			struct rhlist_head *list, *tmp;
- 
- 			list = rhltable_lookup(&table->chains_ht, ctx->chain,
-@@ -3536,7 +3530,7 @@ static int nf_tables_dump_rules(struct sk_buff *skb,
- 				if (!nft_is_active(net, chain))
- 					continue;
- 				__nf_tables_dump_rules(skb, &idx,
--						       cb, table, chain, reset);
-+						       cb, table, chain);
- 				break;
- 			}
- 			goto done;
-@@ -3544,62 +3538,51 @@ static int nf_tables_dump_rules(struct sk_buff *skb,
- 
- 		list_for_each_entry_rcu(chain, &table->chains, list) {
- 			if (__nf_tables_dump_rules(skb, &idx,
--						   cb, table, chain, reset))
-+						   cb, table, chain))
- 				goto done;
- 		}
- 
--		if (ctx && ctx->table)
-+		if (ctx->table)
- 			break;
- 	}
- done:
- 	rcu_read_unlock();
- 
--	cb->args[0] = idx;
-+	ctx->s_idx = idx;
+@@ -3552,6 +3552,19 @@ static int nf_tables_dump_rules(struct sk_buff *skb,
  	return skb->len;
  }
  
++static int nf_tables_dumpreset_rules(struct sk_buff *skb,
++				     struct netlink_callback *cb)
++{
++	struct nftables_pernet *nft_net = nft_pernet(sock_net(skb->sk));
++	int ret;
++
++	spin_lock(&nft_net->reset_lock);
++	ret = nf_tables_dump_rules(skb, cb);
++	spin_unlock(&nft_net->reset_lock);
++
++	return ret;
++}
++
  static int nf_tables_dump_rules_start(struct netlink_callback *cb)
  {
-+	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
- 	const struct nlattr * const *nla = cb->data;
--	struct nft_rule_dump_ctx *ctx = NULL;
- 
--	if (nla[NFTA_RULE_TABLE] || nla[NFTA_RULE_CHAIN]) {
--		ctx = kzalloc(sizeof(*ctx), GFP_ATOMIC);
--		if (!ctx)
--			return -ENOMEM;
-+	BUILD_BUG_ON(sizeof(*ctx) > sizeof(cb->ctx));
- 
--		if (nla[NFTA_RULE_TABLE]) {
--			ctx->table = nla_strdup(nla[NFTA_RULE_TABLE],
--							GFP_ATOMIC);
--			if (!ctx->table) {
--				kfree(ctx);
--				return -ENOMEM;
--			}
--		}
--		if (nla[NFTA_RULE_CHAIN]) {
--			ctx->chain = nla_strdup(nla[NFTA_RULE_CHAIN],
--						GFP_ATOMIC);
--			if (!ctx->chain) {
--				kfree(ctx->table);
--				kfree(ctx);
--				return -ENOMEM;
--			}
-+	if (nla[NFTA_RULE_TABLE]) {
-+		ctx->table = nla_strdup(nla[NFTA_RULE_TABLE], GFP_ATOMIC);
-+		if (!ctx->table)
-+			return -ENOMEM;
-+	}
-+	if (nla[NFTA_RULE_CHAIN]) {
-+		ctx->chain = nla_strdup(nla[NFTA_RULE_CHAIN], GFP_ATOMIC);
-+		if (!ctx->chain) {
-+			kfree(ctx->table);
-+			return -ENOMEM;
+ 	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
+@@ -3571,12 +3584,18 @@ static int nf_tables_dump_rules_start(struct netlink_callback *cb)
+ 			return -ENOMEM;
  		}
  	}
-+	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETRULE_RESET)
-+		ctx->reset = true;
- 
--	cb->data = ctx;
+-	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETRULE_RESET)
+-		ctx->reset = true;
+-
  	return 0;
  }
  
++static int nf_tables_dumpreset_rules_start(struct netlink_callback *cb)
++{
++	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
++
++	ctx->reset = true;
++
++	return nf_tables_dump_rules_start(cb);
++}
++
  static int nf_tables_dump_rules_done(struct netlink_callback *cb)
  {
--	struct nft_rule_dump_ctx *ctx = cb->data;
-+	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
- 
--	if (ctx) {
--		kfree(ctx->table);
--		kfree(ctx->chain);
--		kfree(ctx);
--	}
-+	kfree(ctx->table);
-+	kfree(ctx->chain);
- 	return 0;
+ 	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
+@@ -3587,8 +3606,9 @@ static int nf_tables_dump_rules_done(struct netlink_callback *cb)
  }
  
+ /* called with rcu_read_lock held */
+-static int nf_tables_getrule(struct sk_buff *skb, const struct nfnl_info *info,
+-			     const struct nlattr * const nla[])
++static struct sk_buff *
++nf_tables_getrule_single(u32 portid, const struct nfnl_info *info,
++			 const struct nlattr * const nla[], bool reset)
+ {
+ 	struct netlink_ext_ack *extack = info->extack;
+ 	u8 genmask = nft_genmask_cur(info->net);
+@@ -3598,60 +3618,107 @@ static int nf_tables_getrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	struct net *net = info->net;
+ 	struct nft_table *table;
+ 	struct sk_buff *skb2;
+-	bool reset = false;
+ 	int err;
+ 
+-	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
+-		struct netlink_dump_control c = {
+-			.start= nf_tables_dump_rules_start,
+-			.dump = nf_tables_dump_rules,
+-			.done = nf_tables_dump_rules_done,
+-			.module = THIS_MODULE,
+-			.data = (void *)nla,
+-		};
+-
+-		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
+-	}
+-
+ 	table = nft_table_lookup(net, nla[NFTA_RULE_TABLE], family, genmask, 0);
+ 	if (IS_ERR(table)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_TABLE]);
+-		return PTR_ERR(table);
++		return ERR_CAST(table);
+ 	}
+ 
+ 	chain = nft_chain_lookup(net, table, nla[NFTA_RULE_CHAIN], genmask);
+ 	if (IS_ERR(chain)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_CHAIN]);
+-		return PTR_ERR(chain);
++		return ERR_CAST(chain);
+ 	}
+ 
+ 	rule = nft_rule_lookup(chain, nla[NFTA_RULE_HANDLE]);
+ 	if (IS_ERR(rule)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_HANDLE]);
+-		return PTR_ERR(rule);
++		return ERR_CAST(rule);
+ 	}
+ 
+ 	skb2 = alloc_skb(NLMSG_GOODSIZE, GFP_ATOMIC);
+ 	if (!skb2)
+-		return -ENOMEM;
+-
+-	if (NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_GETRULE_RESET)
+-		reset = true;
++		return ERR_PTR(-ENOMEM);
+ 
+-	err = nf_tables_fill_rule_info(skb2, net, NETLINK_CB(skb).portid,
++	err = nf_tables_fill_rule_info(skb2, net, portid,
+ 				       info->nlh->nlmsg_seq, NFT_MSG_NEWRULE, 0,
+ 				       family, table, chain, rule, 0, reset);
+-	if (err < 0)
+-		goto err_fill_rule_info;
++	if (err < 0) {
++		kfree_skb(skb2);
++		return ERR_PTR(err);
++	}
+ 
+-	if (reset)
+-		audit_log_rule_reset(table, nft_pernet(net)->base_seq, 1);
++	return skb2;
++}
+ 
+-	return nfnetlink_unicast(skb2, net, NETLINK_CB(skb).portid);
++static int nf_tables_getrule(struct sk_buff *skb, const struct nfnl_info *info,
++			     const struct nlattr * const nla[])
++{
++	u32 portid = NETLINK_CB(skb).portid;
++	struct sk_buff *skb2;
+ 
+-err_fill_rule_info:
+-	kfree_skb(skb2);
+-	return err;
++	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
++		struct netlink_dump_control c = {
++			.start= nf_tables_dump_rules_start,
++			.dump = nf_tables_dump_rules,
++			.done = nf_tables_dump_rules_done,
++			.module = THIS_MODULE,
++			.data = (void *)nla,
++		};
++
++		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
++	}
++
++	skb2 = nf_tables_getrule_single(portid, info, nla, false);
++	if (IS_ERR(skb2))
++		return PTR_ERR(skb2);
++
++	return nfnetlink_unicast(skb2, info->net, portid);
++}
++
++static int nf_tables_getrule_reset(struct sk_buff *skb,
++				   const struct nfnl_info *info,
++				   const struct nlattr * const nla[])
++{
++	struct nftables_pernet *nft_net = nft_pernet(info->net);
++	u8 family = info->nfmsg->nfgen_family;
++	u32 portid = NETLINK_CB(skb).portid;
++	char *tablename, *buf;
++	struct sk_buff *skb2;
++
++	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
++		struct netlink_dump_control c = {
++			.start= nf_tables_dumpreset_rules_start,
++			.dump = nf_tables_dumpreset_rules,
++			.done = nf_tables_dump_rules_done,
++			.module = THIS_MODULE,
++			.data = (void *)nla,
++		};
++
++		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
++	}
++
++	if (!nla[NFTA_RULE_TABLE])
++		return -EINVAL;
++
++	tablename = nla_strdup(nla[NFTA_RULE_TABLE], GFP_ATOMIC);
++	if (!tablename)
++		return -ENOMEM;
++
++	spin_lock(&nft_net->reset_lock);
++	skb2 = nf_tables_getrule_single(portid, info, nla, true);
++	spin_unlock(&nft_net->reset_lock);
++	if (IS_ERR(skb2))
++		return PTR_ERR(skb2);
++
++	buf = kasprintf(GFP_ATOMIC, "%s:%u", tablename, nft_net->base_seq);
++	audit_log_nfcfg(buf, family, 1, AUDIT_NFT_OP_RULE_RESET, GFP_ATOMIC);
++	kfree(buf);
++	kfree(tablename);
++
++	return nfnetlink_unicast(skb2, info->net, portid);
+ }
+ 
+ void nf_tables_rule_destroy(const struct nft_ctx *ctx, struct nft_rule *rule)
+@@ -8950,7 +9017,7 @@ static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
+ 		.policy		= nft_rule_policy,
+ 	},
+ 	[NFT_MSG_GETRULE_RESET] = {
+-		.call		= nf_tables_getrule,
++		.call		= nf_tables_getrule_reset,
+ 		.type		= NFNL_CB_RCU,
+ 		.attr_count	= NFTA_RULE_MAX,
+ 		.policy		= nft_rule_policy,
+@@ -11191,6 +11258,7 @@ static int __net_init nf_tables_init_net(struct net *net)
+ 	INIT_LIST_HEAD(&nft_net->module_list);
+ 	INIT_LIST_HEAD(&nft_net->notify_list);
+ 	mutex_init(&nft_net->commit_mutex);
++	spin_lock_init(&nft_net->reset_lock);
+ 	nft_net->base_seq = 1;
+ 	nft_net->gc_seq = 0;
+ 	nft_net->validate_state = NFT_VALIDATE_SKIP;
 -- 
 2.41.0
 
