@@ -2,102 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9B87B449B
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Oct 2023 01:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206347B4533
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Oct 2023 06:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjI3Xih (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Sep 2023 19:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S229461AbjJAEXG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Oct 2023 00:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjI3Xih (ORCPT
+        with ESMTP id S229455AbjJAEXF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Sep 2023 19:38:37 -0400
-Received: from mail1.bemta31.messagelabs.com (mail1.bemta31.messagelabs.com [67.219.246.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D55FAC;
-        Sat, 30 Sep 2023 16:38:34 -0700 (PDT)
-X-Brightmail-Tracker: H4sIAAAAAAAAA1VSb0wbdRjmd732bkDxKJ38bDbnKi4q6bklkBz
-  6wSULyzGMOqOImxk7xkG79d96ZTI2tbMKow63ESa2BeVPhgob0sEsRSgLEzO6okCoA5RY3GqE
-  gZbObmHC4nXNGH5587zv8z7v83x4cYHEK5LhbImRNWgZtVwUi343sVmoKHZAdvNy1+PU1PVhE
-  dVW8z1KXV8+JqSGuk8IKX95r4CyWswIdaO1GaHKpicB1THkFVBeUy51qs2DUhW32wDl9tciVD
-  DQL6Tm/RU8uXiH37U9Qnn7vhZR1R0/8qK5P9CtUtqz0I3RZ6/OiWirpxOj7XOjCB1c2EM3lgc
-  w+nK4AaXt3VUo3dQzg9B1deMIPf/vFYRuraxGaVNnmYj+2+0T0Z/fdiD0qPka9qpkl1ClzdeV
-  7BUqT9/9Ceh7QIm1J4yZQCuwgFhcQnwGoKfxSyzaDAA4eLMeXWHO153l19bgKEHDM7+PYFF8G
-  YWme4IIhsQTcLx/ULCiNs8tCaPNVwAuLzbdVwsIEo6fqRZFsJhIhIPWG2h0ngqbG27yapzHm2
-  DYYoyMk4j1sKKqC4lgKaGAH5uvoJEVEUHBjvDr0QxPwSZHlzCCJTxu8M1g0etbYbs5jJwCEts
-  qY9sqY9sqY9tD43qAtoB0jjUcYg2KdDLfoCpSGjWMSk0ypQqGLOYULMMZFVtI5h2OZDmO5A5r
-  9qkLSC1rvAD4RykwxMR3gaDlHtkPHsMR+Vpx5m7IShLydQWHlQynzDMUq1muH5A4TgwPTYcAM
-  RYMfYDIUK1Oy8qhOL2W3040sEVsSaFKzT/gAwHE4+VScdIXPC3m9IyGUxVFKQ/IxtsbensFuN
-  PVx9fQwhhf/Zd+jkyGIzX8reWSQHLfQZYsbjzPnyAiJ5TF2hWDB08+CtbLksQgJiZGEq9nDRq
-  V8f/8LEjGgTxJLDvHX4lXaY0rOWb5iAgf0fHCo5GIRuYhJTMh1qBzIOxmep8hiL7RP/dKj4t2
-  zH9qPZFxdMK1NOmevDt7JPv905W/7j9E7atak0n43tsVOHhr05vHRxKm99ddrKnFWjY2xdU4n
-  Vl7ptpdz28vPyD7SJa97dxIZXLNGz94NrgXny7758m4KYFtXdrA9pSBv0bUVamYL/eXrM7QYi
-  DR/a7V7Gtuu5ArvqPLql83UgpdDrqw8LfYAoO31HfUpL/WPVRKvhVKeW6+3RnI0LydYc97mbT
-  v/saV82FaHjchrTy5QTpWZ9mhh5lOTf6xNJ+mJQ6bsVJZcfWxr2Xp/AdfQadO2nN8ZaYXly6m
-  f3IkJefA2pfqm68mbFtGdt7CUhvkKKdktjwrMHDMfwoY5XlfBAAA
-X-Env-Sender: cesar.blanquel@sedatu.gob.mx
-X-Msg-Ref: server-20.tower-690.messagelabs.com!1696117108!16957!1
-X-Originating-IP: [187.217.48.5]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.107.4; banners=sedatu.gob.mx,-,-
-X-VirusChecked: Checked
-Received: (qmail 13165 invoked from network); 30 Sep 2023 23:38:29 -0000
-Received: from mail.sedatu.gob.mx (HELO vmzmfep01.sedatu.gob.mx) (187.217.48.5)
-  by server-20.tower-690.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 30 Sep 2023 23:38:29 -0000
-Received: from localhost (localhost [127.0.0.1])
-        by vmzmfep01.sedatu.gob.mx (Postfix) with ESMTP id 8AF1D9A6B52;
-        Sat, 30 Sep 2023 17:38:27 -0600 (CST)
-Received: from vmzmfep01.sedatu.gob.mx ([127.0.0.1])
-        by localhost (vmzmfep01.sedatu.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 51_pKiPGWK0y; Sat, 30 Sep 2023 17:38:27 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by vmzmfep01.sedatu.gob.mx (Postfix) with ESMTP id 543689A6B4F;
-        Sat, 30 Sep 2023 17:38:26 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 vmzmfep01.sedatu.gob.mx 543689A6B4F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sedatu.gob.mx;
-        s=6DCD91FA-2103-11EA-A828-B793B0CC95F8; t=1696117106;
-        bh=vYRP3VnV2N3FV52aFv5Marum2QUZYmcEs+BOT+DoGWc=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=no3jttL6nzXVY3AKWsuiq908omEsq9ACgAApgovSE5T93vPre7OCj8+L5A1QtsGBy
-         mDU+zZHxR5YqSkcsMOZX4LyvyfFVjsq7QbLYdeV0rTt6zKt4+Juun+iyPbOWAPw9lP
-         TfghgAQe2MZ35sq0tDKlb6a375Nwxn3+lC+7FEOTQXPxA6zYZjvS/ynnqhHES1vamB
-         tlKMZV3WobRMQQpPu9jzrsPYkyrswfQDy0M6D6+Sf9pZtrKsGy3K6b/AAstQhtqo1I
-         zJce3XCQW2PJGk3DHHFD80h+cUGFcNox318H8zQhHoYucKEkWrc9KKGnkZA6ixUH0I
-         AG+92u5lW8IlA==
-X-Virus-Scanned: amavisd-new at 
-Received: from vmzmfep01.sedatu.gob.mx ([127.0.0.1])
-        by localhost (vmzmfep01.sedatu.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dmNVqRX5zIGi; Sat, 30 Sep 2023 17:38:26 -0600 (CST)
-Received: from [172.20.10.3] (fwr26.sedatu.gob.mx [10.0.2.26])
-        by vmzmfep01.sedatu.gob.mx (Postfix) with ESMTPSA id 173339A6B41;
-        Sat, 30 Sep 2023 17:38:06 -0600 (CST)
-Content-Type: text/plain; charset="iso-8859-1"
+        Sun, 1 Oct 2023 00:23:05 -0400
+X-Greylist: delayed 85000 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 30 Sep 2023 21:23:01 PDT
+Received: from www.waremed.info (www.waremed.info [46.254.19.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8124FC6;
+        Sat, 30 Sep 2023 21:23:01 -0700 (PDT)
+Received: from [91.224.92.19]
+        by www.waremed.info with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <spam@waremed.info>)
+        id 1qkgVs-0003ta-CW; Mon, 25 Sep 2023 11:00:16 +0300
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Content-Description: Mail message body
-Subject: Yksityinen lahjoitus
-To:     Recipients <cesar.blanquel@sedatu.gob.mx>
-From:   "randomly selected" <cesar.blanquel@sedatu.gob.mx>
-Date:   Sat, 30 Sep 2023 16:37:45 -0700
-Reply-To: stevenoscaronline@gmail.com
-Message-Id: <20230930233807.173339A6B41@vmzmfep01.sedatu.gob.mx>
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_50,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        TVD_SPACE_RATIO autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Subject: Hallo
+To:     Recipients <spam@waremed.info>
+From:   "MASSY FINANCE LIT" <spam@waremed.info>
+Date:   Mon, 25 Sep 2023 01:00:24 -0700
+Reply-To: massyfinanceltd@gmail.com
+Message-Id: <E1qkgVs-0003ta-CW@www.waremed.info>
+X-Spam-Status: Yes, score=5.9 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,NIXSPAM_IXHASH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [46.254.19.132 listed in list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  3.0 NIXSPAM_IXHASH http://www.nixspam.org/
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Yksityinen lahjoitus sinulle, Kristine Wellenstein. Ota yhteytt=E4 Barr.St=
-even Oscariin; s=E4hk=F6postitse (stevenocarchamberonline@outlook.com) saa=
-daksesi lis=E4tietoja / vaatimuksen
+Bent u financieel depressief? Bent u op zoek naar een lening?
 
-______________________________________________________________________
-Este correo ha sido analizado por el servicio de Symantec Email Security.C=
-loud.
-Para m=E1s informaci=F3n, visite http://www.symanteccloud.com
-______________________________________________________________________
+Wij bieden persoonlijke leningen, zakelijke leningen, studieleningen, autoleningen en rekeningaflossingsleningen aan van € 5.000,00 tot € 5.000.000,00 met een rentepercentage van 2%. Leningen moeten voor legitieme en wettige doeleinden bestemd zijn
+
+Bedankt en ik hoop snel van u te horen, zodat we u de leningvoorwaarden en het aflossingsschema kunnen sturen.
+
+Handtekening,
+Massy Finance Limited
