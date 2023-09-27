@@ -2,49 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEEC7B0A99
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Sep 2023 18:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7624F7B0AAC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Sep 2023 18:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjI0Qrk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 Sep 2023 12:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        id S229473AbjI0Qwl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 Sep 2023 12:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjI0Qrj (ORCPT
+        with ESMTP id S229437AbjI0Qwl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:47:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9186CEB;
-        Wed, 27 Sep 2023 09:47:37 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="366934607"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="366934607"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 09:47:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="922853712"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="922853712"
-Received: from pinksteam.jf.intel.com ([10.165.239.231])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 09:47:37 -0700
-From:   joao@overdrivepizza.com
-To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joao@overdrivepizza.com
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        rkannoth@marvell.com, wojciech.drewek@intel.com,
-        steen.hegenlund@microhip.com, keescook@chromium.org,
-        Joao Moreira <joao.moreira@intel.com>
-Subject: [PATCH v3 2/2] Make num_actions unsigned
-Date:   Wed, 27 Sep 2023 09:47:15 -0700
-Message-ID: <20230927164715.76744-3-joao@overdrivepizza.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230927164715.76744-1-joao@overdrivepizza.com>
-References: <20230927164715.76744-1-joao@overdrivepizza.com>
+        Wed, 27 Sep 2023 12:52:41 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80097DE
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Sep 2023 09:52:39 -0700 (PDT)
+Received: from [78.30.34.192] (port=40764 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qlXm6-00DZCn-VI; Wed, 27 Sep 2023 18:52:37 +0200
+Date:   Wed, 27 Sep 2023 18:52:34 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft 3/3,v2] netlink_linearize: skip set element
+ expression in map statement key
+Message-ID: <ZRRd0gxC81eoYNSP@calendula>
+References: <20230926160216.152549-1-pablo@netfilter.org>
+ <ZRMNB+3/4rzYb08p@orbyte.nwl.cc>
+ <ZRPq/JMoVffTEDM4@calendula>
+ <ZRQNkSG/dnesQ6Wv@orbyte.nwl.cc>
+ <ZRQPw+jMI+i9qSyE@calendula>
+ <ZRQpodNr/9aiVI7H@orbyte.nwl.cc>
+ <ZRQ/DhU558tSxQ/D@orbyte.nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NEUTRAL autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZRQ/DhU558tSxQ/D@orbyte.nwl.cc>
+X-Spam-Score: -1.8 (-)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,56 +47,67 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Joao Moreira <joao.moreira@intel.com>
+On Wed, Sep 27, 2023 at 04:41:18PM +0200, Phil Sutter wrote:
+> On Wed, Sep 27, 2023 at 03:09:53PM +0200, Phil Sutter wrote:
+> > On Wed, Sep 27, 2023 at 01:19:31PM +0200, Pablo Neira Ayuso wrote:
+> > > Hi Phil,
+> > > 
+> > > On Wed, Sep 27, 2023 at 01:10:09PM +0200, Phil Sutter wrote:
+[...]
+> > > > I actually considered forking the project. Or we just ship a copy of the
+> > > > lib with nftables sources?
+> > > 
+> > > I would try to get back to them to refresh and retry.
+> > 
+> > Oh well. I'll try an approach which eliminates the pointer if not
+> > enabled. The terse feedback and pessimistic replies right from the start
+> > convinced me though they just don't want it.
+> 
+> OK, so I had a close look at the code and played a bit with pahole. My
+> approach to avoiding the extra pointer is to add another set of types
+> which json_t embed. So taking json_array_t as an example:
+> 
+> | typedef struct {
+> |     json_t json;
+> |     size_t size;
+> |     size_t entries;
+> |     json_t **table;
+> | } json_array_t;
+> 
+> I could introduce json_location_array_t:
+> 
+> | typedef struct {
+> |     json_array_t array;
+> |     json_location_t *location;
+> | } json_location_array_t;
+>
+> The above structs are opaque to users, they only know about json_t.
 
-Currently, in nft_flow_rule_create function, num_actions is a signed
-integer. Yet, it is processed within a loop which increments its
-value. To prevent an overflow from occurring, make it unsigned and
-also check if it reaches 256 when being incremented.
+OK, so this new object type is hiding behind the json_t opaque type.
 
-Accordingly to discussions around v2, 256 actions are more than enough
-for the frontend actions.
+> So I introduced a getter for the location data:
+> 
+> | int json_get_location(json_t *json, int *line, int *column,
+> |                       int *position, int *length);
+> 
+> In there, I have to map from json_t to the type in question. The problem
+> is to know whether I have a json_location_array_t or just a
+> json_array_t. The json_t may have been allocated by the input parser
+> with either JSON_STORE_LOCATION set or not or by json_array().
+>
+> In order to make the decision, I need at least a bit in well-known
+> memory. Pahole tells there's a 4byte hole in json_t, but it may be
+> gone in 32bit builds (and enlarging json_t is a no-go, they consider
+> it ABI). The json_*_t structures don't show any holes, and extending
+> them means adding a mandatory word due to buffering, so I may just
+> as well store the location pointer itself in them.
+>
+> The only feasible alternative is to store location data separate from
+> the objects themselves, ideally in a hash table. This reduces the
+> overhead if not used by a failing hash table lookup in json_delete().
 
-After checking with maintainers, it was mentioned that front-end will
-cap the num_actions value and that it is not possible to reach such
-condition for an overflow. Yet, for correctness, it is still better to
-fix this.
+If I understood correctly, then this means you are ditching the
+json_location_array_t approach that you are detailing above.
 
-This issue was observed by the commit author while reviewing a write-up
-regarding a CVE within the same subsystem [1].
-
-1 - https://nickgregory.me/post/2022/03/12/cve-2022-25636/
-
-Signed-off-by: Joao Moreira <joao.moreira@intel.com>
----
- net/netfilter/nf_tables_offload.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 12ab78fa5d84..9a86db1f0e07 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -90,7 +90,8 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
- {
- 	struct nft_offload_ctx *ctx;
- 	struct nft_flow_rule *flow;
--	int num_actions = 0, err;
-+	unsigned int num_actions = 0;
-+	int err;
- 	struct nft_expr *expr;
- 
- 	expr = nft_expr_first(rule);
-@@ -99,6 +100,10 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
- 		    expr->ops->offload_action(expr))
- 			num_actions++;
- 
-+		/* 2^8 is enough for frontend actions, avoid overflow */
-+		if (num_actions == 256)
-+			return ERR_PTR(-ENOMEM);
-+
- 		expr = nft_expr_next(expr);
- 	}
- 
--- 
-2.42.0
-
+The hashtable approach might be sensible to follow, and such approach
+does not require any update to libjansson?
