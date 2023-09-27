@@ -2,113 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 764FB7AF649
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Sep 2023 00:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03677AF852
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Sep 2023 04:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjIZW2I (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 26 Sep 2023 18:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S235498AbjI0Cwg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 26 Sep 2023 22:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjIZW0H (ORCPT
+        with ESMTP id S229960AbjI0Cuf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 26 Sep 2023 18:26:07 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401758A76
-        for <netfilter-devel@vger.kernel.org>; Tue, 26 Sep 2023 14:25:03 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59f6763767dso75532477b3.2
-        for <netfilter-devel@vger.kernel.org>; Tue, 26 Sep 2023 14:25:03 -0700 (PDT)
+        Tue, 26 Sep 2023 22:50:35 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D347DB4
+        for <netfilter-devel@vger.kernel.org>; Tue, 26 Sep 2023 18:26:57 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c60a514f3aso57847935ad.3
+        for <netfilter-devel@vger.kernel.org>; Tue, 26 Sep 2023 18:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1695763502; x=1696368302; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hwijluXAJKvne9nyx6goJKnLPUI/1CGCM6T80bPQaYM=;
-        b=LR2FX1f3DDBRQYRdtvnoDE0f+uH+7KoAD6fh0mCa/BXBlGRZ1icvRDPb0kMIE/+e+h
-         mjvU1TMBJmwmU12hmgJnSjO1FE7UivTwxapLI+hC/aEluSvhAYrKYABBFBdKqQS/jPIE
-         quHNW3D8taM3MXVGb9x31zKxBN5LmWXD5aVmb8bwGNy0yr+8CU5oylSa9YxaiE5M8jKC
-         u8VlzGeO5yGikhZgBGgDRJ7vuVdJNjb+ryEgbmTDYA94D4etrotoNKhikjaTzHW7TSon
-         vBZEwmC7ybj0IJXfsTZuMLNZlyAGMBLditaBKy9xbsM6Od9WZT95OQwJ3vlpRscJp+Vp
-         GCSQ==
+        d=gmail.com; s=20230601; t=1695778016; x=1696382816; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=69dJPGgHfaS6qnakY5SGCPzF/PEninLXDe01S2qhYLE=;
+        b=RFQxMJXek9qYPS8pRGfQuGSVMR42Vi2vutDmMqjN0ayjvPVAXe3jRtbnUIL6HbbfwC
+         lBnjZDiaZUeNlsnCQiFlnd4epBcAU6p9aiYsHyLt5fykoaI4vQxJl83dHLPgnnJan9ZD
+         mkhtJ1e8xZFQC31vAmzBbZQXWphhdrKNj+FsPep73RMYgTl0T2H6BHvP38jaAmoAQ7cM
+         6CHPt5ltn6Msj1gttRSQadeNgrNEXmPdEeWEFtRs25XpXyOV68cyHt/eu2Pss6mUylc+
+         1/mE2wCRGPAqe3o5xPx3Waa/c/l6DZraTZHqgxsszIeFKtPz0N+dq2gai5g6z5JdK/Y7
+         GKDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695763502; x=1696368302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hwijluXAJKvne9nyx6goJKnLPUI/1CGCM6T80bPQaYM=;
-        b=GgjkgQKaJdRlKKrt3gpqVkrsDp79W6EgHaAXN79Bpc9KUpVbURnj6N4xuDAfMov+ie
-         AldDDKwTjO9aOsAXW9+YDj3tDoMcS8KlpbTT0rHSQo9XJ+i8jqRRnZKPkseeCzR7J5+u
-         rRXToQzSiv3NCemhx86a/iGRtKqJm0GzcD5rZZVCIHfX06+ghWZ7vGd3qkB540ws8sG7
-         N7r/HMpKlyJk3KwD+s2Iji3RDAba8SXKm//JuH1QTdZiWq/v4Xx5GF/ZGtI77TSud2L2
-         WF7RPkJ7ZvEg0JJQ9ab/iScjL9VejVNkP1m+vtBlGm5lOuBeNro4Hfmdrn9GYvpvf/E4
-         ELoQ==
-X-Gm-Message-State: AOJu0Yw2W31EjOKqdcpkYPqr9F6/S1wZQxwL0rNCAEtxQ3R08ceQ0VS5
-        xl4id/ybEoDc8ndEoUChSGjw2bVbz3Q2jbUYikEb
-X-Google-Smtp-Source: AGHT+IHWBrVpaEs8oeLeJX4Du6t+Xq/8ntooKfhRzbkI+hrad/LJobEDNuHtrB4FZeMEAvoJSWXS/3Y3U0XqWUf8NlE=
-X-Received: by 2002:a0d:cbd6:0:b0:599:da80:e1eb with SMTP id
- n205-20020a0dcbd6000000b00599da80e1ebmr287256ywd.24.1695763502468; Tue, 26
- Sep 2023 14:25:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695778016; x=1696382816;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=69dJPGgHfaS6qnakY5SGCPzF/PEninLXDe01S2qhYLE=;
+        b=jdZPLQVXbgN1ouHq5+j4NQEms0SBNRbdIhbkgZrH7K5YoE9u+DDow+LjxFtH6zY8lB
+         mvrWoAArHBKkaznDnDvjvwFV1m6XOy62GDAie8RyMg50Z9EymX6PHJtAHeUIEYNHdasj
+         WW9YSPZ1TzPuTwFgALkMjH6a1JM4HyS70o3j0zT49RkStYmUP8pNw+mpKEB/Sl//pZC9
+         a4lWNFpKTbBDz/P/MvCh4E8AH4h5LgYNzKSQg7/dtjVQbMtWSz2hRZZu1cJYSiZK0t9R
+         qkRYP7eksw7CN8puPuKpoo/oC5AbApp6969i9C+rIO23nLwRED6oDNywQ569o7ZN7VZt
+         U40g==
+X-Gm-Message-State: AOJu0YwlDZYsuYolYQoop9xM2PDJqLsH1PgX0UyLjNw9bUFu5EGWkfKY
+        OI76VoN6lMdklf3KgDIMzAtqljiWf8E=
+X-Google-Smtp-Source: AGHT+IGgPLgf4gv/kwEF9sIIMh+loRwytPwrJewy9XvasWMS0WR6purSOsoUnCR5HuFnwovh+4iKHw==
+X-Received: by 2002:a17:902:fb07:b0:1c6:294c:f89c with SMTP id le7-20020a170902fb0700b001c6294cf89cmr413800plb.63.1695778016549;
+        Tue, 26 Sep 2023 18:26:56 -0700 (PDT)
+Received: from slk15.local.net (n58-108-90-185.meb1.vic.optusnet.com.au. [58.108.90.185])
+        by smtp.gmail.com with ESMTPSA id q14-20020a170902dace00b001b890009634sm11658432plx.139.2023.09.26.18.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 18:26:56 -0700 (PDT)
+Sender: Duncan Roe <duncan.roe2@gmail.com>
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH libnetfilter_queue] Fix typo in examples/nf-queue.c from patch 9a8e4c3
+Date:   Wed, 27 Sep 2023 11:26:51 +1000
+Message-Id: <20230927012651.24721-1-duncan_roe@optusnet.com.au>
+X-Mailer: git-send-email 2.35.8
 MIME-Version: 1.0
-References: <20230923015351.15707-1-phil@nwl.cc>
-In-Reply-To: <20230923015351.15707-1-phil@nwl.cc>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 26 Sep 2023 17:24:51 -0400
-Message-ID: <CAHC9VhQv6dbgbfxEn4EjHhhfu3YDT0Ed76gZQNFyhY2mzeE0bg@mail.gmail.com>
-Subject: Re: [nf PATCH 0/3] Review nf_tables audit logging
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        audit@vger.kernel.org, Richard Guy Briggs <rgb@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 9:53=E2=80=AFPM Phil Sutter <phil@nwl.cc> wrote:
->
-> When working on locking for reset commands, some audit log calls had to
-> be adjusted as well. This series deals with the "fallout" from adding
-> tests for the changed log calls, dealing with the uncovered issues and
-> adding more tests.
->
-> Patch 1 adds more testing to nft_audit.sh for commands which are
-> unproblematic.
->
-> Patch 2 deals with (likely) leftovers from audit log flood prevention in
-> commit c520292f29b80 ("audit: log nftables configuration change events
-> once per table").
->
-> Patch 3 changes logging for object reset requests to happen once per
-> table (if skb size is sufficient) and thereby aligns output with object
-> add requests. As a side-effect, logging is fixed to happen after the
-> actual reset has succeeded, not before.
->
-> NOTE: This whole series probably depends on the reset locking series[1]
-> submitted earlier, but there's no functional connection and reviews
-> should happen independently.
->
-> [1] https://lore.kernel.org/netfilter-devel/20230923013807.11398-1-phil@n=
-wl.cc/
->
-> Phil Sutter (3):
->   selftests: netfilter: Extend nft_audit.sh
->   netfilter: nf_tables: Deduplicate nft_register_obj audit logs
->   netfilter: nf_tables: Audit log object reset once per table
->
->  net/netfilter/nf_tables_api.c                 |  95 +++++-----
->  .../testing/selftests/netfilter/nft_audit.sh  | 163 ++++++++++++++++--
->  2 files changed, 203 insertions(+), 55 deletions(-)
+Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
+---
+ examples/nf-queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Phil,
+diff --git a/examples/nf-queue.c b/examples/nf-queue.c
+index baff5c2..1ae52e4 100644
+--- a/examples/nf-queue.c
++++ b/examples/nf-queue.c
+@@ -106,7 +106,7 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
+ 	printf("packet received (id=%u hw=0x%04x hook=%u, payload len %u",
+ 		id, ntohs(ph->hw_protocol), ph->hook, plen);
+ 
+-	/* Fetch ethernet destionation address. */
++	/* Fetch ethernet destination address. */
+ 	if (attr[NFQA_HWADDR]) {
+ 		struct nfqnl_msg_packet_hw *hw = mnl_attr_get_payload(attr[NFQA_HWADDR]);
+ 		unsigned int hwlen = ntohs(hw->hw_addrlen);
+-- 
+2.35.8
 
-Thanks for continuing to work on this, my network access is limited at
-the moment but I hope to be able to review this next week.
-
---=20
-paul-moore.com
