@@ -2,237 +2,269 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CB27B22F8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 Sep 2023 18:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55DD7B2320
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 Sep 2023 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbjI1Qwx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 28 Sep 2023 12:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        id S231377AbjI1RDX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 28 Sep 2023 13:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjI1Qww (ORCPT
+        with ESMTP id S231285AbjI1RDW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:52:52 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955BB1A7
-        for <netfilter-devel@vger.kernel.org>; Thu, 28 Sep 2023 09:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=lCMyq+V0pj+Z4iIbB0McLZnhrPHr56X3xmOZ1zzURYI=; b=QDcARQI53BxOJ+LmeytwexQg/f
-        AL+0dY5AQ+ggs5KmeZ7LmZ85EKsNf2j537plHSDEDsUYToM+xVqhuoVil/iMNjGyAiRk7xQ+SlQIJ
-        Ab58oZAp+BaWgb+T16s5UAXjOUS7ApJAmguass8BvdA+sIF17iBaax3u11XHzogqWIYQu572wi+ul
-        cEOIFqkWSKINecYRU08nEVLSoxpVN7BVGI/GWZtgjOokUu+vtQPxoSW8OjSrTih3sTYaGwPWMxnoy
-        iXYGc3odgNZ0pUtRSQjittCfB10+G/EU0JQMOzQBwfvTuCY/2frdfq+LecrAEbFRzrjOmWqKCyQxK
-        +982taQg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1qluFs-0004wS-VC; Thu, 28 Sep 2023 18:52:49 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: [nf PATCH v2 8/8] netfilter: nf_tables: Add locking for NFT_MSG_GETSETELEM_RESET requests
-Date:   Thu, 28 Sep 2023 18:52:44 +0200
-Message-ID: <20230928165244.7168-9-phil@nwl.cc>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928165244.7168-1-phil@nwl.cc>
-References: <20230928165244.7168-1-phil@nwl.cc>
+        Thu, 28 Sep 2023 13:03:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A63AC
+        for <netfilter-devel@vger.kernel.org>; Thu, 28 Sep 2023 10:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695920556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D4jGMheYI/ylOZ/WbaLBSPfRFCuKdZTp++iYBHyAKp4=;
+        b=XTo/XQdQclyhXA/hSfLoZW+0Mg0FZ/KhsrtwnOAsl1kl5CxD9VxhPoZl/c9l3tj4/CmS39
+        yDRdRATUJ1ZDpmHYSHW4tjdSfPI2YIdB2aqKdMdfm6DfNwpC11fvLu9BJnlEa962hjeXCE
+        8YEW7kLi3JN75YFLpc9MppZhlwQvH/w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-322-MTVpC4n9MseRqyyijGwhbQ-1; Thu, 28 Sep 2023 13:02:33 -0400
+X-MC-Unique: MTVpC4n9MseRqyyijGwhbQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 92FDA858281;
+        Thu, 28 Sep 2023 17:02:32 +0000 (UTC)
+Received: from madcap2.tricolour.ca (ovpn-0-7.rdu2.redhat.com [10.22.0.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 570F42156702;
+        Thu, 28 Sep 2023 17:02:31 +0000 (UTC)
+Date:   Thu, 28 Sep 2023 13:02:29 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        audit@vger.kernel.org, Paul Moore <paul@paul-moore.com>
+Subject: Re: [nf PATCH 3/3] netfilter: nf_tables: Audit log object reset once
+ per table
+Message-ID: <ZRWxpZJTh0NOwenR@madcap2.tricolour.ca>
+References: <20230923015351.15707-1-phil@nwl.cc>
+ <20230923015351.15707-4-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923015351.15707-4-phil@nwl.cc>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Set expressions' dump callbacks are not concurrency-safe per-se with
-reset bit set. If two CPUs reset the same element at the same time,
-values may underrun at least with element-attached counters and quotas.
+On 2023-09-23 03:53, Phil Sutter wrote:
+> When resetting multiple objects at once (via dump request), emit a log
+> message per table (or filled skb) and resurrect the 'entries' parameter
+> to contain the number of objects being logged for.
+> 
+> With the above in place, all audit logs for op=nft_register_obj have a
+> predictable value in 'entries', so drop the value zeroing for them in
+> audit_logread.c.
+> 
+> To test the skb exhaustion path, perform some bulk counter and quota
+> adds in the kselftest.
+> 
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
-Prevent this by introducing dedicated callbacks for nfnetlink and the
-asynchronous dump handling to serialize access.
+(Resend, forgot to include other addressees.)
+Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Improved commit description
-- Unrelated chunk moved into a previous patch
----
- net/netfilter/nf_tables_api.c | 105 +++++++++++++++++++++++++++++-----
- 1 file changed, 91 insertions(+), 14 deletions(-)
+> ---
+>  net/netfilter/nf_tables_api.c                 | 51 ++++++++++---------
+>  .../testing/selftests/netfilter/nft_audit.sh  | 46 +++++++++++++++++
+>  2 files changed, 74 insertions(+), 23 deletions(-)
+> 
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index 48d50df950a18..e04ef2c451be4 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -7733,6 +7733,16 @@ static int nf_tables_fill_obj_info(struct sk_buff *skb, struct net *net,
+>  	return -1;
+>  }
+>  
+> +static void audit_log_obj_reset(const struct nft_table *table,
+> +				unsigned int base_seq, unsigned int nentries)
+> +{
+> +	char *buf = kasprintf(GFP_ATOMIC, "%s:%u", table->name, base_seq);
+> +
+> +	audit_log_nfcfg(buf, table->family, nentries,
+> +			AUDIT_NFT_OP_OBJ_RESET, GFP_ATOMIC);
+> +	kfree(buf);
+> +}
+> +
+>  struct nft_obj_dump_ctx {
+>  	unsigned int	s_idx;
+>  	char		*table;
+> @@ -7748,8 +7758,10 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+>  	int family = nfmsg->nfgen_family;
+>  	struct nftables_pernet *nft_net;
+>  	const struct nft_table *table;
+> +	unsigned int entries = 0;
+>  	struct nft_object *obj;
+>  	unsigned int idx = 0;
+> +	int rc = 0;
+>  
+>  	rcu_read_lock();
+>  	nft_net = nft_pernet(net);
+> @@ -7759,6 +7771,7 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+>  		if (family != NFPROTO_UNSPEC && family != table->family)
+>  			continue;
+>  
+> +		entries = 0;
+>  		list_for_each_entry_rcu(obj, &table->objects, list) {
+>  			if (!nft_is_active(net, obj))
+>  				goto cont;
+> @@ -7769,34 +7782,27 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+>  			if (ctx->type != NFT_OBJECT_UNSPEC &&
+>  			    obj->ops->type->type != ctx->type)
+>  				goto cont;
+> -			if (ctx->reset) {
+> -				char *buf = kasprintf(GFP_ATOMIC,
+> -						      "%s:%u",
+> -						      table->name,
+> -						      nft_net->base_seq);
+> -
+> -				audit_log_nfcfg(buf,
+> -						family,
+> -						obj->handle,
+> -						AUDIT_NFT_OP_OBJ_RESET,
+> -						GFP_ATOMIC);
+> -				kfree(buf);
+> -			}
+>  
+> -			if (nf_tables_fill_obj_info(skb, net, NETLINK_CB(cb->skb).portid,
+> -						    cb->nlh->nlmsg_seq,
+> -						    NFT_MSG_NEWOBJ,
+> -						    NLM_F_MULTI | NLM_F_APPEND,
+> -						    table->family, table,
+> -						    obj, ctx->reset) < 0)
+> -				goto done;
+> +			rc = nf_tables_fill_obj_info(skb, net,
+> +						     NETLINK_CB(cb->skb).portid,
+> +						     cb->nlh->nlmsg_seq,
+> +						     NFT_MSG_NEWOBJ,
+> +						     NLM_F_MULTI | NLM_F_APPEND,
+> +						     table->family, table,
+> +						     obj, ctx->reset);
+> +			if (rc < 0)
+> +				break;
+>  
+> +			entries++;
+>  			nl_dump_check_consistent(cb, nlmsg_hdr(skb));
+>  cont:
+>  			idx++;
+>  		}
+> +		if (ctx->reset && entries)
+> +			audit_log_obj_reset(table, nft_net->base_seq, entries);
+> +		if (rc < 0)
+> +			break;
+>  	}
+> -done:
+>  	rcu_read_unlock();
+>  
+>  	ctx->s_idx = idx;
+> @@ -7977,8 +7983,7 @@ static int nf_tables_getobj_reset(struct sk_buff *skb,
+>  		return PTR_ERR(skb2);
+>  
+>  	buf = kasprintf(GFP_ATOMIC, "%s:%u", table->name, nft_net->base_seq);
+> -	audit_log_nfcfg(buf, family, obj->handle,
+> -			AUDIT_NFT_OP_OBJ_RESET, GFP_ATOMIC);
+> +	audit_log_nfcfg(buf, family, 1, AUDIT_NFT_OP_OBJ_RESET, GFP_ATOMIC);
+>  	kfree(buf);
+>  
+>  	return nfnetlink_unicast(skb2, net, portid);
+> diff --git a/tools/testing/selftests/netfilter/nft_audit.sh b/tools/testing/selftests/netfilter/nft_audit.sh
+> index bb34329e02a7f..e94a80859bbdb 100755
+> --- a/tools/testing/selftests/netfilter/nft_audit.sh
+> +++ b/tools/testing/selftests/netfilter/nft_audit.sh
+> @@ -93,6 +93,12 @@ do_test 'nft add counter t1 c1' \
+>  do_test 'nft add counter t2 c1; add counter t2 c2' \
+>  'table=t2 family=2 entries=2 op=nft_register_obj'
+>  
+> +for ((i = 3; i <= 500; i++)); do
+> +	echo "add counter t2 c$i"
+> +done >$rulefile
+> +do_test "nft -f $rulefile" \
+> +'table=t2 family=2 entries=498 op=nft_register_obj'
+> +
+>  # adding/updating quotas
+>  
+>  do_test 'nft add quota t1 q1 { 10 bytes }' \
+> @@ -101,6 +107,12 @@ do_test 'nft add quota t1 q1 { 10 bytes }' \
+>  do_test 'nft add quota t2 q1 { 10 bytes }; add quota t2 q2 { 10 bytes }' \
+>  'table=t2 family=2 entries=2 op=nft_register_obj'
+>  
+> +for ((i = 3; i <= 500; i++)); do
+> +	echo "add quota t2 q$i { 10 bytes }"
+> +done >$rulefile
+> +do_test "nft -f $rulefile" \
+> +'table=t2 family=2 entries=498 op=nft_register_obj'
+> +
+>  # changing the quota value triggers obj update path
+>  do_test 'nft add quota t1 q1 { 20 bytes }' \
+>  'table=t1 family=2 entries=1 op=nft_register_obj'
+> @@ -150,6 +162,40 @@ done
+>  do_test 'nft reset set t1 s' \
+>  'table=t1 family=2 entries=3 op=nft_reset_setelem'
+>  
+> +# resetting counters
+> +
+> +do_test 'nft reset counter t1 c1' \
+> +'table=t1 family=2 entries=1 op=nft_reset_obj'
+> +
+> +do_test 'nft reset counters t1' \
+> +'table=t1 family=2 entries=1 op=nft_reset_obj'
+> +
+> +do_test 'nft reset counters t2' \
+> +'table=t2 family=2 entries=342 op=nft_reset_obj
+> +table=t2 family=2 entries=158 op=nft_reset_obj'
+> +
+> +do_test 'nft reset counters' \
+> +'table=t1 family=2 entries=1 op=nft_reset_obj
+> +table=t2 family=2 entries=341 op=nft_reset_obj
+> +table=t2 family=2 entries=159 op=nft_reset_obj'
+> +
+> +# resetting quotas
+> +
+> +do_test 'nft reset quota t1 q1' \
+> +'table=t1 family=2 entries=1 op=nft_reset_obj'
+> +
+> +do_test 'nft reset quotas t1' \
+> +'table=t1 family=2 entries=1 op=nft_reset_obj'
+> +
+> +do_test 'nft reset quotas t2' \
+> +'table=t2 family=2 entries=315 op=nft_reset_obj
+> +table=t2 family=2 entries=185 op=nft_reset_obj'
+> +
+> +do_test 'nft reset quotas' \
+> +'table=t1 family=2 entries=1 op=nft_reset_obj
+> +table=t2 family=2 entries=314 op=nft_reset_obj
+> +table=t2 family=2 entries=186 op=nft_reset_obj'
+> +
+>  # deleting rules
+>  
+>  readarray -t handles < <(nft -a list chain t1 c1 | \
+> -- 
+> 2.41.0
+> 
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 1491d4c65fed9..a855b43fe72db 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -5834,10 +5834,6 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
- 	nla_nest_end(skb, nest);
- 	nlmsg_end(skb, nlh);
- 
--	if (dump_ctx->reset && args.iter.count > args.iter.skip)
--		audit_log_nft_set_reset(table, cb->seq,
--					args.iter.count - args.iter.skip);
--
- 	rcu_read_unlock();
- 
- 	if (args.iter.err && args.iter.err != -EMSGSIZE)
-@@ -5853,6 +5849,24 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
- 	return -ENOSPC;
- }
- 
-+static int nf_tables_dumpreset_set(struct sk_buff *skb,
-+				   struct netlink_callback *cb)
-+{
-+	struct nftables_pernet *nft_net = nft_pernet(sock_net(skb->sk));
-+	struct nft_set_dump_ctx *dump_ctx = cb->data;
-+	int ret, skip = cb->args[0];
-+
-+	mutex_lock(&nft_net->commit_mutex);
-+	ret = nf_tables_dump_set(skb, cb);
-+	mutex_unlock(&nft_net->commit_mutex);
-+
-+	if (cb->args[0] > skip)
-+		audit_log_nft_set_reset(dump_ctx->ctx.table, cb->seq,
-+					cb->args[0] - skip);
-+
-+	return ret;
-+}
-+
- static int nf_tables_dump_set_start(struct netlink_callback *cb)
- {
- 	struct nft_set_dump_ctx *dump_ctx = cb->data;
-@@ -6070,7 +6084,6 @@ static int nf_tables_getsetelem(struct sk_buff *skb,
- 	struct nft_set *set;
- 	struct nlattr *attr;
- 	struct nft_ctx ctx;
--	bool reset = false;
- 
- 	table = nft_table_lookup(net, nla[NFTA_SET_ELEM_LIST_TABLE], family,
- 				 genmask, 0);
-@@ -6085,9 +6098,6 @@ static int nf_tables_getsetelem(struct sk_buff *skb,
- 
- 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
- 
--	if (NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_GETSETELEM_RESET)
--		reset = true;
--
- 	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
- 		struct netlink_dump_control c = {
- 			.start = nf_tables_dump_set_start,
-@@ -6098,7 +6108,67 @@ static int nf_tables_getsetelem(struct sk_buff *skb,
- 		struct nft_set_dump_ctx dump_ctx = {
- 			.set = set,
- 			.ctx = ctx,
--			.reset = reset,
-+			.reset = false,
-+		};
-+
-+		c.data = &dump_ctx;
-+		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
-+	}
-+
-+	if (!nla[NFTA_SET_ELEM_LIST_ELEMENTS])
-+		return -EINVAL;
-+
-+	nla_for_each_nested(attr, nla[NFTA_SET_ELEM_LIST_ELEMENTS], rem) {
-+		err = nft_get_set_elem(&ctx, set, attr, false);
-+		if (err < 0) {
-+			NL_SET_BAD_ATTR(extack, attr);
-+			break;
-+		}
-+		nelems++;
-+	}
-+
-+	return err;
-+}
-+
-+static int nf_tables_getsetelem_reset(struct sk_buff *skb,
-+				      const struct nfnl_info *info,
-+				      const struct nlattr * const nla[])
-+{
-+	struct nftables_pernet *nft_net = nft_pernet(info->net);
-+	struct netlink_ext_ack *extack = info->extack;
-+	u8 genmask = nft_genmask_cur(info->net);
-+	u8 family = info->nfmsg->nfgen_family;
-+	int rem, err = 0, nelems = 0;
-+	struct net *net = info->net;
-+	struct nft_table *table;
-+	struct nft_set *set;
-+	struct nlattr *attr;
-+	struct nft_ctx ctx;
-+
-+	table = nft_table_lookup(net, nla[NFTA_SET_ELEM_LIST_TABLE], family,
-+				 genmask, 0);
-+	if (IS_ERR(table)) {
-+		NL_SET_BAD_ATTR(extack, nla[NFTA_SET_ELEM_LIST_TABLE]);
-+		return PTR_ERR(table);
-+	}
-+
-+	set = nft_set_lookup(table, nla[NFTA_SET_ELEM_LIST_SET], genmask);
-+	if (IS_ERR(set))
-+		return PTR_ERR(set);
-+
-+	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
-+
-+	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
-+		struct netlink_dump_control c = {
-+			.start = nf_tables_dump_set_start,
-+			.dump = nf_tables_dumpreset_set,
-+			.done = nf_tables_dump_set_done,
-+			.module = THIS_MODULE,
-+		};
-+		struct nft_set_dump_ctx dump_ctx = {
-+			.set = set,
-+			.ctx = ctx,
-+			.reset = true,
- 		};
- 
- 		c.data = &dump_ctx;
-@@ -6108,18 +6178,25 @@ static int nf_tables_getsetelem(struct sk_buff *skb,
- 	if (!nla[NFTA_SET_ELEM_LIST_ELEMENTS])
- 		return -EINVAL;
- 
-+	if (!try_module_get(THIS_MODULE))
-+		return -EINVAL;
-+	rcu_read_unlock();
-+	mutex_lock(&nft_net->commit_mutex);
-+	rcu_read_lock();
- 	nla_for_each_nested(attr, nla[NFTA_SET_ELEM_LIST_ELEMENTS], rem) {
--		err = nft_get_set_elem(&ctx, set, attr, reset);
-+		err = nft_get_set_elem(&ctx, set, attr, true);
- 		if (err < 0) {
- 			NL_SET_BAD_ATTR(extack, attr);
- 			break;
- 		}
- 		nelems++;
- 	}
-+	rcu_read_unlock();
-+	mutex_unlock(&nft_net->commit_mutex);
-+	rcu_read_lock();
-+	module_put(THIS_MODULE);
- 
--	if (reset)
--		audit_log_nft_set_reset(table, nft_pernet(net)->base_seq,
--					nelems);
-+	audit_log_nft_set_reset(table, nft_net->base_seq, nelems);
- 
- 	return err;
- }
-@@ -9140,7 +9217,7 @@ static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
- 		.policy		= nft_set_elem_list_policy,
- 	},
- 	[NFT_MSG_GETSETELEM_RESET] = {
--		.call		= nf_tables_getsetelem,
-+		.call		= nf_tables_getsetelem_reset,
- 		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_SET_ELEM_LIST_MAX,
- 		.policy		= nft_set_elem_list_policy,
--- 
-2.41.0
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+Upstream IRC: SunRaycer
+Voice: +1.613.860 2354 SMS: +1.613.518.6570
 
