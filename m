@@ -2,43 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2556C7B64C1
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Oct 2023 10:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5987B64EF
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Oct 2023 11:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239261AbjJCI4C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 3 Oct 2023 04:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
+        id S239434AbjJCJEQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 3 Oct 2023 05:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239455AbjJCI4B (ORCPT
+        with ESMTP id S239412AbjJCJEP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:56:01 -0400
-Received: from mail.commercesolutions.pl (unknown [162.19.155.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40609AD
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Oct 2023 01:55:54 -0700 (PDT)
-Received: by mail.commercesolutions.pl (Postfix, from userid 1002)
-        id BF24A22E65; Tue,  3 Oct 2023 08:55:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=commercesolutions.pl;
-        s=mail; t=1696323351;
-        bh=PcMncQpBfIZCnTOfZJY5G1G+gaLn4c9QPfFvoXrE4rA=;
-        h=Date:From:To:Subject:From;
-        b=MCvFl9hoBpKMKd0hj85VfBKwaJfU3Bp47c8nRWOqH0kYqYt04N/pDGrKBWwXIRzkb
-         FGUvE23Eg0U8SrQI+roR/8uJQ//RjcteRUgm+31DcvuwWH96J3fmk27Uizv9WUuiQP
-         iwMAXE8vPRUvy0QMIVoQxaish4DPuxhge/PzqcKXUed/+ymjjoIDSYU4kfdIfXb4JD
-         4BKGMnwgnSyJB5cgIR9kndjzrVn8buD/v1J73I5NbvUdsqRvaPhTEyfioBwD6t2MX3
-         qf6T+f8oSkLM2MYJz+KrZCzx7yZ+8YFnyEHE1Ka/w4X/pa8DX92NowTdbv1dTMvoib
-         /Esy1wxQOOxLQ==
-Received: by mail.commercesolutions.pl for <netfilter-devel@vger.kernel.org>; Tue,  3 Oct 2023 08:55:35 GMT
-Message-ID: <20231003080829-0.1.92.1qxpo.0.n9n84ck1gl@commercesolutions.pl>
-Date:   Tue,  3 Oct 2023 08:55:35 GMT
-From:   "Kamil Tralewski" <kamil.tralewski@commercesolutions.pl>
-To:     <netfilter-devel@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.commercesolutions.pl
+        Tue, 3 Oct 2023 05:04:15 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BED9E
+        for <netfilter-devel@vger.kernel.org>; Tue,  3 Oct 2023 02:04:11 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qnbK6-0000S3-2Q; Tue, 03 Oct 2023 11:04:10 +0200
+Date:   Tue, 3 Oct 2023 11:04:10 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: Re: update element timeout support [was Re: [PATCH nf 1/2]
+ netfilter: nft_set_rbtree: move sync GC from insert path to
+ set->ops->commit]
+Message-ID: <20231003090410.GA446@breakpoint.cc>
+References: <20230929164404.172081-1-pablo@netfilter.org>
+ <ZRdOxs+i1EuC+zoS@calendula>
+ <20230930081038.GB23327@breakpoint.cc>
+ <ZRnSGwk40jpUActD@calendula>
+ <20231001210816.GA15564@breakpoint.cc>
+ <ZRq6oP2/hns1qoaq@calendula>
+ <20231002135838.GB30843@breakpoint.cc>
+ <20231002142141.GA7339@breakpoint.cc>
+ <ZRvPSw5PGFyt7S10@calendula>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRvPSw5PGFyt7S10@calendula>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,18 +49,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> Hi Florian,
+> 
+> I am collecting here your comments for the model we are defining for
+> set elements:
+> 
+> https://people.netfilter.org/pablo/setelems-timeout.txt
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+LGTM.  I think your proposal to snapshot current time and
+remove the "moving target" is key.
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+> Let me know if you have more possible scenarios that you think that
+> might not be address by this model:
+> 
+> - Annotate current time at the beginning of the transaction, use it
+>   in _expired() check (=> timeout is not a moving target anymore).
+> - Annotate element timeout update in transaction, update timeout from
+>   _commit() path not to refresh it.
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+Right, I think that will work.
+For rbtree, sync gc is kept in place, elements are not zapped,
+they get tagged as DEAD, including the end element.
 
-Pozdrawiam
-Kamil Tralewski
+Then from commit, do full scan and remove any and all elements
+that are flagged as DEAD or have expired.
