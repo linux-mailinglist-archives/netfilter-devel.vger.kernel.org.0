@@ -2,68 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D718E7BA361
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Oct 2023 17:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA7D7B9E80
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Oct 2023 16:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbjJEP4d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Oct 2023 11:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        id S231939AbjJEOHj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Oct 2023 10:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237517AbjJEPzo (ORCPT
+        with ESMTP id S232244AbjJEOGB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Oct 2023 11:55:44 -0400
-X-Greylist: delayed 4201 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 05 Oct 2023 08:15:36 PDT
-Received: from mail.projectinc.pl (mail.projectinc.pl [151.236.21.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2232185E4
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Oct 2023 08:15:36 -0700 (PDT)
-Received: by mail.projectinc.pl (Postfix, from userid 1001)
-        id 651D13DA6D; Thu,  5 Oct 2023 09:55:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=projectinc.pl;
-        s=mail; t=1696492550;
-        bh=lIHTK8URpqixZz6NHWxMXvKMyyZ1ujcgjAp/F0bQcns=;
-        h=Date:From:To:Subject:From;
-        b=FmGf35iiktomf1d3dTNNgSIHThuEA3ljaFOF4ibOud4kvD0gti+c5jHYXCCHclXwH
-         vSgcS+LbeMo9eK8BZJui5D2mPO4NuyPFa5R1qZmZBXLF8V4oyD8LKYx+mFrTWHnqtY
-         YUlOl9z7hiy5xh96xtAZGvStk1cN+lElUzmpW1Pr495NmtG7WNNjAkStDOL3L9VCSb
-         j0w1E2Cus/eVB9+MsVtUEKnhAGmWvRJVIxRfowFOcJYFVVnWLz6LSEO3QoZJzXT/DB
-         y/bqXIi02B2S/XsY3IgepXD50WKJd//QKI+EuPkD46PQo2utN16VdfMDg0OERBoDME
-         0l1twILe9+lYQ==
-Received: by mail.projectinc.pl for <netfilter-devel@vger.kernel.org>; Thu,  5 Oct 2023 07:55:47 GMT
-Message-ID: <20231005084500-0.1.bg.36gn5.0.ne32xlxqko@projectinc.pl>
-Date:   Thu,  5 Oct 2023 07:55:47 GMT
-From:   =?UTF-8?Q? "Jakub_Wr=C3=B3bel" ?= <jakub.wrobel@projectinc.pl>
+        Thu, 5 Oct 2023 10:06:01 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9021693D9
+        for <netfilter-devel@vger.kernel.org>; Thu,  5 Oct 2023 01:53:20 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1qoK6g-0007Wf-CG; Thu, 05 Oct 2023 10:53:18 +0200
+From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
-Subject: Pozycjonowanie- informacja
-X-Mailer: mail.projectinc.pl
+Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>
+Subject: [PATCH nf] netfilter: nfnetlink_log: silence bogus compiler warning
+Date:   Thu,  5 Oct 2023 10:53:08 +0200
+Message-ID: <20231005085311.21133-1-fw@strlen.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,URIBL_DBL_SPAM autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+ net/netfilter/nfnetlink_log.c:800:18: warning: variable 'ctinfo' is uninitialized
 
-jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
-j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
-e Google.=20
+The warning is bogus, the variable is only used if ct is non-NULL and
+always initialised in that case.  Init to 0 too to silence this.
 
-Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
-=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
-w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
-owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
-dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309100514.ndBFebXN-lkp@intel.com/
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nfnetlink_log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
-edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
-edstawi=C4=87 ofert=C4=99?
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index 53c9e76473ba..f03f4d4d7d88 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -698,8 +698,8 @@ nfulnl_log_packet(struct net *net,
+ 	unsigned int plen = 0;
+ 	struct nfnl_log_net *log = nfnl_log_pernet(net);
+ 	const struct nfnl_ct_hook *nfnl_ct = NULL;
++	enum ip_conntrack_info ctinfo = 0;
+ 	struct nf_conn *ct = NULL;
+-	enum ip_conntrack_info ctinfo;
+ 
+ 	if (li_user && li_user->type == NF_LOG_TYPE_ULOG)
+ 		li = li_user;
+-- 
+2.41.0
 
-
-Pozdrawiam serdecznie,
-Jakub Wr=C3=B3bel
