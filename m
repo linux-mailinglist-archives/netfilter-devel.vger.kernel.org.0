@@ -2,28 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA7D7B9E80
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Oct 2023 16:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946597BA2DE
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Oct 2023 17:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbjJEOHj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Oct 2023 10:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
+        id S234396AbjJEPst (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Oct 2023 11:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232244AbjJEOGB (ORCPT
+        with ESMTP id S233191AbjJEPsH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Oct 2023 10:06:01 -0400
+        Thu, 5 Oct 2023 11:48:07 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9021693D9
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Oct 2023 01:53:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC09AFAE
+        for <netfilter-devel@vger.kernel.org>; Thu,  5 Oct 2023 07:18:56 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qoK6g-0007Wf-CG; Thu, 05 Oct 2023 10:53:18 +0200
+        id 1qoPBl-0000ZB-Hb; Thu, 05 Oct 2023 16:18:53 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>
-Subject: [PATCH nf] netfilter: nfnetlink_log: silence bogus compiler warning
-Date:   Thu,  5 Oct 2023 10:53:08 +0200
-Message-ID: <20231005085311.21133-1-fw@strlen.de>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Timo Sigurdsson <public_timo.s@silentcreek.de>
+Subject: [PATCH nf] netfilter: nf_tables: work around newrule after chain binding
+Date:   Thu,  5 Oct 2023 16:18:39 +0200
+Message-ID: <20231005141843.8203-1-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -36,32 +37,116 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- net/netfilter/nfnetlink_log.c:800:18: warning: variable 'ctinfo' is uninitialized
+nftables versions prior to
+commit 3975430b12d9 ("src: expand table command before evaluation"), i.e.
+1.0.6 and earlier, will handle the following snippet in the wrong order:
 
-The warning is bogus, the variable is only used if ct is non-NULL and
-always initialised in that case.  Init to 0 too to silence this.
+table ip t {
+	chain c {
+		jump { counter; }
+	}
+}
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309100514.ndBFebXN-lkp@intel.com/
+1. create the table, chain,c and an anon chain.
+2. append a rule to chain c to jump to the anon chain.
+3. append the rule(s) (here: "counter") to the anon chain.
+
+(step 3 should be before 2).
+
+With below commit, this is now rejected by the kernel.
+
+Reason is that the 'jump {' rule added to chain c adds an explicit binding
+(dependency), i.e. the kernel will automatically remove the anon chain when
+userspace later asks to delete the 'jump {' rule from chain c.
+
+This caused crashes in the kernel in case of a errors further down
+in the same transaction.
+
+The abort part has to unroll all pending changes, including the request to
+add the rule 'jump {'.  As its already bound, all the rules added to it
+get deleted as well.
+
+Because we tolerated late-add-after-bind, the transaction log also contains
+the NEWRULE requests (here "counter"), so those were deleted again.
+
+Instead of rejecting newrule-to-bound-chain, allow it iff the anon chain
+is new in this transaction and we are appending.
+
+Mark the newrule transaction as already_bound so abort path skips them.
+
+Fixes: 0ebc1064e487 ("netfilter: nf_tables: disallow rule addition to bound chain via NFTA_RULE_CHAIN_ID")
+Reported-by: Timo Sigurdsson <public_timo.s@silentcreek.de>
+Closes: https://lore.kernel.org/netfilter-devel/20230911213750.5B4B663206F5@dd20004.kasserver.com/
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nfnetlink_log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 33 +++++++++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index 53c9e76473ba..f03f4d4d7d88 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -698,8 +698,8 @@ nfulnl_log_packet(struct net *net,
- 	unsigned int plen = 0;
- 	struct nfnl_log_net *log = nfnl_log_pernet(net);
- 	const struct nfnl_ct_hook *nfnl_ct = NULL;
-+	enum ip_conntrack_info ctinfo = 0;
- 	struct nf_conn *ct = NULL;
--	enum ip_conntrack_info ctinfo;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index a72b6aeefb1b..dd5b78a58023 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3805,6 +3805,26 @@ static struct nft_rule *nft_rule_lookup_byid(const struct net *net,
+ 					     const struct nft_chain *chain,
+ 					     const struct nlattr *nla);
  
- 	if (li_user && li_user->type == NF_LOG_TYPE_ULOG)
- 		li = li_user;
++/* nft <= 1.0.6 appends rules to anon chains after they have been bound */
++static bool nft_rule_work_around_old_version(const struct nfnl_info *info,
++					     struct nft_chain *chain)
++{
++	/* bound (anonymous) chain is already used */
++	if (nft_is_active(info->net, chain))
++		return false;
++
++	/* nft never asks to replace rules here */
++	if (info->nlh->nlmsg_flags & (NLM_F_REPLACE | NLM_F_EXCL))
++		return false;
++
++	/* nft and it only ever appends. */
++	if ((info->nlh->nlmsg_flags & NLM_F_APPEND) == 0)
++		return false;
++
++	pr_warn_once("enabling workaround for nftables 1.0.6 and older\n");
++	return true;
++}
++
+ #define NFT_RULE_MAXEXPRS	128
+ 
+ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+@@ -3818,6 +3838,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	struct nft_expr_info *expr_info = NULL;
+ 	u8 family = info->nfmsg->nfgen_family;
+ 	struct nft_flow_rule *flow = NULL;
++	bool add_after_bind = false;
+ 	struct net *net = info->net;
+ 	struct nft_userdata *udata;
+ 	struct nft_table *table;
+@@ -3857,8 +3878,12 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (nft_chain_is_bound(chain))
+-		return -EOPNOTSUPP;
++	if (nft_chain_is_bound(chain)) {
++		if (!nft_rule_work_around_old_version(info, chain))
++			return -EOPNOTSUPP;
++
++		add_after_bind = true;
++	}
+ 
+ 	if (nla[NFTA_RULE_HANDLE]) {
+ 		handle = be64_to_cpu(nla_get_be64(nla[NFTA_RULE_HANDLE]));
+@@ -4003,6 +4028,10 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 			goto err_destroy_flow_rule;
+ 		}
+ 
++		/* work around nftables versions <= 1.0.5 that append rules after bind. */
++		if (add_after_bind)
++			nft_trans_rule_bound(trans) = true;
++
+ 		if (info->nlh->nlmsg_flags & NLM_F_APPEND) {
+ 			if (old_rule)
+ 				list_add_rcu(&rule->list, &old_rule->list);
 -- 
 2.41.0
 
