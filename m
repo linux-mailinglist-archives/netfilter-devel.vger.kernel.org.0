@@ -2,80 +2,134 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E433B7BA4F8
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Oct 2023 18:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537BF7BB42B
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Oct 2023 11:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240107AbjJEQN3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Oct 2023 12:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S230484AbjJFJ2E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 6 Oct 2023 05:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240972AbjJEQMU (ORCPT
+        with ESMTP id S231404AbjJFJ2D (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Oct 2023 12:12:20 -0400
+        Fri, 6 Oct 2023 05:28:03 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADDA26A42;
-        Thu,  5 Oct 2023 05:31:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DC2A6
+        for <netfilter-devel@vger.kernel.org>; Fri,  6 Oct 2023 02:28:01 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qoNVT-0008M5-La; Thu, 05 Oct 2023 14:31:07 +0200
-Date:   Thu, 5 Oct 2023 14:31:07 +0200
+        (envelope-from <fw@breakpoint.cc>)
+        id 1qoh7n-0007cU-Sz; Fri, 06 Oct 2023 11:27:59 +0200
 From:   Florian Westphal <fw@strlen.de>
-To:     xiaolinkui <xiaolinkui@126.com>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, justinstitt@google.com, kuniyu@amazon.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linkui Xiao <xiaolinkui@kylinos.cn>
-Subject: Re: [PATCH] netfilter: ipset: wait for xt_recseq on all cpus
-Message-ID: <20231005123107.GB9350@breakpoint.cc>
-References: <20231005115022.12902-1-xiaolinkui@126.com>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: conntrack: simplify nf_conntrack_alter_reply
+Date:   Fri,  6 Oct 2023 11:27:29 +0200
+Message-ID: <20231006092755.2343-1-fw@strlen.de>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <netfilter-devel>
+References: <netfilter-devel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005115022.12902-1-xiaolinkui@126.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-xiaolinkui <xiaolinkui@126.com> wrote:
-> From: Linkui Xiao <xiaolinkui@kylinos.cn>
-> 
-> Before destroying the ipset, take a check on sequence to ensure that the
-> ip_set_test operation of this ipset has been completed.
-> 
-> The code of set_match_v4 is protected by addend=xt_write_recseq_begin() and
-> xt_write_recseq_end(addend). So we can ensure that the test operation is
-> completed by reading seqcount.
+nf_conntrack_alter_reply doesn't do helper reassignment anymore.
+Remove the comments that make this claim.
 
-Nope, please don't do this, the xt_set can also be used from nft_compat
-which doesn't use the xtables packet traversers.
+Furthermore, remove dead code from the function and place ot
+in nf_conntrack.h.
 
-I'd rather use synchonize_rcu() once in ip_set_destroy(), that will
-make sure all concurrent traversers are gone.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ include/net/netfilter/nf_conntrack.h | 14 ++++++++++----
+ net/netfilter/nf_conntrack_core.c    | 18 ------------------
+ net/netfilter/nf_conntrack_helper.c  |  7 +------
+ 3 files changed, 11 insertions(+), 28 deletions(-)
 
-That said, I still do not understand this fix, the
-match / target destroy hooks are called after the table has
-been completely replaced, i.e., while packets can still be in flight
-no packets should be within the ipset lookup functions when
-this happens, and no more packets should be able to enter them.
+diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
+index 4085765c3370..cba3ccf03fcc 100644
+--- a/include/net/netfilter/nf_conntrack.h
++++ b/include/net/netfilter/nf_conntrack.h
+@@ -160,10 +160,6 @@ static inline struct net *nf_ct_net(const struct nf_conn *ct)
+ 	return read_pnet(&ct->ct_net);
+ }
+ 
+-/* Alter reply tuple (maybe alter helper). */
+-void nf_conntrack_alter_reply(struct nf_conn *ct,
+-			      const struct nf_conntrack_tuple *newreply);
+-
+ /* Is this tuple taken? (ignoring any belonging to the given
+    conntrack). */
+ int nf_conntrack_tuple_taken(const struct nf_conntrack_tuple *tuple,
+@@ -284,6 +280,16 @@ static inline bool nf_is_loopback_packet(const struct sk_buff *skb)
+ 	return skb->dev && skb->skb_iif && skb->dev->flags & IFF_LOOPBACK;
+ }
+ 
++static inline void nf_conntrack_alter_reply(struct nf_conn *ct,
++					    const struct nf_conntrack_tuple *newreply)
++{
++	/* Must be unconfirmed, so not in hash table yet */
++	if (WARN_ON(nf_ct_is_confirmed(ct)))
++		return;
++
++	ct->tuplehash[IP_CT_DIR_REPLY].tuple = *newreply;
++}
++
+ #define nfct_time_stamp ((u32)(jiffies))
+ 
+ /* jiffies until ct expires, 0 if already expired */
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 9f6f2e643575..124136b5a79a 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2042,24 +2042,6 @@ nf_conntrack_in(struct sk_buff *skb, const struct nf_hook_state *state)
+ }
+ EXPORT_SYMBOL_GPL(nf_conntrack_in);
+ 
+-/* Alter reply tuple (maybe alter helper).  This is for NAT, and is
+-   implicitly racy: see __nf_conntrack_confirm */
+-void nf_conntrack_alter_reply(struct nf_conn *ct,
+-			      const struct nf_conntrack_tuple *newreply)
+-{
+-	struct nf_conn_help *help = nfct_help(ct);
+-
+-	/* Should be unconfirmed, so not in hash table yet */
+-	WARN_ON(nf_ct_is_confirmed(ct));
+-
+-	nf_ct_dump_tuple(newreply);
+-
+-	ct->tuplehash[IP_CT_DIR_REPLY].tuple = *newreply;
+-	if (ct->master || (help && !hlist_empty(&help->expectations)))
+-		return;
+-}
+-EXPORT_SYMBOL_GPL(nf_conntrack_alter_reply);
+-
+ /* Refresh conntrack for this many jiffies and do accounting if do_acct is 1 */
+ void __nf_ct_refresh_acct(struct nf_conn *ct,
+ 			  enum ip_conntrack_info ctinfo,
+diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
+index f22691f83853..4ed5878cb25b 100644
+--- a/net/netfilter/nf_conntrack_helper.c
++++ b/net/netfilter/nf_conntrack_helper.c
+@@ -194,12 +194,7 @@ int __nf_ct_try_assign_helper(struct nf_conn *ct, struct nf_conn *tmpl,
+ 	struct nf_conntrack_helper *helper = NULL;
+ 	struct nf_conn_help *help;
+ 
+-	/* We already got a helper explicitly attached. The function
+-	 * nf_conntrack_alter_reply - in case NAT is in use - asks for looking
+-	 * the helper up again. Since now the user is in full control of
+-	 * making consistent helper configurations, skip this automatic
+-	 * re-lookup, otherwise we'll lose the helper.
+-	 */
++	/* We already got a helper explicitly attached (e.g. nft_ct) */
+ 	if (test_bit(IPS_HELPER_BIT, &ct->status))
+ 		return 0;
+ 
+-- 
+2.41.0
 
-AFAICS the request to delete the set will fail if its still referenced
-via any rule. xt_set holds references to the sets.
-
-So:
-1. set have dropped all references
-2. userspace *can* delete the set
-3. we get crash because xt_set was still within a sets eval
-  function.
-
-I don't see how 3) can happen, xt table replace isn't supposed
-to call the xt_set destroy functions until after table replace.
-
-We even release the entire x_table blob right afterwards.
