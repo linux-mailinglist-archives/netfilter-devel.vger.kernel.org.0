@@ -2,112 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3907CA89D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Oct 2023 14:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC4B7CA8FF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Oct 2023 15:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjJPM4X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Oct 2023 08:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S230056AbjJPNNK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Oct 2023 09:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbjJPM4U (ORCPT
+        with ESMTP id S229459AbjJPNNK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Oct 2023 08:56:20 -0400
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF99F1;
-        Mon, 16 Oct 2023 05:56:14 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 6C1E8CC010E;
-        Mon, 16 Oct 2023 14:56:11 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Mon, 16 Oct 2023 14:56:09 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id AE4D6CC010A;
-        Mon, 16 Oct 2023 14:56:06 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 8B45C3431A8; Mon, 16 Oct 2023 14:56:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id 89D09340D74;
-        Mon, 16 Oct 2023 14:56:06 +0200 (CEST)
-Date:   Mon, 16 Oct 2023 14:56:06 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     xiaolinkui <xiaolinkui@126.com>
-cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        David Miller <davem@davemloft.net>, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, justinstitt@google.com,
-        kuniyu@amazon.com, oe-kbuild-all@lists.linux.dev,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linkui Xiao <xiaolinkui@kylinos.cn>
-Subject: Re: [PATCH] netfilter: ipset: wait for xt_recseq on all cpus
-In-Reply-To: <202310161625.GDDBP8SZ-lkp@intel.com>
-Message-ID: <20ae91c-155-32c5-c388-9fdaea5b1eed@netfilter.org>
-References: <20231005115022.12902-1-xiaolinkui@126.com> <202310161625.GDDBP8SZ-lkp@intel.com>
+        Mon, 16 Oct 2023 09:13:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3210A2
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Oct 2023 06:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697461944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=noFKdPUgAvckGV7mweXpb2n7vkYJCaBf0ycnMOO3sq0=;
+        b=P+2L+9l2v6iN9Qun8ZzCOvImy8QRoe2ur2I90B47OlNDzQsG6qEDamxHOz8Uq1NDwkrkbw
+        VWD5p5QVw1uilyYvbGQH/N0E4wPW47uhpKFgRHR63ObaM4CdNCQhiivRHnaUCDQML916tw
+        29dQ0C1kvpkLH6WujWxGHr3ml4Rm/bo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-633-5vijGf7hM6-baWbILwxGgg-1; Mon, 16 Oct 2023 09:12:22 -0400
+X-MC-Unique: 5vijGf7hM6-baWbILwxGgg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9203929ABA34
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Oct 2023 13:12:21 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EDF4A492BEE;
+        Mon, 16 Oct 2023 13:12:20 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft 1/3] tests/shell: skip "table_onoff" test if kernel patch is missing
+Date:   Mon, 16 Oct 2023 15:12:07 +0200
+Message-ID: <20231016131209.1127298-1-thaller@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+Passing the test suite must not require latest kernel patches.  If test
+"table_onoff" appears to not work due to a missing kernel patch, skip
+it.
 
-Besides the broken patch, the description simply cannot be true:
+If you run a special kernel and expect that all test pass, set
+NFT_TEST_FAIL_ON_SKIP=y to catch unexpected skips.
 
-"Before destroying the ipset, take a check on sequence to ensure that the 
-ip_set_test operation of this ipset has been completed."
+Fixes: bcca2d67656f ('tests: add test for dormant on/off/on bug')
+Signed-off-by: Thomas Haller <thaller@redhat.com>
+---
+ tests/shell/testcases/transactions/table_onoff | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Set can only be destroyed when there is no iptables rule (match/target) 
-which refers to it. If this condition is not true, then the real reason 
-must be fixed.
-
-How can one reproduce the issue?
-
-Best regards,
-Jozsef
-
-On Mon, 16 Oct 2023, kernel test robot wrote:
-
-> Hi xiaolinkui,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on netfilter-nf/main]
-> [also build test ERROR on nf-next/master horms-ipvs/master linus/master v6.6-rc6 next-20231016]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/xiaolinkui/netfilter-ipset-wait-for-xt_recseq-on-all-cpus/20231005-234042
-> base:   git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git main
-> patch link:    https://lore.kernel.org/r/20231005115022.12902-1-xiaolinkui%40126.com
-> patch subject: [PATCH] netfilter: ipset: wait for xt_recseq on all cpus
-> config: x86_64-buildonly-randconfig-006-20231016 (https://download.01.org/0day-ci/archive/20231016/202310161625.GDDBP8SZ-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231016/202310161625.GDDBP8SZ-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310161625.GDDBP8SZ-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->    ld: vmlinux.o: in function `wait_xt_recseq':
-> >> ip_set_core.c:(.text+0x1c561ac): undefined reference to `xt_recseq'
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
-> 
-
+diff --git a/tests/shell/testcases/transactions/table_onoff b/tests/shell/testcases/transactions/table_onoff
+index 831d4614c1f2..d5ad09ef334c 100755
+--- a/tests/shell/testcases/transactions/table_onoff
++++ b/tests/shell/testcases/transactions/table_onoff
+@@ -11,7 +11,8 @@ delete table ip t
+ EOF
+ 
+ if [ $? -eq 0 ]; then
+-	exit 1
++	echo "Command to re-awaken a dormant table did not fail. Assume https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c9bd26513b3a11b3adb3c2ed8a31a01a87173ff1 is missing"
++	exit 77
+ fi
+ 
+ set -e
 -- 
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+2.41.0
+
