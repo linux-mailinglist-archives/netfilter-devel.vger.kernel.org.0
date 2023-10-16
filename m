@@ -2,77 +2,181 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D0F7CAAA7
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Oct 2023 15:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7C77CB374
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Oct 2023 21:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232437AbjJPN7x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Oct 2023 09:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
+        id S232198AbjJPTrF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Oct 2023 15:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbjJPN7Z (ORCPT
+        with ESMTP id S232055AbjJPTrE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Oct 2023 09:59:25 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C6E1A2
-        for <netfilter-devel@vger.kernel.org>; Mon, 16 Oct 2023 06:59:21 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7c011e113so61663147b3.1
-        for <netfilter-devel@vger.kernel.org>; Mon, 16 Oct 2023 06:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1697464760; x=1698069560; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wMYooUkM1nunigDk2LPCLu9Cd71nmXj5oLnseLVsCeE=;
-        b=M25S8ekKZN1zkCWl21jOhJMZ3yVzn+vGx9SuKLmCmENETbSVi9Lh291KIL70j4vgdl
-         O7J61ekscOPKWikwu9MVHBCheYXpFK2zH9TKDtN4pjAkNLWJEjHsm0Fq5mlrbpztjPG1
-         GcVGGhlfsAFmlEzXE8/cAZ/QBiIZtPBKF30w6w5AUVtou8vGJGPSLU7H/odhmp/8LAQ4
-         WpMZ6fs22m3+kb8tSGgAruwnyPq0KRHCrd3physBJstTep1MlOqv3wJrjmFtBBl6hQCG
-         smh5jeAlVaKRCujx23u6zVTBinuYrAv/cqx3jzKpW/Nyb8uYe9yG8kGHpVqEvVX5Wtz5
-         xpLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697464760; x=1698069560;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wMYooUkM1nunigDk2LPCLu9Cd71nmXj5oLnseLVsCeE=;
-        b=Zgxr3QIlXWjSVcLy0mSvrPC9vOTiUSb4h4cGIocyQOrrRXcgPtzC33+U/+H0V+ujKw
-         lhZrFysPMf5p4zCD+xFbYXOc2+ZiQRcvj8MOhOOC4W8DV5o85GpK1RZyCDd5qMOLFiIC
-         C1neQhGHHzGEKj7PHpqpa6zh+S1syrIndKEpMdN6lqsVJYt/mnVIc9XntPYWiLAIBDYZ
-         seKYXhh5MrlPafrHXtedu0Izt5Q6GbwqkNeNrfh8ksyKum42HjfBcYfiEARjnrdE4nPI
-         Ibx1QlZnPZPWGcrDwZamHrm7mgXHPjujWDm+1soFi/Z+O7gjmICVGtWO9owTAghOY9/B
-         1rRg==
-X-Gm-Message-State: AOJu0YzpMNaHH+FyS1e27bazxxPNpWvqPrCd330pTdaz/hOSsss2Wmhu
-        cgNO7KWrpfXg+Hm10VsHzMPrIzvW7nf8u9RFmiX/Rg==
-X-Google-Smtp-Source: AGHT+IETRiV2/PhjUZyx0BRtzi0Hsmm6fxw54pLJiUINO18R8nKmJ9dy1P8nuaiL6mgLYz744QPxYMSIpJHE9XQPCro=
-X-Received: by 2002:a0d:c8c3:0:b0:59b:f8da:ffdb with SMTP id
- k186-20020a0dc8c3000000b0059bf8daffdbmr37459485ywd.29.1697464760466; Mon, 16
- Oct 2023 06:59:20 -0700 (PDT)
+        Mon, 16 Oct 2023 15:47:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5619FD
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Oct 2023 12:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697485580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MCaKT4BR9vTAqa1Dz7vZJOMkTOV+xCXMH8DbrugmMtE=;
+        b=RHl4kutP5nKdjackfoxbpKEP0LojC2V6z4vrEy/Yw43nc9DOWoJU5zPOp88qg1g/Noqoqa
+        tPmBnPR71z0VqFOI1d5+9bAAGt5Bs+232GsACIkE3grnPqofx0DuvqBP8LGijy8UvhliF6
+        LVvFbrNEezVGhgWdGRapzFbjcVYr6rA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-634-ympfp7gxNJ6tq470tulSig-1; Mon, 16 Oct 2023 15:46:18 -0400
+X-MC-Unique: ympfp7gxNJ6tq470tulSig-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 09103185A7B9
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Oct 2023 19:46:18 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57D1A492BFA;
+        Mon, 16 Oct 2023 19:46:17 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft v2 2/2] tests/shell: honor NFT_TEST_VERBOSE_TEST variable to debug tests via `bash -x`
+Date:   Mon, 16 Oct 2023 21:43:08 +0200
+Message-ID: <20231016194505.1095075-1-thaller@redhat.com>
+In-Reply-To: <20231016133019.1134188-2-thaller@redhat.com>
+References: <20231016133019.1134188-2-thaller@redhat.com>
 MIME-Version: 1.0
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Mon, 16 Oct 2023 09:59:09 -0400
-Message-ID: <CAM0EoMmBbnNfTMAa4jap71Sja51CMvRxJVUUvRTykPs4wKwQSw@mail.gmail.com>
-Subject: 0x17: Schedule is now up
-To:     people <people@netdevconf.info>
-Cc:     Christie Geldart <christie@ambedia.com>,
-        Kimberley Jeffries <kimberleyjeffries@gmail.com>,
-        program-committee@netdevconf.info,
-        Ricardo Coelho <ricardocoelho@expertisesolutions.com.br>,
-        Lael Santos <lael.santos@expertisesolutions.com.br>,
-        lwn@lwn.net,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, lartc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Apologies for the delay in posting the schedule. Here it is:
-https://netdevconf.info/0x17/pages/schedule.html
+It can be cumbersome to debug why a test fails. Our tests are just shell
+scripts, which for the most part don't print much. That is good, but for
+debugging, it can be useful to run the test via `bash -x`. Previously,
+we would just patch the source file while debugging.
 
-Amazing sessions as always.
+Add an option "-x" and NFT_TEST_VERBOSE_TEST=y environment variable. If set,
+"test-wrapper.sh" will check whether the shebang is "#!/bin/bash" and add
+"-x" to the command line.
 
-cheers,
-jamal
+While at it, let test-wrapper.sh also log a line like
+
+    Command: $CMD
+
+With this, we see in the log the command that was run, and how
+NFT_TEST_VERBOSE_TEST may have affected it. This is anyway useful,
+because many tests don't print anything at all, and we end up with an
+empty "testout.log". Empty files are cumbersome, e.g. I like to use
+`grep -R ^` to show the content of all files, which does not show empty
+files. Ensuring that something is always written is desirable.
+
+Signed-off-by: Thomas Haller <thaller@redhat.com>
+---
+This replaces "[PATCH nft 2/2] tests/shell: honor NFT_TEST_VERBOSE_TEST variable to debug tests via `bash -x`"
+Compared to v1, add a comment about how parsing of the shebang is done
+differently by the script (compared to execve). Also, log the actually
+executed command to "testout.log" file.
+
+ tests/shell/helpers/test-wrapper.sh | 15 ++++++++++++++-
+ tests/shell/run-tests.sh            | 15 ++++++++++++++-
+ 2 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/tests/shell/helpers/test-wrapper.sh b/tests/shell/helpers/test-wrapper.sh
+index 13b918f8b8e1..872a0c56ed54 100755
+--- a/tests/shell/helpers/test-wrapper.sh
++++ b/tests/shell/helpers/test-wrapper.sh
+@@ -93,7 +93,20 @@ if [ "$rc_test" -eq 0 ] ; then
+ fi
+ 
+ if [ "$rc_test" -eq 0 ] ; then
+-	"$TEST" &>> "$NFT_TEST_TESTTMPDIR/testout.log" || rc_test=$?
++	CMD=( "$TEST" )
++	if [ "$NFT_TEST_VERBOSE_TEST" = y ] ; then
++		X="$(sed -n '1 s/^#!\(\/bin\/bash\>.*$\)/\1/p' "$TEST" 2>/dev/null)"
++		if [ -n "$X" ] ; then
++			# Note that kernel parses the shebang differently and does not
++			# word splitting for the arguments. We do split the arguments here
++			# which would matter if there are spaces. For our tests, there
++			# are either no arguments or only one argument without space. So
++			# this is good enough.
++			CMD=( $X -x "$TEST" )
++		fi
++	fi
++	printf "Command: $(printf '%q ' "${CMD[@]}")\n" &>> "$NFT_TEST_TESTTMPDIR/testout.log"
++	"${CMD[@]}" &>> "$NFT_TEST_TESTTMPDIR/testout.log" || rc_test=$?
+ fi
+ 
+ $NFT list ruleset > "$NFT_TEST_TESTTMPDIR/ruleset-after"
+diff --git a/tests/shell/run-tests.sh b/tests/shell/run-tests.sh
+index 22105c2e90e2..27a0ec43042a 100755
+--- a/tests/shell/run-tests.sh
++++ b/tests/shell/run-tests.sh
+@@ -163,6 +163,7 @@ usage() {
+ 	echo " -R|--without-realroot : Sets NFT_TEST_HAS_REALROOT=n."
+ 	echo " -U|--no-unshare : Sets NFT_TEST_UNSHARE_CMD=\"\"."
+ 	echo " -k|--keep-logs  : Sets NFT_TEST_KEEP_LOGS=y."
++	echo " -x              : Sets NFT_TEST_VERBOSE_TEST=y."
+ 	echo " -s|--sequential : Sets NFT_TEST_JOBS=0, which also enables global cleanups."
+ 	echo "                   Also sets NFT_TEST_SHUFFLE_TESTS=n if left unspecified."
+ 	echo " -Q|--quick      : Sets NFT_TEST_SKIP_slow=y."
+@@ -181,6 +182,8 @@ usage() {
+ 	echo " NFT_REAL=<CMD> : Real nft comand. Usually this is just the same as \$NFT,"
+ 	echo "                 however, you may set NFT='valgrind nft' and NFT_REAL to the real command."
+ 	echo " VERBOSE=*|y   : Enable verbose output."
++	echo " NFT_TEST_VERBOSE_TEST=*|y: if true, enable verbose output for tests. For bash scripts, this means"
++	echo "                 to pass \"-x\" to the interpreter."
+ 	echo " DUMPGEN=*|y   : Regenerate dump files. Dump files are only recreated if the"
+ 	echo "                 test completes successfully and the \"dumps\" directory for the"
+ 	echo "                 test exits."
+@@ -275,6 +278,7 @@ _NFT_TEST_JOBS_DEFAULT="$(nproc)"
+ _NFT_TEST_JOBS_DEFAULT="$(( _NFT_TEST_JOBS_DEFAULT + (_NFT_TEST_JOBS_DEFAULT + 1) / 2 ))"
+ 
+ VERBOSE="$(bool_y "$VERBOSE")"
++NFT_TEST_VERBOSE_TEST="$(bool_y "$NFT_TEST_VERBOSE_TEST")"
+ DUMPGEN="$(bool_y "$DUMPGEN")"
+ VALGRIND="$(bool_y "$VALGRIND")"
+ KMEMLEAK="$(bool_y "$KMEMLEAK")"
+@@ -327,6 +331,9 @@ while [ $# -gt 0 ] ; do
+ 		-v)
+ 			VERBOSE=y
+ 			;;
++		-x)
++			NFT_TEST_VERBOSE_TEST=y
++			;;
+ 		-g)
+ 			DUMPGEN=y
+ 			;;
+@@ -627,6 +634,7 @@ exec &> >(tee "$NFT_TEST_TMPDIR/test.log")
+ msg_info "conf: NFT=$(printf '%q' "$NFT")"
+ msg_info "conf: NFT_REAL=$(printf '%q' "$NFT_REAL")"
+ msg_info "conf: VERBOSE=$(printf '%q' "$VERBOSE")"
++msg_info "conf: NFT_TEST_VERBOSE_TEST=$(printf '%q' "$NFT_TEST_VERBOSE_TEST")"
+ msg_info "conf: DUMPGEN=$(printf '%q' "$DUMPGEN")"
+ msg_info "conf: VALGRIND=$(printf '%q' "$VALGRIND")"
+ msg_info "conf: KMEMLEAK=$(printf '%q' "$KMEMLEAK")"
+@@ -832,7 +840,12 @@ job_start() {
+ 	fi
+ 
+ 	NFT_TEST_TESTTMPDIR="${JOBS_TEMPDIR["$testfile"]}" \
+-	NFT="$NFT" NFT_REAL="$NFT_REAL" DIFF="$DIFF" DUMPGEN="$DUMPGEN" $NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
++	NFT="$NFT" \
++	NFT_REAL="$NFT_REAL" \
++	DIFF="$DIFF" \
++	DUMPGEN="$DUMPGEN" \
++	NFT_TEST_VERBOSE_TEST="$NFT_TEST_VERBOSE_TEST" \
++	$NFT_TEST_UNSHARE_CMD "$NFT_TEST_BASEDIR/helpers/test-wrapper.sh" "$testfile"
+ 	local rc_got=$?
+ 
+ 	if [ "$NFT_TEST_JOBS" -le 1 ] ; then
+-- 
+2.41.0
+
