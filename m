@@ -2,87 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0699A7CD8BD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Oct 2023 12:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F37E7CD8E4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Oct 2023 12:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjJRKAX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Oct 2023 06:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S229801AbjJRKKZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Oct 2023 06:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjJRKAV (ORCPT
+        with ESMTP id S229552AbjJRKKY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:00:21 -0400
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760B5B0;
-        Wed, 18 Oct 2023 03:00:19 -0700 (PDT)
-Received: from [78.30.34.192] (port=38694 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qt3Lb-00CBce-4V; Wed, 18 Oct 2023 12:00:17 +0200
-Date:   Wed, 18 Oct 2023 12:00:14 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     "U.Mutlu" <um@mutluit.com>
-Cc:     imnozi@gmail.com, netfilter-devel@vger.kernel.org,
-        netfilter@vger.kernel.org
-Subject: Re: [nftables/nft] nft equivalent of "ipset test"
-Message-ID: <ZS+srsBsJSynJ7Tm@calendula>
-References: <652EC034.7090501@mutluit.com>
- <20231017213507.GD5770@breakpoint.cc>
- <652F02EC.2050807@mutluit.com>
- <20231017220539.GE5770@breakpoint.cc>
- <652F0C75.8010006@mutluit.com>
- <20231017200057.57cfce21@playground>
- <ZS+nJS/4dolCsIk8@calendula>
- <652FAB56.5060200@mutluit.com>
+        Wed, 18 Oct 2023 06:10:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8233595
+        for <netfilter-devel@vger.kernel.org>; Wed, 18 Oct 2023 03:10:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 28AE0C433CA;
+        Wed, 18 Oct 2023 10:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697623823;
+        bh=WuXUZXR6Fqzg/9JZerRXRjWDA8H5BHBFcBiSCLvFMiI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=h42bS60IcySv71gfgESP05vUUViquk8C4qlcx5lEbXN3xF69+ZahfgceImdhNw/EY
+         0w8NaF4berxwJyWmn1biV0L4NKkEfqT2Z7T7Q7QnquDgP/yxw2v4YTTmMKE5GTO0nt
+         Aw1nbAs1ZkdLJ46JwdTjaPEaCJlBiqfzoIIVyYf9Jw/nzM0q99S3ydj37FnLnRw1T0
+         tumiZEsPCCqYjgjbIX4imqTw60VFmJr5tKFXCw12h5YSTlq+78i2x87C3M62NWBMJM
+         Kob6zHEeXE7ej5/SnXezlzHYl1Tu/Bw1zRJYMag63kVkHSNqRcN95hjcnew8iFlBOb
+         /ZbMF0A/98Fkw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 16674C04E27;
+        Wed, 18 Oct 2023 10:10:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <652FAB56.5060200@mutluit.com>
-X-Spam-Score: -1.9 (-)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 1/7] netfilter: xt_mangle: only check verdict part of
+ return value
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169762382308.3133.9060197209130107475.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Oct 2023 10:10:23 +0000
+References: <20231018085118.10829-2-fw@strlen.de>
+In-Reply-To: <20231018085118.10829-2-fw@strlen.de>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 11:54:30AM +0200, U.Mutlu wrote:
-> Pablo Neira Ayuso wrote on 10/18/23 11:36:
-> > On Tue, Oct 17, 2023 at 08:00:57PM -0400, imnozi@gmail.com wrote:
-> > > On Wed, 18 Oct 2023 00:36:37 +0200
-> > > "U.Mutlu" <um@mutluit.com> wrote:
-> > > 
-> > > > ...
-> > > > Actualy I need to do this monster:   :-)
-> > > > 
-> > > > IP="1.2.3.4"
-> > > > ! nft "get element inet mytable myset  { $IP }" > /dev/null 2>&1 && \
-> > > > ! nft "get element inet mytable myset2 { $IP }" > /dev/null 2>&1 && \
-> > > >     nft "add element inet mytable myset  { $IP }"
-> > > 
-> > > Try using '||', akin to:
-> > 
-> > Please, use 'nft create' for this, no need for an explicit test and
-> > then add from command line.
-> > 
-> > The idiom above is an antipattern, because it is not atomic, the
-> > 'create' command provides a way to first test if the element exists
-> > (if so it fails) then add it.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Florian Westphal <fw@strlen.de>:
+
+On Wed, 18 Oct 2023 10:51:05 +0200 you wrote:
+> These checks assume that the caller only returns NF_DROP without
+> any errno embedded in the upper bits.
 > 
-> Pablo, unfortunately your solution with 'create' cannot be used
-> in my above said special use-case of testing first in BOTH sets...
+> This is fine right now, but followup patches will start to propagate
+> such errors to allow kfree_skb_drop_reason() in the called functions,
+> those would then indicate 'errno << 8 | NF_STOLEN'.
+> 
+> [...]
 
-'ipset test' also requires a set to be specified.
+Here is the summary with links:
+  - [net-next,1/7] netfilter: xt_mangle: only check verdict part of return value
+    https://git.kernel.org/netdev/net-next/c/e15e5027106f
+  - [net-next,2/7] netfilter: nf_tables: mask out non-verdict bits when checking return value
+    https://git.kernel.org/netdev/net-next/c/4d26ab0086aa
+  - [net-next,3/7] netfilter: conntrack: convert nf_conntrack_update to netfilter verdicts
+    https://git.kernel.org/netdev/net-next/c/6291b3a67ad5
+  - [net-next,4/7] netfilter: nf_nat: mask out non-verdict bits when checking return value
+    https://git.kernel.org/netdev/net-next/c/35c038b0a4be
+  - [net-next,5/7] netfilter: make nftables drops visible in net dropmonitor
+    https://git.kernel.org/netdev/net-next/c/e0d4593140b0
+  - [net-next,6/7] netfilter: bridge: convert br_netfilter to NF_DROP_REASON
+    https://git.kernel.org/netdev/net-next/c/cf8b7c1a5be7
+  - [net-next,7/7] netfilter: nf_tables: de-constify set commit ops function argument
+    https://git.kernel.org/netdev/net-next/c/256001672153
 
-> I just don't understand why the author cannot simply add a real 'test'
-> function to the nft tool...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I just don't understand your usecase :-), why do you need this atomic
-check on two different sets?
 
-Could you explain your ruleset in more detail?
-
-> The logic is already in 'get element' and also in your 'create' method.
