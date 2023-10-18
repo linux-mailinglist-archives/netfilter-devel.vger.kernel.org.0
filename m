@@ -2,43 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E511A7CD8C8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Oct 2023 12:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0699A7CD8BD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Oct 2023 12:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjJRKCu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Oct 2023 06:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53276 "EHLO
+        id S229798AbjJRKAX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Oct 2023 06:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJRKCu (ORCPT
+        with ESMTP id S229690AbjJRKAV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Oct 2023 06:02:50 -0400
-X-Greylist: delayed 496 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 18 Oct 2023 03:02:48 PDT
-Received: from mail.mutluit.com (mail.mutluit.com [195.201.130.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6993AF7
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Oct 2023 03:02:48 -0700 (PDT)
-Received: from [127.0.0.1] (mail.mutluit.com [195.201.130.20]:56780)
-        by mail.mutluit.com (mail.mutluit.com [195.201.130.20]:50025) with ESMTP ([XMail 1.27 ESMTP Server])
-        id <S172311E> for <netfilter-devel@vger.kernel.org> from <um@mutluit.com>;
-        Wed, 18 Oct 2023 11:54:31 +0200
+        Wed, 18 Oct 2023 06:00:21 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760B5B0;
+        Wed, 18 Oct 2023 03:00:19 -0700 (PDT)
+Received: from [78.30.34.192] (port=38694 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qt3Lb-00CBce-4V; Wed, 18 Oct 2023 12:00:17 +0200
+Date:   Wed, 18 Oct 2023 12:00:14 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     "U.Mutlu" <um@mutluit.com>
+Cc:     imnozi@gmail.com, netfilter-devel@vger.kernel.org,
+        netfilter@vger.kernel.org
 Subject: Re: [nftables/nft] nft equivalent of "ipset test"
-To:     Pablo Neira Ayuso <pablo@netfilter.org>, imnozi@gmail.com
-Cc:     netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Message-ID: <ZS+srsBsJSynJ7Tm@calendula>
 References: <652EC034.7090501@mutluit.com>
- <20231017213507.GD5770@breakpoint.cc> <652F02EC.2050807@mutluit.com>
- <20231017220539.GE5770@breakpoint.cc> <652F0C75.8010006@mutluit.com>
- <20231017200057.57cfce21@playground> <ZS+nJS/4dolCsIk8@calendula>
-From:   "U.Mutlu" <um@mutluit.com>
-Organization: mutluit.com
-Message-ID: <652FAB56.5060200@mutluit.com>
-Date:   Wed, 18 Oct 2023 11:54:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101
- Firefox/40.0 SeaMonkey/2.37a1
+ <20231017213507.GD5770@breakpoint.cc>
+ <652F02EC.2050807@mutluit.com>
+ <20231017220539.GE5770@breakpoint.cc>
+ <652F0C75.8010006@mutluit.com>
+ <20231017200057.57cfce21@playground>
+ <ZS+nJS/4dolCsIk8@calendula>
+ <652FAB56.5060200@mutluit.com>
 MIME-Version: 1.0
-In-Reply-To: <ZS+nJS/4dolCsIk8@calendula>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,TVD_RCVD_SPACE_BRACKET autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <652FAB56.5060200@mutluit.com>
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,34 +49,40 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pablo Neira Ayuso wrote on 10/18/23 11:36:
-> On Tue, Oct 17, 2023 at 08:00:57PM -0400, imnozi@gmail.com wrote:
->> On Wed, 18 Oct 2023 00:36:37 +0200
->> "U.Mutlu" <um@mutluit.com> wrote:
->>
->>> ...
->>> Actualy I need to do this monster:   :-)
->>>
->>> IP="1.2.3.4"
->>> ! nft "get element inet mytable myset  { $IP }" > /dev/null 2>&1 && \
->>> ! nft "get element inet mytable myset2 { $IP }" > /dev/null 2>&1 && \
->>>     nft "add element inet mytable myset  { $IP }"
->>
->> Try using '||', akin to:
->
-> Please, use 'nft create' for this, no need for an explicit test and
-> then add from command line.
->
-> The idiom above is an antipattern, because it is not atomic, the
-> 'create' command provides a way to first test if the element exists
-> (if so it fails) then add it.
+On Wed, Oct 18, 2023 at 11:54:30AM +0200, U.Mutlu wrote:
+> Pablo Neira Ayuso wrote on 10/18/23 11:36:
+> > On Tue, Oct 17, 2023 at 08:00:57PM -0400, imnozi@gmail.com wrote:
+> > > On Wed, 18 Oct 2023 00:36:37 +0200
+> > > "U.Mutlu" <um@mutluit.com> wrote:
+> > > 
+> > > > ...
+> > > > Actualy I need to do this monster:   :-)
+> > > > 
+> > > > IP="1.2.3.4"
+> > > > ! nft "get element inet mytable myset  { $IP }" > /dev/null 2>&1 && \
+> > > > ! nft "get element inet mytable myset2 { $IP }" > /dev/null 2>&1 && \
+> > > >     nft "add element inet mytable myset  { $IP }"
+> > > 
+> > > Try using '||', akin to:
+> > 
+> > Please, use 'nft create' for this, no need for an explicit test and
+> > then add from command line.
+> > 
+> > The idiom above is an antipattern, because it is not atomic, the
+> > 'create' command provides a way to first test if the element exists
+> > (if so it fails) then add it.
+> 
+> Pablo, unfortunately your solution with 'create' cannot be used
+> in my above said special use-case of testing first in BOTH sets...
 
-Pablo, unfortunately your solution with 'create' cannot be used
-in my above said special use-case of testing first in BOTH sets...
+'ipset test' also requires a set to be specified.
 
-I just don't understand why the author cannot simply add a real 'test' 
-function to the nft tool...
-The logic is already in 'get element' and also in your 'create' method.
+> I just don't understand why the author cannot simply add a real 'test'
+> function to the nft tool...
 
-PS: I'm not yet subscribed to netfilter-dev, so CC may fail...
+I just don't understand your usecase :-), why do you need this atomic
+check on two different sets?
 
+Could you explain your ruleset in more detail?
+
+> The logic is already in 'get element' and also in your 'create' method.
