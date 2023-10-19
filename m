@@ -2,202 +2,107 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6AA7CFC50
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Oct 2023 16:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870D17CFC7A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Oct 2023 16:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346051AbjJSOUN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 19 Oct 2023 10:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
+        id S235397AbjJSO12 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 19 Oct 2023 10:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346049AbjJSOUL (ORCPT
+        with ESMTP id S1346117AbjJSO10 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:20:11 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B357138
-        for <netfilter-devel@vger.kernel.org>; Thu, 19 Oct 2023 07:20:08 -0700 (PDT)
+        Thu, 19 Oct 2023 10:27:26 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B391513A
+        for <netfilter-devel@vger.kernel.org>; Thu, 19 Oct 2023 07:27:23 -0700 (PDT)
+Received: from [78.30.34.192] (port=39618 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qtTzZ-003ZE9-SO; Thu, 19 Oct 2023 16:27:20 +0200
+Date:   Thu, 19 Oct 2023 16:27:17 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,RFC 8/8] netfilter: nf_tables: set element timeout update support
-Date:   Thu, 19 Oct 2023 16:19:58 +0200
-Message-Id: <20231019141958.653727-9-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231019141958.653727-1-pablo@netfilter.org>
-References: <20231019141958.653727-1-pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>,
+        Arturo Borrero Gonzalez <arturo@debian.org>,
+        Jeremy Sowden <jeremy@azazel.net>,
+        netfilter-devel@vger.kernel.org, fw@strlen.de
+Subject: Re: [RFC] nftables 1.0.6 -stable backports
+Message-ID: <ZTE8xaZfFJoQRhjY@calendula>
+References: <ZSPZiekbEmjDfIF2@calendula>
+ <ZSZWS7StJ9nSP6cK@calendula>
+ <ZSa+h18/ZNRxLpzq@orbyte.nwl.cc>
+ <ZSbD9fPv2Ltx8Cx2@calendula>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZSbD9fPv2Ltx8Cx2@calendula>
+X-Spam-Score: -1.8 (-)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Store new timeout and expiration to be updated from .commit path.
-Simply discard the timeout update if .abort path is exercised.
+Hi Phil,
 
-This patch requires ("netfilter: nf_tables: use timestamp to check for
-set element timeout") to make sure an element does not expire while
-transaction is ongoing.
+On Wed, Oct 11, 2023 at 05:49:09PM +0200, Pablo Neira Ayuso wrote:
+> On Wed, Oct 11, 2023 at 05:25:59PM +0200, Phil Sutter wrote:
+> > On Wed, Oct 11, 2023 at 10:01:15AM +0200, Pablo Neira Ayuso wrote:
+> > > For the record, I have pushed out this 1.0.6.y branch:
+> > > 
+> > > http://git.netfilter.org/nftables/log/?h=1.0.6.y
+> > 
+> > I have this shell script collecting potential backports based on Fixes:
+> > tags. It identified 34 additional backports for v1.0.6 tag (hashes are
+> > meaningless):
+> > 
+> > e5b4169ee25ab json: expose dynamic flag
+> 
+> These are local commit IDs? Would it be possible to list with upstream
+> commit IDs for easier review?
+> 
+> > 0a7e53f2e0913 parser_json: Default meter size to zero
+> > 522e207b0a836 parser_json: Catch nonsense ops in match statement
+> > 725b096b99e56 parser_json: Wrong check in json_parse_ct_timeout_policy()
+> > 91401c4115b51 parser_json: Fix synproxy object mss/wscale parsing
+> > 7aee3e7754b22 parser_json: Fix limit object burst value parsing
+> > 60504c1817c42 parser_json: Fix flowtable prio value parsing
+> > 3b2f35cee7e1c parser_json: Proper ct expectation attribute parsing
+> > d804aa93a5988 parser_json: Fix typo in json_parse_cmd_add_object()
+> > 7e4eb93535418 parser_json: Catch wrong "reset" payload
+> 
+> I can see json fixes, these should be good too.
+> 
+> > ed0c72352193e netlink: handle invalid etype in set_make_key()
+> > 733470961f792 datatype: initialize TYPE_CT_EVENTBIT slot in datatype array
+> > 6e674db5d2990 datatype: initialize TYPE_CT_LABEL slot in datatype array
+> > f8ccde9188013 datatype: fix leak and cleanup reference counting for struct datatype
+> > 4b46a3fa44813 include: drop "format" attribute from nft_gmp_print()
+> > 930756f09a750 evaluate: fix check for truncation in stmt_evaluate_log_prefix()
+> > 987ae8d4b20de tests: monitor: Fix for wrong ordering in expected JSON output
+> > ad6cfbace2d2d tests: monitor: Fix for wrong syntax in set-interval.t
+> > b83bd8b441e41 tests: monitor: Fix monitor JSON output for insert command
+> > 0f8798917093a evaluate: Drop dead code from expr_evaluate_mapping()
+> > 2f2320a434300 tests: shell: Stabilize sets/0043concatenated_ranges_0 test
+> > fa841d99b3795 tests: fix inet nat prio tests
+> > 5604dd5b1f365 cache: include set elements in "nft set list"
+> > 8d1f462e157bc evaluate: set NFT_SET_EVAL flag if dynamic set already exists
+> > d572772659392 tests: shell: Fix for unstable sets/0043concatenated_ranges_0
+> > 4e4f7fd8334aa xt: Fix translation error path
+> > ca2fbde1ceeeb evaluate: insert byte-order conversions for expressions between 9 and 15 bits
+> > c0e5aba1bc963 xt: Fix fallback printing for extensions matching keywords
+> > 62a416b9eac19 tests: shell: cover rule insertion by index
+> > 0e5ea5fae26a3 evaluate: print error on missing family in nat statement
+> > cf35149fd378a netlink_delinearize: Sanitize concat data element decoding
+> > 1fb4c25073ed6 mnl: dump_nf_hooks() leaks memory in error path
+> > 2f14b059afd88 meta: parse_iso_date() returns boolean
+> > 99d6c23b32160 netlink: Fix for potential NULL-pointer deref
 
-Element transaction takes 128 bytes on x86_64 after this update.
+Would you send me your script?
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/net/netfilter/nf_tables.h | 19 +++++++++-
- net/netfilter/nf_tables_api.c     | 62 ++++++++++++++++++++++++++-----
- 2 files changed, 69 insertions(+), 12 deletions(-)
+I will look at integrating this into 1.0.6.y
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 0243ed6c36c5..36947c28e59d 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -801,8 +801,14 @@ static inline struct nft_set_elem_expr *nft_set_ext_expr(const struct nft_set_ex
- static inline bool __nft_set_elem_expired(const struct nft_set_ext *ext,
- 					  u64 tstamp)
- {
--	return nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION) &&
--	       time_after_eq64(tstamp, *nft_set_ext_expiration(ext));
-+	u64 expiration;
-+
-+	if (!nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION))
-+		return false;
-+
-+	expiration = READ_ONCE(*nft_set_ext_expiration(ext));
-+
-+	return time_after_eq64(tstamp, expiration);
- }
- 
- static inline bool nft_set_elem_expired(const struct nft_set_ext *ext)
-@@ -1654,6 +1660,9 @@ struct nft_trans_table {
- struct nft_trans_elem {
- 	struct nft_set			*set;
- 	struct nft_elem_priv		*elem_priv;
-+	u64				timeout;
-+	u64				expiration;
-+	bool				update;
- 	bool				bound;
- };
- 
-@@ -1661,6 +1670,12 @@ struct nft_trans_elem {
- 	(((struct nft_trans_elem *)trans->data)->set)
- #define nft_trans_elem_priv(trans)	\
- 	(((struct nft_trans_elem *)trans->data)->elem_priv)
-+#define nft_trans_elem_update(trans)	\
-+	(((struct nft_trans_elem *)trans->data)->update)
-+#define nft_trans_elem_timeout(trans)	\
-+	(((struct nft_trans_elem *)trans->data)->timeout)
-+#define nft_trans_elem_expiration(trans)	\
-+	(((struct nft_trans_elem *)trans->data)->expiration)
- #define nft_trans_elem_set_bound(trans)	\
- 	(((struct nft_trans_elem *)trans->data)->bound)
- 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 2a9cd3886612..bcfb1ffc1827 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -5583,17 +5583,20 @@ static int nf_tables_fill_setelem(struct sk_buff *skb,
- 		         htonl(*nft_set_ext_flags(ext))))
- 		goto nla_put_failure;
- 
--	if (nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT) &&
--	    *nft_set_ext_timeout(ext) != READ_ONCE(set->timeout) &&
--	    nla_put_be64(skb, NFTA_SET_ELEM_TIMEOUT,
--			 nf_jiffies64_to_msecs(*nft_set_ext_timeout(ext)),
--			 NFTA_SET_ELEM_PAD))
--		goto nla_put_failure;
-+	if (nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT)) {
-+		u64 timeout = READ_ONCE(*nft_set_ext_timeout(ext));
-+
-+		if (timeout != READ_ONCE(set->timeout) &&
-+		    nla_put_be64(skb, NFTA_SET_ELEM_TIMEOUT,
-+				 nf_jiffies64_to_msecs(timeout),
-+				 NFTA_SET_ELEM_PAD))
-+			goto nla_put_failure;
-+	}
- 
- 	if (nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION)) {
- 		u64 expires, now = get_jiffies_64();
- 
--		expires = *nft_set_ext_expiration(ext);
-+		expires = READ_ONCE(*nft_set_ext_expiration(ext));
- 		if (time_before64(now, expires))
- 			expires -= now;
- 		else
-@@ -6524,6 +6527,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 	struct nft_data_desc desc;
- 	enum nft_registers dreg;
- 	struct nft_trans *trans;
-+	bool update = false;
- 	u64 expiration;
- 	u64 timeout;
- 	int err, i;
-@@ -6833,8 +6837,28 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			     nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF) &&
- 			     *nft_set_ext_obj(ext) != *nft_set_ext_obj(ext2)))
- 				goto err_element_clash;
--			else if (!(nlmsg_flags & NLM_F_EXCL))
-+			else if (!(nlmsg_flags & NLM_F_EXCL)) {
- 				err = 0;
-+				if (timeout) {
-+					nft_trans_elem_timeout(trans) = timeout;
-+					if (expiration == 0)
-+						expiration = timeout;
-+
-+					update = true;
-+				}
-+				if (expiration) {
-+					nft_trans_elem_expiration(trans) =
-+						expiration;
-+					update = true;
-+				}
-+
-+				if (update) {
-+					nft_trans_elem_priv(trans) = elem_priv;
-+					nft_trans_elem_update(trans) = true;
-+					nft_trans_commit_list_add_tail(ctx->net, trans);
-+					goto err_elem_free;
-+				}
-+			}
- 		} else if (err == -ENOTEMPTY) {
- 			/* ENOTEMPTY reports overlapping between this element
- 			 * and an existing one.
-@@ -10035,7 +10059,24 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 		case NFT_MSG_NEWSETELEM:
- 			te = (struct nft_trans_elem *)trans->data;
- 
--			nft_setelem_activate(net, te->set, te->elem_priv);
-+			if (te->update) {
-+				const struct nft_set_ext *ext =
-+					nft_set_elem_ext(te->set, te->elem_priv);
-+
-+				if (te->timeout &&
-+				    nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT)) {
-+					WRITE_ONCE(*nft_set_ext_timeout(ext),
-+						   te->timeout);
-+				}
-+				if (te->expiration &&
-+				    nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION)) {
-+					WRITE_ONCE(*nft_set_ext_expiration(ext),
-+						   get_jiffies_64() + te->expiration);
-+				}
-+			} else {
-+				nft_setelem_activate(net, te->set, te->elem_priv);
-+			}
-+
- 			nf_tables_setelem_notify(&trans->ctx, te->set,
- 						 te->elem_priv,
- 						 NFT_MSG_NEWSETELEM);
-@@ -10316,7 +10357,8 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- 			nft_trans_destroy(trans);
- 			break;
- 		case NFT_MSG_NEWSETELEM:
--			if (nft_trans_elem_set_bound(trans)) {
-+			if (nft_trans_elem_update(trans) ||
-+			    nft_trans_elem_set_bound(trans)) {
- 				nft_trans_destroy(trans);
- 				break;
- 			}
--- 
-2.30.2
-
+Thanks.
