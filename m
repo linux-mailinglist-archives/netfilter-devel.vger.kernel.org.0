@@ -2,196 +2,99 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FED7CFBEF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Oct 2023 16:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFD87CFC4B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Oct 2023 16:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345906AbjJSODq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 19 Oct 2023 10:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
+        id S1345795AbjJSOUJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 19 Oct 2023 10:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345858AbjJSODp (ORCPT
+        with ESMTP id S1346021AbjJSOUI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 19 Oct 2023 10:03:45 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24298124
-        for <netfilter-devel@vger.kernel.org>; Thu, 19 Oct 2023 07:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=GWw8uINJGmP4GefsXIzGAriujtRKwL4vlcA0uZrV1ho=; b=JZFWDOitzRQkVTw7gZ+6kiQ7lz
-        yevl8aspyUmgEa07glYBPd2Fo/O6DAKLT53bgn9GO7uoCdO7m/juNQzZGbvskpaiA4+waYiugUChX
-        MvPAb6ZNHyuNSJAUGQL1vqGvdYEZKpZVBetVFaViv3nPIDlUlvgK5uAd8ykzW3+M9yPmEupuQKBfg
-        0DQSzDaLZAgfK/ThnKYpOXB4KCw6uuWfDykGaP9sqlriFtk6UmWPlegTW4p3Ht7Rk37biGdtvJccV
-        5ncC8iMqRqfuJSj/cgV2g83EEVaWX7X0joELwOZpQbN7BqlYbt9FdZx9+Oq3GOXoEslOZAElLNvjB
-        3RR11fhg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1qtTci-0002P7-AP; Thu, 19 Oct 2023 16:03:40 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: [nf-next PATCH v4 3/3] netfilter: nf_tables: Add locking for NFT_MSG_GETRULE_RESET requests
-Date:   Thu, 19 Oct 2023 16:03:36 +0200
-Message-ID: <20231019140336.31563-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231019140336.31563-1-phil@nwl.cc>
-References: <20231019140336.31563-1-phil@nwl.cc>
+        Thu, 19 Oct 2023 10:20:08 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2A1F132
+        for <netfilter-devel@vger.kernel.org>; Thu, 19 Oct 2023 07:20:06 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next,RFC 0/8] nf_tables set updates
+Date:   Thu, 19 Oct 2023 16:19:50 +0200
+Message-Id: <20231019141958.653727-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Rule reset is not concurrency-safe per-se, so multiple CPUs may reset
-the same rule at the same time. At least counter and quota expressions
-will suffer from value underruns in this case.
+Hi,
 
-Prevent this by introducing dedicated locking callbacks for nfnetlink
-and the asynchronous dump handling to serialize access.
+This batch contains updates for set infrastructure in nf_tables.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v3:
-- Add comment to dumpreset function as suggested
----
- net/netfilter/nf_tables_api.c | 77 +++++++++++++++++++++++++++++------
- 1 file changed, 64 insertions(+), 13 deletions(-)
+Patch #1 no need to call pipapo_deactivate() from .flush path, instead
+         use the e->ext that is passed as argument to make the element
+	 inactive in the next generation.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 19b3f0087c67..20734fbb0d94 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -3551,6 +3551,23 @@ static int nf_tables_dump_rules(struct sk_buff *skb,
- 	return skb->len;
- }
- 
-+static int nf_tables_dumpreset_rules(struct sk_buff *skb,
-+				     struct netlink_callback *cb)
-+{
-+	struct nftables_pernet *nft_net = nft_pernet(sock_net(skb->sk));
-+	int ret;
-+
-+	/* Mutex is held is to prevent that two concurrent dump-and-reset calls
-+	 * do not underrun counters and quotas. The commit_mutex is used for
-+	 * the lack a better lock, this is not transaction path.
-+	 */
-+	mutex_lock(&nft_net->commit_mutex);
-+	ret = nf_tables_dump_rules(skb, cb);
-+	mutex_unlock(&nft_net->commit_mutex);
-+
-+	return ret;
-+}
-+
- static int nf_tables_dump_rules_start(struct netlink_callback *cb)
- {
- 	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
-@@ -3570,12 +3587,18 @@ static int nf_tables_dump_rules_start(struct netlink_callback *cb)
- 			return -ENOMEM;
- 		}
- 	}
--	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETRULE_RESET)
--		ctx->reset = true;
--
- 	return 0;
- }
- 
-+static int nf_tables_dumpreset_rules_start(struct netlink_callback *cb)
-+{
-+	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
-+
-+	ctx->reset = true;
-+
-+	return nf_tables_dump_rules_start(cb);
-+}
-+
- static int nf_tables_dump_rules_done(struct netlink_callback *cb)
- {
- 	struct nft_rule_dump_ctx *ctx = (void *)cb->ctx;
-@@ -3636,12 +3659,9 @@ nf_tables_getrule_single(u32 portid, const struct nfnl_info *info,
- static int nf_tables_getrule(struct sk_buff *skb, const struct nfnl_info *info,
- 			     const struct nlattr * const nla[])
- {
--	struct nftables_pernet *nft_net = nft_pernet(info->net);
- 	u32 portid = NETLINK_CB(skb).portid;
- 	struct net *net = info->net;
- 	struct sk_buff *skb2;
--	bool reset = false;
--	char *buf;
- 
- 	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
- 		struct netlink_dump_control c = {
-@@ -3655,15 +3675,46 @@ static int nf_tables_getrule(struct sk_buff *skb, const struct nfnl_info *info,
- 		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
- 	}
- 
--	if (NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_GETRULE_RESET)
--		reset = true;
--
--	skb2 = nf_tables_getrule_single(portid, info, nla, reset);
-+	skb2 = nf_tables_getrule_single(portid, info, nla, false);
- 	if (IS_ERR(skb2))
- 		return PTR_ERR(skb2);
- 
--	if (!reset)
--		return nfnetlink_unicast(skb2, net, portid);
-+	return nfnetlink_unicast(skb2, net, portid);
-+}
-+
-+static int nf_tables_getrule_reset(struct sk_buff *skb,
-+				   const struct nfnl_info *info,
-+				   const struct nlattr * const nla[])
-+{
-+	struct nftables_pernet *nft_net = nft_pernet(info->net);
-+	u32 portid = NETLINK_CB(skb).portid;
-+	struct net *net = info->net;
-+	struct sk_buff *skb2;
-+	char *buf;
-+
-+	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
-+		struct netlink_dump_control c = {
-+			.start= nf_tables_dumpreset_rules_start,
-+			.dump = nf_tables_dumpreset_rules,
-+			.done = nf_tables_dump_rules_done,
-+			.module = THIS_MODULE,
-+			.data = (void *)nla,
-+		};
-+
-+		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
-+	}
-+
-+	if (!try_module_get(THIS_MODULE))
-+		return -EINVAL;
-+	rcu_read_unlock();
-+	mutex_lock(&nft_net->commit_mutex);
-+	skb2 = nf_tables_getrule_single(portid, info, nla, true);
-+	mutex_unlock(&nft_net->commit_mutex);
-+	rcu_read_lock();
-+	module_put(THIS_MODULE);
-+
-+	if (IS_ERR(skb2))
-+		return PTR_ERR(skb2);
- 
- 	buf = kasprintf(GFP_ATOMIC, "%.*s:%u",
- 			nla_len(nla[NFTA_RULE_TABLE]),
-@@ -9003,7 +9054,7 @@ static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
- 		.policy		= nft_rule_policy,
- 	},
- 	[NFT_MSG_GETRULE_RESET] = {
--		.call		= nf_tables_getrule,
-+		.call		= nf_tables_getrule_reset,
- 		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_RULE_MAX,
- 		.policy		= nft_rule_policy,
+Patch #2 turn set backend .flush to void, it always succeeds.
+
+Patch #3 add struct nft_elem_priv placeholder and use it instead of
+         void * to expose the opaque set element representation from
+	 the nf_tables frontend.
+
+Patch #4 use struct nft_elem_priv instead of struct nft_set_elem in
+	 transactions, this shrinks set element transaction object
+	 to fit into kmalloc-128.
+
+Patch #5 pass struct nft_elem_priv instead of nft_set_ext to .insert,
+         this is in preparation for set timeout updates support.
+
+Patch #6 use timestamp to check if element has expired from transaction
+	 path, that is .insert, .deactivate and sync gc paths. The
+	 timestamp ensures that element are consistently evaluated
+	 as alive / expired while handling the transaction.
+
+Patch #7 always add timeout extensions to set elements that use default
+	 set timeout, as with support to update set elements, element
+	 timeout could be updated to use something different than default
+	 set timeout.
+
+Patch #8 Support for set element timeout updates. This requires no
+         userspace updates. This calls .insert on the element, if it returns
+	 EEXIST, then it creates a transaction using the existing
+	 struct nft_elem_priv that represents the object.
+
+This has survived 3+3 hours of 30s-stress and tests/shell runs with all
+debugging instrumentation being enabled. I still have to modify existing tests
+to make sure existing torture tests are exercising set element updates.
+
+Batch can be splitted in three smaller batches to be upstreamed, because they
+are unrelated although they all were made to clear the path to support for
+element timeout updates.
+
+Pablo Neira Ayuso (8):
+  netfilter: nft_set_pipapo: no need to call pipapo_deactivate() from flush
+  netfilter: nf_tables: set backend .flush always succeeds
+  netfilter: nf_tables: expose opaque set element as struct nft_elem_priv
+  netfilter: nf_tables: shrink memory consumption of set elements
+  netfilter: nf_tables: set->ops->insert returns opaque set element in case of EEXIST
+  netfilter: nf_tables: use timestamp to check for set element timeout
+  netfilter: nf_tables: add timeout extension to elements to prepare for updates
+  netfilter: nf_tables: set element timeout update support
+
+ include/net/netfilter/nf_tables.h |  91 ++++++---
+ net/netfilter/nf_tables_api.c     | 296 ++++++++++++++++--------------
+ net/netfilter/nft_dynset.c        |  23 +--
+ net/netfilter/nft_set_bitmap.c    |  51 +++--
+ net/netfilter/nft_set_hash.c      | 113 ++++++------
+ net/netfilter/nft_set_pipapo.c    |  86 ++++-----
+ net/netfilter/nft_set_pipapo.h    |   4 +-
+ net/netfilter/nft_set_rbtree.c    |  75 ++++----
+ 8 files changed, 406 insertions(+), 333 deletions(-)
+
 -- 
-2.41.0
+2.30.2
 
