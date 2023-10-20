@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0817D14F1
+	by mail.lfdr.de (Postfix) with ESMTP id A05297D14F2
 	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Oct 2023 19:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377908AbjJTRep (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1377915AbjJTRep (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 20 Oct 2023 13:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbjJTRem (ORCPT
+        with ESMTP id S230007AbjJTRem (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 20 Oct 2023 13:34:42 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29FBD67
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED62FD68
         for <netfilter-devel@vger.kernel.org>; Fri, 20 Oct 2023 10:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=L2UcNsS3g0gKqqCTS5obUY8kFwjyrw8ItTcgPyeiIQU=; b=ZnwSOS5kSdm2SyBeRl7B6fKXBs
-        FI71BgGWIxe6S7O4Vv0w7OZ4elRMQJthCnptkiQlwE+svKX/nvPfwHR+Utje1xngqs5T+IxQSJS8Y
-        GZ5Q3sevRZ6We29WxgcECSQ4H7BrL8Yx3Ffq6/w5VFyAu53UKQssnDSF6h3S/LONh8wAUuM1uG2YF
-        u50/o8U9qGtfn8CJ4VNoZaLneRZb3i8d4FzTXAuPQE/pINHlsvqMyzZbhlxh1Jr3ee1PdOrIMxmeg
-        xjHqgYrGnMuChLWB8Cnn3AkPxrC4IQTAYa7LXELgRwFxFA5ns/ZEHBzc5aEYcFoqheHdX0pz6H3sL
-        o6YLVdMg==;
+        bh=Iu+53/w5OWCGWed8Iv1zc0bWnDgl4BGKxDc4yJ32RaI=; b=Ro/C7HkeVyToJllOXA5+cuAQvA
+        UXex2hI9S4RK2rnNtrc57NQnpFFLHsqKRRpFtrC13miYiBqXOahlr5KfB7O/x9ufAWIjsP5HOPQJO
+        MpptkUOzh1mcourF233TFUmAFd2gGsI3k4ngxE096JpEOE9c2P0u5v2FXF1lLxYgQT7ZbZMz491Ri
+        sHWsu0WyJk/0pfeS+YcFyXoqlRDBZ8hXMCUXf//CiFm0tVC64e8ZsfMmuR/M+usq0mhSiYeEkzQrB
+        E3zgTWKU7tUv5ub8JWvMaUCpDpbU8eRgN0GkwrsjlyK43hsP29UzdpQ7ptmtq7PCpzIVD0CqHYdeY
+        KgpPHJfQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qttOQ-0003kq-1y; Fri, 20 Oct 2023 19:34:38 +0200
+        id 1qttOQ-0003kv-Bh; Fri, 20 Oct 2023 19:34:38 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nf-next PATCH 0/6] Refactor nft_obj_filter into nft_obj_dump_ctx
-Date:   Fri, 20 Oct 2023 19:34:27 +0200
-Message-ID: <20231020173433.4611-1-phil@nwl.cc>
+Subject: [nf-next PATCH 1/6] netfilter: nf_tables: Drop pointless memset in nf_tables_dump_obj
+Date:   Fri, 20 Oct 2023 19:34:28 +0200
+Message-ID: <20231020173433.4611-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231020173433.4611-1-phil@nwl.cc>
+References: <20231020173433.4611-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,25 +51,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is ultimately prep work for object reset locking, but valid on it's
-own:
+The code does not make use of cb->args fields past the first one, no
+need to zero them.
 
-Make object dump routines utilize struct netlink_callback's scratch area
-for context data. This requires to relocate the s_idx counter, so turn
-nft_obj_filter into a real context data structure holding also the
-counter (and the reset boolean as well).
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ net/netfilter/nf_tables_api.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Phil Sutter (6):
-  netfilter: nf_tables: Drop pointless memset in nf_tables_dump_obj
-  netfilter: nf_tables: Unconditionally allocate nft_obj_filter
-  netfilter: nf_tables: A better name for nft_obj_filter
-  netfilter: nf_tables: Carry s_idx in nft_obj_dump_ctx
-  netfilter: nf_tables: nft_obj_filter fits into cb->ctx
-  netfilter: nf_tables: Carry reset boolean in nft_obj_dump_ctx
-
- net/netfilter/nf_tables_api.c | 66 ++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 40 deletions(-)
-
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 20734fbb0d94..0f7ee76ad64f 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -7725,9 +7725,6 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+ 				goto cont;
+ 			if (idx < s_idx)
+ 				goto cont;
+-			if (idx > s_idx)
+-				memset(&cb->args[1], 0,
+-				       sizeof(cb->args) - sizeof(cb->args[0]));
+ 			if (filter && filter->table &&
+ 			    strcmp(filter->table, table->name))
+ 				goto cont;
 -- 
 2.41.0
 
