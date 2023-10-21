@@ -2,116 +2,232 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECDA7D14ED
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Oct 2023 19:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4007D1CC9
+	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Oct 2023 13:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbjJTRem (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 20 Oct 2023 13:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
+        id S229668AbjJULXt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 21 Oct 2023 07:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjJTRem (ORCPT
+        with ESMTP id S229478AbjJULXt (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:34:42 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A55126
-        for <netfilter-devel@vger.kernel.org>; Fri, 20 Oct 2023 10:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=sfhMvW1GqHod5rgNxCurrcEn2LuzflQnjt6VN5LyRrM=; b=PcN/fJ3oFMDJDzFIWD1NZkZddS
-        B6bZqeAQscHKT6ie1eJybGLZ4WvL628Wa0qJCzQ0d9kgrgQsbMoB9skvKyt07HRyc/PNskgaZrNI+
-        7CiEOa9KNZjjCdgI8SXSLijwKYTxW3RPBL9ydrWQ8sat/Vo9jpTnpnqlYQMQA+Z7xcoCDbLoiGLP0
-        fagf0bi94YiMTUecXxI+JVPonJtq5ZX8K6wYkAL8bebIlDC089J8tUwP2BDIFbAI91CwQARvX14sl
-        wB69hwRyfs1YwKwuyQv4MAOq9nLbK7kpZ1yq1b2/LrSYLM/okFHcVZjIwIW7YOfX7TMcgSj8VUjhF
-        uRaBWBpg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1qttOP-0003kg-CF; Fri, 20 Oct 2023 19:34:37 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nf-next PATCH 6/6] netfilter: nf_tables: Carry reset boolean in nft_obj_dump_ctx
-Date:   Fri, 20 Oct 2023 19:34:33 +0200
-Message-ID: <20231020173433.4611-7-phil@nwl.cc>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231020173433.4611-1-phil@nwl.cc>
-References: <20231020173433.4611-1-phil@nwl.cc>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 21 Oct 2023 07:23:49 -0400
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5CC1A4;
+        Sat, 21 Oct 2023 04:23:43 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 71EBC2800B75F;
+        Sat, 21 Oct 2023 13:23:41 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 64FAB11768A; Sat, 21 Oct 2023 13:23:41 +0200 (CEST)
+Message-Id: <143690ecc1102c0f67fa7faec437ec7b02bb2304.1697885975.git.lukas@wunner.de>
+From:   Lukas Wunner <lukas@wunner.de>
+Date:   Sat, 21 Oct 2023 13:23:44 +0200
+Subject: [PATCH] treewide: Add SPDX identifier to IETF ASN.1 modules
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-spdx@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, Hyunchul Lee <hyc.lee@gmail.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org,
+        Taehee Yoo <ap420073@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URI_TRY_3LD autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Relieve the dump callback from having to inspect nlmsg_type upon each
-call, just do it once at start of the dump.
+Per section 4.c. of the IETF Trust Legal Provisions, "Code Components"
+in IETF Documents are licensed on the terms of the BSD-3-Clause license:
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/
+
+The term "Code Components" specifically includes ASN.1 modules:
+
+https://trustee.ietf.org/documents/trust-legal-provisions/code-components-list-3/
+
+Add an SPDX identifier as well as a copyright notice pursuant to section
+6.d. of the Trust Legal Provisions to all ASN.1 modules in the tree
+which are derived from IETF Documents.
+
+Section 4.d. of the Trust Legal Provisions requests that each Code
+Component identify the RFC from which it is taken, so link that RFC
+in every ASN.1 module.
+
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 ---
- net/netfilter/nf_tables_api.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ I'm adding a new IETF ASN.1 module for PCI device authentication, hence
+ had to research what the correct license is.  Thought I'd fix this up
+ treewide while at it.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 9523f1f3a598..29298ed0252d 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -7693,6 +7693,7 @@ struct nft_obj_dump_ctx {
- 	unsigned int	s_idx;
- 	char		*table;
- 	u32		type;
-+	bool		reset;
- };
- 
- static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
-@@ -7706,12 +7707,8 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- 	unsigned int entries = 0;
- 	struct nft_object *obj;
- 	unsigned int idx = 0;
--	bool reset = false;
- 	int rc = 0;
- 
--	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
--		reset = true;
--
- 	rcu_read_lock();
- 	nft_net = nft_pernet(net);
- 	cb->seq = READ_ONCE(nft_net->base_seq);
-@@ -7738,7 +7735,7 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- 						     NFT_MSG_NEWOBJ,
- 						     NLM_F_MULTI | NLM_F_APPEND,
- 						     table->family, table,
--						     obj, reset);
-+						     obj, ctx->reset);
- 			if (rc < 0)
- 				break;
- 
-@@ -7747,7 +7744,7 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- cont:
- 			idx++;
- 		}
--		if (reset && entries)
-+		if (ctx->reset && entries)
- 			audit_log_obj_reset(table, nft_net->base_seq, entries);
- 		if (rc < 0)
- 			break;
-@@ -7774,6 +7771,9 @@ static int nf_tables_dump_obj_start(struct netlink_callback *cb)
- 	if (nla[NFTA_OBJ_TYPE])
- 		ctx->type = ntohl(nla_get_be32(nla[NFTA_OBJ_TYPE]));
- 
-+	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
-+		ctx->reset = true;
+ Not included here is fs/smb/client/cifs_spnego_negtokeninit.asn1,
+ which is similar to fs/smb/client/ksmbd_spnego_negtokeninit.asn1,
+ but contains a Microsoft extension published as Open Specifications
+ Documentation.  It's unclear to me what license they use:
+ https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-spng/
+
+ crypto/asymmetric_keys/pkcs7.asn1            | 7 +++++++
+ crypto/asymmetric_keys/pkcs8.asn1            | 6 ++++++
+ crypto/asymmetric_keys/x509.asn1             | 7 +++++++
+ crypto/asymmetric_keys/x509_akid.asn1        | 5 +++++
+ crypto/rsaprivkey.asn1                       | 7 +++++++
+ crypto/rsapubkey.asn1                        | 7 +++++++
+ fs/smb/server/ksmbd_spnego_negtokeninit.asn1 | 8 ++++++++
+ fs/smb/server/ksmbd_spnego_negtokentarg.asn1 | 7 +++++++
+ net/ipv4/netfilter/nf_nat_snmp_basic.asn1    | 8 ++++++++
+ 9 files changed, 62 insertions(+)
+
+diff --git a/crypto/asymmetric_keys/pkcs7.asn1 b/crypto/asymmetric_keys/pkcs7.asn1
+index 1eca740..28e1f4a 100644
+--- a/crypto/asymmetric_keys/pkcs7.asn1
++++ b/crypto/asymmetric_keys/pkcs7.asn1
+@@ -1,3 +1,10 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 2009 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc5652#section-3
 +
- 	return 0;
- }
+ PKCS7ContentInfo ::= SEQUENCE {
+ 	contentType	ContentType ({ pkcs7_check_content_type }),
+ 	content		[0] EXPLICIT SignedData OPTIONAL
+diff --git a/crypto/asymmetric_keys/pkcs8.asn1 b/crypto/asymmetric_keys/pkcs8.asn1
+index 702c41a..a2a8af2 100644
+--- a/crypto/asymmetric_keys/pkcs8.asn1
++++ b/crypto/asymmetric_keys/pkcs8.asn1
+@@ -1,3 +1,9 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 2010 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc5958#section-2
+ --
+ -- This is the unencrypted variant
+ --
+diff --git a/crypto/asymmetric_keys/x509.asn1 b/crypto/asymmetric_keys/x509.asn1
+index 92d59c3..feb9573 100644
+--- a/crypto/asymmetric_keys/x509.asn1
++++ b/crypto/asymmetric_keys/x509.asn1
+@@ -1,3 +1,10 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 2008 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc5280#section-4
++
+ Certificate ::= SEQUENCE {
+ 	tbsCertificate		TBSCertificate ({ x509_note_tbs_certificate }),
+ 	signatureAlgorithm	AlgorithmIdentifier,
+diff --git a/crypto/asymmetric_keys/x509_akid.asn1 b/crypto/asymmetric_keys/x509_akid.asn1
+index 1a33231..164b2ed 100644
+--- a/crypto/asymmetric_keys/x509_akid.asn1
++++ b/crypto/asymmetric_keys/x509_akid.asn1
+@@ -1,3 +1,8 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 2008 IETF Trust and the persons identified as authors
++-- of the code
++--
+ -- X.509 AuthorityKeyIdentifier
+ -- rfc5280 section 4.2.1.1
  
+diff --git a/crypto/rsaprivkey.asn1 b/crypto/rsaprivkey.asn1
+index 4ce0675..76865124 100644
+--- a/crypto/rsaprivkey.asn1
++++ b/crypto/rsaprivkey.asn1
+@@ -1,3 +1,10 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 2016 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc8017#appendix-A.1.2
++
+ RsaPrivKey ::= SEQUENCE {
+ 	version		INTEGER,
+ 	n		INTEGER ({ rsa_get_n }),
+diff --git a/crypto/rsapubkey.asn1 b/crypto/rsapubkey.asn1
+index 725498e..0d32b1c 100644
+--- a/crypto/rsapubkey.asn1
++++ b/crypto/rsapubkey.asn1
+@@ -1,3 +1,10 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 2016 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc8017#appendix-A.1.1
++
+ RsaPubKey ::= SEQUENCE {
+ 	n INTEGER ({ rsa_get_n }),
+ 	e INTEGER ({ rsa_get_e })
+diff --git a/fs/smb/server/ksmbd_spnego_negtokeninit.asn1 b/fs/smb/server/ksmbd_spnego_negtokeninit.asn1
+index 0065f19..00151380 100644
+--- a/fs/smb/server/ksmbd_spnego_negtokeninit.asn1
++++ b/fs/smb/server/ksmbd_spnego_negtokeninit.asn1
+@@ -1,3 +1,11 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 1998, 2000 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc2478#section-3.2.1
++-- https://www.rfc-editor.org/rfc/rfc2743#section-3.1
++
+ GSSAPI ::=
+ 	[APPLICATION 0] IMPLICIT SEQUENCE {
+ 		thisMech
+diff --git a/fs/smb/server/ksmbd_spnego_negtokentarg.asn1 b/fs/smb/server/ksmbd_spnego_negtokentarg.asn1
+index 1151933..797e485 100644
+--- a/fs/smb/server/ksmbd_spnego_negtokentarg.asn1
++++ b/fs/smb/server/ksmbd_spnego_negtokentarg.asn1
+@@ -1,3 +1,10 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 1998 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc2478#section-3.2.1
++
+ GSSAPI ::=
+ 	CHOICE {
+ 		negTokenInit
+diff --git a/net/ipv4/netfilter/nf_nat_snmp_basic.asn1 b/net/ipv4/netfilter/nf_nat_snmp_basic.asn1
+index 24b7326..dc2cc57 100644
+--- a/net/ipv4/netfilter/nf_nat_snmp_basic.asn1
++++ b/net/ipv4/netfilter/nf_nat_snmp_basic.asn1
+@@ -1,3 +1,11 @@
++-- SPDX-License-Identifier: BSD-3-Clause
++--
++-- Copyright (C) 1990, 2002 IETF Trust and the persons identified as authors
++-- of the code
++--
++-- https://www.rfc-editor.org/rfc/rfc1157#section-4
++-- https://www.rfc-editor.org/rfc/rfc3416#section-3
++
+ Message ::=
+ 	SEQUENCE {
+ 		version
 -- 
-2.41.0
+2.40.1
 
