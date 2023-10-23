@@ -2,116 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D494B7D2879
-	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Oct 2023 04:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26DD7D28E2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Oct 2023 05:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjJWC0F (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 22 Oct 2023 22:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
+        id S229484AbjJWDJK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 22 Oct 2023 23:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjJWC0E (ORCPT
+        with ESMTP id S233310AbjJWDIx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 22 Oct 2023 22:26:04 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697C919E
-        for <netfilter-devel@vger.kernel.org>; Sun, 22 Oct 2023 19:26:00 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b20a48522fso2163939b3a.1
-        for <netfilter-devel@vger.kernel.org>; Sun, 22 Oct 2023 19:26:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698027960; x=1698632760; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=UJLwrsVY6XmyAIP1SnoymnbfQYmOGrLFkHuYsXveVxo=;
-        b=AX5bqqJi3LsLGMmI5wp8i2SZeF2z9t/gXlHYBF8MIpwoA9fQmyRlE6i6GJqui/O326
-         2CV96v1u1yyHe39zWfH3t48Hgu5vKlFejblP3p5WLMDkCIyU06gBUYkrFnEXgnhjVi+4
-         8NiNSy0Wd7aS+uqdiJWXxSKW1LsidGPujZIqtuElrceI68kwzlLkYoWj96/2Rg7MMBS8
-         EIhukF+Pj2tGGvt1s2VUeEeWCJOYIPGiuJVknmk9YLdNNynqIQ47hLCVh+qRHazyf4Q9
-         6JmHeG56VSxwYf67JdJhpqGks6QVWXdaNyH6rGL99Fvc8XyF/ZDI7m94RITMSlzwEjV3
-         8/Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698027960; x=1698632760;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UJLwrsVY6XmyAIP1SnoymnbfQYmOGrLFkHuYsXveVxo=;
-        b=ZuSH1A9abow8P6wMe81n8f11qwbhiWEqkjGeYh1UWZ+NGwNyQ9OHGLb2d1Nc8PukJC
-         Yn5Ur+oGAC+36sqbO4qGXib553xdmWS+lZTnMlZvLu4x2nGVclvBjUero19bsxhXY3RR
-         SgpKMMpkHzI9GybEIsmqfPOZg5QXBs605isYmgo2b/e6UYlewu3wXZteyxx3DRVwUtVe
-         05Le0DUFQL6Cqds/hxGodXFBnd7+Fz8UQU46ia0kR6QBaueqlI18GdT6DRGbUEwijzoL
-         qxpPGipj3djt4eD/HzI1JzaZAKYK6xO3gWlkAG/Jf460QT+B7eeMpmrOeiqMBdQ4Jja6
-         vwQg==
-X-Gm-Message-State: AOJu0YymAozrpZQLJmfF5obZUkIa/OCkkQe/ALX3OJDIOXr0tjHeI8/Q
-        f2SoMyams2hq6Mwb6hC1pt//eXXYXh4=
-X-Google-Smtp-Source: AGHT+IHPMcHufaE7DlZlQHIzlGzCLxcNV6Qxmf4v0b8Y0lluDK38g/rFNc0nMa2SDuCzL39kqZF6/w==
-X-Received: by 2002:a05:6a00:1788:b0:6b5:86c3:ccaf with SMTP id s8-20020a056a00178800b006b586c3ccafmr7063501pfg.22.1698027959675;
-        Sun, 22 Oct 2023 19:25:59 -0700 (PDT)
-Received: from slk15.local.net (n58-108-90-185.meb1.vic.optusnet.com.au. [58.108.90.185])
-        by smtp.gmail.com with ESMTPSA id y10-20020aa79e0a000000b006875df4773fsm5111251pfq.163.2023.10.22.19.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 19:25:59 -0700 (PDT)
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH libnetfilter_queue] include: all: remove trailing spaces
-Date:   Mon, 23 Oct 2023 13:25:55 +1100
-Message-Id: <20231023022555.18740-1-duncan_roe@optusnet.com.au>
-X-Mailer: git-send-email 2.35.8
+        Sun, 22 Oct 2023 23:08:53 -0400
+X-Greylist: delayed 92 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 22 Oct 2023 20:08:24 PDT
+Received: from omta039.useast.a.cloudfilter.net (omta039.useast.a.cloudfilter.net [44.202.169.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E66E171E
+        for <netfilter-devel@vger.kernel.org>; Sun, 22 Oct 2023 20:08:23 -0700 (PDT)
+Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
+        by cmsmtp with ESMTPS
+        id ukEdqhgD86nOZulHIq1Fbi; Mon, 23 Oct 2023 03:06:52 +0000
+Received: from 162-240-83-27.unifiedlayer.com ([137.59.148.200])
+        by cmsmtp with ESMTPS
+        id ulHHqWLpq6uHPulHHq8kYq; Mon, 23 Oct 2023 03:06:51 +0000
+X-Authority-Analysis: v=2.4 cv=TuH1ORbh c=1 sm=1 tr=0 ts=6535e34b
+ a=MgGYFET5X96nYrQ76toljg==:117 a=/5CYD1hNzocxg58dEBddTw==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=kj9zAlcOel0A:10 a=bhdUkHdE2iEA:10 a=lUDAUsI-kUQA:10
+ a=9m64_h_j2zU8ieQoq-sA:9 a=CjuIK1q_8ugA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=35686686.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Dm1nus89JLbD/65ItGQLhdR/UwQLhddPM+BxEJ7yOwM=; b=MN+yXIwHiRnBgKpXu8GtKgH+yZ
+        zpyuGTnBtvuEKayduiQo0EgNm3JCXVPaUNb0hpZOcsUkBapsrtfW84xC04OXbshCjPyXX57MO/85L
+        4PXC4jRcJzzaX7lGfY2Yf4s0yWcB2jiyYSB0/tTSVno1FgigW/lNbpZkxA4TGW7vHq/OyOs0K+Dp1
+        QFqQvtTJOQHPpldYV4y07bp66TynO9+bwAS77xCyCy0r3F4TEKgUbK3g2At1eoj1yIoAvrz3TRAtJ
+        wmyjbwdUtwi/nzWndZwB8cJAkXzv7W1iqFDcX8Nv5MzXEk5RA9zpXEQVHKK9La5U7AZKjyrwTlL64
+        DJWZBumA==;
+Received: from md-hk-12.webhostbox.net ([137.59.148.200]:50410)
+        by md-hk-12.webhostbox.net with esmtpa (Exim 4.96.2)
+        (envelope-from <jc@35686686.com>)
+        id 1qulHA-003XJ4-0B;
+        Mon, 23 Oct 2023 08:36:44 +0530
+Received: from [181.214.94.254]
+ by 35686686.com
+ with HTTP (HTTP/1.1 POST); Mon, 23 Oct 2023 08:36:36 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Date:   Mon, 23 Oct 2023 11:06:36 +0800
+From:   jc@35686686.com
+To:     undisclosed-recipients:;
+Subject: LOAN SCHEME
+Reply-To: info@kafurinvestment.com
+Mail-Reply-To: info@kafurinvestment.com
+User-Agent: Roundcube Webmail/1.6.0
+Message-ID: <0337743eb695ab1bd07d3ca2f79a4e90@35686686.com>
+X-Sender: jc@35686686.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-hk-12.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - 35686686.com
+X-BWhitelist: no
+X-Source-IP: 137.59.148.200
+X-Source-L: No
+X-Exim-ID: 1qulHA-003XJ4-0B
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: md-hk-12.webhostbox.net [137.59.148.200]:50410
+X-Source-Auth: jc@35686686.com
+X-Email-Count: 98
+X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: ZmJkZXN4amc7Ymx1ZWhvc3Q7bWQtaGstMTIud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOGraWUwPKrQ3NXa2FrSHpsHFoZs0MutDHX4Lb1XxPErTePWOaJi6Ax1oaZfvsxHkRbNNsJN2pIcmkbQphhYtV4Lm8SoT8pOV8Pd/n5enaTTuy/yDzYp
+ hUouLavzBtLQAnW1knuPQUg3uU23DKaXNn0wk2VygX/EIhfU+sciWN2QXiRpT9tw1fgTB5xfuXM3tuIIa0Jo8eWv8nXesxr05GmLoX7gWB6ybkdT8qDc1JUk
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_50,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,SUBJ_ALL_CAPS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Also use as many leading tabs as posssible.
+Greetings:
 
-Fixes: c5bcd787a6a5 ("src: Always use pktb as formal arg of type struct pkt_buff")
-Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
----
- include/libnetfilter_queue/libnetfilter_queue.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I am Mr. Faheem Badawi, working as a project facilitator for (Kafur 
+Project Management Services) also, with numerous investors worldwide. As 
+a means of widening our global portfolio we would like to know if you 
+have any project(s) requiring funding. We also offer business, personal 
+and home loans to finance new projects as well as expansion capital.
 
-diff --git a/include/libnetfilter_queue/libnetfilter_queue.h b/include/libnetfilter_queue/libnetfilter_queue.h
-index a19122f..ec727fc 100644
---- a/include/libnetfilter_queue/libnetfilter_queue.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue.h
-@@ -3,9 +3,9 @@
-  * (C) 2005 by Harald Welte <laforge@gnumonks.org>
-  *
-  *
-- * Changelog : 
-+ * Changelog :
-  * 	(2005/08/11)  added  parsing function (Eric Leblond <regit@inl.fr>)
-- * 
-+ *
-  * This software may be used and distributed according to the terms
-  * of the GNU General Public License, incorporated herein by reference.
-  */
-@@ -82,7 +82,7 @@ extern int nfq_set_verdict_batch2(struct nfq_q_handle *qh,
- 			    uint32_t mark);
- 
- extern __attribute__((deprecated))
--int nfq_set_verdict_mark(struct nfq_q_handle *qh, 
-+int nfq_set_verdict_mark(struct nfq_q_handle *qh,
- 			 uint32_t id,
- 			 uint32_t verdict,
- 			 uint32_t mark,
-@@ -111,7 +111,7 @@ extern int nfq_get_secctx(struct nfq_data *nfad, unsigned char **secdata);
- extern int nfq_get_indev_name(struct nlif_handle *nlif_handle,
- 			      struct nfq_data *nfad, char *name);
- extern int nfq_get_physindev_name(struct nlif_handle *nlif_handle,
--			          struct nfq_data *nfad, char *name);
-+				  struct nfq_data *nfad, char *name);
- extern int nfq_get_outdev_name(struct nlif_handle *nlif_handle,
- 			       struct nfq_data *nfad, char *name);
- extern int nfq_get_physoutdev_name(struct nlif_handle *nlif_handle,
--- 
-2.35.8
+For more updates on the mode of operation send a reply.
 
+Waiting for your prompt response.
+
+Kind regards,
+Faheem Badawi.
+(Financial Advisory - KPMS)
