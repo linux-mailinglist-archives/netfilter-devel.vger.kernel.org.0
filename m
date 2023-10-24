@@ -2,21 +2,21 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0407D5149
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8A17D5146
 	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Oct 2023 15:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbjJXNTZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Oct 2023 09:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        id S234285AbjJXNTY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Oct 2023 09:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234283AbjJXNTY (ORCPT
+        with ESMTP id S234262AbjJXNTY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 24 Oct 2023 09:19:24 -0400
 Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58E710F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37F8E8
         for <netfilter-devel@vger.kernel.org>; Tue, 24 Oct 2023 06:19:21 -0700 (PDT)
 Received: by a3.inai.de (Postfix, from userid 65534)
-        id 01FB958740D54; Tue, 24 Oct 2023 15:19:20 +0200 (CEST)
+        id 2E94658783417; Tue, 24 Oct 2023 15:19:20 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 X-Spam-Level: 
@@ -24,13 +24,13 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:10b:45d8::f8])
-        by a3.inai.de (Postfix) with ESMTP id 6CD2F58783417
+        by a3.inai.de (Postfix) with ESMTP id 7A82A58783FC6
         for <netfilter-devel@vger.kernel.org>; Tue, 24 Oct 2023 15:19:19 +0200 (CEST)
 From:   Jan Engelhardt <jengelh@inai.de>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH 2/6] man: encode emdash the way groff/man requires it
-Date:   Tue, 24 Oct 2023 15:19:15 +0200
-Message-ID: <20231024131919.28665-2-jengelh@inai.de>
+Subject: [PATCH 3/6] man: encode hyphens the way groff/man requires it
+Date:   Tue, 24 Oct 2023 15:19:16 +0200
+Message-ID: <20231024131919.28665-3-jengelh@inai.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231024131919.28665-1-jengelh@inai.de>
 References: <20231024131919.28665-1-jengelh@inai.de>
@@ -40,53 +40,25 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unlike LaTeX, two/three U+002D in the source do not translate
-to an en-/em-dash in man. Using \(em addresses this.
+Here is one instance in SYNPROXY.man where we want hyphens (U+2010)
+rather than U+002D.
 ---
- extensions/libxt_hashlimit.man | 2 +-
- extensions/libxt_limit.man     | 2 +-
- extensions/libxt_time.man      | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ extensions/libxt_SYNPROXY.man | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/extensions/libxt_hashlimit.man b/extensions/libxt_hashlimit.man
-index 627fcd0a..b95a52d2 100644
---- a/extensions/libxt_hashlimit.man
-+++ b/extensions/libxt_hashlimit.man
-@@ -20,7 +20,7 @@ Maximum initial number of packets to match: this number gets recharged by one
- every time the limit specified above is not reached, up to this number; the
- default is 5.  When byte-based rate matching is requested, this option specifies
- the amount of bytes that can exceed the given rate.  This option should be used
--with caution -- if the entry expires, the burst value is reset too.
-+with caution \(em if the entry expires, the burst value is reset too.
- .TP
- \fB\-\-hashlimit\-mode\fP {\fBsrcip\fP|\fBsrcport\fP|\fBdstip\fP|\fBdstport\fP}\fB,\fP...
- A comma-separated list of objects to take into consideration. If no
-diff --git a/extensions/libxt_limit.man b/extensions/libxt_limit.man
-index 6fb94ccf..b477dd94 100644
---- a/extensions/libxt_limit.man
-+++ b/extensions/libxt_limit.man
-@@ -4,7 +4,7 @@ It can be used in combination with the
- .B LOG
- target to give limited logging, for example.
+diff --git a/extensions/libxt_SYNPROXY.man b/extensions/libxt_SYNPROXY.man
+index 521a1d28..bc2b3eec 100644
+--- a/extensions/libxt_SYNPROXY.man
++++ b/extensions/libxt_SYNPROXY.man
+@@ -40,7 +40,7 @@ telnet 192.0.2.42 80
+ .br
+     length 0
  .PP
--xt_limit has no negation support - you will have to use \-m hashlimit !
-+xt_limit has no negation support \(em you will have to use \-m hashlimit !
- \-\-hashlimit \fIrate\fP in this case whilst omitting \-\-hashlimit\-mode.
- .TP
- \fB\-\-limit\fP \fIrate\fP[\fB/second\fP|\fB/minute\fP|\fB/hour\fP|\fB/day\fP]
-diff --git a/extensions/libxt_time.man b/extensions/libxt_time.man
-index 4c0cae06..5b749a48 100644
---- a/extensions/libxt_time.man
-+++ b/extensions/libxt_time.man
-@@ -58,7 +58,7 @@ rest of the system uses).
- The caveat with the kernel timezone is that Linux distributions may ignore to
- set the kernel timezone, and instead only set the system time. Even if a
- particular distribution does set the timezone at boot, it is usually does not
--keep the kernel timezone offset - which is what changes on DST - up to date.
-+keep the kernel timezone offset \(em which is what changes on DST \(em up to date.
- ntpd will not touch the kernel timezone, so running it will not resolve the
- issue. As such, one may encounter a timezone that is always +0000, or one that
- is wrong half of the time of the year. As such, \fBusing \-\-kerneltz is highly
+-Switch tcp_loose mode off, so conntrack will mark out\-of\-flow
++Switch tcp_loose mode off, so conntrack will mark out-of-flow
+ packets as state INVALID.
+ .IP
+ echo 0 > /proc/sys/net/netfilter/nf_conntrack_tcp_loose
 -- 
 2.42.0
 
