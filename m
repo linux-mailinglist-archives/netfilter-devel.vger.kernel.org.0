@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F25F7D769D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Oct 2023 23:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936677D769F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Oct 2023 23:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbjJYV0N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Oct 2023 17:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
+        id S230522AbjJYV0O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Oct 2023 17:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjJYV0J (ORCPT
+        with ESMTP id S230397AbjJYV0K (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:26:09 -0400
+        Wed, 25 Oct 2023 17:26:10 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7BDE183;
-        Wed, 25 Oct 2023 14:26:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70CB8185;
+        Wed, 25 Oct 2023 14:26:08 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
         pabeni@redhat.com, edumazet@google.com, fw@strlen.de
-Subject: [PATCH net-next 10/19] netfilter: nf_tables: A better name for nft_obj_filter
-Date:   Wed, 25 Oct 2023 23:25:46 +0200
-Message-Id: <20231025212555.132775-11-pablo@netfilter.org>
+Subject: [PATCH net-next 11/19] netfilter: nf_tables: Carry s_idx in nft_obj_dump_ctx
+Date:   Wed, 25 Oct 2023 23:25:47 +0200
+Message-Id: <20231025212555.132775-12-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231025212555.132775-1-pablo@netfilter.org>
 References: <20231025212555.132775-1-pablo@netfilter.org>
@@ -38,96 +38,62 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Phil Sutter <phil@nwl.cc>
 
-Name it for what it is supposed to become, a real nft_obj_dump_ctx. No
-functional change intended.
+Prep work for moving the context into struct netlink_callback scratch
+area.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ net/netfilter/nf_tables_api.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e2e0586307f5..2b81069ea3f6 100644
+index 2b81069ea3f6..3585ddd99ef8 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -7681,7 +7681,7 @@ static void audit_log_obj_reset(const struct nft_table *table,
- 	kfree(buf);
+@@ -7682,6 +7682,7 @@ static void audit_log_obj_reset(const struct nft_table *table,
  }
  
--struct nft_obj_filter {
-+struct nft_obj_dump_ctx {
+ struct nft_obj_dump_ctx {
++	unsigned int	s_idx;
  	char		*table;
  	u32		type;
  };
-@@ -7691,7 +7691,7 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+@@ -7689,14 +7690,14 @@ struct nft_obj_dump_ctx {
+ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+ {
  	const struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
- 	const struct nft_table *table;
- 	unsigned int idx = 0, s_idx = cb->args[0];
--	struct nft_obj_filter *filter = cb->data;
-+	struct nft_obj_dump_ctx *ctx = cb->data;
+-	const struct nft_table *table;
+-	unsigned int idx = 0, s_idx = cb->args[0];
+ 	struct nft_obj_dump_ctx *ctx = cb->data;
  	struct net *net = sock_net(skb->sk);
  	int family = nfmsg->nfgen_family;
  	struct nftables_pernet *nft_net;
-@@ -7717,10 +7717,10 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- 				goto cont;
- 			if (idx < s_idx)
- 				goto cont;
--			if (filter->table && strcmp(filter->table, table->name))
-+			if (ctx->table && strcmp(ctx->table, table->name))
- 				goto cont;
--			if (filter->type != NFT_OBJECT_UNSPEC &&
--			    obj->ops->type->type != filter->type)
-+			if (ctx->type != NFT_OBJECT_UNSPEC &&
-+			    obj->ops->type->type != ctx->type)
- 				goto cont;
++	const struct nft_table *table;
+ 	unsigned int entries = 0;
+ 	struct nft_object *obj;
++	unsigned int idx = 0;
+ 	bool reset = false;
+ 	int rc = 0;
  
- 			rc = nf_tables_fill_obj_info(skb, net,
-@@ -7752,33 +7752,33 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- static int nf_tables_dump_obj_start(struct netlink_callback *cb)
- {
- 	const struct nlattr * const *nla = cb->data;
--	struct nft_obj_filter *filter = NULL;
-+	struct nft_obj_dump_ctx *ctx = NULL;
- 
--	filter = kzalloc(sizeof(*filter), GFP_ATOMIC);
--	if (!filter)
-+	ctx = kzalloc(sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
- 		return -ENOMEM;
- 
- 	if (nla[NFTA_OBJ_TABLE]) {
--		filter->table = nla_strdup(nla[NFTA_OBJ_TABLE], GFP_ATOMIC);
--		if (!filter->table) {
--			kfree(filter);
-+		ctx->table = nla_strdup(nla[NFTA_OBJ_TABLE], GFP_ATOMIC);
-+		if (!ctx->table) {
-+			kfree(ctx);
- 			return -ENOMEM;
- 		}
+@@ -7715,7 +7716,7 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+ 		list_for_each_entry_rcu(obj, &table->objects, list) {
+ 			if (!nft_is_active(net, obj))
+ 				goto cont;
+-			if (idx < s_idx)
++			if (idx < ctx->s_idx)
+ 				goto cont;
+ 			if (ctx->table && strcmp(ctx->table, table->name))
+ 				goto cont;
+@@ -7745,7 +7746,7 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
  	}
+ 	rcu_read_unlock();
  
- 	if (nla[NFTA_OBJ_TYPE])
--		filter->type = ntohl(nla_get_be32(nla[NFTA_OBJ_TYPE]));
-+		ctx->type = ntohl(nla_get_be32(nla[NFTA_OBJ_TYPE]));
- 
--	cb->data = filter;
-+	cb->data = ctx;
- 	return 0;
+-	cb->args[0] = idx;
++	ctx->s_idx = idx;
+ 	return skb->len;
  }
  
- static int nf_tables_dump_obj_done(struct netlink_callback *cb)
- {
--	struct nft_obj_filter *filter = cb->data;
-+	struct nft_obj_dump_ctx *ctx = cb->data;
- 
--	kfree(filter->table);
--	kfree(filter);
-+	kfree(ctx->table);
-+	kfree(ctx);
- 
- 	return 0;
- }
 -- 
 2.30.2
 
