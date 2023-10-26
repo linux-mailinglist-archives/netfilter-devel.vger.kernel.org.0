@@ -2,21 +2,21 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F08D47D7F04
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Oct 2023 10:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8067D7F06
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Oct 2023 10:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjJZIzQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Oct 2023 04:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
+        id S234957AbjJZIzT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Oct 2023 04:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344700AbjJZIzL (ORCPT
+        with ESMTP id S1344716AbjJZIzM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Oct 2023 04:55:11 -0400
+        Thu, 26 Oct 2023 04:55:12 -0400
 Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD5E1A2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C761A5
         for <netfilter-devel@vger.kernel.org>; Thu, 26 Oct 2023 01:55:08 -0700 (PDT)
 Received: by a3.inai.de (Postfix, from userid 65534)
-        id 1E898587266A2; Thu, 26 Oct 2023 10:55:07 +0200 (CEST)
+        id 51F45587266A3; Thu, 26 Oct 2023 10:55:07 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 X-Spam-Level: 
@@ -24,14 +24,14 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:10b:45d8::f8])
-        by a3.inai.de (Postfix) with ESMTP id 6303258726687;
+        by a3.inai.de (Postfix) with ESMTP id 7166D58726688;
         Thu, 26 Oct 2023 10:55:06 +0200 (CEST)
 From:   Jan Engelhardt <jengelh@inai.de>
 To:     netfilter-devel@vger.kernel.org
 Cc:     phil@nwl.cc
-Subject: [PATCH 02/10] man: encode emdash the way groff/man requires it
-Date:   Thu, 26 Oct 2023 10:54:58 +0200
-Message-ID: <20231026085506.94343-2-jengelh@inai.de>
+Subject: [PATCH 03/10] man: encode math minuses the way groff/man requires it
+Date:   Thu, 26 Oct 2023 10:54:59 +0200
+Message-ID: <20231026085506.94343-3-jengelh@inai.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231026085506.94343-1-jengelh@inai.de>
 References: <20231026085506.94343-1-jengelh@inai.de>
@@ -41,70 +41,85 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unlike LaTeX, two/three U+002D in the source do not translate to an
-en and em-dash in man. Using \(en and \(em, respectively, addresses
-this.
+The groff_char(7) manpage tells me that the magic incantation for
+a mathematical minus is \[-].
+
+On terminals, math minuses are oddly rendered with U+002D rather than
+U+2212, but that's another topic for another day for another
+software. In PostScript output (man -t), everything looks right.
 
 Signed-off-by: Jan Engelhardt <jengelh@inai.de>
 ---
- extensions/libxt_hashlimit.man | 2 +-
- extensions/libxt_limit.man     | 2 +-
+ extensions/libxt_NFLOG.man     | 2 +-
+ extensions/libxt_cpu.man       | 2 +-
  extensions/libxt_rateest.man   | 2 +-
- extensions/libxt_time.man      | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ extensions/libxt_statistic.man | 2 +-
+ iptables/ebtables-nft.8        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/extensions/libxt_hashlimit.man b/extensions/libxt_hashlimit.man
-index 8a35d564..79a37986 100644
---- a/extensions/libxt_hashlimit.man
-+++ b/extensions/libxt_hashlimit.man
-@@ -20,7 +20,7 @@ Maximum initial number of packets to match: this number gets recharged by one
- every time the limit specified above is not reached, up to this number; the
- default is 5.  When byte-based rate matching is requested, this option specifies
- the amount of bytes that can exceed the given rate.  This option should be used
--with caution -- if the entry expires, the burst value is reset too.
-+with caution \(em if the entry expires, the burst value is reset too.
+diff --git a/extensions/libxt_NFLOG.man b/extensions/libxt_NFLOG.man
+index 093704a1..9d1b4271 100644
+--- a/extensions/libxt_NFLOG.man
++++ b/extensions/libxt_NFLOG.man
+@@ -9,7 +9,7 @@ may subscribe to the group to receive the packets. Like LOG, this is a
+ non-terminating target, i.e. rule traversal continues at the next rule.
  .TP
- \fB\-\-hashlimit\-mode\fP {\fBsrcip\fP|\fBsrcport\fP|\fBdstip\fP|\fBdstport\fP}\fB,\fP...
- A comma-separated list of objects to take into consideration. If no
-diff --git a/extensions/libxt_limit.man b/extensions/libxt_limit.man
-index 6fb94ccf..b477dd94 100644
---- a/extensions/libxt_limit.man
-+++ b/extensions/libxt_limit.man
-@@ -4,7 +4,7 @@ It can be used in combination with the
- .B LOG
- target to give limited logging, for example.
+ \fB\-\-nflog\-group\fP \fInlgroup\fP
+-The netlink group (0\(en2^16\-1) to which packets are (only applicable for
++The netlink group (0\(en2^16\[-]1) to which packets are (only applicable for
+ nfnetlink_log). The default value is 0.
+ .TP
+ \fB\-\-nflog\-prefix\fP \fIprefix\fP
+diff --git a/extensions/libxt_cpu.man b/extensions/libxt_cpu.man
+index c89ef08a..7fcc8189 100644
+--- a/extensions/libxt_cpu.man
++++ b/extensions/libxt_cpu.man
+@@ -1,6 +1,6 @@
+ .TP
+ [\fB!\fP] \fB\-\-cpu\fP \fInumber\fP
+-Match cpu handling this packet. cpus are numbered from 0 to NR_CPUS-1
++Match cpu handling this packet. cpus are numbered from 0 to NR_CPUS\[-]1
+ Can be used in combination with RPS (Remote Packet Steering) or
+ multiqueue NICs to spread network traffic on different queues.
  .PP
--xt_limit has no negation support - you will have to use \-m hashlimit !
-+xt_limit has no negation support \(em you will have to use \-m hashlimit !
- \-\-hashlimit \fIrate\fP in this case whilst omitting \-\-hashlimit\-mode.
- .TP
- \fB\-\-limit\fP \fIrate\fP[\fB/second\fP|\fB/minute\fP|\fB/hour\fP|\fB/day\fP]
 diff --git a/extensions/libxt_rateest.man b/extensions/libxt_rateest.man
-index 42a82f32..1989ff6c 100644
+index 1989ff6c..d6ba3675 100644
 --- a/extensions/libxt_rateest.man
 +++ b/extensions/libxt_rateest.man
-@@ -68,7 +68,7 @@ The names of the two rate estimators for relative mode.
- \fB\-\-rateest\-pps2\fP [\fIvalue\fP]
- Compare the estimator(s) by bytes or packets per second, and compare against
- the chosen value. See the above bullet list for which option is to be used in
--which case. A unit suffix may be used - available ones are: bit, [kmgt]bit,
-+which case. A unit suffix may be used \(em available ones are: bit, [kmgt]bit,
- [KMGT]ibit, Bps, [KMGT]Bps, [KMGT]iBps.
- .PP
- Example: This is what can be used to route outgoing data connections from an
-diff --git a/extensions/libxt_time.man b/extensions/libxt_time.man
-index 4c0cae06..5b749a48 100644
---- a/extensions/libxt_time.man
-+++ b/extensions/libxt_time.man
-@@ -58,7 +58,7 @@ rest of the system uses).
- The caveat with the kernel timezone is that Linux distributions may ignore to
- set the kernel timezone, and instead only set the system time. Even if a
- particular distribution does set the timezone at boot, it is usually does not
--keep the kernel timezone offset - which is what changes on DST - up to date.
-+keep the kernel timezone offset \(em which is what changes on DST \(em up to date.
- ntpd will not touch the kernel timezone, so running it will not resolve the
- issue. As such, one may encounter a timezone that is always +0000, or one that
- is wrong half of the time of the year. As such, \fBusing \-\-kerneltz is highly
+@@ -31,7 +31,7 @@ combinations:
+ For each estimator (either absolute or relative mode), calculate the difference
+ between the estimator-determined flow rate and the static value chosen with the
+ BPS/PPS options. If the flow rate is higher than the specified BPS/PPS, 0 will
+-be used instead of a negative value. In other words, "max(0, rateest#_rate -
++be used instead of a negative value. In other words, "max(0, rateest#_rate \[-]
+ rateest#_bps)" is used.
+ .TP
+ [\fB!\fP] \fB\-\-rateest\-lt\fP
+diff --git a/extensions/libxt_statistic.man b/extensions/libxt_statistic.man
+index 47182bfb..e9ffa4b9 100644
+--- a/extensions/libxt_statistic.man
++++ b/extensions/libxt_statistic.man
+@@ -24,6 +24,6 @@ mode (see also the
+ option).
+ .TP
+ \fB\-\-packet\fP \fIp\fP
+-Set the initial counter value (0 <= p <= n\-1, default 0) for the
++Set the initial counter value (0 <= p <= n\[-]1, default 0) for the
+ .B nth 
+ mode.
+diff --git a/iptables/ebtables-nft.8 b/iptables/ebtables-nft.8
+index eaeb6d29..f8523f41 100644
+--- a/iptables/ebtables-nft.8
++++ b/iptables/ebtables-nft.8
+@@ -858,7 +858,7 @@ Log with the default logging options
+ .TP
+ .B --nflog-group "\fInlgroup\fP"
+ .br
+-The netlink group (1\(en2^32-1) to which packets are (only applicable for
++The netlink group (1\(en2^32\[-]1) to which packets are (only applicable for
+ nfnetlink_log). The default value is 1.
+ .TP
+ .B --nflog-prefix "\fIprefix\fP"
 -- 
 2.42.0
 
