@@ -2,31 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBB57DB077
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Oct 2023 00:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B987DB0AA
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Oct 2023 00:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbjJ2XHJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 29 Oct 2023 19:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
+        id S231740AbjJ2XIw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 29 Oct 2023 19:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbjJ2XGn (ORCPT
+        with ESMTP id S231835AbjJ2XIO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 29 Oct 2023 19:06:43 -0400
+        Sun, 29 Oct 2023 19:08:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFB06595;
-        Sun, 29 Oct 2023 16:01:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E08C433CC;
-        Sun, 29 Oct 2023 23:01:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178CAAD08;
+        Sun, 29 Oct 2023 16:03:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE555C433BA;
+        Sun, 29 Oct 2023 23:01:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698620469;
-        bh=uEtJBRzg7Zr+VZEfWwug+VgiKu2cYuMf1hhXMXL/dkU=;
+        s=k20201202; t=1698620506;
+        bh=NUktvKdtx3rjiNTW7jqPhBIpl+8PnX2jZY36oZLVZi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qqW1Hvee0vuqWBQsU6Zf+N7sCpKuFpjAFp2NIw6UPi0kI9u/RXizzvXlqmiGTXrCV
-         Ri9j3EIjUyKErRqLh0G6ZoUt2qailb1xjV2wt4J65mZ2ZfkhkREx6JqkMVcVdEBKmz
-         fXYuujW4k1VdNFECy4/PoQ9K7oVVIFpCag10Qf4blUCJMb3INjz7TRIVWEYtnqfOpG
-         wM/nPYryn8OtlloJ9EbjAB3YeHsm/2A9jJJO68E5pU69hMBVM0bj06Wru6EVi6rOw1
-         GFNSCXLeJku+ydeEKKZAV4WEF1XgmVlY/CJqVpYFG1g6t/5OvTeMASOL4LgkNEjwOu
-         z4aajbkiD0b3A==
+        b=GRLQyegHIxa+cTIZMmdkeLgKwRZ4f62XVA82aHEWJmw2BXDS8/UK5VBeRDo2fdkAM
+         bDnx2mNSCbJMZrNoh5Bx8L1Qb1Jt1OrNv9qScMo/sRnbQX8h2Z7U8ummio6ZktCCmG
+         LVr1IpLXtn13474wz/0XVMqxag2aY+XfRef/JM54ahRUl0auUWUGRMbUofa5QjkVri
+         OyRG15yBrIjOMS9mBoR/ZIFnZ70E/CoV+D90Cz/e9BK8iO9FA1jhlTD1tt/ZFTA0zR
+         dH2robVA1ufpRwuBHuj1kBCNiyVbIy8jQulFZM40MzWqyA10/Ob5tplVG4wU/wIt5T
+         EeTLT8YTRinoA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>,
@@ -35,17 +35,23 @@ Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>,
         kuba@kernel.org, pabeni@redhat.com,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/13] netfilter: nfnetlink_log: silence bogus compiler warning
-Date:   Sun, 29 Oct 2023 19:00:39 -0400
-Message-ID: <20231029230057.792930-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 05/12] netfilter: nfnetlink_log: silence bogus compiler warning
+Date:   Sun, 29 Oct 2023 19:01:18 -0400
+Message-ID: <20231029230135.793281-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231029230057.792930-1-sashal@kernel.org>
-References: <20231029230057.792930-1-sashal@kernel.org>
+In-Reply-To: <20231029230135.793281-1-sashal@kernel.org>
+References: <20231029230135.793281-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.259
+X-stable-base: Linux 4.19.297
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -68,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index f087baa95b07b..80c09070ea9fa 100644
+index da05c4d82b944..1735bcb07381c 100644
 --- a/net/netfilter/nfnetlink_log.c
 +++ b/net/netfilter/nfnetlink_log.c
-@@ -683,8 +683,8 @@ nfulnl_log_packet(struct net *net,
+@@ -631,8 +631,8 @@ nfulnl_log_packet(struct net *net,
  	unsigned int plen = 0;
  	struct nfnl_log_net *log = nfnl_log_pernet(net);
  	const struct nfnl_ct_hook *nfnl_ct = NULL;
