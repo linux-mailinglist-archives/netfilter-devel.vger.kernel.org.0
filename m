@@ -2,112 +2,756 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B337DC4BB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Oct 2023 04:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7507DD656
+	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Oct 2023 19:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbjJaDIO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 30 Oct 2023 23:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        id S230517AbjJaSzy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 31 Oct 2023 14:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjJaDIN (ORCPT
+        with ESMTP id S230322AbjJaSzw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 30 Oct 2023 23:08:13 -0400
-X-Greylist: delayed 2679 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 20:08:10 PDT
-Received: from mx1.supremebox.com (mx2.supremebox.com [198.23.53.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DFCC5;
-        Mon, 30 Oct 2023 20:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jilayne.com
-        ; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/gjbVBqD6wUd83Ic/WpsYkTAScFG89GoRNlWHJQ3pyY=; b=VrGRTETHeUXeMg6iB+ujy5itQJ
-        dAieB6ad/PZVlJCtyprHmz/ZEW2BwJfm/uh67cFTRrvAP2Hh+Y5YCDKIZeEn/hm/zQGwSD/2Waqat
-        DlU2ogG0KEtbQFm7TbqXakazRbrpQbEm2cqKPakg3jDm/RWbnnlsPh/p8DDCksE45TLk=;
-Received: from 71-211-137-107.hlrn.qwest.net ([71.211.137.107] helo=[192.168.1.162])
-        by mx1.supremebox.com with esmtpa (Exim 4.92)
-        (envelope-from <opensource@jilayne.com>)
-        id 1qxePf-0005Ei-PH; Tue, 31 Oct 2023 02:23:27 +0000
-Message-ID: <ccf41bd2-e627-424c-8486-47f22553820d@jilayne.com>
-Date:   Mon, 30 Oct 2023 20:23:25 -0600
+        Tue, 31 Oct 2023 14:55:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1D8B7
+        for <netfilter-devel@vger.kernel.org>; Tue, 31 Oct 2023 11:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698778500;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=h03p0qzTYin2G4kXfAFJ7NNZpQLtiYsT1zW+i71lqew=;
+        b=Pvx/A5yjq8TfLkjcc/UPkwwdeZ1mwKm3s+/F/opa5bt55ySWbZoc1KoDLxJv/JY700nBFB
+        MPFIxcKjmEMwfppoEZhx5zbISqcsuAMbRnX7AnkzkTogVF7sv4WwalyhnNeaha99BBGZiD
+        1ukUBJEBI9X1snevk2rgwsKI9PsHedo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-645-Jf2gl1Z5PeW08y3q7M-O0w-1; Tue,
+ 31 Oct 2023 14:54:58 -0400
+X-MC-Unique: Jf2gl1Z5PeW08y3q7M-O0w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B1D1629AB3E9
+        for <netfilter-devel@vger.kernel.org>; Tue, 31 Oct 2023 18:54:58 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5423510F51;
+        Tue, 31 Oct 2023 18:54:57 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft 0/7] add and check dump files for JSON in tests/shell
+Date:   Tue, 31 Oct 2023 19:53:26 +0100
+Message-ID: <20231031185449.1033380-1-thaller@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] treewide: Add SPDX identifier to IETF ASN.1 modules
-Content-Language: en-US
-To:     Lukas Wunner <lukas@wunner.de>,
-        Richard Fontana <rfontana@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-spdx@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, Hyunchul Lee <hyc.lee@gmail.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org,
-        Taehee Yoo <ap420073@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org
-References: <143690ecc1102c0f67fa7faec437ec7b02bb2304.1697885975.git.lukas@wunner.de>
- <CAC1cPGx-cb+YZ9KgEFvSjtf+fp9Dhcn4sm9qHmFFDRDxb=7fHg@mail.gmail.com>
- <20231022085319.GA25981@wunner.de>
-From:   J Lovejoy <opensource@jilayne.com>
-In-Reply-To: <20231022085319.GA25981@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Sender-Ident-agJab5osgicCis: opensource@jilayne.com
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Like we have .nft dump files to compare the expected result, add
+.json-nft files that compare the JSON output.
 
+Thomas Haller (7):
+  json: fix use after free in table_flags_json()
+  json: drop messages "warning: stmt ops chain have no json callback"
+  tests/shell: check and generate JSON dump files
+  tests/shell: add JSON dump files
+  tools: simplify error handling in "check-tree.sh" by adding
+    msg_err()/msg_warn()
+  tools: check more strictly for bash shebang in "check-tree.sh"
+  tools: check for consistency of .json-nft dumps in "check-tree.sh"
 
-On 10/22/23 4:53 AM, Lukas Wunner wrote:
-> On Sat, Oct 21, 2023 at 09:23:55AM -0400, Richard Fontana wrote:
->> On Sat, Oct 21, 2023 at 7:25???AM Lukas Wunner <lukas@wunner.de> wrote:
->>> Per section 4.c. of the IETF Trust Legal Provisions, "Code Components"
->>> in IETF Documents are licensed on the terms of the BSD-3-Clause license:
->>>
->>> https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/
->>>
->>> The term "Code Components" specifically includes ASN.1 modules:
->>>
->>> https://trustee.ietf.org/documents/trust-legal-provisions/code-components-list-3/
->> Sorry if this seems super-pedantic but I am pretty sure the license
->> text in the IETF Trust Legal Provisions does not actually match SPDX
->> `BSD-3-Clause` because of one additional word in clause 3 ("specific"
->> before "contributors"), so IMO you should get SPDX to modify its
->> definition of `BSD-3-Clause` prior to applying this patch (or get IETF
->> to change its version of the license, but I imagine that would be more
->> difficult).
-> I've submitted a pull request to modify the SPDX definition of
-> BSD-3-Clause for the IETF variant:
->
-> https://github.com/spdx/license-list-XML/pull/2218
->
-> I assume this addresses your concern?  Let me know if it doesn't.
->
-> If anyone has further objections to this patch please speak up.
-Thanks for submitting the PR! Usually this is something that would be 
-discussed via an issue before making a PR. I made one here 
-https://github.com/spdx/license-list-XML/issues/2242 and will have a 
-closer look shortly. Also ideally, this patch would not be applied until 
-the additional markup is confirmed by SPDX (in case this is deemed a new 
-license and needs a new/different identifier)
+ src/json.c                                    |   8 +-
+ tests/shell/helpers/test-wrapper.sh           | 138 +++++++++++++-----
+ tests/shell/run-tests.sh                      |  11 +-
+ .../bitwise/dumps/0040mark_binop_0.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_1.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_2.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_3.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_4.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_5.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_6.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_7.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_8.json-nft   |   1 +
+ .../bitwise/dumps/0040mark_binop_9.json-nft   |   1 +
+ .../bogons/dumps/assert_failures.json-nft     |   1 +
+ .../dumps/0001_cache_handling_0.json-nft      |   1 +
+ .../cache/dumps/0002_interval_0.json-nft      |   1 +
+ .../cache/dumps/0003_cache_update_0.json-nft  |   1 +
+ .../cache/dumps/0004_cache_update_0.json-nft  |   1 +
+ .../dumps/0005_cache_chain_flush.json-nft     |   1 +
+ .../dumps/0006_cache_table_flush.json-nft     |   1 +
+ .../dumps/0007_echo_cache_init_0.json-nft     |   1 +
+ .../dumps/0008_delete_by_handle_0.json-nft    |   1 +
+ ...0009_delete_by_handle_incorrect_0.json-nft |   1 +
+ .../cache/dumps/0011_index_0.json-nft         |   1 +
+ .../chains/dumps/0001jumps_0.json-nft         |   1 +
+ .../chains/dumps/0002jumps_1.json-nft         |   1 +
+ .../chains/dumps/0003jump_loop_1.json-nft     |   1 +
+ .../chains/dumps/0004busy_1.json-nft          |   1 +
+ .../chains/dumps/0005busy_map_1.json-nft      |   1 +
+ .../chains/dumps/0006masquerade_0.json-nft    |   1 +
+ .../chains/dumps/0007masquerade_1.json-nft    |   1 +
+ .../dumps/0008masquerade_jump_1.json-nft      |   1 +
+ .../dumps/0009masquerade_jump_1.json-nft      |   1 +
+ .../dumps/0010endless_jump_loop_1.json-nft    |   1 +
+ .../chains/dumps/0013rename_0.json-nft        |   1 +
+ .../chains/dumps/0014rename_0.json-nft        |   1 +
+ .../dumps/0015check_jump_loop_1.json-nft      |   1 +
+ .../chains/dumps/0016delete_handle_0.json-nft |   1 +
+ .../dumps/0017masquerade_jump_1.json-nft      |   1 +
+ .../dumps/0018check_jump_loop_1.json-nft      |   1 +
+ .../dumps/0019masquerade_jump_1.json-nft      |   1 +
+ .../chains/dumps/0020depth_1.json-nft         |   1 +
+ .../chains/dumps/0021prio_0.json-nft          |   1 +
+ .../chains/dumps/0022prio_dummy_1.json-nft    |   1 +
+ .../dumps/0023prio_inet_srcnat_1.json-nft     |   1 +
+ .../dumps/0024prio_inet_dstnat_1.json-nft     |   1 +
+ .../chains/dumps/0025prio_arp_1.json-nft      |   1 +
+ .../chains/dumps/0026prio_netdev_1.json-nft   |   1 +
+ .../dumps/0027prio_bridge_dstnat_1.json-nft   |   1 +
+ .../dumps/0028prio_bridge_out_1.json-nft      |   1 +
+ .../dumps/0029prio_bridge_srcnat_1.json-nft   |   1 +
+ .../chains/dumps/0030create_0.json-nft        |   1 +
+ .../dumps/0031priority_variable_0.json-nft    |   1 +
+ .../dumps/0032priority_variable_0.json-nft    |   1 +
+ .../dumps/0033priority_variable_1.json-nft    |   1 +
+ .../dumps/0034priority_variable_1.json-nft    |   1 +
+ .../dumps/0035policy_variable_0.json-nft      |   1 +
+ .../dumps/0036policy_variable_0.json-nft      |   1 +
+ .../dumps/0037policy_variable_1.json-nft      |   1 +
+ .../dumps/0038policy_variable_1.json-nft      |   1 +
+ .../dumps/0039negative_priority_0.json-nft    |   1 +
+ .../dumps/0042chain_variable_0.json-nft       |   1 +
+ .../chains/dumps/0043chain_ingress_0.json-nft |   1 +
+ .../chains/dumps/0044chain_destroy_0.json-nft |   1 +
+ .../chains/dumps/netdev_chain_0.json-nft      |   1 +
+ .../dumps/netdev_chain_autoremove.json-nft    |   1 +
+ .../comments/dumps/comments_0.json-nft        |   1 +
+ .../flowtable/dumps/0001flowtable_0.json-nft  |   1 +
+ .../dumps/0002create_flowtable_0.json-nft     |   1 +
+ .../dumps/0003add_after_flush_0.json-nft      |   1 +
+ .../dumps/0004delete_after_add_0.json-nft     |   1 +
+ .../dumps/0005delete_in_use_1.json-nft        |   1 +
+ .../flowtable/dumps/0006segfault_0.json-nft   |   1 +
+ .../flowtable/dumps/0007prio_0.json-nft       |   1 +
+ .../flowtable/dumps/0008prio_1.json-nft       |   1 +
+ .../dumps/0009deleteafterflush_0.json-nft     |   1 +
+ .../dumps/0010delete_handle_0.json-nft        |   1 +
+ .../dumps/0011deleteafterflush_0.json-nft     |   1 +
+ .../dumps/0012flowtable_variable_0.json-nft   |   1 +
+ .../dumps/0013addafterdelete_0.json-nft       |   1 +
+ .../dumps/0014addafterdelete_0.json-nft       |   1 +
+ .../flowtable/dumps/0015destroy_0.json-nft    |   1 +
+ .../include/dumps/0001absolute_0.json-nft     |   1 +
+ .../include/dumps/0002relative_0.json-nft     |   1 +
+ .../include/dumps/0003includepath_0.json-nft  |   1 +
+ .../include/dumps/0004endlessloop_1.json-nft  |   1 +
+ .../include/dumps/0005glob_empty_0.json-nft   |   1 +
+ .../include/dumps/0006glob_single_0.json-nft  |   1 +
+ .../include/dumps/0007glob_double_0.json-nft  |   1 +
+ .../dumps/0008glob_nofile_wildcard_0.json-nft |   1 +
+ .../include/dumps/0009glob_nofile_1.json-nft  |   1 +
+ .../dumps/0010glob_broken_file_1.json-nft     |   1 +
+ .../dumps/0011glob_dependency_0.json-nft      |   1 +
+ .../dumps/0012glob_dependency_1.json-nft      |   1 +
+ .../include/dumps/0013glob_dotfile_0.json-nft |   1 +
+ ...nput_descriptors_included_files_0.json-nft |   1 +
+ .../dumps/0014glob_directory_0.json-nft       |   1 +
+ .../dumps/0015doubleincludepath_0.json-nft    |   1 +
+ .../include/dumps/0016maxdepth_0.json-nft     |   1 +
+ .../0017glob_more_than_maxdepth_1.json-nft    |   1 +
+ .../dumps/0018include_error_0.json-nft        |   1 +
+ .../dumps/0019include_error_0.json-nft        |   1 +
+ .../dumps/0020include_chain_0.json-nft        |   1 +
+ .../json/dumps/0001set_statements_0.json-nft  |   1 +
+ .../json/dumps/0002table_map_0.json-nft       |   1 +
+ .../dumps/0003json_schema_version_0.json-nft  |   1 +
+ .../dumps/0004json_schema_version_1.json-nft  |   1 +
+ .../json/dumps/0005secmark_objref_0.json-nft  |   1 +
+ .../json/dumps/0006obj_comment_0.json-nft     |   1 +
+ .../testcases/json/dumps/netdev.json-nft      |   1 +
+ .../listing/dumps/0001ruleset_0.json-nft      |   1 +
+ .../listing/dumps/0002ruleset_0.json-nft      |   1 +
+ .../listing/dumps/0003table_0.json-nft        |   1 +
+ .../listing/dumps/0004table_0.json-nft        |   1 +
+ .../listing/dumps/0005ruleset_ip_0.json-nft   |   1 +
+ .../listing/dumps/0006ruleset_ip6_0.json-nft  |   1 +
+ .../listing/dumps/0007ruleset_inet_0.json-nft |   1 +
+ .../listing/dumps/0008ruleset_arp_0.json-nft  |   1 +
+ .../dumps/0009ruleset_bridge_0.json-nft       |   1 +
+ .../listing/dumps/0010sets_0.json-nft         |   1 +
+ .../listing/dumps/0011sets_0.json-nft         |   1 +
+ .../listing/dumps/0012sets_0.json-nft         |   1 +
+ .../listing/dumps/0014objects_0.json-nft      |   1 +
+ .../listing/dumps/0015dynamic_0.json-nft      |   1 +
+ .../listing/dumps/0016anonymous_0.json-nft    |   1 +
+ .../listing/dumps/0017objects_0.json-nft      |   1 +
+ .../listing/dumps/0018data_0.json-nft         |   1 +
+ .../listing/dumps/0019set_0.json-nft          |   1 +
+ .../listing/dumps/0020flowtable_0.json-nft    |   1 +
+ .../dumps/0021ruleset_json_terse_0.json-nft   |   1 +
+ .../listing/dumps/0022terse_0.json-nft        |   1 +
+ .../0003map_add_many_elements_0.json-nft      |   1 +
+ ...5interval_map_add_many_elements_0.json-nft |   1 +
+ .../dumps/0006interval_map_overlap_0.json-nft |   1 +
+ .../dumps/0007named_ifname_dtype_0.json-nft   |   1 +
+ .../dumps/0008interval_map_delete_0.json-nft  |   1 +
+ .../testcases/maps/dumps/0009vmap_0.json-nft  |   1 +
+ .../testcases/maps/dumps/0012map_0.json-nft   |   1 +
+ .../testcases/maps/dumps/0013map_0.json-nft   |   1 +
+ .../maps/dumps/0014destroy_0.json-nft         |   1 +
+ .../maps/dumps/0016map_leak_0.json-nft        |   1 +
+ .../maps/dumps/0017_map_variable_0.json-nft   |   1 +
+ .../dumps/0018map_leak_timeout_0.json-nft     |   1 +
+ .../maps/dumps/anon_objmap_concat.json-nft    |   1 +
+ .../maps/dumps/anonymous_snat_map_0.json-nft  |   1 +
+ .../maps/dumps/different_map_types_1.json-nft |   1 +
+ .../map_catchall_double_deactivate.json-nft   |   1 +
+ .../maps/dumps/map_with_flags_0.json-nft      |   1 +
+ .../maps/dumps/named_snat_map_0.json-nft      |   1 +
+ .../dumps/typeof_maps_add_delete.json-nft     |   1 +
+ .../maps/dumps/typeof_maps_update_0.json-nft  |   1 +
+ .../netns/dumps/0001nft-f_0.json-nft          |   1 +
+ .../netns/dumps/0002loosecommands_0.json-nft  |   1 +
+ .../testcases/netns/dumps/0003many_0.json-nft |   1 +
+ .../nft-f/dumps/0001define_slash_0.json-nft   |   1 +
+ .../nft-f/dumps/0002rollback_rule_0.json-nft  |   1 +
+ .../nft-f/dumps/0003rollback_jump_0.json-nft  |   1 +
+ .../nft-f/dumps/0004rollback_set_0.json-nft   |   1 +
+ .../nft-f/dumps/0005rollback_map_0.json-nft   |   1 +
+ .../nft-f/dumps/0006action_object_0.json-nft  |   1 +
+ .../0007action_object_set_segfault_1.json-nft |   1 +
+ .../nft-f/dumps/0008split_tables_0.json-nft   |   1 +
+ .../nft-f/dumps/0009variable_0.json-nft       |   1 +
+ .../nft-f/dumps/0010variable_0.json-nft       |   1 +
+ .../nft-f/dumps/0013defines_1.json-nft        |   1 +
+ .../nft-f/dumps/0014defines_1.json-nft        |   1 +
+ .../nft-f/dumps/0015defines_1.json-nft        |   1 +
+ .../nft-f/dumps/0016redefines_1.json-nft      |   1 +
+ .../dumps/0018ct_expectation_obj_0.json-nft   |   1 +
+ .../nft-f/dumps/0018jump_variable_0.json-nft  |   1 +
+ .../nft-f/dumps/0019jump_variable_1.json-nft  |   1 +
+ .../nft-f/dumps/0020jump_variable_1.json-nft  |   1 +
+ .../nft-f/dumps/0021list_ruleset_0.json-nft   |   1 +
+ .../nft-f/dumps/0022variables_0.json-nft      |   1 +
+ .../nft-f/dumps/0023check_1.json-nft          |   1 +
+ .../nft-f/dumps/0025empty_dynset_0.json-nft   |   1 +
+ .../nft-f/dumps/0026listing_0.json-nft        |   1 +
+ .../nft-f/dumps/0027split_chains_0.json-nft   |   1 +
+ .../dumps/0028variable_cmdline_0.json-nft     |   1 +
+ .../nft-f/dumps/0029split_file_0.json-nft     |   1 +
+ .../nft-f/dumps/0030variable_reuse_0.json-nft |   1 +
+ .../nft-f/dumps/0031vmap_string_0.json-nft    |   1 +
+ .../nft-f/dumps/0032pknock_0.json-nft         |   1 +
+ .../nft-i/dumps/0001define_0.json-nft         |   1 +
+ .../dumps/dependency_kill.json-nft            |   1 +
+ .../optimizations/dumps/merge_nat.json-nft    |   1 +
+ .../optimizations/dumps/merge_reject.json-nft |   1 +
+ .../optimizations/dumps/merge_stmts.json-nft  |   1 +
+ .../dumps/merge_stmts_concat.json-nft         |   1 +
+ .../dumps/merge_stmts_concat_vmap.json-nft    |   1 +
+ .../dumps/merge_stmts_vmap.json-nft           |   1 +
+ .../dumps/merge_vmap_raw.json-nft             |   1 +
+ .../optimizations/dumps/merge_vmaps.json-nft  |   1 +
+ .../dumps/not_mergeable.json-nft              |   1 +
+ .../optimizations/dumps/ruleset.json-nft      |   1 +
+ .../dumps/single_anon_set.json-nft            |   1 +
+ .../optimizations/dumps/skip_merge.json-nft   |   1 +
+ .../optimizations/dumps/skip_non_eq.json-nft  |   1 +
+ .../dumps/skip_unsupported.json-nft           |   1 +
+ .../optimizations/dumps/variables.json-nft    |   1 +
+ .../optionals/dumps/comments_0.json-nft       |   1 +
+ .../optionals/dumps/comments_chain_0.json-nft |   1 +
+ .../dumps/comments_handles_0.json-nft         |   1 +
+ .../dumps/comments_objects_dup_0.json-nft     |   1 +
+ .../optionals/dumps/comments_table_0.json-nft |   1 +
+ .../dumps/delete_object_handles_0.json-nft    |   1 +
+ .../optionals/dumps/handles_0.json-nft        |   1 +
+ .../optionals/dumps/handles_1.json-nft        |   1 +
+ .../optionals/dumps/log_prefix_0.json-nft     |   1 +
+ .../dumps/update_object_handles_0.json-nft    |   1 +
+ .../owner/dumps/0001-flowtable-uaf.json-nft   |   1 +
+ .../testcases/parsing/dumps/describe.json-nft |   1 +
+ .../parsing/dumps/large_rule_pipe.json-nft    |   1 +
+ .../testcases/parsing/dumps/log.json-nft      |   1 +
+ .../testcases/parsing/dumps/octal.json-nft    |   1 +
+ .../dumps/0001addinsertposition_0.json-nft    |   1 +
+ .../dumps/0002addinsertlocation_1.json-nft    |   1 +
+ .../dumps/0003insert_0.json-nft               |   1 +
+ .../dumps/0004replace_0.json-nft              |   1 +
+ .../dumps/0005replace_1.json-nft              |   1 +
+ .../dumps/0006replace_1.json-nft              |   1 +
+ .../dumps/0007delete_0.json-nft               |   1 +
+ .../dumps/0008delete_1.json-nft               |   1 +
+ .../dumps/0009delete_1.json-nft               |   1 +
+ .../dumps/0010replace_0.json-nft              |   1 +
+ .../dumps/0011reset_0.json-nft                |   1 +
+ .../dumps/0012destroy_0.json-nft              |   1 +
+ .../sets/dumps/0001named_interval_0.json-nft  |   1 +
+ .../0002named_interval_automerging_0.json-nft |   1 +
+ ...0003named_interval_missing_flag_0.json-nft |   1 +
+ .../0004named_interval_shadow_0.json-nft      |   1 +
+ .../0005named_interval_shadow_0.json-nft      |   1 +
+ .../sets/dumps/0006create_set_0.json-nft      |   1 +
+ .../sets/dumps/0007create_element_0.json-nft  |   1 +
+ .../dumps/0008comments_interval_0.json-nft    |   1 +
+ .../dumps/0009comments_timeout_0.json-nft     |   1 +
+ .../sets/dumps/0010comments_0.json-nft        |   1 +
+ .../0012add_delete_many_elements_0.json-nft   |   1 +
+ .../0013add_delete_many_elements_0.json-nft   |   1 +
+ ...014malformed_set_is_not_defined_0.json-nft |   1 +
+ .../sets/dumps/0015rulesetflush_0.json-nft    |   1 +
+ .../sets/dumps/0016element_leak_0.json-nft    |   1 +
+ .../sets/dumps/0017add_after_flush_0.json-nft |   1 +
+ .../sets/dumps/0018set_check_size_1.json-nft  |   1 +
+ .../sets/dumps/0019set_check_size_0.json-nft  |   1 +
+ .../sets/dumps/0020comments_0.json-nft        |   1 +
+ .../sets/dumps/0021nesting_0.json-nft         |   1 +
+ .../dumps/0022type_selective_flush_0.json-nft |   1 +
+ .../0023incomplete_add_set_command_0.json-nft |   1 +
+ .../sets/dumps/0025anonymous_set_0.json-nft   |   1 +
+ .../sets/dumps/0026named_limit_0.json-nft     |   1 +
+ .../sets/dumps/0027ipv6_maps_ipv4_0.json-nft  |   1 +
+ .../sets/dumps/0028autoselect_0.json-nft      |   1 +
+ .../sets/dumps/0028delete_handle_0.json-nft   |   1 +
+ .../dumps/0032restore_set_simple_0.json-nft   |   1 +
+ .../dumps/0033add_set_simple_flat_0.json-nft  |   1 +
+ .../sets/dumps/0034get_element_0.json-nft     |   1 +
+ .../0035add_set_elements_flat_0.json-nft      |   1 +
+ .../0037_set_with_inet_service_0.json-nft     |   1 +
+ .../sets/dumps/0038meter_list_0.json-nft      |   1 +
+ .../sets/dumps/0039delete_interval_0.json-nft |   1 +
+ .../0040get_host_endian_elements_0.json-nft   |   1 +
+ .../sets/dumps/0041interval_0.json-nft        |   1 +
+ .../sets/dumps/0042update_set_0.json-nft      |   1 +
+ .../dumps/0043concatenated_ranges_0.json-nft  |   1 +
+ .../dumps/0043concatenated_ranges_1.json-nft  |   1 +
+ .../dumps/0044interval_overlap_1.json-nft     |   1 +
+ .../dumps/0045concat_ipv4_service.json-nft    |   1 +
+ .../sets/dumps/0046netmap_0.json-nft          |   1 +
+ .../sets/dumps/0048set_counters_0.json-nft    |   1 +
+ .../sets/dumps/0049set_define_0.json-nft      |   1 +
+ .../sets/dumps/0050set_define_1.json-nft      |   1 +
+ .../dumps/0051set_interval_counter_0.json-nft |   1 +
+ .../sets/dumps/0052overlap_0.json-nft         |   1 +
+ .../testcases/sets/dumps/0053echo_0.json-nft  |   1 +
+ .../sets/dumps/0054comments_set_0.json-nft    |   1 +
+ .../sets/dumps/0055tcpflags_0.json-nft        |   1 +
+ .../sets/dumps/0056dynamic_limit_0.json-nft   |   1 +
+ .../dumps/0057set_create_fails_0.json-nft     |   1 +
+ .../dumps/0058_setupdate_timeout_0.json-nft   |   1 +
+ .../dumps/0059set_update_multistmt_0.json-nft |   1 +
+ .../sets/dumps/0060set_multistmt_0.json-nft   |   1 +
+ .../sets/dumps/0060set_multistmt_1.json-nft   |   1 +
+ .../dumps/0061anonymous_automerge_0.json-nft  |   1 +
+ .../sets/dumps/0062set_connlimit_0.json-nft   |   1 +
+ .../sets/dumps/0063set_catchall_0.json-nft    |   1 +
+ .../sets/dumps/0064map_catchall_0.json-nft    |   1 +
+ .../dumps/0065_icmp_postprocessing.json-nft   |   1 +
+ .../sets/dumps/0069interval_merge_0.json-nft  |   1 +
+ .../0071unclosed_prefix_interval_0.json-nft   |   1 +
+ .../sets/dumps/0072destroy_0.json-nft         |   1 +
+ .../sets/dumps/0073flat_interval_set.json-nft |   1 +
+ .../dumps/0074nested_interval_set.json-nft    |   1 +
+ .../sets/dumps/collapse_elem_0.json-nft       |   1 +
+ .../sets/dumps/concat_interval_0.json-nft     |   1 +
+ .../sets/dumps/dynset_missing.json-nft        |   1 +
+ .../testcases/sets/dumps/errors_0.json-nft    |   1 +
+ .../sets/dumps/exact_overlap_0.json-nft       |   1 +
+ .../testcases/sets/dumps/inner_0.json-nft     |   1 +
+ .../testcases/sets/dumps/set_eval_0.json-nft  |   1 +
+ .../sets/dumps/type_set_symbol.json-nft       |   1 +
+ .../transactions/dumps/0001table_0.json-nft   |   1 +
+ .../transactions/dumps/0002table_0.json-nft   |   1 +
+ .../transactions/dumps/0003table_0.json-nft   |   1 +
+ .../transactions/dumps/0010chain_0.json-nft   |   1 +
+ .../transactions/dumps/0011chain_0.json-nft   |   1 +
+ .../transactions/dumps/0012chain_0.json-nft   |   1 +
+ .../transactions/dumps/0013chain_0.json-nft   |   1 +
+ .../transactions/dumps/0014chain_1.json-nft   |   1 +
+ .../transactions/dumps/0015chain_0.json-nft   |   1 +
+ .../transactions/dumps/0020rule_0.json-nft    |   1 +
+ .../transactions/dumps/0021rule_0.json-nft    |   1 +
+ .../transactions/dumps/0022rule_1.json-nft    |   1 +
+ .../transactions/dumps/0023rule_1.json-nft    |   1 +
+ .../transactions/dumps/0024rule_0.json-nft    |   1 +
+ .../transactions/dumps/0025rule_0.json-nft    |   1 +
+ .../transactions/dumps/0030set_0.json-nft     |   1 +
+ .../transactions/dumps/0031set_0.json-nft     |   1 +
+ .../transactions/dumps/0032set_0.json-nft     |   1 +
+ .../transactions/dumps/0033set_0.json-nft     |   1 +
+ .../transactions/dumps/0034set_0.json-nft     |   1 +
+ .../transactions/dumps/0035set_0.json-nft     |   1 +
+ .../transactions/dumps/0036set_1.json-nft     |   1 +
+ .../transactions/dumps/0037set_0.json-nft     |   1 +
+ .../transactions/dumps/0038set_0.json-nft     |   1 +
+ .../transactions/dumps/0039set_0.json-nft     |   1 +
+ .../transactions/dumps/0040set_0.json-nft     |   1 +
+ .../dumps/0041nat_restore_0.json-nft          |   1 +
+ .../dumps/0042_stateful_expr_0.json-nft       |   1 +
+ .../transactions/dumps/0043set_1.json-nft     |   1 +
+ .../transactions/dumps/0044rule_0.json-nft    |   1 +
+ .../dumps/0045anon-unbind_0.json-nft          |   1 +
+ .../transactions/dumps/0046set_0.json-nft     |   1 +
+ .../transactions/dumps/0047set_0.json-nft     |   1 +
+ .../transactions/dumps/0048helpers_0.json-nft |   1 +
+ .../transactions/dumps/0049huge_0.json-nft    |   1 +
+ .../transactions/dumps/0050rule_1.json-nft    |   1 +
+ .../transactions/dumps/30s-stress.json-nft    |   1 +
+ .../dumps/anon_chain_loop.json-nft            |   1 +
+ .../dumps/bad_expression.json-nft             |   1 +
+ .../transactions/dumps/table_onoff.json-nft   |   1 +
+ tools/check-tree.sh                           |  63 +++++---
+ 342 files changed, 494 insertions(+), 64 deletions(-)
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_0.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_1.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_2.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_3.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_4.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_5.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_6.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_7.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_8.json-nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_9.json-nft
+ create mode 100644 tests/shell/testcases/bogons/dumps/assert_failures.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0001_cache_handling_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0002_interval_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0003_cache_update_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0004_cache_update_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0005_cache_chain_flush.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0006_cache_table_flush.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0007_echo_cache_init_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0008_delete_by_handle_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0009_delete_by_handle_incorrect_0.json-nft
+ create mode 100644 tests/shell/testcases/cache/dumps/0011_index_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0001jumps_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0002jumps_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0003jump_loop_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0004busy_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0005busy_map_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0006masquerade_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0007masquerade_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0008masquerade_jump_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0009masquerade_jump_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0010endless_jump_loop_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0013rename_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0014rename_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0015check_jump_loop_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0016delete_handle_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0017masquerade_jump_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0018check_jump_loop_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0019masquerade_jump_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0020depth_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0021prio_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0022prio_dummy_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0023prio_inet_srcnat_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0024prio_inet_dstnat_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0025prio_arp_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0026prio_netdev_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0027prio_bridge_dstnat_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0028prio_bridge_out_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0029prio_bridge_srcnat_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0030create_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0031priority_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0032priority_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0033priority_variable_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0034priority_variable_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0035policy_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0036policy_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0037policy_variable_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0038policy_variable_1.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0039negative_priority_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0042chain_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0043chain_ingress_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044chain_destroy_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_autoremove.json-nft
+ create mode 100644 tests/shell/testcases/comments/dumps/comments_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0001flowtable_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0002create_flowtable_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0003add_after_flush_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0004delete_after_add_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0005delete_in_use_1.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0006segfault_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0007prio_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0008prio_1.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0009deleteafterflush_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0010delete_handle_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0011deleteafterflush_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0012flowtable_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0013addafterdelete_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0014addafterdelete_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0015destroy_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0001absolute_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0002relative_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0003includepath_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0004endlessloop_1.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0005glob_empty_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0006glob_single_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0007glob_double_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0008glob_nofile_wildcard_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0009glob_nofile_1.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0010glob_broken_file_1.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0011glob_dependency_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0012glob_dependency_1.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0013glob_dotfile_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0013input_descriptors_included_files_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0014glob_directory_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0015doubleincludepath_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0016maxdepth_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0017glob_more_than_maxdepth_1.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0018include_error_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0019include_error_0.json-nft
+ create mode 100644 tests/shell/testcases/include/dumps/0020include_chain_0.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/0001set_statements_0.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/0002table_map_0.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/0003json_schema_version_0.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/0004json_schema_version_1.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/0005secmark_objref_0.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/0006obj_comment_0.json-nft
+ create mode 100644 tests/shell/testcases/json/dumps/netdev.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0001ruleset_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0002ruleset_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0003table_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0004table_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0005ruleset_ip_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0006ruleset_ip6_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0007ruleset_inet_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0008ruleset_arp_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0009ruleset_bridge_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0010sets_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0011sets_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0012sets_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0014objects_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0015dynamic_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0016anonymous_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0017objects_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0018data_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0019set_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0020flowtable_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0021ruleset_json_terse_0.json-nft
+ create mode 100644 tests/shell/testcases/listing/dumps/0022terse_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0003map_add_many_elements_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0005interval_map_add_many_elements_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0006interval_map_overlap_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0007named_ifname_dtype_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0008interval_map_delete_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0009vmap_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0012map_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0013map_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0014destroy_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0016map_leak_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0017_map_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0018map_leak_timeout_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/anon_objmap_concat.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/different_map_types_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/map_catchall_double_deactivate.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/map_with_flags_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/named_snat_map_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/typeof_maps_add_delete.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/typeof_maps_update_0.json-nft
+ create mode 100644 tests/shell/testcases/netns/dumps/0001nft-f_0.json-nft
+ create mode 100644 tests/shell/testcases/netns/dumps/0002loosecommands_0.json-nft
+ create mode 100644 tests/shell/testcases/netns/dumps/0003many_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0001define_slash_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0002rollback_rule_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0003rollback_jump_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0004rollback_set_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0005rollback_map_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0006action_object_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0007action_object_set_segfault_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0008split_tables_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0009variable_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0010variable_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0013defines_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0014defines_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0015defines_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0016redefines_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0018ct_expectation_obj_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0018jump_variable_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0019jump_variable_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0020jump_variable_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0021list_ruleset_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0022variables_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0023check_1.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0025empty_dynset_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0026listing_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0027split_chains_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0028variable_cmdline_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0029split_file_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0030variable_reuse_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0031vmap_string_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-f/dumps/0032pknock_0.json-nft
+ create mode 100644 tests/shell/testcases/nft-i/dumps/0001define_0.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/dependency_kill.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_nat.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_reject.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_stmts.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_stmts_concat.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_stmts_concat_vmap.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_stmts_vmap.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_vmap_raw.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/merge_vmaps.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/not_mergeable.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/ruleset.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/single_anon_set.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/skip_merge.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/skip_non_eq.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/skip_unsupported.json-nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/variables.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_chain_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_handles_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_objects_dup_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_table_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/delete_object_handles_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/handles_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/handles_1.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/log_prefix_0.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/update_object_handles_0.json-nft
+ create mode 100644 tests/shell/testcases/owner/dumps/0001-flowtable-uaf.json-nft
+ create mode 100644 tests/shell/testcases/parsing/dumps/describe.json-nft
+ create mode 100644 tests/shell/testcases/parsing/dumps/large_rule_pipe.json-nft
+ create mode 100644 tests/shell/testcases/parsing/dumps/log.json-nft
+ create mode 100644 tests/shell/testcases/parsing/dumps/octal.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0001addinsertposition_0.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0002addinsertlocation_1.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0003insert_0.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0004replace_0.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0005replace_1.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0006replace_1.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0007delete_0.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0008delete_1.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0009delete_1.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0010replace_0.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0011reset_0.json-nft
+ create mode 100644 tests/shell/testcases/rule_management/dumps/0012destroy_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0001named_interval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0002named_interval_automerging_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0003named_interval_missing_flag_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0004named_interval_shadow_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0005named_interval_shadow_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0006create_set_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0007create_element_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0008comments_interval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0009comments_timeout_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0010comments_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0012add_delete_many_elements_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0013add_delete_many_elements_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0014malformed_set_is_not_defined_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0015rulesetflush_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0016element_leak_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0017add_after_flush_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0018set_check_size_1.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0019set_check_size_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0020comments_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0021nesting_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0022type_selective_flush_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0023incomplete_add_set_command_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0025anonymous_set_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0026named_limit_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0027ipv6_maps_ipv4_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0028autoselect_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0028delete_handle_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0032restore_set_simple_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0033add_set_simple_flat_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0034get_element_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0035add_set_elements_flat_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0037_set_with_inet_service_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0038meter_list_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0039delete_interval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0040get_host_endian_elements_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0041interval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0042update_set_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0043concatenated_ranges_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0043concatenated_ranges_1.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0044interval_overlap_1.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0045concat_ipv4_service.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0046netmap_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0048set_counters_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0049set_define_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0050set_define_1.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0051set_interval_counter_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0052overlap_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0053echo_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0054comments_set_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0055tcpflags_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0056dynamic_limit_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0057set_create_fails_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0058_setupdate_timeout_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0059set_update_multistmt_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0060set_multistmt_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0060set_multistmt_1.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0061anonymous_automerge_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0062set_connlimit_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0063set_catchall_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0064map_catchall_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0065_icmp_postprocessing.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0069interval_merge_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0071unclosed_prefix_interval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0072destroy_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0073flat_interval_set.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0074nested_interval_set.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/collapse_elem_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/concat_interval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/dynset_missing.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/errors_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/exact_overlap_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/inner_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/set_eval_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/type_set_symbol.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0001table_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0002table_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0003table_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0010chain_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0011chain_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0012chain_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0013chain_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0014chain_1.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0015chain_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0020rule_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0021rule_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0022rule_1.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0023rule_1.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0024rule_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0025rule_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0030set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0031set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0032set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0033set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0034set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0035set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0036set_1.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0037set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0038set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0039set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0040set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0041nat_restore_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0042_stateful_expr_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0043set_1.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0044rule_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0045anon-unbind_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0046set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0047set_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0048helpers_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0049huge_0.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0050rule_1.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/30s-stress.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/anon_chain_loop.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/bad_expression.json-nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/table_onoff.json-nft
 
-thanks,
-Jilayne
-> Thanks,
->
-> Lukas
+-- 
+2.41.0
 
