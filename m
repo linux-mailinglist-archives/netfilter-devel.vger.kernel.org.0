@@ -2,57 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2E77DD655
-	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Oct 2023 19:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90E67DD6A1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Oct 2023 20:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjJaSzx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 31 Oct 2023 14:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        id S233831AbjJaTSb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 31 Oct 2023 15:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbjJaSzw (ORCPT
+        with ESMTP id S231181AbjJaTSa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 31 Oct 2023 14:55:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52AAF4
-        for <netfilter-devel@vger.kernel.org>; Tue, 31 Oct 2023 11:55:10 -0700 (PDT)
+        Tue, 31 Oct 2023 15:18:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55A991
+        for <netfilter-devel@vger.kernel.org>; Tue, 31 Oct 2023 12:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698778510;
+        s=mimecast20190719; t=1698779861;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9kzU3ECYBb8X7Bsk8TK99RpXB/RO04Ked1wo8mW/gOI=;
-        b=LgW6A/DKMQoyD0kk4n6PNYV6D+ewcaxgE1ageAJd/oTvKSTHq2k3hqNQ/OjCgrhVN5YTJ1
-        W/a8LUpRpNAQPFeOQstRst3iW+gv888GAeTU0jM4kaj/3+HtzxZaeUKwFKccbcXJZyCvyn
-        xKZdEKUyaTeKUAiKWKwrQ9VldfT4QN0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=aw6HYI9I8kGenZWRDQuric1pZmmYxkN5SNu/7s7ccLY=;
+        b=DWwrxuvoM1+jjwIdD9sER4CTXoSk99qYyNmaGjcst+BbZaTpMeUBtxCQ2sF6w7dg4wgVZc
+        0MOSxsRbgP6mVa2lbaUh8G8RS8ysTr3Fz0xxp19UI5I9FZEcnchc/BudZw+Y5d9dIaSndR
+        Qj8bvi6d81zKihJbtpSRq0z2zOEfOBo=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-Zptt7n7VP5SwF1hR4-fJ3Q-1; Tue, 31 Oct 2023 14:55:08 -0400
-X-MC-Unique: Zptt7n7VP5SwF1hR4-fJ3Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7FF8185A58C
-        for <netfilter-devel@vger.kernel.org>; Tue, 31 Oct 2023 18:55:08 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9EFCA10F52;
-        Tue, 31 Oct 2023 18:55:07 +0000 (UTC)
+ us-mta-287-DnMyyFeUN32X5WwgBTqCyA-1; Tue, 31 Oct 2023 15:17:28 -0400
+X-MC-Unique: DnMyyFeUN32X5WwgBTqCyA-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5435b614a0cso279866a12.1
+        for <netfilter-devel@vger.kernel.org>; Tue, 31 Oct 2023 12:17:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698779846; x=1699384646;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=aw6HYI9I8kGenZWRDQuric1pZmmYxkN5SNu/7s7ccLY=;
+        b=nbwpp5aCrhtK0wWpsTqhUWIwJV5RVmNjbpoFgLvg8hsR0HYoT4wTuiAfxXPwb7Ybjz
+         9VOeFklfuE87RfS6JzYV984Q1pvCRBt4E+gdRP8/XWnFGImvcKu6eK/jxx5RSRGD4P7j
+         GqFM0bXAZ5dIBwjFKPoTmCMqfeNgbuHqOIoRbR7bNw/V0G3d3qD7mGC7gLQRHtS9tXqs
+         IbZjZU2uLKyMDVl8079VcKyzEs2xXQU8s082KMhQQdqs4kn7JbD420/LxjU/i5etkslA
+         RAktDVS4Y2JD1vWv/MgBkK7xRXWt3Ju3kFa/mCpIv0Kd0qTGGgaZOwrmqvvBHlzPHmDL
+         GWEQ==
+X-Gm-Message-State: AOJu0Yx/Fr+i+30eH/sg2Mi73TCHzWoFgY4kzPN5Wz7oahb8uTage8Ps
+        EH4fokSLeLno2I98u4QxOJnYGVT/QGfx43vFMexqZPOUPKKuiSNgjgVl7Bcdo5U07XzZVfXbOBU
+        r3Zf+BARwhUtKxpxqNtf+kV3tkjQQIPpDomQXMgWi20Mrlc+6PTSJ04PnGyfYNiyQSqVYpRni1q
+        OXRADCxWUb/fI=
+X-Received: by 2002:a17:907:6d02:b0:9c4:4b20:44a5 with SMTP id sa2-20020a1709076d0200b009c44b2044a5mr12322905ejc.4.1698779845868;
+        Tue, 31 Oct 2023 12:17:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE5KMWfoPyG+CLHuCYQ9KIwjAAr6aKB9acEBsZ/d0WSM4sRqPamC50bfhoDY5IAzdtkbvVaEQ==
+X-Received: by 2002:a17:907:6d02:b0:9c4:4b20:44a5 with SMTP id sa2-20020a1709076d0200b009c44b2044a5mr12322888ejc.4.1698779845507;
+        Tue, 31 Oct 2023 12:17:25 -0700 (PDT)
+Received: from [10.0.0.168] ([37.186.169.33])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170906414c00b009a1a653770bsm1410619ejk.87.2023.10.31.12.17.24
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 12:17:25 -0700 (PDT)
+Message-ID: <f9955dba2dba9965ad2a540482cdd66ab674cd83.camel@redhat.com>
+Subject: Re: [PATCH nft 0/7] add and check dump files for JSON in tests/shell
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 7/7] tools: check for consistency of .json-nft dumps in "check-tree.sh"
-Date:   Tue, 31 Oct 2023 19:53:33 +0100
-Message-ID: <20231031185449.1033380-8-thaller@redhat.com>
+Date:   Tue, 31 Oct 2023 20:17:24 +0100
 In-Reply-To: <20231031185449.1033380-1-thaller@redhat.com>
 References: <20231031185449.1033380-1-thaller@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,78 +80,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add checks for the newly introduced .json-nft dump files.
+On Tue, 2023-10-31 at 19:53 +0100, Thomas Haller wrote:
+> Like we have .nft dump files to compare the expected result, add
+> .json-nft files that compare the JSON output.
+>=20
+> Thomas Haller (7):
+> =C2=A0 json: fix use after free in table_flags_json()
+> =C2=A0 json: drop messages "warning: stmt ops chain have no json callback=
+"
+> =C2=A0 tests/shell: check and generate JSON dump files
+> =C2=A0 tests/shell: add JSON dump files
+> =C2=A0 tools: simplify error handling in "check-tree.sh" by adding
+> =C2=A0=C2=A0=C2=A0 msg_err()/msg_warn()
+> =C2=A0 tools: check more strictly for bash shebang in "check-tree.sh"
+> =C2=A0 tools: check for consistency of .json-nft dumps in "check-tree.sh"
 
-Optimally, every test that has a .nft dump should also have a .json-nft
-dump, and vice versa.
+Hm. Patch 4/7 bounced (too large).
 
-However, currently some JSON tests fail to validate, and are missing.
-Only flag those missing files as warning, without failing the script.
-The reason to warn about this, is that we really should fix those tests,
-and having a annoying warning increases the pressure and makes it
-discoverable.
+Will see how to resend, after there is some feedback.
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- tools/check-tree.sh | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+The patch is also here:
+https://gitlab.freedesktop.org/thaller/nftables/-/commit/6545b31080036e8525=
+be5c80c0103a1509e698e4
 
-diff --git a/tools/check-tree.sh b/tools/check-tree.sh
-index 4be874fcd85e..e358c957857e 100755
---- a/tools/check-tree.sh
-+++ b/tools/check-tree.sh
-@@ -41,6 +41,7 @@ check_shell_dumps() {
- 	local base="$(basename "$TEST")"
- 	local dir="$(dirname "$TEST")"
- 	local has_nft=0
-+	local has_jnft=0
- 	local has_nodump=0
- 	local nft_name
- 	local nodump_name
-@@ -51,9 +52,11 @@ check_shell_dumps() {
- 	fi
- 
- 	nft_name="$dir/dumps/$base.nft"
-+	jnft_name="$dir/dumps/$base.json-nft"
- 	nodump_name="$dir/dumps/$base.nodump"
- 
- 	[ -f "$nft_name" ] && has_nft=1
-+	[ -f "$jnft_name" ] && has_jnft=1
- 	[ -f "$nodump_name" ] && has_nodump=1
- 
- 	if [ "$has_nft" != 1 -a "$has_nodump" != 1 ] ; then
-@@ -63,6 +66,22 @@ check_shell_dumps() {
- 	elif [ "$has_nodump" == 1 -a -s "$nodump_name" ] ; then
- 		msg_err "\"$TEST\" has a non-empty \"$dir/dumps/$base.nodump\" file"
- 	fi
-+	if [ "$has_jnft" = 1 -a "$has_nft" != 1 ] ; then
-+		msg_err "\"$TEST\" has a JSON dump file \"$jnft_name\" but lacks a dump \"$nft_name\""
-+	fi
-+	if [ "$has_nft" = 1 -a "$has_jnft" != 1 ] ; then
-+		# it's currently known that `nft -j --check` cannot parse all dumped rulesets.
-+		# Accept having no JSON dump file.
-+		#
-+		# This should be fixed. Currently this is only a warning.
-+		msg_warn "\"$TEST\" has a dump file \"$nft_name\" but lacks a JSON dump \"$jnft_name\""
-+	fi
-+
-+	if [ "$has_jnft" = 1 ] && command -v jq &>/dev/null ; then
-+		if ! jq empty < "$jnft_name" &>/dev/null ; then
-+			msg_err "\"$TEST\" has a JSON dump file \"$jnft_name\" that does not validate with \`jq empty < \"$jnft_name\"\`"
-+		fi
-+	fi
- }
- 
- SHELL_TESTS=( $(find "tests/shell/testcases/" -type f -executable | sort) )
-@@ -91,7 +110,7 @@ fi
- 
- ##############################################################################
- #
--F=( $(find tests/shell/testcases/ -type f | grep '^tests/shell/testcases/[^/]\+/dumps/[^/]\+\.\(nft\|nodump\)$' -v | sort) )
-+F=( $(find tests/shell/testcases/ -type f | grep '^tests/shell/testcases/[^/]\+/dumps/[^/]\+\.\(json-nft\|nft\|nodump\)$' -v | sort) )
- IGNORED_FILES=( tests/shell/testcases/bogons/nft-f/* )
- for f in "${F[@]}" ; do
- 	if ! array_contains "$f" "${SHELL_TESTS[@]}" "${IGNORED_FILES[@]}" ; then
--- 
-2.41.0
+
+Thomas
 
