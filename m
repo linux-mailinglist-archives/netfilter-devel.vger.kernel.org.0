@@ -2,47 +2,35 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90207DF577
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Nov 2023 16:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3202C7DF45A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Nov 2023 14:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjKBPAH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 2 Nov 2023 11:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
+        id S1376664AbjKBNyD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 2 Nov 2023 09:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjKBPAH (ORCPT
+        with ESMTP id S1376635AbjKBNyD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:00:07 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3042D13D
-        for <netfilter-devel@vger.kernel.org>; Thu,  2 Nov 2023 07:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=9mAv6lSO74QuXZKVhYaKGMNwquil773pFWdjDAifr1c=; b=Ia0sLsKFUTlHKeC/io2VDRSsN+
-        xq+849FxAyk0SgJCV/x8Go+PsKHI+HtjW9wcEPPOHyS7ST//5yknSmoGJcmladcqXX/tQJTmdoWx/
-        vzhd1NpkwWoHISOgElk+ZgZfyHei3u+GclVYZWAchVN3nHNpQuREDnF0ATzpXYiUFCgyHFPFd5EyS
-        MYQIZ46WwZE9a/xBZuFTFn7pTtROuDVpS5nsro2m51RCpgKOMf8VPhhxhoRLghSoZAgMA9NuSa86L
-        k8pJpjgFlpVteZ416lwQaL+T77K0eU6EMZemsjvQqz94pt66wwZpPBbJWljpACGCLP4KSEnGMCArk
-        cZ0ZqZEA==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1qyZAr-0004h6-Dv; Thu, 02 Nov 2023 15:59:57 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH] tproxy: Drop artificial port printing restriction
-Date:   Thu,  2 Nov 2023 14:52:58 +0100
-Message-ID: <20231102135258.17214-1-phil@nwl.cc>
+        Thu, 2 Nov 2023 09:54:03 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248A6134
+        for <netfilter-devel@vger.kernel.org>; Thu,  2 Nov 2023 06:54:00 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1qyY90-0007tL-D1; Thu, 02 Nov 2023 14:53:58 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     netfilter-devel <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Brian Davidson <davidson.brian@gmail.com>
+Subject: [PATCH nft] meta: fix hour decoding when timezone offset is negative
+Date:   Thu,  2 Nov 2023 14:53:40 +0100
+Message-ID: <20231102135344.153380-1-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,108 +38,49 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It does not make much sense to omit printing the port expression if it's
-not a value expression: On one hand, input allows for more advanced
-uses. On the other, if it is in-kernel, best nft can do is to try and
-print it no matter what. Just ignoring ruleset elements can't be
-correct.
+Brian Davidson says:
 
-Fixes: 2be1d52644cf7 ("src: Add tproxy support")
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1721
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+ meta hour rules don't display properly after being created when the
+ hour is on or after 00:00 UTC. The netlink debug looks correct for
+ seconds past midnight UTC, but displaying the rules looks like an
+ overflow or a byte order problem. I am in UTC-0400, so today, 20:00
+ and later exhibits the problem, while 19:00 and earlier hours are
+ fine.
+
+meta.c only ever worked when the delta to UTC is positive.
+We need to add in case the second counter turns negative after
+offset adjustment.
+
+Fixes: f8f32deda31d ("meta: Introduce new conditions 'time', 'day' and 'hour'")
+Reported-by: Brian Davidson <davidson.brian@gmail.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/statement.c                |  2 +-
- tests/py/inet/tproxy.t         |  2 ++
- tests/py/inet/tproxy.t.json    | 35 ++++++++++++++++++++++++++++++++++
- tests/py/inet/tproxy.t.payload | 12 ++++++++++++
- 4 files changed, 50 insertions(+), 1 deletion(-)
+ src/meta.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/src/statement.c b/src/statement.c
-index 475611664946a..f5176e6d87f95 100644
---- a/src/statement.c
-+++ b/src/statement.c
-@@ -989,7 +989,7 @@ static void tproxy_stmt_print(const struct stmt *stmt, struct output_ctx *octx)
- 			expr_print(stmt->tproxy.addr, octx);
- 		}
- 	}
--	if (stmt->tproxy.port && stmt->tproxy.port->etype == EXPR_VALUE) {
-+	if (stmt->tproxy.port) {
- 		if (!stmt->tproxy.addr)
- 			nft_print(octx, " ");
- 		nft_print(octx, ":");
-diff --git a/tests/py/inet/tproxy.t b/tests/py/inet/tproxy.t
-index d23bbcb56cdcd..9901df75a91a8 100644
---- a/tests/py/inet/tproxy.t
-+++ b/tests/py/inet/tproxy.t
-@@ -19,3 +19,5 @@ meta l4proto 17 tproxy ip to :50080;ok
- meta l4proto 17 tproxy ip6 to :50080;ok
- meta l4proto 17 tproxy to :50080;ok
- ip daddr 0.0.0.0/0 meta l4proto 6 tproxy ip to :2000;ok
-+
-+meta l4proto 6 tproxy ip to 127.0.0.1:symhash mod 2 map { 0 : 23, 1 : 42 };ok
-diff --git a/tests/py/inet/tproxy.t.json b/tests/py/inet/tproxy.t.json
-index 7b3b11c49205a..71b6fd2f678dd 100644
---- a/tests/py/inet/tproxy.t.json
-+++ b/tests/py/inet/tproxy.t.json
-@@ -183,3 +183,38 @@
-         }
-     }
- ]
-+
-+# meta l4proto 6 tproxy ip to 127.0.0.1:symhash mod 2 map { 0 : 23, 1 : 42 }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "l4proto"
-+                }
-+            },
-+            "op": "==",
-+            "right": 6
-+        }
-+    },
-+    {
-+        "tproxy": {
-+            "addr": "127.0.0.1",
-+            "family": "ip",
-+            "port": {
-+                "map": {
-+                    "data": {
-+                        "set": [
-+                            [ 0, 23 ],
-+                            [ 1, 42 ]
-+                        ]
-+                    },
-+                    "key": {
-+                        "symhash": { "mod": 2 }
-+                    }
-+                }
-+            }
-+        }
-+    }
-+]
-+
-diff --git a/tests/py/inet/tproxy.t.payload b/tests/py/inet/tproxy.t.payload
-index 24bf8f6002f8f..2f41904261144 100644
---- a/tests/py/inet/tproxy.t.payload
-+++ b/tests/py/inet/tproxy.t.payload
-@@ -61,3 +61,15 @@ inet x y
-   [ immediate reg 1 0x0000d007 ]
-   [ tproxy ip port reg 1 ]
+diff --git a/src/meta.c b/src/meta.c
+index b578d5e24c06..7846aefe7f5d 100644
+--- a/src/meta.c
++++ b/src/meta.c
+@@ -495,9 +495,16 @@ static void hour_type_print(const struct expr *expr, struct output_ctx *octx)
  
-+# meta l4proto 6 tproxy ip to 127.0.0.1:symhash mod 2 map { 0 : 23, 1 : 42 }
-+__map%d x b size 2
-+__map%d x 0
-+	element 00000000  : 00001700 0 [end]	element 00000001  : 00002a00 0 [end]
-+inet x y
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ immediate reg 1 0x0100007f ]
-+  [ hash reg 2 = symhash() % mod 2 ]
-+  [ lookup reg 2 set __map%d dreg 2 ]
-+  [ tproxy ip addr reg 1 port reg 2 ]
+ 	/* Obtain current tm, so that we can add tm_gmtoff */
+ 	ts = time(NULL);
+-	if (ts != ((time_t) -1) && localtime_r(&ts, &cur_tm))
+-		seconds = (seconds + cur_tm.tm_gmtoff) % SECONDS_PER_DAY;
++	if (ts != ((time_t) -1) && localtime_r(&ts, &cur_tm)) {
++		int32_t adj = seconds + cur_tm.tm_gmtoff;
+ 
++		if (adj < 0)
++			adj += SECONDS_PER_DAY;
++		else if (adj >= SECONDS_PER_DAY)
++			adj -= SECONDS_PER_DAY;
 +
++		seconds = adj;
++	}
+ 	minutes = seconds / 60;
+ 	seconds %= 60;
+ 	hours = minutes / 60;
 -- 
 2.41.0
 
