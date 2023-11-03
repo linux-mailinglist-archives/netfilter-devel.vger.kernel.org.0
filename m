@@ -2,109 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EB07E010F
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 11:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894A87E00EE
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 11:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbjKCK0a (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Nov 2023 06:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S231526AbjKCKZ7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Nov 2023 06:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjKCK03 (ORCPT
+        with ESMTP id S232511AbjKCKZ6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:26:29 -0400
+        Fri, 3 Nov 2023 06:25:58 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C6013E
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 03:26:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9523D4E;
+        Fri,  3 Nov 2023 03:25:54 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1qyrNd-00056D-UM; Fri, 03 Nov 2023 11:26:21 +0100
+        (envelope-from <fw@strlen.de>)
+        id 1qyrN4-00055B-3O; Fri, 03 Nov 2023 11:25:46 +0100
+Date:   Fri, 3 Nov 2023 11:25:46 +0100
 From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH iptables 4/4] arptables-txlate: add test cases
-Date:   Fri,  3 Nov 2023 11:23:26 +0100
-Message-ID: <20231103102330.27578-5-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231103102330.27578-1-fw@strlen.de>
-References: <20231103102330.27578-1-fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net] netfilter: nf_tables: fix pointer math issue in
+ nft_byteorder_eval()
+Message-ID: <20231103102546.GB8035@breakpoint.cc>
+References: <15fdceb5-2de5-4453-98b3-cfa9d486e8da@moroto.mountain>
+ <20231103091801.GA8035@breakpoint.cc>
+ <ZUTBNcA7ApLu5DMA@calendula>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUTBNcA7ApLu5DMA@calendula>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add test cases for libarpt_mangle and extend the generic
-tests to cover basic arptables matches.
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> On Fri, Nov 03, 2023 at 10:18:01AM +0100, Florian Westphal wrote:
+> > Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> > > The problem is in nft_byteorder_eval() where we are iterating through a
+> > > loop and writing to dst[0], dst[1], dst[2] and so on...  On each
+> > > iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
+> > > element only has space for 4 bytes.  That means that every iteration
+> > > overwrites part of the previous element.
+> > > 
+> > > I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
+> > > nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
+> > > issue.  I think that the reason we have not detected this bug in testing
+> > > is that most of time we only write one element.
+> > 
+> > LGTM, thanks Dan.  We will route this via nf.git.
+> 
+> Thanks for your patch.
+> 
+> One question, is this update really required?
 
-Note that there are several historic artefacts that could be revised.
-For example, arptables-legacy and arptables-nft both ignore "-p"
-instead of returning an error about an unsupported option.
-
-The ptype could be hard-wired to 0x800 and set unconditionally.
-OTOH, this should always match for ethernet arp packets anyway.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- extensions/generic.txlate        | 6 ++++++
- extensions/libarpt_mangle.txlate | 6 ++++++
- xlate-test.py                    | 4 +++-
- 3 files changed, 15 insertions(+), 1 deletion(-)
- create mode 100644 extensions/libarpt_mangle.txlate
-
-diff --git a/extensions/generic.txlate b/extensions/generic.txlate
-index c24ed1568884..b79239f1a063 100644
---- a/extensions/generic.txlate
-+++ b/extensions/generic.txlate
-@@ -1,3 +1,9 @@
-+arptables-translate -A OUTPUT --proto-type ipv4 -s 1.2.3.4 -j ACCEPT
-+nft 'add rule arp filter OUTPUT arp htype 1 arp hlen 6 arp plen 4 arp ptype 0x800 arp saddr ip 1.2.3.4 counter accept'
-+
-+arptables-translate -I OUTPUT -o oifname
-+nft 'insert rule arp filter OUTPUT oifname "oifname" arp htype 1 arp hlen 6 arp plen 4 counter'
-+
- iptables-translate -I OUTPUT -p udp -d 8.8.8.8 -j ACCEPT
- nft 'insert rule ip filter OUTPUT ip protocol udp ip daddr 8.8.8.8 counter accept'
- 
-diff --git a/extensions/libarpt_mangle.txlate b/extensions/libarpt_mangle.txlate
-new file mode 100644
-index 000000000000..e884d3289a76
---- /dev/null
-+++ b/extensions/libarpt_mangle.txlate
-@@ -0,0 +1,6 @@
-+arptables-translate -A OUTPUT -d 10.21.22.129 -j mangle --mangle-ip-s 10.21.22.161
-+nft 'add rule arp filter OUTPUT arp htype 1 arp hlen 6 arp plen 4 arp daddr ip 10.21.22.129 counter arp saddr ip set 10.21.22.161 accept'
-+arptables-translate -A OUTPUT -d 10.2.22.129/24 -j mangle --mangle-ip-d 10.2.22.1 --mangle-target CONTINUE
-+nft 'add rule arp filter OUTPUT arp htype 1 arp hlen 6 arp plen 4 arp daddr ip 10.2.22.0/24 counter arp daddr ip set 10.2.22.1'
-+arptables-translate -A OUTPUT -d 10.2.22.129/24 -j mangle --mangle-ip-d 10.2.22.1 --mangle-mac-d a:b:c:d:e:f
-+nft 'add rule arp filter OUTPUT arp htype 1 arp hlen 6 arp plen 4 arp daddr ip 10.2.22.0/24 counter arp daddr ip set 10.2.22.1 arp daddr ether set 0a:0b:0c:0d:0e:0f accept'
-diff --git a/xlate-test.py b/xlate-test.py
-index 6a1165986847..ddd68b91d3a7 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -14,7 +14,7 @@ def run_proc(args, shell = False, input = None):
-     output, error = process.communicate(input)
-     return (process.returncode, output, error)
- 
--keywords = ("iptables-translate", "ip6tables-translate", "ebtables-translate")
-+keywords = ("iptables-translate", "ip6tables-translate", "arptables-translate", "ebtables-translate")
- xtables_nft_multi = 'xtables-nft-multi'
- 
- if sys.stdout.isatty():
-@@ -95,6 +95,8 @@ def test_one_replay(name, sourceline, expected, result):
-     fam = ""
-     if srccmd.startswith("ip6"):
-         fam = "ip6 "
-+    elif srccmd.startswith("arp"):
-+        fam = "arp "
-     elif srccmd.startswith("ebt"):
-         fam = "bridge "
- 
--- 
-2.41.0
-
+I think so, yes.  Part of this bug here is that this helper-niceness
+masks whats really happening in the caller (advancing in strides of
+'u32', rather than 'u64').
