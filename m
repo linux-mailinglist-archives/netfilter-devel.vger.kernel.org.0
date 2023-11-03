@@ -2,59 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D81AF7E06F7
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 17:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3775F7E0711
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 17:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjKCQrI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Nov 2023 12:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        id S234355AbjKCQzp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Nov 2023 12:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbjKCQrI (ORCPT
+        with ESMTP id S230144AbjKCQzp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:47:08 -0400
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEA3FB
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 09:47:04 -0700 (PDT)
-Received: from [78.30.35.151] (port=35928 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qyxK0-00FuHp-F8; Fri, 03 Nov 2023 17:47:02 +0100
-Date:   Fri, 3 Nov 2023 17:46:59 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Thomas Haller <thaller@redhat.com>
-Cc:     NetFilter <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft v3 2/2] json: drop warning on stderr for missing
- json() hook in stmt_print_json()
-Message-ID: <ZUUkA43oAM7XO7LU@calendula>
-References: <20231103162937.3352069-1-thaller@redhat.com>
- <20231103162937.3352069-3-thaller@redhat.com>
+        Fri, 3 Nov 2023 12:55:45 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AEBD47
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 09:55:41 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1qyxSO-0007EX-3l; Fri, 03 Nov 2023 17:55:40 +0100
+Date:   Fri, 3 Nov 2023 17:55:40 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH iptables 1/4] arptables-nft: use ARPT_INV flags
+ consistently
+Message-ID: <ZUUmDCXkVtssSuKc@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20231103102330.27578-1-fw@strlen.de>
+ <20231103102330.27578-2-fw@strlen.de>
+ <ZUUYMEGTRN2OFBwn@orbyte.nwl.cc>
+ <20231103160129.GD8035@breakpoint.cc>
+ <ZUUdXyKzjKzIYae/@orbyte.nwl.cc>
+ <20231103163519.GE8035@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103162937.3352069-3-thaller@redhat.com>
-X-Spam-Score: -1.8 (-)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231103163519.GE8035@breakpoint.cc>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 05:25:14PM +0100, Thomas Haller wrote:
-> diff --git a/src/statement.c b/src/statement.c
-> index f5176e6d87f9..d52b01b9099a 100644
-> --- a/src/statement.c
-> +++ b/src/statement.c
-> @@ -141,6 +141,7 @@ static const struct stmt_ops chain_stmt_ops = {
->  	.type		= STMT_CHAIN,
->  	.name		= "chain",
->  	.print		= chain_stmt_print,
-> +	.json		= NULL, /* BUG: must be implemented! */
+On Fri, Nov 03, 2023 at 05:35:19PM +0100, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > Indeed, I broke the checks for ARPT_INV_ARPHLN in there. That needs a
+> > fix either way.
+> > 
+> > The ARPT_INV_* defines are part of UAPI. They can't be removed without
+> > breaking (or also converting?) legacy arptables.
+> 
+> Its just a cached header.
 
-This is a bit starting the house from the roof.
+Ah, you mean dropping them locally just to prevent reuse. Yeah, why not.
 
-Better fix this first, so this ugly patch does not need to be applied.
+> > Either way, we're
+> > breaking third-party arptables DSOs using them. Right now, they are only
+> > broken with arptables-nft. No idea if such DSOs exist, but if
+> > compatibility is to be taken seriously, there's no way around reverting
+> > above commit (and reintroducing do_commandarp() or at least a wrapper
+> > around the shared do_parse()).
+> 
+> arptables-legacy doesn't support runtime extension loading.
+
+Ah, that's great news!
+
+> I'll post a patch to convert libarpt_mangle.c.
+
+Cool, thanks!
