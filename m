@@ -2,49 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368AB7E0822
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 19:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D528D7E0821
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 19:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbjKCSaI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Nov 2023 14:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
+        id S234105AbjKCSaH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Nov 2023 14:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbjKCSaH (ORCPT
+        with ESMTP id S234064AbjKCSaH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 3 Nov 2023 14:30:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91539DB
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 11:29:19 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8136D49
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 11:29:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699036158;
+        s=mimecast20190719; t=1699036160;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ae7jZslnIZWSMwz8fG8821b9hauoGOxH+m7tyDnTXIA=;
-        b=ZivUX0nTgNqE/F/zr2lFG25y7paga6F1d4/ERt3cfPitBDDFoCrfUcZyvmgMZUGXzeCNVv
-        4GMU+Kk7IdyqAmcDRe+QvbmhHRNepjN+Cb+AB1HH4AXl7XevF8rfdTCDZGHdlBATTjxehe
-        +O35nAkCrZGn59mPGxLog3V9ephhhbw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-363-rs6L-u92P5e4Sh0gXFya6w-1; Fri,
- 03 Nov 2023 14:29:17 -0400
-X-MC-Unique: rs6L-u92P5e4Sh0gXFya6w-1
+        bh=Uk3MP8KC5ctslCRICFZOCB7Eyvh8tNywvNsWm34ye+I=;
+        b=N48WcyFOmgxBcHkiKXK3u7ml+zsCTq832x7W89StujKmj0O1GjitibEPYswnKR2FPtxQ8O
+        U/L8LdbFtNE6+PKLOomiXtws0EijUcZ2lQg1uq6iIhswNRW2Z4IC+OQWn0XPk5n7Fu8mpy
+        GzmulaHWB2tBDOOw6bw6IOymOUSyTw4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28-dkNUEUXUO2-WxKe449KswA-1; Fri, 03 Nov 2023 14:29:18 -0400
+X-MC-Unique: dkNUEUXUO2-WxKe449KswA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F8B43C025C1
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EAB8885A58B
         for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 18:29:17 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A45E92166B27;
-        Fri,  3 Nov 2023 18:29:16 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6AFE32166B2C;
+        Fri,  3 Nov 2023 18:29:17 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v2 4/6] tools: simplify error handling in "check-tree.sh" by adding msg_err()/msg_warn()
-Date:   Fri,  3 Nov 2023 19:26:01 +0100
-Message-ID: <20231103182901.3795263-5-thaller@redhat.com>
+Subject: [PATCH nft v2 5/6] tools: check more strictly for bash shebang in "check-tree.sh"
+Date:   Fri,  3 Nov 2023 19:26:02 +0100
+Message-ID: <20231103182901.3795263-6-thaller@redhat.com>
 In-Reply-To: <20231103182901.3795263-1-thaller@redhat.com>
 References: <20231103182901.3795263-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -52,7 +52,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,108 +61,40 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-msg_err() also sets EXIT_CODE=, so we don't have to duplicate this.
+There is no principle problem to allow any executable/shebang. However,
+it also not clear why we would want to use anything except bash.  Unless
+we have a good reason, check and reject anything else.
 
-Also add msg_warn() to print non-fatal warnings. Will be used in the
-future. As "check-tree.sh" tests the consistency of the source tree, a
-warning only makes sense to point something out that really should be
-fixed, but is not yet.
+Also not that `./tests/shell/run-tests.sh -x` only works if the shebang
+is either "#!/bin/bash" or "#!/bin/bash -e". It probably could also work
+with other tests, but it's unclear what they are and how to enable
+verbose mode in that case.
+
+Just check that they are all bash scripts. If there is a use-case, we
+can always adjust this check.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- tools/check-tree.sh | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ tools/check-tree.sh | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/tools/check-tree.sh b/tools/check-tree.sh
-index e3ddf8bdea58..b16d37c4651b 100755
+index b16d37c4651b..4be874fcd85e 100755
 --- a/tools/check-tree.sh
 +++ b/tools/check-tree.sh
-@@ -25,6 +25,15 @@ cd "$(dirname "$0")/.."
- 
- EXIT_CODE=0
- 
-+msg_err() {
-+	printf "ERR:  %s\n" "$*"
-+	EXIT_CODE=1
-+}
-+
-+msg_warn() {
-+	printf "WARN: %s\n" "$*"
-+}
-+
- ##############################################################################
- 
- check_shell_dumps() {
-@@ -37,8 +46,7 @@ check_shell_dumps() {
- 	local nodump_name
- 
- 	if [ ! -d "$dir/dumps/" ] ; then
--		echo "\"$TEST\" has no \"$dir/dumps/\" directory"
--		EXIT_CODE=1
-+		msg_err "\"$TEST\" has no \"$dir/dumps/\" directory"
- 		return 0
- 	fi
- 
-@@ -49,34 +57,31 @@ check_shell_dumps() {
- 	[ -f "$nodump_name" ] && has_nodump=1
- 
- 	if [ "$has_nft" != 1 -a "$has_nodump" != 1 ] ; then
--		echo "\"$TEST\" has no \"$dir/dumps/$base.{nft,nodump}\" file"
--		EXIT_CODE=1
-+		msg_err "\"$TEST\" has no \"$dir/dumps/$base.{nft,nodump}\" file"
- 	elif [ "$has_nft" == 1 -a "$has_nodump" == 1 ] ; then
--		echo "\"$TEST\" has both \"$dir/dumps/$base.{nft,nodump}\" files"
--		EXIT_CODE=1
-+		msg_err "\"$TEST\" has both \"$dir/dumps/$base.{nft,nodump}\" files"
- 	elif [ "$has_nodump" == 1 -a -s "$nodump_name" ] ; then
--		echo "\"$TEST\" has a non-empty \"$dir/dumps/$base.nodump\" file"
--		EXIT_CODE=1
-+		msg_err "\"$TEST\" has a non-empty \"$dir/dumps/$base.nodump\" file"
- 	fi
- }
- 
- SHELL_TESTS=( $(find "tests/shell/testcases/" -type f -executable | sort) )
- 
- if [ "${#SHELL_TESTS[@]}" -eq 0 ] ; then
--	echo "No executable tests under \"tests/shell/testcases/\" found"
--	EXIT_CODE=1
-+	msg_err "No executable tests under \"tests/shell/testcases/\" found"
+@@ -72,8 +72,13 @@ if [ "${#SHELL_TESTS[@]}" -eq 0 ] ; then
  fi
  for t in "${SHELL_TESTS[@]}" ; do
  	check_shell_dumps "$t"
--	head -n 1 "$t" |grep -q  '^#!/bin/sh' && echo "$t uses sh instead of bash" && EXIT_CODE=1
-+	if head -n 1 "$t" |grep -q  '^#!/bin/sh' ; then
-+		msg_err "$t uses #!/bin/sh instead of /bin/bash"
-+	fi
- done
- 
- ##############################################################################
- 
- SHELL_TESTS2=( $(./tests/shell/run-tests.sh --list-tests) )
- if [ "${SHELL_TESTS[*]}" != "${SHELL_TESTS2[*]}" ] ; then
--	echo "\`./tests/shell/run-tests.sh --list-tests\` does not list the expected tests"
--	EXIT_CODE=1
-+	msg_err "\`./tests/shell/run-tests.sh --list-tests\` does not list the expected tests"
- fi
- 
- ##############################################################################
-@@ -85,8 +90,7 @@ F=( $(find tests/shell/testcases/ -type f | grep '^tests/shell/testcases/[^/]\+/
- IGNORED_FILES=( tests/shell/testcases/bogons/nft-f/* )
- for f in "${F[@]}" ; do
- 	if ! array_contains "$f" "${SHELL_TESTS[@]}" "${IGNORED_FILES[@]}" ; then
--		echo "Unexpected file \"$f\""
--		EXIT_CODE=1
-+		msg_err "Unexpected file \"$f\""
- 	fi
- done
- 
-@@ -97,8 +101,7 @@ FILES=( $(find "tests/shell/testcases/" -type f | sed -n 's#\(tests/shell/testca
- for f in "${FILES[@]}" ; do
- 	f2="$(echo "$f" | sed -n 's#\(tests/shell/testcases\(/.*\)\?/\)dumps/\(.*\)\.\(nft\|nodump\)$#\1\3#p')"
- 	if ! array_contains "$f2" "${SHELL_TESTS[@]}" ; then
--		echo "\"$f\" has no test \"$f2\""
--		EXIT_CODE=1
-+		msg_err "\"$f\" has no test \"$f2\""
+-	if head -n 1 "$t" |grep -q  '^#!/bin/sh' ; then
+-		msg_err "$t uses #!/bin/sh instead of /bin/bash"
++	if ! ( head -n 1 "$t" | grep -q '^#!/bin/bash\( -e\)\?$' ) ; then
++		# Currently all tests only use bash as shebang. That also
++		# works with `./tests/shell/run-tests.sh -x`.
++		#
++		# We could allow other shebangs, but for now there is no need.
++		# Unless you have a good reason, create a bash script.
++		msg_err "$t should use either \"#!/bin/bash\" or \"#!/bin/bash -e\" as shebang"
  	fi
  done
  
