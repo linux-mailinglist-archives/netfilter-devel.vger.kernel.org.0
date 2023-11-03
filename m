@@ -2,49 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D648D7E0695
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 17:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764057E0698
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 17:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344868AbjKCQah (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Nov 2023 12:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
+        id S229845AbjKCQau (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Nov 2023 12:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344250AbjKCQag (ORCPT
+        with ESMTP id S234355AbjKCQat (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:30:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39170E3
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 09:29:52 -0700 (PDT)
+        Fri, 3 Nov 2023 12:30:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F1E111
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 09:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699028991;
+        s=mimecast20190719; t=1699028996;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nG+ld1dyaWrlNFwkQaHYrw2B8lQM9CBwJEd+0Juk9Uc=;
-        b=LkPtRDsZrzJbLwWWiUu1E2wV7aPhLLiKmLUd8VVJ61qKksDRsSBJWhsKLWAyBHWAmNGqI+
-        VSz6RZPyPalOxebYIkvImdFNGktZ1LUc/oK0SCFwsc3abvIN6G7Az4XVmfHWfpbRAn5d/M
-        j7GM0PIDW1Wd2MCpFFqOZ+JcK+/Wevc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-544-Ud2sr2T-NDqNGGcZKnFO1g-1; Fri,
- 03 Nov 2023 12:29:49 -0400
-X-MC-Unique: Ud2sr2T-NDqNGGcZKnFO1g-1
+        bh=Ik6t5Xv3KDPzihc7eITeVx9G68hx/T1C0bg7zuRs3cw=;
+        b=eiZiX3FyjFxNNKFip6mXoPR4tnav8JOx3M2dcWdU7DrFmbFRLP2RKtPyyJkz59yJVZIMSQ
+        hOqAL7bJMcp4QUWTFzda2kfoqhINi95IUs5mydbydP8BajwAEFYNBlY1GStW05dKMqiEtj
+        AmzQfZ1Cwzq7JJ6nemUTiIN1kbrg1io=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-ibLTQAF2N4GLNHWsUFjcvg-1; Fri, 03 Nov 2023 12:29:50 -0400
+X-MC-Unique: ibLTQAF2N4GLNHWsUFjcvg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 35C5D1C0754C
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0DE28110A7
         for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 16:29:49 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A932C2166B2C;
-        Fri,  3 Nov 2023 16:29:48 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 714222166B26;
+        Fri,  3 Nov 2023 16:29:49 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v3 1/2] json: drop handling missing json() hook in expr_print_json()
-Date:   Fri,  3 Nov 2023 17:25:13 +0100
-Message-ID: <20231103162937.3352069-2-thaller@redhat.com>
+Subject: [PATCH nft v3 2/2] json: drop warning on stderr for missing json() hook in stmt_print_json()
+Date:   Fri,  3 Nov 2023 17:25:14 +0100
+Message-ID: <20231103162937.3352069-3-thaller@redhat.com>
 In-Reply-To: <20231103162937.3352069-1-thaller@redhat.com>
 References: <20231103162937.3352069-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -52,7 +52,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,94 +61,66 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There are only two "struct expr_ops" that don't have a json() hook set
-("symbol_expr_ops", "variable_exrp_ops"). For those, we never expect to
-call expr_print_json().
+All "struct stmt_ops" really must have a json hook set, to handle the
+statement. And almost all of them do, except "struct chain_stmt_ops".
 
-All other "struct expr_ops" must have a hook set. Soon a unit test shall
-be added to also ensure that for all expr_ops (except EXPR_SYMBOL and
-EXPR_VARIABLE).
+Soon a unit test will be added, to check that all stmt_ops have a json()
+hook. Also, the missing hook in "struct chain_stmt_ops" is a bug, that
+is now understood and shall be fixed soon/later.
 
-It thus should not be possible to ever call expr_print_json() with a
-NULL hook. Drop the code that tries to handle that.
+Note that we can already hit the bug, if we would call `nft -j list
+ruleset` at the end of test "tests/shell/testcases/nft-f/sample-ruleset":
 
-The previous code was essentially a graceful assertion, which only
-prints a message to stderr (instead of assert()/abort()) and implemented
-a fallback solution. The fallback solution is not really useful, because
-it's just the bison string which cannot be parsed back.
+    warning: stmt ops chain have no json callback
 
-This seems too much effort trying to handle a potential bug, for
-something that we most likely will not be wrong (once the unit test is
-in place). Drop the fallback solution and just require the bug not to be
-present. We now get a hard crash if the requirement is violated.
+Soon tests will be added, that hit this condition. Printing a message to
+stderr breaks those tests, and blocks adding the tests.
 
-Also add code comments hinting to all of this.
+Drop this warning on stderr, so we can add those other tests sooner, as
+those tests are useful for testing JSON code in general. The warning
+stderr was useful for finding the problem, but the problem is now
+understood and will be addressed separately. Drop the message to unblock
+adding those tests.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- src/expression.c |  2 ++
- src/json.c       | 28 ++++++++--------------------
- 2 files changed, 10 insertions(+), 20 deletions(-)
+ src/json.c      | 10 ++++++++--
+ src/statement.c |  1 +
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/src/expression.c b/src/expression.c
-index a21dfec25722..53fa630e099c 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -321,6 +321,7 @@ static const struct expr_ops symbol_expr_ops = {
- 	.type		= EXPR_SYMBOL,
- 	.name		= "symbol",
- 	.print		= symbol_expr_print,
-+	.json		= NULL, /* expr_print_json() must never be called. */
- 	.clone		= symbol_expr_clone,
- 	.destroy	= symbol_expr_destroy,
- };
-@@ -362,6 +363,7 @@ static const struct expr_ops variable_expr_ops = {
- 	.type		= EXPR_VARIABLE,
- 	.name		= "variable",
- 	.print		= variable_expr_print,
-+	.json		= NULL, /* expr_print_json() must never be called. */
- 	.clone		= variable_expr_clone,
- 	.destroy	= variable_expr_destroy,
- };
 diff --git a/src/json.c b/src/json.c
-index 068c423addc7..25e349155394 100644
+index 25e349155394..8fff401dfb3e 100644
 --- a/src/json.c
 +++ b/src/json.c
-@@ -44,26 +44,14 @@
+@@ -83,8 +83,14 @@ static json_t *stmt_print_json(const struct stmt *stmt, struct output_ctx *octx)
+ 	if (stmt->ops->json)
+ 		return stmt->ops->json(stmt, octx);
  
- static json_t *expr_print_json(const struct expr *expr, struct output_ctx *octx)
- {
--	const struct expr_ops *ops;
--	char buf[1024];
--	FILE *fp;
--
--	ops = expr_ops(expr);
--	if (ops->json)
--		return ops->json(expr, octx);
--
--	fprintf(stderr, "warning: expr ops %s have no json callback\n",
--		expr_name(expr));
--
--	fp = octx->output_fp;
--	octx->output_fp = fmemopen(buf, 1024, "w");
--
--	ops->print(expr, octx);
--
--	fclose(octx->output_fp);
--	octx->output_fp = fp;
--
--	return json_pack("s", buf);
-+	/* The json() hooks of "symbol_expr_ops" and "variable_expr_ops" are
-+	 * known to be NULL, but for such expressions we never expect to call
-+	 * expr_print_json().
+-	fprintf(stderr, "warning: stmt ops %s have no json callback\n",
+-		stmt->ops->name);
++	/* In general, all "struct stmt_ops" must implement json() hook. Otherwise
++	 * we have a bug, and a unit test should check that all ops are correct.
 +	 *
-+	 * All other expr_ops must have a json() hook.
++	 * Currently, "chain_stmt_ops.json" is known to be NULL. That is a bug that
++	 * needs fixing.
 +	 *
-+	 * Unconditionally access the hook (and segfault in case of a bug).  */
-+	return expr_ops(expr)->json(expr, octx);
- }
++	 * After the bug is fixed, and the unit test in place, this fallback code
++	 * can be dropped. */
  
- static json_t *set_dtype_json(const struct expr *key)
+ 	fp = octx->output_fp;
+ 	octx->output_fp = fmemopen(buf, 1024, "w");
+diff --git a/src/statement.c b/src/statement.c
+index f5176e6d87f9..d52b01b9099a 100644
+--- a/src/statement.c
++++ b/src/statement.c
+@@ -141,6 +141,7 @@ static const struct stmt_ops chain_stmt_ops = {
+ 	.type		= STMT_CHAIN,
+ 	.name		= "chain",
+ 	.print		= chain_stmt_print,
++	.json		= NULL, /* BUG: must be implemented! */
+ 	.destroy	= chain_stmt_destroy,
+ };
+ 
 -- 
 2.41.0
 
