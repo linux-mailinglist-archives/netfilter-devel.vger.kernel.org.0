@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AB57E01F7
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 12:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE57E7E01ED
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 12:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjKCLMN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Nov 2023 07:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33720 "EHLO
+        id S229596AbjKCLM5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Nov 2023 07:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjKCLMN (ORCPT
+        with ESMTP id S229960AbjKCLM4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:12:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B5518B
+        Fri, 3 Nov 2023 07:12:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE8FD45
         for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 04:11:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1699009878;
@@ -21,30 +21,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=96anuPFrO5gsM8CHmLpFB1X3aSARSwSEMh7SFENNt/w=;
-        b=EDV7JeVHl8CEPf3/jyfAJ3CUHfwZa8aXPl2CeZGG0BLNc30zspAgrcrFGY3D9VrL1kdwFo
-        TqLHtzn7MI2wZBZHMl554ei4BHYCZ/pFeCRGRnk6RTbEkD8INd7/wjxxnvd9yUe6SciBll
-        EFrZ6qCVPtz4+5hXgpgy3cvVPMeuz5k=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-595-XxOot2TtNpKSdOE6bErrFQ-1; Fri,
- 03 Nov 2023 07:11:16 -0400
-X-MC-Unique: XxOot2TtNpKSdOE6bErrFQ-1
+        bh=Y5xzeJhwOzNKjeNrUnon6so8UZY4mXOb669i/F3TTVg=;
+        b=MAYq4ZY8XWDM9NuQEYcGbrCFpJdUHYTJNHPLUb/1UCG7iXkixOOrcUCqAh79APxCddcmsi
+        51MQzq4oQGkjH6225YjOYvdIeDLke7cW/FshuMFzDlsWYm3pXCgWojZzXeYU5o/IvGRZjN
+        UmRjoOSLj+pykZzGQ6KhZR8x4PDT2oQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-Xc27GE_wMR6aTViEo3RcQQ-1; Fri, 03 Nov 2023 07:11:17 -0400
+X-MC-Unique: Xc27GE_wMR6aTViEo3RcQQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8344B1C05132
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 11:11:16 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4BBD8811E7B
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 11:11:17 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 038741C060BA;
-        Fri,  3 Nov 2023 11:11:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFD111C060BA;
+        Fri,  3 Nov 2023 11:11:16 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 4/6] build: add check for consistency of source tree
-Date:   Fri,  3 Nov 2023 12:05:46 +0100
-Message-ID: <20231103111102.2801624-5-thaller@redhat.com>
+Subject: [PATCH nft 5/6] build: cleanup if blocks for conditional compilation
+Date:   Fri,  3 Nov 2023 12:05:47 +0100
+Message-ID: <20231103111102.2801624-6-thaller@redhat.com>
 In-Reply-To: <20231103111102.2801624-1-thaller@redhat.com>
 References: <20231103111102.2801624-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -52,7 +52,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,40 +61,79 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The script "tools/check-tree.sh" performs some consistency checks of the
-source tree. Call it from a make target "check-tree".
+`configure` sets those $(*_LIBS) variables to something empty, if the
+dependency is not available. It's cumbersome and unnecessary to
+explicitly checking.
+
+Also, the order in which libraries are specified on the command line
+matters. Commonly we want our own libraries first (src/libminigmp.la
+should come pretty early). That is cumbersome to get right otherwise.
+
+Also, as "xt.c" is always built, just directly add it to the list of
+source files.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- Makefile.am | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Makefile.am | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index f39d6cdd0ca3..94c40fc3c6a2 100644
+index 94c40fc3c6a2..f06fab8e3b9f 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -408,6 +408,7 @@ EXTRA_DIST += \
- EXTRA_DIST += \
- 	files \
- 	tests \
-+	tools \
+@@ -195,6 +195,12 @@ src_libminigmp_la_CFLAGS = \
+ 	-Wno-sign-compare \
  	$(NULL)
  
- pkgconfigdir = $(libdir)/pkgconfig
-@@ -429,6 +430,13 @@ check_more += check-tests-build
++LIBMINIGMP_LIBS = src/libminigmp.la
++
++else
++
++LIBMINIGMP_LIBS =
++
+ endif
  
  ###############################################################################
+@@ -247,10 +253,9 @@ src_libnftables_la_SOURCES = \
+ 	src/tcpopt.c \
+ 	src/utils.c \
+ 	src/xfrm.c \
++	src/xt.c \
+ 	$(NULL)
  
-+check-tree:
-+	"$(srcdir)/tools/check-tree.sh"
-+
-+check_local += check-tree
-+
-+###############################################################################
-+
- check-local: build-all $(check_local)
+-src_libnftables_la_SOURCES += src/xt.c
+-
+ if BUILD_JSON
+ src_libnftables_la_SOURCES += \
+ 	src/json.c \
+@@ -264,23 +269,14 @@ src_libnftables_la_LDFLAGS = \
+ 	$(NULL)
  
- .PHONY: check-local $(check_local)
+ src_libnftables_la_LIBADD = \
++	src/libparser.la \
++	$(LIBMINIGMP_LIBS) \
+ 	$(LIBMNL_LIBS) \
+ 	$(LIBNFTNL_LIBS) \
+-	src/libparser.la \
++	$(XTABLES_LIBS) \
++	$(JANSSON_LIBS) \
+ 	$(NULL)
+ 
+-if BUILD_MINIGMP
+-src_libnftables_la_LIBADD += src/libminigmp.la
+-endif
+-
+-if BUILD_XTABLES
+-src_libnftables_la_LIBADD += $(XTABLES_LIBS)
+-endif
+-
+-if BUILD_JSON
+-src_libnftables_la_LIBADD += $(JANSSON_LIBS)
+-endif
+-
+ ###############################################################################
+ 
+ sbin_PROGRAMS += src/nft
 -- 
 2.41.0
 
