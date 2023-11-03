@@ -2,74 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4967E063D
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 17:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9967E0699
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Nov 2023 17:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344453AbjKCQSo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Nov 2023 12:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43172 "EHLO
+        id S234376AbjKCQao (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Nov 2023 12:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343808AbjKCQSo (ORCPT
+        with ESMTP id S229845AbjKCQan (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:18:44 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F105111
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 09:18:41 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qywsZ-0006XA-9a; Fri, 03 Nov 2023 17:18:39 +0100
-Date:   Fri, 3 Nov 2023 17:18:39 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH iptables 1/4] arptables-nft: use ARPT_INV flags
- consistently
-Message-ID: <ZUUdXyKzjKzIYae/@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-References: <20231103102330.27578-1-fw@strlen.de>
- <20231103102330.27578-2-fw@strlen.de>
- <ZUUYMEGTRN2OFBwn@orbyte.nwl.cc>
- <20231103160129.GD8035@breakpoint.cc>
+        Fri, 3 Nov 2023 12:30:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21746CA
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 09:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699028993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wSu0CtxYXVyl9ihDQTo7CABd+d3NWJtHWLMWnRCO4E0=;
+        b=E2BdawBwVA4v1DcCH9SXxaTudXlw9GuzlBzABubonIFmFnsi/3ZnOGiB66mrw3YkXSCq9v
+        mgl5lUYA7Y3evdCpassZ7rHJ4Q928hPeTKGDXlO7l3oTu/GaVcGBHxYlcOeqKU8RymdaUa
+        oEQFrnDWgwAvZR6OVmxUBHx4c/3RW84=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-376-IHS7aIXcM7i_-T6SWnoiZw-1; Fri,
+ 03 Nov 2023 12:29:48 -0400
+X-MC-Unique: IHS7aIXcM7i_-T6SWnoiZw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6CC161C02D5D
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Nov 2023 16:29:48 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.193.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E11EA2166B26;
+        Fri,  3 Nov 2023 16:29:47 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft v3 0/2] drop warning messages from stmt_print_json()/expr_print_json()
+Date:   Fri,  3 Nov 2023 17:25:12 +0100
+Message-ID: <20231103162937.3352069-1-thaller@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103160129.GD8035@breakpoint.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 05:01:29PM +0100, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > Hmm. This is a partial revert of 44457c0805905 ("xtables-arp: Don't use
-> > ARPT_INV_*") and therefore very likely incomplete - e.g. it does not
-> > reinstate ipt_to_arpt_flags() which was used in nft_arp_parse_meta().
-> > 
-> > Above commit introduced IPT_INV_SRCDEVADDR in the first place, iptables
-> > does not make use of it.
-> > 
-> > A revert of that commit requires a thorough review of later changes in
-> > arptables code as it may have allowed for some code-sharing which is no
-> > longer possible then. So please hold back with this a bit, I'll check if
-> > any follow-ups are required.
-> 
-> Well, in that case it might be better to convert libarpt_mangle.c
-> AND remove all of the ARTP_INV?
+The second patch "json: drop warning on stderr for missing json() hook
+in stmt_print_json()" is important to add .json-nft tests from
 
-Indeed, I broke the checks for ARPT_INV_ARPHLN in there. That needs a
-fix either way.
+  Subject:    [PATCH nft 0/7] add and check dump files for JSON in tests/shell
+  Date:   Tue, 31 Oct 2023 19:53:26 +0100
 
-The ARPT_INV_* defines are part of UAPI. They can't be removed without
-breaking (or also converting?) legacy arptables. Either way, we're
-breaking third-party arptables DSOs using them. Right now, they are only
-broken with arptables-nft. No idea if such DSOs exist, but if
-compatibility is to be taken seriously, there's no way around reverting
-above commit (and reintroducing do_commandarp() or at least a wrapper
-around the shared do_parse()).
+(while fixing the bug in stmt_print_json()/chain_stmt_ops.json might take longer).
 
-Cheers, Phil
+This replaces v1:
+
+  Subject:  [PATCH nft 2/7] json: drop messages "warning: stmt ops chain have no json callback"
+  Date: Tue, 31 Oct 2023 19:53:28 +0100
+
+and v2:
+
+  Subject:  [PATCH nft 1/2] json: implement json() hook for "symbol_expr_ops"/"variabl_expr_ops"
+  Subject:  [PATCH nft 2/2] json: drop handling missing json() hook for "struct expr_ops"
+  Date:   Thu,  2 Nov 2023 12:20:28 +0100
+
+Thomas Haller (2):
+  json: drop handling missing json() hook in expr_print_json()
+  json: drop warning on stderr for missing json() hook in
+    stmt_print_json()
+
+ src/expression.c |  2 ++
+ src/json.c       | 38 ++++++++++++++++----------------------
+ src/statement.c  |  1 +
+ 3 files changed, 19 insertions(+), 22 deletions(-)
+
+-- 
+2.41.0
+
