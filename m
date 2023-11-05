@@ -2,49 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA307E140A
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Nov 2023 16:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDC67E1408
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Nov 2023 16:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjKEPLC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 5 Nov 2023 10:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
+        id S229608AbjKEPLA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Nov 2023 10:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbjKEPK7 (ORCPT
+        with ESMTP id S229437AbjKEPK7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 5 Nov 2023 10:10:59 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E6CE1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8388AE0
         for <netfilter-devel@vger.kernel.org>; Sun,  5 Nov 2023 07:10:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699197012;
+        s=mimecast20190719; t=1699197011;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pFdaC3e0mGs/f1xtc58o2gIDTFWj/uB7Jz6U47uRiDY=;
-        b=K0/0NTe3OVo17FDTTXnkMY6IrzIzFJc9wvTZgGzM5siRQBu7m3azIYD2NZQozu2fJIUx9n
-        r7Rw5TBGI25Df3dSnZkPBc+2JPE7hOTCe2cLoCDp+/U/pvYi/ZTwIEXCMPf2eAWBdb75GP
-        thfpVaHwhyk1Fl8KgNEAuVOD/ul1m/M=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-214-oldow4ndNEeoh0QNJzV52g-1; Sun,
- 05 Nov 2023 10:10:09 -0500
-X-MC-Unique: oldow4ndNEeoh0QNJzV52g-1
+        bh=r3l4cEuqonwaqle7GSVCXUcT0l7OaIqlkKBKMwFJ3yM=;
+        b=D/nZ4/9aG587+DoHGuTRw+7B7S7o32RBe5vCfwu/dpiA7hGLnagAKTAp2bkv9Q+t7P7ce1
+        9MPS0nF/NgiqBWRziN5lgq0r8ASu76TeMbu62xhdhWXORfudWVoVYi1/pRXgch+8fjSWtN
+        m7NbPeRL2fIq6fVQzmkzjA7lcuAJX+g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-580-uSnDo0_yPTi6Kv6OVtIOKA-1; Sun, 05 Nov 2023 10:10:10 -0500
+X-MC-Unique: uSnDo0_yPTi6Kv6OVtIOKA-1
 Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 140B629ABA11
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D2C6B85A58B
         for <netfilter-devel@vger.kernel.org>; Sun,  5 Nov 2023 15:10:09 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.193.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 851FF492BFA;
-        Sun,  5 Nov 2023 15:10:08 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 50768492BFA;
+        Sun,  5 Nov 2023 15:10:09 +0000 (UTC)
 From:   Thomas Haller <thaller@redhat.com>
 To:     NetFilter <netfilter-devel@vger.kernel.org>
 Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v2 3/5] build: add `make check-tree` to check consistency of source tree
-Date:   Sun,  5 Nov 2023 16:08:39 +0100
-Message-ID: <20231105150955.349966-4-thaller@redhat.com>
+Subject: [PATCH nft v2 4/5] build: cleanup if-blocks for conditional compilation in "Makefile.am"
+Date:   Sun,  5 Nov 2023 16:08:40 +0100
+Message-ID: <20231105150955.349966-5-thaller@redhat.com>
 In-Reply-To: <20231105150955.349966-1-thaller@redhat.com>
 References: <20231105150955.349966-1-thaller@redhat.com>
 MIME-Version: 1.0
@@ -61,43 +61,83 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The script "tools/check-tree.sh" performs some consistency checks of the
-source tree. Call it from a make target "check-tree".
+`configure` sets those $(*_LIBS) variables to something empty, when the
+dependency is not available. It's cumbersome and unnecessary to
+explicitly check.
 
-Note that `make check-tree` is hooked into `make check-local`, which in
-turn is hooked into `make check` and `make distcheck`.
+Also, the order in which libraries are specified on the command line
+matters. Commonly we want our own libraries first ("src/libminigmp.la"
+should come pretty early). That is cumbersome to get right otherwise.
+
+Thus, remove those conditional checks and just refer to those $(*_LIBS)
+variables unconditionally. Rely on them being empty, when the dependency
+is disabled.
+
+Also, as "src/xt.c" is always built, just directly add it to the list of
+source files.
 
 Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- Makefile.am | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Makefile.am | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 6a0b04641afc..48d138636d2f 100644
+index 48d138636d2f..396bf3fa2c22 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -408,6 +408,7 @@ EXTRA_DIST += \
- EXTRA_DIST += \
- 	files \
- 	tests \
-+	tools \
+@@ -195,6 +195,12 @@ src_libminigmp_la_CFLAGS = \
+ 	-Wno-sign-compare \
  	$(NULL)
  
- pkgconfigdir = $(libdir)/pkgconfig
-@@ -421,6 +422,13 @@ build-all: all $(check_PROGRAMS) $(check_LTLIBRARIES)
++LIBMINIGMP_LIBS = src/libminigmp.la
++
++else
++
++LIBMINIGMP_LIBS =
++
+ endif
  
  ###############################################################################
+@@ -247,10 +253,9 @@ src_libnftables_la_SOURCES = \
+ 	src/tcpopt.c \
+ 	src/utils.c \
+ 	src/xfrm.c \
++	src/xt.c \
+ 	$(NULL)
  
-+check-tree:
-+	"$(srcdir)/tools/check-tree.sh"
-+
-+check_local += check-tree
-+
-+###############################################################################
-+
- check-build: build-all
- 	cd "$(srcdir)/tests/build/" ; \
- 	CC="$(CC)" CFLAGS='-Werror' ./run-tests.sh
+-src_libnftables_la_SOURCES += src/xt.c
+-
+ if BUILD_JSON
+ src_libnftables_la_SOURCES += \
+ 	src/json.c \
+@@ -264,23 +269,14 @@ src_libnftables_la_LDFLAGS = \
+ 	$(NULL)
+ 
+ src_libnftables_la_LIBADD = \
++	src/libparser.la \
++	$(LIBMINIGMP_LIBS) \
+ 	$(LIBMNL_LIBS) \
+ 	$(LIBNFTNL_LIBS) \
+-	src/libparser.la \
++	$(XTABLES_LIBS) \
++	$(JANSSON_LIBS) \
+ 	$(NULL)
+ 
+-if BUILD_MINIGMP
+-src_libnftables_la_LIBADD += src/libminigmp.la
+-endif
+-
+-if BUILD_XTABLES
+-src_libnftables_la_LIBADD += $(XTABLES_LIBS)
+-endif
+-
+-if BUILD_JSON
+-src_libnftables_la_LIBADD += $(JANSSON_LIBS)
+-endif
+-
+ ###############################################################################
+ 
+ sbin_PROGRAMS += src/nft
 -- 
 2.41.0
 
