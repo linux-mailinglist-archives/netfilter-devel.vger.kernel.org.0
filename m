@@ -2,49 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2317E1E1A
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Nov 2023 11:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D892D7E2014
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Nov 2023 12:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjKFKQx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Nov 2023 05:16:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S231414AbjKFLe5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Nov 2023 06:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjKFKQw (ORCPT
+        with ESMTP id S230018AbjKFLe4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Nov 2023 05:16:52 -0500
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A0CDB
-        for <netfilter-devel@vger.kernel.org>; Mon,  6 Nov 2023 02:16:49 -0800 (PST)
-Received: from [78.30.35.151] (port=55868 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qzwey-00ERnW-HM
-        for netfilter-devel@vger.kernel.org; Mon, 06 Nov 2023 11:16:46 +0100
-Date:   Mon, 6 Nov 2023 11:16:43 +0100
+        Mon, 6 Nov 2023 06:34:56 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E04EDB3
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 Nov 2023 03:34:53 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf,v3] netfilter: nf_tables: remove catchall element in
- GC sync path
-Message-ID: <ZUi9C6oJlsKSPaks@calendula>
-References: <20231106101345.11694-1-pablo@netfilter.org>
+Subject: [PATCH nf,v4] netfilter: nf_tables: remove catchall element in GC sync path
+Date:   Mon,  6 Nov 2023 12:34:47 +0100
+Message-Id: <20231106113447.14290-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231106101345.11694-1-pablo@netfilter.org>
-X-Spam-Score: -1.9 (-)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 11:13:45AM +0100, Pablo Neira Ayuso wrote:
-> The expired catchall element is not removed from GC sync path. This path
-> holds mutex so just call nft_setelem_catchall_remove() before queueing
-> the GC work.
+The expired catchall element is not deactivated and removed from GC sync
+path. This path holds mutex so just call nft_setelem_data_deactivate()
+and nft_setelem_catchall_remove() before queueing the GC work.
 
-Scratch this too, this is not correct.
+Fixes: 4a9e12ea7e70 ("netfilter: nft_set_pipapo: call nft_trans_gc_queue_sync() in catchall GC")
+Reported-by: lonial con <kongln9170@gmail.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v4: deactivate and remove after gc batch is successfully allocated.
+
+ net/netfilter/nf_tables_api.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 3c1fd8283bf4..1cfca9cdc315 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6520,6 +6520,12 @@ static int nft_setelem_deactivate(const struct net *net,
+ 	return ret;
+ }
+ 
++static void nft_setelem_catchall_destroy(struct nft_set_elem_catchall *catchall)
++{
++	list_del_rcu(&catchall->list);
++	kfree_rcu(catchall, rcu);
++}
++
+ static void nft_setelem_catchall_remove(const struct net *net,
+ 					const struct nft_set *set,
+ 					struct nft_elem_priv *elem_priv)
+@@ -6528,8 +6534,7 @@ static void nft_setelem_catchall_remove(const struct net *net,
+ 
+ 	list_for_each_entry_safe(catchall, next, &set->catchall_list, list) {
+ 		if (catchall->elem == elem_priv) {
+-			list_del_rcu(&catchall->list);
+-			kfree_rcu(catchall, rcu);
++			nft_setelem_catchall_destroy(catchall);
+ 			break;
+ 		}
+ 	}
+@@ -9678,11 +9683,12 @@ static struct nft_trans_gc *nft_trans_gc_catchall(struct nft_trans_gc *gc,
+ 						  unsigned int gc_seq,
+ 						  bool sync)
+ {
+-	struct nft_set_elem_catchall *catchall;
++	struct nft_set_elem_catchall *catchall, *next;
+ 	const struct nft_set *set = gc->set;
++	struct nft_elem_priv *elem_priv;
+ 	struct nft_set_ext *ext;
+ 
+-	list_for_each_entry_rcu(catchall, &set->catchall_list, list) {
++	list_for_each_entry_safe(catchall, next, &set->catchall_list, list) {
+ 		ext = nft_set_elem_ext(set, catchall->elem);
+ 
+ 		if (!nft_set_elem_expired(ext))
+@@ -9700,7 +9706,13 @@ static struct nft_trans_gc *nft_trans_gc_catchall(struct nft_trans_gc *gc,
+ 		if (!gc)
+ 			return NULL;
+ 
+-		nft_trans_gc_elem_add(gc, catchall->elem);
++		elem_priv = catchall->elem;
++		if (sync) {
++			nft_setelem_data_deactivate(gc->net, gc->set, elem_priv);
++			nft_setelem_catchall_destroy(catchall);
++		}
++
++		nft_trans_gc_elem_add(gc, elem_priv);
+ 	}
+ 
+ 	return gc;
+-- 
+2.30.2
+
