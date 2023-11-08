@@ -2,121 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55D07E5AAD
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Nov 2023 16:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F857E5D20
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Nov 2023 19:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbjKHP6Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 8 Nov 2023 10:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
+        id S231277AbjKHSX1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Nov 2023 13:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbjKHP6N (ORCPT
+        with ESMTP id S230086AbjKHSX1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:58:13 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7AF021FDB;
-        Wed,  8 Nov 2023 07:58:11 -0800 (PST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com, edumazet@google.com, fw@strlen.de,
-        kadlec@netfilter.org
-Subject: [PATCH net 5/5] netfilter: nat: fix ipv6 nat redirect with mapped and scoped addresses
-Date:   Wed,  8 Nov 2023 16:58:02 +0100
-Message-Id: <20231108155802.84617-6-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231108155802.84617-1-pablo@netfilter.org>
-References: <20231108155802.84617-1-pablo@netfilter.org>
+        Wed, 8 Nov 2023 13:23:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A664C1FF5
+        for <netfilter-devel@vger.kernel.org>; Wed,  8 Nov 2023 10:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699467762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Jl3YWsyrlx5FOpPULAn/ttNJ0D3HgSlALeY4e6AjDhE=;
+        b=GMO8GsEFZI62e4mu2u041IPB4nRf93u3FdyJsq8zdqQSd9ySsHSumFI1fw8STKK2D6hcPN
+        SZ7i3U8SDwcS0pyE73cU7Ioxxy1JotwsO2xy4hFys/tjEsZcHYjV2apkbJHxC/l+s9bpwK
+        N5JCL7urp4MAvT0nTBnpL6f5+cYelY4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-220-ZYPYzGTlNKu1cSLBZvQQ3A-1; Wed,
+ 08 Nov 2023 13:22:41 -0500
+X-MC-Unique: ZYPYzGTlNKu1cSLBZvQQ3A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 55F8628211AC
+        for <netfilter-devel@vger.kernel.org>; Wed,  8 Nov 2023 18:22:41 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.193.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C9B3A40C6EB9;
+        Wed,  8 Nov 2023 18:22:40 +0000 (UTC)
+From:   Thomas Haller <thaller@redhat.com>
+To:     NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Thomas Haller <thaller@redhat.com>
+Subject: [PATCH nft] netlink: fix buffer size for user data in netlink_delinearize_chain()
+Date:   Wed,  8 Nov 2023 19:22:20 +0100
+Message-ID: <20231108182230.3999140-1-thaller@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+The correct define is NFTNL_UDATA_CHAIN_MAX and not NFTNL_UDATA_OBJ_MAX.
+In current libnftnl, they both are defined as 1, so (with current libnftnl)
+there is no difference.
 
-The ipv6 redirect target was derived from the ipv4 one, i.e. its
-identical to a 'dnat' with the first (primary) address assigned to the
-network interface.  The code has been moved around to make it usable
-from nf_tables too, but its still the same as it was back when this
-was added in 2012.
-
-IPv6, however, has different types of addresses, if the 'wrong' address
-comes first the redirection does not work.
-
-In Daniels case, the addresses are:
-  inet6 ::ffff:192 ...
-  inet6 2a01: ...
-
-... so the function attempts to redirect to the mapped address.
-
-Add more checks before the address is deemed correct:
-1. If the packets' daddr is scoped, search for a scoped address too
-2. skip tentative addresses
-3. skip mapped addresses
-
-Use the first address that appears to match our needs.
-
-Reported-by: Daniel Huhardeaux <tech@tootai.net>
-Closes: https://lore.kernel.org/netfilter/71be06b8-6aa0-4cf9-9e0b-e2839b01b22f@tootai.net/
-Fixes: 115e23ac78f8 ("netfilter: ip6tables: add REDIRECT target")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 702ac2b72c0e ('src: add comment support for chains')
+Signed-off-by: Thomas Haller <thaller@redhat.com>
 ---
- net/netfilter/nf_nat_redirect.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ src/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_nat_redirect.c b/net/netfilter/nf_nat_redirect.c
-index 6616ba5d0b04..5b37487d9d11 100644
---- a/net/netfilter/nf_nat_redirect.c
-+++ b/net/netfilter/nf_nat_redirect.c
-@@ -80,6 +80,26 @@ EXPORT_SYMBOL_GPL(nf_nat_redirect_ipv4);
- 
- static const struct in6_addr loopback_addr = IN6ADDR_LOOPBACK_INIT;
- 
-+static bool nf_nat_redirect_ipv6_usable(const struct inet6_ifaddr *ifa, unsigned int scope)
-+{
-+	unsigned int ifa_addr_type = ipv6_addr_type(&ifa->addr);
-+
-+	if (ifa_addr_type & IPV6_ADDR_MAPPED)
-+		return false;
-+
-+	if ((ifa->flags & IFA_F_TENTATIVE) && (!(ifa->flags & IFA_F_OPTIMISTIC)))
-+		return false;
-+
-+	if (scope) {
-+		unsigned int ifa_scope = ifa_addr_type & IPV6_ADDR_SCOPE_MASK;
-+
-+		if (!(scope & ifa_scope))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- unsigned int
- nf_nat_redirect_ipv6(struct sk_buff *skb, const struct nf_nat_range2 *range,
- 		     unsigned int hooknum)
-@@ -89,14 +109,19 @@ nf_nat_redirect_ipv6(struct sk_buff *skb, const struct nf_nat_range2 *range,
- 	if (hooknum == NF_INET_LOCAL_OUT) {
- 		newdst.in6 = loopback_addr;
- 	} else {
-+		unsigned int scope = ipv6_addr_scope(&ipv6_hdr(skb)->daddr);
- 		struct inet6_dev *idev;
--		struct inet6_ifaddr *ifa;
- 		bool addr = false;
- 
- 		idev = __in6_dev_get(skb->dev);
- 		if (idev != NULL) {
-+			const struct inet6_ifaddr *ifa;
-+
- 			read_lock_bh(&idev->lock);
- 			list_for_each_entry(ifa, &idev->addr_list, if_list) {
-+				if (!nf_nat_redirect_ipv6_usable(ifa, scope))
-+					continue;
-+
- 				newdst.in6 = ifa->addr;
- 				addr = true;
- 				break;
+diff --git a/src/netlink.c b/src/netlink.c
+index 2876ebad5a78..1d18280bb8c1 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -614,7 +614,7 @@ static int qsort_device_cmp(const void *a, const void *b)
+ struct chain *netlink_delinearize_chain(struct netlink_ctx *ctx,
+ 					const struct nftnl_chain *nlc)
+ {
+-	const struct nftnl_udata *ud[NFTNL_UDATA_OBJ_MAX + 1] = {};
++	const struct nftnl_udata *ud[NFTNL_UDATA_CHAIN_MAX + 1] = {};
+ 	int priority, policy, len = 0, i;
+ 	const char * const *dev_array;
+ 	struct chain *chain;
 -- 
-2.30.2
+2.41.0
 
