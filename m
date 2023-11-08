@@ -2,67 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCE17E4F7E
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Nov 2023 04:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE2C7E5273
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Nov 2023 10:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjKHDbi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Nov 2023 22:31:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        id S235460AbjKHJNS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Nov 2023 04:13:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjKHDbi (ORCPT
+        with ESMTP id S235408AbjKHJNR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Nov 2023 22:31:38 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CDC10C9
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Nov 2023 19:31:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=rmv9j8JfORrsDRCOQDCuhIFBMAvzY7yUl8x8tv5OkxU=; b=OuwaBMGfdlb9JVDnlE4uARVAQu
-        10HcdG0gEELvUJ1t4CneAwgFFrDhVu2fZnisYggPdF0M+ud5m0O2tCUKJLBVDpylQ0WhtAPo9PEeb
-        07i13j5K/BkGpAvfr4hnO+ZtvoJylPLBBESRQC1P8IQhpi9Sat8LLcoi/SjpiPH76mU2htzFfBmNl
-        9Tlnn3bPgJYoM4LgGr9LW5GcNjDO5KobBsu28+TPEnkuMHy4+on1HFZrc5UcA1pwLS0Y3gP8rz4To
-        T3Hdg0o5xIpRjqciLhtPN5FG1gL+1PfT3cgTjGvVsjyaDbSrw2kMSyiY5rl8xagtNKu4q3EYhCOte
-        iI1BdOfA==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1r0ZHy-0002N9-FQ; Wed, 08 Nov 2023 04:31:34 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/3] extensions: libarpt_standard.t: Add a rule with builtin option masks
-Date:   Wed,  8 Nov 2023 04:31:30 +0100
-Message-ID: <20231108033130.18747-3-phil@nwl.cc>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231108033130.18747-1-phil@nwl.cc>
+        Wed, 8 Nov 2023 04:13:17 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEF19F
+        for <netfilter-devel@vger.kernel.org>; Wed,  8 Nov 2023 01:13:15 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1r0eca-00054e-MF; Wed, 08 Nov 2023 10:13:12 +0100
+Date:   Wed, 8 Nov 2023 10:13:12 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH 1/3] arptables: Fix formatting of numeric
+ --h-type output
+Message-ID: <20231108091312.GB5721@breakpoint.cc>
 References: <20231108033130.18747-1-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108033130.18747-1-phil@nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Just some random values in hope this starts failing if masks support
-changes or breaks.
+Phil Sutter <phil@nwl.cc> wrote:
+> Arptables expects numeric arguments to --h-type option in hexadecimal
+> form, even if no '0x'-prefix is present. In contrast, it prints such
+> values in decimal. This is not just inconsistent, but makes it
+> impossible to save and later restore a ruleset without fixing up the
+> values in between.
+> 
+> Assuming that the parser side can't be changed for compatibility
+> reasons, fix the output side instead.
+> 
+> This is a day 1 bug and present in legacy arptables as well, so treat
+> this as a "feature" of arptables-nft and omit a Fixes: tag.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- extensions/libarpt_standard.t | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/extensions/libarpt_standard.t b/extensions/libarpt_standard.t
-index b9a3560660372..153540903f786 100644
---- a/extensions/libarpt_standard.t
-+++ b/extensions/libarpt_standard.t
-@@ -20,3 +20,4 @@
- --proto-type 10/10;--proto-type 0xa/0xa;OK
- --proto-type 0x10;=;OK
- --proto-type 0x10/0x10;=;OK
-+--h-length 6/15 --opcode 1/235 --h-type 0x8/0xcf --proto-type 0x800/0xde00;=;OK
--- 
-2.41.0
-
+Acked-by: Florian Westphal <fw@strlen.de>
