@@ -2,121 +2,128 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD6A7E5619
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Nov 2023 13:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E117E5AA9
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Nov 2023 16:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344588AbjKHMTH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 8 Nov 2023 07:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        id S229558AbjKHP6O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Nov 2023 10:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344296AbjKHMTF (ORCPT
+        with ESMTP id S232257AbjKHP6N (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:19:05 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C821BD7
-        for <netfilter-devel@vger.kernel.org>; Wed,  8 Nov 2023 04:19:03 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1r0hWP-0006p0-BJ; Wed, 08 Nov 2023 13:19:01 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Daniel Huhardeaux <tech@tootai.net>
-Subject: [PATCH nf] netfilter: nat: fix ipv6 nat redirect with mapped and scoped addresses
-Date:   Wed,  8 Nov 2023 13:18:53 +0100
-Message-ID: <20231108121856.23809-1-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
+        Wed, 8 Nov 2023 10:58:13 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E2031BC3;
+        Wed,  8 Nov 2023 07:58:09 -0800 (PST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com, fw@strlen.de,
+        kadlec@netfilter.org
+Subject: [PATCH net 0/5] Netfilter fixes for net
+Date:   Wed,  8 Nov 2023 16:57:57 +0100
+Message-Id: <20231108155802.84617-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The ipv6 redirect target was derived from the ipv4 one, i.e. its
-identical to a 'dnat' with the first (primary) address assigned to the
-network interface.  The code has been moved around to make it usable
-from nf_tables too, but its still the same as it was back when this
-was added in 2012.
+Hi,
 
-IPv6, however, has different types of addresses, if the 'wrong' address
-comes first the redirection does not work.
+The following patchset contains Netfilter fixes for net:
 
-In Daniels case, the addresses are:
-  inet6 ::ffff:192 ...
-  inet6 2a01: ...
+1) Add missing netfilter modules description to fix W=1, from Florian Westphal.
 
-... so the function attempts to redirect to the mapped address.
+2) Fix catch-all element GC with timeout when use with the pipapo set
+   backend, this remained broken since I tried to fix it this summer,
+   then another attempt to fix it recently.
 
-Add more checks before the address is deemed correct:
-1. If the packets' daddr is scoped, search for a scoped address too
-2. skip tentative addresses
-3. skip mapped addresses
+3) Add missing IPVS modules descriptions to fix W=1, also from Florian.
 
-Use the first address that appears to match our needs.
+4) xt_recent allocated a too small buffer to store an IPv4-mapped IPv6
+   address which can be parsed by in6_pton(), from Maciej Zenczykowski.
+   Broken for many releases.
 
-Reported-by: Daniel Huhardeaux <tech@tootai.net>
-Closes: https://lore.kernel.org/netfilter/71be06b8-6aa0-4cf9-9e0b-e2839b01b22f@tootai.net/
-Fixes: 115e23ac78f8 ("netfilter: ip6tables: add REDIRECT target")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- This bug is very old, we could also route this fix via nf-next
- if you think its too intrusive.
+5) Skip IPv4-mapped IPv6, IPv4-compat IPv6, site/link local scoped IPv6
+   addressses to set up IPv6 NAT redirect, also from Florian. This is
+   broken since 2012.
 
- net/netfilter/nf_nat_redirect.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+Please, pull these changes from:
 
-diff --git a/net/netfilter/nf_nat_redirect.c b/net/netfilter/nf_nat_redirect.c
-index 6616ba5d0b04..5b37487d9d11 100644
---- a/net/netfilter/nf_nat_redirect.c
-+++ b/net/netfilter/nf_nat_redirect.c
-@@ -80,6 +80,26 @@ EXPORT_SYMBOL_GPL(nf_nat_redirect_ipv4);
- 
- static const struct in6_addr loopback_addr = IN6ADDR_LOOPBACK_INIT;
- 
-+static bool nf_nat_redirect_ipv6_usable(const struct inet6_ifaddr *ifa, unsigned int scope)
-+{
-+	unsigned int ifa_addr_type = ipv6_addr_type(&ifa->addr);
-+
-+	if (ifa_addr_type & IPV6_ADDR_MAPPED)
-+		return false;
-+
-+	if ((ifa->flags & IFA_F_TENTATIVE) && (!(ifa->flags & IFA_F_OPTIMISTIC)))
-+		return false;
-+
-+	if (scope) {
-+		unsigned int ifa_scope = ifa_addr_type & IPV6_ADDR_SCOPE_MASK;
-+
-+		if (!(scope & ifa_scope))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- unsigned int
- nf_nat_redirect_ipv6(struct sk_buff *skb, const struct nf_nat_range2 *range,
- 		     unsigned int hooknum)
-@@ -89,14 +109,19 @@ nf_nat_redirect_ipv6(struct sk_buff *skb, const struct nf_nat_range2 *range,
- 	if (hooknum == NF_INET_LOCAL_OUT) {
- 		newdst.in6 = loopback_addr;
- 	} else {
-+		unsigned int scope = ipv6_addr_scope(&ipv6_hdr(skb)->daddr);
- 		struct inet6_dev *idev;
--		struct inet6_ifaddr *ifa;
- 		bool addr = false;
- 
- 		idev = __in6_dev_get(skb->dev);
- 		if (idev != NULL) {
-+			const struct inet6_ifaddr *ifa;
-+
- 			read_lock_bh(&idev->lock);
- 			list_for_each_entry(ifa, &idev->addr_list, if_list) {
-+				if (!nf_nat_redirect_ipv6_usable(ifa, scope))
-+					continue;
-+
- 				newdst.in6 = ifa->addr;
- 				addr = true;
- 				break;
--- 
-2.41.0
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-23-11-08
 
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit d93f9528573e1d419b69ca5ff4130201d05f6b90:
+
+  nfsd: regenerate user space parsers after ynl-gen changes (2023-11-06 09:03:46 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-23-11-08
+
+for you to fetch changes up to 80abbe8a8263106fe45a4f293b92b5c74cc9cc8a:
+
+  netfilter: nat: fix ipv6 nat redirect with mapped and scoped addresses (2023-11-08 16:40:30 +0100)
+
+----------------------------------------------------------------
+netfilter pull request 23-11-08
+
+----------------------------------------------------------------
+Florian Westphal (3):
+      netfilter: add missing module descriptions
+      ipvs: add missing module descriptions
+      netfilter: nat: fix ipv6 nat redirect with mapped and scoped addresses
+
+Maciej Żenczykowski (1):
+      netfilter: xt_recent: fix (increase) ipv6 literal buffer length
+
+Pablo Neira Ayuso (1):
+      netfilter: nf_tables: remove catchall element in GC sync path
+
+ net/bridge/netfilter/ebtable_broute.c      |  1 +
+ net/bridge/netfilter/ebtable_filter.c      |  1 +
+ net/bridge/netfilter/ebtable_nat.c         |  1 +
+ net/bridge/netfilter/ebtables.c            |  1 +
+ net/bridge/netfilter/nf_conntrack_bridge.c |  1 +
+ net/ipv4/netfilter/iptable_nat.c           |  1 +
+ net/ipv4/netfilter/iptable_raw.c           |  1 +
+ net/ipv4/netfilter/nf_defrag_ipv4.c        |  1 +
+ net/ipv4/netfilter/nf_reject_ipv4.c        |  1 +
+ net/ipv6/netfilter/ip6table_nat.c          |  1 +
+ net/ipv6/netfilter/ip6table_raw.c          |  1 +
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c  |  1 +
+ net/ipv6/netfilter/nf_reject_ipv6.c        |  1 +
+ net/netfilter/ipvs/ip_vs_core.c            |  1 +
+ net/netfilter/ipvs/ip_vs_dh.c              |  1 +
+ net/netfilter/ipvs/ip_vs_fo.c              |  1 +
+ net/netfilter/ipvs/ip_vs_ftp.c             |  1 +
+ net/netfilter/ipvs/ip_vs_lblc.c            |  1 +
+ net/netfilter/ipvs/ip_vs_lblcr.c           |  1 +
+ net/netfilter/ipvs/ip_vs_lc.c              |  1 +
+ net/netfilter/ipvs/ip_vs_nq.c              |  1 +
+ net/netfilter/ipvs/ip_vs_ovf.c             |  1 +
+ net/netfilter/ipvs/ip_vs_pe_sip.c          |  1 +
+ net/netfilter/ipvs/ip_vs_rr.c              |  1 +
+ net/netfilter/ipvs/ip_vs_sed.c             |  1 +
+ net/netfilter/ipvs/ip_vs_sh.c              |  1 +
+ net/netfilter/ipvs/ip_vs_twos.c            |  1 +
+ net/netfilter/ipvs/ip_vs_wlc.c             |  1 +
+ net/netfilter/ipvs/ip_vs_wrr.c             |  1 +
+ net/netfilter/nf_conntrack_broadcast.c     |  1 +
+ net/netfilter/nf_conntrack_netlink.c       |  1 +
+ net/netfilter/nf_conntrack_proto.c         |  1 +
+ net/netfilter/nf_nat_core.c                |  1 +
+ net/netfilter/nf_nat_redirect.c            | 27 ++++++++++++++++++++++++++-
+ net/netfilter/nf_tables_api.c              | 23 ++++++++++++++++++-----
+ net/netfilter/nfnetlink_osf.c              |  1 +
+ net/netfilter/nft_chain_nat.c              |  1 +
+ net/netfilter/nft_fib.c                    |  1 +
+ net/netfilter/nft_fwd_netdev.c             |  1 +
+ net/netfilter/xt_recent.c                  |  2 +-
+ 40 files changed, 82 insertions(+), 7 deletions(-)
