@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247847E6E91
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Nov 2023 17:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6437E6E95
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Nov 2023 17:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343826AbjKIQXP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Nov 2023 11:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
+        id S1343803AbjKIQXQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Nov 2023 11:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKIQXO (ORCPT
+        with ESMTP id S1343567AbjKIQXO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 9 Nov 2023 11:23:14 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0806327D
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Nov 2023 08:23:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B1A235A9
+        for <netfilter-devel@vger.kernel.org>; Thu,  9 Nov 2023 08:23:12 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     thaller@redhat.com, fw@strlen.de
-Subject: [PATCH nft 05/12] tests: shell: skip NAT netmap tests if kernel lacks support
-Date:   Thu,  9 Nov 2023 17:22:57 +0100
-Message-Id: <20231109162304.119506-6-pablo@netfilter.org>
+Subject: [PATCH nft 06/12] tests: shell: skip comment tests if kernel lacks support
+Date:   Thu,  9 Nov 2023 17:22:58 +0100
+Message-Id: <20231109162304.119506-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231109162304.119506-1-pablo@netfilter.org>
 References: <20231109162304.119506-1-pablo@netfilter.org>
@@ -30,41 +30,96 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Skip tests that require NAT netmap support
+Skip tests that require comment support
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tests/shell/features/netmap.nft         | 8 ++++++++
- tests/shell/testcases/sets/0046netmap_0 | 2 ++
- 2 files changed, 10 insertions(+)
- create mode 100644 tests/shell/features/netmap.nft
+ tests/shell/features/comment.sh                    | 11 +++++++++++
+ tests/shell/testcases/json/0006obj_comment_0       |  1 +
+ tests/shell/testcases/optionals/comments_chain_0   |  2 ++
+ tests/shell/testcases/optionals/comments_objects_0 |  2 ++
+ tests/shell/testcases/optionals/comments_table_0   |  2 ++
+ tests/shell/testcases/sets/0020comments_0          |  2 ++
+ 6 files changed, 20 insertions(+)
+ create mode 100755 tests/shell/features/comment.sh
 
-diff --git a/tests/shell/features/netmap.nft b/tests/shell/features/netmap.nft
-new file mode 100644
-index 000000000000..129ee243e2eb
+diff --git a/tests/shell/features/comment.sh b/tests/shell/features/comment.sh
+new file mode 100755
+index 000000000000..516cf5e183ad
 --- /dev/null
-+++ b/tests/shell/features/netmap.nft
-@@ -0,0 +1,8 @@
-+# 3ff7ddb1353d ("netfilter: nft_nat: add netmap support")
-+# v5.7-rc2-635-g3ff7ddb1353d
-+table ip x {
-+        chain y {
-+              type nat hook postrouting priority srcnat; policy accept;
-+              snat ip prefix to ip saddr map { 10.141.11.0/24 : 192.168.2.0/24 }
-+        }
-+}
-diff --git a/tests/shell/testcases/sets/0046netmap_0 b/tests/shell/testcases/sets/0046netmap_0
-index 60bda4017c59..7533623e7f7b 100755
---- a/tests/shell/testcases/sets/0046netmap_0
-+++ b/tests/shell/testcases/sets/0046netmap_0
++++ b/tests/shell/features/comment.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++
++EXPECTED="table ip x {
++	chain y {
++		comment \"test\"
++	}
++}"
++
++$NFT -f - <<< $EXPECTED
++
++$DIFF -u <($NFT list ruleset) - <<<"$EXPECTED"
+diff --git a/tests/shell/testcases/json/0006obj_comment_0 b/tests/shell/testcases/json/0006obj_comment_0
+index 4c2a0e8c0880..7ce859d2529f 100755
+--- a/tests/shell/testcases/json/0006obj_comment_0
++++ b/tests/shell/testcases/json/0006obj_comment_0
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+ 
+ # NFT_TEST_REQUIRES(NFT_TEST_HAVE_json)
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_comment)
+ 
+ set -e
+ 
+diff --git a/tests/shell/testcases/optionals/comments_chain_0 b/tests/shell/testcases/optionals/comments_chain_0
+index fba961c76841..1a84cfa67a2a 100755
+--- a/tests/shell/testcases/optionals/comments_chain_0
++++ b/tests/shell/testcases/optionals/comments_chain_0
 @@ -1,5 +1,7 @@
  #!/bin/bash
  
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_netmap)
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_comment)
 +
- EXPECTED="table ip x {
-             chain y {
-                     type nat hook postrouting priority srcnat; policy accept;
+ EXPECTED='table ip test_table {
+ 	chain test_chain {
+ 		comment "test"
+diff --git a/tests/shell/testcases/optionals/comments_objects_0 b/tests/shell/testcases/optionals/comments_objects_0
+index 301f5518fb80..28041ebd2a43 100755
+--- a/tests/shell/testcases/optionals/comments_objects_0
++++ b/tests/shell/testcases/optionals/comments_objects_0
+@@ -1,5 +1,7 @@
+ #!/bin/bash
+ 
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_comment)
++
+ set -e
+ 
+ COMMENT128="12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678"
+diff --git a/tests/shell/testcases/optionals/comments_table_0 b/tests/shell/testcases/optionals/comments_table_0
+index a0dfd7494661..56bb206bddcf 100755
+--- a/tests/shell/testcases/optionals/comments_table_0
++++ b/tests/shell/testcases/optionals/comments_table_0
+@@ -1,5 +1,7 @@
+ #!/bin/bash
+ 
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_comment)
++
+ # comments are shown
+ 
+ $NFT add table test { comment \"test_comment\"\; }
+diff --git a/tests/shell/testcases/sets/0020comments_0 b/tests/shell/testcases/sets/0020comments_0
+index 44d451a8ad3a..1df38326ab57 100755
+--- a/tests/shell/testcases/sets/0020comments_0
++++ b/tests/shell/testcases/sets/0020comments_0
+@@ -1,5 +1,7 @@
+ #!/bin/bash
+ 
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_comment)
++
+ # Test that comments are added to set elements in standard sets.
+ # Explicitly test bitmap backend set implementation.
+ 
 -- 
 2.30.2
 
