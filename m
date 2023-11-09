@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7F07E6E96
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Nov 2023 17:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C4D7E6E98
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Nov 2023 17:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343878AbjKIQXR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Nov 2023 11:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
+        id S234424AbjKIQXT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Nov 2023 11:23:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343808AbjKIQXP (ORCPT
+        with ESMTP id S1343866AbjKIQXQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:23:15 -0500
+        Thu, 9 Nov 2023 11:23:16 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3EBBE35AE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDB26327D
         for <netfilter-devel@vger.kernel.org>; Thu,  9 Nov 2023 08:23:13 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     thaller@redhat.com, fw@strlen.de
-Subject: [PATCH nft 09/12] tests: shell: split set NAT interval test
-Date:   Thu,  9 Nov 2023 17:23:01 +0100
-Message-Id: <20231109162304.119506-10-pablo@netfilter.org>
+Subject: [PATCH nft 10/12] tests: shell: split map test
+Date:   Thu,  9 Nov 2023 17:23:02 +0100
+Message-Id: <20231109162304.119506-11-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231109162304.119506-1-pablo@netfilter.org>
 References: <20231109162304.119506-1-pablo@netfilter.org>
@@ -30,111 +30,119 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Split test in two, one for interval sets and another with concatenation
-+ intervals, so at least intervals are tested in older kernels with no
-pipapo support.
+Split interval + concatenation into a separated file, so older kernels
+with no pipapo can still run what it is supported.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- .../testcases/sets/0067nat_concat_interval_0   | 17 ++---------------
- tests/shell/testcases/sets/0067nat_interval_0  | 18 ++++++++++++++++++
- .../sets/dumps/0067nat_concat_interval_0.nft   |  7 -------
- .../sets/dumps/0067nat_interval_0.nft          | 12 ++++++++++++
- 4 files changed, 32 insertions(+), 22 deletions(-)
- create mode 100755 tests/shell/testcases/sets/0067nat_interval_0
- create mode 100644 tests/shell/testcases/sets/dumps/0067nat_interval_0.nft
+ tests/shell/testcases/maps/0012map_0          | 19 ---------------
+ tests/shell/testcases/maps/0012map_concat_0   | 24 +++++++++++++++++++
+ .../shell/testcases/maps/dumps/0012map_0.nft  | 13 ----------
+ .../testcases/maps/dumps/0012map_concat_0.nft | 14 +++++++++++
+ 4 files changed, 38 insertions(+), 32 deletions(-)
+ create mode 100755 tests/shell/testcases/maps/0012map_concat_0
+ create mode 100644 tests/shell/testcases/maps/dumps/0012map_concat_0.nft
 
-diff --git a/tests/shell/testcases/sets/0067nat_concat_interval_0 b/tests/shell/testcases/sets/0067nat_concat_interval_0
-index 55cc0d4b43df..816219573870 100755
---- a/tests/shell/testcases/sets/0067nat_concat_interval_0
-+++ b/tests/shell/testcases/sets/0067nat_concat_interval_0
-@@ -1,21 +1,8 @@
- #!/bin/bash
+diff --git a/tests/shell/testcases/maps/0012map_0 b/tests/shell/testcases/maps/0012map_0
+index 49e51b755b0f..dd93c482f441 100755
+--- a/tests/shell/testcases/maps/0012map_0
++++ b/tests/shell/testcases/maps/0012map_0
+@@ -15,22 +15,3 @@ table ip x {
+ }"
  
--set -e
+ $NFT -f - <<< "$EXPECTED"
 -
--EXPECTED="table ip nat {
--       map ipportmap {
--                type ipv4_addr : interval ipv4_addr . inet_service
--                flags interval
--                elements = { 192.168.1.2 : 10.141.10.1-10.141.10.3 . 8888-8999 }
--       }
--       chain prerouting {
--                type nat hook prerouting priority dstnat; policy accept;
--                ip protocol tcp dnat ip to ip saddr map @ipportmap
--       }
--}"
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_pipapo)
- 
--$NFT -f - <<< $EXPECTED
--$NFT add element ip nat ipportmap { 192.168.2.0/24 : 10.141.11.5-10.141.11.20 . 8888-8999 }
-+set -e
- 
- EXPECTED="table ip nat {
-         map ipportmap2 {
-diff --git a/tests/shell/testcases/sets/0067nat_interval_0 b/tests/shell/testcases/sets/0067nat_interval_0
-new file mode 100755
-index 000000000000..c90203d0d648
---- /dev/null
-+++ b/tests/shell/testcases/sets/0067nat_interval_0
-@@ -0,0 +1,18 @@
-+#!/bin/bash
-+
-+set -e
-+
-+EXPECTED="table ip nat {
-+       map ipportmap {
-+                type ipv4_addr : interval ipv4_addr . inet_service
-+                flags interval
-+                elements = { 192.168.1.2 : 10.141.10.1-10.141.10.3 . 8888-8999 }
-+       }
-+       chain prerouting {
-+                type nat hook prerouting priority dstnat; policy accept;
-+                ip protocol tcp dnat ip to ip saddr map @ipportmap
-+       }
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-+$NFT add element ip nat ipportmap { 192.168.2.0/24 : 10.141.11.5-10.141.11.20 . 8888-8999 }
-diff --git a/tests/shell/testcases/sets/dumps/0067nat_concat_interval_0.nft b/tests/shell/testcases/sets/dumps/0067nat_concat_interval_0.nft
-index 0215691e28ee..9ac3774a7222 100644
---- a/tests/shell/testcases/sets/dumps/0067nat_concat_interval_0.nft
-+++ b/tests/shell/testcases/sets/dumps/0067nat_concat_interval_0.nft
-@@ -1,10 +1,4 @@
- table ip nat {
--	map ipportmap {
--		type ipv4_addr : interval ipv4_addr . inet_service
+-EXPECTED="table ip x {
+-	map w {
+-		typeof ip saddr . meta mark : verdict
 -		flags interval
--		elements = { 192.168.1.2 : 10.141.10.1-10.141.10.3 . 8888-8999, 192.168.2.0/24 : 10.141.11.5-10.141.11.20 . 8888-8999 }
+-		counter
+-		elements = {
+-			127.0.0.1-127.0.0.4 . 0x123434-0xb00122 : accept,
+-		}
 -	}
 -
- 	map ipportmap2 {
- 		type ipv4_addr . ipv4_addr : interval ipv4_addr . inet_service
- 		flags interval
-@@ -33,7 +27,6 @@ table ip nat {
- 
- 	chain prerouting {
- 		type nat hook prerouting priority dstnat; policy accept;
--		ip protocol tcp dnat ip to ip saddr map @ipportmap
- 		ip protocol tcp dnat ip to ip saddr . ip daddr map @ipportmap2
- 		meta l4proto { tcp, udp } dnat ip to ip daddr . th dport map @fwdtoip_th
- 		dnat ip to iifname . ip saddr map @ipportmap4
-diff --git a/tests/shell/testcases/sets/dumps/0067nat_interval_0.nft b/tests/shell/testcases/sets/dumps/0067nat_interval_0.nft
-new file mode 100644
-index 000000000000..b6d07fcdc248
+-	chain k {
+-		type filter hook input priority filter + 1; policy accept;
+-		meta mark set 0x123434
+-		ip saddr . meta mark vmap @w
+-	}
+-}"
+-
+-$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/maps/0012map_concat_0 b/tests/shell/testcases/maps/0012map_concat_0
+new file mode 100755
+index 000000000000..d18c7a73c844
 --- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0067nat_interval_0.nft
-@@ -0,0 +1,12 @@
-+table ip nat {
-+	map ipportmap {
-+		type ipv4_addr : interval ipv4_addr . inet_service
++++ b/tests/shell/testcases/maps/0012map_concat_0
+@@ -0,0 +1,24 @@
++#!/bin/bash
++
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_pipapo)
++
++set -e
++
++EXPECTED="table ip x {
++        map w {
++                typeof ip saddr . meta mark : verdict
++                flags interval
++                counter
++                elements = {
++                        127.0.0.1-127.0.0.4 . 0x123434-0xb00122 : accept,
++                }
++        }
++
++        chain k {
++                type filter hook input priority filter + 1; policy accept;
++                meta mark set 0x123434
++                ip saddr . meta mark vmap @w
++        }
++}"
++
++$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/maps/dumps/0012map_0.nft b/tests/shell/testcases/maps/dumps/0012map_0.nft
+index 895490cffa8c..e734fc1c70b9 100644
+--- a/tests/shell/testcases/maps/dumps/0012map_0.nft
++++ b/tests/shell/testcases/maps/dumps/0012map_0.nft
+@@ -6,20 +6,7 @@ table ip x {
+ 			     "eth1" : drop }
+ 	}
+ 
+-	map w {
+-		typeof ip saddr . meta mark : verdict
+-		flags interval
+-		counter
+-		elements = { 127.0.0.1-127.0.0.4 . 0x00123434-0x00b00122 counter packets 0 bytes 0 : accept }
+-	}
+-
+ 	chain y {
+ 		iifname vmap { "lo" : accept, "eth0" : drop, "eth1" : drop }
+ 	}
+-
+-	chain k {
+-		type filter hook input priority filter + 1; policy accept;
+-		meta mark set 0x00123434
+-		ip saddr . meta mark vmap @w
+-	}
+ }
+diff --git a/tests/shell/testcases/maps/dumps/0012map_concat_0.nft b/tests/shell/testcases/maps/dumps/0012map_concat_0.nft
+new file mode 100644
+index 000000000000..6649d0342a28
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/0012map_concat_0.nft
+@@ -0,0 +1,14 @@
++table ip x {
++	map w {
++		typeof ip saddr . meta mark : verdict
 +		flags interval
-+		elements = { 192.168.1.2 : 10.141.10.1-10.141.10.3 . 8888-8999, 192.168.2.0/24 : 10.141.11.5-10.141.11.20 . 8888-8999 }
++		counter
++		elements = { 127.0.0.1-127.0.0.4 . 0x00123434-0x00b00122 counter packets 0 bytes 0 : accept }
 +	}
 +
-+	chain prerouting {
-+		type nat hook prerouting priority dstnat; policy accept;
-+		ip protocol tcp dnat ip to ip saddr map @ipportmap
++	chain k {
++		type filter hook input priority filter + 1; policy accept;
++		meta mark set 0x00123434
++		ip saddr . meta mark vmap @w
 +	}
 +}
 -- 
