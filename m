@@ -2,92 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254F47E71D7
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Nov 2023 20:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 219AA7E7202
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Nov 2023 20:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjKITBl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Nov 2023 14:01:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        id S229613AbjKITMK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Nov 2023 14:12:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjKITBj (ORCPT
+        with ESMTP id S229560AbjKITMK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:01:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EF73C12
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Nov 2023 11:00:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699556446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xkxNkzX8gzJb5i2gTJaxU24hsbpH18lBcoVAZmfjAN4=;
-        b=epNmlhIfpIxvyjSOXeo/KmT4yF3xCdzvQ3qTGbVu1OZhQ1t/H6FpTTjsLqvbdZ8fvFE6nf
-        5Bb0eHqTRAPtRlrN/q27riqZ0eZBgGR6ZoGegZw265cXAeALp5tM1BSszLeXiqQsSiCy7x
-        FmWpjJhIoSeEO5pZpCWhv9+EVhL3H9U=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-494-pNZnp71wPDWflDF42R9_ew-1; Thu,
- 09 Nov 2023 14:00:44 -0500
-X-MC-Unique: pNZnp71wPDWflDF42R9_ew-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 46373380627C
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Nov 2023 19:00:44 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.193.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B9A2740C6EB9;
-        Thu,  9 Nov 2023 19:00:43 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft 3/3] parser: use size_t type for strlen() results
-Date:   Thu,  9 Nov 2023 19:59:49 +0100
-Message-ID: <20231109190032.669575-3-thaller@redhat.com>
-In-Reply-To: <20231109190032.669575-1-thaller@redhat.com>
-References: <20231109190032.669575-1-thaller@redhat.com>
+        Thu, 9 Nov 2023 14:12:10 -0500
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C813A84
+        for <netfilter-devel@vger.kernel.org>; Thu,  9 Nov 2023 11:12:08 -0800 (PST)
+Received: from [78.30.43.141] (port=36736 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1r1ARe-00G11b-03; Thu, 09 Nov 2023 20:12:03 +0100
+Date:   Thu, 9 Nov 2023 20:12:01 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Thomas Haller <thaller@redhat.com>
+Cc:     NetFilter <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH nft 2/2] netlink: add and use _nftnl_udata_buf_alloc()
+ helper
+Message-ID: <ZU0vAe2mEenETxYJ@calendula>
+References: <20231108182431.4005745-1-thaller@redhat.com>
+ <20231108182431.4005745-2-thaller@redhat.com>
+ <ZUz3Q5MNVxsXo0Wy@calendula>
+ <86486aabb07912a51263c68c8cf45f338081fe5a.camel@redhat.com>
+ <ZUz7my1Gawv5RSb4@calendula>
+ <a81dc3f30da3055116ded96a2f4ad423e4ba7899.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a81dc3f30da3055116ded96a2f4ad423e4ba7899.camel@redhat.com>
+X-Spam-Score: -1.9 (-)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-strlen() has a "size_t" as result. Use the correct type.
+On Thu, Nov 09, 2023 at 05:48:57PM +0100, Thomas Haller wrote:
+> On Thu, 2023-11-09 at 16:32 +0100, Pablo Neira Ayuso wrote:
+> > On Thu, Nov 09, 2023 at 04:19:29PM +0100, Thomas Haller wrote:
+> > > On Thu, 2023-11-09 at 16:14 +0100, Pablo Neira Ayuso wrote:
+> > > > 
+> > > > Add a wrapper function, no macro.
+> > > > 
+> > > 
+> > > 
+> > > memory_allocation_error() is itself a macro, as it uses
+> > > __FILE__,__LINE__
+> > 
+> > In this case above, __FILE__ and __LINE__ does not provide much
+> > information?
+> 
+> In which case? The patch changes a repeated pattern to a macro(),
+> without changing any behavior and without questioning the use of
+> __FILE__:__LINE__.
+> .
+> 
+> > nftnl_expr_alloc() returns NULL when support for an expression is
+> > missing in libnftnl,
+> 
+> The patch is not about nftnl_expr_alloc(). Do you mean
+> nftnl_udata_buf_alloc()?
+> 
+> nftnl_udata_buf_alloc() fails exactly when malloc() fails. It's
+> unrelated to missing "support for an expression".
+> 
+> >  that provides a hint on that, this is very rare
+> > and it can only happen when developing support for new expressions.
+> > 
+> > Maybe simply say __func__ instead to know what function has failed
+> > when performing the memory allocation is a hint that is fine enough.
+> 
+> I wouldn't use __func__. It consumes more strings in the binary while
+> providing less exact information.
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- src/parser_bison.y | 2 +-
- src/scanner.l      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index ca0851c915d2..12031c831353 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -150,7 +150,7 @@ static struct expr *ifname_expr_alloc(const struct location *location,
- 				      struct list_head *queue,
- 				      char *name)
- {
--	unsigned int length = strlen(name);
-+	size_t length = strlen(name);
- 	struct expr *expr;
- 
- 	if (length == 0) {
-diff --git a/src/scanner.l b/src/scanner.l
-index 31284d7358fa..aba8ef1c6b54 100644
---- a/src/scanner.l
-+++ b/src/scanner.l
-@@ -1117,7 +1117,7 @@ static int include_glob(struct nft_ctx *nft, void *scanner, const char *pattern,
- 	ret = glob(pattern, flags, NULL, &glob_data);
- 	if (ret == 0) {
- 		char *path;
--		int len;
-+		size_t len;
- 
- 		/* reverse alphabetical order due to stack */
- 		for (i = glob_data.gl_pathc; i > 0; i--) {
--- 
-2.41.0
-
+OK, then if you prefer a generic OOM error message, that's also fine.
