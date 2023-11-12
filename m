@@ -2,69 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6500C7E8804
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Nov 2023 02:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1030D7E8EDB
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Nov 2023 07:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjKKBwu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 10 Nov 2023 20:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        id S229588AbjKLG7b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 12 Nov 2023 01:59:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjKKBwt (ORCPT
+        with ESMTP id S229441AbjKLG7b (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:52:49 -0500
-Received: from mail.maprial.com (mail.maprial.com [190.181.35.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F129449A
-        for <netfilter-devel@vger.kernel.org>; Fri, 10 Nov 2023 17:52:46 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.maprial.com (Postfix) with ESMTP id 2DAB673FC21A;
-        Fri, 10 Nov 2023 18:56:08 -0400 (-04)
-Received: from mail.maprial.com ([127.0.0.1])
-        by localhost (mail.maprial.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id MHFOssetZX6S; Fri, 10 Nov 2023 18:56:07 -0400 (-04)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.maprial.com (Postfix) with ESMTP id 041E786B6D5B;
-        Fri, 10 Nov 2023 17:47:07 -0400 (-04)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.maprial.com 041E786B6D5B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maprial.com;
-        s=8A254412-65B9-11ED-A564-8B9C10001A2B; t=1699652828;
-        bh=WOZURJ77pkiMUL2pPLC14ifVPRvyTQIBEQmxuN1ezAA=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=tpRvAlggbE0inlzJULfpN89qsFHVAniau8J6t3jPXjxXYB02vKDnZG8nJbKuGk0O5
-         U0s0x3DupAixEKVEKgi8BwMCWcZVUIGWdNjMe6L6tObk11VpbbTKpehm62RYJ598Ra
-         Q80C/AmSqstkfaqr+IzSAehF/LSA5Sk+aiia70P0=
-X-Virus-Scanned: amavisd-new at mail.maprial.com
-Received: from mail.maprial.com ([127.0.0.1])
-        by localhost (mail.maprial.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1h1H7RSvRGjG; Fri, 10 Nov 2023 17:47:06 -0400 (-04)
-Received: from [192.168.1.152] (unknown [51.179.104.230])
-        by mail.maprial.com (Postfix) with ESMTPSA id AA2097238B67;
-        Fri, 10 Nov 2023 17:04:26 -0400 (-04)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 12 Nov 2023 01:59:31 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63402D6B
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Nov 2023 22:59:27 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc921a4632so30443905ad.1
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Nov 2023 22:59:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699772367; x=1700377167; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=+HMOKajMzMaS+H8dygfXxCWA6IdbFwg5PDL5rujcvwQ=;
+        b=U2k1y8dcd8CqlwMzMfEbtDEWxlYch53r+u93ImbkC0WsiLEBFPuETGb9BzbDq/JCgB
+         RJFGCqmd6+Lm3XF6bTW/5mX65M9U2BFIAcSvL9JsNLHg18DuHWz9OAAA71nF/siB2VZQ
+         6nvkeAN/Y2a0/Mkbd6mql2pRMnJCWzq3HUrJbHyPNCFHQSK/yDJ01AB01Lp465fl4U02
+         awp96U68JIxzsdbRBk1SqR0YCN5FYU2Sdk05bO2pyql1P05JIygHMkAWS7O4X9Ad30ii
+         juNqGcc9hJhMZjdSjVMiYy7kb4m8cBmhDOazPvhDXUPEaXipG/4un+MGZ6JhDS5YVg0x
+         BI8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699772367; x=1700377167;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+HMOKajMzMaS+H8dygfXxCWA6IdbFwg5PDL5rujcvwQ=;
+        b=QOnAgsiU/R4Yt5SjFASpzmCOfdAqZ9Cq8fInTlBXLhaGlJBQGciUDRq5lDM1bcS65J
+         lrSg/LZ1x9/iMSGbVKXPpl24K21LPLsE/fjoXGX/NFtQbwnvTSib4WdXFAcJ7ZBEOkj1
+         cqPXDz9N1ASFoCagZZiEeClmMlVvpmuEBacl8GGMVS9Tg5tls2n2CaAWdPwTtaYQQoW2
+         Bo1pteiK6MiyCIKhUbLOIEYOw3qIL1Aqzmfc/y2n5sNpLg7cEQfMRBkNwEgqu3/jRS6Q
+         /pNtXimPTnUJ4/ls6Cnt9iXN8vc+Gs8gXpondiw1L7ROgg6N9OAVUuOtqLHqBMeOe26K
+         xjqA==
+X-Gm-Message-State: AOJu0YxSvREyb4jprrNiJVNlvMEO4NwPM+YCWWI1qlXdHU2uyi7Kb4xf
+        7QYmsEQaYEIpIFB93zzqdHoa0GYaGb8=
+X-Google-Smtp-Source: AGHT+IGyXvIwf4dJqk60zIuNnSq663Dr9x4pqZTP9nvHV1yvMAzhLau6yqgcuEi47FfVBc7DQ8wRFQ==
+X-Received: by 2002:a17:902:b08f:b0:1cc:4cbb:c564 with SMTP id p15-20020a170902b08f00b001cc4cbbc564mr3392467plr.69.1699772367254;
+        Sat, 11 Nov 2023 22:59:27 -0800 (PST)
+Received: from slk15.local.net (n58-108-90-185.meb1.vic.optusnet.com.au. [58.108.90.185])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170902d30400b001c9bfd20d0csm2159363plc.124.2023.11.11.22.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 22:59:26 -0800 (PST)
+Sender: Duncan Roe <duncan.roe2@gmail.com>
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: libnfnetlink dependency elimination
+Date:   Sun, 12 Nov 2023 17:59:21 +1100
+Message-Id: <20231112065922.3414-1-duncan_roe@optusnet.com.au>
+X-Mailer: git-send-email 2.35.8
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?b?4oKsIDEwMC4wMDAuMDAwPw==?=
-To:     Recipients <gvalencia@maprial.com>
-From:   gvalencia@maprial.com
-Date:   Fri, 10 Nov 2023 22:04:16 +0100
-Reply-To: joliushk@gmail.com
-Message-Id: <20231110210426.AA2097238B67@mail.maprial.com>
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Goededag,
-Ik ben mevrouw Joanna Liu en een medewerker van Citi Bank Hong Kong.
-Kan ik =E2=82=AC 100.000.000 aan u overmaken? Kan ik je vertrouwen
+Some of these documented changes haven't happened yet.
 
+Duncan Roe (1):
+  doc: First update for libnfnetlink-based API over libmnl
 
-Ik wacht op jullie reacties
-Met vriendelijke groeten
-mevrouw Joanna Liu
+ src/libnetfilter_queue.c | 56 +++++++++++++++++++++++++++-------------
+ 1 file changed, 38 insertions(+), 18 deletions(-)
+
+-- 
+2.35.8
+
