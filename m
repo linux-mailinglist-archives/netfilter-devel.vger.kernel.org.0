@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D176E7E9D58
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Nov 2023 14:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38247E9D5A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Nov 2023 14:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjKMNjN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 13 Nov 2023 08:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S231312AbjKMNjO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 13 Nov 2023 08:39:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbjKMNjL (ORCPT
+        with ESMTP id S231330AbjKMNjL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 13 Nov 2023 08:39:11 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A32ED1729
-        for <netfilter-devel@vger.kernel.org>; Mon, 13 Nov 2023 05:39:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2FB3A1A2
+        for <netfilter-devel@vger.kernel.org>; Mon, 13 Nov 2023 05:39:07 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     fw@strlen.de, thaller@redhat.com
-Subject: [PATCH nft,v2 03/11] tests: shell: skip stateful expression in sets tests if kernel lacks support
-Date:   Mon, 13 Nov 2023 14:38:50 +0100
-Message-Id: <20231113133858.121324-3-pablo@netfilter.org>
+Subject: [PATCH nft,v2 04/11] tests: shell: skip NAT netmap tests if kernel lacks support
+Date:   Mon, 13 Nov 2023 14:38:51 +0100
+Message-Id: <20231113133858.121324-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231113133858.121324-1-pablo@netfilter.org>
 References: <20231113133858.121324-1-pablo@netfilter.org>
@@ -35,119 +35,43 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Skip tests that require stateful expressions in sets.
+Skip tests that require NAT netmap support
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: use git describe --contains and use diff instead of $DIFF, requested by Florian
+v2: use git describe --contains, requested by Florian.
 
- tests/shell/features/set_expr.sh              | 19 +++++++++++++++++++
- tests/shell/testcases/json/0002table_map_0    |  1 +
- tests/shell/testcases/maps/0009vmap_0         |  2 ++
- .../testcases/optimizations/merge_stmts_vmap  |  2 ++
- tests/shell/testcases/sets/0048set_counters_0 |  2 ++
- .../testcases/sets/0051set_interval_counter_0 |  2 ++
- tests/shell/testcases/sets/elem_opts_compat_0 |  2 ++
- 7 files changed, 30 insertions(+)
- create mode 100755 tests/shell/features/set_expr.sh
+ tests/shell/features/netmap.nft         | 8 ++++++++
+ tests/shell/testcases/sets/0046netmap_0 | 2 ++
+ 2 files changed, 10 insertions(+)
+ create mode 100644 tests/shell/features/netmap.nft
 
-diff --git a/tests/shell/features/set_expr.sh b/tests/shell/features/set_expr.sh
-new file mode 100755
-index 000000000000..fbdfc2288fcb
+diff --git a/tests/shell/features/netmap.nft b/tests/shell/features/netmap.nft
+new file mode 100644
+index 000000000000..2580a8dcf534
 --- /dev/null
-+++ b/tests/shell/features/set_expr.sh
-@@ -0,0 +1,19 @@
-+#!/bin/bash
-+
-+# 65038428b2c6 ("netfilter: nf_tables: allow to specify stateful expression in set definition")
-+# v5.7-rc1~146^2~12^2~25
-+
-+# NFT_SET_EXPR to detect kernel feature only available since
-+# b4e70d8dd9ea ("netfilter: nftables: add set expression flags")
-+# v5.11-rc3~39^2^2
-+
-+EXPECTED="table ip x {
-+	set y {
-+		typeof ip saddr
-+		counter
-+	}
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-+
-+diff -u <($NFT list ruleset) - <<<"$EXPECTED"
-diff --git a/tests/shell/testcases/json/0002table_map_0 b/tests/shell/testcases/json/0002table_map_0
-index b375e9969608..a1e9f2634978 100755
---- a/tests/shell/testcases/json/0002table_map_0
-+++ b/tests/shell/testcases/json/0002table_map_0
-@@ -1,6 +1,7 @@
- #!/bin/bash
- 
- # NFT_TEST_REQUIRES(NFT_TEST_HAVE_json)
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_set_expr)
- 
- set -e
- 
-diff --git a/tests/shell/testcases/maps/0009vmap_0 b/tests/shell/testcases/maps/0009vmap_0
-index d31e1608f792..4e133b72f6ef 100755
---- a/tests/shell/testcases/maps/0009vmap_0
-+++ b/tests/shell/testcases/maps/0009vmap_0
++++ b/tests/shell/features/netmap.nft
+@@ -0,0 +1,8 @@
++# 3ff7ddb1353d ("netfilter: nft_nat: add netmap support")
++# v5.8-rc1~165^2~393^2
++table ip x {
++        chain y {
++              type nat hook postrouting priority srcnat; policy accept;
++              snat ip prefix to ip saddr map { 10.141.11.0/24 : 192.168.2.0/24 }
++        }
++}
+diff --git a/tests/shell/testcases/sets/0046netmap_0 b/tests/shell/testcases/sets/0046netmap_0
+index 60bda4017c59..7533623e7f7b 100755
+--- a/tests/shell/testcases/sets/0046netmap_0
++++ b/tests/shell/testcases/sets/0046netmap_0
 @@ -1,5 +1,7 @@
  #!/bin/bash
  
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_set_expr)
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_netmap)
 +
- set -e
- 
- EXPECTED="table inet filter {
-diff --git a/tests/shell/testcases/optimizations/merge_stmts_vmap b/tests/shell/testcases/optimizations/merge_stmts_vmap
-index 6e0f0762b7bb..e5357c0f66b6 100755
---- a/tests/shell/testcases/optimizations/merge_stmts_vmap
-+++ b/tests/shell/testcases/optimizations/merge_stmts_vmap
-@@ -1,5 +1,7 @@
- #!/bin/bash
- 
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_set_expr)
-+
- set -e
- 
- RULESET="table ip x {
-diff --git a/tests/shell/testcases/sets/0048set_counters_0 b/tests/shell/testcases/sets/0048set_counters_0
-index e62d25df799c..95babdc9ca5f 100755
---- a/tests/shell/testcases/sets/0048set_counters_0
-+++ b/tests/shell/testcases/sets/0048set_counters_0
-@@ -1,5 +1,7 @@
- #!/bin/bash
- 
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_set_expr)
-+
- set -e
- 
  EXPECTED="table ip x {
-diff --git a/tests/shell/testcases/sets/0051set_interval_counter_0 b/tests/shell/testcases/sets/0051set_interval_counter_0
-index ea90e264bfcc..6e67a43c577a 100755
---- a/tests/shell/testcases/sets/0051set_interval_counter_0
-+++ b/tests/shell/testcases/sets/0051set_interval_counter_0
-@@ -1,5 +1,7 @@
- #!/bin/bash
- 
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_set_expr)
-+
- set -e
- 
- EXPECTED="table ip x {
-diff --git a/tests/shell/testcases/sets/elem_opts_compat_0 b/tests/shell/testcases/sets/elem_opts_compat_0
-index 3467cc07e646..7563773e626f 100755
---- a/tests/shell/testcases/sets/elem_opts_compat_0
-+++ b/tests/shell/testcases/sets/elem_opts_compat_0
-@@ -1,5 +1,7 @@
- #!/bin/bash
- 
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_set_expr)
-+
- # ordering of element options and expressions has changed, make sure parser
- # accepts both ways
- 
+             chain y {
+                     type nat hook postrouting priority srcnat; policy accept;
 -- 
 2.30.2
 
