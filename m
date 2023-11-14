@@ -2,104 +2,143 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EC27EB39F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Nov 2023 16:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBEE7EB43A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Nov 2023 16:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbjKNPcm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Nov 2023 10:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
+        id S233632AbjKNPzC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 Nov 2023 10:55:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233647AbjKNPcl (ORCPT
+        with ESMTP id S230200AbjKNPzB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:32:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ABB93
-        for <netfilter-devel@vger.kernel.org>; Tue, 14 Nov 2023 07:32:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699975958;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=spxyS/g6gflZyUowk0ETgfotPS8E2LoKyBSH8A7LoX8=;
-        b=UAIRxM34fQLZBGZK6M/it/Z3C3gDIomPb79qOI82DTRo12bywZH7d5Gfz7iqPd5NrUPWos
-        YYRwIOZ8lI/pzCeaTau7SnaMghNW3n1V6+zHGFXV6cQ4VYkWwx8tRFlSpbI6PRhWqZzTzz
-        IM2NDLMq/RMvH7d1Qgog8OpZrdxbOK0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-78-p5dm35oGNwKwy-yxgo00Mw-1; Tue,
- 14 Nov 2023 10:32:36 -0500
-X-MC-Unique: p5dm35oGNwKwy-yxgo00Mw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BD59E2808B24
-        for <netfilter-devel@vger.kernel.org>; Tue, 14 Nov 2023 15:32:00 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.194.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D8F9DC12930;
-        Tue, 14 Nov 2023 15:31:59 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Thomas Haller <thaller@redhat.com>
-Subject: [PATCH nft v3 1/6] json: fix use after free in table_flags_json()
-Date:   Tue, 14 Nov 2023 16:29:25 +0100
-Message-ID: <20231114153150.406334-2-thaller@redhat.com>
-In-Reply-To: <20231114153150.406334-1-thaller@redhat.com>
-References: <20231114153150.406334-1-thaller@redhat.com>
+        Tue, 14 Nov 2023 10:55:01 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61581FE
+        for <netfilter-devel@vger.kernel.org>; Tue, 14 Nov 2023 07:54:57 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1r2vkd-0001CU-43; Tue, 14 Nov 2023 16:54:55 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: [RFC nf-next] netfilter: nf_tables: reject flowtable hw offload for same device
+Date:   Tue, 14 Nov 2023 16:54:47 +0100
+Message-ID: <20231114155450.30813-1-fw@strlen.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add `$NFT -j list ruleset` to the end of "tests/shell/testcases/transactions/table_onoff".
-Then valgrind will find this issue:
+The existing check is not sufficient, as it only considers flowtables
+within the same table.
 
-  $ make -j && ./tests/shell/run-tests.sh tests/shell/testcases/transactions/table_onoff -V
+In case of HW offload, we need check all flowtables that exist in
+the same net namespace.
 
-Gives:
+We can skip flowtables that are slated for removal (not active in next gen).
 
-  ==286== Invalid read of size 4
-  ==286==    at 0x49B0261: do_dump (dump.c:211)
-  ==286==    by 0x49B08B8: do_dump (dump.c:378)
-  ==286==    by 0x49B08B8: do_dump (dump.c:378)
-  ==286==    by 0x49B04F7: do_dump (dump.c:273)
-  ==286==    by 0x49B08B8: do_dump (dump.c:378)
-  ==286==    by 0x49B0E84: json_dump_callback (dump.c:465)
-  ==286==    by 0x48AF22A: do_command_list_json (json.c:2016)
-  ==286==    by 0x48732F1: do_command_list (rule.c:2335)
-  ==286==    by 0x48737F5: do_command (rule.c:2605)
-  ==286==    by 0x48A867D: nft_netlink (libnftables.c:42)
-  ==286==    by 0x48A92B1: nft_run_cmd_from_buffer (libnftables.c:597)
-  ==286==    by 0x402CBA: main (main.c:533)
+Ideally this check would supersede the existing one, but this is
+probably too risky and might prevent existing configs from working.
 
-Fixes: e70354f53e9f ("libnftables: Implement JSON output support")
-Signed-off-by: Thomas Haller <thaller@redhat.com>
+As is, you can do all of the following:
+
+table ip t { flowtable f { devices = { lo  } } }
+table ip6 t { flowtable f { devices = { lo  } } }
+table inet t { flowtable f { devices = { lo  } } }
+
+... but IMO this should not be possible in the first place.
+
+Disable this at least when hw offlaod is requested.
+
+This is related to XDP flowtable work, the idea is to keep a small
+hashtable that has a 'struct net_device := struct nf_flowtable' map so
+that xdp program can obtain the flowtable that the net_device is
+part of.
+
+This mapping must be unique.  The idea is to add a "XDP OFFLOAD"
+flag to nftables api and then have this function run for 'xdp offload'
+case too.
+
+This is useful, because it would permit the "xdp offload" hashtable
+to tolerate duplicate keys -- they would only occur during transactional
+updates, e.g. a flush of the current table combined with atomic reload.
+
+Without this change, the nf_flowtable core cannot tell when flowtable
+is a real duplicate, or just a temporary artefact of the
+two-phase-commit protocol (i.e., the clashing entry is queued for removal).
+
+NB: This also disables ip and ip6 family for same device, plan would be
+to support 'xdp offload' only for NFPROTO_INET for simplicity.
+
+CC: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/json.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 36 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/src/json.c b/src/json.c
-index 23bd247221d3..81328ab3a4e4 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -496,7 +496,7 @@ static json_t *table_flags_json(const struct table *table)
- 		json_decref(root);
- 		return NULL;
- 	case 1:
--		json_unpack(root, "[o]", &tmp);
-+		json_unpack(root, "[O]", &tmp);
- 		json_decref(root);
- 		root = tmp;
- 		break;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 3c1fd8283bf4..0c3485410efc 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8183,6 +8183,37 @@ static void nft_unregister_flowtable_net_hooks(struct net *net,
+ 	__nft_unregister_flowtable_net_hooks(net, hook_list, false);
+ }
+ 
++static bool nft_flowtable_offload_clash(struct net *net,
++				        const struct nft_hook *hook,
++				        struct nft_flowtable *flowtable)
++{
++	const struct nftables_pernet *nft_net;
++	struct nft_flowtable *existing_ft;
++	const struct nft_table *table;
++
++	/* No offload requested, no need to validate */
++	if (!nf_flowtable_hw_offload(&flowtable->data))
++		return false;
++
++	nft_net = nft_pernet(net);
++
++	list_for_each_entry(table, &nft_net->tables, list) {
++		list_for_each_entry(existing_ft, &table->flowtables, list) {
++		        const struct nft_hook *hook2;
++
++			if (!nft_is_active_next(net, existing_ft))
++				continue;
++
++			list_for_each_entry(hook2, &existing_ft->hook_list, list) {
++				if (hook->ops.dev == hook2->ops.dev)
++					return true;
++			}
++		}
++	}
++
++	return false;
++}
++
+ static int nft_register_flowtable_net_hooks(struct net *net,
+ 					    struct nft_table *table,
+ 					    struct list_head *hook_list,
+@@ -8193,6 +8224,11 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 	int err, i = 0;
+ 
+ 	list_for_each_entry(hook, hook_list, list) {
++		if (nft_flowtable_offload_clash(net, hook, flowtable)) {
++			err = -EEXIST;
++			goto err_unregister_net_hooks;
++		}
++
+ 		list_for_each_entry(ft, &table->flowtables, list) {
+ 			if (!nft_is_active_next(net, ft))
+ 				continue;
 -- 
 2.41.0
 
