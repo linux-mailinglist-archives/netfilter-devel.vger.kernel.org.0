@@ -2,31 +2,30 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 823097ECAB2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Nov 2023 19:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EB77ECAB3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Nov 2023 19:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjKOSpY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 Nov 2023 13:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S229500AbjKOSpZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 Nov 2023 13:45:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjKOSpY (ORCPT
+        with ESMTP id S229648AbjKOSpY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 15 Nov 2023 13:45:24 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2DBE9D53;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E73EDD5C;
         Wed, 15 Nov 2023 10:45:20 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
         pabeni@redhat.com, edumazet@google.com, fw@strlen.de
-Subject: [PATCH net 1/6] netfilter: nft_set_rbtree: Remove unused variable nft_net
-Date:   Wed, 15 Nov 2023 19:45:09 +0100
-Message-Id: <20231115184514.8965-2-pablo@netfilter.org>
+Subject: [PATCH net 2/6] netfilter: nf_conntrack_bridge: initialize err to 0
+Date:   Wed, 15 Nov 2023 19:45:10 +0100
+Message-Id: <20231115184514.8965-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231115184514.8965-1-pablo@netfilter.org>
 References: <20231115184514.8965-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -37,44 +36,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Linkui Xiao <xiaolinkui@kylinos.cn>
 
-The code that uses nft_net has been removed, and the nft_pernet function
-is merely obtaining a reference to shared data through the net pointer.
-The content of the net pointer is not modified or changed, so both of
-them should be removed.
+K2CI reported a problem:
 
-silence the warning:
-net/netfilter/nft_set_rbtree.c:627:26: warning: variable ‘nft_net’ set but not used
+	consume_skb(skb);
+	return err;
+[nf_br_ip_fragment() error]  uninitialized symbol 'err'.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7103
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
+err is not initialized, because returning 0 is expected, initialize err
+to 0.
+
+Fixes: 3c171f496ef5 ("netfilter: bridge: add connection tracking system")
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Linkui Xiao <xiaolinkui@kylinos.cn>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_rbtree.c | 2 --
- 1 file changed, 2 deletions(-)
+ net/bridge/netfilter/nf_conntrack_bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 6f1186abd47b..baa3fea4fe65 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -624,14 +624,12 @@ static void nft_rbtree_gc(struct nft_set *set)
- {
- 	struct nft_rbtree *priv = nft_set_priv(set);
- 	struct nft_rbtree_elem *rbe, *rbe_end = NULL;
--	struct nftables_pernet *nft_net;
- 	struct rb_node *node, *next;
- 	struct nft_trans_gc *gc;
- 	struct net *net;
+diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+index b5c406a6e765..abb090f94ed2 100644
+--- a/net/bridge/netfilter/nf_conntrack_bridge.c
++++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+@@ -37,7 +37,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
+ 	ktime_t tstamp = skb->tstamp;
+ 	struct ip_frag_state state;
+ 	struct iphdr *iph;
+-	int err;
++	int err = 0;
  
- 	set  = nft_set_container_of(priv);
- 	net  = read_pnet(&set->net);
--	nft_net = nft_pernet(net);
- 
- 	gc = nft_trans_gc_alloc(set, 0, GFP_KERNEL);
- 	if (!gc)
+ 	/* for offloaded checksums cleanup checksum before fragmentation */
+ 	if (skb->ip_summed == CHECKSUM_PARTIAL &&
 -- 
 2.30.2
 
