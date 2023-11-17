@@ -2,112 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 952F77EED84
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Nov 2023 09:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB217EEDD5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Nov 2023 09:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjKQI1x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 17 Nov 2023 03:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        id S230383AbjKQIu5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 17 Nov 2023 03:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjKQI1w (ORCPT
+        with ESMTP id S231476AbjKQIu4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:27:52 -0500
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A70C130
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Nov 2023 00:27:48 -0800 (PST)
-Received: from [78.30.43.141] (port=59656 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1r3uCV-003tkb-DY; Fri, 17 Nov 2023 09:27:45 +0100
-Date:   Fri, 17 Nov 2023 09:27:42 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Thomas Haller <thaller@redhat.com>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft v3 2/6] tests/shell: check and generate JSON dump
- files
-Message-ID: <ZVcj/vvZB+EoRUoA@calendula>
-References: <20231114160903.409552-1-thaller@redhat.com>
- <20231115082427.GC14621@breakpoint.cc>
- <ZVSVPgRFv9tTF4yQ@calendula>
- <20231115100101.GA23742@breakpoint.cc>
- <ZVSgywZtf8F7nFop@calendula>
- <20231115122105.GD23742@breakpoint.cc>
- <ZVS530oqzSu/cgQS@calendula>
- <7f0da90a92e339594c9a86a6eda6d0be2df6155b.camel@redhat.com>
- <ZVY++RiqayXOZSBQ@calendula>
- <20231116230024.GA1206@breakpoint.cc>
+        Fri, 17 Nov 2023 03:50:56 -0500
+Received: from mail.commercesolutions.pl (unknown [162.19.155.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B86FD68
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Nov 2023 00:50:49 -0800 (PST)
+Received: by mail.commercesolutions.pl (Postfix, from userid 1002)
+        id B6557241D6; Fri, 17 Nov 2023 08:50:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=commercesolutions.pl;
+        s=mail; t=1700211047;
+        bh=PcMncQpBfIZCnTOfZJY5G1G+gaLn4c9QPfFvoXrE4rA=;
+        h=Date:From:To:Subject:From;
+        b=AhVFyGy3A5D+29sVJRh/ejdiXHWlQI9M5ebJAS3NmJtL3D4eEgA7F9fUIV3EITxtK
+         e2GC2zSmVKqi7WaFh1LYM+o2eTYeW+WeiXxcGZfBQeDMkroceGVkiUqhdRBKZN99Gb
+         CakFyG/ZeYAaEHSNIxBrLCFJkNrDpQXq/xdft/yOyPZAFVNHRbc9IN/JIppP32byAh
+         xjMyHi6pgQzymYFKk67PKoM50zBvZl4rs85CXhjowb8oTTjNoZvu26zF8DUt2aR2yr
+         dTxNE7Kjwn6agGCzSWaEzxUJss4HtPMfkj0ZdusuvoFKN+twzaDSNH9t//sda+oylK
+         GM4P4nRank9DA==
+Received: by mail.commercesolutions.pl for <netfilter-devel@vger.kernel.org>; Fri, 17 Nov 2023 08:50:40 GMT
+Message-ID: <20231117074500-0.1.9z.217e2.0.7fri87sbmb@commercesolutions.pl>
+Date:   Fri, 17 Nov 2023 08:50:40 GMT
+From:   "Kamil Tralewski" <kamil.tralewski@commercesolutions.pl>
+To:     <netfilter-devel@vger.kernel.org>
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+X-Mailer: mail.commercesolutions.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231116230024.GA1206@breakpoint.cc>
-X-Spam-Score: -1.9 (-)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 12:00:24AM +0100, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > Hi Thomas,
-> > 
-> > On Wed, Nov 15, 2023 at 01:36:40PM +0100, Thomas Haller wrote:
-> > > On Wed, 2023-11-15 at 13:30 +0100, Pablo Neira Ayuso wrote:
-> > [...]
-> > > > I see _lots_ of DUMP FAIL with kernel 5.4
-> > > 
-> > > Hi,
-> > > 
-> > > Could you provide more details?
-> > > 
-> > > For example,
-> > > 
-> > >     make -j && ./tests/shell/run-tests.sh tests/shell/testcases/include/0007glob_double_0 -x
-> > >     grep ^ -a -R /tmp/nft-test.latest.*/
-> > 
-> > # cat [...]/ruleset-diff.json
-> > --- testcases/include/dumps/0007glob_double_0.json-nft  2023-11-15 13:27:20.272084254 +0100
-> > +++ /tmp/nft-test.20231116-170617.584.lrZzMy/test-testcases-include-0007glob_double_0.1/ruleset-after.json      2023-11-16 17:06:18.332535411 +0100
-> > @@ -1 +1 @@
-> > -{"nftables": [{"metainfo": {"version": "VERSION", "release_name": "RELEASE_NAME", "json_schema_version": 1}}, {"table": {"family": "ip", "name": "x", "handle": 1}}, {"table": {"family": "ip", "name": "y", "handle": 2}}]}
-> > +{"nftables": [{"metainfo": {"version": "VERSION", "release_name": "RELEASE_NAME", "json_schema_version": 1}}, {"table": {"family": "ip", "name": "x", "handle": 158}}, {"table": {"family": "ip", "name": "y", "handle": 159}}]}
-> > 
-> > It seems that handles are a problem in this diff.
-> 
-> Are you running tests with -s option?
+Dzie=C5=84 dobry,
 
-This is plain run with no options.
+zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
+=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
+o dalszych rozm=C3=B3w.=20
 
-> In that case, modules are removed after each test.
-> 
-> I suspect its because we can then hit -EAGAIN mid-transaction
-> because module is missing (again), then replay logic does its
-> thing.
-> 
-> But the handle generator isn't transaction aware,
-> so it has advanced vs. the aborted partial transaction.
-> 
-> I'm not sure what to do here.
-> 
-> One the one hand those rmmods are plain stupid, but on the other
-> hand this adds partial coverage for the rmmod path.
-> 
-> We could make the handle counter transaction aware to
-> "fix" this on kernel side; it should not be too much code.
-> 
-> What do you think?
+Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
+=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
+=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
+strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
 
-I don't think this needs a kernel fix.
+Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
 
-The kernel is free to allocate handle, the guarantee is that they are
-unique. How this handles are allocated could change in the future.
-There is no way userspace can forecast how handles are allocated.
-
-Phil made some code to skip comparing handles in tests/py that I
-remember to deal with this.
+Pozdrawiam
+Kamil Tralewski
