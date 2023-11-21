@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1F07F2CBF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AF57F2CC3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234658AbjKUMNx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Nov 2023 07:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+        id S234674AbjKUMNy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Nov 2023 07:13:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234675AbjKUMNw (ORCPT
+        with ESMTP id S234682AbjKUMNw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 21 Nov 2023 07:13:52 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E011013D;
-        Tue, 21 Nov 2023 04:13:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77D44131;
+        Tue, 21 Nov 2023 04:13:49 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, sashal@kernel.org,
         stable@vger.kernel.org
-Subject: [PATCH -stable,5.4 13/26] netfilter: nf_tables: GC transaction race with netns dismantle
-Date:   Tue, 21 Nov 2023 13:13:20 +0100
-Message-Id: <20231121121333.294238-14-pablo@netfilter.org>
+Subject: [PATCH -stable,5.4 14/26] netfilter: nf_tables: GC transaction race with abort path
+Date:   Tue, 21 Nov 2023 13:13:21 +0100
+Message-Id: <20231121121333.294238-15-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231121121333.294238-1-pablo@netfilter.org>
 References: <20231121121333.294238-1-pablo@netfilter.org>
@@ -36,37 +36,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-commit 02c6c24402bf1c1e986899c14ba22a10b510916b upstream.
+commit 720344340fb9be2765bbaab7b292ece0a4570eae upstream.
 
-Use maybe_get_net() since GC workqueue might race with netns exit path.
+Abort path is missing a synchronization point with GC transactions. Add
+GC sequence number hence any GC transaction losing race will be
+discarded.
 
 Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
  net/netfilter/nf_tables_api.c | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index cd4974674568..e76ceefd8e01 100644
+index e76ceefd8e01..9b523c53a7a9 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -7052,9 +7052,14 @@ struct nft_trans_gc *nft_trans_gc_alloc(struct nft_set *set,
- 	if (!trans)
- 		return NULL;
- 
-+	trans->net = maybe_get_net(net);
-+	if (!trans->net) {
-+		kfree(trans);
-+		return NULL;
-+	}
+@@ -7597,7 +7597,12 @@ static int nf_tables_abort(struct net *net, struct sk_buff *skb,
+ 			   enum nfnl_abort_action action)
+ {
+ 	struct nftables_pernet *nft_net = net_generic(net, nf_tables_net_id);
+-	int ret = __nf_tables_abort(net, action);
++	unsigned int gc_seq;
++	int ret;
 +
- 	refcount_inc(&set->refs);
- 	trans->set = set;
--	trans->net = get_net(net);
- 	trans->seq = gc_seq;
++	gc_seq = nft_gc_seq_begin(nft_net);
++	ret = __nf_tables_abort(net, action);
++	nft_gc_seq_end(nft_net, gc_seq);
  
- 	return trans;
+ 	mutex_unlock(&nft_net->commit_mutex);
+ 
 -- 
 2.30.2
 
