@@ -2,152 +2,144 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131257F2DD5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9F47F2E6F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 14:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbjKUM6w (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Nov 2023 07:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
+        id S229514AbjKUNgN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Nov 2023 08:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbjKUM6v (ORCPT
+        with ESMTP id S233728AbjKUNgN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:58:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AFA131
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Nov 2023 04:58:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700571527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=/GNVdQXR99KsVCN+iN/8lJELzR6vCOht7vL6F8H8BQw=;
-        b=bylUVUnSm5bhLtwdnT/nQ75LBUMSaGZZvKyQbwL3BhFPxZ6iL1m2MY10zV6+4c8zjd+xLe
-        2IbD5WW3L2Zc1YKYAAg36AKHYm7cyh1lCOQ9F/Uq8o+Jl/I44Hv12fMliI2ECBL+ejjDei
-        yi7RxE+IjZuL0uK6IBF4v4TxANAcIus=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-v9HGOs4NN36K0oHM0tQSIg-1; Tue, 21 Nov 2023 07:58:44 -0500
-X-MC-Unique: v9HGOs4NN36K0oHM0tQSIg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32f78dc3fcbso480096f8f.0
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Nov 2023 04:58:44 -0800 (PST)
+        Tue, 21 Nov 2023 08:36:13 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5799D1BC
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Nov 2023 05:36:09 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id ffacd0b85a97d-32d9effe314so3933774f8f.3
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Nov 2023 05:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700573768; x=1701178568; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4WQYH8wKFCCHTXrK1Zk61Xzuiy6SVyBtq7SxIFkJbxM=;
+        b=b02Gs1/jclhPGW3FXRbm+GZX8giElAGBTK+xKOQevAFA43pAqhK8mKWSDUDi43gD+a
+         GfWbPPzclBURCplpSVjKicCPLoLR/6oGwN1EfUkjH6K8zu3kBlNzVT/0SfzlJTsNV8lO
+         i3PP7Re+5FkuwY4R9Djd+mcVix6aTt+ipfmIvqwuZzMZ/mBtzBIlOFAd7NXH+GKRW79M
+         ylhe1cj7h77TfwsmHaV6pbDP/TWlQcEl+eTiiarseJBW/vYlwqXhyUI2IjrdraJaedWT
+         Emyl8FREjXy7Q/0M3VKp7umivGaY8trnUXwMahaG1UXlOmRrthRzMDH1BObbXIA+gY7M
+         rjdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700571523; x=1701176323;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/GNVdQXR99KsVCN+iN/8lJELzR6vCOht7vL6F8H8BQw=;
-        b=SB2y2LRRNpUdHp5iRNkdNydzZw+jqLP9LvRV1+g1TYsuLGmY5LSUC8aWs+TY4yhaie
-         FQhV0xdRgN2h03gzSfzeBKa4KF7My+prrMWmatddeC9X45PViz/Zz4HlprD+RhMQ7dYr
-         x+z6ymFWHPHk1v6o4XpXjqWY6qeyeAKzc0GLh7QM7d+/5muYvX9cX7VnpmgcSraIlDL2
-         93h4xdc5rBlJkegAdXmI/b4FzBJbvJZrvvlZN5XffO0R6Wu3cW0ZMLs3CNh20IhcUmbY
-         DYn7N05GjKm8M5pmFw1wCa2nmFxuyHvxEFEzybSMTsxB8qPvQCRM/5Skv+BjMheB0cqi
-         IMZg==
-X-Gm-Message-State: AOJu0YxRrMFq/+PXGGMfb1pICap9Ndo9nlqpJkD2K3EId5RIyIQIqr31
-        ikm+oQDI8sBTJpbx8XBz4qfnAnC4FHqAXJx62BUe0I4M9JM8hfJSAnsHUoLm6zZrNBtXJng9qhv
-        C3mu2Ps9kfJ9n60fSlG5q7EDXji3QMZcSqhQ0
-X-Received: by 2002:adf:f74b:0:b0:332:cfe9:9491 with SMTP id z11-20020adff74b000000b00332cfe99491mr493482wrp.0.1700571523224;
-        Tue, 21 Nov 2023 04:58:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG0F4+zc5hVtaNundC3MEexKiI+K5fm3HPezelYNJRbEc48yU9z3u6+vzekqdPvToGWajaqgA==
-X-Received: by 2002:adf:f74b:0:b0:332:cfe9:9491 with SMTP id z11-20020adff74b000000b00332cfe99491mr493471wrp.0.1700571522854;
-        Tue, 21 Nov 2023 04:58:42 -0800 (PST)
-Received: from [10.0.0.196] ([37.186.166.196])
-        by smtp.gmail.com with ESMTPSA id d16-20020adfe2d0000000b003316a2aedadsm13987932wrj.36.2023.11.21.04.58.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 04:58:42 -0800 (PST)
-Message-ID: <31ff0aceab627a9838b94fc3fa58c271bc0a6023.camel@redhat.com>
-Subject: Re: [PATCH nft 1/1] tests/shell: sanitize "handle" in JSON output
-From:   Thomas Haller <thaller@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     NetFilter <netfilter-devel@vger.kernel.org>
-Date:   Tue, 21 Nov 2023 13:58:41 +0100
-In-Reply-To: <ZVylBpvC+IK4RIyH@orbyte.nwl.cc>
-References: <20231117171948.897229-1-thaller@redhat.com>
-         <ZVgjLFGvHqoXXvjd@orbyte.nwl.cc>
-         <f4b86e5318556be07a8c86c3fdd551ad5e22a831.camel@redhat.com>
-         <ZVylBpvC+IK4RIyH@orbyte.nwl.cc>
-Autocrypt: addr=thaller@redhat.com; prefer-encrypt=mutual; keydata=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
+        d=1e100.net; s=20230601; t=1700573768; x=1701178568;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4WQYH8wKFCCHTXrK1Zk61Xzuiy6SVyBtq7SxIFkJbxM=;
+        b=DgVaVjO/dVhsVNGyP7DOmYjI5APkFJRdV/gkAnQLpl1/y/7I4XtXXEtBel8GfaYLSt
+         +OGYxbpyU5EfY8J6xUrW582Hfg2wwtvIbTNEDDLca41CPseqLrzHnve+OpN5SreDEhaI
+         U39usQ0EPsd7uwLX8DeeqFsnefrCc9Zi2Btz8JTAkLDkSE19Hc65dAS+iUBO3xXl2TzU
+         U7wS4PP8rx7cT1CI23YdYbFFruJb7D+3nh4LaoT3E0mFvW4QaV5Nepz/EJX9ZPG328fm
+         UV/rLt5B0eXJHUN6E/j5Zp4RkP4VbDTLRvlHYAg4bZqaC8ZBeD+d2oV8cRfGHMoCWglo
+         MgVw==
+X-Gm-Message-State: AOJu0YxilIpUUXAyAcINoWOIiVvnK/hwWWT4nMNM05JyJzZhOmpau5hw
+        WC/GRvu7Mb4iQbOKusyBXMC/Ol0pF/EOCvoBfW4=
+X-Google-Smtp-Source: AGHT+IEWK3zFUynEPu6oYS3eNhvf6qA8c8Ok9hm5WtAK8r9BcOkihX1MS4tl255JkWNqy9FgJ7QB7YNpeE9kfHw4s7o=
+X-Received: by 2002:a5d:448a:0:b0:331:69a2:cad2 with SMTP id
+ j10-20020a5d448a000000b0033169a2cad2mr6622652wrq.62.1700573767492; Tue, 21
+ Nov 2023 05:36:07 -0800 (PST)
+MIME-Version: 1.0
+Reply-To: razumkoykhailo@gmail.com
+Sender: stedoni744@gmail.com
+Received: by 2002:a5d:6e86:0:b0:314:3d27:c464 with HTTP; Tue, 21 Nov 2023
+ 05:36:06 -0800 (PST)
+From:   "Mr.Razum Khailo" <razumkoykhailo@gmail.com>
+Date:   Tue, 21 Nov 2023 05:36:06 -0800
+X-Google-Sender-Auth: xIQvDSnPoOtHyBuANw5G6LZJono
+Message-ID: <CAKMRoaN2Eszoa5e7u4xm_jAkdTLB7ijXdNa3vpjzn=SFh4KYgA@mail.gmail.com>
+Subject: Greetings from Ukraine,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,HK_NAME_FM_MR_MRS,LOTS_OF_MONEY,MILLION_USD,
+        MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:442 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [stedoni744[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [stedoni744[at]gmail.com]
+        *  0.0 MILLION_USD BODY: Talks about millions of dollars
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  1.5 HK_NAME_FM_MR_MRS No description available.
+        *  2.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 MONEY_FRAUD_5 Lots of money and many fraud phrases
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, 2023-11-21 at 13:39 +0100, Phil Sutter wrote:
-> On Tue, Nov 21, 2023 at 01:10:11PM +0100, Thomas Haller wrote:
-> > On Sat, 2023-11-18 at 03:36 +0100, Phil Sutter wrote:
-> [...]
-> > > Also, scoping these replacements to line 1 is funny with single
-> > > line
-> > > input. Worse is identifying the change in the resulting diff.
-> > > Maybe
-> > > write a helper in python which lets you more comfortably sanitize
-> > > input,
-> > > sort attributes by key and output pretty-printed?
-> >=20
-> > You mean, to parse and re-encode the JSON? That introduces
-> > additional
-> > changes, which seems undesirable. That's why the regex is limited
-> > to
-> > the first line (even if we only expect to ever see one line there).
-> >=20
-> > Also, normalization via 2 regex seems simpler than writing some
-> > python.
-> >=20
-> > Well, pretty-printing the output with `jq` would have the
-> > advantage,
-> > that future diffs might be smaller (changing individual lines, vs.
-> > replace one large line). Still, I think it's better to keep the
-> > amount
-> > of post-processing minimal.
->=20
-> The testsuite relies upon Python and respective modules already,
-> using
-> jq introduces a new dependency. Hence why I suggested to write a
-> script.
->=20
-> JSON object attributes are not bound to any ordering, the code may
-> change it.
+Greetings from Ukraine,
 
-Don't have .nft dumps the same concern?
+Mr. Razumkov Mykhailo, an entrepreneur businessman from Odessa
+Ukraine. Within a year plus some months now, more than 8.2 million
+people around the cities of my country Ukraine have been evacuated to
+a safe location and out of the country, most especially children with
+their parents, nursing mothers and pregnant women, and those who have
+been seriously wounded and need urgent medical attention. I was among
+those that were able to evacuate to our neighbouring countries and I=E2=80=
+=99m
+now in the refugee camp of Ter Apel Groningen in the Netherlands.
 
-In JSON the order of things certainly matters. libjansson has
-JSON_PRESERVE_ORDER, which is used by libnftables. Also,
-JSON_PRESERVE_ORDER is deprecated since 2016 and order is always
-preserved.
+I need a foreign partner to enable me to transport my investment
+capital and then relocate with my family, honestly i wish I will
+discuss more and get along. I need a partner because my investment
+capital is in my international account. I=E2=80=99m interested in buying
+properties, houses, building real estates, my capital for investment
+is ($30 Million USD) . The financial institutions in my country
+Ukraine are all shot down due to the crisis of this war on Ukraine
+soil by the Russian forces. Meanwhile, if there is any profitable
+investment that you have so much experience in your country, then we
+can join together as partners since I=E2=80=99m a foreigner.
 
-If the order changes, that should be visible (in form of a test
-failure).
+I came across your e-mail contact through private search while in need
+of your assistance and I decided to contact you directly to ask you if
+you know any lucrative business investment in your country i can
+invest my money since my country Ukraine security and economic
+independent has lost to the greatest lower level, and our culture has
+lost including our happiness has been taken away from us. Our country
+has been on fire for more than a year now.
 
->=20
-> When analyzing testsuite failures, a diff of two overlong lines is
-> inconvenient to the point that one may pipe both through json_pp and
-> then diff again. The testsuite may do just that in case of offending
-> output, but the problem of reordered attributes remains.
->=20
-> I'd really appreciate if testsuite changes prioritized usability. I
-> rather focus on fixing bugs instead of parsing the testsuite results.
-
-The test suite prioritizes usability. No need to suggest otherwise.
-
-To make debugging easier, the test suite can additionally show a
-prettified diff. It does not determine how the .json-nft file is stored
-in git.=20
+If you are capable of handling this business partnership, contact me
+for more details, I will appreciate it if you can contact me
+immediately. You may as well tell me a little more about yourself.
+Contact me urgently to enable us to proceed with the business. I will
+be waiting for your response. My sincere apologies for the
+inconvenience.
 
 
-Thomas
+Thank you!
 
+Mr. Razumkov Mykhailo.
