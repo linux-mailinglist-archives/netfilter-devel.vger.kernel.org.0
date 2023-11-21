@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592E97F2CAF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFA37F2CB2
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234606AbjKUMNs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Nov 2023 07:13:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S234134AbjKUMNt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Nov 2023 07:13:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233940AbjKUMNs (ORCPT
+        with ESMTP id S234206AbjKUMNs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 21 Nov 2023 07:13:48 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9327C13D;
-        Tue, 21 Nov 2023 04:13:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 34986183;
+        Tue, 21 Nov 2023 04:13:45 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, sashal@kernel.org,
         stable@vger.kernel.org
-Subject: [PATCH -stable,5.4 05/26] netfilter: nft_set_rbtree: fix null deref on element insertion
-Date:   Tue, 21 Nov 2023 13:13:12 +0100
-Message-Id: <20231121121333.294238-6-pablo@netfilter.org>
+Subject: [PATCH -stable,5.4 06/26] netfilter: nft_set_rbtree: fix overlap expiration walk
+Date:   Tue, 21 Nov 2023 13:13:13 +0100
+Message-Id: <20231121121333.294238-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231121121333.294238-1-pablo@netfilter.org>
 References: <20231121121333.294238-1-pablo@netfilter.org>
@@ -38,84 +38,84 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Florian Westphal <fw@strlen.de>
 
-commit 61ae320a29b0540c16931816299eb86bf2b66c08 upstream.
+commit f718863aca469a109895cb855e6b81fff4827d71 upstream.
 
-There is no guarantee that rb_prev() will not return NULL in nft_rbtree_gc_elem():
+The lazy gc on insert that should remove timed-out entries fails to release
+the other half of the interval, if any.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
- nft_add_set_elem+0x14b0/0x2990
-  nf_tables_newsetelem+0x528/0xb30
+Can be reproduced with tests/shell/testcases/sets/0044interval_overlap_0
+in nftables.git and kmemleak enabled kernel.
 
-Furthermore, there is a possible use-after-free while iterating,
-'node' can be free'd so we need to cache the next value to use.
+Second bug is the use of rbe_prev vs. prev pointer.
+If rbe_prev() returns NULL after at least one iteration, rbe_prev points
+to element that is not an end interval, hence it should not be removed.
+
+Lastly, check the genmask of the end interval if this is active in the
+current generation.
 
 Fixes: c9e6978e2725 ("netfilter: nft_set_rbtree: Switch to node list walk for overlap detection")
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_set_rbtree.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ net/netfilter/nft_set_rbtree.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 039c75e27e1b..928288138a51 100644
+index 928288138a51..f456db3d786d 100644
 --- a/net/netfilter/nft_set_rbtree.c
 +++ b/net/netfilter/nft_set_rbtree.c
-@@ -220,7 +220,7 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+@@ -216,29 +216,37 @@ static void *nft_rbtree_get(const struct net *net, const struct nft_set *set,
+ 
+ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+ 			      struct nft_rbtree *priv,
+-			      struct nft_rbtree_elem *rbe)
++			      struct nft_rbtree_elem *rbe,
++			      u8 genmask)
  {
  	struct nft_set *set = (struct nft_set *)__set;
  	struct rb_node *prev = rb_prev(&rbe->node);
--	struct nft_rbtree_elem *rbe_prev;
-+	struct nft_rbtree_elem *rbe_prev = NULL;
+-	struct nft_rbtree_elem *rbe_prev = NULL;
++	struct nft_rbtree_elem *rbe_prev;
  	struct nft_set_gc_batch *gcb;
  
  	gcb = nft_set_gc_batch_check(set, NULL, GFP_ATOMIC);
-@@ -228,17 +228,21 @@ static int nft_rbtree_gc_elem(const struct nft_set *__set,
+ 	if (!gcb)
  		return -ENOMEM;
  
- 	/* search for expired end interval coming before this element. */
--	do {
-+	while (prev) {
+-	/* search for expired end interval coming before this element. */
++	/* search for end interval coming before this element.
++	 * end intervals don't carry a timeout extension, they
++	 * are coupled with the interval start element.
++	 */
+ 	while (prev) {
  		rbe_prev = rb_entry(prev, struct nft_rbtree_elem, node);
- 		if (nft_rbtree_interval_end(rbe_prev))
+-		if (nft_rbtree_interval_end(rbe_prev))
++		if (nft_rbtree_interval_end(rbe_prev) &&
++		    nft_set_elem_active(&rbe_prev->ext, genmask))
  			break;
  
  		prev = rb_prev(prev);
--	} while (prev != NULL);
-+	}
-+
-+	if (rbe_prev) {
-+		rb_erase(&rbe_prev->node, &priv->root);
-+		atomic_dec(&set->nelems);
-+	}
+ 	}
  
--	rb_erase(&rbe_prev->node, &priv->root);
+-	if (rbe_prev) {
++	if (prev) {
++		rbe_prev = rb_entry(prev, struct nft_rbtree_elem, node);
++
+ 		rb_erase(&rbe_prev->node, &priv->root);
+ 		atomic_dec(&set->nelems);
++		nft_set_gc_batch_add(gcb, rbe_prev);
+ 	}
+ 
  	rb_erase(&rbe->node, &priv->root);
--	atomic_sub(2, &set->nelems);
-+	atomic_dec(&set->nelems);
+@@ -320,7 +328,7 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
  
- 	nft_set_gc_batch_add(gcb, rbe);
- 	nft_set_gc_batch_complete(gcb);
-@@ -267,7 +271,7 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 			       struct nft_set_ext **ext)
- {
- 	struct nft_rbtree_elem *rbe, *rbe_le = NULL, *rbe_ge = NULL;
--	struct rb_node *node, *parent, **p, *first = NULL;
-+	struct rb_node *node, *next, *parent, **p, *first = NULL;
- 	struct nft_rbtree *priv = nft_set_priv(set);
- 	u8 genmask = nft_genmask_next(net);
- 	int d, err;
-@@ -306,7 +310,9 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 	 * Values stored in the tree are in reversed order, starting from
- 	 * highest to lowest value.
- 	 */
--	for (node = first; node != NULL; node = rb_next(node)) {
-+	for (node = first; node != NULL; node = next) {
-+		next = rb_next(node);
-+
- 		rbe = rb_entry(node, struct nft_rbtree_elem, node);
+ 		/* perform garbage collection to avoid bogus overlap reports. */
+ 		if (nft_set_elem_expired(&rbe->ext)) {
+-			err = nft_rbtree_gc_elem(set, priv, rbe);
++			err = nft_rbtree_gc_elem(set, priv, rbe, genmask);
+ 			if (err < 0)
+ 				return err;
  
- 		if (!nft_set_elem_active(&rbe->ext, genmask))
 -- 
 2.30.2
 
