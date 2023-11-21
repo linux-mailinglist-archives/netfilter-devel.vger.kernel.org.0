@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 213EF7F2CA3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D817F2CA9
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Nov 2023 13:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbjKUMNq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Nov 2023 07:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        id S233857AbjKUMNr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Nov 2023 07:13:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjKUMNp (ORCPT
+        with ESMTP id S230239AbjKUMNq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:13:45 -0500
+        Tue, 21 Nov 2023 07:13:46 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F898138;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB10A13D;
         Tue, 21 Nov 2023 04:13:42 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, sashal@kernel.org,
         stable@vger.kernel.org
-Subject: [PATCH -stable,5.4 01/26] netfilter: nf_tables: pass context to nft_set_destroy()
-Date:   Tue, 21 Nov 2023 13:13:08 +0100
-Message-Id: <20231121121333.294238-2-pablo@netfilter.org>
+Subject: [PATCH -stable,5.4 02/26] netfilter: nftables: rename set element data activation/deactivation functions
+Date:   Tue, 21 Nov 2023 13:13:09 +0100
+Message-Id: <20231121121333.294238-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231121121333.294238-1-pablo@netfilter.org>
 References: <20231121121333.294238-1-pablo@netfilter.org>
@@ -36,65 +36,89 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-commit 0c2a85edd143162b3a698f31e94bf8cdc041da87 upstream.
+commit f8bb7889af58d8e74d2d61c76b1418230f1610fa upstream.
 
-The patch that adds support for stateful expressions in set definitions
-require this.
+Rename:
+
+- nft_set_elem_activate() to nft_set_elem_data_activate().
+- nft_set_elem_deactivate() to nft_set_elem_data_deactivate().
+
+To prepare for updates in the set element infrastructure to add support
+for the special catch-all element.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ net/netfilter/nf_tables_api.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 9fc4431242e2..235f15d89fc2 100644
+index 235f15d89fc2..2bd522abb334 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -3852,7 +3852,7 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
- 	return err;
+@@ -4602,8 +4602,8 @@ void nft_set_elem_destroy(const struct nft_set *set, void *elem,
  }
+ EXPORT_SYMBOL_GPL(nft_set_elem_destroy);
  
--static void nft_set_destroy(struct nft_set *set)
-+static void nft_set_destroy(const struct nft_ctx *ctx, struct nft_set *set)
- {
- 	if (WARN_ON(set->use > 0))
- 		return;
-@@ -4024,7 +4024,7 @@ EXPORT_SYMBOL_GPL(nf_tables_deactivate_set);
- void nf_tables_destroy_set(const struct nft_ctx *ctx, struct nft_set *set)
- {
- 	if (list_empty(&set->bindings) && nft_set_is_anonymous(set))
--		nft_set_destroy(set);
-+		nft_set_destroy(ctx, set);
- }
- EXPORT_SYMBOL_GPL(nf_tables_destroy_set);
- 
-@@ -6715,7 +6715,7 @@ static void nft_commit_release(struct nft_trans *trans)
- 		nf_tables_rule_destroy(&trans->ctx, nft_trans_rule(trans));
- 		break;
- 	case NFT_MSG_DELSET:
--		nft_set_destroy(nft_trans_set(trans));
-+		nft_set_destroy(&trans->ctx, nft_trans_set(trans));
- 		break;
- 	case NFT_MSG_DELSETELEM:
- 		nf_tables_set_elem_destroy(&trans->ctx,
-@@ -7176,7 +7176,7 @@ static void nf_tables_abort_release(struct nft_trans *trans)
- 		nf_tables_rule_destroy(&trans->ctx, nft_trans_rule(trans));
- 		break;
- 	case NFT_MSG_NEWSET:
--		nft_set_destroy(nft_trans_set(trans));
-+		nft_set_destroy(&trans->ctx, nft_trans_set(trans));
- 		break;
- 	case NFT_MSG_NEWSETELEM:
- 		nft_set_elem_destroy(nft_trans_elem_set(trans),
-@@ -7951,7 +7951,7 @@ static void __nft_release_table(struct net *net, struct nft_table *table)
- 	list_for_each_entry_safe(set, ns, &table->sets, list) {
- 		list_del(&set->list);
- 		nft_use_dec(&table->use);
--		nft_set_destroy(set);
-+		nft_set_destroy(&ctx, set);
+-/* Only called from commit path, nft_set_elem_deactivate() already deals with
+- * the refcounting from the preparation phase.
++/* Only called from commit path, nft_setelem_data_deactivate() already deals
++ * with the refcounting from the preparation phase.
+  */
+ static void nf_tables_set_elem_destroy(const struct nft_ctx *ctx,
+ 				       const struct nft_set *set, void *elem)
+@@ -4919,9 +4919,9 @@ void nft_data_hold(const struct nft_data *data, enum nft_data_types type)
  	}
- 	list_for_each_entry_safe(obj, ne, &table->objects, list) {
- 		nft_obj_del(obj);
+ }
+ 
+-static void nft_set_elem_activate(const struct net *net,
+-				  const struct nft_set *set,
+-				  struct nft_set_elem *elem)
++static void nft_setelem_data_activate(const struct net *net,
++				      const struct nft_set *set,
++				      struct nft_set_elem *elem)
+ {
+ 	const struct nft_set_ext *ext = nft_set_elem_ext(set, elem->priv);
+ 
+@@ -4931,9 +4931,9 @@ static void nft_set_elem_activate(const struct net *net,
+ 		nft_use_inc_restore(&(*nft_set_ext_obj(ext))->use);
+ }
+ 
+-static void nft_set_elem_deactivate(const struct net *net,
+-				    const struct nft_set *set,
+-				    struct nft_set_elem *elem)
++static void nft_setelem_data_deactivate(const struct net *net,
++					const struct nft_set *set,
++					struct nft_set_elem *elem)
+ {
+ 	const struct nft_set_ext *ext = nft_set_elem_ext(set, elem->priv);
+ 
+@@ -5000,7 +5000,7 @@ static int nft_del_setelem(struct nft_ctx *ctx, struct nft_set *set,
+ 	kfree(elem.priv);
+ 	elem.priv = priv;
+ 
+-	nft_set_elem_deactivate(ctx->net, set, &elem);
++	nft_setelem_data_deactivate(ctx->net, set, &elem);
+ 
+ 	nft_trans_elem(trans) = elem;
+ 	nft_trans_commit_list_add_tail(ctx->net, trans);
+@@ -5034,7 +5034,7 @@ static int nft_flush_set(const struct nft_ctx *ctx,
+ 	}
+ 	set->ndeact++;
+ 
+-	nft_set_elem_deactivate(ctx->net, set, elem);
++	nft_setelem_data_deactivate(ctx->net, set, elem);
+ 	nft_trans_elem_set(trans) = set;
+ 	nft_trans_elem(trans) = *elem;
+ 	nft_trans_commit_list_add_tail(ctx->net, trans);
+@@ -7277,7 +7277,7 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 		case NFT_MSG_DELSETELEM:
+ 			te = (struct nft_trans_elem *)trans->data;
+ 
+-			nft_set_elem_activate(net, te->set, &te->elem);
++			nft_setelem_data_activate(net, te->set, &te->elem);
+ 			te->set->ops->activate(net, te->set, &te->elem);
+ 			te->set->ndeact--;
+ 
 -- 
 2.30.2
 
