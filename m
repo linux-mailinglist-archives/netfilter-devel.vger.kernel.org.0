@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F237F470E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88D77F4704
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbjKVMyw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
+        id S1343891AbjKVMyu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 07:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343895AbjKVMys (ORCPT
+        with ESMTP id S235111AbjKVMyq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:54:48 -0500
+        Wed, 22 Nov 2023 07:54:46 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F87AD71
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90BBD58
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=eSmks/Rb6Eej+jGCwX8PmHud+0dwuiF8GilSktgB2NA=; b=qbji7rUl+XeHcMrNfKEawnEKZY
-        3LfVSQfGXppDBeKoy4kgCfFmChAUxAz7IrIOsAnvfZkYprSoOIq0h7MqSyXrT1FwnnwuNTzn81Ng2
-        HzrwkaVYGHuufGJk1n3pYPXKX4o+8fqCqzYCcxcE8lQamJ5QjDM6ofM+nmGPBrdvsd+kd/65ekHCd
-        +aFuwSSyx0PnK03Lk0n0MXbJzDAKVyp4lj5uiabieq6m6Z960GB1JYwHxBXjCenBJecbHJWeVuT4h
-        Ios//h/5hqWL2FNz/ooDWmg6uI898IA7i7gBNoksO0QrEFiPhixaskn93Ah1xEMsiYmgfkpivHsHi
-        omPC7zQA==;
+        bh=3RyDtfJEZq6McpdY/zw/fcQtxh0gfeSyIdBYUC7huac=; b=B+j1tMIwxOziN+KEOO3KbWOKik
+        XOzhLuScirAJ5qFZ4CbGY+qH021EKLmSilLbvVhLw7/2CDo9zpr2PvuarZ6G/joqZxYqhsbBDyP8b
+        pxSJpZiShp1cUHuHc8l+k+09eJmT52cswkcfclSGODaiMxD7F7cEvif4Uq5X5x4FSLaKPlikPSbnh
+        F21hEO9OATeiA010q2yWrjivWvmAHgTfyNAR03zSqfsBdGhDgGjaet54ZWvOHSyWMrxc636q1EntK
+        8wlVCy595s02Cjomav8F3P65jU7FsLoyrxPZufZ0/CImVbdRzwFqTYz192p5zJQm1epl0lNqUvid1
+        XJR+5qhw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5mkX-0005Sg-KJ
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:37 +0100
+        id 1r5mkU-0005SH-VE
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:34 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 04/12] xshared: All variants support -v
-Date:   Wed, 22 Nov 2023 14:02:14 +0100
-Message-ID: <20231122130222.29453-5-phil@nwl.cc>
+Subject: [iptables PATCH 05/12] xshared: Drop needless assignment in --help case
+Date:   Wed, 22 Nov 2023 14:02:15 +0100
+Message-ID: <20231122130222.29453-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122130222.29453-1-phil@nwl.cc>
 References: <20231122130222.29453-1-phil@nwl.cc>
@@ -51,33 +51,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Update OPTSTRING_COMMON and remove the flag from *_OPTSTRING defines.
+Help text printing code does not refer to optarg, so there is no need to
+assign to it if unset.
 
-Fixes: 51d9d9e081344 ("ebtables: Support verbose mode")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ iptables/xshared.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index c77556a1987dc..815b9d3e98726 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -75,10 +75,10 @@ struct xtables_globals;
- struct xtables_rule_match;
- struct xtables_target;
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 5f75a0a57a023..53e72b7abb1e8 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -1527,9 +1527,6 @@ void do_parse(int argc, char *argv[],
+ 			break;
  
--#define OPTSTRING_COMMON "-:A:C:D:E:F::I:L::M:N:P:VX::Z::" "c:d:i:j:o:p:s:t:"
--#define IPT_OPTSTRING	OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nvw::x"
--#define ARPT_OPTSTRING	OPTSTRING_COMMON "R:S::" "h::l:nvx" /* "m:" */
--#define EBT_OPTSTRING	OPTSTRING_COMMON "hv"
-+#define OPTSTRING_COMMON "-:A:C:D:E:F::I:L::M:N:P:VX::Z::" "c:d:i:j:o:p:s:t:v"
-+#define IPT_OPTSTRING	OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nw::x"
-+#define ARPT_OPTSTRING	OPTSTRING_COMMON "R:S::" "h::l:nx" /* "m:" */
-+#define EBT_OPTSTRING	OPTSTRING_COMMON "h"
- 
- /* define invflags which won't collide with IPT ones.
-  * arptables-nft does NOT use the legacy ARPT_INV_* defines.
+ 		case 'h':
+-			if (!optarg)
+-				optarg = argv[optind];
+-
+ 			/* iptables -p icmp -h */
+ 			if (!cs->matches && cs->protocol)
+ 				xtables_find_match(cs->protocol,
 -- 
 2.41.0
 
