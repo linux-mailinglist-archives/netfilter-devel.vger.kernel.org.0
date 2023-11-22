@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E279F7F4701
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728007F46FF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343854AbjKVMyt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343879AbjKVMyq (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
+        id S234981AbjKVMyq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Wed, 22 Nov 2023 07:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231286AbjKVMyp (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 22 Nov 2023 07:54:45 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D24D54
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8934810C
         for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=pvWG3A4Yf5LYOoZptYJ1sMC2DLCEeDAmyKx2bE23xzU=; b=Qj736xNABUC/fDB86WGxEhbLbK
-        KtY+f0v1VNLB/FJnW7AiEDnqg5VrtEz11WcYGTVftjbVfN6A7B9dLtZ/xF9RBjcSmcD+JB+gqfKr9
-        4U5UpT4NwrqZ9CG1Iar6mLmiITK9APRtdKd3YdS07G3AMmuLq4hWqcSotzamivEFRv9P1Ao6gcpdz
-        G2Lz27E/bkfAkWSdPxPpwzbCkpGu6fq94JmaXVSBWGrmdPO+UaU7M86R8G6+JHsTysu1rXskEeLVx
-        wSM3AG+MfKN0sS/5OsF9ZW+glz/BCboqQH5Q20pE1GMFIkwE+9/a86eBvNvmtPZhwOWJd0PHy456d
-        m8IWgXSA==;
+        bh=5CR0iZqmVnzx6OwryvZsEG1/4wDokFx0FhGgP0EhYGo=; b=Km91QfWIlP6z8ki33ohfcl+aw4
+        99nZ+7pKAnU0Y1uI0sF9N7ZHdjVmoKxa0UTF0LWLeDIl85s0fZgjRWP5KhtxM4fJU4lBD38LzYgOX
+        E4U173j6+hk5ZtA8mJyFyOzihncJ8WZvK/EBB7+ZXCDcn/kPw+TtFmZfeu63A2bFjpT6aFlO7+xwT
+        +VP3Srnl6MWWbWDwUzGo9g5CzxfA/ckhlKBFZUoM2wb3Ij8HMXyeEP3tTc0ITra2lic7x6ckX7Fqe
+        NPrLBNQrD7cROS2bG9y/M6x7G/C1gT4kn5JToS+mDKNpXWlYuioU6PAgG7dowhSZVrB9/x3tee2uF
+        JLxtwvIQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5mkU-0005S5-2p
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:34 +0100
+        id 1r5mkT-0005S1-O8
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:33 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 09/12] ebtables: Make ebt_load_match_extensions() static
-Date:   Wed, 22 Nov 2023 14:02:19 +0100
-Message-ID: <20231122130222.29453-10-phil@nwl.cc>
+Subject: [iptables PATCH 10/12] ebtables: Align line number formatting with legacy
+Date:   Wed, 22 Nov 2023 14:02:20 +0100
+Message-ID: <20231122130222.29453-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122130222.29453-1-phil@nwl.cc>
 References: <20231122130222.29453-1-phil@nwl.cc>
@@ -51,39 +51,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The function is not used outside of xtables-eb.c.
+Legacy ebtables appends a dot to the number printed in first column if
+--Ln flag was given.
 
+Fixes: da871de2a6efb ("nft: bootstrap ebtables-compat")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-bridge.h | 1 -
- iptables/xtables-eb.c | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ iptables/nft-bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/iptables/nft-bridge.h b/iptables/nft-bridge.h
-index eb1b3928b6543..0e6a29650acca 100644
---- a/iptables/nft-bridge.h
-+++ b/iptables/nft-bridge.h
-@@ -115,7 +115,6 @@ static inline const char *ebt_target_name(unsigned int verdict)
- })								\
+diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
+index 772525e1b45a9..1fcdeaf2cad68 100644
+--- a/iptables/nft-bridge.c
++++ b/iptables/nft-bridge.c
+@@ -354,7 +354,7 @@ static void nft_bridge_print_rule(struct nft_handle *h, struct nftnl_rule *r,
+ 	struct iptables_command_state cs = {};
  
- void ebt_cs_clean(struct iptables_command_state *cs);
--void ebt_load_match_extensions(void);
- void ebt_add_match(struct xtables_match *m,
- 			  struct iptables_command_state *cs);
- void ebt_add_watcher(struct xtables_target *watcher,
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 3fa5c179ba4b1..cd45e0495ebcb 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -504,7 +504,7 @@ static void ebt_load_watcher(const char *name)
- 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
- }
+ 	if (format & FMT_LINENUMBERS)
+-		printf("%d ", num);
++		printf("%d. ", num);
  
--void ebt_load_match_extensions(void)
-+static void ebt_load_match_extensions(void)
- {
- 	opts = ebt_original_options;
- 	ebt_load_match("802_3");
+ 	nft_rule_to_ebtables_command_state(h, r, &cs);
+ 	__nft_bridge_save_rule(&cs, format);
 -- 
 2.41.0
 
