@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1077F4706
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F237F470E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343905AbjKVMyv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        id S1343884AbjKVMyw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 07:54:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343883AbjKVMyr (ORCPT
+        with ESMTP id S1343895AbjKVMys (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:54:47 -0500
+        Wed, 22 Nov 2023 07:54:48 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03055D60
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F87AD71
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=LOI67zIJViVUJPhdzYd4IViCPYV+IYYcwb3DOUO76Ns=; b=dW64jzb8kjgBKvJ1t56M+YBBwY
-        X7g8l3QXxEDifeBU9ybu6ocb2W6ql4sHteyl4a3+Rp6IxUOvk/txCMcVlq3F4SEGNiSUkfxoEWKhq
-        gWTarRKh/iOsoAEw6oXRlaSd9WQVLQfnE+skL49B6fVMpjPzwJtrh6vIfoKY0kBd9BEHpvyaQ195B
-        qKrxv9ocj4FINpjcPfxM/udkx6Ce3c7UEPahGBqCg5wK2pfB98I4I652LoA/qZvutGb+Ae0quBKmj
-        ZnoFunpCa+KR7ia1d0xmKgXOYqEZrwkR0L8/9LmY9mZd+KY6FTlcpmgynMQv5TgkkMpyCVR1iKOO4
-        9DFxeB/w==;
+        bh=eSmks/Rb6Eej+jGCwX8PmHud+0dwuiF8GilSktgB2NA=; b=qbji7rUl+XeHcMrNfKEawnEKZY
+        3LfVSQfGXppDBeKoy4kgCfFmChAUxAz7IrIOsAnvfZkYprSoOIq0h7MqSyXrT1FwnnwuNTzn81Ng2
+        HzrwkaVYGHuufGJk1n3pYPXKX4o+8fqCqzYCcxcE8lQamJ5QjDM6ofM+nmGPBrdvsd+kd/65ekHCd
+        +aFuwSSyx0PnK03Lk0n0MXbJzDAKVyp4lj5uiabieq6m6Z960GB1JYwHxBXjCenBJecbHJWeVuT4h
+        Ios//h/5hqWL2FNz/ooDWmg6uI898IA7i7gBNoksO0QrEFiPhixaskn93Ah1xEMsiYmgfkpivHsHi
+        omPC7zQA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5mkV-0005SL-8T
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:35 +0100
+        id 1r5mkX-0005Sg-KJ
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:37 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 03/12] xshared: struct xt_cmd_parse::xlate is unused
-Date:   Wed, 22 Nov 2023 14:02:13 +0100
-Message-ID: <20231122130222.29453-4-phil@nwl.cc>
+Subject: [iptables PATCH 04/12] xshared: All variants support -v
+Date:   Wed, 22 Nov 2023 14:02:14 +0100
+Message-ID: <20231122130222.29453-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122130222.29453-1-phil@nwl.cc>
 References: <20231122130222.29453-1-phil@nwl.cc>
@@ -51,42 +51,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Drop the boolean, it was meant to disable some existence checks in
-do_parse() prior to the caching rework. Now that do_parse() runs before
-any caching is done, the checks in question don't exist anymore so drop
-this relict.
+Update OPTSTRING_COMMON and remove the flag from *_OPTSTRING defines.
 
-Fixes: a7f1e208cdf9c ("nft: split parsing from netlink commands")
+Fixes: 51d9d9e081344 ("ebtables: Support verbose mode")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.h           | 1 -
- iptables/xtables-translate.c | 1 -
- 2 files changed, 2 deletions(-)
+ iptables/xshared.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 5586385456a4d..c77556a1987dc 100644
+index c77556a1987dc..815b9d3e98726 100644
 --- a/iptables/xshared.h
 +++ b/iptables/xshared.h
-@@ -284,7 +284,6 @@ struct xt_cmd_parse {
- 	bool				restore;
- 	int				line;
- 	int				verbose;
--	bool				xlate;
- 	struct xt_cmd_parse_ops		*ops;
- };
+@@ -75,10 +75,10 @@ struct xtables_globals;
+ struct xtables_rule_match;
+ struct xtables_target;
  
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index ea9dce204dfc9..ad44311230323 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -259,7 +259,6 @@ static int do_command_xlate(struct nft_handle *h, int argc, char *argv[],
- 		.table		= *table,
- 		.restore	= restore,
- 		.line		= line,
--		.xlate		= true,
- 		.ops		= &h->ops->cmd_parse,
- 	};
- 	struct iptables_command_state cs = {
+-#define OPTSTRING_COMMON "-:A:C:D:E:F::I:L::M:N:P:VX::Z::" "c:d:i:j:o:p:s:t:"
+-#define IPT_OPTSTRING	OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nvw::x"
+-#define ARPT_OPTSTRING	OPTSTRING_COMMON "R:S::" "h::l:nvx" /* "m:" */
+-#define EBT_OPTSTRING	OPTSTRING_COMMON "hv"
++#define OPTSTRING_COMMON "-:A:C:D:E:F::I:L::M:N:P:VX::Z::" "c:d:i:j:o:p:s:t:v"
++#define IPT_OPTSTRING	OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nw::x"
++#define ARPT_OPTSTRING	OPTSTRING_COMMON "R:S::" "h::l:nx" /* "m:" */
++#define EBT_OPTSTRING	OPTSTRING_COMMON "h"
+ 
+ /* define invflags which won't collide with IPT ones.
+  * arptables-nft does NOT use the legacy ARPT_INV_* defines.
 -- 
 2.41.0
 
