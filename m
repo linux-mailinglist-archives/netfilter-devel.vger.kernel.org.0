@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426EB7F52CE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 22:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006927F52C8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 22:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344443AbjKVVpF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 16:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        id S1344352AbjKVVpE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 16:45:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344369AbjKVVpC (ORCPT
+        with ESMTP id S1344326AbjKVVpC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 22 Nov 2023 16:45:02 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34021B9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234751A5
         for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 13:44:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=GPHnKpi5FXgxsAHyGPweaxU3/3bR/P21ZEzVOirDJAA=; b=IV/5QlSWAo2KkNKu2vXi//Y+/c
-        22yN0QifxrYyng4zUVpscJrSIaIaiiqV4bxBv6Hvd7sovt1L996nxdZkQSjxEn9UWVKt4UYgO4qWk
-        PlBq1A7xOKKfu3WbRRVzo44u2Q7803UlJUV4Fa3UR1hI5wAI/gHCT446PyLa5D1JOdxIudOI65Yve
-        y0y07VrHmIFb9OtIxHqRfo7k6bK5gbW+5ok1EfGvpBd99dvG/QnNqkIOpXCvYIRnGfo1Pp81TJ61/
-        TfYkjiGseDAoX2ydxLB1NJzqroq2mVMwTgplaEMLXa49zDx/hksc4i0h/dNR99STlsgvz75hzDUie
-        0dMa8L5Q==;
+        bh=kxrMuE3iBGMLlD/zKsDtzMnhgyNBOoFgc7/flDisW8c=; b=j1LnEacuh0RTmexGAGqoG6KDRs
+        piZdPb1/m6LgCi95RCyNU2iu9X/KUH59H1Whd6icFkXEQ3IVbz0w8p7Rf/lGp2US8ygSNme1+p6wK
+        G3Hj6U1eo0i2/5QKu+/gE6OI9qXNj2W+WnT/yGQYnkg0UM7Aau/wDFKOw1Tpwuf12y4x+8JhlB5aq
+        a7gzwxcSH7TZg+3qzuDVek1hO0FlvADaPcMJCeOitEJ5+0CROCV3cN3zbXWAu81QSCe9SoxSu/5bh
+        uoQlTgFevJMcz3A4y5LgVf82bOkmEXyn3K/t/V2LXCgkdioWU31hgocg9lRTfIkJ69zYCyx0icpSQ
+        sqK9jOMw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5v1l-0003ht-6A
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 22:44:57 +0100
+        id 1r5v1k-0003hf-6z
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 22:44:56 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/6] libxtables: Introduce xtables_strtoul_base()
-Date:   Wed, 22 Nov 2023 22:52:58 +0100
-Message-ID: <20231122215301.15725-4-phil@nwl.cc>
+Subject: [iptables PATCH 4/6] libxtables: Introduce struct xt_option_entry::base
+Date:   Wed, 22 Nov 2023 22:52:59 +0100
+Message-ID: <20231122215301.15725-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122215301.15725-1-phil@nwl.cc>
 References: <20231122215301.15725-1-phil@nwl.cc>
@@ -51,83 +51,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Semantically identical to xtables_strtoul() but accepts the base as
-parameter so callers may force it irrespective of number prefix. The old
-xtables_strtoul() becomes a shallow wrapper.
+Enable guided option parser users to parse integer values with a fixed
+base.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/xtables.h    |  2 ++
- libxtables/xtables.c | 16 +++++++++++-----
- 2 files changed, 13 insertions(+), 5 deletions(-)
+ include/xtables.h      | 3 ++-
+ libxtables/xtoptions.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/include/xtables.h b/include/xtables.h
-index 087a1d600f9ae..1a9e08bb131ab 100644
+index 1a9e08bb131ab..b3c45c981b1c7 100644
 --- a/include/xtables.h
 +++ b/include/xtables.h
-@@ -486,6 +486,8 @@ extern void xtables_register_matches(struct xtables_match *, unsigned int);
- extern void xtables_register_target(struct xtables_target *me);
- extern void xtables_register_targets(struct xtables_target *, unsigned int);
- 
-+extern bool xtables_strtoul_base(const char *, char **, uintmax_t *,
-+	uintmax_t, uintmax_t, unsigned int);
- extern bool xtables_strtoul(const char *, char **, uintmax_t *,
- 	uintmax_t, uintmax_t);
- extern bool xtables_strtoui(const char *, char **, unsigned int *,
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index ba9ceaeb3da41..b4339e8d31275 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -580,23 +580,23 @@ int xtables_load_ko(const char *modprobe, bool quiet)
- }
+@@ -122,6 +122,7 @@ enum xt_option_flags {
+  * @size:	size of the item pointed to by @ptroff; this is a safeguard
+  * @min:	lowest allowed value (for singular integral types)
+  * @max:	highest allowed value (for singular integral types)
++ * @base:	assumed base of parsed value for integer types (default 0)
+  */
+ struct xt_option_entry {
+ 	const char *name;
+@@ -129,7 +130,7 @@ struct xt_option_entry {
+ 	unsigned int id, excl, also, flags;
+ 	unsigned int ptroff;
+ 	size_t size;
+-	unsigned int min, max;
++	unsigned int min, max, base;
+ };
  
  /**
-- * xtables_strtou{i,l} - string to number conversion
-+ * xtables_strtoul_base - string to number conversion
-  * @s:	input string
-  * @end:	like strtoul's "end" pointer
-  * @value:	pointer for result
-  * @min:	minimum accepted value
-  * @max:	maximum accepted value
-+ * @base:	assumed base of value
-  *
-  * If @end is NULL, we assume the caller wants a "strict strtoul", and hence
-  * "15a" is rejected.
-  * In either case, the value obtained is compared for min-max compliance.
-- * Base is always 0, i.e. autodetect depending on @s.
-  *
-  * Returns true/false whether number was accepted. On failure, *value has
-  * undefined contents.
-  */
--bool xtables_strtoul(const char *s, char **end, uintmax_t *value,
--                     uintmax_t min, uintmax_t max)
-+bool xtables_strtoul_base(const char *s, char **end, uintmax_t *value,
-+			  uintmax_t min, uintmax_t max, unsigned int base)
- {
- 	uintmax_t v;
- 	const char *p;
-@@ -608,7 +608,7 @@ bool xtables_strtoul(const char *s, char **end, uintmax_t *value,
- 		;
- 	if (*p == '-')
- 		return false;
--	v = strtoumax(s, &my_end, 0);
-+	v = strtoumax(s, &my_end, base);
- 	if (my_end == s)
- 		return false;
- 	if (end != NULL)
-@@ -625,6 +625,12 @@ bool xtables_strtoul(const char *s, char **end, uintmax_t *value,
- 	return false;
- }
+diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
+index 25540f8b88c6d..4fd0e70e6b555 100644
+--- a/libxtables/xtoptions.c
++++ b/libxtables/xtoptions.c
+@@ -161,7 +161,8 @@ static void xtopt_parse_int(struct xt_option_call *cb)
+ 	if (cb->entry->max != 0)
+ 		lmax = cb->entry->max;
  
-+bool xtables_strtoul(const char *s, char **end, uintmax_t *value,
-+		     uintmax_t min, uintmax_t max)
-+{
-+	return xtables_strtoul_base(s, end, value, min, max, 0);
-+}
-+
- bool xtables_strtoui(const char *s, char **end, unsigned int *value,
-                      unsigned int min, unsigned int max)
- {
+-	if (!xtables_strtoul(cb->arg, NULL, &value, lmin, lmax))
++	if (!xtables_strtoul_base(cb->arg, NULL, &value,
++				  lmin, lmax, cb->entry->base))
+ 		xt_params->exit_err(PARAMETER_PROBLEM,
+ 			"%s: bad value for option \"--%s\", "
+ 			"or out of range (%ju-%ju).\n",
 -- 
 2.41.0
 
