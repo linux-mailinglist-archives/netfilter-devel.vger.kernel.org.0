@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E2E7F470D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1077F4706
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343909AbjKVMyx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S1343905AbjKVMyv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 07:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343893AbjKVMys (ORCPT
+        with ESMTP id S1343883AbjKVMyr (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:54:48 -0500
+        Wed, 22 Nov 2023 07:54:47 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FE2D6F
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03055D60
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=twUzJXjqeQmDhj9u1JpIXnNj/yB3+crEtpLkp81Y19U=; b=QoGi25jQtCMvNp5AU8wySEeY+1
-        mMLjQgps7+l5Uk+YP3DNPt+7XNhLttwafZ98Dlns0+ZJZ8vcUS98okV8Ra4anQSS/Nrf02YN46yf3
-        kGf+z5d9TKgcfzXm/M/zCfaiV+D11+mh3GqLRcRFlW+TVtmJqXSrdFCKf4FfvgldqJnf+12II77Ml
-        yEcYbFbNmlfdjSBaOHGpllJEP79ThmDTD9tlMjRGJPuM5z+Si1IoeV7hsLMFKxd96L4vtWwQk3dNT
-        VYkIkXO0bAL6TO8WXAuoB/Ogoa1c/EXwCuSjpJ0+FGHFswA5y9bxcITz1FxJZYJrgAkc/ZWD+DJ1W
-        5yxRT9gw==;
+        bh=LOI67zIJViVUJPhdzYd4IViCPYV+IYYcwb3DOUO76Ns=; b=dW64jzb8kjgBKvJ1t56M+YBBwY
+        X7g8l3QXxEDifeBU9ybu6ocb2W6ql4sHteyl4a3+Rp6IxUOvk/txCMcVlq3F4SEGNiSUkfxoEWKhq
+        gWTarRKh/iOsoAEw6oXRlaSd9WQVLQfnE+skL49B6fVMpjPzwJtrh6vIfoKY0kBd9BEHpvyaQ195B
+        qKrxv9ocj4FINpjcPfxM/udkx6Ce3c7UEPahGBqCg5wK2pfB98I4I652LoA/qZvutGb+Ae0quBKmj
+        ZnoFunpCa+KR7ia1d0xmKgXOYqEZrwkR0L8/9LmY9mZd+KY6FTlcpmgynMQv5TgkkMpyCVR1iKOO4
+        9DFxeB/w==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5mkW-0005SZ-L9
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:36 +0100
+        id 1r5mkV-0005SL-8T
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:35 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 02/12] nft-bridge: nft_bridge_add() uses wrong flags
-Date:   Wed, 22 Nov 2023 14:02:12 +0100
-Message-ID: <20231122130222.29453-3-phil@nwl.cc>
+Subject: [iptables PATCH 03/12] xshared: struct xt_cmd_parse::xlate is unused
+Date:   Wed, 22 Nov 2023 14:02:13 +0100
+Message-ID: <20231122130222.29453-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122130222.29453-1-phil@nwl.cc>
 References: <20231122130222.29453-1-phil@nwl.cc>
@@ -51,38 +51,42 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When checking whether -s or -d was given, invflags were used by
-accident. This change has no functional effect since the values remain
-the same, but this way it's clear where the previously assigned flags
-are used.
+Drop the boolean, it was meant to disable some existence checks in
+do_parse() prior to the caching rework. Now that do_parse() runs before
+any caching is done, the checks in question don't exist anymore so drop
+this relict.
 
-Fixes: 07f4ca9681688 ("xtables-compat: ebtables: allow checking for zero-mac")
+Fixes: a7f1e208cdf9c ("nft: split parsing from netlink commands")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-bridge.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ iptables/xshared.h           | 1 -
+ iptables/xtables-translate.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index d9a8ad2b0f373..772525e1b45a9 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -134,14 +134,14 @@ static int nft_bridge_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
- 	struct ebt_entry *fw = &cs->eb;
- 	uint32_t op;
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 5586385456a4d..c77556a1987dc 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -284,7 +284,6 @@ struct xt_cmd_parse {
+ 	bool				restore;
+ 	int				line;
+ 	int				verbose;
+-	bool				xlate;
+ 	struct xt_cmd_parse_ops		*ops;
+ };
  
--	if (fw->bitmask & EBT_ISOURCE) {
-+	if (fw->bitmask & EBT_SOURCEMAC) {
- 		op = nft_invflags2cmp(fw->invflags, EBT_ISOURCE);
- 		add_addr(h, r, NFT_PAYLOAD_LL_HEADER,
- 			 offsetof(struct ethhdr, h_source),
- 			 fw->sourcemac, fw->sourcemsk, ETH_ALEN, op);
- 	}
- 
--	if (fw->bitmask & EBT_IDEST) {
-+	if (fw->bitmask & EBT_DESTMAC) {
- 		op = nft_invflags2cmp(fw->invflags, EBT_IDEST);
- 		add_addr(h, r, NFT_PAYLOAD_LL_HEADER,
- 			 offsetof(struct ethhdr, h_dest),
+diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
+index ea9dce204dfc9..ad44311230323 100644
+--- a/iptables/xtables-translate.c
++++ b/iptables/xtables-translate.c
+@@ -259,7 +259,6 @@ static int do_command_xlate(struct nft_handle *h, int argc, char *argv[],
+ 		.table		= *table,
+ 		.restore	= restore,
+ 		.line		= line,
+-		.xlate		= true,
+ 		.ops		= &h->ops->cmd_parse,
+ 	};
+ 	struct iptables_command_state cs = {
 -- 
 2.41.0
 
