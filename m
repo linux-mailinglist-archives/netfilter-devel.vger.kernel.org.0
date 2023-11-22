@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 767EC7F4703
+	by mail.lfdr.de (Postfix) with ESMTP id 151717F4702
 	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343654AbjKVMyt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
+        id S1343890AbjKVMys (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 07:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343882AbjKVMyq (ORCPT
+        with ESMTP id S1343864AbjKVMyq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 22 Nov 2023 07:54:46 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E33DD52
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898E4D50
         for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=8FkQzjUrpaPvxneV9OnzQLsIVo2tydXssCId4Ed5F/M=; b=SzlcHSpU7LRWVB3d4vcfMCYlpI
-        a45qAL8ZmlARsx0XlyFhUEdXF5PICqBzoGJHRvVd3aDNL7Bp/IBFCndRaNTo0yMsJJtNTqZ44XY1H
-        SSJntw2K6D8O3dhLbLBASvDZ2sTQHfkhHGj2KlwzDFVob08JtIB2fyGgrWsoeo8M4HMNyEqPoFS1J
-        MVf2bbVQy4By91VZGmCh5L2uE09onpPrZQUkD7MNMTlVJj4/eTi928BvF/wMo170fLlIS2mL3vkAV
-        Z11T+TzwZfR3ukLGqO4/lWHYdfmowjywkWDl2c2NmQEpWAIOGfSFWwEGeOPG8GqboOk4qJ7tQWWAd
-        t1V+ZsEg==;
+        bh=6m20D6uRZp+aHrUYzF3NpYaYBq1c9kmMS0LxLNDgg4I=; b=Kgmjx/Su75uxDzumTWpfFXtLDW
+        P8seKdEVB6Yy+YvVbXgVltyTBltZtS+9BHRh3EJMIPRzS8yhu/P+l8qMlM7DulMjcXBhLqjWkqxgI
+        LSMK1TwAeAd27Y3urSiepnAHIbQbzr7DRyNeFoUk1QxZEtxyNLm2U+a9Uz3wimdrkiV1on7gAfWXp
+        yHX1cuZOs3QsDPR4uZ/EYu8VF04Zc0PyhHRqB62AJXDeO1bDcaE/S64yBYbCmZOd4fC2AO75fM8lb
+        evlCdvvFRnu5/+NkvqT3Fa0wfuZEfXXgT78hTIN+ojhFqJ5b9/rHGAZPBSPeGqa6ig/P7FU6Yhg91
+        0a6CJSjQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5mkS-0005Ro-RW
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:32 +0100
+        id 1r5mkT-0005Rt-4u
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:33 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 07/12] tests: xlate: Print failing command line
-Date:   Wed, 22 Nov 2023 14:02:17 +0100
-Message-ID: <20231122130222.29453-8-phil@nwl.cc>
+Subject: [iptables PATCH 08/12] ebtables: Drop append_entry() wrapper
+Date:   Wed, 22 Nov 2023 14:02:18 +0100
+Message-ID: <20231122130222.29453-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122130222.29453-1-phil@nwl.cc>
 References: <20231122130222.29453-1-phil@nwl.cc>
@@ -51,32 +51,58 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If the command segfaults, 'error' variable is empty and the resulting
-error message is even misleading as the called program may not have been
-iptables-translate.
+There is no point in having it when there is no code to share.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- xlate-test.py | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ iptables/xtables-eb.c | 26 ++++----------------------
+ 1 file changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/xlate-test.py b/xlate-test.py
-index ddd68b91d3a7e..b6a78bb250e27 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -41,9 +41,10 @@ xtables_nft_multi = 'xtables-nft-multi'
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index a8ad57c735cc5..3fa5c179ba4b1 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -112,24 +112,6 @@ static int parse_rule_number(const char *rule)
+ 	return rule_nr;
+ }
  
- 
- def test_one_xlate(name, sourceline, expected, result):
--    rc, output, error = run_proc([xtables_nft_multi] + shlex.split(sourceline))
-+    cmd = [xtables_nft_multi] + shlex.split(sourceline)
-+    rc, output, error = run_proc(cmd)
-     if rc != 0:
--        result.append(name + ": " + red("Error: ") + "iptables-translate failure")
-+        result.append(name + ": " + red("Error: ") + "Call failed: " + " ".join(cmd))
-         result.append(error)
-         return False
- 
+-static int
+-append_entry(struct nft_handle *h,
+-	     const char *chain,
+-	     const char *table,
+-	     struct iptables_command_state *cs,
+-	     int rule_nr,
+-	     bool verbose, bool append)
+-{
+-	int ret = 1;
+-
+-	if (append)
+-		ret = nft_cmd_rule_append(h, chain, table, cs, verbose);
+-	else
+-		ret = nft_cmd_rule_insert(h, chain, table, cs, rule_nr, verbose);
+-
+-	return ret;
+-}
+-
+ static int
+ delete_entry(struct nft_handle *h,
+ 	     const char *chain,
+@@ -1178,11 +1160,11 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 	} else if (command == 'F') {
+ 		ret = nft_cmd_rule_flush(h, chain, *table, flags & OPT_VERBOSE);
+ 	} else if (command == 'A') {
+-		ret = append_entry(h, chain, *table, &cs, 0,
+-				   flags & OPT_VERBOSE, true);
++		ret = nft_cmd_rule_append(h, chain, *table, &cs,
++					  flags & OPT_VERBOSE);
+ 	} else if (command == 'I') {
+-		ret = append_entry(h, chain, *table, &cs, rule_nr - 1,
+-				   flags & OPT_VERBOSE, false);
++		ret = nft_cmd_rule_insert(h, chain, *table, &cs,
++					  rule_nr - 1, flags & OPT_VERBOSE);
+ 	} else if (command == 'D') {
+ 		ret = delete_entry(h, chain, *table, &cs, rule_nr - 1,
+ 				   rule_nr_end, flags & OPT_VERBOSE);
 -- 
 2.41.0
 
