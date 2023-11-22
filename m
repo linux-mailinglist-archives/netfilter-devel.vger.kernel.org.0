@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 983BE7F52CF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 22:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C12F7F52CC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 22:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344312AbjKVVpF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 16:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S1344369AbjKVVpG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 16:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344379AbjKVVpD (ORCPT
+        with ESMTP id S1344372AbjKVVpD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 22 Nov 2023 16:45:03 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDAEA9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779F31BF
         for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 13:44:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=a7dnBRgKsRt3OHYJlROxvHWcMlmyZCQvqB8kJkzxIqQ=; b=lyJ0ZBmW1xZ9bsF3eCNtmAAdrI
-        /VH+O3SHrIJr92y7UgI8T3TqcKfzJPgSi7Xr+Ynsazaaau9LX2xsLkr/CRthV56I3rnWSnkJ/TbL0
-        gbFJICrnhrfNovUZRX4N4dbWF3AOz6UPgHrXuhsUVoR2f2w24qE4vX6bzhvBTRsUra/neSUTdVb7T
-        KUwECnGe0dYXnoy2nTNLf+jpv78zW2OE0e5WC3RAY3jwxnpClH3dKtjkdsTe5hNxnMxbkAx26slgm
-        +fmHG/TclaJJavomDals1/CAEwB+zFiBzZ0GJsgeEw8K4eToB2KtP1wNgiWF5s2jJdDrQO9gpyLRc
-        Iveixkcg==;
+        bh=Ak9Ldh0Cg94LV58WoreEC07xO562loBXRmOP2kyoX34=; b=f8a3gnZbbfIsmeoWs14lagAt67
+        /gYsFROlIW0wT62AkcggiJU2KuaJvKvRDCad2XfkEORd7pkDTadzRw65KkZ/8QdkZcjZgTW89Q8+T
+        KzjNyMU/aYPCr2Pbg4FOGR+o4vKtNZCxpRt0B4vjKQn8ll5474CGiywF8mjXO2PIIosZOjpnq1EPU
+        z1tfahViZGMmsmUCpqY7evmgkRcSRFPcVrjDHzDhWyvrZvcCX6mDBteiSlqkztfdzDzZpXG1HR/FF
+        YAxnlIgviVXbtxiEoQ0tT5bnw7LBwK4j4UvdWZHDwIos9w1ZCMk0QeRee6Z9qchu1KsEPEvJCEnlx
+        IEDiM87Q==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5v1l-0003hy-Gg
+        id 1r5v1l-0003i2-Qj
         for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 22:44:57 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/6] libxtables: Combine the two extension option mergers
-Date:   Wed, 22 Nov 2023 22:52:56 +0100
-Message-ID: <20231122215301.15725-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/6] libxtables: Fix guided option parser for use with arptables
+Date:   Wed, 22 Nov 2023 22:52:57 +0100
+Message-ID: <20231122215301.15725-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122215301.15725-1-phil@nwl.cc>
 References: <20231122215301.15725-1-phil@nwl.cc>
@@ -51,86 +51,84 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-For extending the command parser's struct option array, there is
-xtables_merge_options() and xtables_options_xfrm(). Since their bodies
-were almost identical, make the latter a wrapper of the former by
-transforming the passed struct xt_option_entry array into a temporary
-struct option one before handing over.
+With an unexpected value in afinfo->family, guided option parser was
+rather useless when called from arptables extensions. Introduce
+afinfo_family() wrapper to sanitize at least NFPROTO_ARP value.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- libxtables/xtoptions.c | 51 +++++++-----------------------------------
- 1 file changed, 8 insertions(+), 43 deletions(-)
+ libxtables/xtoptions.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
-index b16bbfbe32311..0667315ceccf8 100644
+index 0667315ceccf8..25540f8b88c6d 100644
 --- a/libxtables/xtoptions.c
 +++ b/libxtables/xtoptions.c
-@@ -73,56 +73,21 @@ struct option *
- xtables_options_xfrm(struct option *orig_opts, struct option *oldopts,
- 		     const struct xt_option_entry *entry, unsigned int *offset)
+@@ -65,6 +65,19 @@ static const size_t xtopt_psize[] = {
+ 	[XTTYPE_ETHERMAC]    = sizeof(uint8_t[6]),
+ };
+ 
++/**
++ * Return a sanitized afinfo->family value, covering for NFPROTO_ARP
++ */
++static uint8_t afinfo_family(void)
++{
++	switch (afinfo->family) {
++	case NFPROTO_ARP:
++		return NFPROTO_IPV4;
++	default:
++		return afinfo->family;
++	}
++}
++
+ /**
+  * Creates getopt options from the x6-style option map, and assigns each a
+  * getopt id.
+@@ -461,7 +474,7 @@ static socklen_t xtables_sa_hostlen(unsigned int afproto)
+  */
+ static void xtopt_parse_host(struct xt_option_call *cb)
  {
--	unsigned int num_orig, num_old = 0, num_new, i;
-+	int num_new, i;
- 	struct option *merge, *mp;
+-	struct addrinfo hints = {.ai_family = afinfo->family};
++	struct addrinfo hints = {.ai_family = afinfo_family()};
+ 	unsigned int adcount = 0;
+ 	struct addrinfo *res, *p;
+ 	int ret;
+@@ -472,7 +485,7 @@ static void xtopt_parse_host(struct xt_option_call *cb)
+ 			"getaddrinfo: %s\n", gai_strerror(ret));
  
--	if (entry == NULL)
--		return oldopts;
--	for (num_orig = 0; orig_opts[num_orig].name != NULL; ++num_orig)
--		;
--	if (oldopts != NULL)
--		for (num_old = 0; oldopts[num_old].name != NULL; ++num_old)
--			;
- 	for (num_new = 0; entry[num_new].name != NULL; ++num_new)
- 		;
+ 	memset(&cb->val.hmask, 0xFF, sizeof(cb->val.hmask));
+-	cb->val.hlen = (afinfo->family == NFPROTO_IPV4) ? 32 : 128;
++	cb->val.hlen = (afinfo_family() == NFPROTO_IPV4) ? 32 : 128;
  
--	/*
--	 * Since @oldopts also has @orig_opts already (and does so at the
--	 * start), skip these entries.
--	 */
--	if (oldopts != NULL) {
--		oldopts += num_orig;
--		num_old -= num_orig;
--	}
--
--	merge = malloc(sizeof(*mp) * (num_orig + num_old + num_new + 1));
--	if (merge == NULL)
--		return NULL;
--
--	/* Let the base options -[ADI...] have precedence over everything */
--	memcpy(merge, orig_opts, sizeof(*mp) * num_orig);
--	mp = merge + num_orig;
--
--	/* Second, the new options */
--	xt_params->option_offset += XT_OPTION_OFFSET_SCALE;
--	*offset = xt_params->option_offset;
--
--	for (i = 0; i < num_new; ++i, ++mp, ++entry) {
--		mp->name         = entry->name;
--		mp->has_arg      = entry->type != XTTYPE_NONE;
--		mp->flag         = NULL;
--		mp->val          = entry->id + *offset;
--	}
--
--	/* Third, the old options */
--	if (oldopts != NULL) {
--		memcpy(mp, oldopts, sizeof(*mp) * num_old);
--		mp += num_old;
-+	mp = xtables_calloc(num_new, sizeof(*mp));
-+	for (i = 0; i < num_new; i++) {
-+		mp[i].name	= entry[i].name;
-+		mp[i].has_arg	= entry[i].type != XTTYPE_NONE;
-+		mp[i].val	= entry[i].id;
- 	}
--	xtables_free_opts(0);
-+	merge = xtables_merge_options(orig_opts, oldopts, mp, offset);
+ 	for (p = res; p != NULL; p = p->ai_next) {
+ 		if (adcount == 0) {
+@@ -615,7 +628,7 @@ static void xtopt_parse_mport(struct xt_option_call *cb)
  
--	/* Clear trailing entry */
--	memset(mp, 0, sizeof(*mp));
-+	free(mp);
- 	return merge;
- }
+ static int xtopt_parse_mask(struct xt_option_call *cb)
+ {
+-	struct addrinfo hints = {.ai_family = afinfo->family,
++	struct addrinfo hints = {.ai_family = afinfo_family(),
+ 				 .ai_flags = AI_NUMERICHOST };
+ 	struct addrinfo *res;
+ 	int ret;
+@@ -627,7 +640,7 @@ static int xtopt_parse_mask(struct xt_option_call *cb)
+ 	memcpy(&cb->val.hmask, xtables_sa_host(res->ai_addr, res->ai_family),
+ 	       xtables_sa_hostlen(res->ai_family));
  
+-	switch(afinfo->family) {
++	switch(afinfo_family()) {
+ 	case AF_INET:
+ 		cb->val.hlen = xtables_ipmask_to_cidr(&cb->val.hmask.in);
+ 		break;
+@@ -649,7 +662,7 @@ static void xtopt_parse_plen(struct xt_option_call *cb)
+ 	const struct xt_option_entry *entry = cb->entry;
+ 	unsigned int prefix_len = 128; /* happiness is a warm gcc */
+ 
+-	cb->val.hlen = (afinfo->family == NFPROTO_IPV4) ? 32 : 128;
++	cb->val.hlen = (afinfo_family() == NFPROTO_IPV4) ? 32 : 128;
+ 	if (!xtables_strtoui(cb->arg, NULL, &prefix_len, 0, cb->val.hlen)) {
+ 		/* Is this mask expressed in full format? e.g. 255.255.255.0 */
+ 		if (xtopt_parse_mask(cb))
 -- 
 2.41.0
 
