@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3F57F4708
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E2E7F470D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Nov 2023 13:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343883AbjKVMyw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Nov 2023 07:54:52 -0500
+        id S1343909AbjKVMyx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Nov 2023 07:54:53 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343884AbjKVMyr (ORCPT
+        with ESMTP id S1343893AbjKVMys (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:54:47 -0500
+        Wed, 22 Nov 2023 07:54:48 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1737819D
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FE2D6F
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Nov 2023 04:54:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=zT7EnA9xkGqJ62ueSnC9ZYRuNqDSJMAX6zk3gXRgrVQ=; b=Q+PWO5TtJ7UoaRW7b0svCNn5Ah
-        JrITj7lV6XX2URGhG80j5AF6FAahLXFkv2fJlSaiAiBqdLQ1vjEPf7yNLJ9rgcA8iDMhLwTgVMvGF
-        PH5R4UiOsISuAty7qyhkxTYXiA9sV/Nyw1NUShFUPN6nJy/oj6n/NwXuQ8wmbTuAR5IQ/MsokqVeH
-        F7YgLovIt9vsJ3errXQmiWMD5k/zgE8NPS+s0oVJdDHRFJ+EuPfu2howIMlBGjeL9epurGuxfsgST
-        edBfBDG0bwxkGSW1Fik3Nv3qs43Kln5lja9CjS+qDSYxlqAacJRvqngGg8WSfi4sRbDMSndgIVm+Z
-        vg7m8Xsg==;
+        bh=twUzJXjqeQmDhj9u1JpIXnNj/yB3+crEtpLkp81Y19U=; b=QoGi25jQtCMvNp5AU8wySEeY+1
+        mMLjQgps7+l5Uk+YP3DNPt+7XNhLttwafZ98Dlns0+ZJZ8vcUS98okV8Ra4anQSS/Nrf02YN46yf3
+        kGf+z5d9TKgcfzXm/M/zCfaiV+D11+mh3GqLRcRFlW+TVtmJqXSrdFCKf4FfvgldqJnf+12II77Ml
+        yEcYbFbNmlfdjSBaOHGpllJEP79ThmDTD9tlMjRGJPuM5z+Si1IoeV7hsLMFKxd96L4vtWwQk3dNT
+        VYkIkXO0bAL6TO8WXAuoB/Ogoa1c/EXwCuSjpJ0+FGHFswA5y9bxcITz1FxJZYJrgAkc/ZWD+DJ1W
+        5yxRT9gw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1r5mkU-0005S9-Bw
-        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:34 +0100
+        id 1r5mkW-0005SZ-L9
+        for netfilter-devel@vger.kernel.org; Wed, 22 Nov 2023 13:54:36 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 01/12] Makefile: Install arptables-translate link and man page
-Date:   Wed, 22 Nov 2023 14:02:11 +0100
-Message-ID: <20231122130222.29453-2-phil@nwl.cc>
+Subject: [iptables PATCH 02/12] nft-bridge: nft_bridge_add() uses wrong flags
+Date:   Wed, 22 Nov 2023 14:02:12 +0100
+Message-ID: <20231122130222.29453-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231122130222.29453-1-phil@nwl.cc>
 References: <20231122130222.29453-1-phil@nwl.cc>
@@ -51,88 +51,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-While at it, introduce a variable to hold the various semantic links to
-xtables-translate.8 man page.
+When checking whether -s or -d was given, invflags were used by
+accident. This change has no functional effect since the values remain
+the same, but this way it's clear where the previously assigned flags
+are used.
 
-Fixes: 5b7324e0675e3 ("nft-arp: add arptables-translate")
+Fixes: 07f4ca9681688 ("xtables-compat: ebtables: allow checking for zero-mac")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/Makefile.am         | 11 +++++++----
- iptables/xtables-translate.8 | 12 ++++++++----
- 2 files changed, 15 insertions(+), 8 deletions(-)
+ iptables/nft-bridge.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/iptables/Makefile.am b/iptables/Makefile.am
-index 8a7227024987f..0f8b430c20213 100644
---- a/iptables/Makefile.am
-+++ b/iptables/Makefile.am
-@@ -69,10 +69,12 @@ man_MANS         = iptables.8 iptables-restore.8 iptables-save.8 \
- dist_sbin_SCRIPTS = iptables-apply
- dist_pkgdata_DATA = iptables.xslt
+diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
+index d9a8ad2b0f373..772525e1b45a9 100644
+--- a/iptables/nft-bridge.c
++++ b/iptables/nft-bridge.c
+@@ -134,14 +134,14 @@ static int nft_bridge_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	struct ebt_entry *fw = &cs->eb;
+ 	uint32_t op;
  
-+xlate_man_links = iptables-translate.8 ip6tables-translate.8 \
-+		  iptables-restore-translate.8 ip6tables-restore-translate.8 \
-+		  ebtables-translate.8 arptables-translate.8
-+
- if ENABLE_NFTABLES
--man_MANS	+= iptables-translate.8 ip6tables-translate.8 \
--		   iptables-restore-translate.8 ip6tables-restore-translate.8 \
--		   xtables-monitor.8 ebtables-translate.8
-+man_MANS	+= ${xlate_man_links} xtables-monitor.8
+-	if (fw->bitmask & EBT_ISOURCE) {
++	if (fw->bitmask & EBT_SOURCEMAC) {
+ 		op = nft_invflags2cmp(fw->invflags, EBT_ISOURCE);
+ 		add_addr(h, r, NFT_PAYLOAD_LL_HEADER,
+ 			 offsetof(struct ethhdr, h_source),
+ 			 fw->sourcemac, fw->sourcemsk, ETH_ALEN, op);
+ 	}
  
- dist_man_MANS	 = xtables-nft.8 xtables-translate.8 xtables-legacy.8 \
- 		   arptables-nft.8 arptables-nft-restore.8 arptables-nft-save.8 \
-@@ -97,6 +99,7 @@ x_sbin_links  = iptables-nft iptables-nft-restore iptables-nft-save \
- 		arptables-nft arptables \
- 		arptables-nft-restore arptables-restore \
- 		arptables-nft-save arptables-save \
-+		arptables-translate \
- 		ebtables-nft ebtables \
- 		ebtables-nft-restore ebtables-restore \
- 		ebtables-nft-save ebtables-save \
-@@ -108,7 +111,7 @@ iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../e
- 		-e '/@MATCH@/ r ../extensions/matches.man' \
- 		-e '/@TARGET@/ r ../extensions/targets.man' $< >$@;
- 
--iptables-translate.8 ip6tables-translate.8 iptables-restore-translate.8 ip6tables-restore-translate.8 ebtables-translate.8:
-+${xlate_man_links}:
- 	${AM_VERBOSE_GEN} echo '.so man8/xtables-translate.8' >$@
- 
- ip6tables.8 ip6tables-apply.8 ip6tables-restore.8 ip6tables-save.8:
-diff --git a/iptables/xtables-translate.8 b/iptables/xtables-translate.8
-index ba16c5257c4a5..fe1278874b4da 100644
---- a/iptables/xtables-translate.8
-+++ b/iptables/xtables-translate.8
-@@ -30,10 +30,12 @@ iptables-translate \(em translation tool to migrate from iptables to nftables
- ip6tables-translate \(em translation tool to migrate from ip6tables to nftables
- .P
- ebtables-translate \(em translation tool to migrate from ebtables to nftables
-+.P
-+arptables-translate \(em translation tool to migrate from arptables to nftables
- .SH DESCRIPTION
- There is a set of tools to help the system administrator translate a given
--ruleset from \fBiptables(8)\fP, \fBip6tables(8)\fP and \fBebtables(8)\fP to
--\fBnftables(8)\fP.
-+ruleset from \fBiptables(8)\fP, \fBip6tables(8)\fP, \fBebtables(8)\fP and
-+\fBarptables(8)\fP to \fBnftables(8)\fP.
- 
- The available commands are:
- 
-@@ -47,11 +49,13 @@ ip6tables\-translate
- ip6tables\-restore\-translate
- .IP \[bu] 2
- ebtables\-translate
-+.IP \[bu] 2
-+arptables\-translate
- 
- .SH USAGE
- They take as input the original
--\fBiptables(8)\fP/\fBip6tables(8)\fP/\fBebtables(8)\fP syntax and
--output the native \fBnftables(8)\fP syntax.
-+\fBiptables(8)\fP/\fBip6tables(8)\fP/\fBebtables(8)\fP/\fBarptables(8)\fP
-+syntax and output the native \fBnftables(8)\fP syntax.
- 
- The \fBiptables-restore-translate\fP tool reads a ruleset in the syntax
- produced by \fBiptables-save(8)\fP. Likewise, the
+-	if (fw->bitmask & EBT_IDEST) {
++	if (fw->bitmask & EBT_DESTMAC) {
+ 		op = nft_invflags2cmp(fw->invflags, EBT_IDEST);
+ 		add_addr(h, r, NFT_PAYLOAD_LL_HEADER,
+ 			 offsetof(struct ethhdr, h_dest),
 -- 
 2.41.0
 
