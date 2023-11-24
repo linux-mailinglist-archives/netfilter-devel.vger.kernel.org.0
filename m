@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-27-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-25-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 904617F725C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 12:04:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5F777F725A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 12:04:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478991F20F39
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 11:04:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9004A28175A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 11:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07E11A733;
-	Fri, 24 Nov 2023 11:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB0B5247;
+	Fri, 24 Nov 2023 11:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="oHYAyJbM"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Oj9aqZsh"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C316D72
-	for <netfilter-devel@vger.kernel.org>; Fri, 24 Nov 2023 03:04:18 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F2ED67
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 Nov 2023 03:04:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=8CLQgAc9ncq55DtctCxf0V1FLy5fp4ynFw7NmnAlf5U=; b=oHYAyJbMphQj3eg41hw1HEBuAZ
-	T3SogI3ROvHHbuZRRoQFWJeHFPmV7qR4lk4PBmh4HfqbEq5p+6nS+kiO/nwGi0dWhUlE7tFIPaSjl
-	RNEaSnmwVqTMLBiBoVDds60+z/C87+Cyn5T5SvKFZ6Kofzrt86w8mCDBDyn5FrhX35XPzQyn97v5G
-	SR9Lkauy9rMRYkwj2Q/q6H0lVcsVuefYUwMB/mIxYAJJD/pJJTQ/5Ds4YuyoR43HjETwbzVIcZJp4
-	RD8ph8T3YKXq++i0wEop/F4QUWrkr4rc2L8MgATq49vYgFwa/LVssqCqhwXymIbOIW0eNl/XPTfzS
-	wmzNwYHw==;
+	bh=JjQ/8KKwJxFgvvLJeiYSKpE3wLDnJgNvps4S+O0PhEE=; b=Oj9aqZsh6YGDNGnENijwG2XQRo
+	DpNlmIhMKGFrpXyrtXdp928OzYj6bw4ay66PXDJTU4Ydg/BLMZ+Jw3kfW3WjJapWOOGIGamUH7a4G
+	1wjoMUOwRdX6PVkAPdDFirfmwfI5Rz9DeotWj9UFGJUUEMS6PKPVF36T2NF30BgEqjEiS1AJuUmKf
+	Mq2qmogPDBcWcO7nk01Pch//XKjrPMk++sysm33TZdjDThUn9aKUJ2D5VDXMEUBMO60z0L0AY7/Ue
+	XgC9lE1fxDXsVYSSGHn1xaLdoe/ldPl5WV86BcM9JlFL/7EeVuYbvaeRBcMuQerdAa+C4nN9T8lPp
+	A/QOOurw==;
 Received: from localhost ([::1] helo=minime)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r6Tyq-0002J7-Ru
+	id 1r6Typ-0002Iz-Vq
 	for netfilter-devel@vger.kernel.org; Fri, 24 Nov 2023 12:04:16 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/3] xshared: Introduce xt_cmd_parse_ops::option_invert
-Date: Fri, 24 Nov 2023 12:13:24 +0100
-Message-ID: <20231124111325.5221-3-phil@nwl.cc>
+Subject: [iptables PATCH 3/3] xshared: Simplify generic_opt_check()
+Date: Fri, 24 Nov 2023 12:13:25 +0100
+Message-ID: <20231124111325.5221-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231124111325.5221-1-phil@nwl.cc>
 References: <20231124111325.5221-1-phil@nwl.cc>
@@ -51,183 +51,117 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace the awkward inverse_for_options array with basically a few
-switch() statements clearly identifying the relation between option and
-inverse values and relieve callers from having to find the option flag
-bit's position.
+The option/command matrix does not contain any '+' entries anymore, so
+each option/command combination is either allowed (and optional) or not.
+
+Reduce the matrix to an array of unsigned ints which specify the
+commands a given option is allowed with.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c |  1 +
- iptables/iptables.c  |  1 +
- iptables/nft-arp.c   | 14 ++++++++++++++
- iptables/nft-ipv4.c  |  1 +
- iptables/nft-ipv6.c  |  1 +
- iptables/xshared.c   | 38 ++++++++++++++------------------------
- iptables/xshared.h   |  2 ++
- 7 files changed, 34 insertions(+), 24 deletions(-)
+ iptables/xshared.c | 77 +++++++++++++++++-----------------------------
+ 1 file changed, 28 insertions(+), 49 deletions(-)
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 85cb211d2ec12..08da04b456787 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -670,6 +670,7 @@ int do_command6(int argc, char *argv[], char **table,
- 		.proto_parse	= ipv6_proto_parse,
- 		.post_parse	= ipv6_post_parse,
- 		.option_name	= ip46t_option_name,
-+		.option_invert	= ip46t_option_invert,
- 	};
- 	struct xt_cmd_parse p = {
- 		.table		= *table,
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 4bfce62dd5d86..a73e8eed9028a 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -664,6 +664,7 @@ int do_command4(int argc, char *argv[], char **table,
- 		.proto_parse	= ipv4_proto_parse,
- 		.post_parse	= ipv4_post_parse,
- 		.option_name	= ip46t_option_name,
-+		.option_invert	= ip46t_option_invert,
- 	};
- 	struct xt_cmd_parse p = {
- 		.table		= *table,
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index 6f8e1952db3b8..c009dd83e26cf 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -832,6 +832,19 @@ static const char *nft_arp_option_name(int option)
- 	}
- }
- 
-+static int nft_arp_option_invert(int option)
-+{
-+	switch (option) {
-+	case OPT_S_MAC:		return IPT_INV_SRCDEVADDR;
-+	case OPT_D_MAC:		return IPT_INV_TGTDEVADDR;
-+	case OPT_H_LENGTH:	return IPT_INV_ARPHLN;
-+	case OPT_OPCODE:	return IPT_INV_ARPOP;
-+	case OPT_H_TYPE:	return IPT_INV_ARPHRD;
-+	case OPT_P_TYPE:	return IPT_INV_PROTO;
-+	default:		return ip46t_option_invert(option);
-+	}
-+}
-+
- struct nft_family_ops nft_family_ops_arp = {
- 	.add			= nft_arp_add,
- 	.is_same		= nft_arp_is_same,
-@@ -844,6 +857,7 @@ struct nft_family_ops nft_family_ops_arp = {
- 	.cmd_parse		= {
- 		.post_parse	= nft_arp_post_parse,
- 		.option_name	= nft_arp_option_name,
-+		.option_invert	= nft_arp_option_invert,
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.init_cs		= nft_arp_init_cs,
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 166680b3eb07c..7fb71ed4a8056 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -354,6 +354,7 @@ struct nft_family_ops nft_family_ops_ipv4 = {
- 		.proto_parse	= ipv4_proto_parse,
- 		.post_parse	= ipv4_post_parse,
- 		.option_name	= ip46t_option_name,
-+		.option_invert	= ip46t_option_invert,
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.clear_cs		= xtables_clear_iptables_command_state,
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 2cc45944f6c04..bb417356629a9 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -345,6 +345,7 @@ struct nft_family_ops nft_family_ops_ipv6 = {
- 		.proto_parse	= ipv6_proto_parse,
- 		.post_parse	= ipv6_post_parse,
- 		.option_name	= ip46t_option_name,
-+		.option_invert	= ip46t_option_invert,
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.clear_cs		= xtables_clear_iptables_command_state,
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 31a3019592317..f939a988fa59d 100644
+index f939a988fa59d..ca17479811df3 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -1003,27 +1003,18 @@ const char *ip46t_option_name(int option)
- 	}
+@@ -920,67 +920,46 @@ static int parse_rulenumber(const char *rule)
+ 	return rulenum;
  }
  
--static const int inverse_for_options[NUMBER_OF_OPT] =
-+int ip46t_option_invert(int option)
+-/* Table of legal combinations of commands and options.  If any of the
+- * given commands make an option legal, that option is legal (applies to
+- * CMD_LIST and CMD_ZERO only).
+- * Key:
+- *  +  compulsory
+- *  x  illegal
+- *     optional
+- */
+-static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
+-/* Well, it's better than "Re: Linux vs FreeBSD" */
+-{
+-	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f 2 3 l 4 5 6 */
+-/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
+-/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x','x','x','x','x','x','x'},
+-/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x','x','x','x','x','x','x'},
+-/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
+-/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
++/* list the commands an option is allowed with */
++#define CMD_IDRAC	CMD_INSERT | CMD_DELETE | CMD_REPLACE | \
++			CMD_APPEND | CMD_CHECK
++static const unsigned int options_v_commands[NUMBER_OF_OPT] = {
++/*OPT_NUMERIC*/		CMD_LIST,
++/*OPT_SOURCE*/		CMD_IDRAC,
++/*OPT_DESTINATION*/	CMD_IDRAC,
++/*OPT_PROTOCOL*/	CMD_IDRAC,
++/*OPT_JUMP*/		CMD_IDRAC,
++/*OPT_VERBOSE*/		UINT_MAX,
++/*OPT_EXPANDED*/	CMD_LIST,
++/*OPT_VIANAMEIN*/	CMD_IDRAC,
++/*OPT_VIANAMEOUT*/	CMD_IDRAC,
++/*OPT_LINENUMBERS*/	CMD_LIST,
++/*OPT_COUNTERS*/	CMD_INSERT | CMD_REPLACE | CMD_APPEND | CMD_SET_POLICY,
++/*OPT_FRAGMENT*/	CMD_IDRAC,
++/*OPT_S_MAC*/		CMD_IDRAC,
++/*OPT_D_MAC*/		CMD_IDRAC,
++/*OPT_H_LENGTH*/	CMD_IDRAC,
++/*OPT_OPCODE*/		CMD_IDRAC,
++/*OPT_H_TYPE*/		CMD_IDRAC,
++/*OPT_P_TYPE*/		CMD_IDRAC,
+ };
++#undef CMD_IDRAC
+ 
+ static void generic_opt_check(struct xt_cmd_parse_ops *ops,
+ 			      int command, int options)
  {
--/* -n */ 0,
--/* -s */ IPT_INV_SRCIP,
--/* -d */ IPT_INV_DSTIP,
--/* -p */ XT_INV_PROTO,
--/* -j */ 0,
--/* -v */ 0,
--/* -x */ 0,
--/* -i */ IPT_INV_VIA_IN,
--/* -o */ IPT_INV_VIA_OUT,
--/*--line*/ 0,
--/* -c */ 0,
--/* -f */ IPT_INV_FRAG,
--/* 2 */ IPT_INV_SRCDEVADDR,
--/* 3 */ IPT_INV_TGTDEVADDR,
--/* -l */ IPT_INV_ARPHLN,
--/* 4 */ IPT_INV_ARPOP,
--/* 5 */ IPT_INV_ARPHRD,
--/* 6 */ IPT_INV_PROTO,
--};
-+	switch (option) {
-+	case OPT_SOURCE:	return IPT_INV_SRCIP;
-+	case OPT_DESTINATION:	return IPT_INV_DSTIP;
-+	case OPT_PROTOCOL:	return XT_INV_PROTO;
-+	case OPT_VIANAMEIN:	return IPT_INV_VIA_IN;
-+	case OPT_VIANAMEOUT:	return IPT_INV_VIA_OUT;
-+	case OPT_FRAGMENT:	return IPT_INV_FRAG;
-+	default:		return -1;
-+	}
-+}
+-	int i, j, legal = 0;
++	int i, optval;
  
- static void
- set_option(struct xt_cmd_parse_ops *ops,
-@@ -1037,14 +1028,13 @@ set_option(struct xt_cmd_parse_ops *ops,
- 	*options |= option;
- 
- 	if (invert) {
--		unsigned int i;
--		for (i = 0; 1 << i != option; i++);
-+		int invopt = ops->option_invert(option);
- 
--		if (!inverse_for_options[i])
-+		if (invopt < 0)
+ 	/* Check that commands are valid with options. Complicated by the
+ 	 * fact that if an option is legal with *any* command given, it is
+ 	 * legal overall (ie. -z and -l).
+ 	 */
+-	for (i = 0; i < NUMBER_OF_OPT; i++) {
+-		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
+-
+-		for (j = 0; j < NUMBER_OF_CMD; j++) {
+-			if (!(command & (1<<j)))
+-				continue;
+-
+-			if (!(options & (1<<i))) {
+-				if (commands_v_options[j][i] == '+')
+-					xtables_error(PARAMETER_PROBLEM,
+-						      "You need to supply the `%s' option for this command",
+-						      ops->option_name(1<<i));
+-			} else {
+-				if (commands_v_options[j][i] != 'x')
+-					legal = 1;
+-				else if (legal == 0)
+-					legal = -1;
+-			}
+-		}
+-		if (legal == -1)
++	for (i = 0, optval = 1; i < NUMBER_OF_OPT; optval = (1 << ++i)) {
++		if ((options & optval) &&
++		    (options_v_commands[i] & command) != command)
  			xtables_error(PARAMETER_PROBLEM,
- 				      "cannot have ! before %s",
- 				      ops->option_name(option));
--		*invflg |= inverse_for_options[i];
-+		*invflg |= invopt;
+ 				      "Illegal option `%s' with this command",
+-				      ops->option_name(1<<i));
++				      ops->option_name(optval));
  	}
  }
  
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 2470acbb46b7d..28efd73cf470a 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -274,6 +274,7 @@ struct xt_cmd_parse_ops {
- 			      struct iptables_command_state *cs,
- 			      struct xtables_args *args);
- 	const char *(*option_name)(int option);
-+	int	(*option_invert)(int option);
- };
- 
- struct xt_cmd_parse {
-@@ -290,6 +291,7 @@ struct xt_cmd_parse {
- };
- 
- const char *ip46t_option_name(int option);
-+int ip46t_option_invert(int option);
- 
- void do_parse(int argc, char *argv[],
- 	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
 -- 
 2.41.0
 
