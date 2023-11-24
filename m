@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-65-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-51-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2054C7F84B1
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 20:28:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9311D7F8498
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 20:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C298828C0F0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 19:28:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3423AB28204
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 19:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563693A8E0;
-	Fri, 24 Nov 2023 19:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1B139FEA;
+	Fri, 24 Nov 2023 19:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="J9XImoJM"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ei4kC60V"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D7D33076;
-	Fri, 24 Nov 2023 19:28:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF31C433C7;
-	Fri, 24 Nov 2023 19:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0B928DBB;
+	Fri, 24 Nov 2023 19:28:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE23AC433C8;
+	Fri, 24 Nov 2023 19:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700854129;
-	bh=y3VC7sFgLNCbZVrKvLWtnhpEI0thfgj/FZOeOklv0j4=;
+	s=korg; t=1700854094;
+	bh=mgxJFFTi3bhwE/ceZbNm3sJQMpiMtBvZTLWTrk7by/w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=J9XImoJMmkuGcO2JpSGWYr/CcKWH3Hc2c+TefLINjzNR4zOJddrjVggW4+0KBa0rT
-	 jR984pvw8ZznyysxzcilJ0O4qq3yqpCMdGkLrDabwiYOgeTM0c4fm6ijAi3S4dLneA
-	 wIwyfIA8r3RO915KHHv5gpF+SaggPZ4AM6zut9uw=
+	b=Ei4kC60VIzh6kruzSc25+06xEeiwSS6x2EL9ydewDinHvtnUEZ5il4Z2JoZAIlSoj
+	 +pxYn/a7OxLh5pF3zsSx4EJ9hZRbI7E42GpJ44gtTMeFYg1vVxjiDTUFe44Wf3m7mc
+	 WxzGFEO+Gs6ItsmO1BO2asd9f30OfM+ONeNj1gIo=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org,
 	netfilter-devel@vger.kernel.org
@@ -36,9 +36,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>
-Subject: [PATCH 5.4 145/159] netfilter: nf_tables: fix GC transaction races with netns and netlink event exit path
-Date: Fri, 24 Nov 2023 17:56:02 +0000
-Message-ID: <20231124171947.830097689@linuxfoundation.org>
+Subject: [PATCH 5.4 146/159] netfilter: nf_tables: GC transaction race with netns dismantle
+Date: Fri, 24 Nov 2023 17:56:03 +0000
+Message-ID: <20231124171947.874417474@linuxfoundation.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231124171941.909624388@linuxfoundation.org>
 References: <20231124171941.909624388@linuxfoundation.org>
@@ -59,84 +59,36 @@ Content-Transfer-Encoding: 8bit
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 6a33d8b73dfac0a41f3877894b38082bd0c9a5bc upstream.
+commit 02c6c24402bf1c1e986899c14ba22a10b510916b upstream.
 
-Netlink event path is missing a synchronization point with GC
-transactions. Add GC sequence number update to netns release path and
-netlink event path, any GC transaction losing race will be discarded.
+Use maybe_get_net() since GC workqueue might race with netns exit path.
 
 Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_tables_api.c |   29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -7178,6 +7178,22 @@ static void nf_tables_commit_release(str
- 	mutex_unlock(&nft_net->commit_mutex);
- }
+@@ -7052,9 +7052,14 @@ struct nft_trans_gc *nft_trans_gc_alloc(
+ 	if (!trans)
+ 		return NULL;
  
-+static unsigned int nft_gc_seq_begin(struct nftables_pernet *nft_net)
-+{
-+	unsigned int gc_seq;
++	trans->net = maybe_get_net(net);
++	if (!trans->net) {
++		kfree(trans);
++		return NULL;
++	}
 +
-+	/* Bump gc counter, it becomes odd, this is the busy mark. */
-+	gc_seq = READ_ONCE(nft_net->gc_seq);
-+	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
-+
-+	return gc_seq;
-+}
-+
-+static void nft_gc_seq_end(struct nftables_pernet *nft_net, unsigned int gc_seq)
-+{
-+	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
-+}
-+
- static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- {
- 	struct nftables_pernet *nft_net = net_generic(net, nf_tables_net_id);
-@@ -7242,9 +7258,7 @@ static int nf_tables_commit(struct net *
- 	while (++nft_net->base_seq == 0)
- 		;
+ 	refcount_inc(&set->refs);
+ 	trans->set = set;
+-	trans->net = get_net(net);
+ 	trans->seq = gc_seq;
  
--	/* Bump gc counter, it becomes odd, this is the busy mark. */
--	gc_seq = READ_ONCE(nft_net->gc_seq);
--	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
-+	gc_seq = nft_gc_seq_begin(nft_net);
- 
- 	/* step 3. Start new generation, rules_gen_X now in use. */
- 	net->nft.gencursor = nft_gencursor_next(net);
-@@ -7386,7 +7400,7 @@ static int nf_tables_commit(struct net *
- 
- 	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
- 
--	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
-+	nft_gc_seq_end(nft_net, gc_seq);
- 	nf_tables_commit_release(net);
- 
- 	return 0;
-@@ -8256,11 +8270,18 @@ static void __net_exit nf_tables_pre_exi
- static void __net_exit nf_tables_exit_net(struct net *net)
- {
- 	struct nftables_pernet *nft_net = net_generic(net, nf_tables_net_id);
-+	unsigned int gc_seq;
- 
- 	mutex_lock(&nft_net->commit_mutex);
-+
-+	gc_seq = nft_gc_seq_begin(nft_net);
-+
- 	if (!list_empty(&nft_net->commit_list))
- 		__nf_tables_abort(net, NFNL_ABORT_NONE);
- 	__nft_release_tables(net);
-+
-+	nft_gc_seq_end(nft_net, gc_seq);
-+
- 	mutex_unlock(&nft_net->commit_mutex);
- 	WARN_ON_ONCE(!list_empty(&nft_net->tables));
- 	WARN_ON_ONCE(!list_empty(&nft_net->module_list));
+ 	return trans;
 
 
 
