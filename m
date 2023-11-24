@@ -1,44 +1,43 @@
-Return-Path: <netfilter-devel+bounces-64-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-52-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CEF87F84B2
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 20:28:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B257F8496
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 20:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBD63B289D6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 19:28:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F09E428BE2D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 19:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293C839FFA;
-	Fri, 24 Nov 2023 19:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C1739FE8;
+	Fri, 24 Nov 2023 19:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PeWhH/XT"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eRKNZUIb"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0002539FEA;
-	Fri, 24 Nov 2023 19:28:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31BEDC433C7;
-	Fri, 24 Nov 2023 19:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03812C1A2;
+	Fri, 24 Nov 2023 19:28:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B7A1C433C8;
+	Fri, 24 Nov 2023 19:28:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700854126;
-	bh=vFHS9QQ5nUcX6zCL7Kr9lTIHaDJM0jFHQa5d0A3gZwI=;
+	s=korg; t=1700854096;
+	bh=ZIUQaLKxcdX8152UpZBoQZ/HEwN/PKXbtUvPp218UEQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PeWhH/XTOwuXwjWd1zuhhnHl3IV6RuyJ4NBvN9MnzRTCQM70/8LK7UBtq+iQBG5Rb
-	 QxQwjGUcjG0AorlBw/lXf5SO44eEyNzVCljgfTLJ1/zTVukm5x0KWCC3qnIReyBlfu
-	 jq+l73uTAlJHRNo+5AIxa9gWidFdTmqMN7OYKm1A=
+	b=eRKNZUIbWtiyjPAxJmG3Qr9oM0KT0BzGGqjTLwF7Ez2kgB+gp5VNFMEJe6D1H+wYM
+	 L5MatNdwijQPPgYmX5Wrsr9pAtCNv3mgrzQVbHjpB+/up4UmIN0EB7AO0sck2hefTt
+	 JMtpebyiUD6mR+CYDyCLJdoWlRPBMsAllPtcYIhg=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org,
 	netfilter-devel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
-	syzbot+e918523f77e62790d6d9@syzkaller.appspotmail.com,
 	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 154/159] netfilter: nf_tables: unregister flowtable hooks on netns exit
-Date: Fri, 24 Nov 2023 17:56:11 +0000
-Message-ID: <20231124171948.192831203@linuxfoundation.org>
+Subject: [PATCH 5.4 155/159] netfilter: nf_tables: double hook unregistration in netns path
+Date: Fri, 24 Nov 2023 17:56:12 +0000
+Message-ID: <20231124171948.242563153@linuxfoundation.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231124171941.909624388@linuxfoundation.org>
 References: <20231124171941.909624388@linuxfoundation.org>
@@ -59,84 +58,122 @@ Content-Transfer-Encoding: 8bit
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 6069da443bf65f513bb507bb21e2f87cfb1ad0b6 upstream.
+commit f9a43007d3f7ba76d5e7f9421094f00f2ef202f8 upstream.
 
-Unregister flowtable hooks before they are releases via
-nf_tables_flowtable_destroy() otherwise hook core reports UAF.
+__nft_release_hooks() is called from pre_netns exit path which
+unregisters the hooks, then the NETDEV_UNREGISTER event is triggered
+which unregisters the hooks again.
 
-BUG: KASAN: use-after-free in nf_hook_entries_grow+0x5a7/0x700 net/netfilter/core.c:142 net/netfilter/core.c:142
-Read of size 4 at addr ffff8880736f7438 by task syz-executor579/3666
+[  565.221461] WARNING: CPU: 18 PID: 193 at net/netfilter/core.c:495 __nf_unregister_net_hook+0x247/0x270
+[...]
+[  565.246890] CPU: 18 PID: 193 Comm: kworker/u64:1 Tainted: G            E     5.18.0-rc7+ #27
+[  565.253682] Workqueue: netns cleanup_net
+[  565.257059] RIP: 0010:__nf_unregister_net_hook+0x247/0x270
+[...]
+[  565.297120] Call Trace:
+[  565.300900]  <TASK>
+[  565.304683]  nf_tables_flowtable_event+0x16a/0x220 [nf_tables]
+[  565.308518]  raw_notifier_call_chain+0x63/0x80
+[  565.312386]  unregister_netdevice_many+0x54f/0xb50
 
-CPU: 0 PID: 3666 Comm: syz-executor579 Not tainted 5.16.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- __dump_stack lib/dump_stack.c:88 [inline] lib/dump_stack.c:106
- dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106 lib/dump_stack.c:106
- print_address_description+0x65/0x380 mm/kasan/report.c:247 mm/kasan/report.c:247
- __kasan_report mm/kasan/report.c:433 [inline]
- __kasan_report mm/kasan/report.c:433 [inline] mm/kasan/report.c:450
- kasan_report+0x19a/0x1f0 mm/kasan/report.c:450 mm/kasan/report.c:450
- nf_hook_entries_grow+0x5a7/0x700 net/netfilter/core.c:142 net/netfilter/core.c:142
- __nf_register_net_hook+0x27e/0x8d0 net/netfilter/core.c:429 net/netfilter/core.c:429
- nf_register_net_hook+0xaa/0x180 net/netfilter/core.c:571 net/netfilter/core.c:571
- nft_register_flowtable_net_hooks+0x3c5/0x730 net/netfilter/nf_tables_api.c:7232 net/netfilter/nf_tables_api.c:7232
- nf_tables_newflowtable+0x2022/0x2cf0 net/netfilter/nf_tables_api.c:7430 net/netfilter/nf_tables_api.c:7430
- nfnetlink_rcv_batch net/netfilter/nfnetlink.c:513 [inline]
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
- nfnetlink_rcv_batch net/netfilter/nfnetlink.c:513 [inline] net/netfilter/nfnetlink.c:652
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline] net/netfilter/nfnetlink.c:652
- nfnetlink_rcv+0x10e6/0x2550 net/netfilter/nfnetlink.c:652 net/netfilter/nfnetlink.c:652
+Unregister and destroy netdev hook from netns pre_exit via kfree_rcu
+so the NETDEV_UNREGISTER path see unregistered hooks.
 
-__nft_release_hook() calls nft_unregister_flowtable_net_hooks() which
-only unregisters the hooks, then after RCU grace period, it is
-guaranteed that no packets add new entries to the flowtable (no flow
-offload rules and flowtable hooks are reachable from packet path), so it
-is safe to call nf_flow_table_free() which cleans up the remaining
-entries from the flowtable (both software and hardware) and it unbinds
-the flow_block.
-
-Fixes: ff4bf2f42a40 ("netfilter: nf_tables: add nft_unregister_flowtable_hook()")
-Reported-by: syzbot+e918523f77e62790d6d9@syzkaller.appspotmail.com
+Fixes: 767d1216bff8 ("netfilter: nftables: fix possible UAF over chains from packet path in netns")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_tables_api.c |   18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ net/netfilter/nf_tables_api.c    |   34 +++++++++++++++++++++++++++-------
+ net/netfilter/nft_chain_filter.c |    3 +++
+ 2 files changed, 30 insertions(+), 7 deletions(-)
 
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -8186,16 +8186,24 @@ int __nft_release_basechain(struct nft_c
+@@ -219,9 +219,10 @@ static int nf_tables_register_hook(struc
+ 	return nf_register_net_hook(net, ops);
  }
- EXPORT_SYMBOL_GPL(__nft_release_basechain);
  
-+static void __nft_release_hook(struct net *net, struct nft_table *table)
-+{
-+	struct nft_flowtable *flowtable;
-+	struct nft_chain *chain;
-+
-+	list_for_each_entry(chain, &table->chains, list)
-+		nf_tables_unregister_hook(net, table, chain);
-+	list_for_each_entry(flowtable, &table->flowtables, list)
-+		nft_unregister_flowtable_net_hooks(net, flowtable);
+-static void nf_tables_unregister_hook(struct net *net,
+-				      const struct nft_table *table,
+-				      struct nft_chain *chain)
++static void __nf_tables_unregister_hook(struct net *net,
++					const struct nft_table *table,
++					struct nft_chain *chain,
++					bool release_netdev)
+ {
+ 	const struct nft_base_chain *basechain;
+ 	const struct nf_hook_ops *ops;
+@@ -236,6 +237,16 @@ static void nf_tables_unregister_hook(st
+ 		return basechain->type->ops_unregister(net, ops);
+ 
+ 	nf_unregister_net_hook(net, ops);
++	if (release_netdev &&
++	    table->family == NFPROTO_NETDEV)
++		nft_base_chain(chain)->ops.dev = NULL;
 +}
 +
- static void __nft_release_hooks(struct net *net)
- {
- 	struct nftables_pernet *nft_net = net_generic(net, nf_tables_net_id);
- 	struct nft_table *table;
--	struct nft_chain *chain;
- 
--	list_for_each_entry(table, &nft_net->tables, list) {
--		list_for_each_entry(chain, &table->chains, list)
--			nf_tables_unregister_hook(net, table, chain);
--	}
-+	list_for_each_entry(table, &nft_net->tables, list)
-+		__nft_release_hook(net, table);
++static void nf_tables_unregister_hook(struct net *net,
++				      const struct nft_table *table,
++				      struct nft_chain *chain)
++{
++	__nf_tables_unregister_hook(net, table, chain, false);
  }
  
- static void __nft_release_table(struct net *net, struct nft_table *table)
+ static int nft_trans_table_add(struct nft_ctx *ctx, int msg_type)
+@@ -5997,8 +6008,9 @@ nft_flowtable_type_get(struct net *net,
+ 	return ERR_PTR(-ENOENT);
+ }
+ 
+-static void nft_unregister_flowtable_net_hooks(struct net *net,
+-					       struct nft_flowtable *flowtable)
++static void __nft_unregister_flowtable_net_hooks(struct net *net,
++						 struct nft_flowtable *flowtable,
++						 bool release_netdev)
+ {
+ 	int i;
+ 
+@@ -6007,9 +6019,17 @@ static void nft_unregister_flowtable_net
+ 			continue;
+ 
+ 		nf_unregister_net_hook(net, &flowtable->ops[i]);
++		if (release_netdev)
++			flowtable->ops[i].dev = NULL;
+ 	}
+ }
+ 
++static void nft_unregister_flowtable_net_hooks(struct net *net,
++					       struct nft_flowtable *flowtable)
++{
++	__nft_unregister_flowtable_net_hooks(net, flowtable, false);
++}
++
+ static int nf_tables_newflowtable(struct net *net, struct sock *nlsk,
+ 				  struct sk_buff *skb,
+ 				  const struct nlmsghdr *nlh,
+@@ -8192,9 +8212,9 @@ static void __nft_release_hook(struct ne
+ 	struct nft_chain *chain;
+ 
+ 	list_for_each_entry(chain, &table->chains, list)
+-		nf_tables_unregister_hook(net, table, chain);
++		__nf_tables_unregister_hook(net, table, chain, true);
+ 	list_for_each_entry(flowtable, &table->flowtables, list)
+-		nft_unregister_flowtable_net_hooks(net, flowtable);
++		__nft_unregister_flowtable_net_hooks(net, flowtable, true);
+ }
+ 
+ static void __nft_release_hooks(struct net *net)
+--- a/net/netfilter/nft_chain_filter.c
++++ b/net/netfilter/nft_chain_filter.c
+@@ -296,6 +296,9 @@ static void nft_netdev_event(unsigned lo
+ 		if (strcmp(basechain->dev_name, dev->name) != 0)
+ 			return;
+ 
++		if (!basechain->ops.dev)
++			return;
++
+ 		/* UNREGISTER events are also happpening on netns exit.
+ 		 *
+ 		 * Altough nf_tables core releases all tables/chains, only
 
 
 
