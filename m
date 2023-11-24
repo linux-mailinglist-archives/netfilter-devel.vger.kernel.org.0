@@ -1,76 +1,87 @@
-Return-Path: <netfilter-devel+bounces-24-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-26-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCBC7F722F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 11:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78DA17F725B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 12:04:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF9E91C20A4A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 10:59:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3021C20B35
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 11:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3024199B3;
-	Fri, 24 Nov 2023 10:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6091A712;
+	Fri, 24 Nov 2023 11:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="JiseBQme"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nXX+d9Xl"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C96D46;
-	Fri, 24 Nov 2023 02:59:15 -0800 (PST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
-	t=1700823553; bh=hQv1mFn0xf2droBvF8tHfDYDAZXFwZfl7wiNr1flmI8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=JiseBQmeqh9av05ZxnOz2/iu9m8oniFN9hqR8xAPBUQdIMYNF/mkc96qv6guifQER
-	 rnf8gERnNT996BZtBp8lsYWxKbXrTvgjals6KllWR+1ik0V+LryNfYAuPnRbmGePuf
-	 r+kZI9RStw3QWvoIQmwVXbGYbFHG5KL+zpM3NAW1ncHVen5qWwPsK72w8Uwws4REFL
-	 Z7qCixahKlgjy3+4y+hdka4yeobztQqdIvG4VcXEeZyzjLcdh6KG07HB8TC4b3ITxn
-	 kkpqgaq1qEHLAKQ1QJEhjfsZQoIt06TASoWFc0aR0Z5jzUq4J3x/RsG2AyLVeaN7ku
-	 vY6WHFFXiDEFQ==
-To: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Cc: lorenzo@kernel.org, netdev@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH nf-next 7/8] netfilter: nf_tables: add flowtable map for
- xdp offload
-In-Reply-To: <20231121122800.13521-8-fw@strlen.de>
-References: <20231121122800.13521-1-fw@strlen.de>
- <20231121122800.13521-8-fw@strlen.de>
-Date: Fri, 24 Nov 2023 11:59:13 +0100
-X-Clacks-Overhead: GNU Terry Pratchett
-Message-ID: <87il5re7su.fsf@toke.dk>
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFE9D53
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 Nov 2023 03:04:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=K3TcdqOvvyJ0nOupYqNN+hj31Xea6VK9R3u/4CyATs8=; b=nXX+d9Xl2xYDVznvIdHtz02fvA
+	1X+0XYnLcIXKoDhtuSilq4p4lHic/ravP1eYiJxszeW/iWmOIz1TAn9BDnyCifLigLqXt6uIdlhIH
+	dQuKUL15/gN3iEXTU7dPSNIpsIVdwyrb91ipI3MOFz9tM4shEC/6aRIKRzGe6hOkuaQ1fe+vp3OAJ
+	hUV9i6ra6gaWxGbr7Vnke4ypcfvgGnv8HSIQCvQ+bMkKc8InRQ0msV3JnwoVGfy//VxAg89bQ1o2l
+	uuKz1XHRQIt9WBRDW+bVGblT4c9TnJbFZrwf1Iu8eDLAkr/gQJmAk1nIjouO6B9WInd0LPZiHslbT
+	TNCFuG7A==;
+Received: from localhost ([::1] helo=minime)
+	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1r6Typ-0002Iu-GP
+	for netfilter-devel@vger.kernel.org; Fri, 24 Nov 2023 12:04:15 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/3] xshared: Review option parsing
+Date: Fri, 24 Nov 2023 12:13:22 +0100
+Message-ID: <20231124111325.5221-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Florian Westphal <fw@strlen.de> writes:
+Faced with the need to extend optflags, inverse_for_options and
+commands_v_options arrays in order to integrate ebtables-specific
+options, I chose to get rid of them all instead.
 
-> A device cannot be added to multiple flowtables, the mapping needs
-> to be unique.  This is enforced when a flowtables with the
-> NF_FLOWTABLE_XDP_OFFLOAD was added.
->
-> Exposure of this NF_FLOWTABLE_XDP_OFFLOAD in UAPI could be avoided,
-> iff the 'net_device maps to 0 or 1 flowtable' paradigm is enforced
-> regardless of offload-or-not flag.
->
-> HOWEVER, that does break existing behaviour.
+Patch 1 replaces opt2char() function which didn't work well since not
+every option has printable short-option character. The callback-based
+replacement returns the long-option and should make error messages more
+readable this way.
 
-I am not a huge fan of this flag, especially not as UAPI. Using the XDP
-offload functionality is already an explicit opt-in by userspace (you
-need to load the XDP program). So adding a second UAPI flag that you
-have to set for the flowtable to be compatible with XDP seems to just
-constrain things needlessly (and is bound to lead to bugs)?
+Patch 2 elminates the inverse_for_options array along with the loop
+turning a given option into its bit's position for use in the array. The
+switch statement in the replacing callback is much easier to maintain
+and extend.
 
-If we can't change the behaviour, we could change the lookup mechanism?
-BPF is pretty flexible, nothing says it has to use an ifindex as the
-lookup key? The neatest thing would be to have some way for userspace to
-directly populate a reference to the flowtable struct in a map, but a
-simpler solution would be to just introduce an opaque ID for each
-flowtable instance and use that as the lookup key (userspace could
-trivially put that into a map for the BPF program to find)?
+Patch 3 makes use of the fact that no command has a mandatory option
+anymore. So every combination is either allowed or not, and a single bit
+may indicate that.
 
--Toke
+Phil Sutter (3):
+  xshared: Introduce xt_cmd_parse_ops::option_name
+  xshared: Introduce xt_cmd_parse_ops::option_invert
+  xshared: Simplify generic_opt_check()
+
+ iptables/ip6tables.c |   2 +
+ iptables/iptables.c  |   2 +
+ iptables/nft-arp.c   |  32 ++++++
+ iptables/nft-ipv4.c  |   2 +
+ iptables/nft-ipv6.c  |   2 +
+ iptables/xshared.c   | 249 ++++++++++++++++++++-----------------------
+ iptables/xshared.h   |   6 ++
+ 7 files changed, 159 insertions(+), 136 deletions(-)
+
+-- 
+2.41.0
+
 
