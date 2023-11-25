@@ -1,92 +1,72 @@
-Return-Path: <netfilter-devel+bounces-56-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-66-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFF97F84A0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 20:28:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F6677F8931
+	for <lists+netfilter-devel@lfdr.de>; Sat, 25 Nov 2023 09:26:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 635C31F218C3
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Nov 2023 19:28:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3B3F281762
+	for <lists+netfilter-devel@lfdr.de>; Sat, 25 Nov 2023 08:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F63539FE7;
-	Fri, 24 Nov 2023 19:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9405F9443;
+	Sat, 25 Nov 2023 08:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cMCt/0Tv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uWO1yBW5"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE9438DD5;
-	Fri, 24 Nov 2023 19:28:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65255C433C8;
-	Fri, 24 Nov 2023 19:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700854106;
-	bh=PoQwOY+p+i7AIvJrKP6iMVyUvCZG6dcvTfMZABmm0UA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cMCt/0TvsLHenRamdPoR7x0zYkZkZSsotRq9Wod4YuFSRSUiZFVsNFynk+12C4fQk
-	 jFgnvBuzXojmXJ1QTvhQPTxBdxjNTSgkFxj5AU1Axuwx60hQbdN0o7W1HBAPilrszC
-	 N+8simzGHOdDyHBBRm9LrqmLlGjWJ0ZmSaugZo6E=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org,
-	netfilter-devel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 159/159] netfilter: nf_tables: bogus EBUSY when deleting flowtable after flush (for 5.4)
-Date: Fri, 24 Nov 2023 17:56:16 +0000
-Message-ID: <20231124171948.409928439@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231124171941.909624388@linuxfoundation.org>
-References: <20231124171941.909624388@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F57C4435;
+	Sat, 25 Nov 2023 08:26:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCAE0C433C7;
+	Sat, 25 Nov 2023 08:26:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700900765;
+	bh=UmvJtQeVyTEfjGE1mQII1hztZYXgnO19cdovN/4Ks2s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uWO1yBW5T11Ah5soLyxJte9xozXYqraPHIBk6049mz0Eu810D3PqvCTtr2wUZ4O6L
+	 2A9aqEhPqpkauHRngkRJMGWceLmFWLyHYmlivn5441RZ1d9cgfCSOG4vuB+0FLIeKe
+	 ZaXIQH49kMOGURs7zQUhMNEnnwb7LLz6pEKrHPTLshORUvWlLU62ip3mAvcb45jA1z
+	 fyMJMooh3oikTR2ikUYstmMjtgIZs8WOEna13fuIboPlp/ccrNtWudRL3s91/aELUy
+	 xZfUIWFeLozAOn+zujQVTBtmkeK/xYjVkXrvAyTbzzhnF8zuM1kXIINal+CsxUvrAj
+	 NEb9mSLw69+LQ==
+Date: Sat, 25 Nov 2023 08:26:01 +0000
+From: Simon Horman <horms@kernel.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org, lorenzo@kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH nf-next 1/8] netfilter: flowtable: move nf_flowtable out
+ of container structures
+Message-ID: <20231125082601.GA84723@kernel.org>
+References: <20231121122800.13521-1-fw@strlen.de>
+ <20231121122800.13521-2-fw@strlen.de>
+ <20231123135213.GE6339@kernel.org>
+ <20231123141051.GA13062@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123141051.GA13062@breakpoint.cc>
 
-5.4-stable review patch.  If anyone has any objections, please let me know.
+On Thu, Nov 23, 2023 at 03:10:51PM +0100, Florian Westphal wrote:
+> Simon Horman <horms@kernel.org> wrote:
+> > > -	err = nf_flow_table_init(&ct_ft->nf_ft);
+> > > +	ct_ft->nf_ft = kzalloc(sizeof(*ct_ft->nf_ft), GFP_KERNEL);
+> > > +	if (!ct_ft->nf_ft)
+> > > +		goto err_alloc;
+> > 
+> > Hi Florian,
+> > 
+> > This branch will cause the function to return err, but err is 0 here.
+> > Perhaps it should be set to a negative error value instead?
+> 
+> Yes, this should fail with -ENOMEM.
 
-------------------
-
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-
-3f0465a9ef02 ("netfilter: nf_tables: dynamically allocate hooks per
-net_device in flowtables") reworks flowtable support to allow for
-dynamic allocation of hooks, which implicitly fixes the following
-bogus EBUSY in transaction:
-
-  delete flowtable
-  add flowtable # same flowtable with same devices, it hits EBUSY
-
-This patch does not exist in any tree, but it fixes this issue for
--stable Linux kernel 5.4
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/netfilter/nf_tables_api.c |    3 +++
- 1 file changed, 3 insertions(+)
-
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6132,6 +6132,9 @@ static int nf_tables_newflowtable(struct
- 			continue;
- 
- 		list_for_each_entry(ft, &table->flowtables, list) {
-+			if (!nft_is_active_next(net, ft))
-+				continue;
-+
- 			for (k = 0; k < ft->ops_len; k++) {
- 				if (!ft->ops[k].dev)
- 					continue;
-
-
+Thanks, I will send a patch.
 
