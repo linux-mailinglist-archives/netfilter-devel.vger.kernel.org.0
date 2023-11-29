@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-110-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-113-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0312A7FD7B0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A8C7FD7B4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:16:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABF6B282A33
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BEF1282510
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F7D1F94B;
-	Wed, 29 Nov 2023 13:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A5A2032C;
+	Wed, 29 Nov 2023 13:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ThQ6fLny"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="qXU5iilx"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E23810A
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:40 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313E51A8
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=LX03F5ZwCADDJEyWZ6+uuGTjpov9WP0rhX6xumsVnhM=; b=ThQ6fLnyoc/EVmoh8Is7FO9JPN
-	P1troriTRbcS52Y+2vgMd7JksQgcDEZcLgP9bfxUx4UuJj146gJz8BwI6eUbVAD0J6dy0lkpyuoen
-	QWXN1qXLM7RNvNfAPC+N1O+o/PF57AAJF8kn8ARQclU+sRI/5emK6lK/j101ShC4i/Cgo+/z/r2S6
-	Z9cluzG197uOmE7jcKyFqpxsivOwWr4MWCoNrX9vhL1kTkLpQ7xwrXf2aK1cjNCNfAqILschE824+
-	I7OD2h+5jUqH+e7Rxw4gWMTLWEQbhlhEZjfQrz4WQk+O33kEpvMwqoeuDtgFt0BWpRyBT0oUQiZA8
-	Vm+X2MOA==;
+	bh=BIZfeMXhWjjvENrylSWL9FA5RbfMQ2Zj83oOK9K9nZQ=; b=qXU5iilxnTS5O6Snnn2UzOy+kF
+	ZygsA63WMSfFlduJZIUEEq6pFTc3aXvVjphcY1XjyBM163iT9WUMjgc7q/ylHAouBdgEH4PB8NtwJ
+	7DZ12ckQ6NUCBAPkGGmrBTHkxTAu8cahTCMNw4BQPHj0gX9SOKCmSsqLfhdGKj4+9O01vcoYzJTas
+	p1nusBQmMBCT5NzR7uTzqKtXpc+PgBkRsVFBJbYdmkv2ECB99aqm1N9ofh/LPQh7Vqqio150YtQn5
+	2JH7t0Y/l3IG9/FJmEVVyEeN8kuNayy3jNDEZ1CQwtQlO7RDLU2kr89vyRzxjTP5CrDiMs8H3dfiS
+	4QDHOzVA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPi-0001j2-GE
-	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:38 +0100
+	id 1r8KPj-0001jD-HI
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:39 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 04/13] xshared: Introduce print_help callback (again)
-Date: Wed, 29 Nov 2023 14:28:18 +0100
-Message-ID: <20231129132827.18166-5-phil@nwl.cc>
+Subject: [iptables PATCH 05/13] xshared: Support rule range deletion in do_parse()
+Date: Wed, 29 Nov 2023 14:28:19 +0100
+Message-ID: <20231129132827.18166-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,126 +51,88 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Prep work for ebtables parser to use do_parse(). Adding more special
-casing to xtables_printhelp() causes a mess, so work with a callback
-again.
+This is a distinct ebtables feature. Introduce struct
+xt_cmd_parse::rule_ranges boolean indicating support for it and bail
+otherwise if a range was specified by the user.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c | 1 +
- iptables/iptables.c  | 1 +
- iptables/nft-arp.c   | 1 +
- iptables/nft-ipv4.c  | 1 +
- iptables/nft-ipv6.c  | 1 +
- iptables/xshared.c   | 6 +++---
- iptables/xshared.h   | 2 ++
- 7 files changed, 10 insertions(+), 3 deletions(-)
+ iptables/xshared.c | 34 +++++++++++++++++++++++++++++++++-
+ iptables/xshared.h |  2 ++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 96603756324a5..4b5d4ac6878b7 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -671,6 +671,7 @@ int do_command6(int argc, char *argv[], char **table,
- 		.option_name	= ip46t_option_name,
- 		.option_invert	= ip46t_option_invert,
- 		.command_default = command_default,
-+		.print_help	= xtables_printhelp,
- 	};
- 	struct xt_cmd_parse p = {
- 		.table		= *table,
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index b57483ef44514..5ae28fe04a5f5 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -665,6 +665,7 @@ int do_command4(int argc, char *argv[], char **table,
- 		.option_name	= ip46t_option_name,
- 		.option_invert	= ip46t_option_invert,
- 		.command_default = command_default,
-+		.print_help	= xtables_printhelp,
- 	};
- 	struct xt_cmd_parse p = {
- 		.table		= *table,
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index f3e2920ac6d15..6011620cf52a7 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -859,6 +859,7 @@ struct nft_family_ops nft_family_ops_arp = {
- 		.option_name	= nft_arp_option_name,
- 		.option_invert	= nft_arp_option_invert,
- 		.command_default = command_default,
-+		.print_help	= xtables_printhelp,
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.init_cs		= nft_arp_init_cs,
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 754c776473143..979880a3e7702 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -355,6 +355,7 @@ struct nft_family_ops nft_family_ops_ipv4 = {
- 		.option_name	= ip46t_option_name,
- 		.option_invert	= ip46t_option_invert,
- 		.command_default = command_default,
-+		.print_help	= xtables_printhelp,
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.clear_cs		= xtables_clear_iptables_command_state,
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index b1b5891013577..e4b1714d00c2f 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -346,6 +346,7 @@ struct nft_family_ops nft_family_ops_ipv6 = {
- 		.option_name	= ip46t_option_name,
- 		.option_invert	= ip46t_option_invert,
- 		.command_default = command_default,
-+		.print_help	= xtables_printhelp,
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.clear_cs		= xtables_clear_iptables_command_state,
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 29b3992904e68..177f3ddd1c19e 100644
+index 177f3ddd1c19e..62ae4141325ed 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -1108,9 +1108,9 @@ int print_match_save(const struct xt_entry_match *e, const void *ip)
- 	return 0;
+@@ -903,6 +903,38 @@ static int parse_rulenumber(const char *rule)
+ 	return rulenum;
  }
  
--static void
--xtables_printhelp(const struct xtables_rule_match *matches)
-+void xtables_printhelp(struct iptables_command_state *cs)
- {
-+	const struct xtables_rule_match *matches = cs->matches;
- 	const char *prog_name = xt_params->program_name;
- 	const char *prog_vers = xt_params->program_version;
- 
-@@ -1527,7 +1527,7 @@ void do_parse(int argc, char *argv[],
- 				xtables_find_match(cs->protocol,
- 					XTF_TRY_LOAD, &cs->matches);
- 
--			xtables_printhelp(cs->matches);
-+			p->ops->print_help(cs);
- 			xtables_clear_iptables_command_state(cs);
- 			xtables_free_opts(1);
- 			xtables_fini();
++static void parse_rule_range(struct xt_cmd_parse *p, const char *argv)
++{
++	char *colon = strchr(argv, ':'), *buffer;
++
++	if (colon) {
++		if (!p->rule_ranges)
++			xtables_error(PARAMETER_PROBLEM,
++				      "Rule ranges are not supported");
++
++		*colon = '\0';
++		if (*(colon + 1) == '\0')
++			p->rulenum_end = -1; /* Until the last rule */
++		else {
++			p->rulenum_end = strtol(colon + 1, &buffer, 10);
++			if (*buffer != '\0' || p->rulenum_end == 0)
++				xtables_error(PARAMETER_PROBLEM,
++					      "Invalid rule range end`%s'",
++					      colon + 1);
++		}
++	}
++	if (colon == argv)
++		p->rulenum = 1; /* Beginning with the first rule */
++	else {
++		p->rulenum = strtol(argv, &buffer, 10);
++		if (*buffer != '\0' || p->rulenum == 0)
++			xtables_error(PARAMETER_PROBLEM,
++				      "Invalid rule number `%s'", argv);
++	}
++	if (!colon)
++		p->rulenum_end = p->rulenum;
++}
++
+ /* list the commands an option is allowed with */
+ #define CMD_IDRAC	CMD_INSERT | CMD_DELETE | CMD_REPLACE | \
+ 			CMD_APPEND | CMD_CHECK
+@@ -1411,7 +1443,7 @@ void do_parse(int argc, char *argv[],
+ 			add_command(&p->command, CMD_DELETE, CMD_NONE, invert);
+ 			p->chain = optarg;
+ 			if (xs_has_arg(argc, argv)) {
+-				p->rulenum = parse_rulenumber(argv[optind++]);
++				parse_rule_range(p, argv[optind++]);
+ 				p->command = CMD_DELETE_NUM;
+ 			}
+ 			break;
 diff --git a/iptables/xshared.h b/iptables/xshared.h
-index bf24fd568a6f5..69f50e505cb9b 100644
+index 69f50e505cb9b..2fd15c725faaf 100644
 --- a/iptables/xshared.h
 +++ b/iptables/xshared.h
-@@ -274,6 +274,7 @@ struct xt_cmd_parse_ops {
- 	int	(*option_invert)(int option);
- 	int	(*command_default)(struct iptables_command_state *cs,
- 				   struct xtables_globals *gl, bool invert);
-+	void	(*print_help)(struct iptables_command_state *cs);
- };
- 
+@@ -280,6 +280,7 @@ struct xt_cmd_parse_ops {
  struct xt_cmd_parse {
-@@ -289,6 +290,7 @@ struct xt_cmd_parse {
+ 	unsigned int			command;
+ 	unsigned int			rulenum;
++	unsigned int			rulenum_end;
+ 	char				*table;
+ 	const char			*chain;
+ 	const char			*newname;
+@@ -287,6 +288,7 @@ struct xt_cmd_parse {
+ 	bool				restore;
+ 	int				line;
+ 	int				verbose;
++	bool				rule_ranges;
  	struct xt_cmd_parse_ops		*ops;
  };
  
-+void xtables_printhelp(struct iptables_command_state *cs);
- const char *ip46t_option_name(int option);
- int ip46t_option_invert(int option);
- int command_default(struct iptables_command_state *cs,
 -- 
 2.41.0
 
