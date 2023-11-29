@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-105-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-116-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 439D47FD7AC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613977FD7B8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:16:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F105A28234E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0C18B2197D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B1C1F94C;
-	Wed, 29 Nov 2023 13:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E552033D;
+	Wed, 29 Nov 2023 13:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ne/8LBXt"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="TezizLDa"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23E99A
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:38 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6434010D4
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=fR/OTWwDhGlM9aVNvymAnk4o3HL4xGQN18TWCg4+F9M=; b=ne/8LBXtkvQk7HMEJj9XLgKOwf
-	u5Sfzo0jIeAj5eHpybFdG66Jg9c8q+rqlotZp0rfM8mLF1PpV89juHkEtfZe8GD6aEIU0zMnL6qnq
-	Ha7zdenE5ZbE1NXep+h5In5mhwahJPuIBFjLIx2mW2d0Q9YjpUoU40wZqjvGqicxrJE0/nRthVgMz
-	GXtBiHnes+xh9caGHr04JXhHjIaZyzJ9/p8NhAyzfojfgSd1f0+zEUtBKLEhlAtq6d6M7MsntRzNS
-	PjRuwqWiTl/d/73RGBlIS8L8HuuNpg9pGD1tQMqrxnWcdOuHMVPv0Bd/9DKILBfKABEfTTeAtUb8W
-	QKxZbPWg==;
+	bh=KxUdjGCe4vJwoieDwFtcWCGbhastKXhd3wwPrafRJps=; b=TezizLDaDGp/j+zJXRMZoX+vEZ
+	tjWQK7IHl7DrBh3tT+LNBnHTpqltiSyyYc4vTelE9jLRMUAzCj0ddYfdSbVdvIMD21ad7ZkDgJ5nS
+	lf8YdDgGarw2C/4T4BDVSgdmKvQxPY2C/FX9k2FFhddGt37gjx7+evgRxFAAdy+OunMC6FPXQ1XTz
+	ZlbOQJ8Is2VBinP6hlEsMqyrs14Ddk3W+5E7lqaX72JNbRbZSRWy2MHjJ47B/cJ2l5asmjw85iyFw
+	mfsBXNXhoCMWbqQQ+dRQD4U+Luu4WVigdncJx4dlyucgNFCg1EaLAYs3El54FQi07JRTNsfbgRAqI
+	VNsStxaA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPg-0001id-Au
-	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:36 +0100
+	id 1r8KPl-0001jb-PI
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:41 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 07/13] ebtables{,-translate}: Convert if-clause to switch()
-Date: Wed, 29 Nov 2023 14:28:21 +0100
-Message-ID: <20231129132827.18166-8-phil@nwl.cc>
+Subject: [iptables PATCH 08/13] ebtables: Change option values to avoid clashes
+Date: Wed, 29 Nov 2023 14:28:22 +0100
+Message-ID: <20231129132827.18166-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,136 +51,159 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Parser merge prep work, align final do_commandeb*() parts with
-do_commandx().
+In order to parse input using do_parse(), distinct ebtables option's
+values have to be distinct from others. Since arptables uses values 2-8
+already, resort to values >10.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb-translate.c | 24 +++++++++--------
- iptables/xtables-eb.c           | 46 ++++++++++++++++++++-------------
- 2 files changed, 41 insertions(+), 29 deletions(-)
+ iptables/xtables-eb-translate.c | 14 +++++++-------
+ iptables/xtables-eb.c           | 24 ++++++++++++------------
+ 2 files changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/iptables/xtables-eb-translate.c b/iptables/xtables-eb-translate.c
-index da7e5e3dda1f3..d0fec9c6d5ae3 100644
+index d0fec9c6d5ae3..a2ab318cff251 100644
 --- a/iptables/xtables-eb-translate.c
 +++ b/iptables/xtables-eb-translate.c
-@@ -497,23 +497,25 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
+@@ -292,9 +292,9 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
+ 			table_set = true;
+ 			break;
+ 		case 'i': /* Input interface */
+-		case 2  : /* Logical input interface */
++		case 15 : /* Logical input interface */
+ 		case 'o': /* Output interface */
+-		case 3  : /* Logical output interface */
++		case 16 : /* Logical output interface */
+ 		case 'j': /* Target */
+ 		case 'p': /* Net family protocol */
+ 		case 's': /* Source mac */
+@@ -316,7 +316,7 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
  
- 	cs.eb.ethproto = htons(cs.eb.ethproto);
+ 				ebtables_parse_interface(optarg, cs.eb.in);
+ 				break;
+-			} else if (c == 2) {
++			} else if (c == 15) {
+ 				ebt_check_option2(&flags, OPT_LOGICALIN);
+ 				if (selected_chain > 2 && selected_chain < NF_BR_BROUTING)
+ 					xtables_error(PARAMETER_PROBLEM,
+@@ -336,7 +336,7 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
  
--	if (command == 'P') {
--		return 0;
--	} else if (command == 'F') {
--			if (p.chain) {
--				printf("flush chain bridge %s %s\n", p.table, p.chain);
--			} else {
--				printf("flush table bridge %s\n", p.table);
--			}
--			ret = 1;
--	} else if (command == 'A') {
-+	switch (command) {
-+	case 'F':
-+		if (p.chain) {
-+			printf("flush chain bridge %s %s\n", p.table, p.chain);
-+		} else {
-+			printf("flush table bridge %s\n", p.table);
-+		}
-+		ret = 1;
-+		break;
-+	case 'A':
- 		ret = nft_rule_eb_xlate_add(h, &p, &cs, true);
- 		if (!ret)
- 			print_ebt_cmd(argc, argv);
--	} else if (command == 'I') {
-+		break;
-+	case 'I':
- 		ret = nft_rule_eb_xlate_add(h, &p, &cs, false);
- 		if (!ret)
- 			print_ebt_cmd(argc, argv);
-+		break;
- 	}
- 
- 	ebt_cs_clean(&cs);
+ 				ebtables_parse_interface(optarg, cs.eb.out);
+ 				break;
+-			} else if (c == 3) {
++			} else if (c == 16) {
+ 				ebt_check_option2(&flags, OPT_LOGICALOUT);
+ 				if (selected_chain < 2 || selected_chain == NF_BR_BROUTING)
+ 					xtables_error(PARAMETER_PROBLEM,
+@@ -424,14 +424,14 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "Sorry, protocols have values above or equal to 0x0600");
+ 			break;
+-		case 4  : /* Lc */
++		case 17 : /* Lc */
+ 			ebt_check_option2(&flags, LIST_C);
+ 			if (command != 'L')
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "Use --Lc with -L");
+ 			flags |= LIST_C;
+ 			break;
+-		case 5  : /* Ln */
++		case 18 : /* Ln */
+ 			ebt_check_option2(&flags, LIST_N);
+ 			if (command != 'L')
+ 				xtables_error(PARAMETER_PROBLEM,
+@@ -441,7 +441,7 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
+ 					      "--Lx is not compatible with --Ln");
+ 			flags |= LIST_N;
+ 			break;
+-		case 6  : /* Lx */
++		case 19 : /* Lx */
+ 			ebt_check_option2(&flags, LIST_X);
+ 			if (command != 'L')
+ 				xtables_error(PARAMETER_PROBLEM,
 diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index ddbe1b5a3adc0..db75e65caa02a 100644
+index db75e65caa02a..9afaa614bac5b 100644
 --- a/iptables/xtables-eb.c
 +++ b/iptables/xtables-eb.c
-@@ -1168,47 +1168,57 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 	 * The kernel does not have to do this of course */
- 	cs.eb.ethproto = htons(cs.eb.ethproto);
+@@ -196,17 +196,17 @@ struct option ebt_original_options[] =
+ 	{ "insert"         , required_argument, 0, 'I' },
+ 	{ "delete"         , required_argument, 0, 'D' },
+ 	{ "list"           , optional_argument, 0, 'L' },
+-	{ "Lc"             , no_argument      , 0, 4   },
+-	{ "Ln"             , no_argument      , 0, 5   },
+-	{ "Lx"             , no_argument      , 0, 6   },
++	{ "Lc"             , no_argument      , 0, 17  },
++	{ "Ln"             , no_argument      , 0, 18  },
++	{ "Lx"             , no_argument      , 0, 19  },
+ 	{ "Lmac2"          , no_argument      , 0, 12  },
+ 	{ "zero"           , optional_argument, 0, 'Z' },
+ 	{ "flush"          , optional_argument, 0, 'F' },
+ 	{ "policy"         , required_argument, 0, 'P' },
+ 	{ "in-interface"   , required_argument, 0, 'i' },
+ 	{ "in-if"          , required_argument, 0, 'i' },
+-	{ "logical-in"     , required_argument, 0, 2   },
+-	{ "logical-out"    , required_argument, 0, 3   },
++	{ "logical-in"     , required_argument, 0, 15  },
++	{ "logical-out"    , required_argument, 0, 16  },
+ 	{ "out-interface"  , required_argument, 0, 'o' },
+ 	{ "out-if"         , required_argument, 0, 'o' },
+ 	{ "version"        , no_argument      , 0, 'V' },
+@@ -940,9 +940,9 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 			table_set = true;
+ 			break;
+ 		case 'i': /* Input interface */
+-		case 2  : /* Logical input interface */
++		case 15 : /* Logical input interface */
+ 		case 'o': /* Output interface */
+-		case 3  : /* Logical output interface */
++		case 16 : /* Logical output interface */
+ 		case 'j': /* Target */
+ 		case 'p': /* Net family protocol */
+ 		case 's': /* Source mac */
+@@ -965,7 +965,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
  
--	if (command == 'P') {
-+	switch (command) {
-+	case 'P':
- 		if (selected_chain >= NF_BR_NUMHOOKS) {
- 			ret = ebt_cmd_user_chain_policy(h, *table, chain, policy);
--		} else {
--			if (strcmp(policy, "RETURN") == 0) {
--				xtables_error(PARAMETER_PROBLEM,
--					      "Policy RETURN only allowed for user defined chains");
--			}
--			ret = nft_cmd_chain_set(h, *table, chain, policy, NULL);
--			if (ret < 0)
--				xtables_error(PARAMETER_PROBLEM, "Wrong policy");
-+			break;
- 		}
--	} else if (command == 'L') {
-+		if (strcmp(policy, "RETURN") == 0) {
-+			xtables_error(PARAMETER_PROBLEM,
-+				      "Policy RETURN only allowed for user defined chains");
-+		}
-+		ret = nft_cmd_chain_set(h, *table, chain, policy, NULL);
-+		if (ret < 0)
-+			xtables_error(PARAMETER_PROBLEM, "Wrong policy");
-+		break;
-+	case 'L':
- 		ret = list_rules(h, chain, *table, rule_nr,
- 				 flags & OPT_VERBOSE,
- 				 0,
- 				 /*flags&OPT_EXPANDED*/0,
- 				 flags&LIST_N,
- 				 flags&LIST_C);
--	}
--	if (flags & OPT_ZERO) {
-+		if (!(flags & OPT_ZERO))
-+			break;
-+	case 'Z':
- 		ret = nft_cmd_chain_zero_counters(h, chain, *table,
- 						  flags & OPT_VERBOSE);
--	} else if (command == 'F') {
-+		break;
-+	case 'F':
- 		ret = nft_cmd_rule_flush(h, chain, *table, flags & OPT_VERBOSE);
--	} else if (command == 'A') {
-+		break;
-+	case 'A':
- 		ret = nft_cmd_rule_append(h, chain, *table, &cs,
- 					  flags & OPT_VERBOSE);
--	} else if (command == 'I') {
-+		break;
-+	case 'I':
- 		ret = nft_cmd_rule_insert(h, chain, *table, &cs,
- 					  rule_nr - 1, flags & OPT_VERBOSE);
--	} else if (command == 'D') {
-+		break;
-+	case 'D':
- 		ret = delete_entry(h, chain, *table, &cs, rule_nr - 1,
- 				   rule_nr_end, flags & OPT_VERBOSE);
--	} else if (command == 14) {
-+		break;
-+	case 14:
- 		ret = nft_cmd_rule_check(h, chain, *table,
- 					 &cs, flags & OPT_VERBOSE);
--	} else if (command == 'C') {
-+		break;
-+	case 'C':
- 		ret = change_entry_counters(h, chain, *table, &cs,
- 					    rule_nr - 1, rule_nr_end, chcounter,
- 					    flags & OPT_VERBOSE);
-+		break;
- 	}
+ 				ebtables_parse_interface(optarg, cs.eb.in);
+ 				break;
+-			} else if (c == 2) {
++			} else if (c == 15) {
+ 				ebt_check_option2(&flags, OPT_LOGICALIN);
+ 				if (selected_chain > 2 && selected_chain < NF_BR_BROUTING)
+ 					xtables_error(PARAMETER_PROBLEM,
+@@ -985,7 +985,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
  
- 	ebt_cs_clean(&cs);
+ 				ebtables_parse_interface(optarg, cs.eb.out);
+ 				break;
+-			} else if (c == 3) {
++			} else if (c == 16) {
+ 				ebt_check_option2(&flags, OPT_LOGICALOUT);
+ 				if (selected_chain < 2 || selected_chain == NF_BR_BROUTING)
+ 					xtables_error(PARAMETER_PROBLEM,
+@@ -1073,14 +1073,14 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "Sorry, protocols have values above or equal to 0x0600");
+ 			break;
+-		case 4  : /* Lc */
++		case 17 : /* Lc */
+ 			ebt_check_option2(&flags, LIST_C);
+ 			if (command != 'L')
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "Use --Lc with -L");
+ 			flags |= LIST_C;
+ 			break;
+-		case 5  : /* Ln */
++		case 18 : /* Ln */
+ 			ebt_check_option2(&flags, LIST_N);
+ 			if (command != 'L')
+ 				xtables_error(PARAMETER_PROBLEM,
+@@ -1090,7 +1090,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 					      "--Lx is not compatible with --Ln");
+ 			flags |= LIST_N;
+ 			break;
+-		case 6  : /* Lx */
++		case 19 : /* Lx */
+ 			ebt_check_option2(&flags, LIST_X);
+ 			if (command != 'L')
+ 				xtables_error(PARAMETER_PROBLEM,
 -- 
 2.41.0
 
