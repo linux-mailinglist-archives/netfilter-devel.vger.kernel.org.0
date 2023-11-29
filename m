@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-111-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-108-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D77C7FD7B1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A67247FD7AF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58778282FBB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D656B1C21060
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164F220321;
-	Wed, 29 Nov 2023 13:15:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C001E526;
+	Wed, 29 Nov 2023 13:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="iDz7kGdS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Ubf1S4T+"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB2BD68
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:41 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA59BC4
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Z7Xe+vB7HcXssf9unKSAeNbJnWNwd0tPHNJqRh2JpVc=; b=iDz7kGdSmgBsrjd4HOOPs2OJ1i
-	c6ZVWeRnfZiThLeYK476daWt5mbxDGclQe/OgSN/2mfkT+r5xKu0ESVGNVC2utQY9E7cCZI3hS6XU
-	7FaE1S78lQShwsjb8fDoclIU7lTzCRYJCpxCr3v4wf8RboECbqbK+og/mv73dynyvyPcL/KoFuSbF
-	ee88b0ttfdIU7BsbgZ7t+He/MlEw7+Qz7RKC0MpAQpj+O2iqoCK3yWMiO0TarbqqvTxvJ07KiVm+P
-	J/3aK+YpC0kcWL7miP+w0gRHNRQHA0jrKK/TC1wzdEXPmU3B6+KL/udgT0u4yvTESTE53FXoDUcrL
-	wGk006Qw==;
+	bh=4TkhuKzb/wjlUvntsy6XWtLJ7Js6pu8c3kPwgNifcUM=; b=Ubf1S4T+HpU1zScNta80nKEpOL
+	1hQJQMB8iYb7g7oomQvSjMGm2dmDI4d4mvhOSgAqjnhG/0wvVxPLpPSdjtYeuqR2XXdRqSFypiNLU
+	py6XY+Ja9yzKsZJvirRyqYa8A0UFSzfBYQ5ijo5nIThZPK1A79OcaHTlP8uTftxP/nsh3Be8Os7/b
+	5F5JSkOYbpIZQm5euJH5ofjvVg2sYteVha5QZifxnic+Q1L/mTct1SsAbl+yh0ywdTU3Rv+uGoMz+
+	65D+299LpF3vbA3LehhroLewuvxAb1lOq3T7ino4bz7pQ5+9osgZnwEs155cK1KFrskQQIT8kodbM
+	qdfNDcSQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPk-0001jK-BA
-	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:40 +0100
+	id 1r8KPi-0001iy-5J
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:38 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 09/13] ebtables: Pass struct iptables_command_state to print_help()
-Date: Wed, 29 Nov 2023 14:28:23 +0100
-Message-ID: <20231129132827.18166-10-phil@nwl.cc>
+Subject: [iptables PATCH 10/13] ebtables: Make 'h' case just a call to print_help()
+Date: Wed, 29 Nov 2023 14:28:24 +0100
+Message-ID: <20231129132827.18166-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,52 +51,122 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Parameters passed by the sole caller came from there already, apart from
-'table' which is not used (ebtables-nft does not have per-table help
-texts).
+Move the special ebtables help parameter handling into its print_help()
+function to prepare for it turning into a callback. Add new field 'argc'
+to struct iptables_command_state to make this possible. It is actually
+kind of consistent as it holds 'argv' already.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ iptables/xshared.h    |  1 +
+ iptables/xtables-eb.c | 61 +++++++++++++++++++++----------------------
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 68acfb4b406fb..de32198fa0b67 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -137,6 +137,7 @@ struct iptables_command_state {
+ 	char *protocol;
+ 	int proto_used;
+ 	const char *jumpto;
++	int argc;
+ 	char **argv;
+ 	bool restore;
+ };
 diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 9afaa614bac5b..017e1ad364840 100644
+index 017e1ad364840..8ab479237faa8 100644
 --- a/iptables/xtables-eb.c
 +++ b/iptables/xtables-eb.c
-@@ -303,9 +303,11 @@ static struct option *merge_options(struct option *oldopts,
- 	return merge;
- }
+@@ -308,6 +308,33 @@ static void print_help(struct iptables_command_state *cs)
+ 	const struct xtables_rule_match *m = cs->matches;
+ 	struct xtables_target *t = cs->target;
  
--static void print_help(const struct xtables_target *t,
--		       const struct xtables_rule_match *m, const char *table)
-+static void print_help(struct iptables_command_state *cs)
- {
-+	const struct xtables_rule_match *m = cs->matches;
-+	struct xtables_target *t = cs->target;
++	while (optind < cs->argc) {
++		/*struct ebt_u_match *m;
++		struct ebt_u_watcher *w;*/
++
++		if (!strcasecmp("list_extensions", cs->argv[optind])) {
++			ebt_list_extensions(xtables_targets, cs->matches);
++			exit(0);
++		}
++		/*if ((m = ebt_find_match(cs->argv[optind])))
++			ebt_add_match(new_entry, m);
++		else if ((w = ebt_find_watcher(cs->argv[optind])))
++			ebt_add_watcher(new_entry, w);
++		else {*/
++			if (!(t = xtables_find_target(cs->argv[optind],
++						      XTF_TRY_LOAD)))
++				xtables_error(PARAMETER_PROBLEM,
++					      "Extension '%s' not found",
++					      cs->argv[optind]);
++			if (cs->options & OPT_JUMP)
++				xtables_error(PARAMETER_PROBLEM,
++					      "Sorry, you can only see help for one target extension at a time");
++			cs->options |= OPT_JUMP;
++			cs->target = t;
++		//}
++		optind++;
++	}
 +
  	printf("%s %s\n", prog_name, prog_vers);
  	printf(
  "Usage:\n"
-@@ -354,9 +356,6 @@ static void print_help(const struct xtables_target *t,
- 		printf("\n");
- 		t->help();
- 	}
+@@ -735,6 +762,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 	unsigned int flags = 0;
+ 	struct xtables_target *t;
+ 	struct iptables_command_state cs = {
++		.argc = argc,
+ 		.argv = argv,
+ 		.jumpto	= "",
+ 		.eb.bitmask = EBT_NOPROTO,
+@@ -897,32 +925,8 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 			if (OPT_COMMANDS)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "Multiple commands are not allowed");
+-			command = 'h';
 -
--//	if (table->help)
--//		table->help(ebt_hooknames);
- }
- 
- /* Execute command L */
-@@ -1144,7 +1143,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+-			/* All other arguments should be extension names */
+-			while (optind < argc) {
+-				/*struct ebt_u_match *m;
+-				struct ebt_u_watcher *w;*/
+-
+-				if (!strcasecmp("list_extensions", argv[optind])) {
+-					ebt_list_extensions(xtables_targets, cs.matches);
+-					exit(0);
+-				}
+-				/*if ((m = ebt_find_match(argv[optind])))
+-					ebt_add_match(new_entry, m);
+-				else if ((w = ebt_find_watcher(argv[optind])))
+-					ebt_add_watcher(new_entry, w);
+-				else {*/
+-					if (!(t = xtables_find_target(argv[optind], XTF_TRY_LOAD)))
+-						xtables_error(PARAMETER_PROBLEM,"Extension '%s' not found", argv[optind]);
+-					if (flags & OPT_JUMP)
+-						xtables_error(PARAMETER_PROBLEM,"Sorry, you can only see help for one target extension at a time");
+-					flags |= OPT_JUMP;
+-					cs.target = t;
+-				//}
+-				optind++;
+-			}
+-			break;
++			print_help(&cs);
++			exit(0);
+ 		case 't': /* Table */
+ 			if (restore && table_set)
+ 				xtables_error(PARAMETER_PROBLEM,
+@@ -1142,11 +1146,6 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 	if (!(table = ebt_find_table(replace->name)))
  		ebt_print_error2("Bad table name");*/
  
- 	if (command == 'h' && !(flags & OPT_ZERO)) {
--		print_help(cs.target, cs.matches, *table);
-+		print_help(&cs);
- 		ret = 1;
- 	}
- 
+-	if (command == 'h' && !(flags & OPT_ZERO)) {
+-		print_help(&cs);
+-		ret = 1;
+-	}
+-
+ 	/* Do the final checks */
+ 	if (command == 'A' || command == 'I' ||
+ 	    command == 'D' || command == 'C' || command == 14) {
 -- 
 2.41.0
 
