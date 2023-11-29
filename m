@@ -1,46 +1,48 @@
-Return-Path: <netfilter-devel+bounces-106-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-117-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087FC7FD7AE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A677FD7B6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BA61B21446
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C46528344D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D3119BB2;
-	Wed, 29 Nov 2023 13:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0500D1F94C;
+	Wed, 29 Nov 2023 13:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GrTdrlAw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="VsgHrt9r"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D281BA8
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:38 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17813A8
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=kFczb7jnJYvFqgli2NUKHDzJFW5P7BASw4aqZR+CBZc=; b=GrTdrlAw9A9aAFTpjo6zWNgjaf
-	uU+cdHDjfZHteM4AXgdj/v3ph7PRz3do5j3183FAUUgrGtFUpzaVNEWNExfdOkhzBks2PKLG9c8Nb
-	2gbIuJaYdcswHunhOltysb6yE7L+qQZ6ZXaPRhA9JXtV/9ZJI8kgnsyvUYkhRdbLp1Ifwn6duUoQH
-	tunkQC6L6zK6sh+GUsvewBYSWRC1y/4sW1FHd3IXtPtufaC98uDQkz3EJ8gdS16U5Y27OiUAwQ04c
-	hTP4zG9/tXnycvoRdnDgUimzWAz387D3Hw2SGu+OQ+oO9PtBuHXsfc2zFM3I7icErlS91XEbI0HVD
-	mn4XxSUQ==;
+	bh=YIs1l6yfHG3MEAZIo2PzCeSIfZE81qB9rWHN2JUQ3Wc=; b=VsgHrt9rXdLAnYcZfD/eOswURo
+	0k2hCdkutQOz43DhKKjnqKAO0wftHb6BoRrO6cMRB4pD5o1pIXI0vApGcwsxK1sLjzvyespaDULmg
+	dlC8tbn4Y4HxVigHnUAqbmS8XyCHJbs0YkBLj3kwtiGkkvqBlQccDjNDsE8pZMK6UEUf4N57Rgb6O
+	y2Qh4Yr9ZJoZaJGZfJ6U87/VjTvljHGnT+tBa6WRsFDIrZhe18HvdrtbhMwPLaKYXuQ+AUT3P5UFW
+	J1tfBpM0bJ6L9uuJVnyKvyRKHVvyquxGRByAhal4vN51HfXWw/1xWEkMh//sVCiWPQQMXqxwzgDS9
+	VzTrLeOg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPh-0001im-3A
-	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:37 +0100
+	id 1r8KPm-0001jh-G8
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:42 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 00/13] ebtables: Use the shared commandline parser
-Date: Wed, 29 Nov 2023 14:28:14 +0100
-Message-ID: <20231129132827.18166-1-phil@nwl.cc>
+Subject: [iptables PATCH 01/13] xshared: do_parse: Skip option checking for CMD_DELETE_NUM
+Date: Wed, 29 Nov 2023 14:28:15 +0100
+Message-ID: <20231129132827.18166-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
+References: <20231129132827.18166-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -49,45 +51,26 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series converts do_commandeb() and do_commandeb_xlate() to call
-do_parse() from xshared.c instead of iterating over argv themselves.
+This command will delete a rule by its number, not rule spec. No -i/-o
+options are expected on commandline.
 
-Patches 1-6 prepare the shared (parser) code for use by ebtables.
-Patches 7-11 prepare ebtables code for the following integration in
-patch 13. Patch 12 is a minor refactoring in xshared but fits fine right
-before the merge as the introduced helper function is called two more
-times by it.
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xshared.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Phil Sutter (13):
-  xshared: do_parse: Skip option checking for CMD_DELETE_NUM
-  xshared: Perform protocol value parsing in callback
-  xshared: Turn command_default() into a callback
-  xshared: Introduce print_help callback (again)
-  xshared: Support rule range deletion in do_parse()
-  xshared: Support for ebtables' --change-counters command
-  ebtables{,-translate}: Convert if-clause to switch()
-  ebtables: Change option values to avoid clashes
-  ebtables: Pass struct iptables_command_state to print_help()
-  ebtables: Make 'h' case just a call to print_help()
-  ebtables: Use struct xt_cmd_parse
-  xshared: Introduce option_test_and_reject()
-  ebtables: Use do_parse() from xshared
-
- iptables/ip6tables.c            |   2 +
- iptables/iptables.c             |   2 +
- iptables/nft-arp.c              |   2 +
- iptables/nft-bridge.c           | 121 +++++
- iptables/nft-bridge.h           |  13 +-
- iptables/nft-cmd.h              |   7 -
- iptables/nft-ipv4.c             |   2 +
- iptables/nft-ipv6.c             |   2 +
- iptables/nft.h                  |   1 -
- iptables/xshared.c              | 218 +++++++--
- iptables/xshared.h              |  36 +-
- iptables/xtables-eb-translate.c | 491 +++----------------
- iptables/xtables-eb.c           | 839 ++++++--------------------------
- 13 files changed, 567 insertions(+), 1169 deletions(-)
-
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index dca744773d773..53e6720169950 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -1837,7 +1837,6 @@ void do_parse(int argc, char *argv[],
+ 
+ 	if (p->command == CMD_APPEND ||
+ 	    p->command == CMD_DELETE ||
+-	    p->command == CMD_DELETE_NUM ||
+ 	    p->command == CMD_CHECK ||
+ 	    p->command == CMD_INSERT ||
+ 	    p->command == CMD_REPLACE) {
 -- 
 2.41.0
 
