@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-109-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-105-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEC8D7FD7B2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 439D47FD7AC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63D27B20CC5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F105A28234E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A351020311;
-	Wed, 29 Nov 2023 13:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B1C1F94C;
+	Wed, 29 Nov 2023 13:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="MqZBDt0I"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ne/8LBXt"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F0B19A
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:40 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23E99A
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=JZqsfWOknLtp2WpFwIXCIyCIxeQ8nhpHi4Q48weCE44=; b=MqZBDt0IfdhpZVsZZMIlCwpkIQ
-	9yZIgEOmcbh02guwEbXCLb//7kTeNix2CCqArHOAd43wCnfMCDG965a5yCuxvW4s+hDY4hqbnhPdm
-	57uh/tJrE6rzIhCnqtQt5MlDjELg2Er0KAB+c36rGHhnvIlBxy5wlRdo9/RMp+4KSJeQnzjLZDbbV
-	Q2qZSdanMTV++jcoX9ci25dvI4P9RSQicMuBR3qqqoeieO5C2lqtRzSfHmjD3z9N7VzpTsHVdomxs
-	jIcYpOHZM30+yw0mvmclF73nKTxK1EZU/GJ4hGSHd1MtAobM+c//OcUpP2ZeNqHjsrzNDlEvhRmX1
-	1/N0qugQ==;
+	bh=fR/OTWwDhGlM9aVNvymAnk4o3HL4xGQN18TWCg4+F9M=; b=ne/8LBXtkvQk7HMEJj9XLgKOwf
+	u5Sfzo0jIeAj5eHpybFdG66Jg9c8q+rqlotZp0rfM8mLF1PpV89juHkEtfZe8GD6aEIU0zMnL6qnq
+	Ha7zdenE5ZbE1NXep+h5In5mhwahJPuIBFjLIx2mW2d0Q9YjpUoU40wZqjvGqicxrJE0/nRthVgMz
+	GXtBiHnes+xh9caGHr04JXhHjIaZyzJ9/p8NhAyzfojfgSd1f0+zEUtBKLEhlAtq6d6M7MsntRzNS
+	PjRuwqWiTl/d/73RGBlIS8L8HuuNpg9pGD1tQMqrxnWcdOuHMVPv0Bd/9DKILBfKABEfTTeAtUb8W
+	QKxZbPWg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPi-0001j7-Qo
-	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:38 +0100
+	id 1r8KPg-0001id-Au
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:36 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 06/13] xshared: Support for ebtables' --change-counters command
-Date: Wed, 29 Nov 2023 14:28:20 +0100
-Message-ID: <20231129132827.18166-7-phil@nwl.cc>
+Subject: [iptables PATCH 07/13] ebtables{,-translate}: Convert if-clause to switch()
+Date: Wed, 29 Nov 2023 14:28:21 +0100
+Message-ID: <20231129132827.18166-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,159 +51,136 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is tricky because the short-option clashes with the --check
-command. OTOH, ebtables supports --check as well (though without
-short-option), so making do_parse() detect ebtables based on struct
-xtables_args::family is probably still the least messy option.
+Parser merge prep work, align final do_commandeb*() parts with
+do_commandx().
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-cmd.h |  7 ------
- iptables/xshared.c | 57 +++++++++++++++++++++++++++++++++++++++++++++-
- iptables/xshared.h | 11 ++++++++-
- 3 files changed, 66 insertions(+), 9 deletions(-)
+ iptables/xtables-eb-translate.c | 24 +++++++++--------
+ iptables/xtables-eb.c           | 46 ++++++++++++++++++++-------------
+ 2 files changed, 41 insertions(+), 29 deletions(-)
 
-diff --git a/iptables/nft-cmd.h b/iptables/nft-cmd.h
-index 8163b82c3511f..00ecc80249f0d 100644
---- a/iptables/nft-cmd.h
-+++ b/iptables/nft-cmd.h
-@@ -7,13 +7,6 @@
+diff --git a/iptables/xtables-eb-translate.c b/iptables/xtables-eb-translate.c
+index da7e5e3dda1f3..d0fec9c6d5ae3 100644
+--- a/iptables/xtables-eb-translate.c
++++ b/iptables/xtables-eb-translate.c
+@@ -497,23 +497,25 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
  
- struct nftnl_rule;
+ 	cs.eb.ethproto = htons(cs.eb.ethproto);
  
--enum {
--	CTR_OP_INC_PKTS = 1 << 0,
--	CTR_OP_DEC_PKTS = 1 << 1,
--	CTR_OP_INC_BYTES = 1 << 2,
--	CTR_OP_DEC_BYTES = 1 << 3,
--};
--
- struct nft_cmd {
- 	struct list_head		head;
- 	int				command;
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 62ae4141325ed..50f23757d4aff 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -937,7 +937,7 @@ static void parse_rule_range(struct xt_cmd_parse *p, const char *argv)
- 
- /* list the commands an option is allowed with */
- #define CMD_IDRAC	CMD_INSERT | CMD_DELETE | CMD_REPLACE | \
--			CMD_APPEND | CMD_CHECK
-+			CMD_APPEND | CMD_CHECK | CMD_CHANGE_COUNTERS
- static const unsigned int options_v_commands[NUMBER_OF_OPT] = {
- /*OPT_NUMERIC*/		CMD_LIST,
- /*OPT_SOURCE*/		CMD_IDRAC,
-@@ -1392,10 +1392,58 @@ static void parse_interface(const char *arg, char *iface)
- 	strcpy(iface, arg);
- }
- 
-+static bool
-+parse_signed_counter(char *argv, unsigned long long *val, uint8_t *ctr_op,
-+		     uint8_t flag_inc, uint8_t flag_dec)
-+{
-+	char *endptr, *p = argv;
-+
-+	switch (*p) {
-+	case '+':
-+		*ctr_op |= flag_inc;
-+		p++;
+-	if (command == 'P') {
+-		return 0;
+-	} else if (command == 'F') {
+-			if (p.chain) {
+-				printf("flush chain bridge %s %s\n", p.table, p.chain);
+-			} else {
+-				printf("flush table bridge %s\n", p.table);
+-			}
+-			ret = 1;
+-	} else if (command == 'A') {
++	switch (command) {
++	case 'F':
++		if (p.chain) {
++			printf("flush chain bridge %s %s\n", p.table, p.chain);
++		} else {
++			printf("flush table bridge %s\n", p.table);
++		}
++		ret = 1;
 +		break;
-+	case '-':
-+		*ctr_op |= flag_dec;
-+		p++;
++	case 'A':
+ 		ret = nft_rule_eb_xlate_add(h, &p, &cs, true);
+ 		if (!ret)
+ 			print_ebt_cmd(argc, argv);
+-	} else if (command == 'I') {
 +		break;
-+	}
-+	*val = strtoull(p, &endptr, 10);
-+	return *endptr == '\0';
-+}
-+
-+static void parse_change_counters_rule(int argc, char **argv,
-+				       struct xt_cmd_parse *p,
-+				       struct xtables_args *args)
-+{
-+	if (optind + 1 >= argc ||
-+	    (argv[optind][0] == '-' && !isdigit(argv[optind][1])) ||
-+	    (argv[optind + 1][0] == '-' && !isdigit(argv[optind + 1][1])))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "The command -C needs at least 2 arguments");
-+	if (optind + 2 < argc &&
-+	    (argv[optind + 2][0] != '-' || isdigit(argv[optind + 2][1]))) {
-+		if (optind + 3 != argc)
++	case 'I':
+ 		ret = nft_rule_eb_xlate_add(h, &p, &cs, false);
+ 		if (!ret)
+ 			print_ebt_cmd(argc, argv);
++		break;
+ 	}
+ 
+ 	ebt_cs_clean(&cs);
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index ddbe1b5a3adc0..db75e65caa02a 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -1168,47 +1168,57 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 	 * The kernel does not have to do this of course */
+ 	cs.eb.ethproto = htons(cs.eb.ethproto);
+ 
+-	if (command == 'P') {
++	switch (command) {
++	case 'P':
+ 		if (selected_chain >= NF_BR_NUMHOOKS) {
+ 			ret = ebt_cmd_user_chain_policy(h, *table, chain, policy);
+-		} else {
+-			if (strcmp(policy, "RETURN") == 0) {
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "Policy RETURN only allowed for user defined chains");
+-			}
+-			ret = nft_cmd_chain_set(h, *table, chain, policy, NULL);
+-			if (ret < 0)
+-				xtables_error(PARAMETER_PROBLEM, "Wrong policy");
++			break;
+ 		}
+-	} else if (command == 'L') {
++		if (strcmp(policy, "RETURN") == 0) {
 +			xtables_error(PARAMETER_PROBLEM,
-+				      "No extra options allowed with -C start_nr[:end_nr] pcnt bcnt");
-+		parse_rule_range(p, argv[optind++]);
-+	}
-+
-+	if (!parse_signed_counter(argv[optind++], &args->pcnt_cnt,
-+				  &args->counter_op,
-+				  CTR_OP_INC_PKTS, CTR_OP_DEC_PKTS) ||
-+	    !parse_signed_counter(argv[optind++], &args->bcnt_cnt,
-+				  &args->counter_op,
-+				  CTR_OP_INC_BYTES, CTR_OP_DEC_BYTES))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "Packet counter '%s' invalid", argv[optind - 1]);
-+}
-+
- void do_parse(int argc, char *argv[],
- 	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
- 	      struct xtables_args *args)
- {
-+	bool family_is_bridge = args->family == NFPROTO_BRIDGE;
- 	struct xtables_match *m;
- 	struct xtables_rule_match *matchp;
- 	bool wait_interval_set = false;
-@@ -1435,6 +1483,13 @@ void do_parse(int argc, char *argv[],
- 			break;
++				      "Policy RETURN only allowed for user defined chains");
++		}
++		ret = nft_cmd_chain_set(h, *table, chain, policy, NULL);
++		if (ret < 0)
++			xtables_error(PARAMETER_PROBLEM, "Wrong policy");
++		break;
++	case 'L':
+ 		ret = list_rules(h, chain, *table, rule_nr,
+ 				 flags & OPT_VERBOSE,
+ 				 0,
+ 				 /*flags&OPT_EXPANDED*/0,
+ 				 flags&LIST_N,
+ 				 flags&LIST_C);
+-	}
+-	if (flags & OPT_ZERO) {
++		if (!(flags & OPT_ZERO))
++			break;
++	case 'Z':
+ 		ret = nft_cmd_chain_zero_counters(h, chain, *table,
+ 						  flags & OPT_VERBOSE);
+-	} else if (command == 'F') {
++		break;
++	case 'F':
+ 		ret = nft_cmd_rule_flush(h, chain, *table, flags & OPT_VERBOSE);
+-	} else if (command == 'A') {
++		break;
++	case 'A':
+ 		ret = nft_cmd_rule_append(h, chain, *table, &cs,
+ 					  flags & OPT_VERBOSE);
+-	} else if (command == 'I') {
++		break;
++	case 'I':
+ 		ret = nft_cmd_rule_insert(h, chain, *table, &cs,
+ 					  rule_nr - 1, flags & OPT_VERBOSE);
+-	} else if (command == 'D') {
++		break;
++	case 'D':
+ 		ret = delete_entry(h, chain, *table, &cs, rule_nr - 1,
+ 				   rule_nr_end, flags & OPT_VERBOSE);
+-	} else if (command == 14) {
++		break;
++	case 14:
+ 		ret = nft_cmd_rule_check(h, chain, *table,
+ 					 &cs, flags & OPT_VERBOSE);
+-	} else if (command == 'C') {
++		break;
++	case 'C':
+ 		ret = change_entry_counters(h, chain, *table, &cs,
+ 					    rule_nr - 1, rule_nr_end, chcounter,
+ 					    flags & OPT_VERBOSE);
++		break;
+ 	}
  
- 		case 'C':
-+			if (family_is_bridge) {
-+				add_command(&p->command, CMD_CHANGE_COUNTERS,
-+					    CMD_NONE, invert);
-+				p->chain = optarg;
-+				parse_change_counters_rule(argc, argv, p, args);
-+				break;
-+			}
- 			add_command(&p->command, CMD_CHECK, CMD_NONE, invert);
- 			p->chain = optarg;
- 			break;
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 2fd15c725faaf..68acfb4b406fb 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -69,8 +69,9 @@ enum {
- 	CMD_LIST_RULES		= 1 << 12,
- 	CMD_ZERO_NUM		= 1 << 13,
- 	CMD_CHECK		= 1 << 14,
-+	CMD_CHANGE_COUNTERS	= 1 << 15, /* ebtables only */
- };
--#define NUMBER_OF_CMD		16
-+#define NUMBER_OF_CMD		17
- 
- struct xtables_globals;
- struct xtables_rule_match;
-@@ -247,6 +248,13 @@ struct addr_mask {
- 	} mask;
- };
- 
-+enum {
-+	CTR_OP_INC_PKTS = 1 << 0,
-+	CTR_OP_DEC_PKTS = 1 << 1,
-+	CTR_OP_INC_BYTES = 1 << 2,
-+	CTR_OP_DEC_BYTES = 1 << 3,
-+};
-+
- struct xtables_args {
- 	int		family;
- 	uint8_t		flags;
-@@ -261,6 +269,7 @@ struct xtables_args {
- 	const char	*arp_hlen, *arp_opcode;
- 	const char	*arp_htype, *arp_ptype;
- 	unsigned long long pcnt_cnt, bcnt_cnt;
-+	uint8_t		counter_op;
- 	int		wait;
- };
- 
+ 	ebt_cs_clean(&cs);
 -- 
 2.41.0
 
