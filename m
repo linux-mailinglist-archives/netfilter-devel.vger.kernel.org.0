@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-114-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-112-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717677FD7B5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:16:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C03B77FD7B3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B8D92825C3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:16:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 732471F20F9C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0231D522;
-	Wed, 29 Nov 2023 13:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5792032A;
+	Wed, 29 Nov 2023 13:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="er8rZnLy"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="pXEg4erX"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DCE10D3
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:43 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC798D7F
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=+YZBIQcCVHBaWqpMveCoQ9XFOSrBaB/NxHGOEC5649U=; b=er8rZnLy+Z0P73lQYU/qNqHfNF
-	6zt/OqhVkBCJFujD0qVg+H1HTVPmP/8UIWrYkX75X+hEPgNWQM1TRVULJof/4DX9JmbL86z2uCWqi
-	Lt6qRjm4V4vdq99n5lGoSS0jCUFYyTNiVwrDb0EHlkVmaqUYx9lv1fkxnJ/2WNKC82LCPd7TbQ3Pt
-	I73geqBeD2F6riBFJXtTGu6QVvv9X9R00ESl6hbmXK4wvlqQ3QQt4sEbzFUEgjrWXkrmjaCGDmZFF
-	ipvjITZwz21Jq6/zbxH8YxXd73wLxK7o25MnlrLi5gaYnoxJEYF+XMkUljLDuKPqFW81FDtvE/6ST
-	+NmFl3AA==;
+	bh=93FZ81YMjx38BgShSrEX+i3cU71Z+4T6pfE8YPZcuN8=; b=pXEg4erXS92dPXZ9YD006JhaEF
+	D3Eu3xkn3L7BcTix27IPA/TA/fRc6csa3JuqXpvnX7DP30m3a65Yhkz5IQkaLcx4Ii5XEYT2+Iab3
+	dzmsDqKzi8AbBZqRn5UZjpPyACwcQdhAT0sxyTmA78wi+eYdggmzmU6rndiM6ZxsSQ49UYX3ig0zl
+	U3ofs0ONtb++C56QKVsjCpb16xlqFcSb3YgVhxeybS9dblO8RK9plJ+/sjhfLmdpNoggwH7P+4CeY
+	tnJIXo7ZzwmogTJkPpjUuZTEN47PcYNxA/EU4fIlssP4ybChNoJZyjNA8LL2LCgR3Zfqb16lkguNx
+	g44hSGkw==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPl-0001jX-ER
+	id 1r8KPl-0001jS-3r
 	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:41 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 11/13] ebtables: Use struct xt_cmd_parse
-Date: Wed, 29 Nov 2023 14:28:25 +0100
-Message-ID: <20231129132827.18166-12-phil@nwl.cc>
+Subject: [iptables PATCH 12/13] xshared: Introduce option_test_and_reject()
+Date: Wed, 29 Nov 2023 14:28:26 +0100
+Message-ID: <20231129132827.18166-13-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,118 +51,57 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is merely to reduce size of the parser merge patch, no functional
-change intended.
+Just a small helper eliminating the repetitive code there.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb.c | 59 ++++++++++++++++++++++++++-----------------
- 1 file changed, 36 insertions(+), 23 deletions(-)
+ iptables/xshared.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 8ab479237faa8..e03b2b2510eda 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -767,6 +767,8 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 		.jumpto	= "",
- 		.eb.bitmask = EBT_NOPROTO,
- 	};
-+	struct xt_cmd_parse p = {
-+	};
- 	char command = 'h';
- 	const char *chain = NULL;
- 	const char *policy = NULL;
-@@ -1166,56 +1168,67 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 	 * The kernel does not have to do this of course */
- 	cs.eb.ethproto = htons(cs.eb.ethproto);
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 50f23757d4aff..ebe172223486e 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -1439,6 +1439,15 @@ static void parse_change_counters_rule(int argc, char **argv,
+ 			      "Packet counter '%s' invalid", argv[optind - 1]);
+ }
  
-+	p.table		= *table;
-+	p.chain		= chain;
-+	p.policy	= policy;
-+	p.rulenum	= rule_nr;
-+	p.rulenum_end	= rule_nr_end;
-+	cs.options	= flags;
++static void option_test_and_reject(struct xt_cmd_parse *p,
++				   struct iptables_command_state *cs,
++				   unsigned int option)
++{
++	if (cs->options & option)
++		xtables_error(PARAMETER_PROBLEM, "Can't use %s with %s",
++			      p->ops->option_name(option), p->chain);
++}
 +
- 	switch (command) {
- 	case 'P':
- 		if (selected_chain >= NF_BR_NUMHOOKS) {
--			ret = ebt_cmd_user_chain_policy(h, *table, chain, policy);
-+			ret = ebt_cmd_user_chain_policy(h, p.table, p.chain,
-+							p.policy);
- 			break;
+ void do_parse(int argc, char *argv[],
+ 	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
+ 	      struct xtables_args *args)
+@@ -1924,21 +1933,13 @@ void do_parse(int argc, char *argv[],
+ 		if (strcmp(p->chain, "PREROUTING") == 0
+ 		    || strcmp(p->chain, "INPUT") == 0) {
+ 			/* -o not valid with incoming packets. */
+-			if (cs->options & OPT_VIANAMEOUT)
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "Can't use %s with %s\n",
+-					      p->ops->option_name(OPT_VIANAMEOUT),
+-					      p->chain);
++			option_test_and_reject(p, cs, OPT_VIANAMEOUT);
  		}
--		if (strcmp(policy, "RETURN") == 0) {
-+		if (strcmp(p.policy, "RETURN") == 0) {
- 			xtables_error(PARAMETER_PROBLEM,
- 				      "Policy RETURN only allowed for user defined chains");
- 		}
--		ret = nft_cmd_chain_set(h, *table, chain, policy, NULL);
-+		ret = nft_cmd_chain_set(h, p.table, p.chain, p.policy, NULL);
- 		if (ret < 0)
- 			xtables_error(PARAMETER_PROBLEM, "Wrong policy");
- 		break;
- 	case 'L':
--		ret = list_rules(h, chain, *table, rule_nr,
--				 flags & OPT_VERBOSE,
-+		ret = list_rules(h, p.chain, p.table, p.rulenum,
-+				 cs.options & OPT_VERBOSE,
- 				 0,
--				 /*flags&OPT_EXPANDED*/0,
--				 flags&LIST_N,
--				 flags&LIST_C);
--		if (!(flags & OPT_ZERO))
-+				 /*cs.options&OPT_EXPANDED*/0,
-+				 cs.options&LIST_N,
-+				 cs.options&LIST_C);
-+		if (!(cs.options & OPT_ZERO))
- 			break;
- 	case 'Z':
--		ret = nft_cmd_chain_zero_counters(h, chain, *table,
--						  flags & OPT_VERBOSE);
-+		ret = nft_cmd_chain_zero_counters(h, p.chain, p.table,
-+						  cs.options & OPT_VERBOSE);
- 		break;
- 	case 'F':
--		ret = nft_cmd_rule_flush(h, chain, *table, flags & OPT_VERBOSE);
-+		ret = nft_cmd_rule_flush(h, p.chain, p.table,
-+					 cs.options & OPT_VERBOSE);
- 		break;
- 	case 'A':
--		ret = nft_cmd_rule_append(h, chain, *table, &cs,
--					  flags & OPT_VERBOSE);
-+		ret = nft_cmd_rule_append(h, p.chain, p.table, &cs,
-+					  cs.options & OPT_VERBOSE);
- 		break;
- 	case 'I':
--		ret = nft_cmd_rule_insert(h, chain, *table, &cs,
--					  rule_nr - 1, flags & OPT_VERBOSE);
-+		ret = nft_cmd_rule_insert(h, p.chain, p.table, &cs,
-+					  p.rulenum - 1,
-+					  cs.options & OPT_VERBOSE);
- 		break;
- 	case 'D':
--		ret = delete_entry(h, chain, *table, &cs, rule_nr - 1,
--				   rule_nr_end, flags & OPT_VERBOSE);
-+		ret = delete_entry(h, p.chain, p.table, &cs, p.rulenum - 1,
-+				   p.rulenum_end, cs.options & OPT_VERBOSE);
- 		break;
- 	case 14:
--		ret = nft_cmd_rule_check(h, chain, *table,
--					 &cs, flags & OPT_VERBOSE);
-+		ret = nft_cmd_rule_check(h, p.chain, p.table,
-+					 &cs, cs.options & OPT_VERBOSE);
- 		break;
- 	case 'C':
--		ret = change_entry_counters(h, chain, *table, &cs,
--					    rule_nr - 1, rule_nr_end, chcounter,
--					    flags & OPT_VERBOSE);
-+		ret = change_entry_counters(h, p.chain, p.table, &cs,
-+					    p.rulenum - 1, p.rulenum_end,
-+					    chcounter,
-+					    cs.options & OPT_VERBOSE);
- 		break;
- 	}
  
+ 		if (strcmp(p->chain, "POSTROUTING") == 0
+ 		    || strcmp(p->chain, "OUTPUT") == 0) {
+ 			/* -i not valid with outgoing packets */
+-			if (cs->options & OPT_VIANAMEIN)
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "Can't use %s with %s\n",
+-					      p->ops->option_name(OPT_VIANAMEIN),
+-					      p->chain);
++			option_test_and_reject(p, cs, OPT_VIANAMEIN);
+ 		}
+ 	}
+ }
 -- 
 2.41.0
 
