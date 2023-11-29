@@ -1,22 +1,22 @@
-Return-Path: <netfilter-devel+bounces-107-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-115-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A4A87FD7AD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB91F7FD7B7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2AD3282519
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B06AB219B6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BEB200C3;
-	Wed, 29 Nov 2023 13:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9177620338;
+	Wed, 29 Nov 2023 13:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ea7pV/Ok"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FyCH1j4I"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E1F85
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66779B2
 	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -24,22 +24,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=BgjE3LazCOEi/oVaZwc7f/T2/TeTz0xpQM6b/3Mkj1U=; b=ea7pV/OkDDh7T79JIo/Q5puYuN
-	I9EJyhHGzaCl3xeJCeffOnBj2+JG8P9K/ciszQJE9beAYCwe7LdNVlBDp1DNsDE6e2oVQlstKTBDe
-	yORGV5hlz3FHTaApsU8DS7b052GDdgm/amIcjuT0CwINiyGqa2Y6WnKxEhcFWwQ+hmuM5GUwadSni
-	ysLMA7kaTiQ2vk1gFYSx82mwzMZDxoZMA9CMfR9rZfN1T+0hQLaxorYfJL9vWf0EJJIjlWQeSvLvl
-	yYS3c3Cl0xNjGfpufRVjMJksNBcYfIRfbH0/Zj2Qv974XnrlpKz0G/zuPqCcI6OaBsHrx2O8zeynW
-	67O3W14g==;
+	bh=qAqm42Llfs712T9EGHrSvgmeJMePZd8CxVFLF3AVx+E=; b=FyCH1j4IHjqwwm2xgxn/RFh36E
+	rSz/94RCSjUy9G2FMGPBIbSM94gqQLTQO3d3zOpYlQ9kbL+e9dzdCfw9+QCGE74hRYkevsz+fS68q
+	6CxlUCBcH/x9sfMI4U8ZyQ0xkW49NvVs9qn5JV61C7xoWc09K0DusXZz07qlbTHsLkXupyZw+xi8+
+	oxyFGJjJyNDR1TzuDquFtk+PB+nEZSKi4iq+DZkNf8/V0gT93i7TmOoLp5ovZ1JRZDFT01Nd4JUy3
+	miEopBTjnYic7JJM0oSzDHRQScIBY+d7N6KDSB8ZAG/MLy2d3ocVCMcAOKUNdnYERSYXzUhpMy09m
+	29C9525w==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPh-0001iq-EY
+	id 1r8KPh-0001iu-R2
 	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:37 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 02/13] xshared: Perform protocol value parsing in callback
-Date: Wed, 29 Nov 2023 14:28:16 +0100
-Message-ID: <20231129132827.18166-3-phil@nwl.cc>
+Subject: [iptables PATCH 03/13] xshared: Turn command_default() into a callback
+Date: Wed, 29 Nov 2023 14:28:17 +0100
+Message-ID: <20231129132827.18166-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,75 +51,127 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The code is same in iptables and ip6tables, but different in ebtables.
-Therefore move it into the callback to keep that part of do_parse()
-generic.
+Ebtables' variant is pretty different since all extensions are loaded up
+front and some targets serve as "watcher" extensions, so let variants
+specify the function to call for extension parameters.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.c | 22 ++++++++++++++--------
- iptables/xshared.h |  1 -
- 2 files changed, 14 insertions(+), 9 deletions(-)
+ iptables/ip6tables.c | 1 +
+ iptables/iptables.c  | 1 +
+ iptables/nft-arp.c   | 1 +
+ iptables/nft-ipv4.c  | 1 +
+ iptables/nft-ipv6.c  | 1 +
+ iptables/xshared.c   | 6 +++---
+ iptables/xshared.h   | 4 ++++
+ 7 files changed, 12 insertions(+), 3 deletions(-)
 
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index 53eeb6e90bbb7..96603756324a5 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -670,6 +670,7 @@ int do_command6(int argc, char *argv[], char **table,
+ 		.post_parse	= ipv6_post_parse,
+ 		.option_name	= ip46t_option_name,
+ 		.option_invert	= ip46t_option_invert,
++		.command_default = command_default,
+ 	};
+ 	struct xt_cmd_parse p = {
+ 		.table		= *table,
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 69dd289060528..b57483ef44514 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -664,6 +664,7 @@ int do_command4(int argc, char *argv[], char **table,
+ 		.post_parse	= ipv4_post_parse,
+ 		.option_name	= ip46t_option_name,
+ 		.option_invert	= ip46t_option_invert,
++		.command_default = command_default,
+ 	};
+ 	struct xt_cmd_parse p = {
+ 		.table		= *table,
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index c009dd83e26cf..f3e2920ac6d15 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -858,6 +858,7 @@ struct nft_family_ops nft_family_ops_arp = {
+ 		.post_parse	= nft_arp_post_parse,
+ 		.option_name	= nft_arp_option_name,
+ 		.option_invert	= nft_arp_option_invert,
++		.command_default = command_default,
+ 	},
+ 	.rule_to_cs		= nft_rule_to_iptables_command_state,
+ 	.init_cs		= nft_arp_init_cs,
+diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
+index c140ffde34b62..754c776473143 100644
+--- a/iptables/nft-ipv4.c
++++ b/iptables/nft-ipv4.c
+@@ -354,6 +354,7 @@ struct nft_family_ops nft_family_ops_ipv4 = {
+ 		.post_parse	= ipv4_post_parse,
+ 		.option_name	= ip46t_option_name,
+ 		.option_invert	= ip46t_option_invert,
++		.command_default = command_default,
+ 	},
+ 	.rule_to_cs		= nft_rule_to_iptables_command_state,
+ 	.clear_cs		= xtables_clear_iptables_command_state,
+diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
+index 4bf4f54f18a00..b1b5891013577 100644
+--- a/iptables/nft-ipv6.c
++++ b/iptables/nft-ipv6.c
+@@ -345,6 +345,7 @@ struct nft_family_ops nft_family_ops_ipv6 = {
+ 		.post_parse	= ipv6_post_parse,
+ 		.option_name	= ip46t_option_name,
+ 		.option_invert	= ip46t_option_invert,
++		.command_default = command_default,
+ 	},
+ 	.rule_to_cs		= nft_rule_to_iptables_command_state,
+ 	.clear_cs		= xtables_clear_iptables_command_state,
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 53e6720169950..ff809f2be3438 100644
+index ff809f2be3438..29b3992904e68 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -1547,12 +1547,6 @@ void do_parse(int argc, char *argv[],
- 				*cs->protocol = tolower(*cs->protocol);
- 
- 			cs->protocol = optarg;
--			args->proto = xtables_parse_protocol(cs->protocol);
--
--			if (args->proto == 0 &&
--			    (args->invflags & XT_INV_PROTO))
--				xtables_error(PARAMETER_PROBLEM,
--					   "rule would never match protocol");
- 
- 			/* This needs to happen here to parse extensions */
- 			if (p->ops->proto_parse)
-@@ -1865,7 +1859,13 @@ void do_parse(int argc, char *argv[],
- void ipv4_proto_parse(struct iptables_command_state *cs,
- 		      struct xtables_args *args)
- {
--	cs->fw.ip.proto = args->proto;
-+	cs->fw.ip.proto = xtables_parse_protocol(cs->protocol);
-+
-+	if (cs->fw.ip.proto == 0 &&
-+	    (args->invflags & XT_INV_PROTO))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "rule would never match protocol");
-+
- 	cs->fw.ip.invflags = args->invflags;
+@@ -122,8 +122,8 @@ static struct xtables_match *load_proto(struct iptables_command_state *cs)
+ 			  cs->options & OPT_NUMERIC, &cs->matches);
  }
  
-@@ -1881,7 +1881,13 @@ static int is_exthdr(uint16_t proto)
- void ipv6_proto_parse(struct iptables_command_state *cs,
- 		      struct xtables_args *args)
+-static int command_default(struct iptables_command_state *cs,
+-			   struct xtables_globals *gl, bool invert)
++int command_default(struct iptables_command_state *cs,
++		    struct xtables_globals *gl, bool invert)
  {
--	cs->fw6.ipv6.proto = args->proto;
-+	cs->fw6.ipv6.proto = xtables_parse_protocol(cs->protocol);
-+
-+	if (cs->fw6.ipv6.proto == 0 &&
-+	    (args->invflags & XT_INV_PROTO))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "rule would never match protocol");
-+
- 	cs->fw6.ipv6.invflags = args->invflags;
+ 	struct xtables_rule_match *matchp;
+ 	struct xtables_match *m;
+@@ -1784,7 +1784,7 @@ void do_parse(int argc, char *argv[],
+ 			exit_tryhelp(2, p->line);
  
- 	/* this is needed for ip6tables-legacy only */
+ 		default:
+-			if (command_default(cs, xt_params, invert))
++			if (p->ops->command_default(cs, xt_params, invert))
+ 				/* cf. ip6tables.c */
+ 				continue;
+ 			break;
 diff --git a/iptables/xshared.h b/iptables/xshared.h
-index d2ce72e90824a..3df2153fd6a10 100644
+index 3df2153fd6a10..bf24fd568a6f5 100644
 --- a/iptables/xshared.h
 +++ b/iptables/xshared.h
-@@ -249,7 +249,6 @@ struct addr_mask {
+@@ -272,6 +272,8 @@ struct xt_cmd_parse_ops {
+ 			      struct xtables_args *args);
+ 	const char *(*option_name)(int option);
+ 	int	(*option_invert)(int option);
++	int	(*command_default)(struct iptables_command_state *cs,
++				   struct xtables_globals *gl, bool invert);
+ };
  
- struct xtables_args {
- 	int		family;
--	uint16_t	proto;
- 	uint8_t		flags;
- 	uint16_t	invflags;
- 	char		iniface[IFNAMSIZ], outiface[IFNAMSIZ];
+ struct xt_cmd_parse {
+@@ -289,6 +291,8 @@ struct xt_cmd_parse {
+ 
+ const char *ip46t_option_name(int option);
+ int ip46t_option_invert(int option);
++int command_default(struct iptables_command_state *cs,
++		    struct xtables_globals *gl, bool invert);
+ 
+ void do_parse(int argc, char *argv[],
+ 	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
 -- 
 2.41.0
 
