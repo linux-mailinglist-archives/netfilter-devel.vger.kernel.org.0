@@ -1,92 +1,94 @@
-Return-Path: <netfilter-devel+bounces-119-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-106-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 399787FD7CA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 087FC7FD7AE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D438B210BE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:19:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BA61B21446
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C81200B6;
-	Wed, 29 Nov 2023 13:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D3119BB2;
+	Wed, 29 Nov 2023 13:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GrTdrlAw"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AABDA8;
-	Wed, 29 Nov 2023 05:18:52 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1r8KSk-0006M6-D7; Wed, 29 Nov 2023 14:18:46 +0100
-Date: Wed, 29 Nov 2023 14:18:46 +0100
-From: Florian Westphal <fw@strlen.de>
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	ast@kernel.org
-Subject: Re: [PATCH net] net/netfilter: bpf: avoid leakage of skb
-Message-ID: <20231129131846.GC27744@breakpoint.cc>
-References: <1701252962-63418-1-git-send-email-alibuda@linux.alibaba.com>
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D281BA8
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=kFczb7jnJYvFqgli2NUKHDzJFW5P7BASw4aqZR+CBZc=; b=GrTdrlAw9A9aAFTpjo6zWNgjaf
+	uU+cdHDjfZHteM4AXgdj/v3ph7PRz3do5j3183FAUUgrGtFUpzaVNEWNExfdOkhzBks2PKLG9c8Nb
+	2gbIuJaYdcswHunhOltysb6yE7L+qQZ6ZXaPRhA9JXtV/9ZJI8kgnsyvUYkhRdbLp1Ifwn6duUoQH
+	tunkQC6L6zK6sh+GUsvewBYSWRC1y/4sW1FHd3IXtPtufaC98uDQkz3EJ8gdS16U5Y27OiUAwQ04c
+	hTP4zG9/tXnycvoRdnDgUimzWAz387D3Hw2SGu+OQ+oO9PtBuHXsfc2zFM3I7icErlS91XEbI0HVD
+	mn4XxSUQ==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1r8KPh-0001im-3A
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:37 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 00/13] ebtables: Use the shared commandline parser
+Date: Wed, 29 Nov 2023 14:28:14 +0100
+Message-ID: <20231129132827.18166-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1701252962-63418-1-git-send-email-alibuda@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-D. Wythe <alibuda@linux.alibaba.com> wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> A malicious eBPF program can interrupt the subsequent processing of
-> a skb by returning an exceptional retval, and no one will be responsible
-> for releasing the very skb.
+This series converts do_commandeb() and do_commandeb_xlate() to call
+do_parse() from xshared.c instead of iterating over argv themselves.
 
-How?  The bpf verifier is supposed to reject nf bpf programs that
-return a value other than accept or drop.
+Patches 1-6 prepare the shared (parser) code for use by ebtables.
+Patches 7-11 prepare ebtables code for the following integration in
+patch 13. Patch 12 is a minor refactoring in xshared but fits fine right
+before the merge as the introduced helper function is called two more
+times by it.
 
-If this is a real bug, please also figure out why
-006c0e44ed92 ("selftests/bpf: add missing netfilter return value and ctx access tests")
-failed to catch it.
+Phil Sutter (13):
+  xshared: do_parse: Skip option checking for CMD_DELETE_NUM
+  xshared: Perform protocol value parsing in callback
+  xshared: Turn command_default() into a callback
+  xshared: Introduce print_help callback (again)
+  xshared: Support rule range deletion in do_parse()
+  xshared: Support for ebtables' --change-counters command
+  ebtables{,-translate}: Convert if-clause to switch()
+  ebtables: Change option values to avoid clashes
+  ebtables: Pass struct iptables_command_state to print_help()
+  ebtables: Make 'h' case just a call to print_help()
+  ebtables: Use struct xt_cmd_parse
+  xshared: Introduce option_test_and_reject()
+  ebtables: Use do_parse() from xshared
 
-> Moreover, normal programs can also have the demand to return NF_STOLEN,
+ iptables/ip6tables.c            |   2 +
+ iptables/iptables.c             |   2 +
+ iptables/nft-arp.c              |   2 +
+ iptables/nft-bridge.c           | 121 +++++
+ iptables/nft-bridge.h           |  13 +-
+ iptables/nft-cmd.h              |   7 -
+ iptables/nft-ipv4.c             |   2 +
+ iptables/nft-ipv6.c             |   2 +
+ iptables/nft.h                  |   1 -
+ iptables/xshared.c              | 218 +++++++--
+ iptables/xshared.h              |  36 +-
+ iptables/xtables-eb-translate.c | 491 +++----------------
+ iptables/xtables-eb.c           | 839 ++++++--------------------------
+ 13 files changed, 567 insertions(+), 1169 deletions(-)
 
-No, this should be disallowed already.
+-- 
+2.41.0
 
->  net/netfilter/nf_bpf_link.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index e502ec0..03c47d6 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -12,12 +12,29 @@ static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
->  				    const struct nf_hook_state *s)
->  {
->  	const struct bpf_prog *prog = bpf_prog;
-> +	unsigned int verdict;
->  	struct bpf_nf_ctx ctx = {
->  		.state = s,
->  		.skb = skb,
->  	};
->  
-> -	return bpf_prog_run(prog, &ctx);
-> +	verdict = bpf_prog_run(prog, &ctx);
-> +	switch (verdict) {
-> +	case NF_STOLEN:
-> +		consume_skb(skb);
-> +		fallthrough;
-
-This can't be right.  STOLEN really means STOLEN (free'd,
-redirected, etc, "skb" MUST be "leaked".
-
-Which is also why the bpf program is not allowed to return it.
 
