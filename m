@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-117-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-107-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53A677FD7B6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A4A87FD7AD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 14:15:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C46528344D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:16:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2AD3282519
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Nov 2023 13:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0500D1F94C;
-	Wed, 29 Nov 2023 13:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BEB200C3;
+	Wed, 29 Nov 2023 13:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="VsgHrt9r"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ea7pV/Ok"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17813A8
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:44 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E1F85
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Nov 2023 05:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=YIs1l6yfHG3MEAZIo2PzCeSIfZE81qB9rWHN2JUQ3Wc=; b=VsgHrt9rXdLAnYcZfD/eOswURo
-	0k2hCdkutQOz43DhKKjnqKAO0wftHb6BoRrO6cMRB4pD5o1pIXI0vApGcwsxK1sLjzvyespaDULmg
-	dlC8tbn4Y4HxVigHnUAqbmS8XyCHJbs0YkBLj3kwtiGkkvqBlQccDjNDsE8pZMK6UEUf4N57Rgb6O
-	y2Qh4Yr9ZJoZaJGZfJ6U87/VjTvljHGnT+tBa6WRsFDIrZhe18HvdrtbhMwPLaKYXuQ+AUT3P5UFW
-	J1tfBpM0bJ6L9uuJVnyKvyRKHVvyquxGRByAhal4vN51HfXWw/1xWEkMh//sVCiWPQQMXqxwzgDS9
-	VzTrLeOg==;
+	bh=BgjE3LazCOEi/oVaZwc7f/T2/TeTz0xpQM6b/3Mkj1U=; b=ea7pV/OkDDh7T79JIo/Q5puYuN
+	I9EJyhHGzaCl3xeJCeffOnBj2+JG8P9K/ciszQJE9beAYCwe7LdNVlBDp1DNsDE6e2oVQlstKTBDe
+	yORGV5hlz3FHTaApsU8DS7b052GDdgm/amIcjuT0CwINiyGqa2Y6WnKxEhcFWwQ+hmuM5GUwadSni
+	ysLMA7kaTiQ2vk1gFYSx82mwzMZDxoZMA9CMfR9rZfN1T+0hQLaxorYfJL9vWf0EJJIjlWQeSvLvl
+	yYS3c3Cl0xNjGfpufRVjMJksNBcYfIRfbH0/Zj2Qv974XnrlpKz0G/zuPqCcI6OaBsHrx2O8zeynW
+	67O3W14g==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1r8KPm-0001jh-G8
-	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:42 +0100
+	id 1r8KPh-0001iq-EY
+	for netfilter-devel@vger.kernel.org; Wed, 29 Nov 2023 14:15:37 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 01/13] xshared: do_parse: Skip option checking for CMD_DELETE_NUM
-Date: Wed, 29 Nov 2023 14:28:15 +0100
-Message-ID: <20231129132827.18166-2-phil@nwl.cc>
+Subject: [iptables PATCH 02/13] xshared: Perform protocol value parsing in callback
+Date: Wed, 29 Nov 2023 14:28:16 +0100
+Message-ID: <20231129132827.18166-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129132827.18166-1-phil@nwl.cc>
 References: <20231129132827.18166-1-phil@nwl.cc>
@@ -51,26 +51,75 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This command will delete a rule by its number, not rule spec. No -i/-o
-options are expected on commandline.
+The code is same in iptables and ip6tables, but different in ebtables.
+Therefore move it into the callback to keep that part of do_parse()
+generic.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.c | 1 -
- 1 file changed, 1 deletion(-)
+ iptables/xshared.c | 22 ++++++++++++++--------
+ iptables/xshared.h |  1 -
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index dca744773d773..53e6720169950 100644
+index 53e6720169950..ff809f2be3438 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -1837,7 +1837,6 @@ void do_parse(int argc, char *argv[],
+@@ -1547,12 +1547,6 @@ void do_parse(int argc, char *argv[],
+ 				*cs->protocol = tolower(*cs->protocol);
  
- 	if (p->command == CMD_APPEND ||
- 	    p->command == CMD_DELETE ||
--	    p->command == CMD_DELETE_NUM ||
- 	    p->command == CMD_CHECK ||
- 	    p->command == CMD_INSERT ||
- 	    p->command == CMD_REPLACE) {
+ 			cs->protocol = optarg;
+-			args->proto = xtables_parse_protocol(cs->protocol);
+-
+-			if (args->proto == 0 &&
+-			    (args->invflags & XT_INV_PROTO))
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "rule would never match protocol");
+ 
+ 			/* This needs to happen here to parse extensions */
+ 			if (p->ops->proto_parse)
+@@ -1865,7 +1859,13 @@ void do_parse(int argc, char *argv[],
+ void ipv4_proto_parse(struct iptables_command_state *cs,
+ 		      struct xtables_args *args)
+ {
+-	cs->fw.ip.proto = args->proto;
++	cs->fw.ip.proto = xtables_parse_protocol(cs->protocol);
++
++	if (cs->fw.ip.proto == 0 &&
++	    (args->invflags & XT_INV_PROTO))
++		xtables_error(PARAMETER_PROBLEM,
++			      "rule would never match protocol");
++
+ 	cs->fw.ip.invflags = args->invflags;
+ }
+ 
+@@ -1881,7 +1881,13 @@ static int is_exthdr(uint16_t proto)
+ void ipv6_proto_parse(struct iptables_command_state *cs,
+ 		      struct xtables_args *args)
+ {
+-	cs->fw6.ipv6.proto = args->proto;
++	cs->fw6.ipv6.proto = xtables_parse_protocol(cs->protocol);
++
++	if (cs->fw6.ipv6.proto == 0 &&
++	    (args->invflags & XT_INV_PROTO))
++		xtables_error(PARAMETER_PROBLEM,
++			      "rule would never match protocol");
++
+ 	cs->fw6.ipv6.invflags = args->invflags;
+ 
+ 	/* this is needed for ip6tables-legacy only */
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index d2ce72e90824a..3df2153fd6a10 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -249,7 +249,6 @@ struct addr_mask {
+ 
+ struct xtables_args {
+ 	int		family;
+-	uint16_t	proto;
+ 	uint8_t		flags;
+ 	uint16_t	invflags;
+ 	char		iniface[IFNAMSIZ], outiface[IFNAMSIZ];
 -- 
 2.41.0
 
