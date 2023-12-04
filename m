@@ -1,26 +1,26 @@
-Return-Path: <netfilter-devel+bounces-146-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-147-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9213180354E
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Dec 2023 14:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92A85803598
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Dec 2023 14:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D9CA1F211AC
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Dec 2023 13:46:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BDFA1F2109D
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Dec 2023 13:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E96525546;
-	Mon,  4 Dec 2023 13:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FE425574;
+	Mon,  4 Dec 2023 13:54:52 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1AA19D2
-	for <netfilter-devel@vger.kernel.org>; Mon,  4 Dec 2023 05:46:19 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52A62DF
+	for <netfilter-devel@vger.kernel.org>; Mon,  4 Dec 2023 05:54:48 -0800 (PST)
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: nf_tables: bail out on mismatching dynset and set expressions
-Date: Mon,  4 Dec 2023 14:46:15 +0100
-Message-Id: <20231204134615.2406-1-pablo@netfilter.org>
+Subject: [PATCH nf] netfilter: nf_tables: validate family when identifying table via handle
+Date: Mon,  4 Dec 2023 14:54:44 +0100
+Message-Id: <20231204135444.3881-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -30,40 +30,45 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If dynset expressions provided by userspace is larger than the declared
-set expressions, then bail out.
+Validate table family when looking up for it via NFTA_TABLE_HANDLE.
 
-Fixes: 48b0ae046ee9 ("netfilter: nftables: netlink support for several set element expressions")
 Reported-by: Xingyuan Mo <hdthky0@gmail.com>
+Fixes: 3ecbfd65f50e ("netfilter: nf_tables: allocate handle and delete objects via handle")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_dynset.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
-index b18a79039125..c09dba57354c 100644
---- a/net/netfilter/nft_dynset.c
-+++ b/net/netfilter/nft_dynset.c
-@@ -280,10 +280,15 @@ static int nft_dynset_init(const struct nft_ctx *ctx,
- 			priv->expr_array[i] = dynset_expr;
- 			priv->num_exprs++;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index c0a42989b982..c5c17c6e80ed 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -803,7 +803,7 @@ static struct nft_table *nft_table_lookup(const struct net *net,
  
--			if (set->num_exprs &&
--			    dynset_expr->ops != set->exprs[i]->ops) {
--				err = -EOPNOTSUPP;
--				goto err_expr_free;
-+			if (set->num_exprs) {
-+				if (i >= set->num_exprs) {
-+					err = -EINVAL;
-+					goto err_expr_free;
-+				}
-+				if (dynset_expr->ops != set->exprs[i]->ops) {
-+					err = -EOPNOTSUPP;
-+					goto err_expr_free;
-+				}
- 			}
- 			i++;
- 		}
+ static struct nft_table *nft_table_lookup_byhandle(const struct net *net,
+ 						   const struct nlattr *nla,
+-						   u8 genmask, u32 nlpid)
++						   int family, u8 genmask, u32 nlpid)
+ {
+ 	struct nftables_pernet *nft_net;
+ 	struct nft_table *table;
+@@ -811,6 +811,7 @@ static struct nft_table *nft_table_lookup_byhandle(const struct net *net,
+ 	nft_net = nft_pernet(net);
+ 	list_for_each_entry(table, &nft_net->tables, list) {
+ 		if (be64_to_cpu(nla_get_be64(nla)) == table->handle &&
++		    table->family == family &&
+ 		    nft_active_genmask(table, genmask)) {
+ 			if (nft_table_has_owner(table) &&
+ 			    nlpid && table->nlpid != nlpid)
+@@ -1544,7 +1545,7 @@ static int nf_tables_deltable(struct sk_buff *skb, const struct nfnl_info *info,
+ 
+ 	if (nla[NFTA_TABLE_HANDLE]) {
+ 		attr = nla[NFTA_TABLE_HANDLE];
+-		table = nft_table_lookup_byhandle(net, attr, genmask,
++		table = nft_table_lookup_byhandle(net, attr, family, genmask,
+ 						  NETLINK_CB(skb).portid);
+ 	} else {
+ 		attr = nla[NFTA_TABLE_NAME];
 -- 
 2.30.2
 
