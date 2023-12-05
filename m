@@ -1,27 +1,27 @@
-Return-Path: <netfilter-devel+bounces-163-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-164-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C340804DF3
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Dec 2023 10:34:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E561804DF8
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Dec 2023 10:35:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9DB91F2131F
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Dec 2023 09:34:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2E181F21495
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Dec 2023 09:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A003F8FE;
-	Tue,  5 Dec 2023 09:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4763FB2F;
+	Tue,  5 Dec 2023 09:35:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from felix.runs.onstackit.cloud (felix.runs.onstackit.cloud [45.129.43.133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B98A7
-	for <netfilter-devel@vger.kernel.org>; Tue,  5 Dec 2023 01:34:36 -0800 (PST)
-Date: Tue, 5 Dec 2023 09:34:30 +0000
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC683B2
+	for <netfilter-devel@vger.kernel.org>; Tue,  5 Dec 2023 01:35:05 -0800 (PST)
+Date: Tue, 5 Dec 2023 09:35:03 +0000
 From: Felix Huettner <felix.huettner@mail.schwarz>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH libnetfilter_conntrack 0/2] dump/flush support filtering by
- zone
-Message-ID: <cover.1701675975.git.felix.huettner@mail.schwarz>
+Subject: [PATCH libnetfilter_conntrack 1/2] dump: support filtering by zone
+Message-ID: <f5abe59a5d9577db8a5e07317aab90cede94d90a.1701675975.git.felix.huettner@mail.schwarz>
+References: <cover.1701675975.git.felix.huettner@mail.schwarz>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -30,29 +30,137 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1701675975.git.felix.huettner@mail.schwarz>
 
-this patchset expands libnetfilter_conntrack to send dump and flush requests
-that filter by conntrack zone.
-It is dependent on a patch to the kernel repo at
-https://marc.info/?l=linux-kernel&m=170108582310775
+based on a kernel side extension of the conntrack api, this patch brings
+this extension to userspace.
 
-Felix Huettner (2):
-  dump: support filtering by zone
-  flush: support filtering
+When dumping the conntrack table we can now filter based on the
+conntrack zone directly in kernel space. If the kernel does not yet
+support this feature this filtering is ignored.
 
- include/internal/object.h                     |  1 +
- include/internal/prototypes.h                 |  1 +
- .../libnetfilter_conntrack.h                  |  5 ++
- src/conntrack/api.c                           | 14 +++++
- src/conntrack/build_mnl.c                     |  3 +
- src/conntrack/filter_dump.c                   | 17 ++++++
- utils/.gitignore                              |  1 +
- utils/Makefile.am                             |  4 ++
- utils/conntrack_dump_filter.c                 |  2 +
- utils/conntrack_flush_filter.c                | 60 +++++++++++++++++++
- 10 files changed, 108 insertions(+)
- create mode 100644 utils/conntrack_flush_filter.c
+Signed-off-by: Felix Huettner <felix.huettner@mail.schwarz>
+---
+ include/internal/object.h                           |  1 +
+ .../libnetfilter_conntrack/libnetfilter_conntrack.h |  5 +++++
+ src/conntrack/api.c                                 | 13 +++++++++++++
+ src/conntrack/build_mnl.c                           |  3 +++
+ src/conntrack/filter_dump.c                         |  8 ++++++++
+ utils/conntrack_dump_filter.c                       |  2 ++
+ 6 files changed, 32 insertions(+)
 
+diff --git a/include/internal/object.h b/include/internal/object.h
+index 4cac4f1..8854ef2 100644
+--- a/include/internal/object.h
++++ b/include/internal/object.h
+@@ -293,6 +293,7 @@ struct nfct_filter_dump {
+ 	struct nfct_filter_dump_mark	status;
+ 	uint8_t				l3num;
+ 	uint32_t			set;
++	uint16_t			zone;
+ };
+ 
+ /*
+diff --git a/include/libnetfilter_conntrack/libnetfilter_conntrack.h b/include/libnetfilter_conntrack/libnetfilter_conntrack.h
+index 76b5c27..2e9458a 100644
+--- a/include/libnetfilter_conntrack/libnetfilter_conntrack.h
++++ b/include/libnetfilter_conntrack/libnetfilter_conntrack.h
+@@ -547,6 +547,7 @@ enum nfct_filter_dump_attr {
+ 	NFCT_FILTER_DUMP_MARK = 0,	/* struct nfct_filter_dump_mark */
+ 	NFCT_FILTER_DUMP_L3NUM,		/* uint8_t */
+ 	NFCT_FILTER_DUMP_STATUS,	/* struct nfct_filter_dump_mark */
++	NFCT_FILTER_DUMP_ZONE,		/* uint16_t */
+ 	NFCT_FILTER_DUMP_TUPLE,
+ 	NFCT_FILTER_DUMP_MAX
+ };
+@@ -563,6 +564,10 @@ void nfct_filter_dump_set_attr_u8(struct nfct_filter_dump *filter_dump,
+ 				  const enum nfct_filter_dump_attr type,
+ 				  uint8_t data);
+ 
++void nfct_filter_dump_set_attr_u16(struct nfct_filter_dump *filter_dump,
++				  const enum nfct_filter_dump_attr type,
++				  uint16_t data);
++
+ /* low level API: netlink functions */
+ 
+ extern __attribute__((deprecated)) int
+diff --git a/src/conntrack/api.c b/src/conntrack/api.c
+index cd8bea8..60c87b3 100644
+--- a/src/conntrack/api.c
++++ b/src/conntrack/api.c
+@@ -1551,6 +1551,19 @@ void nfct_filter_dump_set_attr_u8(struct nfct_filter_dump *filter_dump,
+ 	nfct_filter_dump_set_attr(filter_dump, type, &value);
+ }
+ 
++/**
++ * nfct_filter_dump_attr_set_u16 - set u16 dump filter attribute
++ * \param filter dump filter object that we want to modify
++ * \param type filter attribute type
++ * \param value value of the filter attribute using unsigned int (32 bits).
++ */
++void nfct_filter_dump_set_attr_u16(struct nfct_filter_dump *filter_dump,
++				  const enum nfct_filter_dump_attr type,
++				  uint16_t value)
++{
++	nfct_filter_dump_set_attr(filter_dump, type, &value);
++}
++
+ /**
+  * @}
+  */
+diff --git a/src/conntrack/build_mnl.c b/src/conntrack/build_mnl.c
+index eb9fcbf..eed0679 100644
+--- a/src/conntrack/build_mnl.c
++++ b/src/conntrack/build_mnl.c
+@@ -658,6 +658,9 @@ int nfct_nlmsg_build_filter(struct nlmsghdr *nlh,
+ 		mnl_attr_put_u32(nlh, CTA_STATUS_MASK,
+ 				 htonl(filter_dump->status.mask));
+ 	}
++	if (filter_dump->set & (1 << NFCT_FILTER_DUMP_ZONE)) {
++		mnl_attr_put_u16(nlh, CTA_ZONE, htons(filter_dump->zone));
++	}
+ 	if (filter_dump->set & (1 << NFCT_FILTER_DUMP_TUPLE)) {
+ 		const struct nf_conntrack *ct = &filter_dump->ct;
+ 		struct nlattr *nest;
+diff --git a/src/conntrack/filter_dump.c b/src/conntrack/filter_dump.c
+index 5723a44..0a19985 100644
+--- a/src/conntrack/filter_dump.c
++++ b/src/conntrack/filter_dump.c
+@@ -37,6 +37,13 @@ set_filter_dump_attr_family(struct nfct_filter_dump *filter_dump,
+ 	filter_dump->l3num = *((uint8_t *)value);
+ }
+ 
++static void
++set_filter_dump_attr_zone(struct nfct_filter_dump *filter_dump,
++			    const void *value)
++{
++	filter_dump->zone = *((uint16_t *)value);
++}
++
+ static void
+ set_filter_dump_attr_tuple(struct nfct_filter_dump *filter_dump,
+ 			   const void *value)
+@@ -48,6 +55,7 @@ const set_filter_dump_attr set_filter_dump_attr_array[NFCT_FILTER_DUMP_MAX] = {
+ 	[NFCT_FILTER_DUMP_MARK]		= set_filter_dump_attr_mark,
+ 	[NFCT_FILTER_DUMP_L3NUM]	= set_filter_dump_attr_family,
+ 	[NFCT_FILTER_DUMP_STATUS]	= set_filter_dump_attr_status,
++	[NFCT_FILTER_DUMP_ZONE]		= set_filter_dump_attr_zone,
+ 	[NFCT_FILTER_DUMP_TUPLE]	= set_filter_dump_attr_tuple,
+ };
+ 
+diff --git a/utils/conntrack_dump_filter.c b/utils/conntrack_dump_filter.c
+index 41e3f0c..16492ac 100644
+--- a/utils/conntrack_dump_filter.c
++++ b/utils/conntrack_dump_filter.c
+@@ -40,6 +40,8 @@ int main(void)
+ 					&filter_dump_mark);
+ 	nfct_filter_dump_set_attr_u8(filter_dump, NFCT_FILTER_DUMP_L3NUM,
+ 					AF_INET);
++	nfct_filter_dump_set_attr_u16(filter_dump, NFCT_FILTER_DUMP_ZONE,
++					123);
+ 
+ 	nfct_callback_register(h, NFCT_T_ALL, cb, NULL);
+ 	ret = nfct_query(h, NFCT_Q_DUMP_FILTER, filter_dump);
 -- 
 2.43.0
 
