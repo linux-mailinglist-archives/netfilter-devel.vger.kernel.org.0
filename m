@@ -1,21 +1,21 @@
-Return-Path: <netfilter-devel+bounces-241-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-244-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E50480773E
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Dec 2023 19:04:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79FA5807743
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Dec 2023 19:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 392A6281E9F
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Dec 2023 18:04:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D4131F2135C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Dec 2023 18:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B396EB68;
-	Wed,  6 Dec 2023 18:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BFE6F61C;
+	Wed,  6 Dec 2023 18:04:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE0F9D4B;
-	Wed,  6 Dec 2023 10:04:04 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 546A0122;
+	Wed,  6 Dec 2023 10:04:05 -0800 (PST)
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -24,9 +24,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 3/6] netfilter: nf_tables: fix 'exist' matching on bigendian arches
-Date: Wed,  6 Dec 2023 19:03:54 +0100
-Message-Id: <20231206180357.959930-4-pablo@netfilter.org>
+Subject: [PATCH net 4/6] netfilter: nf_tables: bail out on mismatching dynset and set expressions
+Date: Wed,  6 Dec 2023 19:03:55 +0100
+Message-Id: <20231206180357.959930-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231206180357.959930-1-pablo@netfilter.org>
 References: <20231206180357.959930-1-pablo@netfilter.org>
@@ -36,89 +36,42 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Florian Westphal <fw@strlen.de>
+If dynset expressions provided by userspace is larger than the declared
+set expressions, then bail out.
 
-Maze reports "tcp option fastopen exists" fails to match on
-OpenWrt 22.03.5, r20134-5f15225c1e (5.10.176) router.
-
-"tcp option fastopen exists" translates to:
-inet
-  [ exthdr load tcpopt 1b @ 34 + 0 present => reg 1 ]
-  [ cmp eq reg 1 0x00000001 ]
-
-.. but existing nft userspace generates a 1-byte compare.
-
-On LSB (x86), "*reg32 = 1" is identical to nft_reg_store8(reg32, 1), but
-not on MSB, which will place the 1 last. IOW, on bigendian aches the cmp8
-is awalys false.
-
-Make sure we store this in a consistent fashion, so existing userspace
-will also work on MSB (bigendian).
-
-Regardless of this patch we can also change nft userspace to generate
-'reg32 == 0' and 'reg32 != 0' instead of u8 == 0 // u8 == 1 when
-adding 'option x missing/exists' expressions as well.
-
-Fixes: 3c1fece8819e ("netfilter: nft_exthdr: Allow checking TCP option presence, too")
-Fixes: b9f9a485fb0e ("netfilter: nft_exthdr: add boolean DCCP option matching")
-Fixes: 055c4b34b94f ("netfilter: nft_fib: Support existence check")
-Reported-by: Maciej Żenczykowski <zenczykowski@gmail.com>
-Closes: https://lore.kernel.org/netfilter-devel/CAHo-OozyEqHUjL2-ntATzeZOiuftLWZ_HU6TOM_js4qLfDEAJg@mail.gmail.com/
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Acked-by: Phil Sutter <phil@nwl.cc>
+Fixes: 48b0ae046ee9 ("netfilter: nftables: netlink support for several set element expressions")
+Reported-by: Xingyuan Mo <hdthky0@gmail.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_exthdr.c | 4 ++--
- net/netfilter/nft_fib.c    | 8 ++++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ net/netfilter/nft_dynset.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nft_exthdr.c b/net/netfilter/nft_exthdr.c
-index 3fbaa7bf41f9..6eb571d0c3fd 100644
---- a/net/netfilter/nft_exthdr.c
-+++ b/net/netfilter/nft_exthdr.c
-@@ -214,7 +214,7 @@ static void nft_exthdr_tcp_eval(const struct nft_expr *expr,
+diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
+index b18a79039125..c09dba57354c 100644
+--- a/net/netfilter/nft_dynset.c
++++ b/net/netfilter/nft_dynset.c
+@@ -280,10 +280,15 @@ static int nft_dynset_init(const struct nft_ctx *ctx,
+ 			priv->expr_array[i] = dynset_expr;
+ 			priv->num_exprs++;
  
- 		offset = i + priv->offset;
- 		if (priv->flags & NFT_EXTHDR_F_PRESENT) {
--			*dest = 1;
-+			nft_reg_store8(dest, 1);
- 		} else {
- 			if (priv->len % NFT_REG32_SIZE)
- 				dest[priv->len / NFT_REG32_SIZE] = 0;
-@@ -461,7 +461,7 @@ static void nft_exthdr_dccp_eval(const struct nft_expr *expr,
- 		type = bufp[0];
- 
- 		if (type == priv->type) {
--			*dest = 1;
-+			nft_reg_store8(dest, 1);
- 			return;
+-			if (set->num_exprs &&
+-			    dynset_expr->ops != set->exprs[i]->ops) {
+-				err = -EOPNOTSUPP;
+-				goto err_expr_free;
++			if (set->num_exprs) {
++				if (i >= set->num_exprs) {
++					err = -EINVAL;
++					goto err_expr_free;
++				}
++				if (dynset_expr->ops != set->exprs[i]->ops) {
++					err = -EOPNOTSUPP;
++					goto err_expr_free;
++				}
+ 			}
+ 			i++;
  		}
- 
-diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
-index 1bfe258018da..37cfe6dd712d 100644
---- a/net/netfilter/nft_fib.c
-+++ b/net/netfilter/nft_fib.c
-@@ -145,11 +145,15 @@ void nft_fib_store_result(void *reg, const struct nft_fib *priv,
- 	switch (priv->result) {
- 	case NFT_FIB_RESULT_OIF:
- 		index = dev ? dev->ifindex : 0;
--		*dreg = (priv->flags & NFTA_FIB_F_PRESENT) ? !!index : index;
-+		if (priv->flags & NFTA_FIB_F_PRESENT)
-+			nft_reg_store8(dreg, !!index);
-+		else
-+			*dreg = index;
-+
- 		break;
- 	case NFT_FIB_RESULT_OIFNAME:
- 		if (priv->flags & NFTA_FIB_F_PRESENT)
--			*dreg = !!dev;
-+			nft_reg_store8(dreg, !!dev);
- 		else
- 			strscpy_pad(reg, dev ? dev->name : "", IFNAMSIZ);
- 		break;
 -- 
 2.30.2
 
