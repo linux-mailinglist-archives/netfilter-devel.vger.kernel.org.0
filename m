@@ -1,61 +1,140 @@
-Return-Path: <netfilter-devel+bounces-270-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-271-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29F1B80E0B7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 02:09:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9FD80E779
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 10:23:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DACF42825D8
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 01:09:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26BA81C2081B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 09:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B039639;
-	Tue, 12 Dec 2023 01:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2607E584D5;
+	Tue, 12 Dec 2023 09:23:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AFBAB
-	for <netfilter-devel@vger.kernel.org>; Mon, 11 Dec 2023 17:09:30 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E425CF
+	for <netfilter-devel@vger.kernel.org>; Tue, 12 Dec 2023 01:23:08 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1rCrH6-0004IY-3z
-	for netfilter-devel@vger.kernel.org; Tue, 12 Dec 2023 02:09:28 +0100
-Date: Tue, 12 Dec 2023 02:09:28 +0100
+	(envelope-from <fw@breakpoint.cc>)
+	id 1rCyyo-0006dG-Lg; Tue, 12 Dec 2023 10:23:06 +0100
 From: Florian Westphal <fw@strlen.de>
-To: Netfilter Development <netfilter-devel@vger.kernel.org>
-Subject: Re: Should we keep the advice to increase queue max length?
-Message-ID: <20231212010928.GA16434@breakpoint.cc>
-References: <ZXetLVAKMug1YvL3@slk15.local.net>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] parser_bison: fix ct scope underflow if ct helper section is duplicated
+Date: Tue, 12 Dec 2023 10:22:58 +0100
+Message-ID: <20231212092301.24582-1-fw@strlen.de>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXetLVAKMug1YvL3@slk15.local.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-Duncan Roe <duncan_roe@optusnet.com.au> wrote:
-> /proc/net/netfilter/nfnetlink_queue has a line for every active queue. The 3rd
-> field is the number of queued packets. The max length is not in these lines but
-> kernel source suggests it is 1024 by default. Anyway, I updated nfq6 to be able
-> to set the max (using mnl functions).
-> 
-> And I found the maximum number of queued packets is: 238. Further packets are
-> dropped.
-> 
-> If I lower the max below 238, limiting occurs at the new max.
-> 
-> So I propose to drop the advice to increase the queue max length when I revise
-> the libnetfilter_queue main page as part of the project to stop using
-> libnfnetlink.
-> 
-> Anyone have any comments?
+table inet filter {
+	ct helper sip-5060u {
+		type "sip" protocol udp
+		l3proto ip
+	}5060t {
+		type "sip" protocol tcp
+		l3pownerip
+	}
 
-This code is very old, it stems from a time where the network stack
-did not do any kind of packet aggregation.
+Will close the 'ct' scope twice, it has to be closed AFTER the separator
+has been parsed.
 
-I think the hint should be removed as you suggest.
+While not strictly needed, also error out if the protocol is already
+given, this provides a better error description.
+
+Also make sure we release the string in all error branches.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ src/parser_bison.y                                | 15 +++++++++++----
+ .../bogons/nft-f/ct_helper_yystate_underflow      | 14 ++++++++++++++
+ 2 files changed, 25 insertions(+), 4 deletions(-)
+ create mode 100644 tests/shell/testcases/bogons/nft-f/ct_helper_yystate_underflow
+
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 70acfc5754fa..91c4d263dc73 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -1971,7 +1971,7 @@ table_block		:	/* empty */	{ $$ = $<table>-1; }
+ 				list_add_tail(&$4->list, &$1->objs);
+ 				$$ = $1;
+ 			}
+-			|	table_block	CT	HELPER	obj_identifier  obj_block_alloc '{'     ct_helper_block     '}' close_scope_ct stmt_separator
++			|	table_block	CT	HELPER	obj_identifier  obj_block_alloc '{'     ct_helper_block     '}' stmt_separator close_scope_ct
+ 			{
+ 				$5->location = @4;
+ 				$5->type = NFT_OBJECT_CT_HELPER;
+@@ -1980,7 +1980,7 @@ table_block		:	/* empty */	{ $$ = $<table>-1; }
+ 				list_add_tail(&$5->list, &$1->objs);
+ 				$$ = $1;
+ 			}
+-			|	table_block	CT	TIMEOUT obj_identifier obj_block_alloc '{'	ct_timeout_block	'}' close_scope_ct stmt_separator
++			|	table_block	CT	TIMEOUT obj_identifier obj_block_alloc '{'	ct_timeout_block	'}' stmt_separator close_scope_ct
+ 			{
+ 				$5->location = @4;
+ 				$5->type = NFT_OBJECT_CT_TIMEOUT;
+@@ -1989,7 +1989,7 @@ table_block		:	/* empty */	{ $$ = $<table>-1; }
+ 				list_add_tail(&$5->list, &$1->objs);
+ 				$$ = $1;
+ 			}
+-			|	table_block	CT	EXPECTATION obj_identifier obj_block_alloc '{'	ct_expect_block	'}' close_scope_ct stmt_separator
++			|	table_block	CT	EXPECTATION obj_identifier obj_block_alloc '{'	ct_expect_block	'}' stmt_separator close_scope_ct
+ 			{
+ 				$5->location = @4;
+ 				$5->type = NFT_OBJECT_CT_EXPECT;
+@@ -4826,16 +4826,23 @@ ct_l4protoname		:	TCP	close_scope_tcp	{ $$ = IPPROTO_TCP; }
+ 			|	UDP	close_scope_udp	{ $$ = IPPROTO_UDP; }
+ 			;
+ 
+-ct_helper_config		:	TYPE	QUOTED_STRING	PROTOCOL	ct_l4protoname	stmt_separator	close_scope_type
++ct_helper_config	:	TYPE	QUOTED_STRING	PROTOCOL	ct_l4protoname	stmt_separator	close_scope_type
+ 			{
+ 				struct ct_helper *ct;
+ 				int ret;
+ 
+ 				ct = &$<obj>0->ct_helper;
+ 
++				if (ct->l4proto) {
++					erec_queue(error(&@2, "You can only specify this once. This statement is already set for %s.", ct->name), state->msgs);
++					free_const($2);
++					YYERROR;
++				}
++
+ 				ret = snprintf(ct->name, sizeof(ct->name), "%s", $2);
+ 				if (ret <= 0 || ret >= (int)sizeof(ct->name)) {
+ 					erec_queue(error(&@2, "invalid name '%s', max length is %u\n", $2, (int)sizeof(ct->name)), state->msgs);
++					free_const($2);
+ 					YYERROR;
+ 				}
+ 				free_const($2);
+diff --git a/tests/shell/testcases/bogons/nft-f/ct_helper_yystate_underflow b/tests/shell/testcases/bogons/nft-f/ct_helper_yystate_underflow
+new file mode 100644
+index 000000000000..18eb25ebcd48
+--- /dev/null
++++ b/tests/shell/testcases/bogons/nft-f/ct_helper_yystate_underflow
+@@ -0,0 +1,14 @@
++table inet filter {
++	ct helper sip-5060u {
++		type "sip" protocol udp
++		l3proto ip
++	}5060t {
++		type "sip" protocol tcp
++		l3pownerip
++	}
++
++	chain input {
++		type filtol/dev/stdinok input priority f)lser; policy accept;
++		ct helper set ip protocol . th dport map { udp . 1-20000 : "si60u", tcp . 10000-20000 : "sip-5060t" }
++	}
++}
+-- 
+2.41.0
+
 
