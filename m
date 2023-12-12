@@ -1,30 +1,30 @@
-Return-Path: <netfilter-devel+bounces-279-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-280-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC3D80EE3D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 15:01:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE0980F167
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 16:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0706B20D09
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 14:01:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9261C20981
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Dec 2023 15:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F0B73160;
-	Tue, 12 Dec 2023 14:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A9E76DCC;
+	Tue, 12 Dec 2023 15:45:29 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2949111
-	for <netfilter-devel@vger.kernel.org>; Tue, 12 Dec 2023 06:01:27 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FD7EB
+	for <netfilter-devel@vger.kernel.org>; Tue, 12 Dec 2023 07:45:23 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rD3KA-000073-Bq; Tue, 12 Dec 2023 15:01:26 +0100
+	id 1rD4wj-0000nV-3o; Tue, 12 Dec 2023 16:45:21 +0100
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH libnftnl] expr: fix buffer overflows in data value setters
-Date: Tue, 12 Dec 2023 15:01:17 +0100
-Message-ID: <20231212140121.10357-1-fw@strlen.de>
+Subject: [PATCH nft] evaluate: error out if concat expression becomes too large
+Date: Tue, 12 Dec 2023 16:45:12 +0100
+Message-ID: <20231212154516.21144-1-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -34,137 +34,50 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The data value setters memcpy() to a fixed-size buffer, but its very easy
-to make nft pass too-larger values.
+Before:
+BUG: nld buffer overflow: want to copy 132, max 64
 
-Example: @th,160,1272 gt 0
-
-==21204==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x60b000000630 at pc 0x7f91dca74b73 bp 0x7ffdf10f4620 sp 0x7ffdf10f3dc8
-...
-
-
-Truncate the copy instead of corrupting the heap.
-This needs additional fixes on nft side to reject such
-statements with a proper error message.
-
+After:
+Error: Concatenation of size 544 exceeds maximum size of 512
+udp length . @th,0,512 . @th,512,512 { 47-63 . 0xe373135363130 . 0x33131303735353203 }
+                             ^^^^^^^^^
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/data_reg.h   |  2 ++
- src/expr/bitwise.c   | 12 +++---------
- src/expr/cmp.c       |  4 +---
- src/expr/data_reg.c  | 14 ++++++++++++++
- src/expr/immediate.c |  4 +---
- src/expr/range.c     |  8 ++------
- 6 files changed, 23 insertions(+), 21 deletions(-)
+ Pablo, I can merge this with
+ "[nft] parser_bison: reject large raw payload expressions" if you
+ prefer.
 
-diff --git a/include/data_reg.h b/include/data_reg.h
-index 6d2dc66858bf..5ee7080daef0 100644
---- a/include/data_reg.h
-+++ b/include/data_reg.h
-@@ -37,4 +37,6 @@ struct nlattr;
- int nftnl_parse_data(union nftnl_data_reg *data, struct nlattr *attr, int *type);
- void nftnl_free_verdict(const union nftnl_data_reg *data);
+ src/evaluate.c                                               | 4 ++++
+ .../bogons/nft-f/stack_overflow_via_large_concat_expr        | 5 +++++
+ 2 files changed, 9 insertions(+)
+ create mode 100644 tests/shell/testcases/bogons/nft-f/stack_overflow_via_large_concat_expr
+
+diff --git a/src/evaluate.c b/src/evaluate.c
+index c7191e8cad08..e2d9a320587e 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -1591,6 +1591,10 @@ static int expr_evaluate_concat(struct eval_ctx *ctx, struct expr **expr)
+ 		}
  
-+int nftnl_data_cpy(union nftnl_data_reg *dreg, const void *src, uint32_t len);
+ 		ctx->inner_desc = NULL;
 +
- #endif
-diff --git a/src/expr/bitwise.c b/src/expr/bitwise.c
-index 2d272335e377..e5dba827f3d9 100644
---- a/src/expr/bitwise.c
-+++ b/src/expr/bitwise.c
-@@ -51,17 +51,11 @@ nftnl_expr_bitwise_set(struct nftnl_expr *e, uint16_t type,
- 		memcpy(&bitwise->len, data, sizeof(bitwise->len));
- 		break;
- 	case NFTNL_EXPR_BITWISE_MASK:
--		memcpy(&bitwise->mask.val, data, data_len);
--		bitwise->mask.len = data_len;
--		break;
-+		return nftnl_data_cpy(&bitwise->mask, data, data_len);
- 	case NFTNL_EXPR_BITWISE_XOR:
--		memcpy(&bitwise->xor.val, data, data_len);
--		bitwise->xor.len = data_len;
--		break;
-+		return nftnl_data_cpy(&bitwise->xor, data, data_len);
- 	case NFTNL_EXPR_BITWISE_DATA:
--		memcpy(&bitwise->data.val, data, data_len);
--		bitwise->data.len = data_len;
--		break;
-+		return nftnl_data_cpy(&bitwise->data, data, data_len);
- 	default:
- 		return -1;
++		if (size > NFT_REG32_COUNT * sizeof(uint32_t) * BITS_PER_BYTE)
++			return expr_error(ctx->msgs, i, "Concatenation of size %u exceeds maximum size of %u",
++					  size, NFT_REG32_COUNT * sizeof(uint32_t) * BITS_PER_BYTE);
  	}
-diff --git a/src/expr/cmp.c b/src/expr/cmp.c
-index f9d15bba3b0f..1d396e83411a 100644
---- a/src/expr/cmp.c
-+++ b/src/expr/cmp.c
-@@ -42,9 +42,7 @@ nftnl_expr_cmp_set(struct nftnl_expr *e, uint16_t type,
- 		memcpy(&cmp->op, data, sizeof(cmp->op));
- 		break;
- 	case NFTNL_EXPR_CMP_DATA:
--		memcpy(&cmp->data.val, data, data_len);
--		cmp->data.len = data_len;
--		break;
-+		return nftnl_data_cpy(&cmp->data, data, data_len);
- 	default:
- 		return -1;
- 	}
-diff --git a/src/expr/data_reg.c b/src/expr/data_reg.c
-index 2633a775c90c..690b23dbad6c 100644
---- a/src/expr/data_reg.c
-+++ b/src/expr/data_reg.c
-@@ -217,3 +217,17 @@ void nftnl_free_verdict(const union nftnl_data_reg *data)
- 		break;
- 	}
- }
-+
-+int nftnl_data_cpy(union nftnl_data_reg *dreg, const void *src, uint32_t len)
-+{
-+	int ret = 0;
-+
-+	if (len > sizeof(dreg->val)) {
-+		len = sizeof(dreg->val);
-+		ret = -1;
+ 
+ 	(*expr)->flags |= flags;
+diff --git a/tests/shell/testcases/bogons/nft-f/stack_overflow_via_large_concat_expr b/tests/shell/testcases/bogons/nft-f/stack_overflow_via_large_concat_expr
+new file mode 100644
+index 000000000000..8b0d27444c22
+--- /dev/null
++++ b/tests/shell/testcases/bogons/nft-f/stack_overflow_via_large_concat_expr
+@@ -0,0 +1,5 @@
++table t {
++	chain c {
++		udp length . @th,0,512 . @th,512,512 { 47-63 . 0xe373135363130 . 0x33131303735353203 }
 +	}
-+
-+	memcpy(dreg->val, src, len);
-+	dreg->len = len;
-+	return ret;
 +}
-diff --git a/src/expr/immediate.c b/src/expr/immediate.c
-index 5d477a8b4217..f56aa8fd6999 100644
---- a/src/expr/immediate.c
-+++ b/src/expr/immediate.c
-@@ -36,9 +36,7 @@ nftnl_expr_immediate_set(struct nftnl_expr *e, uint16_t type,
- 		memcpy(&imm->dreg, data, sizeof(imm->dreg));
- 		break;
- 	case NFTNL_EXPR_IMM_DATA:
--		memcpy(&imm->data.val, data, data_len);
--		imm->data.len = data_len;
--		break;
-+		return nftnl_data_cpy(&imm->data, data, data_len);
- 	case NFTNL_EXPR_IMM_VERDICT:
- 		memcpy(&imm->data.verdict, data, sizeof(imm->data.verdict));
- 		break;
-diff --git a/src/expr/range.c b/src/expr/range.c
-index 473add86e4b4..5a30e48fde92 100644
---- a/src/expr/range.c
-+++ b/src/expr/range.c
-@@ -40,13 +40,9 @@ static int nftnl_expr_range_set(struct nftnl_expr *e, uint16_t type,
- 		memcpy(&range->op, data, sizeof(range->op));
- 		break;
- 	case NFTNL_EXPR_RANGE_FROM_DATA:
--		memcpy(&range->data_from.val, data, data_len);
--		range->data_from.len = data_len;
--		break;
-+		return nftnl_data_cpy(&range->data_from, data, data_len);
- 	case NFTNL_EXPR_RANGE_TO_DATA:
--		memcpy(&range->data_to.val, data, data_len);
--		range->data_to.len = data_len;
--		break;
-+		return nftnl_data_cpy(&range->data_to, data, data_len);
- 	default:
- 		return -1;
- 	}
 -- 
 2.41.0
 
