@@ -1,22 +1,22 @@
-Return-Path: <netfilter-devel+bounces-363-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-358-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0F1081369D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 17:44:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBDAC813698
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 17:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32EE6B20ADE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 16:44:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76883B218A0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 16:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F8361673;
-	Thu, 14 Dec 2023 16:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500DD60BAF;
+	Thu, 14 Dec 2023 16:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="VrZ+arIK"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="Qzvx6+IJ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABF5114
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27B211A
 	for <netfilter-devel@vger.kernel.org>; Thu, 14 Dec 2023 08:44:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
 	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -24,24 +24,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=upReZHkA5rxf9OVI1F0LW/69k6j+8yjL8deHHMN3N1w=; b=VrZ+arIKbYtobbYGLlKAyNlrx2
-	vC55Nj12e661JZ8YtbFckqiQvoThY31fjU/4IW8QFtbRbgUpYVI490MAbd6bVwTwr3MWIQl3PRZ7G
-	b4jBEr43CzvVbcGMREexG7ynZBIIzqws31ImcRfOD0YAcOdp9OOtuI4HxWOWTgN+w6phIdFOGpXjd
-	sxHC6EKUHqbvT2LiOKWlEmxTnXvJEeyNQcn2Lj6EBS92PkdJsZwE+aNiwW/vG58ZO+FI9AYstmnUb
-	ar8f4jwWzw0KC32xlYxWSkC+YH/Xj4nLB2PZbNr63mG4wHqyoawVLIEpa9VbH+eXlbc72xDEtmhTK
-	YVx+qU1g==;
+	bh=2t0e+IQFzHkiT46I+zwxwNceQ7/AQ16DNL2CzaCCDD4=; b=Qzvx6+IJ4zb7BePfyKHxFa0oH4
+	aQJJfTW+rS7rIaVCQv2vkGSyLZM9mfWkKj1wXHdUMDYzvQgo6hM1GhzyhopaT0552pps3lDQ920Hm
+	WkCtl5nizBxOAKHmW12Vx4Ofgh3rxK1QUnQ99z1tXVBXIXPRv32OmH4pb/ZJRq7CAKC6f1mskRcgC
+	8Nm8SbDUy3WHecHkfjydR/QHfZCxVoYR2lbz4uqZIyA6hHBqcq/wFf0ATm9iHOaURDk1UhxjSDZUf
+	Z/rz8GSF2JeU+Q0vf0PE2TBbN7eRMRXC2ekO0chyzsfi9oAjT5dPNMjD813rPQXyTXapjQOozBDuU
+	4Tu+0fbw==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
 	by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1rDoor-0038UN-1u
+	id 1rDoor-0038UN-23
 	for netfilter-devel@vger.kernel.org;
 	Thu, 14 Dec 2023 16:44:17 +0000
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH iptables v2 2/6] build: remove obsolete `AM_LIBTOOL_SILENT` variable
-Date: Thu, 14 Dec 2023 16:44:01 +0000
-Message-ID: <20231214164408.1001721-3-jeremy@azazel.net>
+Subject: [PATCH iptables v2 3/6] build: remove unused `AM_VERBOSE_CXX*` variables
+Date: Thu, 14 Dec 2023 16:44:02 +0000
+Message-ID: <20231214164408.1001721-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231214164408.1001721-1-jeremy@azazel.net>
 References: <20231214164408.1001721-1-jeremy@azazel.net>
@@ -56,25 +56,26 @@ X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-It doesn't do anything, so get rid of it.
+There is no C++, so these variables are not required.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/GNUmakefile.in | 1 -
- 1 file changed, 1 deletion(-)
+ extensions/GNUmakefile.in | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
-index 40bcec7999ae..53011fc8c2bb 100644
+index 53011fc8c2bb..51b18a59a580 100644
 --- a/extensions/GNUmakefile.in
 +++ b/extensions/GNUmakefile.in
-@@ -35,7 +35,6 @@ AM_DEPFLAGS     = -Wp,-MMD,$(@D)/.$(@F).d,-MT,$@
- AM_LDFLAGS      = @noundef_LDFLAGS@ @regular_LDFLAGS@
- 
+@@ -37,8 +37,6 @@ AM_LDFLAGS      = @noundef_LDFLAGS@ @regular_LDFLAGS@
  ifeq (${V},)
--AM_LIBTOOL_SILENT = --silent
  AM_VERBOSE_CC     = @echo "  CC      " $@;
  AM_VERBOSE_CCLD   = @echo "  CCLD    " $@;
- AM_VERBOSE_CXX    = @echo "  CXX     " $@;
+-AM_VERBOSE_CXX    = @echo "  CXX     " $@;
+-AM_VERBOSE_CXXLD  = @echo "  CXXLD   " $@;
+ AM_VERBOSE_AR     = @echo "  AR      " $@;
+ AM_VERBOSE_GEN    = @echo "  GEN     " $@;
+ endif
 -- 
 2.43.0
 
