@@ -1,50 +1,31 @@
-Return-Path: <netfilter-devel+bounces-360-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-364-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20564813699
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 17:44:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C19E813712
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 17:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D175728340B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 16:44:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2725E1F2170D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 16:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1A060BB8;
-	Thu, 14 Dec 2023 16:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="ZhFe1Hci"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9235061FD1;
+	Thu, 14 Dec 2023 16:57:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azazel.net (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD03120
-	for <netfilter-devel@vger.kernel.org>; Thu, 14 Dec 2023 08:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=PW+L8Bt1onKMhcUk/GBl5hwPZR555HSH4eZvlLezlbw=; b=ZhFe1Hci/xqu4dddOrQ8OqNwvY
-	CZqZxxYJUpllLArDzF5Lrww4shniVy7EHSLN3FHvizvK2uUqcHedA4FzH3VPlX1jCs4hq79eogz0Q
-	1o9KWpLKvzaYfAQXh2DaS4jA1KQVZ60L+gLk/te7XL8LmRZ3A40711PRuZPavoetkb3AhylWq653n
-	EdY/xkhf4pw7KRLHo1FJwOH8orAV59Tohaht3FFwLWNUoKCk8AigTeFgObXALcKHcZ3ncAD731yXv
-	cWwcCxROI/rfKdAftBTxTyDNBnQslFam6aXGcSqbfHVp561TEyDaVEz8hnCkL78P7dnM15m+H3nrH
-	9KotUqhQ==;
-Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
-	by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <jeremy@azazel.net>)
-	id 1rDoor-0038UN-2U
-	for netfilter-devel@vger.kernel.org;
-	Thu, 14 Dec 2023 16:44:17 +0000
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH iptables v2 6/6] build: replace `echo -e` with `printf`
-Date: Thu, 14 Dec 2023 16:44:05 +0000
-Message-ID: <20231214164408.1001721-7-jeremy@azazel.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231214164408.1001721-1-jeremy@azazel.net>
-References: <20231214164408.1001721-1-jeremy@azazel.net>
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F153F114
+	for <netfilter-devel@vger.kernel.org>; Thu, 14 Dec 2023 08:57:09 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1rDp1H-0002Qa-MK; Thu, 14 Dec 2023 17:57:07 +0100
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] evaluate: exthdr: statement arg must be not be a range
+Date: Thu, 14 Dec 2023 17:56:59 +0100
+Message-ID: <20231214165703.12520-1-fw@strlen.de>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,60 +33,61 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-`echo -e` is not portable and we can end up with:
+Else we get:
+BUG: unknown expression type range
+nft: src/netlink_linearize.c:909: netlink_gen_expr: Assertion `0' failed.
 
-      GEN      matches.man
-    -e      + ./libxt_addrtype.man
-    -e      + ./libip6t_ah.man
-    -e      + ./libipt_ah.man
-    -e      + ./libxt_bpf.man
-    -e      + ./libxt_cgroup.man
-    -e      + ./libxt_cluster.man
-    -e      + ./libxt_comment.man
-    -e      + ./libxt_connbytes.man
-    -e      + ./libxt_connlabel.man
-    -e      + ./libxt_connlimit.man
-    -e      + ./libxt_connmark.man
-    -e      + ./libxt_conntrack.man
-    [...]
-
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- extensions/GNUmakefile.in | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ src/evaluate.c                                | 19 ++++++++++++++++---
+ .../bogons/nft-f/exthdr_with_range_bug        |  1 +
+ 2 files changed, 17 insertions(+), 3 deletions(-)
+ create mode 100644 tests/shell/testcases/bogons/nft-f/exthdr_with_range_bug
 
-diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
-index dfa58c3b9e8b..20c2b7bc6293 100644
---- a/extensions/GNUmakefile.in
-+++ b/extensions/GNUmakefile.in
-@@ -228,19 +228,19 @@ man_run    = \
- 	for ext in $(sort ${1}); do \
- 		f="${srcdir}/libxt_$$ext.man"; \
- 		if [ -f "$$f" ]; then \
--			echo -e "\t+ $$f" >&2; \
-+			printf "\t+ $$f\n" >&2; \
- 			echo ".SS $$ext"; \
- 			cat "$$f" || exit $$?; \
- 		fi; \
- 		f="${srcdir}/libip6t_$$ext.man"; \
- 		if [ -f "$$f" ]; then \
--			echo -e "\t+ $$f" >&2; \
-+			printf "\t+ $$f\n" >&2; \
- 			echo ".SS $$ext (IPv6-specific)"; \
- 			cat "$$f" || exit $$?; \
- 		fi; \
- 		f="${srcdir}/libipt_$$ext.man"; \
- 		if [ -f "$$f" ]; then \
--			echo -e "\t+ $$f" >&2; \
-+			printf "\t+ $$f\n" >&2; \
- 			echo ".SS $$ext (IPv4-specific)"; \
- 			cat "$$f" || exit $$?; \
- 		fi; \
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 70d80eb48556..1c5078d67c13 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -3024,14 +3024,27 @@ static bool stmt_evaluate_payload_need_csum(const struct expr *payload)
+ static int stmt_evaluate_exthdr(struct eval_ctx *ctx, struct stmt *stmt)
+ {
+ 	struct expr *exthdr;
++	int ret;
+ 
+ 	if (__expr_evaluate_exthdr(ctx, &stmt->exthdr.expr) < 0)
+ 		return -1;
+ 
+ 	exthdr = stmt->exthdr.expr;
+-	return stmt_evaluate_arg(ctx, stmt, exthdr->dtype, exthdr->len,
+-				 BYTEORDER_BIG_ENDIAN,
+-				 &stmt->exthdr.val);
++	ret = stmt_evaluate_arg(ctx, stmt, exthdr->dtype, exthdr->len,
++				BYTEORDER_BIG_ENDIAN,
++				&stmt->exthdr.val);
++	if (ret < 0)
++		return ret;
++
++	switch (stmt->exthdr.val->etype) {
++	case EXPR_RANGE:
++		return expr_error(ctx->msgs, stmt->exthdr.val,
++				   "cannot be a range");
++	default:
++		break;
++	}
++
++	return 0;
+ }
+ 
+ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+diff --git a/tests/shell/testcases/bogons/nft-f/exthdr_with_range_bug b/tests/shell/testcases/bogons/nft-f/exthdr_with_range_bug
+new file mode 100644
+index 000000000000..e307e7cc5482
+--- /dev/null
++++ b/tests/shell/testcases/bogons/nft-f/exthdr_with_range_bug
+@@ -0,0 +1 @@
++add rule t c ip option ra set 0-1
 -- 
-2.43.0
+2.41.0
 
 
