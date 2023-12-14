@@ -1,48 +1,50 @@
-Return-Path: <netfilter-devel+bounces-357-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-361-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0AA3813696
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 17:44:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE5C81369A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 17:44:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87A721F2175D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 16:44:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 252E5283425
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Dec 2023 16:44:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94F160BA6;
-	Thu, 14 Dec 2023 16:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DCE60BBB;
+	Thu, 14 Dec 2023 16:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="sCfpfZS+"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="EUfvKL4E"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B3810F
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B9F112
 	for <netfilter-devel@vger.kernel.org>; Thu, 14 Dec 2023 08:44:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=ojcdrKre1+cMsd8RNAYxdif4uurn6CHtSrfM0usovGI=; b=sCfpfZS+eei+08RqN3ZNpeWK7X
-	7ZXWb3WrJv7SZwFPqv/8En3r7JnbhiEZP1FIIBs1zc7IG9oK7ycOHRoUltu8DOki60z5/PxyJEpOk
-	7Kmgs15+KbYeLVklUBnN2UoMwF76YmR0oGvEz3i8wNXwFyYe6v1Bt8Tso2uN1XZDXslib/eNBmbOg
-	0hNDIv2dkMTCNrSFK04pZpdkhxu0vXz80rGmBs5NyqDu7ryseQG9S8uQFMqauLUneBNdlKRFVcg15
-	1HMzMJQDcmIzUzGdeh6Z50I4QglshLur/WA8MjneRCiHFdgyVOWcbwCh6lCrud27mOWTyWa3oNXkB
-	SwunGciA==;
+	bh=j4ZlDOe+f2JRDu8UIynnR9NFfdbKktTLMk/okOZtq7E=; b=EUfvKL4ElY3WeG2pHCKwMCH1PT
+	3Fv/cEbzaEbKyOfFbnDBXLneGvyjlrbGyvz4UX62sg8PRFW2KEGbwcRAIvgokfnC2BrA3mS3VgCZ3
+	Lk4zzKgcf/KbpGM/FVJ0C7yjO6osw75JgkIL66BytPqjTngqea1r/sJK+RuLwQXqVu19tzxzSjnWJ
+	L7usArKApyyD+RKR+YDn3Skl4Lw0w8DfVp02vlL1pshZLL/1SeFzOWITJ9JaXeXxtZVwXw/N0sBaG
+	QpSWoajvzYiAh8f+egjL5Jt71Q12ZH3uLOnsMDHXMFjIKBnriprx/j9K+K9DWtk0NQ64KHHCkask+
+	cPS7LKuw==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
 	by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1rDoor-0038UN-1c
+	id 1rDoor-0038UN-1l
 	for netfilter-devel@vger.kernel.org;
 	Thu, 14 Dec 2023 16:44:17 +0000
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH iptables v2 0/6] Autoools silent-rules fixes
-Date: Thu, 14 Dec 2023 16:43:59 +0000
-Message-ID: <20231214164408.1001721-1-jeremy@azazel.net>
+Subject: [PATCH iptables v2 1/6] build: format `AM_CPPFLAGS` variables
+Date: Thu, 14 Dec 2023 16:44:00 +0000
+Message-ID: <20231214164408.1001721-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231214164408.1001721-1-jeremy@azazel.net>
+References: <20231214164408.1001721-1-jeremy@azazel.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -54,35 +56,53 @@ X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-The build system defines variables similar to the ones automake provides
-to control the verbosity of the build.  However, the iptables implemen-
-tation is only partially effective and was written fifteen years ago.
-This patch-set brings the variable definitions in line with the current
-automake recommendations and fixes some bugs.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ extensions/GNUmakefile.in | 10 +++++++++-
+ iptables/Makefile.am      |  9 ++++++++-
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-Patch 1 contains some unrelated formatting changes.
-Patches 2 & 3 remove some unused variables.
-Patch 4 brings the remaining ones in line with automake.
-Patch 5 adds a new variable for `ln`.
-Patch 6 fixes a problem with the man-page rules.
-
-Changes since v1
-
-  * Patch 6: missing newlines added
-  * Patch 7: dropped after feedback from Jan Engelhardt
-
-Jeremy Sowden (6):
-  build: format `AM_CPPFLAGS` variables
-  build: remove obsolete `AM_LIBTOOL_SILENT` variable
-  build: remove unused `AM_VERBOSE_CXX*` variables
-  build: use standard automake verbosity variables
-  build: add an automake verbosity variable for `ln`
-  build: replace `echo -e` with `printf`
-
- extensions/GNUmakefile.in | 75 +++++++++++++++++++++++----------------
- iptables/Makefile.am      | 15 +++++---
- 2 files changed, 56 insertions(+), 34 deletions(-)
-
+diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
+index e289adf06547..40bcec7999ae 100644
+--- a/extensions/GNUmakefile.in
++++ b/extensions/GNUmakefile.in
+@@ -22,7 +22,15 @@ regular_CPPFLAGS   = @regular_CPPFLAGS@
+ kinclude_CPPFLAGS  = @kinclude_CPPFLAGS@
+ 
+ AM_CFLAGS       = ${regular_CFLAGS}
+-AM_CPPFLAGS     = ${regular_CPPFLAGS} -I${top_builddir}/include -I${top_builddir} -I${top_srcdir}/include -I${top_srcdir} ${kinclude_CPPFLAGS} ${CPPFLAGS} @libnetfilter_conntrack_CFLAGS@ @libnftnl_CFLAGS@
++AM_CPPFLAGS     = ${regular_CPPFLAGS} \
++                  -I${top_builddir}/include \
++                  -I${top_builddir} \
++                  -I${top_srcdir}/include \
++                  -I${top_srcdir} \
++                  ${kinclude_CPPFLAGS} \
++                  ${CPPFLAGS} \
++                  @libnetfilter_conntrack_CFLAGS@ \
++                  @libnftnl_CFLAGS@
+ AM_DEPFLAGS     = -Wp,-MMD,$(@D)/.$(@F).d,-MT,$@
+ AM_LDFLAGS      = @noundef_LDFLAGS@ @regular_LDFLAGS@
+ 
+diff --git a/iptables/Makefile.am b/iptables/Makefile.am
+index 0f8b430c2021..31d4b48624cb 100644
+--- a/iptables/Makefile.am
++++ b/iptables/Makefile.am
+@@ -1,7 +1,14 @@
+ # -*- Makefile -*-
+ 
+ AM_CFLAGS        = ${regular_CFLAGS}
+-AM_CPPFLAGS      = ${regular_CPPFLAGS} -I${top_builddir}/include -I${top_srcdir}/include -I${top_srcdir} ${kinclude_CPPFLAGS} ${libmnl_CFLAGS} ${libnftnl_CFLAGS} ${libnetfilter_conntrack_CFLAGS}
++AM_CPPFLAGS      = ${regular_CPPFLAGS} \
++                   -I${top_builddir}/include \
++                   -I${top_srcdir}/include \
++                   -I${top_srcdir} \
++                   ${kinclude_CPPFLAGS} \
++                   ${libmnl_CFLAGS} \
++                   ${libnftnl_CFLAGS} \
++                   ${libnetfilter_conntrack_CFLAGS}
+ AM_LDFLAGS       = ${regular_LDFLAGS}
+ 
+ BUILT_SOURCES =
 -- 
 2.43.0
 
