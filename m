@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-372-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-373-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BB8B8144E1
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Dec 2023 10:53:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DB181479B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Dec 2023 13:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF3B31C22A39
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Dec 2023 09:53:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24AA11C22C97
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Dec 2023 12:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2D8182A3;
-	Fri, 15 Dec 2023 09:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F4216429;
+	Fri, 15 Dec 2023 12:04:35 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C81719445
-	for <netfilter-devel@vger.kernel.org>; Fri, 15 Dec 2023 09:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC60C2D033
+	for <netfilter-devel@vger.kernel.org>; Fri, 15 Dec 2023 12:04:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rE4Li-0002n2-FP; Fri, 15 Dec 2023 10:19:14 +0100
+	id 1rE6ve-0004Qc-NZ; Fri, 15 Dec 2023 13:04:30 +0100
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] evaluate: fix stack overflow with huge priority string
-Date: Fri, 15 Dec 2023 10:19:02 +0100
-Message-ID: <20231215091907.23312-1-fw@strlen.de>
+Subject: [PATCH nft] tcpopt: don't create exthdr expression without datatype
+Date: Fri, 15 Dec 2023 13:04:22 +0100
+Message-ID: <20231215120425.32532-1-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -38,41 +38,42 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Alternative would be to refactor this and move this into the parsers
-(bison, json) instead of this hidden re-parsing.
+The reproducer crashes during concat evaluation, as the
+exthdr expression lacks a datatype.
 
-Fixes: 627c451b2351 ("src: allow variables in the chain priority specification")
+This should never happen, i->dtype must be set.
+
+In this case the culprit is tcp option parsing, it will
+wire up a non-existent template, because the "nop" option
+has no length field (1 byte only).
+
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/evaluate.c                                     | 2 +-
- tests/shell/testcases/bogons/nft-f/huge_chain_prio | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
- create mode 100644 tests/shell/testcases/bogons/nft-f/huge_chain_prio
+ src/tcpopt.c                                                   | 2 +-
+ tests/shell/testcases/bogons/nft-f/tcp_option_without_template | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 tests/shell/testcases/bogons/nft-f/tcp_option_without_template
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 731313e08c2a..a220a8ca1809 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -4909,7 +4909,7 @@ static bool evaluate_priority(struct eval_ctx *ctx, struct prio_spec *prio,
- 			NFT_NAME_MAXLEN);
- 	loc = prio->expr->location;
+diff --git a/src/tcpopt.c b/src/tcpopt.c
+index 8111a50718ac..f977e417536a 100644
+--- a/src/tcpopt.c
++++ b/src/tcpopt.c
+@@ -224,7 +224,7 @@ struct expr *tcpopt_expr_alloc(const struct location *loc,
+ 	}
  
--	if (sscanf(prio_str, "%s %c %d", prio_fst, &op, &prio_snd) < 3) {
-+	if (sscanf(prio_str, "%255s %c %d", prio_fst, &op, &prio_snd) < 3) {
- 		priority = std_prio_lookup(prio_str, family, hook);
- 		if (priority == NF_IP_PRI_LAST)
- 			return false;
-diff --git a/tests/shell/testcases/bogons/nft-f/huge_chain_prio b/tests/shell/testcases/bogons/nft-f/huge_chain_prio
+ 	tmpl = &desc->templates[field];
+-	if (!tmpl)
++	if (!tmpl || !tmpl->dtype)
+ 		return NULL;
+ 
+ 	expr = expr_alloc(loc, EXPR_EXTHDR, tmpl->dtype,
+diff --git a/tests/shell/testcases/bogons/nft-f/tcp_option_without_template b/tests/shell/testcases/bogons/nft-f/tcp_option_without_template
 new file mode 100644
-index 000000000000..41f8061a1369
+index 000000000000..fd732fd31aa5
 --- /dev/null
-+++ b/tests/shell/testcases/bogons/nft-f/huge_chain_prio
-@@ -0,0 +1,5 @@
-+table t {
-+        chain c {
-+                type filter hook input priority srcnDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD#DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD; policy accept;
-+        }
-+}
++++ b/tests/shell/testcases/bogons/nft-f/tcp_option_without_template
+@@ -0,0 +1 @@
++add rule f i tcp option nop length . @ih,32,3 1
 -- 
 2.41.0
 
