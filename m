@@ -1,77 +1,83 @@
-Return-Path: <netfilter-devel+bounces-394-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-397-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0F2A81653C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Dec 2023 04:07:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E8BA8165A3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Dec 2023 05:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A78841F220BE
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Dec 2023 03:07:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF443B20E40
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Dec 2023 04:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29182581;
-	Mon, 18 Dec 2023 03:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD103566E;
+	Mon, 18 Dec 2023 04:24:01 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE0F3C0D;
-	Mon, 18 Dec 2023 03:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A8763A8;
+	Mon, 18 Dec 2023 04:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vydujm._1702868817;
-Received: from 30.221.148.252(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vydujm._1702868817)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vye8nUn_1702873102;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vye8nUn_1702873102)
           by smtp.aliyun-inc.com;
-          Mon, 18 Dec 2023 11:06:59 +0800
-Message-ID: <82c74693-db42-2491-868e-b6cb1cead4ec@linux.alibaba.com>
-Date: Mon, 18 Dec 2023 11:06:56 +0800
+          Mon, 18 Dec 2023 12:18:27 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org
+Subject: [RFC nf-next v2 0/2] netfilter: bpf: support prog update
+Date: Mon, 18 Dec 2023 12:18:19 +0800
+Message-Id: <1702873101-77522-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC nf-next v1 1/2] netfilter: bpf: support prog update
-Content-Language: en-US
-To: Florian Westphal <fw@strlen.de>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org
-References: <1702609653-45835-1-git-send-email-alibuda@linux.alibaba.com>
- <1702609653-45835-2-git-send-email-alibuda@linux.alibaba.com>
- <20231215141712.GA17065@breakpoint.cc>
+
 From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <20231215141712.GA17065@breakpoint.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+This patches attempt to implements updating of progs within
+bpf netfilter link, allowing user update their ebpf netfilter
+prog in hot update manner.
 
+Besides, a corresponding test case has been added to verify
+whether the update works.
 
-On 12/15/23 10:17 PM, Florian Westphal wrote:
-> D. Wythe <alibuda@linux.alibaba.com> wrote:
->>   	const struct nf_defrag_hook *defrag_hook;
->> +	const struct bpf_prog __rcu *nf_prog;
-> Hmm, why do we need this pointer?
-> Can't you just re-use bpf_nf_link->link.prog?
-Accessing nf_link->link.prog directly is a bit strange because it is not 
-marked as __rcu, which will generate a compilation warning,
-thus we need to perform a type conversion.
+--
+v1:
+1. remove unnecessary context, access the prog directly via rcu.
+2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
+3. check the dead flag during the update.
+--
+v1->v2:
+1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
 
-But I do not intend to insist on it. I will remove it in the next version.
+D. Wythe (2):
+  netfilter: bpf: support prog update
+  selftests/bpf: Add netfilter link prog update test
 
-Best wishes,
-D. Wythe
->
->> +	rcu_assign_pointer(nf_link->nf_prog, new_prog);
->> +	old_prog = xchg(&link->prog, new_prog);
-> This looks redundant, I think you can remove the nf_prog
-> pointer again.
->
-> Rest LGTM.
+ net/netfilter/nf_bpf_link.c                        | 63 ++++++++++++----
+ .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
+ .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
+ 3 files changed, 155 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+
+-- 
+1.8.3.1
 
 
