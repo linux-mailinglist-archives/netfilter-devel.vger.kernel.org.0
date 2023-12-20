@@ -1,25 +1,25 @@
-Return-Path: <netfilter-devel+bounces-434-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-438-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3772E81A3CA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C551B81A3CE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A365D1F26839
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA1E91C24EEC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947AB40C04;
-	Wed, 20 Dec 2023 16:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF57482E0;
+	Wed, 20 Dec 2023 16:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="NLCsfW4/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dy0sX8pQ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF0C482CE
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1514482EA
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -28,22 +28,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=oEHVrkdD+y9jdXZtthq4uKjaPjUliPLOS9lCHROU0Do=; b=NLCsfW4/QeP6y2awraMyQVn65k
-	aX3rFxMUCStj0Xsbdbtl+QYicSioJrcJxd8cm02POWJrKMptI2k7vSQPG4OGmU6EkhWdBS3/VCC4w
-	Nhtl/Imji1+/uPsCq5lvCGMvuF2/ibNhSeDMvybd7vXd0BUmFn+sZvFh1FmEE1z1Ep0VX8nHjkAR0
-	3TW+LV6vcz7AmF0SmmT8cVOpgaC4XyQ9eQKt/gyTzQZHl9Zgb0eRPYVxI120MWwK1OCSZfkvIhq/M
-	CAX6sQaa6L8vSvHAPXm/QVh7Aao7NVYo1Ay88wyQQqlkh8GqCy5BLq6w0YLZa8QnLadK/yNmypunU
-	/d3L2fUw==;
+	bh=j1ocAMd7tCs2w6rmR4ixb+c31+2WVFKhoy8zdLzP3Ow=; b=dy0sX8pQ6hijQdA7xHeBFoaSDL
+	LrtMyRGb9NzOOjt2gV8FKtffwJwWWU7lDj233ayaJAvgiI2PNtmRM0SPDWzUbMYvN73307FV0jVQQ
+	C8y8KQoP5QHjJJNNmqCMfXTBEy+iIweFMyMWGgmPASIBkzkWPY+c2rdBVmKYY46EwCpWf94QGqTUf
+	aYm8uLrmRVCqaYILQD8YevaFyAaFiCO+84ZQ3s52niCUey1oWcZ/Ok7Vtpza1nKb13FhTjV2L8wMY
+	Q7pn08KPS3g6LZ3zdrG+Ph68mjRB+KwAxDlNarbD+bY5MEvc74KSUy/YaRV2XkuI4Imy0Y/gtX4yQ
+	EwBloL1A==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1rFz5l-0004Ka-FP
-	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:41 +0100
+	id 1rFz5p-0004LG-AC
+	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:45 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 14/23] extensions: libebt_nflog: Use guided option parser
-Date: Wed, 20 Dec 2023 17:06:27 +0100
-Message-ID: <20231220160636.11778-15-phil@nwl.cc>
+Subject: [iptables PATCH 15/23] extensions: libebt_snat: Use guided option parser
+Date: Wed, 20 Dec 2023 17:06:28 +0100
+Message-ID: <20231220160636.11778-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231220160636.11778-1-phil@nwl.cc>
 References: <20231220160636.11778-1-phil@nwl.cc>
@@ -57,126 +57,136 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_nflog.c | 82 +++++++++------------------------------
- 1 file changed, 18 insertions(+), 64 deletions(-)
+ extensions/libebt_snat.c | 74 +++++++++++++++++-----------------------
+ extensions/libebt_snat.t |  2 ++
+ 2 files changed, 34 insertions(+), 42 deletions(-)
 
-diff --git a/extensions/libebt_nflog.c b/extensions/libebt_nflog.c
-index 762d6d5d8bbe2..48cd53218bf08 100644
---- a/extensions/libebt_nflog.c
-+++ b/extensions/libebt_nflog.c
-@@ -16,27 +16,30 @@
+diff --git a/extensions/libebt_snat.c b/extensions/libebt_snat.c
+index c1124bf32d1e5..1dc738fa5ca36 100644
+--- a/extensions/libebt_snat.c
++++ b/extensions/libebt_snat.c
+@@ -9,23 +9,27 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
 -#include <getopt.h>
+ #include <netinet/ether.h>
  #include <xtables.h>
+ #include <linux/netfilter_bridge/ebt_nat.h>
  #include "iptables/nft.h"
  #include "iptables/nft-bridge.h"
- #include <linux/netfilter_bridge/ebt_nflog.h>
  
- enum {
--	NFLOG_GROUP	= 0x1,
--	NFLOG_PREFIX	= 0x2,
--	NFLOG_RANGE	= 0x4,
--	NFLOG_THRESHOLD	= 0x8,
--	NFLOG_NFLOG	= 0x16,
-+	O_GROUP	= 0,
-+	O_PREFIX,
-+	O_RANGE,
-+	O_THRESHOLD,
-+	O_NFLOG,
- };
- 
--static const struct option brnflog_opts[] = {
--	{ .name = "nflog-group",     .has_arg = true,  .val = NFLOG_GROUP},
--	{ .name = "nflog-prefix",    .has_arg = true,  .val = NFLOG_PREFIX},
--	{ .name = "nflog-range",     .has_arg = true,  .val = NFLOG_RANGE},
--	{ .name = "nflog-threshold", .has_arg = true,  .val = NFLOG_THRESHOLD},
--	{ .name = "nflog",           .has_arg = false, .val = NFLOG_NFLOG},
--	XT_GETOPT_TABLEEND,
-+static const struct xt_option_entry brnflog_opts[] = {
-+	{ .name = "nflog-group",     .id = O_GROUP, .type = XTTYPE_UINT16,
-+	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_nflog_info, group) },
-+	{ .name = "nflog-prefix",    .id = O_PREFIX, .type = XTTYPE_STRING,
-+	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_nflog_info, prefix) },
-+	{ .name = "nflog-range",     .id = O_RANGE, .type = XTTYPE_UINT32,
-+	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_nflog_info, len) },
-+	{ .name = "nflog-threshold", .id = O_THRESHOLD, .type = XTTYPE_UINT16,
-+	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_nflog_info, threshold) },
-+	{ .name = "nflog",           .id = O_NFLOG, .type = XTTYPE_NONE },
+-#define NAT_S '1'
+-#define NAT_S_TARGET '2'
+-#define NAT_S_ARP '3'
+-static const struct option brsnat_opts[] =
++enum {
++	O_SRC,
++	O_TARGET,
++	O_ARP,
++};
++
++static const struct xt_option_entry brsnat_opts[] =
+ {
+-	{ "to-source"     , required_argument, 0, NAT_S },
+-	{ "to-src"        , required_argument, 0, NAT_S },
+-	{ "snat-target"   , required_argument, 0, NAT_S_TARGET },
+-	{ "snat-arp"      ,       no_argument, 0, NAT_S_ARP },
+-	{ 0 }
++	{ .name = "to-source", .id = O_SRC, .type = XTTYPE_ETHERMAC,
++	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_nat_info, mac) },
++	{ .name = "to-src",    .id = O_SRC, .type = XTTYPE_ETHERMAC,
++	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_nat_info, mac) },
++	{ .name = "snat-target", .id = O_TARGET, .type = XTTYPE_STRING },
++	{ .name = "snat-arp", .id = O_ARP, .type = XTTYPE_NONE },
 +	XTOPT_TABLEEND,
  };
  
- static void brnflog_help(void)
-@@ -59,55 +62,6 @@ static void brnflog_init(struct xt_entry_target *t)
- 	info->threshold = EBT_NFLOG_DEFAULT_THRESHOLD;
+ static void brsnat_print_help(void)
+@@ -44,43 +48,29 @@ static void brsnat_init(struct xt_entry_target *target)
+ 	natinfo->target = EBT_ACCEPT;
  }
  
--static int brnflog_parse(int c, char **argv, int invert, unsigned int *flags,
+-#define OPT_SNAT         0x01
+-#define OPT_SNAT_TARGET  0x02
+-#define OPT_SNAT_ARP     0x04
+-static int brsnat_parse(int c, char **argv, int invert, unsigned int *flags,
 -			 const void *entry, struct xt_entry_target **target)
--{
--	struct ebt_nflog_info *info = (struct ebt_nflog_info *)(*target)->data;
--	unsigned int i;
--
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM,
--			      "The use of '!' makes no sense for the"
--			      " nflog watcher");
++static void brsnat_parse(struct xt_option_call *cb)
+ {
+-	struct ebt_nat_info *natinfo = (struct ebt_nat_info *)(*target)->data;
+-	struct ether_addr *addr;
 -
 -	switch (c) {
--	case NFLOG_PREFIX:
--		EBT_CHECK_OPTION(flags, NFLOG_PREFIX);
--		if (strlen(optarg) > EBT_NFLOG_PREFIX_SIZE - 1)
--			xtables_error(PARAMETER_PROBLEM,
--				      "Prefix too long for nflog-prefix");
--		strncpy(info->prefix, optarg, EBT_NFLOG_PREFIX_SIZE);
+-	case NAT_S:
+-		EBT_CHECK_OPTION(flags, OPT_SNAT);
+-		if (!(addr = ether_aton(optarg)))
+-			xtables_error(PARAMETER_PROBLEM, "Problem with specified --to-source mac");
+-		memcpy(natinfo->mac, addr, ETH_ALEN);
 -		break;
--	case NFLOG_GROUP:
--		EBT_CHECK_OPTION(flags, NFLOG_GROUP);
--		if (!xtables_strtoui(optarg, NULL, &i, 1, UINT32_MAX))
--			xtables_error(PARAMETER_PROBLEM,
--				      "--nflog-group must be a number!");
--		info->group = i;
--		break;
--	case NFLOG_RANGE:
--		EBT_CHECK_OPTION(flags, NFLOG_RANGE);
--		if (!xtables_strtoui(optarg, NULL, &i, 1, UINT32_MAX))
--			xtables_error(PARAMETER_PROBLEM,
--				      "--nflog-range must be a number!");
--		info->len = i;
--		break;
--	case NFLOG_THRESHOLD:
--		EBT_CHECK_OPTION(flags, NFLOG_THRESHOLD);
--		if (!xtables_strtoui(optarg, NULL, &i, 1, UINT32_MAX))
--			xtables_error(PARAMETER_PROBLEM,
--				      "--nflog-threshold must be a number!");
--		info->threshold = i;
--		break;
--	case NFLOG_NFLOG:
--		EBT_CHECK_OPTION(flags, NFLOG_NFLOG);
--		break;
+-	case NAT_S_TARGET:
+-		{ unsigned int tmp;
+-		EBT_CHECK_OPTION(flags, OPT_SNAT_TARGET);
+-		if (ebt_fill_target(optarg, &tmp))
+-			xtables_error(PARAMETER_PROBLEM, "Illegal --snat-target target");
+-		natinfo->target = (natinfo->target & ~EBT_VERDICT_BITS) | (tmp & EBT_VERDICT_BITS);
+-		}
++	struct ebt_nat_info *natinfo = cb->data;
++	unsigned int tmp;
++
++	xtables_option_parse(cb);
++	switch (cb->entry->id) {
++	case O_TARGET:
++		if (ebt_fill_target(cb->arg, &tmp))
++			xtables_error(PARAMETER_PROBLEM,
++				      "Illegal --snat-target target");
++		natinfo->target &= ~EBT_VERDICT_BITS;
++		natinfo->target |= tmp & EBT_VERDICT_BITS;
+ 		break;
+-	case NAT_S_ARP:
+-		EBT_CHECK_OPTION(flags, OPT_SNAT_ARP);
++	case O_ARP:
+ 		natinfo->target ^= NAT_ARP_BIT;
+ 		break;
 -	default:
 -		return 0;
--	}
+ 	}
 -	return 1;
--}
--
- static void
- brnflog_print(const void *ip, const struct xt_entry_target *target,
- 	      int numeric)
-@@ -153,10 +107,10 @@ static struct xtables_target brnflog_watcher = {
- 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_nflog_info)),
- 	.init		= brnflog_init,
- 	.help		= brnflog_help,
--	.parse		= brnflog_parse,
-+	.x6_parse	= xtables_option_parse,
- 	.print		= brnflog_print,
- 	.xlate		= brnflog_xlate,
--	.extra_opts	= brnflog_opts,
-+	.x6_options	= brnflog_opts,
+ }
+ 
+-static void brsnat_final_check(unsigned int flags)
++static void brsnat_final_check(struct xt_fcheck_call *fc)
+ {
+-	if (!flags)
++	if (!fc->xflags)
+ 		xtables_error(PARAMETER_PROBLEM,
+ 			      "You must specify proper arguments");
+ }
+@@ -133,11 +123,11 @@ static struct xtables_target brsnat_target =
+ 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_nat_info)),
+ 	.help		= brsnat_print_help,
+ 	.init		= brsnat_init,
+-	.parse		= brsnat_parse,
+-	.final_check	= brsnat_final_check,
++	.x6_parse	= brsnat_parse,
++	.x6_fcheck	= brsnat_final_check,
+ 	.print		= brsnat_print,
+ 	.xlate		= brsnat_xlate,
+-	.extra_opts	= brsnat_opts,
++	.x6_options	= brsnat_opts,
  };
  
  void _init(void)
+diff --git a/extensions/libebt_snat.t b/extensions/libebt_snat.t
+index 639b13f300c9d..f5d02340fc576 100644
+--- a/extensions/libebt_snat.t
++++ b/extensions/libebt_snat.t
+@@ -2,3 +2,5 @@
+ *nat
+ -o someport -j snat --to-source a:b:c:d:e:f;-o someport -j snat --to-src 0a:0b:0c:0d:0e:0f --snat-target ACCEPT;OK
+ -o someport+ -j snat --to-src de:ad:00:be:ee:ff --snat-target CONTINUE;=;OK
++-j snat;;FAIL
++-j snat --to-src de:ad:00:be:ee:ff;-j snat --to-src de:ad:00:be:ee:ff --snat-target ACCEPT;OK
 -- 
 2.43.0
 
