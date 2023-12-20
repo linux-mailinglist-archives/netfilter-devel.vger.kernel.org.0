@@ -1,73 +1,87 @@
-Return-Path: <netfilter-devel+bounces-418-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-420-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C082F819F2F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 13:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A4781A0CC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 15:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63A8FB219F6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 12:40:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D45DB25A55
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 14:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF8124B29;
-	Wed, 20 Dec 2023 12:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F3938F96;
+	Wed, 20 Dec 2023 14:09:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3945F2230D;
-	Wed, 20 Dec 2023 12:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BCA39862;
+	Wed, 20 Dec 2023 14:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VyuTPGv_1703076019;
-Received: from 30.221.149.0(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyuTPGv_1703076019)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VyumN1T_1703081351;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyumN1T_1703081351)
           by smtp.aliyun-inc.com;
-          Wed, 20 Dec 2023 20:40:21 +0800
-Message-ID: <b3614748-e34e-5629-e483-ddff29af8fe4@linux.alibaba.com>
-Date: Wed, 20 Dec 2023 20:40:19 +0800
+          Wed, 20 Dec 2023 22:09:20 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org
+Subject: [RFC nf-next v3 0/2] netfilter: bpf: support prog update
+Date: Wed, 20 Dec 2023 22:09:09 +0800
+Message-Id: <1703081351-85579-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC nf-next v2 1/2] netfilter: bpf: support prog update
-Content-Language: en-US
-To: Florian Westphal <fw@strlen.de>
-Cc: Simon Horman <horms@kernel.org>, pablo@netfilter.org,
- kadlec@netfilter.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, coreteam@netfilter.org,
- netfilter-devel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org
-References: <1702873101-77522-1-git-send-email-alibuda@linux.alibaba.com>
- <1702873101-77522-2-git-send-email-alibuda@linux.alibaba.com>
- <20231218190640.GJ6288@kernel.org>
- <2fd4fb88-8aaa-b22d-d048-776a6c19d9a6@linux.alibaba.com>
- <20231219145813.GA28704@breakpoint.cc>
+
 From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <20231219145813.GA28704@breakpoint.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+
+This patches attempt to implements updating of progs within
+bpf netfilter link, allowing user update their ebpf netfilter
+prog in hot update manner.
+
+Besides, a corresponding test case has been added to verify
+whether the update works.
+
+--
+v1:
+1. remove unnecessary context, access the prog directly via rcu.
+2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
+3. check the dead flag during the update.
+--
+v1->v2:
+1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
+--
+v2->v3:
+1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
 
 
+D. Wythe (2):
+  netfilter: bpf: support prog update
+  selftests/bpf: Add netfilter link prog update test
 
-On 12/19/23 10:58 PM, Florian Westphal wrote:
-> D. Wythe <alibuda@linux.alibaba.com> wrote:
->> net/netfilter/nf_bpf_link.c:31:22: note: in expansion of macro
->> ‘rcu_dereference’
->>     31 |  return bpf_prog_run(rcu_dereference((const struct bpf_prog __rcu
->> *)nf_link->link.prog), &ctx);
->>        |                      ^~~~~~~~~~~~~~~
->>
->> So, I think we might need to go back to version 1.
->>
->> @ Florian , what do you think ?
-> Use rcu_dereference_raw().
+ net/netfilter/nf_bpf_link.c                        | 63 ++++++++++++----
+ .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
+ .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
+ 3 files changed, 155 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
 
-Got it. I'm also good with that.
+-- 
+1.8.3.1
 
-D. Wythe
 
