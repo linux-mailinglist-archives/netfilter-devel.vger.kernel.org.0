@@ -1,25 +1,25 @@
-Return-Path: <netfilter-devel+bounces-428-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-432-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2260C81A3C4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E44481A3C8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B602B1F21210
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9776A1F266C5
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB2746B99;
-	Wed, 20 Dec 2023 16:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7DF482DD;
+	Wed, 20 Dec 2023 16:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="VjdJNWgG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="aXpaX0kG"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EFB482C6
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602D8482CB
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -28,22 +28,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=BVV1gTaSldI5eTFXe6NDSJmEtWQVavql3cuw/Z1p2zs=; b=VjdJNWgGbEz8EUhABJCLNJzIE8
-	Ubwc/mVbMdhBHjOb1JzpQ3iagBNpmUDc880Csj1CeNehTfInefWAqxbm3jJfBe9zJdnXWuLPdOEeS
-	+YunQs5bXJW6K3/N74eDqH+6EWdj6ZSG1ZhrhVWpjU0qLaRs6V5oYVorerqmwS/wcs2nIIaSA4zjZ
-	ez2FPRcf++WOKXMvpGn0CaThWQHN+j6odUxtK4SGhB8JCqUVBVfWa8h+prPy4+YmPO7SZMtMD4mtM
-	wkIwZeB5Sh9gKrcYVQ8JdPFi8QYViAONae1it1cWkwuPeawwGU4XHvlqhnaYceIbyyqSd6MVs2MlB
-	njn/5+5Q==;
+	bh=FuMlcvhfpwLq3DTD1TvMxPiZLDqGk0kn5qjhuTGPDB4=; b=aXpaX0kGKf5MWUnZMtEIR81Xdf
+	eoyCqU8ve72yFXr+dK8UG0TwYJPLLzmSMVIMhDVFo66+K85YiGiDZGvzGHhOlg6gbjcZ5AM07Uoyh
+	JfUdwUcp7xV7voW/C2oKuOKay5QdV1aPqoHOT7CRupqwWqs+e4wSm+ZiyFyLjrGJzK66LIorAOIgs
+	wghxbkhr62OshVS828bt804dWuiemfU1K0nD6w6UT47zqqjp4zCR39m9oOsZetRkbDgaZY8WeWaOZ
+	IWKuQnWH6h7tZF6sF8wyDDs81rd1udIDx6VxzzWhdbpuGpcaCNM/7Nratn8ReAsr+EoUQX4d2e9r8
+	GzhCjSTw==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1rFz5l-0004Ke-Pp
-	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:41 +0100
+	id 1rFz5k-0004KA-BA
+	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:40 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 12/23] extensions: libebt_log: Use guided option parser
-Date: Wed, 20 Dec 2023 17:06:25 +0100
-Message-ID: <20231220160636.11778-13-phil@nwl.cc>
+Subject: [iptables PATCH 13/23] extensions: libebt_mark: Use guided option parser
+Date: Wed, 20 Dec 2023 17:06:26 +0100
+Message-ID: <20231220160636.11778-14-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231220160636.11778-1-phil@nwl.cc>
 References: <20231220160636.11778-1-phil@nwl.cc>
@@ -57,173 +57,198 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_log.c | 121 ++++++++++------------------------------
- 1 file changed, 30 insertions(+), 91 deletions(-)
+ extensions/libebt_mark.c | 140 +++++++++++++++------------------------
+ 1 file changed, 54 insertions(+), 86 deletions(-)
 
-diff --git a/extensions/libebt_log.c b/extensions/libebt_log.c
-index 9f8d158956802..dc2357c022bf0 100644
---- a/extensions/libebt_log.c
-+++ b/extensions/libebt_log.c
-@@ -14,19 +14,11 @@
+diff --git a/extensions/libebt_mark.c b/extensions/libebt_mark.c
+index 40e49618e0215..0dc598fe1009d 100644
+--- a/extensions/libebt_mark.c
++++ b/extensions/libebt_mark.c
+@@ -12,27 +12,39 @@
+ #include <stdio.h>
  #include <stdlib.h>
- #include <syslog.h>
  #include <string.h>
 -#include <getopt.h>
  #include <xtables.h>
- #include <linux/netfilter_bridge/ebt_log.h>
+ #include <linux/netfilter_bridge/ebt_mark_t.h>
+ #include "iptables/nft.h"
+ #include "iptables/nft-bridge.h"
  
- #define LOG_DEFAULT_LEVEL LOG_INFO
- 
--#define LOG_PREFIX '1'
--#define LOG_LEVEL  '2'
--#define LOG_ARP    '3'
--#define LOG_IP     '4'
--#define LOG_LOG    '5'
--#define LOG_IP6    '6'
--
- struct code {
- 	char *c_name;
- 	int c_val;
-@@ -43,26 +35,26 @@ static struct code eight_priority[] = {
- 	{ "debug", LOG_DEBUG }
- };
- 
--static int name_to_loglevel(const char *arg)
--{
--	int i;
--
--	for (i = 0; i < 8; i++)
--		if (!strcmp(arg, eight_priority[i].c_name))
--			return eight_priority[i].c_val;
--
--	/* return bad loglevel */
--	return 9;
--}
+-#define MARK_TARGET  '1'
+-#define MARK_SETMARK '2'
+-#define MARK_ORMARK  '3'
+-#define MARK_ANDMARK '4'
+-#define MARK_XORMARK '5'
+-static const struct option brmark_opts[] = {
+-	{ .name = "mark-target",.has_arg = true,	.val = MARK_TARGET },
 +enum {
-+	/* first three must correspond with bit pos in respective EBT_LOG_* */
-+	O_LOG_IP = 0,
-+	O_LOG_ARP = 1,
-+	O_LOG_IP6 = 3,
-+	O_LOG_PREFIX,
-+	O_LOG_LEVEL,
-+	O_LOG_LOG,
++	O_SET_MARK = 0,
++	O_AND_MARK,
++	O_OR_MARK,
++	O_XOR_MARK,
++	O_MARK_TARGET,
++	F_SET_MARK  = 1 << O_SET_MARK,
++	F_AND_MARK  = 1 << O_AND_MARK,
++	F_OR_MARK   = 1 << O_OR_MARK,
++	F_XOR_MARK  = 1 << O_XOR_MARK,
++	F_ANY       = F_SET_MARK | F_AND_MARK | F_OR_MARK | F_XOR_MARK,
 +};
- 
--static const struct option brlog_opts[] = {
--	{ .name = "log-prefix",		.has_arg = true,  .val = LOG_PREFIX },
--	{ .name = "log-level",		.has_arg = true,  .val = LOG_LEVEL  },
--	{ .name = "log-arp",		.has_arg = false, .val = LOG_ARP    },
--	{ .name = "log-ip",		.has_arg = false, .val = LOG_IP     },
--	{ .name = "log",		.has_arg = false, .val = LOG_LOG    },
--	{ .name = "log-ip6",		.has_arg = false, .val = LOG_IP6    },
++
++static const struct xt_option_entry brmark_opts[] = {
++	{ .name = "mark-target",.id = O_MARK_TARGET, .type = XTTYPE_STRING },
+ 	/* an oldtime messup, we should have always used the scheme
+ 	 * <extension-name>-<option> */
+-	{ .name = "set-mark",	.has_arg = true,	.val = MARK_SETMARK },
+-	{ .name = "mark-set",	.has_arg = true,	.val = MARK_SETMARK },
+-	{ .name = "mark-or",	.has_arg = true,	.val = MARK_ORMARK },
+-	{ .name = "mark-and",	.has_arg = true,	.val = MARK_ANDMARK },
+-	{ .name = "mark-xor",	.has_arg = true,	.val = MARK_XORMARK },
 -	XT_GETOPT_TABLEEND,
-+static const struct xt_option_entry brlog_opts[] = {
-+	{ .name = "log-prefix", .id = O_LOG_PREFIX, .type = XTTYPE_STRING,
-+	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_log_info, prefix) },
-+	{ .name = "log-level", .id = O_LOG_LEVEL, .type = XTTYPE_SYSLOGLEVEL,
-+	  .flags = XTOPT_PUT, XTOPT_POINTER(struct ebt_log_info, loglevel) },
-+	{ .name = "log-arp",	.id = O_LOG_ARP,	.type = XTTYPE_NONE },
-+	{ .name = "log-ip",	.id = O_LOG_IP,		.type = XTTYPE_NONE },
-+	{ .name = "log",	.id = O_LOG_LOG,	.type = XTTYPE_NONE },
-+	{ .name = "log-ip6",	.id = O_LOG_IP6,	.type = XTTYPE_NONE },
++	{ .name = "set-mark",	.id = O_SET_MARK, .type = XTTYPE_UINT32,
++	  .excl = F_ANY },
++	{ .name = "mark-set",	.id = O_SET_MARK, .type = XTTYPE_UINT32,
++	  .excl = F_ANY },
++	{ .name = "mark-or",	.id = O_OR_MARK, .type = XTTYPE_UINT32,
++	  .excl = F_ANY },
++	{ .name = "mark-and",	.id = O_AND_MARK, .type = XTTYPE_UINT32,
++	  .excl = F_ANY },
++	{ .name = "mark-xor",	.id = O_XOR_MARK, .type = XTTYPE_UINT32,
++	  .excl = F_ANY },
 +	XTOPT_TABLEEND,
  };
  
- static void brlog_help(void)
-@@ -87,73 +79,21 @@ static void brlog_init(struct xt_entry_target *t)
- {
- 	struct ebt_log_info *loginfo = (struct ebt_log_info *)t->data;
- 
--	loginfo->bitmask = 0;
--	loginfo->prefix[0] = '\0';
- 	loginfo->loglevel = LOG_NOTICE;
+ static void brmark_print_help(void)
+@@ -54,83 +66,39 @@ static void brmark_init(struct xt_entry_target *target)
+ 	info->mark = 0;
  }
  
--static unsigned int log_chk_inv(int inv, unsigned int bit, const char *suffix)
--{
--	if (inv)
--		xtables_error(PARAMETER_PROBLEM,
--			      "Unexpected `!' after --log%s", suffix);
--	return bit;
--}
+-#define OPT_MARK_TARGET   0x01
+-#define OPT_MARK_SETMARK  0x02
+-#define OPT_MARK_ORMARK   0x04
+-#define OPT_MARK_ANDMARK  0x08
+-#define OPT_MARK_XORMARK  0x10
 -
--static int brlog_parse(int c, char **argv, int invert, unsigned int *flags,
--		       const void *entry, struct xt_entry_target **target)
-+static void brlog_parse(struct xt_option_call *cb)
+-static int
+-brmark_parse(int c, char **argv, int invert, unsigned int *flags,
+-	     const void *entry, struct xt_entry_target **target)
++static void brmark_parse(struct xt_option_call *cb)
  {
--	struct ebt_log_info *loginfo = (struct ebt_log_info *)(*target)->data;
--	long int i;
+-	struct ebt_mark_t_info *info = (struct ebt_mark_t_info *)
+-				       (*target)->data;
 -	char *end;
+-	uint32_t mask;
 -
 -	switch (c) {
--	case LOG_PREFIX:
--		if (invert)
--			xtables_error(PARAMETER_PROBLEM,
--				      "Unexpected `!` after --log-prefix");
--		if (strlen(optarg) > sizeof(loginfo->prefix) - 1)
--			xtables_error(PARAMETER_PROBLEM,
--				      "Prefix too long");
--		if (strchr(optarg, '\"'))
--			xtables_error(PARAMETER_PROBLEM,
--				      "Use of \\\" is not allowed"
--				      " in the prefix");
--		strcpy((char *)loginfo->prefix, (char *)optarg);
-+	struct ebt_log_info *loginfo = cb->data;
+-	case MARK_TARGET:
+-		{ unsigned int tmp;
+-		EBT_CHECK_OPTION(flags, OPT_MARK_TARGET);
+-		if (ebt_fill_target(optarg, &tmp))
++	static const unsigned long target_orval[] = {
++		[O_SET_MARK]	= MARK_SET_VALUE,
++		[O_AND_MARK]	= MARK_AND_VALUE,
++		[O_OR_MARK]	= MARK_OR_VALUE,
++		[O_XOR_MARK]	= MARK_XOR_VALUE,
++	};
++	struct ebt_mark_t_info *info = cb->data;
++	unsigned int tmp;
 +
 +	xtables_option_parse(cb);
 +	switch (cb->entry->id) {
-+	case O_LOG_IP:
-+	case O_LOG_ARP:
-+	case O_LOG_IP6:
-+		loginfo->bitmask |= 1 << cb->entry->id;
- 		break;
--	case LOG_LEVEL:
--		i = strtol(optarg, &end, 16);
--		if (*end != '\0' || i < 0 || i > 7)
--			loginfo->loglevel = name_to_loglevel(optarg);
--		else
--			loginfo->loglevel = i;
--
--		if (loginfo->loglevel == 9)
++	case O_MARK_TARGET:
++		if (ebt_fill_target(cb->arg, &tmp))
+ 			xtables_error(PARAMETER_PROBLEM,
+ 				      "Illegal --mark-target target");
+ 		/* the 4 lsb are left to designate the target */
+ 		info->target = (info->target & ~EBT_VERDICT_BITS) |
+ 			       (tmp & EBT_VERDICT_BITS);
+-		}
+-		return 1;
+-	case MARK_SETMARK:
+-		EBT_CHECK_OPTION(flags, OPT_MARK_SETMARK);
+-		mask = (OPT_MARK_ORMARK|OPT_MARK_ANDMARK|OPT_MARK_XORMARK);
+-		if (*flags & mask)
 -			xtables_error(PARAMETER_PROBLEM,
--				      "Problem with the log-level");
+-				      "--mark-set cannot be used together with"
+-				      " specific --mark option");
+-		info->target = (info->target & EBT_VERDICT_BITS) |
+-			       MARK_SET_VALUE;
 -		break;
--	case LOG_IP:
--		loginfo->bitmask |= log_chk_inv(invert, EBT_LOG_IP, "-ip");
+-	case MARK_ORMARK:
+-		EBT_CHECK_OPTION(flags, OPT_MARK_ORMARK);
+-		mask = (OPT_MARK_SETMARK|OPT_MARK_ANDMARK|OPT_MARK_XORMARK);
+-		if (*flags & mask)
+-			xtables_error(PARAMETER_PROBLEM,
+-				      "--mark-or cannot be used together with"
+-				      " specific --mark option");
+-		info->target = (info->target & EBT_VERDICT_BITS) |
+-			       MARK_OR_VALUE;
 -		break;
--	case LOG_ARP:
--		loginfo->bitmask |= log_chk_inv(invert, EBT_LOG_ARP, "-arp");
+-	case MARK_ANDMARK:
+-		EBT_CHECK_OPTION(flags, OPT_MARK_ANDMARK);
+-		mask = (OPT_MARK_SETMARK|OPT_MARK_ORMARK|OPT_MARK_XORMARK);
+-		if (*flags & mask)
+-			xtables_error(PARAMETER_PROBLEM,
+-				      "--mark-and cannot be used together with"
+-				      " specific --mark option");
+-		info->target = (info->target & EBT_VERDICT_BITS) |
+-			       MARK_AND_VALUE;
 -		break;
--	case LOG_LOG:
--		loginfo->bitmask |= log_chk_inv(invert, 0, "");
--		break;
--	case LOG_IP6:
--		loginfo->bitmask |= log_chk_inv(invert, EBT_LOG_IP6, "-ip6");
--		break;
--	default:
+-	case MARK_XORMARK:
+-		EBT_CHECK_OPTION(flags, OPT_MARK_XORMARK);
+-		mask = (OPT_MARK_SETMARK|OPT_MARK_ANDMARK|OPT_MARK_ORMARK);
+-		if (*flags & mask)
+-			xtables_error(PARAMETER_PROBLEM,
+-				      "--mark-xor cannot be used together with"
+-				      " specific --mark option");
+-		info->target = (info->target & EBT_VERDICT_BITS) |
+-			       MARK_XOR_VALUE;
++		return;
++	case O_SET_MARK:
++	case O_OR_MARK:
++	case O_AND_MARK:
++	case O_XOR_MARK:
+ 		break;
+ 	default:
 -		return 0;
++		return;
  	}
+ 	/* mutual code */
+-	info->mark = strtoul(optarg, &end, 0);
+-	if (*end != '\0' || end == optarg)
+-		xtables_error(PARAMETER_PROBLEM, "Bad MARK value '%s'",
+-			      optarg);
 -
--	*flags |= loginfo->bitmask;
 -	return 1;
--}
--
--static void brlog_final_check(unsigned int flags)
--{
++	info->mark = cb->val.u32;
++	info->target = (info->target & EBT_VERDICT_BITS) |
++		       target_orval[cb->entry->id];
  }
  
- static void brlog_print(const void *ip, const struct xt_entry_target *target,
-@@ -204,11 +144,10 @@ static struct xtables_target brlog_target = {
- 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_log_info)),
- 	.init		= brlog_init,
- 	.help		= brlog_help,
--	.parse		= brlog_parse,
--	.final_check	= brlog_final_check,
-+	.x6_parse	= brlog_parse,
- 	.print		= brlog_print,
- 	.xlate		= brlog_xlate,
--	.extra_opts	= brlog_opts,
-+	.x6_options	= brlog_opts,
+ static void brmark_print(const void *ip, const struct xt_entry_target *target,
+@@ -156,9 +124,9 @@ static void brmark_print(const void *ip, const struct xt_entry_target *target,
+ 	printf(" --mark-target %s", ebt_target_name(tmp));
+ }
+ 
+-static void brmark_final_check(unsigned int flags)
++static void brmark_final_check(struct xt_fcheck_call *fc)
+ {
+-	if (!flags)
++	if (!fc->xflags)
+ 		xtables_error(PARAMETER_PROBLEM,
+ 			      "You must specify some option");
+ }
+@@ -215,11 +183,11 @@ static struct xtables_target brmark_target = {
+ 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_mark_t_info)),
+ 	.help		= brmark_print_help,
+ 	.init		= brmark_init,
+-	.parse		= brmark_parse,
+-	.final_check	= brmark_final_check,
++	.x6_parse	= brmark_parse,
++	.x6_fcheck	= brmark_final_check,
+ 	.print		= brmark_print,
+ 	.xlate		= brmark_xlate,
+-	.extra_opts	= brmark_opts,
++	.x6_options	= brmark_opts,
  };
  
  void _init(void)
