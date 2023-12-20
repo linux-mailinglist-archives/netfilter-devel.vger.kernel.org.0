@@ -1,50 +1,52 @@
-Return-Path: <netfilter-devel+bounces-448-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-436-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1629581A3D8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:09:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B98AD81A3CC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 481CC1C2537F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:09:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A313B26191
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF9441850;
-	Wed, 20 Dec 2023 16:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E89482F0;
+	Wed, 20 Dec 2023 16:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="mlpF3S0f"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="qJEGZRQl"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57655487A2
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E7C482D1
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=f0Fub8YgRDaLHMTYzNwaMNEbGk9V9wDGN4g7LpMgcsc=; b=mlpF3S0fOmZjg5ekaVG8ZkhsZn
-	xxx4vOK3V2EhXm3YFEMNAEtfkm5oW4LNxxA01BkqX6Os+A32agBW+DjddUguW22ydZ31aKiSs8iih
-	0iD/rBKogRuRBfGpkusYm6PzE3O/cMRHmEnJmngX70iQ79jpf6fHNb0Gqiofuf/Qzyr3hlUPaqMGn
-	FrW5yzB8dJ0TmNdTVD6FcdzI5YsEuBYdz7q3Wine0bGIA71ZguetDhVl2YFH3H7YF467qhWcAhelW
-	toABpt4Iwq2v88PMrte4B9A/oW0T4ztgq4y5zvHmxzFryvK3Wukr3dvwY4Pfg01GgMIofrk83I/1N
-	TXKbFSlw==;
+	bh=pQJvivl6QI0GqVl/N2ISlqpFTlQu/iM9o0fUbY9bHrE=; b=qJEGZRQlIiSoQ4ih3vJxkAuDmA
+	LWVCgVJCUkLnqOdGWcKHPQYHZ1lHH/lyan2OPMYbcPtaWgjUs/QR7URuSl6AF/uIRxQFh0p5JWKyZ
+	6YeWOQM+8JFXTluv8twwtRyNarwTsDPckrznnE4JmBieS/45NqefBKlIE7C4f0c2eMuZmV6bZzS9p
+	nY/ZHAc7OaG0E+KOZUqOfHd3gG6ZTBNb+iKPCPlbT20XMLwXMjC3I4LZr2r8gq8vPAladmEjn0axn
+	T+wHmOeKfDOT7XKIqnG91mohqnlElDQBtp1r8hAiAqQUhUOwakuG2HES4fELwnSmK/gYlN4UghkP0
+	yjsSArGA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1rFz5t-0004M3-Tc
-	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:49 +0100
+	id 1rFz5n-0004Kv-8I
+	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:43 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 00/23] Guided option parser for ebtables
-Date: Wed, 20 Dec 2023 17:06:13 +0100
-Message-ID: <20231220160636.11778-1-phil@nwl.cc>
+Subject: [iptables PATCH 01/23] libxtables: xtoptions: Prevent XTOPT_PUT with XTTYPE_HOSTMASK
+Date: Wed, 20 Dec 2023 17:06:14 +0100
+Message-ID: <20231220160636.11778-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231220160636.11778-1-phil@nwl.cc>
+References: <20231220160636.11778-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -53,68 +55,41 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The first part of this series deals with guided option parser itself,
-fixing a bug in patch 1 and adding features in patches 2-4 in
-preparation for ebtables' guided option parser support enabled in patch
-5. The remaining patches then convert ebtables extensions apart from the
-last one which significantly reduces parser code in libxt_HMARK.c using
-the new parser features.
+Do as the comment in xtopt_parse_hostmask() claims and omit
+XTTYPE_HOSTMASK from xtopt_psize array so xtables_option_metavalidate()
+will catch the incompatibility.
 
-Phil Sutter (23):
-  libxtables: xtoptions: Prevent XTOPT_PUT with XTTYPE_HOSTMASK
-  libxtables: xtoptions: Support XTOPT_NBO with XTTYPE_UINT*
-  libxtables: xtoptions: Implement XTTYPE_ETHERMACMASK
-  libxtables: xtoptions: Treat NFPROTO_BRIDGE as IPv4
-  ebtables: Support for guided option parser
-  extensions: libebt_*: Drop some needless init callbacks
-  extensions: libebt_stp: Use guided option parser
-  extensions: libebt_arpreply: Use guided option parser
-  extensions: libebt_dnat: Use guided option parser
-  extensions: libebt_ip6: Use guided option parser
-  extensions: libebt_ip: Use guided option parser
-  extensions: libebt_log: Use guided option parser
-  extensions: libebt_mark: Use guided option parser
-  extensions: libebt_nflog: Use guided option parser
-  extensions: libebt_snat: Use guided option parser
-  extensions: libebt_redirect: Use guided option parser
-  extensions: libebt_802_3: Use guided option parser
-  extensions: libebt_vlan: Use guided option parser
-  extensions: libebt_arp: Use guided option parser
-  extensions: libxt_limit: Use guided option parser for NFPROTO_BRIDGE,
-    too
-  extensions: libebt_pkttype: Use guided option parser
-  extensions: libebt_mark_m: Use guided option parser
-  extensions: libxt_HMARK: Review HMARK_parse()
+Fixes: 66266abd17adc ("libxtables: XTTYPE_HOSTMASK support")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ include/xtables.h      | 1 -
+ libxtables/xtoptions.c | 1 -
+ 2 files changed, 2 deletions(-)
 
- extensions/libebt_802_3.c    |  83 +++---------
- extensions/libebt_802_3.t    |   2 +
- extensions/libebt_arp.c      | 201 ++++++++++-------------------
- extensions/libebt_arp.t      |   7 +
- extensions/libebt_arpreply.c |  52 +++-----
- extensions/libebt_arpreply.t |   4 +
- extensions/libebt_dnat.c     |  64 ++++-----
- extensions/libebt_ip.c       | 208 +++++++++++------------------
- extensions/libebt_ip.t       |   8 ++
- extensions/libebt_ip6.c      | 212 +++++++++++-------------------
- extensions/libebt_ip6.t      |   8 ++
- extensions/libebt_log.c      | 121 +++++------------
- extensions/libebt_mark.c     | 140 ++++++++------------
- extensions/libebt_mark_m.c   |  69 ++++------
- extensions/libebt_nflog.c    |  82 +++---------
- extensions/libebt_pkttype.c  |  45 +++----
- extensions/libebt_redirect.c |  40 +++---
- extensions/libebt_snat.c     |  74 +++++------
- extensions/libebt_snat.t     |   2 +
- extensions/libebt_stp.c      | 244 ++++++++++++-----------------------
- extensions/libebt_stp.t      |  16 +++
- extensions/libebt_vlan.c     | 102 +++++----------
- extensions/libxt_HMARK.c     |  60 ++-------
- extensions/libxt_limit.c     |  50 +------
- include/xtables.h            |   8 +-
- iptables/xtables-eb.c        | 108 ++++++++--------
- libxtables/xtoptions.c       |  52 ++++++--
- 27 files changed, 757 insertions(+), 1305 deletions(-)
-
+diff --git a/include/xtables.h b/include/xtables.h
+index b3c45c981b1c7..db7c492a9556e 100644
+--- a/include/xtables.h
++++ b/include/xtables.h
+@@ -61,7 +61,6 @@ struct in_addr;
+  * %XTTYPE_SYSLOGLEVEL:	syslog level by name or number
+  * %XTTYPE_HOST:	one host or address (ptr: union nf_inet_addr)
+  * %XTTYPE_HOSTMASK:	one host or address, with an optional prefix length
+- * 			(ptr: union nf_inet_addr; only host portion is stored)
+  * %XTTYPE_PROTOCOL:	protocol number/name from /etc/protocols (ptr: uint8_t)
+  * %XTTYPE_PORT:	16-bit port name or number (supports %XTOPT_NBO)
+  * %XTTYPE_PORTRC:	colon-separated port range (names acceptable),
+diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
+index 5964a9bfb57fe..9694639188006 100644
+--- a/libxtables/xtoptions.c
++++ b/libxtables/xtoptions.c
+@@ -57,7 +57,6 @@ static const size_t xtopt_psize[] = {
+ 	[XTTYPE_STRING]      = -1,
+ 	[XTTYPE_SYSLOGLEVEL] = sizeof(uint8_t),
+ 	[XTTYPE_HOST]        = sizeof(union nf_inet_addr),
+-	[XTTYPE_HOSTMASK]    = sizeof(union nf_inet_addr),
+ 	[XTTYPE_PROTOCOL]    = sizeof(uint8_t),
+ 	[XTTYPE_PORT]        = sizeof(uint16_t),
+ 	[XTTYPE_PORTRC]      = sizeof(uint16_t[2]),
 -- 
 2.43.0
 
