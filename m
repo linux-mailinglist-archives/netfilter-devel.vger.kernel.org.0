@@ -1,37 +1,50 @@
-Return-Path: <netfilter-devel+bounces-425-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-448-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DF6881A21C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:20:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1629581A3D8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2CC9B26177
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 15:20:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 481CC1C2537F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6478C40C1D;
-	Wed, 20 Dec 2023 15:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF9441850;
+	Wed, 20 Dec 2023 16:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="mlpF3S0f"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DD94120B;
-	Wed, 20 Dec 2023 15:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57655487A2
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=f0Fub8YgRDaLHMTYzNwaMNEbGk9V9wDGN4g7LpMgcsc=; b=mlpF3S0fOmZjg5ekaVG8ZkhsZn
+	xxx4vOK3V2EhXm3YFEMNAEtfkm5oW4LNxxA01BkqX6Os+A32agBW+DjddUguW22ydZ31aKiSs8iih
+	0iD/rBKogRuRBfGpkusYm6PzE3O/cMRHmEnJmngX70iQ79jpf6fHNb0Gqiofuf/Qzyr3hlUPaqMGn
+	FrW5yzB8dJ0TmNdTVD6FcdzI5YsEuBYdz7q3Wine0bGIA71ZguetDhVl2YFH3H7YF467qhWcAhelW
+	toABpt4Iwq2v88PMrte4B9A/oW0T4ztgq4y5zvHmxzFryvK3Wukr3dvwY4Pfg01GgMIofrk83I/1N
+	TXKbFSlw==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1rFz5t-0004M3-Tc
+	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:49 +0100
+From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 2/2] netfilter: nf_tables: skip set commit for deleted/destroyed sets
-Date: Wed, 20 Dec 2023 16:15:44 +0100
-Message-Id: <20231220151544.270214-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231220151544.270214-1-pablo@netfilter.org>
-References: <20231220151544.270214-1-pablo@netfilter.org>
+Subject: [iptables PATCH 00/23] Guided option parser for ebtables
+Date: Wed, 20 Dec 2023 17:06:13 +0100
+Message-ID: <20231220160636.11778-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -40,32 +53,69 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-NFT_MSG_DELSET deactivates all elements in the set, skip
-set->ops->commit() to avoid the unnecessary clone (for the pipapo case)
-as well as the sync GC cycle, which could deactivate again expired
-elements in such set.
+The first part of this series deals with guided option parser itself,
+fixing a bug in patch 1 and adding features in patches 2-4 in
+preparation for ebtables' guided option parser support enabled in patch
+5. The remaining patches then convert ebtables extensions apart from the
+last one which significantly reduces parser code in libxt_HMARK.c using
+the new parser features.
 
-Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
-Reported-by: Kevin Rich <kevinrich1337@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Phil Sutter (23):
+  libxtables: xtoptions: Prevent XTOPT_PUT with XTTYPE_HOSTMASK
+  libxtables: xtoptions: Support XTOPT_NBO with XTTYPE_UINT*
+  libxtables: xtoptions: Implement XTTYPE_ETHERMACMASK
+  libxtables: xtoptions: Treat NFPROTO_BRIDGE as IPv4
+  ebtables: Support for guided option parser
+  extensions: libebt_*: Drop some needless init callbacks
+  extensions: libebt_stp: Use guided option parser
+  extensions: libebt_arpreply: Use guided option parser
+  extensions: libebt_dnat: Use guided option parser
+  extensions: libebt_ip6: Use guided option parser
+  extensions: libebt_ip: Use guided option parser
+  extensions: libebt_log: Use guided option parser
+  extensions: libebt_mark: Use guided option parser
+  extensions: libebt_nflog: Use guided option parser
+  extensions: libebt_snat: Use guided option parser
+  extensions: libebt_redirect: Use guided option parser
+  extensions: libebt_802_3: Use guided option parser
+  extensions: libebt_vlan: Use guided option parser
+  extensions: libebt_arp: Use guided option parser
+  extensions: libxt_limit: Use guided option parser for NFPROTO_BRIDGE,
+    too
+  extensions: libebt_pkttype: Use guided option parser
+  extensions: libebt_mark_m: Use guided option parser
+  extensions: libxt_HMARK: Review HMARK_parse()
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index c5c17c6e80ed..be04af433988 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -9887,7 +9887,7 @@ static void nft_set_commit_update(struct list_head *set_update_list)
- 	list_for_each_entry_safe(set, next, set_update_list, pending_update) {
- 		list_del_init(&set->pending_update);
- 
--		if (!set->ops->commit)
-+		if (!set->ops->commit || set->dead)
- 			continue;
- 
- 		set->ops->commit(set);
+ extensions/libebt_802_3.c    |  83 +++---------
+ extensions/libebt_802_3.t    |   2 +
+ extensions/libebt_arp.c      | 201 ++++++++++-------------------
+ extensions/libebt_arp.t      |   7 +
+ extensions/libebt_arpreply.c |  52 +++-----
+ extensions/libebt_arpreply.t |   4 +
+ extensions/libebt_dnat.c     |  64 ++++-----
+ extensions/libebt_ip.c       | 208 +++++++++++------------------
+ extensions/libebt_ip.t       |   8 ++
+ extensions/libebt_ip6.c      | 212 +++++++++++-------------------
+ extensions/libebt_ip6.t      |   8 ++
+ extensions/libebt_log.c      | 121 +++++------------
+ extensions/libebt_mark.c     | 140 ++++++++------------
+ extensions/libebt_mark_m.c   |  69 ++++------
+ extensions/libebt_nflog.c    |  82 +++---------
+ extensions/libebt_pkttype.c  |  45 +++----
+ extensions/libebt_redirect.c |  40 +++---
+ extensions/libebt_snat.c     |  74 +++++------
+ extensions/libebt_snat.t     |   2 +
+ extensions/libebt_stp.c      | 244 ++++++++++++-----------------------
+ extensions/libebt_stp.t      |  16 +++
+ extensions/libebt_vlan.c     | 102 +++++----------
+ extensions/libxt_HMARK.c     |  60 ++-------
+ extensions/libxt_limit.c     |  50 +------
+ include/xtables.h            |   8 +-
+ iptables/xtables-eb.c        | 108 ++++++++--------
+ libxtables/xtoptions.c       |  52 ++++++--
+ 27 files changed, 757 insertions(+), 1305 deletions(-)
+
 -- 
-2.30.2
+2.43.0
 
 
