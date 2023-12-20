@@ -1,25 +1,25 @@
-Return-Path: <netfilter-devel+bounces-429-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-450-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1524081A3C5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15EDA81A3DB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B8561C24DAC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92091B26E25
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E2B481CB;
-	Wed, 20 Dec 2023 16:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA8948CC9;
+	Wed, 20 Dec 2023 16:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="mcTtv0ja"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GsfLt/Y+"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B8D482CD
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB5C487B4
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -28,22 +28,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=w2IYuDf7rURhIrZYyrbrBL8mmPMDAgMVxZzkfnFMmuY=; b=mcTtv0janhnjQUCM0czoPbd/UK
-	l91oWS/deqlD+LFye7CsOpMDoNYFdoDNbOwD+JsjeVDXo3h9k0lFSIsKtlnRL35wUMdltaEhrq5fy
-	yXl4iNyqudjLGPqS9+DZc4aShrLQxnROf8fyvSQFa9i/KebRy6lB/Y4+xBCIMJOWqnZlJB+vK4bev
-	RGU9FKBbDoIPPws4YOm2Kl1kIj9zQWqmFzZjQOT4QXj9pQp4F6mUuBU5UsGrIHJGQ6WZuFo8W8v2+
-	LRgKRmw4eKNi7eO45pZ05LAyFKc7ox0Y+7nm7kTKSJ2g0o4CFIoKF/qkWDQh0UGuN4GsykRfur40L
-	QZLSyxlg==;
+	bh=+XtTB3zMYOyr0BxBGjYqyP+JQAj5w7iiAH1nmo6aV7o=; b=GsfLt/Y+EebygwjB3uZUTrbFd8
+	clIqY4kA2L6hY2dxaT0MnhI5bbBHwuHb8ad68fgdKR4xHdKBIehx/35nOefKGxlGAHYltiWn8BR8M
+	7idpTxBi9XtMs5ePffB9VZgUqpBY2JIIcrLoubGXcGQWi/Ewfo2AHIDjqteOeqbbaqtnCiMwfYNQY
+	//+ai9jOCUiVgypUS7PBiKBJ0Qcz5Cjzj33abN2JMg05I+Fu/8XKebdxkKhseTL7x//XOix2pHpDr
+	0YUru+0Tbmf/z1Gm7UGd7n75qg4h/yIcPGDZvZPrbkb63zV9pm9y/T3fXKfSKIz0Owoxh6gMyaqan
+	numJHadg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1rFz5k-0004KG-Ni
-	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:40 +0100
+	id 1rFz5u-0004MA-IV
+	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:50 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 05/23] ebtables: Support for guided option parser
-Date: Wed, 20 Dec 2023 17:06:18 +0100
-Message-ID: <20231220160636.11778-6-phil@nwl.cc>
+Subject: [iptables PATCH 06/23] extensions: libebt_*: Drop some needless init callbacks
+Date: Wed, 20 Dec 2023 17:06:19 +0100
+Message-ID: <20231220160636.11778-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231220160636.11778-1-phil@nwl.cc>
 References: <20231220160636.11778-1-phil@nwl.cc>
@@ -55,178 +55,130 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adjust ebt_load_match() and ebt_command_default() to expect
-x6_options/x6_parse fiels to be set instead of the traditional ones.
-
-Much of this is c'n'p from command_default() in xshared.c, but due to
-ebtables' custom match data structure (combining matches and watchers),
-sharing the code is probably not feasible.
+Extension data is zero by default.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb.c | 108 ++++++++++++++++++++----------------------
- 1 file changed, 51 insertions(+), 57 deletions(-)
+ extensions/libebt_802_3.c  |  9 ---------
+ extensions/libebt_ip.c     |  9 ---------
+ extensions/libebt_ip6.c    | 13 -------------
+ extensions/libebt_mark_m.c | 11 -----------
+ 4 files changed, 42 deletions(-)
 
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index c3cf1c2c74104..e8cdd7eaa8e44 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -170,36 +170,6 @@ static void ebt_list_extensions(const struct xtables_target *t,
- 	}*/
+diff --git a/extensions/libebt_802_3.c b/extensions/libebt_802_3.c
+index f05d02ead5a4a..8cbcdcea4912f 100644
+--- a/extensions/libebt_802_3.c
++++ b/extensions/libebt_802_3.c
+@@ -36,14 +36,6 @@ static void br802_3_print_help(void)
+ "  Type implies SAP value 0xaa\n");
  }
  
--#define OPTION_OFFSET 256
--static struct option *merge_options(struct option *oldopts,
--				    const struct option *newopts,
--				    unsigned int *options_offset)
+-static void br802_3_init(struct xt_entry_match *match)
 -{
--	unsigned int num_old, num_new, i;
--	struct option *merge;
+-	struct ebt_802_3_info *info = (struct ebt_802_3_info *)match->data;
 -
--	if (!newopts || !oldopts || !options_offset)
--		return oldopts;
--	for (num_old = 0; oldopts[num_old].name; num_old++);
--	for (num_new = 0; newopts[num_new].name; num_new++);
--
--	ebtables_globals.option_offset += OPTION_OFFSET;
--	*options_offset = ebtables_globals.option_offset;
--
--	merge = xtables_malloc(sizeof(struct option) * (num_new + num_old + 1));
--	memcpy(merge, oldopts, num_old * sizeof(struct option));
--	for (i = 0; i < num_new; i++) {
--		merge[num_old + i] = newopts[i];
--		merge[num_old + i].val += *options_offset;
--	}
--	memset(merge + num_old + num_new, 0, sizeof(struct option));
--	/* Only free dynamically allocated stuff */
--	if (oldopts != ebt_original_options)
--		free(oldopts);
--
--	return merge;
+-	info->invflags = 0;
+-	info->bitmask = 0;
 -}
 -
- void nft_bridge_print_help(struct iptables_command_state *cs)
+ static int
+ br802_3_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	      const void *entry, struct xt_entry_match **match)
+@@ -119,7 +111,6 @@ static struct xtables_match br802_3_match =
+ 	.family		= NFPROTO_BRIDGE,
+ 	.size		= XT_ALIGN(sizeof(struct ebt_802_3_info)),
+ 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_802_3_info)),
+-	.init		= br802_3_init,
+ 	.help		= br802_3_print_help,
+ 	.parse		= br802_3_parse,
+ 	.final_check	= br802_3_final_check,
+diff --git a/extensions/libebt_ip.c b/extensions/libebt_ip.c
+index 68f34bff97deb..97ec4160942da 100644
+--- a/extensions/libebt_ip.c
++++ b/extensions/libebt_ip.c
+@@ -69,14 +69,6 @@ static void brip_print_help(void)
+ 	xt_print_icmp_types(igmp_types, ARRAY_SIZE(igmp_types));
+ }
+ 
+-static void brip_init(struct xt_entry_match *match)
+-{
+-	struct ebt_ip_info *info = (struct ebt_ip_info *)match->data;
+-
+-	info->invflags = 0;
+-	info->bitmask = 0;
+-}
+-
+ static void
+ parse_port_range(const char *protocol, const char *portstring, uint16_t *ports)
  {
- 	const struct xtables_rule_match *m = cs->matches;
-@@ -327,7 +297,12 @@ static void ebt_load_match(const char *name)
- 	m->m->u.user.revision = m->revision;
- 	xs_init_match(m);
- 
--	opts = merge_options(opts, m->extra_opts, &m->option_offset);
-+	if (m->x6_options != NULL)
-+		opts = xtables_options_xfrm(opts, NULL,
-+					    m->x6_options, &m->option_offset);
-+	else if (m->extra_opts != NULL)
-+		opts = xtables_merge_options(opts, NULL,
-+					     m->extra_opts, &m->option_offset);
- 	if (opts == NULL)
- 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
+@@ -503,7 +495,6 @@ static struct xtables_match brip_match = {
+ 	.family		= NFPROTO_BRIDGE,
+ 	.size		= XT_ALIGN(sizeof(struct ebt_ip_info)),
+ 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_ip_info)),
+-	.init		= brip_init,
+ 	.help		= brip_print_help,
+ 	.parse		= brip_parse,
+ 	.final_check	= brip_final_check,
+diff --git a/extensions/libebt_ip6.c b/extensions/libebt_ip6.c
+index 18bb2720ccbec..d926e86a585f4 100644
+--- a/extensions/libebt_ip6.c
++++ b/extensions/libebt_ip6.c
+@@ -127,18 +127,6 @@ static void brip6_print_help(void)
+ 	xt_print_icmp_types(icmpv6_codes, ARRAY_SIZE(icmpv6_codes));
  }
-@@ -354,8 +329,12 @@ static void ebt_load_watcher(const char *name)
  
- 	xs_init_target(watcher);
- 
--	opts = merge_options(opts, watcher->extra_opts,
--			     &watcher->option_offset);
-+	if (watcher->x6_options != NULL)
-+		opts = xtables_options_xfrm(opts, NULL, watcher->x6_options,
-+					    &watcher->option_offset);
-+	else if (watcher->extra_opts != NULL)
-+		opts = xtables_merge_options(opts, NULL, watcher->extra_opts,
-+					     &watcher->option_offset);
- 	if (opts == NULL)
- 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
+-static void brip6_init(struct xt_entry_match *match)
+-{
+-	struct ebt_ip6_info *ipinfo = (struct ebt_ip6_info *)match->data;
+-
+-	ipinfo->invflags = 0;
+-	ipinfo->bitmask = 0;
+-	memset(ipinfo->saddr.s6_addr, 0, sizeof(ipinfo->saddr.s6_addr));
+-	memset(ipinfo->smsk.s6_addr, 0, sizeof(ipinfo->smsk.s6_addr));
+-	memset(ipinfo->daddr.s6_addr, 0, sizeof(ipinfo->daddr.s6_addr));
+-	memset(ipinfo->dmsk.s6_addr, 0, sizeof(ipinfo->dmsk.s6_addr));
+-}
+-
+ /* wrap xtables_ip6parse_any(), ignoring any but the first returned address */
+ static void ebt_parse_ip6_address(char *address,
+ 				  struct in6_addr *addr, struct in6_addr *msk)
+@@ -452,7 +440,6 @@ static struct xtables_match brip6_match = {
+ 	.family		= NFPROTO_BRIDGE,
+ 	.size		= XT_ALIGN(sizeof(struct ebt_ip6_info)),
+ 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_ip6_info)),
+-	.init		= brip6_init,
+ 	.help		= brip6_print_help,
+ 	.parse		= brip6_parse,
+ 	.final_check	= brip6_final_check,
+diff --git a/extensions/libebt_mark_m.c b/extensions/libebt_mark_m.c
+index 2462d0af7d0bc..178c9ecef94da 100644
+--- a/extensions/libebt_mark_m.c
++++ b/extensions/libebt_mark_m.c
+@@ -30,16 +30,6 @@ static void brmark_m_print_help(void)
+ "--mark    [!] [value][/mask]: Match nfmask value (see man page)\n");
  }
-@@ -450,37 +429,50 @@ int ebt_command_default(struct iptables_command_state *cs,
- 	struct ebt_match *matchp;
  
- 	/* Is it a target option? */
--	if (t && t->parse) {
--		if (t->parse(cs->c - t->option_offset, cs->argv,
--			     ebt_invert, &t->tflags, NULL, &t->t))
--			return 0;
-+	if (cs->target != NULL &&
-+	    (cs->target->parse != NULL || cs->target->x6_parse != NULL) &&
-+	    cs->c >= cs->target->option_offset &&
-+	    cs->c < cs->target->option_offset + XT_OPTION_OFFSET_SCALE) {
-+		xtables_option_tpcall(cs->c, cs->argv, ebt_invert,
-+				      cs->target, &cs->eb);
-+		return 0;
- 	}
- 
- 	/* check previously added matches/watchers to this rule first */
- 	for (matchp = cs->match_list; matchp; matchp = matchp->next) {
- 		if (matchp->ismatch) {
- 			m = matchp->u.match;
--			if (m->parse &&
--			    m->parse(cs->c - m->option_offset, cs->argv,
--				     ebt_invert, &m->mflags, NULL, &m->m))
--				return 0;
-+			if (!m->parse && !m->x6_parse)
-+				continue;
-+			if (cs->c < m->option_offset ||
-+			    cs->c >= m->option_offset + XT_OPTION_OFFSET_SCALE)
-+				continue;
-+			xtables_option_mpcall(cs->c, cs->argv, ebt_invert,
-+					      m, &cs->eb);
-+			return 0;
- 		} else {
- 			t = matchp->u.watcher;
--			if (t->parse &&
--			    t->parse(cs->c - t->option_offset, cs->argv,
--				     ebt_invert, &t->tflags, NULL, &t->t))
--				return 0;
-+			if (!t->parse && !t->x6_parse)
-+				continue;
-+			if (cs->c < t->option_offset ||
-+			    cs->c >= t->option_offset + XT_OPTION_OFFSET_SCALE)
-+				continue;
-+			xtables_option_tpcall(cs->c, cs->argv, ebt_invert,
-+					      t, &cs->eb);
-+			return 0;
- 		}
- 	}
- 
- 	/* Is it a match_option? */
- 	for (m = xtables_matches; m; m = m->next) {
--		if (m->parse &&
--		    m->parse(cs->c - m->option_offset, cs->argv,
--			     ebt_invert, &m->mflags, NULL, &m->m)) {
--			ebt_add_match(m, cs);
--			return 0;
--		}
-+		if (!m->parse && !m->x6_parse)
-+			continue;
-+		if (cs->c < m->option_offset ||
-+		    cs->c >= m->option_offset + XT_OPTION_OFFSET_SCALE)
-+			continue;
-+		xtables_option_mpcall(cs->c, cs->argv, ebt_invert, m, &cs->eb);
-+		ebt_add_match(m, cs);
-+		return 0;
- 	}
- 
- 	/* Is it a watcher option? */
-@@ -488,12 +480,14 @@ int ebt_command_default(struct iptables_command_state *cs,
- 		if (!(t->ext_flags & XTABLES_EXT_WATCHER))
- 			continue;
- 
--		if (t->parse &&
--		    t->parse(cs->c - t->option_offset, cs->argv,
--			     ebt_invert, &t->tflags, NULL, &t->t)) {
--			ebt_add_watcher(t, cs);
--			return 0;
--		}
-+		if (!t->parse && !t->x6_parse)
-+			continue;
-+		if (cs->c < t->option_offset ||
-+		    cs->c >= t->option_offset + XT_OPTION_OFFSET_SCALE)
-+			continue;
-+		xtables_option_tpcall(cs->c, cs->argv, ebt_invert, t, &cs->eb);
-+		ebt_add_watcher(t, cs);
-+		return 0;
- 	}
- 	if (cs->c == ':')
- 		xtables_error(PARAMETER_PROBLEM, "option \"%s\" "
+-static void brmark_m_init(struct xt_entry_match *match)
+-{
+-	struct ebt_mark_m_info *info = (struct ebt_mark_m_info *)match->data;
+-
+-	info->mark = 0;
+-	info->mask = 0;
+-	info->invert = 0;
+-	info->bitmask = 0;
+-}
+-
+ #define OPT_MARK 0x01
+ static int
+ brmark_m_parse(int c, char **argv, int invert, unsigned int *flags,
+@@ -128,7 +118,6 @@ static struct xtables_match brmark_m_match = {
+ 	.family		= NFPROTO_BRIDGE,
+ 	.size		= XT_ALIGN(sizeof(struct ebt_mark_m_info)),
+ 	.userspacesize	= XT_ALIGN(sizeof(struct ebt_mark_m_info)),
+-	.init		= brmark_m_init,
+ 	.help		= brmark_m_print_help,
+ 	.parse		= brmark_m_parse,
+ 	.final_check	= brmark_m_final_check,
 -- 
 2.43.0
 
