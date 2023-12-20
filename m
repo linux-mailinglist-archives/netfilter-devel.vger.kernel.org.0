@@ -1,25 +1,25 @@
-Return-Path: <netfilter-devel+bounces-443-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-441-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E84F681A3D3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B54381A3D1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 17:08:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 264F11C24E9A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3221C24478
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Dec 2023 16:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE598482E3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40074482D0;
 	Wed, 20 Dec 2023 16:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ii5+ohQH"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="kaRfMdfz"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5580A4175E
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1262482E3
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Dec 2023 16:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -28,22 +28,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=KN8244QfmMpeHf16RmxDx8A+zp87CpphPoy3OJ7/Z4w=; b=ii5+ohQHK2fWCWvhyg1sVng77x
-	6UEGtE1OBhlRc0I5qZdKKM7wFaP+62wSpv49hGR5I8tDGFy7iYdaTK/+y6r0eTHFdnJtGawbCxGbP
-	M3bpbSXWHqBWTVuhlqqze80wmSFZAmBq9afwzCji+F5zmxekPvFiNnpsC3eT1k/D11XTGMhIgbwUP
-	rJdCmntskmPw81JJ0cZcBPGxZgPQh10SVaJniCcsP3IYXh261UImeotG9pLjY12R61CYXrU51uBq+
-	u67W3LVlQtl64F1Y1TMf7ucN/UJQ0IE/WnACQVCnhMmCYEJvxyRzr2vLoYMncsklMyuJgBUGgqa5d
-	gs6zfr8Q==;
+	bh=KtYgZxlHs5cr7Jo+Hk4dnMzUOqna7/XJ+m7QSyWxsiE=; b=kaRfMdfzaLF152Ad54M0M+/PwF
+	xIHjhwV9xUrC3SD3ZiNji6u/2ef0BP9rS3H71KiOmDU3rMeQtfZ3aps5YF2/fL0yUuJR6lX2zW9n0
+	OuVD/RB7jKIahQ/c0u/wt4YpXnCIgEIew8CA17S7fNhRiZuBc2ydEPCVrskPHLTbIlOqOm5hr6NiW
+	wzUBlyt8zGLzfadU88U1VkjnPHJaDFteCxHEnEwMVlkQzirO23+JAquBmj2xJXabrAvGNSn8sqRDB
+	PM6+J8PyZ+8jlDDirJ+X//A+pZ3ucT48oMoQPU7EecVTPaqI/Zwxv+xTFNnGcONEQPasz4QLOkXY3
+	nit24rwg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.94.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1rFz5r-0004Lg-Tm
+	id 1rFz5r-0004LW-7X
 	for netfilter-devel@vger.kernel.org; Wed, 20 Dec 2023 17:06:47 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 02/23] libxtables: xtoptions: Support XTOPT_NBO with XTTYPE_UINT*
-Date: Wed, 20 Dec 2023 17:06:15 +0100
-Message-ID: <20231220160636.11778-3-phil@nwl.cc>
+Subject: [iptables PATCH 03/23] libxtables: xtoptions: Implement XTTYPE_ETHERMACMASK
+Date: Wed, 20 Dec 2023 17:06:16 +0100
+Message-ID: <20231220160636.11778-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231220160636.11778-1-phil@nwl.cc>
 References: <20231220160636.11778-1-phil@nwl.cc>
@@ -55,87 +55,81 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Value conversion into Big Endian byteorder is pretty straightforward,
-merely needed a small helper for uint64.
+Accept an Ethernet MAC address with optional mask in the format
+xtables_parse_mac_and_mask() expects it. Does not support XTOPT_PUT (for
+now) due to the lack of defined data structure.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- libxtables/xtoptions.c | 40 +++++++++++++++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 9 deletions(-)
+ include/xtables.h      |  7 ++++++-
+ libxtables/xtoptions.c | 10 ++++++++++
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
+diff --git a/include/xtables.h b/include/xtables.h
+index db7c492a9556e..ab856ebc426ac 100644
+--- a/include/xtables.h
++++ b/include/xtables.h
+@@ -12,6 +12,7 @@
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdint.h>
++#include <netinet/ether.h>
+ #include <netinet/in.h>
+ #include <net/if.h>
+ #include <linux/types.h>
+@@ -68,6 +69,7 @@ struct in_addr;
+  * %XTTYPE_PLEN:	prefix length
+  * %XTTYPE_PLENMASK:	prefix length (ptr: union nf_inet_addr)
+  * %XTTYPE_ETHERMAC:	Ethernet MAC address in hex form
++ * %XTTYPE_ETHERMACMASK: Ethernet MAC address in hex form with optional mask
+  */
+ enum xt_option_type {
+ 	XTTYPE_NONE,
+@@ -92,6 +94,7 @@ enum xt_option_type {
+ 	XTTYPE_PLEN,
+ 	XTTYPE_PLENMASK,
+ 	XTTYPE_ETHERMAC,
++	XTTYPE_ETHERMACMASK,
+ };
+ 
+ /**
+@@ -167,7 +170,9 @@ struct xt_option_call {
+ 		struct {
+ 			uint32_t mark, mask;
+ 		};
+-		uint8_t ethermac[6];
++		struct {
++			uint8_t ethermac[ETH_ALEN], ethermacmask[ETH_ALEN];
++		};
+ 	} val;
+ 	/* Wished for a world where the ones below were gone: */
+ 	union {
 diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
-index 9694639188006..3973c807ded0e 100644
+index 3973c807ded0e..9377e1641f28c 100644
 --- a/libxtables/xtoptions.c
 +++ b/libxtables/xtoptions.c
-@@ -147,6 +147,14 @@ static size_t xtopt_esize_by_type(enum xt_option_type type)
- 	}
+@@ -791,6 +791,15 @@ static void xtopt_parse_ethermac(struct xt_option_call *cb)
+ 	xt_params->exit_err(PARAMETER_PROBLEM, "Invalid MAC address specified.");
  }
  
-+static uint64_t htonll(uint64_t val)
++static void xtopt_parse_ethermacmask(struct xt_option_call *cb)
 +{
-+	uint32_t high = val >> 32;
-+	uint32_t low = val & UINT32_MAX;
-+
-+	return (uint64_t)htonl(low) << 32 | htonl(high);
++	memset(cb->val.ethermacmask, 0xff, ETH_ALEN);
++	if (xtables_parse_mac_and_mask(cb->arg, cb->val.ethermac,
++				       cb->val.ethermacmask))
++		xt_params->exit_err(PARAMETER_PROBLEM,
++				    "Invalid MAC/mask address specified.");
 +}
 +
- /**
-  * Require a simple integer.
-  */
-@@ -174,14 +182,20 @@ static void xtopt_parse_int(struct xt_option_call *cb)
- 			*(uint8_t *)XTOPT_MKPTR(cb) = cb->val.u8;
- 	} else if (entry->type == XTTYPE_UINT16) {
- 		cb->val.u16 = value;
-+		if (entry->flags & XTOPT_NBO)
-+			cb->val.u16 = htons(cb->val.u16);
- 		if (entry->flags & XTOPT_PUT)
- 			*(uint16_t *)XTOPT_MKPTR(cb) = cb->val.u16;
- 	} else if (entry->type == XTTYPE_UINT32) {
- 		cb->val.u32 = value;
-+		if (entry->flags & XTOPT_NBO)
-+			cb->val.u32 = htonl(cb->val.u32);
- 		if (entry->flags & XTOPT_PUT)
- 			*(uint32_t *)XTOPT_MKPTR(cb) = cb->val.u32;
- 	} else if (entry->type == XTTYPE_UINT64) {
- 		cb->val.u64 = value;
-+		if (entry->flags & XTOPT_NBO)
-+			cb->val.u64 = htonll(cb->val.u64);
- 		if (entry->flags & XTOPT_PUT)
- 			*(uint64_t *)XTOPT_MKPTR(cb) = cb->val.u64;
- 	}
-@@ -216,17 +230,25 @@ static void xtopt_parse_float(struct xt_option_call *cb)
- static void xtopt_mint_value_to_cb(struct xt_option_call *cb, uintmax_t value)
- {
- 	const struct xt_option_entry *entry = cb->entry;
-+	int i = cb->nvals;
- 
--	if (cb->nvals >= ARRAY_SIZE(cb->val.u32_range))
-+	if (i >= ARRAY_SIZE(cb->val.u32_range))
- 		return;
--	if (entry->type == XTTYPE_UINT8RC)
--		cb->val.u8_range[cb->nvals] = value;
--	else if (entry->type == XTTYPE_UINT16RC)
--		cb->val.u16_range[cb->nvals] = value;
--	else if (entry->type == XTTYPE_UINT32RC)
--		cb->val.u32_range[cb->nvals] = value;
--	else if (entry->type == XTTYPE_UINT64RC)
--		cb->val.u64_range[cb->nvals] = value;
-+	if (entry->type == XTTYPE_UINT8RC) {
-+		cb->val.u8_range[i] = value;
-+	} else if (entry->type == XTTYPE_UINT16RC) {
-+		cb->val.u16_range[i] = value;
-+		if (entry->flags & XTOPT_NBO)
-+			cb->val.u16_range[i] = htons(cb->val.u16_range[i]);
-+	} else if (entry->type == XTTYPE_UINT32RC) {
-+		cb->val.u32_range[i] = value;
-+		if (entry->flags & XTOPT_NBO)
-+			cb->val.u32_range[i] = htonl(cb->val.u32_range[i]);
-+	} else if (entry->type == XTTYPE_UINT64RC) {
-+		cb->val.u64_range[i] = value;
-+		if (entry->flags & XTOPT_NBO)
-+			cb->val.u64_range[i] = htonll(cb->val.u64_range[i]);
-+	}
- }
+ static void (*const xtopt_subparse[])(struct xt_option_call *) = {
+ 	[XTTYPE_UINT8]       = xtopt_parse_int,
+ 	[XTTYPE_UINT16]      = xtopt_parse_int,
+@@ -813,6 +822,7 @@ static void (*const xtopt_subparse[])(struct xt_option_call *) = {
+ 	[XTTYPE_PLEN]        = xtopt_parse_plen,
+ 	[XTTYPE_PLENMASK]    = xtopt_parse_plenmask,
+ 	[XTTYPE_ETHERMAC]    = xtopt_parse_ethermac,
++	[XTTYPE_ETHERMACMASK]= xtopt_parse_ethermacmask,
+ };
  
  /**
 -- 
