@@ -1,80 +1,72 @@
-Return-Path: <netfilter-devel+bounces-481-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-483-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ACB281C986
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Dec 2023 12:58:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBCEE81C9A0
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Dec 2023 13:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FF12B22F89
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Dec 2023 11:58:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E0A41F26112
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Dec 2023 12:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DFF1803E;
-	Fri, 22 Dec 2023 11:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FE11799E;
+	Fri, 22 Dec 2023 12:01:18 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD791A5A3;
-	Fri, 22 Dec 2023 11:57:28 +0000 (UTC)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F01B1A707;
+	Fri, 22 Dec 2023 12:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.43.141] (port=37472 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1rGeDG-005iDe-Rv; Fri, 22 Dec 2023 13:01:12 +0100
+Date: Fri, 22 Dec 2023 13:01:10 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net-next 8/8] netfilter: nf_tables: validate chain type update if available
-Date: Fri, 22 Dec 2023 12:57:14 +0100
-Message-Id: <20231222115714.364393-9-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231222115714.364393-1-pablo@netfilter.org>
-References: <20231222115714.364393-1-pablo@netfilter.org>
+To: Felix Huettner <felix.huettner@mail.schwarz>
+Cc: linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	shuah@kernel.org, luca.czesla@mail.schwarz,
+	max.lamprecht@mail.schwarz
+Subject: Re: [PATCH net-next v2] net: ctnetlink: support filtering by zone
+Message-ID: <ZYV6hgP35k6Bwk+H@calendula>
+References: <ZWSCPKtDuYRG1XWt@kernel-bug-kernel-bug>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZWSCPKtDuYRG1XWt@kernel-bug-kernel-bug>
+X-Spam-Score: -1.8 (-)
 
-Parse netlink attribute containing the chain type in this update, to
-bail out if this is different from the existing type.
+On Mon, Nov 27, 2023 at 11:49:16AM +0000, Felix Huettner wrote:
+> conntrack zones are heavily used by tools like openvswitch to run
+> multiple virtual "routers" on a single machine. In this context each
+> conntrack zone matches to a single router, thereby preventing
+> overlapping IPs from becoming issues.
+> In these systems it is common to operate on all conntrack entries of a
+> given zone, e.g. to delete them when a router is deleted. Previously this
+> required these tools to dump the full conntrack table and filter out the
+> relevant entries in userspace potentially causing performance issues.
+> 
+> To do this we reuse the existing CTA_ZONE attribute. This was previous
+> parsed but not used during dump and flush requests. Now if CTA_ZONE is
+> set we filter these operations based on the provided zone.
+> However this means that users that previously passed CTA_ZONE will
+> experience a difference in functionality.
+> 
+> Alternatively CTA_FILTER could have been used for the same
+> functionality. However it is not yet supported during flush requests and
+> is only available when using AF_INET or AF_INET6.
 
-Otherwise, it is possible to define a chain with the same name, hook and
-priority but different type, which is silently ignored.
-
-Fixes: 96518518cc41 ("netfilter: add nftables")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4c3de1a2c52b..5531b13d92b6 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2261,7 +2261,16 @@ static int nft_chain_parse_hook(struct net *net,
- 				return -EOPNOTSUPP;
- 		}
- 
--		type = basechain->type;
-+		if (nla[NFTA_CHAIN_TYPE]) {
-+			type = __nf_tables_chain_type_lookup(nla[NFTA_CHAIN_TYPE],
-+							     family);
-+			if (!type) {
-+				NL_SET_BAD_ATTR(extack, nla[NFTA_CHAIN_TYPE]);
-+				return -ENOENT;
-+			}
-+		} else {
-+			type = basechain->type;
-+		}
- 	}
- 
- 	if (!try_module_get(type->owner)) {
--- 
-2.30.2
-
+For the record, this is applied to nf-next.
 
