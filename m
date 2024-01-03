@@ -1,45 +1,38 @@
-Return-Path: <netfilter-devel+bounces-538-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-539-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03460822B44
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jan 2024 11:26:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA3C822B6D
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jan 2024 11:32:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90CD31F240DB
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jan 2024 10:26:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CD372855C7
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jan 2024 10:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31D518C17;
-	Wed,  3 Jan 2024 10:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BE21805D;
+	Wed,  3 Jan 2024 10:32:40 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE1918C10;
-	Wed,  3 Jan 2024 10:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB7518C07
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jan 2024 10:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.41.52] (port=54536 helo=gnumonks.org)
+Received: from [78.30.41.52] (port=54550 helo=gnumonks.org)
 	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <pablo@gnumonks.org>)
-	id 1rKyRx-009QtZ-F1; Wed, 03 Jan 2024 11:26:15 +0100
-Date: Wed, 3 Jan 2024 11:26:12 +0100
+	id 1rKyY5-009RWm-4J; Wed, 03 Jan 2024 11:32:35 +0100
+Date: Wed, 3 Jan 2024 11:32:32 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Aaron Conole <aconole@redhat.com>
-Cc: Simon Horman <horms@kernel.org>, Brad Cowie <brad@faucet.nz>,
-	netdev@vger.kernel.org, dev@openvswitch.org, fw@strlen.de,
-	linux-kernel@vger.kernel.org, kadlec@netfilter.org,
-	edumazet@google.com, netfilter-devel@vger.kernel.org,
-	kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net,
-	Xin Long <lucien.xin@gmail.com>, coreteam@netfilter.org
-Subject: Re: [PATCH net] netfilter: nf_nat: fix action not being set for all
- ct states
-Message-ID: <ZZU2RPcYX/iueeRe@calendula>
-References: <20231221224311.130319-1-brad@faucet.nz>
- <20231223211306.GA215659@kernel.org>
- <f7tle97eppk.fsf@redhat.com>
+To: Nicholas Vinson <nvinson234@gmail.com>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH libnftnl] object: define nftnl_obj_unset()
+Message-ID: <ZZU3wJKLfQdmatV3@calendula>
+References: <20240102132540.31391-1-pablo@netfilter.org>
+ <20240102175058.24570-1-nvinson234@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -48,8 +41,30 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f7tle97eppk.fsf@redhat.com>
+In-Reply-To: <20240102175058.24570-1-nvinson234@gmail.com>
 X-Spam-Score: -1.9 (-)
 
-Applied to nf.git, thanks everyone for reviewing.
+Hi Nicholas,
+
+On Tue, Jan 02, 2024 at 12:50:58PM -0500, Nicholas Vinson wrote:
+> I manually applied this patch and got the following build error:
+> 
+>     error: use of undeclared identifier 'nftnl_obj_unset'; did you mean
+>     'nftnl_obj_set'
+> 
+> I think a declaration for nftnl_obj_unset() needs to be added to
+> include/libnftnl/object.h. Other than that, this patch looks OK to me.
+
+$ git grep nftnl_obj_unset
+include/libnftnl/object.h:void nftnl_obj_unset(struct nftnl_obj *ne, uint16_t attr);
+src/libnftnl.map:  nftnl_obj_unset;
+src/object.c:EXPORT_SYMBOL(nftnl_obj_unset);
+src/object.c:void nftnl_obj_unset(struct nftnl_obj *obj, uint16_t attr
+
+the header file already has a declaration for this (which was part of
+5573d0146c1a ("src: support for stateful objects").
+
+What is missing then?
+
+Thanks.
 
