@@ -1,76 +1,78 @@
-Return-Path: <netfilter-devel+bounces-594-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-598-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C46E82A402
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 23:34:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D274482A414
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 23:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF3681F23875
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 22:34:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D9BC28A282
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 22:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64B41E4B6;
-	Wed, 10 Jan 2024 22:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6234F614;
+	Wed, 10 Jan 2024 22:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="S7IgxBih"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="U+76ZNxu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E174F892
-	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jan 2024 22:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817B650256
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jan 2024 22:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=SOYUc49zD5Agmz0GDII1IgIeEnjcMvfun3XTTr5Y5Pg=; b=S7IgxBihJgFT63i7sNN2/5YJic
-	mhq/J3pgUbP6KSu1Tx06c5/p2Me+TpxiGlRuXys4SARHx6q1nzgu5GtU/rc0T2WBsLdG1iSSnfB0/
-	ar98vGWbjYCTje5E3U9CHsRrLBTE3U3Enl9F+s9ouVTDbZJF84428L53R0psddxGSXnQCdufjsrVm
-	OJW9TnSLq2o3RHt5MvuEhqRyGc9sKiiLLHgey3wh+GyYl3AaN0BBv/GNANWtGjoTGC525MyIyknLG
-	KXh+QgJbCSxCl/yH2HoCTteZ1eB4dlzsdIK8gEdM/Qp+PWkm7gSeLYCD0ma/Y//3bydWKmSPfuvx5
-	2Vkprhjg==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97)
+	bh=FJVEIdIwAf17Ay4Ph7xgUYVupoCu42vrpy/zwglnfcU=; b=U+76ZNxuEOq3lwp04Zt5n9D5J2
+	GXhVXlzqX0TnV0VQCjvckI97jXV5EC+t2svSxNwGoWlq70HDY+zkrmMCn0FwbnU57cO6Hli71CrU5
+	K5q/zVuALVMEbico/Twgd6qKIsLsrNlt2ZZ5uSgp2PIwkN/LICjZYmzd2CCfjst2tGyF+A/HEEoB5
+	MS5kgiYAdPbNHz2VlXhUpGEJ5GiHgO6i4eEBDBXZF+cs0LXG1Wtlf1L21eO66tHQXyxwQnpHXuvbP
+	0KnsCDkIFuwL3Cq11mncOfwkik3D8kplZyen2muK3mVx/G81Y8+FC7Z5EyIEXGFlEUvxlDZjt9g9m
+	8abvmJfA==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rNh9X-000000005Ml-38Wr;
-	Wed, 10 Jan 2024 23:34:27 +0100
-Date: Wed, 10 Jan 2024 23:34:27 +0100
+	id 1rNhGV-000000005WA-3PIw;
+	Wed, 10 Jan 2024 23:41:39 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Cc: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [iptables PATCH v2] ebtables: Default to extrapositioned
- negations
-Message-ID: <ZZ8bc2RQ5N1EBvvQ@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
-References: <20231221133940.959-1-phil@nwl.cc>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [iptables PATCH v2 0/3] iptables-save: Avoid /etc/protocols lookups
+Date: Wed, 10 Jan 2024 23:41:33 +0100
+Message-ID: <20240110224136.11211-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221133940.959-1-phil@nwl.cc>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 02:38:52PM +0100, Phil Sutter wrote:
-> ebtables-nft has always supported both intra- and extrapositioned
-> negations but defaulted to intrapositioned when printing/saving rules.
-> 
-> With commit 58d364c7120b5 ("ebtables: Use do_parse() from xshared")
-> though, it started to warn about intrapositioned negations. So change
-> the default to avoid mandatory warnings when e.g. loading previously
-> dumped rulesets.
-> 
-> Also adjust test cases, help texts and ebtables-nft.8 accordingly.
-> 
-> Cc: Jan Engelhardt <jengelh@inai.de>
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
+V1 was a tad too simple: The revert is fine, but the (now) third patch
+changes iptables-save output and thus potentially breaks test cases. To
+avoid that, add patch 2 which enables "dccp" and "ipcomp" protocol names
+in output. Apart from that, a single shell test case expected '-p gre'
+in the dump. Replace the actually printed '-p 47' using sed in there.
 
-Patch applied.
+Phil Sutter (3):
+  Revert "xshared: Print protocol numbers if --numeric was given"
+  libxtables: Add dccp and ipcomp to xtables_chain_protos
+  iptables-save: Avoid /etc/protocols lookups
+
+ .../shell/testcases/ip6tables/0002-verbose-output_0    | 10 +++++-----
+ .../testcases/ipt-restore/0011-noflush-empty-line_0    |  2 +-
+ .../tests/shell/testcases/ipt-save/0001load-dumps_0    |  1 +
+ .../shell/testcases/iptables/0002-verbose-output_0     |  4 ++--
+ iptables/xshared.c                                     |  8 ++++----
+ libxtables/xtables.c                                   |  2 ++
+ 6 files changed, 15 insertions(+), 12 deletions(-)
+
+-- 
+2.43.0
 
