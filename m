@@ -1,199 +1,113 @@
-Return-Path: <netfilter-devel+bounces-588-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-592-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81709829E6C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 17:23:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B89C82A122
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 20:42:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3538A1F22A5F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 16:23:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB653B22868
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jan 2024 19:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABB84CB40;
-	Wed, 10 Jan 2024 16:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E7D4E1D6;
+	Wed, 10 Jan 2024 19:42:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp2-kfki.kfki.hu (smtp2-kfki.kfki.hu [148.6.0.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63F74CB3D;
-	Wed, 10 Jan 2024 16:22:55 +0000 (UTC)
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED574D581
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jan 2024 19:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=netfilter.org
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 0089DCC0120;
-	Wed, 10 Jan 2024 17:14:33 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-	by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP; Wed, 10 Jan 2024 17:14:30 +0100 (CET)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 17D41CC011E;
-	Wed, 10 Jan 2024 17:14:30 +0100 (CET)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-	id 11436343167; Wed, 10 Jan 2024 17:14:30 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by blackhole.kfki.hu (Postfix) with ESMTP id 0F06C343166;
-	Wed, 10 Jan 2024 17:14:30 +0100 (CET)
-Date: Wed, 10 Jan 2024 17:14:30 +0100 (CET)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: David Wang <00107082@163.com>
-cc: ale.crismani@automattic.com, xiaolinkui@kylinos.cn, pablo@netfilter.org, 
-    linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: Performance regression in ip_set_swap on 6.1.69
-In-Reply-To: <661cb613.7974.18cf30c4a42.Coremail.00107082@163.com>
-Message-ID: <956ec7cd-16ef-7f72-dad8-dfa2ec5f4d77@netfilter.org>
-References: <C0829B10-EAA6-4809-874E-E1E9C05A8D84@automattic.com> <20240110102342.4978-1-00107082@163.com> <a4dfc3d9-f028-7ab4-c3a7-11dcbb12e377@netfilter.org> <661cb613.7974.18cf30c4a42.Coremail.00107082@163.com>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: fw@strlen.de
+Subject: [PATCH nft 0/4] assorted fixes
+Date: Wed, 10 Jan 2024 20:42:13 +0100
+Message-Id: <20240110194217.484064-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Hi Florian,
 
-On Wed, 10 Jan 2024, David Wang wrote:
+This in an alternative path to address the issue described here:
 
-> At 2024-01-10 18:35:02, "Jozsef Kadlecsik" <kadlec@netfilter.org> wrote:
-> >On Wed, 10 Jan 2024, David Wang wrote:
-> >
-> >> I confirmed this on 6.7 that this was introduced by commit 
-> >> 28628fa952fefc7f2072ce6e8016968cc452b1ba with following changes:
-> >> 
-> >> 	 static inline void
-> >> 	@@ -1397,6 +1394,9 @@ static int ip_set_swap(struct sk_buff *skb, const struct nfnl_info *info,
-> >> 		ip_set(inst, to_id) = from;
-> >> 		write_unlock_bh(&ip_set_ref_lock);
-> >> 	 
-> >> 	+       /* Make sure all readers of the old set pointers are completed. */
-> >> 	+       synchronize_rcu();
-> >> 	+
-> >> 		return 0;
-> >> 	 }
-> >> 
-> >> synchronize_rcu causes the delay, and its usage here is very confusing, 
-> >> there is no reclaimer code after it.
-> >
-> >As I'm seeing just the end of the discussion, please send a full report of 
-> >the problem and how to reproduce it.
-> >
-> 
-> This was reported in 
-> https://lore.kernel.org/lkml/C0829B10-EAA6-4809-874E-E1E9C05A8D84@automattic.com/ 
-> by ale.crismani@automattic.com Just out of interest of performance 
-> issues, I tried to reproduce it with a test stressing ipset_swap:
-> 
-> My test code is as following, it would stress swapping ipset 'foo' with 
-> 'bar'; (foo/bar ipset needs to be created before the test.) With latest 
-> 6.7, the stress would take about 180 seconds to finish, but with 
-> `synchronize_rcu` removed, it only took 3seconds.
-> 
-> 
-> ```
-> unsigned char mbuffer[4096];
-> int main() {
-> 	int err;
-> 	int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
-> 	if (sock<0) {
-> 		perror("Fail to create socket");
-> 		return 1;
-> 	}
-> 	struct sockaddr_nl addr = {
-> 		.nl_family = AF_NETLINK,
-> 		.nl_pad = 0,
-> 		.nl_pid = 0,
-> 		.nl_groups = 0
-> 	};
-> 	struct sockaddr raddr = {0};
-> 	socklen_t rsize;
-> 	int seq = 0x12345678;
-> 	err = bind(sock, (struct sockaddr*)&addr, sizeof(addr));
-> 	if (err) {
-> 		perror("Fail to bind");
-> 		return 1;
-> 	}
-> 	err = getsockname(sock, &raddr, &rsize);
-> 	if (err) {
-> 		perror("Fail to getsockname");
-> 		return 1;
-> 	}
-> 	unsigned char buf[64];
-> 	struct nlmsghdr *phdr;
-> 	struct nfgenmsg *pnfg;
-> 	struct nlattr *pnla;
-> 	unsigned int total;
-> 	ssize_t rz;
-> 	struct iovec iovs;
-> 	iovs.iov_base = mbuffer;
-> 	iovs.iov_len = sizeof(mbuffer);
-> 	struct msghdr msg = {0};
-> 	msg.msg_name = &addr;
-> 	msg.msg_namelen = sizeof(addr);
-> 	msg.msg_iov = &iovs;
-> 	msg.msg_iovlen = 1;
-> 
-> 	memset(buf, 0, sizeof(buf));
-> 	total = 0;
-> 	phdr = (struct nlmsghdr*)(buf+total);
-> 	total += sizeof(struct nlmsghdr);
-> 	phdr->nlmsg_type=NFNL_SUBSYS_IPSET<<8|IPSET_CMD_PROTOCOL;
-> 	phdr->nlmsg_seq = seq;
-> 	phdr->nlmsg_flags = NLM_F_REQUEST;
-> 	pnfg = (struct nfgenmsg*)(buf+total);
-> 	total += sizeof(struct nfgenmsg);
-> 	pnfg->nfgen_family=AF_INET;
->     	pnfg->version= NFNETLINK_V0;
-> 	pnfg->res_id=htons(0);
-> 	pnla = (struct nlattr *)(buf+total);
-> 	pnla->nla_len = 5;
-> 	pnla->nla_type = 1;
-> 	buf[total+sizeof(struct nlattr)]=0x06;
-> 	total+=8;
-> 	phdr->nlmsg_len = total;
-> 	rz = sendto(sock, buf, total, 0, (struct sockaddr*)&addr, sizeof(addr));
-> 	rz = recvmsg(sock, &msg, 0);
-> 
-> 	pnla = (struct nlattr *)(buf+total);
-> 	pnla->nla_len = 8;
-> 	pnla->nla_type = 2;
-> 	char *p = buf+(total+sizeof(struct nlattr));
-> 	p[0]='f'; p[1]='o'; p[2]='o'; p[3]=0;
-> 	total+=8;
-> 	pnla = (struct nlattr *)(buf+total);
-> 	pnla->nla_len = 8;
-> 	pnla->nla_type = 3;
-> 	p = buf+(total+sizeof(struct nlattr));
-> 	p[0]='b'; p[1]='a'; p[2]='r'; p[3]=0;
-> 	total+=8;
-> 	phdr->nlmsg_type = NFNL_SUBSYS_IPSET<<8|IPSET_CMD_SWAP;
-> 	phdr->nlmsg_flags = NLM_F_REQUEST|NLM_F_ACK;
-> 	phdr->nlmsg_len = total;
-> 
-> 	
-> 	for (int i=0; i<10000; i++) {
-> 		// stress swap foo bar
-> 		phdr->nlmsg_seq++;
-> 		sendto(sock, buf, total, 0, (struct sockaddr*)&addr, sizeof(addr));
-> 		recvmsg(sock, &msg, 0);
-> 	}
-> 
-> 	close(sock);
-> 	return 0;
-> }
-> ```
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20240110082657.1967-2-fw@strlen.de/
 
-Thanks, I'll look into it. The race condition fix between swap/destroy and 
-kernel side add/del/test had several versions, either penalizing destroy 
-or swap. Finally swap seemed to be the less intrusive. I'm going to 
-explore other possibilities.
+(I am partially integrating this patch into 3/4 in this series).
 
-Best regards,
-Jozsef
--- 
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Patch #1 fixes a bug in the set optimization with single elements, which
+         results in strange ruleset listings. Concatenations are only
+	 supported with sets, so let's just skip this.
+
+Patch #2 do not fetch next key in case runaway flag is set on with
+	 concatenations. I could not crash nftables with this, but
+	 I found it when reviewing this code.
+
+Patch #3 iterate over the anonymous set in set_evaluate() to validate
+         consistency of elements as concat expressions. Otherwise, bail
+	 out with:
+
+  ruleset.nft:3:46-53: Error: expression is not a concatenation
+               ip protocol . th dport vmap { tcp / 22 : accept, tcp . 80 : drop}
+                                             ^^^^^^^^
+
+         I extended tests to cover maps too.
+
+I needed special error handling when set_evaluate() fails to release sets so
+ASAN does not complain with incorrect memory handling, this chunk:
+
+@@ -118,7 +119,15 @@ static struct expr *implicit_set_declaration(struct eval_ctx *ctx,
+                list_add_tail(&cmd->list, &ctx->cmd->list);
+        }
+
+-       set_evaluate(ctx, set);
++       err = set_evaluate(ctx, set);
++       if (err < 0) {
++               list_del(&cmd->list);
++               if (set->flags & NFT_SET_MAP)
++                       cmd->set->init = NULL;
++
++               cmd_free(cmd);
++               return NULL;
++       }
+
+        return set_ref_expr_alloc(&expr->location, set);
+ }
+
+Patch #4 revert a recent late sanity check which is already covered by this
+	 patchset.
+
+In general the idea is to make stricter validations from evaluation phase
+to avoid propagating errors any further.
+
+This passing tests/shell and tests/py, it might be a good idea to add more
+bogons tests for concatenations with imbalanced number of components / runaway
+number of components, I will follow up with a patch to extend tests
+infrastructure with this.
+
+Pablo Neira Ayuso (4):
+  evaluate: skip anonymous set optimization for concatenations
+  evaluate: do not fetch next expression on runaway number of concatenation components
+  evaluate: bail out if anonymous concat set defines a non concat expression
+  Revert "datatype: do not assert when value exceeds expected width"
+
+ src/datatype.c                                |  6 +-
+ src/evaluate.c                                | 59 +++++++++++++++----
+ .../bogons/nft-f/unhandled_key_type_13_assert |  5 ++
+ .../nft-f/unhandled_key_type_13_assert_map    |  5 ++
+ .../nft-f/unhandled_key_type_13_assert_vmap   |  5 ++
+ 5 files changed, 64 insertions(+), 16 deletions(-)
+ create mode 100644 tests/shell/testcases/bogons/nft-f/unhandled_key_type_13_assert
+ create mode 100644 tests/shell/testcases/bogons/nft-f/unhandled_key_type_13_assert_map
+ create mode 100644 tests/shell/testcases/bogons/nft-f/unhandled_key_type_13_assert_vmap
+
+--
+2.30.2
+
 
