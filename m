@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-678-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-682-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F1E0830A40
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jan 2024 17:01:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D99E830A47
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jan 2024 17:02:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A26801F23B53
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jan 2024 16:01:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C414A1F217F0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jan 2024 16:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4FB4225DE;
-	Wed, 17 Jan 2024 16:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4D822F0F;
+	Wed, 17 Jan 2024 16:00:52 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC8D224CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3516B224EF;
 	Wed, 17 Jan 2024 16:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705507251; cv=none; b=myGKvEGSUM3wZz4Gx2PtKzMEqCwk6DCT6WVfBGrLLAWeUMNK75so1mpJUwMleaH9BrrvFi87XoRC59h5kzL6YDC6hPGIMzC7ofUBMoTXnfxSeJ1R1eXnI2nuJ0BG8o8aovErQWR5tHl57ndlDtfU0E3n8ZGV3fMagelrKb3V9nc=
+	t=1705507252; cv=none; b=L+mnF3kAdzqEZomuu+xt9CzqGmdHLF3y5iGlYBlHlRnbIUB0oZSBet+qXWce7FJ62HjjnMUFcx0t+WhzMJvd4JHhh5CeN/6WGzRLT6QWzyFjZ7LzqtoUiZie6B9tB45UkZ6g/LPX9i2TT45K5tslr3IO2QdnpOci1yzA3s4vehg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705507251; c=relaxed/simple;
-	bh=DqAPtdzyDrXVLwhz7Y33bPeIFtxJQ4xuGUt7Q1XJ5nY=;
+	s=arc-20240116; t=1705507252; c=relaxed/simple;
+	bh=WWyEQ6lt5TMmpHLJH3V4dcQuVzrtcTq57nNMpd84wZo=;
 	h=From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=e077g2P3eqgK/Ap6l6Rdft30V1VHbfkKLzLn8lYPxd71CtKuvjz+glxgGNXfKpHJT9fdowXNbfd65TpXlWt9s33uNPlKYCFBIVCPOShbX2w36CHlEbm/V5nhFitaX3PEj7o/vfhL0dvKiq2Kzdxqd5RevbCgPCJdgwccmnBKOgM=
+	 References:MIME-Version:Content-Transfer-Encoding; b=PE9ZLd7IBexRW3Ah5IW7eeaKV5LujwM0XpCKThCeS30zlaNc+KgGNagCPuB3NQCggMPsG6TEtQRo1ogOPNwM31fybcYR+MMr/pJ3+1WzJidUHQnjdithASWbNVFXe5DDeYvzphMSEf49wjigFT7BUwl6Qt2LxS6+RWh32ceJ2Y4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 10/14] netfilter: nf_tables: do not allow mismatch field size and set key length
-Date: Wed, 17 Jan 2024 17:00:26 +0100
-Message-Id: <20240117160030.140264-11-pablo@netfilter.org>
+Subject: [PATCH net 11/14] netfilter: nf_tables: skip dead set elements in netlink dump
+Date: Wed, 17 Jan 2024 17:00:27 +0100
+Message-Id: <20240117160030.140264-12-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240117160030.140264-1-pablo@netfilter.org>
 References: <20240117160030.140264-1-pablo@netfilter.org>
@@ -49,43 +49,40 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The set description provides the size of each field in the set whose sum
-should not mismatch the set key length, bail out otherwise.
+Delete from packet path relies on the garbage collector to purge
+elements with NFT_SET_ELEM_DEAD_BIT on.
 
-I did not manage to crash nft_set_pipapo with mismatch fields and set key
-length so far, but this is UB which must be disallowed.
+Skip these dead elements from nf_tables_dump_setelem() path, I very
+rarely see tests/shell/testcases/maps/typeof_maps_add_delete reports
+[DUMP FAILED] showing a mismatch in the expected output with an element
+that should not be there.
 
-Fixes: f3a2181e16f1 ("netfilter: nf_tables: Support for sets with multiple ranged fields")
+If the netlink dump happens before GC worker run, it might show dead
+elements in the ruleset listing.
+
+nft_rhash_get() already skips dead elements in nft_rhash_cmp(),
+therefore, it already does not show the element when getting a single
+element via netlink control plane.
+
+Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 50b595ef6389..e9fa4a32c093 100644
+index e9fa4a32c093..88a6a858383b 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -4813,8 +4813,8 @@ static int nft_set_desc_concat_parse(const struct nlattr *attr,
- static int nft_set_desc_concat(struct nft_set_desc *desc,
- 			       const struct nlattr *nla)
- {
-+	u32 num_regs = 0, key_num_regs = 0;
- 	struct nlattr *attr;
--	u32 num_regs = 0;
- 	int rem, err, i;
+@@ -5718,7 +5718,7 @@ static int nf_tables_dump_setelem(const struct nft_ctx *ctx,
+ 	const struct nft_set_ext *ext = nft_set_elem_ext(set, elem_priv);
+ 	struct nft_set_dump_args *args;
  
- 	nla_for_each_nested(attr, nla, rem) {
-@@ -4829,6 +4829,10 @@ static int nft_set_desc_concat(struct nft_set_desc *desc,
- 	for (i = 0; i < desc->field_count; i++)
- 		num_regs += DIV_ROUND_UP(desc->field_len[i], sizeof(u32));
+-	if (nft_set_elem_expired(ext))
++	if (nft_set_elem_expired(ext) || nft_set_elem_is_dead(ext))
+ 		return 0;
  
-+	key_num_regs = DIV_ROUND_UP(desc->klen, sizeof(u32));
-+	if (key_num_regs != num_regs)
-+		return -EINVAL;
-+
- 	if (num_regs > NFT_REG32_COUNT)
- 		return -E2BIG;
- 
+ 	args = container_of(iter, struct nft_set_dump_args, iter);
 -- 
 2.30.2
 
