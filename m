@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-703-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-706-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C95831D6E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:18:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 372DD831D72
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:18:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51F42B2562C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:18:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E44761F23AD4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A65E2C871;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5948D2D021;
 	Thu, 18 Jan 2024 16:17:45 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48472C6BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C752C842;
 	Thu, 18 Jan 2024 16:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594665; cv=none; b=T+3fgrr9VbkH2JqS8QOXx3TiGK7rs6RJfvJrGs7rBxtwWLen+rQKcsUE1ji+9MaXvoJjdyt6CSnTvuoqzIuxNQvcE8wv/AVEHY1tPbGHU2+sQ3vAIDGdaENQAg8bjKyAzRYoRN3w3BiQTeTYiVEnYU329Y5XfUuzvkptnuI+30E=
+	t=1705594665; cv=none; b=ZzG1iUqlzmBtujL1eiplZnvRpi5jXd+llY0I3/uTRI8Ydqt1ZICbw2bwBXDAu2nqq89jFjgMp3e5A7oqraW8jQm6Jj4MCR40yj9Hrj05eEYKM/XniWfbm6CTXfhe2lq6VfOvNtRTyGUMFsvCiJdPigP+cLsVej3KSaGC0AeHf4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705594665; c=relaxed/simple;
-	bh=WWyEQ6lt5TMmpHLJH3V4dcQuVzrtcTq57nNMpd84wZo=;
+	bh=0uOq3O0vrcPvSyLetUXeAUlNFT6UKkWK3KxVl0vRjJY=;
 	h=From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=BDuNYIJ55Ynk6k7elaI31r6M+Tp8zgbDi4fx9FGoPu9vADLRJbVCWv9VolYE2KEQz3yylDx2fLhi1dAwxDJyanam5kknzhLIUYPxIK3s82qO0sNMz7oW/E4xnP/5LFLBX9KwP8KN2nQ73TBAY0nD+jurM58hKmRaqEMmP3zkh3g=
+	 References:MIME-Version:Content-Transfer-Encoding; b=iXX0AiZGAxXZoPyZ8buIx/gC6ppGSHMeqGbPk8uTMZ5NuHaUm9u9Ua6TnjJvdiIQYowDmZ1AlWN6saWfhTCAlefB18qYEBvdTjvxVGpTgKXiIcgM7jG8aiFrn6Psl5BuxlTKTSNPWj4vvdbVHjhcV7jMa0kfLkRs2NXr1nHnu6U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 11/13] netfilter: nf_tables: skip dead set elements in netlink dump
-Date: Thu, 18 Jan 2024 17:17:24 +0100
-Message-Id: <20240118161726.14838-12-pablo@netfilter.org>
+Subject: [PATCH net 12/13] netfilter: nf_tables: reject NFT_SET_CONCAT with not field length description
+Date: Thu, 18 Jan 2024 17:17:25 +0100
+Message-Id: <20240118161726.14838-13-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240118161726.14838-1-pablo@netfilter.org>
 References: <20240118161726.14838-1-pablo@netfilter.org>
@@ -49,40 +49,33 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Delete from packet path relies on the garbage collector to purge
-elements with NFT_SET_ELEM_DEAD_BIT on.
+It is still possible to set on the NFT_SET_CONCAT flag by specifying a
+set size and no field description, report EINVAL in such case.
 
-Skip these dead elements from nf_tables_dump_setelem() path, I very
-rarely see tests/shell/testcases/maps/typeof_maps_add_delete reports
-[DUMP FAILED] showing a mismatch in the expected output with an element
-that should not be there.
-
-If the netlink dump happens before GC worker run, it might show dead
-elements in the ruleset listing.
-
-nft_rhash_get() already skips dead elements in nft_rhash_cmp(),
-therefore, it already does not show the element when getting a single
-element via netlink control plane.
-
-Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
+Fixes: 1b6345d4160e ("netfilter: nf_tables: check NFT_SET_CONCAT flag if field_count is specified")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e9fa4a32c093..88a6a858383b 100644
+index 88a6a858383b..4b55533ce5ca 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -5718,7 +5718,7 @@ static int nf_tables_dump_setelem(const struct nft_ctx *ctx,
- 	const struct nft_set_ext *ext = nft_set_elem_ext(set, elem_priv);
- 	struct nft_set_dump_args *args;
+@@ -5070,8 +5070,12 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 		if (err < 0)
+ 			return err;
  
--	if (nft_set_elem_expired(ext))
-+	if (nft_set_elem_expired(ext) || nft_set_elem_is_dead(ext))
- 		return 0;
- 
- 	args = container_of(iter, struct nft_set_dump_args, iter);
+-		if (desc.field_count > 1 && !(flags & NFT_SET_CONCAT))
++		if (desc.field_count > 1) {
++			if (!(flags & NFT_SET_CONCAT))
++				return -EINVAL;
++		} else if (flags & NFT_SET_CONCAT) {
+ 			return -EINVAL;
++		}
+ 	} else if (flags & NFT_SET_CONCAT) {
+ 		return -EINVAL;
+ 	}
 -- 
 2.30.2
 
