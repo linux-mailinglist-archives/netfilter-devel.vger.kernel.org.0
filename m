@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-696-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-698-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45082831D60
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:17:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 881D0831D63
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:18:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C27CAB22024
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:17:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27E441F2424A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804F02C18F;
-	Thu, 18 Jan 2024 16:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290342C1B9;
+	Thu, 18 Jan 2024 16:17:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB6A28E0D;
-	Thu, 18 Jan 2024 16:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94312942A;
+	Thu, 18 Jan 2024 16:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594662; cv=none; b=bLzzf70kW0lpKh1ZBItGLAg+Z8FTm/7uQ4HMYPGoXwY44Fi454Oct9OAxu+KLYyZvuoi1/Zsbrb/oXL9HDlpxu+Z5ptrQEsk72wRHWnyHzuNJGMN06oJHBwRYEEpneFYtpxlyMSQWuPbCRpTnspKimxs865huE/BnJWdaqkax6c=
+	t=1705594663; cv=none; b=dDqNyCMhNVlZV7XNHlQ3/RxCZHL/Ucl8zxi17XkmPllAxJfU/TlWRs+wSgzn66ZvDt6l9jKItPAL19qhXlMDmkq+E6F7aV6QkZ04VUW/nxvXwP/0EaKlFRzj13RldYHL/VZhFKmlFczrwMDO/EfaXSS88vjmsH9k5y1/+5BVF4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705594662; c=relaxed/simple;
-	bh=v8brMQ+HpLj3Ea+P/82A97oHOrS/84rOO69N/UNUBUw=;
+	s=arc-20240116; t=1705594663; c=relaxed/simple;
+	bh=10+mbyFzIQMLfraP8AqZ3UUcWireIRhnyTNXOUnzibg=;
 	h=From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=H+8w0zoOg0JoyxPyKj09m4Yr8j70H+aDUEPjtlBDA/UKoRJtdnkKojS/HAKSwHRdmtVM7Wez+JJLw3aJxLoD+oXMHy6L7q/YLgsMwAKpU6n3zunzLdUl/URLbRjckYv0WgntIpcm1DjJfUZCRWP7mO7P23clew+Suc+phWKk30I=
+	 References:MIME-Version:Content-Transfer-Encoding; b=XGd2T92RGKZIWlJ2uaHYdXC5SymNBpG2Cd+4rywF1SxbqRNNPuZppyhDJowaF5ufyESsocl9Hgd+Ccpd0oqEyAD/AQMzZdtCbe127fuvlhF+flHYalZYOfUfRTygj/AyfgG2p620dlPyCNlr/XCRicDCMURS0XJbTFTi9OOBW8w=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 02/13] netfilter: nf_tables: validate .maxattr at expression registration
-Date: Thu, 18 Jan 2024 17:17:15 +0100
-Message-Id: <20240118161726.14838-3-pablo@netfilter.org>
+Subject: [PATCH net 03/13] netfilter: nf_tables: bail out if stateful expression provides no .clone
+Date: Thu, 18 Jan 2024 17:17:16 +0100
+Message-Id: <20240118161726.14838-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240118161726.14838-1-pablo@netfilter.org>
 References: <20240118161726.14838-1-pablo@netfilter.org>
@@ -49,32 +49,41 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-struct nft_expr_info allows to store up to NFT_EXPR_MAXATTR (16)
-attributes when parsing netlink attributes.
-
-Rise a warning in case there is ever a nft expression whose .maxattr
-goes beyond this number of expressions, in such case, struct nft_expr_info
-needs to be updated.
+All existing NFT_EXPR_STATEFUL provide a .clone interface, remove
+fallback to copy content of stateful expression since this is never
+exercised and bail out if .clone interface is not defined.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nf_tables_api.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index a90a364f5be5..2548d7d56408 100644
+index 2548d7d56408..b3db97440db1 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2977,6 +2977,9 @@ static int nf_tables_delchain(struct sk_buff *skb, const struct nfnl_info *info,
-  */
- int nft_register_expr(struct nft_expr_type *type)
+@@ -3274,14 +3274,13 @@ int nft_expr_clone(struct nft_expr *dst, struct nft_expr *src)
  {
-+	if (WARN_ON_ONCE(type->maxattr > NFT_EXPR_MAXATTR))
-+		return -ENOMEM;
+ 	int err;
+ 
+-	if (src->ops->clone) {
+-		dst->ops = src->ops;
+-		err = src->ops->clone(dst, src);
+-		if (err < 0)
+-			return err;
+-	} else {
+-		memcpy(dst, src, src->ops->size);
+-	}
++	if (WARN_ON_ONCE(!src->ops->clone))
++		return -EINVAL;
 +
- 	nfnl_lock(NFNL_SUBSYS_NFTABLES);
- 	if (type->family == NFPROTO_UNSPEC)
- 		list_add_tail_rcu(&type->list, &nf_tables_expressions);
++	dst->ops = src->ops;
++	err = src->ops->clone(dst, src);
++	if (err < 0)
++		return err;
+ 
+ 	__module_get(src->ops->type->owner);
+ 
 -- 
 2.30.2
 
