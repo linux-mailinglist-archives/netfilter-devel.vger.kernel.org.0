@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-706-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-708-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372DD831D72
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:18:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C477831D77
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E44761F23AD4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:18:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0430C283AF7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5948D2D021;
-	Thu, 18 Jan 2024 16:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8132D61B;
+	Thu, 18 Jan 2024 16:17:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C752C842;
-	Thu, 18 Jan 2024 16:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6125A2C84C;
+	Thu, 18 Jan 2024 16:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594665; cv=none; b=ZzG1iUqlzmBtujL1eiplZnvRpi5jXd+llY0I3/uTRI8Ydqt1ZICbw2bwBXDAu2nqq89jFjgMp3e5A7oqraW8jQm6Jj4MCR40yj9Hrj05eEYKM/XniWfbm6CTXfhe2lq6VfOvNtRTyGUMFsvCiJdPigP+cLsVej3KSaGC0AeHf4w=
+	t=1705594666; cv=none; b=FicQoCngerRG4fXDI1f8EmO1cJb/3lw5Z4fbgwaf/1ZINBHYCxn0JIs+eLSws9pVxoN/Oes4EP6HoM0IRzVVKPJpX+0o4V5/BM1hgnit8uJQ1ONQOpsQmdFqpsvLgWlzmzl4tCThsVL/lSk+Xh9oPB6uZmceBYJhL5XpsBP1Wzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705594665; c=relaxed/simple;
-	bh=0uOq3O0vrcPvSyLetUXeAUlNFT6UKkWK3KxVl0vRjJY=;
+	s=arc-20240116; t=1705594666; c=relaxed/simple;
+	bh=i+g1c9MzBrdk6gCX13L1vqVGvEmrX/fbeR/nfR4gh10=;
 	h=From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=iXX0AiZGAxXZoPyZ8buIx/gC6ppGSHMeqGbPk8uTMZ5NuHaUm9u9Ua6TnjJvdiIQYowDmZ1AlWN6saWfhTCAlefB18qYEBvdTjvxVGpTgKXiIcgM7jG8aiFrn6Psl5BuxlTKTSNPWj4vvdbVHjhcV7jMa0kfLkRs2NXr1nHnu6U=
+	 References:MIME-Version:Content-Transfer-Encoding; b=a+aPziM6P4DDEH2BxrX7rC4A0NkEyKHXt7xIhE3Usvu9bACQcgbyOVCeD7uNRr/9UTIhxg7QQDdZ57QljqOhu06+mcVXPeXihb1I+8tEgYprqG4+Y2K9kSDNWP2q4Sgxrzk2Ao82QYohfmti1oeRTviqGlWQzEb39X0StbScwlw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 12/13] netfilter: nf_tables: reject NFT_SET_CONCAT with not field length description
-Date: Thu, 18 Jan 2024 17:17:25 +0100
-Message-Id: <20240118161726.14838-13-pablo@netfilter.org>
+Subject: [PATCH net 13/13] ipvs: avoid stat macros calls from preemptible context
+Date: Thu, 18 Jan 2024 17:17:26 +0100
+Message-Id: <20240118161726.14838-14-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240118161726.14838-1-pablo@netfilter.org>
 References: <20240118161726.14838-1-pablo@netfilter.org>
@@ -49,33 +49,78 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It is still possible to set on the NFT_SET_CONCAT flag by specifying a
-set size and no field description, report EINVAL in such case.
+From: Fedor Pchelkin <pchelkin@ispras.ru>
 
-Fixes: 1b6345d4160e ("netfilter: nf_tables: check NFT_SET_CONCAT flag if field_count is specified")
+Inside decrement_ttl() upon discovering that the packet ttl has exceeded,
+__IP_INC_STATS and __IP6_INC_STATS macros can be called from preemptible
+context having the following backtrace:
+
+check_preemption_disabled: 48 callbacks suppressed
+BUG: using __this_cpu_add() in preemptible [00000000] code: curl/1177
+caller is decrement_ttl+0x217/0x830
+CPU: 5 PID: 1177 Comm: curl Not tainted 6.7.0+ #34
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xbd/0xe0
+ check_preemption_disabled+0xd1/0xe0
+ decrement_ttl+0x217/0x830
+ __ip_vs_get_out_rt+0x4e0/0x1ef0
+ ip_vs_nat_xmit+0x205/0xcd0
+ ip_vs_in_hook+0x9b1/0x26a0
+ nf_hook_slow+0xc2/0x210
+ nf_hook+0x1fb/0x770
+ __ip_local_out+0x33b/0x640
+ ip_local_out+0x2a/0x490
+ __ip_queue_xmit+0x990/0x1d10
+ __tcp_transmit_skb+0x288b/0x3d10
+ tcp_connect+0x3466/0x5180
+ tcp_v4_connect+0x1535/0x1bb0
+ __inet_stream_connect+0x40d/0x1040
+ inet_stream_connect+0x57/0xa0
+ __sys_connect_file+0x162/0x1a0
+ __sys_connect+0x137/0x160
+ __x64_sys_connect+0x72/0xb0
+ do_syscall_64+0x6f/0x140
+ entry_SYSCALL_64_after_hwframe+0x6e/0x76
+RIP: 0033:0x7fe6dbbc34e0
+
+Use the corresponding preemption-aware variants: IP_INC_STATS and
+IP6_INC_STATS.
+
+Found by Linux Verification Center (linuxtesting.org).
+
+Fixes: 8d8e20e2d7bb ("ipvs: Decrement ttl")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Acked-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/netfilter/ipvs/ip_vs_xmit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 88a6a858383b..4b55533ce5ca 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -5070,8 +5070,12 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
- 		if (err < 0)
- 			return err;
+diff --git a/net/netfilter/ipvs/ip_vs_xmit.c b/net/netfilter/ipvs/ip_vs_xmit.c
+index 9193e109e6b3..65e0259178da 100644
+--- a/net/netfilter/ipvs/ip_vs_xmit.c
++++ b/net/netfilter/ipvs/ip_vs_xmit.c
+@@ -271,7 +271,7 @@ static inline bool decrement_ttl(struct netns_ipvs *ipvs,
+ 			skb->dev = dst->dev;
+ 			icmpv6_send(skb, ICMPV6_TIME_EXCEED,
+ 				    ICMPV6_EXC_HOPLIMIT, 0);
+-			__IP6_INC_STATS(net, idev, IPSTATS_MIB_INHDRERRORS);
++			IP6_INC_STATS(net, idev, IPSTATS_MIB_INHDRERRORS);
  
--		if (desc.field_count > 1 && !(flags & NFT_SET_CONCAT))
-+		if (desc.field_count > 1) {
-+			if (!(flags & NFT_SET_CONCAT))
-+				return -EINVAL;
-+		} else if (flags & NFT_SET_CONCAT) {
- 			return -EINVAL;
-+		}
- 	} else if (flags & NFT_SET_CONCAT) {
- 		return -EINVAL;
- 	}
+ 			return false;
+ 		}
+@@ -286,7 +286,7 @@ static inline bool decrement_ttl(struct netns_ipvs *ipvs,
+ 	{
+ 		if (ip_hdr(skb)->ttl <= 1) {
+ 			/* Tell the sender its packet died... */
+-			__IP_INC_STATS(net, IPSTATS_MIB_INHDRERRORS);
++			IP_INC_STATS(net, IPSTATS_MIB_INHDRERRORS);
+ 			icmp_send(skb, ICMP_TIME_EXCEEDED, ICMP_EXC_TTL, 0);
+ 			return false;
+ 		}
 -- 
 2.30.2
 
