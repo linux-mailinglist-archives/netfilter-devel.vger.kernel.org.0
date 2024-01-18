@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-707-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-702-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D462831D76
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:19:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C73831D6C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 17:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42DF41F22015
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:19:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2462B24AA1
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jan 2024 16:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14852D605;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D752C863;
 	Thu, 18 Jan 2024 16:17:45 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAAC2C6A3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C32B28E0D;
 	Thu, 18 Jan 2024 16:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705594665; cv=none; b=cyUN0nOMYUF+ShexPbPvIdo9EDfnh9xe8Aku9USh3P85W+avkug8rNZvRrAoHIpqVE+5IHFIAxaXacATQOZd1gzIocjayj4tbewEC99J3b/L6//FIWCCvBlHEzoxHc/JMBsnef45fgdLDxghueoHD3Nqlq2I4MOnTh0FDn9bUNg=
+	t=1705594664; cv=none; b=IqKP5aRcNH/qcK9+eLT3100AVlkNYGCOYUMxnqmbLl02xhvt1+WJfRF6HMxdt7+4NQNcIX64tfF1mhI1R9/Q1z2uhkAYNyw7vWJfBbXkLIPUj5czww/lUpJotAMVPMuInCVHXF6vVPRcH18k3VFNfSt1vjIPV0ESdCslLUd8+aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705594665; c=relaxed/simple;
-	bh=Yeywi/BF+jVrBpU8KHRO80VHtM1cc6uWlS/9uaeIhDs=;
+	s=arc-20240116; t=1705594664; c=relaxed/simple;
+	bh=bJxfJMx7+YX0jNcOnPpAyIUKLCrLCTQO/Za8hJRRhm8=;
 	h=From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding; b=mIz0r2WIY/J7zlxsP3AUwEbJOM5RmnHWBl+TJqD7IkVos50mAB6me4Ze8tDhiHmE9qYWAXuBaqBopEwuSKQcuKaOyfJ33MktPIzjIJznMLUDXZT4jwIkyE73KCo1NNS39ef31mNS5iaYEtO8OndMzjIbvNzg/VHV6joarhYWX4I=
+	 References:MIME-Version:Content-Transfer-Encoding; b=SLXrjXX+jQFTeSp93n40UOwGr/70rIr35oHLsDMbncfSq1zWVL/NeecF258OGjIDB6gOHJPXRkb0YB4qVgNJWkVKBd1S8yisyw7fk6Pji00adSnpT1j5toKlOJbJ+DQTM8COb1zzvTEQH6MSxI4RKemKjdFW2zOhPzsKZXTndnw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 06/13] netfilter: nf_queue: remove excess nf_bridge variable
-Date: Thu, 18 Jan 2024 17:17:19 +0100
-Message-Id: <20240118161726.14838-7-pablo@netfilter.org>
+Subject: [PATCH net 07/13] netfilter: propagate net to nf_bridge_get_physindev
+Date: Thu, 18 Jan 2024 17:17:20 +0100
+Message-Id: <20240118161726.14838-8-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240118161726.14838-1-pablo@netfilter.org>
 References: <20240118161726.14838-1-pablo@netfilter.org>
@@ -51,33 +51,181 @@ Content-Transfer-Encoding: 8bit
 
 From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 
-We don't really need nf_bridge variable here. And nf_bridge_info_exists
-is better replacement for nf_bridge_info_get in case we are only
-checking for existence.
+This is a preparation patch for replacing physindev with physinif on
+nf_bridge_info structure. We will use dev_get_by_index_rcu to resolve
+device, when needed, and it requires net to be available.
 
 Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_queue.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/linux/netfilter_bridge.h           |  2 +-
+ net/ipv4/netfilter/nf_reject_ipv4.c        |  2 +-
+ net/ipv6/netfilter/nf_reject_ipv6.c        |  2 +-
+ net/netfilter/ipset/ip_set_hash_netiface.c |  8 ++++----
+ net/netfilter/nf_log_syslog.c              | 13 +++++++------
+ net/netfilter/nf_queue.c                   |  2 +-
+ net/netfilter/xt_physdev.c                 |  2 +-
+ 7 files changed, 16 insertions(+), 15 deletions(-)
 
+diff --git a/include/linux/netfilter_bridge.h b/include/linux/netfilter_bridge.h
+index f980edfdd278..e927b9a15a55 100644
+--- a/include/linux/netfilter_bridge.h
++++ b/include/linux/netfilter_bridge.h
+@@ -56,7 +56,7 @@ static inline int nf_bridge_get_physoutif(const struct sk_buff *skb)
+ }
+ 
+ static inline struct net_device *
+-nf_bridge_get_physindev(const struct sk_buff *skb)
++nf_bridge_get_physindev(const struct sk_buff *skb, struct net *net)
+ {
+ 	const struct nf_bridge_info *nf_bridge = nf_bridge_info_get(skb);
+ 
+diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
+index f01b038fc1cd..86e7d390671a 100644
+--- a/net/ipv4/netfilter/nf_reject_ipv4.c
++++ b/net/ipv4/netfilter/nf_reject_ipv4.c
+@@ -289,7 +289,7 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	 * build the eth header using the original destination's MAC as the
+ 	 * source, and send the RST packet directly.
+ 	 */
+-	br_indev = nf_bridge_get_physindev(oldskb);
++	br_indev = nf_bridge_get_physindev(oldskb, net);
+ 	if (br_indev) {
+ 		struct ethhdr *oeth = eth_hdr(oldskb);
+ 
+diff --git a/net/ipv6/netfilter/nf_reject_ipv6.c b/net/ipv6/netfilter/nf_reject_ipv6.c
+index d45bc54b7ea5..27b2164f4c43 100644
+--- a/net/ipv6/netfilter/nf_reject_ipv6.c
++++ b/net/ipv6/netfilter/nf_reject_ipv6.c
+@@ -354,7 +354,7 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	 * build the eth header using the original destination's MAC as the
+ 	 * source, and send the RST packet directly.
+ 	 */
+-	br_indev = nf_bridge_get_physindev(oldskb);
++	br_indev = nf_bridge_get_physindev(oldskb, net);
+ 	if (br_indev) {
+ 		struct ethhdr *oeth = eth_hdr(oldskb);
+ 
+diff --git a/net/netfilter/ipset/ip_set_hash_netiface.c b/net/netfilter/ipset/ip_set_hash_netiface.c
+index 95aeb31c60e0..30a655e5c4fd 100644
+--- a/net/netfilter/ipset/ip_set_hash_netiface.c
++++ b/net/netfilter/ipset/ip_set_hash_netiface.c
+@@ -138,9 +138,9 @@ hash_netiface4_data_next(struct hash_netiface4_elem *next,
+ #include "ip_set_hash_gen.h"
+ 
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+-static const char *get_physindev_name(const struct sk_buff *skb)
++static const char *get_physindev_name(const struct sk_buff *skb, struct net *net)
+ {
+-	struct net_device *dev = nf_bridge_get_physindev(skb);
++	struct net_device *dev = nf_bridge_get_physindev(skb, net);
+ 
+ 	return dev ? dev->name : NULL;
+ }
+@@ -177,7 +177,7 @@ hash_netiface4_kadt(struct ip_set *set, const struct sk_buff *skb,
+ 
+ 	if (opt->cmdflags & IPSET_FLAG_PHYSDEV) {
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+-		const char *eiface = SRCDIR ? get_physindev_name(skb) :
++		const char *eiface = SRCDIR ? get_physindev_name(skb, xt_net(par)) :
+ 					      get_physoutdev_name(skb);
+ 
+ 		if (!eiface)
+@@ -395,7 +395,7 @@ hash_netiface6_kadt(struct ip_set *set, const struct sk_buff *skb,
+ 
+ 	if (opt->cmdflags & IPSET_FLAG_PHYSDEV) {
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+-		const char *eiface = SRCDIR ? get_physindev_name(skb) :
++		const char *eiface = SRCDIR ? get_physindev_name(skb, xt_net(par)) :
+ 					      get_physoutdev_name(skb);
+ 
+ 		if (!eiface)
+diff --git a/net/netfilter/nf_log_syslog.c b/net/netfilter/nf_log_syslog.c
+index c66689ad2b49..58402226045e 100644
+--- a/net/netfilter/nf_log_syslog.c
++++ b/net/netfilter/nf_log_syslog.c
+@@ -111,7 +111,8 @@ nf_log_dump_packet_common(struct nf_log_buf *m, u8 pf,
+ 			  unsigned int hooknum, const struct sk_buff *skb,
+ 			  const struct net_device *in,
+ 			  const struct net_device *out,
+-			  const struct nf_loginfo *loginfo, const char *prefix)
++			  const struct nf_loginfo *loginfo, const char *prefix,
++			  struct net *net)
+ {
+ 	const struct net_device *physoutdev __maybe_unused;
+ 	const struct net_device *physindev __maybe_unused;
+@@ -121,7 +122,7 @@ nf_log_dump_packet_common(struct nf_log_buf *m, u8 pf,
+ 			in ? in->name : "",
+ 			out ? out->name : "");
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+-	physindev = nf_bridge_get_physindev(skb);
++	physindev = nf_bridge_get_physindev(skb, net);
+ 	if (physindev && in != physindev)
+ 		nf_log_buf_add(m, "PHYSIN=%s ", physindev->name);
+ 	physoutdev = nf_bridge_get_physoutdev(skb);
+@@ -148,7 +149,7 @@ static void nf_log_arp_packet(struct net *net, u_int8_t pf,
+ 		loginfo = &default_loginfo;
+ 
+ 	nf_log_dump_packet_common(m, pf, hooknum, skb, in, out, loginfo,
+-				  prefix);
++				  prefix, net);
+ 	dump_arp_packet(m, loginfo, skb, skb_network_offset(skb));
+ 
+ 	nf_log_buf_close(m);
+@@ -845,7 +846,7 @@ static void nf_log_ip_packet(struct net *net, u_int8_t pf,
+ 		loginfo = &default_loginfo;
+ 
+ 	nf_log_dump_packet_common(m, pf, hooknum, skb, in,
+-				  out, loginfo, prefix);
++				  out, loginfo, prefix, net);
+ 
+ 	if (in)
+ 		dump_mac_header(m, loginfo, skb);
+@@ -880,7 +881,7 @@ static void nf_log_ip6_packet(struct net *net, u_int8_t pf,
+ 		loginfo = &default_loginfo;
+ 
+ 	nf_log_dump_packet_common(m, pf, hooknum, skb, in, out,
+-				  loginfo, prefix);
++				  loginfo, prefix, net);
+ 
+ 	if (in)
+ 		dump_mac_header(m, loginfo, skb);
+@@ -916,7 +917,7 @@ static void nf_log_unknown_packet(struct net *net, u_int8_t pf,
+ 		loginfo = &default_loginfo;
+ 
+ 	nf_log_dump_packet_common(m, pf, hooknum, skb, in, out, loginfo,
+-				  prefix);
++				  prefix, net);
+ 
+ 	dump_mac_header(m, loginfo, skb);
+ 
 diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
-index 63d1516816b1..3dfcb3ac5cb4 100644
+index 3dfcb3ac5cb4..e2f334f70281 100644
 --- a/net/netfilter/nf_queue.c
 +++ b/net/netfilter/nf_queue.c
-@@ -82,10 +82,8 @@ static void __nf_queue_entry_init_physdevs(struct nf_queue_entry *entry)
- {
- #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+@@ -84,7 +84,7 @@ static void __nf_queue_entry_init_physdevs(struct nf_queue_entry *entry)
  	const struct sk_buff *skb = entry->skb;
--	struct nf_bridge_info *nf_bridge;
  
--	nf_bridge = nf_bridge_info_get(skb);
--	if (nf_bridge) {
-+	if (nf_bridge_info_exists(skb)) {
- 		entry->physin = nf_bridge_get_physindev(skb);
+ 	if (nf_bridge_info_exists(skb)) {
+-		entry->physin = nf_bridge_get_physindev(skb);
++		entry->physin = nf_bridge_get_physindev(skb, entry->state.net);
  		entry->physout = nf_bridge_get_physoutdev(skb);
  	} else {
+ 		entry->physin = NULL;
+diff --git a/net/netfilter/xt_physdev.c b/net/netfilter/xt_physdev.c
+index ec6ed6fda96c..343e65f377d4 100644
+--- a/net/netfilter/xt_physdev.c
++++ b/net/netfilter/xt_physdev.c
+@@ -59,7 +59,7 @@ physdev_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	    (!!outdev ^ !(info->invert & XT_PHYSDEV_OP_BRIDGED)))
+ 		return false;
+ 
+-	physdev = nf_bridge_get_physindev(skb);
++	physdev = nf_bridge_get_physindev(skb, xt_net(par));
+ 	indev = physdev ? physdev->name : NULL;
+ 
+ 	if ((info->bitmask & XT_PHYSDEV_OP_ISIN &&
 -- 
 2.30.2
 
