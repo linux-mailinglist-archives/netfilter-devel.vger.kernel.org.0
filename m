@@ -1,61 +1,45 @@
-Return-Path: <netfilter-devel+bounces-748-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-750-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293EF83AB47
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 15:00:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD8983AC6E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 15:51:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD37E1F238BA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 14:00:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C661729A6D1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 14:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E50477F35;
-	Wed, 24 Jan 2024 14:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ZZBJ8+qK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C0C7CF08;
+	Wed, 24 Jan 2024 14:38:03 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE2A604B2
-	for <netfilter-devel@vger.kernel.org>; Wed, 24 Jan 2024 14:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E2632182
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Jan 2024 14:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706104850; cv=none; b=OLWftKfKxnJbR3r4Qqpkw7E2mZ1tB07JfyzI5Z8O2uQ3ESrcTMMVn2lEvH9kHf8uDYRHDLXUNuK8HmD9/k+LtsadGLj84N8pOx5iMx2zDiN9b0ypErk5mHNT1jIsDyd8tj5k7m4eoXMKuvyz0JAFyrcaatFr2FmdArN5QXakdp8=
+	t=1706107083; cv=none; b=pxni5eWiE+2RvyMu34qbK+PmXyqgxhDnubr0eoCiNp9B4L7mIq5UmNeMjdvdTl1G5vSnN1biQrLgQZhpaY+XGIZmBBY/98xbxhcAqMfHxygdg3g06TMAmFiv6s2OrsvSmqIZFfFB3XBPCm77nPjHBSEDJ8BGI+NXlTvz8WG8qrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706104850; c=relaxed/simple;
-	bh=aC3M8fIAlxvtv7Icno9ZBB2G5w66/3PDA3aTiqTBV64=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YotNPHsl6JxMVFnnXEBI9PqR+RJ1H5bO8DGBv21Jk7V9uEIjXPHUbPQthoXRFhXbLYbV3rCOFHpk5u3OTbMMYCDhtS/h+UkfY+CGPtYNxdb+kDSnSFuOgSQcAzP8OqbopsQ/miSua9jg/Cbu5sP856CVy0qhjBKPasQKtDVnNrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=ZZBJ8+qK; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=qjr7Q7E2/jR890r3TUKG4HmLrest3P5SsXK8j1/a15g=; b=ZZBJ8+qKfp+9B9+9lB3yYVbuGm
-	zE6ZIitZMhKe7zfElr7hEPIhU/g4tMaJHRpmQNc5MqwXebpl7kQACsm2FJyW08bCqGAp3B7ozEY8r
-	H8zNQW6CN6PeQQeffPYcu9bhwu3tkQezLvGBIUSE7uo999erGx91mS8rDwjJ+/WT4J9CulNJsELSN
-	EoRE/2BsUNcLAARtHLWmdg6WPy6axdy8CI+FFFVmFNLIphg1rhuCmSZl3Suss6ahMWI7W/wgpGqZZ
-	LFEyL92bO38+4mtUMkQkGKt6Gn7GpgKw5DmK3vve0aqqrVtArc3w8TmaD+oXVKjzhXH9RmYN9vkB5
-	uDV7VLcw==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97)
-	(envelope-from <phil@nwl.cc>)
-	id 1rSdo6-0000000022m-2A9E;
-	Wed, 24 Jan 2024 15:00:46 +0100
-Date: Wed, 24 Jan 2024 15:00:46 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org
+	s=arc-20240116; t=1706107083; c=relaxed/simple;
+	bh=nxGAx5EDWXy+5Wx9vnoc49HiYZzIHrD5uz2Fcml3tJM=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QiHeCeHXFhfhhSQEsVK08XtLMiLtZ5I4594to2BhP/uPvL/0kqVInMTaPDdIFwyKOIp0U8pU9xpStlw8SuKWMcZq4bsi/reQJT6e3eYNGKYX/squpTrhHsLskb2iGgG5kH47e4l8PU2g0YLKDWvXKd5mDHcPizNRCY8nX6qeDhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1rSeO5-0000wa-Um; Wed, 24 Jan 2024 15:37:57 +0100
+Date: Wed, 24 Jan 2024 15:37:57 +0100
+From: Florian Westphal <fw@strlen.de>
+To: Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
+	netfilter-devel@vger.kernel.org
 Subject: Re: [PATCH iptables] extensions: libebt_stp: fix range checking
-Message-ID: <ZbEYDliDhUrO73eu@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Message-ID: <20240124143757.GC31645@breakpoint.cc>
 References: <20240123164936.14403-1-fw@strlen.de>
+ <ZbEYDliDhUrO73eu@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,42 +48,45 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240123164936.14403-1-fw@strlen.de>
+In-Reply-To: <ZbEYDliDhUrO73eu@orbyte.nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Hi Florian,
+Phil Sutter <phil@nwl.cc> wrote:
+> On Tue, Jan 23, 2024 at 05:49:33PM +0100, Florian Westphal wrote:
+> > This has to either consider ->nvals > 1 or check the values
+> > post-no-range-fixup:
+> > 
+> > ./iptables-test.py  extensions/libebt_stp.t
+> > extensions/libebt_stp.t: ERROR: line 12 (cannot load: ebtables -A INPUT --stp-root-cost 1)
+> > 
+> > (it tests 0 < 1 and fails, but test should be 1 < 1).
+> > 
+> > Fixes: dc6efcfeac38 ("extensions: libebt_stp: Use guided option parser")
+> > Signed-off-by: Florian Westphal <fw@strlen.de>
+> > ---
+> >  extensions/libebt_stp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/extensions/libebt_stp.c b/extensions/libebt_stp.c
+> > index 81054b26c1f0..371fa04c870f 100644
+> > --- a/extensions/libebt_stp.c
+> > +++ b/extensions/libebt_stp.c
+> > @@ -142,7 +142,7 @@ static void brstp_parse(struct xt_option_call *cb)
+> >  #define RANGE_ASSIGN(name, fname, val) {				    \
+> >  		stpinfo->config.fname##l = val[0];			    \
+> >  		stpinfo->config.fname##u = cb->nvals > 1 ? val[1] : val[0]; \
+> > -		if (val[1] < val[0])					    \
+> > +		if (stpinfo->config.fname##u < stpinfo->config.fname##l)    \
+> >  			xtables_error(PARAMETER_PROBLEM,		    \
+> >  				      "Bad --stp-" name " range");	    \
+> >  }
+> 
+> This is odd: xtopt_parse_mint() assigns UINT32_MAX to val[1] for
+> XTTYPE_UINT32RC if no upper end is given. Also, extensions/libebt_stp.t
+> passes for me. What's missing on my end?
 
-On Tue, Jan 23, 2024 at 05:49:33PM +0100, Florian Westphal wrote:
-> This has to either consider ->nvals > 1 or check the values
-> post-no-range-fixup:
-> 
-> ./iptables-test.py  extensions/libebt_stp.t
-> extensions/libebt_stp.t: ERROR: line 12 (cannot load: ebtables -A INPUT --stp-root-cost 1)
-> 
-> (it tests 0 < 1 and fails, but test should be 1 < 1).
-> 
-> Fixes: dc6efcfeac38 ("extensions: libebt_stp: Use guided option parser")
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  extensions/libebt_stp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/extensions/libebt_stp.c b/extensions/libebt_stp.c
-> index 81054b26c1f0..371fa04c870f 100644
-> --- a/extensions/libebt_stp.c
-> +++ b/extensions/libebt_stp.c
-> @@ -142,7 +142,7 @@ static void brstp_parse(struct xt_option_call *cb)
->  #define RANGE_ASSIGN(name, fname, val) {				    \
->  		stpinfo->config.fname##l = val[0];			    \
->  		stpinfo->config.fname##u = cb->nvals > 1 ? val[1] : val[0]; \
-> -		if (val[1] < val[0])					    \
-> +		if (stpinfo->config.fname##u < stpinfo->config.fname##l)    \
->  			xtables_error(PARAMETER_PROBLEM,		    \
->  				      "Bad --stp-" name " range");	    \
->  }
+No fukcing clue. did git clean -d -f -x and it works now without the
+patch.
 
-This is odd: xtopt_parse_mint() assigns UINT32_MAX to val[1] for
-XTTYPE_UINT32RC if no upper end is given. Also, extensions/libebt_stp.t
-passes for me. What's missing on my end?
-
-Cheers, Phil
+I hate my life.
 
