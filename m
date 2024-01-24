@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-755-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-756-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6357583AFF1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 18:31:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABDE83B00C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 18:33:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 162DF280FC5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 17:31:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F3CD1C26D6E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jan 2024 17:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0BC81ABA;
-	Wed, 24 Jan 2024 17:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA4686AD7;
+	Wed, 24 Jan 2024 17:31:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E1E811E2
-	for <netfilter-devel@vger.kernel.org>; Wed, 24 Jan 2024 17:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811D1128371
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Jan 2024 17:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117425; cv=none; b=XxSLANjVGwhPTW2E0yBTs3cp63ZVkZn/8EJSJYiKxNvxKfTc4zUMpyJ2d9UB+9atLV4HIyYz9Vb8y0Mio+7KofqzMGkUpdwXR/Q4ynLoSWrZyAMfnf9ARwBMPucTaLPP9cQ9zMsn3hgvrH2DTVD5+iCIS72c5pe3lFC2DfNnbt4=
+	t=1706117504; cv=none; b=jyhNWgAzfXakQVe3MEBeY2yAqVohPeLZ2J4qJbdHdF9xS1vvMNrXvWZ02K0gy5d2/qRe97qQsS8TDXICaVjhearLBUVaABiuiM/5xI74gOi/To433Rln0n87SmCTl2OEek4JU+S4iEuoTXbIv6bk68+C+quzsQb0bBvbs5GSbv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117425; c=relaxed/simple;
-	bh=9QgfzSUKyX+V09NpdLOlWdX+vca7aJDyVbgrYkgTwBo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eddwQsJ7+J+qnFnuTYWSOJTMId9FGkLALpJMtcIlsPRgUfJ4Xjy05H5qHeFJ7C+r7hsQ7JiPdHHuCK2fNjt881dj1akaDtLH23LkK+pEm+xq8+tMaikPavPsQY42DHjgRJslU2phqE8iX8Xmb3NNd9F7tKwIhcwIcWLNQBGP/38=
+	s=arc-20240116; t=1706117504; c=relaxed/simple;
+	bh=MniHfUFIK3iIlQtdUc5QbS5iozuAq2MPowPdO6bTfaA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GMUAEDZYi0g25GBkIjt9CsauHKOmGMq2/Df2wscNNtN6jVkkqVXKobRzyzROwAbBbMBRsRYYeMBGk1vWdk0FVqLFczBCHXRJjc+tsC8s4pqEVWzz8h33QIf6EL4Th0rWRwWgiQmnB5s6XbwozsJcX+Bj7jJ1uAO6YKzjdFBSYK0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de
-Subject: [PATCH nf,v2] netfilter: nf_tables: validate NFPROTO_{IPV4,IPV6,INET} family
-Date: Wed, 24 Jan 2024 18:30:09 +0100
-Message-Id: <20240124173009.154749-1-pablo@netfilter.org>
+Subject: [PATCH nf,v3] netfilter: nf_tables: validate NFPROTO_* family
+Date: Wed, 24 Jan 2024 18:31:36 +0100
+Message-Id: <20240124173136.154957-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -56,9 +56,7 @@ Fixes: 4ed8eb6570a4 ("netfilter: nf_tables: Add native tproxy support")
 Fixes: 6c47260250fc ("netfilter: nf_tables: add xfrm expression")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: - allow NFPROTO_ARP in nft_compat, per Florian
-    - remove NFPROTO_BRIDGE in nft_synproxy, per Florian
-    - add validation in nft_xfrm
+v3: change patch subject, since patch also checks for NFPROTO_ARP and _BRIDGE
 
  net/netfilter/nft_compat.c       | 12 ++++++++++++
  net/netfilter/nft_flow_offload.c |  5 +++++
