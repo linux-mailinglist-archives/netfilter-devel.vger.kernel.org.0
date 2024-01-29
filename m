@@ -1,37 +1,36 @@
-Return-Path: <netfilter-devel+bounces-806-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-807-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E96841308
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 20:05:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9E73841356
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 20:24:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33E191F27733
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 19:05:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DDB9287E2A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 19:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2DC29CFB;
-	Mon, 29 Jan 2024 19:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5656C48790;
+	Mon, 29 Jan 2024 19:24:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7DB24B57
-	for <netfilter-devel@vger.kernel.org>; Mon, 29 Jan 2024 19:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14C24CB28
+	for <netfilter-devel@vger.kernel.org>; Mon, 29 Jan 2024 19:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706555148; cv=none; b=FStcSlyoUuG43/i+6xsrq5Tjy2LWwj37RPHIzDFL7MFkzy/AMnSvtjIWNxdF3wR6c8VSoxKFyTRx7BsyJoQd/dZr6Cb2ZrV6KhdfueOswWPEonUxtaZbm2BaFGyA01ODPMTdLnckFrD39lxaafeXSDOMxYJ9G6CuRjeRe05Ygwc=
+	t=1706556272; cv=none; b=fTXPis116t3QyWTmc2F41lKMpmMsyXcG1dMp5GXfIVrmqAyIU5D7UmGbLy7JZKRPLypSVpGsBKOFL0/Gk0zqZ3xoA5479drDpE0PPeGi58mgKYyn7+3lV9nZLNZZrOBdI6A1AYAen6pJLavFot3/KnqSiQW9kVV8G8/q2FauOHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706555148; c=relaxed/simple;
-	bh=cH7jq5GvRT6X5v+HRP6H6WEeAi9Inh2m1L+NtIUOdus=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=a9SLYjehPL+mPeZF0hUwaDeD86oi9PqusmtuoA5SWrB1wovCeG0HLYJzBRyuoW58Hl4Jff5KbBVHPzjr10/hCkSJ3RvmvxVrIMCas8R8+gTyzyEcYlqOEYLykmEE0wknuHXsqKW3yR9FUXY9uZ74KLNbv3/Kc897F1W0Nn6iyf8=
+	s=arc-20240116; t=1706556272; c=relaxed/simple;
+	bh=3VDfQCzZRB4xkw7ybUFObORS4d68yxA3vSkZ4Sbqws4=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=incNvN+RYoZqRLJ1OmmQhbCFejHuDOT1bAE0x9rKBdNjMX/xrrVlOIhv95y3wfluntqcs+GpwkCvKuQSa6FlFwz7Z/bXCuZMXhYWsbJgLP2sXsv8P0Pm4xVjqR8sbYKyK2Z3/tY5VKU9iGAimNBnC6HPvh1P8GDb2uvJvPLUCj8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: fw@strlen.de
-Subject: [PATCH nf] netfilter: nft_ct: bail out if helper is not found for NFPROTO_{IPV4,IPV6}
-Date: Mon, 29 Jan 2024 20:05:38 +0100
-Message-Id: <20240129190538.147822-1-pablo@netfilter.org>
+Subject: [PATCH nf-next 1/2] netfilter: nf_log: consolidate check for NULL logger in lookup function
+Date: Mon, 29 Jan 2024 20:24:24 +0100
+Message-Id: <20240129192425.148310-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -41,56 +40,31 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Otherwise, this assigns the NULL helper. Bail out from control plane path
-if the kernel does not provide this helper.
+Consolidate pointer fetch to logger and check for NULL in
+__find_logger().
 
-Fixes: 1a64edf54f55 ("netfilter: nft_ct: add helper set support")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_ct.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ net/netfilter/nf_log.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 715a154f243c..6f7e49752bfa 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -1077,6 +1077,8 @@ static int nft_ct_helper_obj_init(const struct nft_ctx *ctx,
+diff --git a/net/netfilter/nf_log.c b/net/netfilter/nf_log.c
+index e16f158388bb..e0bfeb75766f 100644
+--- a/net/netfilter/nf_log.c
++++ b/net/netfilter/nf_log.c
+@@ -31,10 +31,10 @@ static struct nf_logger *__find_logger(int pf, const char *str_logger)
+ 	int i;
  
- 		help4 = nf_conntrack_helper_try_module_get(name, family,
- 							   priv->l4proto);
-+		if (!help4)
-+			return -ENOENT;
- 		break;
- 	case NFPROTO_IPV6:
- 		if (ctx->family == NFPROTO_IPV4)
-@@ -1084,6 +1086,8 @@ static int nft_ct_helper_obj_init(const struct nft_ctx *ctx,
+ 	for (i = 0; i < NF_LOG_TYPE_MAX; i++) {
+-		if (loggers[pf][i] == NULL)
++		log = nft_log_dereference(loggers[pf][i]);
++		if (!log)
+ 			continue;
  
- 		help6 = nf_conntrack_helper_try_module_get(name, family,
- 							   priv->l4proto);
-+		if (!help6)
-+			return -ENOENT;
- 		break;
- 	case NFPROTO_NETDEV:
- 	case NFPROTO_BRIDGE:
-@@ -1092,15 +1096,14 @@ static int nft_ct_helper_obj_init(const struct nft_ctx *ctx,
- 							   priv->l4proto);
- 		help6 = nf_conntrack_helper_try_module_get(name, NFPROTO_IPV6,
- 							   priv->l4proto);
-+		/* && is intentional; only error if INET found neither ipv4 or ipv6 */
-+		if (!help4 && !help6)
-+			return -ENOENT;
- 		break;
- 	default:
- 		return -EAFNOSUPPORT;
+-		log = nft_log_dereference(loggers[pf][i]);
+ 		if (!strncasecmp(str_logger, log->name, strlen(log->name)))
+ 			return log;
  	}
- 
--	/* && is intentional; only error if INET found neither ipv4 or ipv6 */
--	if (!help4 && !help6)
--		return -ENOENT;
--
- 	priv->helper4 = help4;
- 	priv->helper6 = help6;
- 
 -- 
 2.30.2
 
