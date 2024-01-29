@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-802-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-801-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3695840A05
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 16:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 438BA840A03
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 16:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A160280C49
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 15:32:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC972884E3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jan 2024 15:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FBA155A20;
-	Mon, 29 Jan 2024 15:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CEC155310;
+	Mon, 29 Jan 2024 15:31:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEEB155302;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E32D154454;
 	Mon, 29 Jan 2024 15:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706542293; cv=none; b=Lxdd5iUET0+Hc7TsXdcO/+JYMNSthkFKgBdPOrZudegLdiCD7LqsPeH9LdLp/ePud2BrS53wrHMoVyChjRtzOv4HdRash/ed2ek35l6KYQchYwZwB56jo/yYpHrLly2+5CLd0UMhH2NJnuKZddFxo2UTv7tW/KaVKoLnCRMeycY=
+	t=1706542292; cv=none; b=Rkw7B815SAQ6zYbP1L8CdfVmPf3zyU4fYw50LgYGAnJijzkZ9FfcwOFVOra7Yb3JuLSyRKRgOOBZPM/12DFXCv0vRKNxqon3e2Xor0r8lQPxuFMi/BzbL3UTiMR/OqC0D1Gacq3oSBS10DWJRsWxkzeSPA6nE7B6IH8yLnD35pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706542293; c=relaxed/simple;
-	bh=l0hM+HWEyAUI2hn54alZopDnPbqW0wr2rKPz5r5bdi4=;
+	s=arc-20240116; t=1706542292; c=relaxed/simple;
+	bh=OAU/058iGlP+OZhLqZ8NsOJERDWs9M9YpXuxlAXHd5I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=USiK9JkII0IhWOU6uPsgUjUb/Kh1LeAKhtS6XcJznWmJF6ndKoAfhTeYYyV9XBVyKqx0IhzeU77nH+5VviO87+lmDvq0wt8TGs/h1In0WR+oDSBwSM7BOFjR6fbwfES4FYg8t4xy4yGfllUNOjSboxOkPjIfNdhWN25NPeyQmLc=
+	 MIME-Version; b=J6992bSPlaTg6jZLd0MYB2qA619AwtA+Wc2LDppIUkAcmXKAoLJKaWjhILzbucjCDpuDc0mAOhns8RacbueuZfcgaU8in/TasQeG87ai8KNgzi9zzkgGFqQwT1ZfpnvOQfi/SMapafKxJK5Yrr/HhX6nzW8dREQTV4pu7AX0IDg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rUTbW-000219-Un; Mon, 29 Jan 2024 16:31:22 +0100
+	id 1rUTbb-00021h-8O; Mon, 29 Jan 2024 16:31:27 +0100
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -39,10 +39,11 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH nf-next 5/9] netfilter: nf_conncount: Use KMEM_CACHE instead of kmem_cache_create()
-Date: Mon, 29 Jan 2024 15:57:55 +0100
-Message-ID: <20240129145807.8773-6-fw@strlen.de>
+	Kunwu Chan <chentao@kylinos.cn>,
+	Simon Horman <horms@kernel.org>
+Subject: [PATCH nf-next 6/9] ipvs: Simplify the allocation of ip_vs_conn slab caches
+Date: Mon, 29 Jan 2024 15:57:56 +0100
+Message-ID: <20240129145807.8773-7-fw@strlen.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240129145807.8773-1-fw@strlen.de>
 References: <20240129145807.8773-1-fw@strlen.de>
@@ -60,32 +61,26 @@ Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
 to simplify the creation of SLAB caches.
 
 Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Acked-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conncount.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ net/netfilter/ipvs/ip_vs_conn.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
-index 5d8ed6c90b7e..8715617b02fe 100644
---- a/net/netfilter/nf_conncount.c
-+++ b/net/netfilter/nf_conncount.c
-@@ -605,15 +605,11 @@ static int __init nf_conncount_modinit(void)
- 	for (i = 0; i < CONNCOUNT_SLOTS; ++i)
- 		spin_lock_init(&nf_conncount_locks[i]);
- 
--	conncount_conn_cachep = kmem_cache_create("nf_conncount_tuple",
--					   sizeof(struct nf_conncount_tuple),
--					   0, 0, NULL);
-+	conncount_conn_cachep = KMEM_CACHE(nf_conncount_tuple, 0);
- 	if (!conncount_conn_cachep)
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index a743db073887..98d7dbe3d787 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1511,9 +1511,7 @@ int __init ip_vs_conn_init(void)
  		return -ENOMEM;
  
--	conncount_rb_cachep = kmem_cache_create("nf_conncount_rb",
--					   sizeof(struct nf_conncount_rb),
--					   0, 0, NULL);
-+	conncount_rb_cachep = KMEM_CACHE(nf_conncount_rb, 0);
- 	if (!conncount_rb_cachep) {
- 		kmem_cache_destroy(conncount_conn_cachep);
+ 	/* Allocate ip_vs_conn slab cache */
+-	ip_vs_conn_cachep = kmem_cache_create("ip_vs_conn",
+-					      sizeof(struct ip_vs_conn), 0,
+-					      SLAB_HWCACHE_ALIGN, NULL);
++	ip_vs_conn_cachep = KMEM_CACHE(ip_vs_conn, SLAB_HWCACHE_ALIGN);
+ 	if (!ip_vs_conn_cachep) {
+ 		kvfree(ip_vs_conn_tab);
  		return -ENOMEM;
 -- 
 2.43.0
