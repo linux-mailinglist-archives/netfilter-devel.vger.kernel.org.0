@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-829-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-832-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1759B844B64
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 00:00:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13940844B6E
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 00:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8B4D1F28748
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jan 2024 23:00:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9296C292DD7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jan 2024 23:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530803A8E4;
-	Wed, 31 Jan 2024 22:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 353163B2A1;
+	Wed, 31 Jan 2024 22:59:58 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947FF3A29A;
-	Wed, 31 Jan 2024 22:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346723A264;
+	Wed, 31 Jan 2024 22:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706741996; cv=none; b=pJB6ZP2TtIXqdOPeeBJIkf8NvLVVVoglR5hW8uMJ6wCeSZXMFMlaCyWLUY06JuGUNunsnRdax0nIp4OkEu1o88meJKs4KffYff2Fy0lUqV1UIDKFv/9x8WiRky3Rv21ijc4cP70PcSVjZ2w/Ad6KHhDRgY13X5cjSQWceYFktuo=
+	t=1706741998; cv=none; b=fVR2dLIaPQWpDlvPh6I9tftE1EXvmaIi8ePy9mX38umL4ELPGkuSqGiwk0+JUpV27cdHha6+S3nqKcrfUJ9jCg/AHMkBY6HFo+ozJMBfN8ydG0mYSiMXd8oAnCz5JoT8dUj/EO7A9owJ3y2bK1535gHQmMVBWNLh2apdr5eyKEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706741996; c=relaxed/simple;
-	bh=n02mJWTwgOIsnqxBb4P+laHCDaYVU+bwTl0OfH+qFHs=;
+	s=arc-20240116; t=1706741998; c=relaxed/simple;
+	bh=7rwvOzPEy2OWvqD5T2BKAZT/0XThNh5fiLm0L/w0o7A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CvbXq1/fxwVegnB5K/3Z+pOC85GTOWcznOznVVLSOKkQdS7GThhEiFB23pVU7fqQa6QgSV8e8zYidSud5au5BlzWv8t5/RTy7xr1nCpk/4UaSHCa8piIjwP/3XwdkC/CoqnqsIQgM7DzMxe3vgAWTjua9sXCDcjhNJigAPg7ufY=
+	 MIME-Version; b=DgyBt2hiIIXUyBLG3EOYduBZGlp3i/5lA1BPPClc7dVhYL85zdicq7X0AaLEu5Krc6t65b4iq3kWiZHyXyWXn7Q1iIh2XyzG1OATDjhIvcEfL27e37VLvfKgP31XMZQ0sZrTYjLdkpx/U2sm0xRWVoWk7jgQhhCQBG/myFom29U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/6] netfilter: conntrack: correct window scaling with retransmitted SYN
-Date: Wed, 31 Jan 2024 23:59:38 +0100
-Message-Id: <20240131225943.7536-2-pablo@netfilter.org>
+Subject: [PATCH net 2/6] netfilter: nf_tables: restrict tunnel object to NFPROTO_NETDEV
+Date: Wed, 31 Jan 2024 23:59:39 +0100
+Message-Id: <20240131225943.7536-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240131225943.7536-1-pablo@netfilter.org>
 References: <20240131225943.7536-1-pablo@netfilter.org>
@@ -49,79 +49,102 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Ryan Schaefer <ryanschf@amazon.com>
+Bail out on using the tunnel dst template from other than netdev family.
+Add the infrastructure to check for the family in objects.
 
-commit c7aab4f17021 ("netfilter: nf_conntrack_tcp: re-init for syn packets
-only") introduces a bug where SYNs in ORIGINAL direction on reused 5-tuple
-result in incorrect window scale negotiation. This commit merged the SYN
-re-initialization and simultaneous open or SYN retransmits cases. Merging
-this block added the logic in tcp_init_sender() that performed window scale
-negotiation to the retransmitted syn case. Previously. this would only
-result in updating the sender's scale and flags. After the merge the
-additional logic results in improperly clearing the scale in ORIGINAL
-direction before any packets in the REPLY direction are received. This
-results in packets incorrectly being marked invalid for being
-out-of-window.
-
-This can be reproduced with the following trace:
-
-Packet Sequence:
-> Flags [S], seq 1687765604, win 62727, options [.. wscale 7], length 0
-> Flags [S], seq 1944817196, win 62727, options [.. wscale 7], length 0
-
-In order to fix the issue, only evaluate window negotiation for packets
-in the REPLY direction. This was tested with simultaneous open, fast
-open, and the above reproduction.
-
-Fixes: c7aab4f17021 ("netfilter: nf_conntrack_tcp: re-init for syn packets only")
-Signed-off-by: Ryan Schaefer <ryanschf@amazon.com>
+Fixes: af308b94a2a4 ("netfilter: nf_tables: add tunnel support")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_proto_tcp.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/net/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_tables_api.c     | 14 +++++++++-----
+ net/netfilter/nft_tunnel.c        |  1 +
+ 3 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index e573be5afde7..ae493599a3ef 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -457,7 +457,8 @@ static void tcp_init_sender(struct ip_ct_tcp_state *sender,
- 			    const struct sk_buff *skb,
- 			    unsigned int dataoff,
- 			    const struct tcphdr *tcph,
--			    u32 end, u32 win)
-+			    u32 end, u32 win,
-+			    enum ip_conntrack_dir dir)
- {
- 	/* SYN-ACK in reply to a SYN
- 	 * or SYN from reply direction in simultaneous open.
-@@ -471,7 +472,8 @@ static void tcp_init_sender(struct ip_ct_tcp_state *sender,
- 	 * Both sides must send the Window Scale option
- 	 * to enable window scaling in either direction.
- 	 */
--	if (!(sender->flags & IP_CT_TCP_FLAG_WINDOW_SCALE &&
-+	if (dir == IP_CT_DIR_REPLY &&
-+	    !(sender->flags & IP_CT_TCP_FLAG_WINDOW_SCALE &&
- 	      receiver->flags & IP_CT_TCP_FLAG_WINDOW_SCALE)) {
- 		sender->td_scale = 0;
- 		receiver->td_scale = 0;
-@@ -542,7 +544,7 @@ tcp_in_window(struct nf_conn *ct, enum ip_conntrack_dir dir,
- 		if (tcph->syn) {
- 			tcp_init_sender(sender, receiver,
- 					skb, dataoff, tcph,
--					end, win);
-+					end, win, dir);
- 			if (!tcph->ack)
- 				/* Simultaneous open */
- 				return NFCT_TCP_ACCEPT;
-@@ -585,7 +587,7 @@ tcp_in_window(struct nf_conn *ct, enum ip_conntrack_dir dir,
- 		 */
- 		tcp_init_sender(sender, receiver,
- 				skb, dataoff, tcph,
--				end, win);
-+				end, win, dir);
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 4e1ea18eb5f0..001226c34621 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1351,6 +1351,7 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
+  *	@type: stateful object numeric type
+  *	@owner: module owner
+  *	@maxattr: maximum netlink attribute
++ *	@family: address family for AF-specific object types
+  *	@policy: netlink attribute policy
+  */
+ struct nft_object_type {
+@@ -1360,6 +1361,7 @@ struct nft_object_type {
+ 	struct list_head		list;
+ 	u32				type;
+ 	unsigned int                    maxattr;
++	u8				family;
+ 	struct module			*owner;
+ 	const struct nla_policy		*policy;
+ };
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index c537104411e7..fc016befb46f 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -7551,11 +7551,15 @@ static int nft_object_dump(struct sk_buff *skb, unsigned int attr,
+ 	return -1;
+ }
  
- 		if (dir == IP_CT_DIR_REPLY && !tcph->ack)
- 			return NFCT_TCP_ACCEPT;
+-static const struct nft_object_type *__nft_obj_type_get(u32 objtype)
++static const struct nft_object_type *__nft_obj_type_get(u32 objtype, u8 family)
+ {
+ 	const struct nft_object_type *type;
+ 
+ 	list_for_each_entry(type, &nf_tables_objects, list) {
++		if (type->family != NFPROTO_UNSPEC &&
++		    type->family != family)
++			continue;
++
+ 		if (objtype == type->type)
+ 			return type;
+ 	}
+@@ -7563,11 +7567,11 @@ static const struct nft_object_type *__nft_obj_type_get(u32 objtype)
+ }
+ 
+ static const struct nft_object_type *
+-nft_obj_type_get(struct net *net, u32 objtype)
++nft_obj_type_get(struct net *net, u32 objtype, u8 family)
+ {
+ 	const struct nft_object_type *type;
+ 
+-	type = __nft_obj_type_get(objtype);
++	type = __nft_obj_type_get(objtype, family);
+ 	if (type != NULL && try_module_get(type->owner))
+ 		return type;
+ 
+@@ -7660,7 +7664,7 @@ static int nf_tables_newobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 		if (info->nlh->nlmsg_flags & NLM_F_REPLACE)
+ 			return -EOPNOTSUPP;
+ 
+-		type = __nft_obj_type_get(objtype);
++		type = __nft_obj_type_get(objtype, family);
+ 		if (WARN_ON_ONCE(!type))
+ 			return -ENOENT;
+ 
+@@ -7674,7 +7678,7 @@ static int nf_tables_newobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 	if (!nft_use_inc(&table->use))
+ 		return -EMFILE;
+ 
+-	type = nft_obj_type_get(net, objtype);
++	type = nft_obj_type_get(net, objtype, family);
+ 	if (IS_ERR(type)) {
+ 		err = PTR_ERR(type);
+ 		goto err_type;
+diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
+index 9f21953c7433..f735d79d8be5 100644
+--- a/net/netfilter/nft_tunnel.c
++++ b/net/netfilter/nft_tunnel.c
+@@ -713,6 +713,7 @@ static const struct nft_object_ops nft_tunnel_obj_ops = {
+ 
+ static struct nft_object_type nft_tunnel_obj_type __read_mostly = {
+ 	.type		= NFT_OBJECT_TUNNEL,
++	.family		= NFPROTO_NETDEV,
+ 	.ops		= &nft_tunnel_obj_ops,
+ 	.maxattr	= NFTA_TUNNEL_KEY_MAX,
+ 	.policy		= nft_tunnel_key_policy,
 -- 
 2.30.2
 
