@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-836-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-838-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D56784594A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05F8584594C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A6CE295F86
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B39AE296073
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981FD5D465;
-	Thu,  1 Feb 2024 13:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD97C5D471;
+	Thu,  1 Feb 2024 13:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Yzh+Ntkw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fnInPuoC"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109D25B669
-	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782E15CDFA
+	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795463; cv=none; b=n42zMq0ZOU1OCtunNr/FWZezxpvf4LiXvW5wcs0jDvNNttjY2aulTDdr7M56t1tse/87vQ1MMaUMQnf2r8++gVAQj3n/1IfYeSRfPIzMKXXQoL/YnNGIDf7Xa8HVDrJZ123oEpULT368yK6rK7674gz6JOv8DzDya/PsohVgjUY=
+	t=1706795464; cv=none; b=sNk/WhPHkH1ICPZc18TK4V3XLrkwI9+q7BCHh900lpVRL2eZkY5z99ToIk/ajy4RcCyGRVFEKC1fNrc2B4EQW6HfxFwBzLKvc6b/G3B31SHvx5KoOKK+CLn3ggD3P4PtHh7702HHjFVe55sOQ5JX1CSkC/oU8SUvIGQV+zoKt3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795463; c=relaxed/simple;
-	bh=yUvm/vsBdMrWGhr8ELnDsx7eqoz+hCn/KKkshaVRt2g=;
+	s=arc-20240116; t=1706795464; c=relaxed/simple;
+	bh=1L9Nn0TYL3zwSLJjPnzOWYNXqhFiw2amcae45rKvJrA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FnNxHKzc42bSso/NvQ3ei/HoLtlXT3r3mxDHP8SlXV2apxtaqYIPrffCYwthgdi1qSUdIUgKwiQLvTakHEDWCbwpn1yjoyv6emYhbNrO/x3U4YRDzQ6Dq6AkQII/jifmI4hL97S6kstIyEZOcfls5pphxSgEyXXk2f+sZueEwIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Yzh+Ntkw; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=pxawf9HGss1cM8q5tEqL/YjVxNOfAHLUKfKfqTWxzeKtbYrX0d7Pghfdq3aIRO73K39OLhQi1hVwwXu5ShlDO5DMsgvNDqKgbGKADW8tJSDv9cvQWJdu4F4byS8IfMt5ENg8nCVyPiXd48otiHJqMCWjIHbeNd2tgNrKgOaZH0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fnInPuoC; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=m/HOl2okEE47l37xMeuo8HjdsleSTPtfgXty8K0LVSQ=; b=Yzh+Ntkwmzzs08adJJpCE10BM7
-	DLcfDhYRQQWHiedA+b0acjomkQxXPf62g0HhrWVvO6x12iUKV1YHUwj+qrn2Noj+gNOFztsf0A2AH
-	zg/IKpLDhnRCIsuLZorMVfGcGw0M3kFnngfmndsVblHaoEpkYiPPvPb5ZybhIsyImYXArfbBL9J2+
-	kSVQlskqkmRw2/7AAHTcjsFl6tllaVKG6vGH+OJbZoQqZKVPgrq5O9LknDfskmYe+xKUcQZWWJHdf
-	lMDs4IhL2oWaZ6UKoplXunZ7ovps9BpJvasDr95mY69t6xwzYp1GmnCDXqBxYmMdi7YuNS7vupkri
-	znMS1OOA==;
+	bh=TtmnsUX176o13aGnLC8SbspPckhHCcrs37jizNx/MFw=; b=fnInPuoC3kNyaRKGE1x5aQk52m
+	i1Ox61VJnc/8wNJGugVDj35sRyzifg/g2gPsP4DIHOq0+S+Th0TuglIuicDaZxJw6n+n2P5wqapuX
+	qNbw2oIcRkBKLrGL2IFv9ugOEjwyWoR4QE4fTDctioXJQCzGnxDpWEVILc93sgIq86/LUD/+7Bc4s
+	mWA/YQx+QJDKNilksRIQiKmm5qwf+RJlRKLpkf4aLdp2dBEn92SVQW8zzME/rHqSN5u2b3m4R7D3d
+	mC1dTBW2LzdU/W1a1LjBYMYVkYhcwXGvH3Fv0MDFmWsVsMNk/w7f1YAJ/VmeRCfoOq6CrHBF4BbSl
+	3NPBSMOw==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rVXT1-000000001M4-2sFk;
-	Thu, 01 Feb 2024 14:50:59 +0100
+	id 1rVXT2-000000001MG-3BIt;
+	Thu, 01 Feb 2024 14:51:00 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 6/7] xshared: Introduce xtables_clear_args()
-Date: Thu,  1 Feb 2024 14:50:56 +0100
-Message-ID: <20240201135057.24828-7-phil@nwl.cc>
+Subject: [iptables PATCH 7/7] ebtables: Fix for memleak with change counters command
+Date: Thu,  1 Feb 2024 14:50:57 +0100
+Message-ID: <20240201135057.24828-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201135057.24828-1-phil@nwl.cc>
 References: <20240201135057.24828-1-phil@nwl.cc>
@@ -65,121 +65,29 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Perform struct xtables_args object deinit in a common place, even though
-it merely consists of freeing any IP addresses and masks.
+Just like with check command, change counters command creates a
+temporary rule from rulespec on command line for a search by spec in
+rule cache. It is not used anymore afterwards, so nft_cmd_free() should
+free it.
 
-This fixes for a memleak in arptables-translate as the check for
-h->family didn't catch the value NFPROTO_ARP.
-
-Fixes: 5b7324e0675e3 ("nft-arp: add arptables-translate")
+Fixes: f340b7b6816be ("ebtables: Implement --change-counters command")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c         |  5 +----
- iptables/iptables.c          |  5 +----
- iptables/xshared.c           |  8 ++++++++
- iptables/xshared.h           |  2 ++
- iptables/xtables-translate.c | 12 +-----------
- iptables/xtables.c           |  5 +----
- 6 files changed, 14 insertions(+), 23 deletions(-)
+ iptables/nft-cmd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 4b5d4ac6878b7..f9ae18aed8041 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -892,10 +892,7 @@ int do_command6(int argc, char *argv[], char **table,
- 		e = NULL;
- 	}
- 
--	free(saddrs);
--	free(smasks);
--	free(daddrs);
--	free(dmasks);
-+	xtables_clear_args(&args);
- 	xtables_free_opts(1);
- 
- 	return ret;
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 5ae28fe04a5f5..8eb043e9b736e 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -887,10 +887,7 @@ int do_command4(int argc, char *argv[], char **table,
- 		e = NULL;
- 	}
- 
--	free(saddrs);
--	free(smasks);
--	free(daddrs);
--	free(dmasks);
-+	xtables_clear_args(&args);
- 	xtables_free_opts(1);
- 
- 	return ret;
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 7d073891ed5c3..0b2724a3e5162 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -2185,3 +2185,11 @@ make_delete_mask(const struct xtables_rule_match *matches,
- 
- 	return mask;
- }
-+
-+void xtables_clear_args(struct xtables_args *args)
-+{
-+	free(args->s.addr.ptr);
-+	free(args->s.mask.ptr);
-+	free(args->d.addr.ptr);
-+	free(args->d.mask.ptr);
-+}
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 2a9cdf45f581a..7d4035ec03e52 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -333,4 +333,6 @@ unsigned char *make_delete_mask(const struct xtables_rule_match *matches,
- 
- void iface_to_mask(const char *ifname, unsigned char *mask);
- 
-+void xtables_clear_args(struct xtables_args *args);
-+
- #endif /* IPTABLES_XSHARED_H */
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index ad44311230323..8ebe523c447f2 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -349,17 +349,7 @@ static int do_command_xlate(struct nft_handle *h, int argc, char *argv[],
- 
- 	h->ops->clear_cs(&cs);
- 
--	if (h->family == AF_INET) {
--		free(args.s.addr.v4);
--		free(args.s.mask.v4);
--		free(args.d.addr.v4);
--		free(args.d.mask.v4);
--	} else if (h->family == AF_INET6) {
--		free(args.s.addr.v6);
--		free(args.s.mask.v6);
--		free(args.d.addr.v6);
--		free(args.d.mask.v6);
--	}
-+	xtables_clear_args(&args);
- 	xtables_free_opts(1);
- 
- 	return ret;
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 22d6ea58376fc..5d73481c25761 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -264,10 +264,7 @@ int do_commandx(struct nft_handle *h, int argc, char *argv[], char **table,
- 
- 	h->ops->clear_cs(&cs);
- 
--	free(args.s.addr.ptr);
--	free(args.s.mask.ptr);
--	free(args.d.addr.ptr);
--	free(args.d.mask.ptr);
-+	xtables_clear_args(&args);
- 	xtables_free_opts(1);
- 
- 	return ret;
+diff --git a/iptables/nft-cmd.c b/iptables/nft-cmd.c
+index 8372d171b00c4..b38da9bdc1c0b 100644
+--- a/iptables/nft-cmd.c
++++ b/iptables/nft-cmd.c
+@@ -65,6 +65,7 @@ void nft_cmd_free(struct nft_cmd *cmd)
+ 	switch (cmd->command) {
+ 	case NFT_COMPAT_RULE_CHECK:
+ 	case NFT_COMPAT_RULE_DELETE:
++	case NFT_COMPAT_RULE_CHANGE_COUNTERS:
+ 		if (cmd->obj.rule)
+ 			nftnl_rule_free(cmd->obj.rule);
+ 		break;
 -- 
 2.43.0
 
