@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-835-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-842-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2750845949
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B251845951
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E203295EEC
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DE831C23EBA
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946D95D461;
-	Thu,  1 Feb 2024 13:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649DD5D497;
+	Thu,  1 Feb 2024 13:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="oUgXsLOY"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GSo/0CLB"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109995336C
-	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22765D468
+	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795463; cv=none; b=h+d0+SMt5a81RlcnD6bcFfx0cUD9mzHWQERSnl85k+i5InnBzivxkEmhuijJD2N23atV1q1798p1rpoo/dxS9NNCV9gVaPx59UGLZkvz481pOe7c7fE/XCi6xj0fCVsTo1QsBmdaJFjdvuVvq+HKHLKk6LDs9Rm5TkUoJXpFB2o=
+	t=1706795466; cv=none; b=W07LL79xD+zgJuFgOiJdSfoZoY1c5N4nFsA/yEagoeqtX6A6zBcaTl0AcHifPyxKtGJP0C46HHpbTknTsxt0T3peBa1YTMXdiYx0hf/a6WlrJ5HYKtb86uV6fU/ZnWo02wEiocU6thiTRsDKfFc5ZRvTjmulfurNwQ2qMttFeZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795463; c=relaxed/simple;
-	bh=f4UIlS3uoUiXg3E1PTTu9pTJ7E5Zf0QYFRbvQjKwPqs=;
+	s=arc-20240116; t=1706795466; c=relaxed/simple;
+	bh=Rj3l5c0wvBNRwQn4Aq8a8N8OV/rYZ/NmdJGZGNRQHqo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=irvB4rQtGirppphqLqTzwmCYN3yCN65XMXESi5gmZ+oqqyIyoCHOkNq3EE8JpdDl+Em1SFtyKeTazWkcCEmD40tj4KjoeHjMaBC0T+QTPAyiumD/L1iC2xwXxCA+EQHkIFLbQh9tO5wuYd9oBsXOUYfl3Q5WPoXG7my9lh/nIIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=oUgXsLOY; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=ppYcRR52HcqyWo8OVQNzwws6ivtmFwWZiVrmRTEAHRhkaNy3AwF9nZi6h4JV37P2ufDG/MRtYnLjRcNJmZD/RGN2UrK3fWwui6TON5A3HhACv7tk54HQuIGfeiSTv4KAcijokrOx/zg8qCPl1myDIosNTWCdFYUX0dwJtt1AZsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GSo/0CLB; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=mj64cQUHMGcLodVpEQVciBdlhgsBwvgbLQUPIz2ErZY=; b=oUgXsLOYYRxUVNaT2kLAcrS1ww
-	E9o0oR4GlcJL2XIeFr2kKG16PpKDSx4nFnVNvhI0OWSeoHSVRfTw5MymV9Aw4CcuGBhHbwxqUBRYt
-	oVLpAUzH1MX8+o6bi7XfWGF7pjHRePQxqn19JFy+CbakV5OPccZwG9qNly3U+0MQQi788Sc1cxKpb
-	VdtOE/bsh5Pu3G5KxYTRo94NqxfKNoA8x3kXkicYEqLu+bztnV+YAlBGBT5JLFGkJ5ksRMppvF5NQ
-	xs+pdawggfe9Npchip9l1HxspBYPJF+OeiNsGZ08StDyeS1Ad6x1kKjldyf+a1oTNs885tRHN1rkc
-	Bno8M1FQ==;
+	bh=AJT80PESImMFcBo0V0PBaZDhtnw0ENM2HnAnqJvBc6w=; b=GSo/0CLBERWllRw+UIeQbYLYlc
+	M1UWbuNvgbNIDNHBsg2k4X5vp0bKOCQK8uRVtim4kOGRYp3zBI2BFwftn1NzDwskylhrJa/jtoZQT
+	ev1uTIYY9arP/HdyPH3kNHrGYrxCy1VBo8DQoD7rM+ZGCZ8kZ3zAmdw6Z/CnBojGBCCs9cUM6EsSG
+	BKrr2tKo5/A/J4eAXMkpH5ADeSZ9J/2LzidmH5hsS82kNsSfTw3+DAk578DRTgFM/5LiLS06M+w+D
+	X+aSU7zyQDuD3QqCxSZPeGBjykswHmKRKZ+762X1/kfUDasqOGVDm2b4dnBXT/1OWI+Dis8kClS4A
+	CatPSIUA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rVXT0-000000001Ls-1yLi;
-	Thu, 01 Feb 2024 14:50:58 +0100
+	id 1rVXT4-000000001MV-1XQi;
+	Thu, 01 Feb 2024 14:51:02 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 3/7] libxtables: Fix memleak of matches' udata
-Date: Thu,  1 Feb 2024 14:50:53 +0100
-Message-ID: <20240201135057.24828-4-phil@nwl.cc>
+Subject: [iptables PATCH 4/7] xtables-eb: Eliminate 'opts' define
+Date: Thu,  1 Feb 2024 14:50:54 +0100
+Message-ID: <20240201135057.24828-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201135057.24828-1-phil@nwl.cc>
 References: <20240201135057.24828-1-phil@nwl.cc>
@@ -65,32 +65,82 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the extension specifies a non-zero udata_size, field 'udata' points
-to an allocated buffer which needs to be freed upon extension deinit.
+It is more harm than good as it hides assignments to xt_params->opts
+field and does funny things if statements actually use xt_params->opts
+instead of the define.
 
-Interestingly, this bug was identified by ASAN and missed by valgrind.
+Replace it by local variables where sensible (cf. command_match() and
+command_jump() in xshared.c).
 
-Fixes: 2dba676b68ef8 ("extensions: support for per-extension instance "global" variable space")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- libxtables/xtables.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ iptables/xtables-eb.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index b4339e8d31275..856bfae804ea9 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -1420,6 +1420,10 @@ void xtables_rule_matches_free(struct xtables_rule_match **matches)
- 			free(matchp->match->m);
- 			matchp->match->m = NULL;
- 		}
-+		if (matchp->match->udata_size) {
-+			free(matchp->match->udata);
-+			matchp->match->udata = NULL;
-+		}
- 		if (matchp->match == matchp->match->next) {
- 			free(matchp->match);
- 			matchp->match = NULL;
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index 250169c35d521..d197b37e81e9e 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -141,7 +141,6 @@ struct xtables_globals ebtables_globals = {
+ 	.compat_rev		= nft_compatible_revision,
+ };
+ 
+-#define opts ebtables_globals.opts
+ #define prog_name ebtables_globals.program_name
+ #define prog_vers ebtables_globals.program_version
+ 
+@@ -281,6 +280,7 @@ static int list_rules(struct nft_handle *h, const char *chain, const char *table
+ /* This code is very similar to iptables/xtables.c:command_match() */
+ static void ebt_load_match(const char *name)
+ {
++	struct option *opts = xt_params->opts;
+ 	struct xtables_match *m;
+ 	size_t size;
+ 
+@@ -305,10 +305,12 @@ static void ebt_load_match(const char *name)
+ 					     m->extra_opts, &m->option_offset);
+ 	if (opts == NULL)
+ 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
++	xt_params->opts = opts;
+ }
+ 
+ static void ebt_load_watcher(const char *name)
+ {
++	struct option *opts = xt_params->opts;
+ 	struct xtables_target *watcher;
+ 	size_t size;
+ 
+@@ -337,11 +339,12 @@ static void ebt_load_watcher(const char *name)
+ 					     &watcher->option_offset);
+ 	if (opts == NULL)
+ 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
++	xt_params->opts = opts;
+ }
+ 
+ static void ebt_load_match_extensions(void)
+ {
+-	opts = ebt_original_options;
++	xt_params->opts = ebt_original_options;
+ 	ebt_load_match("802_3");
+ 	ebt_load_match("arp");
+ 	ebt_load_match("ip");
+@@ -358,7 +361,7 @@ static void ebt_load_match_extensions(void)
+ 
+ 	/* assign them back so do_parse() may
+ 	 * reset opts to orig_opts upon each call */
+-	xt_params->orig_opts = opts;
++	xt_params->orig_opts = xt_params->opts;
+ }
+ 
+ void ebt_add_match(struct xtables_match *m,
+@@ -528,6 +531,7 @@ int nft_init_eb(struct nft_handle *h, const char *pname)
+ 
+ void nft_fini_eb(struct nft_handle *h)
+ {
++	struct option *opts = xt_params->opts;
+ 	struct xtables_match *match;
+ 	struct xtables_target *target;
+ 
 -- 
 2.43.0
 
