@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-837-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-841-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2838384594B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13DBF845950
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B76A1C238D4
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C288F296282
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7D95B669;
-	Thu,  1 Feb 2024 13:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B1F5D487;
+	Thu,  1 Feb 2024 13:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="EcdulOrI"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="BQXf7umM"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109653A1BC
-	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457A35CDF5
+	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795464; cv=none; b=BU+2L9RCdOfUaBFFrGvHlsedLJITEa441pu5DckQ5a3ogq/ebRYvLg9+61bweP3FkfUUmgVj2X9AEJkrUfjKBj6m6hqPD/+GbYn2bBUuw1LrJzwqoLwd29Y5sXfQlxbKEu62WJqgA1M/XeGYfi2ODkwz4fkMMLYesXhZPo4F8NM=
+	t=1706795466; cv=none; b=tXmh3lsUv4frjdRGXZKjVmsLr5Xj6CVL7dbTuRvNjZnlzwDEkdDfgWuj0270B8uUn3wtZQB6+4omn53ITFBIqVpsbZljQeJBuQBBVz5mnwjRd6X7FvUJLmFzQKGlnLuq5UaIUbvseg5aCwQUAGh8dFqDhvLyv1SRewHe9dHihcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795464; c=relaxed/simple;
-	bh=B7kEW+kJC3U4oYEAp4pzG2PnOTxnoypIevOEK7lWbv4=;
+	s=arc-20240116; t=1706795466; c=relaxed/simple;
+	bh=RseSYHJ+vvR/Q9gijAex2FgcmzO/5CIN4hBRxiH1N/0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eZDQwTKxPyKrh3FVfSe/eBQttzZm4a/dLN/OvuaYyAAOfQ8eQUws317GwoDcqGpbOz++YVRJAJxKFla86+wvLXUa2w4gTNbDnMYjuzPGAeZGzOIdrRDsc57yAoXNW8A5kXE32ZnR+Rteqb/8NOfpQiAOL59c7XW74WZpWoQmP80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=EcdulOrI; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=q8h29/IKr7BN/MMppUVy5UofOVXKvXChXdJJ1RTbVI7q4OAN9K13wNV6+D8+AKfZQf9cQZj8ptX3IRmU33YRlvr4Hq4qXvjDdievLQ4QpwJ4X0DbooL2pkhJwxpm0zVkMmgxXHMN4R2tu41mNXd/ReXldg4J81SKzGnOCoznDNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=BQXf7umM; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=XzTkx+lKgcykPxOjhNt6dTn+DUe1G9ymXp/SxHNFWRY=; b=EcdulOrIJNIecY1u79hN7ixs/X
-	CPHy5gD0ZakBlTnj6PPL9P6TU/OQumhKi+RXaWlC7KeQE/paLjlDcfsjIJX5prvZeiPka8ideLoUq
-	bCbbx4HbljA/f+VBK4RYh+tgfoTaE6+sKkFCn4qFCH6herJaCzmKFNYrHg7auSRs78bMdA1LyJT6O
-	fDAuLBFMCt+W72WL9NgAJAnZ0GmJ9XeTqNhKGgysZFmKfgtNjP+uUVV5t4kv5DRt2bL+/UhRTu4z0
-	s/P3gMjeGWJb7ILns+C+mxAuvxnbS99c/MGd+NSnASsbttZzahJtB4kOe/6D3K7iVyBQBj9gEnd+F
-	jAnFUlOQ==;
+	bh=1dCYUF4/xfiwyCGLOdaqE50GS19G0LjXAFKmh1DscNU=; b=BQXf7umMf1r42GV6TffdDwp1tJ
+	+J3fE8wevj+zE6n78hzLH75cQBMvu+NMKpSNQn3c3yhcsrcj8QaTI57Pd2RAKugUB8HmJwVlqwcZW
+	fS8p+OmIOBdvBOE2WCYcxFL4VyGM0WSaJmrp2w8rRV6JI/FUNxE+NnVZvWqWqbNnmMqxwp4k2R/GJ
+	RnHtotf6VShdU6qwTCrcm0hPZJhbmuw+nIAV3CN8B7gzaOnB8cxlmNLXmMt2nH/wEYaYMExY2AO0Q
+	9lEUXXGyo7MiHznm0y4JRqaHPrUnkqVzCzblR+md1Ggg7PIPG+Vn6tYdqbhyIr3XQhpZe0fPjPABH
+	+a/8Txkg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rVXT1-000000001Lx-008B;
-	Thu, 01 Feb 2024 14:50:59 +0100
+	id 1rVXT2-000000001MB-0wQz;
+	Thu, 01 Feb 2024 14:51:00 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 1/7] tests: iptables-test: Increase non-fast mode strictness
-Date: Thu,  1 Feb 2024 14:50:51 +0100
-Message-ID: <20240201135057.24828-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/7] nft: ruleparse: Add missing braces around ternary
+Date: Thu,  1 Feb 2024 14:50:52 +0100
+Message-ID: <20240201135057.24828-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201135057.24828-1-phil@nwl.cc>
 References: <20240201135057.24828-1-phil@nwl.cc>
@@ -65,82 +65,36 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The simple search for the rule in save output accepted arbitrary leading
-and trailing rule parts. This was partly desired as it allowed to omit
-the leading '-A' flag or ignore the mandatory '-j CONTINUE' in ebtables
-rules, though it could hide bugs.
+The expression evaluated the sum before the ternay, consequently not
+adding target->size if tgsize was zero.
 
-Introduction of fast mode mitigated this due to the way how it searches
-for multiple rules at the same time, but there are cases which fast mode
-does not support yet (e.g. test cases containing variant-specific rule
-output).
+Identified by ASAN for a simple rule using standard target:
+| # ebtables -A INPUT -s de:ad:be:ef:0:00 -j RETURN
+| # ebtables -D INPUT -s de:ad:be:ef:0:00 -j RETURN
+| =================================================================
+| ==18925==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x603000000120 at pc 0x7f627a4c75c5 bp 0x7ffe882b5180 sp 0x7ffe882b4928
+| READ of size 8 at 0x603000000120 thread T0
+| [...]
 
-Given save output format will never contain the rule in first or last
-line, so enclosing the searched rule in newline characters is sufficient
-to make the search apply to full lines only. The only drawback is having
-to add '-A' and '-j CONTINUE' parts if needed.
-
-The hidden bugs this revealed were:
-- Long --nflog-prefix strings are not cut to 64 chars with iptables-nft
-- The TCPMSS rule supposed to fail with legacy only must specify an
-  expected save output
-
+Fixes: 2a6eee89083c8 ("nft-ruleparse: Introduce nft_create_target()")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_NFLOG.t  | 2 +-
- extensions/libxt_TCPMSS.t | 2 +-
- iptables-test.py          | 6 +++++-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ iptables/nft-ruleparse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/extensions/libxt_NFLOG.t b/extensions/libxt_NFLOG.t
-index 25f332ae16b6b..0cd81c643b2d5 100644
---- a/extensions/libxt_NFLOG.t
-+++ b/extensions/libxt_NFLOG.t
-@@ -15,7 +15,7 @@
- -j NFLOG --nflog-size 4294967296;;FAIL
- -j NFLOG --nflog-size -1;;FAIL
- -j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;=;OK
---j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;-j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;OK
-+-j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;-j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;OK;LEGACY;=
- -j NFLOG --nflog-threshold 1;=;OK
- # ERROR: line 13 (should fail: iptables -A INPUT -j NFLOG --nflog-threshold 0
- # -j NFLOG --nflog-threshold 0;;FAIL
-diff --git a/extensions/libxt_TCPMSS.t b/extensions/libxt_TCPMSS.t
-index fbfbfcf88d81a..b3639cc17a935 100644
---- a/extensions/libxt_TCPMSS.t
-+++ b/extensions/libxt_TCPMSS.t
-@@ -1,6 +1,6 @@
- :FORWARD,OUTPUT,POSTROUTING
- *mangle
- -j TCPMSS;;FAIL
---p tcp -j TCPMSS --set-mss 42;;FAIL;LEGACY
-+-p tcp -j TCPMSS --set-mss 42;=;FAIL;LEGACY
- -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j TCPMSS --set-mss 42;=;OK
- -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j TCPMSS --clamp-mss-to-pmtu;=;OK
-diff --git a/iptables-test.py b/iptables-test.py
-index 179e366e02961..cefe42335d25d 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -143,7 +143,8 @@ STDERR_IS_TTY = sys.stderr.isatty()
-         return -1
+diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
+index 0bbdf44fafe03..3b1cbe4fa1499 100644
+--- a/iptables/nft-ruleparse.c
++++ b/iptables/nft-ruleparse.c
+@@ -94,7 +94,7 @@ __nft_create_target(struct nft_xt_ctx *ctx, const char *name, size_t tgsize)
+ 	if (!target)
+ 		return NULL;
  
-     # find the rule
--    matching = out.find(rule_save.encode('utf-8'))
-+    matching = out.find("\n-A {}\n".format(rule_save).encode('utf-8'))
-+
-     if matching < 0:
-         if res == "OK":
-             reason = "cannot find: " + iptables + " -I " + rule
-@@ -470,6 +471,9 @@ STDERR_IS_TTY = sys.stderr.isatty()
-             else:
-                 rule_save = chain + " " + item[1]
+-	size = XT_ALIGN(sizeof(*target->t)) + tgsize ?: target->size;
++	size = XT_ALIGN(sizeof(*target->t)) + (tgsize ?: target->size);
  
-+            if iptables == EBTABLES and rule_save.find('-j') < 0:
-+                rule_save += " -j CONTINUE"
-+
-             res = item[2].rstrip()
-             if len(item) > 3:
-                 variant = item[3].rstrip()
+ 	target->t = xtables_calloc(1, size);
+ 	target->t->u.target_size = size;
 -- 
 2.43.0
 
