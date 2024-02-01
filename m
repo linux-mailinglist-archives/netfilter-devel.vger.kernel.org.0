@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-840-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-836-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1D1F84594E
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D56784594A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAD7D1C2462C
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A6CE295F86
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89CD65D486;
-	Thu,  1 Feb 2024 13:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981FD5D465;
+	Thu,  1 Feb 2024 13:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="mJUyWBtC"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Yzh+Ntkw"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00155CDFE
-	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109D25B669
+	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795465; cv=none; b=AuVEZ+V34gQFk0AjczpZN6h3fPRlvcM2umZHO6AB6F5/fj73eq9FjKsm//hYHNV4nMZI93DIqTGWzSmcGbcl0zzb0yRLyfPcdTAch+Vu0yczfhSgCgr/WMWoZSm4r/A4rElMYumH6tZ1YzL0nqeQOWQy1CVhtJ8c/34e8q3yd5U=
+	t=1706795463; cv=none; b=n42zMq0ZOU1OCtunNr/FWZezxpvf4LiXvW5wcs0jDvNNttjY2aulTDdr7M56t1tse/87vQ1MMaUMQnf2r8++gVAQj3n/1IfYeSRfPIzMKXXQoL/YnNGIDf7Xa8HVDrJZ123oEpULT368yK6rK7674gz6JOv8DzDya/PsohVgjUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795465; c=relaxed/simple;
-	bh=e9AU3JqSTPotCEe1B61MkQfBfg/STaUZGkLg+tawVbA=;
+	s=arc-20240116; t=1706795463; c=relaxed/simple;
+	bh=yUvm/vsBdMrWGhr8ELnDsx7eqoz+hCn/KKkshaVRt2g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LnaUZLKK17GmG4sanQRLVcC+D0oRBv4oEo02Z4FigHXgDORBGsUxsJcA5SSzzLIa7ZqC//ZBN7itWg3V3XeFE7eM4Kb36LmZ5kB2HGqNLWj0lHq/mcuila+4faTIvsOwb8Ws0X9LhK90EFVB7Yr3cdHOokjFW4MkFJzkxtxhILc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=mJUyWBtC; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=FnNxHKzc42bSso/NvQ3ei/HoLtlXT3r3mxDHP8SlXV2apxtaqYIPrffCYwthgdi1qSUdIUgKwiQLvTakHEDWCbwpn1yjoyv6emYhbNrO/x3U4YRDzQ6Dq6AkQII/jifmI4hL97S6kstIyEZOcfls5pphxSgEyXXk2f+sZueEwIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Yzh+Ntkw; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=rqeWfTZrYoWhRRHFMifXP1zlzYAST1CAiEEzo9JmVL0=; b=mJUyWBtCn7GwxWYWhuwfEdKzCQ
-	yGYtuTSpDgwC7cOyEUxYWyK03CG2rjk+ycrMy7aYmBAp5Mfo/AGfflVKgaNTTv/HoCK+ozW+ApMY1
-	QBXrTHtoFXSh3rbze3O3tKNFDMuj94Td7QkbVkMXsC4fXt14Vo+buDUG0eeqE7CBV+79XeYCh7Qcd
-	gFLTILJCdlkleRB55/ks4o/pF3PMuGpt4s9f6vkM1WgRwILFaAU+Fvnu1bQh4owDW4gvLW8+8H4QX
-	5KYLQIk5FcfDLZEllWW4gWwOWcOjNjSCAeQJH0RpTCB/qkWQCCXw6O+RMbRFVjwshXT6XnO+SKyEX
-	Dn8uw7wA==;
+	bh=m/HOl2okEE47l37xMeuo8HjdsleSTPtfgXty8K0LVSQ=; b=Yzh+Ntkwmzzs08adJJpCE10BM7
+	DLcfDhYRQQWHiedA+b0acjomkQxXPf62g0HhrWVvO6x12iUKV1YHUwj+qrn2Noj+gNOFztsf0A2AH
+	zg/IKpLDhnRCIsuLZorMVfGcGw0M3kFnngfmndsVblHaoEpkYiPPvPb5ZybhIsyImYXArfbBL9J2+
+	kSVQlskqkmRw2/7AAHTcjsFl6tllaVKG6vGH+OJbZoQqZKVPgrq5O9LknDfskmYe+xKUcQZWWJHdf
+	lMDs4IhL2oWaZ6UKoplXunZ7ovps9BpJvasDr95mY69t6xwzYp1GmnCDXqBxYmMdi7YuNS7vupkri
+	znMS1OOA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rVXT3-000000001ML-1Ffq;
-	Thu, 01 Feb 2024 14:51:01 +0100
+	id 1rVXT1-000000001M4-2sFk;
+	Thu, 01 Feb 2024 14:50:59 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 5/7] xshared: Fix for memleak in option merging with ebtables
-Date: Thu,  1 Feb 2024 14:50:55 +0100
-Message-ID: <20240201135057.24828-6-phil@nwl.cc>
+Subject: [iptables PATCH 6/7] xshared: Introduce xtables_clear_args()
+Date: Thu,  1 Feb 2024 14:50:56 +0100
+Message-ID: <20240201135057.24828-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201135057.24828-1-phil@nwl.cc>
 References: <20240201135057.24828-1-phil@nwl.cc>
@@ -65,177 +65,121 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The crucial difference in ebtables is that all extensions are loaded up
-front instead of while parsing -m/-j flags. Since this loading of all
-extensions before every call to do_parse() is pointless overhead (cf.
-ebtables-restore), other tools' mechanism of freeing all merged options
-in xtables_free_opts() after handling each command and resetting
-xt_params->opts at the start of the parser loop is problematic.
+Perform struct xtables_args object deinit in a common place, even though
+it merely consists of freeing any IP addresses and masks.
 
-Fixed commit entailed a hack to defeat the xt_params->opts happening at
-start of do_parse() by assigning to xt_params->orig_opts after loading
-all extensions. This approach caused a memleak though since
-xtables_free_opts() called from xtables_merge_options() will free the
-opts pointer only if it differs from orig_opts.
+This fixes for a memleak in arptables-translate as the check for
+h->family didn't catch the value NFPROTO_ARP.
 
-Resolve this via a different approach which eliminates the
-xt_params->opts reset at the start of do_parse():
-
-Make xt_params->opts be NULL until the first extension is loaded. Option
-merging in command_match() and command_jump() tolerates a NULL pointer
-there after minimal adjustment. Deinit in xtables_free_opts() is already
-fine as it (re)turns xt_params->opts to a NULL pointer. With do_parse()
-expecting that and falling back to xt_params->orig_opts, no explicit
-initialization is required anymore and thus ebtables' init is not
-mangled by accident.
-
-A critical part is that do_parse() checks xt_params->opts pointer upon
-each call to getopt_long() as it may get assigned while parsing.
-
-Fixes: 58d364c7120b5 ("ebtables: Use do_parse() from xshared")
+Fixes: 5b7324e0675e3 ("nft-arp: add arptables-translate")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.c    | 12 +++++++++---
- iptables/xtables-eb.c | 25 +++++++++++++------------
- libxtables/xtables.c  |  6 ++----
- 3 files changed, 24 insertions(+), 19 deletions(-)
+ iptables/ip6tables.c         |  5 +----
+ iptables/iptables.c          |  5 +----
+ iptables/xshared.c           |  8 ++++++++
+ iptables/xshared.h           |  2 ++
+ iptables/xtables-translate.c | 12 +-----------
+ iptables/xtables.c           |  5 +----
+ 6 files changed, 14 insertions(+), 23 deletions(-)
 
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 43fa929df7676..7d073891ed5c3 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -798,6 +798,9 @@ static void command_match(struct iptables_command_state *cs, bool invert)
- 	else if (m->extra_opts != NULL)
- 		opts = xtables_merge_options(xt_params->orig_opts, opts,
- 					     m->extra_opts, &m->option_offset);
-+	else
-+		return;
-+
- 	if (opts == NULL)
- 		xtables_error(OTHER_PROBLEM, "can't alloc memory!");
- 	xt_params->opts = opts;
-@@ -856,10 +859,13 @@ void command_jump(struct iptables_command_state *cs, const char *jumpto)
- 		opts = xtables_options_xfrm(xt_params->orig_opts, opts,
- 					    cs->target->x6_options,
- 					    &cs->target->option_offset);
--	else
-+	else if (cs->target->extra_opts != NULL)
- 		opts = xtables_merge_options(xt_params->orig_opts, opts,
- 					     cs->target->extra_opts,
- 					     &cs->target->option_offset);
-+	else
-+		return;
-+
- 	if (opts == NULL)
- 		xtables_error(OTHER_PROBLEM, "can't alloc memory!");
- 	xt_params->opts = opts;
-@@ -1484,10 +1490,10 @@ void do_parse(int argc, char *argv[],
- 	   demand-load a protocol. */
- 	opterr = 0;
- 
--	xt_params->opts = xt_params->orig_opts;
- 	while ((cs->c = getopt_long(argc, argv,
- 				    optstring_lookup(afinfo->family),
--				    xt_params->opts, NULL)) != -1) {
-+				    xt_params->opts ?: xt_params->orig_opts,
-+				    NULL)) != -1) {
- 		switch (cs->c) {
- 			/*
- 			 * Command selection
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index d197b37e81e9e..51c699defb047 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -298,11 +298,14 @@ static void ebt_load_match(const char *name)
- 	xs_init_match(m);
- 
- 	if (m->x6_options != NULL)
--		opts = xtables_options_xfrm(opts, NULL,
-+		opts = xtables_options_xfrm(xt_params->orig_opts, opts,
- 					    m->x6_options, &m->option_offset);
- 	else if (m->extra_opts != NULL)
--		opts = xtables_merge_options(opts, NULL,
-+		opts = xtables_merge_options(xt_params->orig_opts, opts,
- 					     m->extra_opts, &m->option_offset);
-+	else
-+		return;
-+
- 	if (opts == NULL)
- 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
- 	xt_params->opts = opts;
-@@ -332,11 +335,16 @@ static void ebt_load_watcher(const char *name)
- 	xs_init_target(watcher);
- 
- 	if (watcher->x6_options != NULL)
--		opts = xtables_options_xfrm(opts, NULL, watcher->x6_options,
-+		opts = xtables_options_xfrm(xt_params->orig_opts, opts,
-+					    watcher->x6_options,
- 					    &watcher->option_offset);
- 	else if (watcher->extra_opts != NULL)
--		opts = xtables_merge_options(opts, NULL, watcher->extra_opts,
-+		opts = xtables_merge_options(xt_params->orig_opts, opts,
-+					     watcher->extra_opts,
- 					     &watcher->option_offset);
-+	else
-+		return;
-+
- 	if (opts == NULL)
- 		xtables_error(OTHER_PROBLEM, "Can't alloc memory");
- 	xt_params->opts = opts;
-@@ -344,7 +352,6 @@ static void ebt_load_watcher(const char *name)
- 
- static void ebt_load_match_extensions(void)
- {
--	xt_params->opts = ebt_original_options;
- 	ebt_load_match("802_3");
- 	ebt_load_match("arp");
- 	ebt_load_match("ip");
-@@ -358,10 +365,6 @@ static void ebt_load_match_extensions(void)
- 
- 	ebt_load_watcher("log");
- 	ebt_load_watcher("nflog");
--
--	/* assign them back so do_parse() may
--	 * reset opts to orig_opts upon each call */
--	xt_params->orig_opts = xt_params->opts;
- }
- 
- void ebt_add_match(struct xtables_match *m,
-@@ -531,7 +534,6 @@ int nft_init_eb(struct nft_handle *h, const char *pname)
- 
- void nft_fini_eb(struct nft_handle *h)
- {
--	struct option *opts = xt_params->opts;
- 	struct xtables_match *match;
- 	struct xtables_target *target;
- 
-@@ -542,8 +544,7 @@ void nft_fini_eb(struct nft_handle *h)
- 		free(target->t);
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index 4b5d4ac6878b7..f9ae18aed8041 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -892,10 +892,7 @@ int do_command6(int argc, char *argv[], char **table,
+ 		e = NULL;
  	}
  
--	if (opts != ebt_original_options)
--		free(opts);
-+	free(xt_params->opts);
+-	free(saddrs);
+-	free(smasks);
+-	free(daddrs);
+-	free(dmasks);
++	xtables_clear_args(&args);
+ 	xtables_free_opts(1);
  
- 	nft_fini(h);
- 	xtables_fini();
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index 856bfae804ea9..ae3ff25a3a876 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -111,10 +111,8 @@ void basic_exit_err(enum xtables_exittype status, const char *msg, ...)
+ 	return ret;
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 5ae28fe04a5f5..8eb043e9b736e 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -887,10 +887,7 @@ int do_command4(int argc, char *argv[], char **table,
+ 		e = NULL;
+ 	}
  
- void xtables_free_opts(int unused)
- {
--	if (xt_params->opts != xt_params->orig_opts) {
--		free(xt_params->opts);
--		xt_params->opts = NULL;
--	}
-+	free(xt_params->opts);
-+	xt_params->opts = NULL;
+-	free(saddrs);
+-	free(smasks);
+-	free(daddrs);
+-	free(dmasks);
++	xtables_clear_args(&args);
+ 	xtables_free_opts(1);
+ 
+ 	return ret;
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 7d073891ed5c3..0b2724a3e5162 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -2185,3 +2185,11 @@ make_delete_mask(const struct xtables_rule_match *matches,
+ 
+ 	return mask;
  }
++
++void xtables_clear_args(struct xtables_args *args)
++{
++	free(args->s.addr.ptr);
++	free(args->s.mask.ptr);
++	free(args->d.addr.ptr);
++	free(args->d.mask.ptr);
++}
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 2a9cdf45f581a..7d4035ec03e52 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -333,4 +333,6 @@ unsigned char *make_delete_mask(const struct xtables_rule_match *matches,
  
- struct option *xtables_merge_options(struct option *orig_opts,
+ void iface_to_mask(const char *ifname, unsigned char *mask);
+ 
++void xtables_clear_args(struct xtables_args *args);
++
+ #endif /* IPTABLES_XSHARED_H */
+diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
+index ad44311230323..8ebe523c447f2 100644
+--- a/iptables/xtables-translate.c
++++ b/iptables/xtables-translate.c
+@@ -349,17 +349,7 @@ static int do_command_xlate(struct nft_handle *h, int argc, char *argv[],
+ 
+ 	h->ops->clear_cs(&cs);
+ 
+-	if (h->family == AF_INET) {
+-		free(args.s.addr.v4);
+-		free(args.s.mask.v4);
+-		free(args.d.addr.v4);
+-		free(args.d.mask.v4);
+-	} else if (h->family == AF_INET6) {
+-		free(args.s.addr.v6);
+-		free(args.s.mask.v6);
+-		free(args.d.addr.v6);
+-		free(args.d.mask.v6);
+-	}
++	xtables_clear_args(&args);
+ 	xtables_free_opts(1);
+ 
+ 	return ret;
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 22d6ea58376fc..5d73481c25761 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -264,10 +264,7 @@ int do_commandx(struct nft_handle *h, int argc, char *argv[], char **table,
+ 
+ 	h->ops->clear_cs(&cs);
+ 
+-	free(args.s.addr.ptr);
+-	free(args.s.mask.ptr);
+-	free(args.d.addr.ptr);
+-	free(args.d.mask.ptr);
++	xtables_clear_args(&args);
+ 	xtables_free_opts(1);
+ 
+ 	return ret;
 -- 
 2.43.0
 
