@@ -1,62 +1,50 @@
-Return-Path: <netfilter-devel+bounces-838-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-843-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05F8584594C
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1794845E5E
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 18:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B39AE296073
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 564B81F26953
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 17:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD97C5D471;
-	Thu,  1 Feb 2024 13:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B951649DE;
+	Thu,  1 Feb 2024 17:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fnInPuoC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1SRyX6b"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782E15CDFA
-	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F791649AE;
+	Thu,  1 Feb 2024 17:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706795464; cv=none; b=sNk/WhPHkH1ICPZc18TK4V3XLrkwI9+q7BCHh900lpVRL2eZkY5z99ToIk/ajy4RcCyGRVFEKC1fNrc2B4EQW6HfxFwBzLKvc6b/G3B31SHvx5KoOKK+CLn3ggD3P4PtHh7702HHjFVe55sOQ5JX1CSkC/oU8SUvIGQV+zoKt3Y=
+	t=1706808028; cv=none; b=EhhO4R1NvAE+1NOP1ykARlfGEVQgzm/nobpzesfaBpbnQugErljfGHmwgXUhoZcsxt8zZOFpm+cBsgI85AsUgI6QPOTguJyffCMYjF/50JUbfRWWezH3vogbkqrt/CpSqUyw5r62CY90XdMBjp8grJOgQmq40GFF/JWUm8nHBJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706795464; c=relaxed/simple;
-	bh=1L9Nn0TYL3zwSLJjPnzOWYNXqhFiw2amcae45rKvJrA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pxawf9HGss1cM8q5tEqL/YjVxNOfAHLUKfKfqTWxzeKtbYrX0d7Pghfdq3aIRO73K39OLhQi1hVwwXu5ShlDO5DMsgvNDqKgbGKADW8tJSDv9cvQWJdu4F4byS8IfMt5ENg8nCVyPiXd48otiHJqMCWjIHbeNd2tgNrKgOaZH0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fnInPuoC; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=TtmnsUX176o13aGnLC8SbspPckhHCcrs37jizNx/MFw=; b=fnInPuoC3kNyaRKGE1x5aQk52m
-	i1Ox61VJnc/8wNJGugVDj35sRyzifg/g2gPsP4DIHOq0+S+Th0TuglIuicDaZxJw6n+n2P5wqapuX
-	qNbw2oIcRkBKLrGL2IFv9ugOEjwyWoR4QE4fTDctioXJQCzGnxDpWEVILc93sgIq86/LUD/+7Bc4s
-	mWA/YQx+QJDKNilksRIQiKmm5qwf+RJlRKLpkf4aLdp2dBEn92SVQW8zzME/rHqSN5u2b3m4R7D3d
-	mC1dTBW2LzdU/W1a1LjBYMYVkYhcwXGvH3Fv0MDFmWsVsMNk/w7f1YAJ/VmeRCfoOq6CrHBF4BbSl
-	3NPBSMOw==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97)
-	(envelope-from <phil@nwl.cc>)
-	id 1rVXT2-000000001MG-3BIt;
-	Thu, 01 Feb 2024 14:51:00 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 7/7] ebtables: Fix for memleak with change counters command
-Date: Thu,  1 Feb 2024 14:50:57 +0100
-Message-ID: <20240201135057.24828-8-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240201135057.24828-1-phil@nwl.cc>
-References: <20240201135057.24828-1-phil@nwl.cc>
+	s=arc-20240116; t=1706808028; c=relaxed/simple;
+	bh=qBK8IEEC/YqjJg3DzlG/+3uVXL6f6ACc/jMCidzB0OE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=nut1zX/pzHW4mIQlYaV6431bkHm8hm3ewPPVHqxT/R1TIU04XMNgW1vbhzjRT+IjXUcD+KXWRbg4DqhHNfyj2kuUK1Mzh70smr16G5ZHH5zlhQAuT5feLMZBPQZHeh3TnJJKrsS5vAyM2sfor+apvHY5eFiE24ztlPEa/o/gQEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C1SRyX6b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 140E3C433F1;
+	Thu,  1 Feb 2024 17:20:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706808028;
+	bh=qBK8IEEC/YqjJg3DzlG/+3uVXL6f6ACc/jMCidzB0OE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=C1SRyX6bo1jQ0HLoQl92kq2lkiqTe0SDYMWA6cCWZskHYDv4HPmE6LmsQ67N31UWN
+	 fy+o3H5cIyP45KvmsETVd4U/PxciQ7E3Mo3R7rbALNtor9MxyfMCzjZikw/yTy9KQ+
+	 i+gZLyqo8US8BCMPFf4iEii4DX8iGMor/c6EjMOSpXzRCbONkR1dbKPDRwanQ0P5yq
+	 Dyb2OO2qX0Sycph2rdOEzRkXgE24zQmK6mrqn/nDbxrLHdpHwrFMyAPqM9kneyeLX/
+	 E+TylEpVb0+s+0jE7hoqV8DhWsKSn0OotTk8eb5CqFbEwGKDoHEv003DzB+UFS6wB7
+	 j70CB2bxoLz7w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E784AE3237E;
+	Thu,  1 Feb 2024 17:20:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,31 +52,59 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/6] netfilter: conntrack: correct window scaling with
+ retransmitted SYN
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170680802794.24895.1311935985185271736.git-patchwork-notify@kernel.org>
+Date: Thu, 01 Feb 2024 17:20:27 +0000
+References: <20240131225943.7536-2-pablo@netfilter.org>
+In-Reply-To: <20240131225943.7536-2-pablo@netfilter.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
+ netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, fw@strlen.de
 
-Just like with check command, change counters command creates a
-temporary rule from rulespec on command line for a search by spec in
-rule cache. It is not used anymore afterwards, so nft_cmd_free() should
-free it.
+Hello:
 
-Fixes: f340b7b6816be ("ebtables: Implement --change-counters command")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft-cmd.c | 1 +
- 1 file changed, 1 insertion(+)
+This series was applied to netdev/net.git (main)
+by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-diff --git a/iptables/nft-cmd.c b/iptables/nft-cmd.c
-index 8372d171b00c4..b38da9bdc1c0b 100644
---- a/iptables/nft-cmd.c
-+++ b/iptables/nft-cmd.c
-@@ -65,6 +65,7 @@ void nft_cmd_free(struct nft_cmd *cmd)
- 	switch (cmd->command) {
- 	case NFT_COMPAT_RULE_CHECK:
- 	case NFT_COMPAT_RULE_DELETE:
-+	case NFT_COMPAT_RULE_CHANGE_COUNTERS:
- 		if (cmd->obj.rule)
- 			nftnl_rule_free(cmd->obj.rule);
- 		break;
+On Wed, 31 Jan 2024 23:59:38 +0100 you wrote:
+> From: Ryan Schaefer <ryanschf@amazon.com>
+> 
+> commit c7aab4f17021 ("netfilter: nf_conntrack_tcp: re-init for syn packets
+> only") introduces a bug where SYNs in ORIGINAL direction on reused 5-tuple
+> result in incorrect window scale negotiation. This commit merged the SYN
+> re-initialization and simultaneous open or SYN retransmits cases. Merging
+> this block added the logic in tcp_init_sender() that performed window scale
+> negotiation to the retransmitted syn case. Previously. this would only
+> result in updating the sender's scale and flags. After the merge the
+> additional logic results in improperly clearing the scale in ORIGINAL
+> direction before any packets in the REPLY direction are received. This
+> results in packets incorrectly being marked invalid for being
+> out-of-window.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/6] netfilter: conntrack: correct window scaling with retransmitted SYN
+    https://git.kernel.org/netdev/net/c/fb366fc7541a
+  - [net,2/6] netfilter: nf_tables: restrict tunnel object to NFPROTO_NETDEV
+    https://git.kernel.org/netdev/net/c/776d45164844
+  - [net,3/6] netfilter: conntrack: check SCTP_CID_SHUTDOWN_ACK for vtag setting in sctp_new
+    https://git.kernel.org/netdev/net/c/6e348067ee4b
+  - [net,4/6] netfilter: ipset: fix performance regression in swap operation
+    https://git.kernel.org/netdev/net/c/97f7cf1cd80e
+  - [net,5/6] netfilter: nf_log: replace BUG_ON by WARN_ON_ONCE when putting logger
+    https://git.kernel.org/netdev/net/c/259eb32971e9
+  - [net,6/6] netfilter: nft_ct: sanitize layer 3 and 4 protocol number in custom expectations
+    https://git.kernel.org/netdev/net/c/8059918a1377
+
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
