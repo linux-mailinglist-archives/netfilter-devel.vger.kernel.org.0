@@ -1,46 +1,59 @@
-Return-Path: <netfilter-devel+bounces-830-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-839-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79548844B6A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 00:00:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E0B84594D
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 14:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28FF31F27366
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jan 2024 23:00:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3014C29612B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Feb 2024 13:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCC63B191;
-	Wed, 31 Jan 2024 22:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0945D47C;
+	Thu,  1 Feb 2024 13:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dHXNAPGf"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2938B3A8DA;
-	Wed, 31 Jan 2024 22:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834A15CDEE
+	for <netfilter-devel@vger.kernel.org>; Thu,  1 Feb 2024 13:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706741997; cv=none; b=E7SxLmebuVcpyKsh20whaN3UVyl6gyi8tmH2s+jcwUCOlw0KAUf7zLeTrKa1PZRfiHYOGtpZbsPfNGXx6UAERjOFelwI2BwHX0k8tt9l4KxzY7ErIyIE3R/Qs7Qo2srJjrldaP4waa3q8+WnxpGrSMJpJEvnE2EeZPrmkT/RCnk=
+	t=1706795465; cv=none; b=qnbqW1/tx0A89pzja31ISqSA+vBbRW55caRheTf4RWJoef308CrYn/mdpryLhnjeSHHDK1lM6T/2g6jfsM8gk0dn+u6wRTO+tpgZltXVGvBin3ko7CNIxYPzGC+dvzE1RBWFN/zhclcXSs/sH7obpGjzEfF8aN7Oa7G9zxFb5Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706741997; c=relaxed/simple;
-	bh=b7fixYkzE2lXdQJngFeyItEAJCaaCBK8CNL217RZvvs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=o6DH9LRf6fT7pVgcMc+U0UzOJQZvloL0DPYPhi1LiKSkzmUsifsTvzvK80/c+zjHbNumGx/+a6zt+KUHzirc3jWrJq8O5imVhFaf9WsyX/PrbQl1lkUZR4TDXQ5hinnD5FbacETvoOg2BRcfLDkBsi5gO0N6aT0nGAzpQGtZ1bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+	s=arc-20240116; t=1706795465; c=relaxed/simple;
+	bh=Ge02P53X9VGuAOAwSVY7f6jDW//SalCwZ7emcklSL44=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Csjrvq0GSKEETKrN7+kfYqThzoBqy6mwjG0kOZOSmmFMm+pR8yAQz5oF8U63EXdg4xE1oiBEA5i1UeyAYVwp2l/O6XOymrMQt3GuRtsdEGVMSWYzdMEL6AYeUSLik2JYkEJCWyfFi3sGqg5ZFVltvyRv8xsPDNaaxRBkO6ZSNOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dHXNAPGf; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=vNji+uLBtBIe5hgRA0eyhTTdSbn/9lQqmYOGTgMCDOU=; b=dHXNAPGfgCvi7PyAc/mDTzsLDg
+	6UizQCnwsh+uqjm+GdIcaOc1liCJCoKNBOhZ7AuuoShEsKEJEVEyCcF/ubNftwPFifMO1nT2hJRki
+	dgMN+b9okXNnTG8DEIn2032VjEsgpZoroLOcpfj7Cv+xJr0PFHvcVF2Sp1cOvpyqi388XycxM1QNN
+	5wu1ggpdWdeTkxVdZBI1WVf8OLTakTDO3xY3MaOb40j7cRDf5uq0uMoUsdfBGWM4Uqz8E/wwq7W5J
+	oFq6IJ4nlzIaKVkklmYEp6MNMEdz78RIPbd2ObXcEotBk/PwUAiufZrmKlpBFcFushNxHecWycrtT
+	UvQeD0aQ==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97)
+	(envelope-from <phil@nwl.cc>)
+	id 1rVXT3-000000001MQ-3WGv;
+	Thu, 01 Feb 2024 14:51:01 +0100
+From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 6/6] netfilter: nft_ct: sanitize layer 3 and 4 protocol number in custom expectations
-Date: Wed, 31 Jan 2024 23:59:43 +0100
-Message-Id: <20240131225943.7536-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240131225943.7536-1-pablo@netfilter.org>
-References: <20240131225943.7536-1-pablo@netfilter.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [iptables PATCH 0/7] A number of ASAN-identified fixes
+Date: Thu,  1 Feb 2024 14:50:50 +0100
+Message-ID: <20240201135057.24828-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -49,53 +62,41 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-- Disallow families other than NFPROTO_{IPV4,IPV6,INET}.
-- Disallow layer 4 protocol with no ports, since destination port is a
-  mandatory attribute for this object.
+Many thanks to Pablo for pointing me at ASAN reporting issues with the
+code valgrind had missed so far. This series fixes all reports so make
+check passes also when compiled with -fsanitize=address.
 
-Fixes: 857b46027d6f ("netfilter: nft_ct: add ct expectations support")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_ct.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Patch 1 is not quite related but rather a shortcoming in
+iptables-test.py I decided to fix while being at it.
 
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 86bb9d7797d9..aac98a3c966e 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -1250,7 +1250,31 @@ static int nft_ct_expect_obj_init(const struct nft_ctx *ctx,
- 	if (tb[NFTA_CT_EXPECT_L3PROTO])
- 		priv->l3num = ntohs(nla_get_be16(tb[NFTA_CT_EXPECT_L3PROTO]));
- 
-+	switch (priv->l3num) {
-+	case NFPROTO_IPV4:
-+	case NFPROTO_IPV6:
-+		if (priv->l3num != ctx->family)
-+			return -EINVAL;
-+
-+		fallthrough;
-+	case NFPROTO_INET:
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
- 	priv->l4proto = nla_get_u8(tb[NFTA_CT_EXPECT_L4PROTO]);
-+	switch (priv->l4proto) {
-+	case IPPROTO_TCP:
-+	case IPPROTO_UDP:
-+	case IPPROTO_UDPLITE:
-+	case IPPROTO_DCCP:
-+	case IPPROTO_SCTP:
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
- 	priv->dport = nla_get_be16(tb[NFTA_CT_EXPECT_DPORT]);
- 	priv->timeout = nla_get_u32(tb[NFTA_CT_EXPECT_TIMEOUT]);
- 	priv->size = nla_get_u8(tb[NFTA_CT_EXPECT_SIZE]);
+The remaining patches are actual fixes apart from patch 4 which pulls
+out unrelated (but sensible) changes from patch 5.
+
+Phil Sutter (7):
+  tests: iptables-test: Increase non-fast mode strictness
+  nft: ruleparse: Add missing braces around ternary
+  libxtables: Fix memleak of matches' udata
+  xtables-eb: Eliminate 'opts' define
+  xshared: Fix for memleak in option merging with ebtables
+  xshared: Introduce xtables_clear_args()
+  ebtables: Fix for memleak with change counters command
+
+ extensions/libxt_NFLOG.t     |  2 +-
+ extensions/libxt_TCPMSS.t    |  2 +-
+ iptables-test.py             |  6 +++++-
+ iptables/ip6tables.c         |  5 +----
+ iptables/iptables.c          |  5 +----
+ iptables/nft-cmd.c           |  1 +
+ iptables/nft-ruleparse.c     |  2 +-
+ iptables/xshared.c           | 20 +++++++++++++++++---
+ iptables/xshared.h           |  2 ++
+ iptables/xtables-eb.c        | 29 +++++++++++++++++------------
+ iptables/xtables-translate.c | 12 +-----------
+ iptables/xtables.c           |  5 +----
+ libxtables/xtables.c         | 10 ++++++----
+ 13 files changed, 55 insertions(+), 46 deletions(-)
+
 -- 
-2.30.2
+2.43.0
 
 
