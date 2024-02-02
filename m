@@ -1,37 +1,36 @@
-Return-Path: <netfilter-devel+bounces-848-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-849-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10CCD846FC0
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 13:06:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A5F846FC3
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 13:06:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C08342996FD
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 12:06:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B22B1C25160
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 12:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0F713D4F7;
-	Fri,  2 Feb 2024 12:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A352613E223;
+	Fri,  2 Feb 2024 12:06:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C8917C60
-	for <netfilter-devel@vger.kernel.org>; Fri,  2 Feb 2024 12:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6981413E233
+	for <netfilter-devel@vger.kernel.org>; Fri,  2 Feb 2024 12:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706875571; cv=none; b=CTMxSVxrXgLRrM/CtGYAu4y8hzHt7p9wVquEZOmogCbC863kK7D09hUCLzZ+6t+RAPsyBkeQqPYF6gUVbk2v9zf8RbWWPtSP/STnEAW3JdxV0sIaCFESkrfTldPSXNjXuPcpd/xllzvNKKvOzykmhxYdgBiivR9gt2sBqnTe+0g=
+	t=1706875594; cv=none; b=pdb+CiuFsJaJVVIMV7FhYD+GlzAdK7GVuCTkpfyXgBLQ7xKg2XDASe0gOuSqUPELRdeTCx8GPeA1bycAkuUTS2HAdd9BUPhT61ShGbxrztZ0nBRqzgKBTXAWCBaT2h+EXHghuqciBLUzwOGO2e10eu2rdoH57GKdw6YgHXfORzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706875571; c=relaxed/simple;
-	bh=zcar4yqU15euBGEfqckPSM9NzmEcAx30CC32rwg7hFY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AAsnCiL5N4b8oqWlusgcWiMP0dM8LkpexFcctk4NdnJxys1PeJDu16nmKTbdxG+gj+LaZABytVAyk61wMbMjydRntNpaWegnPW4q1Dgp4dhbsDJa/s0Q5YGh1Rowk1PjlQI6CC6z0+O7joWZSGhxDjVdqQmf5MBeKtoQM50sL5M=
+	s=arc-20240116; t=1706875594; c=relaxed/simple;
+	bh=JGqMyZn5PUS5Jyme6daszsMDNgGgUpdJmxZYXdcblb0=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=TicWT2EhSI/GetOCUgUvhz3Lw5iUZQsCN5N4SE6psV9AajXSV753mr8TW/DaV7NBn6rQfmEJ+vw3vB0PuVP0Mus59dXlb9ZAxl+h5GamzkCCNKnXvi5kuZzZYjYJ1SyUR9FGH1Rs393GfgXQPE8l1911mVS9C2HT+0ea9d1Ta8o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: fw@strlen.de
-Subject: [PATCH nf] netfilter: nft_byteorder: length must be multiple of size
-Date: Fri,  2 Feb 2024 13:06:02 +0100
-Message-Id: <20240202120602.5122-1-pablo@netfilter.org>
+Subject: [PATCH nf] netfilter: nft_compat: narrow down revision to unsigned 8-bits
+Date: Fri,  2 Feb 2024 13:06:27 +0100
+Message-Id: <20240202120627.5190-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -41,32 +40,45 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Although init path validates that store does not go over the register
-boundaries, the eval loop iterates over length / size to perform the
-byteorder swap.
+xt_find_revision() expects u8, restrict it to this datatype.
 
-Make sure length is a multiple of size, otherwise userspace is buggy.
-
-Fixes: 96518518cc41 ("netfilter: add nftables")
+Fixes: 0ca743a55991 ("netfilter: nf_tables: add compatibility layer for x_tables")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_byteorder.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nft_compat.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
-index f6e791a68101..8cf91e47fd7a 100644
---- a/net/netfilter/nft_byteorder.c
-+++ b/net/netfilter/nft_byteorder.c
-@@ -139,6 +139,9 @@ static int nft_byteorder_init(const struct nft_ctx *ctx,
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index f0eeda97bfcd..001b6841a4b6 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -135,7 +135,7 @@ static void nft_target_eval_bridge(const struct nft_expr *expr,
  
- 	priv->len = len;
+ static const struct nla_policy nft_target_policy[NFTA_TARGET_MAX + 1] = {
+ 	[NFTA_TARGET_NAME]	= { .type = NLA_NUL_STRING },
+-	[NFTA_TARGET_REV]	= { .type = NLA_U32 },
++	[NFTA_TARGET_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
+ 	[NFTA_TARGET_INFO]	= { .type = NLA_BINARY },
+ };
  
-+	if (len % size != 0)
-+		return -EINVAL;
-+
- 	err = nft_parse_register_load(tb[NFTA_BYTEORDER_SREG], &priv->sreg,
- 				      priv->len);
- 	if (err < 0)
+@@ -419,7 +419,7 @@ static void nft_match_eval(const struct nft_expr *expr,
+ 
+ static const struct nla_policy nft_match_policy[NFTA_MATCH_MAX + 1] = {
+ 	[NFTA_MATCH_NAME]	= { .type = NLA_NUL_STRING },
+-	[NFTA_MATCH_REV]	= { .type = NLA_U32 },
++	[NFTA_MATCH_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
+ 	[NFTA_MATCH_INFO]	= { .type = NLA_BINARY },
+ };
+ 
+@@ -724,7 +724,7 @@ static int nfnl_compat_get_rcu(struct sk_buff *skb,
+ static const struct nla_policy nfnl_compat_policy_get[NFTA_COMPAT_MAX+1] = {
+ 	[NFTA_COMPAT_NAME]	= { .type = NLA_NUL_STRING,
+ 				    .len = NFT_COMPAT_NAME_MAX-1 },
+-	[NFTA_COMPAT_REV]	= { .type = NLA_U32 },
++	[NFTA_COMPAT_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
+ 	[NFTA_COMPAT_TYPE]	= { .type = NLA_U32 },
+ };
+ 
 -- 
 2.30.2
 
