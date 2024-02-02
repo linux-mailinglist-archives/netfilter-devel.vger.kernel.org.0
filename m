@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-865-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-859-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BEA684717A
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 14:53:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE72E847174
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 14:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 984901F2C58C
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 13:53:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69851B241FF
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 13:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F290D144608;
-	Fri,  2 Feb 2024 13:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EAB813DBAF;
+	Fri,  2 Feb 2024 13:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nRWggShv"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="bthhZoPN"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3465D7F7EF
-	for <netfilter-devel@vger.kernel.org>; Fri,  2 Feb 2024 13:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE5146B9B
+	for <netfilter-devel@vger.kernel.org>; Fri,  2 Feb 2024 13:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706882000; cv=none; b=kNkrCQeP7aZ1aeurcBu0ta6Is3pmAzDKVoWCwQCW/hXQK+2FlrJg8hSU1Rw6COq1Bw2go2Hd5+/0IDPSERXu2S7o7AZ62W+ySXbsiCeS9xnYUkrsVu5ESGSGtc5Uhjk9zPQrEimhcYVDqOZk6FkvWgCsEzbcJM1tjnJmJNNwGFA=
+	t=1706881999; cv=none; b=tw9bfXggikJmE3i5e1dxAyJTtU4XlEfSv3/hky2lwXWUVHDcMoE/FgXzRULv+FbtSZtIsnq+Va+gNEpRFefla6b0KPySMOug63YwLEDpxT/0rBg7WYfVwX6XZ2ky0SL808lw58gFtqCHp2UehhzIMjYnaIwVGcexQ5zQi4GQJdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706882000; c=relaxed/simple;
-	bh=CW4A4aPJhi7XvLltcY634LycGGhVd1opR7LkXTkosCE=;
+	s=arc-20240116; t=1706881999; c=relaxed/simple;
+	bh=gZX2rIjryXfa9Lf9h/pv8vnnHgzFWnP4GnLD1gGCMuA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aqnQIKODnekZP1RXJINEWN7H2e6q2k1XsWr3sYI3J903iAIgLUqagIi8YzbZbs1ld8HsPLxEtPtDzi9r7JIfN94GSpgEFAqRnMrM599gHvbWM5GDgMY5tTGwGAU3rtarJO8CelC4YaMBReJXEoHleomB5blEBGXrXkB1AlxbnWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nRWggShv; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=IHhE4dEKHv/PgpaCR4b+f/gt/a+mAiKXbKeb6DuTpgnlTZee0zbQyalz7/mEmvWlDG7hUZVaUbtDbpxpN/HpKCK7tRqLCFg1kkubl0H1m3pfAzZrg3KZUDZggFO5plSBXEd8IbO8D017RXJvmaFQXCyp3EzInnSxlLwUDrREJCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=bthhZoPN; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=FqYvGh0cIM6CT3uQJ0A0Z9zUBa79p4eMErNyhntzAa8=; b=nRWggShvv07g/x1IGazymmsAAk
-	Eex0KQ9HKbuTQCIl/LYZkvbF+uIxTxAQR7j4UGq5+djxB7KPnrXj6DTmgrQ98DCCbGhD9+KM+HAmP
-	bkq7GIjbASMVkHGyBcXV7EIS4G9W0WhVng/bBZUEsIpIiE56IMxYNDKFBH3Zd7sQj0j3JeM744kI4
-	bEAMF/xw5YpFHsUlxLeAzyhLZlGobwTQ2HJThukpuof7R0AUXZJlaUZD3sIZtwUrNCwghIPSKbW5D
-	MrtmgCyUmRkPieuMpWMXf5y4ftx4TuU5suxijz1J3ZQetxMBC810aFwlEmuYIWe6YeQ6uAIxkClNt
-	u8r+z+fA==;
+	bh=lpZDlpbaBQCaRBTP/hDAme1s4fShQnxXRxb8CPj0xcE=; b=bthhZoPNnedz4EjXICmQOiXSBp
+	yumNuAi3ZBJNEhwFYMNOAwhhQjIIL+6qe0xyQs+PUqHGI4A7bsAbqBObJfFiUkI8WxKy4L7FSG/Pn
+	/vUUJ2ZqhytsGbG2MCW3RtueD6ICAIeSyWawe+lWGEFBJyj+xcLJwbVaW4PaQDlnkqoqQPN3vHYg+
+	mllM7hMtAeozUzZ5qY3rfLNfZWJ09tFy2iR6LZvHnrkWSJa/hUNzSjTedb5mwJVKFMB4salBHdlIQ
+	qMmxnnN23+HFpxP7nGwaO8V5aGqKdrtOq9qDJQjcR4nqs94imHeNnf/JfIkfkl9bzsRsuIcU0uqMU
+	3DLpgndg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rVtyh-000000003Bl-3cPy;
-	Fri, 02 Feb 2024 14:53:11 +0100
+	id 1rVtyf-000000003BP-1upe;
+	Fri, 02 Feb 2024 14:53:09 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 02/12] libxtables: xtoptions: Assert ranges are monotonic increasing
-Date: Fri,  2 Feb 2024 14:52:57 +0100
-Message-ID: <20240202135307.25331-3-phil@nwl.cc>
+Subject: [iptables PATCH 03/12] libxtables: Reject negative port ranges
+Date: Fri,  2 Feb 2024 14:52:58 +0100
+Message-ID: <20240202135307.25331-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202135307.25331-1-phil@nwl.cc>
 References: <20240202135307.25331-1-phil@nwl.cc>
@@ -65,217 +65,112 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extensions commonly require the upper range value to be larger or equal
-to the lower one. Performing this check in the parser is easier and
-covers all extensions at once.
-
-One notable exception is NFQUEUE which requires strict monotonicity.
-Hence leave its checks in place.
+Analogous to XTTYPE_UINT*RC value parsing, assert consecutive port
+values are not lower than previous ones.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_stp.c      | 21 +++++++++------------
- extensions/libip6t_ah.t      |  2 +-
- extensions/libip6t_frag.t    |  2 +-
- extensions/libip6t_rt.t      |  2 +-
- extensions/libipt_ah.t       |  2 +-
- extensions/libxt_connbytes.c |  4 ----
- extensions/libxt_conntrack.t |  2 +-
- extensions/libxt_esp.t       |  2 +-
- extensions/libxt_ipcomp.t    |  2 +-
- extensions/libxt_length.t    |  2 +-
- libxtables/xtoptions.c       |  9 +++++----
- 11 files changed, 22 insertions(+), 28 deletions(-)
+ extensions/libxt_conntrack.t | 8 ++++----
+ extensions/libxt_dccp.t      | 4 ++--
+ extensions/libxt_udp.t       | 4 ++--
+ libxtables/xtoptions.c       | 7 ++++++-
+ 4 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/extensions/libebt_stp.c b/extensions/libebt_stp.c
-index 371fa04c870fe..189e36a529f26 100644
---- a/extensions/libebt_stp.c
-+++ b/extensions/libebt_stp.c
-@@ -139,36 +139,33 @@ static void brstp_parse(struct xt_option_call *cb)
- 		       cb->val.ethermacmask, ETH_ALEN);
- 		break;
- 
--#define RANGE_ASSIGN(name, fname, val) {				    \
-+#define RANGE_ASSIGN(fname, val) {				    \
- 		stpinfo->config.fname##l = val[0];			    \
- 		stpinfo->config.fname##u = cb->nvals > 1 ? val[1] : val[0]; \
--		if (stpinfo->config.fname##u < stpinfo->config.fname##l)    \
--			xtables_error(PARAMETER_PROBLEM,		    \
--				      "Bad --stp-" name " range");	    \
- }
- 	case O_RPRIO:
--		RANGE_ASSIGN("root-prio", root_prio, cb->val.u16_range);
-+		RANGE_ASSIGN(root_prio, cb->val.u16_range);
- 		break;
- 	case O_RCOST:
--		RANGE_ASSIGN("root-cost", root_cost, cb->val.u32_range);
-+		RANGE_ASSIGN(root_cost, cb->val.u32_range);
- 		break;
- 	case O_SPRIO:
--		RANGE_ASSIGN("sender-prio", sender_prio, cb->val.u16_range);
-+		RANGE_ASSIGN(sender_prio, cb->val.u16_range);
- 		break;
- 	case O_PORT:
--		RANGE_ASSIGN("port", port, cb->val.u16_range);
-+		RANGE_ASSIGN(port, cb->val.u16_range);
- 		break;
- 	case O_MSGAGE:
--		RANGE_ASSIGN("msg-age", msg_age, cb->val.u16_range);
-+		RANGE_ASSIGN(msg_age, cb->val.u16_range);
- 		break;
- 	case O_MAXAGE:
--		RANGE_ASSIGN("max-age", max_age, cb->val.u16_range);
-+		RANGE_ASSIGN(max_age, cb->val.u16_range);
- 		break;
- 	case O_HTIME:
--		RANGE_ASSIGN("hello-time", hello_time, cb->val.u16_range);
-+		RANGE_ASSIGN(hello_time, cb->val.u16_range);
- 		break;
- 	case O_FWDD:
--		RANGE_ASSIGN("forward-delay", forward_delay, cb->val.u16_range);
-+		RANGE_ASSIGN(forward_delay, cb->val.u16_range);
- 		break;
- #undef RANGE_ASSIGN
- 	}
-diff --git a/extensions/libip6t_ah.t b/extensions/libip6t_ah.t
-index 77c5383c91a6d..eeba7b451fc6d 100644
---- a/extensions/libip6t_ah.t
-+++ b/extensions/libip6t_ah.t
-@@ -18,4 +18,4 @@
- -m ah --ahspi :3;-m ah --ahspi 0:3;OK
- -m ah --ahspi 3:;-m ah --ahspi 3:4294967295;OK
- -m ah --ahspi 3:3;-m ah --ahspi 3;OK
---m ah --ahspi 4:3;=;OK
-+-m ah --ahspi 4:3;;FAIL
-diff --git a/extensions/libip6t_frag.t b/extensions/libip6t_frag.t
-index a89076708ea03..57f7da27d5e1d 100644
---- a/extensions/libip6t_frag.t
-+++ b/extensions/libip6t_frag.t
-@@ -5,7 +5,7 @@
- -m frag --fragid 42:;-m frag --fragid 42:4294967295;OK
- -m frag --fragid 1:42;=;OK
- -m frag --fragid 3:3;-m frag --fragid 3;OK
---m frag --fragid 4:3;=;OK
-+-m frag --fragid 4:3;;FAIL
- -m frag --fraglen 42;=;OK
- -m frag --fragres;=;OK
- -m frag --fragfirst;=;OK
-diff --git a/extensions/libip6t_rt.t b/extensions/libip6t_rt.t
-index 2699e800d528e..56c8b077267ce 100644
---- a/extensions/libip6t_rt.t
-+++ b/extensions/libip6t_rt.t
-@@ -8,4 +8,4 @@
- -m rt --rt-segsleft :3;-m rt --rt-segsleft 0:3;OK
- -m rt --rt-segsleft 3:;-m rt --rt-segsleft 3:4294967295;OK
- -m rt --rt-segsleft 3:3;-m rt --rt-segsleft 3;OK
---m rt --rt-segsleft 4:3;=;OK
-+-m rt --rt-segsleft 4:3;;FAIL
-diff --git a/extensions/libipt_ah.t b/extensions/libipt_ah.t
-index a2aa338fef9c5..d86ede60970ac 100644
---- a/extensions/libipt_ah.t
-+++ b/extensions/libipt_ah.t
-@@ -16,4 +16,4 @@
- -p ah -m ah --ahspi :3;-p ah -m ah --ahspi 0:3;OK
- -p ah -m ah --ahspi 3:;-p ah -m ah --ahspi 3:4294967295;OK
- -p ah -m ah --ahspi 3:3;-p ah -m ah --ahspi 3;OK
---p ah -m ah --ahspi 4:3;=;OK
-+-p ah -m ah --ahspi 4:3;;FAIL
-diff --git a/extensions/libxt_connbytes.c b/extensions/libxt_connbytes.c
-index b57f0fc0d28c2..2f1108572e8a9 100644
---- a/extensions/libxt_connbytes.c
-+++ b/extensions/libxt_connbytes.c
-@@ -41,10 +41,6 @@ static void connbytes_parse(struct xt_option_call *cb)
- 		if (cb->nvals == 2)
- 			sinfo->count.to = cb->val.u64_range[1];
- 
--		if (sinfo->count.to < sinfo->count.from)
--			xtables_error(PARAMETER_PROBLEM, "%llu should be less than %llu",
--					(unsigned long long)sinfo->count.from,
--					(unsigned long long)sinfo->count.to);
- 		if (cb->invert) {
- 			i = sinfo->count.from;
- 			sinfo->count.from = sinfo->count.to;
 diff --git a/extensions/libxt_conntrack.t b/extensions/libxt_conntrack.t
-index 399d70abbe707..620e7b5436e88 100644
+index 620e7b5436e88..5e27ddce4fe6e 100644
 --- a/extensions/libxt_conntrack.t
 +++ b/extensions/libxt_conntrack.t
-@@ -18,7 +18,7 @@
- -m conntrack --ctexpire 42949672956;;FAIL
- -m conntrack --ctexpire -1;;FAIL
- -m conntrack --ctexpire 3:3;-m conntrack --ctexpire 3;OK
---m conntrack --ctexpire 4:3;=;OK
-+-m conntrack --ctexpire 4:3;;FAIL
- -m conntrack --ctdir ORIGINAL;=;OK
- -m conntrack --ctdir REPLY;=;OK
- -m conntrack --ctstatus NONE;=;OK
-diff --git a/extensions/libxt_esp.t b/extensions/libxt_esp.t
-index a8bc5287dd089..686611f22b457 100644
---- a/extensions/libxt_esp.t
-+++ b/extensions/libxt_esp.t
-@@ -10,6 +10,6 @@
- -p esp -m esp --espspi 4:;-p esp -m esp --espspi 4:4294967295;OK
- -p esp -m esp --espspi 3:4;=;OK
- -p esp -m esp --espspi 4:4;-p esp -m esp --espspi 4;OK
---p esp -m esp --espspi 4:3;=;OK
-+-p esp -m esp --espspi 4:3;;FAIL
- -p esp -m esp;=;OK
- -m esp;;FAIL
-diff --git a/extensions/libxt_ipcomp.t b/extensions/libxt_ipcomp.t
-index f62144ae8fec8..375f885a708d9 100644
---- a/extensions/libxt_ipcomp.t
-+++ b/extensions/libxt_ipcomp.t
-@@ -7,4 +7,4 @@
- -p ipcomp -m ipcomp --ipcompspi 4:;-p ipcomp -m ipcomp --ipcompspi 4:4294967295;OK
- -p ipcomp -m ipcomp --ipcompspi 3:4;=;OK
- -p ipcomp -m ipcomp --ipcompspi 4:4;-p ipcomp -m ipcomp --ipcompspi 4;OK
---p ipcomp -m ipcomp --ipcompspi 4:3;=;OK
-+-p ipcomp -m ipcomp --ipcompspi 4:3;;FAIL
-diff --git a/extensions/libxt_length.t b/extensions/libxt_length.t
-index 3905d2d05feec..bae313b4072c8 100644
---- a/extensions/libxt_length.t
-+++ b/extensions/libxt_length.t
-@@ -9,5 +9,5 @@
- -m length --length 0:65536;;FAIL
- -m length --length -1:65535;;FAIL
- -m length --length 4:4;-m length --length 4;OK
---m length --length 4:3;=;OK
-+-m length --length 4:3;;FAIL
- -m length;;FAIL
+@@ -34,22 +34,22 @@
+ -m conntrack --ctorigsrcport 4:;-m conntrack --ctorigsrcport 4:65535;OK
+ -m conntrack --ctorigsrcport 3:4;=;OK
+ -m conntrack --ctorigsrcport 4:4;-m conntrack --ctorigsrcport 4;OK
+--m conntrack --ctorigsrcport 4:3;=;OK
++-m conntrack --ctorigsrcport 4:3;;FAIL
+ -m conntrack --ctreplsrcport :;-m conntrack --ctreplsrcport 0:65535;OK
+ -m conntrack --ctreplsrcport :4;-m conntrack --ctreplsrcport 0:4;OK
+ -m conntrack --ctreplsrcport 4:;-m conntrack --ctreplsrcport 4:65535;OK
+ -m conntrack --ctreplsrcport 3:4;=;OK
+ -m conntrack --ctreplsrcport 4:4;-m conntrack --ctreplsrcport 4;OK
+--m conntrack --ctreplsrcport 4:3;=;OK
++-m conntrack --ctreplsrcport 4:3;;FAIL
+ -m conntrack --ctorigdstport :;-m conntrack --ctorigdstport 0:65535;OK
+ -m conntrack --ctorigdstport :4;-m conntrack --ctorigdstport 0:4;OK
+ -m conntrack --ctorigdstport 4:;-m conntrack --ctorigdstport 4:65535;OK
+ -m conntrack --ctorigdstport 3:4;=;OK
+ -m conntrack --ctorigdstport 4:4;-m conntrack --ctorigdstport 4;OK
+--m conntrack --ctorigdstport 4:3;=;OK
++-m conntrack --ctorigdstport 4:3;;FAIL
+ -m conntrack --ctrepldstport :;-m conntrack --ctrepldstport 0:65535;OK
+ -m conntrack --ctrepldstport :4;-m conntrack --ctrepldstport 0:4;OK
+ -m conntrack --ctrepldstport 4:;-m conntrack --ctrepldstport 4:65535;OK
+ -m conntrack --ctrepldstport 3:4;=;OK
+ -m conntrack --ctrepldstport 4:4;-m conntrack --ctrepldstport 4;OK
+--m conntrack --ctrepldstport 4:3;=;OK
++-m conntrack --ctrepldstport 4:3;;FAIL
+diff --git a/extensions/libxt_dccp.t b/extensions/libxt_dccp.t
+index 535891a556394..3655ab6f4b7fc 100644
+--- a/extensions/libxt_dccp.t
++++ b/extensions/libxt_dccp.t
+@@ -10,12 +10,12 @@
+ -p dccp -m dccp --sport :4;-p dccp -m dccp --sport 0:4;OK
+ -p dccp -m dccp --sport 4:;-p dccp -m dccp --sport 4:65535;OK
+ -p dccp -m dccp --sport 4:4;-p dccp -m dccp --sport 4;OK
+--p dccp -m dccp --sport 4:3;=;OK
++-p dccp -m dccp --sport 4:3;;FAIL
+ -p dccp -m dccp --dport :;-p dccp -m dccp --dport 0:65535;OK
+ -p dccp -m dccp --dport :4;-p dccp -m dccp --dport 0:4;OK
+ -p dccp -m dccp --dport 4:;-p dccp -m dccp --dport 4:65535;OK
+ -p dccp -m dccp --dport 4:4;-p dccp -m dccp --dport 4;OK
+--p dccp -m dccp --dport 4:3;=;OK
++-p dccp -m dccp --dport 4:3;;FAIL
+ -p dccp -m dccp ! --sport 1;=;OK
+ -p dccp -m dccp ! --sport 65535;=;OK
+ -p dccp -m dccp ! --dport 1;=;OK
+diff --git a/extensions/libxt_udp.t b/extensions/libxt_udp.t
+index d62dd5e3f830e..09dff363fc21a 100644
+--- a/extensions/libxt_udp.t
++++ b/extensions/libxt_udp.t
+@@ -11,13 +11,13 @@
+ -p udp -m udp --sport :4;-p udp -m udp --sport 0:4;OK
+ -p udp -m udp --sport 4:;-p udp -m udp --sport 4:65535;OK
+ -p udp -m udp --sport 4:4;-p udp -m udp --sport 4;OK
+--p udp -m udp --sport 4:3;=;OK
++-p udp -m udp --sport 4:3;;FAIL
+ -p udp -m udp --dport :;-p udp -m udp;OK
+ -p udp -m udp ! --dport :;-p udp -m udp;OK;LEGACY;-p udp
+ -p udp -m udp --dport :4;-p udp -m udp --dport 0:4;OK
+ -p udp -m udp --dport 4:;-p udp -m udp --dport 4:65535;OK
+ -p udp -m udp --dport 4:4;-p udp -m udp --dport 4;OK
+--p udp -m udp --dport 4:3;=;OK
++-p udp -m udp --dport 4:3;;FAIL
+ -p udp -m udp ! --sport 1;=;OK
+ -p udp -m udp ! --sport 65535;=;OK
+ -p udp -m udp ! --dport 1;=;OK
 diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
-index f622f4c6ea328..cecf7d3526112 100644
+index cecf7d3526112..0a995a63a2a88 100644
 --- a/libxtables/xtoptions.c
 +++ b/libxtables/xtoptions.c
-@@ -291,8 +291,8 @@ static void xtopt_parse_mint(struct xt_option_call *cb)
- 	size_t esize = xtopt_esize_by_type(entry->type);
- 	const uintmax_t lmax = xtopt_max_by_type(entry->type);
- 	void *put = XTOPT_MKPTR(cb);
-+	uintmax_t value, lmin = 0;
+@@ -604,7 +604,7 @@ static void xtopt_parse_mport(struct xt_option_call *cb)
+ 	const struct xt_option_entry *entry = cb->entry;
+ 	char *lo_arg, *wp_arg, *arg;
  	unsigned int maxiter;
--	uintmax_t value;
- 	char *end = "";
- 	char sep = ':';
+-	int value;
++	int value, prev = 0;
  
-@@ -314,16 +314,17 @@ static void xtopt_parse_mint(struct xt_option_call *cb)
- 			end = (char *)arg;
- 			value = (cb->nvals == 1) ? lmax : 0;
- 		} else {
--			if (!xtables_strtoul(arg, &end, &value, 0, lmax))
-+			if (!xtables_strtoul(arg, &end, &value, lmin, lmax))
- 				xt_params->exit_err(PARAMETER_PROBLEM,
- 					"%s: bad value for option \"--%s\" near "
--					"\"%s\", or out of range (0-%ju).\n",
--					cb->ext_name, entry->name, arg, lmax);
-+					"\"%s\", or out of range (%ju-%ju).\n",
-+					cb->ext_name, entry->name, arg, lmin, lmax);
- 			if (*end != '\0' && *end != sep)
- 				xt_params->exit_err(PARAMETER_PROBLEM,
- 					"%s: Argument to \"--%s\" has "
- 					"unexpected characters near \"%s\".\n",
- 					cb->ext_name, entry->name, end);
-+			lmin = value;
- 		}
- 		xtopt_mint_value_to_cb(cb, value);
- 		++cb->nvals;
+ 	wp_arg = lo_arg = xtables_strdup(cb->arg);
+ 
+@@ -634,6 +634,11 @@ static void xtopt_parse_mport(struct xt_option_call *cb)
+ 			xt_params->exit_err(PARAMETER_PROBLEM,
+ 				"Port \"%s\" does not resolve to "
+ 				"anything.\n", arg);
++		if (value < prev)
++			xt_params->exit_err(PARAMETER_PROBLEM,
++				"Port range %d-%d is negative.\n",
++				prev, value);
++		prev = value;
+ 		if (entry->flags & XTOPT_NBO)
+ 			value = htons(value);
+ 		if (cb->nvals < ARRAY_SIZE(cb->val.port_range))
 -- 
 2.43.0
 
