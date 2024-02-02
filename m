@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-854-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-864-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 994E8847171
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 14:53:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 998E0847179
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 14:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A49BCB2460E
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 13:53:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 955261C23F38
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Feb 2024 13:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DA547A60;
-	Fri,  2 Feb 2024 13:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90731420B9;
+	Fri,  2 Feb 2024 13:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="o5z8Dchd"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="UmZtvXNk"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41A923C5
-	for <netfilter-devel@vger.kernel.org>; Fri,  2 Feb 2024 13:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346BA13541C
+	for <netfilter-devel@vger.kernel.org>; Fri,  2 Feb 2024 13:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706881998; cv=none; b=DYdSMSrRaUHaEde8u83noHJvhdXyZv++qJcnqCGjObAMQIGe83hCI4fgfILAboZNFvXfekCrzNRwSP5/6mewSwdSYnw0tAh0pC6VB7ZR2yeEld9kKoTa656CIyP1LhXElBN3TZ+NvRj+7l671Y6vIW2MxZKdKLdqNq7i692h0fI=
+	t=1706882000; cv=none; b=nL4ODb7zR+X/U6TNJdACvLDUk5dxuiwDA+zmORP6gkt9zJ03oJVhLNerG18MRrrapuXFkMPH55EnyKtpYjjibhqbfHK8iWapfW+Ur6wG83BuSb00YBQ+6Fz3rKfXmOfg8PViJixWFE29AefTaiX8LF6hqxcNFoMsMV0HiJ6zlMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706881998; c=relaxed/simple;
-	bh=0JlAXB8X4JpPVcMuQCROpKHXLO+TNzrjSPv3NKqZlhM=;
+	s=arc-20240116; t=1706882000; c=relaxed/simple;
+	bh=eB3AsazPsiSUe1jf/8mWUrKsBQIY6Ce+kRkH65LZoHY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K84QOSMD6JmANOAnV4G/LdoJT4Av7l8KDk72oc1G1ig3kgcV174cgRFV4dedhxTI5rSF1zaFcRZOP+BShZusxOXy2zZaP2vLbUxDFGfi81+mWy0nulsngHp3ZipuJiq2tSqkA4n8LyLJ60sNl+QF9reXbsALuJ29BY3Zbz+/3vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=o5z8Dchd; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=Oz0yfD+lWkXtHiTKMFpfZV+xNvpOCxp4ZCgqh+0Xt5RMVlnfejlJn8sIUzoaW3ME+setFT4q9qMugWgKolRxJ3LGmurVb2LC1KXLanbXORHrbkoYo8zGp2T8l9kzgTBqdDUcOKUsVR7hkR2e1rdn18T7NoDHA+PjH0lsDNAMUWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=UmZtvXNk; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=8XaP0LiTppFyTAI3jlue/xLeY+9qXgjKw3/yPjbbveI=; b=o5z8DchdJRFVLDiIu8UGNn+91R
-	g1sSX5LsamlDhhafS43hKbPe73qwOfEY/2ih5gWgb6qhVMYs2aQwKXQnro3XbAZB6GEk2Uxx+KfVN
-	iii7m6YRbjYAUyBowSS0uPKsHcoztrowffjF2o8AbRUdn2gsj7UtkTGCy/g67mFfAd2bYY6W+fEHF
-	gg6UCxMgkxdlVVTHMy20MhHuV0FPFCGfB1hPM1taibe2ln5YGVdWqRgSiz6ABYYeX7WNnnfni/Mk8
-	HEDCOXfNxNmKHlrc2r86zl0LLYfRF7NG3ccOlXM7VRezzQN05a47o4UVkawXkKtVSz5SoenO9zbmq
-	GAp9pPkA==;
+	bh=lYC9MnOqhuPdDSeFq9CNPyYcz+EY09sUSMmnseUX1Uc=; b=UmZtvXNk/yEObnW2GnQcJzZeKB
+	sLbKlY+81fMNoPi/LK2v4CpsgHTV71pHQnXhDbFGTi/6gUNcgNL+770a2QFME+uMnUHg9IVZ7CrCB
+	Ra3QoS6gft8jzv9mr8Vd7nhq7bGdzf2gOf43VwtxKGR3Y4u+XPgKOXweKmEB2OXlsv4C2VJ+1iWVG
+	AWATLCaqhlKktSNR7ye0L1eSHw30TCNw9f2Aqy3JqCbsORQsRXQlkd33hfEKrMUy0ANA2fGthAyY7
+	cQ56zK+bsrs5Ckp7lfP8Dhx4yS68eBnC38x1iZxIb6x+JybbXMZVRR+YBeVElq2MqTUN2KCLaIeMe
+	/vFsCwdA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rVtye-000000003BE-1MQU;
-	Fri, 02 Feb 2024 14:53:08 +0100
+	id 1rVtyi-000000003Bq-1fP4;
+	Fri, 02 Feb 2024 14:53:12 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 09/12] extensions: ipcomp: Save inverted full ranges
-Date: Fri,  2 Feb 2024 14:53:04 +0100
-Message-ID: <20240202135307.25331-10-phil@nwl.cc>
+Subject: [iptables PATCH 10/12] nft: Do not omit full ranges if inverted
+Date: Fri,  2 Feb 2024 14:53:05 +0100
+Message-ID: <20240202135307.25331-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240202135307.25331-1-phil@nwl.cc>
 References: <20240202135307.25331-1-phil@nwl.cc>
@@ -65,46 +65,78 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fixes: 0bb8765cc28cf ("iptables: Add IPv4/6 IPcomp match support")
+Otherwise this turns a never matching rule into an always matching one.
+
+Fixes: c034cf31dd1a9 ("nft: prefer native expressions instead of udp match")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_ipcomp.c | 7 ++++---
- extensions/libxt_ipcomp.t | 2 +-
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ extensions/libxt_tcp.t | 4 ++--
+ extensions/libxt_udp.t | 4 ++--
+ iptables/nft.c         | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/extensions/libxt_ipcomp.c b/extensions/libxt_ipcomp.c
-index 4171c4a1c4eb7..961c17e584933 100644
---- a/extensions/libxt_ipcomp.c
-+++ b/extensions/libxt_ipcomp.c
-@@ -76,11 +76,12 @@ static void comp_print(const void *ip, const struct xt_entry_match *match,
- static void comp_save(const void *ip, const struct xt_entry_match *match)
- {
- 	const struct xt_ipcomp *compinfo = (struct xt_ipcomp *)match->data;
-+	bool inv_spi = compinfo->invflags & XT_IPCOMP_INV_SPI;
+diff --git a/extensions/libxt_tcp.t b/extensions/libxt_tcp.t
+index baa41615b11a6..911c51113cf2a 100644
+--- a/extensions/libxt_tcp.t
++++ b/extensions/libxt_tcp.t
+@@ -7,13 +7,13 @@
+ -p tcp -m tcp --sport 1024:65535;=;OK
+ -p tcp -m tcp --sport 1024:;-p tcp -m tcp --sport 1024:65535;OK
+ -p tcp -m tcp --sport :;-p tcp -m tcp;OK
+--p tcp -m tcp ! --sport :;-p tcp -m tcp;OK;LEGACY;-p tcp
++-p tcp -m tcp ! --sport :;-p tcp -m tcp;OK
+ -p tcp -m tcp --sport :4;-p tcp -m tcp --sport 0:4;OK
+ -p tcp -m tcp --sport 4:;-p tcp -m tcp --sport 4:65535;OK
+ -p tcp -m tcp --sport 4:4;-p tcp -m tcp --sport 4;OK
+ -p tcp -m tcp --sport 4:3;;FAIL
+ -p tcp -m tcp --dport :;-p tcp -m tcp;OK
+--p tcp -m tcp ! --dport :;-p tcp -m tcp;OK;LEGACY;-p tcp
++-p tcp -m tcp ! --dport :;-p tcp -m tcp;OK
+ -p tcp -m tcp --dport :4;-p tcp -m tcp --dport 0:4;OK
+ -p tcp -m tcp --dport 4:;-p tcp -m tcp --dport 4:65535;OK
+ -p tcp -m tcp --dport 4:4;-p tcp -m tcp --dport 4;OK
+diff --git a/extensions/libxt_udp.t b/extensions/libxt_udp.t
+index 09dff363fc21a..3c85b09f871da 100644
+--- a/extensions/libxt_udp.t
++++ b/extensions/libxt_udp.t
+@@ -7,13 +7,13 @@
+ -p udp -m udp --sport 1024:65535;=;OK
+ -p udp -m udp --sport 1024:;-p udp -m udp --sport 1024:65535;OK
+ -p udp -m udp --sport :;-p udp -m udp;OK
+--p udp -m udp ! --sport :;-p udp -m udp;OK;LEGACY;-p udp
++-p udp -m udp ! --sport :;-p udp -m udp;OK
+ -p udp -m udp --sport :4;-p udp -m udp --sport 0:4;OK
+ -p udp -m udp --sport 4:;-p udp -m udp --sport 4:65535;OK
+ -p udp -m udp --sport 4:4;-p udp -m udp --sport 4;OK
+ -p udp -m udp --sport 4:3;;FAIL
+ -p udp -m udp --dport :;-p udp -m udp;OK
+--p udp -m udp ! --dport :;-p udp -m udp;OK;LEGACY;-p udp
++-p udp -m udp ! --dport :;-p udp -m udp;OK
+ -p udp -m udp --dport :4;-p udp -m udp --dport 0:4;OK
+ -p udp -m udp --dport 4:;-p udp -m udp --dport 4:65535;OK
+ -p udp -m udp --dport 4:4;-p udp -m udp --dport 4;OK
+diff --git a/iptables/nft.c b/iptables/nft.c
+index c2cbc9d72ef0c..dae6698d3234a 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -1324,7 +1324,7 @@ static int add_nft_tcpudp(struct nft_handle *h,struct nftnl_rule *r,
+ 		return 0;
+ 	}
  
- 	if (!(compinfo->spis[0] == 0
--	    && compinfo->spis[1] == 0xFFFFFFFF)) {
--		printf("%s --ipcompspi ",
--			(compinfo->invflags & XT_IPCOMP_INV_SPI) ? " !" : "");
-+	    && compinfo->spis[1] == UINT32_MAX
-+	    && !inv_spi)) {
-+		printf("%s --ipcompspi ", inv_spi ? " !" : "");
- 		if (compinfo->spis[0]
- 		    != compinfo->spis[1])
- 			printf("%u:%u",
-diff --git a/extensions/libxt_ipcomp.t b/extensions/libxt_ipcomp.t
-index 375f885a708d9..e25695c6912be 100644
---- a/extensions/libxt_ipcomp.t
-+++ b/extensions/libxt_ipcomp.t
-@@ -2,7 +2,7 @@
- -p ipcomp -m ipcomp --ipcompspi 18 -j DROP;=;OK
- -p ipcomp -m ipcomp ! --ipcompspi 18 -j ACCEPT;=;OK
- -p ipcomp -m ipcomp --ipcompspi :;-p ipcomp -m ipcomp;OK
---p ipcomp -m ipcomp ! --ipcompspi :;-p ipcomp -m ipcomp;OK
-+-p ipcomp -m ipcomp ! --ipcompspi :;-p ipcomp -m ipcomp ! --ipcompspi 0:4294967295;OK
- -p ipcomp -m ipcomp --ipcompspi :4;-p ipcomp -m ipcomp --ipcompspi 0:4;OK
- -p ipcomp -m ipcomp --ipcompspi 4:;-p ipcomp -m ipcomp --ipcompspi 4:4294967295;OK
- -p ipcomp -m ipcomp --ipcompspi 3:4;=;OK
+-	if (src[0] || src[1] < 0xffff) {
++	if (src[0] || src[1] < UINT16_MAX || invert_src) {
+ 		expr = gen_payload(h, NFT_PAYLOAD_TRANSPORT_HEADER, 0, 2, &reg);
+ 		if (!expr)
+ 			return -ENOMEM;
+@@ -1335,7 +1335,7 @@ static int add_nft_tcpudp(struct nft_handle *h,struct nftnl_rule *r,
+ 			return ret;
+ 	}
+ 
+-	if (dst[0] || dst[1] < 0xffff) {
++	if (dst[0] || dst[1] < UINT16_MAX || invert_dst) {
+ 		expr = gen_payload(h, NFT_PAYLOAD_TRANSPORT_HEADER, 2, 2, &reg);
+ 		if (!expr)
+ 			return -ENOMEM;
 -- 
 2.43.0
 
