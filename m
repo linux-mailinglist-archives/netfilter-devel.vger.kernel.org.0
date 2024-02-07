@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-941-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-943-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD3384D6A4
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Feb 2024 00:38:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D634F84D6A9
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Feb 2024 00:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 712261C229F3
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Feb 2024 23:38:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 755F51F231BC
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Feb 2024 23:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D6D692EC;
-	Wed,  7 Feb 2024 23:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A2169313;
+	Wed,  7 Feb 2024 23:37:39 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643A11D557;
-	Wed,  7 Feb 2024 23:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD100535D1;
+	Wed,  7 Feb 2024 23:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707349058; cv=none; b=KDYKrA1kgmvcUBp5jhNl9l/TJ784wd0JNM3McL6ZPB17lSmwQfO38UZ7UGftIc0y1svUwAANwfbzEVAJ7q0pic+IuAV4859sLha0ookWs1DFxytIxFRodntGDwErzlryhMSaUbUskbMS/qm02AtKyp8h+oPiPSN6m8MBpn/jPYI=
+	t=1707349059; cv=none; b=Rxi7sJl3Jg8osMiyx9dt+WMeF6a1e/cE0/A7Dct7ejYfTs0S+d0kXc6+JqjVPpzLgUW70kzWOx1HnsiF2yWAnRrBiir1NokX7dPAB4u6OqajRAdlqSzqlVev9NsXv6nEZQLhRYBtSjsumzOVpoV1WjJEEGqVC2l2UqM2lkgVfrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707349058; c=relaxed/simple;
-	bh=PU7UEUpSNPhUkPIkmvSRc9uwekEDT0k6Y67J10CevyU=;
+	s=arc-20240116; t=1707349059; c=relaxed/simple;
+	bh=XYGxS6hARIDz9poT+mcg0n0SSX1Vz+xu6ZhtTKq0i1c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Mtij0xBYApYYd/mVMRkUFtTemYRm3e5eyVEpeDEg0eUZGcoPa1WO7yxhVI05QssP+/E5kRlzGdsHJzIVpojTA4XwLTTBM+xeszFQK5tbOfgNkyXHP9xkKVeBhIHONa2sPR+4QhopkQREgIj/Nd/0/tCB2MuKkiRPVEb20+d8sJU=
+	 MIME-Version:Content-Type; b=Ykz/+ld17MGZxLf3sU6LEfRvF5wrBCL1yrhALhjy++HpOCinyZq+IouTXoXqxbcRjZ+Wv6zi2Bz7qH0fhSsIGzHWyYCegjvHsScjoyw2vdSV+zJxrBNMfx6DsnRSjRzPz3c47YiTdKBpm5rMyHGq4f6IjJWCOCO8yY8bDvz1q2o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 04/13] netfilter: nft_set_pipapo: remove static in nft_pipapo_get()
-Date: Thu,  8 Feb 2024 00:37:17 +0100
-Message-Id: <20240207233726.331592-5-pablo@netfilter.org>
+Subject: [PATCH net 05/13] netfilter: ipset: Missing gc cancellations fixed
+Date: Thu,  8 Feb 2024 00:37:18 +0100
+Message-Id: <20240207233726.331592-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240207233726.331592-1-pablo@netfilter.org>
 References: <20240207233726.331592-1-pablo@netfilter.org>
@@ -47,31 +47,74 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This has slipped through when reducing memory footprint for set
-elements, remove it.
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-Fixes: 9dad402b89e8 ("netfilter: nf_tables: expose opaque set elementas struct nft_elem_priv")
-Reported-by: Florian Westphal <fw@strlen.de>
+The patch fdb8e12cc2cc ("netfilter: ipset: fix performance regression
+in swap operation") missed to add the calls to gc cancellations
+at the error path of create operations and at module unload. Also,
+because the half of the destroy operations now executed by a
+function registered by call_rcu(), neither NFNL_SUBSYS_IPSET mutex
+or rcu read lock is held and therefore the checking of them results
+false warnings.
+
+Reported-by: syzbot+52bbc0ad036f6f0d4a25@syzkaller.appspotmail.com
+Reported-by: Brad Spengler <spender@grsecurity.net>
+Reported-by: Стас Ничипорович <stasn77@gmail.com>
+Fixes: fdb8e12cc2cc ("netfilter: ipset: fix performance regression in swap operation")
+Tested-by: Brad Spengler <spender@grsecurity.net>
+Tested-by: Стас Ничипорович <stasn77@gmail.com>
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_pipapo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/ipset/ip_set_core.c     | 2 ++
+ net/netfilter/ipset/ip_set_hash_gen.h | 4 ++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index efd523496be4..f24ecdaa1c1e 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -603,7 +603,7 @@ static struct nft_elem_priv *
- nft_pipapo_get(const struct net *net, const struct nft_set *set,
- 	       const struct nft_set_elem *elem, unsigned int flags)
- {
--	static struct nft_pipapo_elem *e;
-+	struct nft_pipapo_elem *e;
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index bcaad9c009fe..3184cc6be4c9 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -1154,6 +1154,7 @@ static int ip_set_create(struct sk_buff *skb, const struct nfnl_info *info,
+ 	return ret;
  
- 	e = pipapo_get(net, set, (const u8 *)elem->key.val.data,
- 		       nft_genmask_cur(net));
+ cleanup:
++	set->variant->cancel_gc(set);
+ 	set->variant->destroy(set);
+ put_out:
+ 	module_put(set->type->me);
+@@ -2378,6 +2379,7 @@ ip_set_net_exit(struct net *net)
+ 		set = ip_set(inst, i);
+ 		if (set) {
+ 			ip_set(inst, i) = NULL;
++			set->variant->cancel_gc(set);
+ 			ip_set_destroy_set(set);
+ 		}
+ 	}
+diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
+index 1136510521a8..cfa5eecbe393 100644
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -432,7 +432,7 @@ mtype_ahash_destroy(struct ip_set *set, struct htable *t, bool ext_destroy)
+ 	u32 i;
+ 
+ 	for (i = 0; i < jhash_size(t->htable_bits); i++) {
+-		n = __ipset_dereference(hbucket(t, i));
++		n = hbucket(t, i);
+ 		if (!n)
+ 			continue;
+ 		if (set->extensions & IPSET_EXT_DESTROY && ext_destroy)
+@@ -452,7 +452,7 @@ mtype_destroy(struct ip_set *set)
+ 	struct htype *h = set->data;
+ 	struct list_head *l, *lt;
+ 
+-	mtype_ahash_destroy(set, ipset_dereference_nfnl(h->table), true);
++	mtype_ahash_destroy(set, h->table, true);
+ 	list_for_each_safe(l, lt, &h->ad) {
+ 		list_del(l);
+ 		kfree(l);
 -- 
 2.30.2
 
