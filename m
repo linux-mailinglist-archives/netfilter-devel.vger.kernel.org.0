@@ -1,102 +1,85 @@
-Return-Path: <netfilter-devel+bounces-918-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-920-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F093784CF40
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Feb 2024 17:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B5CD84CF5D
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Feb 2024 18:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 986F31F22C29
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Feb 2024 16:48:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3AAC1F2408C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Feb 2024 17:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAF981ABA;
-	Wed,  7 Feb 2024 16:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D57881AD8;
+	Wed,  7 Feb 2024 17:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PZDb/Kmb"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="pTWEUVhu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65BF5A10B
-	for <netfilter-devel@vger.kernel.org>; Wed,  7 Feb 2024 16:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E741E532
+	for <netfilter-devel@vger.kernel.org>; Wed,  7 Feb 2024 17:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707324527; cv=none; b=jT+tyGxBgUmOrBy5orDFxLYiOJPRUaC5m3LrIZCnvjJ//JVQrj6uoXhnU047TRYQ+qfwr7zf2056cnXOZrL/f99q+tox4E4RF1D1mNdDd2gm+xK+AbNJZSUQ1XDFp2ceSnIVMgO6mfYMCqnbeafbFLiPinHh6ATBTR0QixMV03E=
+	t=1707325600; cv=none; b=eiGz9QAbZJfPiyMzbvWtmqC9nfIMYTf7Q6WMv2PCaftyF0POyFNzj38QNNi8byXgHr38pYLqrxdV7CZ6fNdntpx8bq9C94oaSNPHZmjW+t+mvtqtl01bEBIOlPQJvknmQ3BaOWPD37HS51zB6GrXK+OFum+TUadgG7a6/5Xwasw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707324527; c=relaxed/simple;
-	bh=hg8sUJ87N/IJ/CEUmHrsvhxQNgsZQyInycxguhRHXK8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TnshxA4RP5nkwTOEMzEZkPK/J7mDHqNLdl43HmljJEuYhtQ4g4/6VJbINAK+ktFurA6NBnH9uFNuAYBQ3cdg56CJED3vFhyg19hkI7lRZEbA2jCHabfbPfG/HgmIt8qltB1jARUwgakQCQqtNrcRu1qaCb6Mxb2AuU5F08OM1ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PZDb/Kmb; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1707325600; c=relaxed/simple;
+	bh=Vomkg/9E+xflwe1TKPYBMmgCBIqvYkNvoHrFspYPC0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OY7C1BrtYBKWh/iIDcGoyYz+e0oz1Ab16fhTID+VsvXomDOrV31X7KfBq2c/LjGYMg4y/4C8c+HT68wZSI5qXoo4UPVvvbcDDjYgM9/JsuU7V7MEPV64Btymih+G+Lgesb2c3ATosHRj/dbAPj4s9Bf8iyRDZAj+hgi0yXErJTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=pTWEUVhu; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=ibzeVVuOq8Jt2+tcliT/wnf6JWmHp0CdYFrGiGddEpk=; b=PZDb/Kmb8bkrnAZ1t9MlF9jmp5
-	MLdS3L6KX3GqNW//T6RTpLO+qxXa7s5TdQStnA/8xnyYZOzf1iwPVqKqy0hx1eKBOmgbbfQ/4Gmgh
-	2esHEg4lSQuC4zDgK6gAIPBXW+5QjTqV3qXh7VYlxrFFq+Ztsb4GUeSLcB0UkECHxi4vTMG8F1Fjk
-	aTHpSfeFcg4N8KEDA9o02cZADR0AR0aPAfAUfFcWM4eJagyDoenKDxgelvMDo0S0teKq9w+TVRISu
-	qdmEK4SB6lHigy1l25BL6vQxfqHV9RetAniVJfem6ds+nOp3t9RREjxv/1YH+X8o1xVkb/ObqkWkN
-	LNG6iXMg==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97)
+	bh=vHagVUYAX/DUVAiuDUCmLCPh4Ysa5cSFTHTqVGi6+zg=; b=pTWEUVhuZ/6KkUNyt4HpWdsRhv
+	zw90AaXvqLJIbC80AaYSvTFaG9Cd4C0IPAu92bFX1mJ5sXGTqLEsDLytH77qAlRKM3wOfEA7Ny1+U
+	IBZYFX16KuCYQe+K9BJoCJbbK6UCvT568Ui3J1v2zluV71Dyj+pqXhc/FKki0GWxfMVkw8S9YHLJ0
+	/xv9iKXuxoVo7acSpQdSK9zokrNQ1g9OGlvCfezyB4Fc0WBvb/R6oYL6aTgasepPX95xP0eHiYwwF
+	VLx4JbvOfp5hvnmi8ibpi17tSVsNVXrD98WMbp616RcNUUwVUhx7RApIu0cDkE5x9YEVKPR00URPK
+	KEURoG6Q==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97)
 	(envelope-from <phil@nwl.cc>)
-	id 1rXl6D-000000006VR-0GlP;
-	Wed, 07 Feb 2024 17:48:37 +0100
+	id 1rXlNZ-000000006hV-034u;
+	Wed, 07 Feb 2024 18:06:33 +0100
+Date: Wed, 7 Feb 2024 18:06:32 +0100
 From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org,
-	anton.khazan@gmail.com
-Subject: [nft PATCH] cache: Optimize caching for 'list tables' command
-Date: Wed,  7 Feb 2024 17:48:35 +0100
-Message-ID: <20240207164835.32723-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
+To: =?utf-8?B?6LCi6Ie06YKmIChYSUUgWmhpYmFuZyk=?= <Yeking@Red54.com>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH v3] evaluate: fix check for unknown in cmd_op_to_name
+Message-ID: <ZcO4mPIjziQFSfHZ@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	=?utf-8?B?6LCi6Ie06YKmIChYSUUgWmhpYmFuZyk=?= <Yeking@Red54.com>,
+	netfilter-devel@vger.kernel.org
+References: <tencent_FC8F6CE01EED438FA435FB1FD8337B3BCD06@qq.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_FC8F6CE01EED438FA435FB1FD8337B3BCD06@qq.com>
 
-No point in fetching anything other than existing tables from kernel:
-'list tables' merely prints existing table names, no contents.
+On Wed, Feb 07, 2024 at 03:10:20PM +0000, 谢致邦 (XIE Zhibang) wrote:
+> Example:
+> nft --debug=all destroy table ip missingtable
+> 
+> Before:
+> Evaluate unknown
+> 
+> After:
+> Evaluate destroy
+> 
+> Fixes: e1dfd5cc4c46 ("src: add support to command "destroy"")
+> Signed-off-by: 谢致邦 (XIE Zhibang) <Yeking@Red54.com>
 
-Also populate filter's family field to reduce overhead when listing
-tables in one family with many tables in another one. It works without
-further adjustments because nftnl_nlmsg_build_hdr() will use the value
-for nfgen_family.
-
-Reported-by: anton.khazan@gmail.com
-Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1735
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/cache.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/src/cache.c b/src/cache.c
-index b7f46c001d6eb..97f50ccaf6ba1 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -203,8 +203,12 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
- {
- 	switch (cmd->obj) {
- 	case CMD_OBJ_TABLE:
--		if (filter && cmd->handle.table.name) {
-+		if (filter)
- 			filter->list.family = cmd->handle.family;
-+		if (!cmd->handle.table.name) {
-+			flags |= NFT_CACHE_TABLE;
-+			break;
-+		} else if (filter) {
- 			filter->list.table = cmd->handle.table.name;
- 		}
- 		flags |= NFT_CACHE_FULL;
--- 
-2.43.0
-
+Patch applied, thanks!
 
