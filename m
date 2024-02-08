@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-967-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-970-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0E4184DF9E
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Feb 2024 12:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA3B84DFA3
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Feb 2024 12:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D14C1F2A552
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Feb 2024 11:28:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 508421F2A422
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Feb 2024 11:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E998A6F093;
-	Thu,  8 Feb 2024 11:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4077871B26;
+	Thu,  8 Feb 2024 11:28:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E74C6BFD8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7686D1B8;
 	Thu,  8 Feb 2024 11:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707391722; cv=none; b=ps2YYK69xTOuGlkL/b4vCfdCJDaFoAHArCerrJgBsaq5F6f6pdr/BaJNBivcJZJ+sC6F6Udyd8txg/LxHvFiykk05Q4ZiSOrfm9xBSpyRLVdpQTbA/7OAOSEwAG09CYMue5khRjfD2C4N6SfmI4yciovdY+L/QlobZ80wfH282A=
+	t=1707391724; cv=none; b=aXcbmcuUIgtqWOP/v3Pt1LVVPGFEXUhjLGxR/0a3/OC3wKFIEHI8d9FcqwiqoBS3mXw/fuplkpJ0ROYmKx2KEJDxi+saU5bcKzrlX8+DWqzucw2b5PuTU3hI2Bb3O6DFDTcexfnO/FgZpZPgAlDRgVhXynPPCDden0rk2P9qWjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707391722; c=relaxed/simple;
-	bh=JGqMyZn5PUS5Jyme6daszsMDNgGgUpdJmxZYXdcblb0=;
+	s=arc-20240116; t=1707391724; c=relaxed/simple;
+	bh=zt+vClPJLNab6Ob4q7jou1FjjrMe31sCfWi/4X78goA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=niRERhtLDzBDdA7hWgq6cseskNBOPqv9EWNVGhW2EEQOjGTypkDL+2KHYCK6N0IiPgoabDqWighpy70GLeyaFkhqIgPWRJI6jLDczfdCr2fJ99h42Mqpr/TnHlSUQxt7miivqYSiSOZFkTMi9LrlgCYK7G3tR40B/Ut0CXBteAM=
+	 MIME-Version; b=XyezcWjMxXKR90i8RGudmos02X1HaBfxXzX3RPT3JlhU2uiTPdqMk6m8aI6ucbjSTj3TlA6vNSlxl5R0wxMyheKtsIjSmp1jspAs+mC0HiyL3R7jXAg6yGnqEddL9UNHcd97B77RoztQGbpfB3ii1Sk9Q3dl9Qh2gQk5yIcvwZ0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -36,9 +36,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	kadlec@netfilter.org
-Subject: [PATCH net 01/13] netfilter: nft_compat: narrow down revision to unsigned 8-bits
-Date: Thu,  8 Feb 2024 12:28:22 +0100
-Message-Id: <20240208112834.1433-2-pablo@netfilter.org>
+Subject: [PATCH net 02/13] netfilter: nft_compat: reject unused compat flag
+Date: Thu,  8 Feb 2024 12:28:23 +0100
+Message-Id: <20240208112834.1433-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240208112834.1433-1-pablo@netfilter.org>
 References: <20240208112834.1433-1-pablo@netfilter.org>
@@ -50,45 +50,46 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-xt_find_revision() expects u8, restrict it to this datatype.
+Flag (1 << 0) is ignored is set, never used, reject it it with EINVAL
+instead.
 
 Fixes: 0ca743a55991 ("netfilter: nf_tables: add compatibility layer for x_tables")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_compat.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h | 2 ++
+ net/netfilter/nft_compat.c               | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index ca30232b7bc8..117c6a9b845b 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -285,9 +285,11 @@ enum nft_rule_attributes {
+ /**
+  * enum nft_rule_compat_flags - nf_tables rule compat flags
+  *
++ * @NFT_RULE_COMPAT_F_UNUSED: unused
+  * @NFT_RULE_COMPAT_F_INV: invert the check result
+  */
+ enum nft_rule_compat_flags {
++	NFT_RULE_COMPAT_F_UNUSED = (1 << 0),
+ 	NFT_RULE_COMPAT_F_INV	= (1 << 1),
+ 	NFT_RULE_COMPAT_F_MASK	= NFT_RULE_COMPAT_F_INV,
+ };
 diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
-index f0eeda97bfcd..001b6841a4b6 100644
+index 001b6841a4b6..ed71d5ecbe0a 100644
 --- a/net/netfilter/nft_compat.c
 +++ b/net/netfilter/nft_compat.c
-@@ -135,7 +135,7 @@ static void nft_target_eval_bridge(const struct nft_expr *expr,
+@@ -212,7 +212,8 @@ static int nft_parse_compat(const struct nlattr *attr, u16 *proto, bool *inv)
+ 		return -EINVAL;
  
- static const struct nla_policy nft_target_policy[NFTA_TARGET_MAX + 1] = {
- 	[NFTA_TARGET_NAME]	= { .type = NLA_NUL_STRING },
--	[NFTA_TARGET_REV]	= { .type = NLA_U32 },
-+	[NFTA_TARGET_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
- 	[NFTA_TARGET_INFO]	= { .type = NLA_BINARY },
- };
- 
-@@ -419,7 +419,7 @@ static void nft_match_eval(const struct nft_expr *expr,
- 
- static const struct nla_policy nft_match_policy[NFTA_MATCH_MAX + 1] = {
- 	[NFTA_MATCH_NAME]	= { .type = NLA_NUL_STRING },
--	[NFTA_MATCH_REV]	= { .type = NLA_U32 },
-+	[NFTA_MATCH_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
- 	[NFTA_MATCH_INFO]	= { .type = NLA_BINARY },
- };
- 
-@@ -724,7 +724,7 @@ static int nfnl_compat_get_rcu(struct sk_buff *skb,
- static const struct nla_policy nfnl_compat_policy_get[NFTA_COMPAT_MAX+1] = {
- 	[NFTA_COMPAT_NAME]	= { .type = NLA_NUL_STRING,
- 				    .len = NFT_COMPAT_NAME_MAX-1 },
--	[NFTA_COMPAT_REV]	= { .type = NLA_U32 },
-+	[NFTA_COMPAT_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
- 	[NFTA_COMPAT_TYPE]	= { .type = NLA_U32 },
- };
- 
+ 	flags = ntohl(nla_get_be32(tb[NFTA_RULE_COMPAT_FLAGS]));
+-	if (flags & ~NFT_RULE_COMPAT_F_MASK)
++	if (flags & NFT_RULE_COMPAT_F_UNUSED ||
++	    flags & ~NFT_RULE_COMPAT_F_MASK)
+ 		return -EINVAL;
+ 	if (flags & NFT_RULE_COMPAT_F_INV)
+ 		*inv = true;
 -- 
 2.30.2
 
