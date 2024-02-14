@@ -1,83 +1,76 @@
-Return-Path: <netfilter-devel+bounces-1031-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1033-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F37855760
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Feb 2024 00:38:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8651F855768
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Feb 2024 00:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71D35B27C27
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Feb 2024 23:38:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B867B1C240C7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Feb 2024 23:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EC81420D0;
-	Wed, 14 Feb 2024 23:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 562791419A0;
+	Wed, 14 Feb 2024 23:40:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720F61419A0;
-	Wed, 14 Feb 2024 23:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE276604DD
+	for <netfilter-devel@vger.kernel.org>; Wed, 14 Feb 2024 23:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707953914; cv=none; b=Ac+nCK8O0JgY4uX5mK7/aoQfzxvhTdlL06Mzq45oR0kt6d+yqQlT0UrCzSxl2V5waMpSB/w3R2D9TDdOSHdzQ6mFD6XL5NnHDpqMDJsVTbiq0gLoaDwCphcWCBzWFCeF/un+ntpv61ATmkakmjDNc12LDtuo1+E+0CpusVN8kcc=
+	t=1707954055; cv=none; b=pmqeIr8LwBSW+K7ND7AWZagOlMa5UxNeWtmsoHOOiezIdQznnYMLYQpmgTuOyyQboQS1mtVoGJMKqot5qOobvHBr2/n1hJzFxl2nFLjuZ/iyOxMWUAfjUMACpKOkQ4GwfVNLkMG6xVZwSuG57ucszepb42UqZQrulPBByv5rwNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707953914; c=relaxed/simple;
-	bh=cusHiibxw7scG0b928hwhY4fmI5SGcnm2+HPyqulOhQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=o9Hbk1yv7hkkf1mHQ9y7iv77ty7OvUnItnixxCvWQYWKVkgQjx353cqtUxpG54hwq7/KBh08pIwtKxg/lXuAzeR5zFIKx0658qsw+IdLf03UWwyQ6X5QZUcxxKwfdunzFS4yy1fYT+32hvGnBG+dYRrO+2gTnKVlLFQrQFj5tTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+	s=arc-20240116; t=1707954055; c=relaxed/simple;
+	bh=wvBUSkZk9Lajn8UR9GN3NeJKg9lnTRa1HnoxAhm+95w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h5NAWoSTlK+ejl+s7IRia7haGSYq0nB9IvdXkNPI92gLokjWkmGkkL/IXJGHiOTxr1JZd8TNpjPQc7WuUgcIyxQYowTvPu9nhDsuqCEA5kc/tgBomPeMfLWBVibAUfBxIVw44yJ91JuGr2N7B3eBmKO8GeZXQ2jEqzKlqI//34w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.41.52] (port=55310 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1raOru-001mYK-Nx; Thu, 15 Feb 2024 00:40:48 +0100
+Date: Thu, 15 Feb 2024 00:40:46 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 3/3] netfilter: nf_tables: fix bidirectional offload regression
-Date: Thu, 15 Feb 2024 00:38:18 +0100
-Message-Id: <20240214233818.7946-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240214233818.7946-1-pablo@netfilter.org>
-References: <20240214233818.7946-1-pablo@netfilter.org>
+To: Ignat Korchagin <ignat@cloudflare.com>
+Cc: kadlec@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, kernel-team@cloudflare.com,
+	jgriege@cloudflare.com
+Subject: Re: [PATCH] netfilter: nf_tables: allow NFPROTO_INET in
+ nft_(match/target)_validate()
+Message-ID: <Zc1PfoWN38UuFJRI@calendula>
+References: <20240209121954.81223-1-ignat@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240209121954.81223-1-ignat@cloudflare.com>
+X-Spam-Score: -1.9 (-)
 
-From: Felix Fietkau <nbd@nbd.name>
+Hi Ignat,
 
-Commit 8f84780b84d6 ("netfilter: flowtable: allow unidirectional rules")
-made unidirectional flow offload possible, while completely ignoring (and
-breaking) bidirectional flow offload for nftables.
-Add the missing flag that was left out as an exercise for the reader :)
+On Fri, Feb 09, 2024 at 12:19:54PM +0000, Ignat Korchagin wrote:
+> diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+> index 1f9474fefe84..beea8c447e7a 100644
+> --- a/net/netfilter/nft_compat.c
+> +++ b/net/netfilter/nft_compat.c
+> @@ -359,6 +359,7 @@ static int nft_target_validate(const struct nft_ctx *ctx,
+>  
+>  	if (ctx->family != NFPROTO_IPV4 &&
+>  	    ctx->family != NFPROTO_IPV6 &&
+> +	    ctx->family != NFPROTO_INET &&
 
-Cc: Vlad Buslov <vladbu@nvidia.com>
-Fixes: 8f84780b84d6 ("netfilter: flowtable: allow unidirectional rules")
-Reported-by: Daniel Golle <daniel@makrotopia.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_flow_offload.c | 1 +
- 1 file changed, 1 insertion(+)
+Please send a v2 restricting this to hooks prerouting, input, forward,
+output and postrouting which are the classic hooks, so ingress is not
+allowed, both for matches and targets.
 
-diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
-index 397351fa4d5f..ab9576098701 100644
---- a/net/netfilter/nft_flow_offload.c
-+++ b/net/netfilter/nft_flow_offload.c
-@@ -361,6 +361,7 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
- 		ct->proto.tcp.seen[1].flags |= IP_CT_TCP_FLAG_BE_LIBERAL;
- 	}
- 
-+	__set_bit(NF_FLOW_HW_BIDIRECTIONAL, &flow->flags);
- 	ret = flow_offload_add(flowtable, flow);
- 	if (ret < 0)
- 		goto err_flow_add;
--- 
-2.30.2
-
+Thanks
 
