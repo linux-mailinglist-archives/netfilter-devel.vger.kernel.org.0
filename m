@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1058-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1061-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E97985D6DA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 12:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9B985D6E1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 12:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B059B1C2268B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 11:30:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF3381C21FD0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 11:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956CA450F2;
-	Wed, 21 Feb 2024 11:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC94D3DB86;
+	Wed, 21 Feb 2024 11:30:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A495D4120B;
-	Wed, 21 Feb 2024 11:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B593FE4C;
+	Wed, 21 Feb 2024 11:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515000; cv=none; b=P1iJ5rVk5DmgzAmuppXhE20FxKrBYceG6npPFn0ETuq5lFpeTGCzCZRDqqWzZ/Sa+eXehklWEOt8FWB5Aztg1ryW7KUAJutnCZnAczEjyU6WQ/VEytD0bktYT2QHXwfdfHS5aV8pOVngUt5s0TbMjdDe7NFkBEmS4BGGPcvq/AA=
+	t=1708515013; cv=none; b=RuIWYc9zJiKgnlkqbFN6P8O/g2i+NW+Fk8hn9jTcNZN3v0qd0EoHV+45HwxaPooDN5vHvsWqE3kqf9/gZwIyZgRhPpQZLBqeDBufS6Ip9L8USowEU7Xpu3sSPiZZeaOpv+BLgiRHC7AtnpuUuxau1ktg0xCIJUobuFWQyxsDe4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515000; c=relaxed/simple;
-	bh=xerHGnIMtR/q4LquwWbcJISmaHjquvhFpnEVsOK1DjE=;
+	s=arc-20240116; t=1708515013; c=relaxed/simple;
+	bh=5JmIV5KBRuiB5rVg6Pzp94kME3zztS/rsXK7adO/Nzw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=unrVKFYBaYemF6LJ4Fwbh6iEAeWh9XVFpk98Qi2aWrntzZ5Mh/EpKTjJG3gAhlff/vNHFQmyj1SRVMU9kCdiVVOP3Zjrfvykoy1sKmJTUmjvBozT40fuuQZkv9JyTYkIQ/A/6JIAzrIsVn0leLdESTa2wnQDYBfT2oIKj4ePdpU=
+	 MIME-Version; b=QaAR+LMDQpH/lg41hZZe9EEBV7UvnA22t+YPBFsqTNDnvIdaG/Wh3CSNqNGZtTL+TrFeDwZNXq3LuPpjXBAyn1+BZjK8Nq1SPBAbQfP7naOCLEjRdHOl8YnJauIoelWR35ThHy41GYxFoo2SKu2THWOMUQ5ixGyyfvY95n/OF9c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rcknF-0003sC-SW; Wed, 21 Feb 2024 12:29:41 +0100
+	id 1rcknJ-0003sP-VK; Wed, 21 Feb 2024 12:29:45 +0100
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -40,9 +40,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH net-next 02/12] netfilter: nf_log: consolidate check for NULL logger in lookup function
-Date: Wed, 21 Feb 2024 12:26:04 +0100
-Message-ID: <20240221112637.5396-3-fw@strlen.de>
+Subject: [PATCH net-next 03/12] netfilter: nf_log: validate nf_logger_find_get()
+Date: Wed, 21 Feb 2024 12:26:05 +0100
+Message-ID: <20240221112637.5396-4-fw@strlen.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240221112637.5396-1-fw@strlen.de>
 References: <20240221112637.5396-1-fw@strlen.de>
@@ -56,32 +56,31 @@ Content-Transfer-Encoding: 8bit
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Consolidate pointer fetch to logger and check for NULL in
-__find_logger().
+Sanitize nf_logger_find_get() input parameters, no caller in the tree
+passes invalid values.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_log.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nf_log.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/net/netfilter/nf_log.c b/net/netfilter/nf_log.c
-index e16f158388bb..e0bfeb75766f 100644
+index e0bfeb75766f..370f8231385c 100644
 --- a/net/netfilter/nf_log.c
 +++ b/net/netfilter/nf_log.c
-@@ -31,10 +31,10 @@ static struct nf_logger *__find_logger(int pf, const char *str_logger)
- 	int i;
+@@ -156,6 +156,11 @@ int nf_logger_find_get(int pf, enum nf_log_type type)
+ 	struct nf_logger *logger;
+ 	int ret = -ENOENT;
  
- 	for (i = 0; i < NF_LOG_TYPE_MAX; i++) {
--		if (loggers[pf][i] == NULL)
-+		log = nft_log_dereference(loggers[pf][i]);
-+		if (!log)
- 			continue;
- 
--		log = nft_log_dereference(loggers[pf][i]);
- 		if (!strncasecmp(str_logger, log->name, strlen(log->name)))
- 			return log;
- 	}
++	if (pf >= ARRAY_SIZE(loggers))
++		return -EINVAL;
++	if (type >= NF_LOG_TYPE_MAX)
++		return -EINVAL;
++
+ 	if (pf == NFPROTO_INET) {
+ 		ret = nf_logger_find_get(NFPROTO_IPV4, type);
+ 		if (ret < 0)
 -- 
 2.43.0
 
