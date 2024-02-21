@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1063-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1067-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9989D85D6E6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 12:30:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4F085D6EC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 12:31:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52148281FD6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 11:30:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 332D11F22A07
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 11:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B01641775;
-	Wed, 21 Feb 2024 11:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E586046436;
+	Wed, 21 Feb 2024 11:30:22 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830224176F;
-	Wed, 21 Feb 2024 11:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E12540BF0;
+	Wed, 21 Feb 2024 11:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515019; cv=none; b=EP/W3UWr6S6yuGmmhqnEPp4s6quIon5z8KQgnq4b5w6IXktnTAIvU1ccV3eoVrACEerAICJosh2B0h3isq2WSm3y6PJhSsHUUSGaurXm3sKDSiUnjyDRmsSeSN9VFDwBo6aujfeI4MYFpuXd2fQnOpGDpS4FfMKT1yCpGqecrQw=
+	t=1708515022; cv=none; b=sWMiz00oHOlJCwfNvBOqN+L5jyBXCnWyxswrKPLTTPBvyljYQfc3OBnjPGKCAXCi4CpYoDwr2TyUvpZ1IHKnm+hCZ2FoO46iEnveOkCgkPDJj178kAXHb5Yjos2uk40IZEe6UFkXgHd+FOhoqlAl5OgPgc5Rnx/E7oxg2nFozMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515019; c=relaxed/simple;
-	bh=g7AhCM3To+xt3ACwNHgUnMvSsnNFjm6wIoZPafUupB8=;
+	s=arc-20240116; t=1708515022; c=relaxed/simple;
+	bh=FBUzN9Psi8PovEQ6gXSXJ7AJcO5gl0AH1rFQjrq+BOs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LSfFogVCZIkpdRI3naxUElt4nBmDWKhc+8PoWOfytdboV16fKRoytxQm2c/6dFL/RA8CDOaahmfabSYff8f7BFOVNWrDn7a4RPeBjOMZ8HSGQn0VYV2X6w+I4dIhx9qCaRxd1sUWwK2pccJIqJPvpV7ENCL+twbovyodHJ2kg18=
+	 MIME-Version; b=fpLe/3Mld9S4YlPkQ7idaxpiLDk2QVFucnNCrip7KAH9ip471l0TVnXT+XLn3hxUD0bVft6LuWz/rN7Xi78LEN5ybln+/A621UhWPxXx8pEkpNMnw2W8cRwnRWUyOSB3Mp7J8aJo17dD2JGpjp6Ig34EVImlbfmEiyB48W9l/VU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rcknO-0003si-1G; Wed, 21 Feb 2024 12:29:50 +0100
+	id 1rcknS-0003t5-4L; Wed, 21 Feb 2024 12:29:54 +0100
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -39,10 +39,11 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH net-next 04/12] netfilter: nft_osf: simplify init path
-Date: Wed, 21 Feb 2024 12:26:06 +0100
-Message-ID: <20240221112637.5396-5-fw@strlen.de>
+	kernel test robot <lkp@intel.com>,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH net-next 05/12] netfilter: xtables: fix up kconfig dependencies
+Date: Wed, 21 Feb 2024 12:26:07 +0100
+Message-ID: <20240221112637.5396-6-fw@strlen.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240221112637.5396-1-fw@strlen.de>
 References: <20240221112637.5396-1-fw@strlen.de>
@@ -54,45 +55,50 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+Randy Dunlap reports arptables build failure:
+arp_tables.c:(.text+0x20): undefined reference to `xt_find_table'
 
-Remove useless branch to check for errors in nft_parse_register_store().
+... because recent change removed a 'select' on the xtables core.
+Add a "depends" clause on arptables to resolve this.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Kernel test robot reports another build breakage:
+iptable_nat.c:(.text+0x8): undefined reference to `ipt_unregister_table_exit'
+
+... because of a typo, the nat table selected ip6tables.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/netfilter-devel/d0dfbaef-046a-4c42-9daa-53636664bf6d@infradead.org/
+Fixes: a9525c7f6219 ("netfilter: xtables: allow xtables-nft only builds")
+Fixes: 4654467dc7e1 ("netfilter: arptables: allow xtables-nft only builds")
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_osf.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ net/ipv4/netfilter/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_osf.c b/net/netfilter/nft_osf.c
-index 7f61506e5b44..7fec57ff736f 100644
---- a/net/netfilter/nft_osf.c
-+++ b/net/netfilter/nft_osf.c
-@@ -63,7 +63,6 @@ static int nft_osf_init(const struct nft_ctx *ctx,
- {
- 	struct nft_osf *priv = nft_expr_priv(expr);
- 	u32 flags;
--	int err;
- 	u8 ttl;
- 
- 	if (!tb[NFTA_OSF_DREG])
-@@ -83,13 +82,9 @@ static int nft_osf_init(const struct nft_ctx *ctx,
- 		priv->flags = flags;
- 	}
- 
--	err = nft_parse_register_store(ctx, tb[NFTA_OSF_DREG], &priv->dreg,
--				       NULL, NFT_DATA_VALUE,
--				       NFT_OSF_MAXGENRELEN);
--	if (err < 0)
--		return err;
--
--	return 0;
-+	return nft_parse_register_store(ctx, tb[NFTA_OSF_DREG], &priv->dreg,
-+					NULL, NFT_DATA_VALUE,
-+					NFT_OSF_MAXGENRELEN);
- }
- 
- static int nft_osf_dump(struct sk_buff *skb,
+diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
+index 783523087281..8f6e950163a7 100644
+--- a/net/ipv4/netfilter/Kconfig
++++ b/net/ipv4/netfilter/Kconfig
+@@ -217,7 +217,7 @@ config IP_NF_NAT
+ 	default m if NETFILTER_ADVANCED=n
+ 	select NF_NAT
+ 	select NETFILTER_XT_NAT
+-	select IP6_NF_IPTABLES_LEGACY
++	select IP_NF_IPTABLES_LEGACY
+ 	help
+ 	  This enables the `nat' table in iptables. This allows masquerading,
+ 	  port forwarding and other forms of full Network Address Port
+@@ -329,6 +329,7 @@ config NFT_COMPAT_ARP
+ config IP_NF_ARPFILTER
+ 	tristate "arptables-legacy packet filtering support"
+ 	select IP_NF_ARPTABLES
++	depends on NETFILTER_XTABLES
+ 	help
+ 	  ARP packet filtering defines a table `filter', which has a series of
+ 	  rules for simple ARP packet filtering at local input and
 -- 
 2.43.0
 
