@@ -1,93 +1,134 @@
-Return-Path: <netfilter-devel+bounces-1057-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1059-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484EF85D621
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 11:57:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70B4785D6DD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 12:30:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAC14B2364A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 10:57:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B1362820AC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Feb 2024 11:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C223D981;
-	Wed, 21 Feb 2024 10:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZXXnSreM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332924120B;
+	Wed, 21 Feb 2024 11:30:08 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A903D3A1;
-	Wed, 21 Feb 2024 10:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB703FE5F;
+	Wed, 21 Feb 2024 11:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708513051; cv=none; b=L2r8flYGBxUPYjDrd/cyYPDQEVojOQcZI/yo18k8z9snYa/TxNmJ00bUUSXCVMntLd6q9+INqt62l3WFTwXO176FeuxESBGg4sJqRmqSngmPJ3y5jGprbq0lV8cGUJpZDl6gPWlOxS0d3bf0TYLtL1Vc6OSFfRmhc4sWK/G6PTM=
+	t=1708515007; cv=none; b=eWOSLyzLpJEfGIEaWmNj1XAf1VZMQkd8BXLoRMJSJNwOtBW8EFypUybgQVzf6S4SDfTdKaeZofr4ZX1LVz4galCppLbW2cfYAhtSECjkpEgw4fJVF0mEIvErLknJ+DU/AoCn4G4dMKhSPRPgisX4xodnP7ELBRxytgBxguaOAv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708513051; c=relaxed/simple;
-	bh=C1Ipxz+S16Qg2MJDx5VYOE+RjL+OrQCdY2m3px6eY+g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RlG92UWck5n0Uv2H/ytQDyCXuZaHVRCI3I7egm+FAh3+5rX0x+TgNl2G/0rg3SJREGERguLE7e/Bm+gnM6VsaMIYFyVIayp/7WDemcpOZXDJqwFJu/wohwVsFoB+uKtG9KKh4rms2Pt3UGZdAOP215hdpsjn2g7iq39WvU+f0Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZXXnSreM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B933C433F1;
-	Wed, 21 Feb 2024 10:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708513050;
-	bh=C1Ipxz+S16Qg2MJDx5VYOE+RjL+OrQCdY2m3px6eY+g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZXXnSreMyEkh5WuKXE5riH1IWkbU/zmf9iF0XKW2PETpi4Pq2POrhKZmFwVyezSc+
-	 PTrRjWp9UDICUxawwlcTDzmyt6UxSbiCg7odez4qbnT9bKt6oANCqtF/NBcHHIAF9b
-	 SH0+Nfh55usNSP4O0UIi18Gh4eNAtC4qcNShuRZQ=
-Date: Wed, 21 Feb 2024 11:57:22 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Ajay Kaher <ajay.kaher@broadcom.com>
-Cc: stable@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
-	fw@strlen.de, davem@davemloft.net, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alexey.makhalov@broadcom.com,
-	florian.fainelli@broadcom.com, vasavi.sirnapalli@broadcom.com,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH v5.4.y] netfilter: nf_tables: fix pointer math issue in
- nft_byteorder_eval()
-Message-ID: <2024022115-vixen-brought-6058@gregkh>
-References: <1707108293-1004-1-git-send-email-ajay.kaher@broadcom.com>
- <1707108293-1004-2-git-send-email-ajay.kaher@broadcom.com>
+	s=arc-20240116; t=1708515007; c=relaxed/simple;
+	bh=+BHc1OAdUgXjf5xunuA0CoXPKMUSdOst/gul8MZDbwc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tpqqjj7/QgLrkpZhzx1GhKSJeuMJAXNkJpsqMRjdHCzT2J2GkzO7OhoOA9e2SGQMGElVqPJtWFnb0Nmxo7D0C/ZIyURvR7eVQOdL2crTskUDMiPT6Lflv65rENqW8AatPF3YGHs1zp9obiJyOZA502bQoJWZy2WcRA7qcXQJWNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1rckn7-0003rh-NT; Wed, 21 Feb 2024 12:29:33 +0100
+From: Florian Westphal <fw@strlen.de>
+To: <netdev@vger.kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	<netfilter-devel@vger.kernel.org>
+Subject: [PATCH net-next 00/12] netfilter updates for net-next
+Date: Wed, 21 Feb 2024 12:26:02 +0100
+Message-ID: <20240221112637.5396-1-fw@strlen.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1707108293-1004-2-git-send-email-ajay.kaher@broadcom.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 05, 2024 at 10:14:53AM +0530, Ajay Kaher wrote:
-> From: Dan Carpenter <dan.carpenter@linaro.org>
-> 
-> commit c301f0981fdd3fd1ffac6836b423c4d7a8e0eb63 upstream.
-> 
-> The problem is in nft_byteorder_eval() where we are iterating through a
-> loop and writing to dst[0], dst[1], dst[2] and so on...  On each
-> iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
-> element only has space for 4 bytes.  That means that every iteration
-> overwrites part of the previous element.
-> 
-> I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
-> nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
-> issue.  I think that the reason we have not detected this bug in testing
-> is that most of time we only write one element.
-> 
-> Fixes: ce1e7989d989 ("netfilter: nft_byteorder: provide 64bit le/be conversion")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> [Ajay: Modified to apply on v5.4.y]
-> Signed-off-by: Ajay Kaher <ajay.kaher@broadcom.com>
-> ---
+This pull request contains updates for your *net-next* tree:
 
-All now queued up, thanks.
+1. Prefer KMEM_CACHE() macro to create kmem caches, from Kunwu Chan.
 
-greg k-h
+Patches 2 and 3 consolidate nf_log NULL checks and introduces
+extra boundary checks on family and type to make it clear that no out
+of bounds access will happen.  No in-tree user currently passes such
+values, but thats not clear from looking at the function.
+From Pablo Neira Ayuso.
+
+Patch 4, also from Pablo, gets rid of unneeded conditional in
+nft_osf init function.
+
+Patch 5, from myself, fixes erroneous Kconfig dependencies that
+came in an earlier net-next pull request. This should get rid
+of the xtables related build failure reports.
+
+Patches 6 to 10 are an update to nftables' concatenated-ranges
+set type to speed up element insertions.  This series also
+compacts a few data structures and cleans up a few oddities such
+as reliance on ZERO_SIZE_PTR when asking to allocate a set with
+no elements. From myself.
+
+Patches 11 moves the nf_reinject function from the netfilter core
+(vmlinux) into the nfnetlink_queue backend, the only location where
+this is called from. Also from myself.
+
+Patch 12, from Kees Cook, switches xtables' compat layer to use
+unsafe_memcpy because xt_entry_target cannot easily get converted
+to a real flexible array (its UAPI and used inside other structs).
+
+The following changes since commit b0117d136bb9e4a1facb7ce354e0580dde876f6b:
+
+  Merge branch 'net-constify-device_type' (2024-02-21 09:45:24 +0000)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-24-02-21
+
+for you to fetch changes up to 26f4dac11775a1ca24e2605cb30e828d4dbdea93:
+
+  netfilter: x_tables: Use unsafe_memcpy() for 0-sized destination (2024-02-21 12:03:22 +0100)
+
+----------------------------------------------------------------
+netfilter pr 2024-21-02
+
+----------------------------------------------------------------
+Florian Westphal (7):
+      netfilter: xtables: fix up kconfig dependencies
+      netfilter: nft_set_pipapo: constify lookup fn args where possible
+      netfilter: nft_set_pipapo: do not rely on ZERO_SIZE_PTR
+      netfilter: nft_set_pipapo: shrink data structures
+      netfilter: nft_set_pipapo: speed up bulk element insertions
+      netfilter: nft_set_pipapo: use GFP_KERNEL for insertions
+      netfilter: move nf_reinject into nfnetlink_queue modules
+
+Kees Cook (1):
+      netfilter: x_tables: Use unsafe_memcpy() for 0-sized destination
+
+Kunwu Chan (1):
+      netfilter: expect: Simplify the allocation of slab caches in nf_conntrack_expect_init
+
+Pablo Neira Ayuso (3):
+      netfilter: nf_log: consolidate check for NULL logger in lookup function
+      netfilter: nf_log: validate nf_logger_find_get()
+      netfilter: nft_osf: simplify init path
+
+ include/linux/netfilter.h           |   1 -
+ include/net/netfilter/nf_queue.h    |   1 -
+ net/ipv4/netfilter/Kconfig          |   3 +-
+ net/netfilter/nf_conntrack_expect.c |   4 +-
+ net/netfilter/nf_log.c              |   9 +-
+ net/netfilter/nf_queue.c            | 106 --------------------
+ net/netfilter/nfnetlink_queue.c     | 142 ++++++++++++++++++++++++++
+ net/netfilter/nft_osf.c             |  11 +-
+ net/netfilter/nft_set_pipapo.c      | 193 ++++++++++++++++++++++++++----------
+ net/netfilter/nft_set_pipapo.h      |  37 +++----
+ net/netfilter/nft_set_pipapo_avx2.c |  59 ++++++-----
+ net/netfilter/utils.c               |  37 -------
+ net/netfilter/x_tables.c            |   3 +-
+ 13 files changed, 346 insertions(+), 260 deletions(-)
 
