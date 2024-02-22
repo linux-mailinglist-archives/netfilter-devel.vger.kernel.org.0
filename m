@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-1081-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1078-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CEA285ED9D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Feb 2024 01:09:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E8885ED95
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Feb 2024 01:08:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5ACA1F23AA2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Feb 2024 00:09:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 268551C216DE
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Feb 2024 00:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C83A94F;
-	Thu, 22 Feb 2024 00:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3CFC628;
+	Thu, 22 Feb 2024 00:08:53 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B55A10F1;
-	Thu, 22 Feb 2024 00:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893CB15BF;
+	Thu, 22 Feb 2024 00:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708560535; cv=none; b=VpZi3F1NobQwQYGStGNFFw2giyyPoCfDU3y4wOLU0YPJ/xrsihlHDrvSGnhNBFRutTPRluMhWJUddcu7LZ8p5OD/a6Zhpu3VUk5lR1jgZQbG4poPJyWlJ2b+pHxvGADB1Ykwq8yqy1WKQuYyQvVeeJTn9HKn50rYhG8T3gJ6Oyg=
+	t=1708560533; cv=none; b=FeBThRDdPSCCnQ89G4n09tM/hWV2LRpTjFqsp/K16f8EAkt9nhow5tKoFvtmz6RZT5SF1nta56ScmFMS5L0Rn0fTdJvFHhczbD/1JOXHaxzeaCu6oOSn87e/5n1FdYtUYni5iQnD9LU3SW9rAzq3evXGacFZ7gR4NXId0BlO0D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708560535; c=relaxed/simple;
-	bh=2n/mqBjXZQR/JNE569Eojei1VwcI4Xx5AmH4D6kwZr4=;
+	s=arc-20240116; t=1708560533; c=relaxed/simple;
+	bh=fZYI1Wm9etnD2oj49LBXnVNWbYUn3Tis4ha0K+VZ/Gk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rwYpbOTDabJbLR4iPx+2BIkDCISy0Og/cWxafOrnRX9BREcOyTm1pf63GaWL2M1rNOSeeeIttUT3iWXPX2QCqTbWP3BHUVUkrpkWLYdNNf0ok5sYjZITlYXWx5oCFQt9Q7bJSHs/s45KxYtgTeTe92mPqc94BPow0eqN1uhXsg8=
+	 MIME-Version; b=Xg6ccZj/Z+crfokdzYx5VKn1Jn7hYcMyMbBCpdnV/BqV/rJHZlbQ2SdlV6V+eYDiRoVrVKm3nzzTAINrbZcT0IB264v/JZ5rCBjNfrNr2IXb2rdW23QfmparGz4bGA6R+rbVWKozqSkfKfQqSMXM0cAzx+osqLNyEzlOanQ+HzU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/5] netfilter: nf_tables: set dormant flag on hook register failure
-Date: Thu, 22 Feb 2024 01:08:39 +0100
-Message-Id: <20240222000843.146665-2-pablo@netfilter.org>
+Subject: [PATCH net 2/5] netfilter: nft_flow_offload: reset dst in route object after setting up flow
+Date: Thu, 22 Feb 2024 01:08:40 +0100
+Message-Id: <20240222000843.146665-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240222000843.146665-1-pablo@netfilter.org>
 References: <20240222000843.146665-1-pablo@netfilter.org>
@@ -49,37 +49,68 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Florian Westphal <fw@strlen.de>
+dst is transferred to the flow object, route object does not own it
+anymore.  Reset dst in route object, otherwise if flow_offload_add()
+fails, error path releases dst twice, leading to a refcount underflow.
 
-We need to set the dormant flag again if we fail to register
-the hooks.
-
-During memory pressure hook registration can fail and we end up
-with a table marked as active but no registered hooks.
-
-On table/base chain deletion, nf_tables will attempt to unregister
-the hook again which yields a warn splat from the nftables core.
-
-Reported-and-tested-by: syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com
-Fixes: 179d9ba5559a ("netfilter: nf_tables: fix table flag updates")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: a3c90f7a2323 ("netfilter: nf_tables: flow offload expression")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/net/netfilter/nf_flow_table.h |  2 +-
+ net/netfilter/nf_flow_table_core.c    | 16 +++++++++++++---
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index f8e3f70c35bd..90038d778f37 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1251,6 +1251,7 @@ static int nf_tables_updtable(struct nft_ctx *ctx)
- 	return 0;
- 
- err_register_hooks:
-+	ctx->table->flags |= NFT_TABLE_F_DORMANT;
- 	nft_trans_destroy(trans);
- 	return ret;
+diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+index 956c752ceb31..a763dd327c6e 100644
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -276,7 +276,7 @@ nf_flow_table_offload_del_cb(struct nf_flowtable *flow_table,
  }
+ 
+ void flow_offload_route_init(struct flow_offload *flow,
+-			     const struct nf_flow_route *route);
++			     struct nf_flow_route *route);
+ 
+ int flow_offload_add(struct nf_flowtable *flow_table, struct flow_offload *flow);
+ void flow_offload_refresh(struct nf_flowtable *flow_table,
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index 920a5a29ae1d..7502d6d73a60 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -87,12 +87,22 @@ static u32 flow_offload_dst_cookie(struct flow_offload_tuple *flow_tuple)
+ 	return 0;
+ }
+ 
++static struct dst_entry *nft_route_dst_fetch(struct nf_flow_route *route,
++					     enum flow_offload_tuple_dir dir)
++{
++	struct dst_entry *dst = route->tuple[dir].dst;
++
++	route->tuple[dir].dst = NULL;
++
++	return dst;
++}
++
+ static int flow_offload_fill_route(struct flow_offload *flow,
+-				   const struct nf_flow_route *route,
++				   struct nf_flow_route *route,
+ 				   enum flow_offload_tuple_dir dir)
+ {
+ 	struct flow_offload_tuple *flow_tuple = &flow->tuplehash[dir].tuple;
+-	struct dst_entry *dst = route->tuple[dir].dst;
++	struct dst_entry *dst = nft_route_dst_fetch(route, dir);
+ 	int i, j = 0;
+ 
+ 	switch (flow_tuple->l3proto) {
+@@ -146,7 +156,7 @@ static void nft_flow_dst_release(struct flow_offload *flow,
+ }
+ 
+ void flow_offload_route_init(struct flow_offload *flow,
+-			    const struct nf_flow_route *route)
++			     struct nf_flow_route *route)
+ {
+ 	flow_offload_fill_route(flow, route, FLOW_OFFLOAD_DIR_ORIGINAL);
+ 	flow_offload_fill_route(flow, route, FLOW_OFFLOAD_DIR_REPLY);
 -- 
 2.30.2
 
