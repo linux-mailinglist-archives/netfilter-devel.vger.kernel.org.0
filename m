@@ -1,48 +1,48 @@
-Return-Path: <netfilter-devel+bounces-1147-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1148-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F67686EFEE
-	for <lists+netfilter-devel@lfdr.de>; Sat,  2 Mar 2024 10:53:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3166C86EFEF
+	for <lists+netfilter-devel@lfdr.de>; Sat,  2 Mar 2024 10:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC7CE1F21AB4
-	for <lists+netfilter-devel@lfdr.de>; Sat,  2 Mar 2024 09:53:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6322C1C20858
+	for <lists+netfilter-devel@lfdr.de>; Sat,  2 Mar 2024 09:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B37010953;
-	Sat,  2 Mar 2024 09:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BAF12E52;
+	Sat,  2 Mar 2024 09:54:42 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF0F79C8
-	for <netfilter-devel@vger.kernel.org>; Sat,  2 Mar 2024 09:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB86879C8
+	for <netfilter-devel@vger.kernel.org>; Sat,  2 Mar 2024 09:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709373222; cv=none; b=Dmd+TebhP0tjtnCsrvefYZtSG9v90KcCXkCmfHREFKiZP7z/3vm00E9PTwU3bbGHK6fGx94TObx6QR/+ew0PrEL9/JqHkYiHEcLS0xF2GXyBDKNL/Fo1CSDsJM+uTTVDtoE5sZjeGxG+FtswaikrI57R8IztA/6P3vvF+qFqUzE=
+	t=1709373282; cv=none; b=LdCw1XL2sILLoVQ+Y5gAZyT64fzjt78+PZcK35CUv7m9+vFvmWkQk9Krz0ls0kmtlA2jPEr5+JyUfv+oMqz048PO4aiagszgqYSZW7DGgm7K/A9uSXFRHx2K7sRd4OXcLKmmtJfW0S2V1EEpowipxA18uPzRvw3rihOPtwjmFPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709373222; c=relaxed/simple;
-	bh=lc50YOTWQDJhmBKV0Z1anV+7Rq4JiOoJAEfXGV78ka4=;
+	s=arc-20240116; t=1709373282; c=relaxed/simple;
+	bh=/NA8TBDavWzsKFBo8fN0hd9NLx/ADppWMbZVoGsKRUA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fS8ef50PGIEJrpAVQEdpeuY+BjOOuWZbwtnhvLsfhgkpJSLQTseTeV2TnrlVmyGQLMpz/iZfSIuAjjkunKo0Jmg6DbfDGGmYIAJ8RA0tezqCRMRYuxLgzUWNv/K1vW7g8HwhYnhwJLuYEes346sIALhcAeWB43H7a9cQL2vwJ2U=
+	 Content-Type:Content-Disposition:In-Reply-To; b=FEV+dwyezwoT3e3AEpRBs64z8S+AKe3kXnusId9OWD6sg7yfkulYeriGfSADYBP/AGTJTwkJwpu0fe8WH5p1F/kOvsnE44Eai0oTbh5eG7DQ0CPBmZX5L+SQuAIaMLaYpicY6rv+aSYf3Uv+xrhJcAWbnDZ99A1k2Ovf4OrYAng=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.41.52] (port=37364 helo=gnumonks.org)
+Received: from [78.30.41.52] (port=38976 helo=gnumonks.org)
 	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <pablo@gnumonks.org>)
-	id 1rgM3g-008pDf-T0; Sat, 02 Mar 2024 10:53:34 +0100
-Date: Sat, 2 Mar 2024 10:53:32 +0100
+	id 1rgM4h-008pGo-AE; Sat, 02 Mar 2024 10:54:37 +0100
+Date: Sat, 2 Mar 2024 10:54:34 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: Donald Yandt <donald.yandt@gmail.com>
 Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH conntrack-tools 2/3] conntrackd: use size_t for element
- indices
-Message-ID: <ZeL3HJRhC3D8yMlR@calendula>
+Subject: Re: [PATCH conntrack-tools 1/3] conntrackd: prevent memory loss if
+ reallocation fails
+Message-ID: <ZeL3WvMhrir_Lz-s@calendula>
 References: <20240301170731.21657-1-donald.yandt@gmail.com>
- <20240301170731.21657-3-donald.yandt@gmail.com>
+ <20240301170731.21657-2-donald.yandt@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -51,36 +51,45 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240301170731.21657-3-donald.yandt@gmail.com>
+In-Reply-To: <20240301170731.21657-2-donald.yandt@gmail.com>
 X-Spam-Score: -1.9 (-)
 
-Hi,
 
-Could you describe why these are needed?
 
-Thanks!
-
-On Fri, Mar 01, 2024 at 12:07:30PM -0500, Donald Yandt wrote:
+On Fri, Mar 01, 2024 at 12:07:29PM -0500, Donald Yandt wrote:
 > Signed-off-by: Donald Yandt <donald.yandt@gmail.com>
 > ---
->  src/vector.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  src/vector.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
 > diff --git a/src/vector.c b/src/vector.c
-> index 7f9bc3c..ac1f5d9 100644
+> index c81e7ce..7f9bc3c 100644
 > --- a/src/vector.c
 > +++ b/src/vector.c
-> @@ -23,9 +23,7 @@
->  
->  struct vector {
->  	char *data;
-> -	unsigned int cur_elems;
-> -	unsigned int max_elems;
-> -	size_t size;
-> +	size_t cur_elems, max_elems, size;
->  };
->  
->  #define DEFAULT_VECTOR_MEMBERS	8
+> @@ -62,11 +62,12 @@ int vector_add(struct vector *v, void *data)
+>  {
+>  	if (v->cur_elems >= v->max_elems) {
+>  		v->max_elems += DEFAULT_VECTOR_GROWTH;
+> -		v->data = realloc(v->data, v->max_elems * v->size);
+> -		if (v->data == NULL) {
+
+Good catch.
+
+> +		void *ptr = realloc(v->data, v->max_elems * v->size);
+
+Could you declare void *ptr at the top of the function? Following old
+style variable declarations?
+
+Thanks.
+
+> +		if (ptr == NULL) {
+>  			v->max_elems -= DEFAULT_VECTOR_GROWTH;
+>  			return -1;
+>  		}
+> +		v->data = ptr;
+>  	}
+>  	memcpy(v->data + (v->size * v->cur_elems), data, v->size);
+>  	v->cur_elems++;
 > -- 
 > 2.44.0
 > 
