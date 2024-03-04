@@ -1,50 +1,54 @@
-Return-Path: <netfilter-devel+bounces-1157-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1156-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BE958701CC
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Mar 2024 13:47:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0E308701B8
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Mar 2024 13:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B882D282FEA
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Mar 2024 12:47:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D30A11C23054
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Mar 2024 12:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 442903D3A1;
-	Mon,  4 Mar 2024 12:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD773D0C0;
+	Mon,  4 Mar 2024 12:41:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72EB17C62
-	for <netfilter-devel@vger.kernel.org>; Mon,  4 Mar 2024 12:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC9F1D53F;
+	Mon,  4 Mar 2024 12:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709556435; cv=none; b=l/arxGXG7N9N2qW3jBumyqbIpiMC+9lWkUCDzdeWpIPP8Pv8PDfVrVLk3eeE/y6eVhrul8t7802gJwQ3rtrs+OjSts1Z+hN2ahfIwzQ3IIoEYA0gzcSLegFK28tMWaPmNPaCnsgavu6hzsS9LdmG6eHvyKpF6J64T9NG2/u0A88=
+	t=1709556091; cv=none; b=JeLnROQ5uW+KQKkGXLrgDnQzpEcT72aJrZhR4ROrW23C+iRXwtvxjZhTsmw6QNNb2b2HtU9SE/OYzcWONZ4Hzxo/RkyBQ/pO1dOXyUICRHKF9fkADl9VNjvaNQszaNHac6q3AFvc8LdymlKWiGA89aBpv02kg01ERsDYLlnuc6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709556435; c=relaxed/simple;
-	bh=i8PRd8EkvjxlUffwzVywJsRYl12D8Sr9qoNRveRBwmE=;
+	s=arc-20240116; t=1709556091; c=relaxed/simple;
+	bh=n4TJ0d6qjbOI8Xx4ib2oaN7MTZY5YsSPrg9jw/wrV3M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jSzLjn0uj4NQIr2RZEPzXtiLGbV+NJYKGwzpRSEVgw/NHiOzCS0Gudpz4letjLgXKDolnZ/kpKDq48M2May3IZo2GhOs5q8xHux1IXtsUnY+QW+lhv9MMWdkH3ZNXvFm0kVsBU3XRU/NW92JAVm01akB/zi6z4+mdpQIYwqPFZQ=
+	 Content-Type:Content-Disposition:In-Reply-To; b=YM0hx++jARa8qL8cLmfS+mrL5bfdiRJBmAmGy8hNR0CwOLiXqFTJ6CHRE8nM1cTD1sC39yIk453Jg/EWdLFJ/QDa0zwcQttgOeSE7MEm3jAjaxiWqFxqFfWHRQ4MijhYf7vVtX5PMz5cjL4PoOyqPLJTHTKne6pE/XqN1irjqUA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.33.11] (port=43812 helo=gnumonks.org)
+Received: from [78.30.33.11] (port=42844 helo=gnumonks.org)
 	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <pablo@gnumonks.org>)
-	id 1rh7XE-00CEbH-QL; Mon, 04 Mar 2024 13:35:14 +0100
-Date: Mon, 4 Mar 2024 13:35:11 +0100
+	id 1rh7dA-00CFAm-GK; Mon, 04 Mar 2024 13:41:22 +0100
+Date: Mon, 4 Mar 2024 13:41:19 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Donald Yandt <donald.yandt@gmail.com>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH conntrack-tools 2/3] conntrackd: use size_t for element
- indices
-Message-ID: <ZeW__zJ0C-JJdSBw@calendula>
-References: <20240301170731.21657-1-donald.yandt@gmail.com>
- <20240301170731.21657-3-donald.yandt@gmail.com>
- <ZeL3HJRhC3D8yMlR@calendula>
- <CADm=fg=TbKc8D-nzY7kA=NT7Fi_ZJ7ZLA3uJB-7+bK2-s5W3FQ@mail.gmail.com>
+To: Florian Westphal <fw@strlen.de>
+Cc: Lena Wang =?utf-8?B?KOeOi+WonCk=?= <Lena.Wang@mediatek.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"kadlec@netfilter.org" <kadlec@netfilter.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH net v2] netfilter: Add protection for bmp length out of
+ range
+Message-ID: <ZeXBb6dKL0GQe909@calendula>
+References: <d2b63acc5cd76db46132eb6ebd106f159fc5132d.camel@mediatek.com>
+ <ZeL1_-Pdq6Kw0NIO@calendula>
+ <20240302115241.GA7494@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -53,29 +57,21 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADm=fg=TbKc8D-nzY7kA=NT7Fi_ZJ7ZLA3uJB-7+bK2-s5W3FQ@mail.gmail.com>
+In-Reply-To: <20240302115241.GA7494@breakpoint.cc>
 X-Spam-Score: -1.9 (-)
 
-On Sat, Mar 02, 2024 at 11:20:38AM -0500, Donald Yandt wrote:
-> On Sat, Mar 2, 2024 at 4:53 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> >
-> > Hi,
-> >
-> > Could you describe why these are needed?
-> >
-> > Thanks!
-> >
+On Sat, Mar 02, 2024 at 12:52:41PM +0100, Florian Westphal wrote:
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > > +	if (f->sz > 32)
+> > > +		return H323_ERROR_RANGE;
+> > 
+> > Could you possibly place this in get_bitmap()? IIRC these are the only
+> > two calls to this function.
 > 
-> Hi Pablo,
-> 
-> I mentioned it briefly in the cover letter and explained why it should
-> be used in the commit message for version 2.
-> If you require any additional detail, please let me know.
+> How would you signal the error?  I think this patch is fine as-is.
 
-Cover letter gets lost when applying patches.
+Provide the bitmap instead as parameter, but this opencode variant
+also LGTM, I am probably overdoing, we can take this as is.
 
-Split descriptions into each individual commit, it really helps us.
-
-Thanks a lot
+Thanks.
 
