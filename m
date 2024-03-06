@@ -1,42 +1,42 @@
-Return-Path: <netfilter-devel+bounces-1171-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1172-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AB9B873216
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Mar 2024 10:10:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F118733B5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Mar 2024 11:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB05D28ECDE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Mar 2024 09:10:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68C391F21599
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Mar 2024 10:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F97C5D461;
-	Wed,  6 Mar 2024 08:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBC45DF3B;
+	Wed,  6 Mar 2024 10:11:42 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F09F5EE60
-	for <netfilter-devel@vger.kernel.org>; Wed,  6 Mar 2024 08:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4BB5DF29
+	for <netfilter-devel@vger.kernel.org>; Wed,  6 Mar 2024 10:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715552; cv=none; b=I6q06gncvz4vt1QlTI8GOtOjZOZRFdQ4caR+N1Av7kSVcVgclYo0MBLR5VEVCZs7lcQF/KAyubDfMfGf7F6HtQkmhmJ9oQIaGUVcOOc9Qc7tJHzlsKAcIdhBN7MxcHCNELP0acOndQ1sdkvedfs/i3iJVJaal59mtAmEvmWv8Bo=
+	t=1709719902; cv=none; b=hEJEbRRB8iaFrIi1uTUbfnFRCVz80tCU8HZD3Bz4lu3e1prohEJN0MycPlKhMa8dcG/2x3UVm5QxAJO6R9LjUwtzziH79aHhkXlEXtIANVQBUrn+7LMsZX2QfzWhkfb5pJ7kKCRQBwtZgcn/RrXbnpOfFqwGtgKM5xVwIGZHMVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715552; c=relaxed/simple;
-	bh=Ny/OCgNXzteFdtjxFyNT/OG/6Ou5G4zaXZ1zeGD4nRc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k0GsnIs/tSCGf3cXTWH4YL+HfCNjzI32OKvIN0T7sjoPm4rQcb5IkqIr7K0IgBfBYbNOYkdeHiF4tp6l3LjAsmKIDXgB28EbBnN8t5+2VMbIxcWlRn9GsbTeUEW3QT8h9209IyNkW0Acg3H/7tBdsIrvUJaFCl+hd/gYcai0ekk=
+	s=arc-20240116; t=1709719902; c=relaxed/simple;
+	bh=gvIXHjbp2eGyAZpbEmD03/9eMsXI9OQ0gPkJ0oHjAXs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VNDGEGNngRmVMPUDzB+IweOo0bajqrsUVsSdNyYkzdLk//krNM2wBlaFJ/VSXJkLL9hmaJsJmcTct9la4m8ov3HxPy7ncKmIv+HABT6ZCBlCT3zYglGmxfOg9zTOrIQBttvLG61Mu1o8rPdiZY+swNM+WhioU0nifN/03qzzMic=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rhn78-00056x-HM; Wed, 06 Mar 2024 09:59:02 +0100
+	id 1rhoFO-0005iO-CJ; Wed, 06 Mar 2024 11:11:38 +0100
 From: Florian Westphal <fw@strlen.de>
 To: netfilter-devel <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH xtables-nft] extensions: xt_socket: add txlate support for sk match v3
-Date: Wed,  6 Mar 2024 09:58:49 +0100
-Message-ID: <20240306085854.39838-1-fw@strlen.de>
+Subject: [PATCH xtables-nft v2] extensions: xt_socket: add txlate support for socket match
+Date: Wed,  6 Mar 2024 11:11:25 +0100
+Message-ID: <20240306101132.55075-1-fw@strlen.de>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -46,18 +46,32 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+v2: document the match semantics of -m socket.
+
+Ignore --nowildcard if used with other options when translating
+and add "wildcard 0" if the option is missing.
+
+"-m socket" will ignore sockets bound to 0.0.0.0/:: by default,
+unless --nowildcard is given.
+
+So, xlate must always append "wildcard 0", can elide "wildcard"
+if other options are present along with --nowildcard.
+
+To emulate "-m socket --nowildcard", check for "wildcard <= 1" to
+get a "socket exists" type matching.
+
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- extensions/libxt_socket.c      | 24 ++++++++++++++++++++++++
- extensions/libxt_socket.txlate | 11 +++++++++++
- 2 files changed, 35 insertions(+)
+ extensions/libxt_socket.c      | 39 ++++++++++++++++++++++++++++++++++
+ extensions/libxt_socket.txlate | 17 +++++++++++++++
+ 2 files changed, 56 insertions(+)
  create mode 100644 extensions/libxt_socket.txlate
 
 diff --git a/extensions/libxt_socket.c b/extensions/libxt_socket.c
-index a99135cdfa0a..387e10ea0dea 100644
+index a99135cdfa0a..016ea3435339 100644
 --- a/extensions/libxt_socket.c
 +++ b/extensions/libxt_socket.c
-@@ -159,6 +159,27 @@ socket_mt_print_v3(const void *ip, const struct xt_entry_match *match,
+@@ -159,6 +159,42 @@ socket_mt_print_v3(const void *ip, const struct xt_entry_match *match,
  	socket_mt_save_v3(ip, match);
  }
  
@@ -66,16 +80,31 @@ index a99135cdfa0a..387e10ea0dea 100644
 +	const struct xt_socket_mtinfo3 *info = (const void *)params->match->data;
 +	const char *space = "";
 +
++	/* ONLY --nowildcard: match if socket exists. It does not matter
++	 * to which address it is bound.
++	 */
++	if (info->flags == XT_SOCKET_NOWILDCARD) {
++		xt_xlate_add(xl, "%ssocket wildcard le 1", space);
++		return 1;
++	}
++
++	/* Without --nowildcard, restrict to sockets NOT bound to
++	 * the any address.
++	 */
++	if ((info->flags & XT_SOCKET_NOWILDCARD) == 0) {
++		xt_xlate_add(xl, "socket wildcard 0");
++		space = " ";
++	}
++
 +	if (info->flags & XT_SOCKET_TRANSPARENT) {
-+		xt_xlate_add(xl, "socket transparent 1");
++		xt_xlate_add(xl, "%ssocket transparent 1", space);
 +		space = " ";
 +	}
 +
-+	if (info->flags & XT_SOCKET_NOWILDCARD) {
-+		xt_xlate_add(xl, "%ssocket wildcard 0", space);
-+		space = " ";
-+	}
-+
++	/* If --nowildcard was given, -m socket should not test
++	 * the bound address.  We can simply ignore this; its
++	 * equal to "wildcard <= 1".
++	 */
 +	if (info->flags & XT_SOCKET_RESTORESKMARK)
 +		xt_xlate_add(xl, "%smeta mark set socket mark", space);
 +
@@ -85,7 +114,7 @@ index a99135cdfa0a..387e10ea0dea 100644
  static struct xtables_match socket_mt_reg[] = {
  	{
  		.name          = "socket",
-@@ -180,6 +201,7 @@ static struct xtables_match socket_mt_reg[] = {
+@@ -180,6 +216,7 @@ static struct xtables_match socket_mt_reg[] = {
  		.save          = socket_mt_save,
  		.x6_parse      = socket_mt_parse,
  		.x6_options    = socket_mt_opts,
@@ -93,7 +122,7 @@ index a99135cdfa0a..387e10ea0dea 100644
  	},
  	{
  		.name          = "socket",
-@@ -193,6 +215,7 @@ static struct xtables_match socket_mt_reg[] = {
+@@ -193,6 +230,7 @@ static struct xtables_match socket_mt_reg[] = {
  		.save          = socket_mt_save_v2,
  		.x6_parse      = socket_mt_parse_v2,
  		.x6_options    = socket_mt_opts_v2,
@@ -101,7 +130,7 @@ index a99135cdfa0a..387e10ea0dea 100644
  	},
  	{
  		.name          = "socket",
-@@ -206,6 +229,7 @@ static struct xtables_match socket_mt_reg[] = {
+@@ -206,6 +244,7 @@ static struct xtables_match socket_mt_reg[] = {
  		.save          = socket_mt_save_v3,
  		.x6_parse      = socket_mt_parse_v3,
  		.x6_options    = socket_mt_opts_v3,
@@ -111,21 +140,27 @@ index a99135cdfa0a..387e10ea0dea 100644
  
 diff --git a/extensions/libxt_socket.txlate b/extensions/libxt_socket.txlate
 new file mode 100644
-index 000000000000..1fe73f9b510d
+index 000000000000..7731e42eabf7
 --- /dev/null
 +++ b/extensions/libxt_socket.txlate
-@@ -0,0 +1,11 @@
-+iptables-translate -A INPUT -m socket --transparent
-+nft 'add rule ip filter INPUT socket transparent 1 counter'
-+
-+iptables-translate -A INPUT -m socket --nowildcard
+@@ -0,0 +1,17 @@
++# old socket match, no options.  Matches if sk can be found and it is not bound to 0.0.0.0/::
++iptables-translate -A INPUT -m socket
 +nft 'add rule ip filter INPUT socket wildcard 0 counter'
 +
++iptables-translate -A INPUT -m socket --transparent
++nft 'add rule ip filter INPUT socket wildcard 0 socket transparent 1 counter'
++
++# Matches if sk can be found.  Doesn't matter as to what addess it is bound to.
++# therefore, emulate "exists".
++iptables-translate -A INPUT -m socket --nowildcard
++nft 'add rule ip filter INPUT socket wildcard le 1 counter'
++
 +iptables-translate -A INPUT -m socket --restore-skmark
-+nft 'add rule ip filter INPUT meta mark set socket mark counter'
++nft 'add rule ip filter INPUT socket wildcard 0 meta mark set socket mark counter'
 +
 +iptables-translate -A INPUT -m socket --transparent --nowildcard --restore-skmark
-+nft 'add rule ip filter INPUT socket transparent 1 socket wildcard 0 meta mark set socket mark counter'
++nft 'add rule ip filter INPUT socket transparent 1 meta mark set socket mark counter'
 -- 
 2.44.0
 
