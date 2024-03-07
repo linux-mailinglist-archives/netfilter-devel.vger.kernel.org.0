@@ -1,168 +1,143 @@
-Return-Path: <netfilter-devel+bounces-1217-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1219-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF665875189
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 15:11:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 334348751ED
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 15:32:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856A71F26687
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 14:11:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D176D1F251B0
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 14:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C63D12E1C9;
-	Thu,  7 Mar 2024 14:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1591E53A;
+	Thu,  7 Mar 2024 14:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="EJUlqqXq"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E229512DD9F;
-	Thu,  7 Mar 2024 14:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F66639
+	for <netfilter-devel@vger.kernel.org>; Thu,  7 Mar 2024 14:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709820640; cv=none; b=hll+7dAAtUGeJur2kDcJ33E0oA2A+gTVj2jgXOb6clRTopNgIPx2VbBOiXNRH9v6r3Ru/ubPsoS2HS6+kIy0tAFjDqqN3pF95pDDHgmBU2IzMJ80ooEnEgs7qCRzpr6rkA4+gfZGzl74vdvibjEq0cedPGBEK0/UrebpFCa0cZU=
+	t=1709821930; cv=none; b=LTWr1zSPOI0/Wkm3rgE4QrrdYNswF9m80muo1nlQtJO3Km09/554JBnQZXRx2kAr19R1CvifttuAOzKwOewHxhO1You8+KmXYqxSjTVM/hSNz2HE3Wl+feT2Emug+pExQtwjJb2H9DdyA6OwKgdeahFxSIu+7mVrygBuSw+d6Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709820640; c=relaxed/simple;
-	bh=IG5hBWgdvIQIXiIi6nwGfY6sqdPdDNVJbUfK9RDSYrI=;
+	s=arc-20240116; t=1709821930; c=relaxed/simple;
+	bh=7Qg+H08ksvm3D9mWlFbr1GKB0CzmOaD7Vn3oTsx2opc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j6p9ZuyOHT7YjgFC5juYCpgCeKq3msB0guDGyEXsI9p5zGmJv4cEVoZ8fDqf6Uc63QRMuP/HiVuSD0YwqLxHg8PW5e3rXAb+5dvr8rIhBEaikVxb6en1K1de4VwmeZhQCAJh9o2g/F9LBJmHOaVLjJchCO4sR4ooVjzmk+vUbCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1riES1-0007l6-Ki; Thu, 07 Mar 2024 15:10:25 +0100
-Date: Thu, 7 Mar 2024 15:10:25 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, edumazet@google.com,
-	pablo@netfilter.org, kadlec@netfilter.org, kuba@kernel.org,
-	pabeni@redhat.com, davem@davemloft.net,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next] netfilter: conntrack: avoid sending RST to
- reply out-of-window skb
-Message-ID: <20240307141025.GL4420@breakpoint.cc>
-References: <20240307090732.56708-1-kerneljasonxing@gmail.com>
- <20240307093310.GI4420@breakpoint.cc>
- <CAL+tcoAPi+greENaD8X6Scc97Fnhiqa62eUSn+JS98kqY+VA6A@mail.gmail.com>
- <20240307120054.GK4420@breakpoint.cc>
- <CAL+tcoBqBaHxSU9NQqVxhRzzsaJr4=0=imtyCo4p8+DuXPL5AA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=q6ChzD6fZMVwbQ+nageg0HJo0QdKwovAHBVz+wyWCvEiduKTrX9laRJYHYKx/7MpYYBuUMVx8X29NX7GG9hhINipf0UUOSeHrdZ66xOWRQblS/6YdXN9wB+9Ur3Uk62KEmcyYdT00v1E0Ayc5o70+fAf1PhMKqgXujFDSudSYag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=EJUlqqXq; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=mEO4CGfmBYhFuO6DkhARBlzX2wX9sej4ZQy/KbqLTUk=; b=EJUlqqXq7myzUK4VR+uJ5BsaYI
+	l88WEHeJwOg6PQbykMfI3TUdoNi+XkGRfDN3QzmMKFA1hPcsOQOkpW0R1+aJlvJF9iTI+MfPqVUCO
+	8j+7AMbzD1Lp6HukNG2QE5z/0tLw0MHun84jZXJqs7uwLD9oCZtWp06JB65etMwWS1jKql/a/vXXb
+	z5wIeUggArPBxJ+jTLFu9kgaafoCeGeFim35fFyecOHII6o4snHSXYRptA3R/V6D4wJwChKntPt5/
+	HgYpYf5LYpjY66EsJP6Hmz6KUtb+2Bn1D9TdBiZAmHJc8vNYPfUgUbdN9wUk8iZztMLREPsZ8OHV9
+	rJQxEAew==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1riEmt-000000006Gd-3KV1;
+	Thu, 07 Mar 2024 15:31:59 +0100
+Date: Thu, 7 Mar 2024 15:31:59 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft 2/5] parser_json: move list_add into json_parse_cmd
+Message-ID: <ZenP32bq9xtJglJQ@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20240307122640.29507-1-fw@strlen.de>
+ <20240307122640.29507-3-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL+tcoBqBaHxSU9NQqVxhRzzsaJr4=0=imtyCo4p8+DuXPL5AA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240307122640.29507-3-fw@strlen.de>
 
-Jason Xing <kerneljasonxing@gmail.com> wrote:
-> On Thu, Mar 7, 2024 at 8:00 PM Florian Westphal <fw@strlen.de> wrote:
-> >
-> > Jason Xing <kerneljasonxing@gmail.com> wrote:
-> > > > This change disables most of the tcp_in_window() test, this will
-> > > > pretend everything is fine even though tcp_in_window says otherwise.
-> > >
-> > > Thanks for the information. It does make sense.
-> > >
-> > > What I've done is quite similar to nf_conntrack_tcp_be_liberal sysctl
-> > > knob which you also pointed out. It also pretends to ignore those
-> > > out-of-window skbs.
-> > >
-> > > >
-> > > > You could:
-> > > >  - drop invalid tcp packets in input hook
-> > >
-> > > How about changing the return value only as below? Only two cases will
-> > > be handled:
-> > >
-> > > diff --git a/net/netfilter/nf_conntrack_proto_tcp.c
-> > > b/net/netfilter/nf_conntrack_proto_tcp.c
-> > > index ae493599a3ef..c88ce4cd041e 100644
-> > > --- a/net/netfilter/nf_conntrack_proto_tcp.c
-> > > +++ b/net/netfilter/nf_conntrack_proto_tcp.c
-> > > @@ -1259,7 +1259,7 @@ int nf_conntrack_tcp_packet(struct nf_conn *ct,
-> > >         case NFCT_TCP_INVALID:
-> > >                 nf_tcp_handle_invalid(ct, dir, index, skb, state);
-> > >                 spin_unlock_bh(&ct->lock);
-> > > -               return -NF_ACCEPT;
-> > > +               return -NF_DROP;
-> >
-> > Lets not do this.  conntrack should never drop packets and defer to ruleset
-> > whereever possible.
+Hi Florian,
+
+On Thu, Mar 07, 2024 at 01:26:32PM +0100, Florian Westphal wrote:
+> The existing parser cannot handle certain inputs.  Example:
 > 
-> Hmm, sorry, it is against my understanding.
+>   "map": {
+>    "family": "ip",
+>    "name": "testmap",
+>    "table": "test",
+>    "type": "ipv4_addr",
+>    "handle": 2,
+>    "map": "verdict",
+>    "elem": [ [ "*", {
+>         "jump": {
+>            "target": "testchain"
+> [..]
+>     },
+>     {
+>       "chain": {
+>         "family": "ip",
+>         "table": "test",
+>         "name": "testchain",
+>         ...
 > 
-> If we cannot return -NF_DROP, why have we already added some 'return
-> NF_DROP' in the nf_conntrack_handle_packet() function? And why does
-> this test statement exist?
+> Problem is that the json input parser does cmd_add at the earliest opportunity.
+> 
+> For a simple input file defining a table, set, set element and chain, we get
+> following transaction:
+>  * add table
+>  * add set
+>  * add setelem
+>  * add chain
+> 
+> This is rejected by the kernel, because the set element references a chain
+> that does (not yet) exist.
+> 
+> Normal input parser only allocates a CMD_ADD request for the table.
+> 
+> Rest of the transactional commands are created much later, via nft_cmd_expand(),
+> which walks "struct table" and then creates the needed CMD_ADD for the objects
+> owned by that table.
 
-Sure we can drop.  But we should only do it if there is no better
-alternative.
+JSON parser simply does not support nested syntax, like, for instance:
 
-> nf_conntrack_in()
->   -> nf_conntrack_handle_packet()
->   -> if (ret <= 0) {
->          if (ret == -NF_DROP) NF_CT_STAT_INC_ATOMIC(state->net, drop);
+| table test {
+| 	map testmap {
+| 		type ipv4_addr : verdict
+| 		elements = {
+| 			"*" : jump testchain
+| 		}
+| 	}
+| 	chain testchain {
+| 	}
+| }
 
-AFAICS this only happens when we receive syn for an existing conntrack
-that is being removed already so we'd expect next syn to create a new
-connection.  Feel free to send patches that replace drop with -accept
-where possible/where it makes sense, but I don't think the
-TCP_CONNTRACK_SYN_SENT one can reasonably be avoided.
+Your example above is equivalent to the following in standard syntax:
 
-> My only purpose is not to let the TCP layer sending strange RST to the
-> right flow.
+| add table t
+| add map t m { type ipv4_addr : verdict; elements = { 10.0.0.1 : jump mychain }; }
+| add chain t mychain
 
-AFAIU tcp layer is correct, no?  Out of the blue packet to some listener
-socket?
+It is rejected by nft as well:
 
-> Besides, resorting to turning on nf_conntrack_tcp_be_liberal sysctl
-> knob seems odd to me though it can workaround :S
+| /tmp/input.nft:2:54-61: Error: Could not process rule: No such file or directory
+| add map t m { type ipv4_addr : verdict; elements = { 10.0.0.1 : jump mychain }; }
+|                                                      ^^^^^^^^
 
-I don't see a better alternative, other than -p tcp -m conntrack
---ctstate INVALID -j DROP rule, if you wish for tcp stack to not see
-such packets.
+(Note the wrong marker position, an unrelated bug it seems.)
 
-> I would like to prevent sending such an RST as default behaviour.
+If I swap the 'add map' and 'add chain' commands in input, it is
+accepted.
 
-I don't see a way to make this work out of the box, without possible
-unwanted side effects.
-
-MAYBE we could drop IFF we check that the conntrack entry candidate
-that fails sequence validation has NAT translation applied to it, and
-thus the '-NF_ACCEPT' packet won't be translated.
-
-Not even compile tested:
-
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -1256,10 +1256,14 @@ int nf_conntrack_tcp_packet(struct nf_conn *ct,
-        case NFCT_TCP_IGNORE:
-                spin_unlock_bh(&ct->lock);
-                return NF_ACCEPT;
--       case NFCT_TCP_INVALID:
-+       case NFCT_TCP_INVALID: {
-+               verdict = -NF_ACCEPT;
-+               if (ct->status & IPS_NAT_MASK)
-+                       res = NF_DROP; /* skb would miss nat transformation */
-                nf_tcp_handle_invalid(ct, dir, index, skb, state);
-                spin_unlock_bh(&ct->lock);
--               return -NF_ACCEPT;
-+               return verdict;
-+       }
-        case NFCT_TCP_ACCEPT:
-                break;
-        }
-
-But I don't really see the advantage compared to doing drop decision in
-iptables/nftables ruleset.
-
-I also have a hunch that someone will eventually complain about this
-change in behavior.
+Cheers, Phil
 
