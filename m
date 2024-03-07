@@ -1,150 +1,173 @@
-Return-Path: <netfilter-devel+bounces-1216-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1218-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81E1875019
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 14:35:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFEFE87518F
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 15:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67EB1B23AD0
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 13:35:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 805591F269F2
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Mar 2024 14:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07B012C7F8;
-	Thu,  7 Mar 2024 13:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6628212C52B;
+	Thu,  7 Mar 2024 14:11:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACCF128806
-	for <netfilter-devel@vger.kernel.org>; Thu,  7 Mar 2024 13:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.23.86.59
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A2483CA7
+	for <netfilter-devel@vger.kernel.org>; Thu,  7 Mar 2024 14:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709818482; cv=none; b=FiN7CggFDl9B4ADpPGIgITj5o1Y+qLVQmz+jLmJ4NOyoTX128qpUDhjtTwaefXRyMeSuWOjAXUWGMe+/k0Vg/iyPaTamWipkEC2FEGjGqVfPL4T21wIumYEL1wOkgKpE7JRrRvmXP0+hmXNvzVjJrzaIdWBSDGMvOI4fkdZ6fi4=
+	t=1709820693; cv=none; b=o/x0rq6wAwP4nOn+Rr+5JK3AEudAF73WCxVk56suIiloR8X0HNv+Ddn9tBWlt9ZqZs5RPqIyjcplnAjM5+sikyL8j7f0HXp7v2ixkCHHh2fketDsBKc8fjjvreO55yIqKXFM/iXk2ig5CEffxWjTuU0I7Gf+NQOLgaUaixeRPVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709818482; c=relaxed/simple;
-	bh=yRq1ox96SHfKuU111fdrrNG1Xo6sLpVgPDYNrCzkF0w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NUMu1A4noPYAErJTA1fiFWB6p0STzJ42rtxzxZ+O67pTWaBWAyqTK+hggxwZTgLqJp1440yJBNegKRChNhbk1Cbhrk2IZsZv+1C/6KnE+gt40qEPU1Sw2tZJwLnenm7swhKHNOIZbHtCzuv3IxKNtVC9MdVXHWhTKsZGVV6zLtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org; spf=pass smtp.mailfrom=zonque.org; arc=none smtp.client-ip=46.23.86.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zonque.org
-Received: from [192.168.100.26] (unknown [62.214.9.170])
-	by mail.bugwerft.de (Postfix) with ESMTPSA id 11EF2281561;
-	Thu,  7 Mar 2024 13:34:39 +0000 (UTC)
-Message-ID: <07000633-1191-445d-b894-8a1d8b0c9044@zonque.org>
-Date: Thu, 7 Mar 2024 14:34:38 +0100
+	s=arc-20240116; t=1709820693; c=relaxed/simple;
+	bh=lk5ocZG1OuvH33+ab5D4IFNzdGo2UJg1oU4we3bHedE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DFsAlDtKfRaLVFJWQAa7bjcf+FpkBBfG2aANMLYK2YjBWcLggmowXh1moh1bs4dVqj/DFsXExQvEU87uHtW8LXMxEolhwDYXcfkju9oQPM01Dd/GlkNpy1Is9utQXw9BmPq9YT86EltYgu0zkAhOLaNOiZyorvMNXxrS21tNlQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1riET3-0007mK-VS; Thu, 07 Mar 2024 15:11:29 +0100
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH xtables] extensions: xt_TPROXY: add txlate support
+Date: Thu,  7 Mar 2024 15:05:28 +0100
+Message-ID: <20240307140531.9822-1-fw@strlen.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Issues with netdev egress hooks
-Content-Language: en-US
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-References: <ba22c8bd-4fff-40e5-81c3-50538b8c70b5@zonque.org>
- <ZeizUwnSTfN3pkB-@calendula>
-From: Daniel Mack <daniel@zonque.org>
-In-Reply-To: <ZeizUwnSTfN3pkB-@calendula>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Pablo,
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ extensions/libxt_TPROXY.c      | 59 ++++++++++++++++++++++++++++++++++
+ extensions/libxt_TPROXY.txlate | 17 ++++++++++
+ 2 files changed, 76 insertions(+)
+ create mode 100644 extensions/libxt_TPROXY.txlate
 
-Thanks a lot for your reply.
-
-On 3/6/24 19:17, Pablo Neira Ayuso wrote:
-> On Wed, Mar 06, 2024 at 04:43:02PM +0100, Daniel Mack wrote:
->> Hi,
->>
->> I am using the NFT egress hook in a netdev table with 'set' statements
->> to adjust the source MAC and IP addresses before duplicating packets to
->> another interface:
->>
->> table netdev dummy {
->>   chain egress {
->>     type filter hook egress device "dummy" priority 0;
->>     ether type ip ether saddr set 01:02:03:04:05:06 ip saddr set 1.1.1.1
->> dup to "eth0"
->>   }
->> }
-> 
-> Is this a dummy device created via: ip link add dummy type dummy or
-> just a coincidence?
-
-Yes, it's a dummy device. I'm using the egress netdev hook here because
-it is executed before the device's .ndo_start_xmit() is called.
-
->> The modification of the sender's MAC address works fine. However, the
->> adjustment of the source IP is applied at the wrong offset. The octets
->> in the raw packet that are being modified are 13 and 14, which would be
->> the correct offset within an IP header, but it seems that the prefixed
->> Ethernet header is not taken into account.
->>
->> For the same reason, attempting to filter based on any details beyond
->> the Ethernet header also fails. The following rule does not match any
->> packets, even though there is a significant amount of UDP traffic:
->>
->> table netdev dummy {
->>   chain egress {
->>     type filter hook egress device "dummy" priority 0;
->>     ether type ip ip protocol udp dup to "eth0"
->>   }
->> }
->>
->> At this point, I'm not sure where to start digging to be honest and
->> would appreciate any guidance on how to resolve this issue.
-> 
-> I guess you are running a kernel with
-> 
-> commit 0ae8e4cca78781401b17721bfb72718fdf7b4912
-> Author: Pablo Neira Ayuso <pablo@netfilter.org>
-> Date:   Thu Dec 14 11:50:12 2023 +0100
-> 
->     netfilter: nf_tables: set transport offset from mac header for netdev/egress
-> 
-> so this is a different bug?
-
-Interesting, I did in fact run a 6.4 production kernel when I tried
-this, and that didn't have that patch applied. Sorry for that oversight.
-
-On 6.7, what I see is different but still broken:
-
-This rules does the right thing and patches the source MAC correctly:
-
-table netdev dummy {
-  chain egress {
-    type filter hook egress device dummy priority 0;
-    ether saddr set 1:2:3:4:5:6 dup to eth0
-  }
-}
-
-Whereas trying to patch the IP source addr leads to no packets being
-forwarded at all anymore:
-
-table netdev dummy {
-  chain egress {
-    type filter hook egress device dummy priority 0;
-    ip saddr set 1.1.1.1 dup to eth0
-  }
-}
-
-Interestingly, ether type filtering is also broken now, the following
-also doesn't match any packets:
-
-table netdev dummy {
-  chain egress {
-    type filter hook egress device dummy priority 0;
-    ether type ip dup to eth0
-  }
-}
-
-I browsed through the patches since 6.7 and couldn't find anything that
-is related. Did I miss anything?
-
-
-Best regards,
-Daniel
+diff --git a/extensions/libxt_TPROXY.c b/extensions/libxt_TPROXY.c
+index d13ec85f92d0..4d2d7961ca2c 100644
+--- a/extensions/libxt_TPROXY.c
++++ b/extensions/libxt_TPROXY.c
+@@ -147,6 +147,62 @@ static void tproxy_tg1_parse(struct xt_option_call *cb)
+ 	}
+ }
+ 
++static int tproxy_tg_xlate(struct xt_xlate *xl,
++			   const struct xt_tproxy_target_info_v1 *info)
++{
++	int family = xt_xlate_get_family(xl);
++	uint32_t mask = info->mark_mask;
++	bool port_mandatory = false;
++	char buf[INET6_ADDRSTRLEN];
++
++	xt_xlate_add(xl, "tproxy to");
++
++	inet_ntop(family, &info->laddr, buf, sizeof(buf));
++
++	if (family == AF_INET6 && !IN6_IS_ADDR_UNSPECIFIED(&info->laddr.in6))
++		xt_xlate_add(xl, "[%s]", buf);
++	else if (family == AF_INET && info->laddr.ip)
++		xt_xlate_add(xl, "%s", buf);
++	else
++		port_mandatory = true;
++
++	if (port_mandatory)
++		xt_xlate_add(xl, " :%d", ntohs(info->lport));
++	else if (info->lport)
++		xt_xlate_add(xl, ":%d", ntohs(info->lport));
++
++	/* xt_TPROXY.c does: skb->mark = (skb->mark & ~mark_mask) ^ mark_value */
++	if (mask == 0xffffffff)
++		xt_xlate_add(xl, "meta mark set 0x%x", info->mark_value);
++	else if (mask || info->mark_value)
++		xt_xlate_add(xl, "meta mark set meta mark & 0x%x or 0x%x",
++			     ~mask, info->mark_value);
++
++	return 1;
++}
++
++static int tproxy_tg_xlate_v1(struct xt_xlate *xl,
++			      const struct xt_xlate_tg_params *params)
++{
++	const struct xt_tproxy_target_info_v1 *data = (const void *)params->target->data;
++
++	return tproxy_tg_xlate(xl, data);
++}
++
++static int tproxy_tg_xlate_v0(struct xt_xlate *xl,
++			      const struct xt_xlate_tg_params *params)
++{
++	const struct xt_tproxy_target_info *info = (const void *)params->target->data;
++	struct xt_tproxy_target_info_v1 t = {
++		.mark_mask = info->mark_mask,
++		.mark_value = info->mark_value,
++		.laddr.ip = info->laddr,
++		.lport = info->lport,
++	};
++
++	return tproxy_tg_xlate(xl, &t);
++}
++
+ static struct xtables_target tproxy_tg_reg[] = {
+ 	{
+ 		.name          = "TPROXY",
+@@ -160,6 +216,7 @@ static struct xtables_target tproxy_tg_reg[] = {
+ 		.save          = tproxy_tg_save,
+ 		.x6_options    = tproxy_tg0_opts,
+ 		.x6_parse      = tproxy_tg0_parse,
++		.xlate	       = tproxy_tg_xlate_v0,
+ 	},
+ 	{
+ 		.name          = "TPROXY",
+@@ -173,6 +230,7 @@ static struct xtables_target tproxy_tg_reg[] = {
+ 		.save          = tproxy_tg_save4,
+ 		.x6_options    = tproxy_tg1_opts,
+ 		.x6_parse      = tproxy_tg1_parse,
++		.xlate	       = tproxy_tg_xlate_v1,
+ 	},
+ 	{
+ 		.name          = "TPROXY",
+@@ -186,6 +244,7 @@ static struct xtables_target tproxy_tg_reg[] = {
+ 		.save          = tproxy_tg_save6,
+ 		.x6_options    = tproxy_tg1_opts,
+ 		.x6_parse      = tproxy_tg1_parse,
++		.xlate	       = tproxy_tg_xlate_v1,
+ 	},
+ };
+ 
+diff --git a/extensions/libxt_TPROXY.txlate b/extensions/libxt_TPROXY.txlate
+new file mode 100644
+index 000000000000..0dfe3bbb430d
+--- /dev/null
++++ b/extensions/libxt_TPROXY.txlate
+@@ -0,0 +1,17 @@
++iptables-translate -t mangle -A PREROUTING -p tcp -j TPROXY --on-port 12345 --on-ip 10.0.0.1 --tproxy-mark 0x23/0xff
++nft 'add rule ip mangle PREROUTING ip protocol tcp counter tproxy to 10.0.0.1:12345 meta mark set meta mark & 0xffffff00 or 0x23'
++
++iptables-translate -t mangle -A PREROUTING -p udp -j TPROXY --on-port 12345 --on-ip 10.0.0.1 --tproxy-mark 0x23
++nft 'add rule ip mangle PREROUTING ip protocol udp counter tproxy to 10.0.0.1:12345 meta mark set 0x23'
++
++iptables-translate -t mangle -A PREROUTING -p udp -j TPROXY --on-port 12345 --on-ip 10.0.0.1
++nft 'add rule ip mangle PREROUTING ip protocol udp counter tproxy to 10.0.0.1:12345'
++
++iptables-translate -t mangle -A PREROUTING -p udp -j TPROXY --on-ip 10.0.0.1 --on-port 0
++nft 'add rule ip mangle PREROUTING ip protocol udp counter tproxy to 10.0.0.1'
++
++iptables-translate -t mangle -A PREROUTING -p tcp -j TPROXY --on-port 12345
++nft 'add rule ip mangle PREROUTING ip protocol tcp counter tproxy to :12345'
++
++iptables-translate -t mangle -A PREROUTING -p tcp -j TPROXY --on-port 0
++nft 'add rule ip mangle PREROUTING ip protocol tcp counter tproxy to :0'
+-- 
+2.43.0
 
 
