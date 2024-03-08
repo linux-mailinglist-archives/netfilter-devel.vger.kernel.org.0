@@ -1,55 +1,62 @@
-Return-Path: <netfilter-devel+bounces-1246-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1248-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEEDC876D50
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Mar 2024 23:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E9CF876DAE
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 00:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5877528120C
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Mar 2024 22:47:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCC73281CBD
+	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Mar 2024 23:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED44836129;
-	Fri,  8 Mar 2024 22:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCC3381C8;
+	Fri,  8 Mar 2024 23:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FZoxwFu4"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C5D1DA52;
-	Fri,  8 Mar 2024 22:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E071DA52
+	for <netfilter-devel@vger.kernel.org>; Fri,  8 Mar 2024 23:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709938033; cv=none; b=MKeBIYRW06oasYdJnj1C4/gofqDn4XH9O/YDmj5S1gt1PecHWo661G/b0gbSwxw6l9DjBChIsCtjUuRhifEcbcAZq4hFBCUWKX/jSRTu9fFjzjBUmoWLff5Wr/IfBpG6wLxFL1Smd62eG+mRXkJeUJ7hPCRAORsZYlxfKicHTho=
+	t=1709938937; cv=none; b=bIYPQLNLEwV8EP91PK/ZNKzfrd34wHv7b3jD7bsaRsoPf4/+TvHABJIrQO2IA1U+rSCecmiJWqoa+d2rtf3NeGClB7tJVXvk4y3yDawJ8tDxHZAZ/YMBUtKH3+jEZ1Sd8hrQQzZeAoZvmS8d8ITXAbXeYETYQ3q8PWctGQFFk1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709938033; c=relaxed/simple;
-	bh=Qk/hdkYXqfzVF5bRt7Hb0RhYrHltEkqGeDNSTmo3iQA=;
+	s=arc-20240116; t=1709938937; c=relaxed/simple;
+	bh=S4FtNcfgq1ha3rjde75oaynXlo3yhg3uaWTkYwDACAQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I2z5/RJCeLVfX8SLQWU24iBnTyYbZTp1LT3gRgTbY0aS6nk0ZS9rwYQHjAzApCx2YtU25RA9uUEb7JzbD+vTw+FB3XwPc+41WreEZQ0vnAZQV0ZnF3nEDZ/3xSAaZdkj4UWNNw79/Fz4UJHPL2oCkZSif7ZIIUL3wob5DTcNFvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1riizR-00033f-AX; Fri, 08 Mar 2024 23:46:57 +0100
-Date: Fri, 8 Mar 2024 23:46:57 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, edumazet@google.com,
-	pablo@netfilter.org, kadlec@netfilter.org, kuba@kernel.org,
-	pabeni@redhat.com, davem@davemloft.net,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, Jason Xing <kernelxing@tencent.com>
-Subject: Re: [PATCH net-next] netfilter: conntrack: avoid sending RST to
- reply out-of-window skb
-Message-ID: <20240308224657.GO4420@breakpoint.cc>
-References: <20240307090732.56708-1-kerneljasonxing@gmail.com>
- <20240307093310.GI4420@breakpoint.cc>
- <CAL+tcoAPi+greENaD8X6Scc97Fnhiqa62eUSn+JS98kqY+VA6A@mail.gmail.com>
- <20240307120054.GK4420@breakpoint.cc>
- <CAL+tcoBqBaHxSU9NQqVxhRzzsaJr4=0=imtyCo4p8+DuXPL5AA@mail.gmail.com>
- <20240307141025.GL4420@breakpoint.cc>
- <CAL+tcoDUyFU9wT8gzOcDqW7hWfR-7Sg8Tky9QsY_b05gP4uZ1Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=L5u3H/1ZXCllxhYoRFZlUZY+eTGtX7RxX/uaCkfGYXr3TnJ1daPSA9lHUFHXlCB3jgthhMSi+nhGBJ5aR33eNpXLIS+HVY6OoT7VrOJ0zPKyxxQjo2dABJGo1sJ5/c3mqJ0Tsg6xOhcMSfPuOjI4nXf8VBbBPi0+y4QITOzznJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FZoxwFu4; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=S4FtNcfgq1ha3rjde75oaynXlo3yhg3uaWTkYwDACAQ=; b=FZoxwFu4+eCTiVlCDqGzrqYHdr
+	0REcN3fufPd1711ly1jh8Y1VjHTs49enTF31naxHno0jG1GS6K8ymr8ajirleOufz7UvfNtTWf2LZ
+	YTV/2I8IiDSow+EtcElqm0Nz+jrKBTijHPpu85RYkE3U6P0NrkqjwJmW8nYiSUp52nQE7o6O7LGuj
+	KDE9rkA4MUNa6Y/jp2iFA2TMv4eBMyQKNn55fm7achdXIrBE2BCJGv/uDGTcMUPIcrToiZS/H2mwJ
+	e/79BpCyqlNEW95VLsuQGhJjQtzLjsYQpL8l+e0O5zvlFq8JDkySlbbp+AYC/mTvL9w8K4iZH+v5C
+	HHZupt2Q==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1rijE5-000000003kf-2QAf;
+	Sat, 09 Mar 2024 00:02:05 +0100
+Date: Sat, 9 Mar 2024 00:02:05 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH v2 xtables] extensions: xt_TPROXY: add txlate support
+Message-ID: <ZeuY7c4NweKAtHwg@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>,
+	netfilter-devel <netfilter-devel@vger.kernel.org>
+References: <20240308142431.7960-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -58,32 +65,10 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL+tcoDUyFU9wT8gzOcDqW7hWfR-7Sg8Tky9QsY_b05gP4uZ1Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240308142431.7960-1-fw@strlen.de>
 
-Jason Xing <kerneljasonxing@gmail.com> wrote:
-> > connection.  Feel free to send patches that replace drop with -accept
-> > where possible/where it makes sense, but I don't think the
-> > TCP_CONNTRACK_SYN_SENT one can reasonably be avoided.
-> 
-> Oh, are you suggesting replacing NF_DROP with -NF_ACCEPT in
-> nf_conntrack_dccp_packet()?
+On Fri, Mar 08, 2024 at 03:24:28PM +0100, Florian Westphal wrote:
+> Signed-off-by: Florian Westphal <fw@strlen.de>
 
-It would be more consistent with what tcp and sctp trackers are
-doing, but this should not matter in practice (the packet is malformed).
-
-> > +       case NFCT_TCP_INVALID: {
-> > +               verdict = -NF_ACCEPT;
-> > +               if (ct->status & IPS_NAT_MASK)
-> > +                       res = NF_DROP; /* skb would miss nat transformation */
-> 
-> Above line, I guess, should be 'verdict = NF_DROP'?
-
-Yes.
-
-> Great! I think your draft patch makes sense really, which takes NAT
-> into consideration.
-
-You could submit this officially and we could give it a try and see if
-anyone complains down the road.
+Patch applied, thanks!
 
