@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1256-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1252-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2438F8770AF
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF9D38770AB
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF1C2281BE4
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03F961C2094F
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC969383BE;
-	Sat,  9 Mar 2024 11:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A1E37147;
+	Sat,  9 Mar 2024 11:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="TpJdA4uF"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Pp+72H8d"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F2E364DC
-	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A2C2E3F2
+	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709984137; cv=none; b=elabU0FqXDRkN/F0VdusESBMNxG2nKBGDXhL0B1HxzIN3MsXrhqln1SGQZXUq5SIgCsDaTyY+fyeSJmq7SgJSaXuBqQZ5F0dLF8+4628b0HpofJyg823GaQOt4x5G+7xdRVOoVugbgJy8QHjnUiupwz2C0ArAXLuUHi5k54LGrU=
+	t=1709984136; cv=none; b=uqU+vXqg08eoOX6gjxVkJx/hW8OlOY9slTlXnmNVmldahmj2g4wmclIwYzL9hxNv7SzK8QnIlhyFShYdeh0YcnRBxsM9CjpnrjWCvcUOBbWOnG/KivxUY86+ppnf4ldMrulhE7nRkqfVKBrdamfQS1KPfX/iUw9lHjpKjE3zQJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709984137; c=relaxed/simple;
-	bh=rn//vveocJAFIVYfpU9Y/cxLN3dhEQtWUrVrsygR/Aw=;
+	s=arc-20240116; t=1709984136; c=relaxed/simple;
+	bh=5cD9fON8ZM2XksZ2DtF2ERaRqjz+2uF7xsDjCcuEJg0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vCb2ndlMccc8Jx/lDnmTUvQjpuveuNmECNCklHxrN3xFRMXUhuQ/RxmOYzC1lm7CCWQyFacIPa08daOk8P5A96oSbJwpopXKt2NL0EUQXn7X2orgBTH3oHOACuyfBUUjwSXpt75e9VXDz7DjAIf1khGRDcSTloH53yt07D2GSQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=TpJdA4uF; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=CPord1a37t7Pjc5IGA+56yTE/4cajDvxc/lxwns3T2f0RzHtS0QEAQTp5dW7wocNEJpjdGDlgZ5fhOJPmL/53E0gKjgS95YCC+Up9xuY2/wbGiRuF56tGJpxjUYF5CE/lrmo7ixPKzTMn1cGz9Udn9bJ0mTARbeEB4wQZFCmYIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Pp+72H8d; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,24 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=V1jxi2tAQqoTxrscT8asWGGdemBElOP9/imKrm5y60Y=; b=TpJdA4uFbpDnxF1tuEQgFqEdui
-	1gGUXR+7HVT5AJD+cFEwJ01GkrBxby8PLPsLIh8jCp8o8/MUHuToBsKbLObUHnVkohq+7EaZd2FXQ
-	otPqRpMJcjJrDSBVfdWNiQXI+INokuW9Yk6YZBRoYb7PPkAgD/99PegTf4LIT2JaC8U15tkApobD/
-	3ITpEJJeu1ibG2WuirEURQ5rz5s8tYfB48tCCLHGYkfSQIPmSs4nWoq1//rCwQKFM3Kca8pinakaz
-	hEIPirejzAS/zD+9UxwjQ/nBbc41iumdGlY1d+wBjNzRWn6xO/e6s6NDbGcQX+dEMQSWkIBrAObc7
-	yoDadHug==;
+	bh=hCh+gjVz77p7Ah9VCxqiS5Isu5WslhOiaQp+AA35phc=; b=Pp+72H8dbZ1BIJJ+vjPhJWJL0R
+	mHP0peKHJNDvC1P2Aiw/qOytV231QuZ7PnDAXT6zQ6S6NZqcrtuTM5I+oXDsa80xRoqkoIsyfkTtp
+	ebkM+Ns4LnY0QB2oI0DpmtkJgOpTmvXSnwOk3vUwCc/spL+Lkzy875yN9LEcemUvOnmYHrfEpXrNt
+	TgnSmtsCKjvf/qdBHx7iHVh28E7XoqTnOfG2VdoiaY2wPxtmv+h4LYo/TQxqI1LY9/bv2fvslPaHx
+	+bQ84gMhnI3R1+/jylnssIihkq6wHGuZgX+7u2l2WOu0smE9TbGUTw773Ofsl+YTYUvb1pUxEiP1B
+	ityl97ZA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1riuzG-000000003hV-1fsw;
-	Sat, 09 Mar 2024 12:35:34 +0100
+	id 1riuzE-000000003hD-2wOj;
+	Sat, 09 Mar 2024 12:35:32 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>
-Subject: [nft PATCH 2/7] tests: shell: packetpath/flowtables: Avoid spurious EPERM
-Date: Sat,  9 Mar 2024 12:35:22 +0100
-Message-ID: <20240309113527.8723-3-phil@nwl.cc>
+Subject: [nft PATCH 3/7] json: Order output like nft_cmd_expand()
+Date: Sat,  9 Mar 2024 12:35:23 +0100
+Message-ID: <20240309113527.8723-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240309113527.8723-1-phil@nwl.cc>
 References: <20240309113527.8723-1-phil@nwl.cc>
@@ -66,41 +66,42 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On my system for testing, called socat is not allowed to create the pipe
-file in local directory (probably due to sshfs). Specify a likely unique
-path in /tmp to avoid such problems.
+Print empty chain add commands early in list so following verdict maps
+and rules referring to them won't cause spurious errors when loading the
+resulting ruleset dump.
 
-Fixes: 419c0199774c6 ("tests: shell: add test to cover ct offload by using nft flowtables")
+Fixes: e70354f53e9f6 ("libnftables: Implement JSON output support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/shell/testcases/packetpath/flowtables | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ src/json.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tests/shell/testcases/packetpath/flowtables b/tests/shell/testcases/packetpath/flowtables
-index 852a05c6d0ab1..18a57a9b2b726 100755
---- a/tests/shell/testcases/packetpath/flowtables
-+++ b/tests/shell/testcases/packetpath/flowtables
-@@ -79,17 +79,17 @@ ip netns exec $R sysctl -w net.netfilter.nf_conntrack_tcp_timeout_established=86
- # A trick to control the timing to send a packet
- ip netns exec $S socat TCP6-LISTEN:10001 GOPEN:pipefile,ignoreeof &
- sleep 1
--ip netns exec $C socat -b 2048 PIPE:pipefile TCP:[2001:db8:ffff:22::1]:10001 &
-+ip netns exec $C socat -b 2048 PIPE:/tmp/pipefile-$rnd 'TCP:[2001:db8:ffff:22::1]:10001' &
- sleep 1
- ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   || { echo "check [OFFLOAD] tag (failed)"; exit 1; }
- ip netns exec $R cat /proc/net/nf_conntrack
- sleep 6
- ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   && { echo "CT OFFLOAD timeout, fail back to classical path (failed)"; exit 1; }
- ip netns exec $R grep '8639[0-9]' /proc/net/nf_conntrack || { echo "check nf_conntrack_tcp_timeout_established (failed)"; exit 1; }
--ip netns exec $C echo "send sth" >> pipefile
-+ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd
- ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   || { echo "traffic seen, back to OFFLOAD path (failed)"; exit 1; }
- ip netns exec $C sleep 3
--ip netns exec $C echo "send sth" >> pipefile
-+ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd
- ip netns exec $C sleep 3
- ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   || { echo "Traffic seen in 5s (nf_flowtable_tcp_timeout), so stay in OFFLOAD (failed)"; exit 1; }
+diff --git a/src/json.c b/src/json.c
+index b3e1e4e14a5f9..bb515164d2587 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -1704,6 +1704,11 @@ static json_t *table_print_json_full(struct netlink_ctx *ctx,
+ 	tmp = table_print_json(table);
+ 	json_array_append_new(root, tmp);
  
++	/* both maps and rules may refer to chains, list them first */
++	list_for_each_entry(chain, &table->chain_cache.list, cache.list) {
++		tmp = chain_print_json(chain);
++		json_array_append_new(root, tmp);
++	}
+ 	list_for_each_entry(obj, &table->obj_cache.list, cache.list) {
+ 		tmp = obj_print_json(obj);
+ 		json_array_append_new(root, tmp);
+@@ -1719,9 +1724,6 @@ static json_t *table_print_json_full(struct netlink_ctx *ctx,
+ 		json_array_append_new(root, tmp);
+ 	}
+ 	list_for_each_entry(chain, &table->chain_cache.list, cache.list) {
+-		tmp = chain_print_json(chain);
+-		json_array_append_new(root, tmp);
+-
+ 		list_for_each_entry(rule, &chain->rules, list) {
+ 			tmp = rule_print_json(&ctx->nft->output, rule);
+ 			json_array_append_new(rules, tmp);
 -- 
 2.43.0
 
