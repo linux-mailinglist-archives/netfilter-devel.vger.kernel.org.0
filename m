@@ -1,117 +1,201 @@
-Return-Path: <netfilter-devel+bounces-1251-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1257-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B81D876FC9
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 09:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01AD38770B0
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6266C1C20AA4
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 08:32:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24E1E1C20B1B
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0861208BB;
-	Sat,  9 Mar 2024 08:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243FE38F83;
+	Sat,  9 Mar 2024 11:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="Z5zS+Fcw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="mnZ5N8By"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azazel.net (taras.nevrast.org [35.176.194.208])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E99F17740
-	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 08:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE25364AB
+	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709973145; cv=none; b=LW0myId6Tb8HASF9MXEPA0A8PX8ILLtLUvigM8EXD9AM/zkOv7TLadB7ZtinznyVsxyMH0+cZC0RpDXkW0dsWD4ZZu6xEL+1hu6vQnwUuBNO6F5QtOd2Aty5Kv0DkIrYsB2UTkmnm91/KTr2CnWcGZ4ryUV6uQQbufIW+Xyc/Ns=
+	t=1709984138; cv=none; b=cUs0bG0k87zn7MUniKVUnUYNrfTlpLUESSr0Hg3be7EUOvOeMT0wI5FLvltPdjF7yHu8+xvIxugAaqqLhZQAXeVXqAUwDeTW77/UqQ1IquEQ9yAJSZF1PNAIKQ3uc6FNu+GF2JVrgthGyqngn13a/T/pyuqyrpI2ktXkgapOl64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709973145; c=relaxed/simple;
-	bh=U/b4Uuy5EmXk6skqg2wVKh3q7L5HnsVDbuv9lusAths=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KwB/FYcPuBYkCg08lcDWRDiFtspfI91k8EyPj0ZoX5V1LYo0oCvw9KSznUUD0ozGt6Bu58CSFjGPh0NaQ473Dl0gZVEwopesKIxCt4jpuaVyTl3eFOkpnmbhQ9p7xzrzlBcS40g4IDJFHQhoHJ+QwvtSKTx+i7XmpUjhdvZcq2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=Z5zS+Fcw; arc=none smtp.client-ip=35.176.194.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=arc-20240116; t=1709984138; c=relaxed/simple;
+	bh=bDxBplO8hEXClJ0sEF7Yv2U6GRfZlmERZApqYteYFbc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=luJwX2bn7RxEEq4rWr4WD7nLSbSbkYYMyMOqDcuWS5bQd/+Fab6HdrsJjtd2/dgw2X68aIOKlL8dYe2dXTbN3sINmXVir9VihET0k+5KmbV0O7uWfiBFDZnFvVU0+v06wmBrG5A9Gl3iVRhi9PakJEo5RuK+As7f2NvHKoALz+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=mnZ5N8By; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=a5nD3+hLowtTdm4prantHzWeewPOck3uGtPYqwZDmI8=; b=Z5zS+FcwUJdqH2iWFLcx78ux3A
-	AKTCDyspm9bTogWntsxyvtjHjcnRNyZAJLe/Aiil4+hEqpOrTuxSvs1oVIX9cFjewk26Wyh9r4Q+8
-	4htKeCyJMdnZSWJhyatpDQ2RWmBd9P3Dopeqsqx8hams1/QhJI15PaIFAp1McDxtujzBqY9zECh2W
-	6VS0L5TgXCEvLbHOmnEFbj2pvBopqkOJL9X+XLcCjMvrZEzUec4fpaADXwXYcMhSgHaw4HVriop9H
-	rUmgfjn60oAEOAOWivW1aiEL8RU98/+S/JCVc3LAp5ZIdU5WuuR+j63GTbLXdEllxjmfveP+y1m1x
-	RwKK0YrQ==;
-Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] helo=celephais.dreamlands)
-	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <jeremy@azazel.net>)
-	id 1ris7r-009dvM-0c;
-	Sat, 09 Mar 2024 08:32:15 +0000
-Date: Sat, 9 Mar 2024 08:32:14 +0000
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Phil Sutter <phil@nwl.cc>
-Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH arptables] Fix a couple of spelling errors
-Message-ID: <20240309083214.GA4876@celephais.dreamlands>
-References: <20240308221720.639060-1-jeremy@azazel.net>
- <ZeuZiCDOI8NoyfOF@orbyte.nwl.cc>
+	bh=H96mLM5u4mDbjezNkVtzB3YCjNX2AgWTb+/H4HOOSfM=; b=mnZ5N8By1xnV2s3Pu3HU31k7Ny
+	h2BUjxIJBf6RCZT65QSq9cLSpcKHf3I3XVtM/OsZMG5TuOn1tZrdLd4VXkdARyND1SnTTVbBXYSR7
+	zRayF4QPqJGrLTcWWpDrAujqsuYDW8U1CC7UJ+arZNv4Xbx0LmEPSZgtLLW3XLNWOvSxddX9fzGiD
+	SJMIUhX4wSlEdEtj9iBCyaqj62AO5vqgReY7omFflYxi6qmOcFIEgL8Jbd0dlg1VzqBmPrxmIlgRT
+	Y1mNgdxCmYvviqEcAgWi24uiJ2RoY+vIyPRb3yU8qCR+VOsYwbjlqNox6/wlAKPha8Ena3srjpd6z
+	/NNvNiLg==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1riuzF-000000003hP-3bHV;
+	Sat, 09 Mar 2024 12:35:33 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>
+Subject: [nft PATCH 0/7] A bunch of JSON printer/parser fixes
+Date: Sat,  9 Mar 2024 12:35:20 +0100
+Message-ID: <20240309113527.8723-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/axIK4cRAyRF2/mK"
-Content-Disposition: inline
-In-Reply-To: <ZeuZiCDOI8NoyfOF@orbyte.nwl.cc>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 
+Fix the following flaws in JSON input/output code:
 
---/axIK4cRAyRF2/mK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Patch 3:
+  Wrong ordering of 'nft -j list ruleset' preventing a following restore
+  of the dump. Code assumed dumping objects before chains was fine in
+  all cases, when actually verdict maps may reference chains already.
+  Dump like nft_cmd_expand() does when expanding nested syntax for
+  kernel submission (chains first, objects second, finally rules).
 
-On 2024-03-09, at 00:04:40 +0100, Phil Sutter wrote:
-> On Fri, Mar 08, 2024 at 10:17:20PM +0000, Jeremy Sowden wrote:
-> > One mistake in a man-page, one in a warning.
-> >=20
-> > Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
->=20
-> Patch applied, thanks!
->=20
-> Just please be aware that it's entirely unclear if/when a new
-> arptables-legacy release will be made.
+* Patch 5:
+  Maps may contain concatenated "targets". Both printer and parser were
+  entirely ignorant of that fact.
 
-Thanks, Phil.  Yes, I had a suspicion that might be the case.  Just
-giving the Debian package a spring clean.
+* Patch 6:
+  Synproxy objects were "mostly" supported, some hooks missing to
+  cover for named ones.
 
-J.
+Patch 4 applies the new ordering to all stored json-nft dumps. Patch 7
+adds new dumps which are now parseable given the fixes above.
 
---/axIK4cRAyRF2/mK
-Content-Type: application/pgp-signature; name="signature.asc"
+Patches 1 and 2 are fallout fixes to initially make the whole shell
+testsuite pass on my testing system.
 
------BEGIN PGP SIGNATURE-----
+Bugs still present after this series:
 
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmXsHoYACgkQKYasCr3x
-BA1IEg//RESvGDyY0mVdEAk4YHUQzONE+7l127BimUaOUAR+Sgm0VxWmdky+DORB
-tZtXtm2VOEUdlN9xERK9JCanAEfjkR8n4S/oqBJrmsBb508Il5sAUcddvmDzfOQl
-dnXNDm2yubUs2w+gX6M76lVkSMemhRfDf/cneLrp3V38VCpjyzk3VKvIMa0ZxMx+
-BQK6q16YwM5qiso7fsFGkPYvDImHcM5d3Xeq0qphPKC7szSyxdvWebTo1/WOMmtN
-2aETNun7lme10n9tTKFo/rYQYJmePlun+rIs69srgg9JTZ80Nwhx6rM45EhYpjuG
-ksHNNQnrlGJVx2JD8npJedyzufkUTKws7gj0//4QbTw9T7RJmjO7LW1AgB+rx6VZ
-2B8s1yGkwg+LaTJ/ywi6Cd1yj3vajPjzq5fnpVUEtooatl0bAnSeaC8tX9PX1C1g
-jYuyBLyaqoER0AYdDVyqclzbOXBVj/zqnrjpSmoIXH/9otFijkK/3vhYMOMOU2CC
-Czy2ET4aRQFX8wTrJv1vtoS+LNT4VqqxK/4onWAp/Q4eToIeXWLhBNYZi+QLIVAo
-y+8e13H5u8Soj5b1UbiN+29Vr/i3I3NiGHDSvSN/VwpIKiUmG7HwKH/bWFTsPIvU
-tvrh6hNg1jblAwrRnRG3Ca6Xpl2SkiSqpRXMusN84DwKhh6DcCw=
-=R+iM
------END PGP SIGNATURE-----
+* Nested chains remain entirely unsupported
+* Maps specifying interval "targets" (i.e., set->data->flags contains
+  EXPR_F_INTERVAL bit) will be printed like regular ones and the parser
+  then rejects them.
 
---/axIK4cRAyRF2/mK--
+Phil Sutter (7):
+  tests: shell: maps/named_ct_objects: Fix for recent kernel
+  tests: shell: packetpath/flowtables: Avoid spurious EPERM
+  json: Order output like nft_cmd_expand()
+  tests: shell: Regenerate all json-nft dumps
+  json: Support maps with concatenated data
+  parser: json: Support for synproxy objects
+  tests: shell: Add missing json-nft dumps
+
+ src/json.c                                    |  18 +-
+ src/parser_json.c                             |  35 +-
+ .../dumps/0001_cache_handling_0.json-nft      |  16 +-
+ .../dumps/0005_cache_chain_flush.json-nft     |  28 +-
+ .../dumps/0006_cache_table_flush.json-nft     |  28 +-
+ .../dumps/0011endless_jump_loop_1.json-nft    |  75 +++
+ .../comments/dumps/comments_0.json-nft        |  16 +-
+ .../flowtable/dumps/0001flowtable_0.json-nft  |  16 +-
+ .../dumps/0005delete_in_use_1.json-nft        |  16 +-
+ .../dumps/0014addafterdelete_0.json-nft       |  22 +-
+ .../json/dumps/0001set_statements_0.json-nft  |  24 +-
+ .../json/dumps/0005secmark_objref_0.json-nft  |  18 +-
+ .../listing/dumps/0013objects_0.json-nft      |  16 +-
+ .../dumps/0021ruleset_json_terse_0.json-nft   |  16 +-
+ .../listing/dumps/0022terse_0.json-nft        |  24 +-
+ .../dumps/0007named_ifname_dtype_0.json-nft   |  16 +-
+ .../dumps/0008interval_map_delete_0.json-nft  |  24 +-
+ .../maps/dumps/0010concat_map_0.json-nft      | 106 ++++
+ .../testcases/maps/dumps/0011vmap_0.json-nft  | 145 +++++
+ .../testcases/maps/dumps/0012map_0.json-nft   |  16 +-
+ .../maps/dumps/0012map_concat_0.json-nft      |  24 +-
+ .../testcases/maps/dumps/0013map_0.json-nft   |  24 +-
+ .../maps/dumps/0024named_objects_0.json-nft   | 165 ++++++
+ .../maps/dumps/anon_objmap_concat.json-nft    |  24 +-
+ .../dumps/map_catchall_double_free_2.json-nft |  46 ++
+ .../testcases/maps/dumps/named_ct_objects.nft |   4 +-
+ .../maps/dumps/named_limits.json-nft          |  24 +-
+ .../maps/dumps/named_snat_map_0.json-nft      |  16 +-
+ .../maps/dumps/pipapo_double_flush.json-nft   |  16 +-
+ .../dumps/typeof_maps_add_delete.json-nft     |  40 +-
+ .../maps/dumps/typeof_maps_update_0.json-nft  |  32 +-
+ .../maps/dumps/vmap_mark_bitwise_0.json-nft   | 158 +++++
+ .../maps/dumps/vmap_timeout.json-nft          | 229 ++++++++
+ tests/shell/testcases/maps/named_ct_objects   |   2 -
+ .../nft-f/dumps/0002rollback_rule_0.json-nft  |  22 +-
+ .../nft-f/dumps/0003rollback_jump_0.json-nft  |  22 +-
+ .../nft-f/dumps/0004rollback_set_0.json-nft   |  22 +-
+ .../nft-f/dumps/0005rollback_map_0.json-nft   |  22 +-
+ .../nft-f/dumps/0017ct_timeout_obj_0.json-nft |  16 +-
+ .../dumps/0018ct_expectation_obj_0.json-nft   |  16 +-
+ .../nft-f/dumps/0022variables_0.json-nft      |  24 +-
+ .../nft-f/dumps/0029split_file_0.json-nft     |  18 +-
+ .../nft-f/dumps/0032pknock_0.json-nft         |  24 +-
+ .../optimizations/dumps/merge_vmaps.json-nft  |  26 +-
+ .../optimizations/dumps/skip_merge.json-nft   |  32 +-
+ .../dumps/skip_unsupported.json-nft           |  16 +-
+ .../dumps/comments_objects_0.json-nft         | 102 ++++
+ .../owner/dumps/0002-persist.json-nft         |  19 +
+ .../testcases/owner/dumps/0002-persist.nft    |   3 +
+ .../packetpath/dumps/set_lookups.json-nft     |  24 +-
+ tests/shell/testcases/packetpath/flowtables   |   6 +-
+ .../dumps/0011reset_0.json-nft                |  32 +-
+ .../sets/dumps/0001named_interval_0.json-nft  |  16 +-
+ .../dumps/0008create_verdict_map_0.json-nft   |  78 +++
+ .../dumps/0022type_selective_flush_0.json-nft |  16 +-
+ .../sets/dumps/0024synproxy_0.json-nft        | 131 +++++
+ .../sets/dumps/0026named_limit_0.json-nft     |  22 +-
+ .../sets/dumps/0028autoselect_0.json-nft      |  24 +-
+ .../0037_set_with_inet_service_0.json-nft     |  24 +-
+ .../sets/dumps/0038meter_list_0.json-nft      |  16 +-
+ .../sets/dumps/0042update_set_0.json-nft      |  16 +-
+ .../dumps/0043concatenated_ranges_0.json-nft  |  24 +-
+ .../dumps/0045concat_ipv4_service.json-nft    |  16 +-
+ .../sets/dumps/0048set_counters_0.json-nft    |  24 +-
+ .../sets/dumps/0049set_define_0.json-nft      |  24 +-
+ .../dumps/0051set_interval_counter_0.json-nft |  24 +-
+ .../dumps/0058_setupdate_timeout_0.json-nft   |  16 +-
+ .../dumps/0059set_update_multistmt_0.json-nft |  24 +-
+ .../sets/dumps/0060set_multistmt_0.json-nft   |  24 +-
+ .../sets/dumps/0060set_multistmt_1.json-nft   |  24 +-
+ .../sets/dumps/0064map_catchall_0.json-nft    |  16 +-
+ .../0071unclosed_prefix_interval_0.json-nft   |  16 +-
+ .../sets/dumps/dynset_missing.json-nft        |  24 +-
+ .../testcases/sets/dumps/inner_0.json-nft     |  16 +-
+ .../testcases/sets/dumps/set_eval_0.json-nft  |  24 +-
+ .../sets/dumps/sets_with_ifnames.json-nft     | 551 ++++++++++++++++++
+ .../sets/dumps/type_set_symbol.json-nft       |  32 +-
+ .../transactions/dumps/0040set_0.json-nft     |  20 +-
+ 78 files changed, 2490 insertions(+), 677 deletions(-)
+ create mode 100644 tests/shell/testcases/chains/dumps/0011endless_jump_loop_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0010concat_map_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0011vmap_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/map_catchall_double_free_2.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/vmap_mark_bitwise_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/vmap_timeout.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_objects_0.json-nft
+ create mode 100644 tests/shell/testcases/owner/dumps/0002-persist.json-nft
+ create mode 100644 tests/shell/testcases/owner/dumps/0002-persist.nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0008create_verdict_map_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0024synproxy_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/sets_with_ifnames.json-nft
+
+-- 
+2.43.0
+
 
