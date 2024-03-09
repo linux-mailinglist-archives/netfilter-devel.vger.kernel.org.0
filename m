@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1258-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1253-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E08768770B1
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20C248770AC
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CC6B281BA7
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 374341C208DA
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D09638F9C;
-	Sat,  9 Mar 2024 11:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4703D381D4;
+	Sat,  9 Mar 2024 11:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="LI0B3nkZ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nq2gCyJ2"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC577374D4
-	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6DC2DF7D
+	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709984138; cv=none; b=mlQC9/xP20GPx/8pBaeilT6Xe9feLL7fgt5/d4edfQFO3815WBSgCfXINER/Kh3Nve/fuZIZWnC/0goWV6S8b3og5lxZJmW8afAHNrPdBUfQCcJ0+eAZpoZNPfkscsCFIJQfX0hHn3VBjFk5E7OzRQmYwM3Q5lYnum8KH0yCOxQ=
+	t=1709984137; cv=none; b=HTR2fb/hAwmK2uVcRp/VCU+c/laoe1QAq+HnpS0z96i+jyU1KhMAhf0Y4P4Sf2qgjQtQU45cbvLTaxIxSZ0VlMMLYLu2gKwZv8b1etIrlGPjrCIXnEZoNaGQ/U8CFbixw6B4f7+WwTX/6Aighu6qXhB6B6UxCftnr6YIOWJyvQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709984138; c=relaxed/simple;
-	bh=OTRI94HLC5NUDwpj5wkAsbG+7UPVtPM3F1kGQUOneq8=;
+	s=arc-20240116; t=1709984137; c=relaxed/simple;
+	bh=xfw8vK0izvlJzUgBy3/FCib9T1Fw7nAGZ3q5iXwEyZI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WY0Rm1H0iAo684IXLoHTFl8DcXrQPaMLHba4lVww3KLtmtdGTkDAqAhzwtzg0gYVNxQDmcdn7boOWuZJCSPkygWpcSuKEilhbzP/349+X4s6AEfDhj2rZZm6aMVKmebvi/Doj9XgMokNXAW2RDB0d6wjQH5c4O0Z9cAdnNETbHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=LI0B3nkZ; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=NKOj/GDsTwpYdhI4UecYBo4pQEETQpxu7bo3JaL/9yFPUS5UAswKRb/ZGcGN5FsXTARvobf0/KsmAF1ecC2yO6En348OFcqJtM9k2Zpw3QFMS8drnNXFB13rmGFhf9/CQSFzkrQyN6AgEO58nKH46GFG7djWr/UI4gHihxAxLEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nq2gCyJ2; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,24 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=+9hQfpVzdZ5WdJG5aL4t/QWSL6efH9Ufzveau65wngI=; b=LI0B3nkZ//MN2+hZ2CgziKoE3J
-	ir+JyT0NJ6F//3uVeAyPGA18jtf9wwNwx/RFPGTaLqadMPuxibm6NCmgxaCVssY2LR8mF5zMujAx0
-	GfxpLXlfuL7+lucBDltyoqMHuogDTghx7cOCNFhP/MQLvOjP/d+5A2obqoqd5nOp0CRDcGuFsGmBf
-	Li1S88lp2LL6LxZPY2/t3+N7ybCwO2F0FHZ+KFtzZrD7NsvnFYoZ+wl3UVe51NvevxdnHyBt96zal
-	tmkl8FEbA/P6s4rY54qDE9Lv7y0wHbsWyjNlvxL4uvsT4mhkWMEG3UggiX6eOVoYnFglYVJY5yj38
-	718jGfZg==;
+	bh=dWen0EdBzbLmkxk9jaNzIukcIIxCikAR/xOqXWblL4k=; b=nq2gCyJ2L6gPI0eS8ZnKn5m+aJ
+	m7kXNHx3PIDIxvM+Za4JlILCy9Fn/bqemGZl+6aMvABosHk5PT8vMXQnGtwpo0QHqI4CAklgLEu+I
+	TJPGvq561jPDE76C2vN2OhTsfX7A+KC4mUewwBs/2ttHt7QDmwRwcRFaJnIHXnhTu7R0bQ46u6rhV
+	AO0AGpZs7e9UFpwdTvbJCPiqajAmAUJ8QO+VZus8bfQ55g0l7d7m86wBBvEQLvAtCmWhByPaUTr3N
+	9A/fXZIioEFce9j1dDdsdCUQjFFImluCCDvQfQkBUuFyTqH4gxRTDKpaoEZf47D/Ul4kS+AxfdRBn
+	qrEgamjQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1riuzH-000000003hb-0D3L;
-	Sat, 09 Mar 2024 12:35:35 +0100
+	id 1riuzE-000000003h7-0MPL;
+	Sat, 09 Mar 2024 12:35:32 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>
-Subject: [nft PATCH 6/7] parser: json: Support for synproxy objects
-Date: Sat,  9 Mar 2024 12:35:26 +0100
-Message-ID: <20240309113527.8723-7-phil@nwl.cc>
+Subject: [nft PATCH 7/7] tests: shell: Add missing json-nft dumps
+Date: Sat,  9 Mar 2024 12:35:27 +0100
+Message-ID: <20240309113527.8723-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240309113527.8723-1-phil@nwl.cc>
 References: <20240309113527.8723-1-phil@nwl.cc>
@@ -66,55 +66,1927 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Parsing code was there already, merely the entry in json_parse_cmd_add()
-missing.
+Given that a bunch of issues got fixed, add some more dumps.
 
-To support maps with synproxy target, an entry in string_to_nft_object()
-is required. While being at it, add other missing entries as well.
+Also add tests/shell/testcases/owner/dumps/0002-persist.nft while at it,
+even though it's really small.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/parser_json.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ .../dumps/0011endless_jump_loop_1.json-nft    |  75 +++
+ .../maps/dumps/0010concat_map_0.json-nft      | 106 ++++
+ .../testcases/maps/dumps/0011vmap_0.json-nft  | 145 +++++
+ .../maps/dumps/0024named_objects_0.json-nft   | 165 ++++++
+ .../dumps/map_catchall_double_free_2.json-nft |  46 ++
+ .../maps/dumps/vmap_mark_bitwise_0.json-nft   | 158 +++++
+ .../maps/dumps/vmap_timeout.json-nft          | 229 ++++++++
+ .../dumps/comments_objects_0.json-nft         | 102 ++++
+ .../owner/dumps/0002-persist.json-nft         |  19 +
+ .../testcases/owner/dumps/0002-persist.nft    |   3 +
+ .../dumps/0008create_verdict_map_0.json-nft   |  78 +++
+ .../sets/dumps/0024synproxy_0.json-nft        | 131 +++++
+ .../sets/dumps/sets_with_ifnames.json-nft     | 551 ++++++++++++++++++
+ 13 files changed, 1808 insertions(+)
+ create mode 100644 tests/shell/testcases/chains/dumps/0011endless_jump_loop_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0010concat_map_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0011vmap_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/map_catchall_double_free_2.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/vmap_mark_bitwise_0.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/vmap_timeout.json-nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_objects_0.json-nft
+ create mode 100644 tests/shell/testcases/owner/dumps/0002-persist.json-nft
+ create mode 100644 tests/shell/testcases/owner/dumps/0002-persist.nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0008create_verdict_map_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/0024synproxy_0.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/sets_with_ifnames.json-nft
 
-diff --git a/src/parser_json.c b/src/parser_json.c
-index bb027448319c5..4fc0479cf4972 100644
---- a/src/parser_json.c
-+++ b/src/parser_json.c
-@@ -3217,14 +3217,18 @@ static struct cmd *json_parse_cmd_add_rule(struct json_ctx *ctx, json_t *root,
- static int string_to_nft_object(const char *str)
- {
- 	const char *obj_tbl[__NFT_OBJECT_MAX] = {
--		[NFT_OBJECT_COUNTER] = "counter",
--		[NFT_OBJECT_QUOTA] = "quota",
--		[NFT_OBJECT_LIMIT] = "limit",
--		[NFT_OBJECT_SECMARK] = "secmark",
-+		[NFT_OBJECT_COUNTER]	= "counter",
-+		[NFT_OBJECT_QUOTA]	= "quota",
-+		[NFT_OBJECT_CT_HELPER]	= "ct helper",
-+		[NFT_OBJECT_LIMIT]	= "limit",
-+		[NFT_OBJECT_CT_TIMEOUT]	= "ct timeout",
-+		[NFT_OBJECT_SECMARK]	= "secmark",
-+		[NFT_OBJECT_CT_EXPECT]	= "ct expectation",
-+		[NFT_OBJECT_SYNPROXY]	= "synproxy",
- 	};
- 	unsigned int i;
- 
--	for (i = 0; i < NFT_OBJECT_MAX; i++) {
-+	for (i = 0; i <= NFT_OBJECT_MAX; i++) {
- 		if (obj_tbl[i] && !strcmp(str, obj_tbl[i]))
- 			return i;
- 	}
-@@ -3759,7 +3763,8 @@ static struct cmd *json_parse_cmd_add(struct json_ctx *ctx,
- 		{ "ct timeout", NFT_OBJECT_CT_TIMEOUT, json_parse_cmd_add_object },
- 		{ "ct expectation", NFT_OBJECT_CT_EXPECT, json_parse_cmd_add_object },
- 		{ "limit", CMD_OBJ_LIMIT, json_parse_cmd_add_object },
--		{ "secmark", CMD_OBJ_SECMARK, json_parse_cmd_add_object }
-+		{ "secmark", CMD_OBJ_SECMARK, json_parse_cmd_add_object },
-+		{ "synproxy", CMD_OBJ_SYNPROXY, json_parse_cmd_add_object }
- 	};
- 	unsigned int i;
- 	json_t *tmp;
+diff --git a/tests/shell/testcases/chains/dumps/0011endless_jump_loop_1.json-nft b/tests/shell/testcases/chains/dumps/0011endless_jump_loop_1.json-nft
+new file mode 100644
+index 0000000000000..e1a2262fdf04f
+--- /dev/null
++++ b/tests/shell/testcases/chains/dumps/0011endless_jump_loop_1.json-nft
+@@ -0,0 +1,75 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "t",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "t",
++        "name": "c1",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "t",
++        "name": "c2",
++        "handle": 0
++      }
++    },
++    {
++      "map": {
++        "family": "ip",
++        "name": "m",
++        "table": "t",
++        "type": "inet_service",
++        "handle": 0,
++        "map": "verdict",
++        "elem": [
++          [
++            2,
++            {
++              "jump": {
++                "target": "c2"
++              }
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "ip",
++        "table": "t",
++        "chain": "c1",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "payload": {
++                  "protocol": "tcp",
++                  "field": "dport"
++                }
++              },
++              "data": "@m"
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/maps/dumps/0010concat_map_0.json-nft b/tests/shell/testcases/maps/dumps/0010concat_map_0.json-nft
+new file mode 100644
+index 0000000000000..fcc23bb8095fa
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/0010concat_map_0.json-nft
+@@ -0,0 +1,106 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "inet",
++        "name": "x",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "x",
++        "name": "y",
++        "handle": 0,
++        "type": "nat",
++        "hook": "prerouting",
++        "prio": -100,
++        "policy": "accept"
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "z",
++        "table": "x",
++        "type": [
++          "ipv4_addr",
++          "inet_proto",
++          "inet_service"
++        ],
++        "handle": 0,
++        "map": [
++          "ipv4_addr",
++          "inet_service"
++        ],
++        "elem": [
++          [
++            {
++              "concat": [
++                "1.1.1.1",
++                "tcp",
++                20
++              ]
++            },
++            {
++              "concat": [
++                "2.2.2.2",
++                30
++              ]
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "x",
++        "chain": "y",
++        "handle": 0,
++        "expr": [
++          {
++            "dnat": {
++              "family": "ip",
++              "addr": {
++                "map": {
++                  "key": {
++                    "concat": [
++                      {
++                        "payload": {
++                          "protocol": "ip",
++                          "field": "saddr"
++                        }
++                      },
++                      {
++                        "payload": {
++                          "protocol": "ip",
++                          "field": "protocol"
++                        }
++                      },
++                      {
++                        "payload": {
++                          "protocol": "tcp",
++                          "field": "dport"
++                        }
++                      }
++                    ]
++                  },
++                  "data": "@z"
++                }
++              }
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/maps/dumps/0011vmap_0.json-nft b/tests/shell/testcases/maps/dumps/0011vmap_0.json-nft
+new file mode 100644
+index 0000000000000..8f07378a84e4c
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/0011vmap_0.json-nft
+@@ -0,0 +1,145 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "inet",
++        "name": "filter",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "ssh_input",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "wan_input",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "prerouting",
++        "handle": 0,
++        "type": "filter",
++        "hook": "prerouting",
++        "prio": -300,
++        "policy": "accept"
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "portmap",
++        "table": "filter",
++        "type": "inet_service",
++        "handle": 0,
++        "map": "verdict",
++        "elem": [
++          [
++            {
++              "elem": {
++                "val": 22,
++                "counter": {
++                  "packets": 0,
++                  "bytes": 0
++                }
++              }
++            },
++            {
++              "jump": {
++                "target": "ssh_input"
++              }
++            }
++          ],
++          [
++            {
++              "elem": {
++                "val": "*",
++                "counter": {
++                  "packets": 0,
++                  "bytes": 0
++                }
++              }
++            },
++            {
++              "drop": null
++            }
++          ]
++        ],
++        "stmt": [
++          {
++            "counter": null
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "wan_input",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "payload": {
++                  "protocol": "tcp",
++                  "field": "dport"
++                }
++              },
++              "data": "@portmap"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "prerouting",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "meta": {
++                  "key": "iif"
++                }
++              },
++              "data": {
++                "set": [
++                  [
++                    "lo",
++                    {
++                      "jump": {
++                        "target": "wan_input"
++                      }
++                    }
++                  ]
++                ]
++              }
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/maps/dumps/0024named_objects_0.json-nft b/tests/shell/testcases/maps/dumps/0024named_objects_0.json-nft
+new file mode 100644
+index 0000000000000..aa2f6f8c22874
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/0024named_objects_0.json-nft
+@@ -0,0 +1,165 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "inet",
++        "name": "x",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "x",
++        "name": "y",
++        "handle": 0,
++        "type": "filter",
++        "hook": "input",
++        "prio": 0,
++        "policy": "accept"
++      }
++    },
++    {
++      "counter": {
++        "family": "inet",
++        "name": "user123",
++        "table": "x",
++        "handle": 0,
++        "packets": 12,
++        "bytes": 1433
++      }
++    },
++    {
++      "counter": {
++        "family": "inet",
++        "name": "user321",
++        "table": "x",
++        "handle": 0,
++        "packets": 0,
++        "bytes": 0
++      }
++    },
++    {
++      "quota": {
++        "family": "inet",
++        "name": "user123",
++        "table": "x",
++        "handle": 0,
++        "bytes": 2000,
++        "used": 0,
++        "inv": true
++      }
++    },
++    {
++      "quota": {
++        "family": "inet",
++        "name": "user124",
++        "table": "x",
++        "handle": 0,
++        "bytes": 2000,
++        "used": 0,
++        "inv": true
++      }
++    },
++    {
++      "set": {
++        "family": "inet",
++        "name": "y",
++        "table": "x",
++        "type": "ipv4_addr",
++        "handle": 0
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "test",
++        "table": "x",
++        "type": "ipv4_addr",
++        "handle": 0,
++        "map": "quota",
++        "elem": [
++          [
++            "192.168.2.2",
++            "user124"
++          ],
++          [
++            "192.168.2.3",
++            "user124"
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "x",
++        "chain": "y",
++        "handle": 0,
++        "expr": [
++          {
++            "counter": {
++              "map": {
++                "key": {
++                  "payload": {
++                    "protocol": "ip",
++                    "field": "saddr"
++                  }
++                },
++                "data": {
++                  "set": [
++                    [
++                      "1.1.1.1",
++                      "user123"
++                    ],
++                    [
++                      "2.2.2.2",
++                      "user123"
++                    ],
++                    [
++                      "192.168.2.2",
++                      "user123"
++                    ]
++                  ]
++                }
++              }
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "x",
++        "chain": "y",
++        "handle": 0,
++        "expr": [
++          {
++            "quota": {
++              "map": {
++                "key": {
++                  "payload": {
++                    "protocol": "ip",
++                    "field": "saddr"
++                  }
++                },
++                "data": "@test"
++              }
++            }
++          },
++          {
++            "drop": null
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/maps/dumps/map_catchall_double_free_2.json-nft b/tests/shell/testcases/maps/dumps/map_catchall_double_free_2.json-nft
+new file mode 100644
+index 0000000000000..a9d4c8e9fde3c
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/map_catchall_double_free_2.json-nft
+@@ -0,0 +1,46 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "test",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "test",
++        "name": "testchain",
++        "handle": 0
++      }
++    },
++    {
++      "map": {
++        "family": "ip",
++        "name": "testmap",
++        "table": "test",
++        "type": "ipv4_addr",
++        "handle": 0,
++        "map": "verdict",
++        "elem": [
++          [
++            "*",
++            {
++              "jump": {
++                "target": "testchain"
++              }
++            }
++          ]
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/maps/dumps/vmap_mark_bitwise_0.json-nft b/tests/shell/testcases/maps/dumps/vmap_mark_bitwise_0.json-nft
+new file mode 100644
+index 0000000000000..df156411c346c
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/vmap_mark_bitwise_0.json-nft
+@@ -0,0 +1,158 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "x",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "x",
++        "name": "sctm_o0_0",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "x",
++        "name": "sctm_o0_1",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "x",
++        "name": "SET_ctmark_RPLYroute",
++        "handle": 0
++      }
++    },
++    {
++      "counter": {
++        "family": "ip",
++        "name": "c_o0_0",
++        "table": "x",
++        "handle": 0,
++        "packets": 0,
++        "bytes": 0
++      }
++    },
++    {
++      "map": {
++        "family": "ip",
++        "name": "sctm_o0",
++        "table": "x",
++        "type": "mark",
++        "handle": 0,
++        "map": "verdict",
++        "elem": [
++          [
++            0,
++            {
++              "jump": {
++                "target": "sctm_o0_0"
++              }
++            }
++          ],
++          [
++            1,
++            {
++              "jump": {
++                "target": "sctm_o0_1"
++              }
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "map": {
++        "family": "ip",
++        "name": "sctm_o1",
++        "table": "x",
++        "type": "mark",
++        "handle": 0,
++        "map": "counter",
++        "elem": [
++          [
++            0,
++            "c_o0_0"
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "ip",
++        "table": "x",
++        "chain": "SET_ctmark_RPLYroute",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "&": [
++                  {
++                    ">>": [
++                      {
++                        "meta": {
++                          "key": "mark"
++                        }
++                      },
++                      8
++                    ]
++                  },
++                  15
++                ]
++              },
++              "data": "@sctm_o0"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "ip",
++        "table": "x",
++        "chain": "SET_ctmark_RPLYroute",
++        "handle": 0,
++        "expr": [
++          {
++            "counter": {
++              "map": {
++                "key": {
++                  "&": [
++                    {
++                      ">>": [
++                        {
++                          "meta": {
++                            "key": "mark"
++                          }
++                        },
++                        8
++                      ]
++                    },
++                    15
++                  ]
++                },
++                "data": "@sctm_o1"
++              }
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/maps/dumps/vmap_timeout.json-nft b/tests/shell/testcases/maps/dumps/vmap_timeout.json-nft
+new file mode 100644
+index 0000000000000..1c3aa590f846e
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/vmap_timeout.json-nft
+@@ -0,0 +1,229 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "inet",
++        "name": "filter",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "ssh_input",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "log_and_drop",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "other_input",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "wan_input",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "filter",
++        "name": "prerouting",
++        "handle": 0,
++        "type": "filter",
++        "hook": "prerouting",
++        "prio": -300,
++        "policy": "accept"
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "portmap",
++        "table": "filter",
++        "type": "inet_service",
++        "handle": 0,
++        "map": "verdict",
++        "flags": [
++          "timeout"
++        ],
++        "gc-interval": 10,
++        "elem": [
++          [
++            22,
++            {
++              "jump": {
++                "target": "ssh_input"
++              }
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "portaddrmap",
++        "table": "filter",
++        "type": [
++          "ipv4_addr",
++          "inet_service"
++        ],
++        "handle": 0,
++        "map": "verdict",
++        "flags": [
++          "timeout"
++        ],
++        "gc-interval": 10,
++        "elem": [
++          [
++            {
++              "concat": [
++                "1.2.3.4",
++                22
++              ]
++            },
++            {
++              "jump": {
++                "target": "ssh_input"
++              }
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "log_and_drop",
++        "handle": 0,
++        "expr": [
++          {
++            "drop": null
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "other_input",
++        "handle": 0,
++        "expr": [
++          {
++            "goto": {
++              "target": "log_and_drop"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "wan_input",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "concat": [
++                  {
++                    "payload": {
++                      "protocol": "ip",
++                      "field": "daddr"
++                    }
++                  },
++                  {
++                    "payload": {
++                      "protocol": "tcp",
++                      "field": "dport"
++                    }
++                  }
++                ]
++              },
++              "data": "@portaddrmap"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "wan_input",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "payload": {
++                  "protocol": "tcp",
++                  "field": "dport"
++                }
++              },
++              "data": "@portmap"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "filter",
++        "chain": "prerouting",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "meta": {
++                  "key": "iif"
++                }
++              },
++              "data": {
++                "set": [
++                  [
++                    "lo",
++                    {
++                      "jump": {
++                        "target": "wan_input"
++                      }
++                    }
++                  ]
++                ]
++              }
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/optionals/dumps/comments_objects_0.json-nft b/tests/shell/testcases/optionals/dumps/comments_objects_0.json-nft
+new file mode 100644
+index 0000000000000..b5359d8b10c0f
+--- /dev/null
++++ b/tests/shell/testcases/optionals/dumps/comments_objects_0.json-nft
+@@ -0,0 +1,102 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "filter",
++        "handle": 0
++      }
++    },
++    {
++      "quota": {
++        "family": "ip",
++        "name": "foo1",
++        "table": "filter",
++        "handle": 0,
++        "comment": "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678",
++        "bytes": 0,
++        "used": 0,
++        "inv": false
++      }
++    },
++    {
++      "quota": {
++        "family": "ip",
++        "name": "q",
++        "table": "filter",
++        "handle": 0,
++        "comment": "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678",
++        "bytes": 1200,
++        "used": 0,
++        "inv": true
++      }
++    },
++    {
++      "counter": {
++        "family": "ip",
++        "name": "c",
++        "table": "filter",
++        "handle": 0,
++        "comment": "test2",
++        "packets": 0,
++        "bytes": 0
++      }
++    },
++    {
++      "ct helper": {
++        "family": "ip",
++        "name": "h",
++        "table": "filter",
++        "handle": 0,
++        "comment": "test3",
++        "type": "sip",
++        "protocol": "tcp",
++        "l3proto": "ip"
++      }
++    },
++    {
++      "ct expectation": {
++        "family": "ip",
++        "name": "e",
++        "table": "filter",
++        "handle": 0,
++        "comment": "test4",
++        "protocol": "tcp",
++        "dport": 666,
++        "timeout": 100,
++        "size": 96,
++        "l3proto": "ip"
++      }
++    },
++    {
++      "limit": {
++        "family": "ip",
++        "name": "l",
++        "table": "filter",
++        "handle": 0,
++        "comment": "test5",
++        "rate": 400,
++        "per": "hour",
++        "burst": 5
++      }
++    },
++    {
++      "synproxy": {
++        "family": "ip",
++        "name": "s",
++        "table": "filter",
++        "handle": 0,
++        "comment": "test6",
++        "mss": 1460,
++        "wscale": 2
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/owner/dumps/0002-persist.json-nft b/tests/shell/testcases/owner/dumps/0002-persist.json-nft
+new file mode 100644
+index 0000000000000..f0c336a86e52f
+--- /dev/null
++++ b/tests/shell/testcases/owner/dumps/0002-persist.json-nft
+@@ -0,0 +1,19 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "t",
++        "handle": 0,
++        "flags": "persist"
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/owner/dumps/0002-persist.nft b/tests/shell/testcases/owner/dumps/0002-persist.nft
+new file mode 100644
+index 0000000000000..b47027d35a30c
+--- /dev/null
++++ b/tests/shell/testcases/owner/dumps/0002-persist.nft
+@@ -0,0 +1,3 @@
++table ip t {
++	flags persist
++}
+diff --git a/tests/shell/testcases/sets/dumps/0008create_verdict_map_0.json-nft b/tests/shell/testcases/sets/dumps/0008create_verdict_map_0.json-nft
+new file mode 100644
+index 0000000000000..fa5dcb2571b1a
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/0008create_verdict_map_0.json-nft
+@@ -0,0 +1,78 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "t",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "t",
++        "name": "postrouting",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "t",
++        "name": "c",
++        "handle": 0
++      }
++    },
++    {
++      "map": {
++        "family": "ip",
++        "name": "sourcemap",
++        "table": "t",
++        "type": "ipv4_addr",
++        "handle": 0,
++        "map": "verdict",
++        "elem": [
++          [
++            "100.123.10.2",
++            {
++              "jump": {
++                "target": "c"
++              }
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "ip",
++        "table": "t",
++        "chain": "postrouting",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "payload": {
++                  "protocol": "ip",
++                  "field": "saddr"
++                }
++              },
++              "data": "@sourcemap"
++            }
++          },
++          {
++            "accept": null
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/sets/dumps/0024synproxy_0.json-nft b/tests/shell/testcases/sets/dumps/0024synproxy_0.json-nft
+new file mode 100644
+index 0000000000000..0af613333592d
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/0024synproxy_0.json-nft
+@@ -0,0 +1,131 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "inet",
++        "name": "x",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "x",
++        "name": "y",
++        "handle": 0,
++        "type": "filter",
++        "hook": "input",
++        "prio": 0,
++        "policy": "accept"
++      }
++    },
++    {
++      "synproxy": {
++        "family": "inet",
++        "name": "https-synproxy",
++        "table": "x",
++        "handle": 0,
++        "mss": 1460,
++        "wscale": 7,
++        "flags": [
++          "timestamp",
++          "sack-perm"
++        ]
++      }
++    },
++    {
++      "synproxy": {
++        "family": "inet",
++        "name": "other-synproxy",
++        "table": "x",
++        "handle": 0,
++        "mss": 1460,
++        "wscale": 5
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "test2",
++        "table": "x",
++        "type": "ipv4_addr",
++        "handle": 0,
++        "map": "synproxy",
++        "flags": [
++          "interval"
++        ],
++        "elem": [
++          [
++            {
++              "prefix": {
++                "addr": "192.168.1.0",
++                "len": 24
++              }
++            },
++            "https-synproxy"
++          ],
++          [
++            {
++              "prefix": {
++                "addr": "192.168.2.0",
++                "len": 24
++              }
++            },
++            "other-synproxy"
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "x",
++        "chain": "y",
++        "handle": 0,
++        "expr": [
++          {
++            "synproxy": {
++              "map": {
++                "key": {
++                  "payload": {
++                    "protocol": "ip",
++                    "field": "saddr"
++                  }
++                },
++                "data": {
++                  "set": [
++                    [
++                      {
++                        "prefix": {
++                          "addr": "192.168.1.0",
++                          "len": 24
++                        }
++                      },
++                      "https-synproxy"
++                    ],
++                    [
++                      {
++                        "prefix": {
++                          "addr": "192.168.2.0",
++                          "len": 24
++                        }
++                      },
++                      "other-synproxy"
++                    ]
++                  ]
++                }
++              }
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/sets/dumps/sets_with_ifnames.json-nft b/tests/shell/testcases/sets/dumps/sets_with_ifnames.json-nft
+new file mode 100644
+index 0000000000000..ac4284293c32a
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/sets_with_ifnames.json-nft
+@@ -0,0 +1,551 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "inet",
++        "name": "testifsets",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "testifsets",
++        "name": "v4icmp",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "testifsets",
++        "name": "v4icmpc",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "testifsets",
++        "name": "input",
++        "handle": 0,
++        "type": "filter",
++        "hook": "input",
++        "prio": 0,
++        "policy": "accept"
++      }
++    },
++    {
++      "chain": {
++        "family": "inet",
++        "table": "testifsets",
++        "name": "do_nothing",
++        "handle": 0
++      }
++    },
++    {
++      "set": {
++        "family": "inet",
++        "name": "simple",
++        "table": "testifsets",
++        "type": "ifname",
++        "handle": 0,
++        "elem": [
++          "abcdef0",
++          "abcdef1",
++          "othername"
++        ]
++      }
++    },
++    {
++      "set": {
++        "family": "inet",
++        "name": "simple_wild",
++        "table": "testifsets",
++        "type": "ifname",
++        "handle": 0,
++        "flags": [
++          "interval"
++        ],
++        "elem": [
++          "abcdef*",
++          "othername",
++          "ppp0"
++        ]
++      }
++    },
++    {
++      "set": {
++        "family": "inet",
++        "name": "concat",
++        "table": "testifsets",
++        "type": [
++          "ipv4_addr",
++          "ifname"
++        ],
++        "handle": 0,
++        "elem": [
++          {
++            "concat": [
++              "10.1.2.2",
++              "abcdef0"
++            ]
++          },
++          {
++            "concat": [
++              "10.1.2.2",
++              "abcdef1"
++            ]
++          }
++        ]
++      }
++    },
++    {
++      "set": {
++        "family": "inet",
++        "name": "concat_wild",
++        "table": "testifsets",
++        "type": [
++          "ipv4_addr",
++          "ifname"
++        ],
++        "handle": 0,
++        "flags": [
++          "interval"
++        ],
++        "elem": [
++          {
++            "concat": [
++              "10.1.2.2",
++              "abcdef*"
++            ]
++          },
++          {
++            "concat": [
++              "10.1.2.1",
++              "bar"
++            ]
++          },
++          {
++            "concat": [
++              {
++                "prefix": {
++                  "addr": "1.1.2.0",
++                  "len": 24
++                }
++              },
++              "abcdef0"
++            ]
++          },
++          {
++            "concat": [
++              {
++                "prefix": {
++                  "addr": "12.2.2.0",
++                  "len": 24
++                }
++              },
++              "abcdef*"
++            ]
++          }
++        ]
++      }
++    },
++    {
++      "map": {
++        "family": "inet",
++        "name": "map_wild",
++        "table": "testifsets",
++        "type": "ifname",
++        "handle": 0,
++        "map": "verdict",
++        "flags": [
++          "interval"
++        ],
++        "elem": [
++          [
++            "abcdef*",
++            {
++              "jump": {
++                "target": "do_nothing"
++              }
++            }
++          ],
++          [
++            "eth0",
++            {
++              "jump": {
++                "target": "do_nothing"
++              }
++            }
++          ]
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmp",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "meta": {
++                  "key": "iifname"
++                }
++              },
++              "right": "@simple"
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmp",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "meta": {
++                  "key": "iifname"
++                }
++              },
++              "right": "@simple_wild"
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmp",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "meta": {
++                  "key": "iifname"
++                }
++              },
++              "right": {
++                "set": [
++                  "eth0",
++                  "abcdef0"
++                ]
++              }
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmp",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "meta": {
++                  "key": "iifname"
++                }
++              },
++              "right": {
++                "set": [
++                  "abcdef*",
++                  "eth0"
++                ]
++              }
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmp",
++        "handle": 0,
++        "expr": [
++          {
++            "vmap": {
++              "key": {
++                "meta": {
++                  "key": "iifname"
++                }
++              },
++              "data": "@map_wild"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmpc",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "concat": [
++                  {
++                    "payload": {
++                      "protocol": "ip",
++                      "field": "saddr"
++                    }
++                  },
++                  {
++                    "meta": {
++                      "key": "iifname"
++                    }
++                  }
++                ]
++              },
++              "right": "@concat"
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmpc",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "concat": [
++                  {
++                    "payload": {
++                      "protocol": "ip",
++                      "field": "saddr"
++                    }
++                  },
++                  {
++                    "meta": {
++                      "key": "iifname"
++                    }
++                  }
++                ]
++              },
++              "right": "@concat_wild"
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmpc",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "concat": [
++                  {
++                    "payload": {
++                      "protocol": "ip",
++                      "field": "saddr"
++                    }
++                  },
++                  {
++                    "meta": {
++                      "key": "iifname"
++                    }
++                  }
++                ]
++              },
++              "right": {
++                "set": [
++                  {
++                    "concat": [
++                      "10.1.2.2",
++                      "abcdef0"
++                    ]
++                  }
++                ]
++              }
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "v4icmpc",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "concat": [
++                  {
++                    "payload": {
++                      "protocol": "ip",
++                      "field": "saddr"
++                    }
++                  },
++                  {
++                    "meta": {
++                      "key": "iifname"
++                    }
++                  }
++                ]
++              },
++              "right": {
++                "set": [
++                  {
++                    "concat": [
++                      "10.1.2.2",
++                      "abcdef*"
++                    ]
++                  }
++                ]
++              }
++            }
++          },
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "input",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "payload": {
++                  "protocol": "ip",
++                  "field": "protocol"
++                }
++              },
++              "right": "icmp"
++            }
++          },
++          {
++            "jump": {
++              "target": "v4icmp"
++            }
++          }
++        ]
++      }
++    },
++    {
++      "rule": {
++        "family": "inet",
++        "table": "testifsets",
++        "chain": "input",
++        "handle": 0,
++        "expr": [
++          {
++            "match": {
++              "op": "==",
++              "left": {
++                "payload": {
++                  "protocol": "ip",
++                  "field": "protocol"
++                }
++              },
++              "right": "icmp"
++            }
++          },
++          {
++            "goto": {
++              "target": "v4icmpc"
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
 -- 
 2.43.0
 
