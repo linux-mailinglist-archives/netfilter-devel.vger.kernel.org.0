@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1254-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1258-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C71718770AD
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E08768770B1
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 12:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82068281C68
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CC6B281BA7
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Mar 2024 11:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D66B2E3F2;
-	Sat,  9 Mar 2024 11:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D09638F9C;
+	Sat,  9 Mar 2024 11:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="qNm5y8Do"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="LI0B3nkZ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E792FEDD
-	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC577374D4
+	for <netfilter-devel@vger.kernel.org>; Sat,  9 Mar 2024 11:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709984137; cv=none; b=KMVdX3/SI+4SkI9xRd2ASHXTvpxq7hTCpYOqYL2IgZhPgmNysX0agB8XlQTqANH0scRDJ7p5Opk7WUX+EI47W7YPCYEk9EzhG9a9z4qwXooHXciRqm6FfOUARq13sNtUpQyh1X2R2sPSDilVYrXcULDtAS/Nbt2DAQTOdpuPDuk=
+	t=1709984138; cv=none; b=mlQC9/xP20GPx/8pBaeilT6Xe9feLL7fgt5/d4edfQFO3815WBSgCfXINER/Kh3Nve/fuZIZWnC/0goWV6S8b3og5lxZJmW8afAHNrPdBUfQCcJ0+eAZpoZNPfkscsCFIJQfX0hHn3VBjFk5E7OzRQmYwM3Q5lYnum8KH0yCOxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709984137; c=relaxed/simple;
-	bh=Ev1mzNidUkI+oEiYi0GtWLXUFWnmVxAUz3qn3MlLajk=;
+	s=arc-20240116; t=1709984138; c=relaxed/simple;
+	bh=OTRI94HLC5NUDwpj5wkAsbG+7UPVtPM3F1kGQUOneq8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MsNmisU/dU45c9tq2to2v8WbbCAc26K2ox/BdPUCQsXyDWgCvLpdYQtxJfndWUXpIFMv1LZeRgOaYsF2vgqPE3nm1jp0/qVzhBkShND3cgR2QQQiZUIsxBTo+XIgxXp6Snafwb3+gkHk7KVp92O5PiQxw4pfImU3kP99/aiiS1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=qNm5y8Do; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=WY0Rm1H0iAo684IXLoHTFl8DcXrQPaMLHba4lVww3KLtmtdGTkDAqAhzwtzg0gYVNxQDmcdn7boOWuZJCSPkygWpcSuKEilhbzP/349+X4s6AEfDhj2rZZm6aMVKmebvi/Doj9XgMokNXAW2RDB0d6wjQH5c4O0Z9cAdnNETbHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=LI0B3nkZ; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,24 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=4PRCPI8pluOOcXw+JlsLS4iq1gM48Jjr/j9hMqLTlbI=; b=qNm5y8DorUTzmIXkWdOPzUdS0H
-	PEfIk+Vk+DztfN6R7uU4oox5Y06u0YiDrWLGgHkJikce34553FbqrJwrTsrZOVEDM7Ifrg+329c3m
-	5g7p+A44We4B8kt6z89itHe+bBmjgryltppuqf9aMpNRaeYv8zEGRtzVbV9RKgXhSC7aqgHkFtwZu
-	b8efQrp88a0CoRszxnfYd4aZXvBSpq3REM3n3IZxagwtjFXPib9UgjD8QiX+j6ZKLHx4iC4QTfxIM
-	n6oVTRLslipa7lt2d448F2BihiSx30aNCsOiB5uU1hnVgNZfG0xIHariV+wwaSfsok2YKNXhLTXYt
-	8Urr4F8A==;
+	bh=+9hQfpVzdZ5WdJG5aL4t/QWSL6efH9Ufzveau65wngI=; b=LI0B3nkZ//MN2+hZ2CgziKoE3J
+	ir+JyT0NJ6F//3uVeAyPGA18jtf9wwNwx/RFPGTaLqadMPuxibm6NCmgxaCVssY2LR8mF5zMujAx0
+	GfxpLXlfuL7+lucBDltyoqMHuogDTghx7cOCNFhP/MQLvOjP/d+5A2obqoqd5nOp0CRDcGuFsGmBf
+	Li1S88lp2LL6LxZPY2/t3+N7ybCwO2F0FHZ+KFtzZrD7NsvnFYoZ+wl3UVe51NvevxdnHyBt96zal
+	tmkl8FEbA/P6s4rY54qDE9Lv7y0wHbsWyjNlvxL4uvsT4mhkWMEG3UggiX6eOVoYnFglYVJY5yj38
+	718jGfZg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1riuzD-000000003h0-23xt;
-	Sat, 09 Mar 2024 12:35:31 +0100
+	id 1riuzH-000000003hb-0D3L;
+	Sat, 09 Mar 2024 12:35:35 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>
-Subject: [nft PATCH 5/7] json: Support maps with concatenated data
-Date: Sat,  9 Mar 2024 12:35:25 +0100
-Message-ID: <20240309113527.8723-6-phil@nwl.cc>
+Subject: [nft PATCH 6/7] parser: json: Support for synproxy objects
+Date: Sat,  9 Mar 2024 12:35:26 +0100
+Message-ID: <20240309113527.8723-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240309113527.8723-1-phil@nwl.cc>
 References: <20240309113527.8723-1-phil@nwl.cc>
@@ -66,89 +66,55 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Dump such maps with an array of types in "map" property, make the parser
-aware of this.
+Parsing code was there already, merely the entry in json_parse_cmd_add()
+missing.
+
+To support maps with synproxy target, an entry in string_to_nft_object()
+is required. While being at it, add other missing entries as well.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/json.c        | 10 +++++-----
- src/parser_json.c | 18 +++++++++---------
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ src/parser_json.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/src/json.c b/src/json.c
-index bb515164d2587..29fbd0cfdba28 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -130,15 +130,15 @@ static json_t *set_stmt_list_json(const struct list_head *stmt_list,
- 
- static json_t *set_print_json(struct output_ctx *octx, const struct set *set)
- {
--	json_t *root, *tmp;
--	const char *type, *datatype_ext = NULL;
-+	json_t *root, *tmp, *datatype_ext = NULL;
-+	const char *type;
- 
- 	if (set_is_datamap(set->flags)) {
- 		type = "map";
--		datatype_ext = set->data->dtype->name;
-+		datatype_ext = set_dtype_json(set->data);
- 	} else if (set_is_objmap(set->flags)) {
- 		type = "map";
--		datatype_ext = obj_type_name(set->objtype);
-+		datatype_ext = json_string(obj_type_name(set->objtype));
- 	} else if (set_is_meter(set->flags)) {
- 		type = "meter";
- 	} else {
-@@ -155,7 +155,7 @@ static json_t *set_print_json(struct output_ctx *octx, const struct set *set)
- 	if (set->comment)
- 		json_object_set_new(root, "comment", json_string(set->comment));
- 	if (datatype_ext)
--		json_object_set_new(root, "map", json_string(datatype_ext));
-+		json_object_set_new(root, "map", datatype_ext);
- 
- 	if (!(set->flags & (NFT_SET_CONSTANT))) {
- 		if (set->policy != NFT_SET_POL_PERFORMANCE) {
 diff --git a/src/parser_json.c b/src/parser_json.c
-index ff52423af4d7f..bb027448319c5 100644
+index bb027448319c5..4fc0479cf4972 100644
 --- a/src/parser_json.c
 +++ b/src/parser_json.c
-@@ -3255,7 +3255,7 @@ static struct cmd *json_parse_cmd_add_set(struct json_ctx *ctx, json_t *root,
- 					  enum cmd_ops op, enum cmd_obj obj)
+@@ -3217,14 +3217,18 @@ static struct cmd *json_parse_cmd_add_rule(struct json_ctx *ctx, json_t *root,
+ static int string_to_nft_object(const char *str)
  {
- 	struct handle h = { 0 };
--	const char *family = "", *policy, *dtype_ext = NULL;
-+	const char *family = "", *policy;
- 	json_t *tmp, *stmt_json;
- 	struct set *set;
+ 	const char *obj_tbl[__NFT_OBJECT_MAX] = {
+-		[NFT_OBJECT_COUNTER] = "counter",
+-		[NFT_OBJECT_QUOTA] = "quota",
+-		[NFT_OBJECT_LIMIT] = "limit",
+-		[NFT_OBJECT_SECMARK] = "secmark",
++		[NFT_OBJECT_COUNTER]	= "counter",
++		[NFT_OBJECT_QUOTA]	= "quota",
++		[NFT_OBJECT_CT_HELPER]	= "ct helper",
++		[NFT_OBJECT_LIMIT]	= "limit",
++		[NFT_OBJECT_CT_TIMEOUT]	= "ct timeout",
++		[NFT_OBJECT_SECMARK]	= "secmark",
++		[NFT_OBJECT_CT_EXPECT]	= "ct expectation",
++		[NFT_OBJECT_SYNPROXY]	= "synproxy",
+ 	};
+ 	unsigned int i;
  
-@@ -3308,19 +3308,19 @@ static struct cmd *json_parse_cmd_add_set(struct json_ctx *ctx, json_t *root,
- 		return NULL;
+-	for (i = 0; i < NFT_OBJECT_MAX; i++) {
++	for (i = 0; i <= NFT_OBJECT_MAX; i++) {
+ 		if (obj_tbl[i] && !strcmp(str, obj_tbl[i]))
+ 			return i;
  	}
- 
--	if (!json_unpack(root, "{s:s}", "map", &dtype_ext)) {
--		const struct datatype *dtype;
-+	if (!json_unpack(root, "{s:o}", "map", &tmp)) {
-+		if (json_is_string(tmp)) {
-+			const char *s = json_string_value(tmp);
- 
--		set->objtype = string_to_nft_object(dtype_ext);
-+			set->objtype = string_to_nft_object(s);
-+		}
- 		if (set->objtype) {
- 			set->flags |= NFT_SET_OBJECT;
--		} else if ((dtype = datatype_lookup_byname(dtype_ext))) {
--			set->data = constant_expr_alloc(&netlink_location,
--							dtype, dtype->byteorder,
--							dtype->size, NULL);
-+		} else if ((set->data = json_parse_dtype_expr(ctx, tmp))) {
- 			set->flags |= NFT_SET_MAP;
- 		} else {
--			json_error(ctx, "Invalid map type '%s'.", dtype_ext);
-+			json_error(ctx, "Invalid map type '%s'.",
-+				   json_dumps(tmp, 0));
- 			set_free(set);
- 			handle_free(&h);
- 			return NULL;
+@@ -3759,7 +3763,8 @@ static struct cmd *json_parse_cmd_add(struct json_ctx *ctx,
+ 		{ "ct timeout", NFT_OBJECT_CT_TIMEOUT, json_parse_cmd_add_object },
+ 		{ "ct expectation", NFT_OBJECT_CT_EXPECT, json_parse_cmd_add_object },
+ 		{ "limit", CMD_OBJ_LIMIT, json_parse_cmd_add_object },
+-		{ "secmark", CMD_OBJ_SECMARK, json_parse_cmd_add_object }
++		{ "secmark", CMD_OBJ_SECMARK, json_parse_cmd_add_object },
++		{ "synproxy", CMD_OBJ_SYNPROXY, json_parse_cmd_add_object }
+ 	};
+ 	unsigned int i;
+ 	json_t *tmp;
 -- 
 2.43.0
 
