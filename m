@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1415-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1405-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8FCB880327
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C49F88031D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6054A282914
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:13:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02DA3281F2D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B241E23776;
-	Tue, 19 Mar 2024 17:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C3E2031D;
+	Tue, 19 Mar 2024 17:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PoJT8Fhh"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="pKZtXyF7"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A3A210E6
-	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D3A19479
+	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710868359; cv=none; b=cAgqSvexOol2JGrLbN9LWHw9oCII50+EY5W3J7jz2mLABD2P4AN4INK6fxDYZVjof/bCJaCM87obOH1iSD1EklwM4thha4o5kgw+5vUJnT7eW34XJsMxXimlFvRfHZOaYGMW9oeLWBKIW3fagM5DJWip+H0EBpPamk1SlqKMZlE=
+	t=1710868355; cv=none; b=MoDmYN4VS6rnGABqcTJ7sbUdtWZeUHyNc7JUbLEBldm6yTTn2A6Hnou08MPe4fKyCBkHhNYBAO424+jA2A1WYMbYb/v4wbrAZN1XBSMlSmRpH0tsdKoJTTs3wGdj5vYE+NcfZNvsbnjS6pMSpU3aY+pb9Ft+cdaeGVSWWCvqJDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710868359; c=relaxed/simple;
-	bh=O9O3F9HU/hMcDoSTtoQzcin9VN0ZVl6aSy12uGPf96A=;
+	s=arc-20240116; t=1710868355; c=relaxed/simple;
+	bh=8L5XdUFrEOh0h7XdH23L/6cSjxk7oxopulzsBLjVT10=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bDg16gloLEkoMfJt5dgFDfuWLe4rVQZaDgph8qDwNaRlM/4z//7tMf1DElIQPmNasoIvpJ5AcwX7lH1wYoiF9rh+5PfepyTjXHp6F2oQ8/7gJeihS0FFf6UBFb370muXRJ1H/zk2K2VTvbkP6o6ccMGL9rPbCKqziTAqv0BptBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PoJT8Fhh; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=p4Gxxog3WE2PRKJbdXgajdiLQsIDB5mcPuoOtdOwXWg6p5IfXrq1L4V3rWvO4u80VBeIXOJchkvyNsxbXx/omiUtvjNopkMKlV3e0hwwNHewI2cSz7Odhyp8labKzYwwN5K0zl7ZzoAQiH1hdZQoZmr1Qb9XwYPeHrmdfwsTSD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=pKZtXyF7; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=COVdgqetbd7vv0P6S/UOdUwHNuznjpsy4YdnHTuEiOk=; b=PoJT8Fhh12592eeTuHtP9pT1HE
-	MIdPLO5F6605LxXELgheEfcg1MPnwuA3WtqVAcoufp/vjT8b3o2IeItSAQJ1U4B3I9DcRcOMiu5EN
-	U7HuQTHeNvgM7pOwmw/D9SplNErYn//X1rX0qL6vSxFHUQmyX4ZaWtVcscbmFBrxt5+D8+0Nzi96K
-	IPXMUwY1XV4QMIXTysCNV58VXSCmKwf9uXwTk8FPoCXbGbqYNX4Q4/zE4kK/WaRwDgHBMao7lvFUG
-	tg+hfzxynCm/SbSyZHTteJbyvVeFqEs4Bcq+EtdJWj1h3UewibvZMZd70MpBiH2sioGx7GQRJTnv0
-	LIIXqivA==;
+	bh=lC7E3iZwUuVoDwNqw+RUaRCPEpq6RaNSwntlPYJCNNU=; b=pKZtXyF75xyDne4bEcGjbOa/Vj
+	ttuAni0vivwDZln0eSxuHavhHHZgSQy8hca7QPtJVRKw9xid1dlLtNTHrFdTLzs/LX0xIbZkPPXt8
+	vhnv4u0KYZ64xnKYPK6GKe1LlxSW5eL1sqHdNeTBAOpSMZcw7/BtIWvBh1ioWUsD1BTUkNZcDo7LU
+	aq8lCsIDvkmT9c7HXGdFaKBoyKBKarOjh6rJ17+c2H5LGj+NIrauVsMgwGh0ZVRJlZiYaniNqFJf0
+	Sr1U/KrwPkJHksm021OcWk4Pxs13JX5cNmV9dkQ53tXw5s2u9/1DkMVl9aLW8uQ2iVNyfQO+AqQX8
+	wUAg8sOQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rmd0u-000000007gj-3r7P;
-	Tue, 19 Mar 2024 18:12:36 +0100
+	id 1rmd0p-000000007fw-2Vl4;
+	Tue, 19 Mar 2024 18:12:31 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 12/17] obj: Call obj_ops::set with legal attributes only
-Date: Tue, 19 Mar 2024 18:12:19 +0100
-Message-ID: <20240319171224.18064-13-phil@nwl.cc>
+Subject: [libnftnl PATCH 13/17] obj: Introduce struct obj_ops::attr_policy
+Date: Tue, 19 Mar 2024 18:12:20 +0100
+Message-ID: <20240319171224.18064-14-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240319171224.18064-1-phil@nwl.cc>
 References: <20240319171224.18064-1-phil@nwl.cc>
@@ -65,158 +65,262 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Refer to obj_ops::nftnl_max_attr field value for the maximum supported
-attribute value to reject invalid ones upfront.
-
-Consequently drop default cases from callbacks' switches which handle
-all supported attributes.
+Just like with struct expr_ops::attr_policy, enable object types to
+inform about restrictions on attribute use. This way generic object code
+may perform sanity checks before dispatching to object ops.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/obj/counter.c    | 2 --
- src/obj/ct_expect.c  | 2 --
- src/obj/ct_helper.c  | 2 --
- src/obj/ct_timeout.c | 2 --
- src/obj/limit.c      | 2 --
- src/obj/quota.c      | 2 --
- src/obj/secmark.c    | 2 --
- src/obj/synproxy.c   | 2 --
- src/obj/tunnel.c     | 2 --
- src/object.c         | 4 +++-
- 10 files changed, 3 insertions(+), 19 deletions(-)
+ include/obj.h        |  1 +
+ src/obj/counter.c    |  6 ++++++
+ src/obj/ct_expect.c  | 10 ++++++++++
+ src/obj/ct_helper.c  | 11 +++++++++++
+ src/obj/ct_timeout.c |  7 +++++++
+ src/obj/limit.c      |  9 +++++++++
+ src/obj/quota.c      |  7 +++++++
+ src/obj/secmark.c    |  5 +++++
+ src/obj/synproxy.c   |  7 +++++++
+ src/obj/tunnel.c     | 20 ++++++++++++++++++++
+ 10 files changed, 83 insertions(+)
 
+diff --git a/include/obj.h b/include/obj.h
+index 6d2af8d5527d3..d2177377860d6 100644
+--- a/include/obj.h
++++ b/include/obj.h
+@@ -105,6 +105,7 @@ struct obj_ops {
+ 	uint32_t type;
+ 	size_t	alloc_len;
+ 	int	nftnl_max_attr;
++	struct attr_policy *attr_policy;
+ 	int	(*set)(struct nftnl_obj *e, uint16_t type, const void *data, uint32_t data_len);
+ 	const void *(*get)(const struct nftnl_obj *e, uint16_t type, uint32_t *data_len);
+ 	int	(*parse)(struct nftnl_obj *e, struct nlattr *attr);
 diff --git a/src/obj/counter.c b/src/obj/counter.c
-index 76a1b20f19c30..982da2c6678e5 100644
+index 982da2c6678e5..44524d71b1698 100644
 --- a/src/obj/counter.c
 +++ b/src/obj/counter.c
-@@ -34,8 +34,6 @@ nftnl_obj_counter_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_CTR_PKTS:
- 		memcpy(&ctr->pkts, data, sizeof(ctr->pkts));
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -116,11 +116,17 @@ static int nftnl_obj_counter_snprintf(char *buf, size_t len, uint32_t flags,
+ 			ctr->pkts, ctr->bytes);
  }
+ 
++static struct attr_policy obj_ctr_attr_policy[__NFTNL_OBJ_CTR_MAX] = {
++	[NFTNL_OBJ_CTR_BYTES]	= { .maxlen = sizeof(uint64_t) },
++	[NFTNL_OBJ_CTR_PKTS]	= { .maxlen = sizeof(uint64_t) },
++};
++
+ struct obj_ops obj_ops_counter = {
+ 	.name		= "counter",
+ 	.type		= NFT_OBJECT_COUNTER,
+ 	.alloc_len	= sizeof(struct nftnl_obj_counter),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_CTR_MAX - 1,
++	.attr_policy	= obj_ctr_attr_policy,
+ 	.set		= nftnl_obj_counter_set,
+ 	.get		= nftnl_obj_counter_get,
+ 	.parse		= nftnl_obj_counter_parse,
 diff --git a/src/obj/ct_expect.c b/src/obj/ct_expect.c
-index 7e9c5e1b9e48c..60014dc9848b5 100644
+index 60014dc9848b5..978af152c5a8e 100644
 --- a/src/obj/ct_expect.c
 +++ b/src/obj/ct_expect.c
-@@ -35,8 +35,6 @@ static int nftnl_obj_ct_expect_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_CT_EXPECT_SIZE:
- 		memcpy(&exp->size, data, sizeof(exp->size));
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -185,11 +185,21 @@ static int nftnl_obj_ct_expect_snprintf(char *buf, size_t remain,
+ 	return offset;
  }
+ 
++static struct attr_policy
++obj_ct_expect_attr_policy[__NFTNL_OBJ_CT_EXPECT_MAX] = {
++	[NFTNL_OBJ_CT_EXPECT_L3PROTO]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_CT_EXPECT_L4PROTO]	= { .maxlen = sizeof(uint8_t) },
++	[NFTNL_OBJ_CT_EXPECT_DPORT]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_CT_EXPECT_TIMEOUT]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_CT_EXPECT_SIZE]	= { .maxlen = sizeof(uint8_t) },
++};
++
+ struct obj_ops obj_ops_ct_expect = {
+ 	.name		= "ct_expect",
+ 	.type		= NFT_OBJECT_CT_EXPECT,
+ 	.alloc_len	= sizeof(struct nftnl_obj_ct_expect),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_CT_EXPECT_MAX - 1,
++	.attr_policy	= obj_ct_expect_attr_policy,
+ 	.set		= nftnl_obj_ct_expect_set,
+ 	.get		= nftnl_obj_ct_expect_get,
+ 	.parse		= nftnl_obj_ct_expect_parse,
 diff --git a/src/obj/ct_helper.c b/src/obj/ct_helper.c
-index f8aa73408839c..b8b05fd9eee8c 100644
+index b8b05fd9eee8c..aa8e9262ec5aa 100644
 --- a/src/obj/ct_helper.c
 +++ b/src/obj/ct_helper.c
-@@ -37,8 +37,6 @@ static int nftnl_obj_ct_helper_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_CT_HELPER_L4PROTO:
- 		memcpy(&helper->l4proto, data, sizeof(helper->l4proto));
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -139,11 +139,22 @@ static int nftnl_obj_ct_helper_snprintf(char *buf, size_t len,
+ 			helper->name, helper->l3proto, helper->l4proto);
  }
+ 
++/* from kernel's include/net/netfilter/nf_conntrack_helper.h */
++#define NF_CT_HELPER_NAME_LEN	16
++
++static struct attr_policy
++obj_ct_helper_attr_policy[__NFTNL_OBJ_CT_HELPER_MAX] = {
++	[NFTNL_OBJ_CT_HELPER_NAME]	= { .maxlen = NF_CT_HELPER_NAME_LEN },
++	[NFTNL_OBJ_CT_HELPER_L3PROTO]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_CT_HELPER_L4PROTO]	= { .maxlen = sizeof(uint8_t) },
++};
++
+ struct obj_ops obj_ops_ct_helper = {
+ 	.name		= "ct_helper",
+ 	.type		= NFT_OBJECT_CT_HELPER,
+ 	.alloc_len	= sizeof(struct nftnl_obj_ct_helper),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_CT_HELPER_MAX - 1,
++	.attr_policy	= obj_ct_helper_attr_policy,
+ 	.set		= nftnl_obj_ct_helper_set,
+ 	.get		= nftnl_obj_ct_helper_get,
+ 	.parse		= nftnl_obj_ct_helper_parse,
 diff --git a/src/obj/ct_timeout.c b/src/obj/ct_timeout.c
-index ee86231f42965..011d92867a077 100644
+index 011d92867a077..88522d8c89bce 100644
 --- a/src/obj/ct_timeout.c
 +++ b/src/obj/ct_timeout.c
-@@ -162,8 +162,6 @@ static int nftnl_obj_ct_timeout_set(struct nftnl_obj *e, uint16_t type,
- 		memcpy(timeout->timeout, data,
- 		       sizeof(uint32_t) * NFTNL_CTTIMEOUT_ARRAY_MAX);
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -308,11 +308,18 @@ static int nftnl_obj_ct_timeout_snprintf(char *buf, size_t remain,
+ 	return offset;
  }
+ 
++static struct attr_policy
++obj_ct_timeout_attr_policy[__NFTNL_OBJ_CT_TIMEOUT_MAX] = {
++	[NFTNL_OBJ_CT_TIMEOUT_L3PROTO]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_CT_TIMEOUT_L4PROTO]	= { .maxlen = sizeof(uint8_t) },
++};
++
+ struct obj_ops obj_ops_ct_timeout = {
+ 	.name		= "ct_timeout",
+ 	.type		= NFT_OBJECT_CT_TIMEOUT,
+ 	.alloc_len	= sizeof(struct nftnl_obj_ct_timeout),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_CT_TIMEOUT_MAX - 1,
++	.attr_policy	= obj_ct_timeout_attr_policy,
+ 	.set		= nftnl_obj_ct_timeout_set,
+ 	.get		= nftnl_obj_ct_timeout_get,
+ 	.parse		= nftnl_obj_ct_timeout_parse,
 diff --git a/src/obj/limit.c b/src/obj/limit.c
-index 1c54bbca72fef..83cb1935fc8e9 100644
+index 83cb1935fc8e9..0c7362e55e682 100644
 --- a/src/obj/limit.c
 +++ b/src/obj/limit.c
-@@ -42,8 +42,6 @@ static int nftnl_obj_limit_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_LIMIT_FLAGS:
- 		memcpy(&limit->flags, data, sizeof(limit->flags));
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -157,11 +157,20 @@ static int nftnl_obj_limit_snprintf(char *buf, size_t len,
+ 			limit->burst, limit->type, limit->flags);
  }
+ 
++static struct attr_policy obj_limit_attr_policy[__NFTNL_OBJ_LIMIT_MAX] = {
++	[NFTNL_OBJ_LIMIT_RATE]	= { .maxlen = sizeof(uint64_t) },
++	[NFTNL_OBJ_LIMIT_UNIT]	= { .maxlen = sizeof(uint64_t) },
++	[NFTNL_OBJ_LIMIT_BURST]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_LIMIT_TYPE]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_LIMIT_FLAGS]	= { .maxlen = sizeof(uint32_t) },
++};
++
+ struct obj_ops obj_ops_limit = {
+ 	.name		= "limit",
+ 	.type		= NFT_OBJECT_LIMIT,
+ 	.alloc_len	= sizeof(struct nftnl_obj_limit),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_LIMIT_MAX - 1,
++	.attr_policy	= obj_limit_attr_policy,
+ 	.set		= nftnl_obj_limit_set,
+ 	.get		= nftnl_obj_limit_get,
+ 	.parse		= nftnl_obj_limit_parse,
 diff --git a/src/obj/quota.c b/src/obj/quota.c
-index a39d552d923f2..665d7caf4a5d5 100644
+index 665d7caf4a5d5..b48ba91a4df11 100644
 --- a/src/obj/quota.c
 +++ b/src/obj/quota.c
-@@ -36,8 +36,6 @@ static int nftnl_obj_quota_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_QUOTA_FLAGS:
- 		memcpy(&quota->flags, data, sizeof(quota->flags));
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -133,11 +133,18 @@ static int nftnl_obj_quota_snprintf(char *buf, size_t len,
+ 			quota->bytes, quota->flags);
  }
+ 
++static struct attr_policy obj_quota_attr_policy[__NFTNL_OBJ_QUOTA_MAX] = {
++	[NFTNL_OBJ_QUOTA_BYTES]		= { .maxlen = sizeof(uint64_t) },
++	[NFTNL_OBJ_QUOTA_CONSUMED]	= { .maxlen = sizeof(uint64_t) },
++	[NFTNL_OBJ_QUOTA_FLAGS]		= { .maxlen = sizeof(uint32_t) },
++};
++
+ struct obj_ops obj_ops_quota = {
+ 	.name		= "quota",
+ 	.type		= NFT_OBJECT_QUOTA,
+ 	.alloc_len	= sizeof(struct nftnl_obj_quota),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_QUOTA_MAX - 1,
++	.attr_policy	= obj_quota_attr_policy,
+ 	.set		= nftnl_obj_quota_set,
+ 	.get		= nftnl_obj_quota_get,
+ 	.parse		= nftnl_obj_quota_parse,
 diff --git a/src/obj/secmark.c b/src/obj/secmark.c
-index c78e35f2c284f..83cd1dc2264ed 100644
+index 83cd1dc2264ed..eea96647cff72 100644
 --- a/src/obj/secmark.c
 +++ b/src/obj/secmark.c
-@@ -30,8 +30,6 @@ static int nftnl_obj_secmark_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_SECMARK_CTX:
- 		snprintf(secmark->ctx, sizeof(secmark->ctx), "%s", (const char *)data);
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -105,11 +105,16 @@ static int nftnl_obj_secmark_snprintf(char *buf, size_t len,
+ 	return snprintf(buf, len, "context %s ", secmark->ctx);
  }
+ 
++static struct attr_policy obj_secmark_attr_policy[__NFTNL_OBJ_SECMARK_MAX] = {
++	[NFTNL_OBJ_SECMARK_CTX]	= { .maxlen = NFT_SECMARK_CTX_MAXLEN },
++};
++
+ struct obj_ops obj_ops_secmark = {
+ 	.name		= "secmark",
+ 	.type		= NFT_OBJECT_SECMARK,
+ 	.alloc_len	= sizeof(struct nftnl_obj_secmark),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_SECMARK_MAX - 1,
++	.attr_policy	= obj_secmark_attr_policy,
+ 	.set		= nftnl_obj_secmark_set,
+ 	.get		= nftnl_obj_secmark_get,
+ 	.parse		= nftnl_obj_secmark_parse,
 diff --git a/src/obj/synproxy.c b/src/obj/synproxy.c
-index d259a517bebbf..f7c77627b56e9 100644
+index f7c77627b56e9..65fbcf76629ad 100644
 --- a/src/obj/synproxy.c
 +++ b/src/obj/synproxy.c
-@@ -27,8 +27,6 @@ static int nftnl_obj_synproxy_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_SYNPROXY_FLAGS:
- 		memcpy(&synproxy->flags, data, data_len);
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -132,11 +132,18 @@ static int nftnl_obj_synproxy_snprintf(char *buf, size_t len,
+         return offset;
  }
+ 
++static struct attr_policy obj_synproxy_attr_policy[__NFTNL_OBJ_SYNPROXY_MAX] = {
++	[NFTNL_OBJ_SYNPROXY_MSS]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_SYNPROXY_WSCALE]	= { .maxlen = sizeof(uint8_t) },
++	[NFTNL_OBJ_SYNPROXY_FLAGS]	= { .maxlen = sizeof(uint32_t) },
++};
++
+ struct obj_ops obj_ops_synproxy = {
+ 	.name		= "synproxy",
+ 	.type		= NFT_OBJECT_SYNPROXY,
+ 	.alloc_len	= sizeof(struct nftnl_obj_synproxy),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_SYNPROXY_MAX - 1,
++	.attr_policy	= obj_synproxy_attr_policy,
+ 	.set		= nftnl_obj_synproxy_set,
+ 	.get		= nftnl_obj_synproxy_get,
+ 	.parse		= nftnl_obj_synproxy_parse,
 diff --git a/src/obj/tunnel.c b/src/obj/tunnel.c
-index 19a3639eafc01..72985eeb761cd 100644
+index 72985eeb761cd..07b3b2ac0cb86 100644
 --- a/src/obj/tunnel.c
 +++ b/src/obj/tunnel.c
-@@ -76,8 +76,6 @@ nftnl_obj_tunnel_set(struct nftnl_obj *e, uint16_t type,
- 	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR:
- 		memcpy(&tun->u.tun_erspan.u.v2.dir, data, sizeof(tun->u.tun_erspan.u.v2.dir));
- 		break;
--	default:
--		return -1;
- 	}
- 	return 0;
+@@ -536,11 +536,31 @@ static int nftnl_obj_tunnel_snprintf(char *buf, size_t len,
+ 	return snprintf(buf, len, "id %u ", tun->id);
  }
-diff --git a/src/object.c b/src/object.c
-index d363725e10fb8..bd4e51a21aea9 100644
---- a/src/object.c
-+++ b/src/object.c
-@@ -149,7 +149,9 @@ int nftnl_obj_set_data(struct nftnl_obj *obj, uint16_t attr,
- 		obj->user.len = data_len;
- 		break;
- 	default:
--		if (!obj->ops)
-+		if (!obj->ops ||
-+		    attr < NFTNL_OBJ_BASE ||
-+		    attr > obj->ops->nftnl_max_attr)
- 			return -1;
  
- 		if (obj->ops->set(obj, attr, data, data_len) < 0)
++static struct attr_policy obj_tunnel_attr_policy[__NFTNL_OBJ_TUNNEL_MAX] = {
++	[NFTNL_OBJ_TUNNEL_ID]		= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_IPV4_SRC]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_IPV4_DST]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_IPV6_SRC]	= { .maxlen = sizeof(struct in6_addr) },
++	[NFTNL_OBJ_TUNNEL_IPV6_DST]	= { .maxlen = sizeof(struct in6_addr) },
++	[NFTNL_OBJ_TUNNEL_IPV6_FLOWLABEL] = { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_SPORT]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_TUNNEL_DPORT]	= { .maxlen = sizeof(uint16_t) },
++	[NFTNL_OBJ_TUNNEL_FLAGS]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_TOS]		= { .maxlen = sizeof(uint8_t) },
++	[NFTNL_OBJ_TUNNEL_TTL]		= { .maxlen = sizeof(uint8_t) },
++	[NFTNL_OBJ_TUNNEL_VXLAN_GBP]	= { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_ERSPAN_VERSION] = { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX] = { .maxlen = sizeof(uint32_t) },
++	[NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID] = { .maxlen = sizeof(uint8_t) },
++	[NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR] = { .maxlen = sizeof(uint8_t) },
++};
++
+ struct obj_ops obj_ops_tunnel = {
+ 	.name		= "tunnel",
+ 	.type		= NFT_OBJECT_TUNNEL,
+ 	.alloc_len	= sizeof(struct nftnl_obj_tunnel),
+ 	.nftnl_max_attr	= __NFTNL_OBJ_TUNNEL_MAX - 1,
++	.attr_policy	= obj_tunnel_attr_policy,
+ 	.set		= nftnl_obj_tunnel_set,
+ 	.get		= nftnl_obj_tunnel_get,
+ 	.parse		= nftnl_obj_tunnel_parse,
 -- 
 2.43.0
 
