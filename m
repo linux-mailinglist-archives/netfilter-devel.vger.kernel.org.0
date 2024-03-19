@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1400-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1402-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA7C880318
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31D4088031A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7299EB210F3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:12:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6FA1B222DB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9E41427B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C9618C05;
 	Tue, 19 Mar 2024 17:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Wj1dsLfG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="cvIQEnwJ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728F42B9B3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AAE2B9B9
 	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710868352; cv=none; b=P2MOu9KVHEe2mXt3Jtj1qbyeScLjjrQBk5KLdcyj9JGabjyxe3wsCjsbEm8kPnXELpimUekMHfOZ+EkxsIM13t8kKIP5d/fPiFKGhvyfpGtQSTr7Hoe9KhtGy7hrqvHfYDMbUhyFbUl1+gf8N6BQ7vLB9NE0oH6rXDwljtGowLw=
+	t=1710868352; cv=none; b=kL9FUXuVGT3wzPJQ/fAS53usLW8JKKGCreqKHaRZwQQd9hUlzN7BXsGOW0OlP/wBN0SgyDfnNZcpH2Ja8RANUvQ/9Gzav3EY4rvEQUIktfvkpO/3FSgGImOwYoqaCeMmX/FYSeEJ6JlJPV0z0DwpwZSi8+qt0W+BW2OK1E2JV+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710868352; c=relaxed/simple;
-	bh=joaT5qXcpoYy45ohc3q38RHapRLSe0FobxbGJStYpC4=;
+	bh=eQdmxNZJS5QBmSb5L+0e8DJFDKa9WdjJAcruRndQgTM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oEB+yMC/v0cX7O5Eqlk0qyZ0qPyOPTgRk6OjzNry02KmztNSM6JVPjhqIi5Lzu/H540zXthPr7KrxVe7wptlHMyU1UzB2Qh2qhA+rPwPVuveEFcnIFHJhKZF6ickAj+A2xhdAzNEdfu5Jy69ZWogO5YFlva8wJGwwzs5nqsi8Os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Wj1dsLfG; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=ihcVHLJzT5/M1WM29oN3od9FeZQ0nqUPrtFVP39hs3wjD3ZMjN456i5TJuvPbWOcgg0mM5/kr6N9mYsreF+yI+GjiFjjlks55WxiTNrHB/36sw4nih9FUwc1DhSJk1ermq4ALfAeZ7Hwfx/780xx77DQKitwPTYmURkME1KE9k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=cvIQEnwJ; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=GG/ajz4S6q3ZRquV8B6RlCYdYhhD84El14q90RK3thk=; b=Wj1dsLfGtVUQY4FcI5xmemvDvu
-	/uTc0wsG15J2M4fRaWahwUwSIzVfDVyY54NYd0pr2VLvfxhOVCpFAexV2W46oCaadUM6TjJIEyN98
-	UzsEtvdJWr70Ox6gdzGHVWUxUv1IzPndPQdMUb/Dl37IzLwmVB8LWYPTW9M7A13dlSKsyVaMiRpI3
-	g1xZx445QNzYt0atD9+7VsLs4wV+CSceSZm81W6+a7d+nCBklwpcmfyv+YFLluUAbzi1pVw6/zLlV
-	cm/PjpyPnfxQlqQbsKfNwCbljr7qdlkAmYLV7plob+Zy8qx4Y4XKjcAS57wcU3b/LtECshWhRyL/G
-	FB39rsIQ==;
+	bh=F2wijYqKAkmyq+HH33ShaVdGCnZK0OCflcWREj/o2z4=; b=cvIQEnwJzfxtDs4Tgim37UOzJK
+	02N+M6RBmDIo+z+1HGdUqt9FVP0oP2xtbzHU0d12xZnqMCGv0DZe2eHf2wFVoQa8RAla+5SR0aRBr
+	6sBs4BrqIKt4Eufn9yC8RRJIYjcqoleEdfrUo+fD7igHHb9YEkXmw4MMvgXU2J2biCkM69GgkVO1Y
+	XuqSiiwDgaA/fLKYZtxZtlAS9iLVoOcfebDIghlu7DlDWvhi/7rlwWWy5PXOZIvGPSTev0F7MQcvk
+	jg/LpwnRVESXoukPoXsMwNg97UF4t5oiEjfuPBkrCvOPFoPpsJfqZEP5TGpo3NNumNi1HmI9fA0pL
+	pkXwlP7g==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rmd0m-000000007fX-3HlM;
-	Tue, 19 Mar 2024 18:12:28 +0100
+	id 1rmd0n-000000007fc-1OiB;
+	Tue, 19 Mar 2024 18:12:29 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 06/17] table: Validate NFTNL_TABLE_OWNER, too
-Date: Tue, 19 Mar 2024 18:12:13 +0100
-Message-ID: <20240319171224.18064-7-phil@nwl.cc>
+Subject: [libnftnl PATCH 07/17] obj: Do not call nftnl_obj_set_data() with zero data_len
+Date: Tue, 19 Mar 2024 18:12:14 +0100
+Message-ID: <20240319171224.18064-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240319171224.18064-1-phil@nwl.cc>
 References: <20240319171224.18064-1-phil@nwl.cc>
@@ -65,24 +65,28 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fixes: 985955fe41f53 ("table: add table owner support")
+Pass 'strlen() + 1' as length parameter when setting string attributes,
+just like other string setters do.
+
+Fixes: 5573d0146c1ae ("src: support for stateful objects")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/table.c | 1 +
- 1 file changed, 1 insertion(+)
+ src/object.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/table.c b/src/table.c
-index 4a439ff5ab996..4f48e8c9e73e1 100644
---- a/src/table.c
-+++ b/src/table.c
-@@ -89,6 +89,7 @@ static uint32_t nftnl_table_validate[NFTNL_TABLE_MAX + 1] = {
- 	[NFTNL_TABLE_FAMILY]	= sizeof(uint32_t),
- 	[NFTNL_TABLE_HANDLE]	= sizeof(uint64_t),
- 	[NFTNL_TABLE_USE]	= sizeof(uint32_t),
-+	[NFTNL_TABLE_OWNER]	= sizeof(uint32_t),
- };
+diff --git a/src/object.c b/src/object.c
+index d3bfd16df532e..b518a675c2fb0 100644
+--- a/src/object.c
++++ b/src/object.c
+@@ -185,7 +185,7 @@ void nftnl_obj_set_u64(struct nftnl_obj *obj, uint16_t attr, uint64_t val)
+ EXPORT_SYMBOL(nftnl_obj_set_str);
+ void nftnl_obj_set_str(struct nftnl_obj *obj, uint16_t attr, const char *str)
+ {
+-	nftnl_obj_set_data(obj, attr, str, 0);
++	nftnl_obj_set_data(obj, attr, str, strlen(str) + 1);
+ }
  
- EXPORT_SYMBOL(nftnl_table_set_data);
+ EXPORT_SYMBOL(nftnl_obj_get_data);
 -- 
 2.43.0
 
