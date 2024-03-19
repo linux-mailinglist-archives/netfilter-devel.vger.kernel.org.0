@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1409-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1411-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8757B880321
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:12:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B094880324
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:13:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A665E1C21D54
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:12:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B429B220A0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93DC1CAB2;
-	Tue, 19 Mar 2024 17:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E2324B2F;
+	Tue, 19 Mar 2024 17:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ZIDD5nh+"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="BZYvIjC8"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1B320335
-	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A713210E6
+	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710868356; cv=none; b=MJu6VZ+okUkzAstO0EE8EWz4Nv0uKjNEt7+9f5rvXT7FixotF5pPnEGHZGnIzcDcjYnNo7Bjjrs693jf78JfZ003ypzX5aaggwMV79TOtHK1ZQx7qMZK1iL+9a0qFqPjo8t3UzlG80p9x1yNR9BNV56zzIad3MFVtmX/6cyOFoI=
+	t=1710868357; cv=none; b=PZ9tBrWgnW5/KtYl9wUGFGCIK7DK7rL6EDXQrltQRj7H1CTHvPqd0UN5aQ1vwam+6UuO0uNOzkOlmdKjrwDduO49jbeiei20GkC65lp1L4VAqvkzs71whWyyR1gxNfYUY7P48tyO8d74x+DCXjCYijPnybM0JgHxm4mKixK1R0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710868356; c=relaxed/simple;
-	bh=XQdsYRKuSp4qnDUi7dZG4pVClGVxupRP5iGEfLmxSHk=;
+	s=arc-20240116; t=1710868357; c=relaxed/simple;
+	bh=0ZDhdv0NfCiL9qYrX6gY0QftdqRKpEZozaLPZqnFkY0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OkYC4tQ1xvA+gkGrEv5s1ri0Ks1t3RInoe4IBmayK1gSl7IKL2gAbxzH+5yOqpRpDPzf38IfR3smhBWwuS0jpM4/BeBrNz4UF7Z4ytDC62ab9lg/C8/qCeA8s/3RMajkRJJFZeQygfGqr6GzskV7je5N+oxXip5mzMt38tHEI5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=ZIDD5nh+; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=kbTOoW3mz8g3twQi1/fke04L2szwLp5kTmQieg4qK6QUaV2yqyqvEwGM3TFYGbY484wdXnUuaP33iIEMJKlps4eeUczBm2RUMkHXkQ2BC6qJXMCuOQZKbPgKSrcu4BCDh2N7EdUi7d+jhYnjT320LV0zx6BTA3uPqOtr1AJVw8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=BZYvIjC8; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=ZiKnSj5/U2zyBFtyeHOcQGK+Yw2iSRafzzmkNmtsPR0=; b=ZIDD5nh+hpYdZPaCerIuqUyKhL
-	3g8Vj+A1PGRe8dbE08yHPI1fb03lx3KimEfGeU2YC/816uzn1eioN+pOX5fnHj2zY4zy0IIq5SuS0
-	8ZXv8CsQs+MneA02CAjUfwisstf9NNKGF6uQle+G1qt/NpoQiq+1lHpJ8x9LhtbDK3MPHxrGeB80Z
-	DBDszs4pMKuxF/pdlWjDyqkYs8Gl89NwwIgoeuodRhWrQtxGlcyRw5x0XwYEz1vYIrVVt3uUqk5dp
-	tr0Bqy6/udQX0X2J6ely6XZ5Vkzo97UDF19+47lT8BRVt44KXJ2nAE7uwR5eSHhcgcAXHCwKKNHgA
-	92qGJ8UQ==;
+	bh=nuh2W8iWi0GebTWGb1kc53n7wjGnslXAIFAaskF2gIU=; b=BZYvIjC8Kjs68hFlsCJv5aacDh
+	Fy3jzTbqyqiYVwZFZZ0gq+Gb3L54f1AE7pvGcB0nKsLhFPurruqLSathOUiQSmjfMi22vc4lyYNby
+	qFuRecXmmbPxMq9oTqLCIFtjKpDYWmIuR5aNWZSU5A+muOjZukrx3pCiw9AAB5ShmwK1P/Scs6/DR
+	PIdIN410P/Vq1YS2I6WvrwIJH+HASlM2hwj2aD7SyvR6WQsn+w87XnhEep+Tt5c5kBUyhrzV0MYis
+	aEjFzSKx695Y8vM84Nstv9MdlP4kw6VbL913MG/Yor8ewn2JgIqirwZw6jpDqocc7U+mWqzWSnApi
+	5AvfPJvw==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rmd0r-000000007gE-2rJC;
-	Tue, 19 Mar 2024 18:12:33 +0100
+	id 1rmd0s-000000007gO-3Cg4;
+	Tue, 19 Mar 2024 18:12:34 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 08/17] obj: synproxy: Use memcpy() to handle potentially unaligned data
-Date: Tue, 19 Mar 2024 18:12:15 +0100
-Message-ID: <20240319171224.18064-9-phil@nwl.cc>
+Subject: [libnftnl PATCH 09/17] utils: Fix for wrong variable use in nftnl_assert_validate()
+Date: Tue, 19 Mar 2024 18:12:16 +0100
+Message-ID: <20240319171224.18064-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240319171224.18064-1-phil@nwl.cc>
 References: <20240319171224.18064-1-phil@nwl.cc>
@@ -65,36 +65,39 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Analogous to commit dc240913458d5 ("src: Use memcpy() to handle
-potentially unaligned data").
+This worked by accident as all callers passed a local variable 'attr' as
+parameter '_attr'.
 
-Fixes: 609a13fc2999e ("src: synproxy stateful object support")
+Fixes: 7756d31990cd4 ("src: add assertion infrastructure to validate attribute types")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/obj/synproxy.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/utils.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/src/obj/synproxy.c b/src/obj/synproxy.c
-index baef5c201e83c..4ef97ece9306d 100644
---- a/src/obj/synproxy.c
-+++ b/src/obj/synproxy.c
-@@ -19,13 +19,13 @@ static int nftnl_obj_synproxy_set(struct nftnl_obj *e, uint16_t type,
+diff --git a/include/utils.h b/include/utils.h
+index ff76f77ebb351..eed61277595e2 100644
+--- a/include/utils.h
++++ b/include/utils.h
+@@ -37,9 +37,9 @@ void __nftnl_assert_fail(uint16_t attr, const char *filename, int line);
+ #define nftnl_assert_validate(data, _validate_array, _attr, _data_len)		\
+ ({										\
+ 	if (!data)								\
+-		__nftnl_assert_fail(attr, __FILE__, __LINE__);			\
++		__nftnl_assert_fail(_attr, __FILE__, __LINE__);			\
+ 	if (_validate_array[_attr])						\
+-		nftnl_assert(data, attr, _validate_array[_attr] == _data_len);	\
++		nftnl_assert(data, _attr, _validate_array[_attr] == _data_len);	\
+ })
  
- 	switch (type) {
- 	case NFTNL_OBJ_SYNPROXY_MSS:
--		synproxy->mss = *((uint16_t *)data);
-+		memcpy(&synproxy->mss, data, data_len);
- 		break;
- 	case NFTNL_OBJ_SYNPROXY_WSCALE:
--		synproxy->wscale = *((uint8_t *)data);
-+		memcpy(&synproxy->wscale, data, data_len);
- 		break;
- 	case NFTNL_OBJ_SYNPROXY_FLAGS:
--		synproxy->flags = *((uint32_t *)data);
-+		memcpy(&synproxy->flags, data, data_len);
- 		break;
- 	default:
- 		return -1;
+ void __nftnl_assert_attr_exists(uint16_t attr, uint16_t attr_max,
+@@ -79,4 +79,7 @@ int nftnl_fprintf(FILE *fpconst, const void *obj, uint32_t cmd, uint32_t type,
+ 			  	     uint32_t cmd, uint32_t type,
+ 				     uint32_t flags));
+ 
++int nftnl_set_str_attr(const char **dptr, uint32_t *flags,
++		       uint16_t attr, const void *data, uint32_t data_len);
++
+ #endif
 -- 
 2.43.0
 
