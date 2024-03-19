@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1413-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1404-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332B4880325
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:13:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C8DF88031C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 18:12:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD2331F268A7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:13:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FFDF282322
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Mar 2024 17:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8082825601;
-	Tue, 19 Mar 2024 17:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E7C1CD24;
+	Tue, 19 Mar 2024 17:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Sd/cwdLl"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="aErB5ve+"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B7E2375B
-	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB29818AE4
+	for <netfilter-devel@vger.kernel.org>; Tue, 19 Mar 2024 17:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710868358; cv=none; b=eU0HhDBuUJST6XZuvNebGlwkez5mJn91Fg81Ey+fltYzcu8KgKTZGYAYuEW00XqkiCP6xhLlxH4Z9PbvBEnmcmqm/ATOwunQNCgsWmhZc+hzn4TtvIF13xZkyZAZy5LvvCzha6PmS4uLq88/qsO+CekcpTHZO4HASfNiL7u7i6M=
+	t=1710868354; cv=none; b=SHcgaQcMmdWc2PH7TneQPSJOfgS5RCbY9+2W0o0M/NootYb7JsUFBQ99nBmafpQZzihaVBq/7uT0YzlTtY+NGRb0R4/3InVM4Pxz2mrsafpnFw8kLGFa9uiBYyVzm5UGIwmW4TZJC/4sb4K5kdDGC/GS4orbll/pG3eA08nhttw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710868358; c=relaxed/simple;
-	bh=vvml5wa/qs/5pdJW9ed/JnJhBqlTeXRHOVi3da3Z9nQ=;
+	s=arc-20240116; t=1710868354; c=relaxed/simple;
+	bh=K6BhCarnA7grzJf3VqlUjJHLUv6I0JNh1T2W4rnxUdM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q2TgQ3wZH1tOT8tXDOfr9upTSDGSwuOO9f6XXA9iL6zqL/x0ptkbXRfv8uMvuve7hF9cuwk8BlpNoSD1cp+8y+ZfgXlJWr6qZtoJhbnFqNYWFk9lOaPSf0oR1kALQiEJ5gT3JeoG5F8wuhzfI0MZVXU+So09fDy7SMIBIHDjHu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Sd/cwdLl; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=fQXNxbRHaPATWwG5sYsx5tpcp0qO1QUgdzSJd3TSjfRDWDAei1QauxpaU6d37G3DyIoQK+Pyb1etExsRoddoC7QvIAxjVMMGV0trRGzZL3GECMdAYUAebzr4ycS4ctyELNqq4AyCNHwv9S3DkRr2ptFHHQJDMrw+KfOEZi9Nc7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=aErB5ve+; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=rqAi1U04BBXNxL09pkxDNtqU4CZ2CDVq0XnJdd9lLuM=; b=Sd/cwdLlsqDttc1l00jv2p4OZ9
-	Xb0lPBfi7KlfIJafOFaOd2XmTIJ3AeyFHvo1duC5CMkpwE8+DUc/YFeh7A0SLy9BZMqOWL2TW5nVZ
-	slIFH716PYszCZLPPSciJ7gfhWGShRJoqG/ZOomluOA5RBIlKjx4w3kPjA3coiJ0TBHA8YPxBnBXC
-	n214cWlsy9Z0e8zVPFvjauIPcsTKl5Zrm4TBudAXYvnxrIlyaJID2xuY0TTP5L1CUffhwztWBg97r
-	I4SCEdV7224OsAc9ywhT6XzAs7WGT5SJoDsXwnhQWz+BMQn3t2pus8eIZx8DVLLqI08EzGmbmtcBb
-	9mV+xoOA==;
+	bh=Zph+M0lbEAcqWDaa9tzEehB3w1TKtCZgF5SQP8gjMGU=; b=aErB5ve+ExnHLxWRi8v0C//+nA
+	zinKAfrnJrF57l3w/HcKJMcxtJ/g0qwFnJR5ujuhckvnSG9GHVmn5/bQfuSpU7Oh+0oqYoe4uXVtv
+	GCuhfjld38KBRtJtQjHLro8X1DpMt7c+5hewSQ1wouYanOcD/d6R6K9SybhUkcjsczomst4WKDPoA
+	1XaBy+z/jGoCW6xBORcA+zaxTMtzkp8lu/h6cMCTSlLJt1iINsZjoE82TijrusLWLLC1g7SWVtFKU
+	dZzx0JQflPWG44qoeKQCkHXKyLskUnSMuWKta02jk38qYT8wLtA1oLSF5ybN8vNFWFzdaeJKSZIKC
+	qsA7ZKHw==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rmd0t-000000007gY-3Jlw;
-	Tue, 19 Mar 2024 18:12:35 +0100
+	id 1rmd0p-000000007fr-090b;
+	Tue, 19 Mar 2024 18:12:31 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 14/17] obj: Enforce attr_policy compliance in nftnl_obj_set_data()
-Date: Tue, 19 Mar 2024 18:12:21 +0100
-Message-ID: <20240319171224.18064-15-phil@nwl.cc>
+Subject: [libnftnl PATCH 15/17] utils: Introduce and use nftnl_set_str_attr()
+Date: Tue, 19 Mar 2024 18:12:22 +0100
+Message-ID: <20240319171224.18064-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240319171224.18064-1-phil@nwl.cc>
 References: <20240319171224.18064-1-phil@nwl.cc>
@@ -65,33 +65,241 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Every object type defines an attr_policy array, so deny setting
-attributes for object types which don't have it present or if it
-specifies a non-zero maxlen which is lower than the given data_len.
+The function consolidates the necessary code when assigning to string
+pointer attributes, namely:
+
+* Conditional free of the previous value
+* Allocation of new value
+* Checking for memory allocation errors
+* Setting respective flag bit
+
+A new feature previously missing in all call sites is respecting
+data_len in case the buffer up to that point did not contain a NUL-char.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/object.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ src/chain.c     | 36 ++++++++----------------------------
+ src/flowtable.c | 17 ++++-------------
+ src/object.c    | 13 ++++---------
+ src/rule.c      | 18 ++++--------------
+ src/set.c       | 18 ++++--------------
+ src/table.c     |  9 ++-------
+ src/utils.c     | 14 ++++++++++++++
+ 7 files changed, 40 insertions(+), 85 deletions(-)
 
+diff --git a/src/chain.c b/src/chain.c
+index e0b1eaf6d73bc..c7026f486b104 100644
+--- a/src/chain.c
++++ b/src/chain.c
+@@ -217,21 +217,11 @@ int nftnl_chain_set_data(struct nftnl_chain *c, uint16_t attr,
+ 
+ 	switch(attr) {
+ 	case NFTNL_CHAIN_NAME:
+-		if (c->flags & (1 << NFTNL_CHAIN_NAME))
+-			xfree(c->name);
+-
+-		c->name = strdup(data);
+-		if (!c->name)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&c->name, &c->flags,
++					  attr, data, data_len);
+ 	case NFTNL_CHAIN_TABLE:
+-		if (c->flags & (1 << NFTNL_CHAIN_TABLE))
+-			xfree(c->table);
+-
+-		c->table = strdup(data);
+-		if (!c->table)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&c->table, &c->flags,
++					  attr, data, data_len);
+ 	case NFTNL_CHAIN_HOOKNUM:
+ 		memcpy(&c->hooknum, data, sizeof(c->hooknum));
+ 		break;
+@@ -257,21 +247,11 @@ int nftnl_chain_set_data(struct nftnl_chain *c, uint16_t attr,
+ 		memcpy(&c->family, data, sizeof(c->family));
+ 		break;
+ 	case NFTNL_CHAIN_TYPE:
+-		if (c->flags & (1 << NFTNL_CHAIN_TYPE))
+-			xfree(c->type);
+-
+-		c->type = strdup(data);
+-		if (!c->type)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&c->type, &c->flags,
++					  attr, data, data_len);
+ 	case NFTNL_CHAIN_DEV:
+-		if (c->flags & (1 << NFTNL_CHAIN_DEV))
+-			xfree(c->dev);
+-
+-		c->dev = strdup(data);
+-		if (!c->dev)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&c->dev, &c->flags,
++					  attr, data, data_len);
+ 	case NFTNL_CHAIN_DEVICES:
+ 		dev_array = (const char **)data;
+ 		while (dev_array[len] != NULL)
+diff --git a/src/flowtable.c b/src/flowtable.c
+index 2f37cd4c7f04a..41a1456bb19b2 100644
+--- a/src/flowtable.c
++++ b/src/flowtable.c
+@@ -119,20 +119,11 @@ int nftnl_flowtable_set_data(struct nftnl_flowtable *c, uint16_t attr,
+ 
+ 	switch(attr) {
+ 	case NFTNL_FLOWTABLE_NAME:
+-		if (c->flags & (1 << NFTNL_FLOWTABLE_NAME))
+-			xfree(c->name);
+-
+-		c->name = strdup(data);
+-		if (!c->name)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&c->name, &c->flags,
++					  attr, data, data_len);
+ 	case NFTNL_FLOWTABLE_TABLE:
+-		if (c->flags & (1 << NFTNL_FLOWTABLE_TABLE))
+-			xfree(c->table);
+-
+-		c->table = strdup(data);
+-		if (!c->table)
+-			return -1;
++		return nftnl_set_str_attr(&c->table, &c->flags,
++					  attr, data, data_len);
+ 		break;
+ 	case NFTNL_FLOWTABLE_HOOKNUM:
+ 		memcpy(&c->hooknum, data, sizeof(c->hooknum));
 diff --git a/src/object.c b/src/object.c
-index bd4e51a21aea9..2ddaa29cda0be 100644
+index 2ddaa29cda0be..19cb7d0dbf73d 100644
 --- a/src/object.c
 +++ b/src/object.c
-@@ -151,7 +151,12 @@ int nftnl_obj_set_data(struct nftnl_obj *obj, uint16_t attr,
- 	default:
- 		if (!obj->ops ||
- 		    attr < NFTNL_OBJ_BASE ||
--		    attr > obj->ops->nftnl_max_attr)
-+		    attr > obj->ops->nftnl_max_attr ||
-+		    !obj->ops->attr_policy)
-+			return -1;
-+
-+		if (obj->ops->attr_policy[attr].maxlen &&
-+		    obj->ops->attr_policy[attr].maxlen < data_len)
- 			return -1;
+@@ -113,17 +113,12 @@ int nftnl_obj_set_data(struct nftnl_obj *obj, uint16_t attr,
  
- 		if (obj->ops->set(obj, attr, data, data_len) < 0)
+ 	switch (attr) {
+ 	case NFTNL_OBJ_TABLE:
+-		xfree(obj->table);
+-		obj->table = strdup(data);
+-		if (!obj->table)
+-			return -1;
++		return nftnl_set_str_attr(&obj->table, &obj->flags,
++					  attr, data, data_len);
+ 		break;
+ 	case NFTNL_OBJ_NAME:
+-		xfree(obj->name);
+-		obj->name = strdup(data);
+-		if (!obj->name)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&obj->name, &obj->flags,
++					  attr, data, data_len);
+ 	case NFTNL_OBJ_TYPE:
+ 		obj->ops = nftnl_obj_ops_lookup(*((uint32_t *)data));
+ 		if (!obj->ops)
+diff --git a/src/rule.c b/src/rule.c
+index a52012b2177bb..e16e2c1aa5bf8 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -115,21 +115,11 @@ int nftnl_rule_set_data(struct nftnl_rule *r, uint16_t attr,
+ 
+ 	switch(attr) {
+ 	case NFTNL_RULE_TABLE:
+-		if (r->flags & (1 << NFTNL_RULE_TABLE))
+-			xfree(r->table);
+-
+-		r->table = strdup(data);
+-		if (!r->table)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&r->table, &r->flags,
++					  attr, data, data_len);
+ 	case NFTNL_RULE_CHAIN:
+-		if (r->flags & (1 << NFTNL_RULE_CHAIN))
+-			xfree(r->chain);
+-
+-		r->chain = strdup(data);
+-		if (!r->chain)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&r->chain, &r->flags,
++					  attr, data, data_len);
+ 	case NFTNL_RULE_HANDLE:
+ 		memcpy(&r->handle, data, sizeof(r->handle));
+ 		break;
+diff --git a/src/set.c b/src/set.c
+index a732bc032267a..07e332dcd6732 100644
+--- a/src/set.c
++++ b/src/set.c
+@@ -146,21 +146,11 @@ int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
+ 
+ 	switch(attr) {
+ 	case NFTNL_SET_TABLE:
+-		if (s->flags & (1 << NFTNL_SET_TABLE))
+-			xfree(s->table);
+-
+-		s->table = strdup(data);
+-		if (!s->table)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&s->table, &s->flags,
++					  attr, data, data_len);
+ 	case NFTNL_SET_NAME:
+-		if (s->flags & (1 << NFTNL_SET_NAME))
+-			xfree(s->name);
+-
+-		s->name = strdup(data);
+-		if (!s->name)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&s->name, &s->flags,
++					  attr, data, data_len);
+ 	case NFTNL_SET_HANDLE:
+ 		memcpy(&s->handle, data, sizeof(s->handle));
+ 		break;
+diff --git a/src/table.c b/src/table.c
+index 4f48e8c9e73e1..13f01cfbf1e6f 100644
+--- a/src/table.c
++++ b/src/table.c
+@@ -101,13 +101,8 @@ int nftnl_table_set_data(struct nftnl_table *t, uint16_t attr,
+ 
+ 	switch (attr) {
+ 	case NFTNL_TABLE_NAME:
+-		if (t->flags & (1 << NFTNL_TABLE_NAME))
+-			xfree(t->name);
+-
+-		t->name = strdup(data);
+-		if (!t->name)
+-			return -1;
+-		break;
++		return nftnl_set_str_attr(&t->name, &t->flags,
++					  attr, data, data_len);
+ 	case NFTNL_TABLE_HANDLE:
+ 		memcpy(&t->handle, data, sizeof(t->handle));
+ 		break;
+diff --git a/src/utils.c b/src/utils.c
+index ffbad89a0dade..2f1ffd6227583 100644
+--- a/src/utils.c
++++ b/src/utils.c
+@@ -136,3 +136,17 @@ void __noreturn __abi_breakage(const char *file, int line, const char *reason)
+ 		       "%s:%d reason: %s\n", file, line, reason);
+        exit(EXIT_FAILURE);
+ }
++
++int nftnl_set_str_attr(const char **dptr, uint32_t *flags,
++		       uint16_t attr, const void *data, uint32_t data_len)
++{
++	if (*flags & (1 << attr))
++		xfree(*dptr);
++
++	*dptr = strndup(data, data_len);
++	if (!*dptr)
++		return -1;
++
++	*flags |= (1 << attr);
++	return 0;
++}
 -- 
 2.43.0
 
