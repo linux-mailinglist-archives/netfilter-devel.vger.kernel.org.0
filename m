@@ -1,76 +1,74 @@
-Return-Path: <netfilter-devel+bounces-1440-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1442-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEEBE88105D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Mar 2024 12:01:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43FD78810E0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Mar 2024 12:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CBDD1F2385C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Mar 2024 11:01:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 737DE1C22A4F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Mar 2024 11:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798523A1C5;
-	Wed, 20 Mar 2024 11:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B630E3E49B;
+	Wed, 20 Mar 2024 11:23:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from amt.ru (msk-hq-mr1.amt.ru [212.233.68.153])
+Received: from a3.inai.de (a3.inai.de [88.198.85.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D3F3B185
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Mar 2024 11:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.233.68.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51713D961
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 Mar 2024 11:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.198.85.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710932457; cv=none; b=QceNqZZ0iQxWId7/KpqXNd/mjaNKuRYXdCpxzf0kubFOiUsyxlC7+6tA7F2CpqUazU1H39w2N3iyGh3P37EIfWDVl3YNtlRndUERt1VO+/VkNlYb2BuxlwptaYCpeXV1Mz/IinOBNeMKbGLq7xpnYQGN5kJ909tXyZWSbLP3V+o=
+	t=1710933823; cv=none; b=ddq3qlVrt8WJv9FeF2fWeNea+oFKOJSz4augTk+ii9yJg7l/mqmlLJwIrlhYh8Se+p8VqYTKeTu8KLMOp4w6SQHKRCD6vpfXpK1+vnjjw78aBv7z8RDpw3Zlbpsg8x8NNxYBqmvAOMYP6fFB/cc8+31+DDlObor6zo3nHVZJ/Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710932457; c=relaxed/simple;
-	bh=lJIHsWLqMl4KWydzixoLeWLXnQELiPonm2DPKkjJVlE=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=qQID2VPLQtTgfmmI3eUm8n618QTpUUjBYQTrBOuHFWXAdmdTH7lCoG9vWRCck2YCgtvet+CoaFc76mcKnbTzncEf9e9ZTMrwNAep0W2YtMAQaElyY+Fj57jwwinef1CzCfmZncHWpm41wRTUKrYhsrANXhMWVtPTLdu5eGceTUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=amt.ru; spf=pass smtp.mailfrom=amt.ru; arc=none smtp.client-ip=212.233.68.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=amt.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amt.ru
-Received: from Internal Mail-Server by msk-hq-mr1 (envelope-from esagatov@amt.ru)
-	with SMTP; 20 Mar 2024 14:00:34 +0300
-From: "Sagatov, Evgeniy" <esagatov@amt.ru>
-To: "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-Subject: xtables-addons RAWDNAT bug
-Thread-Topic: xtables-addons RAWDNAT bug
-Thread-Index: Adp6tZeLFNUXTNQ7TeODl+CUYwKnHQ==
-Date: Wed, 20 Mar 2024 11:00:47 +0000
-Message-ID: <cbed66aa10f243278a8449c59f27eb44@amt.ru>
-Accept-Language: en-US
-Content-Language: ru-RU
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1710933823; c=relaxed/simple;
+	bh=ZEIahFg+2jE0lKV/xEGMgnR4lK3VTFDyGFVQu/i1wfU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=CP01lBUn7d6GMQmERFx4FvTLtv1R7dtdZA1LUoTfeYyhlnkcg9tP/cD7PCy1KR93He2ZB70WyeEl6tcoHd0e8U2FVoG6a+pXiIaFpons3DIX1Tjfd/tIt++2wk43gFaXBM+YY09TGvPgqXL3ZEr/XKBeKspX3ASOw96Zp+zeie0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=pass smtp.mailfrom=inai.de; arc=none smtp.client-ip=88.198.85.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inai.de
+Received: by a3.inai.de (Postfix, from userid 25121)
+	id 5F0785872CA87; Wed, 20 Mar 2024 12:13:21 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by a3.inai.de (Postfix) with ESMTP id 5DD3160C27867;
+	Wed, 20 Mar 2024 12:13:21 +0100 (CET)
+Date: Wed, 20 Mar 2024 12:13:21 +0100 (CET)
+From: Jan Engelhardt <jengelh@inai.de>
+To: "Sagatov, Evgeniy" <esagatov@amt.ru>
+cc: "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: Re: xtables-addons RAWDNAT bug
+In-Reply-To: <cbed66aa10f243278a8449c59f27eb44@amt.ru>
+Message-ID: <s0s6960s-4192-9741-5qqs-3r9q5o325971@vanv.qr>
+References: <cbed66aa10f243278a8449c59f27eb44@amt.ru>
+User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Hello.
-=20
-I found a bug and want to add it to bugzilla, but I don't have an account.
-I requested the creation of an account via bugzilla-account@netfilter.org, =
-but did not receive a response.
-=20
-After commit "libxtables: Unexport init_extensions*() declarations" (ef1089=
-43f69a6e20533d58823740d3f0534ea8ec) in iptables, the module RAWDNAT from th=
-e xtables-addons stopped working propertly.
-=20
-command line:
-iptables -t raw -A PREROUTING-TUNNELING-UDP -p udp -s 0.0.0.0/0 -d 10.0.0.1=
-/1234 --dport 4567:4567 -j RAWDNAT --to-destination 192.168.1.2:4567
-=20
-stdout:
-iptables v1.8.8 (legacy): unknown option "--to-destination"
-Try `iptables -h' or 'iptables --help' for more information.
-=20
-exit code:
-2
-=20
-----
-Sincerely, Evgeny Sagatov
+
+On Wednesday 2024-03-20 12:00, Sagatov, Evgeniy wrote:
+> 
+>I found a bug and want to add it to bugzilla, but I don't have an account.
+>I requested the creation of an account via bugzilla-account@netfilter.org, but did not receive a response.
+> 
+>After commit "libxtables: Unexport init_extensions*() declarations"
+>(ef108943f69a6e20533d58823740d3f0534ea8ec) in iptables, the module
+>RAWDNAT from the xtables-addons stopped working propertly.
+> 
+>command line:
+>iptables -t raw -A PREROUTING-TUNNELING-UDP -p udp -s 0.0.0.0/0 -d 10.0.0.1/1234 --dport 4567:4567 -j RAWDNAT --to-destination 192.168.1.2:4567
+> 
+>stdout:
+>iptables v1.8.8 (legacy): unknown option "--to-destination"
+>Try `iptables -h' or 'iptables --help' for more information.
+
+Contemporary versions of xtables-addons do not have a RAWDNAT target
+(since about 10½ years), therefore WONTFIX.
 
