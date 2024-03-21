@@ -1,45 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1462-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1465-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61011881A54
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Mar 2024 01:07:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DC14881A73
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Mar 2024 01:29:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1C5A1F21AB2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Mar 2024 00:06:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7F91F21FBC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Mar 2024 00:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2136F15BB;
-	Thu, 21 Mar 2024 00:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7AE67E9;
+	Thu, 21 Mar 2024 00:28:59 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E64181;
-	Thu, 21 Mar 2024 00:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301DA653
+	for <netfilter-devel@vger.kernel.org>; Thu, 21 Mar 2024 00:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710979609; cv=none; b=m2GXw8h7qYXrN8hey2A8wMNH9JjKO9/acbvCTXD73ft455ZW1p9MQUuwla9NLuGLImjM8z2AliuPxETRJrdl4Wsx3cCbDm/92sOnz+8WNsl2NT3uGEGGR+ujaPVeTeCJ8SDVOtO1r2sHn9LaFKSeFHuLShEl2vBa061uvAfmNZo=
+	t=1710980939; cv=none; b=C1zVlFtlpujFv5kZcSmjLYSyfqtlZtoz5KeBQIKuS3cnEJJe+rfSoYycm/pGmWrUvTUk+opDPAZNzazv+pf92fHVfDHNb0d9XJ3qiD/nebz24ihh3hlJyGZBbKvjIGydleUNprO8sljTKs0wFxI3ubg+Gi3P9C3ERuJ2LQTThXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710979609; c=relaxed/simple;
-	bh=F9YHcCxjrLSORTOGYcveR3LZxbLdh6ZamF/xWmv+IPk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UFz9nNiSB/BF/CgSrB4DhU7Ei4qSqQl9eTjn6sx6bwhkuWTPxV3mS7HwaMgbym+k8jT9tZjvPkv2lK+5s7ycCMY0AkFMw+k40++PrKt+Ja79wDRUe1LCP7JLv3h20oI3wtUsiffLvZ1nrrJby6G2ZppjfzWOpZ9rAn8hhmIoxm4=
+	s=arc-20240116; t=1710980939; c=relaxed/simple;
+	bh=9/laNarAMcwdPmjBYXN3/oWkuMl2n4PLzp/notv0Auc=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=gFoPZI/j7BfMomrp3fUXf1d/i67DZNZF0aV7KwI30QTsv6a9hA5DSNLfJQLTd3pRv56T8hZRuW2As0chbDhfxSSF+MEWkWQ+xdXIT39QhPBARdBSUSV8Vb9bRUcOMyYPWGb7E1ej0YFZakfmQ2qdtlxMF7t10GHyuhw7vVg1QSk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com
-Subject: [PATCH net 3/3] netfilter: nf_tables: Fix a memory leak in nf_tables_updchain
-Date: Thu, 21 Mar 2024 01:06:35 +0100
-Message-Id: <20240321000635.31865-4-pablo@netfilter.org>
+Subject: [PATCH nf 1/3] netfilter: nf_tables: reject destroy command to remove basechain hooks
+Date: Thu, 21 Mar 2024 01:28:51 +0100
+Message-Id: <20240321002853.34347-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240321000635.31865-1-pablo@netfilter.org>
-References: <20240321000635.31865-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -48,65 +40,29 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Quan Tian <tianquan23@gmail.com>
+Report EOPNOTSUPP if NFT_MSG_DESTROYCHAIN is used to delete hooks in an
+existing netdev basechain, thus, only NFT_MSG_DELCHAIN is allowed.
 
-If nft_netdev_register_hooks() fails, the memory associated with
-nft_stats is not freed, causing a memory leak.
-
-This patch fixes it by moving nft_stats_alloc() down after
-nft_netdev_register_hooks() succeeds.
-
-Fixes: b9703ed44ffb ("netfilter: nf_tables: support for adding new devices to an existing netdev chain")
-Signed-off-by: Quan Tian <tianquan23@gmail.com>
+Fixes: 7d937b107108f ("netfilter: nf_tables: support for deleting devices in an existing netdev chain")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ net/netfilter/nf_tables_api.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 984c1c83ee38..5fa3d3540c93 100644
+index 5fa3d3540c93..a1a8030e16a5 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2631,19 +2631,6 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 		}
- 	}
+@@ -2944,7 +2944,8 @@ static int nf_tables_delchain(struct sk_buff *skb, const struct nfnl_info *info,
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, chain, nla);
  
--	if (nla[NFTA_CHAIN_COUNTERS]) {
--		if (!nft_is_base_chain(chain)) {
--			err = -EOPNOTSUPP;
--			goto err_hooks;
--		}
--
--		stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
--		if (IS_ERR(stats)) {
--			err = PTR_ERR(stats);
--			goto err_hooks;
--		}
--	}
--
- 	if (!(table->flags & NFT_TABLE_F_DORMANT) &&
- 	    nft_is_base_chain(chain) &&
- 	    !list_empty(&hook.list)) {
-@@ -2658,6 +2645,20 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 	}
+ 	if (nla[NFTA_CHAIN_HOOK]) {
+-		if (chain->flags & NFT_CHAIN_HW_OFFLOAD)
++		if (NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_DESTROYCHAIN ||
++		    chain->flags & NFT_CHAIN_HW_OFFLOAD)
+ 			return -EOPNOTSUPP;
  
- 	unregister = true;
-+
-+	if (nla[NFTA_CHAIN_COUNTERS]) {
-+		if (!nft_is_base_chain(chain)) {
-+			err = -EOPNOTSUPP;
-+			goto err_hooks;
-+		}
-+
-+		stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
-+		if (IS_ERR(stats)) {
-+			err = PTR_ERR(stats);
-+			goto err_hooks;
-+		}
-+	}
-+
- 	err = -ENOMEM;
- 	trans = nft_trans_alloc(ctx, NFT_MSG_NEWCHAIN,
- 				sizeof(struct nft_trans_chain));
+ 		if (nft_is_base_chain(chain)) {
 -- 
 2.30.2
 
