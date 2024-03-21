@@ -1,87 +1,97 @@
-Return-Path: <netfilter-devel+bounces-1460-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1463-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8689C8818B5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Mar 2024 21:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61511881A55
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Mar 2024 01:07:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B791D1C20E74
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Mar 2024 20:45:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9294A1C20DE9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Mar 2024 00:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7361342057;
-	Wed, 20 Mar 2024 20:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PGfati5t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1591C3D;
+	Thu, 21 Mar 2024 00:06:49 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DAF21100
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 Mar 2024 20:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0EF7365;
+	Thu, 21 Mar 2024 00:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710967538; cv=none; b=SUNXgzsmT1c9ROPXIb1CzCSHvvIAjxHw59l6GBIhmwjS1v/lKwNmYP7flxuKZ6jH2P5UMRL78xzAN2wmbXwk2BtDFi98jHDuBM6oE6zzxc9dm/gUqR8UenSdsklOiaMobPtkL7v3j9YOHFA4efOI714gSno+B/pAAWl2+HCsYmQ=
+	t=1710979609; cv=none; b=J0wQOJKzYKwwzlbNcbM1BQEXkAEsrF9PK+r6NX0prD7LbYDaCNQV5lO1Ge5IloNp2xf8wjNy+5wO8gaiLF2fCMbBQDF+TfXdQq29fE0BacwbiAlu81PjnEE/DJ9lc7l+V1xfat+eWxvkj055oon53YySMXYa41+mjJUtYZ8/l6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710967538; c=relaxed/simple;
-	bh=ON982NmFWUbWf7IRG0x+yaOV93u7a3CJVL+0zDufxRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D/J2joWkVweQCBUSFdnbemXDP/ltKybznm2W9yXuio3j8WGpMAfa0ExRsIiY2tdJufBz4GT8fVQE0LDMUWzJdKHndWnyRQdWsOsw/MtvoR2B5h7bzqoEv8qNpx9FwTph9y0IQ6r0zS27y9NJP3PFPG4r7A+/2jsmEgpXcCMicbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PGfati5t; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=aZzz4ZZo+j5UXaSXTegPJeyQloESZWtID/umLecNEo4=; b=PGfati5toVqWSDqvXqH55LD+JV
-	UojNFzSRcf89CKt8nF9MgD9rJEH96Xvs31cri+9K0GCuBXm+BWH8xqL7KnZuvkPz++5yRJ28XmfTV
-	vxzVmVNn3nbEzBZ0gEd5GZJjRT/r2SGiLG5nTMTbA26DAZIGL4lfcLt3kTmLzH0VBkz9by2PSFAlz
-	1wxmv1cBBlQwyPzlpdNDjmucpM2MIsejX6npU7qCFv8VfuMBHltZelpFlbuzpuSjA2Nwhs7HZYUz1
-	bNX0bZevvHVR0vCkthIyPepyCajv1IFun0MF4Q7xvY8yVGGvoaLqD2MLL6YHB5mA1DpmFLvEvP1aV
-	Zz0x8HBQ==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1rn2oX-000000007io-3lfp;
-	Wed, 20 Mar 2024 21:45:33 +0100
-Date: Wed, 20 Mar 2024 21:45:33 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] netlink_delinearize: restore binop syntax when
- listing ruleset for flags
-Message-ID: <ZftK7coQPu9teaE1@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org
-References: <20240319110337.42486-1-pablo@netfilter.org>
- <Zfsl-JagV67u9tNG@calendula>
+	s=arc-20240116; t=1710979609; c=relaxed/simple;
+	bh=XT1soTVQw9gYxMS6ZL+CJVcTgrpaZUCps9nSy0ePO8A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RflNosOItDac5/NTQo7AfsN+lM1m9ZHsLWNTWCLn3ma53xB1rcc7kPcFRPBDVu2C5RmslHCrLhpFQ8y+0Xm4h3bgyOEmdpVQR0SBUsU9A4lSic2AgLJ8Qr9oAQKrTKXzF1KzxpGqMFwmt/kOjpas35EhieN6pwm2DREiFZoXUYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com
+Subject: [PATCH net 0/3] Netfilter fixes for net
+Date: Thu, 21 Mar 2024 01:06:32 +0100
+Message-Id: <20240321000635.31865-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfsl-JagV67u9tNG@calendula>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 20, 2024 at 07:07:52PM +0100, Pablo Neira Ayuso wrote:
-> On Tue, Mar 19, 2024 at 12:03:37PM +0100, Pablo Neira Ayuso wrote:
-> > c3d57114f119 ("parser_bison: add shortcut syntax for matching flags
-> > without binary operations") provides a similar syntax to iptables using
-> > a prefix representation for flag matching.
-> > 
-> > Restore original representation using binop when listing the ruleset.
-> > The parser still accepts the prefix notation for backward compatibility.
-> 
-> Amended tests, which were not correctly updated and I pushed it out.
-> 
-> @Phil: Sorry, this clashes with your recent updates to make more
-> compact representation of flags in json, you have to rebase.
+Hi,
 
-No problem, thanks for the heads-up!
+The following patchset contains Netfilter fixes for net. There is a
+larger batch of fixes still pending that will follow up asap, this is
+what I deemed to be more urgent at this time:
+
+1) Use clone view in pipapo set backend to release elements from destroy
+   path, otherwise it is possible to destroy elements twice.
+
+2) Incorrect check for internal table flags lead to bogus transaction
+   objects.
+
+3) Fix counters memleak in netdev basechain update error path,
+   from Quan Tian.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-03-21
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 9c6a59543a3965071d65b0f9ea43aa396ce2ed14:
+
+  Merge branch 'octeontx2-pf-mbox-fixes' (2024-03-20 10:49:08 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-03-21
+
+for you to fetch changes up to 1c2e3b462542241d2e6f4d32f8356608ff51f487:
+
+  netfilter: nf_tables: Fix a memory leak in nf_tables_updchain (2024-03-21 00:46:03 +0100)
+
+----------------------------------------------------------------
+netfilter pull request 24-03-21
+
+----------------------------------------------------------------
+Pablo Neira Ayuso (2):
+      netfilter: nft_set_pipapo: release elements in clone only from destroy path
+      netfilter: nf_tables: do not compare internal table flags on updates
+
+Quan Tian (1):
+      netfilter: nf_tables: Fix a memory leak in nf_tables_updchain
+
+ net/netfilter/nf_tables_api.c  | 29 +++++++++++++++--------------
+ net/netfilter/nft_set_pipapo.c |  5 +----
+ 2 files changed, 16 insertions(+), 18 deletions(-)
 
