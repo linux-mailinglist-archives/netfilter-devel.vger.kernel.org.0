@@ -1,93 +1,90 @@
-Return-Path: <netfilter-devel+bounces-1485-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1488-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799DC886C0C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 13:28:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2312C887003
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 16:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB66E1C21E79
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 12:28:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC3F21F22448
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 15:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA6A3FE55;
-	Fri, 22 Mar 2024 12:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C239E54744;
+	Fri, 22 Mar 2024 15:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Qk97Rpir"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D114174A;
-	Fri, 22 Mar 2024 12:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE4E5FBB2
+	for <netfilter-devel@vger.kernel.org>; Fri, 22 Mar 2024 15:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711110475; cv=none; b=t3C/AoJiFIgjhWiEEK1hDZSVq7hYc8QSFh8k2jG5GqIzEQgV8LQ2B+RoZ5KbiO6QMqDFLt/hdeUhtVVuIPix9hUxtJj9rLEH5Dh/OD0uDeNDoGcr317XfyuAlCHasj/j2/ZtQxQ7jB6BEGd4VOEiNspWkOkF+ikRbMHXnmdzgFE=
+	t=1711122550; cv=none; b=ADVXj1xtw2cofER0XzxaWGfGLd+GiHtW5/tXdyoKcvtWYE/TeLPWmd91qi5Zm4RuTS8WPNKQqaQshsaiQD5N/olUKcQARXC4cdc0SKigwPTGrpKBG+6kIwcIq20OohznMJg5Q5huVv9UVEHAziCLEtGbAU4xo+x7acxN31HEgTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711110475; c=relaxed/simple;
-	bh=POylI2exnghnVAhQzrav6+u5Od2WnLYhT5aCJPju1sY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=llKRUeah6owSb+WN6AIdmseW6r2hqFbJctGYYn3+SHXoD26+z8xKA7xPnGrg8ZWsr0qyZ6sSGRE2xNtaCWt+DTM6ePbKYrhm9M62arKeqjxHSma2bgsQ34Spbe2ZYdNpo+/tzBYndno5jl14GVGtnD1uF7KJ29uRhIQsse6QhlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Fri, 22 Mar 2024 13:27:46 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Jianbo Liu <jianbol@nvidia.com>
-Cc: "fw@strlen.de" <fw@strlen.de>,
-	"netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [BUG] kernel warning from br_nf_local_in+0x157/0x180
-Message-ID: <Zf15Ni8CuRLNnBAJ@calendula>
-References: <ac03a9ba41e130123cd680be6df9f30be95d0f98.camel@nvidia.com>
+	s=arc-20240116; t=1711122550; c=relaxed/simple;
+	bh=PDnfy5iSmzoSVzJL9RK8Hv8Iwu6ULMXdGVOo7H1ekgI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hiOhxaPCtyYkOviLndxub084qhLP8xLk0u10nrMdCtpyNpvz46YCApSBprHijKCeNOGd6AnfIRWJ8FNLvEdCu0erC7+zvlDvk4DyVwtPAZjATPHrBtU6DYwmNEGXx4RwEDY8ZO8RvvQGALJclopNhqGVqOBVMEmPWasPzzYqZvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Qk97Rpir; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=27cZ9enhPfd2AQTgg4FnHVw7Ypjhql+HWU/gh1kmrlY=; b=Qk97Rpirb/7Q66TfiGH2j5R8p0
+	LaWgUVfplGcsif0N3W6H1jHJhOZS67rNZq5LYeBWN9NPkwu7dOymniv+4MI6EPXBYjxtMpoTZSetG
+	siov48Rih6QZvET0+emLv/asc+xLlnf+6S5uuQ49x95RzWUJ+KOet3T0yziHV2WFSkJV2yXCRrSef
+	z4vrGjXzWL7ByPzyw9byKujkpJeIWeHWHG1O7prAEt0YIM3Lh5uWp8++UJG2WXpEcwAhDX3VOAg1v
+	TPOZ2ulLhKjvNn/4vFFbOSSOmQ19EhpIAic+0AWRYnWzqIvq4PCSSb+zTgUWc9gQ10iFg9I9UNckr
+	lv/K/8lw==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1rnh8e-000000000no-359r;
+	Fri, 22 Mar 2024 16:49:00 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/2] Add support for table's persist flag
+Date: Fri, 22 Mar 2024 16:48:53 +0100
+Message-ID: <20240322154855.13857-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="NRNaLYY0vieban2T"
-Content-Disposition: inline
-In-Reply-To: <ac03a9ba41e130123cd680be6df9f30be95d0f98.camel@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
+Support for kernel commit da5141bbe0c2 ("netfilter: nf_tables: Introduce
+NFT_TABLE_F_PERSIST") in user space.
 
---NRNaLYY0vieban2T
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Patch 1 is not a dependency, but trivial enough to go along with the
+second one.
 
-Hi Jianbo,
+Phil Sutter (2):
+  doc: nft.8: Two minor synopsis fixups
+  Add support for table's persist flag
 
-On Mon, Mar 18, 2024 at 09:41:46AM +0000, Jianbo Liu wrote:
-> Hi Florian and Pablo,
-> 
-> We hit the following warning from br_nf_local_in+0x157/0x180.
+ doc/libnftables-json.adoc                   | 11 +++-
+ doc/nft.txt                                 | 13 +++-
+ include/rule.h                              |  3 +-
+ src/parser_bison.y                          | 42 +++++++++----
+ src/parser_json.c                           | 68 ++++++++++++++++++++-
+ src/rule.c                                  |  1 +
+ tests/shell/features/table_flag_persist.nft |  3 +
+ tests/shell/testcases/owner/0002-persist    | 36 +++++++++++
+ 8 files changed, 158 insertions(+), 19 deletions(-)
+ create mode 100644 tests/shell/features/table_flag_persist.nft
+ create mode 100755 tests/shell/testcases/owner/0002-persist
 
-Can you give a try to this patch?
+-- 
+2.43.0
 
-This fix is not yet complete but it should fix the splat for this
-test.
-
-Thanks.
-
---NRNaLYY0vieban2T
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="x.patch"
-
-diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
-index 35e10c5a766d..085d3f751b3f 100644
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -612,6 +612,13 @@ static unsigned int br_nf_local_in(void *priv,
- 	if (likely(nf_ct_is_confirmed(ct)))
- 		return NF_ACCEPT;
- 
-+	if (skb->pkt_type != PACKET_BROADCAST &&
-+	    skb->pkt_type != PACKET_MULTICAST) {
-+		skb->_nfct = 0ul;
-+		nf_conntrack_put(nfct);
-+		return NF_ACCEPT;
-+	}
-+
- 	WARN_ON_ONCE(skb_shared(skb));
- 	WARN_ON_ONCE(refcount_read(&nfct->use) != 1);
- 
-
---NRNaLYY0vieban2T--
 
