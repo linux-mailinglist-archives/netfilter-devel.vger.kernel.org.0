@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1494-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1489-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30A3887057
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 17:07:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A21887050
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 17:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28A621F24552
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 16:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D43E281996
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 16:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454D15C603;
-	Fri, 22 Mar 2024 16:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4525859170;
+	Fri, 22 Mar 2024 16:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nX5Ysr+N"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="bt4WwrJu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6610256B79
-	for <netfilter-devel@vger.kernel.org>; Fri, 22 Mar 2024 16:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FD0E59B56
+	for <netfilter-devel@vger.kernel.org>; Fri, 22 Mar 2024 16:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123615; cv=none; b=sheOFmPZorv48rR+E+3sDU9/HU59Ko8c0ygnaOCgIGQSdtZR0IczfooR2dMoWVOTWDoqzF4MzEmjJ5VYJgYfyBVxx1cI4MkFlBJcwai90mNCr9LJyoeVhPCqUv/JVeEuzdu63tD3was2VNmZkDDwVi6gIgNKVD5VwiaqU5WXP7k=
+	t=1711123612; cv=none; b=pmxMgKUE8r3ZCBqLkAF9jBn+gomQTxrRQKbe79tXRH63LGs/cshtb3jMZS5vBSBRAnT4dGfqs2TLTk02TS9lLX84qbsI8Zr6E0Oj97Z2iji4BUVgapJduT1e3iJEIYn2c966qw00ykle23m/g+TDGfZRsW/eQafBCWamd7JtJUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123615; c=relaxed/simple;
-	bh=d7Ej/E9vwuTr0Unw7T9N1eo7M02YOqCxrWkPOBBLqss=;
+	s=arc-20240116; t=1711123612; c=relaxed/simple;
+	bh=pT7rc3q+qRGjvQeV+PjNK3ihPjmhA4pFtTWupzebl1w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eQe7KzEBv1OojUO7Vom3TwXM5lSRSAREtLvJiqeW1n7C4eseb8mDTuyB1/rujW/QwssigSQzIFGGn5aB22k6EUS4pyAlI7WfA5j3SK37Usv1NTv2BK+N/hx4KGEiOpfQBqs7gvn0882tBhdb+Zojlu1ulyEMzfoLjm8aciS3XLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nX5Ysr+N; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=kK21kLRS7lFP6pPD7JGoPEDo9j9SfSP8t5a60SMO52hINSfgGvpjmKywXGRT9SDOPz3E4hdXWt4UXJPVY79KWUYwBKVNc3b8WJ7HcZG8AVS5ufgCuBjXLWCUzPHK/mGziKApUV6nOEFxkehCT7O22UtT4fwBxEzVUn0SZ9/3KQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=bt4WwrJu; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=fLqz55pJfMP1F66C5TH07J4fTLku8WaEZ4RTNXYLAKk=; b=nX5Ysr+NjZCnHWa/DUtP1G5toP
-	g47gbmLqTXKqJTW9kmUxb37ooKtF3kj7I8YxN9RMY/HljHdW/v4PFPe6/TZdRmVMJWRcnEdbCFqRo
-	tLAL9+taqvP1uMRZftqrlTmzjkRGEzLorRngmp/72T6zGcwTSDeQ0DcGzhL4kIvI7kQdhZHUQaIh9
-	BT3vVpsuVnSnNv/2yDPIqm9PqTDCtuvrZ8o7cF5SfiBUFiI2NUInNeYOoEcXm+v3Uo3r6QtThZ/lr
-	AV8mXCVBbRj/I1QW5qTPhwxlK4iLVNXg3eSZWOOqDCaYiAcr27JNBUlaiHPBugn4EXvPIpvugy5gR
-	tHzpWw7w==;
+	bh=uy8LfBUyzk3Ua1vQKS67g+tPmeOECpP4jqCgJIT1O3w=; b=bt4WwrJunNs/pbhcrAALLNbrGr
+	I8l1UwFccRUSJ1y4ZanyFTDf+sPU5mr0vpYR0Qo9EU9IrN9lzwuACAcZnyiuzc+ZnZbGHrPJ57YXp
+	HqcJGo/J96FYcuL0CwhIVoBG63IS3sb0V8OXKTbVLERB6JOPIYG8R5FLxPON7ijw2pwrtzoGM00kN
+	VSwY4KnIj79cbSskjjqaZoLHTi6lnBHptTKMyXRWNuFyqGl3z5biv+udQtG+gLKQdGJPL+wEyFePh
+	Ec46QEMTeXU6cb+fZjrLf/4CghUl10tzMJz/2m3jcNfCFT9yKe+OauK0z8QLlupbP3uWr0Ry6jRvv
+	2vTcmhbA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rnhPv-000000000ye-2Mx6;
-	Fri, 22 Mar 2024 17:06:51 +0100
+	id 1rnhPs-000000000yC-2kCK;
+	Fri, 22 Mar 2024 17:06:48 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v2 1/5] json: Accept more than two operands in binary expressions
-Date: Fri, 22 Mar 2024 17:06:41 +0100
-Message-ID: <20240322160645.18331-2-phil@nwl.cc>
+Subject: [nft PATCH v2 2/5] mergesort: Avoid accidental set element reordering
+Date: Fri, 22 Mar 2024 17:06:42 +0100
+Message-ID: <20240322160645.18331-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240322160645.18331-1-phil@nwl.cc>
 References: <20240322160645.18331-1-phil@nwl.cc>
@@ -65,550 +65,190 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The most common use case is ORing flags like
+In corner cases, expr_msort_cmp() may return 0 for two non-identical
+elements. An example are ORed tcp flags: 'syn' and 'syn | ack' are
+considered the same value since expr_msort_value() reduces the latter to
+its LHS.
 
-| syn | ack | rst
+Keeping the above in mind and looking at how list_expr_sort() works: The
+list in 'head' is cut in half, the first half put into the temporary
+list 'list' and finally 'list' is merged back into 'head' considering
+each element's position. Shall expr_msort_cmp() return 0 for two
+elements, the one from 'list' ends up after the one in 'head', thus
+reverting their previous ordering.
 
-but nft seems to be fine with less intuitive stuff like
+The practical implication is that output never matches input for the
+sample set '{ syn, syn | ack }' as the sorting after delinearization in
+netlink_list_setelems() keeps swapping the elements. Out of coincidence,
+the commit this fixes itself illustrates the use-case this breaks,
+namely tracking a ruleset in git: Each ruleset reload will trigger an
+update to the stored dump.
 
-| meta mark set ip dscp << 2 << 3
+This change breaks interval set element deletion because __set_delete()
+implicitly relies upon this reordering of duplicate entries by inserting
+a clone of the one to delete into the start (via list_move()) and after
+sorting assumes the clone will end up right behind the original. Fix
+this by calling list_move_tail() instead.
 
-so support all of them.
-
+Fixes: 14ee0a979b622 ("src: sort set elements in netlink_get_setelems()")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- doc/libnftables-json.adoc                     |  18 +--
- src/json.c                                    |  19 +++-
- src/parser_json.c                             |  12 ++
- tests/py/inet/tcp.t.json                      |  67 +----------
- tests/py/inet/tcp.t.json.output               | 104 ++++--------------
- .../dumps/0012different_defines_0.json-nft    |   8 +-
- .../sets/dumps/0055tcpflags_0.json-nft        |  98 ++++-------------
- 7 files changed, 91 insertions(+), 235 deletions(-)
+ src/intervals.c                               |  2 +-
+ src/mergesort.c                               |  2 +-
+ .../sets/dumps/0055tcpflags_0.json-nft        | 32 +++++++++----------
+ .../testcases/sets/dumps/0055tcpflags_0.nft   |  8 ++---
+ 4 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/doc/libnftables-json.adoc b/doc/libnftables-json.adoc
-index a4adcde2a66a9..a8a6165fde59d 100644
---- a/doc/libnftables-json.adoc
-+++ b/doc/libnftables-json.adoc
-@@ -1352,15 +1352,17 @@ Perform kernel Forwarding Information Base lookups.
- 
- === BINARY OPERATION
- [verse]
--*{ "|": [* 'EXPRESSION'*,* 'EXPRESSION' *] }*
--*{ "^": [* 'EXPRESSION'*,* 'EXPRESSION' *] }*
--*{ "&": [* 'EXPRESSION'*,* 'EXPRESSION' *] }*
--*{ "+<<+": [* 'EXPRESSION'*,* 'EXPRESSION' *] }*
--*{ ">>": [* 'EXPRESSION'*,* 'EXPRESSION' *] }*
--
--All binary operations expect an array of exactly two expressions, of which the
-+*{ "|": [* 'EXPRESSION'*,* 'EXPRESSIONS' *] }*
-+*{ "^": [* 'EXPRESSION'*,* 'EXPRESSIONS' *] }*
-+*{ "&": [* 'EXPRESSION'*,* 'EXPRESSIONS' *] }*
-+*{ "+<<+": [* 'EXPRESSION'*,* 'EXPRESSIONS' *] }*
-+*{ ">>": [* 'EXPRESSION'*,* 'EXPRESSIONS' *] }*
-+'EXPRESSIONS' := 'EXPRESSION' | 'EXPRESSION'*,* 'EXPRESSIONS'
-+
-+All binary operations expect an array of at least two expressions, of which the
- first element denotes the left hand side and the second one the right hand
--side.
-+side. Extra elements are accepted in the given array and appended to the term
-+accordingly.
- 
- === VERDICT
- [verse]
-diff --git a/src/json.c b/src/json.c
-index 29fbd0cfdba28..3753017169930 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -540,11 +540,24 @@ json_t *flagcmp_expr_json(const struct expr *expr, struct output_ctx *octx)
- 			 "right", expr_print_json(expr->flagcmp.value, octx));
- }
- 
-+static json_t *
-+__binop_expr_json(int op, const struct expr *expr, struct output_ctx *octx)
-+{
-+	json_t *a = json_array();
-+
-+	if (expr->etype == EXPR_BINOP && expr->op == op) {
-+		json_array_extend(a, __binop_expr_json(op, expr->left, octx));
-+		json_array_extend(a, __binop_expr_json(op, expr->right, octx));
-+	} else {
-+		json_array_append_new(a, expr_print_json(expr, octx));
-+	}
-+	return a;
-+}
-+
- json_t *binop_expr_json(const struct expr *expr, struct output_ctx *octx)
+diff --git a/src/intervals.c b/src/intervals.c
+index 68728349e999c..6c3f36fec02aa 100644
+--- a/src/intervals.c
++++ b/src/intervals.c
+@@ -466,7 +466,7 @@ static int __set_delete(struct list_head *msgs, struct expr *i,	struct set *set,
+ 			unsigned int debug_mask)
  {
--	return json_pack("{s:[o, o]}", expr_op_symbols[expr->op],
--			 expr_print_json(expr->left, octx),
--			 expr_print_json(expr->right, octx));
-+	return json_pack("{s:o}", expr_op_symbols[expr->op],
-+			 __binop_expr_json(expr->op, expr, octx));
- }
+ 	i->flags |= EXPR_F_REMOVE;
+-	list_move(&i->list, &existing_set->init->expressions);
++	list_move_tail(&i->list, &existing_set->init->expressions);
+ 	list_expr_sort(&existing_set->init->expressions);
  
- json_t *relational_expr_json(const struct expr *expr, struct output_ctx *octx)
-diff --git a/src/parser_json.c b/src/parser_json.c
-index 04255688ca04c..55d65c415bf5c 100644
---- a/src/parser_json.c
-+++ b/src/parser_json.c
-@@ -1204,6 +1204,18 @@ static struct expr *json_parse_binop_expr(struct json_ctx *ctx,
- 		return NULL;
- 	}
- 
-+	if (json_array_size(root) > 2) {
-+		left = json_parse_primary_expr(ctx, json_array_get(root, 0));
-+		right = json_parse_primary_expr(ctx, json_array_get(root, 1));
-+		left = binop_expr_alloc(int_loc, thisop, left, right);
-+		for (i = 2; i < json_array_size(root); i++) {
-+			jright = json_array_get(root, i);
-+			right = json_parse_primary_expr(ctx, jright);
-+			left = binop_expr_alloc(int_loc, thisop, left, right);
-+		}
-+		return left;
-+	}
-+
- 	if (json_unpack_err(ctx, root, "[o, o!]", &jleft, &jright))
- 		return NULL;
- 
-diff --git a/tests/py/inet/tcp.t.json b/tests/py/inet/tcp.t.json
-index d3a846cf9a400..bd589cf0091fe 100644
---- a/tests/py/inet/tcp.t.json
-+++ b/tests/py/inet/tcp.t.json
-@@ -954,12 +954,12 @@
-                         }
-                     },
-                     {
--                        "|": [ "fin", { "|": [ "syn", { "|": [ "rst", { "|": [ "psh", { "|": [ "ack", { "|": [ "urg", { "|": [ "ecn", "cwr" ] } ] } ] } ] } ] } ] } ]
-+                        "|": [ "fin", "syn", "rst", "psh", "ack", "urg", "ecn", "cwr" ]
-                     }
-                 ]
-             },
-             "op": "==",
--            "right": { "|": [ "fin", { "|": [ "syn", { "|": [ "rst", { "|": [ "psh", { "|": [ "ack", { "|": [ "urg", { "|": [ "ecn", "cwr" ] } ] } ] } ] } ] } ] } ] }
-+            "right": { "|": [ "fin", "syn", "rst", "psh", "ack", "urg", "ecn", "cwr" ] }
-         }
-     }
- ]
-@@ -1395,55 +1395,15 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    {
--                        "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            {
--                                                "|": [
--                                                    {
--                                                        "|": [
--                                                            "fin",
--                                                            "syn"
--                                                        ]
--                                                    },
--                                                    "rst"
--                                                ]
--                                            },
--                                            "psh"
--                                        ]
--                                    },
--                                    "ack"
--                                ]
--                            },
--                            "urg"
--                        ]
--                    }
-+                    { "|": [ "fin", "syn", "rst", "psh", "ack", "urg" ] }
-                 ]
-             },
-             "op": "==",
-             "right": {
-                 "set": [
--                    {
--                        "|": [
--                            {
--                                "|": [
--                                    "fin",
--                                    "psh"
--                                ]
--                            },
--                            "ack"
--                        ]
--                    },
-+                    { "|": [ "fin", "psh", "ack" ] },
-                     "fin",
--                    {
--                        "|": [
--                            "psh",
--                            "ack"
--                        ]
--                    },
-+                    { "|": [ "psh", "ack" ] },
-                     "ack"
-                 ]
-             }
-@@ -1780,22 +1740,7 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    {
--                        "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            "fin",
--                                            "syn"
--                                        ]
--                                    },
--                                    "rst"
--                                ]
--                            },
--                            "ack"
--                        ]
--                    }
-+                    { "|": [ "fin", "syn", "rst", "ack" ] }
-                 ]
-             },
-             "op": "!=",
-diff --git a/tests/py/inet/tcp.t.json.output b/tests/py/inet/tcp.t.json.output
-index e186e127fd671..3f03c0ddd1586 100644
---- a/tests/py/inet/tcp.t.json.output
-+++ b/tests/py/inet/tcp.t.json.output
-@@ -155,27 +155,11 @@
-                     },
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            {
--                                                "|": [
--                                                    {
--                                                        "|": [
--                                                            "fin",
--                                                            "syn"
--                                                        ]
--                                                    },
--                                                    "rst"
--                                                ]
--                                            },
--                                            "psh"
--                                        ]
--                                    },
--                                    "ack"
--                                ]
--                            },
-+                            "fin",
-+                            "syn",
-+                            "rst",
-+                            "psh",
-+                            "ack",
-                             "urg"
-                         ]
-                     }
-@@ -187,12 +171,8 @@
-                     "fin",
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    "fin",
--                                    "psh"
--                                ]
--                            },
-+                            "fin",
-+                            "psh",
-                             "ack"
-                         ]
-                     },
-@@ -280,17 +260,9 @@
-                     },
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            "fin",
--                                            "syn"
--                                        ]
--                                    },
--                                    "rst"
--                                ]
--                            },
-+                            "fin",
-+                            "syn",
-+                            "rst",
-                             "ack"
-                         ]
-                     }
-@@ -316,17 +288,9 @@
-                     },
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            "fin",
--                                            "syn"
--                                        ]
--                                    },
--                                    "rst"
--                                ]
--                            },
-+                            "fin",
-+                            "syn",
-+                            "rst",
-                             "ack"
-                         ]
-                     }
-@@ -352,17 +316,9 @@
-                     },
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            "fin",
--                                            "syn"
--                                        ]
--                                    },
--                                    "rst"
--                                ]
--                            },
-+                            "fin",
-+                            "syn",
-+                            "rst",
-                             "ack"
-                         ]
-                     }
-@@ -388,17 +344,9 @@
-                     },
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            "fin",
--                                            "syn"
--                                        ]
--                                    },
--                                    "rst"
--                                ]
--                            },
-+                            "fin",
-+                            "syn",
-+                            "rst",
-                             "ack"
-                         ]
-                     }
-@@ -429,17 +377,9 @@
-                     },
-                     {
-                         "|": [
--                            {
--                                "|": [
--                                    {
--                                        "|": [
--                                            "fin",
--                                            "syn"
--                                        ]
--                                    },
--                                    "rst"
--                                ]
--                            },
-+                            "fin",
-+                            "syn",
-+                            "rst",
-                             "ack"
-                         ]
-                     }
-diff --git a/tests/shell/testcases/nft-f/dumps/0012different_defines_0.json-nft b/tests/shell/testcases/nft-f/dumps/0012different_defines_0.json-nft
-index 8f3f3a81a9bc8..1b2e342047f4b 100644
---- a/tests/shell/testcases/nft-f/dumps/0012different_defines_0.json-nft
-+++ b/tests/shell/testcases/nft-f/dumps/0012different_defines_0.json-nft
-@@ -169,12 +169,8 @@
-               },
-               "right": {
-                 "|": [
--                  {
--                    "|": [
--                      "established",
--                      "related"
--                    ]
--                  },
-+                  "established",
-+                  "related",
-                   "new"
-                 ]
-               }
+ 	return setelem_delete(msgs, set, init, existing_set->init, debug_mask);
+diff --git a/src/mergesort.c b/src/mergesort.c
+index 4d0e280fdc5e2..5e676be16369b 100644
+--- a/src/mergesort.c
++++ b/src/mergesort.c
+@@ -78,7 +78,7 @@ void list_splice_sorted(struct list_head *list, struct list_head *head)
+ 	while (l != list) {
+ 		if (h == head ||
+ 		    expr_msort_cmp(list_entry(l, typeof(struct expr), list),
+-				   list_entry(h, typeof(struct expr), list)) < 0) {
++				   list_entry(h, typeof(struct expr), list)) <= 0) {
+ 			l = l->next;
+ 			list_add_tail(l->prev, h);
+ 			continue;
 diff --git a/tests/shell/testcases/sets/dumps/0055tcpflags_0.json-nft b/tests/shell/testcases/sets/dumps/0055tcpflags_0.json-nft
-index cd39f0909e120..6a3511515f785 100644
+index 6a3511515f785..e37139f334466 100644
 --- a/tests/shell/testcases/sets/dumps/0055tcpflags_0.json-nft
 +++ b/tests/shell/testcases/sets/dumps/0055tcpflags_0.json-nft
-@@ -27,39 +27,23 @@
-         "elem": [
+@@ -28,15 +28,6 @@
            {
              "|": [
--              {
--                "|": [
--                  {
--                    "|": [
--                      "fin",
--                      "psh"
--                    ]
--                  },
--                  "ack"
--                ]
--              },
-+              "fin",
-+              "psh",
-+              "ack",
-               "urg"
+               "fin",
+-              "psh",
+-              "ack",
+-              "urg"
+-            ]
+-          },
+-          {
+-            "|": [
+-              "fin",
+-              "psh",
+               "ack"
              ]
            },
+@@ -50,21 +41,22 @@
            {
              "|": [
--              {
--                "|": [
--                  "fin",
--                  "psh"
--                ]
--              },
-+              "fin",
+               "fin",
 +              "psh",
                "ack"
              ]
            },
            {
              "|": [
--              {
--                "|": [
--                  "fin",
--                  "ack"
--                ]
--              },
+-              "syn",
 +              "fin",
-+              "ack",
+               "psh",
+               "ack",
                "urg"
              ]
            },
-@@ -71,39 +55,23 @@
-           },
++          "syn",
            {
              "|": [
--              {
--                "|": [
--                  {
--                    "|": [
--                      "syn",
--                      "psh"
--                    ]
--                  },
--                  "ack"
--                ]
--              },
-+              "syn",
-+              "psh",
-+              "ack",
-               "urg"
+               "syn",
+-              "psh",
+               "ack"
              ]
            },
+@@ -78,22 +70,22 @@
            {
              "|": [
--              {
--                "|": [
--                  "syn",
--                  "psh"
--                ]
--              },
-+              "syn",
+               "syn",
 +              "psh",
                "ack"
              ]
            },
+-          "syn",
            {
              "|": [
--              {
--                "|": [
--                  "syn",
--                  "ack"
--                ]
--              },
+-              "rst",
 +              "syn",
-+              "ack",
+               "psh",
+               "ack",
                "urg"
              ]
            },
-@@ -116,39 +84,23 @@
-           "syn",
++          "rst",
            {
              "|": [
--              {
--                "|": [
--                  {
--                    "|": [
--                      "rst",
--                      "psh"
--                    ]
--                  },
--                  "ack"
--                ]
--              },
-+              "rst",
-+              "psh",
-+              "ack",
-               "urg"
+               "rst",
+-              "psh",
+               "ack"
              ]
            },
+@@ -107,12 +99,13 @@
            {
              "|": [
--              {
--                "|": [
--                  "rst",
--                  "psh"
--                ]
--              },
-+              "rst",
+               "rst",
 +              "psh",
                "ack"
              ]
            },
+-          "rst",
            {
              "|": [
--              {
--                "|": [
--                  "rst",
--                  "ack"
--                ]
--              },
 +              "rst",
-+              "ack",
+               "psh",
+               "ack",
                "urg"
-             ]
+@@ -126,11 +119,18 @@
            },
-@@ -161,12 +113,8 @@
-           "rst",
            {
              "|": [
--              {
--                "|": [
--                  "psh",
--                  "ack"
--                ]
--              },
 +              "psh",
-+              "ack",
+               "ack",
                "urg"
              ]
            },
+-          "ack"
++          "ack",
++          {
++            "|": [
++              "ack",
++              "urg"
++            ]
++          }
+         ]
+       }
+     }
+diff --git a/tests/shell/testcases/sets/dumps/0055tcpflags_0.nft b/tests/shell/testcases/sets/dumps/0055tcpflags_0.nft
+index ffed5426577e4..22bf5c461b877 100644
+--- a/tests/shell/testcases/sets/dumps/0055tcpflags_0.nft
++++ b/tests/shell/testcases/sets/dumps/0055tcpflags_0.nft
+@@ -2,9 +2,9 @@ table ip test {
+ 	set tcp_good_flags {
+ 		type tcp_flag
+ 		flags constant
+-		elements = { fin | psh | ack | urg, fin | psh | ack, fin | ack | urg, fin | ack, syn | psh | ack | urg,
+-			     syn | psh | ack, syn | ack | urg, syn | ack, syn, rst | psh | ack | urg,
+-			     rst | psh | ack, rst | ack | urg, rst | ack, rst, psh | ack | urg,
+-			     psh | ack, ack | urg, ack }
++		elements = { fin | ack, fin | ack | urg, fin | psh | ack, fin | psh | ack | urg, syn,
++			     syn | ack, syn | ack | urg, syn | psh | ack, syn | psh | ack | urg, rst,
++			     rst | ack, rst | ack | urg, rst | psh | ack, rst | psh | ack | urg, psh | ack,
++			     psh | ack | urg, ack, ack | urg }
+ 	}
+ }
 -- 
 2.43.0
 
