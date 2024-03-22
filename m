@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-1493-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1490-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39212887055
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 17:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D047D887051
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 17:07:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A40D31F23F36
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 16:07:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FC381F2466B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Mar 2024 16:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37875B669;
-	Fri, 22 Mar 2024 16:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B3B59B5F;
+	Fri, 22 Mar 2024 16:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="LxRChuQ6"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="jqIqv55p"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE455A0E6
-	for <netfilter-devel@vger.kernel.org>; Fri, 22 Mar 2024 16:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE0A59163
+	for <netfilter-devel@vger.kernel.org>; Fri, 22 Mar 2024 16:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123614; cv=none; b=tKqiQiElbBEaxx0dzPcWpQi2hpcw9xPD3AkqYvgRVv9Sqlf2tWHo/Peo9i2d0XuNYc2c2kmukcEggtTDn5MDlbpS5StPj06qUD0z8FBjhHjWR3UyEj8wR3ehkMGT2IRnxBiDf1tGniakdAe2iy+OdKE5h0jcZJKv7fJNxDUAKZE=
+	t=1711123612; cv=none; b=sKfmDN3SIiO+Bhd3fsJYiwkbulyi5Hvyi8aFZcdmRHS6ozHJZKWsD34+X5Hu3mzBy1qIYHvMPTbiJ6h4VWcgCiPtbptOBORE3Jd4iW8BHIkAOXeQqWc8IUB4ryaClh2rD9bxxSCd+dEQQRtbDb6JwOVFhpRaqd4bqMm0dVEFJ7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123614; c=relaxed/simple;
-	bh=PKGDrrwUHWswjrXl4pHDmwwhDEH9Rjn3IQCDeAXlU9s=;
+	s=arc-20240116; t=1711123612; c=relaxed/simple;
+	bh=dLpsrfKdZMQt9iaRNdFUzrgrZ9oX/G7hjJ0Sf745CIc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J4WkGtSrYLLacSKfUJ+5RBP+lJxQAmU8nSH3S43P5eRrI77r3Qmyg3s+8JkXOZzml1yJZ3hSZ/vjaVpSH5JPkYiJjCBzQqbQE44AjoEW97CEY9wVEqSvR9qdfwcarlNYtioResYmj01XqQBOYcB93LcI6YPt8Pv/dZdenjSrSLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=LxRChuQ6; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=OVWBCx1lMIaMOLuOr2ALqmozTg4Dn6qNN3YEl9hBTgIRTJy0WlJDE6pxDE1weedQ1bT3rUP155vCHRZNCAMszX7cvV7JyJLHW5YVtxD61SbexufKqFKfj5odX5n8WwY2QI3HfaifrWqNv9y49yzAbHsMLtuDWo+UpW5Gk3Z3MOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=jqIqv55p; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=X8F5/VJV2rsGvCYNDc7wCvoQUOhgQPO0+VMXzkHKuEg=; b=LxRChuQ6hvn3HQPO9YNXchl8SY
-	NPzSQMfylZI7AdgLk7RsdfptAM6nZlEm8cKRkYzVx11dYV2hrfXn2rE5yDmuInwfw0xTstPHT6SZ/
-	5oscJGhAdF+XmYF4YgfKEcCUUraKunGbwXpWFeE65JvGbPk+EZ/jod1fvA+e/Oje8wH1eF6T8dPnB
-	cOxhplTTRif0mKWg56izZiM4omme/2VRUIKUZypbsxQCqPCmOHfX0WVvGT/0po8ydC0rd5hmdu074
-	0Klsn9UH1n777blqSJ2BQuudEjD5uaim+PunaMinbUNXfNvRRtsceRJZVEByrf3gm3NA4pLK23oEC
-	6DsC4x3g==;
+	bh=sU4K15TCFAAXN1H/dPyuVPJ+jb1LaJcDEEbLYdeya9A=; b=jqIqv55pGZahr2y2JEpUyYvt8y
+	cxWe9t5XzMQJrrLhfuz7hzWrjFPrx9AcB3sw5pG7OXE28dza+rJdNwHiR4Ibz4WZxLvzCajz+HzwN
+	//CaNrK3JNZnjgXG46eYc94eNk4y470x4EWbvguAblmlycLuTHgdYU42xEgX8zgzeKveIV9bxn3hI
+	GmMy6sGO11rX+X/crvbhgYBNVuiGTFFp7XHUjncALqIg6m2eE5o6sU5PPcv6UQ/xrvp3T1k4SYdVB
+	Uodb5RsNgPhQ2d3fEUAhTp1sVfG/+wtAMDTdbzHQ2wSBIuiOATigL67wnGNcjOnpIFJmLmwgGc8dI
+	m6xHs+LQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rnhPu-000000000yZ-496A;
-	Fri, 22 Mar 2024 17:06:51 +0100
+	id 1rnhPt-000000000yJ-13fw;
+	Fri, 22 Mar 2024 17:06:49 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v2 3/5] tests: py: Fix some JSON equivalents
-Date: Fri, 22 Mar 2024 17:06:43 +0100
-Message-ID: <20240322160645.18331-4-phil@nwl.cc>
+Subject: [nft PATCH v2 4/5] tests: py: Warn if recorded JSON output matches the input
+Date: Fri, 22 Mar 2024 17:06:44 +0100
+Message-ID: <20240322160645.18331-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240322160645.18331-1-phil@nwl.cc>
 References: <20240322160645.18331-1-phil@nwl.cc>
@@ -65,263 +65,26 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make sure they match the standard syntax input as much as possible.
-
-For some reason inet/tcp.t.json was using plain arrays in place of
-binary OR expressions in many cases. These arrays are interpreted as
-list expressions, which seems to be semantically identical but the goal
-here is to present an accurate equivalent to the rule in standard
-syntax.
+Actively support spring-cleaning by nagging callers.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/any/meta.t.json   |   2 +-
- tests/py/any/tcpopt.t.json |   4 +-
- tests/py/inet/tcp.t.json   | 124 +++++++++++++++++++++----------------
- 3 files changed, 75 insertions(+), 55 deletions(-)
+ tests/py/nft-test.py | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tests/py/any/meta.t.json b/tests/py/any/meta.t.json
-index d50272de55a5b..60e27d48fdf03 100644
---- a/tests/py/any/meta.t.json
-+++ b/tests/py/any/meta.t.json
-@@ -2661,7 +2661,7 @@
-                 }
-             },
-             "op": "==",
--            "right": "17:00"
-+            "right": "17:00:00"
-         }
-     },
-     {
-diff --git a/tests/py/any/tcpopt.t.json b/tests/py/any/tcpopt.t.json
-index 4466f14fac638..87074b9d216a3 100644
---- a/tests/py/any/tcpopt.t.json
-+++ b/tests/py/any/tcpopt.t.json
-@@ -192,7 +192,7 @@
-             "left": {
-                 "tcp option": {
-                     "field": "left",
--                    "name": "sack"
-+                    "name": "sack0"
-                 }
-             },
-             "op": "==",
-@@ -272,7 +272,7 @@
-             "left": {
-                 "tcp option": {
-                     "field": "right",
--                    "name": "sack"
-+                    "name": "sack0"
-                 }
-             },
-             "op": "==",
-diff --git a/tests/py/inet/tcp.t.json b/tests/py/inet/tcp.t.json
-index bd589cf0091fe..28dd4341f08b5 100644
---- a/tests/py/inet/tcp.t.json
-+++ b/tests/py/inet/tcp.t.json
-@@ -1370,13 +1370,13 @@
-             "op": "==",
-             "right": {
-                 "set": [
-+                    "syn",
-                     {
-                         "|": [
-                             "syn",
-                             "ack"
-                         ]
--                    },
--                    "syn"
-+                    }
-                 ]
-             }
-         }
-@@ -1401,10 +1401,10 @@
-             "op": "==",
-             "right": {
-                 "set": [
--                    { "|": [ "fin", "psh", "ack" ] },
-                     "fin",
-+                    "ack",
-                     { "|": [ "psh", "ack" ] },
--                    "ack"
-+                    { "|": [ "fin", "psh", "ack" ] }
-                 ]
-             }
-         }
-@@ -1442,17 +1442,21 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "fin",
--                        "syn"
--                    ]
-+                    {
-+                        "|": [
-+                            "fin",
-+                            "syn"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "==",
--            "right": [
--                "fin",
--                "syn"
--            ]
-+            "right": {
-+                "|": [
-+                    "fin",
-+                    "syn"
-+                ]
-+            }
-         }
-     }
- ]
-@@ -1469,10 +1473,12 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "fin",
--                        "syn"
--                    ]
-+                    {
-+                        "|": [
-+                            "fin",
-+                            "syn"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "!=",
-@@ -1605,12 +1611,14 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "fin",
--                        "syn",
--                        "rst",
--                        "ack"
--                    ]
-+                    {
-+                        "|": [
-+                            "fin",
-+                            "syn",
-+                            "rst",
-+                            "ack"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "==",
-@@ -1631,12 +1639,14 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "fin",
--                        "syn",
--                        "rst",
--                        "ack"
--                    ]
-+                    {
-+                        "|": [
-+                            "fin",
-+                            "syn",
-+                            "rst",
-+                            "ack"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "==",
-@@ -1658,12 +1668,14 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "fin",
--                        "syn",
--                        "rst",
--                        "ack"
--                    ]
-+                    {
-+                        "|": [
-+                            "fin",
-+                            "syn",
-+                            "rst",
-+                            "ack"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "!=",
-@@ -1684,19 +1696,23 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "fin",
--                        "syn",
--                        "rst",
--                        "ack"
--                    ]
-+                    {
-+                        "|": [
-+                            "fin",
-+                            "syn",
-+                            "rst",
-+                            "ack"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "==",
--            "right": [
--                "syn",
--                "ack"
--            ]
-+            "right": {
-+                "|": [
-+                    "syn",
-+                    "ack"
-+                ]
-+            }
-         }
-     }
- ]
-@@ -1713,17 +1729,21 @@
-                             "protocol": "tcp"
-                         }
-                     },
--                    [
--                        "syn",
--                        "ack"
--                    ]
-+                    {
-+                        "|": [
-+                            "syn",
-+                            "ack"
-+                        ]
-+                    }
-                 ]
-             },
-             "op": "==",
--            "right": [
--                "syn",
--                "ack"
--            ]
-+            "right": {
-+                "|": [
-+                    "syn",
-+                    "ack"
-+                ]
-+            }
-         }
-     }
- ]
+diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
+index a7d27c25f9fe0..1bc8955836d0d 100755
+--- a/tests/py/nft-test.py
++++ b/tests/py/nft-test.py
+@@ -809,6 +809,8 @@ def set_delete_elements(set_element, set_name, table, filename=None,
+                     reason = "Invalid JSON syntax in expected output: %s" % json_expected
+                     print_error(reason)
+                     return [-1, warning, error, unit_tests]
++                if json_expected == json_input:
++                    print_warning("Recorded JSON output matches input for: %s" % rule[0])
+ 
+     for table in table_list:
+         if rule[1].strip() == "ok":
 -- 
 2.43.0
 
