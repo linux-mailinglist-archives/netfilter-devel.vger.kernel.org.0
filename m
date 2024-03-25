@@ -1,83 +1,39 @@
-Return-Path: <netfilter-devel+bounces-1513-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1515-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53898889F0D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Mar 2024 13:23:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1CDA88ABEE
+	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Mar 2024 18:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 848311C35DDD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Mar 2024 12:23:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DF0ABE1466
+	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Mar 2024 13:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7A51420BB;
-	Mon, 25 Mar 2024 07:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iun5Bq2t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD72158DAA;
+	Mon, 25 Mar 2024 09:49:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483F8177AB4
-	for <netfilter-devel@vger.kernel.org>; Mon, 25 Mar 2024 03:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BF717EB72
+	for <netfilter-devel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711336801; cv=none; b=KFTQKvAuW6InfCCXn84GYeJfTbQ8eE8d5Bs/dlKSxzPmTfJPBO3MqskAoQ3/uyCOt9lloDK3T7lybFnabXaR4erx71dZZEUD/qhk5w98QQIgMriVyF08D1zkDiFMlfcrnqJufqdmQrKbAs9l51+8N6Bscz7UdTJvcCTlxVJh/9s=
+	t=1711358381; cv=none; b=YP2BDdxmni5WU6SwQQVP+fZL/zmu5m5qTKD9HU9Qt6gucuTvIEplnjToaba5UQzBXo5ffWgU4PAblg7aB9zW6KBIZCA+iL5p/i1+OHfsXh49Tqff/cGlcyhArjwO4OgxE3PRHZLLzF+67AOJ7Jt25K+shFAsD2aFf9yXa61PeLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711336801; c=relaxed/simple;
-	bh=Q2stLWiHzql8MVpPJvMXrTk49sM7hixiBZhPJKFy9NA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I0WM0ucsYQ7rKBzvlqPPPKGkBpoGlSUuiN6/JkZfMcNz/LHHSCaK+w5OrxD9PYfGYBAwps5L2T+lcT8Vc8d9rXg7bu2xBnCbdXQfT3Olr11KFwJmGDz/57q4sXYhVvACp8KrGmiRNGf3oihUTSGuQSHTRJJdnq4EJnI8+tBU8kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iun5Bq2t; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso2707676b3a.3
-        for <netfilter-devel@vger.kernel.org>; Sun, 24 Mar 2024 20:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711336799; x=1711941599; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EpBS5KNG4auxEVPo/hANBY69uPpmtUhZe7khSS71rUQ=;
-        b=Iun5Bq2t58y+BK+7+DMiTpxiuGdp/Ia2ToAmWXlXybmgo9QrCe8H5AutPSDsgGNg70
-         4TbD3+L6ibyDuZ9Hgm9ek00GzPCAr+zY3TYuIoHQnwzeSnB9uc7PQ7ue53CuYOYPMG6h
-         XAPkxiUjfOU3IjnOwon0+DbzBTeKAyxXdML0zANgi2w9TORRf/8/AJFqQv+HZIvoNCW9
-         PNYrqGmlBCprazQEstSVDqWoyISTaOilv9vt7n+F5nR1NIrMGLKgNrGCUahncuDUVb4V
-         GQ3K9ybpweFIXtC5Z23FE8BCDMamHzDbKSUYLwe4mhdmnuaB+92NF8VGuSHKpRr2DmVr
-         el3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711336799; x=1711941599;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EpBS5KNG4auxEVPo/hANBY69uPpmtUhZe7khSS71rUQ=;
-        b=rkHfhR5kUF8T5BHq4wTldMpePIdwGbwcYb94lSUTdpEXEdPbTn8OQntFbB5EvuB9VG
-         JzNGYrfqiKS8HxoMOb4aXSSUK47cZnUdicdIoEYBaqleJCFW2RG8V6T1iYug0EtuUu1O
-         n9utBS4A2UKJ/OSMGREnCC99rWHqcR285pA8B1BHZ6WbZ+D3Bhmn3QMvRhICmNjHbJ3v
-         gbcVMfQlXrHDHDzhzOs9JpNoYnq799XbkfsdOHuwsnifYQ5yFCKKt2EBeH64JwwnsDNt
-         uqOE1x9pRhv2/J6FFbHPuP7liKVU2bf5iKOtTaufIUyLu938XQ8WYjuonxYdZ/RTTozE
-         MREw==
-X-Gm-Message-State: AOJu0Yw6z+ZVjsjxvsjmrUdxzQrK+1hlIiXQbKmQpYbVE8hjLUo2jKiV
-	Dgi396RpPm4HJ+l8VbFEg3/wSTpFwCXsVmVxemurE0p+DcTXeuPJ
-X-Google-Smtp-Source: AGHT+IEXpiEPBciXWBdrhshaAOnzTBEtnuflyl88DMxULbjALnILxuev+h2ILSx4v7nLwoXwjCDopQ==
-X-Received: by 2002:a05:6a20:3947:b0:1a3:32e5:f38a with SMTP id r7-20020a056a20394700b001a332e5f38amr5590451pzg.45.1711336799485;
-        Sun, 24 Mar 2024 20:19:59 -0700 (PDT)
-Received: from KERNELXING-MB0.tencent.com ([43.132.141.24])
-        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001e0bae4490fsm1254080plg.154.2024.03.24.20.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 20:19:58 -0700 (PDT)
-From: Jason Xing <kerneljasonxing@gmail.com>
-To: pablo@netfilter.org,
-	kadlec@netfilter.org
-Cc: netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	kerneljasonxing@gmail.com,
-	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH net-next 3/3] netfilter: use NF_DROP in ip6table_filter_table_init()
-Date: Mon, 25 Mar 2024 11:19:45 +0800
-Message-Id: <20240325031945.15760-4-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240325031945.15760-1-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1711358381; c=relaxed/simple;
+	bh=qAMStYQqsNm0tOiBlXok7t2v6H47LJwLOLVvYwdXRGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nryYzt28by/sM/2otENNrcYerCtkuT+kyUDb2V6a5aPvHqpkPwROahd/ScIe8Q+qlNgBUKPK0EQFZnErmeo/gl6JgUpykQVviG61Sc6e/oUBC2wKhkHSaYuGWgmra/93BRv3x9Gzr4TkDBWKdmx5+YtzSgH4pnScF5srOWHaS/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Date: Mon, 25 Mar 2024 10:19:27 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: kadlec@netfilter.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, Jason Xing <kernelxing@tencent.com>
+Subject: Re: [PATCH net-next 0/3] netfilter: use NF_DROP instead of -NF_DROP
+Message-ID: <ZgFBn1fuSRoDuk1r@calendula>
 References: <20240325031945.15760-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -85,32 +41,26 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240325031945.15760-1-kerneljasonxing@gmail.com>
 
-From: Jason Xing <kernelxing@tencent.com>
+On Mon, Mar 25, 2024 at 11:19:42AM +0800, Jason Xing wrote:
+> From: Jason Xing <kernelxing@tencent.com>
+>
+> Just simply replace the -NF_DROP with NF_DROP since it is just zero.
 
-There is no need to use the negative -NF_DROP because the definition
-is just zero.
+Single patch for this should be fine, thanks.
 
-Signed-off-by: Jason Xing <kernelxing@tencent.com>
----
- net/ipv6/netfilter/ip6table_filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There are spots where this happens, and it is not obvious, such as nf_conntrack_in()
 
-diff --git a/net/ipv6/netfilter/ip6table_filter.c b/net/ipv6/netfilter/ip6table_filter.c
-index df785ebda0ca..e8992693e14a 100644
---- a/net/ipv6/netfilter/ip6table_filter.c
-+++ b/net/ipv6/netfilter/ip6table_filter.c
-@@ -43,7 +43,7 @@ static int ip6table_filter_table_init(struct net *net)
- 		return -ENOMEM;
- 	/* Entry 1 is the FORWARD hook */
- 	((struct ip6t_standard *)repl->entries)[1].target.verdict =
--		forward ? -NF_ACCEPT - 1 : -NF_DROP - 1;
-+		forward ? -NF_ACCEPT - 1 : NF_DROP - 1;
- 
- 	err = ip6t_register_table(net, &packet_filter, repl, filter_ops);
- 	kfree(repl);
--- 
-2.37.3
+        if (protonum == IPPROTO_ICMP || protonum == IPPROTO_ICMPV6) {
+                ret = nf_conntrack_handle_icmp(tmpl, skb, dataoff,
+                                               protonum, state);
+                if (ret <= 0) {
+                        ret = -ret;
+                        goto out;
+                }
 
+removing signed zero seems more in these cases look more complicated.
 
