@@ -1,60 +1,63 @@
-Return-Path: <netfilter-devel+bounces-1525-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1526-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B0CE88C35B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 Mar 2024 14:27:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0B888C35C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 Mar 2024 14:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17D6A2E2A5D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 Mar 2024 13:27:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E4F31F2D8CE
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 Mar 2024 13:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DABE76053;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AEB762F5;
 	Tue, 26 Mar 2024 13:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GOAFKu+5"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FLfsG3LP"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1260A76057
-	for <netfilter-devel@vger.kernel.org>; Tue, 26 Mar 2024 13:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAFD5C61F
+	for <netfilter-devel@vger.kernel.org>; Tue, 26 Mar 2024 13:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711459619; cv=none; b=KLZPy7mAY0j6m4xXvOfKhqnUtmV6hIn0Mo9jkvXNi4DreOc5CBLHh10IE3UW6ihKqpWWHDnEf8miNgbHFMij+XPrtIdokIsoYkwRvrLPDoi+vwJ0t3kTByUD+rKcRoMhx/cTPgecK+GMHhL7AtyG6EP60+cUkZqd56MV/uf2feI=
+	t=1711459619; cv=none; b=tajBBxaI5oKd7S+5e8U3DZeKvMqQZI+w3CU/NbWsaoLc+MgsmiaDo3RyMa0NO0d3hpm8hvgewmRPYJoaVOPgzzaMee4/1zVfOBPWqiB3ioC4pSKoK0Jb6cswLSfqTb6wCTdbUwqc+LegHFzT3l3THQvDkQL+jkCioW21I7qNEjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711459619; c=relaxed/simple;
-	bh=HeFhExx+x6+c4IjZfSzd0POROlsX2nkK050QNUIenD0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mTDcLZPUftJMI7tl+4cW3MpGJa/QSYNvc0nqP7TqClVeZ3yPRDL30byHpi7aBfmvlGZnv8X52QC9kB/sxhE4IcWmkXzyJ+v+RaEQCjK5ZTKtOFhlCejqUOiL6SSG/y6GVmf0aKe76blDRGBFE9ZQGmwNhMh1civssFlLOdQkA3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GOAFKu+5; arc=none smtp.client-ip=151.80.46.58
+	bh=JGnfGBiVoA0IK8mGlLwJLEEUAih9HLZgKnaFSRjukiM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XDcugfOQ06d+k4kOFwKRdPcw0beVztFgGVyTu21BorFT+drafOZyfrjHEkDZZCEo2Bd9f+BeuKm28hhALUSY/YQROuCdz1cOZisb/Jas/LDNnwaIf/Ylb8nWB7VZAXbnmODSq1SYhbwqiEynWKQMBE1A3POyvnMcUNKEpjnrZ2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FLfsG3LP; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Oor3dB8U50CotOR5P4uEBB02qxfK9ArFZCcy2I7WmMo=; b=GOAFKu+5DC6xSSGZ1Fpu5Ltwfq
-	6y0oMQchnfUl4tzQmFNP5g3fe/dgtn/Qy8u4+Pm2YGu6zX5uayy9UVFTtvUihp93hcZxTuNv4Bfzg
-	4hTTU3g0Ya6L30gtahIGZ2SeRuMsmMA4YwqJbNmhhECH3stu5vTj1gXeVLDUO2P/Y0YkuN/LyA4r2
-	MCUPZvs7zTKd7Ba1mp9nDHSArs81kxd/IxEZDtmjq85vXWIHqae2sJZkoaQQh4omOFitKaXfKbmj6
-	6lwnUn0Vp74NQkCpuIAFHpN3Fs0JFA8eieGL6RcHiEJvGsLLpI7hnvR0+8xOMTE9psWOkiUPvxHOJ
-	t6l9xRng==;
+	bh=CSgf+XRlxespXqm3cbQ953WMWoian1X5qn3dudm7NSs=; b=FLfsG3LPGq/EiGIF54Q6dRQojF
+	dlNLefX60jbIz+HynmYzMSD5LTzrDDWQPlqgthkxP9Az16x8vXYh8DpeWCHAn1qWSzQ1LUNtGtZxM
+	M0uLWs3ht2f1xR3gZxjaBwwaJ9WjnC2Mi1KS3SMKRb3dE9KjFuA/MdlOthps756zP09l7yjWzdfCT
+	FwCdAmR5Ks7L9yPnqKe2MFfYScnT8I5QbFeQ+FU97IJcjSjL5WbB7NssBQ7hioBPucik577FD2ySV
+	WYPn6ZbdqwiDHYJ2IwO6SsTaYRh82HXXhaYTvX868wJiQrb30BixHTptNQ1uZViF3M07EOzNVbVry
+	22BBNSgQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rp6pL-000000002rp-04JP;
+	id 1rp6pL-000000002rv-2FjH;
 	Tue, 26 Mar 2024 14:26:55 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Quentin Deslandes <qde@naccy.de>
-Subject: [nft PATCH v2 0/2] Add support for table's persist flag
-Date: Tue, 26 Mar 2024 14:26:49 +0100
-Message-ID: <20240326132651.21274-1-phil@nwl.cc>
+Subject: [nft PATCH v2 1/2] doc: nft.8: Two minor synopsis fixups
+Date: Tue, 26 Mar 2024 14:26:50 +0100
+Message-ID: <20240326132651.21274-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240326132651.21274-1-phil@nwl.cc>
+References: <20240326132651.21274-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -63,31 +66,41 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support for kernel commit da5141bbe0c2 ("netfilter: nf_tables: Introduce
-NFT_TABLE_F_PERSIST") in user space.
+The curly braces in 'add table' are to be put literally, so need to be
+bold. Also, they are optional unless either one (or both) of 'comment'
+and 'flags' are specified.
 
-Patch 1 is not a dependency, but trivial enough to go along with the
-second one.
+The 'add chain' synopsis contained a stray tick, messing up the
+following markup.
 
-Changes since v1:
-- Fix memleak in patch 2.
+Fixes: 7fd67ce121f86 ("doc: fix synopsis of named counter, quota and ct {helper,timeout,expect}")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ doc/nft.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Phil Sutter (2):
-  doc: nft.8: Two minor synopsis fixups
-  Add support for table's persist flag
-
- doc/libnftables-json.adoc                   | 11 +++-
- doc/nft.txt                                 | 13 +++-
- include/rule.h                              |  3 +-
- src/parser_bison.y                          | 43 +++++++++----
- src/parser_json.c                           | 68 ++++++++++++++++++++-
- src/rule.c                                  |  1 +
- tests/shell/features/table_flag_persist.nft |  3 +
- tests/shell/testcases/owner/0002-persist    | 36 +++++++++++
- 8 files changed, 159 insertions(+), 19 deletions(-)
- create mode 100644 tests/shell/features/table_flag_persist.nft
- create mode 100755 tests/shell/testcases/owner/0002-persist
-
+diff --git a/doc/nft.txt b/doc/nft.txt
+index b08e32fadcd5c..248b29af369ad 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -321,7 +321,7 @@ Effectively, this is the nft-equivalent of *iptables-save* and
+ TABLES
+ ------
+ [verse]
+-{*add* | *create*} *table* ['family'] 'table' [ {*comment* 'comment' *;*'} *{ flags* 'flags' *; }*]
++{*add* | *create*} *table* ['family'] 'table' [*{* [*comment* 'comment' *;*] [*flags* 'flags' *;*] *}*]
+ {*delete* | *destroy* | *list* | *flush*} *table* ['family'] 'table'
+ *list tables* ['family']
+ *delete table* ['family'] *handle* 'handle'
+@@ -376,7 +376,7 @@ add table inet mytable
+ CHAINS
+ ------
+ [verse]
+-{*add* | *create*} *chain* ['family'] 'table' 'chain' [*{ type* 'type' *hook* 'hook' [*device* 'device'] *priority* 'priority' *;* [*policy* 'policy' *;*] [*comment* 'comment' *;*'] *}*]
++{*add* | *create*} *chain* ['family'] 'table' 'chain' [*{ type* 'type' *hook* 'hook' [*device* 'device'] *priority* 'priority' *;* [*policy* 'policy' *;*] [*comment* 'comment' *;*] *}*]
+ {*delete* | *destroy* | *list* | *flush*} *chain* ['family'] 'table' 'chain'
+ *list chains* ['family']
+ *delete chain* ['family'] 'table' *handle* 'handle'
 -- 
 2.43.0
 
