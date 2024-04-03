@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1600-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1602-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2897B896DEA
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 13:18:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F0E896DEC
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 13:18:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A85F1C25D89
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 11:18:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CB2C1F23BB9
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 11:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEF31419BF;
-	Wed,  3 Apr 2024 11:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C421419B3;
+	Wed,  3 Apr 2024 11:18:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507681353E2
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Apr 2024 11:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C41141987
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Apr 2024 11:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712143121; cv=none; b=CVsH3athFlA6pP2FISiwLuRH70ytmGTR+8uG3rjgU7OLWbfJyuBRWFTEpuNC+7EKVlV+VOEhy2MUYUVX2IOMIqLxuY56s4ZsBHNBemxWRCZwbrg+3cLhS83HQM7PykEZSrvtbeo37rQYmZ0L4R/StgvAMlBaPc/qRkNITjG1jM4=
+	t=1712143123; cv=none; b=bzmEfjFHDAw9CJCG2lkFQscNBv4PN7oSZiw2Rz3+t+UYX9IjmIkGirmVnocQZY0PdZyHvhdtsCoZFDjG0udhI89DySlpvxGnErYp76DFohkguvqLUlChv/eqkKogutqTFmOQm3DQzBpllDCMIRySAmr/xRVlXKPwpnAarQlCbW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712143121; c=relaxed/simple;
-	bh=VbECTiPBnr/S6qIBEZZwW+FHOUfxLgiBVWOVNPejisY=;
+	s=arc-20240116; t=1712143123; c=relaxed/simple;
+	bh=rx+8jfcF5GKJG0reGXxJDhjQEg3VqV5qUsojFNcJvlU=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gRfoyBxGD80OZ4/yQd+lrkfMRYxNljje1Rr2zzvemyzkIuOd/AB66es15E5YPvD/Lj+FY69/dXUjpvjRKycbjJ9ekZnklm9Rhaez22yrOxbqzl9H0gp1ZienK6FnHO7HJuWKVB/EZM5jGBuUmV1fzMMduZg5wW27ZHP+CVMjq7E=
+	 MIME-Version; b=eON86zhCz90eBKs4W16xQjdD1g+cJDOm9Eau2pJrV8T6Vos2huim5W7xGuWEwJNkCWHNoQDjYhpHtl8TbQb7uXUMrGOSQo9TzA2Qj1CKOYGuUFFMpwFN2xq2FLstIEpnnHuV9ObLaNoZaU8gy5sOeZbq6AJe7+VdnVg2M6fmqPs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf,v2 2/4] netfilter: nf_tables: release mutex after nft_gc_seq_end from abort path
-Date: Wed,  3 Apr 2024 13:18:30 +0200
-Message-Id: <20240403111832.234325-2-pablo@netfilter.org>
+Subject: [PATCH nf,v2 3/4] netfilter: nf_tables: flush pending destroy work before exit_net release
+Date: Wed,  3 Apr 2024 13:18:31 +0200
+Message-Id: <20240403111832.234325-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240403111832.234325-1-pablo@netfilter.org>
 References: <20240403111832.234325-1-pablo@netfilter.org>
@@ -43,56 +43,127 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The commit mutex should not be released during the critical section
-between nft_gc_seq_begin() and nft_gc_seq_end(), otherwise, async GC
-worker could collect expired objects and get the released commit lock
-within the same GC sequence.
+Similar to 2c9f0293280e ("netfilter: nf_tables: flush pending destroy
+work before netlink notifier") to address a race between exit_net and
+the destroy workqueue.
 
-nf_tables_module_autoload() temporarily releases the mutex to load
-module dependencies, then it goes back to replay the transaction again.
-Move it at the end of the abort phase after nft_gc_seq_end() is called.
+The trace below shows an element to be released via destroy workqueue
+while exit_net path (triggered via module removal) has already released
+the set that is used in such transaction.
 
-Cc: stable@vger.kernel.org
-Fixes: 720344340fb9 ("netfilter: nf_tables: GC transaction race with abort path")
-Reported-by: Kuan-Ting Chen <hexrabbit@devco.re>
+[ 1360.547789] BUG: KASAN: slab-use-after-free in nf_tables_trans_destroy_work+0x3f5/0x590 [nf_tables]
+[ 1360.547861] Read of size 8 at addr ffff888140500cc0 by task kworker/4:1/152465
+[ 1360.547870] CPU: 4 PID: 152465 Comm: kworker/4:1 Not tainted 6.8.0+ #359
+[ 1360.547882] Workqueue: events nf_tables_trans_destroy_work [nf_tables]
+[ 1360.547984] Call Trace:
+[ 1360.547991]  <TASK>
+[ 1360.547998]  dump_stack_lvl+0x53/0x70
+[ 1360.548014]  print_report+0xc4/0x610
+[ 1360.548026]  ? __virt_addr_valid+0xba/0x160
+[ 1360.548040]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+[ 1360.548054]  ? nf_tables_trans_destroy_work+0x3f5/0x590 [nf_tables]
+[ 1360.548176]  kasan_report+0xae/0xe0
+[ 1360.548189]  ? nf_tables_trans_destroy_work+0x3f5/0x590 [nf_tables]
+[ 1360.548312]  nf_tables_trans_destroy_work+0x3f5/0x590 [nf_tables]
+[ 1360.548447]  ? __pfx_nf_tables_trans_destroy_work+0x10/0x10 [nf_tables]
+[ 1360.548577]  ? _raw_spin_unlock_irq+0x18/0x30
+[ 1360.548591]  process_one_work+0x2f1/0x670
+[ 1360.548610]  worker_thread+0x4d3/0x760
+[ 1360.548627]  ? __pfx_worker_thread+0x10/0x10
+[ 1360.548640]  kthread+0x16b/0x1b0
+[ 1360.548653]  ? __pfx_kthread+0x10/0x10
+[ 1360.548665]  ret_from_fork+0x2f/0x50
+[ 1360.548679]  ? __pfx_kthread+0x10/0x10
+[ 1360.548690]  ret_from_fork_asm+0x1a/0x30
+[ 1360.548707]  </TASK>
+
+[ 1360.548719] Allocated by task 192061:
+[ 1360.548726]  kasan_save_stack+0x20/0x40
+[ 1360.548739]  kasan_save_track+0x14/0x30
+[ 1360.548750]  __kasan_kmalloc+0x8f/0xa0
+[ 1360.548760]  __kmalloc_node+0x1f1/0x450
+[ 1360.548771]  nf_tables_newset+0x10c7/0x1b50 [nf_tables]
+[ 1360.548883]  nfnetlink_rcv_batch+0xbc4/0xdc0 [nfnetlink]
+[ 1360.548909]  nfnetlink_rcv+0x1a8/0x1e0 [nfnetlink]
+[ 1360.548927]  netlink_unicast+0x367/0x4f0
+[ 1360.548935]  netlink_sendmsg+0x34b/0x610
+[ 1360.548944]  ____sys_sendmsg+0x4d4/0x510
+[ 1360.548953]  ___sys_sendmsg+0xc9/0x120
+[ 1360.548961]  __sys_sendmsg+0xbe/0x140
+[ 1360.548971]  do_syscall_64+0x55/0x120
+[ 1360.548982]  entry_SYSCALL_64_after_hwframe+0x55/0x5d
+
+[ 1360.548994] Freed by task 192222:
+[ 1360.548999]  kasan_save_stack+0x20/0x40
+[ 1360.549009]  kasan_save_track+0x14/0x30
+[ 1360.549019]  kasan_save_free_info+0x3b/0x60
+[ 1360.549028]  poison_slab_object+0x100/0x180
+[ 1360.549036]  __kasan_slab_free+0x14/0x30
+[ 1360.549042]  kfree+0xb6/0x260
+[ 1360.549049]  __nft_release_table+0x473/0x6a0 [nf_tables]
+[ 1360.549131]  nf_tables_exit_net+0x170/0x240 [nf_tables]
+[ 1360.549221]  ops_exit_list+0x50/0xa0
+[ 1360.549229]  free_exit_list+0x101/0x140
+[ 1360.549236]  unregister_pernet_operations+0x107/0x160
+[ 1360.549245]  unregister_pernet_subsys+0x1c/0x30
+[ 1360.549254]  nf_tables_module_exit+0x43/0x80 [nf_tables]
+[ 1360.549345]  __do_sys_delete_module+0x253/0x370
+[ 1360.549352]  do_syscall_64+0x55/0x120
+[ 1360.549360]  entry_SYSCALL_64_after_hwframe+0x55/0x5d
+
+(gdb) list *__nft_release_table+0x473
+0x1e033 is in __nft_release_table (net/netfilter/nf_tables_api.c:11354).
+11349           list_for_each_entry_safe(flowtable, nf, &table->flowtables, list) {
+11350                   list_del(&flowtable->list);
+11351                   nft_use_dec(&table->use);
+11352                   nf_tables_flowtable_destroy(flowtable);
+11353           }
+11354           list_for_each_entry_safe(set, ns, &table->sets, list) {
+11355                   list_del(&set->list);
+11356                   nft_use_dec(&table->use);
+11357                   if (set->flags & (NFT_SET_MAP | NFT_SET_OBJECT))
+11358                           nft_map_deactivate(&ctx, set);
+(gdb)
+
+[ 1360.549372] Last potentially related work creation:
+[ 1360.549376]  kasan_save_stack+0x20/0x40
+[ 1360.549384]  __kasan_record_aux_stack+0x9b/0xb0
+[ 1360.549392]  __queue_work+0x3fb/0x780
+[ 1360.549399]  queue_work_on+0x4f/0x60
+[ 1360.549407]  nft_rhash_remove+0x33b/0x340 [nf_tables]
+[ 1360.549516]  nf_tables_commit+0x1c6a/0x2620 [nf_tables]
+[ 1360.549625]  nfnetlink_rcv_batch+0x728/0xdc0 [nfnetlink]
+[ 1360.549647]  nfnetlink_rcv+0x1a8/0x1e0 [nfnetlink]
+[ 1360.549671]  netlink_unicast+0x367/0x4f0
+[ 1360.549680]  netlink_sendmsg+0x34b/0x610
+[ 1360.549690]  ____sys_sendmsg+0x4d4/0x510
+[ 1360.549697]  ___sys_sendmsg+0xc9/0x120
+[ 1360.549706]  __sys_sendmsg+0xbe/0x140
+[ 1360.549715]  do_syscall_64+0x55/0x120
+[ 1360.549725]  entry_SYSCALL_64_after_hwframe+0x55/0x5d
+
+Fixes: 0935d5588400 ("netfilter: nf_tables: asynchronous release")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: no changes
+v2: update commit description to specify that this is triggered in the module
+    removal path.
+    Flush work from module_exit path as suggested by Florian Westphal.
 
- net/netfilter/nf_tables_api.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ net/netfilter/nf_tables_api.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index ffcd3213c335..0d432d0674e1 100644
+index 0d432d0674e1..17bf53cd0e84 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -10651,11 +10651,6 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- 		nf_tables_abort_release(trans);
- 	}
- 
--	if (action == NFNL_ABORT_AUTOLOAD)
--		nf_tables_module_autoload(net);
--	else
--		nf_tables_module_autoload_cleanup(net);
--
- 	return err;
- }
- 
-@@ -10672,6 +10667,14 @@ static int nf_tables_abort(struct net *net, struct sk_buff *skb,
- 
- 	WARN_ON_ONCE(!list_empty(&nft_net->commit_list));
- 
-+	/* module autoload needs to happen after GC sequence update because it
-+	 * temporarily releases and grabs mutex again.
-+	 */
-+	if (action == NFNL_ABORT_AUTOLOAD)
-+		nf_tables_module_autoload(net);
-+	else
-+		nf_tables_module_autoload_cleanup(net);
-+
- 	mutex_unlock(&nft_net->commit_mutex);
- 
- 	return ret;
+@@ -11575,6 +11575,7 @@ static void __exit nf_tables_module_exit(void)
+ 	unregister_netdevice_notifier(&nf_tables_flowtable_notifier);
+ 	nft_chain_filter_fini();
+ 	nft_chain_route_fini();
++	nf_tables_trans_destroy_flush_work();
+ 	unregister_pernet_subsys(&nf_tables_net_ops);
+ 	cancel_work_sync(&trans_gc_work);
+ 	cancel_work_sync(&trans_destroy_work);
 -- 
 2.30.2
 
