@@ -1,40 +1,60 @@
-Return-Path: <netfilter-devel+bounces-1601-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1603-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278EB896DEE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 13:19:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA087896EDE
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 14:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2331B2B8A8
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 11:18:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616CD28DEE1
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 12:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D99D1353E2;
-	Wed,  3 Apr 2024 11:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0821465B1;
+	Wed,  3 Apr 2024 12:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="XHdcoHta"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0B114199C
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Apr 2024 11:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from azazel.net (taras.nevrast.org [35.176.194.208])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56444145FFF
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Apr 2024 12:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712143122; cv=none; b=mVdgNqYqV3m3C5g4RPRldm3uwlKK87SH+HZxtW8rJVA0LLc2PvgNCTKrV0PZfLMfPJVYZ45/4e5eJVaVMgia+aioALbGL4f5eA1ktIYRB4htIritRBcUk+pn6rGhrYVXRlqMzZz6ybhiJWNo+wZ2p2k6LtREgzE2rZ54MPsPdzM=
+	t=1712147385; cv=none; b=KsRSGEWyVdHOfKcKTXDX/ph1BhLsGGt5cAldP98FmbJtjDETRZjs1HYG5d8ZRqNcj8MA+gxllKDBxm3VFTWTXHw4/VQN3l2ptWat7oOx5EFtHZyLpi/TZAiolRD91fUKPDd5IFGIfd1uLaG7UuDdeGCjhpGHk7et/RTwrU2p9JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712143122; c=relaxed/simple;
-	bh=ZzyG1gciZFzce2wDH6g7G0YzHshotoUnbp9f64Ej6k0=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dA9Yv2MWu/7DVHEdbOa/JBxYvooTF120hZKOX1DIvJFPeGwviP0/2H5svi/a6eTr/Ik+dcwp4LHgNkEmqV55CJgA4yd90hZ8VVMakx0QkJRu/5rf9syVAxr8Io4M0Ju0qJLFo5LUH0rjjlBw8xTF9eNp5cNaIsN92nYOyzj1jBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf,v2 4/4] netfilter: nf_tables: reject new basechain after table flag update
-Date: Wed,  3 Apr 2024 13:18:32 +0200
-Message-Id: <20240403111832.234325-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240403111832.234325-1-pablo@netfilter.org>
-References: <20240403111832.234325-1-pablo@netfilter.org>
+	s=arc-20240116; t=1712147385; c=relaxed/simple;
+	bh=d5B3Uwh5U0luQaWPosgN89PvRzuaNOZ0m6F7/sAhKoQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=V6XOQJoZYcTZvdB+KnUytA2KkWJpX7wf4hZ+5HIkFz9QrBdZpwgqU9Fr7tbfyThUQB7vAzMrZIdOUcVpwDEV4sZCIO/RE0PJpM6cU/NEhFFvC0r2RP2hF3YZEu9naaH6VwFeLfCT5tM/i7EDdj85RUZgWXIBpbMyq7ufMmt4r+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=XHdcoHta; arc=none smtp.client-ip=35.176.194.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=09D+7sqKEoF4kMbKoWW0eMmbIY/Kpr1Q8HkwK1U+U20=; b=XHdcoHtaIflKMG0rMMvXQhQLvP
+	mqnTNXWpwdIuNClZYjjoNrVTO96y210B2SzHa/D4v+xSBaAJoCRey3BfdVkoFJtLrGUKziSRC/ta9
+	VdkveAlO/T42UTXsT7BAj6S/Lmd8p9xe9Xi2/6w5c9nef1kwmNiWvkd/yY8Yq+Tx7Rg8SmlkjsbmI
+	X1bjsFbBt7UOP9nIMoEHFlxzkrWemh6oBTxCON2eljc4kA8yJ6V1NJ+uLBI9eJmOWmtdbDkX+MyXM
+	bVC7NPbemyDg3j3HKHGhPPFuHsBFRHshxLm3JBc/8VkbhijaNHywGHxhAfGfUqMyVNxiwoPeS/vOu
+	8oBQkRqA==;
+Received: from [2001:8b0:fb7d:d6d6:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+	by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <jeremy@azazel.net>)
+	id 1rrzRD-00HR7h-03
+	for netfilter-devel@vger.kernel.org;
+	Wed, 03 Apr 2024 13:09:55 +0100
+From: Jeremy Sowden <jeremy@azazel.net>
+To: Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nft v2 0/2] Support for variables in map expressions
+Date: Wed,  3 Apr 2024 13:09:35 +0100
+Message-ID: <20240403120937.4061434-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -42,61 +62,45 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d6:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-When dormant flag is toggled, hooks are disabled in the commit phase by
-iterating over current chains in table (existing and new).
+The first patch replaces the current assertion failure for invalid
+mapping expression in stateful-object statements with an error message.
+This brings it in line with map statements.
 
-The following configuration allows for an inconsistent state:
+It is possible to use a variable to initialize a map, which is then used
+in a map statement, but if one tries to use the variable directly, nft
+rejects it.  The second patch adds support for doing this.
 
-  add table x
-  add chain x y { type filter hook input priority 0; }
-  add table x { flags dormant; }
-  add chain x w { type filter hook input priority 1; }
+Changes since v1
 
-which triggers the following warning when trying to unregister chain w
-which is already unregistered.
+  * Patch 1 is new.
+  * Patch 2 updated to add support for map variables in stateful object
+    statements.
 
-[  127.322252] WARNING: CPU: 7 PID: 1211 at net/netfilter/core.c:50                                                                     1 __nf_unregister_net_hook+0x21a/0x260
-[...]
-[  127.322519] Call Trace:
-[  127.322521]  <TASK>
-[  127.322524]  ? __warn+0x9f/0x1a0
-[  127.322531]  ? __nf_unregister_net_hook+0x21a/0x260
-[  127.322537]  ? report_bug+0x1b1/0x1e0
-[  127.322545]  ? handle_bug+0x3c/0x70
-[  127.322552]  ? exc_invalid_op+0x17/0x40
-[  127.322556]  ? asm_exc_invalid_op+0x1a/0x20
-[  127.322563]  ? kasan_save_free_info+0x3b/0x60
-[  127.322570]  ? __nf_unregister_net_hook+0x6a/0x260
-[  127.322577]  ? __nf_unregister_net_hook+0x21a/0x260
-[  127.322583]  ? __nf_unregister_net_hook+0x6a/0x260
-[  127.322590]  ? __nf_tables_unregister_hook+0x8a/0xe0 [nf_tables]
-[  127.322655]  nft_table_disable+0x75/0xf0 [nf_tables]
-[  127.322717]  nf_tables_commit+0x2571/0x2620 [nf_tables]
+Jeremy Sowden (2):
+  evaluate: handle invalid mapping expressions in stateful object
+    statements gracefully.
+  evaluate: add support for variables in map expressions
 
-Fixes: 179d9ba5559a ("netfilter: nf_tables: fix table flag updates")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: new in this series
+ src/evaluate.c                                |   7 +-
+ .../shell/testcases/maps/0024named_objects_1  |  31 ++++
+ .../shell/testcases/maps/anonymous_snat_map_1 |  16 ++
+ .../maps/dumps/0024named_objects_1.json-nft   | 147 ++++++++++++++++++
+ .../maps/dumps/0024named_objects_1.nft        |  23 +++
+ .../maps/dumps/anonymous_snat_map_1.json-nft  |  58 +++++++
+ .../maps/dumps/anonymous_snat_map_1.nft       |   5 +
+ 7 files changed, 285 insertions(+), 2 deletions(-)
+ create mode 100755 tests/shell/testcases/maps/0024named_objects_1
+ create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_1
+ create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.nft
+ create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
 
- net/netfilter/nf_tables_api.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 17bf53cd0e84..1eb51bf24fc2 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2449,6 +2449,9 @@ static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
- 		struct nft_stats __percpu *stats = NULL;
- 		struct nft_chain_hook hook = {};
- 
-+		if (table->flags & __NFT_TABLE_F_UPDATE)
-+			return -EINVAL;
-+
- 		if (flags & NFT_CHAIN_BINDING)
- 			return -EOPNOTSUPP;
- 
 -- 
-2.30.2
+2.43.0
 
 
