@@ -1,60 +1,63 @@
-Return-Path: <netfilter-devel+bounces-1603-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1605-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA087896EDE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 14:29:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF62896EE2
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 14:30:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616CD28DEE1
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 12:29:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DB071C25B8B
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Apr 2024 12:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0821465B1;
-	Wed,  3 Apr 2024 12:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40CD1386C9;
+	Wed,  3 Apr 2024 12:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="XHdcoHta"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="j0D3dr+0"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56444145FFF
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Apr 2024 12:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41E81465B9
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Apr 2024 12:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712147385; cv=none; b=KsRSGEWyVdHOfKcKTXDX/ph1BhLsGGt5cAldP98FmbJtjDETRZjs1HYG5d8ZRqNcj8MA+gxllKDBxm3VFTWTXHw4/VQN3l2ptWat7oOx5EFtHZyLpi/TZAiolRD91fUKPDd5IFGIfd1uLaG7UuDdeGCjhpGHk7et/RTwrU2p9JE=
+	t=1712147399; cv=none; b=YDwMxPonfbjShgXPSRMVt9f6lOxDNA2EDl9M5aXddpfXUcOESSPDEJKyTQtb1b8anY5NCm0sUEQaP/xBGyZIsfNcAu0HpG4sdPK7Fj4K2wWgc0T9v5GCeC/mIm7MC0yns0VVQpmk1zdn65t8FGAzVXnc45kE0ohBhkRekcWNTi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712147385; c=relaxed/simple;
-	bh=d5B3Uwh5U0luQaWPosgN89PvRzuaNOZ0m6F7/sAhKoQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=V6XOQJoZYcTZvdB+KnUytA2KkWJpX7wf4hZ+5HIkFz9QrBdZpwgqU9Fr7tbfyThUQB7vAzMrZIdOUcVpwDEV4sZCIO/RE0PJpM6cU/NEhFFvC0r2RP2hF3YZEu9naaH6VwFeLfCT5tM/i7EDdj85RUZgWXIBpbMyq7ufMmt4r+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=XHdcoHta; arc=none smtp.client-ip=35.176.194.208
+	s=arc-20240116; t=1712147399; c=relaxed/simple;
+	bh=aCi4Na4ck4bx8W5akCYJ9jiW+WTZ+fRdbGwXMxnIcKY=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GN9CXuVeONRsGdT+/qRAONEWjPoVKmRh5R2/EBBZfGPINj/Q+OBRyjGaeqAclKXLsJ1WjpvjsYWrtkb86sHo4L+lGepSY6egRjX/W34eN0bA1xBYh0PmEb4rstmLNecaH1SEJD3eF4/kl020IN4UlvBUETRAbh8thIR73QgoXUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=j0D3dr+0; arc=none smtp.client-ip=35.176.194.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=09D+7sqKEoF4kMbKoWW0eMmbIY/Kpr1Q8HkwK1U+U20=; b=XHdcoHtaIflKMG0rMMvXQhQLvP
-	mqnTNXWpwdIuNClZYjjoNrVTO96y210B2SzHa/D4v+xSBaAJoCRey3BfdVkoFJtLrGUKziSRC/ta9
-	VdkveAlO/T42UTXsT7BAj6S/Lmd8p9xe9Xi2/6w5c9nef1kwmNiWvkd/yY8Yq+Tx7Rg8SmlkjsbmI
-	X1bjsFbBt7UOP9nIMoEHFlxzkrWemh6oBTxCON2eljc4kA8yJ6V1NJ+uLBI9eJmOWmtdbDkX+MyXM
-	bVC7NPbemyDg3j3HKHGhPPFuHsBFRHshxLm3JBc/8VkbhijaNHywGHxhAfGfUqMyVNxiwoPeS/vOu
-	8oBQkRqA==;
+	bh=3pqArfhh3gJbAyCVjORpTvQXMLgwTCYMXyLLOV6TFpY=; b=j0D3dr+0XebPEH0nQr07p8g6gK
+	XeKJFOACfEkLQIdGId8ykNgh8ZOEo/S8a33VhAqSDsijKliI35n4Eozeuxw1bpRKO+UyVIDZeBNFh
+	4W/vha8TaQX8dc0MCEeKTewF8fi6Md0mJRFiGSoEiNXu2TAw9h6jX7cF9UmYRsgzM3OjCrGAzFKSf
+	91CCA3lQJPyPvd6xhqzeBac9QBop+zz2sOq1qdxlqhPVj5k9eWnx/5lbna6zcuIeMMA/LlwCufLZx
+	Pox29a5gWrJAhUcb0z5UTeIxgDf3n1jum9eBgKvEMocRVqf8ndk9kwexzzeT2ErUvaNjVkguwkwzJ
+	FyL8uKVw==;
 Received: from [2001:8b0:fb7d:d6d6:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
 	by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1rrzRD-00HR7h-03
+	id 1rrzRD-00HR7h-0V
 	for netfilter-devel@vger.kernel.org;
 	Wed, 03 Apr 2024 13:09:55 +0100
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v2 0/2] Support for variables in map expressions
-Date: Wed,  3 Apr 2024 13:09:35 +0100
-Message-ID: <20240403120937.4061434-1-jeremy@azazel.net>
+Subject: [PATCH nft v2 1/2] evaluate: handle invalid mapping expressions in stateful object statements gracefully.
+Date: Wed,  3 Apr 2024 13:09:36 +0100
+Message-ID: <20240403120937.4061434-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240403120937.4061434-1-jeremy@azazel.net>
+References: <20240403120937.4061434-1-jeremy@azazel.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,40 +69,39 @@ X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d6:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-The first patch replaces the current assertion failure for invalid
-mapping expression in stateful-object statements with an error message.
-This brings it in line with map statements.
+Currently, they are reported as assertion failures:
 
-It is possible to use a variable to initialize a map, which is then used
-in a map statement, but if one tries to use the variable directly, nft
-rejects it.  The second patch adds support for doing this.
+  BUG: invalid mapping expression variable
+  nft: src/evaluate.c:4618: stmt_evaluate_objref_map: Assertion `0' failed.
+  Aborted
 
-Changes since v1
+Instead, report them more informatively as errors:
 
-  * Patch 1 is new.
-  * Patch 2 updated to add support for map variables in stateful object
-    statements.
+  /space/azazel/tmp/ruleset.1067161.nft:15:29-38: Error: invalid mapping expression variable
+      quota name ip saddr map $quota_map
+                 ~~~~~~~~     ^^^^^^^^^^
 
-Jeremy Sowden (2):
-  evaluate: handle invalid mapping expressions in stateful object
-    statements gracefully.
-  evaluate: add support for variables in map expressions
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ src/evaluate.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- src/evaluate.c                                |   7 +-
- .../shell/testcases/maps/0024named_objects_1  |  31 ++++
- .../shell/testcases/maps/anonymous_snat_map_1 |  16 ++
- .../maps/dumps/0024named_objects_1.json-nft   | 147 ++++++++++++++++++
- .../maps/dumps/0024named_objects_1.nft        |  23 +++
- .../maps/dumps/anonymous_snat_map_1.json-nft  |  58 +++++++
- .../maps/dumps/anonymous_snat_map_1.nft       |   5 +
- 7 files changed, 285 insertions(+), 2 deletions(-)
- create mode 100755 tests/shell/testcases/maps/0024named_objects_1
- create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_1
- create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
- create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.nft
- create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
- create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
-
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 1682ba58989e..f28ef2aad8f4 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -4615,8 +4615,9 @@ static int stmt_evaluate_objref_map(struct eval_ctx *ctx, struct stmt *stmt)
+ 					  "Expression is not a map with objects");
+ 		break;
+ 	default:
+-		BUG("invalid mapping expression %s\n",
+-		    expr_name(map->mappings));
++		return expr_binary_error(ctx->msgs, map->mappings, map->map,
++					 "invalid mapping expression %s",
++					 expr_name(map->mappings));
+ 	}
+ 
+ 	if (!datatype_compatible(map->mappings->set->key->dtype, map->map->dtype))
 -- 
 2.43.0
 
