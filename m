@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-1613-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1616-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E58C7898546
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 12:44:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97A2989854C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 12:44:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75D37282B7F
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 10:44:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2838528A740
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 10:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255E9811FF;
-	Thu,  4 Apr 2024 10:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18AA839E0;
+	Thu,  4 Apr 2024 10:43:48 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70827FBA7;
-	Thu,  4 Apr 2024 10:43:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C0980C15;
+	Thu,  4 Apr 2024 10:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712227427; cv=none; b=PWhwaxlBZDKhbPD4UEoG9hM1Asbl7IDkeSrSt3G0rwuxbRjxwsAJP4rl7gSah+mNuz386dlZSUxqNOBbJHFY+MVGx4jO8Q3bJNQG7dLJxckI02iDGDkVpeA1884/CRhOy5KZ2dWLswMRgzTW7yAnff72ZcWb1H0VUxgeT3QwxTA=
+	t=1712227428; cv=none; b=umHIHnjyTOm5lwnagM6ox2NktPI95EHMsfB64/4og5uiy4vbZ/SNZa9N6i++6lb//Vmn3LyosKAWAksoX2Qc7nNA/QCvINiWetjGv9ipPDLGL3MW7NJMZhrFAuhtJZF9qU/EsyZ5jfFImDWYYPbj59L4Y2NRv7V8NrpkS56kO48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712227427; c=relaxed/simple;
-	bh=fk9peLW5DPw4ZsN79hJZWty6Zj+J3reBcGs7d//SlQ4=;
+	s=arc-20240116; t=1712227428; c=relaxed/simple;
+	bh=KvhShJYyNB7S21kOegxaR5NH0sG3z8wdMAX5kevj4IE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TCtp+htqkH3kK1V83eoL4qFTY1GwnBl9g/rZga+xHPp8QO9P2XTp/r7xqOJU5oXsTxT9Ou2CG3Xw0D72SWDoYB/yEqb1SOzGDxOjVkx+vbWKlErXHcFRy26XrNm4iviFNNXoXho5OlEmrezRABbmGiBhM4ENc8PWXMVv3roAzcU=
+	 MIME-Version; b=tDnjvxiVCi6ggOxsMGZLXSeRVe6EhofH4msPaWkRpeNybIx0VOxVFHXkHCacjbxkftT+OL624Qs2lQDyvCUKr9HCwOwMI13CWSTvu3W3UQY5mTkK4VI3FsQAbw6wLkYALVgH0CRR114KoYkogEjFBiF9GmcUbuBoZw+BEDhJUfk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -34,9 +34,9 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	pabeni@redhat.com,
 	edumazet@google.com
-Subject: [PATCH net 4/6] netfilter: nf_tables: reject new basechain after table flag update
-Date: Thu,  4 Apr 2024 12:43:32 +0200
-Message-Id: <20240404104334.1627-5-pablo@netfilter.org>
+Subject: [PATCH net 5/6] netfilter: nf_tables: Fix potential data-race in __nft_flowtable_type_get()
+Date: Thu,  4 Apr 2024 12:43:33 +0200
+Message-Id: <20240404104334.1627-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240404104334.1627-1-pablo@netfilter.org>
 References: <20240404104334.1627-1-pablo@netfilter.org>
@@ -48,57 +48,58 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When dormant flag is toggled, hooks are disabled in the commit phase by
-iterating over current chains in table (existing and new).
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-The following configuration allows for an inconsistent state:
+nft_unregister_flowtable_type() within nf_flow_inet_module_exit() can
+concurrent with __nft_flowtable_type_get() within nf_tables_newflowtable().
+And thhere is not any protection when iterate over nf_tables_flowtables
+list in __nft_flowtable_type_get(). Therefore, there is pertential
+data-race of nf_tables_flowtables list entry.
 
-  add table x
-  add chain x y { type filter hook input priority 0; }
-  add table x { flags dormant; }
-  add chain x w { type filter hook input priority 1; }
+Use list_for_each_entry_rcu() to iterate over nf_tables_flowtables list
+in __nft_flowtable_type_get(), and use rcu_read_lock() in the caller
+nft_flowtable_type_get() to protect the entire type query process.
 
-which triggers the following warning when trying to unregister chain w
-which is already unregistered.
-
-[  127.322252] WARNING: CPU: 7 PID: 1211 at net/netfilter/core.c:50                                                                     1 __nf_unregister_net_hook+0x21a/0x260
-[...]
-[  127.322519] Call Trace:
-[  127.322521]  <TASK>
-[  127.322524]  ? __warn+0x9f/0x1a0
-[  127.322531]  ? __nf_unregister_net_hook+0x21a/0x260
-[  127.322537]  ? report_bug+0x1b1/0x1e0
-[  127.322545]  ? handle_bug+0x3c/0x70
-[  127.322552]  ? exc_invalid_op+0x17/0x40
-[  127.322556]  ? asm_exc_invalid_op+0x1a/0x20
-[  127.322563]  ? kasan_save_free_info+0x3b/0x60
-[  127.322570]  ? __nf_unregister_net_hook+0x6a/0x260
-[  127.322577]  ? __nf_unregister_net_hook+0x21a/0x260
-[  127.322583]  ? __nf_unregister_net_hook+0x6a/0x260
-[  127.322590]  ? __nf_tables_unregister_hook+0x8a/0xe0 [nf_tables]
-[  127.322655]  nft_table_disable+0x75/0xf0 [nf_tables]
-[  127.322717]  nf_tables_commit+0x2571/0x2620 [nf_tables]
-
-Fixes: 179d9ba5559a ("netfilter: nf_tables: fix table flag updates")
+Fixes: 3b49e2e94e6e ("netfilter: nf_tables: add flow table netlink frontend")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nf_tables_api.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 17bf53cd0e84..1eb51bf24fc2 100644
+index 1eb51bf24fc2..e02d0ae4f436 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2449,6 +2449,9 @@ static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
- 		struct nft_stats __percpu *stats = NULL;
- 		struct nft_chain_hook hook = {};
+@@ -8296,11 +8296,12 @@ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
+ 	return err;
+ }
  
-+		if (table->flags & __NFT_TABLE_F_UPDATE)
-+			return -EINVAL;
-+
- 		if (flags & NFT_CHAIN_BINDING)
- 			return -EOPNOTSUPP;
++/* call under rcu_read_lock */
+ static const struct nf_flowtable_type *__nft_flowtable_type_get(u8 family)
+ {
+ 	const struct nf_flowtable_type *type;
  
+-	list_for_each_entry(type, &nf_tables_flowtables, list) {
++	list_for_each_entry_rcu(type, &nf_tables_flowtables, list) {
+ 		if (family == type->family)
+ 			return type;
+ 	}
+@@ -8312,9 +8313,13 @@ nft_flowtable_type_get(struct net *net, u8 family)
+ {
+ 	const struct nf_flowtable_type *type;
+ 
++	rcu_read_lock();
+ 	type = __nft_flowtable_type_get(family);
+-	if (type != NULL && try_module_get(type->owner))
++	if (type != NULL && try_module_get(type->owner)) {
++		rcu_read_unlock();
+ 		return type;
++	}
++	rcu_read_unlock();
+ 
+ 	lockdep_nfnl_nft_mutex_not_held();
+ #ifdef CONFIG_MODULES
 -- 
 2.30.2
 
