@@ -1,85 +1,96 @@
-Return-Path: <netfilter-devel+bounces-1615-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1617-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D58AB898549
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 12:44:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EB7C8985F6
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 13:22:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10F651C25B90
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 10:44:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD01328AC99
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Apr 2024 11:22:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E2782C63;
-	Thu,  4 Apr 2024 10:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F3638004D;
+	Thu,  4 Apr 2024 11:21:58 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BC180C14;
-	Thu,  4 Apr 2024 10:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B819673518
+	for <netfilter-devel@vger.kernel.org>; Thu,  4 Apr 2024 11:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712227428; cv=none; b=LmVVVH88Lv9DtaGwfnaA5lE1hRprHYcVVdkV5Hr8WpD3dzIE3bpOd6riawhT7woJ5saD4PjJoEBEAe78nCFrEx5PUSrpPJEkhgPIOwohIftlf5QBJLtZIvKVnN0+5bHP7osJ/4iI5lXvlDpPY22dbsc6cbbkrKCEXfwAnmxkgtM=
+	t=1712229718; cv=none; b=BL0dc3cFDqYZ+NVT44PYscPiAPcFsVLGl4RNqnMhw2WYu29aZ9GcQDYUvZSEEHZjb4P9JHyiJWWx7usPKudzSMKvYhMxDUKc5kPTzkNRz/rEf/w8Qxl5WNS+OUH3B8M7E1iVq2fXz8+KpOFMFXeRp2qKdOnO76BSwBhL2JXr0Js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712227428; c=relaxed/simple;
-	bh=IcAm6IPqIzjvFLWEexvayPECTgRbWQe2zvaa9XsxLDs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KSZ/39+SouIIYKQHHvZ7UkNuildJ1Q3vAdix1Q0H3QPSP42US//dPEb0K3cKjInmzhIixb1eaEW5DP87Ethpwu1gK+phGPmu2AW7mki22rIHm2EWqh0qbilOH/ONiy+xwIu/FPTEgSPouNPw+H1nXzR3rYU+9x/M4Mt2y2Fv6Co=
+	s=arc-20240116; t=1712229718; c=relaxed/simple;
+	bh=zYCur/mE2tFPj7Diwhz4WQQxByZW+Hxh/J6JcGMzxDs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DAB7rIe07CNz52xaS6Wod9JtUO0j3KWIrwbaEHX2QIuufU0g9IwF1zKTS/V9+zINXPjEwcDCwo+uIpXvEZd0yt5WbpPsLiPacWEkOes7cOzpIOpyt4mJDbSRe1T7lvl2I+V6AxBBqWfltO/hzz5HLfs1hNMpHSd16Qs6lLAG/Rk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Date: Thu, 4 Apr 2024 13:21:52 +0200
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com
-Subject: [PATCH net 6/6] netfilter: nf_tables: discard table flag update with pending basechain deletion
-Date: Thu,  4 Apr 2024 12:43:34 +0200
-Message-Id: <20240404104334.1627-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240404104334.1627-1-pablo@netfilter.org>
-References: <20240404104334.1627-1-pablo@netfilter.org>
+To: Jeremy Sowden <jeremy@azazel.net>
+Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH nft v2 0/2] Support for variables in map expressions
+Message-ID: <Zg6NUHYLHYbIgKtq@calendula>
+References: <20240403120937.4061434-1-jeremy@azazel.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240403120937.4061434-1-jeremy@azazel.net>
 
-Hook unregistration is deferred to the commit phase, same occurs with
-hook updates triggered by the table dormant flag. When both commands are
-combined, this results in deleting a basechain while leaving its hook
-still registered in the core.
+On Wed, Apr 03, 2024 at 01:09:35PM +0100, Jeremy Sowden wrote:
+> The first patch replaces the current assertion failure for invalid
+> mapping expression in stateful-object statements with an error message.
+> This brings it in line with map statements.
+> 
+> It is possible to use a variable to initialize a map, which is then used
+> in a map statement, but if one tries to use the variable directly, nft
+> rejects it.  The second patch adds support for doing this.
 
-Fixes: 179d9ba5559a ("netfilter: nf_tables: fix table flag updates")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Thanks. I can trigger crashes, e.g.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e02d0ae4f436..d89d77946719 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1209,10 +1209,11 @@ static bool nft_table_pending_update(const struct nft_ctx *ctx)
- 		return true;
- 
- 	list_for_each_entry(trans, &nft_net->commit_list, list) {
--		if ((trans->msg_type == NFT_MSG_NEWCHAIN ||
--		     trans->msg_type == NFT_MSG_DELCHAIN) &&
--		    trans->ctx.table == ctx->table &&
--		    nft_trans_chain_update(trans))
-+		if (trans->ctx.table == ctx->table &&
-+		    ((trans->msg_type == NFT_MSG_NEWCHAIN &&
-+		      nft_trans_chain_update(trans)) ||
-+		     (trans->msg_type == NFT_MSG_DELCHAIN &&
-+		      nft_is_base_chain(trans->ctx.chain))))
- 			return true;
- 	}
- 
--- 
-2.30.2
+define quota_map = "1.2.3.4"
 
+table ip x {
+        chain y {
+                quota name ip saddr map $quota_map
+        }
+}
+
+src/mnl.c:1759:2: runtime error: member access within misaligned address 0x000100000001 for type 'struct expr', which requires 8 byte alignment
+0x000100000001: note: pointer points here
+<memory cannot be printed>
+src/netlink.c:121:10: runtime error: member access within misaligned address 0x000100000001 for type 'const struct expr', which requires 8 byte alignment
+0x000100000001: note: pointer points here
+<memory cannot be printed>
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==150056==ERROR: AddressSanitizer: SEGV on unknown address 0x00009fff8009 (pc 0x7f58e67d8624 bp 0x7ffd57d17eb0 sp 0x7ffd57d17c40 T0)
+==150056==The signal is caused by a READ memory access.
+    #0 0x7f58e67d8624 in alloc_nftnl_setelem src/netlink.c:121
+    #1 0x7f58e67c3d12 in mnl_nft_setelem_batch src/mnl.c:1760
+    #2 0x7f58e67c45d9 in mnl_nft_setelem_add src/mnl.c:1805
+    #3 0x7f58e687df1e in __do_add_elements src/rule.c:1425
+    #4 0x7f58e687e528 in do_add_set src/rule.c:1471
+    #5 0x7f58e687e7aa in do_command_add src/rule.c:1491
+    #6 0x7f58e688fdb3 in do_command src/rule.c:2599
+    #7 0x7f58e679d417 in nft_netlink src/libnftables.c:42
+    #8 0x7f58e67a514a in __nft_run_cmd_from_filename src/libnftables.c:729
+    #9 0x7f58e67a639c in nft_run_cmd_from_filename src/libnftables.c:807
+    #10 0x557c9d25b3b0 in main src/main.c:536
+    #11 0x7f58e5846249 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #12 0x7f58e5846304 in __libc_start_main_impl ../csu/libc-start.c:360
+    #13 0x557c9d258460 in _start (/usr/sbin/nft+0x9460)
+
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV src/netlink.c:121 in alloc_nftnl_setelem
+==150056==ABORTING
+
+I think this is lacking more validation.
 
