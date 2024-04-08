@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-1648-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1651-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C8189BC0F
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Apr 2024 11:41:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30AC89BC17
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Apr 2024 11:41:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04B531C220AA
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Apr 2024 09:41:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B9D1F22FFC
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Apr 2024 09:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4FCB4F8BB;
-	Mon,  8 Apr 2024 09:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5324222091;
+	Mon,  8 Apr 2024 09:40:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5A2482E9;
-	Mon,  8 Apr 2024 09:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7507A4AEC4;
+	Mon,  8 Apr 2024 09:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712569224; cv=none; b=HhW7ivmj6gnWKdt+sis8c/KQ5waQc99/MKINceZQWfLQbRRP8EzZJheyCYWAWC4i1w3DjhKdYeUpgq4diGrzDM6+xT4b204C0AqACdZNqSswZyJLJpmfZhECJBgma/0MImU/ss6pkQOz7HVvqoTYqswYs9K7OL3Fx5As9kYHwio=
+	t=1712569233; cv=none; b=j74CUmy6qP3pagWp5vqK1WEyI6FzSkcFSF7QresQCroK8WbLR5Iq5H+XjjKQ072032eYferD7/niT0NxrQSAqFF1hdjvNiyLO0tlUMe4gjXzqd7cSjEuClC4waqqBEbfOf6gIxtn2SNHmPG5fBewtgt4aZE2NHy/8OV4a8CRHxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712569224; c=relaxed/simple;
-	bh=JrikPBy7AnB+J5XvO4rxiRuxdBWn74dh3dvl28232M4=;
+	s=arc-20240116; t=1712569233; c=relaxed/simple;
+	bh=jwu0EAwlmhLGvck+G5CvcpDLqvTG2JxNNqABG8lI7Jc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DPeaHKpmXZJZY/epWyFCVjrVeGvI9TcQ/GBibsNdOuXj+3Cc+qD5UJnAIhMnN2YZbW0xWcpnFfkdyQeTKyTVG+f8kRcEG2EjeF1SxCcOcUIZb0coSSYaUq3nuszzwgJvBle7keg+YvX6MupmzcnVuIKzrlpKWJILPj3LkUG4i5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=cpLT0yu2DZ75yoW/Vnji+fSQr94Y2sBPzZE4ExK444vmad271MN58ySRWjix8nSyFtn0Re+FNvJMJ0IQ6SjJiydYlpJ9Za+5vNRcJaV1d9gJvept55KShx/glsk97dfnOBoAcySpPDiZJbV94/wCc3/jNuukzethx+IBgJYchos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VCkXB4dzXz1h64n;
-	Mon,  8 Apr 2024 17:37:30 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VCkWx3HX7zXl35;
+	Mon,  8 Apr 2024 17:37:17 +0800 (CST)
 Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8D62F18005F;
-	Mon,  8 Apr 2024 17:40:20 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 9A1EB140415;
+	Mon,  8 Apr 2024 17:40:22 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 8 Apr 2024 17:40:18 +0800
+ 15.1.2507.35; Mon, 8 Apr 2024 17:40:20 +0800
 From: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
 To: <mic@digikod.net>
 CC: <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v1 08/10] selftests/landlock: Create 'ruleset_overlap' test
-Date: Mon, 8 Apr 2024 17:39:25 +0800
-Message-ID: <20240408093927.1759381-9-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v1 09/10] selftests/landlock: Create 'ruleset_with_unknown_access' test
+Date: Mon, 8 Apr 2024 17:39:26 +0800
+Message-ID: <20240408093927.1759381-10-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240408093927.1759381-1-ivanov.mikhail1@huawei-partners.com>
 References: <20240408093927.1759381-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,130 +62,53 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml100003.china.huawei.com (10.199.174.67) To
  dggpemm500020.china.huawei.com (7.185.36.49)
 
-Add tcp_layers fixture for tests that check multiple layer configuration
-scenarios.
-Add test that validates multiple layer behavior with overlapped
-restrictions.
+Add fixture mini for tests that check specific cases.
+Add test that validates behavior of landlock after ruleset with
+unknown access is created.
 
 Signed-off-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
 Reviewed-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
 ---
- .../testing/selftests/landlock/socket_test.c  | 107 ++++++++++++++++++
- 1 file changed, 107 insertions(+)
+ .../testing/selftests/landlock/socket_test.c  | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/tools/testing/selftests/landlock/socket_test.c b/tools/testing/selftests/landlock/socket_test.c
-index dd105489d..07f73618d 100644
+index 07f73618d..afc57556d 100644
 --- a/tools/testing/selftests/landlock/socket_test.c
 +++ b/tools/testing/selftests/landlock/socket_test.c
-@@ -316,4 +316,111 @@ TEST_F(protocol, inval)
- 				       &protocol, 0));
+@@ -423,4 +423,35 @@ TEST_F(tcp_layers, ruleset_overlap)
+ 	test_socket_create(_metadata, &self->srv0, variant->num_layers >= 2);
  }
  
-+FIXTURE(tcp_layers)
-+{
-+	struct service_fixture srv0;
-+};
++/* clang-format off */
++FIXTURE(mini) {};
++/* clang-format on */
 +
-+FIXTURE_VARIANT(tcp_layers)
++FIXTURE_SETUP(mini)
 +{
-+	const size_t num_layers;
-+};
-+
-+FIXTURE_SETUP(tcp_layers)
-+{
-+	const struct protocol_variant prot = {
-+		.domain = AF_INET,
-+		.type = SOCK_STREAM,
-+	};
-+
 +	disable_caps(_metadata);
-+	self->srv0.protocol = prot;
++
 +	setup_namespace(_metadata);
 +};
 +
-+FIXTURE_TEARDOWN(tcp_layers)
++FIXTURE_TEARDOWN(mini)
 +{
 +}
 +
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(tcp_layers, no_sandbox_with_ipv4) {
-+	/* clang-format on */
-+	.num_layers = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(tcp_layers, one_sandbox_with_ipv4) {
-+	/* clang-format on */
-+	.num_layers = 1,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(tcp_layers, two_sandboxes_with_ipv4) {
-+	/* clang-format on */
-+	.num_layers = 2,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(tcp_layers, three_sandboxes_with_ipv4) {
-+	/* clang-format on */
-+	.num_layers = 3,
-+};
-+
-+TEST_F(tcp_layers, ruleset_overlap)
++TEST_F(mini, ruleset_with_unknown_access)
 +{
-+	const struct landlock_ruleset_attr ruleset_attr = {
-+		.handled_access_socket = LANDLOCK_ACCESS_SOCKET_CREATE,
-+	};
-+	const struct landlock_socket_attr tcp_create = {
-+		.allowed_access = LANDLOCK_ACCESS_SOCKET_CREATE,
-+		.domain = self->srv0.protocol.domain,
-+		.type = self->srv0.protocol.type,
-+	};
++	__u64 access_mask;
 +
-+	if (variant->num_layers >= 1) {
-+		int ruleset_fd;
++	for (access_mask = 1ULL << 63; access_mask != ACCESS_LAST;
++	     access_mask >>= 1) {
++		const struct landlock_ruleset_attr ruleset_attr = {
++			.handled_access_socket = access_mask,
++		};
 +
-+		ruleset_fd = landlock_create_ruleset(&ruleset_attr,
-+						     sizeof(ruleset_attr), 0);
-+		ASSERT_LE(0, ruleset_fd);
-+
-+		/* Allows create. */
-+		ASSERT_EQ(0,
-+			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
-+					    &tcp_create, 0));
-+		enforce_ruleset(_metadata, ruleset_fd);
-+		EXPECT_EQ(0, close(ruleset_fd));
++		EXPECT_EQ(-1, landlock_create_ruleset(&ruleset_attr,
++						      sizeof(ruleset_attr), 0));
++		EXPECT_EQ(EINVAL, errno);
 +	}
-+
-+	if (variant->num_layers >= 2) {
-+		int ruleset_fd;
-+
-+		/* Creates another ruleset layer with denied create. */
-+		ruleset_fd = landlock_create_ruleset(&ruleset_attr,
-+						     sizeof(ruleset_attr), 0);
-+		ASSERT_LE(0, ruleset_fd);
-+
-+		enforce_ruleset(_metadata, ruleset_fd);
-+		EXPECT_EQ(0, close(ruleset_fd));
-+	}
-+
-+	if (variant->num_layers >= 3) {
-+		int ruleset_fd;
-+
-+		/* Creates another ruleset layer. */
-+		ruleset_fd = landlock_create_ruleset(&ruleset_attr,
-+						     sizeof(ruleset_attr), 0);
-+		ASSERT_LE(0, ruleset_fd);
-+
-+		/* Try to allow create second time. */
-+		ASSERT_EQ(0,
-+			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
-+					    &tcp_create, 0));
-+		enforce_ruleset(_metadata, ruleset_fd);
-+		EXPECT_EQ(0, close(ruleset_fd));
-+	}
-+
-+	test_socket_create(_metadata, &self->srv0, variant->num_layers >= 2);
 +}
 +
  TEST_HARNESS_MAIN
