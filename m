@@ -1,88 +1,110 @@
-Return-Path: <netfilter-devel+bounces-1690-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1692-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D759889D7A6
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Apr 2024 13:11:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1CE089D87A
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Apr 2024 13:47:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B0C11F23BB9
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Apr 2024 11:11:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69B36B2982E
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Apr 2024 11:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8538593D;
-	Tue,  9 Apr 2024 11:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A7F12AAC3;
+	Tue,  9 Apr 2024 11:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="J1CWFnyJ"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387461E885
-	for <netfilter-devel@vger.kernel.org>; Tue,  9 Apr 2024 11:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28407128826
+	for <netfilter-devel@vger.kernel.org>; Tue,  9 Apr 2024 11:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712661110; cv=none; b=NtKFWw/QwJ6plqv5UVIq4tp4M2vHGY6ZLlq7bDLCS7+CP3iBoISjHTXadXrRYf4zJNoyu+FdT8Tg2V9zsjJ3eSL3Td8zM9YwrkpOGZM/aFJTXCZT9vswd4W5Zw6JPnidc+mgJ36WNux5urkOmAmsVR80DFAxtoA7ZUaq4gS1Hik=
+	t=1712663225; cv=none; b=qKNlMUBKOD0jh8eAUD4VRB7mwINKk/TPZ4LKvpRnnI8skt+ltCpaVZlHzEkgT8XALVyUP9z1SlODSJOHpG85jlO68oXDkuLbxeujqPXSefLVKV5rZgupdUTNbGA+kgzEgsI22ngJraaNA8/LgzSvohNyLbjddpADDlMeXHwD35o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712661110; c=relaxed/simple;
-	bh=HyApfXsKdgzR9JD09t2OqwfpoCCTnnwisp7iT4zyJ4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J47Er4+gUd3Q6mDxdotPrFzFonyEcpaMdknv1OxbfYiH9XGa4Lf5zEzDc12MMKfBbip1+ZzKA9e5xjLIiTLZ3Kns39dhh6ZptTqrlDEzDz6HseHVwN0lTQVUMNK5vdYH459hrIkylAgMKCB9CFB/Ew+ANQmnbI5Pys3H37j+XVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Tue, 9 Apr 2024 13:11:43 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Sven Auhagen <sven.auhagen@voleatech.de>
-Cc: netfilter-devel@vger.kernel.org, cratiu@nvidia.com, ozsh@nvidia.com,
-	vladbu@nvidia.com, gal@nvidia.com, fw@strlen.de
-Subject: Re: [PATCH nf] netfilter: flowtable: infer TCP state and timeout
- before flow teardown
-Message-ID: <ZhUibxdb005sYZNq@calendula>
-References: <ZfqnTJKyW1VSIOgY@calendula>
- <lderg42fd4jbcwsztkidn3lhnjhufj5yv3zsdu4dpsenzikkta@cya5vq3prnzf>
- <ZfqsAoSNA4DRsVga@calendula>
- <nvslglowbvxntlpftefkumbwn2gz72evwnfvv4q2qencte7wyn@3jejk23urzeg>
- <Zfqxq3HK_nsGRLhx@calendula>
- <xvnywodpmc3eui6k5kt6fnooq35533jsavkeha7af6c2fntxwm@u3bzj57ntong>
- <Zfq-1gES4VJg2zHe@calendula>
- <o7kxkadlzt2ux5bbdcsgxlfxnfedzxv4jlfd3xnhri6qpr5w3n@2vmkj5o3yrek>
- <ZfrYpvJFrrajPbHM@calendula>
- <x3qvcfxgdmurfnydhrs7ao6fmxxubmhxs2mjk24yn5zjfbo3h5@esbr3eff7bir>
+	s=arc-20240116; t=1712663225; c=relaxed/simple;
+	bh=PygwlUOw/QNpLBkWIpfGpjs0c4AIn/lJxmTe+w8cBDs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QgZsixu7DoVPBOLlD6Qjcv7RQHlNJ0aet3QiKDM7SHKnptgE8LCeRVIY763q9e5j3MaKo4P1Q4+ypaKwjyw/bdGBvxoExc2AfJtBUr5tHuLI48mQy80mhWJ23Jv+zT4/qFJmQkrmwV9nRejT12v0Co8JskLaLlilOJjMSZBAe3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=J1CWFnyJ; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=Vf1v5aAFl6V0aUV5MXt8YX9KWCjTbO4LOHhRreGMBCU=; b=J1CWFnyJiS8yQ3GAzJXm7Ft7JZ
+	6tbPvVsPZ7/dbIplMDt4YbmWncCIzZArMuP9/ADbMvffUvKcHkaRkDK396VSjo6Bslpmp6Rhu3Wl7
+	BlxDBTpcYt6u7aYreNe9EpCWhJx2Qiggc8ctAyjd7ZejUGhKxdr09BaVa58PKRe+n2jbfPaGNgWrz
+	0uXeY0vaE1Y99dB723qAtk9eJ4s0luU+3u4P8VCO+wDkQYpsxXZwGtqb5iOVOZwvrCCVyQz4wnb+e
+	JaOSxOqCv2CA4nN2hX8518XT3E/RPK8Mg0mSSwFzRqrDWh4J4/M3yRz+HmqP8oU7kIDFIm+PLSfQd
+	U3cr9lEA==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1ru9gs-000000000gP-2TG3;
+	Tue, 09 Apr 2024 13:31:02 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: netfilter-devel@vger.kernel.org
+Cc: gorbanev.es@gmail.com
+Subject: [iptables PATCH] xshared: Fix parsing of empty string arg in '-c' option
+Date: Tue,  9 Apr 2024 13:31:01 +0200
+Message-ID: <20240409113101.672-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <x3qvcfxgdmurfnydhrs7ao6fmxxubmhxs2mjk24yn5zjfbo3h5@esbr3eff7bir>
+Content-Transfer-Encoding: 8bit
 
-Hi Sven,
+Calling iptables with '-c ""' resulted in a call to strchr() with an
+invalid pointer as 'optarg + 1' points to past the buffer. The most
+simple fix is to drop the offset: The global optstring part specifies a
+single colon after 'c', so getopt() enforces a valid pointer in optarg.
+If it contains a comma at first position, packet counter value parsing
+will fail so all cases are covered.
 
-On Mon, Apr 08, 2024 at 07:24:43AM +0200, Sven Auhagen wrote:
-> Hi Pablo,
-> 
-> after some testing the problem only happens very rarely now.
-> I suspect it happens only on connections that are at some point
-> one way only or in some other way not in a correct state anymore.
-> Never the less your latest patches are very good and reduce the problem
-> to an absolute minimum that FIN WAIT is offlodaded and the timeout
-> is correct now.
+Reported-by: gorbanev.es@gmail.com
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1741
+Fixes: 60a6073690a45 ("Make --set-counters (-c) accept comma separated counters")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ extensions/iptables.t | 5 +++++
+ iptables/xshared.c    | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-Thanks for testing, I am going to submit this patch.
+diff --git a/extensions/iptables.t b/extensions/iptables.t
+index b4b6d677abab1..5d6d3d15cc5fd 100644
+--- a/extensions/iptables.t
++++ b/extensions/iptables.t
+@@ -4,3 +4,8 @@
+ -i eth+ -o alongifacename+;=;OK
+ ! -i eth0;=;OK
+ ! -o eth+;=;OK
++-c "";;FAIL
++-c ,3;;FAIL
++-c 3,;;FAIL
++-c ,;;FAIL
++-c 2,3 -j ACCEPT;-j ACCEPT;OK
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index b998dd75aaf05..b1997ea35f8f8 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -1885,7 +1885,7 @@ void do_parse(int argc, char *argv[],
+ 			set_option(p->ops, &cs->options, OPT_COUNTERS,
+ 				   &args->invflags, invert);
+ 			args->pcnt = optarg;
+-			args->bcnt = strchr(args->pcnt + 1, ',');
++			args->bcnt = strchr(args->pcnt, ',');
+ 			if (args->bcnt)
+ 			    args->bcnt++;
+ 			if (!args->bcnt && xs_has_arg(argc, argv))
+-- 
+2.43.0
 
-If you have a bit more cycles, I still would like to know what corner
-case scenario is still triggering this so...
-
-> Here is one example if a flow that still is in FIN WAIT:
-> 
-> [NEW] tcp      6 120 SYN_SENT src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 [UNREPLIED] src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 mark=16777216
-> [UPDATE] tcp      6 60 SYN_RECV src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 mark=16777216
-> [UPDATE] tcp      6 86400 ESTABLISHED src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 [OFFLOAD] mark=16777216
-> [UPDATE] tcp      6 120 FIN_WAIT src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 [OFFLOAD] mark=16777216
-> [UPDATE] tcp      6 30 LAST_ACK src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 [ASSURED] mark=16777216
->  [UPDATE] tcp      6 120 TIME_WAIT src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 [ASSURED] mark=16777216
->  [DESTROY] tcp      6 TIME_WAIT src=fd00::192:168:5:32 dst=2a05:d014:687:ed01::21 sport=58790 dport=443 packets=15 bytes=1750 src=2a05:d014:687:ed01::21 dst=2003:a:c7f:e5e8:a3ae:63f7:7f92:e286 sport=443 dport=60848 packets=13 bytes=6905 [ASSURED] mark=16777216 delta-time=120
-
-... could you run conntrack -E -o timestamp? I'd like to know if this is
-a flow that is handed over back to classic path after 30 seconds, then
-being placed in the flowtable again.
 
