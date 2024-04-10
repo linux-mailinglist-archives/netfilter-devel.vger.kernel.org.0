@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1714-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1715-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F6C8A03F9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 01:23:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5CC58A040F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 01:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 545511F246B9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Apr 2024 23:23:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 711AC2812F3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Apr 2024 23:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E6B286AC;
-	Wed, 10 Apr 2024 23:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE603D961;
+	Wed, 10 Apr 2024 23:34:08 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A1B28370
-	for <netfilter-devel@vger.kernel.org>; Wed, 10 Apr 2024 23:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C783BB43
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Apr 2024 23:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791392; cv=none; b=sxqmbPr2OaYN8a7/V0aopmGNjOma+E3rVJMjr+GH+GwYDjxEgDmIOvvyvmlnHl5XeckOHmFt84K93Uxa6U/pez8s3Y5Dvmx9NtcREO52+oG6IrJIxWfiyAHR+F79zwwkgaoEclgxhNxdRK+DMu2xnWJfgnW5ahzpnYYcGvVmS4Y=
+	t=1712792048; cv=none; b=BvaUfh48wF6EL5IQwNu7zJaMkiEZVnyGWgKC5ZtzszVvONVyUHuIPwdfRGCRyMzfDtpKB1nYUL4ohX6BUNxORI5XGW8bGiKjIN9nNZfbIBUVTL1AG3jvXHdXCl7zbqnu1b0/HErDCP4HEbHcAuU3uYRj4rJ7AB3+yUwIyynpGo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791392; c=relaxed/simple;
-	bh=RPViTsMAa3oEpS75/HhrTzv3vCRtuyFHNfBojd9mFZ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=axMpEOYyBS+anvrnpit08rc3hBJ07pIIumDOTVDueHZ65YQXuFcEl2a4Y/r2FEpgKab0DUpqTRcuCFFQR4QqQSWlhN0YYxs48Yle1LwSZVKxHtbTvPod2IaLxFWB0+F90OC7ipBEkq2jNTzSSPVrylCna6irvfmqJ0/a7PBogx4=
+	s=arc-20240116; t=1712792048; c=relaxed/simple;
+	bh=AU45IUrsV2LziPeZd0voSPGjizEst4/IuqSof6l2+xk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=de+WwaRLJilZqfrpYjlv/luEdsPVii7fm/MvjSQq7v7eBNrm5lSesMD275sLoxvir9ob1xYSzzKLPCwz/zqs7ecnqVPx3R0pLgNu2lwFgfgOqg4k9vvWgGkCol84OC7vf0e24qHlHHaXtr434/L7Q5l+GOSG7qJR9TkzA3YPTI8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: nbd@nbd.name
-Subject: [PATCH nf] netfilter: flowtable: incorrect pppoe tuple in reply direction
-Date: Thu, 11 Apr 2024 01:23:06 +0200
-Message-Id: <20240410232306.3379-1-pablo@netfilter.org>
+Subject: [PATCH nf,v2] netfilter: flowtable: incorrect pppoe tuple
+Date: Thu, 11 Apr 2024 01:34:01 +0200
+Message-Id: <20240410233401.3744-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -41,15 +41,16 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-pppoe traffic coming in reply direction does not match the flowtable
-entry because the pppoe header is expected to be at the network header
-offset. This bug causes a mismatch in the flow table lookup, so pppoe
-packets in the reply direction enter the classical forwarding path in
-the flow table.
+pppoe traffic reaching ingress path does not match the flowtable entry
+because the pppoe header is expected to be at the network header offset.
+This bug causes a mismatch in the flow table lookup, so pppoe packets
+enter the classical forwarding path.
 
 Fixes: 72efd585f714 ("netfilter: flowtable: add pppoe support")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
+v2: I have accidentally posted an older version of the commit description in v1.
+
  net/netfilter/nf_flow_table_ip.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
