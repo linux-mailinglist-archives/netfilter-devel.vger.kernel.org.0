@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-1731-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1733-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026778A12F5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 13:29:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 653488A12FA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 13:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC2CB1F223F2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 11:29:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 051271F22EB2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 11:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBB6149E07;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF8614A4E7;
 	Thu, 11 Apr 2024 11:29:15 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B59B14884E;
-	Thu, 11 Apr 2024 11:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2654E149C5E;
+	Thu, 11 Apr 2024 11:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712834955; cv=none; b=t+/PDmveYlh90nUWrYKaGzKoE6AvGgCl7FZFWWyBeQj8tFe51InA+iU1gp722SfshgJH+bMkXqu60uMMMs03Wnk05qjMl7/qlH1dRslWUcWgNHjpbFwIChGWim4ILMDHKOjlNE1lddr8Qe3yiotwyAkn23IXMB9+KLu6v3eYnvo=
+	t=1712834955; cv=none; b=CPymNYmUhIJlPLmj6u4b/3tIao82Ef6V63KrTRXgdy1xgII2ToKOX4L72HA/ZuZR2uUjULA4ppa9RlL5KenunyIQw/0abThKKUPCb5N5xND5wIE345vCVxredyl3j2rfpJp1x0ymnLi3tchgdXnRhe3DNFzHbHT4MXe7OaDYfs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712834955; c=relaxed/simple;
-	bh=k8y8lzNRAkEtQ3zz7x5McCS+EzPOPtzLJlaIuYbApV4=;
+	bh=RjBoKIpmo4KoA4iZuEg1PaTvJEXbtkttR9BvTUztJpc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=k8xz/GnsmnTOrMFL68mLv8oKDu1FFHlBEwAgSRQ5dw3GFgFiup7qfulN+aWOfPi9XdCDyaMT/8T5oywqerOmXGghdSuTTdgytYM17PPUQ94ggfeSyEFuheXUAyXdkrRqbXlH7Yd2W4GSFonYF+2kpiGZTNEUZ5UDRLTubpQO9J0=
+	 MIME-Version; b=ZfL65Flxh5jraSD3qqvF150IjkvV5pupDvxaoguQyh4jTwEIP2bCJ5WqQIkiAQUgPjqOXO3zKE82c/nzR7Mc+7R/cdR2rCzqhHVYz2w5f7wbI91rVUffIjEeo+M4mX/7C/Bq54ZVl9KR+iE7XZDJZ7n17FrJHY4c34jJI8Wme8g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 4/7] netfilter: nft_set_pipapo: walk over current view on netlink dump
-Date: Thu, 11 Apr 2024 13:28:57 +0200
-Message-Id: <20240411112900.129414-5-pablo@netfilter.org>
+Subject: [PATCH net 5/7] netfilter: nft_set_pipapo: do not free live element
+Date: Thu, 11 Apr 2024 13:28:58 +0200
+Message-Id: <20240411112900.129414-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240411112900.129414-1-pablo@netfilter.org>
 References: <20240411112900.129414-1-pablo@netfilter.org>
@@ -49,122 +49,100 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The generation mask can be updated while netlink dump is in progress.
-The pipapo set backend walk iterator cannot rely on it to infer what
-view of the datastructure is to be used. Add notation to specify if user
-wants to read/update the set.
+From: Florian Westphal <fw@strlen.de>
 
-Based on patch from Florian Westphal.
+Pablo reports a crash with large batches of elements with a
+back-to-back add/remove pattern.  Quoting Pablo:
 
-Fixes: 2b84e215f874 ("netfilter: nft_set_pipapo: .walk does not deal with generations")
+  add_elem("00000000") timeout 100 ms
+  ...
+  add_elem("0000000X") timeout 100 ms
+  del_elem("0000000X") <---------------- delete one that was just added
+  ...
+  add_elem("00005000") timeout 100 ms
+
+  1) nft_pipapo_remove() removes element 0000000X
+  Then, KASAN shows a splat.
+
+Looking at the remove function there is a chance that we will drop a
+rule that maps to a non-deactivated element.
+
+Removal happens in two steps, first we do a lookup for key k and return the
+to-be-removed element and mark it as inactive in the next generation.
+Then, in a second step, the element gets removed from the set/map.
+
+The _remove function does not work correctly if we have more than one
+element that share the same key.
+
+This can happen if we insert an element into a set when the set already
+holds an element with same key, but the element mapping to the existing
+key has timed out or is not active in the next generation.
+
+In such case its possible that removal will unmap the wrong element.
+If this happens, we will leak the non-deactivated element, it becomes
+unreachable.
+
+The element that got deactivated (and will be freed later) will
+remain reachable in the set data structure, this can result in
+a crash when such an element is retrieved during lookup (stale
+pointer).
+
+Add a check that the fully matching key does in fact map to the element
+that we have marked as inactive in the deactivation step.
+If not, we need to continue searching.
+
+Add a bug/warn trap at the end of the function as well, the remove
+function must not ever be called with an invisible/unreachable/non-existent
+element.
+
+v2: avoid uneeded temporary variable (Stefano)
+
+Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
+Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/net/netfilter/nf_tables.h | 14 ++++++++++++++
- net/netfilter/nf_tables_api.c     |  6 ++++++
- net/netfilter/nft_set_pipapo.c    |  5 +++--
- 3 files changed, 23 insertions(+), 2 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index e27c28b612e4..3f1ed467f951 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -307,9 +307,23 @@ static inline void *nft_elem_priv_cast(const struct nft_elem_priv *priv)
- 	return (void *)priv;
- }
- 
-+
-+/**
-+ * enum nft_iter_type - nftables set iterator type
-+ *
-+ * @NFT_ITER_READ: read-only iteration over set elements
-+ * @NFT_ITER_UPDATE: iteration under mutex to update set element state
-+ */
-+enum nft_iter_type {
-+	NFT_ITER_UNSPEC,
-+	NFT_ITER_READ,
-+	NFT_ITER_UPDATE,
-+};
-+
- struct nft_set;
- struct nft_set_iter {
- 	u8		genmask;
-+	enum nft_iter_type type:8;
- 	unsigned int	count;
- 	unsigned int	skip;
- 	int		err;
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index f11d0c0a2c73..a7a34db62ea9 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -626,6 +626,7 @@ static void nft_map_deactivate(const struct nft_ctx *ctx, struct nft_set *set)
- {
- 	struct nft_set_iter iter = {
- 		.genmask	= nft_genmask_next(ctx->net),
-+		.type		= NFT_ITER_UPDATE,
- 		.fn		= nft_mapelem_deactivate,
- 	};
- 
-@@ -5445,6 +5446,7 @@ int nf_tables_bind_set(const struct nft_ctx *ctx, struct nft_set *set,
- 		}
- 
- 		iter.genmask	= nft_genmask_next(ctx->net);
-+		iter.type	= NFT_ITER_UPDATE;
- 		iter.skip 	= 0;
- 		iter.count	= 0;
- 		iter.err	= 0;
-@@ -5518,6 +5520,7 @@ static void nft_map_activate(const struct nft_ctx *ctx, struct nft_set *set)
- {
- 	struct nft_set_iter iter = {
- 		.genmask	= nft_genmask_next(ctx->net),
-+		.type		= NFT_ITER_UPDATE,
- 		.fn		= nft_mapelem_activate,
- 	};
- 
-@@ -5892,6 +5895,7 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
- 	args.skb		= skb;
- 	args.reset		= dump_ctx->reset;
- 	args.iter.genmask	= nft_genmask_cur(net);
-+	args.iter.type		= NFT_ITER_READ;
- 	args.iter.skip		= cb->args[0];
- 	args.iter.count		= 0;
- 	args.iter.err		= 0;
-@@ -7376,6 +7380,7 @@ static int nft_set_flush(struct nft_ctx *ctx, struct nft_set *set, u8 genmask)
- {
- 	struct nft_set_iter iter = {
- 		.genmask	= genmask,
-+		.type		= NFT_ITER_UPDATE,
- 		.fn		= nft_setelem_flush,
- 	};
- 
-@@ -10879,6 +10884,7 @@ static int nf_tables_check_loops(const struct nft_ctx *ctx,
- 				continue;
- 
- 			iter.genmask	= nft_genmask_next(ctx->net);
-+			iter.type	= NFT_ITER_UPDATE;
- 			iter.skip 	= 0;
- 			iter.count	= 0;
- 			iter.err	= 0;
 diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index df8de5090246..11e44e4dfb1f 100644
+index 11e44e4dfb1f..eeaf05ffba95 100644
 --- a/net/netfilter/nft_set_pipapo.c
 +++ b/net/netfilter/nft_set_pipapo.c
-@@ -2115,13 +2115,14 @@ static void nft_pipapo_walk(const struct nft_ctx *ctx, struct nft_set *set,
- 			    struct nft_set_iter *iter)
- {
- 	struct nft_pipapo *priv = nft_set_priv(set);
--	struct net *net = read_pnet(&set->net);
- 	const struct nft_pipapo_match *m;
- 	const struct nft_pipapo_field *f;
- 	unsigned int i, r;
+@@ -2077,6 +2077,8 @@ static void nft_pipapo_remove(const struct net *net, const struct nft_set *set,
+ 		rules_fx = rules_f0;
  
-+	WARN_ON_ONCE(iter->type == NFT_ITER_UNSPEC);
+ 		nft_pipapo_for_each_field(f, i, m) {
++			bool last = i == m->field_count - 1;
 +
- 	rcu_read_lock();
--	if (iter->genmask == nft_genmask_cur(net))
-+	if (iter->type == NFT_ITER_READ)
- 		m = rcu_dereference(priv->match);
- 	else
- 		m = priv->clone;
+ 			if (!pipapo_match_field(f, start, rules_fx,
+ 						match_start, match_end))
+ 				break;
+@@ -2089,16 +2091,18 @@ static void nft_pipapo_remove(const struct net *net, const struct nft_set *set,
+ 
+ 			match_start += NFT_PIPAPO_GROUPS_PADDED_SIZE(f);
+ 			match_end += NFT_PIPAPO_GROUPS_PADDED_SIZE(f);
+-		}
+ 
+-		if (i == m->field_count) {
+-			priv->dirty = true;
+-			pipapo_drop(m, rulemap);
+-			return;
++			if (last && f->mt[rulemap[i].to].e == e) {
++				priv->dirty = true;
++				pipapo_drop(m, rulemap);
++				return;
++			}
+ 		}
+ 
+ 		first_rule += rules_f0;
+ 	}
++
++	WARN_ON_ONCE(1); /* elem_priv not found */
+ }
+ 
+ /**
 -- 
 2.30.2
 
