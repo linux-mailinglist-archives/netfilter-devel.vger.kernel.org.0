@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1746-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1749-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 732548A226A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Apr 2024 01:42:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083398A2271
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Apr 2024 01:42:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2831F2323E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 23:42:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A2101F2333A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 23:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF16481DA;
-	Thu, 11 Apr 2024 23:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A793A4CB57;
+	Thu, 11 Apr 2024 23:42:35 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4338514AA7;
-	Thu, 11 Apr 2024 23:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A48A46B83;
+	Thu, 11 Apr 2024 23:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712878951; cv=none; b=ZlcVtASfyCVXKVfkd+3cM9N8jInNvKhon3Q9GeZU06DQv4MsqvD3Jk7ZO3Tvo4GuN7/CJCFKYn2vbfNJbg28SYzh7pCkecjNGwNFIFCymhvq1lokhphAtCIDCBI0MLGGtifMR+tJsxyh7kkIv8XInvs+CsDB7rjiqjFS76LbLuM=
+	t=1712878955; cv=none; b=l/OTveLo48yDDXidT3rumf9h7etLDNpQbWVe+MBOw8mn6VQVWTCAtDyg95B9u1qTJmZIi467Nuv5VIt0JRnXZI94nDXTry+u+Y0f4Meo4Aed0uTZZqN/szh1yATGj5guVprSt//5t3lmOac1HUaO6lS7fvX+dAcv6/uqF+qmTcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712878951; c=relaxed/simple;
-	bh=/OMS7BKyqGbd6XvDWMqH/K15uYWKdbrXsDYCDEsp80k=;
+	s=arc-20240116; t=1712878955; c=relaxed/simple;
+	bh=pL79Z+iUIZn4JRUKZpggGkV2Tui2/7ugdG27zBzJvfg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m0fRsN/we+zet2axxKWexZ23gf/s5/6x24F5tWgsSTENUM8rYZ5R+Q+fiYUEj6/2CRimF0LBP83CwEwKPiCn3Fd9pol6RFdaI1yM6tKhqdoEljeV+acSZzP1vqGfEi5UISE4hJdGLqii6wtes9xBYmGWOu1kXHRxwfjMXQ/qQgs=
+	 MIME-Version; b=HKnbak55HiVrv+UKBfiuO7rVY5xSwodznA6fIQmh7rMfK75nVZ8py7Qp7i0z0EHsM4pltZug/9rfJE7q3wr/NIVqMnANVt0w7D3l41N6vsI0zPGHLZyFBznxtOG3KxVhNvtUFt7dWn1mIHw8LK0LycuR5vZglsqE3DjIUSBJ1Z0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rv43n-0000tM-M7; Fri, 12 Apr 2024 01:42:27 +0200
+	id 1rv43r-0000th-PB; Fri, 12 Apr 2024 01:42:31 +0200
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: <netfilter-devel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc: <netfilter-devel@vger.kernel.org>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH net-next 02/15] selftests: netfilter: bridge_brouter.sh: move to lib.sh infra
-Date: Fri, 12 Apr 2024 01:36:07 +0200
-Message-ID: <20240411233624.8129-3-fw@strlen.de>
+Subject: [PATCH net-next 03/15] selftests: netfilter: br_netfilter.sh: move to lib.sh infra
+Date: Fri, 12 Apr 2024 01:36:08 +0200
+Message-ID: <20240411233624.8129-4-fw@strlen.de>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240411233624.8129-1-fw@strlen.de>
 References: <20240411233624.8129-1-fw@strlen.de>
@@ -54,39 +54,52 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Doing so gets us dynamically generated netns names.
-
-Also:
-* do not assume rp_filter is disabled, if its on script failed
-* reduce timeout (-W) for "expected to fail" ping commands
-* don't print PASS line for basic sanity ping
-* shellcheck cleanups
+Also, fix two issues reported by Pablo Neira:
+1. Must modprobe br_netfilter in case its not loaded,
+   else sysctl cannot be set.
+2. ping for netns4 fails if rp_filter is enabled in bridge netns,
+   so set all and default to 0.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- .../selftests/net/netfilter/bridge_brouter.sh | 128 +++++++-----------
- 1 file changed, 52 insertions(+), 76 deletions(-)
+ .../selftests/net/netfilter/br_netfilter.sh   | 131 ++++++++----------
+ 1 file changed, 55 insertions(+), 76 deletions(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/bridge_brouter.sh b/tools/testing/selftests/net/netfilter/bridge_brouter.sh
-index 29f3955b9af7..2549b6590693 100755
---- a/tools/testing/selftests/net/netfilter/bridge_brouter.sh
-+++ b/tools/testing/selftests/net/netfilter/bridge_brouter.sh
-@@ -5,142 +5,118 @@
- # part of a bridge.
+diff --git a/tools/testing/selftests/net/netfilter/br_netfilter.sh b/tools/testing/selftests/net/netfilter/br_netfilter.sh
+index 659b3ab02c8b..ea3afd6d401f 100755
+--- a/tools/testing/selftests/net/netfilter/br_netfilter.sh
++++ b/tools/testing/selftests/net/netfilter/br_netfilter.sh
+@@ -1,55 +1,40 @@
+ #!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ #
+-# Test bridge netfilter + conntrack, a combination that doesn't really work,
+-# with multicast/broadcast packets racing for hash table insertion.
++# Test for legacy br_netfilter module combined with connection tracking,
++# a combination that doesn't really work.
++# Multicast/broadcast packets race for hash table insertion.
  
  #           eth0    br0     eth0
--# setup is: ns1 <-> ns0 <-> ns2
-+# setup is: ns1 <-> nsbr <-> ns2
+ # setup is: ns1 <->,ns0 <-> ns3
+ #           ns2 <-'    `'-> ns4
  
 -# Kselftest framework requirement - SKIP code is 4.
 -ksft_skip=4
 -ret=0
+-
+-sfx=$(mktemp -u "XXXXXXXX")
+-ns0="ns0-$sfx"
+-ns1="ns1-$sfx"
+-ns2="ns2-$sfx"
+-ns3="ns3-$sfx"
+-ns4="ns4-$sfx"
 +source lib.sh
  
 -ebtables -V > /dev/null 2>&1
--if [ $? -ne 0 ];then
-+if ! ebtables -V > /dev/null 2>&1;then
- 	echo "SKIP: Could not run test without ebtables"
++nft --version > /dev/null 2>&1
+ if [ $? -ne 0 ];then
+-	echo "SKIP: Could not run test without ebtables"
++	echo "SKIP: Could not run test without nft tool"
  	exit $ksft_skip
  fi
  
@@ -95,177 +108,191 @@ index 29f3955b9af7..2549b6590693 100755
 -	echo "SKIP: Could not run test without ip tool"
 -	exit $ksft_skip
 -fi
-+cleanup() {
+-
+-for i in $(seq 0 4); do
+-  eval ip netns add \$ns$i
+-done
+-
+ cleanup() {
+-  for i in $(seq 0 4); do eval ip netns del \$ns$i;done
 +	cleanup_all_ns
-+}
+ }
  
--ip netns add ns0
--ip netns add ns1
--ip netns add ns2
-+trap cleanup EXIT
+ trap cleanup EXIT
  
--ip link add veth0 netns ns0 type veth peer name eth0 netns ns1
--if [ $? -ne 0 ]; then
-+setup_ns nsbr ns1 ns2
++setup_ns ns0 ns1 ns2 ns3 ns4
 +
-+ip netns exec "$nsbr" sysctl -q net.ipv4.conf.default.rp_filter=0
-+ip netns exec "$nsbr" sysctl -q net.ipv4.conf.all.rp_filter=0
-+if ! ip link add veth0 netns "$nsbr" type veth peer name eth0 netns "$ns1"; then
++ret=0
++
+ do_ping()
+ {
+ 	fromns="$1"
+ 	dstip="$2"
+ 
+-	ip netns exec $fromns ping -c 1 -q $dstip > /dev/null
+-	if [ $? -ne 0 ]; then
++	if ! ip netns exec "$fromns" ping -c 1 -q "$dstip" > /dev/null; then
+ 		echo "ERROR: ping from $fromns to $dstip"
+-		ip netns exec ${ns0} nft list ruleset
++		ip netns exec "$ns0" nft list ruleset
+ 		ret=1
+ 	fi
+ }
+@@ -59,75 +44,75 @@ bcast_ping()
+ 	fromns="$1"
+ 	dstip="$2"
+ 
+-	for i in $(seq 1 1000); do
+-		ip netns exec $fromns ping -q -f -b -c 1 -q $dstip > /dev/null 2>&1
+-		if [ $? -ne 0 ]; then
++	for i in $(seq 1 500); do
++		if ! ip netns exec "$fromns" ping -q -f -b -c 1 -q "$dstip" > /dev/null 2>&1; then
+ 			echo "ERROR: ping -b from $fromns to $dstip"
+-			ip netns exec ${ns0} nft list ruleset
+-			fi
++			ip netns exec "$ns0" nft list ruleset
++			ret=1
++			break
++		fi
+ 	done
+ }
+ 
+-ip link add veth1 netns ${ns0} type veth peer name eth0 netns ${ns1}
+-if [ $? -ne 0 ]; then
++ip netns exec "$ns0" sysctl -q net.ipv4.conf.all.rp_filter=0
++ip netns exec "$ns0" sysctl -q net.ipv4.conf.default.rp_filter=0
++
++if ! ip link add veth1 netns "$ns0" type veth peer name eth0 netns "$ns1"; then
  	echo "SKIP: Can't create veth device"
  	exit $ksft_skip
  fi
--ip link add veth1 netns ns0 type veth peer name eth0 netns ns2
--
--ip -net ns0 link set lo up
--ip -net ns0 link set veth0 up
--ip -net ns0 link set veth1 up
-+ip link add veth1 netns "$nsbr" type veth peer name eth0 netns "$ns2"
  
--ip -net ns0 link add br0 type bridge
+-ip link add veth2 netns ${ns0} type veth peer name eth0 netns $ns2
+-ip link add veth3 netns ${ns0} type veth peer name eth0 netns $ns3
+-ip link add veth4 netns ${ns0} type veth peer name eth0 netns $ns4
+-
+-ip -net ${ns0} link set lo up
++ip link add veth2 netns "$ns0" type veth peer name eth0 netns "$ns2"
++ip link add veth3 netns "$ns0" type veth peer name eth0 netns "$ns3"
++ip link add veth4 netns "$ns0" type veth peer name eth0 netns "$ns4"
+ 
+ for i in $(seq 1 4); do
+-  ip -net ${ns0} link set veth$i up
++  ip -net "$ns0" link set "veth$i" up
+ done
+ 
+-ip -net ${ns0} link add br0 type bridge stp_state 0 forward_delay 0 nf_call_iptables 1 nf_call_ip6tables 1 nf_call_arptables 1
 -if [ $? -ne 0 ]; then
-+if ! ip -net "$nsbr" link add br0 type bridge; then
++if ! ip -net "$ns0" link add br0 type bridge stp_state 0 forward_delay 0 nf_call_iptables 1 nf_call_ip6tables 1 nf_call_arptables 1; then
  	echo "SKIP: Can't create bridge br0"
  	exit $ksft_skip
  fi
  
--ip -net ns0 link set veth0 master br0
--ip -net ns0 link set veth1 master br0
--ip -net ns0 link set br0 up
--ip -net ns0 addr add 10.0.0.1/24 dev br0
-+ip -net "$nsbr" link set veth0 up
-+ip -net "$nsbr" link set veth1 up
+ # make veth0,1,2 part of bridge.
+ for i in $(seq 1 3); do
+-  ip -net ${ns0} link set veth$i master br0
++  ip -net "$ns0" link set "veth$i" master br0
+ done
+ 
+ # add a macvlan on top of the bridge.
+ MACVLAN_ADDR=ba:f3:13:37:42:23
+-ip -net ${ns0} link add link br0 name macvlan0 type macvlan mode private
+-ip -net ${ns0} link set macvlan0 address ${MACVLAN_ADDR}
+-ip -net ${ns0} link set macvlan0 up
+-ip -net ${ns0} addr add 10.23.0.1/24 dev macvlan0
++ip -net "$ns0" link add link br0 name macvlan0 type macvlan mode private
++ip -net "$ns0" link set macvlan0 address ${MACVLAN_ADDR}
++ip -net "$ns0" link set macvlan0 up
++ip -net "$ns0" addr add 10.23.0.1/24 dev macvlan0
+ 
+ # add a macvlan on top of veth4.
+ MACVLAN_ADDR=ba:f3:13:37:42:24
+-ip -net ${ns0} link add link veth4 name macvlan4 type macvlan mode vepa
+-ip -net ${ns0} link set macvlan4 address ${MACVLAN_ADDR}
+-ip -net ${ns0} link set macvlan4 up
++ip -net "$ns0" link add link veth4 name macvlan4 type macvlan mode passthru
++ip -net "$ns0" link set macvlan4 address ${MACVLAN_ADDR}
++ip -net "$ns0" link set macvlan4 up
+ 
+ # make the macvlan part of the bridge.
+ # veth4 is not a bridge port, only the macvlan on top of it.
+-ip -net ${ns0} link set macvlan4 master br0
++ip -net "$ns0" link set macvlan4 master br0
+ 
+-ip -net ${ns0} link set br0 up
+-ip -net ${ns0} addr add 10.0.0.1/24 dev br0
+-ip netns exec ${ns0} sysctl -q net.bridge.bridge-nf-call-iptables=1
+-ret=$?
+-if [ $ret -ne 0 ] ; then
++ip -net "$ns0" link set br0 up
++ip -net "$ns0" addr add 10.0.0.1/24 dev br0
 +
-+ip -net "$nsbr" link set veth0 master br0
-+ip -net "$nsbr" link set veth1 master br0
-+ip -net "$nsbr" link set br0 up
-+ip -net "$nsbr" addr add 10.0.0.1/24 dev br0
++modprobe -q br_netfilter
++if ! ip netns exec "$ns0" sysctl -q net.bridge.bridge-nf-call-iptables=1; then
+ 	echo "SKIP: bridge netfilter not available"
+ 	ret=$ksft_skip
+ fi
  
--# place both in same subnet, ns1 and ns2 connected via ns0:br0
--for i in 1 2; do
--  ip -net ns$i link set lo up
--  ip -net ns$i link set eth0 up
--  ip -net ns$i addr add 10.0.0.1$i/24 dev eth0
--done
-+# place both in same subnet, ${ns1} and ${ns2} connected via ${nsbr}:br0
-+ip -net "$ns1" link set eth0 up
-+ip -net "$ns2" link set eth0 up
-+ip -net "$ns1" addr add 10.0.0.11/24 dev eth0
-+ip -net "$ns2" addr add 10.0.0.12/24 dev eth0
+ # for testing, so namespaces will reply to ping -b probes.
+-ip netns exec ${ns0} sysctl -q net.ipv4.icmp_echo_ignore_broadcasts=0
++ip netns exec "$ns0" sysctl -q net.ipv4.icmp_echo_ignore_broadcasts=0
  
- test_ebtables_broute()
- {
--	local cipt
--
- 	# redirect is needed so the dstmac is rewritten to the bridge itself,
- 	# ip stack won't process OTHERHOST (foreign unicast mac) packets.
--	ip netns exec ns0 ebtables -t broute -A BROUTING -p ipv4 --ip-protocol icmp -j redirect --redirect-target=DROP
--	if [ $? -ne 0 ]; then
-+	if ! ip netns exec "$nsbr" ebtables -t broute -A BROUTING -p ipv4 --ip-protocol icmp -j redirect --redirect-target=DROP; then
- 		echo "SKIP: Could not add ebtables broute redirect rule"
- 		return $ksft_skip
- 	fi
+ # enable conntrack in ns0 and drop broadcast packets in forward to
+ # avoid them from getting confirmed in the postrouting hook before
+ # the cloned skb is passed up the stack.
+-ip netns exec ${ns0} nft -f - <<EOF
++ip netns exec "$ns0" nft -f - <<EOF
+ table ip filter {
+ 	chain input {
+ 		type filter hook input priority 1; policy accept
+@@ -149,36 +134,30 @@ EOF
+ # part of the bridge: the corresponding veth4 is not
+ # part of the bridge, only its macvlan interface.
+ for i in $(seq 1 4); do
+-  eval ip -net \$ns$i link set lo up
+-  eval ip -net \$ns$i link set eth0 up
++  eval ip -net \$ns"$i" link set eth0 up
+ done
+ for i in $(seq 1 2); do
+-  eval ip -net \$ns$i addr add 10.0.0.1$i/24 dev eth0
++  eval ip -net \$ns"$i" addr add "10.0.0.1$i/24" dev eth0
+ done
  
--	# ping netns1, expected to not work (ip forwarding is off)
--	ip netns exec ns1 ping -q -c 1 10.0.0.12 > /dev/null 2>&1
--	if [ $? -eq 0 ]; then
-+	ip netns exec "$nsbr" sysctl -q net.ipv4.conf.veth0.forwarding=0
-+
-+	# ping net${ns1}, expected to not work (ip forwarding is off)
-+	if ip netns exec "$ns1" ping -q -c 1 10.0.0.12 -W 0.5 > /dev/null 2>&1; then
- 		echo "ERROR: ping works, should have failed" 1>&2
- 		return 1
- 	fi
- 
- 	# enable forwarding on both interfaces.
- 	# neither needs an ip address, but at least the bridge needs
--	# an ip address in same network segment as ns1 and ns2 (ns0
-+	# an ip address in same network segment as ${ns1} and ${ns2} (${nsbr}
- 	# needs to be able to determine route for to-be-forwarded packet).
--	ip netns exec ns0 sysctl -q net.ipv4.conf.veth0.forwarding=1
--	ip netns exec ns0 sysctl -q net.ipv4.conf.veth1.forwarding=1
--
--	sleep 1
-+	ip netns exec "$nsbr" sysctl -q net.ipv4.conf.veth0.forwarding=1
-+	ip netns exec "$nsbr" sysctl -q net.ipv4.conf.veth1.forwarding=1
- 
--	ip netns exec ns1 ping -q -c 1 10.0.0.12 > /dev/null
--	if [ $? -ne 0 ]; then
-+	if ! ip netns exec "$ns1" ping -q -c 1 10.0.0.12 > /dev/null; then
- 		echo "ERROR: ping did not work, but it should (broute+forward)" 1>&2
- 		return 1
- 	fi
- 
--	echo "PASS: ns1/ns2 connectivity with active broute rule"
--	ip netns exec ns0 ebtables -t broute -F
-+	echo "PASS: ${ns1}/${ns2} connectivity with active broute rule"
-+	ip netns exec "$nsbr" ebtables -t broute -F
- 
--	# ping netns1, expected to work (frames are bridged)
--	ip netns exec ns1 ping -q -c 1 10.0.0.12 > /dev/null
--	if [ $? -ne 0 ]; then
-+	# ping net${ns1}, expected to work (frames are bridged)
-+	if ! ip netns exec "$ns1" ping -q -c 1 10.0.0.12 > /dev/null; then
- 		echo "ERROR: ping did not work, but it should (bridged)" 1>&2
- 		return 1
- 	fi
- 
--	ip netns exec ns0 ebtables -t filter -A FORWARD -p ipv4 --ip-protocol icmp -j DROP
-+	ip netns exec "$nsbr" ebtables -t filter -A FORWARD -p ipv4 --ip-protocol icmp -j DROP
- 
--	# ping netns1, expected to not work (DROP in bridge forward)
--	ip netns exec ns1 ping -q -c 1 10.0.0.12 > /dev/null 2>&1
--	if [ $? -eq 0 ]; then
-+	# ping net${ns1}, expected to not work (DROP in bridge forward)
-+	if ip netns exec "$ns1" ping -q -c 1 10.0.0.12 -W 0.5 > /dev/null 2>&1; then
- 		echo "ERROR: ping works, should have failed (icmp forward drop)" 1>&2
- 		return 1
- 	fi
- 
- 	# re-activate brouter
--	ip netns exec ns0 ebtables -t broute -A BROUTING -p ipv4 --ip-protocol icmp -j redirect --redirect-target=DROP
-+	ip netns exec "$nsbr" ebtables -t broute -A BROUTING -p ipv4 --ip-protocol icmp -j redirect --redirect-target=DROP
- 
--	ip netns exec ns2 ping -q -c 1 10.0.0.11 > /dev/null
--	if [ $? -ne 0 ]; then
-+	if ! ip netns exec "$ns2" ping -q -c 1 10.0.0.11 > /dev/null; then
- 		echo "ERROR: ping did not work, but it should (broute+forward 2)" 1>&2
- 		return 1
- 	fi
- 
--	echo "PASS: ns1/ns2 connectivity with active broute rule and bridge forward drop"
-+	echo "PASS: ${ns1}/${ns2} connectivity with active broute rule and bridge forward drop"
- 	return 0
- }
+-ip -net ${ns3} addr add 10.23.0.13/24 dev eth0
+-ip -net ${ns4} addr add 10.23.0.14/24 dev eth0
++ip -net "$ns3" addr add 10.23.0.13/24 dev eth0
++ip -net "$ns4" addr add 10.23.0.14/24 dev eth0
  
  # test basic connectivity
--ip netns exec ns1 ping -c 1 -q 10.0.0.12 > /dev/null
--if [ $? -ne 0 ]; then
--    echo "ERROR: Could not reach ns2 from ns1" 1>&2
--    ret=1
-+if ! ip netns exec "$ns1" ping -c 1 -q 10.0.0.12 > /dev/null; then
-+    echo "ERROR: Could not reach ${ns2} from ${ns1}" 1>&2
-+    exit 1
- fi
- 
--ip netns exec ns2 ping -c 1 -q 10.0.0.11 > /dev/null
--if [ $? -ne 0 ]; then
--    echo "ERROR: Could not reach ns1 from ns2" 1>&2
--    ret=1
--fi
+-do_ping ${ns1} 10.0.0.12
+-do_ping ${ns3} 10.23.0.1
+-do_ping ${ns4} 10.23.0.1
 -
 -if [ $ret -eq 0 ];then
--    echo "PASS: netns connectivity: ns1 and ns2 can reach each other"
-+if ! ip netns exec "$ns2" ping -c 1 -q 10.0.0.11 > /dev/null; then
-+    echo "ERROR: Could not reach ${ns1} from ${ns2}" 1>&2
-+    exit 1
- fi
+-	echo "PASS: netns connectivity: ns1 can reach ns2, ns3 and ns4 can reach ns0"
+-fi
++do_ping "$ns1" 10.0.0.12
++do_ping "$ns3" 10.23.0.1
++do_ping "$ns4" 10.23.0.1
  
- test_ebtables_broute
--ret=$?
--for i in 0 1 2; do ip netns del ns$i;done
+-bcast_ping ${ns1} 10.0.0.255
++bcast_ping "$ns1" 10.0.0.255
+ 
+ # This should deliver broadcast to macvlan0, which is on top of ns0:br0.
+-bcast_ping ${ns3} 10.23.0.255
++bcast_ping "$ns3" 10.23.0.255
+ 
+ # same, this time via veth4:macvlan4.
+-bcast_ping ${ns4} 10.23.0.255
++bcast_ping "$ns4" 10.23.0.255
+ 
+ read t < /proc/sys/kernel/tainted
 -
--exit $ret
-+exit $?
+-if [ $t -eq 0 ];then
++if [ "$t" -eq 0 ];then
+ 	echo PASS: kernel not tainted
+ else
+ 	echo ERROR: kernel is tainted
 -- 
 2.43.2
 
