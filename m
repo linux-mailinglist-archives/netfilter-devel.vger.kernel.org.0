@@ -1,62 +1,62 @@
-Return-Path: <netfilter-devel+bounces-1722-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1724-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF1D8A0E25
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 12:11:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9968A0E96
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 12:16:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505CD1C220E6
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 10:11:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A52528345D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Apr 2024 10:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8855E145323;
-	Thu, 11 Apr 2024 10:11:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213C2145FF0;
+	Thu, 11 Apr 2024 10:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="iquO3wo7"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Lv0b7W4w"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3ED144D34
-	for <netfilter-devel@vger.kernel.org>; Thu, 11 Apr 2024 10:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD0013F452
+	for <netfilter-devel@vger.kernel.org>; Thu, 11 Apr 2024 10:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712830286; cv=none; b=K6JivVm2XYvZycVHzF5ZL4hR5tFKHY9nwRz4yETTgoHAubAQn/FF9Zb8JxNHMTmx0fUbnEYRG6KQT/qfXqLETjMMNGu0eIK2zP+NpLuazv2+3NdWWMiWN41QPRGXzr12uBwwCUL76yH2MPRZQ6bvuPV+iShiN8RPH+ZFIiiTySU=
+	t=1712830573; cv=none; b=p2RT7+aYJ0oubzSBmKtk1t+XhPM6f5mK3nfNhX3cxJVO3hfIPM/higHBbMesdMkkr/3FovHgIZBhC9eA78EXhdBiXlAePQ0YfIoL3KfMdfC75TFXP3KgUu52RzTHFx/hlGeIhuPlH9f+0OWuaJqbaeZ6dDwU9a/I3+LBm0+/SRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712830286; c=relaxed/simple;
-	bh=CbgE2cCmxXbp9ez5+bIoO3vH0Jv9l+WfEVldD0AiAmM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZKjrH9DGDf/7CcN6JhQsqJOlCFmu4y2B1YVmGpXk5H5U5tPjylJaI/VN1s0O1TyL6O8M9w7RNQQTU+Vxon4sg+JsYiRIQIxaJ/B3ASUCBxLFSsoGitQqVrfEQWXTrnIIkyO7sSB+jvRXAxWKFJeuYq7Cr0FHzqCUpiyh8SJloG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=iquO3wo7; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1712830573; c=relaxed/simple;
+	bh=0g76PMcTmPQD2tc2RMLt49angOihuJWNEJPR4Zt5FKs=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YkXLu6/rI2gN46uG9gXZNuBmGJBqTWqoXLl+AN6LI+TegMdOSDhVgs+VfrXOythlq6VL+GZtPj9sg9iJK0I+Y6bqhh6T8inCmC0O6cc8YcBl2lAh+pGOhaWWrwGKmixd7rsce7Hay2THnv45llH7uCKic26awgwAWd+PIswL6f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Lv0b7W4w; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=YJeuYibclledV2QD7Be+yZSpetdqQT/ZYEj6NG3jPcY=; b=iquO3wo71OfjJ4KZT/yOskOdHv
-	xRVHoPaRB2b8+VpI8fr0iGuS18KiPu6jQWUPPt92JUCkJKQOHpPawHAkW6TJQxSLPIVPjlmP7dkTU
-	h0+hbDZYp1m0hTpFfgZL5dRpmrWqq0YqrxNELVM3lVsv9ihLnoVz3H284cvryP4bbqc5SQrzS51hK
-	ifO98gTs1F6ulcJt/BsVtJfR6XvEhqpNGoAPxUFFIDrGC6/g2OJbSi05iOSE2GqTP6lwYTkkeaGMx
-	O9MZ+Nn9yKWERnTJ/0oN1VLWyJIIKB+3j5YSZYbXGQPZlGb1Vr4dB3O+NR7waO8kcbslKrenKwdf7
-	iQ54l4aA==;
+	bh=QLFa8FDFoEYIkaCGBA79fdar82MOa7kUKRIWfVg6wwE=; b=Lv0b7W4wKlWZOVJ7NIioFuKTdL
+	YcvZdSpnHcLN90CLRcMc9JKZjGyEeel4wmLwN3DDaGh8jbDBDPAd1N33ac9Gr7LPVcpTlrESDf1FA
+	8nRyG/V+0AnW0q7+Bn+wbm6VL5NduPHXKBHtWtRAtt7wD/tEZyvZZFHtyl5MrZC9XFaV79X/YdA6c
+	Qh6xmE6cBrfpZxZKSDfdh/nIc4PowoNnARASy5S0Fl973qxT5h8Njh8nFpnc4Lu3CYUjMjw7JFEw3
+	zfb59dZoXj2d8lgHfaUO1ptLjCPTOR8GR/PIFaRLetsTW87LnfzhreeBThPcxhM1tCpdzeI3m3cr4
+	vtPA9pOA==;
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1rurOm-000000001Eq-0pK6;
-	Thu, 11 Apr 2024 12:11:16 +0200
-Date: Thu, 11 Apr 2024 12:11:16 +0200
+	id 1rurTU-000000001Hn-22Ck
+	for netfilter-devel@vger.kernel.org;
+	Thu, 11 Apr 2024 12:16:08 +0200
+Date: Thu, 11 Apr 2024 12:16:08 +0200
 From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [libnftnl PATCH 00/17] obj: Introduce attribute policies
-Message-ID: <Zhe3ROSn0rCq_iYH@orbyte.nwl.cc>
+To: netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH 1/2] xlate: Improve redundant l4proto match
+ avoidance
+Message-ID: <Zhe4aMxp_wO8On0C@orbyte.nwl.cc>
 Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
 	netfilter-devel@vger.kernel.org
-References: <20240319171224.18064-1-phil@nwl.cc>
+References: <20240305171059.12795-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -65,45 +65,21 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240319171224.18064-1-phil@nwl.cc>
+In-Reply-To: <20240305171059.12795-1-phil@nwl.cc>
 
-On Tue, Mar 19, 2024 at 06:12:07PM +0100, Phil Sutter wrote:
-> Just like with the recent change in expr_ops, this series reuses
-> obj_ops::max_attr field (patch 11) for validating the maximum attribute
-> value and implements an 'attr_policy' field (patch 13) into struct
-> obj_ops to verify maximum attribute lengths when dispatching to specific
-> object type setters in nftnl_obj_set_data().
+On Tue, Mar 05, 2024 at 06:10:58PM +0100, Phil Sutter wrote:
+> xtables-translate tries to avoid 'ip protocol'/'meta l4proto' matches if
+> following expressions add this as dependency anyway. E.g.:
 > 
-> Patches 1-6 add missing attributes to existing validation arrays.
-> Patches 7-9 fix for various more or less related bugs.
-> Patch 10 enables error condition propagation to callers, missing already
-> for ENOMEM situations and used by following patches.
-> Patches 11-14 contain the actual implementation announced above.
-> The remaining patches fix for the other possible cause of invalid data
-> access, namely callers passing too small buffers.
+> | # iptables-translate -A FOO -p tcp -m tcp --dport 22 -j ACCEPT
+> | nft 'add rule ip filter FOO tcp dport 22 counter accept'
 > 
-> To verify this won't break users, I ran nftables' shell testsuite in
-> nftables versions 0.9.9, 1.0.6 and current HEAD and compared the results
-> with and without this series applied to libnftnl.
+> This worked by searching protocol name in loaded matches, but that
+> approach is flawed as the protocol name and corresponding extension may
+> differ ("mobility-header" vs. "mh"). Improve this by searching for all
+> names (cached or resolved) for a given protocol number.
 > 
-> Phil Sutter (17):
->   chain: Validate NFTNL_CHAIN_USE, too
->   table: Validate NFTNL_TABLE_USE, too
->   flowtable: Validate NFTNL_FLOWTABLE_SIZE, too
->   obj: Validate NFTNL_OBJ_TYPE, too
->   set: Validate NFTNL_SET_ID, too
->   table: Validate NFTNL_TABLE_OWNER, too
->   obj: Do not call nftnl_obj_set_data() with zero data_len
->   obj: synproxy: Use memcpy() to handle potentially unaligned data
->   utils: Fix for wrong variable use in nftnl_assert_validate()
->   obj: Return value on setters
->   obj: Repurpose struct obj_ops::max_attr field
->   obj: Call obj_ops::set with legal attributes only
->   obj: Introduce struct obj_ops::attr_policy
->   obj: Enforce attr_policy compliance in nftnl_obj_set_data()
->   utils: Introduce and use nftnl_set_str_attr()
->   obj: Respect data_len when setting attributes
->   expr: Respect data_len when setting attributes
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
 Series applied.
 
