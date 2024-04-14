@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1792-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1794-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460BB8A460E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Apr 2024 01:05:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC668A4613
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Apr 2024 01:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77E8F1C20E34
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Apr 2024 23:04:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BAAFB212D2
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Apr 2024 23:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE2813776A;
-	Sun, 14 Apr 2024 23:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A50513792A;
+	Sun, 14 Apr 2024 23:04:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962381353FB;
-	Sun, 14 Apr 2024 23:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98221353FB;
+	Sun, 14 Apr 2024 23:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713135884; cv=none; b=WldesqwJcRDOpSmsfNT+AU2XNZt9YLH2Hvo4BDZal2d/X4iri/rowNwC/9YfgNdF4WuIhIWTZ/4GRg2KixNHiTjWu1F3/hJD9pOF9rBp83uXJHTVYs/30lws/3eqoyttn1znpwx02BOmYGTSGLHr5nz+Q5vJg74d4tq3zv8n4X4=
+	t=1713135886; cv=none; b=Qpo2pb1BdyfoFH6IOK5PBv4J5XNJ9a3Oqg/NpscII35rYtWd3SDvjLZ+y8zGQRoOZJfFG9lzvM8YGzaxebslibpqqHPJliHX4dXTuzPt84TV31Gz/f044/uFq/Az/7DJD91a98PLsA39gikSjMqHKI8zkAtvWVuv3p4MbLO8pJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713135884; c=relaxed/simple;
-	bh=hY/K7apEHIXleeXMJjk5vn6BueqzeOMCUYSQ4VUDRlE=;
+	s=arc-20240116; t=1713135886; c=relaxed/simple;
+	bh=y97KmOGqK7/F1/6SQpCuZNIapMaS3H4yjOpG0Os5suw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sbGS8SRqcWltghIjSauRhRmktXUkTtzF0bmCbBSBdJtS72XEyon8NDQVeYX7hALXDwSpXZfNtQDYzm9U5R0WYcOwpDUDB0iMHE6cNXhn+kbh3ShsIDttdIxojzNY/rG2PD5A7et+xR6xfQJhXNp8MnZh3ExKFmPHGuhGkPME/Gw=
+	 MIME-Version; b=YI5jyj3zWX6palPrqftQ+lrSfYa81jOgv3yMsUSET98GhrP/6mStPbBZr6RxZ7cArO6rThXf1t7atD57FIwkabU+eOGuizlWYaHMlBIeHS182sba/lAwzQGu/lypQKKvisFQsBmrOzcDlwFTqit36E8ZxIomLnMoBi4WbTewxcg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rw8tk-0002VK-AJ; Mon, 15 Apr 2024 01:04:32 +0200
+	id 1rw8tl-0002VV-DB; Mon, 15 Apr 2024 01:04:33 +0200
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -40,9 +40,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 01/12] selftests: netfilter: conntrack_icmp_related.sh: move to lib.sh infra
-Date: Mon, 15 Apr 2024 00:57:13 +0200
-Message-ID: <20240414225729.18451-2-fw@strlen.de>
+Subject: [PATCH net-next 02/12] selftests: netfilter: conntrack_tcp_unreplied.sh: move to lib.sh infra
+Date: Mon, 15 Apr 2024 00:57:14 +0200
+Message-ID: <20240414225729.18451-3-fw@strlen.de>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240414225729.18451-1-fw@strlen.de>
 References: <20240414225729.18451-1-fw@strlen.de>
@@ -54,24 +54,24 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Only relevant change is that netns names have random suffix names,
-i.e. its safe to run this in parallel with other tests.
+Replace nc with socat. Too many different implementations of nc
+are around with incompatible options ("nc: cannot use -p and -l").
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- tools/testing/selftests/net/netfilter/config | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/net/netfilter/config | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/tools/testing/selftests/net/netfilter/config b/tools/testing/selftests/net/netfilter/config
-index 9df6a9f11384..a34c284242ec 100644
+index a34c284242ec..9df6a9f11384 100644
 --- a/tools/testing/selftests/net/netfilter/config
 +++ b/tools/testing/selftests/net/netfilter/config
-@@ -2,6 +2,8 @@ CONFIG_AUDIT=y
+@@ -2,8 +2,6 @@ CONFIG_AUDIT=y
  CONFIG_BRIDGE_EBT_BROUTE=m
  CONFIG_BRIDGE_EBT_REDIRECT=m
  CONFIG_BRIDGE_NETFILTER=m
-+CONFIG_NF_CONNTRACK=m
-+CONFIG_NF_CT_NETLINK=m
+-CONFIG_NF_CONNTRACK=m
+-CONFIG_NF_CT_NETLINK=m
  CONFIG_IP_NF_MATCH_RPFILTER=m
  CONFIG_IP6_NF_MATCH_RPFILTER=m
  CONFIG_IP_SCTP=m
