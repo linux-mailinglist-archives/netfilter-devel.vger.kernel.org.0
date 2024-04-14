@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1793-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1796-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE188A4610
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Apr 2024 01:05:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5760F8A4616
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Apr 2024 01:05:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA34228197F
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Apr 2024 23:05:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63DA31C20F20
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Apr 2024 23:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2484C137914;
-	Sun, 14 Apr 2024 23:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D78137C41;
+	Sun, 14 Apr 2024 23:04:47 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAB2137905;
-	Sun, 14 Apr 2024 23:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30C2137910;
+	Sun, 14 Apr 2024 23:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713135886; cv=none; b=quqqSszXUIOlXHOeiRx4XnyV4PyMPVjQdbawD76gemZ7Ur/qe8CY4g5qe+r6RCo2i/MGoDkv9STgCUleBXfshJB1l0ju/IB4Mga6WNMGRmXnFt3hNC+bGGIfGraL8AQCgU4isQfRJHyT8UbO0JTiFRHxnOTlxV5/3sfkmewCrH4=
+	t=1713135887; cv=none; b=j4VfeaHj9+ngeKEnVuV2osZ3uY2xWvxTKjz7CRkMUeWMq1LlTyxw/mLDLkL+iLuMhWSqkCZDp9oGhZL5vX2EylwaJvPKKqK7R/8eYc15oAIe/YomymV/U80ADpvPmpeGl1wU1jKSe4F63qzHEqSxzBlrB0xexfmL4Q5kzekvC68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713135886; c=relaxed/simple;
-	bh=z6821y4fkGeBW4sfK6ErF1Uzf5GMRLmD5sThSz81oTE=;
+	s=arc-20240116; t=1713135887; c=relaxed/simple;
+	bh=8TmnnmJzYrAEVHy0A2duQ8EUbQgKDllHOfZZ1Hr72fE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sYa1mOkTgHw1b68L6RAJEVVjUwiLzHXXpq9C8g7wVs/U54mUiFfF711l/CVNPu7wp/plkAtusIUWmQuSAiKVUmcaYS3NUF2+6T8nlNo/rVMWIAxydABtS82K63ZR/1QrnyRFCSWk9IijaaO8BP+2i/g9GFVneUK76Hh44Inrv3E=
+	 MIME-Version; b=gudyPi4C5dPmVmEdbZUuRAS0/BkCEejTLrif5/tXEmyFuylNebDE/wBQxNI2mc28wygaBPMOyK/oSetUTpGXacBJ9Eo33DS8yPf2ex04k2kXm0LDGeJkFv4XOPc1zxqxFTiAwNPKPyBHgmNDF79Ikw4P6G6Dev9kHpQRhsvw6Ck=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rw8ts-0002Wb-NU; Mon, 15 Apr 2024 01:04:40 +0200
+	id 1rw8tt-0002Wk-Pg; Mon, 15 Apr 2024 01:04:41 +0200
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -40,9 +40,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 06/12] selftests: netfilter: xt_string.sh: move to lib.sh infra
-Date: Mon, 15 Apr 2024 00:57:18 +0200
-Message-ID: <20240414225729.18451-7-fw@strlen.de>
+Subject: [PATCH net-next 07/12] selftests: netfilter: nft_nat_zones.sh: shellcheck cleanups
+Date: Mon, 15 Apr 2024 00:57:19 +0200
+Message-ID: <20240414225729.18451-8-fw@strlen.de>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240414225729.18451-1-fw@strlen.de>
 References: <20240414225729.18451-1-fw@strlen.de>
@@ -54,108 +54,342 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Intentional changes:
-- Use socat instead of netcat
-- Use a temporary file instead of pipe, else packets do not match
-  "-m string" rules, multiple writes to the pipe cause multiple packets,
-  but this needs only one to work.
+While at it: No need for iperf here, use socat.
+This also reduces the script runtime.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- .../selftests/net/netfilter/xt_string.sh      | 55 ++++++++++---------
- 1 file changed, 30 insertions(+), 25 deletions(-)
+ .../selftests/net/netfilter/nft_nat_zones.sh  | 193 +++++++-----------
+ 1 file changed, 75 insertions(+), 118 deletions(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/xt_string.sh b/tools/testing/selftests/net/netfilter/xt_string.sh
-index 1802653a4728..ec7042b502e4 100755
---- a/tools/testing/selftests/net/netfilter/xt_string.sh
-+++ b/tools/testing/selftests/net/netfilter/xt_string.sh
-@@ -5,43 +5,45 @@
- ksft_skip=4
- rc=0
+diff --git a/tools/testing/selftests/net/netfilter/nft_nat_zones.sh b/tools/testing/selftests/net/netfilter/nft_nat_zones.sh
+index b9ab37380f33..549f264b41f3 100755
+--- a/tools/testing/selftests/net/netfilter/nft_nat_zones.sh
++++ b/tools/testing/selftests/net/netfilter/nft_nat_zones.sh
+@@ -3,15 +3,14 @@
+ # Test connection tracking zone and NAT source port reallocation support.
+ #
  
--if ! iptables --version >/dev/null 2>&1; then
--	echo "SKIP: Test needs iptables"
--	exit $ksft_skip
--fi
--if ! ip -V >/dev/null 2>&1; then
--	echo "SKIP: Test needs iproute2"
--	exit $ksft_skip
--fi
--if ! nc -h >/dev/null 2>&1; then
--	echo "SKIP: Test needs netcat"
--	exit $ksft_skip
--fi
+-# Kselftest framework requirement - SKIP code is 4.
+-ksft_skip=4
 +source lib.sh
-+
-+checktool "socat -h" "run test without socat"
-+checktool "iptables --version" "test needs iptables"
-+
-+infile=$(mktemp)
-+
-+cleanup()
-+{
-+	ip netns del "$netns"
-+	rm -f "$infile"
-+}
-+
-+trap cleanup EXIT
-+
-+setup_ns netns
-+
-+ip -net "$netns" link add d0 type dummy
-+ip -net "$netns" link set d0 up
-+ip -net "$netns" addr add 10.1.2.1/24 dev d0
  
- pattern="foo bar baz"
- patlen=11
- hdrlen=$((20 + 8)) # IPv4 + UDP
--ns="ns-$(mktemp -u XXXXXXXX)"
--trap 'ip netns del $ns' EXIT
--ip netns add "$ns"
--ip -net "$ns" link add d0 type dummy
--ip -net "$ns" link set d0 up
--ip -net "$ns" addr add 10.1.2.1/24 dev d0
+ # Don't increase too much, 2000 clients should work
+ # just fine but script can then take several minutes with
+ # KASAN/debug builds.
+ maxclients=100
+ 
+-have_iperf=1
++have_socat=0
+ ret=0
+ 
+ # client1---.
+@@ -31,12 +30,6 @@ ret=0
+ #   NAT Gateway is supposed to do port reallocation for each of the
+ #   connections.
+ 
+-sfx=$(mktemp -u "XXXXXXXX")
+-gw="ns-gw-$sfx"
+-cl1="ns-cl1-$sfx"
+-cl2="ns-cl2-$sfx"
+-srv="ns-srv-$sfx"
 -
--#ip netns exec "$ns" tcpdump -npXi d0 &
-+
-+#ip netns exec "$netns" tcpdump -npXi d0 &
- #tcpdump_pid=$!
--#trap 'kill $tcpdump_pid; ip netns del $ns' EXIT
-+#trap 'kill $tcpdump_pid; ip netns del $netns' EXIT
+ v4gc1=$(sysctl -n net.ipv4.neigh.default.gc_thresh1 2>/dev/null)
+ v4gc2=$(sysctl -n net.ipv4.neigh.default.gc_thresh2 2>/dev/null)
+ v4gc3=$(sysctl -n net.ipv4.neigh.default.gc_thresh3 2>/dev/null)
+@@ -46,61 +39,29 @@ v6gc3=$(sysctl -n net.ipv6.neigh.default.gc_thresh3 2>/dev/null)
  
- add_rule() { # (alg, from, to)
--	ip netns exec "$ns" \
-+	ip netns exec "$netns" \
- 		iptables -A OUTPUT -o d0 -m string \
- 			--string "$pattern" --algo $1 --from $2 --to $3
- }
- showrules() { # ()
--	ip netns exec "$ns" iptables -v -S OUTPUT | grep '^-A'
-+	ip netns exec "$netns" iptables -v -S OUTPUT | grep '^-A'
- }
- zerorules() {
--	ip netns exec "$ns" iptables -Z OUTPUT
-+	ip netns exec "$netns" iptables -Z OUTPUT
- }
- countrule() { # (pattern)
- 	showrules | grep -c -- "$*"
-@@ -51,7 +53,9 @@ send() { # (offset)
- 		printf " "
- 	  done
- 	  printf "$pattern"
--	) | ip netns exec "$ns" nc -w 1 -u 10.1.2.2 27374
-+	) > "$infile"
+ cleanup()
+ {
+-	ip netns del $gw
+-	ip netns del $srv
+-	for i in $(seq 1 $maxclients); do
+-		ip netns del ns-cl$i-$sfx 2>/dev/null
+-	done
+-
+-	sysctl -q net.ipv4.neigh.default.gc_thresh1=$v4gc1 2>/dev/null
+-	sysctl -q net.ipv4.neigh.default.gc_thresh2=$v4gc2 2>/dev/null
+-	sysctl -q net.ipv4.neigh.default.gc_thresh3=$v4gc3 2>/dev/null
+-	sysctl -q net.ipv6.neigh.default.gc_thresh1=$v6gc1 2>/dev/null
+-	sysctl -q net.ipv6.neigh.default.gc_thresh2=$v6gc2 2>/dev/null
+-	sysctl -q net.ipv6.neigh.default.gc_thresh3=$v6gc3 2>/dev/null
++	cleanup_all_ns
 +
-+	ip netns exec "$netns" socat -t 1 -u STDIN UDP-SENDTO:10.1.2.2:27374 < "$infile"
++	sysctl -q net.ipv4.neigh.default.gc_thresh1="$v4gc1" 2>/dev/null
++	sysctl -q net.ipv4.neigh.default.gc_thresh2="$v4gc2" 2>/dev/null
++	sysctl -q net.ipv4.neigh.default.gc_thresh3="$v4gc3" 2>/dev/null
++	sysctl -q net.ipv6.neigh.default.gc_thresh1="$v6gc1" 2>/dev/null
++	sysctl -q net.ipv6.neigh.default.gc_thresh2="$v6gc2" 2>/dev/null
++	sysctl -q net.ipv6.neigh.default.gc_thresh3="$v6gc3" 2>/dev/null
  }
  
- add_rule bm 1000 1500
-@@ -125,4 +129,5 @@ if [ $(countrule -c 1) -ne 0 ]; then
- 	((rc--))
+-nft --version > /dev/null 2>&1
+-if [ $? -ne 0 ];then
+-	echo "SKIP: Could not run test without nft tool"
+-	exit $ksft_skip
+-fi
++checktool "nft --version" echo "run test without nft tool"
++checktool "conntrack -V" "run test without conntrack tool"
+ 
+-ip -Version > /dev/null 2>&1
+-if [ $? -ne 0 ];then
+-	echo "SKIP: Could not run test without ip tool"
+-	exit $ksft_skip
++if socat -h >/dev/null 2>&1; then
++	have_socat=1
  fi
  
-+[ $rc -eq 0 ] && echo "PASS: string match tests"
- exit $rc
+-conntrack -V > /dev/null 2>&1
+-if [ $? -ne 0 ];then
+-	echo "SKIP: Could not run test without conntrack tool"
+-	exit $ksft_skip
+-fi
+-
+-iperf3 -v >/dev/null 2>&1
+-if [ $? -ne 0 ];then
+-	have_iperf=0
+-fi
+-
+-ip netns add "$gw"
+-if [ $? -ne 0 ];then
+-	echo "SKIP: Could not create net namespace $gw"
+-	exit $ksft_skip
+-fi
+-ip -net "$gw" link set lo up
++setup_ns gw srv
+ 
+ trap cleanup EXIT
+ 
+-ip netns add "$srv"
+-if [ $? -ne 0 ];then
+-	echo "SKIP: Could not create server netns $srv"
+-	exit $ksft_skip
+-fi
+-
+ ip link add veth0 netns "$gw" type veth peer name eth0 netns "$srv"
+ ip -net "$gw" link set veth0 up
+-ip -net "$srv" link set lo up
+ ip -net "$srv" link set eth0 up
+ 
+ sysctl -q net.ipv6.neigh.default.gc_thresh1=512  2>/dev/null
+@@ -110,55 +71,49 @@ sysctl -q net.ipv4.neigh.default.gc_thresh1=512  2>/dev/null
+ sysctl -q net.ipv4.neigh.default.gc_thresh2=1024 2>/dev/null
+ sysctl -q net.ipv4.neigh.default.gc_thresh3=4096 2>/dev/null
+ 
+-for i in $(seq 1 $maxclients);do
+-  cl="ns-cl$i-$sfx"
++for i in $(seq 1 "$maxclients");do
++  setup_ns "cl$i"
+ 
+-  ip netns add "$cl"
+-  if [ $? -ne 0 ];then
+-     echo "SKIP: Could not create client netns $cl"
+-     exit $ksft_skip
+-  fi
+-  ip link add veth$i netns "$gw" type veth peer name eth0 netns "$cl" > /dev/null 2>&1
+-  if [ $? -ne 0 ];then
++  cl=$(eval echo \$cl"$i")
++  if ! ip link add veth"$i" netns "$gw" type veth peer name eth0 netns "$cl" > /dev/null 2>&1;then
+     echo "SKIP: No virtual ethernet pair device support in kernel"
+     exit $ksft_skip
+   fi
+ done
+ 
+-for i in $(seq 1 $maxclients);do
+-  cl="ns-cl$i-$sfx"
+-  echo netns exec "$cl" ip link set lo up
++for i in $(seq 1 "$maxclients");do
++  cl=$(eval echo \$cl"$i")
+   echo netns exec "$cl" ip link set eth0 up
+   echo netns exec "$cl" sysctl -q net.ipv4.tcp_syn_retries=2
+-  echo netns exec "$gw" ip link set veth$i up
+-  echo netns exec "$gw" sysctl -q net.ipv4.conf.veth$i.arp_ignore=2
+-  echo netns exec "$gw" sysctl -q net.ipv4.conf.veth$i.rp_filter=0
++  echo netns exec "$gw" ip link set "veth$i" up
++  echo netns exec "$gw" sysctl -q net.ipv4.conf.veth"$i".arp_ignore=2
++  echo netns exec "$gw" sysctl -q net.ipv4.conf.veth"$i".rp_filter=0
+ 
+   # clients have same IP addresses.
+   echo netns exec "$cl" ip addr add 10.1.0.3/24 dev eth0
+-  echo netns exec "$cl" ip addr add dead:1::3/64 dev eth0
++  echo netns exec "$cl" ip addr add dead:1::3/64 dev eth0 nodad
+   echo netns exec "$cl" ip route add default via 10.1.0.2 dev eth0
+   echo netns exec "$cl" ip route add default via dead:1::2 dev eth0
+ 
+   # NB: same addresses on client-facing interfaces.
+-  echo netns exec "$gw" ip addr add 10.1.0.2/24 dev veth$i
+-  echo netns exec "$gw" ip addr add dead:1::2/64 dev veth$i
++  echo netns exec "$gw" ip addr add 10.1.0.2/24 dev "veth$i"
++  echo netns exec "$gw" ip addr add dead:1::2/64 dev "veth$i" nodad
+ 
+   # gw: policy routing
+-  echo netns exec "$gw" ip route add 10.1.0.0/24 dev veth$i table $((1000+i))
+-  echo netns exec "$gw" ip route add dead:1::0/64 dev veth$i table $((1000+i))
++  echo netns exec "$gw" ip route add 10.1.0.0/24 dev "veth$i" table $((1000+i))
++  echo netns exec "$gw" ip route add dead:1::0/64 dev "veth$i" table $((1000+i))
+   echo netns exec "$gw" ip route add 10.3.0.0/24 dev veth0 table $((1000+i))
+   echo netns exec "$gw" ip route add dead:3::0/64 dev veth0 table $((1000+i))
+-  echo netns exec "$gw" ip rule add fwmark $i lookup $((1000+i))
++  echo netns exec "$gw" ip rule add fwmark "$i" lookup $((1000+i))
+ done | ip -batch /dev/stdin
+ 
+ ip -net "$gw" addr add 10.3.0.1/24 dev veth0
+-ip -net "$gw" addr add dead:3::1/64 dev veth0
++ip -net "$gw" addr add dead:3::1/64 dev veth0 nodad
+ 
+ ip -net "$srv" addr add 10.3.0.99/24 dev eth0
+-ip -net "$srv" addr add dead:3::99/64 dev eth0
++ip -net "$srv" addr add dead:3::99/64 dev eth0 nodad
+ 
+-ip netns exec $gw nft -f /dev/stdin<<EOF
++ip netns exec "$gw" nft -f /dev/stdin<<EOF
+ table inet raw {
+ 	map iiftomark {
+ 		type ifname : mark
+@@ -203,18 +158,22 @@ table inet raw {
+ 	}
+ }
+ EOF
++if [ "$?" -ne 0 ];then
++	echo "SKIP: Could not add nftables rules"
++	exit $ksft_skip
++fi
+ 
+ ( echo add element inet raw iiftomark \{
+ 	for i in $(seq 1 $((maxclients-1))); do
+-		echo \"veth$i\" : $i,
++		echo \"veth"$i"\" : "$i",
+ 	done
+-	echo \"veth$maxclients\" : $maxclients \}
++	echo \"veth"$maxclients"\" : "$maxclients" \}
+ 	echo add element inet raw iiftozone \{
+ 	for i in $(seq 1 $((maxclients-1))); do
+-		echo \"veth$i\" : $i,
++		echo \"veth"$i"\" : "$i",
+ 	done
+ 	echo \"veth$maxclients\" : $maxclients \}
+-) | ip netns exec $gw nft -f /dev/stdin
++) | ip netns exec "$gw" nft -f /dev/stdin
+ 
+ ip netns exec "$gw" sysctl -q net.ipv4.conf.all.forwarding=1 > /dev/null
+ ip netns exec "$gw" sysctl -q net.ipv6.conf.all.forwarding=1 > /dev/null
+@@ -224,73 +183,72 @@ ip netns exec "$gw" sysctl -q net.ipv4.conf.all.rp_filter=0 >/dev/null
+ ip netns exec "$gw" sysctl -q net.ipv4.fwmark_reflect=1 > /dev/null
+ ip netns exec "$gw" sysctl -q net.ipv6.fwmark_reflect=1 > /dev/null
+ 
+-for i in $(seq 1 $maxclients); do
+-  cl="ns-cl$i-$sfx"
+-  ip netns exec $cl ping -i 0.5 -q -c 3 10.3.0.99 > /dev/null 2>&1 &
+-  if [ $? -ne 0 ]; then
+-     echo FAIL: Ping failure from $cl 1>&2
+-     ret=1
+-     break
+-  fi
++for i in $(seq 1 "$maxclients"); do
++  cl=$(eval echo \$cl"$i")
++  ip netns exec "$cl" ping -i 0.5 -q -c 3 10.3.0.99 > /dev/null 2>&1 &
+ done
+ 
+-wait
++wait || ret=1
+ 
+-for i in $(seq 1 $maxclients); do
+-   ip netns exec $gw nft get element inet raw inicmp "{ 10.1.0.3 . \"veth$i\" . 10.3.0.99 }" | grep -q "{ 10.1.0.3 . \"veth$i\" . 10.3.0.99 counter packets 3 bytes 252 }"
+-   if [ $? -ne 0 ];then
++[ "$ret" -ne 0 ] && "FAIL: Ping failure from $cl" 1>&2
++
++for i in $(seq 1 "$maxclients"); do
++   if ! ip netns exec "$gw" nft get element inet raw inicmp "{ 10.1.0.3 . \"veth$i\" . 10.3.0.99 }" | grep -q "{ 10.1.0.3 . \"veth$i\" . 10.3.0.99 counter packets 3 bytes 252 }"; then
+       ret=1
+       echo "FAIL: counter icmp mismatch for veth$i" 1>&2
+-      ip netns exec $gw nft get element inet raw inicmp "{ 10.1.0.3 . \"veth$i\" . 10.3.0.99 }" 1>&2
++      ip netns exec "$gw" nft get element inet raw inicmp "{ 10.1.0.3 . \"veth$i\" . 10.3.0.99 }" 1>&2
+       break
+    fi
+ done
+ 
+-ip netns exec $gw nft get element inet raw inicmp "{ 10.3.0.99 . \"veth0\" . 10.3.0.1 }" | grep -q "{ 10.3.0.99 . \"veth0\" . 10.3.0.1 counter packets $((3 * $maxclients)) bytes $((252 * $maxclients)) }"
+-if [ $? -ne 0 ];then
++if ! ip netns exec "$gw" nft get element inet raw inicmp "{ 10.3.0.99 . \"veth0\" . 10.3.0.1 }" | grep -q "{ 10.3.0.99 . \"veth0\" . 10.3.0.1 counter packets $((3 * maxclients)) bytes $((252 * maxclients)) }"; then
+     ret=1
+-    echo "FAIL: counter icmp mismatch for veth0: { 10.3.0.99 . \"veth0\" . 10.3.0.1 counter packets $((3 * $maxclients)) bytes $((252 * $maxclients)) }"
+-    ip netns exec $gw nft get element inet raw inicmp "{ 10.3.99 . \"veth0\" . 10.3.0.1 }" 1>&2
++    echo "FAIL: counter icmp mismatch for veth0: { 10.3.0.99 . \"veth0\" . 10.3.0.1 counter packets $((3 * maxclients)) bytes $((252 * maxclients)) }"
++    ip netns exec "$gw" nft get element inet raw inicmp "{ 10.3.99 . \"veth0\" . 10.3.0.1 }" 1>&2
+ fi
+ 
+-if  [ $ret -eq 0 ]; then
++if [ $ret -eq 0 ]; then
+ 	echo "PASS: ping test from all $maxclients namespaces"
+ fi
+ 
+-if [ $have_iperf -eq 0 ];then
+-	echo "SKIP: iperf3 not installed"
++if [ $have_socat -eq 0 ];then
++	echo "SKIP: socat not installed"
+ 	if [ $ret -ne 0 ];then
+ 	    exit $ret
+ 	fi
+ 	exit $ksft_skip
+ fi
+ 
+-ip netns exec $srv iperf3 -s > /dev/null 2>&1 &
+-iperfpid=$!
+-sleep 1
++listener_ready()
++{
++	ss -N "$1" -lnt -o "sport = :5201" | grep -q 5201
++}
++
++ip netns exec "$srv" socat -u TCP-LISTEN:5201,fork STDOUT > /dev/null 2>/dev/null &
++socatpid=$!
++
++busywait 1000 listener_ready "$srv"
+ 
+-for i in $(seq 1 $maxclients); do
++for i in $(seq 1 "$maxclients"); do
+   if [ $ret -ne 0 ]; then
+      break
+   fi
+-  cl="ns-cl$i-$sfx"
+-  ip netns exec $cl iperf3 -c 10.3.0.99 --cport 10000 -n 1 > /dev/null
+-  if [ $? -ne 0 ]; then
+-     echo FAIL: Failure to connect for $cl 1>&2
+-     ip netns exec $gw conntrack -S 1>&2
++  cl=$(eval echo \$cl"$i")
++  if ! ip netns exec "$cl" socat -4 -u STDIN TCP:10.3.0.99:5201,sourceport=10000 < /dev/null > /dev/null; then
++     echo "FAIL: Failure to connect for $cl" 1>&2
++     ip netns exec "$gw" conntrack -S 1>&2
+      ret=1
+   fi
+ done
+ if [ $ret -eq 0 ];then
+-	echo "PASS: iperf3 connections for all $maxclients net namespaces"
++	echo "PASS: socat connections for all $maxclients net namespaces"
+ fi
+ 
+-kill $iperfpid
++kill $socatpid
+ wait
+ 
+-for i in $(seq 1 $maxclients); do
+-   ip netns exec $gw nft get element inet raw inflows "{ 10.1.0.3 . 10000 . \"veth$i\" . 10.3.0.99 . 5201 }" > /dev/null
+-   if [ $? -ne 0 ];then
++for i in $(seq 1 "$maxclients"); do
++   if ! ip netns exec "$gw" nft get element inet raw inflows "{ 10.1.0.3 . 10000 . \"veth$i\" . 10.3.0.99 . 5201 }" > /dev/null;then
+       ret=1
+       echo "FAIL: can't find expected tcp entry for veth$i" 1>&2
+       break
+@@ -300,8 +258,7 @@ if [ $ret -eq 0 ];then
+ 	echo "PASS: Found client connection for all $maxclients net namespaces"
+ fi
+ 
+-ip netns exec $gw nft get element inet raw inflows "{ 10.3.0.99 . 5201 . \"veth0\" . 10.3.0.1 . 10000 }" > /dev/null
+-if [ $? -ne 0 ];then
++if ! ip netns exec "$gw" nft get element inet raw inflows "{ 10.3.0.99 . 5201 . \"veth0\" . 10.3.0.1 . 10000 }" > /dev/null;then
+     ret=1
+     echo "FAIL: cannot find return entry on veth0" 1>&2
+ fi
 -- 
 2.43.2
 
