@@ -1,92 +1,94 @@
-Return-Path: <netfilter-devel+bounces-1845-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1847-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96FFE8A97BB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Apr 2024 12:48:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 513978A983E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Apr 2024 13:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D14281774
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Apr 2024 10:48:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68F2B1C20C58
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Apr 2024 11:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861B415E5A6;
-	Thu, 18 Apr 2024 10:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF5C15E21A;
+	Thu, 18 Apr 2024 11:09:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NElA4jCo"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Zj8lifKr"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BD715E200;
-	Thu, 18 Apr 2024 10:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D20815E20C
+	for <netfilter-devel@vger.kernel.org>; Thu, 18 Apr 2024 11:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437269; cv=none; b=O0TO5GbnGfqAjM2GKH2mT7U5Oe3vIBtY1Xqh2PaTPci7NUFyNmnLgeOCcnQ0QY7NWcb9AX8U8lAqmD4zsQuCjOBxTRp+FBjITEQ8oQrAHC/REQuUhks6eBzANuhkQGqflr2Hfj3Bco1T+YIjXKTmBnw/rv0FMIjMaUYE0qsN9+A=
+	t=1713438566; cv=none; b=pk1380WuYSLMmsjlgCLelqsMl8VHRjInJK1tbyqEL90WJNKtxuYwST/u8ED3KqKtqz5BnWx7c7xEFWe7EfbiM2d0bH9rz060kJC6LTXCbl75xRzeFR4U4/2hWNmsL3mX314qCXRFsko5WQuMwbfr5kuLaWxROa5SQd9brayCpK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437269; c=relaxed/simple;
-	bh=ZI17aBFXnfNIX5gg0TIh85FQjVSnOaICYAT+dqo6FJ4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=igLpqc9cD/y45/3sMgN1xWld4uaBkPVLcg8B3OUq14PRypuvMAUvYTb8BhntiM7PG1Yk/cbgnttJ7SSn9YwO5fueos0iZNzZdc5Gag26iFL8AD8P2TG00OCi1vCbVGlfy5ULtx2mS+JjD4biKYXPjW7gX2EGKGk9YzJQ3R8fxbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NElA4jCo; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-418dc00a30bso5423425e9.3;
-        Thu, 18 Apr 2024 03:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713437266; x=1714042066; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BLXhtS7COhldJZyUQwRPNq3Lb/qi4UMCEJcdHCvY3ZI=;
-        b=NElA4jCoSC8zxVFTzQp1Wp77Lps/ur8qdVehrbP1FUZplPp0+Iz7IOIyUnahe10z4p
-         aQd7mOnoVwMywy4ap5MvESukRdhFNn7Ech+d/nRCTy5EiIa67iw0weXyU0aoyZjmNZ0v
-         c2/3yAK6z4ncwCHV83chRhhjj6jm1mUTS9GcKf4Q/7qVdJ1HRSeExSn8g7SCekQ4wk86
-         3XD26Dqc1EcjBFTUUt+F1tUIpciGUVaBz7l7pkQCG63ro8QfaqhGeT+Xa3TlS3/5lPtt
-         njFnP2ZZ0Hie5j+jRfTMN5eovaArqrtqQRt75D7Lu1hjD6l1eq+jTi5Ia2vtpyPEa+dr
-         J7JQ==
+	s=arc-20240116; t=1713438566; c=relaxed/simple;
+	bh=F/TmGD6P/eBNZve0CmXoI/nVfjo5Bnc9S/wABpwztCg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MKCUUjwaGHh0G10ehphq1GhM1VPGd4a+W92SVREjFFe8j4CR+iaTANziN4toZjAbVskBkGLheOwCdcQxBRmDaYBYn7kJIad3grdiVykS9W7VoradXT++LPGl8f9Cj+gdxosXofzXoYnS9LvEn1zNU4Bs3hd1yHPbA/UzGBCIa8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=Zj8lifKr; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 50FBA3F2EA
+	for <netfilter-devel@vger.kernel.org>; Thu, 18 Apr 2024 11:02:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1713438125;
+	bh=AOGV+CBOV8eiaEz1GoNMtohBk1/aB8bFkBW7cPKL6oU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=Zj8lifKroqtWPZeSBTFG4xaigDMSFk61lNN+TOQ0/qFH3z1Oj/URB1PrWQMhPXRtB
+	 zcfP4aqo+MUK9qcRCaGsOATOPQq9Blkui7OGy0VZQjSHxFwyZlEADMaL7al0Vct/is
+	 KWIdz2OAJdoXhagsJh8l9zto6OipzSxaUGE+eoHJFmufUaKprT9FHR5e33toSvOhE0
+	 0k/ZXV8hBfBhyWMfl/ZkNI5yqxJ5Cor/c1swZI08G3Fpo77xeToW0f39Ea7TcJdfPS
+	 8Z5oK0MKV5yfvSbKF5HGZ14U9TXhqEJAkITI2JkFNkml9QVs3uviNM+G7E+iqHl2Qv
+	 HsEmItHmaeaOA==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a5217f85620so31964666b.2
+        for <netfilter-devel@vger.kernel.org>; Thu, 18 Apr 2024 04:02:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713437266; x=1714042066;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLXhtS7COhldJZyUQwRPNq3Lb/qi4UMCEJcdHCvY3ZI=;
-        b=btvcTaOyCQUUCpT97/ZD/lVC/9ESerg5RU6SRMe+GGUp3bDEMo2Rno+LxQmwbgA+wZ
-         8QEoFfSzOd7tkqJtHHMKSicN91xkGZyUYRoWM/NZjGOdLnEAEJ80FiruzOiEkfeNfO+g
-         D6NDs1dfZec3SXWDgaOBmrUZ2Zn6wO1m6GjcEWl0ZTWJtAhlBZFgem59fhrgn83VrhJ8
-         TRwHlJnliSXD5h3t0u2OH8I/jxhCQwNEg02unrvjoMdQB1GsmwYcON75eG07TVNBVaX/
-         Jpz1G6WMaxYfAKHxOLCgb5749r0rUe6d9K14azwvSmGEZt0t5tMckNpRLNQM/JBVBWag
-         eCpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX05dlO5tVgdImSSa06dMyqNVzE343kI/ExiABH7Vdsu/UmW2piLqxhTDB/YaOrLYGqM6vCMih5NSe00XhUP2Zw77q6bVmzZHhmpL0aS80I
-X-Gm-Message-State: AOJu0YymDEyaQhanIuwgVLTvEj86gBAoNMsx/hesmDbd3vw4KsrCfl6W
-	4sJQKXLMbAknL1KNImhRi+NBrqM8FqPJmlXpf9EhBzy5+Xy7j49oi3biNM34
-X-Google-Smtp-Source: AGHT+IFi/bYwZCA5l4+hI0JIZVfOkLuYFWp/RMkZCCxdNA1TRAM8oCQOXCF2s3RnKm5BL3xqgi9cmw==
-X-Received: by 2002:a05:600c:1f1a:b0:418:d69e:673b with SMTP id bd26-20020a05600c1f1a00b00418d69e673bmr1586995wmb.14.1713437265795;
-        Thu, 18 Apr 2024 03:47:45 -0700 (PDT)
-Received: from imac.fritz.box ([2a02:8010:60a0:0:702a:9979:dc91:f8d0])
-        by smtp.gmail.com with ESMTPSA id f11-20020a05600c4e8b00b00417ee886977sm6135807wmq.4.2024.04.18.03.47.44
+        d=1e100.net; s=20230601; t=1713438124; x=1714042924;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AOGV+CBOV8eiaEz1GoNMtohBk1/aB8bFkBW7cPKL6oU=;
+        b=cGanMPQzMSBSfnwtHCuh/Y0sqdezUkF2c2etoZsyjKu7B7l/0r469sPyAfkRI7g9z5
+         aByk+CKpJVjku7kswuvwmZpNwMfKz1mgtvemHQzKj2Eur8LraxiB4ROrz4mLqo/uALo/
+         1O42Qpvh6X358Iz7eB/cuVDOXS1q+RKbvUm/6hAbuck9KPopp+fYPJvSfmL4t82u9iHv
+         P8PcFZL8d0F9PiHNccKRwwdP8pq210DrvKdNDxSnXNK0XSKFDim29qIMH/smC7pNXyNM
+         9G0P7oNNsqhXi7b0V6FQ5MvQ03irBZoIg4CjULFIqxUKu3KBBrH3CZuU7F7kMK+7cLCp
+         lAHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWNmWi4Npv2bko53B0CTZHmNIMRNPT9E5YClO2hJGoaqGj3QnHLqTOeN/wDVQ2y5VtdhG7Z/Ezyfq0eyKlGcc/TuCkn76pAyc4qHA1m2pC/
+X-Gm-Message-State: AOJu0YyUFgLxOSr5ov1zHnPpSMIIPpuKnYrR/Y2h9OFKrlc+RampUmMI
+	KJcurV1Rfz2AtHKUlKo54Oz4H/R9SnakRoZ8DrPB/50cuJLQKJuqZqb2ODgoQKd8O83DckzBXqC
+	oWbyjCuG1/gfjE4i22cyVhQPTScw7xG3cg9bMkg1oxH+heSB1iPA29KqgigtXkBV8ga9g1Ufu2T
+	tCAinUkw==
+X-Received: by 2002:a17:906:5a8c:b0:a52:5a02:2432 with SMTP id l12-20020a1709065a8c00b00a525a022432mr1500553ejq.50.1713438124766;
+        Thu, 18 Apr 2024 04:02:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFK0FFwqxygVS/MakVnyy4i3LBAXhMuv1GAxCYpN0cDVcZFrxU5v8w8WwAoL/TOLrTzl1iuHA==
+X-Received: by 2002:a17:906:5a8c:b0:a52:5a02:2432 with SMTP id l12-20020a1709065a8c00b00a525a022432mr1500533ejq.50.1713438124401;
+        Thu, 18 Apr 2024 04:02:04 -0700 (PDT)
+Received: from amikhalitsyn.lan ([2001:470:6d:781:320c:9c91:fb97:fbfc])
+        by smtp.gmail.com with ESMTPSA id yk18-20020a17090770d200b00a51983e6190sm728594ejb.205.2024.04.18.04.02.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 03:47:45 -0700 (PDT)
-From: Donald Hunter <donald.hunter@gmail.com>
-To: netdev@vger.kernel.org,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jacob Keller <jacob.e.keller@intel.com>,
+        Thu, 18 Apr 2024 04:02:04 -0700 (PDT)
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: horms@verge.net.au
+Cc: netdev@vger.kernel.org,
+	lvs-devel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Julian Anastasov <ja@ssi.bg>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org
-Cc: donald.hunter@redhat.com,
-	Donald Hunter <donald.hunter@gmail.com>
-Subject: [PATCH net-next v4 4/4] netfilter: nfnetlink: Handle ACK flags for batch messages
-Date: Thu, 18 Apr 2024 11:47:37 +0100
-Message-ID: <20240418104737.77914-5-donald.hunter@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240418104737.77914-1-donald.hunter@gmail.com>
-References: <20240418104737.77914-1-donald.hunter@gmail.com>
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH net-next v2 1/2] ipvs: add READ_ONCE barrier for ipvs->sysctl_amemthresh
+Date: Thu, 18 Apr 2024 13:01:52 +0200
+Message-Id: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -95,46 +97,62 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The NLM_F_ACK flag is ignored for nfnetlink batch begin and end
-messages. This is a problem for ynl which wants to receive an ack for
-every message it sends, not just the commands in between the begin/end
-messages.
-
-Add processing for ACKs for begin/end messages and provide responses
-when requested.
-
-I have checked that iproute2, pyroute2 and systemd are unaffected by
-this change since none of them use NLM_F_ACK for batch begin/end.
-
-Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+Cc: Julian Anastasov <ja@ssi.bg>
+Cc: Simon Horman <horms@verge.net.au>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Suggested-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 ---
- net/netfilter/nfnetlink.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/netfilter/ipvs/ip_vs_ctl.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
-index c9fbe0f707b5..4abf660c7baf 100644
---- a/net/netfilter/nfnetlink.c
-+++ b/net/netfilter/nfnetlink.c
-@@ -427,6 +427,9 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 143a341bbc0a..daa62b8b2dd1 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -94,6 +94,7 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ {
+ 	struct sysinfo i;
+ 	int availmem;
++	int amemthresh;
+ 	int nomem;
+ 	int to_change = -1;
  
- 	nfnl_unlock(subsys_id);
+@@ -105,7 +106,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ 	/* si_swapinfo(&i); */
+ 	/* availmem = availmem - (i.totalswap - i.freeswap); */
  
-+	if (nlh->nlmsg_flags & NLM_F_ACK)
-+		nfnl_err_add(&err_list, nlh, 0, &extack);
-+
- 	while (skb->len >= nlmsg_total_size(0)) {
- 		int msglen, type;
+-	nomem = (availmem < ipvs->sysctl_amemthresh);
++	amemthresh = max(READ_ONCE(ipvs->sysctl_amemthresh), 0);
++	nomem = (availmem < amemthresh);
  
-@@ -573,6 +576,8 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		} else if (err) {
- 			ss->abort(net, oskb, NFNL_ABORT_NONE);
- 			netlink_ack(oskb, nlmsg_hdr(oskb), err, NULL);
-+		} else if (nlh->nlmsg_flags & NLM_F_ACK) {
-+			nfnl_err_add(&err_list, nlh, 0, &extack);
- 		}
- 	} else {
- 		enum nfnl_abort_action abort_action;
+ 	local_bh_disable();
+ 
+@@ -146,8 +148,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ 	case 1:
+ 		if (nomem) {
+ 			ipvs->drop_rate = ipvs->drop_counter
+-				= ipvs->sysctl_amemthresh /
+-				(ipvs->sysctl_amemthresh-availmem);
++				= amemthresh /
++				(amemthresh-availmem);
+ 			ipvs->sysctl_drop_packet = 2;
+ 		} else {
+ 			ipvs->drop_rate = 0;
+@@ -156,8 +158,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ 	case 2:
+ 		if (nomem) {
+ 			ipvs->drop_rate = ipvs->drop_counter
+-				= ipvs->sysctl_amemthresh /
+-				(ipvs->sysctl_amemthresh-availmem);
++				= amemthresh /
++				(amemthresh-availmem);
+ 		} else {
+ 			ipvs->drop_rate = 0;
+ 			ipvs->sysctl_drop_packet = 1;
 -- 
-2.44.0
+2.34.1
 
 
