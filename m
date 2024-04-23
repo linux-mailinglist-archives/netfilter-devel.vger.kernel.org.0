@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-1910-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1912-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87FEA8AE384
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Apr 2024 13:11:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95D6C8AE389
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Apr 2024 13:11:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E53F91F230B0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Apr 2024 11:11:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B02E21C20B47
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Apr 2024 11:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BCD7E575;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7548003B;
 	Tue, 23 Apr 2024 11:11:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58558762E8;
-	Tue, 23 Apr 2024 11:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D857E101;
+	Tue, 23 Apr 2024 11:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713870677; cv=none; b=Ox127E4RsjZQXN1cIqHn7rXrKuEDSsgajrAHV2lLra/1Rv4hjRE4OyJQ7hKkDXxJxK8ozY4PEL5ZtmrGhe9T9yWisNLHJPw7E5FPm5WiLvMFoRYCTMhcKG+YFpODVxdVgApi8YoVUL5CjrWEqH+ahqFGYOwZONhJ7o2IuyxPGhE=
+	t=1713870677; cv=none; b=OGbmCmm9ApnalX6vWShfQUzGPdSp4XO0wDlxFk1eV4o6CEBnuoKCzNRdT0MToUJzPvsDQHai0EUsyiOZDFquFBLmidnFfJuZSHtDjKYGuNH29xoBRS6nWQr0LDRchkHKxIeYflH8OFUEEWasrP5oxpBak09v5aBO6bxZ9NRp9X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713870677; c=relaxed/simple;
-	bh=6bIBYt6pyjgUQIF4j+Wlh43GvARIJXv97mYjiDxfHmE=;
+	bh=1ToGxX5smLuzy0eBhos4Q8wXruXszNCaI66tNz9rn+o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D0jAfLJTRNypiJOa6FGdQpoBxum9gvE183njJzu+sT1B5nokctnf6lthZenPTYr4TGgbAouBb/sgS/z6svmrxhGkWikKRwjjeWEUQza59LXJKj6+LmX/NY4VqOYgtGbM2Jw4Wmt3LrFTrVNWF/zP4pCCm8k5W4t+MSRuIKM8Xkg=
+	 MIME-Version; b=Vu1uBxR0xg9U8EyKtUYGQkQWHMMy4FNF1/oNA9yr9j2i4yt3zdr99/gfPWxSzPuU302nmXfpsa3kPdSQj2d1OJNs730Pvv4QkJm6S8UIJogS5WlhgQFHl/eN9mUkvrk0ZIJcYS6zscDiKWKRs+aoBnvYu0I2FLo16fhKsSXJQZ8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1rzE3F-0006vJ-OK; Tue, 23 Apr 2024 13:11:05 +0200
+	id 1rzE3G-0006vX-RV; Tue, 23 Apr 2024 13:11:06 +0200
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -40,9 +40,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 1/7] selftests: netfilter: nft_concat_range.sh: move to lib.sh infra
-Date: Tue, 23 Apr 2024 15:05:44 +0200
-Message-ID: <20240423130604.7013-2-fw@strlen.de>
+Subject: [PATCH net-next 2/7] selftests: netfilter: nft_concat_range.sh: drop netcat support
+Date: Tue, 23 Apr 2024 15:05:45 +0200
+Message-ID: <20240423130604.7013-3-fw@strlen.de>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240423130604.7013-1-fw@strlen.de>
 References: <20240423130604.7013-1-fw@strlen.de>
@@ -54,306 +54,206 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use busywait helper instead of unconditional sleep, reduces run time
-from 6m to 2:30 on my system.
+Tests fail on my workstation with netcat 110, instead of debugging+more
+workarounds just remove this.
 
-The busywait helper calls the function passed to it as argument; disable
-the shellcheck test for unreachable code, it generates many (false)
-warnings here.
+Tests will fall back to bash or socat.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- .../net/netfilter/nft_concat_range.sh         | 62 +++++++++++--------
- 1 file changed, 37 insertions(+), 25 deletions(-)
+ .../net/netfilter/nft_concat_range.sh         | 74 ++++---------------
+ 1 file changed, 13 insertions(+), 61 deletions(-)
 
 diff --git a/tools/testing/selftests/net/netfilter/nft_concat_range.sh b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-index e908009576c7..877c9d3777d2 100755
+index 877c9d3777d2..2160de014525 100755
 --- a/tools/testing/selftests/net/netfilter/nft_concat_range.sh
 +++ b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/bash
- # SPDX-License-Identifier: GPL-2.0
- #
- # nft_concat_range.sh - Tests for sets with concatenation of ranged fields
-@@ -7,10 +7,10 @@
- #
- # Author: Stefano Brivio <sbrivio@redhat.com>
- #
--# shellcheck disable=SC2154,SC2034,SC2016,SC2030,SC2031
-+# shellcheck disable=SC2154,SC2034,SC2016,SC2030,SC2031,SC2317
- # ^ Configuration and templates sourced with eval, counters reused in subshells
+@@ -66,7 +66,7 @@ src
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip nc bash
++tools		sendip bash
+ proto		udp
  
--KSELFTEST_SKIP=4
-+source lib.sh
+ race_repeat	3
+@@ -91,7 +91,7 @@ src
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
  
- # Available test groups:
- # - reported_issues: check for issues that were reported in the past
-@@ -473,8 +473,6 @@ setup_veth() {
- 	B() {
- 		ip netns exec B "$@" >/dev/null 2>&1
- 	}
+ race_repeat	3
+@@ -116,7 +116,7 @@ src
+ start		10
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp6
+ 
+ race_repeat	3
+@@ -141,7 +141,7 @@ src
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
+ 
+ race_repeat	0
+@@ -163,7 +163,7 @@ src		mac
+ start		10
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp6
+ 
+ race_repeat	0
+@@ -185,7 +185,7 @@ src		mac proto
+ start		10
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp6
+ 
+ race_repeat	0
+@@ -207,7 +207,7 @@ src		addr4
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
+ 
+ race_repeat	3
+@@ -227,7 +227,7 @@ src		addr6 port
+ start		10
+ count		5
+ src_delta	2000
+-tools		sendip socat nc
++tools		sendip socat
+ proto		udp6
+ 
+ race_repeat	3
+@@ -247,7 +247,7 @@ src		mac proto addr4
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
+ 
+ race_repeat	0
+@@ -264,7 +264,7 @@ src		mac
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
+ 
+ race_repeat	0
+@@ -286,7 +286,7 @@ src		mac addr4
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
+ 
+ race_repeat	0
+@@ -337,7 +337,7 @@ src		addr4
+ start		1
+ count		5
+ src_delta	2000
+-tools		sendip socat nc
++tools		sendip socat
+ proto		udp
+ 
+ race_repeat	3
+@@ -363,7 +363,7 @@ src		mac
+ start		1
+ count		1
+ src_delta	2000
+-tools		sendip socat nc bash
++tools		sendip socat bash
+ proto		udp
+ 
+ race_repeat	0
+@@ -486,12 +486,6 @@ check_tools() {
+ 
+ 	__tools=
+ 	for tool in ${tools}; do
+-		if [ "${tool}" = "nc" ] && [ "${proto}" = "udp6" ] && \
+-		   ! nc -u -w0 1.1.1.1 1 2>/dev/null; then
+-			# Some GNU netcat builds might not support IPv6
+-			__tools="${__tools} netcat-openbsd"
+-			continue
+-		fi
+ 		__tools="${__tools} ${tool}"
+ 
+ 		command -v "${tool}" >/dev/null && return 0
+@@ -554,29 +548,6 @@ setup_send_udp() {
+ 
+ 			echo "test4" | B socat -t 0.01 STDIN UDP4-DATAGRAM:${dst_addr4}:${dst_port}"${__socatbind}"
+ 
+-			src_addr4=
+-			src_port=
+-		}
+-	elif command -v nc >/dev/null; then
+-		if nc -u -w0 1.1.1.1 1 2>/dev/null; then
+-			# OpenBSD netcat
+-			nc_opt="-w0"
+-		else
+-			# GNU netcat
+-			nc_opt="-q0"
+-		fi
 -
--	sleep 2
- }
- 
- # Fill in set template and initialise set
-@@ -679,10 +677,17 @@ setup_send_udp6() {
- 	fi
- }
- 
-+listener_ready()
-+{
-+	port="$1"
-+	ss -lnt -o "sport = :$port" | grep -q "$port"
-+}
-+
- # Set up function to send TCP traffic on IPv4
- setup_flood_tcp() {
- 	if command -v iperf3 >/dev/null; then
- 		flood_tcp() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr4}" ]; then
- 				B ip addr add "${src_addr4}/16" dev veth_b
-@@ -699,7 +704,7 @@ setup_flood_tcp() {
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			iperf3 -s -DB "${dst_addr4}" ${dst_port} >/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B iperf3 -c "${dst_addr4}" ${dst_port} ${src_port} \
-@@ -711,6 +716,7 @@ setup_flood_tcp() {
+-		send_udp() {
+-			if [ -n "${src_addr4}" ]; then
+-				B ip addr add "${src_addr4}" dev veth_b
+-				__src_addr4="-s ${src_addr4}"
+-			fi
+-			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
+-			[ -n "${src_port}" ] && src_port="-p ${src_port}"
+-
+-			echo "" | B nc -u "${nc_opt}" "${__src_addr4}" \
+-				  "${src_port}" "${dst_addr4}" "${dst_port}"
+-
+ 			src_addr4=
+ 			src_port=
  		}
- 	elif command -v iperf >/dev/null; then
- 		flood_tcp() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr4}" ]; then
- 				B ip addr add "${src_addr4}/16" dev veth_b
-@@ -727,7 +733,7 @@ setup_flood_tcp() {
+@@ -645,25 +616,6 @@ setup_send_udp6() {
  
- 			# shellcheck disable=SC2086 # this needs split options
- 			iperf -s -DB "${dst_addr4}" ${dst_port} >/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B iperf -c "${dst_addr4}" ${dst_port} ${src_addr4} \
-@@ -739,6 +745,7 @@ setup_flood_tcp() {
+ 			echo "test6" | B socat -t 0.01 STDIN UDP6-DATAGRAM:[${dst_addr6}]:${dst_port}"${__socatbind6}"
  		}
- 	elif command -v netperf >/dev/null; then
- 		flood_tcp() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr4}" ]; then
- 				B ip addr add "${src_addr4}/16" dev veth_b
-@@ -755,7 +762,7 @@ setup_flood_tcp() {
- 			# shellcheck disable=SC2086 # this needs split options
- 			netserver -4 ${dst_port} -L "${dst_addr4}" \
- 				>/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "${n_port}"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B netperf -4 -H "${dst_addr4}" ${dst_port} \
-@@ -774,6 +781,7 @@ setup_flood_tcp() {
- setup_flood_tcp6() {
- 	if command -v iperf3 >/dev/null; then
- 		flood_tcp6() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr6}" ]; then
- 				B ip addr add "${src_addr6}" dev veth_b nodad
-@@ -790,7 +798,7 @@ setup_flood_tcp6() {
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			iperf3 -s -DB "${dst_addr6}" ${dst_port} >/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "${n_port}"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B iperf3 -c "${dst_addr6}" ${dst_port} \
-@@ -802,6 +810,7 @@ setup_flood_tcp6() {
- 		}
- 	elif command -v iperf >/dev/null; then
- 		flood_tcp6() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr6}" ]; then
- 				B ip addr add "${src_addr6}" dev veth_b nodad
-@@ -818,7 +827,7 @@ setup_flood_tcp6() {
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			iperf -s -VDB "${dst_addr6}" ${dst_port} >/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B iperf -c "${dst_addr6}" -V ${dst_port} \
-@@ -830,6 +839,7 @@ setup_flood_tcp6() {
- 		}
- 	elif command -v netperf >/dev/null; then
- 		flood_tcp6() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr6}" ]; then
- 				B ip addr add "${src_addr6}" dev veth_b nodad
-@@ -846,7 +856,7 @@ setup_flood_tcp6() {
- 			# shellcheck disable=SC2086 # this needs split options
- 			netserver -6 ${dst_port} -L "${dst_addr6}" \
- 				>/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B netperf -6 -H "${dst_addr6}" ${dst_port} \
-@@ -865,6 +875,7 @@ setup_flood_tcp6() {
- setup_flood_udp() {
- 	if command -v iperf3 >/dev/null; then
- 		flood_udp() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr4}" ]; then
- 				B ip addr add "${src_addr4}/16" dev veth_b
-@@ -881,7 +892,7 @@ setup_flood_udp() {
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			iperf3 -s -DB "${dst_addr4}" ${dst_port}
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B iperf3 -u -c "${dst_addr4}" -Z -b 100M -l16 -t1000 \
-@@ -893,6 +904,7 @@ setup_flood_udp() {
- 		}
- 	elif command -v iperf >/dev/null; then
- 		flood_udp() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr4}" ]; then
- 				B ip addr add "${src_addr4}/16" dev veth_b
-@@ -909,7 +921,7 @@ setup_flood_udp() {
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			iperf -u -sDB "${dst_addr4}" ${dst_port} >/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B iperf -u -c "${dst_addr4}" -b 100M -l1 -t1000 \
-@@ -921,6 +933,7 @@ setup_flood_udp() {
- 		}
- 	elif command -v netperf >/dev/null; then
- 		flood_udp() {
-+			local n_port="${dst_port}"
- 			[ -n "${dst_port}" ] && dst_port="-p ${dst_port}"
- 			if [ -n "${src_addr4}" ]; then
- 				B ip addr add "${src_addr4}/16" dev veth_b
-@@ -937,7 +950,7 @@ setup_flood_udp() {
- 			# shellcheck disable=SC2086 # this needs split options
- 			netserver -4 ${dst_port} -L "${dst_addr4}" \
- 				>/dev/null 2>&1
--			sleep 2
-+			busywait "$BUSYWAIT_TIMEOUT" listener_ready "$n_port"
- 
- 			# shellcheck disable=SC2086 # this needs split options
- 			B netperf -4 -H "${dst_addr4}" ${dst_port} \
-@@ -990,14 +1003,13 @@ cleanup() {
- 	killall netperf				2>/dev/null
- 	killall netserver			2>/dev/null
- 	rm -f ${tmp}
--	sleep 2
- }
- 
- # Entry point for setup functions
- setup() {
- 	if [ "$(id -u)" -ne 0 ]; then
- 		echo "  need to run as root"
--		exit ${KSELFTEST_SKIP}
-+		exit ${ksft_skip}
- 	fi
- 
- 	cleanup
-@@ -1258,7 +1270,7 @@ send_nomatch() {
- # - check that packets outside range don't match it
- # - remove some elements, check that packets don't match anymore
- test_correctness() {
--	setup veth send_"${proto}" set || return ${KSELFTEST_SKIP}
-+	setup veth send_"${proto}" set || return ${ksft_skip}
- 
- 	range_size=1
- 	for i in $(seq "${start}" $((start + count))); do
-@@ -1307,7 +1319,7 @@ test_concurrency() {
- 	proto=${flood_proto}
- 	tools=${flood_tools}
- 	chain_spec=${flood_spec}
--	setup veth flood_"${proto}" set || return ${KSELFTEST_SKIP}
-+	setup veth flood_"${proto}" set || return ${ksft_skip}
- 
- 	range_size=1
- 	cstart=${start}
-@@ -1325,7 +1337,7 @@ test_concurrency() {
- 		start=$((end + range_size))
- 	done
- 
--	sleep 10
-+	sleep $((RANDOM%10))
- 
- 	pids=
- 	for c in $(seq 1 "$(nproc)"); do (
-@@ -1407,7 +1419,7 @@ test_concurrency() {
- # - add all the elements with 3s timeout while checking that packets match
- # - wait 3s after the last insertion, check that packets don't match any entry
- test_timeout() {
--	setup veth send_"${proto}" set || return ${KSELFTEST_SKIP}
-+	setup veth send_"${proto}" set || return ${ksft_skip}
- 
- 	timeout=3
- 	range_size=1
-@@ -1450,7 +1462,7 @@ test_performance() {
- 	chain_spec=${perf_spec}
- 	dst="${perf_dst}"
- 	src="${perf_src}"
--	setup veth perf set || return ${KSELFTEST_SKIP}
-+	setup veth perf set || return ${ksft_skip}
- 
- 	first=${start}
- 	range_size=1
-@@ -1523,7 +1535,7 @@ test_bug_flush_remove_add() {
- 	elem1='{ 10.0.0.1 . 22-25, 10.0.0.1 . 10-20 }'
- 	elem2='{ 10.0.0.1 . 10-20, 10.0.0.1 . 22-25 }'
- 	for i in `seq 1 100`; do
--		nft add table t ${set_cmd}	|| return ${KSELFTEST_SKIP}
-+		nft add table t ${set_cmd}	|| return ${ksft_skip}
- 		nft add element t s ${elem1}	2>/dev/null || return 1
- 		nft flush set t s		2>/dev/null || return 1
- 		nft add element t s ${elem2}	2>/dev/null || return 1
-@@ -1534,7 +1546,7 @@ test_bug_flush_remove_add() {
- # - add ranged element, check that packets match it
- # - reload the set, check packets still match
- test_bug_reload() {
--	setup veth send_"${proto}" set || return ${KSELFTEST_SKIP}
-+	setup veth send_"${proto}" set || return ${ksft_skip}
- 	rstart=${start}
- 
- 	range_size=1
-@@ -1635,11 +1647,11 @@ for name in ${TESTS}; do
- 			printf "[FAIL]\n"
- 			err_flush
- 			exit 1
--		elif [ $ret -eq ${KSELFTEST_SKIP} ]; then
-+		elif [ $ret -eq ${ksft_skip} ]; then
- 			printf "[SKIP]\n"
- 			err_flush
- 		fi
- 	done
- done
- 
--[ ${passed} -eq 0 ] && exit ${KSELFTEST_SKIP} || exit 0
-+[ ${passed} -eq 0 ] && exit ${ksft_skip} || exit 0
+-	elif command -v nc >/dev/null && nc -u -w0 1.1.1.1 1 2>/dev/null; then
+-		# GNU netcat might not work with IPv6, try next tool
+-		send_udp6() {
+-			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
+-				2>/dev/null
+-			if [ -n "${src_addr6}" ]; then
+-				B ip addr add "${src_addr6}" dev veth_b nodad
+-			else
+-				src_addr6="2001:db8::2"
+-			fi
+-			[ -n "${src_port}" ] && src_port="-p ${src_port}"
+-
+-			# shellcheck disable=SC2086 # this needs split options
+-			echo "" | B nc -u w0 "-s${src_addr6}" ${src_port} \
+-					       ${dst_addr6} ${dst_port}
+-
+-			src_addr6=
+-			src_port=
+-		}
+ 	elif [ -z "$(bash -c 'type -p')" ]; then
+ 		send_udp6() {
+ 			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
 -- 
 2.43.2
 
