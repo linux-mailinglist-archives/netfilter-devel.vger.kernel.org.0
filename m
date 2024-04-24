@@ -1,95 +1,60 @@
-Return-Path: <netfilter-devel+bounces-1948-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1950-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 032E78B15B4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Apr 2024 00:00:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55B828B15E9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Apr 2024 00:12:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41F34B220C5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Apr 2024 22:00:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 873301C20B0F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Apr 2024 22:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01BD1581F4;
-	Wed, 24 Apr 2024 22:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PIhu4LXe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7B015ECF0;
+	Wed, 24 Apr 2024 22:12:53 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA298156F46
-	for <netfilter-devel@vger.kernel.org>; Wed, 24 Apr 2024 22:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1588155358
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Apr 2024 22:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713996051; cv=none; b=U4EgWBrewOWn+myEepeU+GlJQazw47CrZiBofKTYHeUDnMfb0I54PqEvksch20uqvGiXjs1qyWFe2lsBcYKfTouiCCX7um5LojM/5ZHGpfA9MmzFqyeB8XMM52rqGKvelZMEIWR9Pt5V69qh0niMmmGUqZnsJfX2PuAoXx0VaFw=
+	t=1713996772; cv=none; b=HNZi9IRtH6NNuTzNnsGDyLPYjsHN90q3GhPuWkuLC553l+7sFZtJlyRRcYbpmOG4UVk7jTiW/UwdAxIowVmeP0u6IxaxOHEFSc6tlkOP4kk++FlG+T6T13+xCD7wAFxen3w6H4A3NA+nj0YZEGPnWDBObzIlSA6Asp7xYxbdpZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713996051; c=relaxed/simple;
-	bh=77rRAKRLoX2+PF5bKCRU+RUYrX4Zufk0ZP6RkcOtJ/I=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SSZkGE9+Jv5lwNe+l/B1uIHaDbECiSYSgAqODuqZ3uy/ckb5zNsLOqK5GJxeQwAR1EOVA0FC/+ocdlIAchNqy2bFS3fmnUhTPOxZ8byaRtVMnPeT0RgJF2Ce0utuu0go7pIJUgaoGWlop32K72ytujJSxPPCWz57ftwVoHfAnUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PIhu4LXe; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=yjftzZj6lZ0ZdFwLO8M82JWjBLt27jWsUoISIR9D3yk=; b=PIhu4LXeS8ZqImIeRi/ua2tT/+
-	4hwpPI4vBpRbIMH+ED1yCOQCXH0OveBjE6Krr/xdi0pzMO159zykVQE8neJ09ahzqCF46FJzdUawX
-	1wgqEoB+E2vIX5sU7SKoXapNfim3uyHGStKOKcnbw01wzsVulSLKhNNymiH006Y82wwbBv+AirVlN
-	TVW/LMtNq5FSW/qt5SksEZORK8LHgSZiruVSR4El5pLcqVimmw6tOGhWy4T/MVq1djjxREoeY0Hs5
-	RvEIS++zSMWmFaMLewvkYarvYLYHmt2oZEgA2XVngPAaKNLUyoS2zRtkzcTN7yUPwbmpl8ynoBAYH
-	kZMascmw==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1rzkfY-000000003v9-1Etg
-	for netfilter-devel@vger.kernel.org;
-	Thu, 25 Apr 2024 00:00:48 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 2/2] doc: nft.8: Highlight "hook" in flowtable description
-Date: Thu, 25 Apr 2024 00:00:48 +0200
-Message-ID: <20240424220048.19935-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240424220048.19935-1-phil@nwl.cc>
-References: <20240424220048.19935-1-phil@nwl.cc>
+	s=arc-20240116; t=1713996772; c=relaxed/simple;
+	bh=MRaCs4ZMdgeIiNaUG7AksuwPw3f3t9ZrMtYsTkLyYpE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BxTFf9FIO/3LzuKAU7R9N00+V4BoBD5d7jfxM3XN6qm5/sUFV9Fa9IBxQUW/phTTJGLkvJBHQdnCW76cRl6O+5zp4vNhpdDiYq1Wha0Rdm+/ouWEfFGTtZwpjo24si25C59jEIYWgxozIuzlnt2TLOcLoO29To5y9Kns18OE9Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Date: Thu, 25 Apr 2024 00:12:43 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Phil Sutter <phil@nwl.cc>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] json: Fix for memleak in __binop_expr_json
+Message-ID: <ZimD2x6aaf29ZTyJ@calendula>
+References: <20240424215821.19169-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240424215821.19169-1-phil@nwl.cc>
 
-Lacking an explicit description of possible hook values, emphasising the
-word in the description text should draw readers' attention in the right
-direction.
+On Wed, Apr 24, 2024 at 11:58:21PM +0200, Phil Sutter wrote:
+> When merging the JSON arrays generated for LHS and RHS of nested binop
+> expressions, the emptied array objects leak if their reference is not
+> decremented.
+> 
+> Fix this and tidy up other spots which did it right already by
+> introducing a json_array_extend wrapper.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- doc/nft.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks for fixing it up so quick, no more issues with tests/shell.
 
-diff --git a/doc/nft.txt b/doc/nft.txt
-index 2080c07350f6d..e4eb982e75af8 100644
---- a/doc/nft.txt
-+++ b/doc/nft.txt
-@@ -747,8 +747,8 @@ protocols. Each entry also caches the destination interface and the gateway
- address - to update the destination link-layer address - to forward packets.
- The ttl and hoplimit fields are also decremented. Hence, flowtables provides an
- alternative path that allow packets to bypass the classic forwarding path.
--Flowtables reside in the ingress hook that is located before the prerouting
--hook. You can select which flows you want to offload through the flow
-+Flowtables reside in the ingress *hook* that is located before the prerouting
-+*hook*. You can select which flows you want to offload through the flow
- expression from the forward chain. Flowtables are identified by their address
- family and their name. The address family must be one of ip, ip6, or inet. The inet
- address family is a dummy family which is used to create hybrid IPv4/IPv6
--- 
-2.43.0
-
+> Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> Fixes: 0ac39384fd9e4 ("json: Accept more than two operands in binary expressions")
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
