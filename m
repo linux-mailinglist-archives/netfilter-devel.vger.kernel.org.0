@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-1953-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-1955-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49DB8B17EF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Apr 2024 02:20:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D263F8B1812
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Apr 2024 02:30:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63EBA1F2278C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Apr 2024 00:20:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8780F1F26598
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Apr 2024 00:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22E4631;
-	Thu, 25 Apr 2024 00:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B8F17C9;
+	Thu, 25 Apr 2024 00:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MUXf/Lx5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eYgliMNF"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80E136E;
-	Thu, 25 Apr 2024 00:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD8BA3F;
+	Thu, 25 Apr 2024 00:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714004432; cv=none; b=VPQhDVd1RG0XVAdf30RJE7yD+4j2y7MvpNtAwsmrl3EVVpByIKcaPbzcN4J46w4bwrllxInaLYwWLc5M7ekBfljasbnVoNtb79jWF/sv3Gqqjyn79Zsca+Lijp2XRGopVCWEMS5htgpdntFN3U3sBvI6eri08Ed/6510PAf+/Gk=
+	t=1714005029; cv=none; b=We7rwI7RSg77xO63zL4+MLLpLq0oPV+0VG0db5iNks6nNqh4IGr3z+VdblcTKiPLJLlKT851eiwQIHEf6yqs1LOT2AP+TRvaoxCQzt0NnaKdtKScKDOg9b5dEPTKdYsH+WzBYEFzpr8jn+832NDK+aAy3jmk6jxd44DLkzPXDw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714004432; c=relaxed/simple;
-	bh=qSWWjL7tB5KUSxbPiYTwravedXCx7m/IfUKjfVO5Zx8=;
+	s=arc-20240116; t=1714005029; c=relaxed/simple;
+	bh=7V9b27qCWrZrOqKoA0pgyFCHk4yqPSPUuvkVppirZS4=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=h2DvfKs08mA7O2mLDTZF30zjFqcc8qb+MwUh+Se/DZYzeX5ViVXUx2EjAk8rOxDz/p/FAFBeB2sJ4gPp6L8ftXAd/Sr5QraqTU0iK7U/jtCwYf7345CNVcFDCF1v2IGxa6CwODzv2j8p99ZeceB7+NUNVXW9aqCPw3+VZxJTuwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MUXf/Lx5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4CB42C113CD;
-	Thu, 25 Apr 2024 00:20:32 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=kgrC7W7STimGwyxNQewn/bJ+dqPIkWhpkdqfaNPjEaWgG8KO9iwZ2A81AbfoQzZuCqkfrSRbINROldGePNOr0+PprcEJBx3X9KYBolrlXVWY/SDnbdOO2qIJCkHrPr4hLxzz2AgjZvK7w0fVQevTooaznkPfpybfhsmnmWxYiI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eYgliMNF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 27045C113CE;
+	Thu, 25 Apr 2024 00:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714004432;
-	bh=qSWWjL7tB5KUSxbPiYTwravedXCx7m/IfUKjfVO5Zx8=;
+	s=k20201202; t=1714005029;
+	bh=7V9b27qCWrZrOqKoA0pgyFCHk4yqPSPUuvkVppirZS4=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MUXf/Lx5cKQgYdVgPD55K4jG5PZ82jGOBfwOGb22ebeiBwFE7mh9AJ3w+BhIVa78t
-	 FvLWooZ+oBiZl79OyBjdlRfDdZmKVz9KD9FId6K4I9e/x9gUuEOulvb8WwFA0/ILrh
-	 YL1Bs463AjuzuSt721xY9QcUiQrFVVqUsuW5oA5xsxTCWgZOEJ3siDOqoDVS+UwRM6
-	 xDH8r/BdGRkjEhXAmsNJJOf2/13zapYeuiUuU2+LUd8tyDCNI1TMvAzNnXIrtaq4Ua
-	 6vfWEXnbI8GkErJKRoONgkvQKwAYOGNOHVZJWVc9XtyjFp43w4YFbYhLh/EsqqVM0t
-	 uX7KIgnx6UIng==
+	b=eYgliMNFklftChCOl5/gsq/K2ZS8JC2p+6hHycQpe6SrkLPkasxS3OajEiFou/E4X
+	 vvcsV2KZ/MSFxI/pOZWdhvHnYftlW1ETVIK3RFdxAAl0QUxAEPKQbwqZYTYxuzDGVK
+	 B/8lMwxBGNo+MwSf0FSSoZDkePfCxoL/mAXvkYG/mmDiOxX3X0088U9xSZMdYL7Hxl
+	 tAaz43uTXwpJFeyOGK/a4JJiC4G8pTY1fNgDIpOvUgDbONdA/ZPdS/5SxLbUdaVtnJ
+	 DsU2RusorwrXrVYM9J+AsKZ+cdGdCTstb0fRhK4V7AsBJ9TMqlS4DHlm2GB+EQCiwt
+	 n0vrQ8hgQx1fg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3D720C43614;
-	Thu, 25 Apr 2024 00:20:32 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 11A6DCF21C0;
+	Thu, 25 Apr 2024 00:30:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -52,13 +52,14 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/7] selftest: netfilter: additional cleanups
+Subject: Re: [PATCH net-next] selftests: netfilter: nft_zones_many.sh: set ct
+ sysctl after ruleset load
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171400443224.18029.12861058417990114215.git-patchwork-notify@kernel.org>
-Date: Thu, 25 Apr 2024 00:20:32 +0000
-References: <20240423130604.7013-1-fw@strlen.de>
-In-Reply-To: <20240423130604.7013-1-fw@strlen.de>
+ <171400502906.22410.3606824868899948697.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Apr 2024 00:30:29 +0000
+References: <20240422102546.2494-1-fw@strlen.de>
+In-Reply-To: <20240422102546.2494-1-fw@strlen.de>
 To: Florian Westphal <fw@strlen.de>
 Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
  edumazet@google.com, kuba@kernel.org, netfilter-devel@vger.kernel.org,
@@ -66,34 +67,22 @@ Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 23 Apr 2024 15:05:43 +0200 you wrote:
-> This is the last planned series of the netfilter-selftest-move.
-> It contains cleanups (and speedups) and a few small updates to
-> scripts to improve error/skip reporting.
+On Mon, 22 Apr 2024 12:25:42 +0200 you wrote:
+> nf_conntrack_udp_timeout sysctl only exist once conntrack module is loaded,
+> if this test runs standalone on a modular kernel sysctl setting fails,
+> this can result in test failure as udp conntrack entries expire too fast.
 > 
-> I intend to route future changes, if any, via nf(-next) trees
-> now that the 'massive code churn' phase is over.
-> 
-> [...]
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  tools/testing/selftests/net/netfilter/nft_zones_many.sh | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [net-next,1/7] selftests: netfilter: nft_concat_range.sh: move to lib.sh infra
-    https://git.kernel.org/netdev/net-next/c/546fb63fe85e
-  - [net-next,2/7] selftests: netfilter: nft_concat_range.sh: drop netcat support
-    https://git.kernel.org/netdev/net-next/c/ba6fbd383c12
-  - [net-next,3/7] selftests: netfilter: nft_concat_range.sh: shellcheck cleanups
-    https://git.kernel.org/netdev/net-next/c/c54fa6ae35b9
-  - [net-next,4/7] selftests: netfilter: nft_flowtable.sh: re-run with random mtu sizes
-    https://git.kernel.org/netdev/net-next/c/f84ab634904c
-  - [net-next,5/7] selftests: netfilter: nft_flowtable.sh: shellcheck cleanups
-    https://git.kernel.org/netdev/net-next/c/a18f284574ad
-  - [net-next,6/7] selftests: netfilter: skip tests on early errors
-    https://git.kernel.org/netdev/net-next/c/bb0ee78f9418
-  - [net-next,7/7] selftests: netfilter: conntrack_vrf.sh: prefer socat, not iperf3
-    https://git.kernel.org/netdev/net-next/c/99bc5950ebd4
+  - [net-next] selftests: netfilter: nft_zones_many.sh: set ct sysctl after ruleset load
+    https://git.kernel.org/netdev/net-next/c/8e2b318a65c3
 
 You are awesome, thank you!
 -- 
