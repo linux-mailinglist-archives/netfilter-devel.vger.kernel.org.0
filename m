@@ -1,60 +1,63 @@
-Return-Path: <netfilter-devel+bounces-2033-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2031-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F918B632A
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 22:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FC108B6328
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 22:06:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0904D1F21204
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 20:06:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E02C1F21968
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 20:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D14E1411C3;
-	Mon, 29 Apr 2024 20:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851A714039D;
+	Mon, 29 Apr 2024 20:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="iajxSoM2"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="FJy7dnVS"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175BF13F006
-	for <netfilter-devel@vger.kernel.org>; Mon, 29 Apr 2024 20:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A57713F006
+	for <netfilter-devel@vger.kernel.org>; Mon, 29 Apr 2024 20:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714421195; cv=none; b=oHajbk7PlaHqFxgiUNRdh/SnCgL35uKami4BOgyCstQ2VxUovitElq0kuJwPpQ3codHeKQRfJFXPK6eQ0Qoz6tQaxZvWhcDdJ5ZBcaMEmPyEHr4vc0eqQAiJWUPORon3RidhETMrSTZYpyJOaINeIcWxVnQb4cHH/+7+oQrhSy4=
+	t=1714421183; cv=none; b=rT6xhWnHfkc0TZh7AjUXxq8UfHL4ksgzOtSGYFq45/jrVla4tFUUJvWneuWxQBdYUBZaXZDhe7VNgePk0CYtvcLioYPLHDgzJ8MHKZYqmO+UatJ0LFW5+DG2rahhrQ5TM18qadkf/RDGr/eqYOdDMDhDtxswRYYrKhEHPjWNsek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714421195; c=relaxed/simple;
-	bh=o0V5b/lqrk3IJthlla6ehnl4MTqtkr9NXXQrVNGOOI8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=JHXKo2Me26SBpLbONbh9Hdz1p9L6P0oIxzFpOBfRvpE0IuNOjc2l1qreRW5j4/fBaDER2ki28zjS/Ar1wvdS+G0yVEmkD4nYFw97jk6vuHHRaa+0qETiVqnU4hRtksCUQYphQq8V3Fu+EafJ84ZkHOPtp2yfEeZ7y11XOx5Qkb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=iajxSoM2; arc=none smtp.client-ip=35.176.194.208
+	s=arc-20240116; t=1714421183; c=relaxed/simple;
+	bh=aCi4Na4ck4bx8W5akCYJ9jiW+WTZ+fRdbGwXMxnIcKY=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sQemzA7TmhE5HVc+imHN3mcK8t9KBpwD3Fe6d1FmDNWwdiWCOOoKHz8ZifYMTaThQ38s5P7FQXQi/05h4NQh/Yx3aoNjklppVPFdDiUL8fFCRQ7TXAeOwZPobjVIqGDJnciXaahgcaRr6vN53obKgufOW5dfHiT2vWjFoGJhh/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=FJy7dnVS; arc=none smtp.client-ip=35.176.194.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=47hSKzHTqSctVRCumxheMB+KTr2MUbpVfSmq0mD0OgY=; b=iajxSoM2PUIzBVPlJSNli8aHWD
-	e8ggCOZs+zb+6KcLx+fNUznXgjFFCSj7L9YdP0pMx1mO+JVmtKR49Riiuigz1qDM1IBbgXene6ITh
-	yKmG3G6CKoX4QJ1Tg0eEqhlApMjGFNqrPA3U9LIhopeEI4FbabywK+6/Rau4bxenz//u2YSF3encb
-	48VIlzHDzOZEFDnz4Pkw/g46HFC1Dvs2C5MVh/TJEc/0a3FRZXvlJ+EqR77EqzgGs0m6q8xHRTedC
-	sZUP2ciY1WKlZ92f9ffTO0g9d18sc/dYkM3Jdtfn29JrNXUns0iu3K35M4j7iSyG0mqY/Q2aHlGGT
-	OsjCq53g==;
+	bh=3pqArfhh3gJbAyCVjORpTvQXMLgwTCYMXyLLOV6TFpY=; b=FJy7dnVSf3uPXDwrEcvb591y05
+	nK5c7frSuGvOJUPQxenKZpC9Wp9KQTVZYqmMyc6RL1VaxNpl5U6vL0CNPj/b0dj1ehzKiOj/eMpuT
+	lqmgJeZzRYDaGa12J6yj9YK1pioio2v/YHcl4p4HgZ8do7eFHfDPI84lma82RRXuE2+63Pympgvk4
+	lBtkn8+9Ve/ON9k3g8vP1ZGxVczQCBmn38jkFzGc7u+VmA5G9j2SgkLQf10PnS+6d5M8D/RYQGqNx
+	Q810ZRC6yEzyQxvGklkB0OtENWgXVZBNPs4WVX0iKEOP1JkWwsI95RvwXhav/2i9h05w9P89TXO0J
+	YQ29zWkA==;
 Received: from dreamlands.azazel.net ([81.187.231.252] helo=ulthar.dreamlands.azazel.net)
 	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1s1WfP-00G8U5-2M
+	id 1s1WfP-00G8U5-2W
 	for netfilter-devel@vger.kernel.org;
 	Mon, 29 Apr 2024 20:27:59 +0100
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 0/2] Support for variables in map expressions
-Date: Mon, 29 Apr 2024 20:27:51 +0100
-Message-ID: <20240429192756.1347369-1-jeremy@azazel.net>
+Subject: [PATCH nft v3 1/2] evaluate: handle invalid mapping expressions in stateful object statements gracefully.
+Date: Mon, 29 Apr 2024 20:27:52 +0100
+Message-ID: <20240429192756.1347369-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240429192756.1347369-1-jeremy@azazel.net>
+References: <20240429192756.1347369-1-jeremy@azazel.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,49 +69,39 @@ X-SA-Exim-Connect-IP: 81.187.231.252
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-The first patch replaces the current assertion failure for invalid
-mapping expression in stateful-object statements with an error message.
-This brings it in line with map statements.
+Currently, they are reported as assertion failures:
 
-It is possible to use a variable to initialize a map, which is then used
-in a map statement, but if one tries to use the variable directly, nft
-rejects it.  The second patch adds support for doing this.
+  BUG: invalid mapping expression variable
+  nft: src/evaluate.c:4618: stmt_evaluate_objref_map: Assertion `0' failed.
+  Aborted
 
-Changes since v2
+Instead, report them more informatively as errors:
 
-  * Patch 2: error-checking (and test-cases) added for variables that do
-    not contain maps
+  /space/azazel/tmp/ruleset.1067161.nft:15:29-38: Error: invalid mapping expression variable
+      quota name ip saddr map $quota_map
+                 ~~~~~~~~     ^^^^^^^^^^
 
-Changes since v1
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ src/evaluate.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-  * Patch 1 is new.
-  * Patch 2 updated to add support for map variables in stateful object
-    statements.
-
-Jeremy Sowden (2):
-  evaluate: handle invalid mapping expressions in stateful object
-    statements gracefully.
-  evaluate: add support for variables in map expressions
-
- src/evaluate.c                                |  17 +-
- .../shell/testcases/maps/0024named_objects_1  |  31 ++++
- .../shell/testcases/maps/0024named_objects_2  |  23 +++
- .../shell/testcases/maps/anonymous_snat_map_1 |  16 ++
- .../shell/testcases/maps/anonymous_snat_map_2 |  23 +++
- .../maps/dumps/0024named_objects_1.json-nft   | 147 ++++++++++++++++++
- .../maps/dumps/0024named_objects_1.nft        |  23 +++
- .../maps/dumps/anonymous_snat_map_1.json-nft  |  58 +++++++
- .../maps/dumps/anonymous_snat_map_1.nft       |   5 +
- 9 files changed, 341 insertions(+), 2 deletions(-)
- create mode 100755 tests/shell/testcases/maps/0024named_objects_1
- create mode 100755 tests/shell/testcases/maps/0024named_objects_2
- create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_1
- create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_2
- create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
- create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.nft
- create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
- create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
-
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 1682ba58989e..f28ef2aad8f4 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -4615,8 +4615,9 @@ static int stmt_evaluate_objref_map(struct eval_ctx *ctx, struct stmt *stmt)
+ 					  "Expression is not a map with objects");
+ 		break;
+ 	default:
+-		BUG("invalid mapping expression %s\n",
+-		    expr_name(map->mappings));
++		return expr_binary_error(ctx->msgs, map->mappings, map->map,
++					 "invalid mapping expression %s",
++					 expr_name(map->mappings));
+ 	}
+ 
+ 	if (!datatype_compatible(map->mappings->set->key->dtype, map->map->dtype))
 -- 
 2.43.0
 
