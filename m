@@ -1,184 +1,115 @@
-Return-Path: <netfilter-devel+bounces-2030-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2033-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDD78B5BE4
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 16:49:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F918B632A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 22:06:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3959286882
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 14:49:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0904D1F21204
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 20:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8827580039;
-	Mon, 29 Apr 2024 14:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D14E1411C3;
+	Mon, 29 Apr 2024 20:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="iajxSoM2"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE2180058
-	for <netfilter-devel@vger.kernel.org>; Mon, 29 Apr 2024 14:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.139.111.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175BF13F006
+	for <netfilter-devel@vger.kernel.org>; Mon, 29 Apr 2024 20:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714402183; cv=none; b=mXrQ24c5KAz1bG3v0XO61A5MIQc/eu+yKhF5wr58cowZZvo/LT90EfLWyLGAFTw62+YmZlUUayld0FqXxxR5P4LBUeDDGBnY4EiTo0s9f7HU5ZPXt1RLipCXicyWeFpBV5Fksu9JsW0JE4//GhA0Ze94cRXRPIokHpzjyzBQ/Z0=
+	t=1714421195; cv=none; b=oHajbk7PlaHqFxgiUNRdh/SnCgL35uKami4BOgyCstQ2VxUovitElq0kuJwPpQ3codHeKQRfJFXPK6eQ0Qoz6tQaxZvWhcDdJ5ZBcaMEmPyEHr4vc0eqQAiJWUPORon3RidhETMrSTZYpyJOaINeIcWxVnQb4cHH/+7+oQrhSy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714402183; c=relaxed/simple;
-	bh=Pqr7/07Yw2D7SEawMZgXWcnAK3LEd3hoqf3xCtS6wY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=AgRODlqOolZM0Wzos3yBNjR9SyiLPAgEDFzTYb4Ko/JI1vXaKJYEGtMnEVHt8gIz2hysqwK36v2ycY91A3Nq84iAyBIjkyKAoYIDLtinTMiw61KfR2hTJRU+JUYhlSAUQOJauAq+3tV8jOKo/kO6d2ViBezN+G03ELhGOOkNOLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=none smtp.mailfrom=queasysnail.net; arc=none smtp.client-ip=205.139.111.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=queasysnail.net
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-34-ZwAzUYwrN5SO0iPVZmvC4A-1; Mon, 29 Apr 2024 10:49:29 -0400
-X-MC-Unique: ZwAzUYwrN5SO0iPVZmvC4A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1116780D678;
-	Mon, 29 Apr 2024 14:49:29 +0000 (UTC)
-Received: from hog (unknown [10.39.193.137])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id AD66D2166B32;
-	Mon, 29 Apr 2024 14:49:19 +0000 (UTC)
-Date: Mon, 29 Apr 2024 16:49:18 +0200
-From: Sabrina Dubroca <sd@queasysnail.net>
-To: Joel Granados <j.granados@samsung.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	David Ahern <dsahern@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-	Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>,
-	Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
-	Joerg Reuter <jreuter@yaina.de>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
-	linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
-	linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-	linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-	linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, bridge@lists.linux.dev,
-	lvs-devel@vger.kernel.org
-Subject: Re: [PATCH v5 1/8] net: Remove the now superfluous sentinel elements
- from ctl_table array
-Message-ID: <Zi-zbrq43dnlsQBY@hog>
-References: <20240426-jag-sysctl_remset_net-v5-0-e3b12f6111a6@samsung.com>
- <20240426-jag-sysctl_remset_net-v5-1-e3b12f6111a6@samsung.com>
- <CGME20240429085414eucas1p11b3790e4687b8dc8ef02fe0f54bc9c55@eucas1p1.samsung.com>
- <Zi9gG82_OKnLlFI2@hog>
- <20240429123315.og27yehofzz6cui3@joelS2.panther.com>
+	s=arc-20240116; t=1714421195; c=relaxed/simple;
+	bh=o0V5b/lqrk3IJthlla6ehnl4MTqtkr9NXXQrVNGOOI8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=JHXKo2Me26SBpLbONbh9Hdz1p9L6P0oIxzFpOBfRvpE0IuNOjc2l1qreRW5j4/fBaDER2ki28zjS/Ar1wvdS+G0yVEmkD4nYFw97jk6vuHHRaa+0qETiVqnU4hRtksCUQYphQq8V3Fu+EafJ84ZkHOPtp2yfEeZ7y11XOx5Qkb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=iajxSoM2; arc=none smtp.client-ip=35.176.194.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=47hSKzHTqSctVRCumxheMB+KTr2MUbpVfSmq0mD0OgY=; b=iajxSoM2PUIzBVPlJSNli8aHWD
+	e8ggCOZs+zb+6KcLx+fNUznXgjFFCSj7L9YdP0pMx1mO+JVmtKR49Riiuigz1qDM1IBbgXene6ITh
+	yKmG3G6CKoX4QJ1Tg0eEqhlApMjGFNqrPA3U9LIhopeEI4FbabywK+6/Rau4bxenz//u2YSF3encb
+	48VIlzHDzOZEFDnz4Pkw/g46HFC1Dvs2C5MVh/TJEc/0a3FRZXvlJ+EqR77EqzgGs0m6q8xHRTedC
+	sZUP2ciY1WKlZ92f9ffTO0g9d18sc/dYkM3Jdtfn29JrNXUns0iu3K35M4j7iSyG0mqY/Q2aHlGGT
+	OsjCq53g==;
+Received: from dreamlands.azazel.net ([81.187.231.252] helo=ulthar.dreamlands.azazel.net)
+	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <jeremy@azazel.net>)
+	id 1s1WfP-00G8U5-2M
+	for netfilter-devel@vger.kernel.org;
+	Mon, 29 Apr 2024 20:27:59 +0100
+From: Jeremy Sowden <jeremy@azazel.net>
+To: Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nft v3 0/2] Support for variables in map expressions
+Date: Mon, 29 Apr 2024 20:27:51 +0100
+Message-ID: <20240429192756.1347369-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240429123315.og27yehofzz6cui3@joelS2.panther.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: queasysnail.net
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 81.187.231.252
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-2024-04-29, 14:33:15 +0200, Joel Granados wrote:
-> On Mon, Apr 29, 2024 at 10:53:47AM +0200, Sabrina Dubroca wrote:
-> > 2024-04-26, 12:46:53 +0200, Joel Granados via B4 Relay wrote:
-> > > diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> > > index 6973dda3abda..a84690b13bb9 100644
-> > > --- a/net/core/sysctl_net_core.c
-> > > +++ b/net/core/sysctl_net_core.c
-> > [...]
-> > > @@ -723,12 +722,11 @@ static __net_init int sysctl_core_net_init(stru=
-ct net *net)
-> > >  =09=09if (tbl =3D=3D NULL)
-> > >  =09=09=09goto err_dup;
-> > > =20
-> > > -=09=09for (tmp =3D tbl; tmp->procname; tmp++)
-> > > -=09=09=09tmp->data +=3D (char *)net - (char *)&init_net;
-> >=20
-> > Some coding style nits in case you re-post:
-> Thx. I will, so please scream if you see more issues.
+The first patch replaces the current assertion failure for invalid
+mapping expression in stateful-object statements with an error message.
+This brings it in line with map statements.
 
-I've gone through the whole series and didn't see anything more.
+It is possible to use a variable to initialize a map, which is then used
+in a map statement, but if one tries to use the variable directly, nft
+rejects it.  The second patch adds support for doing this.
 
-> > > +=09=09for (int i =3D 0; i < table_size; ++i)
-> >=20
-> > move the declaration of int i out of the for (), it's almost never
-> > written this way (at least in networking)
-> done
->=20
-> >=20
-> > > +=09=09=09(tbl + i)->data +=3D (char *)net - (char *)&init_net;
-> >=20
-> >                         tbl[i].data =3D ...
-> >=20
-> > is more in line with other similar functions in the rest of net/
-> done
->=20
-> >=20
-> >=20
-> > [...]
-> > > diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
-> > > index 6dab883a08dd..ecc849678e7b 100644
-> > > --- a/net/mpls/af_mpls.c
-> > > +++ b/net/mpls/af_mpls.c
-> > [...]
-> > > @@ -2674,6 +2673,7 @@ static const struct ctl_table mpls_table[] =3D =
-{
-> > > =20
-> > >  static int mpls_net_init(struct net *net)
-> > >  {
-> > > +=09size_t table_size =3D ARRAY_SIZE(mpls_table);
-> >=20
-> > This table still has a {} as its final element. It should be gone too?
-> Now, how did that get away?  I'll run my coccinelle scripts once more to
-> make sure that I don't have more of these hiding in the shadows.
+Changes since v2
 
-I didn't spot any other with a dumb
+  * Patch 2: error-checking (and test-cases) added for variables that do
+    not contain maps
 
-    sed -n '<line>,^};/p' <file>
+Changes since v1
 
-(with file/line produced by git grep 'struct ctl_table' -- net)
+  * Patch 1 is new.
+  * Patch 2 updated to add support for map variables in stateful object
+    statements.
 
+Jeremy Sowden (2):
+  evaluate: handle invalid mapping expressions in stateful object
+    statements gracefully.
+  evaluate: add support for variables in map expressions
 
-Thanks.
+ src/evaluate.c                                |  17 +-
+ .../shell/testcases/maps/0024named_objects_1  |  31 ++++
+ .../shell/testcases/maps/0024named_objects_2  |  23 +++
+ .../shell/testcases/maps/anonymous_snat_map_1 |  16 ++
+ .../shell/testcases/maps/anonymous_snat_map_2 |  23 +++
+ .../maps/dumps/0024named_objects_1.json-nft   | 147 ++++++++++++++++++
+ .../maps/dumps/0024named_objects_1.nft        |  23 +++
+ .../maps/dumps/anonymous_snat_map_1.json-nft  |  58 +++++++
+ .../maps/dumps/anonymous_snat_map_1.nft       |   5 +
+ 9 files changed, 341 insertions(+), 2 deletions(-)
+ create mode 100755 tests/shell/testcases/maps/0024named_objects_1
+ create mode 100755 tests/shell/testcases/maps/0024named_objects_2
+ create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_1
+ create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_2
+ create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.nft
+ create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
+ create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
 
---=20
-Sabrina
+-- 
+2.43.0
 
 
