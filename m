@@ -1,565 +1,128 @@
-Return-Path: <netfilter-devel+bounces-2032-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2034-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575D68B6329
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 22:06:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B2D78B6F7C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Apr 2024 12:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D89E21F21977
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Apr 2024 20:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE861F24439
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Apr 2024 10:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE6E140373;
-	Mon, 29 Apr 2024 20:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D6D129E86;
+	Tue, 30 Apr 2024 10:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="Kg9xbh1O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SeYDR/kz"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azazel.net (taras.nevrast.org [35.176.194.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F2E13F006
-	for <netfilter-devel@vger.kernel.org>; Mon, 29 Apr 2024 20:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E40129E72
+	for <netfilter-devel@vger.kernel.org>; Tue, 30 Apr 2024 10:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714421190; cv=none; b=aHgaZ5nLp8bwVXUG9ooiLdkgy/jb0mP+1fG2p3NiDKcN9+16caPHPaTtMXdo8Q73IkRrKcs9o+PxOQlgWNo3NN4RMytyJLecGWcgN5Vh7q8MfF+MSo3xG4B2118IooMYtM0ZHwN5Hl+6ycbffe+pKwmGL1SRZhQ+malWgVkpIDU=
+	t=1714472339; cv=none; b=UOjudMjHiS3/IKD98/t9xKZIFGLwrulNYFVgfyY6p5+bZsEnzP2TPFN9C7zg6WVikX5aIQho39xJn4X6x+jliXm/SIYE4uS0CIDVLpI1ZstD9SFszMaI6JRwS+ZIuRmSCERmTHlgUf7DFl3gcxL3McD75L3Vbt+GmMycWsY6E8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714421190; c=relaxed/simple;
-	bh=QVIz+n9yIquE9bpQ/1NPnWUmebsax9vEk0muGtYNy3M=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JxcJQ5P2unhIZbRm7V3XeDn2eEvGRZ9YiSFVm4NTclO+avpyF3Igw08wXgUsKrTdh3Y3IO/uVFBZQHmSXcGduU+nU3fzmVGubd+lhJlnJgrg0pCQFV64OtYDYb1o2/48TcgxqPYMAJSVUPb3bLDLje0/ZYwtPMb989iNGFWjYT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=Kg9xbh1O; arc=none smtp.client-ip=35.176.194.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=e2pVW6hPb684842msrV/Q65HRmbTXusZxaQ8sFG3cxc=; b=Kg9xbh1OnPtJZ1PQWQUJxpwgvv
-	s8kcBSpwOHNNTVMg1h507lZ9e8MAD1sutnZ3m+zE0zW9X3IWn3ULtSdk/OuJum9vrVTBsVi9Pzwxz
-	69zT4S68l1pvkCIkLOddNe3EGiy489fAw2Naf1R6XS9ZRee+J3qT+5hx4iXMkiHvxmeyHYCLwe8BT
-	TJ5vP4mlsh0JHBTD82ThZPtlCbEgboxsJBRYdgTWgBZBAFOIZcKtreRzbWOCaK7MmDmQl+S99jJTb
-	HlH1HSHHQFW0JKRUvBB4GhcwQcwFnaFUiWpUNKnnKvqFdAzwZxGhaw/ICqof7RLkDTpb2atRnf2qK
-	doiXJefw==;
-Received: from dreamlands.azazel.net ([81.187.231.252] helo=ulthar.dreamlands.azazel.net)
-	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <jeremy@azazel.net>)
-	id 1s1WfP-00G8U5-2g
-	for netfilter-devel@vger.kernel.org;
-	Mon, 29 Apr 2024 20:27:59 +0100
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 2/2] evaluate: add support for variables in map expressions
-Date: Mon, 29 Apr 2024 20:27:53 +0100
-Message-ID: <20240429192756.1347369-3-jeremy@azazel.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240429192756.1347369-1-jeremy@azazel.net>
-References: <20240429192756.1347369-1-jeremy@azazel.net>
+	s=arc-20240116; t=1714472339; c=relaxed/simple;
+	bh=WTP0kuJFFCGr3B5NIZ2LEfNN50rejOlAqs5ohmjZzVI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=TB8RUHfIQzx7lEGMgs2HrPtditcyTFUsb/65ZNm1JEp4U2FMFuTw+CfOgI1p80nWYF3KZug53FiJ/4vB21/xlGzNthj1fOIp/DWUGZOKO30R+4ep/1SXAaCYZ1QUXqJLcupHMiWNiTPUYKHSvgA0t5hKd2dHqF3NAtbhCWSSqcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SeYDR/kz; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a58e7628aeaso376633266b.2
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Apr 2024 03:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714472336; x=1715077136; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rrFZvqDAEpbT/hpuiz/5P/17Uv4VVLsf6B2bRkojVa8=;
+        b=SeYDR/kzfMAEE7VdkiI0e3jt1SuQeBag9pcJfVvavMH0Get4hU9605RZks35gOqkQx
+         eDuaIbZXarHZbL2zthnFfrfUiDLttCPs3xOWi9LjJJ1FDPqz2OCSoUhpUlzATm/4Sqk1
+         c+JRaD+cMym3/SYxyBxjFE/LypqtH13JNgK3FLj9N1nY8/WlFJvaO+uk5HjxtTaE6sKM
+         HG6XcWCI3tw9ZBf0R4lDwH5qsGoyF8ukY+bfzNnlnVXBVw/zy/OlIDqh5FXwn5lfX539
+         ubgjTnUtahHCCqDU+glEHrPJG+UuOctOLBAsNpzN5+roU7TgkqwsY8PLF/tT88ScBnFr
+         wDCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714472336; x=1715077136;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rrFZvqDAEpbT/hpuiz/5P/17Uv4VVLsf6B2bRkojVa8=;
+        b=NEgU8C3UV43jDQ4OEfwf49vjmvQA2YC6sXhtDVkaVTSCZOMPacUkPNxQqg+I3oChjv
+         BiklWEQs3PIZNCDEDT9XC5QQeDM9CYtcSdGQFvcgCvaHq49TslJMbaLbbAeex5t5bKti
+         kpdluCclZR4lf3UFz1WpQyzGqEhdKLcB0UZOez9RkaZNUIPtoI9FXzF/bkEl2qi9FiBU
+         cJoPRAdOKsq7HPZEnIsgAaC0V3Rk1ejL82F57lAF3ShIJk+564aRZPKmPIlHsoaoQTWF
+         JyQsB6xxaUflxHRoJbtY4YQHwXdeqjonnG7ZtU4+uDOjenN/k2RZLN1g4rjQtn2x4N/W
+         ETqQ==
+X-Gm-Message-State: AOJu0YxAJz7s2321cXab0Zz271OtleiSnyWJNtfo+YJOoaQ9TdKZ8k3e
+	G74XUNZmwroIG1tcDAoaVimlBaJKTsaki0XTuUhFjfoBOutuZOE7ZZ7+3tbf5XlVkwoTFoIuXiE
+	fVmzy+8+Wra/lQjd16e+MMze3xbakMeNE
+X-Google-Smtp-Source: AGHT+IFvYIxc/xLZT2Iy0rM10F+e53PbHRpSHPTjbBsIkCUr5ryxMaLcuVUuEx2VAjl02z8OQPX6W0KR3xkFXqD4Nrw=
+X-Received: by 2002:a17:906:fb17:b0:a58:e74b:7e16 with SMTP id
+ lz23-20020a170906fb1700b00a58e74b7e16mr1633484ejb.46.1714472335516; Tue, 30
+ Apr 2024 03:18:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 81.187.231.252
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+From: Evgen Bendyak <jman.box@gmail.com>
+Date: Tue, 30 Apr 2024 13:18:29 +0300
+Message-ID: <CAM9G1EADHBYk9Y-Y9RBHbAhqOPOMab41DOEh+PZZa6XKGm8drA@mail.gmail.com>
+Subject: [libnetfilter_log] fix bug in race condition of calling nflog_open
+ from different threads at same time
+To: netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-It is possible to use a variable to initialize a map, which is then used
-in a map statement:
+This patch addresses a bug that occurs when the nflog_open function is
+called concurrently from different threads within an application. The
+function nflog_open internally invokes nflog_open_nfnl. Within this
+function, a static global variable pkt_cb (static struct nfnl_callback
+pkt_cb) is used. This variable is assigned a pointer to a newly
+created structure (pkt_cb.data = h;) and is passed to
+nfnl_callback_register. The issue arises with concurrent execution of
+pkt_cb.data = h;, as only one of the simultaneously created
+nflog_handle structures is retained due to the callback function.
+Subsequently, the callback function __nflog_rcv_pkt is invoked for all
+the nflog_open structures, but only references one of them.
+Consequently, the callbacks registered by the end-user of the library
+through nflog_callback_register fail to trigger in sessions where the
+incorrect reference was recorded.
+This patch corrects this behavior by creating the structure locally on
+the stack for each call to nflog_open_nfnl. Since the
+nfnl_callback_register function simply copies the data into its
+internal structures, there is no need to retain pkt_cb beyond this
+point.
 
-  define dst_map = { ::1234 : 5678 }
 
-  table ip6 nat {
-    map dst_map {
-      typeof ip6 daddr : tcp dport;
-      elements = $dst_map
-    }
-    chain prerouting {
-      ip6 nexthdr tcp redirect to ip6 daddr map @dst_map
-    }
+*** a/src/libnetfilter_log.c    2024-04-30 12:45:41.974918256 +0300
+--- b/src/libnetfilter_log.c    2024-04-30 12:49:56.774643783 +0300
+*************** static int __nflog_rcv_pkt(struct nlmsgh
+*** 161,171 ****
+      return gh->cb(gh, nfmsg, &nfldata, gh->data);
   }
 
-However, if one tries to use the variable directly in the statement:
+- static struct nfnl_callback pkt_cb = {
+-     .call         = &__nflog_rcv_pkt,
+-     .attr_count     = NFULA_MAX,
+- };
+-
+  /* public interface */
 
-  define dst_map = { ::1234 : 5678 }
+  struct nfnl_handle *nflog_nfnlh(struct nflog_handle *h)
+--- 161,166 ----
+*************** struct nflog_handle *nflog_open_nfnl(str
+*** 255,260 ****
+--- 250,259 ----
+  {
+      struct nflog_handle *h;
+      int err;
++     struct nfnl_callback pkt_cb = {
++         .call         = &__nflog_rcv_pkt,
++         .attr_count     = NFULA_MAX,
++     };
 
-  table ip6 nat {
-    chain prerouting {
-      ip6 nexthdr tcp redirect to ip6 daddr map $dst_map
-    }
-  }
-
-nft rejects it:
-
-  /space/azazel/tmp/ruleset.1067161.nft:5:47-54: Error: invalid mapping expression variable
-      ip6 nexthdr tcp redirect to ip6 daddr map $dst_map
-                                  ~~~~~~~~~     ^^^^^^^^
-It also rejects variables in stateful object statements:
-
-  define quota_map = { 192.168.10.123 : "user123", 192.168.10.124 : "user124" }
-
-  table ip nat {
-    quota user123 { over 20 mbytes }
-    quota user124 { over 20 mbytes }
-    chain prerouting {
-      quota name ip saddr map $quota_map
-    }
-  }
-
-thus:
-
-  /space/azazel/tmp/ruleset.1067161.nft:15:29-38: Error: invalid mapping expression variable
-      quota name ip saddr map $quota_map
-                 ~~~~~~~~     ^^^^^^^^^^
-
-Add support for these uses together with some test-cases.
-
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1067161
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- src/evaluate.c                                |  12 ++
- .../shell/testcases/maps/0024named_objects_1  |  31 ++++
- .../shell/testcases/maps/0024named_objects_2  |  23 +++
- .../shell/testcases/maps/anonymous_snat_map_1 |  16 ++
- .../shell/testcases/maps/anonymous_snat_map_2 |  23 +++
- .../maps/dumps/0024named_objects_1.json-nft   | 147 ++++++++++++++++++
- .../maps/dumps/0024named_objects_1.nft        |  23 +++
- .../maps/dumps/anonymous_snat_map_1.json-nft  |  58 +++++++
- .../maps/dumps/anonymous_snat_map_1.nft       |   5 +
- 9 files changed, 338 insertions(+)
- create mode 100755 tests/shell/testcases/maps/0024named_objects_1
- create mode 100755 tests/shell/testcases/maps/0024named_objects_2
- create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_1
- create mode 100755 tests/shell/testcases/maps/anonymous_snat_map_2
- create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
- create mode 100644 tests/shell/testcases/maps/dumps/0024named_objects_1.nft
- create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
- create mode 100644 tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
-
-diff --git a/src/evaluate.c b/src/evaluate.c
-index f28ef2aad8f4..f26bc7f9b0ed 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -2061,6 +2061,7 @@ static int expr_evaluate_map(struct eval_ctx *ctx, struct expr **expr)
- 	mappings->set_flags |= NFT_SET_MAP;
- 
- 	switch (map->mappings->etype) {
-+	case EXPR_VARIABLE:
- 	case EXPR_SET:
- 		if (ctx->ectx.key && ctx->ectx.key->etype == EXPR_CONCAT) {
- 			key = expr_clone(ctx->ectx.key);
-@@ -2104,6 +2105,11 @@ static int expr_evaluate_map(struct eval_ctx *ctx, struct expr **expr)
- 		if (expr_evaluate(ctx, &map->mappings->set->init) < 0)
- 			return -1;
- 
-+		if (map->mappings->set->init->etype != EXPR_SET) {
-+			return expr_error(ctx->msgs, map->mappings->set->init,
-+					  "Expression is not a map");
-+		}
-+
- 		if (set_is_interval(map->mappings->set->init->set_flags) &&
- 		    !(map->mappings->set->init->set_flags & NFT_SET_CONCAT) &&
- 		    interval_set_eval(ctx, ctx->set, map->mappings->set->init) < 0)
-@@ -4576,6 +4582,7 @@ static int stmt_evaluate_objref_map(struct eval_ctx *ctx, struct stmt *stmt)
- 	mappings->set_flags |= NFT_SET_OBJECT;
- 
- 	switch (map->mappings->etype) {
-+	case EXPR_VARIABLE:
- 	case EXPR_SET:
- 		key = constant_expr_alloc(&stmt->location,
- 					  ctx->ectx.dtype,
-@@ -4595,6 +4602,11 @@ static int stmt_evaluate_objref_map(struct eval_ctx *ctx, struct stmt *stmt)
- 		if (expr_evaluate(ctx, &map->mappings->set->init) < 0)
- 			return -1;
- 
-+		if (map->mappings->set->init->etype != EXPR_SET) {
-+			return expr_error(ctx->msgs, map->mappings->set->init,
-+					  "Expression is not a map");
-+		}
-+
- 		if (set_is_interval(map->mappings->set->init->set_flags) &&
- 		    !(map->mappings->set->init->set_flags & NFT_SET_CONCAT) &&
- 		    interval_set_eval(ctx, ctx->set, map->mappings->set->init) < 0)
-diff --git a/tests/shell/testcases/maps/0024named_objects_1 b/tests/shell/testcases/maps/0024named_objects_1
-new file mode 100755
-index 000000000000..a861e9e2d4a0
---- /dev/null
-+++ b/tests/shell/testcases/maps/0024named_objects_1
-@@ -0,0 +1,31 @@
-+#!/bin/bash
-+
-+# This is the test-case:
-+# * creating valid named objects and using map variables in statements
-+
-+RULESET='
-+define counter_map = { 192.168.2.2 : "user123", 1.1.1.1 : "user123", 2.2.2.2 : "user123" }
-+define quota_map = { 192.168.2.2 : "user124", 192.168.2.3 : "user124" }
-+
-+table inet x {
-+	counter user123 {
-+		packets 12 bytes 1433
-+	}
-+	counter user321 {
-+		packets 12 bytes 1433
-+	}
-+	quota user123 {
-+		over 2000 bytes
-+	}
-+	quota user124 {
-+		over 2000 bytes
-+	}
-+	chain y {
-+		type filter hook input priority 0; policy accept;
-+		counter name ip saddr map $counter_map
-+		quota name ip saddr map $quota_map drop
-+	}
-+}'
-+
-+set -e
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/maps/0024named_objects_2 b/tests/shell/testcases/maps/0024named_objects_2
-new file mode 100755
-index 000000000000..584b5100f650
---- /dev/null
-+++ b/tests/shell/testcases/maps/0024named_objects_2
-@@ -0,0 +1,23 @@
-+#!/bin/bash
-+
-+#
-+# Test some error conditions for using variables to define maps
-+#
-+
-+set -e
-+
-+for m in "192.168.2.2" "{ 192.168.2.2, 1.1.1.1, 2.2.2.2 }"; do
-+
-+    RULESET="
-+define m = $m"'
-+table inet x {
-+	chain y {
-+		type filter hook input priority 0; policy accept;
-+		counter name ip saddr map $m
-+	}
-+}'
-+
-+    $NFT -f - <<< "$RULESET" || rc=$?
-+    test $rc = 1
-+
-+done
-diff --git a/tests/shell/testcases/maps/anonymous_snat_map_1 b/tests/shell/testcases/maps/anonymous_snat_map_1
-new file mode 100755
-index 000000000000..031de0c1a83f
---- /dev/null
-+++ b/tests/shell/testcases/maps/anonymous_snat_map_1
-@@ -0,0 +1,16 @@
-+#!/bin/bash
-+
-+# Variable containing anonymous map can be added to a snat rule
-+
-+set -e
-+
-+RULESET='
-+define m = {1.1.1.1 : 2.2.2.2}
-+table nat {
-+  chain postrouting {
-+    snat ip saddr map $m
-+  }
-+}
-+'
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/maps/anonymous_snat_map_2 b/tests/shell/testcases/maps/anonymous_snat_map_2
-new file mode 100755
-index 000000000000..90e02038093c
---- /dev/null
-+++ b/tests/shell/testcases/maps/anonymous_snat_map_2
-@@ -0,0 +1,23 @@
-+#!/bin/bash
-+
-+#
-+# Test some error conditions for using variables to define maps
-+#
-+
-+set -e
-+
-+for m in "1.1.1.1" "{1.1.1.1}"; do
-+
-+    RULESET="
-+define m = $m"'
-+table nat {
-+  chain postrouting {
-+    snat ip saddr map $m
-+  }
-+}
-+'
-+
-+    $NFT -f - <<< "$RULESET" || rc=$?
-+    test $rc = 1
-+
-+done
-diff --git a/tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft b/tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
-new file mode 100644
-index 000000000000..e3fab16d3337
---- /dev/null
-+++ b/tests/shell/testcases/maps/dumps/0024named_objects_1.json-nft
-@@ -0,0 +1,147 @@
-+{
-+  "nftables": [
-+    {
-+      "metainfo": {
-+        "version": "VERSION",
-+        "release_name": "RELEASE_NAME",
-+        "json_schema_version": 1
-+      }
-+    },
-+    {
-+      "table": {
-+        "family": "inet",
-+        "name": "x",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "chain": {
-+        "family": "inet",
-+        "table": "x",
-+        "name": "y",
-+        "handle": 0,
-+        "type": "filter",
-+        "hook": "input",
-+        "prio": 0,
-+        "policy": "accept"
-+      }
-+    },
-+    {
-+      "counter": {
-+        "family": "inet",
-+        "name": "user123",
-+        "table": "x",
-+        "handle": 0,
-+        "packets": 12,
-+        "bytes": 1433
-+      }
-+    },
-+    {
-+      "counter": {
-+        "family": "inet",
-+        "name": "user321",
-+        "table": "x",
-+        "handle": 0,
-+        "packets": 12,
-+        "bytes": 1433
-+      }
-+    },
-+    {
-+      "quota": {
-+        "family": "inet",
-+        "name": "user123",
-+        "table": "x",
-+        "handle": 0,
-+        "bytes": 2000,
-+        "used": 0,
-+        "inv": true
-+      }
-+    },
-+    {
-+      "quota": {
-+        "family": "inet",
-+        "name": "user124",
-+        "table": "x",
-+        "handle": 0,
-+        "bytes": 2000,
-+        "used": 0,
-+        "inv": true
-+      }
-+    },
-+    {
-+      "rule": {
-+        "family": "inet",
-+        "table": "x",
-+        "chain": "y",
-+        "handle": 0,
-+        "expr": [
-+          {
-+            "counter": {
-+              "map": {
-+                "key": {
-+                  "payload": {
-+                    "protocol": "ip",
-+                    "field": "saddr"
-+                  }
-+                },
-+                "data": {
-+                  "set": [
-+                    [
-+                      "1.1.1.1",
-+                      "user123"
-+                    ],
-+                    [
-+                      "2.2.2.2",
-+                      "user123"
-+                    ],
-+                    [
-+                      "192.168.2.2",
-+                      "user123"
-+                    ]
-+                  ]
-+                }
-+              }
-+            }
-+          }
-+        ]
-+      }
-+    },
-+    {
-+      "rule": {
-+        "family": "inet",
-+        "table": "x",
-+        "chain": "y",
-+        "handle": 0,
-+        "expr": [
-+          {
-+            "quota": {
-+              "map": {
-+                "key": {
-+                  "payload": {
-+                    "protocol": "ip",
-+                    "field": "saddr"
-+                  }
-+                },
-+                "data": {
-+                  "set": [
-+                    [
-+                      "192.168.2.2",
-+                      "user124"
-+                    ],
-+                    [
-+                      "192.168.2.3",
-+                      "user124"
-+                    ]
-+                  ]
-+                }
-+              }
-+            }
-+          },
-+          {
-+            "drop": null
-+          }
-+        ]
-+      }
-+    }
-+  ]
-+}
-diff --git a/tests/shell/testcases/maps/dumps/0024named_objects_1.nft b/tests/shell/testcases/maps/dumps/0024named_objects_1.nft
-new file mode 100644
-index 000000000000..a8e99a3ca9a2
---- /dev/null
-+++ b/tests/shell/testcases/maps/dumps/0024named_objects_1.nft
-@@ -0,0 +1,23 @@
-+table inet x {
-+	counter user123 {
-+		packets 12 bytes 1433
-+	}
-+
-+	counter user321 {
-+		packets 12 bytes 1433
-+	}
-+
-+	quota user123 {
-+		over 2000 bytes
-+	}
-+
-+	quota user124 {
-+		over 2000 bytes
-+	}
-+
-+	chain y {
-+		type filter hook input priority filter; policy accept;
-+		counter name ip saddr map { 1.1.1.1 : "user123", 2.2.2.2 : "user123", 192.168.2.2 : "user123" }
-+		quota name ip saddr map { 192.168.2.2 : "user124", 192.168.2.3 : "user124" } drop
-+	}
-+}
-diff --git a/tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft b/tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
-new file mode 100644
-index 000000000000..f4c55706787c
---- /dev/null
-+++ b/tests/shell/testcases/maps/dumps/anonymous_snat_map_1.json-nft
-@@ -0,0 +1,58 @@
-+{
-+  "nftables": [
-+    {
-+      "metainfo": {
-+        "version": "VERSION",
-+        "release_name": "RELEASE_NAME",
-+        "json_schema_version": 1
-+      }
-+    },
-+    {
-+      "table": {
-+        "family": "ip",
-+        "name": "nat",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "chain": {
-+        "family": "ip",
-+        "table": "nat",
-+        "name": "postrouting",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "rule": {
-+        "family": "ip",
-+        "table": "nat",
-+        "chain": "postrouting",
-+        "handle": 0,
-+        "expr": [
-+          {
-+            "snat": {
-+              "addr": {
-+                "map": {
-+                  "key": {
-+                    "payload": {
-+                      "protocol": "ip",
-+                      "field": "saddr"
-+                    }
-+                  },
-+                  "data": {
-+                    "set": [
-+                      [
-+                        "1.1.1.1",
-+                        "2.2.2.2"
-+                      ]
-+                    ]
-+                  }
-+                }
-+              }
-+            }
-+          }
-+        ]
-+      }
-+    }
-+  ]
-+}
-diff --git a/tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft b/tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
-new file mode 100644
-index 000000000000..5009560c9d69
---- /dev/null
-+++ b/tests/shell/testcases/maps/dumps/anonymous_snat_map_1.nft
-@@ -0,0 +1,5 @@
-+table ip nat {
-+	chain postrouting {
-+		snat to ip saddr map { 1.1.1.1 : 2.2.2.2 }
-+	}
-+}
--- 
-2.43.0
-
+      h = calloc(1, sizeof(*h));
+      if (!h)
 
