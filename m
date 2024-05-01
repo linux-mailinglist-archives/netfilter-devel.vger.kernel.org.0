@@ -1,114 +1,130 @@
-Return-Path: <netfilter-devel+bounces-2047-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2049-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94AC68B7DF8
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Apr 2024 19:00:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74058B853C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 May 2024 07:11:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 348B11F21315
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Apr 2024 17:00:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62ACD285248
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 May 2024 05:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCE5180A70;
-	Tue, 30 Apr 2024 16:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA82043AD9;
+	Wed,  1 May 2024 05:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="wu87VAyq"
+	dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b="w86L0Mfe"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-bc0c.mail.infomaniak.ch (smtp-bc0c.mail.infomaniak.ch [45.157.188.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729331802A0
-	for <netfilter-devel@vger.kernel.org>; Tue, 30 Apr 2024 16:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8E01D68F
+	for <netfilter-devel@vger.kernel.org>; Wed,  1 May 2024 05:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714495946; cv=none; b=dkZC4k1qq5Abu/2+C/JF8/P++GveRiyYD3k060n6krWT7QIu6cwdD8J/ktF5mTGDN9D+TbXyrI1UHLtpXsAhQLWN61Cy0IspMLxSilrsve3gVx4+3vcwHw9kEbF4p8AOXInEkc7HkSM5RfCpAGx1/iWwKw8glF5gsK6wVM3+yks=
+	t=1714540307; cv=none; b=lhbu0Rp1Bh3v9R4qbPLpW1lqmqvdbrbxKXtlxLvGF1cXDSZiH5fWLrjVWXMrZ3pH64tDpxrHZaduLSit4gfqwbD4PCT2T9NMkBRQXQcH12cPHoWA07B3LDvhmVpZRjuPT+CYyQTJGi4m7p86oPOCAoWKsb1IbXgq9HbuPVMZ/e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714495946; c=relaxed/simple;
-	bh=JSh9G8B/hhE3cjcRgoAQVV5csCa5MBscKddNaCVOwYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ap2yWYZWIUQOgjBUJkeyw2Aw7JPCao7B4VT5F7nFJlm+J/OUpmVsG/Q9MCB5zNlG5eFL16zXAh0k2IF74jgwz5R4qsZphaekWSxz8RZF82EX+G/UQ/N2FZ+dmx248pkZAydmvwbEKW4P2RXsCLf9Edm8yTS0GEILnJ5n0H8+hVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=wu87VAyq; arc=none smtp.client-ip=45.157.188.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VTR7f6JW2zjL8;
-	Tue, 30 Apr 2024 18:52:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1714495934;
-	bh=JSh9G8B/hhE3cjcRgoAQVV5csCa5MBscKddNaCVOwYU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=wu87VAyqG0g9pzocG398PQkwDaP655Xc+z/wpf4zOlnDGW0A0K2bm2AE8B0KLPoGP
-	 sBQoBn33iKNf5j1X5p2x54+sYDzhyynFDJGwFTgdU7R1AS/HgyTxfk+jLObEqedf98
-	 avJFepZnA9omeMZ2MTRFkm3hPRu1RLTQZQ15xybo=
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4VTR7d44DkzNRV;
-	Tue, 30 Apr 2024 18:52:13 +0200 (CEST)
-Date: Tue, 30 Apr 2024 18:52:12 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-Cc: willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com, 
-	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	yusongping@huawei.com, artem.kuzin@huawei.com, konstantin.meskhidze@huawei.com, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>
-Subject: Re: [PATCH 1/2] landlock: Add hook on socket_listen()
-Message-ID: <20240430.beicheugee5T@digikod.net>
-References: <20240408094747.1761850-1-ivanov.mikhail1@huawei-partners.com>
- <20240408094747.1761850-2-ivanov.mikhail1@huawei-partners.com>
- <20240425.Soot5eNeexol@digikod.net>
+	s=arc-20240116; t=1714540307; c=relaxed/simple;
+	bh=pEAY0QWRsLB9JluX8XvvnxaNOrBWmNrSqSwEC+UUzo4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GZnWaTIZwDlKC4IqbzAgn8endGvZ0ci2y/eVTKeJY8lOwoDBWqEfkBA0z4CaG44kJn6Ct2ydXXpN83PFmcbAR0gdqzY1fM1d6pOBeFe8O/tEvWbW1A35xJyNds/p0o3MeNfdpSUr5dxuw1eDcjonoA6w2Oh1GfM/G5yb31Y6TRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz; spf=pass smtp.mailfrom=fe-bounces.faucet.nz; dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b=w86L0Mfe; arc=none smtp.client-ip=149.28.215.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.faucet.nz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=faucet.nz;
+ h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
+ Message-Id: Date: Subject: Cc: To: From; q=dns/txt; s=fe-4ed8c67516;
+ t=1714540290; bh=enGl1EWAiYGXFruQwU3JI5/BpgRyOA/UsoNJoaKWqB4=;
+ b=w86L0Mfe+WJFVWiWNrrNu0ODPXsyWWzvqRW+Uzcgxusf/o77gdOlU1ZCiVVU2w+pkx/h1ZToi
+ 5jy2mcyQmMfXDMTTc6zDaG9UpqgwIx/2JMw8AJlHnT6avQC8uKwBo0ProRmuCaBiWQC76dW2z2Q
+ ZflksCjEN0XinwYMcSjenq0=
+From: Brad Cowie <brad@faucet.nz>
+To: martin.lau@linux.dev
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, brad@faucet.nz,
+ coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
+ john.fastabend@gmail.com, jolsa@kernel.org, kuba@kernel.org,
+ lorenzo@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org,
+ sdf@google.com, song@kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] net: netfilter: Make ct zone opts configurable for bpf ct helpers
+Date: Wed,  1 May 2024 16:59:31 +1200
+Message-Id: <20240501045931.157041-1-brad@faucet.nz>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <463c8ea7-08cf-412e-bb31-6fbb15b4df8b@linux.dev>
+References: <463c8ea7-08cf-412e-bb31-6fbb15b4df8b@linux.dev>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240425.Soot5eNeexol@digikod.net>
-X-Infomaniak-Routing: alpha
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; brad@faucet.nz, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 6631cc4e257562284fbdc957
 
-On Tue, Apr 30, 2024 at 03:36:30PM +0200, Mickaël Salaün wrote:
-> On Mon, Apr 08, 2024 at 05:47:46PM +0800, Ivanov Mikhail wrote:
-> > Make hook for socket_listen(). It will check that the socket protocol is
-> > TCP, and if the socket's local port number is 0 (which means,
-> > that listen(2) was called without any previous bind(2) call),
-> > then listen(2) call will be legitimate only if there is a rule for bind(2)
-> > allowing binding to port 0 (or if LANDLOCK_ACCESS_NET_BIND_TCP is not
-> > supported by the sandbox).
-> 
-> Thanks for this patch and sorry for the late full review.  The code is
-> good overall.
-> 
-> We should either consider this patch as a fix or add a new flag/access
-> right to Landlock syscalls for compatibility reason.  I think this
-> should be a fix.  Calling listen(2) without a previous call to bind(2)
-> is a corner case that we should properly handle.  The commit message
-> should make that explicit and highlight the goal of the patch: first
-> explain why, and then how.
-> 
-> We also need to update the user documentation to explain that
-> LANDLOCK_ACCESS_NET_BIND_TCP also handles this case.
-> 
-> > 
-> > Create a new check_access_socket() function to prevent useless copy paste.
-> > It should be called by hook handlers after they perform special checks and
-> > calculate socket port value.
-> 
-> You can add this tag:
-> Fixes: fff69fb03dde ("landlock: Support network rules with TCP bind and connect")
-> 
-> > 
-> > Signed-off-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-> > Reviewed-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-> > ---
-> >  security/landlock/net.c | 104 +++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 88 insertions(+), 16 deletions(-)
+On Fri, 26 Apr 2024 at 11:27, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+> On 4/23/24 8:00 PM, Brad Cowie wrote:
+> >   };
+> >
+> >   static int bpf_nf_ct_tuple_parse(struct bpf_sock_tuple *bpf_tuple,
+> > @@ -104,11 +107,13 @@ __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+> >   			u32 timeout)
+> >   {
+> >   	struct nf_conntrack_tuple otuple, rtuple;
+> > +	struct nf_conntrack_zone ct_zone;
+> >   	struct nf_conn *ct;
+> >   	int err;
+> >
+> > -	if (!opts || !bpf_tuple || opts->reserved[0] || opts->reserved[1] ||
+> > -	    opts_len != NF_BPF_CT_OPTS_SZ)
+> > +	if (!opts || !bpf_tuple)
+> > +		return ERR_PTR(-EINVAL);
+> > +	if (!(opts_len == NF_BPF_CT_OPTS_SZ || opts_len == NF_BPF_CT_OPTS_OLD_SZ))
+> >   		return ERR_PTR(-EINVAL);
+> >
+> >   	if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS))
+> > @@ -130,7 +135,16 @@ __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+> >   			return ERR_PTR(-ENONET);
+> >   	}
+> >
+> > -	ct = nf_conntrack_alloc(net, &nf_ct_zone_dflt, &otuple, &rtuple,
+> > +	if (opts_len == NF_BPF_CT_OPTS_SZ) {
+> > +		if (opts->ct_zone_dir == 0)
+>
+> I don't know the details about the dir in ct_zone, so a question: a 0 
+> ct_zone_dir is invalid and can be reused to mean NF_CT_DEFAULT_ZONE_DIR?
 
+ct_zone_dir is a bitmask that can have two different bits set,
+NF_CT_ZONE_DIR_ORIG (1) and NF_CT_ZONE_DIR_REPL (2).
 
-> > +		if (inet_sk(sock->sk)->inet_num != 0)
-> 
-> Why do we want to allow listen() on any socket that is binded?
+The comparison function nf_ct_zone_matches_dir() in nf_conntrack_zones.h
+checks if ct_zone_dir & (1 << ip_conntrack_dir dir). ip_conntrack_dir
+has two possible values IP_CT_DIR_ORIGINAL (0) and IP_CT_DIR_REPLY (1).
 
-Please ignore this comment. I was initially thinking about a new access
-right, which would be good to have anyway, but with another series.
+If ct_zone_dir has a value of 0, this makes nf_ct_zone_matches_dir()
+always return false which makes nf_ct_zone_id() always return
+NF_CT_DEFAULT_ZONE_ID instead of the specified ct zone id.
+
+I chose to override ct_zone_dir here and set NF_CT_DEFAULT_ZONE_DIR (3),
+to make the behaviour more obvious when a user calls the bpf ct helper
+kfuncs while only setting ct_zone_id but not ct_zone_dir.
+
+> > +			opts->ct_zone_dir = NF_CT_DEFAULT_ZONE_DIR;
+> > +		nf_ct_zone_init(&ct_zone,
+> > +				opts->ct_zone_id, opts->ct_zone_dir, opts->ct_zone_flags);
+> > +	} else {
+>
+> Better enforce "ct_zone_id == 0" also instead of ignoring it.
+
+Could I ask for clarification here, do you mean changing this
+else statement to:
+
++	} else if (opts->ct_zone_id == 0) {
+
+Or should I be setting opts->ct_zone_id = 0 inside the else block?
 
