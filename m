@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2150-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2151-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E908C3749
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 May 2024 18:15:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EF28C374B
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 May 2024 18:15:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E04128148A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 May 2024 16:14:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A46411C20C8B
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 May 2024 16:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140ED46B80;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6ED46BA0;
 	Sun, 12 May 2024 16:14:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30BD544C8F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742C345BE6;
 	Sun, 12 May 2024 16:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715530491; cv=none; b=mDppOVkg+wT0spIBAZr3w4pmkk/aZqzStPIfHxSCJqq0OSk2sBVsO9+kVmBOsMXzmtnybso0f/zCpdesZVzdcF9vlbyooavl43OZjFfJGgB7BQMAvptvyXM/outgKdjxWwmUkbytrMjUam+sEyvVzAqgvKY4JzjkU6xq51qsAVM=
+	t=1715530491; cv=none; b=qqieaQ0MNcAOzITXPJpfcMq5SRbvP7lKK5IfMp+4AejstCj1WKGDiQceUmJ3vuALlS+GuzpqNmrQYtzojKkPdOtAmmp2GDXCR0kg1urhsXNAGmeBJX+6BR5ip4Vq16eGtl17u3uitnGloKsKoZPFpUSfgZ17dFsxJx9u5Xk8HNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715530491; c=relaxed/simple;
-	bh=9npD0TDw3o2mX9t5lmQ8iUe5npj/q4ysiciVemWe8TI=;
+	bh=t+Zbcio1bHYFNcLROzN1cupuMSiXkyewbo1ytJUON0Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LzKSYDuOnNBJC5L/MqVu/NJDapWoJqwub+FpAFo8Yc5VTypRx53GXWK2/y4X7Z5FxPN5Z4WU5vcYfVZyf88xQD2aB3wv+B0OodYuOncDw+mwe45LibK4jyK0Yrv2ECa7dTckMnUMM3AXBwVLURulkgUNq2NuAm47+MqLoA1DOV0=
+	 MIME-Version:Content-Type; b=R+IF5mX8MRcFz3ZyzovMdTXWJqkOCURuOfaeG6CwVJYcKaF/b7eKDdIdIHtgTfwzeZAFgzrdvIxo77Rabu0eGFAVBU7D1Iq/jZRKoDNGzZ/YlkeIn6vthtC7v27tHUMq+HmEXJl3rD/58DCrKAbhK13vEzWHjeTOIHr4S1Cn8yk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 02/17] netfilter: nf_tables: remove NETDEV_CHANGENAME from netdev chain event handler
-Date: Sun, 12 May 2024 18:14:21 +0200
-Message-Id: <20240512161436.168973-3-pablo@netfilter.org>
+Subject: [PATCH net-next 03/17] netfilter: conntrack: fix ct-state for ICMPv6 Multicast Router Discovery
+Date: Sun, 12 May 2024 18:14:22 +0200
+Message-Id: <20240512161436.168973-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240512161436.168973-1-pablo@netfilter.org>
 References: <20240512161436.168973-1-pablo@netfilter.org>
@@ -47,40 +47,65 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Originally, device name used to be stored in the basechain, but it is
-not the case anymore. Remove check for NETDEV_CHANGENAME.
+From: Linus Lüssing <linus.luessing@c0d3.blue>
 
+So far Multicast Router Advertisements and Multicast Router
+Solicitations from the Multicast Router Discovery protocol (RFC4286)
+would be marked as INVALID for IPv6, even if they are in fact intact
+and adhering to RFC4286.
+
+This broke MRA reception and by that multicast reception on
+IPv6 multicast routers in a Proxmox managed setup, where Proxmox
+would install a rule like "-m conntrack --ctstate INVALID -j DROP"
+at the top of the FORWARD chain with br-nf-call-ip6tables enabled
+by default.
+
+Similar to as it's done for MLDv1, MLDv2 and IPv6 Neighbor Discovery
+already, fix this issue by excluding MRD from connection tracking
+handling as MRD always uses predefined multicast destinations
+for its messages, too. This changes the ct-state for ICMPv6 MRD messages
+from INVALID to UNTRACKED.
+
+This issue was found and fixed with the help of the mrdisc tool
+(https://github.com/troglobit/mrdisc).
+
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_chain_filter.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ include/uapi/linux/icmpv6.h               | 1 +
+ net/netfilter/nf_conntrack_proto_icmpv6.c | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index d170758a1eb5..7010541fcca6 100644
---- a/net/netfilter/nft_chain_filter.c
-+++ b/net/netfilter/nft_chain_filter.c
-@@ -325,9 +325,6 @@ static void nft_netdev_event(unsigned long event, struct net_device *dev,
- 	struct nft_hook *hook, *found = NULL;
- 	int n = 0;
+diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
+index ecaece3af38d..4eaab89e2856 100644
+--- a/include/uapi/linux/icmpv6.h
++++ b/include/uapi/linux/icmpv6.h
+@@ -112,6 +112,7 @@ struct icmp6hdr {
+ #define ICMPV6_MOBILE_PREFIX_ADV	147
  
--	if (event != NETDEV_UNREGISTER)
--		return;
--
- 	list_for_each_entry(hook, &basechain->hook_list, list) {
- 		if (hook->ops.dev == dev)
- 			found = hook;
-@@ -367,8 +364,7 @@ static int nf_tables_netdev_event(struct notifier_block *this,
- 		.net	= dev_net(dev),
- 	};
+ #define ICMPV6_MRDISC_ADV		151
++#define ICMPV6_MRDISC_SOL		152
  
--	if (event != NETDEV_UNREGISTER &&
--	    event != NETDEV_CHANGENAME)
-+	if (event != NETDEV_UNREGISTER)
- 		return NOTIFY_DONE;
+ #define ICMPV6_MSG_MAX          255
  
- 	nft_net = nft_pernet(ctx.net);
+diff --git a/net/netfilter/nf_conntrack_proto_icmpv6.c b/net/netfilter/nf_conntrack_proto_icmpv6.c
+index 1020d67600a9..327b8059025d 100644
+--- a/net/netfilter/nf_conntrack_proto_icmpv6.c
++++ b/net/netfilter/nf_conntrack_proto_icmpv6.c
+@@ -62,7 +62,9 @@ static const u_int8_t noct_valid_new[] = {
+ 	[NDISC_ROUTER_ADVERTISEMENT - 130] = 1,
+ 	[NDISC_NEIGHBOUR_SOLICITATION - 130] = 1,
+ 	[NDISC_NEIGHBOUR_ADVERTISEMENT - 130] = 1,
+-	[ICMPV6_MLD2_REPORT - 130] = 1
++	[ICMPV6_MLD2_REPORT - 130] = 1,
++	[ICMPV6_MRDISC_ADV - 130] = 1,
++	[ICMPV6_MRDISC_SOL - 130] = 1
+ };
+ 
+ bool nf_conntrack_invert_icmpv6_tuple(struct nf_conntrack_tuple *tuple,
 -- 
 2.30.2
 
