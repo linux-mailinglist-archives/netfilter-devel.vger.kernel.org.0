@@ -1,115 +1,172 @@
-Return-Path: <netfilter-devel+bounces-2148-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2152-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B69A48C3070
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 May 2024 11:51:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C618C374D
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 May 2024 18:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06307B21285
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 May 2024 09:51:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20E271F21219
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 May 2024 16:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8725476B;
-	Sat, 11 May 2024 09:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="k56XE3N3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA244CDE0;
+	Sun, 12 May 2024 16:14:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4881537F5;
-	Sat, 11 May 2024 09:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08AB1C683;
+	Sun, 12 May 2024 16:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715421082; cv=none; b=hLo1qT7TB6M1I8MXvU4U+q0teDCMTaCT99oP1yXheShClDSEGn2rV4ifefhv/3YO/abP38hBCCzsrcUyArpwKnQONTKXI+RKoIC5VnIahkTw2jq+NK27hcZa61JpOAkVP9bVP1kkw5WYYrGcgCI9k/9+0OPBDERqK0u0+BHgsmc=
+	t=1715530491; cv=none; b=BjrK/9QtSk+3WmifVGfqriV1EEyQoBEys9alMynMuAcUyaHvDPrRUqvcTlUTuRoZF/Zag0ZRYgA9Px22ZI4cCugu+NJ8+5ca/ees2o7ESWEFBhSaGcSUlTgy/cprkn1ncMwaBJ473/Qu+PhiuMz7sXPAFP0cvR07hGxlZzuKnu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715421082; c=relaxed/simple;
-	bh=0cJX+ofKilB0YeAddG2Rk34Tcb84daQhOHXhdzx0r3M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X1Emcb0fYYhIyfj4HDg32a0cLUnd3pWmx0p1eqTDOa+K/dtsGx99nPG6i9Fnxbq0yaMHPghGHN9HnmxE2ySH1nZngEn/mRlDZzJNH3K/XDH5c5MvQZU32BFzpay9cqLlH3U8f6hk+0mwpcNA7zgH/xGNpjc1jvhT2QfLm9mOL2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=k56XE3N3; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1715421078;
-	bh=0cJX+ofKilB0YeAddG2Rk34Tcb84daQhOHXhdzx0r3M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k56XE3N3d4pgs8RXOwLSnRLB27sLWUfITEgcvrDMjZdmJPa/Ir6S6oi9PpE553jPt
-	 sb7k+FxSLFp8Odclpb2t4vqVdgVnPhAwWUDBH9QwI80jAM7LA7gxjkMhJ80aDoR2yw
-	 DUA3ugAMpnt1Nr9pHpMHzjCRdAMZeTMxIBsCjZb8=
-Date: Sat, 11 May 2024 11:51:18 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jakub Kicinski <kuba@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Joel Granados <j.granados@samsung.com>, Eric Dumazet <edumazet@google.com>, 
-	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, 
-	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
-Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
- of sysctl handlers
-Message-ID: <8d1daa64-3746-46a3-b696-127a70cdf7e7@t-8ch.de>
-References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
- <20240424201234.3cc2b509@kernel.org>
- <202405080959.104A73A914@keescook>
+	s=arc-20240116; t=1715530491; c=relaxed/simple;
+	bh=jqchNsA1s9gWMqw2QxSXW5jRUWHZGceNJbRhw8hCw5g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hwvdWm+zZoj0XfntjXNWgRdCMKsxWTlnBZS5j8HObT12vDuSeJ80QgHol+201Jf1XG9Ps2buB+KEjRLM/anbTCfC0VgbrETW7OCwCxIBuv8Rq6i9UUcF23d0M9C8O7JSJxbkkryx8m7fr+/k8eRxpSPBIe8IX9Luc7Mf8FxBtlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de
+Subject: [PATCH net-next 00/17] Netfilter updates for net-next
+Date: Sun, 12 May 2024 18:14:19 +0200
+Message-Id: <20240512161436.168973-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202405080959.104A73A914@keescook>
 
-Hi Kees,
+Hi,
 
-On 2024-05-08 10:11:35+0000, Kees Cook wrote:
-> On Wed, Apr 24, 2024 at 08:12:34PM -0700, Jakub Kicinski wrote:
-> > On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Weißschuh wrote:
-> > > The series was split from my larger series sysctl-const series [0].
-> > > It only focusses on the proc_handlers but is an important step to be
-> > > able to move all static definitions of ctl_table into .rodata.
-> > 
-> > Split this per subsystem, please.
-> 
-> I've done a few painful API transitions before, and I don't think the
-> complexity of these changes needs a per-subsystem constification pass. I
-> think this series is the right approach, but that patch 11 will need
-> coordination with Linus. We regularly do system-wide prototype changes
-> like this right at the end of the merge window before -rc1 comes out.
+The following patchset contains Netfilter updates for net-next:
 
-That sounds good.
+Patch #1 skips transaction if object type provides no .update interface.
 
-> The requirements are pretty simple: it needs to be a obvious changes
-> (this certainly is) and as close to 100% mechanical as possible. I think
-> patch 11 easily qualifies. Linus should be able to run the same Coccinelle
-> script and get nearly the same results, etc. And all the other changes
-> need to have landed. This change also has no "silent failure" conditions:
-> anything mismatched will immediately stand out.
+Patch #2 skips NETDEV_CHANGENAME which is unused.
 
-Unfortunately coccinelle alone is not sufficient, as some helpers with
-different prototypes are called by handlers and themselves are calling
-handler and therefore need to change in the same commit.
-But if I add a diff for those on top of the coccinelle script to the
-changelog it should be obvious.
+Patch #3 enables conntrack to handle Multicast Router Advertisements and
+	 Multicast Router Solicitations from the Multicast Router Discovery
+	 protocol (RFC4286) as untracked opposed to invalid packets.
+	 From Linus Luessing.
 
-> So, have patches 1-10 go via their respective subsystems, and once all
-> of those are in Linus's tree, send patch 11 as a stand-alone PR.
+Patch #4 updates DCCP conntracker to mark invalid as invalid, instead of
+	 dropping them, from Jason Xing.
 
-Ack, I'll do that with the cover letter information requested by Joel.
+Patch #5 uses NF_DROP instead of -NF_DROP since NF_DROP is 0, also from Jason.
 
-> (From patch 11, it looks like the seccomp read/write function changes
-> could be split out? I'll do that now...)
+Patch #6 removes reference in netfilter's sysctl documentation on pickup
+	 entries which were already removed by Florian Westphal.
 
-Thanks!
+Patch #7 removes check for IPS_OFFLOAD flag to disable early drop which allows
+	 to evict entries from the conntrack table, also from Florian.
 
-Thomas
+Patches #8 to #16 updates nf_tables pipapo set backend to allocate the
+	 datastructure copy on-demand from preparation phase, to better deal
+	 with OOM situations where .commit step is too late to fail.
+	 Series from Florian Westphal.
+
+Patch #17 adds a selftest with packetdrill to cover conntrack TCP state
+	 transitions, also from Florian.
+
+Patch #18 use GFP_KERNEL to clone elements from control plane to avoid
+	 quick atomic reserves exhaustion with large sets, reporter refers
+	 to million entries magnitude.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-05-12
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit cdc74c9d06e72addde01092d09f13bb86d3ed7d0:
+
+  Merge branch 'gve-queue-api' (2024-05-05 14:35:48 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-05-12
+
+for you to fetch changes up to fa23e0d4b756d25829e124d6b670a4c6bbd4bf7e:
+
+  netfilter: nf_tables: allow clone callbacks to sleep (2024-05-10 11:13:45 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 24-05-12
+
+----------------------------------------------------------------
+Florian Westphal (12):
+      netfilter: conntrack: documentation: remove reference to non-existent sysctl
+      netfilter: conntrack: remove flowtable early-drop test
+      netfilter: nft_set_pipapo: move prove_locking helper around
+      netfilter: nft_set_pipapo: make pipapo_clone helper return NULL
+      netfilter: nft_set_pipapo: prepare destroy function for on-demand clone
+      netfilter: nft_set_pipapo: prepare walk function for on-demand clone
+      netfilter: nft_set_pipapo: merge deactivate helper into caller
+      netfilter: nft_set_pipapo: prepare pipapo_get helper for on-demand clone
+      netfilter: nft_set_pipapo: move cloning of match info to insert/removal path
+      netfilter: nft_set_pipapo: remove dirty flag
+      selftests: netfilter: add packetdrill based conntrack tests
+      netfilter: nf_tables: allow clone callbacks to sleep
+
+Jason Xing (2):
+      netfilter: conntrack: dccp: try not to drop skb in conntrack
+      netfilter: use NF_DROP instead of -NF_DROP
+
+Linus Lüssing (1):
+      netfilter: conntrack: fix ct-state for ICMPv6 Multicast Router Discovery
+
+Pablo Neira Ayuso (2):
+      netfilter: nf_tables: skip transaction if update object is not implemented
+      netfilter: nf_tables: remove NETDEV_CHANGENAME from netdev chain event handler
+
+ Documentation/networking/nf_conntrack-sysctl.rst   |   4 +-
+ include/net/netfilter/nf_tables.h                  |   4 +-
+ include/uapi/linux/icmpv6.h                        |   1 +
+ net/ipv4/netfilter/iptable_filter.c                |   2 +-
+ net/ipv6/netfilter/ip6table_filter.c               |   2 +-
+ net/netfilter/nf_conntrack_core.c                  |   4 +-
+ net/netfilter/nf_conntrack_proto_dccp.c            |   4 +-
+ net/netfilter/nf_conntrack_proto_icmpv6.c          |   4 +-
+ net/netfilter/nf_tables_api.c                      |  16 +-
+ net/netfilter/nft_chain_filter.c                   |   6 +-
+ net/netfilter/nft_connlimit.c                      |   4 +-
+ net/netfilter/nft_counter.c                        |   4 +-
+ net/netfilter/nft_dynset.c                         |   2 +-
+ net/netfilter/nft_last.c                           |   4 +-
+ net/netfilter/nft_limit.c                          |  14 +-
+ net/netfilter/nft_quota.c                          |   4 +-
+ net/netfilter/nft_set_pipapo.c                     | 258 ++++++++++-----------
+ net/netfilter/nft_set_pipapo.h                     |   2 -
+ tools/testing/selftests/net/netfilter/Makefile     |   2 +
+ tools/testing/selftests/net/netfilter/config       |   1 +
+ .../net/netfilter/nf_conntrack_packetdrill.sh      |  71 ++++++
+ .../selftests/net/netfilter/packetdrill/common.sh  |  33 +++
+ .../packetdrill/conntrack_ack_loss_stall.pkt       | 118 ++++++++++
+ .../packetdrill/conntrack_inexact_rst.pkt          |  62 +++++
+ .../packetdrill/conntrack_rst_invalid.pkt          |  59 +++++
+ .../packetdrill/conntrack_syn_challenge_ack.pkt    |  44 ++++
+ .../netfilter/packetdrill/conntrack_synack_old.pkt |  51 ++++
+ .../packetdrill/conntrack_synack_reuse.pkt         |  34 +++
+ 28 files changed, 639 insertions(+), 175 deletions(-)
+ create mode 100755 tools/testing/selftests/net/netfilter/nf_conntrack_packetdrill.sh
+ create mode 100755 tools/testing/selftests/net/netfilter/packetdrill/common.sh
+ create mode 100644 tools/testing/selftests/net/netfilter/packetdrill/conntrack_ack_loss_stall.pkt
+ create mode 100644 tools/testing/selftests/net/netfilter/packetdrill/conntrack_inexact_rst.pkt
+ create mode 100644 tools/testing/selftests/net/netfilter/packetdrill/conntrack_rst_invalid.pkt
+ create mode 100644 tools/testing/selftests/net/netfilter/packetdrill/conntrack_syn_challenge_ack.pkt
+ create mode 100644 tools/testing/selftests/net/netfilter/packetdrill/conntrack_synack_old.pkt
+ create mode 100644 tools/testing/selftests/net/netfilter/packetdrill/conntrack_synack_reuse.pkt
 
