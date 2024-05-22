@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2282-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2281-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9388D8CC979
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 01:14:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BD428CC976
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 01:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C41E41C21CCC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 May 2024 23:14:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 145242819CD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 May 2024 23:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE7F14A0A7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BF514A09B;
 	Wed, 22 May 2024 23:14:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028D7149C73;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3253E19470;
 	Wed, 22 May 2024 23:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716419652; cv=none; b=qUJNb1dHFL+njR/wW2324Y+b99ZMIcNoeOUWjDaggJsTTCkNX6TV9rD5v1kFe0M4szPprC5GcFCHeuMu3EsZ+5ug8VnqSZ2tGf0RnYFDmUgnU5pd1866hw+JxvP5bD58Y+jZoKHsrn9U/lHFPSkgA4rifbeiLgAYFn/IVmw3FP4=
+	t=1716419652; cv=none; b=go6dFxx9dfvgydvrUaPCbyvC4HPRy0MuxY2GLQDEaFKysyn8RHTdRwvTjeV0vegtioRBvp+pZEitBVMMaoMve4bvHcb80Uk4JxB6kgX6OUzWw62BcxPotk3gjiXL+VpEe5fM+WVgYO3VQRR79oApi7IfDY52rBFX0/mRoBaMRUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1716419652; c=relaxed/simple;
-	bh=TwFcmxRUKIIhZ96ExJZMQ8NkOjqunIl7YEgkcO9oJMY=;
+	bh=DTgRKfxj+1zRBu9Atn+nXDKC7uNhiPYbOhZk7jZJh/M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZHIxmyB+70sSRy0kBDrE3yuFsr3vvjgPkPPOi55JN+MtU+AaYHJvvisB9opLoZ2FUdiyPwMRlmasTdg/Nm02SFfRWSB+03ALGniAivCfr+Mv4gGCKTm63b1qH9EJ4My92SdOdkWfCwIo8L5BVK+AFxixNAWO/tVFhlX3RbEQgzY=
+	 MIME-Version; b=CF1mgFegl4XPZFay8evy+oCMoo+kPfI5ewF00t0VRUfF/MS0FhEoH7Uqa0hn34RRCdxEHN2Y58CBubUubbvwiMe0nQDdMS+xB75UM5K+CJzP4Ern/CigNaISsRw3cK8jNwbuFSfig/VSPMmpyLVZ08uUourNCYjyl8jt2stu2Zw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 5/6] netfilter: tproxy: bail out if IP has been disabled on the device
-Date: Thu, 23 May 2024 01:13:54 +0200
-Message-Id: <20240522231355.9802-6-pablo@netfilter.org>
+Subject: [PATCH net 6/6] netfilter: nft_fib: allow from forward/input without iif selector
+Date: Thu, 23 May 2024 01:13:55 +0200
+Message-Id: <20240522231355.9802-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240522231355.9802-1-pablo@netfilter.org>
 References: <20240522231355.9802-1-pablo@netfilter.org>
@@ -49,40 +49,40 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Florian Westphal <fw@strlen.de>
+From: Eric Garver <eric@garver.life>
 
-syzbot reports:
-general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-[..]
-RIP: 0010:nf_tproxy_laddr4+0xb7/0x340 net/ipv4/netfilter/nf_tproxy_ipv4.c:62
-Call Trace:
- nft_tproxy_eval_v4 net/netfilter/nft_tproxy.c:56 [inline]
- nft_tproxy_eval+0xa9a/0x1a00 net/netfilter/nft_tproxy.c:168
+This removes the restriction of needing iif selector in the
+forward/input hooks for fib lookups when requested result is
+oif/oifname.
 
-__in_dev_get_rcu() can return NULL, so check for this.
+Removing this restriction allows "loose" lookups from the forward hooks.
 
-Reported-and-tested-by: syzbot+b94a6818504ea90d7661@syzkaller.appspotmail.com
-Fixes: cc6eb4338569 ("tproxy: use the interface primary IP address as a default value for --on-ip")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: be8be04e5ddb ("netfilter: nft_fib: reverse path filter for policy-based routing on iif")
+Signed-off-by: Eric Garver <eric@garver.life>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/ipv4/netfilter/nf_tproxy_ipv4.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/nft_fib.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/net/ipv4/netfilter/nf_tproxy_ipv4.c b/net/ipv4/netfilter/nf_tproxy_ipv4.c
-index 69e331799604..73e66a088e25 100644
---- a/net/ipv4/netfilter/nf_tproxy_ipv4.c
-+++ b/net/ipv4/netfilter/nf_tproxy_ipv4.c
-@@ -58,6 +58,8 @@ __be32 nf_tproxy_laddr4(struct sk_buff *skb, __be32 user_laddr, __be32 daddr)
- 
- 	laddr = 0;
- 	indev = __in_dev_get_rcu(skb->dev);
-+	if (!indev)
-+		return daddr;
- 
- 	in_dev_for_each_ifa_rcu(ifa, indev) {
- 		if (ifa->ifa_flags & IFA_F_SECONDARY)
+diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
+index 37cfe6dd712d..b58f62195ff3 100644
+--- a/net/netfilter/nft_fib.c
++++ b/net/netfilter/nft_fib.c
+@@ -35,11 +35,9 @@ int nft_fib_validate(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	switch (priv->result) {
+ 	case NFT_FIB_RESULT_OIF:
+ 	case NFT_FIB_RESULT_OIFNAME:
+-		hooks = (1 << NF_INET_PRE_ROUTING);
+-		if (priv->flags & NFTA_FIB_F_IIF) {
+-			hooks |= (1 << NF_INET_LOCAL_IN) |
+-				 (1 << NF_INET_FORWARD);
+-		}
++		hooks = (1 << NF_INET_PRE_ROUTING) |
++			(1 << NF_INET_LOCAL_IN) |
++			(1 << NF_INET_FORWARD);
+ 		break;
+ 	case NFT_FIB_RESULT_ADDRTYPE:
+ 		if (priv->flags & NFTA_FIB_F_IIF)
 -- 
 2.30.2
 
