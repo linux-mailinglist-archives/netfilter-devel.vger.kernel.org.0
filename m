@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2298-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2294-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFE98CD851
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 18:20:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8628CD848
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 18:20:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F54C1F21C36
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 16:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFA701C208DD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 16:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19CC28E0F;
-	Thu, 23 May 2024 16:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6300A17736;
+	Thu, 23 May 2024 16:20:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6961168C7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A692FE545;
 	Thu, 23 May 2024 16:20:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716481228; cv=none; b=nzVswRIWFSosjt0WU1gRwZufWnyWVp9oCdguymg3RXMsGr10QH4ttKxJ7qNwabq5qtprpoHGpkZI4lxT2YkTUa5/428sC533rCsnJRa8mFfUdpyrCqt4Cr50iVKjKcmDLY46JvA2kcfKY9z/HmKr+PPWALbDYxTOPF3etRG1UN8=
+	t=1716481227; cv=none; b=r3cy7r9hqCgfHaiCNuzcrdspICQx3IoZ05Iv8jEtWLfWOEVRjb4iZp7QYHzIusNlQjK2YHaXcN/5T1WDp3/vkhPzT1sD2y/5ZuyNmhp5y59PJreI1lJueWv7Xf+AzCRqSfUrWQpGCq+GiZ6VRBBddHQ1gurW1QqK4949lDHvwEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716481228; c=relaxed/simple;
-	bh=BJZ+uUadFze585e9aOHxn2QMXf+G+UneaUjFaJ9cvW4=;
+	s=arc-20240116; t=1716481227; c=relaxed/simple;
+	bh=GZugc6t/TGMb0kkCWihZjQHCum1izVwaDyo4kbG/SYc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MlCztM4lKWOQxAC5rksZT3TPgEUc/qeRpWH4+IMY06ev6MAlyo87H5WpaJ6mQSl5Xp1q4lIASL6RkUqBl7OZ+z6YAgWHyw9e/mj2eVw0Aq2Abv+HfwviSQBkiOHNsRsj+WSK5KsSNreMvZl6R1VBL9VMSlM3pfzLzT3L9ayqGJk=
+	 MIME-Version; b=HcfMRkL4QO4Oj3NpQX1Tsvxj0U2zkGHe48FDTd+ZrVmGAJ9avCefLWBQp8VTDUNCwPrCADCCa00X7/w9tWNO3Zo7b0PAnoRYMrplFpCH4mlG94ZPjQ6JE1dcg7/T1QlcBxlbfdvTXfXQo6m4pRsqJ10oIuZrYVds2Onr440bzGM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/6] netfilter: nfnetlink_queue: acquire rcu_read_lock() in instance_destroy_rcu()
-Date: Thu, 23 May 2024 18:20:14 +0200
-Message-Id: <20240523162019.5035-2-pablo@netfilter.org>
+Subject: [PATCH net 2/6] netfilter: ipset: Add list flush to cancel_gc
+Date: Thu, 23 May 2024 18:20:15 +0200
+Message-Id: <20240523162019.5035-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240523162019.5035-1-pablo@netfilter.org>
 References: <20240523162019.5035-1-pablo@netfilter.org>
@@ -49,73 +49,34 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Alexander Maltsev <keltar.gw@gmail.com>
 
-syzbot reported that nf_reinject() could be called without rcu_read_lock() :
+Flushing list in cancel_gc drops references to other lists right away,
+without waiting for RCU to destroy list. Fixes race when referenced
+ipsets can't be destroyed while referring list is scheduled for destroy.
 
-WARNING: suspicious RCU usage
-6.9.0-rc7-syzkaller-02060-g5c1672705a1a #0 Not tainted
-
-net/netfilter/nfnetlink_queue.c:263 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-2 locks held by syz-executor.4/13427:
-  #0: ffffffff8e334f60 (rcu_callback){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
-  #0: ffffffff8e334f60 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2190 [inline]
-  #0: ffffffff8e334f60 (rcu_callback){....}-{0:0}, at: rcu_core+0xa86/0x1830 kernel/rcu/tree.c:2471
-  #1: ffff88801ca92958 (&inst->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-  #1: ffff88801ca92958 (&inst->lock){+.-.}-{2:2}, at: nfqnl_flush net/netfilter/nfnetlink_queue.c:405 [inline]
-  #1: ffff88801ca92958 (&inst->lock){+.-.}-{2:2}, at: instance_destroy_rcu+0x30/0x220 net/netfilter/nfnetlink_queue.c:172
-
-stack backtrace:
-CPU: 0 PID: 13427 Comm: syz-executor.4 Not tainted 6.9.0-rc7-syzkaller-02060-g5c1672705a1a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Call Trace:
- <IRQ>
-  __dump_stack lib/dump_stack.c:88 [inline]
-  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-  lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
-  nf_reinject net/netfilter/nfnetlink_queue.c:323 [inline]
-  nfqnl_reinject+0x6ec/0x1120 net/netfilter/nfnetlink_queue.c:397
-  nfqnl_flush net/netfilter/nfnetlink_queue.c:410 [inline]
-  instance_destroy_rcu+0x1ae/0x220 net/netfilter/nfnetlink_queue.c:172
-  rcu_do_batch kernel/rcu/tree.c:2196 [inline]
-  rcu_core+0xafd/0x1830 kernel/rcu/tree.c:2471
-  handle_softirqs+0x2d6/0x990 kernel/softirq.c:554
-  __do_softirq kernel/softirq.c:588 [inline]
-  invoke_softirq kernel/softirq.c:428 [inline]
-  __irq_exit_rcu+0xf4/0x1c0 kernel/softirq.c:637
-  irq_exit_rcu+0x9/0x30 kernel/softirq.c:649
-  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
-  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
- </IRQ>
- <TASK>
-
-Fixes: 9872bec773c2 ("[NETFILTER]: nfnetlink: use RCU for queue instances hash")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Florian Westphal <fw@strlen.de>
+Fixes: 97f7cf1cd80e ("netfilter: ipset: fix performance regression in swap operation")
+Signed-off-by: Alexander Maltsev <keltar.gw@gmail.com>
+Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nfnetlink_queue.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/ipset/ip_set_list_set.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index 00f4bd21c59b..f1c31757e496 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -169,7 +169,9 @@ instance_destroy_rcu(struct rcu_head *head)
- 	struct nfqnl_instance *inst = container_of(head, struct nfqnl_instance,
- 						   rcu);
+diff --git a/net/netfilter/ipset/ip_set_list_set.c b/net/netfilter/ipset/ip_set_list_set.c
+index 6c3f28bc59b3..54e2a1dd7f5f 100644
+--- a/net/netfilter/ipset/ip_set_list_set.c
++++ b/net/netfilter/ipset/ip_set_list_set.c
+@@ -549,6 +549,9 @@ list_set_cancel_gc(struct ip_set *set)
  
-+	rcu_read_lock();
- 	nfqnl_flush(inst, NULL, 0);
-+	rcu_read_unlock();
- 	kfree(inst);
- 	module_put(THIS_MODULE);
+ 	if (SET_WITH_TIMEOUT(set))
+ 		timer_shutdown_sync(&map->gc);
++
++	/* Flush list to drop references to other ipsets */
++	list_set_flush(set);
  }
+ 
+ static const struct ip_set_type_variant set_variant = {
 -- 
 2.30.2
 
