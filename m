@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2297-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2299-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A374E8CD84F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 18:20:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FB48CD852
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 18:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230E72835A9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 16:20:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D6581C212D3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2024 16:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23BD1EF1D;
-	Thu, 23 May 2024 16:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE6D3381B0;
+	Thu, 23 May 2024 16:20:29 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFAC171D2;
-	Thu, 23 May 2024 16:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9D4E545;
+	Thu, 23 May 2024 16:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716481228; cv=none; b=Afb9VuctUC619uD5ULCgScf0cAwuMF5WycDelAJkpLQ7VnG5IK4zDl/XZydXNOhDJbBusF+xYxfWgf9x1WLwumMmqw1UrposEWweNxCyavRMHJoXlrhyAZGLor82+aOIh1Htn7fKbh9RGOzMvv6AoysS5Eecj2JKtYIggfBuh/E=
+	t=1716481229; cv=none; b=uP1jDpghivSFDaK/+pQwDWIXF3N1MZzGZ8W6PresKx76j6GT7NyCtlMDg6XgDepG1e2SQD+8jDjI8pYXUB11gOzuO1ulSMmWwYLsYeK5hdWTAlJOThhAitUSmKtAKFQKeDJXNWapxL6HnkjXNRiRbVgck5JOQUL25NT0td4xHDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716481228; c=relaxed/simple;
-	bh=F61dKzlEpQOywDFWGNNfICzKievcbWit/fPk7eR29Uc=;
+	s=arc-20240116; t=1716481229; c=relaxed/simple;
+	bh=TwFcmxRUKIIhZ96ExJZMQ8NkOjqunIl7YEgkcO9oJMY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p+eHurRMSH8qL2BJX9yuGbQXevPrOjP/9qa+cQMApXBkGJCrLO1+AOb5i6FNU73xeIixoIIamiHSCffmDPxTFx0/ZcVowQtPRznyU5YvDAyrp8rXNveHH7e9IPNdR/vlUifO2SdLYZMvhgHOJIv0ZzJzhufiD2MLwZhJZ9La8iM=
+	 MIME-Version; b=gzSQrvtC1EkRgXgRc0QoTENMXzTKfjHoBgAojkivBXKLUgmopwmfnNYSDDzYAF9KDEIaV0XmMNU0PNCi7ilh2tAH1XsHKSBXGaAEnu6D64jtf3LyYyMoS1CrF27nc/y0FPqtPi86d0gentj5LDWmr6SsKLzigEYdFxW88MTHEj4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 4/6] netfilter: nft_payload: skbuff vlan metadata mangle support
-Date: Thu, 23 May 2024 18:20:17 +0200
-Message-Id: <20240523162019.5035-5-pablo@netfilter.org>
+Subject: [PATCH net 5/6] netfilter: tproxy: bail out if IP has been disabled on the device
+Date: Thu, 23 May 2024 18:20:18 +0200
+Message-Id: <20240523162019.5035-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240523162019.5035-1-pablo@netfilter.org>
 References: <20240523162019.5035-1-pablo@netfilter.org>
@@ -49,140 +49,40 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Userspace assumes vlan header is present at a given offset, but vlan
-offload allows to store this in metadata fields of the skbuff. Hence
-mangling vlan results in a garbled packet. Handle this transparently by
-adding a parser to the kernel.
+From: Florian Westphal <fw@strlen.de>
 
-If vlan metadata is present and payload offset is over 12 bytes (source
-and destination mac address fields), then subtract vlan header present
-in vlan metadata, otherwise mangle vlan metadata based on offset and
-length, extracting data from the source register.
+syzbot reports:
+general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+[..]
+RIP: 0010:nf_tproxy_laddr4+0xb7/0x340 net/ipv4/netfilter/nf_tproxy_ipv4.c:62
+Call Trace:
+ nft_tproxy_eval_v4 net/netfilter/nft_tproxy.c:56 [inline]
+ nft_tproxy_eval+0xa9a/0x1a00 net/netfilter/nft_tproxy.c:168
 
-This is similar to:
+__in_dev_get_rcu() can return NULL, so check for this.
 
-  8cfd23e67401 ("netfilter: nft_payload: work around vlan header stripping")
-
-to deal with vlan payload mangling.
-
-Fixes: 7ec3f7b47b8d ("netfilter: nft_payload: add packet mangling support")
+Reported-and-tested-by: syzbot+b94a6818504ea90d7661@syzkaller.appspotmail.com
+Fixes: cc6eb4338569 ("tproxy: use the interface primary IP address as a default value for --on-ip")
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_payload.c | 72 +++++++++++++++++++++++++++++++++----
- 1 file changed, 65 insertions(+), 7 deletions(-)
+ net/ipv4/netfilter/nf_tproxy_ipv4.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index a3cb5dbcb362..f97ee7645bd2 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -145,12 +145,12 @@ int nft_payload_inner_offset(const struct nft_pktinfo *pkt)
- 	return pkt->inneroff;
- }
+diff --git a/net/ipv4/netfilter/nf_tproxy_ipv4.c b/net/ipv4/netfilter/nf_tproxy_ipv4.c
+index 69e331799604..73e66a088e25 100644
+--- a/net/ipv4/netfilter/nf_tproxy_ipv4.c
++++ b/net/ipv4/netfilter/nf_tproxy_ipv4.c
+@@ -58,6 +58,8 @@ __be32 nf_tproxy_laddr4(struct sk_buff *skb, __be32 user_laddr, __be32 daddr)
  
--static bool nft_payload_need_vlan_copy(const struct nft_payload *priv)
-+static bool nft_payload_need_vlan_adjust(u32 offset, u32 len)
- {
--	unsigned int len = priv->offset + priv->len;
-+	unsigned int boundary = offset + len;
+ 	laddr = 0;
+ 	indev = __in_dev_get_rcu(skb->dev);
++	if (!indev)
++		return daddr;
  
- 	/* data past ether src/dst requested, copy needed */
--	if (len > offsetof(struct ethhdr, h_proto))
-+	if (boundary > offsetof(struct ethhdr, h_proto))
- 		return true;
- 
- 	return false;
-@@ -174,7 +174,7 @@ void nft_payload_eval(const struct nft_expr *expr,
- 			goto err;
- 
- 		if (skb_vlan_tag_present(skb) &&
--		    nft_payload_need_vlan_copy(priv)) {
-+		    nft_payload_need_vlan_adjust(priv->offset, priv->len)) {
- 			if (!nft_payload_copy_vlan(dest, skb,
- 						   priv->offset, priv->len))
- 				goto err;
-@@ -801,21 +801,79 @@ struct nft_payload_set {
- 	u8			csum_flags;
- };
- 
-+/* This is not struct vlan_hdr. */
-+struct nft_payload_vlan_hdr {
-+        __be16          h_vlan_proto;
-+        __be16          h_vlan_TCI;
-+};
-+
-+static bool
-+nft_payload_set_vlan(const u32 *src, struct sk_buff *skb, u8 offset, u8 len,
-+		     int *vlan_hlen)
-+{
-+	struct nft_payload_vlan_hdr *vlanh;
-+	__be16 vlan_proto;
-+	u16 vlan_tci;
-+
-+	if (offset >= offsetof(struct vlan_ethhdr, h_vlan_encapsulated_proto)) {
-+		*vlan_hlen = VLAN_HLEN;
-+		return true;
-+	}
-+
-+	switch (offset) {
-+	case offsetof(struct vlan_ethhdr, h_vlan_proto):
-+		if (len == 2) {
-+			vlan_proto = nft_reg_load_be16(src);
-+			skb->vlan_proto = vlan_proto;
-+		} else if (len == 4) {
-+			vlanh = (struct nft_payload_vlan_hdr *)src;
-+			__vlan_hwaccel_put_tag(skb, vlanh->h_vlan_proto,
-+					       ntohs(vlanh->h_vlan_TCI));
-+		} else {
-+			return false;
-+		}
-+		break;
-+	case offsetof(struct vlan_ethhdr, h_vlan_TCI):
-+		if (len != 2)
-+			return false;
-+
-+		vlan_tci = ntohs(nft_reg_load_be16(src));
-+		skb->vlan_tci = vlan_tci;
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static void nft_payload_set_eval(const struct nft_expr *expr,
- 				 struct nft_regs *regs,
- 				 const struct nft_pktinfo *pkt)
- {
- 	const struct nft_payload_set *priv = nft_expr_priv(expr);
--	struct sk_buff *skb = pkt->skb;
- 	const u32 *src = &regs->data[priv->sreg];
--	int offset, csum_offset;
-+	int offset, csum_offset, vlan_hlen = 0;
-+	struct sk_buff *skb = pkt->skb;
- 	__wsum fsum, tsum;
- 
- 	switch (priv->base) {
- 	case NFT_PAYLOAD_LL_HEADER:
- 		if (!skb_mac_header_was_set(skb))
- 			goto err;
--		offset = skb_mac_header(skb) - skb->data;
-+
-+		if (skb_vlan_tag_present(skb) &&
-+		    nft_payload_need_vlan_adjust(priv->offset, priv->len)) {
-+			if (!nft_payload_set_vlan(src, skb,
-+						  priv->offset, priv->len,
-+						  &vlan_hlen))
-+				goto err;
-+
-+			if (!vlan_hlen)
-+				return;
-+		}
-+
-+		offset = skb_mac_header(skb) - skb->data - vlan_hlen;
- 		break;
- 	case NFT_PAYLOAD_NETWORK_HEADER:
- 		offset = skb_network_offset(skb);
+ 	in_dev_for_each_ifa_rcu(ifa, indev) {
+ 		if (ifa->ifa_flags & IFA_F_SECONDARY)
 -- 
 2.30.2
 
