@@ -1,78 +1,78 @@
-Return-Path: <netfilter-devel+bounces-2318-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2320-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DFF18CE0B4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2024 07:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAC788CE0B5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2024 07:38:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E0021F224E9
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2024 05:38:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BE871F22672
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2024 05:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C0984DE2;
-	Fri, 24 May 2024 05:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F62085934;
+	Fri, 24 May 2024 05:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EM4/6rEg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C/uwrJ4C"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AFD84DEB
-	for <netfilter-devel@vger.kernel.org>; Fri, 24 May 2024 05:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B858885286
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 May 2024 05:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716529095; cv=none; b=EI4QNlS92/768/2MO3fUXe19PzD6xVmEyoasUTQnFeTjFGKZHGQziLsRYHZsziFafBlZxnXc3R3oBqw8FKH88S0s6ZJeVcylAtHDzgTymx52FtmJDROIILpqoMUNSbaeIp/UOusII997JD0P6XwMqyfSRiyWXgCDvAc67LzYtDE=
+	t=1716529097; cv=none; b=hlNDzyg50OuidTuGvdmiD/SsDDPJFvBwkr3uMr/6t18hhBXtEAjzYgLWWgVgCNWGHuG5U+DAwxWh9y5/9E7VQSSrQjiRXQoyG+o1xm0pk7EfaLukusVALdbY8BuwAjIeozMHebbBHYyvKYZz9KMEtadAXsGPlrSBA3qvuojB4to=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716529095; c=relaxed/simple;
-	bh=x3KcHBcdax96IN/Tjz5Tf0+Dt5SKrQFAdQngqMcC/0w=;
+	s=arc-20240116; t=1716529097; c=relaxed/simple;
+	bh=zf7nI8VCA4uVTiUd43rNKgZ+KepDp5+QWawmLjv6yhU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W+4DdvNBrCVoE+iMSSgcrSMzz3wTL7Y+H4TVG/myZEk+ZZTFTZ+SKqoH7m44qgX2O08b35A3D0+IxLCaeBC7zmVHO/Zc8fdg3HfbbMId3QjRvqz9SpSBsRA9R5WwXfWsndHPlmQbtyIOxC6cCHqgyBMCZ055SuLqGIsELsTNCnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=optusnet.com.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EM4/6rEg; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=l410zJSYVSch0UNvQwO5FsRpyhDpcI7HDNJxlPfG8jgJEo2aGk24l1T8GFQy8E0H4gKU2nDentYKDfWbBwKJpUgUgz49YG1aJia5Y02tCpBugZhzp5rHb1H13jTEW+3SgIkhez2qJoQDNng75OzvY6cqvbnjT3zyvfEIx+orI7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=optusnet.com.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C/uwrJ4C; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=optusnet.com.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f8ec7e054dso358760b3a.2
-        for <netfilter-devel@vger.kernel.org>; Thu, 23 May 2024 22:38:13 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6f69422c090so3676185b3a.2
+        for <netfilter-devel@vger.kernel.org>; Thu, 23 May 2024 22:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716529093; x=1717133893; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716529095; x=1717133895; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J6MOJ7at8deTEk7SDAya3sab5LrvfIJZTyOavfIVR2E=;
-        b=EM4/6rEg5Hzlg7p32IIBe6vpdGKiZrMy/1dnKPLc22B+n23kM3awCO7i5W0hzuiGBb
-         o0x9RaDEF5BCgLc5guKmUKM64wZJxWQcWeOOwbWwaSSIiSIiuc/ttmGrX1HB4w2M0iGT
-         umDsrafSRuqiX1HVTLYo0TZYiL4nKRPxLT9y10E+IXJCoHuxRBbT6szbRzCwsxWF6uqa
-         /u8bk+exJNkq7HLk7rsj7MaZA/Mv/BToxfL5Ys82gmam2HFauXPoghsJfVzX/BC1x1ix
-         CxErlI8+TJ3DPeyzEzwYO7KvpT7rAmjnE6D7NS4NW4rkALqs9b0Z1y07fs0VrxfndPFe
-         ob1A==
+        bh=cqvHPDbxLtfCnye35rWsySJwaa0HricqSMVkAzCrPjw=;
+        b=C/uwrJ4CE8QqFOnx6RTxipdiaILwUGuo9y8aUKfekQg+2QSusRrjA2GFJ9xxP+SgS6
+         QSBskiv9VGbhdL0xpKoI7VUrtZ+VWPdEeYi3yOEaM9TJWlFIIH6rGbYDS/Gda2FBG1tg
+         IZAJZtO8TZIKco1Zy8J+oZKGGd3T03CNeoNpKSRVbNowSUwPBQHJ8U22Ey2PKbomn5xk
+         CbinruX7ZqhF8v4jnt8/6tUfUIkwpRM4zhXkSRvg/34tYu1uO+u+vC+jCaoTZx4y4QAl
+         EKefnlK1EJHHCIk7HZvVnNibEAcus1VHh3e4zO7xe19o0dCHLNTATLiO+kmHzpQqHYr6
+         UWXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716529093; x=1717133893;
+        d=1e100.net; s=20230601; t=1716529095; x=1717133895;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=J6MOJ7at8deTEk7SDAya3sab5LrvfIJZTyOavfIVR2E=;
-        b=gLfAhzpNXDn92FeIhePS/lK2Pr+xj07ip4q0ABc6eCHg3oiQ9e77vv487hL+dWNL6L
-         IRI0J9t+VpVW0Twemj15QPtiWYwypx6V2JEut4zOmHfM/cNAWSKKXZkbuRFVKv5hiFe3
-         HGuj6jAPGvjoz2ohpy22ZYdKdUUyGTcZWCz/McHhF9Ner8UEiSbkvtABObkK1+2q7wl2
-         XQKJWCWVhd11BliHsA9WM+pYwwVblltm6+dE84coacH0Tqmr5ohyP/da6/lyFMBOTUPp
-         47mdx/FuMiP1rwYu7bCk9ObdRvf8OJ1km7/gLsdbXupjcuhnchn9E7ZMp7l2cI1/cIys
-         bUzQ==
-X-Gm-Message-State: AOJu0YwwArxds48sD5Vhxvu1Oc/v62CLRisdimcrF1IcOaOqEuwmujdF
-	I7HKJngb+6GMDybKEmHjnJxthJ/62QxDS/2z/XiL41Ido9vH8XDPpxc/TQ==
-X-Google-Smtp-Source: AGHT+IHSd1OnKzrUTyXumbKafz2KmQy1Z9Kn+q1+5oYyzsJPp17StkutzqKnFrJk1yHU5/VRO8XTig==
-X-Received: by 2002:a05:6a00:4c8b:b0:6ea:9252:435 with SMTP id d2e1a72fcca58-6f8f3d70f73mr1845891b3a.30.1716529093021;
-        Thu, 23 May 2024 22:38:13 -0700 (PDT)
+        bh=cqvHPDbxLtfCnye35rWsySJwaa0HricqSMVkAzCrPjw=;
+        b=rJbCUPv72sDXXHgouRNwhixCZxHvIXZj3eOJsm2RgVS1ATf0MBnIqnjdjCLnTAPzC5
+         n4vXAq7W9cdW/vTD2JeHiZNdy30YawDcxJDwdLdaK5diH4UYct57NAzFQmOZaY9iz4EG
+         IswZ1xtczUBG61fQl23kIPJQiK50EthKMVD/Z5b39aAUOxqYC3Jb009RLrMxsK8mgYOS
+         N8dgALlGdkm5WNoBOLBfBi4BlZd+XewsMuyNArO0lh0pl24xpr8Lb1aa2PqScGpI3Bbm
+         i6xkweusfrghdozc13V+owwpGv6jUDoVFXsbnUIqi4Uvj67lP4/TTwZljmPl3bXtm6rP
+         mkmw==
+X-Gm-Message-State: AOJu0YzjnsW4kLAaj6AJWIGr7Asj/hI0mK/xKuPjOHfgQXthBvVB3OML
+	Eum9IT/BoE4qkz5P6y1xKePd9WAX8zGCQQzo7zEI2FKCX4AmXf/++wfGVw==
+X-Google-Smtp-Source: AGHT+IF4Xfi4kqUWQL2hP1kKe4eS62B4UdADKc09LzLSX3UOWiWxmQny0SeKj2aLhXilvr2tG/Gh6A==
+X-Received: by 2002:a05:6a21:271b:b0:1b1:d2a5:c7b1 with SMTP id adf61e73a8af0-1b212df0622mr1359777637.49.1716529094893;
+        Thu, 23 May 2024 22:38:14 -0700 (PDT)
 Received: from slk15.local.net ([49.190.141.216])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f8fcbe9f61sm460374b3a.110.2024.05.23.22.38.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f8fcbe9f61sm460374b3a.110.2024.05.23.22.38.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 May 2024 22:38:12 -0700 (PDT)
+        Thu, 23 May 2024 22:38:14 -0700 (PDT)
 Sender: Duncan Roe <duncan.roe2@gmail.com>
 From: Duncan Roe <duncan_roe@optusnet.com.au>
 To: netfilter-devel@vger.kernel.org
 Cc: pablo@netfilter.org
-Subject: [PATCH libnetfilter_queue v2 14/15] include: Use libmnl.h instead of libnfnetlink.h
-Date: Fri, 24 May 2024 15:37:41 +1000
-Message-Id: <20240524053742.27294-15-duncan_roe@optusnet.com.au>
+Subject: [PATCH libnetfilter_queue v2 15/15] build: Remove libnfnetlink from the build
+Date: Fri, 24 May 2024 15:37:42 +1000
+Message-Id: <20240524053742.27294-16-duncan_roe@optusnet.com.au>
 X-Mailer: git-send-email 2.35.8
 In-Reply-To: <20240524053742.27294-1-duncan_roe@optusnet.com.au>
 References: <20240524053742.27294-1-duncan_roe@optusnet.com.au>
@@ -84,104 +84,62 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add nlif_* prototypes and 64-bit converters to libnetfilter_queue.h.
-Update (deprecated) include/libnetfilter_queue/linux_nfnetlink_queue.h
-to use /usr/include/linux/nfnetlink.h
-instead of libnfnetlink/linux_nfnetlink.h
-As an aside, everything compiles fine with this line removed
-(i.e library, utils and examples all compile),
-so maybe we can do without it.
+libnfnetlink was a "private library" - always loaded whether user apps
+used it or not. Remove it now it is no longer needed.
 
 Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
 ---
- Changes in v2:
- - This was patch 18 v1
- - Update commit message:
-   - libnetfilter_queue.c has no libnfnetlink.h references
-     (removed in patch 6 v2).
-   - Incorporate patch 22 v1
+ v2: This was patch 21/32. No changes.
 
- .../libnetfilter_queue/libnetfilter_queue.h   | 36 ++++++++++++++++++-
- .../linux_nfnetlink_queue.h                   |  3 +-
- 2 files changed, 37 insertions(+), 2 deletions(-)
+ Make_global.am           | 2 +-
+ configure.ac             | 1 -
+ libnetfilter_queue.pc.in | 2 --
+ src/Makefile.am          | 2 +-
+ 4 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/libnetfilter_queue/libnetfilter_queue.h b/include/libnetfilter_queue/libnetfilter_queue.h
-index 9327f8c..46289f2 100644
---- a/include/libnetfilter_queue/libnetfilter_queue.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue.h
-@@ -14,7 +14,7 @@
- #define __LIBCTNETLINK_H
+diff --git a/Make_global.am b/Make_global.am
+index 91da5da..4d8a58e 100644
+--- a/Make_global.am
++++ b/Make_global.am
+@@ -1,2 +1,2 @@
+-AM_CPPFLAGS = -I${top_srcdir}/include ${LIBNFNETLINK_CFLAGS} ${LIBMNL_CFLAGS}
++AM_CPPFLAGS = -I${top_srcdir}/include ${LIBMNL_CFLAGS}
+ AM_CFLAGS = -Wall ${GCC_FVISIBILITY_HIDDEN}
+diff --git a/configure.ac b/configure.ac
+index 7359fba..ba7b15f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -42,7 +42,6 @@ case "$host" in
+ esac
  
- #include <sys/time.h>
--#include <libnfnetlink/libnfnetlink.h>
-+#include <libmnl/libmnl.h>
+ dnl Dependencies
+-PKG_CHECK_MODULES([LIBNFNETLINK], [libnfnetlink >= 0.0.41])
+ PKG_CHECK_MODULES([LIBMNL], [libmnl >= 1.0.3])
  
- #include <libnetfilter_queue/linux_nfnetlink_queue.h>
+ AS_IF([test "$enable_man_pages" = no -a "$enable_html_doc" = no],
+diff --git a/libnetfilter_queue.pc.in b/libnetfilter_queue.pc.in
+index 9c6c2c4..1927a8a 100644
+--- a/libnetfilter_queue.pc.in
++++ b/libnetfilter_queue.pc.in
+@@ -9,8 +9,6 @@ Name: libnetfilter_queue
+ Description: netfilter userspace packet queueing library
+ URL: http://netfilter.org/projects/libnetfilter_queue/
+ Version: @VERSION@
+-Requires: libnfnetlink
+ Conflicts:
+ Libs: -L${libdir} -lnetfilter_queue
+-Libs.private: @LIBNFNETLINK_LIBS@
+ Cflags: -I${includedir}
+diff --git a/src/Makefile.am b/src/Makefile.am
+index a6813e8..e5e1d66 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -39,4 +39,4 @@ libnetfilter_queue_la_SOURCES = libnetfilter_queue.c	\
+ 				extra/pktbuff.c		\
+ 				extra/udp.c
  
-@@ -25,6 +25,7 @@ extern "C" {
- struct nfq_handle;
- struct nfq_q_handle;
- struct nfq_data;
-+struct nlif_handle;
- 
- extern int nfq_errno;
- 
-@@ -155,8 +156,41 @@ int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr);
- struct nlmsghdr *nfq_nlmsg_put(char *buf, int type, uint32_t queue_num);
- struct nlmsghdr *nfq_nlmsg_put2(char *buf, int type, uint32_t queue_num, uint16_t flags);
- 
-+/*
-+ * Network Interface Table API
-+ */
-+
-+#ifndef IFNAMSIZ
-+#define IFNAMSIZ 16
-+#endif
-+
-+struct nlif_handle *nlif_open(void);
-+void nlif_close(struct nlif_handle *orig);
-+int nlif_fd(struct nlif_handle *nlif_handle);
-+int nlif_query(struct nlif_handle *nlif_handle);
-+int nlif_catch(struct nlif_handle *nlif_handle);
-+int nlif_index2name(struct nlif_handle *nlif_handle, unsigned int if_index, char *name);
-+int nlif_get_ifflags(const struct nlif_handle *h, unsigned int index, unsigned int *flags);
-+
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
- 
-+/*
-+ * __be46 stuff - should be in libmnl.h maybe?
-+ */
-+
-+#include <byteswap.h>
-+#if __BYTE_ORDER == __BIG_ENDIAN
-+#  ifndef __be64_to_cpu
-+#  define __be64_to_cpu(x)     (x)
-+#  endif
-+# else
-+# if __BYTE_ORDER == __LITTLE_ENDIAN
-+#  ifndef __be64_to_cpu
-+#  define __be64_to_cpu(x)     __bswap_64(x)
-+#  endif
-+# endif
-+#endif
-+
- #endif	/* __LIBNFQNETLINK_H */
-diff --git a/include/libnetfilter_queue/linux_nfnetlink_queue.h b/include/libnetfilter_queue/linux_nfnetlink_queue.h
-index 6844270..82d8ece 100644
---- a/include/libnetfilter_queue/linux_nfnetlink_queue.h
-+++ b/include/libnetfilter_queue/linux_nfnetlink_queue.h
-@@ -8,7 +8,8 @@
- #endif
- 
- #include <linux/types.h>
--#include <libnfnetlink/linux_nfnetlink.h>
-+/* Use the real header since libnfnetlink is going away. */
-+#include <linux/nfnetlink.h>
- 
- enum nfqnl_msg_types {
- 	NFQNL_MSG_PACKET,		/* packet from kernel to userspace */
+-libnetfilter_queue_la_LIBADD  = ${LIBNFNETLINK_LIBS} ${LIBMNL_LIBS}
++libnetfilter_queue_la_LIBADD  = ${LIBMNL_LIBS}
 -- 
 2.35.8
 
