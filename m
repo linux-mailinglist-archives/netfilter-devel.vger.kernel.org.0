@@ -1,41 +1,44 @@
-Return-Path: <netfilter-devel+bounces-2378-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2380-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBCF8D2056
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 17:28:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D6AB8D2853
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2024 00:55:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221ED1F24022
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 15:28:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ECA91C22D05
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 22:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C80F16F90E;
-	Tue, 28 May 2024 15:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2822513E41D;
+	Tue, 28 May 2024 22:55:30 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633E91E886
-	for <netfilter-devel@vger.kernel.org>; Tue, 28 May 2024 15:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA99A8F49;
+	Tue, 28 May 2024 22:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716910110; cv=none; b=YRMC5vAHL3GP81EW/Souy2/ft6Ea5fBOCuUbGmV9d6z+W/zAa0TSHjbHY+Plqf7L0bs71jF6JcOeYwgorwFlW7u06feETpuuqqcM3xmFKJZGuKHvbUeUhYr/0F5Xz4cJtSZlcGE23XVUo5DmXov/J60YFyLkqD28nmQj6as5Q/g=
+	t=1716936930; cv=none; b=D3LUFv30YM9Q7nY3vp3s5hkv5EE2RGWq17+bXqqSz6ppnmzyxGSVEkWBqIgc4ay+h4RsdSmyVF16rKAHDjn8EvEfjrb+Iw4xcqkbUb9oOeruSmrIpcj/jhYbhMppnG96aNk0RVNj4JAJLBsCuxfL5c5T5c4pWA328RuEOSOCXGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716910110; c=relaxed/simple;
-	bh=b7To6oNrHVnQ2zHF1EvPVdR0fKCLg0ZW0o8lLzb1Erw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RNQ5lmR4cWEKWHxTXGWp5vHNsKIca9T39DWTOAXQiedRTYVC0/pOSYmtzhM//99z6CkTYL0aeE9OOoNEbhr0ZyfUWUGNDLYABDmXHjC3loBWiGI1jbP2xVoab5THayyWrr/MXnVIB7b6N+650OwFDvL/xSve32Vt47BVgPiTJ4U=
+	s=arc-20240116; t=1716936930; c=relaxed/simple;
+	bh=f7NcCWVoW/042CNhA7DgggRDBuBV1seISr10Qu1IlHc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jXrJKAaLj0h8DDZsqbo/50WaLQi12/dTdA27FiIVktkQ+N90R7zPGZFeuV4Fw3oD3qgBUc6KboaF1VbOw0FiJJURpScNJ++n0WIrsR4iMdhaDdD7mj4cNkOzqR6LTuHfw1OWWa5TNXiviJU0/AQWsfwUUY+PYGbJtVtof+dtTPs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: nhofmeyr@sysmocom.de
-Subject: [PATCH nft 2/2,v2] cache: recycle existing cache with incremental updates
-Date: Tue, 28 May 2024 17:28:17 +0200
-Message-Id: <20240528152817.856211-2-pablo@netfilter.org>
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	kadlec@netfilter.org
+Subject: [PATCH net 0/6,v3] Netfilter fixes for net
+Date: Wed, 29 May 2024 00:55:13 +0200
+Message-Id: <20240528225519.1155786-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240528152817.856211-1-pablo@netfilter.org>
-References: <20240528152817.856211-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -44,65 +47,81 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Cache tracking has improved over time by incrementally adding/deleting
-objects when evaluating commands that are going to be sent to the kernel.
+v3: fixes checkpatch warning in 4/6 on use of space instead of indentation.
 
-nft_cache_is_complete() already checks that the cache contains objects
-that are required to handle this batch of commands by comparing cache
-flags.
+-o-
 
-Infer from the current generation ID if no other transaction has
-invalidated the existing cache, this allows to skip unnecessary cache
-flush then refill situations which slow down incremental updates.
+Hi,
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: no changes
+The following patchset contains Netfilter fixes for net:
 
-    nft_slew.c provided by Neels (on Cc) show better numbers now after this
-    series.
+Patch #1 syzbot reports that nf_reinject() could be called without
+         rcu_read_lock() when flushing pending packets at nfnetlink
+         queue removal, from Eric Dumazet.
 
- src/cache.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+Patch #2 flushes ipset list:set when canceling garbage collection to
+         reference to other lists to fix a race, from Jozsef Kadlecsik.
 
-diff --git a/src/cache.c b/src/cache.c
-index e88cbae2ad95..4b797ec79ae5 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -1184,9 +1184,21 @@ static bool nft_cache_needs_refresh(struct nft_cache *cache, unsigned int flags)
- 	       (flags & NFT_CACHE_REFRESH);
- }
- 
--static bool nft_cache_is_updated(struct nft_cache *cache, uint16_t genid)
-+static bool nft_cache_is_updated(struct nft_cache *cache, unsigned int flags,
-+				 uint16_t genid)
- {
--	return genid && genid == cache->genid;
-+	if (!genid)
-+		return false;
-+
-+	if (genid == cache->genid)
-+		return true;
-+
-+	if (genid == cache->genid + 1) {
-+		cache->genid++;
-+		return true;
-+	}
-+
-+	return false;
- }
- 
- bool nft_cache_needs_update(struct nft_cache *cache)
-@@ -1211,7 +1223,7 @@ replay:
- 	genid = mnl_genid_get(&ctx);
- 	if (!nft_cache_needs_refresh(cache, flags) &&
- 	    nft_cache_is_complete(cache, flags) &&
--	    nft_cache_is_updated(cache, genid))
-+	    nft_cache_is_updated(cache, flags, genid))
- 		return 0;
- 
- 	if (cache->genid)
--- 
-2.30.2
+Patch #3 restores q-in-q matching with nft_payload by reverting
+         f6ae9f120dad ("netfilter: nft_payload: add C-VLAN support").
 
+Patch #4 fixes vlan mangling in skbuff when vlan offload is present
+         in skbuff, without this patch nft_payload corrupts packets
+         in this case.
+
+Patch #5 fixes possible nul-deref in tproxy no IP address is found in
+         netdevice, reported by syzbot and patch from Florian Westphal.
+
+Patch #6 removes a superfluous restriction which prevents loose fib
+         lookups from input and forward hooks, from Eric Garver.
+
+My assessment is that patches #1, #2 and #5 address possible kernel
+crash, anything else in this batch fixes broken features.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-05-29
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 4b377b4868ef17b040065bd468668c707d2477a5:
+
+  kprobe/ftrace: fix build error due to bad function definition (2024-05-17 19:17:55 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-05-29
+
+for you to fetch changes up to e8ded22ef0f4831279c363c264cd41cd9d59ca9e:
+
+  netfilter: nft_fib: allow from forward/input without iif selector (2024-05-29 00:37:51 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 24-05-29
+
+----------------------------------------------------------------
+Alexander Maltsev (1):
+      netfilter: ipset: Add list flush to cancel_gc
+
+Eric Dumazet (1):
+      netfilter: nfnetlink_queue: acquire rcu_read_lock() in instance_destroy_rcu()
+
+Eric Garver (1):
+      netfilter: nft_fib: allow from forward/input without iif selector
+
+Florian Westphal (1):
+      netfilter: tproxy: bail out if IP has been disabled on the device
+
+Pablo Neira Ayuso (2):
+      netfilter: nft_payload: restore vlan q-in-q match support
+      netfilter: nft_payload: skbuff vlan metadata mangle support
+
+ net/ipv4/netfilter/nf_tproxy_ipv4.c   |  2 +
+ net/netfilter/ipset/ip_set_list_set.c |  3 ++
+ net/netfilter/nfnetlink_queue.c       |  2 +
+ net/netfilter/nft_fib.c               |  8 ++-
+ net/netfilter/nft_payload.c           | 95 ++++++++++++++++++++++++++---------
+ 5 files changed, 82 insertions(+), 28 deletions(-)
 
