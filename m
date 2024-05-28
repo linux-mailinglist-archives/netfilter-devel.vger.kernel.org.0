@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2381-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2383-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D66F08D2855
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2024 00:55:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 683648D2859
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2024 00:55:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 142501C22FF1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 22:55:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A15E1C22A2B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 22:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B4813E8AE;
-	Tue, 28 May 2024 22:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1354C13F42D;
+	Tue, 28 May 2024 22:55:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8DC13E05F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB1B13E3E5;
 	Tue, 28 May 2024 22:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716936930; cv=none; b=FxHVdzlNBWOrNzRrh+XhvR3zKEmLb36HnoiPPX0Y6ckN5Mbo4ZsBXkbF3h942ooPCb+z/P9CrqFPyHo0dnxNtZJDhQ4I70hHiWUE6EpbH7WETMDooA4/1X0T6HA8s2qPB/M0qHNTr311o+hTGdyu0jrpTJP/0dPN55ILmQR9t7s=
+	t=1716936931; cv=none; b=sJSGakFTSK+y+a45+RtwBaozTIyk4BuNcU7NDfB3F2xzC4hduhCLhTisIzcu04pW2Fp9Y7w6FzlfgSvnMhRfcgTE4U3U4l09hSXzY52Dm9AJWvzJEi7s9LzKc+l4ZqHTokKxT1n93amAHKWQFathW9+QwnLY6kdlYott3lY8nB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716936930; c=relaxed/simple;
-	bh=GZugc6t/TGMb0kkCWihZjQHCum1izVwaDyo4kbG/SYc=;
+	s=arc-20240116; t=1716936931; c=relaxed/simple;
+	bh=Kl1hatbDvoPkE+SV3b9o2dQqQtjDw7GjY6QaOqy2HT8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lyfuZfEaA7UyQvgPYJ/fSELgsiGsx1bhCRLmMsI1c3dMY79ydVpryC4h2MiHqf8+iOReZT1i0ckUFfWXAMgOeA69i5Ol5qtiw5XZ1ROYuqA3vaAtLbZX2jxFvgjC8I6WiaIe9YJNBDh9m4Y922oY3sgHjsriUCi8MKNDDwTinyo=
+	 MIME-Version; b=C1czvso+BXf3lSit2LArEPpiD36PMNhCOCi6bphy4oD1TaKj0WzFJjac/zl476fEgImbvzyJfPoDZ+ck6cZIBKS5Qqln1ysY1xkuazd1ECi9DqfBUDShqLmafQzCbG1mcrIACylDhxfnpTOTaulSG+52E4iPN7iLQp9a8k8A6z4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -36,9 +36,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	kadlec@netfilter.org
-Subject: [PATCH net 2/6] netfilter: ipset: Add list flush to cancel_gc
-Date: Wed, 29 May 2024 00:55:15 +0200
-Message-Id: <20240528225519.1155786-3-pablo@netfilter.org>
+Subject: [PATCH net 3/6] netfilter: nft_payload: restore vlan q-in-q match support
+Date: Wed, 29 May 2024 00:55:16 +0200
+Message-Id: <20240528225519.1155786-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240528225519.1155786-1-pablo@netfilter.org>
 References: <20240528225519.1155786-1-pablo@netfilter.org>
@@ -50,34 +50,67 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Maltsev <keltar.gw@gmail.com>
+Revert f6ae9f120dad ("netfilter: nft_payload: add C-VLAN support").
 
-Flushing list in cancel_gc drops references to other lists right away,
-without waiting for RCU to destroy list. Fixes race when referenced
-ipsets can't be destroyed while referring list is scheduled for destroy.
+f41f72d09ee1 ("netfilter: nft_payload: simplify vlan header handling")
+already allows to match on inner vlan tags by subtract the vlan header
+size to the payload offset which has been popped and stored in skbuff
+metadata fields.
 
-Fixes: 97f7cf1cd80e ("netfilter: ipset: fix performance regression in swap operation")
-Signed-off-by: Alexander Maltsev <keltar.gw@gmail.com>
-Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Fixes: f6ae9f120dad ("netfilter: nft_payload: add C-VLAN support")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/ipset/ip_set_list_set.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nft_payload.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_list_set.c b/net/netfilter/ipset/ip_set_list_set.c
-index 6c3f28bc59b3..54e2a1dd7f5f 100644
---- a/net/netfilter/ipset/ip_set_list_set.c
-+++ b/net/netfilter/ipset/ip_set_list_set.c
-@@ -549,6 +549,9 @@ list_set_cancel_gc(struct ip_set *set)
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index 0a689c8e0295..a3cb5dbcb362 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -45,36 +45,27 @@ nft_payload_copy_vlan(u32 *d, const struct sk_buff *skb, u8 offset, u8 len)
+ 	int mac_off = skb_mac_header(skb) - skb->data;
+ 	u8 *vlanh, *dst_u8 = (u8 *) d;
+ 	struct vlan_ethhdr veth;
+-	u8 vlan_hlen = 0;
+-
+-	if ((skb->protocol == htons(ETH_P_8021AD) ||
+-	     skb->protocol == htons(ETH_P_8021Q)) &&
+-	    offset >= VLAN_ETH_HLEN && offset < VLAN_ETH_HLEN + VLAN_HLEN)
+-		vlan_hlen += VLAN_HLEN;
  
- 	if (SET_WITH_TIMEOUT(set))
- 		timer_shutdown_sync(&map->gc);
-+
-+	/* Flush list to drop references to other ipsets */
-+	list_set_flush(set);
- }
+ 	vlanh = (u8 *) &veth;
+-	if (offset < VLAN_ETH_HLEN + vlan_hlen) {
++	if (offset < VLAN_ETH_HLEN) {
+ 		u8 ethlen = len;
  
- static const struct ip_set_type_variant set_variant = {
+-		if (vlan_hlen &&
+-		    skb_copy_bits(skb, mac_off, &veth, VLAN_ETH_HLEN) < 0)
+-			return false;
+-		else if (!nft_payload_rebuild_vlan_hdr(skb, mac_off, &veth))
++		if (!nft_payload_rebuild_vlan_hdr(skb, mac_off, &veth))
+ 			return false;
+ 
+-		if (offset + len > VLAN_ETH_HLEN + vlan_hlen)
+-			ethlen -= offset + len - VLAN_ETH_HLEN - vlan_hlen;
++		if (offset + len > VLAN_ETH_HLEN)
++			ethlen -= offset + len - VLAN_ETH_HLEN;
+ 
+-		memcpy(dst_u8, vlanh + offset - vlan_hlen, ethlen);
++		memcpy(dst_u8, vlanh + offset, ethlen);
+ 
+ 		len -= ethlen;
+ 		if (len == 0)
+ 			return true;
+ 
+ 		dst_u8 += ethlen;
+-		offset = ETH_HLEN + vlan_hlen;
++		offset = ETH_HLEN;
+ 	} else {
+-		offset -= VLAN_HLEN + vlan_hlen;
++		offset -= VLAN_HLEN;
+ 	}
+ 
+ 	return skb_copy_bits(skb, offset + mac_off, dst_u8, len) == 0;
 -- 
 2.30.2
 
