@@ -1,68 +1,85 @@
-Return-Path: <netfilter-devel+bounces-2367-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2375-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23C68D15CD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 10:06:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E3EE8D18BD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 12:38:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 406D11F223AB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 08:06:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AD7FB25BB3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2024 10:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC3F745E1;
-	Tue, 28 May 2024 08:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AF616ABEB;
+	Tue, 28 May 2024 10:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="uEFn6rer"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fEeh+qcA"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A085450297;
-	Tue, 28 May 2024 08:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A271213AD3E;
+	Tue, 28 May 2024 10:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716883610; cv=none; b=lzXs3tSy7sFddt3Vx8vxdGFxQ4Xl4eGBP0NOR085mV3qK4o7PETYRNEMrq29OMkT4XwjoXFfL3eGsPKn0o6GtZeX52rYC+kS1ZsvnI9WcpvE7Rw3uEQBudRTZTOGENVhCBUcDnBUADqNwdeX4tUkl/0HEmiXwiFdrt509Y7SR9s=
+	t=1716892684; cv=none; b=YF8Ns+rFOCZdIFBTSFRAlTRZ7UyTkQQIPC04nrLHUi3sXanO6mJ+1/Zlqs/RHn/sx5Kj163FdYygi51yhTuotSEm+tXr7L9iL+EM+VgoQrrFL0z9ubMmeBQjYwgE3nKCv0RtAFMBjJC/+/4u2iBGLDJZNcSZS5ezOfJkEi9S6mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716883610; c=relaxed/simple;
-	bh=XC7O/aZ4sAiFYXgG9FXKm6vW6pQXTcFHr3xz1IFdQ9Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JGz++4SxZkuvvzm+tBmfmiF/bF22GxQo80edS8vySz/XUSrVAKp9cWDMoypTibRkWgKGYRWQ9s2ljn53xXjwHleL8Ru3CBByuUbTwS+WVUDCxiKtfhRXYDjfhsHkF3EHN4ZuDqeGAO1jRaV6egoiTqUEe+1ti+2cYbIvxY6Z+F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=uEFn6rer; arc=none smtp.client-ip=193.238.174.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-	by mg.ssi.bg (Proxmox) with ESMTP id 1445F87B0;
-	Tue, 28 May 2024 11:06:47 +0300 (EEST)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-	by mg.ssi.bg (Proxmox) with ESMTPS;
-	Tue, 28 May 2024 11:06:45 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by ink.ssi.bg (Postfix) with ESMTPSA id D6909900899;
-	Tue, 28 May 2024 11:06:33 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-	t=1716883593; bh=XC7O/aZ4sAiFYXgG9FXKm6vW6pQXTcFHr3xz1IFdQ9Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=uEFn6rerQChlsdC5geb4ek1uaTcZsRadu7zehgU4TiUiHxOc1ud42SZahIc0zhJTy
-	 mPO7qfNZjd1X1FmdCG73bMySYtImAzAEKMV7WR71QL+xr/erpzI0kDk156k7ZHLnuV
-	 1YYV6vxg8yk+RpRNgVDXYi6ztHMwrFFCBxgdBb1Y=
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.17.1) with ESMTP id 44S82thp010233;
-	Tue, 28 May 2024 11:02:55 +0300
-Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 44S82tRf010232;
-	Tue, 28 May 2024 11:02:55 +0300
-From: Julian Anastasov <ja@ssi.bg>
-To: Simon Horman <horms@verge.net.au>
-Cc: lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
-Subject: [PATCHv4 net-next 13/14] ipvs: add ip_vs_status info
-Date: Tue, 28 May 2024 11:02:33 +0300
-Message-ID: <20240528080234.10148-14-ja@ssi.bg>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20240528080234.10148-1-ja@ssi.bg>
-References: <20240528080234.10148-1-ja@ssi.bg>
+	s=arc-20240116; t=1716892684; c=relaxed/simple;
+	bh=njMzUdklFAgR1CDylaANJn2ylbIfnSH2z+YX6LG6nDw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a8Gww7GMJcpj6wA3e2Z97QpF64lopi+CMboT/TOQEOFFgkZ5BeKzgxRqEzJDtZTLGgowrahGnyrHoNcTK5aoF40AoqECq8ZAvNFTrFG1D6QBrNyggQcsqdhsgGmfCjtnNbB3LAOFWCbXS37/R8uj/8lBBij9cr6MWeA/p8ky+IM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fEeh+qcA; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4211b3c21d6so5097285e9.2;
+        Tue, 28 May 2024 03:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716892681; x=1717497481; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ql27cNbGhklYG0AOxTSVuwH0LBMbqLIuM9XupnBo33Y=;
+        b=fEeh+qcAl+Cxmq1y1vYjbuLSlVD3tsa/LlOAs3JGaQG8VJhhqUCP8qbjuKXHaaKeLh
+         c//ILEknxRcFNf1LIgSFMY3tSKq0iRZUst3SLyY7cEOMHhrCAJv48H7QUUtofZmXhpqv
+         +M/e9f2ILimmnNNzmBUntgCTFFUNzFMeGHaiJ20MX4HKtR1USVerBRh9OjS7Bq4iPqst
+         etvo2M611+LohGZvE+hnSQDhMURCHDD5Z3sY0AMESIYJJs5nE9405XjAWdFVcE0cdHrM
+         tZ6wZDVQGQ/RKK808ncya4xu9IIzZACyCu7SkX6wO5+XDBhW6MPaGs0AvEzSGqb9SrPS
+         jgDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716892681; x=1717497481;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ql27cNbGhklYG0AOxTSVuwH0LBMbqLIuM9XupnBo33Y=;
+        b=pYLiPp/Az8vvlh4Yyj9Q2f+CbRrkhAcRCfVfqJk8BglC9sGM22+hbGzK0GQ3OKydO1
+         AwhZ1mU1fgqtVFh0TvGkZ2boQdFSACqC1e6erjUUpecda3Fgpzz+5AKVzpTajX/Jo9EV
+         ehrJtI+9VwOb+I9IqZLwUOR7/KgzhA9FEp8Pw7APnAyDqBx+7JpTCa8VKePPOTK2J8E7
+         1iuWzCAzIeEdY84QIEEdunBUK8rW0m0fifW5O4ShZTwQzzVwQAG7GHNlPlGP43aHW9gs
+         lguzXVnRbp5mtsDmO1cjvmjBCPSfLHtWzc1M/UysdgYSo71OMnir3cyAjaWMQboovBkZ
+         iQ+w==
+X-Forwarded-Encrypted: i=1; AJvYcCVfkHYFe5HlpCdR0r3y0cimQhmTIOKLl+QkW8/IRB3D5BUbYR/B0fEvt/UgK+sdHISeePKC5QI7vEcYWYrquO2C/kNk/lPXHMCKoBUwb1bO
+X-Gm-Message-State: AOJu0YxNrOkfkUWHPVteHjLwI9CHnvsOq7FjnasIiJASiMWAXJq9aUO6
+	9N473Ox+crq2osBqRTafptV0JP4zH7x0FTeEbLd6nGqda6dqQBH7CO9vx/je
+X-Google-Smtp-Source: AGHT+IHT92tkGMi5yl96vQYpYgHd0WKtZOzkStR3uqcb5pT0b0wH/0QCv5SHBuGdygRBdgAXPd/loA==
+X-Received: by 2002:a05:600c:1c04:b0:41c:2313:da92 with SMTP id 5b1f17b1804b1-421089ebd32mr86880945e9.4.1716892680429;
+        Tue, 28 May 2024 03:38:00 -0700 (PDT)
+Received: from imac.fritz.box ([2a02:8010:60a0:0:68e9:662a:6a81:de0a])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3579354abd1sm7984751f8f.59.2024.05.28.03.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 May 2024 03:37:59 -0700 (PDT)
+From: Donald Hunter <donald.hunter@gmail.com>
+To: netdev@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	netfilter-devel@vger.kernel.org
+Cc: donald.hunter@redhat.com,
+	Donald Hunter <donald.hunter@gmail.com>
+Subject: [PATCH net-next v1] netfilter: nfnetlink: convert kfree_skb to consume_skb
+Date: Tue, 28 May 2024 11:37:54 +0100
+Message-ID: <20240528103754.98985-1-donald.hunter@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -71,192 +88,78 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add /proc/net/ip_vs_status to show current state of IPVS.
+Use consume_skb in the batch code path to avoid generating spurious
+NOT_SPECIFIED skb drop reasons.
 
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 145 +++++++++++++++++++++++++++++++++
- 1 file changed, 145 insertions(+)
+ net/netfilter/nfnetlink.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 187a5e238231..6b84b6f17a32 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2913,6 +2913,144 @@ static int ip_vs_stats_percpu_show(struct seq_file *seq, void *v)
+diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
+index 4abf660c7baf..c164abcc326b 100644
+--- a/net/netfilter/nfnetlink.c
++++ b/net/netfilter/nfnetlink.c
+@@ -402,27 +402,27 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		{
+ 			nfnl_unlock(subsys_id);
+ 			netlink_ack(oskb, nlh, -EOPNOTSUPP, NULL);
+-			return kfree_skb(skb);
++			return consume_skb(skb);
+ 		}
+ 	}
  
- 	return 0;
+ 	if (!ss->valid_genid || !ss->commit || !ss->abort) {
+ 		nfnl_unlock(subsys_id);
+ 		netlink_ack(oskb, nlh, -EOPNOTSUPP, NULL);
+-		return kfree_skb(skb);
++		return consume_skb(skb);
+ 	}
+ 
+ 	if (!try_module_get(ss->owner)) {
+ 		nfnl_unlock(subsys_id);
+ 		netlink_ack(oskb, nlh, -EOPNOTSUPP, NULL);
+-		return kfree_skb(skb);
++		return consume_skb(skb);
+ 	}
+ 
+ 	if (!ss->valid_genid(net, genid)) {
+ 		module_put(ss->owner);
+ 		nfnl_unlock(subsys_id);
+ 		netlink_ack(oskb, nlh, -ERESTART, NULL);
+-		return kfree_skb(skb);
++		return consume_skb(skb);
+ 	}
+ 
+ 	nfnl_unlock(subsys_id);
+@@ -565,7 +565,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	if (status & NFNL_BATCH_REPLAY) {
+ 		ss->abort(net, oskb, NFNL_ABORT_AUTOLOAD);
+ 		nfnl_err_reset(&err_list);
+-		kfree_skb(skb);
++		consume_skb(skb);
+ 		module_put(ss->owner);
+ 		goto replay;
+ 	} else if (status == NFNL_BATCH_DONE) {
+@@ -590,7 +590,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		err = ss->abort(net, oskb, abort_action);
+ 		if (err == -EAGAIN) {
+ 			nfnl_err_reset(&err_list);
+-			kfree_skb(skb);
++			consume_skb(skb);
+ 			module_put(ss->owner);
+ 			status |= NFNL_BATCH_FAILURE;
+ 			goto replay_abort;
+@@ -598,7 +598,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	}
+ 
+ 	nfnl_err_deliver(&err_list, oskb);
+-	kfree_skb(skb);
++	consume_skb(skb);
+ 	module_put(ss->owner);
  }
-+
-+static int ip_vs_status_show(struct seq_file *seq, void *v)
-+{
-+	struct net *net = seq_file_single_net(seq);
-+	struct netns_ipvs *ipvs = net_ipvs(net);
-+	unsigned int resched_score = 0;
-+	struct ip_vs_conn_hnode *hn;
-+	struct hlist_bl_head *head;
-+	struct ip_vs_service *svc;
-+	struct ip_vs_rht *t, *pt;
-+	struct hlist_bl_node *e;
-+	int old_gen, new_gen;
-+	u32 counts[8];
-+	u32 bucket;
-+	int count;
-+	u32 sum1;
-+	u32 sum;
-+	int i;
-+
-+	rcu_read_lock();
-+
-+	t = rcu_dereference(ipvs->conn_tab);
-+
-+	seq_printf(seq, "Conns:\t%d\n", atomic_read(&ipvs->conn_count));
-+	seq_printf(seq, "Conn buckets:\t%d (%d bits, lfactor %d)\n",
-+		   t ? t->size : 0, t ? t->bits : 0, t ? t->lfactor : 0);
-+
-+	if (!atomic_read(&ipvs->conn_count))
-+		goto after_conns;
-+	old_gen = atomic_read(&ipvs->conn_tab_changes);
-+
-+repeat_conn:
-+	smp_rmb(); /* ipvs->conn_tab and conn_tab_changes */
-+	memset(counts, 0, sizeof(counts));
-+	ip_vs_rht_for_each_table_rcu(ipvs->conn_tab, t, pt) {
-+		for (bucket = 0; bucket < t->size; bucket++) {
-+			DECLARE_IP_VS_RHT_WALK_BUCKET_RCU();
-+
-+			count = 0;
-+			resched_score++;
-+			ip_vs_rht_walk_bucket_rcu(t, bucket, head) {
-+				count = 0;
-+				hlist_bl_for_each_entry_rcu(hn, e, head, node)
-+					count++;
-+			}
-+			resched_score += count;
-+			if (resched_score >= 100) {
-+				resched_score = 0;
-+				cond_resched_rcu();
-+				new_gen = atomic_read(&ipvs->conn_tab_changes);
-+				/* New table installed ? */
-+				if (old_gen != new_gen) {
-+					old_gen = new_gen;
-+					goto repeat_conn;
-+				}
-+			}
-+			counts[min(count, (int)ARRAY_SIZE(counts) - 1)]++;
-+		}
-+	}
-+	for (sum = 0, i = 0; i < ARRAY_SIZE(counts); i++)
-+		sum += counts[i];
-+	sum1 = sum - counts[0];
-+	seq_printf(seq, "Conn buckets empty:\t%u (%lu%%)\n",
-+		   counts[0], (unsigned long)counts[0] * 100 / max(sum, 1U));
-+	for (i = 1; i < ARRAY_SIZE(counts); i++) {
-+		if (!counts[i])
-+			continue;
-+		seq_printf(seq, "Conn buckets len-%d:\t%u (%lu%%)\n",
-+			   i, counts[i],
-+			   (unsigned long)counts[i] * 100 / max(sum1, 1U));
-+	}
-+
-+after_conns:
-+	t = rcu_dereference(ipvs->svc_table);
-+
-+	count = ip_vs_get_num_services(ipvs);
-+	seq_printf(seq, "Services:\t%d\n", count);
-+	seq_printf(seq, "Service buckets:\t%d (%d bits, lfactor %d)\n",
-+		   t ? t->size : 0, t ? t->bits : 0, t ? t->lfactor : 0);
-+
-+	if (!count)
-+		goto after_svc;
-+	old_gen = atomic_read(&ipvs->svc_table_changes);
-+
-+repeat_svc:
-+	smp_rmb(); /* ipvs->svc_table and svc_table_changes */
-+	memset(counts, 0, sizeof(counts));
-+	ip_vs_rht_for_each_table_rcu(ipvs->svc_table, t, pt) {
-+		for (bucket = 0; bucket < t->size; bucket++) {
-+			DECLARE_IP_VS_RHT_WALK_BUCKET_RCU();
-+
-+			count = 0;
-+			resched_score++;
-+			ip_vs_rht_walk_bucket_rcu(t, bucket, head) {
-+				count = 0;
-+				hlist_bl_for_each_entry_rcu(svc, e, head,
-+							    s_list)
-+					count++;
-+			}
-+			resched_score += count;
-+			if (resched_score >= 100) {
-+				resched_score = 0;
-+				cond_resched_rcu();
-+				new_gen = atomic_read(&ipvs->svc_table_changes);
-+				/* New table installed ? */
-+				if (old_gen != new_gen) {
-+					old_gen = new_gen;
-+					goto repeat_svc;
-+				}
-+			}
-+			counts[min(count, (int)ARRAY_SIZE(counts) - 1)]++;
-+		}
-+	}
-+	for (sum = 0, i = 0; i < ARRAY_SIZE(counts); i++)
-+		sum += counts[i];
-+	sum1 = sum - counts[0];
-+	seq_printf(seq, "Service buckets empty:\t%u (%lu%%)\n",
-+		   counts[0], (unsigned long)counts[0] * 100 / max(sum, 1U));
-+	for (i = 1; i < ARRAY_SIZE(counts); i++) {
-+		if (!counts[i])
-+			continue;
-+		seq_printf(seq, "Service buckets len-%d:\t%u (%lu%%)\n",
-+			   i, counts[i],
-+			   (unsigned long)counts[i] * 100 / max(sum1, 1U));
-+	}
-+
-+after_svc:
-+	seq_printf(seq, "Stats thread slots:\t%d (max %lu)\n",
-+		   ipvs->est_kt_count, ipvs->est_max_threads);
-+	seq_printf(seq, "Stats chain max len:\t%d\n", ipvs->est_chain_max);
-+	seq_printf(seq, "Stats thread ests:\t%d\n",
-+		   ipvs->est_chain_max * IPVS_EST_CHAIN_FACTOR *
-+		   IPVS_EST_NTICKS);
-+
-+	rcu_read_unlock();
-+	return 0;
-+}
-+
- #endif
  
- /*
-@@ -4836,6 +4974,9 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 				    ipvs->net->proc_net,
- 				    ip_vs_stats_percpu_show, NULL))
- 		goto err_percpu;
-+	if (!proc_create_net_single("ip_vs_status", 0, ipvs->net->proc_net,
-+				    ip_vs_status_show, NULL))
-+		goto err_status;
- #endif
- 
- 	ret = ip_vs_control_net_init_sysctl(ipvs);
-@@ -4846,6 +4987,9 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 
- err:
- #ifdef CONFIG_PROC_FS
-+	remove_proc_entry("ip_vs_status", ipvs->net->proc_net);
-+
-+err_status:
- 	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
- 
- err_percpu:
-@@ -4871,6 +5015,7 @@ void __net_exit ip_vs_control_net_cleanup(struct netns_ipvs *ipvs)
- 	ip_vs_control_net_cleanup_sysctl(ipvs);
- 	cancel_delayed_work_sync(&ipvs->est_reload_work);
- #ifdef CONFIG_PROC_FS
-+	remove_proc_entry("ip_vs_status", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs", ipvs->net->proc_net);
 -- 
 2.44.0
-
 
 
