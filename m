@@ -1,88 +1,128 @@
-Return-Path: <netfilter-devel+bounces-2459-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2461-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01DB48FD5ED
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jun 2024 20:42:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C52CB8FD652
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jun 2024 21:15:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8890C1F23308
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jun 2024 18:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 997691C21EDE
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jun 2024 19:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F317345D;
-	Wed,  5 Jun 2024 18:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178C73D9E;
+	Wed,  5 Jun 2024 19:15:50 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66056DF78;
-	Wed,  5 Jun 2024 18:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99EF1420C9
+	for <netfilter-devel@vger.kernel.org>; Wed,  5 Jun 2024 19:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717612920; cv=none; b=MSYT3LO5pLIe8BzX16QjrszTW6W7oDHTeOlw1E665oPJFvQ2Fi2naPxjVB6iTJ221hiz6EqQa0y4s3gxeEbOas3Qu30Me2865VnzV45FGQOCF/8JTGigpupwK+tyqwKciU1BmIDmJqaUp4xnMO6y3ZuUIoJ8wffg8ZbZc3p6Y9s=
+	t=1717614950; cv=none; b=XW5dDNrIioEncvz58KrE2tvepg4xNnJWqBNZ+mxEWzdYjXXbi3oOBwsE3YOdXo3WrIAKY6PnftOcPfBTPEb43CDHeA6GJy9w38xc90IlXTPFZ8SCz31GWiDC4C0DbhzD+7QfHjPvCkLTvSO1y8xI09oBN/Sr+k+K92I6TSA6DJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717612920; c=relaxed/simple;
-	bh=usxXmoU/R3IudYuih3Vw/LaJeB4gSFj0j/Vb7Jr5+dQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bAso2pMbGkV7nRR2IR2P73NTeXxQUENqYAa9iGRSaUKshEwkp8+lP/z0D+vpf7cGIOMbZxFMUFuq/+AnOJwhcFnuNMpsnGeSp6QulQUI4SDYCdAOaElo4uG043NynQ5kRxwL+f7DjzukDt3geLe0TBHWIXlXxf/OzLoxq1A/cTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+	s=arc-20240116; t=1717614950; c=relaxed/simple;
+	bh=7iBNLOTIeAZWE/0/8LtYoQ0p0jxDizeBxDW01stTQ2Y=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=KcV8/pjr6rebrvNVzSr/GjcnggbfvxFkY5rASo7R4ZPlxCXbDWir3+jBrf5bK2gMD8TMKOxw1qJjXXnJ6lUIVQ5RBU+q45XroE9h1rOeqLkEzrla1NImKRzck3lRzl9iGuybSyqxmB3UVJ1o0kBDL3/6US3JDa1M0PB2JDVN+bA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [46.222.228.168] (port=1704 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1sEva4-00AuPb-77; Wed, 05 Jun 2024 20:41:54 +0200
-Date: Wed, 5 Jun 2024 20:41:51 +0200
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-	netfilter-devel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: restore default behavior for
- nf_conntrack_events
-Message-ID: <ZmCxb2MqzeQPDFZt@calendula>
-References: <20240604135438.2613064-1-nicolas.dichtel@6wind.com>
- <ZmAn7VcLHsdAI8Xg@strlen.de>
- <c527582b-05dd-45bf-a9b1-2499b01280ee@6wind.com>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next] netfilter: nf_tables: missing objects with no memcg accounting
+Date: Wed,  5 Jun 2024 21:08:02 +0200
+Message-Id: <20240605190802.19525-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c527582b-05dd-45bf-a9b1-2499b01280ee@6wind.com>
-X-Spam-Score: -1.9 (-)
 
-On Wed, Jun 05, 2024 at 11:09:31AM +0200, Nicolas Dichtel wrote:
-> Le 05/06/2024 à 10:55, Florian Westphal a écrit :
-> > Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
-> >> Since the below commit, there are regressions for legacy setups:
-> >> 1/ conntracks are created while there are no listener
-> >> 2/ a listener starts and dumps all conntracks to get the current state
-> >> 3/ conntracks deleted before the listener has started are not advertised
-> >>
-> >> This is problematic in containers, where conntracks could be created early.
-> >> This sysctl is part of unsafe sysctl and could not be changed easily in
-> >> some environments.
-> >>
-> >> Let's switch back to the legacy behavior.
-> > 
-> > :-(
-> > 
-> > Would it be possible to resolve this for containers by setting
-> > the container default to 1 if init_net had it changed to 1 at netns
-> > creation time?
-> 
-> When we have access to the host, it is possible to allow the configuration of
-> this (unsafe) sysctl for the pod. But there are cases where we don't have access
-> to the host.
-> 
-> https://docs.openshift.com/container-platform/4.9/nodes/containers/nodes-containers-sysctls.html#nodes-containers-sysctls-unsafe_nodes-containers-using
+Several ruleset objects are still not using GFP_KERNEL_ACCOUNT for
+memory accounting, update them.
 
-conntrack is enabled on-demand by the ruleset these days, such monitor
-process could be created _before_ the ruleset is loaded?
+Fixes: 33758c891479 ("memcg: enable accounting for nft objects")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 2 +-
+ net/netfilter/nft_compat.c    | 6 +++---
+ net/netfilter/nft_meta.c      | 2 +-
+ net/netfilter/nft_numgen.c    | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index be3b4c90d2ed..36feb42ec280 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6620,7 +6620,7 @@ static int nft_setelem_catchall_insert(const struct net *net,
+ 		}
+ 	}
+ 
+-	catchall = kmalloc(sizeof(*catchall), GFP_KERNEL);
++	catchall = kmalloc(sizeof(*catchall), GFP_KERNEL_ACCOUNT);
+ 	if (!catchall)
+ 		return -ENOMEM;
+ 
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index d3d11dede545..85450f601142 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -536,7 +536,7 @@ nft_match_large_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	struct xt_match *m = expr->ops->data;
+ 	int ret;
+ 
+-	priv->info = kmalloc(XT_ALIGN(m->matchsize), GFP_KERNEL);
++	priv->info = kmalloc(XT_ALIGN(m->matchsize), GFP_KERNEL_ACCOUNT);
+ 	if (!priv->info)
+ 		return -ENOMEM;
+ 
+@@ -810,7 +810,7 @@ nft_match_select_ops(const struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL);
++	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL_ACCOUNT);
+ 	if (!ops) {
+ 		err = -ENOMEM;
+ 		goto err;
+@@ -900,7 +900,7 @@ nft_target_select_ops(const struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL);
++	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL_ACCOUNT);
+ 	if (!ops) {
+ 		err = -ENOMEM;
+ 		goto err;
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 9139ce38ea7b..f23faf565b68 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -954,7 +954,7 @@ static int nft_secmark_obj_init(const struct nft_ctx *ctx,
+ 	if (tb[NFTA_SECMARK_CTX] == NULL)
+ 		return -EINVAL;
+ 
+-	priv->ctx = nla_strdup(tb[NFTA_SECMARK_CTX], GFP_KERNEL);
++	priv->ctx = nla_strdup(tb[NFTA_SECMARK_CTX], GFP_KERNEL_ACCOUNT);
+ 	if (!priv->ctx)
+ 		return -ENOMEM;
+ 
+diff --git a/net/netfilter/nft_numgen.c b/net/netfilter/nft_numgen.c
+index 7d29db7c2ac0..bd058babfc82 100644
+--- a/net/netfilter/nft_numgen.c
++++ b/net/netfilter/nft_numgen.c
+@@ -66,7 +66,7 @@ static int nft_ng_inc_init(const struct nft_ctx *ctx,
+ 	if (priv->offset + priv->modulus - 1 < priv->offset)
+ 		return -EOVERFLOW;
+ 
+-	priv->counter = kmalloc(sizeof(*priv->counter), GFP_KERNEL);
++	priv->counter = kmalloc(sizeof(*priv->counter), GFP_KERNEL_ACCOUNT);
+ 	if (!priv->counter)
+ 		return -ENOMEM;
+ 
+-- 
+2.30.2
+
 
