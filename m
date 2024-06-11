@@ -1,36 +1,42 @@
-Return-Path: <netfilter-devel+bounces-2527-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2529-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A3D6904366
-	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jun 2024 20:18:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5EE39046B2
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2024 00:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2EAE1F26692
-	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jun 2024 18:18:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B97DB2467F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jun 2024 22:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E3E605BA;
-	Tue, 11 Jun 2024 18:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F1C1552F8;
+	Tue, 11 Jun 2024 22:03:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D56376E9
-	for <netfilter-devel@vger.kernel.org>; Tue, 11 Jun 2024 18:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4249150991;
+	Tue, 11 Jun 2024 22:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718129914; cv=none; b=oQrH9Igja9OT1BSEssI7Qc99Aw1KjAc0PwVu45sV7ThsL+efOewT8FqQkqqHa+FAeDIb6WGxVj9Q+eW1j0YItIQTzws06vT56gb+VZSb4ydBPYPbK+qJGjBexTj5ktWRVR9kptmT6HDCwyf1jocKXEiVn3eS1mO4UQ9qjSaURFU=
+	t=1718143411; cv=none; b=fDOz6gmSXDap/kElOi89TJcdpBe84g253fBfDGAODL513zR0Bpjp1VxP2vNvpcCls8Yk4jy5285d0999XAacC5QwgRjpF6RjnGAI1lc4CbxRJcTjESx7ss/x+iQWP/9a+ef9GB0O4dC2x4NtketXtyRrtiHFGVeAIldIaJn7Iq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718129914; c=relaxed/simple;
-	bh=sgMbDNfnNtYC8pIl/HFHjz7dl/jRS8v5xDdOxtuquHU=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=JVkmiqgRz6fx//DrpHnKvL52zvgx6RwOwwunfe+VQ2LdjKdReVehrQErH5fh6DgNS/6DfBHzMRyi53rRiasi4/yOkOwDA7M7VCHAVzo84ntNOgTwy2ZvPBySV4YgP81BndIwUghOarQuXStjosrqxHrW+7aAN19P1ZmheBjLyrU=
+	s=arc-20240116; t=1718143411; c=relaxed/simple;
+	bh=Z/32LF81Zn9UJbVOXGfYBPwKOU5DY4DOyiVLJEzR1UY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cW8KS3VsM7IQ7NiOHl8BxE3teXzzfOMQftO4DprV4S0aNpLFPMuiu0Mim5p1iNZQ4c+tY5wD8B4ZNspYkBJOCcMcNSbWA0b5DJDhPK9quG/s6ypA5uPmpQR6wtJMZkxtS2K7D66nWMC7Ni7oXC3G1NKwTEHFmUjUBs4sla/243Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2] monitor: too large shift exponent displaying payload expression
-Date: Tue, 11 Jun 2024 20:18:25 +0200
-Message-Id: <20240611181825.328419-1-pablo@netfilter.org>
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de
+Subject: [PATCH net 0/3] Netfilter fixes for net
+Date: Wed, 12 Jun 2024 00:03:20 +0200
+Message-Id: <20240611220323.413713-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -40,34 +46,62 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ASAN reports too large shift exponent when displaying traces for raw
-payload expression:
+Hi,
 
-  trace id ec23e848 ip x y packet: oif "wlan0" src/netlink.c:2100:32: runtime error: shift exponent 1431657095 is too large for 32-bit type 'int'
+The following patchset contains Netfilter fixes for net:
 
-skip if proto_unknown_template is set on in this payload expression.
+Patch #1 fixes insufficient sanitization of netlink attributes for the
+	 inner expression which can trigger nul-pointer dereference,
+	 from Davide Ornaghi.
 
-Fixes: be5d9120e81e ("nft monitor [ trace ]")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: check for proto_unknown_template, otherwise problem persists.
+Patch #2 address a report that there is a race condition between
+         namespace cleanup and the garbage collection of the list:set
+         type. This patch resolves this issue with other minor issues
+	 as well, from Jozsef Kadlecsik.
 
- src/netlink.c | 1 +
- 1 file changed, 1 insertion(+)
+Patch #3 ip6_route_me_harder() ignores flowlabel/dsfield when ip dscp
+	 has been mangled, this unbreaks ip6 dscp set $v,
+	 from Florian Westphal.
 
-diff --git a/src/netlink.c b/src/netlink.c
-index 0088b742d573..efb0b69939dc 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -2096,6 +2096,7 @@ restart:
- 		/* Skip unknown and filtered expressions */
- 		desc = lhs->payload.desc;
- 		if (lhs->dtype == &invalid_type ||
-+		    lhs->payload.tmpl == &proto_unknown_template ||
- 		    desc->checksum_key == payload_hdr_field(lhs) ||
- 		    desc->format.filter & (1 << payload_hdr_field(lhs))) {
- 			expr_free(lhs);
--- 
-2.30.2
+All of these patches address issues that are present in several releases.
 
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-06-11
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 36534d3c54537bf098224a32dc31397793d4594d:
+
+  tcp: use signed arithmetic in tcp_rtx_probe0_timed_out() (2024-06-10 19:50:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-06-11
+
+for you to fetch changes up to 6f8f132cc7bac2ac76911e47d5baa378aafda4cb:
+
+  netfilter: Use flowlabel flow key when re-routing mangled packets (2024-06-11 18:46:04 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 24-06-11
+
+----------------------------------------------------------------
+Davide Ornaghi (1):
+      netfilter: nft_inner: validate mandatory meta and payload
+
+Florian Westphal (1):
+      netfilter: Use flowlabel flow key when re-routing mangled packets
+
+Jozsef Kadlecsik (1):
+      netfilter: ipset: Fix race between namespace cleanup and gc in the list:set type
+
+ net/ipv6/netfilter.c                  |  1 +
+ net/netfilter/ipset/ip_set_core.c     | 81 ++++++++++++++++++++---------------
+ net/netfilter/ipset/ip_set_list_set.c | 30 ++++++-------
+ net/netfilter/nft_meta.c              |  3 ++
+ net/netfilter/nft_payload.c           |  4 ++
+ 5 files changed, 68 insertions(+), 51 deletions(-)
 
