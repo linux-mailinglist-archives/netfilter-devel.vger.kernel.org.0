@@ -1,33 +1,33 @@
-Return-Path: <netfilter-devel+bounces-2537-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2535-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D470D905334
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2024 15:04:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 150CE905332
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2024 15:04:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FF47B220B1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2024 13:04:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13C7D1C21AB6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2024 13:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2085178395;
-	Wed, 12 Jun 2024 13:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BECB176AD4;
+	Wed, 12 Jun 2024 13:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="qnId3n9P"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="AVijy/Gq"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54BB91D54B
-	for <netfilter-devel@vger.kernel.org>; Wed, 12 Jun 2024 13:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7DA1D54B
+	for <netfilter-devel@vger.kernel.org>; Wed, 12 Jun 2024 13:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718197474; cv=none; b=SaDWsX3/Q51JdfI4CFCCNVwJgQ/SpNp8Suu7LLieLg0B9wa4wdZxAMlajMKBCLdaJ00ZRrbHVOXvQ42RcNFiyA+uYGGdWXut+PHynQi2yNpuxZmaxURiydV21Lm/h/s9y0G8AW+INmjutB3jwXF/XSBkpsbGGoB6goukN5P7sO8=
+	t=1718197468; cv=none; b=TrgwnOk1WaKWCktRyH1wP+oEqkpyPxGWkME6o4w3lsJIGJ/MXJ9mHNSwHlYYimFii8nbDQtbebmostDZhPBlNdV6y+NXnW5MUdVzcSwKoDbLVVbR3ID9i+BW4m8terEvtcqUxXLCpkdFuUxpVhAudC785ckxYDqXxUsgv5Kfxj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718197474; c=relaxed/simple;
-	bh=Xcm9/4XeicLEDVf1PQzlRcGa6o/RYegKVo6SYKvK/Tw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=kqexCCUoyRLr4qHVjH0vcUwAgKo39pDH2l+3ZRkGoQ0GKloeKTQol/y6O6Bj5llzyp4SWRBaNPSH45OoA2aph6GLFGqEhDbWsX760KExFWLn9ZLgflCTS6ZjqY+51tAd6ErQ2Hsx6bNdvc6X8uYduJRt/ei+L09Z/HS+R/IZi/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=qnId3n9P; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1718197468; c=relaxed/simple;
+	bh=639AtpBBgaynNIO2gtHMArIC+kuIq9b+geP7wxUkJIo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Osm8Fj8SYai9CVbIx3HRAn1nFnsoXfN1RspcgPkrAYMTGfoHgldEBo/+urb1o08Aqo67F3yM0WEBvRBm5qOY1iPi5OCAzuXi1vv8th//wjueE1lRgPloQar8UAwiQ77REskJt+UMYQWrePznAYWJZ79RCf2wYB/igK6oKjRiV0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=AVijy/Gq; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=h0zXv3KL+OPyYpEeBOXWrausG0dfC03gG+idmvti+ko=; b=qnId3n9P0jjhxe2pww/j3Od7lJ
-	7q7XklxL4KwxkCGBphm+Ch7IiG3e7Lt8AtnekUZeGb7u2S0Y4/IcMMXiwRVlwNyEKAOM0+EtaBdZh
-	RhJKMCPQJWthrQtdHwoCJ08U90mxIO37BaXuY0vcpkaLvnRr8AEup6matX2+sQHvMt7046AUTS5CB
-	Lu6aljonVWlZN0n5mgbkGzJE9fmwSD5a/7ezeP3PI75U2PqwZRmMfZzSQxbHVBXxXgBu0/n9yw3oz
-	0mCcEVwOQjhG/uAsjRi5Ks4hVVHiZ7aPzSwDwog7BV6mlDPgAqvoOKaAnLi5LTRYmxcZZCy4xZT5A
-	mZQ95dFg==;
+	bh=rNV9nQmHbknlDRP71yuS30BfVO+4EJSVXrC3lRb48wY=; b=AVijy/GqjhGHzxgYQ82gxn4JZq
+	QB+bjXUcbBPl0CLYClt70pwT+zStY0ZPjAsMIUaNAC6pPPJ5Ao4rzw9mHIr8nxz1M/jwz3RkUMDDY
+	wcr6cxPpvRJ+XN5HrBGP9gsCzgM2FIc/b7jC2FzQZm4Ab4YQgtwLtTfAS6+LrPXIzsAzrooS0haB5
+	da0UaLlabecWYVCIuxODQpn60pDqPDKkzpahnmTq51TGgjgOoz24xRnoB05OmzrCJMJt6lGVTA+HG
+	860BK4IgyvXH7qszpdDcaEL90vHjQzASjHRNDKzMZXG/DGYTruFoYJTz7ZvdfPqQWEVYe5azcbw6J
+	FZpnx0KQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sHNHl-000000006cT-2F2E
+	id 1sHNHm-000000006cY-0asA
 	for netfilter-devel@vger.kernel.org;
-	Wed, 12 Jun 2024 14:41:05 +0200
+	Wed, 12 Jun 2024 14:41:06 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] man: extensions: recent: Clarify default value of ip_list_hash_size
-Date: Wed, 12 Jun 2024 14:41:07 +0200
-Message-ID: <20240612124109.19837-1-phil@nwl.cc>
+Subject: [iptables PATCH] extensions: libxt_sctp: Add an extra assert()
+Date: Wed, 12 Jun 2024 14:41:08 +0200
+Message-ID: <20240612124109.19837-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -62,28 +62,33 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The default value of 0 is a bit confusing.
+The code is sane, but this keeps popping up in static code analyzers.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_recent.man | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ extensions/libxt_sctp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/extensions/libxt_recent.man b/extensions/libxt_recent.man
-index 419be2579594d..82537fab9846f 100644
---- a/extensions/libxt_recent.man
-+++ b/extensions/libxt_recent.man
-@@ -97,7 +97,9 @@ Number of addresses remembered per table.
- Number of packets per address remembered.
- .TP
- \fBip_list_hash_size\fP=\fI0\fP
--Hash table size. 0 means to calculate it based on ip_list_tot, default: 512.
-+Hash table size. 0 means to calculate it based on ip_list_tot by rounding it up
-+to the next power of two (with \fBip_list_tot\fP defaulting to \fI100\fP,
-+\fBip_list_hash_size\fP will calculate to \fI128\fP by default).
- .TP
- \fBip_list_perms\fP=\fI0644\fP
- Permissions for /proc/net/xt_recent/* files.
+diff --git a/extensions/libxt_sctp.c b/extensions/libxt_sctp.c
+index 6e2b2745dcbd5..e8312f0c8abe9 100644
+--- a/extensions/libxt_sctp.c
++++ b/extensions/libxt_sctp.c
+@@ -7,6 +7,7 @@
+  * libipt_ecn.c borrowed heavily from libipt_dscp.c
+  *
+  */
++#include <assert.h>
+ #include <stdbool.h>
+ #include <stdio.h>
+ #include <string.h>
+@@ -354,6 +355,7 @@ print_chunk_flags(uint32_t chunknum, uint8_t chunk_flags, uint8_t chunk_flags_ma
+ 
+ 	for (i = 7; i >= 0; i--) {
+ 		if (chunk_flags_mask & (1 << i)) {
++			assert(chunknum < ARRAY_SIZE(sctp_chunk_names));
+ 			if (chunk_flags & (1 << i)) {
+ 				printf("%c", sctp_chunk_names[chunknum].valid_flags[7-i]);
+ 			} else {
 -- 
 2.43.0
 
