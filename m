@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-2622-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2642-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0C0906BFB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 13:46:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B31906C53
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 13:49:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB651C2151F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 11:46:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C92552812F6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 11:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703C71442EA;
-	Thu, 13 Jun 2024 11:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD7B145FE8;
+	Thu, 13 Jun 2024 11:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="vfeOsY8l"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="k7cKSe5G"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4587413D512;
-	Thu, 13 Jun 2024 11:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432C0145B34;
+	Thu, 13 Jun 2024 11:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718279113; cv=none; b=RWKKp68Hlpd4/e80mMwdV7OYqn6ZUbaWG++lhCEQR58BpJCtEWboI0WUz5EtPfx64mva+aKgi8c5NJbVhE4tj2hHzi52az2PF/ZP4KHJauJl4EoMml2pxX7CIlEArFk9kXF+uCN/OHjxQxH78ZJ43hbfpibKlhSb5Sy7pZ4OTy0=
+	t=1718279234; cv=none; b=CZ7YK/BxqTqanXC481yRLKV6ZhQ6YHss+x/ErTvophfQ/JfrFpDqk7Re+2DTctXFBBEfVW6V6vsX5AyLrNdCC9eq54FuLrIdCRrpxw7LpQAyfGyAOsz0yeh3E5zVZBODMvcyF63aBikoYjM2e4PmyM5QqPWX7Otj45KKrT/ctkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718279113; c=relaxed/simple;
-	bh=av1XUW+BTT85GCu/Sqb3B3x4M3F5gJ2N4cFTosDrZdA=;
+	s=arc-20240116; t=1718279234; c=relaxed/simple;
+	bh=liMhZjm50fNfiazuOfgzRdDl/zXOqDT/RqYsld329b0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t0MR8zPVNTe2PIamyxuhpdq5LM8Jz1/F6pGIpoOh8mmCGrBYXD/V7khCqD7ZyrWQRKly2n3P5mOiey+sgFkXCEcuTr9iIE6TPBcAWHqdWB2vaKM0chyvwHtd6L2d2MxK8tAZhags6URtOBNSSeRBszVwMchX7OJNsotYtUsgRb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=vfeOsY8l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3599C2BBFC;
-	Thu, 13 Jun 2024 11:45:12 +0000 (UTC)
+	 MIME-Version; b=ty72SzelRIxwrwhrQQh9CiNzCwcOKHWkP42iTTo/a77b6GllsXITlpespPfS+DazN1DQgWYZcEfgi5LBTaXiGWzTYsOWBD9oRZ8TtO4bdWROu6klUCtGzPhhzvByRYk3ms73ont93Uaf8dd9PMg2X6SS1R/y+FA5yHWtcReg1j4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=k7cKSe5G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63CD1C2BBFC;
+	Thu, 13 Jun 2024 11:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1718279113;
-	bh=av1XUW+BTT85GCu/Sqb3B3x4M3F5gJ2N4cFTosDrZdA=;
+	s=korg; t=1718279233;
+	bh=liMhZjm50fNfiazuOfgzRdDl/zXOqDT/RqYsld329b0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vfeOsY8ltmoBcE05rV2gFCiFGlVF96iysjYRzpT21jPxAPkwW1qwBaghzBtER4K6A
-	 S/bAHjURHaSpdQ2W5CqAT9SND8AC2qU2DqTYd44CFEeMMiBL3bh2rmRD27c0OXN/NZ
-	 yWdsZGcypNB4fqTXb9E4pXDhmEaSWndsNRs3wEgE=
+	b=k7cKSe5G4hr2fpmED97UcHob7/fRpKxnWKv+/+qZ0vaJA3nmHHBQHlwt8gnKnCj1C
+	 k68sj5NCnft+Evt6thuDDjT60rJtyCM3eCXBlV3pVKBK/U9Zc1Q8UGDPEQL+kXcaB7
+	 ktxHtNbCblTo92Rx5reMn0Ne16VtzYMkE0U/5x2A=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org,
 	netfilter-devel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH 4.19 178/213] netfilter: nf_tables: fix memleak when more than 255 elements expired
-Date: Thu, 13 Jun 2024 13:33:46 +0200
-Message-ID: <20240613113234.848034243@linuxfoundation.org>
+	syzbot+e918523f77e62790d6d9@syzkaller.appspotmail.com,
+	Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.19 179/213] netfilter: nf_tables: unregister flowtable hooks on netns exit
+Date: Thu, 13 Jun 2024 13:33:47 +0200
+Message-ID: <20240613113234.887608825@linuxfoundation.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240613113227.969123070@linuxfoundation.org>
 References: <20240613113227.969123070@linuxfoundation.org>
@@ -68,79 +68,63 @@ Content-Transfer-Encoding: 8bit
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit cf5000a7787cbc10341091d37245a42c119d26c5 upstream.
+commit 6069da443bf65f513bb507bb21e2f87cfb1ad0b6 upstream.
 
-When more than 255 elements expired we're supposed to switch to a new gc
-container structure.
+Unregister flowtable hooks before they are releases via
+nf_tables_flowtable_destroy() otherwise hook core reports UAF.
 
-This never happens: u8 type will wrap before reaching the boundary
-and nft_trans_gc_space() always returns true.
+BUG: KASAN: use-after-free in nf_hook_entries_grow+0x5a7/0x700 net/netfilter/core.c:142 net/netfilter/core.c:142
+Read of size 4 at addr ffff8880736f7438 by task syz-executor579/3666
 
-This means we recycle the initial gc container structure and
-lose track of the elements that came before.
+CPU: 0 PID: 3666 Comm: syz-executor579 Not tainted 5.16.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ __dump_stack lib/dump_stack.c:88 [inline] lib/dump_stack.c:106
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106 lib/dump_stack.c:106
+ print_address_description+0x65/0x380 mm/kasan/report.c:247 mm/kasan/report.c:247
+ __kasan_report mm/kasan/report.c:433 [inline]
+ __kasan_report mm/kasan/report.c:433 [inline] mm/kasan/report.c:450
+ kasan_report+0x19a/0x1f0 mm/kasan/report.c:450 mm/kasan/report.c:450
+ nf_hook_entries_grow+0x5a7/0x700 net/netfilter/core.c:142 net/netfilter/core.c:142
+ __nf_register_net_hook+0x27e/0x8d0 net/netfilter/core.c:429 net/netfilter/core.c:429
+ nf_register_net_hook+0xaa/0x180 net/netfilter/core.c:571 net/netfilter/core.c:571
+ nft_register_flowtable_net_hooks+0x3c5/0x730 net/netfilter/nf_tables_api.c:7232 net/netfilter/nf_tables_api.c:7232
+ nf_tables_newflowtable+0x2022/0x2cf0 net/netfilter/nf_tables_api.c:7430 net/netfilter/nf_tables_api.c:7430
+ nfnetlink_rcv_batch net/netfilter/nfnetlink.c:513 [inline]
+ nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
+ nfnetlink_rcv_batch net/netfilter/nfnetlink.c:513 [inline] net/netfilter/nfnetlink.c:652
+ nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline] net/netfilter/nfnetlink.c:652
+ nfnetlink_rcv+0x10e6/0x2550 net/netfilter/nfnetlink.c:652 net/netfilter/nfnetlink.c:652
 
-While at it, don't deref 'gc' after we've passed it to call_rcu.
+__nft_release_hook() calls nft_unregister_flowtable_net_hooks() which
+only unregisters the hooks, then after RCU grace period, it is
+guaranteed that no packets add new entries to the flowtable (no flow
+offload rules and flowtable hooks are reachable from packet path), so it
+is safe to call nf_flow_table_free() which cleans up the remaining
+entries from the flowtable (both software and hardware) and it unbinds
+the flow_block.
 
-Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
-Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: ff4bf2f42a40 ("netfilter: nf_tables: add nft_unregister_flowtable_hook()")
+Reported-by: syzbot+e918523f77e62790d6d9@syzkaller.appspotmail.com
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/netfilter/nf_tables.h |    2 +-
- net/netfilter/nf_tables_api.c     |   10 ++++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ net/netfilter/nf_tables_api.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1389,7 +1389,7 @@ struct nft_trans_gc {
- 	struct net		*net;
- 	struct nft_set		*set;
- 	u32			seq;
--	u8			count;
-+	u16			count;
- 	void			*priv[NFT_TRANS_GC_BATCHCOUNT];
- 	struct rcu_head		rcu;
- };
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -6857,12 +6857,15 @@ static int nft_trans_gc_space(struct nft
- struct nft_trans_gc *nft_trans_gc_queue_async(struct nft_trans_gc *gc,
- 					      unsigned int gc_seq, gfp_t gfp)
- {
-+	struct nft_set *set;
-+
- 	if (nft_trans_gc_space(gc))
- 		return gc;
+@@ -7863,6 +7863,8 @@ static void __nft_release_table(struct n
  
-+	set = gc->set;
- 	nft_trans_gc_queue_work(gc);
- 
--	return nft_trans_gc_alloc(gc->set, gc_seq, gfp);
-+	return nft_trans_gc_alloc(set, gc_seq, gfp);
- }
- EXPORT_SYMBOL_GPL(nft_trans_gc_queue_async);
- 
-@@ -6879,15 +6882,18 @@ EXPORT_SYMBOL_GPL(nft_trans_gc_queue_asy
- 
- struct nft_trans_gc *nft_trans_gc_queue_sync(struct nft_trans_gc *gc, gfp_t gfp)
- {
-+	struct nft_set *set;
-+
- 	if (WARN_ON_ONCE(!lockdep_commit_lock_is_held(gc->net)))
- 		return NULL;
- 
- 	if (nft_trans_gc_space(gc))
- 		return gc;
- 
-+	set = gc->set;
- 	call_rcu(&gc->rcu, nft_trans_gc_trans_free);
- 
--	return nft_trans_gc_alloc(gc->set, 0, gfp);
-+	return nft_trans_gc_alloc(set, 0, gfp);
- }
- EXPORT_SYMBOL_GPL(nft_trans_gc_queue_sync);
- 
+ 	list_for_each_entry(chain, &table->chains, list)
+ 		nf_tables_unregister_hook(net, table, chain);
++	list_for_each_entry(flowtable, &table->flowtables, list)
++		nft_unregister_flowtable_net_hooks(net, flowtable);
+ 	/* No packets are walking on these chains anymore. */
+ 	ctx.table = table;
+ 	list_for_each_entry(chain, &table->chains, list) {
 
 
 
