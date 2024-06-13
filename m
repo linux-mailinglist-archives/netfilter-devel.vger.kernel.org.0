@@ -1,53 +1,54 @@
-Return-Path: <netfilter-devel+bounces-2641-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2624-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B841906C43
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 13:48:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E73906C07
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 13:46:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29989B25682
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 11:48:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44948B25128
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 11:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A58145326;
-	Thu, 13 Jun 2024 11:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DB31448CD;
+	Thu, 13 Jun 2024 11:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2SEEn2ha"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="k8j0uiOl"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F08143870;
-	Thu, 13 Jun 2024 11:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6EF143C6D;
+	Thu, 13 Jun 2024 11:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718279231; cv=none; b=jTr8q/qJXXeI+rKNK8XrBpNzNPX1KoZG1oIkpFurQJgOKbNFjYMNzv0+gQFQIjJqkCWPsjMyIfpAHFReNsnfuTRBTNIfFq25U0VD8q5BeLOAmsqAmB84NGIOTG317VC3DFDH+UwV7Qm3CyLlGvlNM3sB826tSfJHk09rOdTsQ1g=
+	t=1718279139; cv=none; b=WuLPEKkm0XpcipVDM0wkRT/j/9FHQuUYBnDDfR3/o1SvumVIQzLgkFTVvxsiJL3TPDCZZBu6oV52O5UMKMPff69cH1aqSm9MjBArL8DR9s2JyLHmr63xpBRK3NEfsZ+WqqnqbJgeBRjJfPhACSpPJ4zF+MmuqU1WtQb3eA8AZ9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718279231; c=relaxed/simple;
-	bh=lFCAKEuqpb11BDFcyqIcaPZ5wO2EnYH/YJAtRuurArU=;
+	s=arc-20240116; t=1718279139; c=relaxed/simple;
+	bh=7u6ABA55JaGctoDzT1Q7whu7FJbMsJ+IFU5trrLuBuc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j8u+vfvbO7CrGW4yAMAGGLa0NQr4iUAbv+v52dTHL+wlvusziHa3zjeLaikylboI7zZaq7TgYkwImmpHyT0qlup/u8LlKFMUh2x8TdeJB58hCSh0jYRhikMYVZzi4PlLTUn7Haumng0cGzYAxP5o6MGGUW1My4ePA5GrOWR9chE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2SEEn2ha; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF93C2BBFC;
-	Thu, 13 Jun 2024 11:47:10 +0000 (UTC)
+	 MIME-Version; b=hdh54VdLHPCbEjwkTgSvf4sADaJM8oBiWjWaTWG0O2gtJwuNUuiqOvOICyvxG4kNKZ9oblSCw9MIh952FlylDjycY73Eaw9MHWYtyd68Y0/mkgMuQSvJ4EN9UCzdy6JM5vWxJFwl2alDyuAB4RGlcNheRMQjQ2s2QYP9WXQ7j80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=k8j0uiOl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 265AAC2BBFC;
+	Thu, 13 Jun 2024 11:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1718279230;
-	bh=lFCAKEuqpb11BDFcyqIcaPZ5wO2EnYH/YJAtRuurArU=;
+	s=korg; t=1718279139;
+	bh=7u6ABA55JaGctoDzT1Q7whu7FJbMsJ+IFU5trrLuBuc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=2SEEn2haVrwAXWgnl3FlMmkdd9nQn57qizXJYn/Ldnj4QVX5SaEEZQ2ZS/v26Wofs
-	 ZDRydbkkadrYKvnmJaXF4vATCwnE/Pd5fDvKrCd8LTtkshVP8O96y9uTCeF8CtoCuf
-	 rBdUmHwpFuOh6DAZSlWQ6Vlh7mkSh9gi4mz+g9pQ=
+	b=k8j0uiOlSZWA82NwenZQ0MBiovHS5IXXw74/1SxS/VoyesExyEAf+C+jIJAMwKEyr
+	 nI0ND4BjRm6RzRTzYllCBtm3nw6b3MFrmtQhRcBYqrinm9xn6VpmzTgxApYrSoy9Qm
+	 ZHP0lJbEEtkZ+V/NI3mr8duqMmcsolvXhKnh67aU=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org,
 	netfilter-devel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
+	Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 188/213] netfilter: nft_dynset: relax superfluous check on set updates
-Date: Thu, 13 Jun 2024 13:33:56 +0200
-Message-ID: <20240613113235.231585566@linuxfoundation.org>
+Subject: [PATCH 4.19 189/213] netfilter: nf_tables: mark newset as dead on transaction abort
+Date: Thu, 13 Jun 2024 13:33:57 +0200
+Message-ID: <20240613113235.268891052@linuxfoundation.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240613113227.969123070@linuxfoundation.org>
 References: <20240613113227.969123070@linuxfoundation.org>
@@ -66,42 +67,47 @@ Content-Transfer-Encoding: 8bit
 
 ------------------
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Florian Westphal <fw@strlen.de>
 
-commit 7b1394892de8d95748d05e3ee41e85edb4abbfa1 upstream.
+[ Upstream commit 08e4c8c5919fd405a4d709b4ba43d836894a26eb ]
 
-Relax this condition to make add and update commands idempotent for sets
-with no timeout. The eval function already checks if the set element
-timeout is available and updates it if the update command is used.
+If a transaction is aborted, we should mark the to-be-released NEWSET dead,
+just like commit path does for DEL and DESTROYSET commands.
 
-Fixes: 22fe54d5fefc ("netfilter: nf_tables: add support for dynamic set updates")
+In both cases all remaining elements will be released via
+set->ops->destroy().
+
+The existing abort code does NOT post the actual release to the work queue.
+Also the entire __nf_tables_abort() function is wrapped in gc_seq
+begin/end pair.
+
+Therefore, async gc worker will never try to release the pending set
+elements, as gc sequence is always stale.
+
+It might be possible to speed up transaction aborts via work queue too,
+this would result in a race and a possible use-after-free.
+
+So fix this before it becomes an issue.
+
+Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nft_dynset.c |   10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ net/netfilter/nf_tables_api.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/netfilter/nft_dynset.c
-+++ b/net/netfilter/nft_dynset.c
-@@ -154,16 +154,8 @@ static int nft_dynset_init(const struct
- 		return -EBUSY;
- 
- 	priv->op = ntohl(nla_get_be32(tb[NFTA_DYNSET_OP]));
--	switch (priv->op) {
--	case NFT_DYNSET_OP_ADD:
--		break;
--	case NFT_DYNSET_OP_UPDATE:
--		if (!(set->flags & NFT_SET_TIMEOUT))
--			return -EOPNOTSUPP;
--		break;
--	default:
-+	if (priv->op > NFT_DYNSET_OP_UPDATE)
- 		return -EOPNOTSUPP;
--	}
- 
- 	timeout = 0;
- 	if (tb[NFTA_DYNSET_TIMEOUT] != NULL) {
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -7254,6 +7254,7 @@ static int __nf_tables_abort(struct net
+ 				nft_trans_destroy(trans);
+ 				break;
+ 			}
++			nft_trans_set(trans)->dead = 1;
+ 			list_del_rcu(&nft_trans_set(trans)->list);
+ 			break;
+ 		case NFT_MSG_DELSET:
 
 
 
