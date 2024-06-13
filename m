@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2575-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2578-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAF890600A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 03:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE33F906010
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 03:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63571F2122C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 01:03:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97E8D1F2216B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jun 2024 01:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0549F2A8D0;
-	Thu, 13 Jun 2024 01:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5446939FCE;
+	Thu, 13 Jun 2024 01:02:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBF6B646;
-	Thu, 13 Jun 2024 01:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A66175AD;
+	Thu, 13 Jun 2024 01:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718240550; cv=none; b=mfqatwhYZYG0W77JQSf5n2oOWMIvm6KGwhkyw/E8kgWloseuWvu8lgVWCo5in9kwhq9jfnlyioKldklDvkFX9gE2ap8rzYl+HfkaiF//vkogK75SOqefFtYsj5fhDQrK1drGUJh4Fc5oxkebvrQZgDGNskmqE0jUQ0Zeul7EZ14=
+	t=1718240552; cv=none; b=gmSCY9S3q6MgNw1QM8BzE/9mPSn3V4U98KtWbNdIpJNlB5u+frf2LEBz2vMtzDGlka91B5B5gQ6ecmPAy0PfhNysLEMEnpbAnMUnOozX4sq9bnITG43/nOoEEoUV/IXdaYv31ibw8EycyRYGur5A7n4Zm76vzLyGISwwV+nwDRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718240550; c=relaxed/simple;
-	bh=afqdUmR1zLyaNOXhMRKzkiOqOrxo3ttlGhnNYDTSirw=;
+	s=arc-20240116; t=1718240552; c=relaxed/simple;
+	bh=fQfCXzLP+W70JrsbT7NmMWL+Lo/paz54Z1IpoPAYc/k=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ds090J3HVi1wyTtA4j2b322Zx21xN/xIthbIsgRSH2LC0z9F9vh57DpB73LcAvmIqeQOhcwVmfLd/Br2u+5bK8mYcUh84DF0J0JX01h80PBCTY95b9wW7XLDuAr7maGcfgyNzOL3cOGPGVq/YA/DNGcdwoVoM+ZvWoN97ofjKM0=
+	 MIME-Version; b=iM7v6lrtCyGrzz0pIGl/zwj9lAMS9FibDHGEHz6Tt9SzVEaSyTbzJB4g3qF34kdr0Sq77oY+1CHWTVM1m84RlHQPOkGl0bYRgoVky7Kn/3hYQz7ZLa0QuwzTMG6bBRrS+NBolMblIO8rgvd8QbvpRhGKcLTBb/PE43XdubidGDk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -32,9 +32,9 @@ To: netfilter-devel@vger.kernel.org
 Cc: gregkh@linuxfoundation.org,
 	sashal@kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH -stable,4.19.x 17/40] netfilter: nft_set_rbtree: skip sync GC for new elements in this transaction
-Date: Thu, 13 Jun 2024 03:01:46 +0200
-Message-Id: <20240613010209.104423-18-pablo@netfilter.org>
+Subject: [PATCH -stable,4.19.x 18/40] netfilter: nft_set_rbtree: use read spinlock to avoid datapath contention
+Date: Thu, 13 Jun 2024 03:01:47 +0200
+Message-Id: <20240613010209.104423-19-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240613010209.104423-1-pablo@netfilter.org>
 References: <20240613010209.104423-1-pablo@netfilter.org>
@@ -46,47 +46,42 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-commit 2ee52ae94baabf7ee09cf2a8d854b990dac5d0e4 upstream.
+commit 96b33300fba880ec0eafcf3d82486f3463b4b6da upstream.
 
-New elements in this transaction might expired before such transaction
-ends. Skip sync GC for such elements otherwise commit path might walk
-over an already released object. Once transaction is finished, async GC
-will collect such expired element.
+rbtree GC does not modify the datastructure, instead it collects expired
+elements and it enqueues a GC transaction. Use a read spinlock instead
+to avoid data contention while GC worker is running.
 
 Fixes: f6c383b8c31a ("netfilter: nf_tables: adapt set backend to use GC transaction API")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_rbtree.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/netfilter/nft_set_rbtree.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 92931fa9593b..8bda3f25360b 100644
+index 8bda3f25360b..69fb57f6a23f 100644
 --- a/net/netfilter/nft_set_rbtree.c
 +++ b/net/netfilter/nft_set_rbtree.c
-@@ -317,6 +317,7 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 	struct nft_rbtree_elem *rbe, *rbe_le = NULL, *rbe_ge = NULL;
- 	struct rb_node *node, *next, *parent, **p, *first = NULL;
- 	struct nft_rbtree *priv = nft_set_priv(set);
-+	u8 cur_genmask = nft_genmask_cur(net);
- 	u8 genmask = nft_genmask_next(net);
- 	int d, err;
+@@ -629,8 +629,7 @@ static void nft_rbtree_gc(struct work_struct *work)
+ 	if (!gc)
+ 		goto done;
  
-@@ -362,8 +363,11 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 		if (!nft_set_elem_active(&rbe->ext, genmask))
- 			continue;
+-	write_lock_bh(&priv->lock);
+-	write_seqcount_begin(&priv->count);
++	read_lock_bh(&priv->lock);
+ 	for (node = rb_first(&priv->root); node != NULL; node = rb_next(node)) {
  
--		/* perform garbage collection to avoid bogus overlap reports. */
--		if (nft_set_elem_expired(&rbe->ext)) {
-+		/* perform garbage collection to avoid bogus overlap reports
-+		 * but skip new elements in this transaction.
-+		 */
-+		if (nft_set_elem_expired(&rbe->ext) &&
-+		    nft_set_elem_active(&rbe->ext, cur_genmask)) {
- 			err = nft_rbtree_gc_elem(set, priv, rbe, genmask);
- 			if (err < 0)
- 				return err;
+ 		/* Ruleset has been updated, try later. */
+@@ -679,8 +678,7 @@ static void nft_rbtree_gc(struct work_struct *work)
+ 	}
+ 
+ try_later:
+-	write_seqcount_end(&priv->count);
+-	write_unlock_bh(&priv->lock);
++	read_unlock_bh(&priv->lock);
+ 
+ 	if (gc)
+ 		nft_trans_gc_queue_async_done(gc);
 -- 
 2.30.2
 
