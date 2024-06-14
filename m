@@ -1,60 +1,63 @@
-Return-Path: <netfilter-devel+bounces-2675-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2677-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D62D908E81
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 17:18:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F30E908E9D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 17:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B495C1F21482
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 15:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9619DB2C4CC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 15:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E8815FCE9;
-	Fri, 14 Jun 2024 15:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A0916B73E;
+	Fri, 14 Jun 2024 15:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="RNART5wa"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PZ/5bdB9"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFF016B744
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF2E15FCF5
 	for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2024 15:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718378209; cv=none; b=ONf1W8DErhw8VpDZihk6UVGQEyFxcXAgtNpkslUdDAii4FkCVivA20O1jaETtbpRZpQxze9dXZgcQK1wO8I5l0K0gaQL9NNFh7X1Y0MUwjGs6xt47RvijmRQaoPAos0vvw138+cqg//pV8RU3xVm48g55yV0D1VS7pazMdiAAjs=
+	t=1718378210; cv=none; b=ZQ8etTBTA3u/78GCVK7kd+1ISmM2U/Y25f6TAfKpzWtNOGGP8F0AdeV/cEoKGWt1A+2i6tZjOiICkSgPZ2pUq7NBUuDBs6ZS0ZtCA/+m2PYAo8q8TKeqgnjIXKzDWr0dyGf3f/1W5XdT+dyXOTYJjVv+pAmyGhqhuhARSrmD39o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718378209; c=relaxed/simple;
-	bh=jZHBRWyOpX4qMoMD7q1YqnN2UTqvnqMyaNfrr3mum68=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EeL8xs853iN5qh2QedRLzkBoOBryYYGvoccSosrIpF0aEp5xeOZkm6H1i9Pnah7gE3my7pHdOWBmpDe4kYlr0mIfgMFjvPKYkEPSIEdy+k61diGEPlYywa2FI/YkNZz4Sg4gjxMC3Ac30710iYb9aQL83HGTEUJ8RgfseceLBpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=RNART5wa; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1718378210; c=relaxed/simple;
+	bh=p+HoCpRxH1Kf/i84CW5y0nYqjOF6hkQofzduAIyM88g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VCwVjkn1RDaLMXanHS3YiP7458a4PvqYaYhLoaHuCKHn+RQnRm+wHF6ta0OU04DgsJNWywc6NQqEId6QUeDYfQDo/KKBN/2EIQB6EyF+Qzz0rc0elSTtQbUw6ysHaqM0uNAj2+VoE2wcHK6XneMru0bwtPTKgNynAXH7a9WzXws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PZ/5bdB9; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=wXZ5If9eigqUj4xOx3mKpbbIuA97hWNR82MW3XwrJ1o=; b=RNART5wadhA7GJbVnrqwBPI89A
-	VTw4G0jFKxk4q46Yp9XWGyKgRFyB2ZsUNLRZ2Fa45W0+vm+lKPlTJZ92OFSfyybnVdPUKnmLofhO+
-	VSjcesHpSydL2sl6WY7JfMY9jsXzErQ2HMfyOu2cTsS1Wr0NYtEdM/XGxzwqbdz0nXZ6ldFGejWlE
-	1DC+Qip+dWLkKBgjHaB3X/D0ec8l5EQw5k0WkUlk+z8eNc2xUpEjK+I1sW6VK2iv5MQbwlX0O+aXL
-	K3zzIhfDnig63G9YTXPca31MMTiT2qUMYQqCoEH3n6CeThpOiRMmGKdx50M3E1yUAVMi0bhr/7Ikm
-	l5XL8mlA==;
+	bh=kbq78l3vrRkBTzF92H9WS7PV/crd5Alh63ZJWaJcIpQ=; b=PZ/5bdB9wSfhGfFZpfZE2LOcwR
+	wB2EJolmH1pfVv42YW0BhCfcFLxGY6XEqWN4fs5a2Kv2ANPwarx6B8mqj2etrDAs/7MDFCw/gmeJ4
+	rIeJqsqU45orRyyKmBD3Jsp8MiJCGf9GtyLrhVQY1PcCgjNNcJfYvkQlbt7GLyIUhSniKec4MOcMp
+	xQJwZGZHaFAR6ERCfH5qJAPmZeZUEBmmVdbJCtLadG2FVQNqiPpXyo3zx0JOthHLv3U0/vkLPys0j
+	RZnIr4TJrjtBLIkgPddUebMxo006pmL4L1dJ+ybnFHjVWxBGtb7hD00MrAkur2DUKGH0jScspgch4
+	cWYRWRBg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sI8fP-000000007Kq-1dPO;
-	Fri, 14 Jun 2024 17:16:39 +0200
+	id 1sI8fO-000000007Kd-1ROs;
+	Fri, 14 Jun 2024 17:16:38 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Florian Westphal <fw@strlen.de>
 Cc: netfilter-devel@vger.kernel.org,
 	Fabio <pedretti.fabio@gmail.com>
-Subject: [nf-next PATCH v2 0/2] netfilter: xt_recent: Allow for larger hitcount values
-Date: Fri, 14 Jun 2024 17:16:39 +0200
-Message-ID: <20240614151641.28885-1-phil@nwl.cc>
+Subject: [nf-next PATCH v2 1/2] netfilter: xt_recent: Reduce size of struct recent_entry::nstamps
+Date: Fri, 14 Jun 2024 17:16:40 +0200
+Message-ID: <20240614151641.28885-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240614151641.28885-1-phil@nwl.cc>
+References: <20240614151641.28885-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -63,27 +66,34 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes since v1:
-- Do not support insanely large hitcount values to limit the amount of
-  storage allocated per entry
-- Fix typo in subject of patch 1
+There is no point in this change besides presenting its possibility
+separate from a follow-up patch extending the size of both 'index' and
+'nstamps' fields.
 
-Patch 2 lifts the restriction of 255 as max hitcount value by adjusting
-XT_RECENT_MAX_NSTAMPS value and increasing required struct field sizes
-accordingly.
+The value of 'nstamps' is initialized to 1 in recent_entry_init() and
+adjusted in recent_entry_update() to match that of 'index' if it becomes
+larger after being incremented. Since 'index' is of type u8, it will at
+max become 255 (and wrap to 0 afterwards). Therefore, 'nstamps' will
+also never exceed the value 255.
 
-In struct recent_entry, field 'nstamps' was 16bit in size of unclear
-reasons. Patch 1 changes that to match field 'index' providing rationale
-why it is sufficient, thus paving the way for keeping both at 16bit (and
-avoiding a larger size for 'nstamps').
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ net/netfilter/xt_recent.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Phil Sutter (2):
-  netfilter: xt_recent: Reduce size of struct recent_entry::nstamps
-  netfilter: xt_recent: Lift restrictions on max hitcount value
-
- net/netfilter/xt_recent.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
+diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
+index ef93e0d3bee0..60259280b2d5 100644
+--- a/net/netfilter/xt_recent.c
++++ b/net/netfilter/xt_recent.c
+@@ -70,7 +70,7 @@ struct recent_entry {
+ 	u_int16_t		family;
+ 	u_int8_t		ttl;
+ 	u_int8_t		index;
+-	u_int16_t		nstamps;
++	u_int8_t		nstamps;
+ 	unsigned long		stamps[];
+ };
+ 
 -- 
 2.43.0
 
