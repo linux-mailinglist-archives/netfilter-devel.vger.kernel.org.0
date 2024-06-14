@@ -1,187 +1,115 @@
-Return-Path: <netfilter-devel+bounces-2669-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2671-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA65908625
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 10:22:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77403908A5F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 12:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07B731C2377A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 08:22:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD4F1F21681
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2024 10:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77AB18FC7D;
-	Fri, 14 Jun 2024 08:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCBA1922C1;
+	Fri, 14 Jun 2024 10:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="IEVfRfnS"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF06E18413D
-	for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2024 08:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC8312E61
+	for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2024 10:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718353220; cv=none; b=mD3c+vt9mMzOIPtxPdeHFzwInZTiPxDcAT8BzitCOWbKvsWBwj5TcLWcBnNdiBSOb4a+QE8Si3GECOaULEz6BPMUChm5VwvyIoRiLyGTQsutRBjunZb1S1U5hJNgq7hpE5fk6jb4HYLESardNBoeKtfPfS+NCEsXYCtih1gnkg8=
+	t=1718361933; cv=none; b=Mj/UyGfGK7FEh52slVBJtILOwrYdhCjmrVN5YNohd0K6H62ntRVNWJ+/vdxAzE/2I4ADG8SrKjdlMk+SW3Kh4KRh70dEjr9rDMMQTAAD6DuO9ZMIiOlnvYYoC+yk/kGTf8RCg4av+FS0kNOPy83C4Jk6H/tjHKGXOngVd2Jvi5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718353220; c=relaxed/simple;
-	bh=e3ogd1Rf26F8B2OGtCcYnmXW4DRYUwGPUqwfsRijmGw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=lBRQ277BtBhn0/WCfZoukf6K+7kQ8nj4XlGoq5h6wo+f6MYjny4K+M7Auh3+MJP6kl0AHVJ8DvLv2uSwa6h/c25M5GFVWsE9FtBaozb94r0K1NG/REcnSI/Dzw4tCxnVr23ZblVGTm8IJSzAIYo/KgtsMij2cR96S0cvlaBKCQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-375d8dbfc25so15806995ab.1
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2024 01:20:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718353218; x=1718958018;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IJYub9ik3zvCE5LR2av2mS0zy2PWlUjn26HCWt4th7Y=;
-        b=nSyOlIl5+Zl3MZCzdRzgsXBprqFEAn+kfDQHQ79VS2D1zx/u12LFxUoqtGozTCR8f2
-         uFAhjXCwWS98wzbGO7KHj+0cZOZrX+ruLVsW4aNrm2iiRqgDjAmG0H0SZmGvbBhheuwD
-         u886eb4Imj0BydsTpAdI5Ng6+hYM+hauypps9LF8Bfv7XoH0L21LUAH4br0opXTUxAqp
-         Z9vkcVE8YqNfrGf9pdn7IAayqc6BuNWn77DSCHvLKjcL4wz6tW5I9bRfCgs5Gm0v8rSo
-         X2FI4sUtYqwPgIdEUYcyJm4BR7zxS+7aPzUNoa4zbeFJbQZmgdxGbSXEWlWCDYpI/zdV
-         z/1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUjse+RMpWmo1wDowQL0b6mVqyXfIlA2avofro65fBkQJCPq77NqfIdeWgQFWKlqGyiSlHz0cgosWwQEvkwZEsZktfxG12NMMYAYGvcoeD1
-X-Gm-Message-State: AOJu0Yw/3PbYnkkHBoeI0AUNy2BXVsbCh+oR4kq0q9Km/68h0NwvEhW9
-	JuZdkLfAx05FXYUvCoLAN3TTJvkrsrxUU9ci8c0y9DkMzjVwNs8KCQ6gd/ZjrFKleUdc+7m5aYk
-	Lt4uTUBlvPmX8AFLl2WLaQd0gmWnZ6TH331lOpITMbvTw/jaJ7czUlZM=
-X-Google-Smtp-Source: AGHT+IFlHbIwVrRQ09ko8ZYI6I9T8ufKj5i6mBTVJzY7IHh86/F0utu1+qkoHOzzZG6f2rTVNlurhV4WzRJtmHfKVVMP6Y7Q/UI6
+	s=arc-20240116; t=1718361933; c=relaxed/simple;
+	bh=ZnmUkX2OmA+2x18cgKsXNDOLGh8GFc21J9/kmVGjdy8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZP7dh0WDYaJYs9fr33q2uPFDy3+6eNOT2akkXk7q8veg/D16+sI7Vjgw0zUjHdwxLYAFT+jzOQG9C0QEEVJw7iCOOvmIl5tBe5NiVA2pASG0g+1A1r2eMlkjh/r43Oahgarz/LyRq2YJbCxrZV6GDb1dttzveiefkm91bezghT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=IEVfRfnS; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=009qP3PQJDiDbKnDdcFVOe7ZDK9oFlBxihiWkXs4Tis=; b=IEVfRfnSF2zGEr93VKJAJEmpUB
+	bcqJjgDWOgdAs4wggH+ODdymYBzOXBSDNvoIDbC+uMtYr8a1X3OWR2GVpBdGusuccJkC6uzo/Gu9j
+	Hxc3OOdc7ng1wBKXcYa2YLgZA8wbpBR13/QmwaqaB4BZhqeQ9HnlsFvYNr2yuU5SZ212Y4wnCx36M
+	QL7o1I6v3CBsf/NhHB6fSlM548K+asMh014huCuZElVL1SE+tT5TP3z2x6BmSOYZPOIwuqIKxk79e
+	+2CUVnQYtAf0r46IqgT0gK7go5g4TabAkXdtpeWs4l8vwx4RbxkQ54pH/TxBE+rRjiik1EkmiJWwM
+	/awAxOrw==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1sI4Qx-000000001OQ-3yps;
+	Fri, 14 Jun 2024 12:45:28 +0200
+Date: Fri, 14 Jun 2024 12:45:27 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org, Fabio <pedretti.fabio@gmail.com>
+Subject: Re: [nf-next PATCH 2/2] netfilter: xt_recent: Largely lift
+ restrictions on max hitcount value
+Message-ID: <ZmwfRzlY1xUbJCmR@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+	Fabio <pedretti.fabio@gmail.com>
+References: <20240613143254.26622-1-phil@nwl.cc>
+ <20240613143254.26622-3-phil@nwl.cc>
+ <20240613144105.GA27366@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1909:b0:375:9e28:49b with SMTP id
- e9e14a558f8ab-375e0e2be9bmr1347055ab.2.1718353218075; Fri, 14 Jun 2024
- 01:20:18 -0700 (PDT)
-Date: Fri, 14 Jun 2024 01:20:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000298850061ad54973@google.com>
-Subject: [syzbot] [netfilter?] net test error: WARNING: suspicious RCU usage
- in _destroy_all_sets
-From: syzbot <syzbot+565a9cd16f2d99544b94@syzkaller.appspotmail.com>
-To: coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com, 
-	kadlec@netfilter.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
-	pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240613144105.GA27366@breakpoint.cc>
 
-Hello,
+On Thu, Jun 13, 2024 at 04:41:05PM +0200, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > Support tracking of up to 2^32-1 packets per table. Since users provide
+> > the hitcount value in a __u32 variable, they can't exceed the max value
+> > anymore.
+> > 
+> > Requested-by: Fabio <pedretti.fabio@gmail.com>
+> > Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1745
+> > Signed-off-by: Phil Sutter <phil@nwl.cc>
+> > ---
+> >  net/netfilter/xt_recent.c | 15 +++++----------
+> >  1 file changed, 5 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
+> > index 60259280b2d5..77ac4964e2dc 100644
+> > --- a/net/netfilter/xt_recent.c
+> > +++ b/net/netfilter/xt_recent.c
+> > @@ -59,9 +59,9 @@ MODULE_PARM_DESC(ip_list_gid, "default owning group of /proc/net/xt_recent/* fil
+> >  /* retained for backwards compatibility */
+> >  static unsigned int ip_pkt_list_tot __read_mostly;
+> >  module_param(ip_pkt_list_tot, uint, 0400);
+> > -MODULE_PARM_DESC(ip_pkt_list_tot, "number of packets per IP address to remember (max. 255)");
+> > +MODULE_PARM_DESC(ip_pkt_list_tot, "number of packets per IP address to remember (max. 2^32 - 1)");
+> >  
+> > -#define XT_RECENT_MAX_NSTAMPS	256
+> > +#define XT_RECENT_MAX_NSTAMPS	(1ULL << 32)
+> 
+> Won't that allow massive mem hog?
 
-syzbot found the following issue on:
+You're right, struct recent_entry may become ~32GB in size.
 
-HEAD commit:    4467c09bc7a6 net: mvpp2: use slab_build_skb for oversized ..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b14736980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa0ce06dcc735711
-dashboard link: https://syzkaller.appspot.com/bug?extid=565a9cd16f2d99544b94
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> Actually I think this is already a mem hog, unbounded
+> allocations from time where we had no untrusted netns :-(
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b7d932d926fc/disk-4467c09b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b6972333a06f/vmlinux-4467c09b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b607f1f9f977/bzImage-4467c09b.xz
+With the current max of 255 stamps, entries are at max 1KB in size. Is
+this bad already? Given unrestricted rule counts, there are various ways
+to cause large memory allocation, no?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+565a9cd16f2d99544b94@syzkaller.appspotmail.com
+How about restricting MAX_NSTAMPS to 1<<16? Max entry size is 568B, a
+little less insane than th 32GB I thoughtlessly proposed above. :)
 
-=============================
-WARNING: suspicious RCU usage
-6.10.0-rc3-syzkaller-00100-g4467c09bc7a6 #0 Not tainted
------------------------------
-net/netfilter/ipset/ip_set_core.c:1200 suspicious rcu_dereference_protected() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-3 locks held by kworker/u8:5/748:
- #0: ffff888015ed5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
- #0: ffff888015ed5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
- #1: ffffc90003a3fd00 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
- #1: ffffc90003a3fd00 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
- #2: ffffffff8f5db250 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x16a/0xcc0 net/core/net_namespace.c:594
-
-stack backtrace:
-CPU: 0 PID: 748 Comm: kworker/u8:5 Not tainted 6.10.0-rc3-syzkaller-00100-g4467c09bc7a6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-Workqueue: netns cleanup_net
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
- _destroy_all_sets+0x232/0x5f0 net/netfilter/ipset/ip_set_core.c:1200
- ip_set_net_exit+0x20/0x50 net/netfilter/ipset/ip_set_core.c:2396
- ops_exit_list net/core/net_namespace.c:173 [inline]
- cleanup_net+0x802/0xcc0 net/core/net_namespace.c:640
- process_one_work kernel/workqueue.c:3231 [inline]
- process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3312
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3393
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-=============================
-WARNING: suspicious RCU usage
-6.10.0-rc3-syzkaller-00100-g4467c09bc7a6 #0 Not tainted
------------------------------
-net/netfilter/ipset/ip_set_core.c:1211 suspicious rcu_dereference_protected() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-3 locks held by kworker/u8:5/748:
- #0: ffff888015ed5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
- #0: ffff888015ed5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
- #1: ffffc90003a3fd00 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
- #1: ffffc90003a3fd00 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
- #2: ffffffff8f5db250 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x16a/0xcc0 net/core/net_namespace.c:594
-
-stack backtrace:
-CPU: 1 PID: 748 Comm: kworker/u8:5 Not tainted 6.10.0-rc3-syzkaller-00100-g4467c09bc7a6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-Workqueue: netns cleanup_net
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
- _destroy_all_sets+0x53f/0x5f0 net/netfilter/ipset/ip_set_core.c:1211
- ip_set_net_exit+0x20/0x50 net/netfilter/ipset/ip_set_core.c:2396
- ops_exit_list net/core/net_namespace.c:173 [inline]
- cleanup_net+0x802/0xcc0 net/core/net_namespace.c:640
- process_one_work kernel/workqueue.c:3231 [inline]
- process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3312
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3393
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Cheers, Phil
 
