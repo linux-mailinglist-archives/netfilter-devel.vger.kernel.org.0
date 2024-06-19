@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2745-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2743-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C86C90F4BD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 19:06:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2559B90F4B8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 19:06:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F2B281C37
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 17:06:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 144091C21958
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 17:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDA9156C69;
-	Wed, 19 Jun 2024 17:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966DB156237;
+	Wed, 19 Jun 2024 17:05:53 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981C8155386;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9816B155336;
 	Wed, 19 Jun 2024 17:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718816754; cv=none; b=M6upv+uP6mBN3z2JIs1AOAfJ8h4Yskl9bDKpuRq3esjgMVwfq57s23rkfVrC7fHUhSLF1bsyMg798sE6wjuB4dB6gaI7ny1DfwZQukvrCxvyoEkRnChBGbhVHd/0FmfGyKfbjgm6ZNsGzBaHn9dojR0898sYj+9lOEifWv5Cvrs=
+	t=1718816753; cv=none; b=VnICg1RLOOGeFz8feRw7vUjfTNXl4bDCi09ECfvbMv8V94/NBqZ/Ao+3meFV/Sw0nwCzhfzQlhZJ3bdMer3sguQi+JVv8TmqSvI6u+umQscAbyuEl3hDA/LSU59BYX1nQASwkABgb+jT7KQeL0VHFhEhlnsSKw1/RxX/tJVqKLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718816754; c=relaxed/simple;
-	bh=5jL9Ly/pKLGqRlM2BXQaVGsUiVRHyC4DgcHE5FynEh4=;
+	s=arc-20240116; t=1718816753; c=relaxed/simple;
+	bh=ghaDSulpqSeZBH9oCxSvkq4K9zMalcbbcY/PLUHxgAU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HRh0OWuSLlJyFzr9AmYMj569B7uZls7n2jq20ILG77qT9ifLZ9tzU2fDs2Vp2GX/dR+aFAUTWa9J55+ZU+xnZXgi2Dmkge4i5VX4i2hklD7Tcj8966YCvYPfymkIxGhs3GLQArV4+FR8UGprcMrNHdRC/yrcMLBoYV2iGtHQhgY=
+	 MIME-Version; b=mM6yG6ftuqsshGteiPlRKD/kqN0S1IJQKYdeDG0b509qriIGLIJH6vywtk8ttqwiPLCl8SQTNx7KToLAJ6hN06eH2w0tL2HlicTBeKI+ZD6YL/TSWVjLfoKKqDaBmlPkb8b2vHWAnJHV51sb8LGP4dKLZ2lovBNi5x8Lux9JxSo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 2/5] seg6: fix parameter passing when calling NF_HOOK() in End.DX4 and End.DX6 behaviors
-Date: Wed, 19 Jun 2024 19:05:34 +0200
-Message-Id: <20240619170537.2846-3-pablo@netfilter.org>
+Subject: [PATCH net 3/5] netfilter: move the sysctl nf_hooks_lwtunnel into the netfilter core
+Date: Wed, 19 Jun 2024 19:05:35 +0200
+Message-Id: <20240619170537.2846-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240619170537.2846-1-pablo@netfilter.org>
 References: <20240619170537.2846-1-pablo@netfilter.org>
@@ -51,90 +51,206 @@ Content-Transfer-Encoding: 8bit
 
 From: Jianguo Wu <wujianguo@chinatelecom.cn>
 
-input_action_end_dx4() and input_action_end_dx6() are called NF_HOOK() for
-PREROUTING hook, in PREROUTING hook, we should passing a valid indev,
-and a NULL outdev to NF_HOOK(), otherwise may trigger a NULL pointer
-dereference, as below:
+Currently, the sysctl net.netfilter.nf_hooks_lwtunnel depends on the
+nf_conntrack module, but the nf_conntrack module is not always loaded.
+Therefore, accessing net.netfilter.nf_hooks_lwtunnel may have an error.
 
-    [74830.647293] BUG: kernel NULL pointer dereference, address: 0000000000000090
-    [74830.655633] #PF: supervisor read access in kernel mode
-    [74830.657888] #PF: error_code(0x0000) - not-present page
-    [74830.659500] PGD 0 P4D 0
-    [74830.660450] Oops: 0000 [#1] PREEMPT SMP PTI
-    ...
-    [74830.664953] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-    [74830.666569] RIP: 0010:rpfilter_mt+0x44/0x15e [ipt_rpfilter]
-    ...
-    [74830.689725] Call Trace:
-    [74830.690402]  <IRQ>
-    [74830.690953]  ? show_trace_log_lvl+0x1c4/0x2df
-    [74830.692020]  ? show_trace_log_lvl+0x1c4/0x2df
-    [74830.693095]  ? ipt_do_table+0x286/0x710 [ip_tables]
-    [74830.694275]  ? __die_body.cold+0x8/0xd
-    [74830.695205]  ? page_fault_oops+0xac/0x140
-    [74830.696244]  ? exc_page_fault+0x62/0x150
-    [74830.697225]  ? asm_exc_page_fault+0x22/0x30
-    [74830.698344]  ? rpfilter_mt+0x44/0x15e [ipt_rpfilter]
-    [74830.699540]  ipt_do_table+0x286/0x710 [ip_tables]
-    [74830.700758]  ? ip6_route_input+0x19d/0x240
-    [74830.701752]  nf_hook_slow+0x3f/0xb0
-    [74830.702678]  input_action_end_dx4+0x19b/0x1e0
-    [74830.703735]  ? input_action_end_t+0xe0/0xe0
-    [74830.704734]  seg6_local_input_core+0x2d/0x60
-    [74830.705782]  lwtunnel_input+0x5b/0xb0
-    [74830.706690]  __netif_receive_skb_one_core+0x63/0xa0
-    [74830.707825]  process_backlog+0x99/0x140
-    [74830.709538]  __napi_poll+0x2c/0x160
-    [74830.710673]  net_rx_action+0x296/0x350
-    [74830.711860]  __do_softirq+0xcb/0x2ac
-    [74830.713049]  do_softirq+0x63/0x90
-
-input_action_end_dx4() passing a NULL indev to NF_HOOK(), and finally
-trigger a NULL dereference in rpfilter_mt()->rpfilter_is_loopback():
-
-    static bool
-    rpfilter_is_loopback(const struct sk_buff *skb,
-          	       const struct net_device *in)
-    {
-            // in is NULL
-            return skb->pkt_type == PACKET_LOOPBACK ||
-          	 in->flags & IFF_LOOPBACK;
-    }
+Move sysctl nf_hooks_lwtunnel into the netfilter core.
 
 Fixes: 7a3f5b0de364 ("netfilter: add netfilter hooks to SRv6 data plane")
+Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Jianguo Wu <wujianguo@chinatelecom.cn>
-Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/ipv6/seg6_local.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/net/netns/netfilter.h           |  3 ++
+ net/netfilter/core.c                    | 13 ++++-
+ net/netfilter/nf_conntrack_standalone.c | 15 ------
+ net/netfilter/nf_hooks_lwtunnel.c       | 67 +++++++++++++++++++++++++
+ net/netfilter/nf_internals.h            |  6 +++
+ 5 files changed, 87 insertions(+), 17 deletions(-)
 
-diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-index 24e2b4b494cb..c434940131b1 100644
---- a/net/ipv6/seg6_local.c
-+++ b/net/ipv6/seg6_local.c
-@@ -941,8 +941,8 @@ static int input_action_end_dx6(struct sk_buff *skb,
+diff --git a/include/net/netns/netfilter.h b/include/net/netns/netfilter.h
+index 02bbdc577f8e..a6a0bf4a247e 100644
+--- a/include/net/netns/netfilter.h
++++ b/include/net/netns/netfilter.h
+@@ -15,6 +15,9 @@ struct netns_nf {
+ 	const struct nf_logger __rcu *nf_loggers[NFPROTO_NUMPROTO];
+ #ifdef CONFIG_SYSCTL
+ 	struct ctl_table_header *nf_log_dir_header;
++#ifdef CONFIG_LWTUNNEL
++	struct ctl_table_header *nf_lwtnl_dir_header;
++#endif
+ #endif
+ 	struct nf_hook_entries __rcu *hooks_ipv4[NF_INET_NUMHOOKS];
+ 	struct nf_hook_entries __rcu *hooks_ipv6[NF_INET_NUMHOOKS];
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index 3126911f5042..b00fc285b334 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -815,12 +815,21 @@ int __init netfilter_init(void)
+ 	if (ret < 0)
+ 		goto err;
  
- 	if (static_branch_unlikely(&nf_hooks_lwtunnel_enabled))
- 		return NF_HOOK(NFPROTO_IPV6, NF_INET_PRE_ROUTING,
--			       dev_net(skb->dev), NULL, skb, NULL,
--			       skb_dst(skb)->dev, input_action_end_dx6_finish);
-+			       dev_net(skb->dev), NULL, skb, skb->dev,
-+			       NULL, input_action_end_dx6_finish);
++#ifdef CONFIG_LWTUNNEL
++	ret = netfilter_lwtunnel_init();
++	if (ret < 0)
++		goto err_lwtunnel_pernet;
++#endif
+ 	ret = netfilter_log_init();
+ 	if (ret < 0)
+-		goto err_pernet;
++		goto err_log_pernet;
  
- 	return input_action_end_dx6_finish(dev_net(skb->dev), NULL, skb);
- drop:
-@@ -991,8 +991,8 @@ static int input_action_end_dx4(struct sk_buff *skb,
+ 	return 0;
+-err_pernet:
++err_log_pernet:
++#ifdef CONFIG_LWTUNNEL
++	netfilter_lwtunnel_fini();
++err_lwtunnel_pernet:
++#endif
+ 	unregister_pernet_subsys(&netfilter_net_ops);
+ err:
+ 	return ret;
+diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+index 74112e9c5dab..6c40bdf8b05a 100644
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -22,9 +22,6 @@
+ #include <net/netfilter/nf_conntrack_acct.h>
+ #include <net/netfilter/nf_conntrack_zones.h>
+ #include <net/netfilter/nf_conntrack_timestamp.h>
+-#ifdef CONFIG_LWTUNNEL
+-#include <net/netfilter/nf_hooks_lwtunnel.h>
+-#endif
+ #include <linux/rculist_nulls.h>
  
- 	if (static_branch_unlikely(&nf_hooks_lwtunnel_enabled))
- 		return NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING,
--			       dev_net(skb->dev), NULL, skb, NULL,
--			       skb_dst(skb)->dev, input_action_end_dx4_finish);
-+			       dev_net(skb->dev), NULL, skb, skb->dev,
-+			       NULL, input_action_end_dx4_finish);
+ static bool enable_hooks __read_mostly;
+@@ -612,9 +609,6 @@ enum nf_ct_sysctl_index {
+ 	NF_SYSCTL_CT_PROTO_TIMEOUT_GRE,
+ 	NF_SYSCTL_CT_PROTO_TIMEOUT_GRE_STREAM,
+ #endif
+-#ifdef CONFIG_LWTUNNEL
+-	NF_SYSCTL_CT_LWTUNNEL,
+-#endif
  
- 	return input_action_end_dx4_finish(dev_net(skb->dev), NULL, skb);
- drop:
+ 	NF_SYSCTL_CT_LAST_SYSCTL,
+ };
+@@ -946,15 +940,6 @@ static struct ctl_table nf_ct_sysctl_table[] = {
+ 		.proc_handler   = proc_dointvec_jiffies,
+ 	},
+ #endif
+-#ifdef CONFIG_LWTUNNEL
+-	[NF_SYSCTL_CT_LWTUNNEL] = {
+-		.procname	= "nf_hooks_lwtunnel",
+-		.data		= NULL,
+-		.maxlen		= sizeof(int),
+-		.mode		= 0644,
+-		.proc_handler	= nf_hooks_lwtunnel_sysctl_handler,
+-	},
+-#endif
+ };
+ 
+ static struct ctl_table nf_ct_netfilter_table[] = {
+diff --git a/net/netfilter/nf_hooks_lwtunnel.c b/net/netfilter/nf_hooks_lwtunnel.c
+index 00e89ffd78f6..7cdb59bb4459 100644
+--- a/net/netfilter/nf_hooks_lwtunnel.c
++++ b/net/netfilter/nf_hooks_lwtunnel.c
+@@ -3,6 +3,9 @@
+ #include <linux/sysctl.h>
+ #include <net/lwtunnel.h>
+ #include <net/netfilter/nf_hooks_lwtunnel.h>
++#include <linux/netfilter.h>
++
++#include "nf_internals.h"
+ 
+ static inline int nf_hooks_lwtunnel_get(void)
+ {
+@@ -50,4 +53,68 @@ int nf_hooks_lwtunnel_sysctl_handler(struct ctl_table *table, int write,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(nf_hooks_lwtunnel_sysctl_handler);
++
++static struct ctl_table nf_lwtunnel_sysctl_table[] = {
++	{
++		.procname	= "nf_hooks_lwtunnel",
++		.data		= NULL,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= nf_hooks_lwtunnel_sysctl_handler,
++	},
++};
++
++static int __net_init nf_lwtunnel_net_init(struct net *net)
++{
++	struct ctl_table_header *hdr;
++	struct ctl_table *table;
++
++	table = nf_lwtunnel_sysctl_table;
++	if (!net_eq(net, &init_net)) {
++		table = kmemdup(nf_lwtunnel_sysctl_table,
++				sizeof(nf_lwtunnel_sysctl_table),
++				GFP_KERNEL);
++		if (!table)
++			goto err_alloc;
++	}
++
++	hdr = register_net_sysctl_sz(net, "net/netfilter", table,
++				     ARRAY_SIZE(nf_lwtunnel_sysctl_table));
++	if (!hdr)
++		goto err_reg;
++
++	net->nf.nf_lwtnl_dir_header = hdr;
++
++	return 0;
++err_reg:
++	if (!net_eq(net, &init_net))
++		kfree(table);
++err_alloc:
++	return -ENOMEM;
++}
++
++static void __net_exit nf_lwtunnel_net_exit(struct net *net)
++{
++	const struct ctl_table *table;
++
++	table = net->nf.nf_lwtnl_dir_header->ctl_table_arg;
++	unregister_net_sysctl_table(net->nf.nf_lwtnl_dir_header);
++	if (!net_eq(net, &init_net))
++		kfree(table);
++}
++
++static struct pernet_operations nf_lwtunnel_net_ops = {
++	.init = nf_lwtunnel_net_init,
++	.exit = nf_lwtunnel_net_exit,
++};
++
++int __init netfilter_lwtunnel_init(void)
++{
++	return register_pernet_subsys(&nf_lwtunnel_net_ops);
++}
++
++void netfilter_lwtunnel_fini(void)
++{
++	unregister_pernet_subsys(&nf_lwtunnel_net_ops);
++}
+ #endif /* CONFIG_SYSCTL */
+diff --git a/net/netfilter/nf_internals.h b/net/netfilter/nf_internals.h
+index 832ae64179f0..25403023060b 100644
+--- a/net/netfilter/nf_internals.h
++++ b/net/netfilter/nf_internals.h
+@@ -29,6 +29,12 @@ void nf_queue_nf_hook_drop(struct net *net);
+ /* nf_log.c */
+ int __init netfilter_log_init(void);
+ 
++#ifdef CONFIG_LWTUNNEL
++/* nf_hooks_lwtunnel.c */
++int __init netfilter_lwtunnel_init(void);
++void netfilter_lwtunnel_fini(void);
++#endif
++
+ /* core.c */
+ void nf_hook_entries_delete_raw(struct nf_hook_entries __rcu **pp,
+ 				const struct nf_hook_ops *reg);
 -- 
 2.30.2
 
