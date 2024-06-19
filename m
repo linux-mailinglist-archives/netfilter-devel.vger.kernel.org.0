@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2742-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2745-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABBBC90F4B7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 19:06:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C86C90F4BD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 19:06:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537421F2290E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 17:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F2B281C37
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2024 17:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7172D155C8B;
-	Wed, 19 Jun 2024 17:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDA9156C69;
+	Wed, 19 Jun 2024 17:05:54 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D34B20DCB;
-	Wed, 19 Jun 2024 17:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981C8155386;
+	Wed, 19 Jun 2024 17:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718816753; cv=none; b=t9jrJjvTFX7xHyIPLWyeyNPBXX0qVhz1uERf1iCPVeXjvKT1KAS6BRUD2l6U+zFgcAuxUblujPvP9Iu4XgUFDeLI6vKJi3fM4RmfjQWfxGcmCZG/zBzQBzar3nYyAiYMDDxqmC+7x/Kcikgw9okjqfpbX/70n/OQnfRf/xC7ou4=
+	t=1718816754; cv=none; b=M6upv+uP6mBN3z2JIs1AOAfJ8h4Yskl9bDKpuRq3esjgMVwfq57s23rkfVrC7fHUhSLF1bsyMg798sE6wjuB4dB6gaI7ny1DfwZQukvrCxvyoEkRnChBGbhVHd/0FmfGyKfbjgm6ZNsGzBaHn9dojR0898sYj+9lOEifWv5Cvrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718816753; c=relaxed/simple;
-	bh=XhAeErKeKgR5ADcPpPZ7jIw3mLPcRI+5ucAxD/EDFuE=;
+	s=arc-20240116; t=1718816754; c=relaxed/simple;
+	bh=5jL9Ly/pKLGqRlM2BXQaVGsUiVRHyC4DgcHE5FynEh4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i15CmGPr4lYAb9fVzdwm+jQOtI+R3r1j9N7/KdZqkFUg+zUVFFzyIDuAdlOnvEiRQJEYL4gGvznUnsBjmamvEE5gjqFzpus4GWfCFsSGy+FVU89BiJwbD2+EiuMVf4rJ/XcY9cEgZ6vNAxxObfzl1pyY/l1t1RiNfsPI45RZXRM=
+	 MIME-Version; b=HRh0OWuSLlJyFzr9AmYMj569B7uZls7n2jq20ILG77qT9ifLZ9tzU2fDs2Vp2GX/dR+aFAUTWa9J55+ZU+xnZXgi2Dmkge4i5VX4i2hklD7Tcj8966YCvYPfymkIxGhs3GLQArV4+FR8UGprcMrNHdRC/yrcMLBoYV2iGtHQhgY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/5] netfilter: ipset: Fix suspicious rcu_dereference_protected()
-Date: Wed, 19 Jun 2024 19:05:33 +0200
-Message-Id: <20240619170537.2846-2-pablo@netfilter.org>
+Subject: [PATCH net 2/5] seg6: fix parameter passing when calling NF_HOOK() in End.DX4 and End.DX6 behaviors
+Date: Wed, 19 Jun 2024 19:05:34 +0200
+Message-Id: <20240619170537.2846-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240619170537.2846-1-pablo@netfilter.org>
 References: <20240619170537.2846-1-pablo@netfilter.org>
@@ -49,56 +49,92 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
+From: Jianguo Wu <wujianguo@chinatelecom.cn>
 
-When destroying all sets, we are either in pernet exit phase or
-are executing a "destroy all sets command" from userspace. The latter
-was taken into account in ip_set_dereference() (nfnetlink mutex is held),
-but the former was not. The patch adds the required check to
-rcu_dereference_protected() in ip_set_dereference().
+input_action_end_dx4() and input_action_end_dx6() are called NF_HOOK() for
+PREROUTING hook, in PREROUTING hook, we should passing a valid indev,
+and a NULL outdev to NF_HOOK(), otherwise may trigger a NULL pointer
+dereference, as below:
 
-Fixes: 4e7aaa6b82d6 ("netfilter: ipset: Fix race between namespace cleanup and gc in the list:set type")
-Reported-by: syzbot+b62c37cdd58103293a5a@syzkaller.appspotmail.com
-Reported-by: syzbot+cfbe1da5fdfc39efc293@syzkaller.appspotmail.com
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202406141556.e0b6f17e-lkp@intel.com
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+    [74830.647293] BUG: kernel NULL pointer dereference, address: 0000000000000090
+    [74830.655633] #PF: supervisor read access in kernel mode
+    [74830.657888] #PF: error_code(0x0000) - not-present page
+    [74830.659500] PGD 0 P4D 0
+    [74830.660450] Oops: 0000 [#1] PREEMPT SMP PTI
+    ...
+    [74830.664953] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+    [74830.666569] RIP: 0010:rpfilter_mt+0x44/0x15e [ipt_rpfilter]
+    ...
+    [74830.689725] Call Trace:
+    [74830.690402]  <IRQ>
+    [74830.690953]  ? show_trace_log_lvl+0x1c4/0x2df
+    [74830.692020]  ? show_trace_log_lvl+0x1c4/0x2df
+    [74830.693095]  ? ipt_do_table+0x286/0x710 [ip_tables]
+    [74830.694275]  ? __die_body.cold+0x8/0xd
+    [74830.695205]  ? page_fault_oops+0xac/0x140
+    [74830.696244]  ? exc_page_fault+0x62/0x150
+    [74830.697225]  ? asm_exc_page_fault+0x22/0x30
+    [74830.698344]  ? rpfilter_mt+0x44/0x15e [ipt_rpfilter]
+    [74830.699540]  ipt_do_table+0x286/0x710 [ip_tables]
+    [74830.700758]  ? ip6_route_input+0x19d/0x240
+    [74830.701752]  nf_hook_slow+0x3f/0xb0
+    [74830.702678]  input_action_end_dx4+0x19b/0x1e0
+    [74830.703735]  ? input_action_end_t+0xe0/0xe0
+    [74830.704734]  seg6_local_input_core+0x2d/0x60
+    [74830.705782]  lwtunnel_input+0x5b/0xb0
+    [74830.706690]  __netif_receive_skb_one_core+0x63/0xa0
+    [74830.707825]  process_backlog+0x99/0x140
+    [74830.709538]  __napi_poll+0x2c/0x160
+    [74830.710673]  net_rx_action+0x296/0x350
+    [74830.711860]  __do_softirq+0xcb/0x2ac
+    [74830.713049]  do_softirq+0x63/0x90
+
+input_action_end_dx4() passing a NULL indev to NF_HOOK(), and finally
+trigger a NULL dereference in rpfilter_mt()->rpfilter_is_loopback():
+
+    static bool
+    rpfilter_is_loopback(const struct sk_buff *skb,
+          	       const struct net_device *in)
+    {
+            // in is NULL
+            return skb->pkt_type == PACKET_LOOPBACK ||
+          	 in->flags & IFF_LOOPBACK;
+    }
+
+Fixes: 7a3f5b0de364 ("netfilter: add netfilter hooks to SRv6 data plane")
+Signed-off-by: Jianguo Wu <wujianguo@chinatelecom.cn>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/ipset/ip_set_core.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/ipv6/seg6_local.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index c7ae4d9bf3d2..61431690cbd5 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -53,12 +53,13 @@ MODULE_DESCRIPTION("core IP set support");
- MODULE_ALIAS_NFNL_SUBSYS(NFNL_SUBSYS_IPSET);
+diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+index 24e2b4b494cb..c434940131b1 100644
+--- a/net/ipv6/seg6_local.c
++++ b/net/ipv6/seg6_local.c
+@@ -941,8 +941,8 @@ static int input_action_end_dx6(struct sk_buff *skb,
  
- /* When the nfnl mutex or ip_set_ref_lock is held: */
--#define ip_set_dereference(p)		\
--	rcu_dereference_protected(p,	\
-+#define ip_set_dereference(inst)	\
-+	rcu_dereference_protected((inst)->ip_set_list,	\
- 		lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET) || \
--		lockdep_is_held(&ip_set_ref_lock))
-+		lockdep_is_held(&ip_set_ref_lock) || \
-+		(inst)->is_deleted)
- #define ip_set(inst, id)		\
--	ip_set_dereference((inst)->ip_set_list)[id]
-+	ip_set_dereference(inst)[id]
- #define ip_set_ref_netlink(inst,id)	\
- 	rcu_dereference_raw((inst)->ip_set_list)[id]
- #define ip_set_dereference_nfnl(p)	\
-@@ -1133,7 +1134,7 @@ static int ip_set_create(struct sk_buff *skb, const struct nfnl_info *info,
- 		if (!list)
- 			goto cleanup;
- 		/* nfnl mutex is held, both lists are valid */
--		tmp = ip_set_dereference(inst->ip_set_list);
-+		tmp = ip_set_dereference(inst);
- 		memcpy(list, tmp, sizeof(struct ip_set *) * inst->ip_set_max);
- 		rcu_assign_pointer(inst->ip_set_list, list);
- 		/* Make sure all current packets have passed through */
+ 	if (static_branch_unlikely(&nf_hooks_lwtunnel_enabled))
+ 		return NF_HOOK(NFPROTO_IPV6, NF_INET_PRE_ROUTING,
+-			       dev_net(skb->dev), NULL, skb, NULL,
+-			       skb_dst(skb)->dev, input_action_end_dx6_finish);
++			       dev_net(skb->dev), NULL, skb, skb->dev,
++			       NULL, input_action_end_dx6_finish);
+ 
+ 	return input_action_end_dx6_finish(dev_net(skb->dev), NULL, skb);
+ drop:
+@@ -991,8 +991,8 @@ static int input_action_end_dx4(struct sk_buff *skb,
+ 
+ 	if (static_branch_unlikely(&nf_hooks_lwtunnel_enabled))
+ 		return NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING,
+-			       dev_net(skb->dev), NULL, skb, NULL,
+-			       skb_dst(skb)->dev, input_action_end_dx4_finish);
++			       dev_net(skb->dev), NULL, skb, skb->dev,
++			       NULL, input_action_end_dx4_finish);
+ 
+ 	return input_action_end_dx4_finish(dev_net(skb->dev), NULL, skb);
+ drop:
 -- 
 2.30.2
 
