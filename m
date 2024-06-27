@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-2818-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2820-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3FC91A526
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 13:28:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F328F91A52A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 13:28:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35736281EB3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 11:28:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D6751F24511
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 11:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD8315351A;
-	Thu, 27 Jun 2024 11:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B39E154C0A;
+	Thu, 27 Jun 2024 11:27:28 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80ED15278F;
-	Thu, 27 Jun 2024 11:27:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD321152E15;
+	Thu, 27 Jun 2024 11:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719487647; cv=none; b=AQGqYShsWZLhb+Wt2dKtCO2jqf5M8eGL5nz3jQhUJiGM9n1rl5zBoJljgxPH82SZXlA5w7F61u85TBoxizrE9zQQFtppBeBXQOyNaBgvWx400koyK2LKWin2NWrGTt7C1ImFU7V2qeK9ROA9eTyJvXa1BGHN8NUz6gYzNRhrY5Q=
+	t=1719487648; cv=none; b=gbLbv6Hpa2HhRDXi9k39NlVizu/Nhs3V3rfFKLUd9lez1qkX25eEfXvW7hxgYUc23IdjPXCCGoAsu2oshLxJ30kNyObaZUsMiu3COaBk3+5VgGn08bIVva1vAZc21k2ItIohbvOk7SIRQn11Iaog1WobgyT9B4LmAbQQPlt/tQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719487647; c=relaxed/simple;
-	bh=lGwXFw/B2hR89OEZNlvMv1NP5BCmRMIKCv05ABL2zTM=;
+	s=arc-20240116; t=1719487648; c=relaxed/simple;
+	bh=+9h5KlLqjJd5g6ibxCp7ZnxzSn1h/vDAGYUDfd3wOGo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VgyRgitLT/Zy1ZNZHNsUbZ+UIVN0MZM6alUu+1gc7NkTD8u5q/SOVq1E4XQceUt80ea5RClbD7WhNY7VA5RFlJZiQdFrGU47cQI+4mHg7Ob+uFg3NXVh5dnzMXgjE4TgIyjRDFlaGVEp+YcyxcyN7pnFkta0oyvRi+jlLP9m4iM=
+	 MIME-Version; b=NKjFqrgPIf3Sje8AYwN0MRh+tFkh4pWNeuJztnKC0mGP8UbCtAJuW3ELc77TBroNQ2smuz/yZkAdUaUJDALstZLMg89LDdNmvWL/p0sZbN7wnM20hM7elVnU2cksmb5eAb2qYMbydefPuadO3iUkAsJOEuG9NQJ9snmLPQ/nLdY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH nf-next 09/19] netfilter: nf_tables: reduce trans->ctx.chain references
-Date: Thu, 27 Jun 2024 13:27:03 +0200
-Message-Id: <20240627112713.4846-10-pablo@netfilter.org>
+Subject: [PATCH nf-next 10/19] netfilter: nf_tables: pass nft_table to destroy function
+Date: Thu, 27 Jun 2024 13:27:04 +0200
+Message-Id: <20240627112713.4846-11-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240627112713.4846-1-pablo@netfilter.org>
 References: <20240627112713.4846-1-pablo@netfilter.org>
@@ -51,66 +51,67 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-These objects are the trans_chain subtype, so use the helper instead
-of referencing trans->ctx, which will be removed soon.
+No functional change intended.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ net/netfilter/nf_tables_api.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 3e5980f0bf71..bd311b37fc61 100644
+index bd311b37fc61..6958f922f95a 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -1262,7 +1262,7 @@ static bool nft_table_pending_update(const struct nft_ctx *ctx)
- 		    ((trans->msg_type == NFT_MSG_NEWCHAIN &&
- 		      nft_trans_chain_update(trans)) ||
- 		     (trans->msg_type == NFT_MSG_DELCHAIN &&
--		      nft_is_base_chain(trans->ctx.chain))))
-+		      nft_is_base_chain(nft_trans_chain(trans)))))
- 			return true;
- 	}
- 
-@@ -2815,13 +2815,11 @@ static struct nft_chain *nft_chain_lookup_byid(const struct net *net,
- 	struct nft_trans *trans;
- 
- 	list_for_each_entry(trans, &nft_net->commit_list, list) {
--		struct nft_chain *chain = trans->ctx.chain;
--
- 		if (trans->msg_type == NFT_MSG_NEWCHAIN &&
--		    chain->table == table &&
-+		    nft_trans_chain(trans)->table == table &&
- 		    id == nft_trans_chain_id(trans) &&
--		    nft_active_genmask(chain, genmask))
--			return chain;
-+		    nft_active_genmask(nft_trans_chain(trans), genmask))
-+			return nft_trans_chain(trans);
- 	}
- 	return ERR_PTR(-ENOENT);
+@@ -1656,15 +1656,15 @@ static int nf_tables_deltable(struct sk_buff *skb, const struct nfnl_info *info,
+ 	return nft_flush_table(&ctx);
  }
-@@ -10625,9 +10623,9 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- 					break;
- 				}
- 				nft_use_dec_restore(&table->use);
--				nft_chain_del(trans->ctx.chain);
-+				nft_chain_del(nft_trans_chain(trans));
- 				nf_tables_unregister_hook(trans->ctx.net, table,
--							  trans->ctx.chain);
-+							  nft_trans_chain(trans));
- 			}
- 			break;
- 		case NFT_MSG_DELCHAIN:
-@@ -10637,7 +10635,7 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- 					    &nft_trans_basechain(trans)->hook_list);
- 			} else {
- 				nft_use_inc_restore(&table->use);
--				nft_clear(trans->ctx.net, trans->ctx.chain);
-+				nft_clear(trans->ctx.net, nft_trans_chain(trans));
- 			}
- 			nft_trans_destroy(trans);
- 			break;
+ 
+-static void nf_tables_table_destroy(struct nft_ctx *ctx)
++static void nf_tables_table_destroy(struct nft_table *table)
+ {
+-	if (WARN_ON(ctx->table->use > 0))
++	if (WARN_ON(table->use > 0))
+ 		return;
+ 
+-	rhltable_destroy(&ctx->table->chains_ht);
+-	kfree(ctx->table->name);
+-	kfree(ctx->table->udata);
+-	kfree(ctx->table);
++	rhltable_destroy(&table->chains_ht);
++	kfree(table->name);
++	kfree(table->udata);
++	kfree(table);
+ }
+ 
+ void nft_register_chain_type(const struct nft_chain_type *ctype)
+@@ -9521,7 +9521,7 @@ static void nft_commit_release(struct nft_trans *trans)
+ 	switch (trans->msg_type) {
+ 	case NFT_MSG_DELTABLE:
+ 	case NFT_MSG_DESTROYTABLE:
+-		nf_tables_table_destroy(&trans->ctx);
++		nf_tables_table_destroy(trans->ctx.table);
+ 		break;
+ 	case NFT_MSG_NEWCHAIN:
+ 		free_percpu(nft_trans_chain_stats(trans));
+@@ -10518,7 +10518,7 @@ static void nf_tables_abort_release(struct nft_trans *trans)
+ {
+ 	switch (trans->msg_type) {
+ 	case NFT_MSG_NEWTABLE:
+-		nf_tables_table_destroy(&trans->ctx);
++		nf_tables_table_destroy(trans->ctx.table);
+ 		break;
+ 	case NFT_MSG_NEWCHAIN:
+ 		if (nft_trans_chain_update(trans))
+@@ -11490,7 +11490,7 @@ static void __nft_release_table(struct net *net, struct nft_table *table)
+ 		nft_use_dec(&table->use);
+ 		nf_tables_chain_destroy(chain);
+ 	}
+-	nf_tables_table_destroy(&ctx);
++	nf_tables_table_destroy(table);
+ }
+ 
+ static void __nft_release_tables(struct net *net)
 -- 
 2.30.2
 
