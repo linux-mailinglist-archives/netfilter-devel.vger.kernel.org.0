@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-2800-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2802-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E658891A142
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 10:18:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D95FD91A144
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 10:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20EAB1C2196A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 08:18:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ED35283422
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 08:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C80763E7;
-	Thu, 27 Jun 2024 08:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EFAA7764E;
+	Thu, 27 Jun 2024 08:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="DKN1xNKJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="YblLndjK"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B661CAB3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B9E31758
 	for <netfilter-devel@vger.kernel.org>; Thu, 27 Jun 2024 08:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719476309; cv=none; b=X0EuaeJw2zwHu65kNzfJClGLjucGQIeiIJ15QtxzGz48+0GlRCULj7VnB23bctrImszM7fN7Wanoq6NsPxXxmJUUKObEZrBNhTKu/DBWDivpk2iUfN279swcHmY5yn/xxfRh9n1KpMLcGVVoa50idveoeKTuEDdIOmlmGdnGCOY=
+	t=1719476310; cv=none; b=RgnVruTaMco9icl1doXMRK8iBy4eqo46T0RD2pzN2eiYmxayiPvLa1Hw6i9johGIlxd2ijqiiOzlCae/L9ssILrC/dkoHKCpK006JVzsL7V5q+i5wOCplUZ+mbnLv19qjUGihtxJAg5fH6UWNivql/LMwGdsX4qWRIAFKAxoii4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719476309; c=relaxed/simple;
-	bh=xPKrTHUUB7BU7lc/BPWQzDDSXJNs7pkuWzpf7jbx5o4=;
+	s=arc-20240116; t=1719476310; c=relaxed/simple;
+	bh=6jLUrQaZ8HqS9zA+3gxTmLB9H/qCaGHum1tSj6k5uXs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IPLdvgB806ziJ2OA90jCk7GQ5wWkmdZUrBWELM8tv0YO6/qPgG3q1tWUCuWhrtv1zoeU6TyAS9ugj/+O1keGsVyJYXPT/n+dUFMkXlOodsbUiLDIZN5xfIKnO3cnp+hfFLAXtZi57MKc9a3Dx0CpBU2TN4cdg/qFNvH8wsVTpv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=DKN1xNKJ; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=TdSLVobkrKNiTSageW9rXg0YQrO8LWD5eY6H4Lfvb9iskuy00HWV74MacGciGQG2gMH0rP9yliDrbTeH+Ez5iGpy26Vydkdb5PF0ZYb5utiighfimCqY8V+WFv5MY0605YFHer9yYBnxEaKDAZtMWZBgk3RI5sJFfTcS/fXrMVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=YblLndjK; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=4SjhqU+1FpD7ybuaY5H8TvaravuYljGmjePsZSNZVRg=; b=DKN1xNKJV11DcEDyPE47qGZuUA
-	BfYD7JLk3fanoZO/NVzBeq36OfsS8M918bu2GAx2RfWS22nK4zHO8Xf/RNNiD8pTL/QI/pzwxPDrR
-	a30JTR3v1N6fJ1OWjRyUEt3SFBOZSWmCGAu+VZ0BzeA1GssNmrxWyyyL7Wd+AouYa0xAujgXkpOaP
-	t8kvHqPZImsBkgOCoM7U5AUYEfPiFbwM8GjrOJNJ8sUt6X/DR6TWRJqveZZO2HH5pv9N1YQEQl3Sp
-	78dEv8Yk53/JLvp6RC6EbgMLkRKH/nB5kS/E4ZHxSO7RWemmVGlgUEQa/BYj1j+6nrKhln/NaqKsr
-	YvOb3qNg==;
+	bh=ydV65UObshyn7E6cwKnhtWIKtpCVrbP5D56MS/oODnc=; b=YblLndjKOT7iLvvepAn6bAb1qO
+	cxgor2QHThzTy+dCL5TTPYtujTgcEwRFo+9bd5JSeV2F9WQy1xI7juQFTghuBWULZ4+c3XlIS/kkI
+	zjP8G4Msz3khrivx05q1FN03FpOHbXBDc8nR6FPceCn+9itmkY1lptLFDkCCtIfghysgK3DKbWfAT
+	UmIWx8ERgBSgf5SQziVjplCdlsxpgTss6UedctepdqLPejP3jKIA6AeaG4xaQYrU9MZPr5koGAfTn
+	lPcTzb4gKIebfCeMWtSalHoxP2cCzsUyW5mpNJec9Qj3OLlgVspOmXAfQJrVYNEO+DJZxTELglABI
+	UnTPdgDQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sMkKl-0000000080G-0Z55;
-	Thu, 27 Jun 2024 10:18:23 +0200
+	id 1sMkKk-0000000080D-2AVd;
+	Thu, 27 Jun 2024 10:18:22 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [ipset PATCH 2/3] lib: ipset: Avoid 'argv' array overstepping
-Date: Thu, 27 Jun 2024 10:18:17 +0200
-Message-ID: <20240627081818.16544-3-phil@nwl.cc>
+Subject: [ipset PATCH 3/3] tests: Reduce testsuite run-time
+Date: Thu, 27 Jun 2024 10:18:18 +0200
+Message-ID: <20240627081818.16544-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240627081818.16544-1-phil@nwl.cc>
 References: <20240627081818.16544-1-phil@nwl.cc>
@@ -65,38 +65,354 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The maximum accepted value for 'argc' is MAX_ARGS which matches 'argv'
-array size. The maximum allowed array index is therefore argc-1.
+Where acceptable, batch add set element calls to avoid overhead of
+excessive 'ipset' program spawns. On my (slow) testing VM, this patch
+reduces a full run of tests/runtest.sh from ~70min down to ~11min.
 
-This fix will leave items in argv non-NULL-terminated, so explicitly
-NULL the formerly last entry after shifting.
+This might eliminate the situation being tested: resize.sh might be such
+a case so batch only 255 'ipset add' calls and continue to repeat these
+batched calls 32 times in hopes that it still qualifies as the resizing
+stress test tests/hash:ip.t calls it.
 
-Looks like a day-1 bug. Interestingly, this neither triggered ASAN nor
-valgrind. Yet adding debug output printing argv entries being copied
-did.
-
-Fixes: 1e6e8bd9a62aa ("Third stage to ipset-5")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- lib/ipset.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tests/resize.sh         |  4 ++--
+ tests/resizec.sh        | 32 +++++++++++++--------------
+ tests/resizen.sh        | 49 ++++++++++++++++++++---------------------
+ tests/resizet.sh        | 40 ++++++++++++++++-----------------
+ tests/setlist_resize.sh |  4 ++--
+ 5 files changed, 64 insertions(+), 65 deletions(-)
 
-diff --git a/lib/ipset.c b/lib/ipset.c
-index c910d88805c28..3bf1c5fcdbc59 100644
---- a/lib/ipset.c
-+++ b/lib/ipset.c
-@@ -343,9 +343,9 @@ ipset_shift_argv(int *argc, char *argv[], int from)
- 
- 	assert(*argc >= from + 1);
- 
--	for (i = from + 1; i <= *argc; i++)
-+	for (i = from + 1; i < *argc; i++)
- 		argv[i-1] = argv[i];
--	(*argc)--;
-+	argv[--(*argc)] = NULL;
- 	return;
+diff --git a/tests/resize.sh b/tests/resize.sh
+index 19b93fb01876c..9069b4970e92d 100755
+--- a/tests/resize.sh
++++ b/tests/resize.sh
+@@ -9,6 +9,6 @@ set -e
+ $ipset n resize-test hash:ip hashsize 64
+ for x in `seq 1 32`; do
+    for y in `seq 1 255`; do
+-      $ipset a resize-test 192.168.$x.$y
+-   done
++      echo "a resize-test 192.168.$x.$y"
++   done | $ipset restore
+ done
+diff --git a/tests/resizec.sh b/tests/resizec.sh
+index 28d674769f76f..781acf74c38dd 100755
+--- a/tests/resizec.sh
++++ b/tests/resizec.sh
+@@ -25,65 +25,65 @@ case "$2" in
+     	$ipset n test hash:ip $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y comment "text $ip$x$sep$y"
++    	    	echo "a test $ip$x$sep$y comment \"text $ip$x$sep$y\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipport)
+     	$ipset n test hash:ip,port $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023 "text $ip$x$sep$y,1023"
++    	    	echo "a test $ip$x$sep$y,1023 \"text $ip$x$sep$y,1023\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipportip)
+     	$ipset n test hash:ip,port,ip $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023,$ip2 comment "text $ip$x$sep$y,1023,$ip2"
++    	    	echo "a test $ip$x$sep$y,1023,$ip2 comment \"text $ip$x$sep$y,1023,$ip2\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipportnet)
+     	$ipset n test hash:ip,port,net $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023,$ip2/$net comment "text $ip$x$sep$y,1023,$ip2/$net"
++    	    	echo "a test $ip$x$sep$y,1023,$ip2/$net comment \"text $ip$x$sep$y,1023,$ip2/$net\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     net)
+     	$ipset n test hash:net $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net comment "text $ip$x$sep$y/$net"
++    	    	echo "a test $ip$x$sep$y/$net comment \"text $ip$x$sep$y/$net\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     netnet)
+ 	$ipset n test hash:net,net $1 hashsize 64 comment
+ 	for x in `seq 0 16`; do
+ 	    for y in `seq 0 255`; do
+-		$ipset a test $ip$x$sep$y/$net,$ip$y$sep$x/$net comment "text $ip$x$sep$y/$net,$ip$y$sep$x/$net"
++		echo "a test $ip$x$sep$y/$net,$ip$y$sep$x/$net comment \"text $ip$x$sep$y/$net,$ip$y$sep$x/$net\""
+ 	    done
+-	done
++    	done | $ipset restore
+ 	;;
+     netport)
+     	$ipset n test hash:net,port $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,1023 comment "text $ip$x$sep$y/$net,1023"
++    	    	echo "a test $ip$x$sep$y/$net,1023 comment \"text $ip$x$sep$y/$net,1023\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     netiface)
+     	$ipset n test hash:net,iface $1 hashsize 64 comment
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,eth0 comment "text $ip$x$sep$y/$net,eth0"
++    	    	echo "$ipset a test $ip$x$sep$y/$net,eth0 comment \"text $ip$x$sep$y/$net,eth0\""
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+ esac
+ $ipset l test | grep ^$ip | while read x y z; do
+diff --git a/tests/resizen.sh b/tests/resizen.sh
+index 9322bd2a2cfce..13221f7b0894a 100755
+--- a/tests/resizen.sh
++++ b/tests/resizen.sh
+@@ -25,80 +25,79 @@ case "$2" in
+     	$ipset n test hash:ip,port,net $1 hashsize 64
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023,$ip2/$net nomatch
++    	    	echo "a test $ip$x$sep$y,1023,$ip2/$net nomatch"
+     	    done
+-    	done
++    	done | $ipset restore
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset t test $ip$x$sep$y,1023,$ip2/$net nomatch 2>/dev/null
++    	    	echo "t test $ip$x$sep$y,1023,$ip2/$net nomatch"
+     	    done
+-    	done
++    	done | $ipset restore 2>/dev/null
+     	;;
+     netportnet)
+     	$ipset n test hash:net,port,net $1 hashsize 64
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023,$ip2/$net nomatch
++    	    	echo "a test $ip$x$sep$y,1023,$ip2/$net nomatch"
+     	    done
+-    	done
++    	done | $ipset restore
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset t test $ip$x$sep$y,1023,$ip2/$net nomatch 2>/dev/null
++    	    	echo "t test $ip$x$sep$y,1023,$ip2/$net nomatch"
+     	    done
+-    	done
++    	done | $ipset restore 2>/dev/null
+     	;;
+     net)
+     	$ipset n test hash:net $1 hashsize 64
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net nomatch
++    	    	echo "a test $ip$x$sep$y/$net nomatch"
+     	    done
+-    	done
++    	done | $ipset restore
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset t test $ip$x$sep$y/$net nomatch 2>/dev/null
++    	    	echo "t test $ip$x$sep$y/$net nomatch"
+     	    done
+-    	done
++    	done | $ipset restore 2>/dev/null
+     	;;
+     netnet)
+ 	$ipset n test hash:net,net $1 hashsize 64
+ 	for x in `seq 0 16`; do
+ 	    for y in `seq 0 255`; do
+-		$ipset a test $ip$x$sep$y/$net,$ip$y$sep$x/$net nomatch
++		echo "a test $ip$x$sep$y/$net,$ip$y$sep$x/$net nomatch"
+ 	    done
+-	done
++	done | $ipset restore
+ 	for x in `seq 0 16`; do
+ 	    for y in `seq 0 255`; do
+-		$ipset t test $ip$x$sep$y/$net,$ip$y$sep$x/$net nomatch \
+-		2>/dev/null
++		echo "t test $ip$x$sep$y/$net,$ip$y$sep$x/$net nomatch"
+ 	    done
+-	done
++	done | $ipset restore 2>/dev/null
+ 	;;
+     netport)
+     	$ipset n test hash:net,port $1 hashsize 64
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,1023 nomatch
++    	    	echo "a test $ip$x$sep$y/$net,1023 nomatch"
+     	    done
+-    	done
++    	done | $ipset restore
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset t test $ip$x$sep$y/$net,1023 nomatch 2>/dev/null
++    	    	echo "t test $ip$x$sep$y/$net,1023 nomatch"
+     	    done
+-    	done
++    	done | $ipset restore 2>/dev/null
+     	;;
+     netiface)
+     	$ipset n test hash:net,iface $1 hashsize 64
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,eth0 nomatch
++    	    	echo "a test $ip$x$sep$y/$net,eth0 nomatch"
+     	    done
+-    	done
++    	done | $ipset restore
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset t test $ip$x$sep$y/$net,eth0 nomatch 2>/dev/null
++    	    	echo "t test $ip$x$sep$y/$net,eth0 nomatch"
+     	    done
+-    	done
++    	done | $ipset restore 2>/dev/null
+     	;;
+ esac
+ $ipset x
+diff --git a/tests/resizet.sh b/tests/resizet.sh
+index eed4abf2bd86e..e8fdd732435ab 100755
+--- a/tests/resizet.sh
++++ b/tests/resizet.sh
+@@ -25,81 +25,81 @@ case "$2" in
+     	$ipset n test hash:ip $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y
++    	    	echo "a test $ip$x$sep$y"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipmark)
+     	$ipset n test hash:ip,mark $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023
++    	    	echo "a test $ip$x$sep$y,1023"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipport)
+     	$ipset n test hash:ip,port $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023
++    	    	echo "a test $ip$x$sep$y,1023"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipportip)
+     	$ipset n test hash:ip,port,ip $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023,$ip2
++    	    	echo "a test $ip$x$sep$y,1023,$ip2"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     ipportnet)
+     	$ipset n test hash:ip,port,net $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y,1023,$ip2/$net
++    	    	echo "a test $ip$x$sep$y,1023,$ip2/$net"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     netportnet)
+     	$ipset n test hash:net,port,net $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 128`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,1023,$ip$y$sep$x/$net
++    	    	echo "a test $ip$x$sep$y/$net,1023,$ip$y$sep$x/$net"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     net)
+     	$ipset n test hash:net $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net
++    	    	echo "a test $ip$x$sep$y/$net"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     netnet)
+ 	$ipset n test hash:net,net $1 hashsize 64 timeout 100
+ 	for x in `seq 0 16`; do
+ 	    for y in `seq 0 255`; do
+-		$ipset a test $ip$x$sep$y/$net,$ip$y$sep$x/$net
++		echo "a test $ip$x$sep$y/$net,$ip$y$sep$x/$net"
+ 	    done
+-	done
++	done | $ipset restore
+ 	;;
+     netport)
+     	$ipset n test hash:net,port $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,1023
++    	    	echo "a test $ip$x$sep$y/$net,1023"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+     netiface)
+     	$ipset n test hash:net,iface $1 hashsize 64 timeout 100
+     	for x in `seq 0 16`; do
+     	    for y in `seq 0 255`; do
+-    	    	$ipset a test $ip$x$sep$y/$net,eth0
++    	    	echo "a test $ip$x$sep$y/$net,eth0"
+     	    done
+-    	done
++    	done | $ipset restore
+     	;;
+ esac
+ $ipset l test | grep ^$ip | while read x y z; do
+diff --git a/tests/setlist_resize.sh b/tests/setlist_resize.sh
+index 848f1d123b2a0..e0179d0f42788 100755
+--- a/tests/setlist_resize.sh
++++ b/tests/setlist_resize.sh
+@@ -18,9 +18,9 @@ done
+ create() {
+     n=$1
+     while [ $n -le 1024 ]; do
+-      $ipset c test$n hash:ip
++      echo "c test$n hash:ip"
+     	n=$((n+2))
+-    done
++    done | $ipset restore
  }
  
+ for x in `seq 1 $loop`; do
 -- 
 2.43.0
 
