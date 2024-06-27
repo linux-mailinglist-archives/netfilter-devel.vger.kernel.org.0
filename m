@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-2803-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2800-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88BA91A145
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 10:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E658891A142
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 10:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D96421C2198E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 08:18:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20EAB1C2196A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2024 08:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951527602D;
-	Thu, 27 Jun 2024 08:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C80763E7;
+	Thu, 27 Jun 2024 08:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Gc5oCQw9"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="DKN1xNKJ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B2B17F3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B661CAB3
 	for <netfilter-devel@vger.kernel.org>; Thu, 27 Jun 2024 08:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719476310; cv=none; b=R4HJtbkepvF9bQfU04inQzpwhqkipSSHFO+ET4DUyXbpaqa8fy1JnVl7+PnJIf+JjE6g4ciDcCe1cv+v7rCc/ep9FN1+Z+8eUqIDLTJM4I9tPgGNM4P6E/u/T7Qu27Zabqd+1kXj/WfAG2Klw9Y6Ai3fGudHVK0kA0RqyuIBDbc=
+	t=1719476309; cv=none; b=X0EuaeJw2zwHu65kNzfJClGLjucGQIeiIJ15QtxzGz48+0GlRCULj7VnB23bctrImszM7fN7Wanoq6NsPxXxmJUUKObEZrBNhTKu/DBWDivpk2iUfN279swcHmY5yn/xxfRh9n1KpMLcGVVoa50idveoeKTuEDdIOmlmGdnGCOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719476310; c=relaxed/simple;
-	bh=PeMpEDqAEjDWpq3T+Dtg30CvP6vbcFRIPSYDCbSkK6Q=;
+	s=arc-20240116; t=1719476309; c=relaxed/simple;
+	bh=xPKrTHUUB7BU7lc/BPWQzDDSXJNs7pkuWzpf7jbx5o4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zcx/foX3g0Q+YM5bJt+ND+PnSEOL6bMwesEt01edzNC4KoLc1ZRRUNgoQYkKRX4p+4z7y0umUoTLML0oi/prAuz0LczX8gOeK5STU4mbrwMvI5Ab9zuhtH0cZH1wydA4r6qWiQUBfD5RHHlUCp1YaTLWKsEQXZO9AyGFlNzfBkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Gc5oCQw9; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=IPLdvgB806ziJ2OA90jCk7GQ5wWkmdZUrBWELM8tv0YO6/qPgG3q1tWUCuWhrtv1zoeU6TyAS9ugj/+O1keGsVyJYXPT/n+dUFMkXlOodsbUiLDIZN5xfIKnO3cnp+hfFLAXtZi57MKc9a3Dx0CpBU2TN4cdg/qFNvH8wsVTpv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=DKN1xNKJ; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=zK/Z1lXyhOwluEl4uZQxPDbz3OnTJSzY7vTQL1nApmA=; b=Gc5oCQw92iN65a1flcveRCX/yN
-	71VG73RfJHLBI9C3t7ArKVjjKoL79VKhoOO2jtKpeJtr/trDwe4S5fpnaAm7EFgzPWQuI6sWTdvR4
-	A2/qDIKznHhEDEpdpoD4zHqhNntr5+abMMA2WQZpPmsPcS2utNrICNoODdA0DTy/IiqBGanBVuczN
-	+mXEB+JyYZ+md5H945iN9Lbckd8eYVmLoW4TcDjI+pQtZD2+wZJ+Hodo5yxrTAINKmGiBmwly3A5l
-	SdQRBpf/5b4hCaiJeKJpM6hwExocvaXx1dU8A5cysng2Zy7syej/n8JOujK99F7oQH8Ppj7AKimjO
-	E8i1TxnQ==;
+	bh=4SjhqU+1FpD7ybuaY5H8TvaravuYljGmjePsZSNZVRg=; b=DKN1xNKJV11DcEDyPE47qGZuUA
+	BfYD7JLk3fanoZO/NVzBeq36OfsS8M918bu2GAx2RfWS22nK4zHO8Xf/RNNiD8pTL/QI/pzwxPDrR
+	a30JTR3v1N6fJ1OWjRyUEt3SFBOZSWmCGAu+VZ0BzeA1GssNmrxWyyyL7Wd+AouYa0xAujgXkpOaP
+	t8kvHqPZImsBkgOCoM7U5AUYEfPiFbwM8GjrOJNJ8sUt6X/DR6TWRJqveZZO2HH5pv9N1YQEQl3Sp
+	78dEv8Yk53/JLvp6RC6EbgMLkRKH/nB5kS/E4ZHxSO7RWemmVGlgUEQa/BYj1j+6nrKhln/NaqKsr
+	YvOb3qNg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sMkKj-00000000809-431f;
-	Thu, 27 Jun 2024 10:18:21 +0200
+	id 1sMkKl-0000000080G-0Z55;
+	Thu, 27 Jun 2024 10:18:23 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [ipset PATCH 1/3] lib: data: Fix for global-buffer-overflow warning by ASAN
-Date: Thu, 27 Jun 2024 10:18:16 +0200
-Message-ID: <20240627081818.16544-2-phil@nwl.cc>
+Subject: [ipset PATCH 2/3] lib: ipset: Avoid 'argv' array overstepping
+Date: Thu, 27 Jun 2024 10:18:17 +0200
+Message-ID: <20240627081818.16544-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240627081818.16544-1-phil@nwl.cc>
 References: <20240627081818.16544-1-phil@nwl.cc>
@@ -65,54 +65,38 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-After compiling with CFLAGS="-fsanitize=address -g", running the
-testsuite triggers the following warning:
+The maximum accepted value for 'argc' is MAX_ARGS which matches 'argv'
+array size. The maximum allowed array index is therefore argc-1.
 
-| ipmap: Range: Check syntax error: missing range/from-to: FAILED
-| Failed test: ../src/ipset 2>.foo.err -N test ipmap
-| =================================================================
-| ==4204==ERROR: AddressSanitizer: global-buffer-overflow on address 0x55a21e77172a at pc 0x7f1ef246f2a6 bp 0x7fffed8f4f40 sp 0x7fffed8f46e8
-| READ of size 32 at 0x55a21e77172a thread T0
-|     #0 0x7f1ef246f2a5 in __interceptor_memcpy /var/tmp/portage/sys-devel/gcc-13.2.1_p20231014/work/gcc-13-20231014/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:899
-|     #1 0x55a21e758bf6 in ipset_strlcpy /home/n0-1/git/ipset/lib/data.c:119
-|     #2 0x55a21e758bf6 in ipset_data_set /home/n0-1/git/ipset/lib/data.c:349
-|     #3 0x55a21e75ee2f in ipset_parse_typename /home/n0-1/git/ipset/lib/parse.c:1819
-|     #4 0x55a21e754119 in ipset_parser /home/n0-1/git/ipset/lib/ipset.c:1205
-|     #5 0x55a21e752cef in ipset_parse_argv /home/n0-1/git/ipset/lib/ipset.c:1344
-|     #6 0x55a21e74ea45 in main /home/n0-1/git/ipset/src/ipset.c:38
-|     #7 0x7f1ef224cf09  (/lib64/libc.so.6+0x23f09)
-|     #8 0x7f1ef224cfc4 in __libc_start_main (/lib64/libc.so.6+0x23fc4)
-|     #9 0x55a21e74f040 in _start (/home/n0-1/git/ipset/src/ipset+0x1d040)
-|
-| 0x55a21e77172a is located 54 bytes before global variable '*.LC1' defined in 'ipset_bitmap_ip.c' (0x55a21e771760) of size 19
-|   '*.LC1' is ascii string 'IP|IP/CIDR|FROM-TO'
-| 0x55a21e77172a is located 0 bytes after global variable '*.LC0' defined in 'ipset_bitmap_ip.c' (0x55a21e771720) of size 10
-|   '*.LC0' is ascii string 'bitmap:ip'
+This fix will leave items in argv non-NULL-terminated, so explicitly
+NULL the formerly last entry after shifting.
 
-Fix this by avoiding 'src' array overstep in ipset_strlcpy(): In
-contrast to strncpy(), memcpy() does not respect NUL-chars in input but
-stubbornly reads as many bytes as specified.
+Looks like a day-1 bug. Interestingly, this neither triggered ASAN nor
+valgrind. Yet adding debug output printing argv entries being copied
+did.
 
-Fixes: a7432ba786ca4 ("Workaround misleading -Wstringop-truncation warning")
+Fixes: 1e6e8bd9a62aa ("Third stage to ipset-5")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- lib/data.c | 3 +++
- 1 file changed, 3 insertions(+)
+ lib/ipset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/data.c b/lib/data.c
-index c05b20144cdad..64cad7a377302 100644
---- a/lib/data.c
-+++ b/lib/data.c
-@@ -111,6 +111,9 @@ ipset_strlcpy(char *dst, const char *src, size_t len)
- 	assert(dst);
- 	assert(src);
+diff --git a/lib/ipset.c b/lib/ipset.c
+index c910d88805c28..3bf1c5fcdbc59 100644
+--- a/lib/ipset.c
++++ b/lib/ipset.c
+@@ -343,9 +343,9 @@ ipset_shift_argv(int *argc, char *argv[], int from)
  
-+	if (strlen(src) < len)
-+		len = strlen(src) + 1;
-+
- 	memcpy(dst, src, len);
- 	dst[len - 1] = '\0';
+ 	assert(*argc >= from + 1);
+ 
+-	for (i = from + 1; i <= *argc; i++)
++	for (i = from + 1; i < *argc; i++)
+ 		argv[i-1] = argv[i];
+-	(*argc)--;
++	argv[--(*argc)] = NULL;
+ 	return;
  }
+ 
 -- 
 2.43.0
 
