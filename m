@@ -1,155 +1,186 @@
-Return-Path: <netfilter-devel+bounces-2870-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2872-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DE7391C891
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jun 2024 23:51:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F67491CEEA
+	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Jun 2024 21:58:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AA851C2284D
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jun 2024 21:51:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 885751C20C03
+	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Jun 2024 19:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB607FBC8;
-	Fri, 28 Jun 2024 21:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909F513AA35;
+	Sat, 29 Jun 2024 19:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CZYcD9np"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYoekVsf"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF04F7FBC1;
-	Fri, 28 Jun 2024 21:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554EE80046;
+	Sat, 29 Jun 2024 19:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719611477; cv=none; b=LMRvEMZbwJXqv82gGWeD1JnfydFf526FxR+Q0Aj8GRAJkkONhqJqMu6UaSxPSWUrAUEd3O6I233aiGxDDTAEXvOZhM92wJTWKMnx/n4/wUDOjdUvp5B7r9owUyvXqmq9Gfwjr9OZ49Asi6pqwxXaIb8drNaZKtD9HeIwHDz1p+k=
+	t=1719691077; cv=none; b=fE1WoRhLfkBewxZ2V7z8yjTtchpDFjr0CkaseGd6XrgOJTgljYLIGQ4s6GIyi10/3wCwqonGyztWqeLK6ychtcA/JR8oqSIyfhTgYs3Fy+TNYVxniGpgyNv+xHtmFwE3kNTB/xvpGFxU7BHPTFBeEWjknNgfby6G79JTbWbPdLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719611477; c=relaxed/simple;
-	bh=2rjEDgKi7xQFtf4FbbysIWcRSYbDXu+SjlOYC23cArI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qIpNWXyLA0jSoE5cjg130Xs8MAUAXwMjLBsd2M+RVxpMuiC4VZBi/Z/eR5e91w0/MHQPOGKDh48FB/tliJrpzhATFS3JCL2Bw0cq+Se1mhaQHTlxaPSok7EQM58g9Co7smDUkzHxwROvi0sgTn9oMmqGAfY3a+gRkAdczg4QUF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CZYcD9np; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=hi+8ifoED1WW8434q/I6jfbO+YdnwwfKA3rmH9p49XE=; b=CZYcD9np4Xr1+BLDiSVgq++gS6
-	swbFbaegcsaqA+76EpPIfFlhKoffhT9fv+LXdxPUoyQUhj49kM+12LcWMFApazsJ04IBMJE3YWBEE
-	rpvdpv1PfMM69OWVm27SAPwuOnHWjpJ/mDGBG6ocoH88/TgFeNmVHKl7IhRmWWP2HhVncAtWYQpnO
-	dD1G3n/2YHzQ7d2K7MFhE25ErkhsuASL7XjX5FZi4jkM0XP8eEyX3v5Y+vp8SKgedd/6STxWHWlfG
-	PXeAJgCXMx7vcdPbVmeMuzjqlycq+tr3GeYF+sSeYAUyqCzvL/vObmaiYb7R7f+rdGFMHV5AzQEBF
-	lF/fqgQg==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sNJ9Y-000KK1-FP; Fri, 28 Jun 2024 23:29:08 +0200
-Received: from [178.197.249.38] (helo=linux.home)
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sNJ9X-0003Mu-0C;
-	Fri, 28 Jun 2024 23:29:07 +0200
-Subject: Re: [PATCH v5 bpf-next 3/3] selftests/bpf: Add selftest for
- bpf_xdp_flow_lookup kfunc
-To: Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-Cc: pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de, hawk@kernel.org,
- horms@kernel.org, donhunte@redhat.com, memxor@gmail.com
+	s=arc-20240116; t=1719691077; c=relaxed/simple;
+	bh=tk6AQGUGO2A5I3v/1p0THsa0yZeeDkzV2SH2rgDD4nY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qE7h7b/cC5n9g3xj2DpKznxMmbX6mQqkc1XVWqUeUdNww0plIxnszBkLJrKwrIltA8sJKMbPCeN38eZCN9dCWY0vILiZfUSEOcWffDigfOYP+nzQmetzOt2D/1EbnEsoMkhUYDbfhRtYV2IwqbsmaFUQoisiA9YEqfeFHlFfL8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYoekVsf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 814B4C2BBFC;
+	Sat, 29 Jun 2024 19:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719691076;
+	bh=tk6AQGUGO2A5I3v/1p0THsa0yZeeDkzV2SH2rgDD4nY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iYoekVsfsZ3S+Rk0Ky3YuMFfW9bB27gHuaTHUzMGkMzthr032H5shRuUrIqNu5kfO
+	 trG4NGAZYHNB1v7o4jLNtnY4xSkRiAVO0x+XUkeq/ohNwEAAmie74123z2hvG7+2y+
+	 wEl6CDMlnhI2UZATcJNXkZALjoCCcujZ1eE/n45/E4+K4qTY5QHrweumZQn2ePOZ9D
+	 3az3hX9U/J6WXy+m70E8eWJhZuYHjYlP4LsbNtb636Msna/YneY692kufKcfET13Yw
+	 wvQ30B3bM9CxsZ9w1r0G9BYnPVoRj0GW8yJFOHr/vflCkhFDcub2jcHPm3gR/Uosfu
+	 91oS6NALR1yNA==
+Date: Sat, 29 Jun 2024 21:57:53 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	martin.lau@linux.dev, eddyz87@gmail.com,
+	lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de,
+	hawk@kernel.org, horms@kernel.org, donhunte@redhat.com,
+	memxor@gmail.com
+Subject: Re: [PATCH v5 bpf-next 2/3] netfilter: add bpf_xdp_flow_lookup kfunc
+Message-ID: <ZoBnQZPfyCuyn1tG@lore-desk>
 References: <cover.1718379122.git.lorenzo@kernel.org>
- <6472c7a775f6a329d16352092071fda8676c2809.1718379122.git.lorenzo@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <89bd0cd7-ed01-a343-d873-dc0c6d2810f2@iogearbox.net>
-Date: Fri, 28 Jun 2024 23:29:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <101e390e62edf8199db8f7cc4df79817b6741f59.1718379122.git.lorenzo@kernel.org>
+ <48b18dc0-19bd-441e-5054-4bd545cd1561@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6472c7a775f6a329d16352092071fda8676c2809.1718379122.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27320/Fri Jun 28 10:37:18 2024)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="d8t7omf+zI8JIQ7G"
+Content-Disposition: inline
+In-Reply-To: <48b18dc0-19bd-441e-5054-4bd545cd1561@iogearbox.net>
 
-On 6/14/24 5:40 PM, Lorenzo Bianconi wrote:
-[...]
-> +void test_xdp_flowtable(void)
-> +{
-> +	struct xdp_flowtable *skel = NULL;
-> +	struct nstoken *tok = NULL;
-> +	int iifindex, stats_fd;
-> +	__u32 value, key = 0;
-> +	struct bpf_link *link;
-> +
-> +	if (SYS_NOFAIL("nft -v")) {
-> +		fprintf(stdout, "Missing required nft tool\n");
-> +		test__skip();
-> +		return;
 
-Bit unfortunate that upstream CI skips the test case at the moment:
+--d8t7omf+zI8JIQ7G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   #542/2   xdp_devmap_attach/DEVMAP with frags programs in entries:OK
-   #542/3   xdp_devmap_attach/Verifier check of DEVMAP programs:OK
-   #542     xdp_devmap_attach:OK
-   #543     xdp_do_redirect:OK
-   #544     xdp_flowtable:SKIP
-[...]
+> On 6/14/24 5:40 PM, Lorenzo Bianconi wrote:
+> [...]
+> > +enum {
+> > +	NF_BPF_FLOWTABLE_OPTS_SZ =3D 4,
+> > +};
+> > +
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +		  "Global functions as their definitions will be in nf_flow_table BT=
+F");
+>=20
+> nit: __bpf_kfunc_start_defs();
 
-> +out:
-> +	xdp_flowtable__destroy(skel);
-> +	if (tok)
-> +		close_netns(tok);
-> +	SYS_NOFAIL("ip netns del " TX_NETNS_NAME);
-> +	SYS_NOFAIL("ip netns del " RX_NETNS_NAME);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_flowtable.c b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-> new file mode 100644
-> index 0000000000000..8297b30b0764b
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/xdp_flowtable.c
-> @@ -0,0 +1,146 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define BPF_NO_KFUNC_PROTOTYPES
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +#define MAX_ERRNO	4095
+ack, I will fix it in v6.
 
-nit: unused?
+>=20
+> > +static struct flow_offload_tuple_rhash *
+> > +bpf_xdp_flow_tuple_lookup(struct net_device *dev,
+> > +			  struct flow_offload_tuple *tuple, __be16 proto)
+> > +{
+> > +	struct flow_offload_tuple_rhash *tuplehash;
+> > +	struct nf_flowtable *nf_flow_table;
+> > +	struct flow_offload *nf_flow;
+> > +
+> > +	nf_flow_table =3D nf_flowtable_by_dev(dev);
+> > +	if (!nf_flow_table)
+> > +		return ERR_PTR(-ENOENT);
+> > +
+> > +	tuplehash =3D flow_offload_lookup(nf_flow_table, tuple);
+> > +	if (!tuplehash)
+> > +		return ERR_PTR(-ENOENT);
+> > +
+> > +	nf_flow =3D container_of(tuplehash, struct flow_offload,
+> > +			       tuplehash[tuplehash->tuple.dir]);
+> > +	flow_offload_refresh(nf_flow_table, nf_flow, false);
+> > +
+> > +	return tuplehash;
+> > +}
+> > +
+> > +__bpf_kfunc struct flow_offload_tuple_rhash *
+> > +bpf_xdp_flow_lookup(struct xdp_md *ctx, struct bpf_fib_lookup *fib_tup=
+le,
+> > +		    struct bpf_flowtable_opts *opts, u32 opts_len)
+> > +{
+> > +	struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> > +	struct flow_offload_tuple tuple =3D {
+> > +		.iifidx =3D fib_tuple->ifindex,
+> > +		.l3proto =3D fib_tuple->family,
+> > +		.l4proto =3D fib_tuple->l4_protocol,
+> > +		.src_port =3D fib_tuple->sport,
+> > +		.dst_port =3D fib_tuple->dport,
+> > +	};
+> > +	struct flow_offload_tuple_rhash *tuplehash;
+> > +	__be16 proto;
+> > +
+> > +	if (opts_len !=3D NF_BPF_FLOWTABLE_OPTS_SZ) {
+> > +		opts->error =3D -EINVAL;
+> > +		return NULL;
+> > +	}
+> > +
+> > +	switch (fib_tuple->family) {
+> > +	case AF_INET:
+> > +		tuple.src_v4.s_addr =3D fib_tuple->ipv4_src;
+> > +		tuple.dst_v4.s_addr =3D fib_tuple->ipv4_dst;
+> > +		proto =3D htons(ETH_P_IP);
+> > +		break;
+> > +	case AF_INET6:
+> > +		tuple.src_v6 =3D *(struct in6_addr *)&fib_tuple->ipv6_src;
+> > +		tuple.dst_v6 =3D *(struct in6_addr *)&fib_tuple->ipv6_dst;
+> > +		proto =3D htons(ETH_P_IPV6);
+> > +		break;
+> > +	default:
+> > +		opts->error =3D -EAFNOSUPPORT;
+> > +		return NULL;
+> > +	}
+> > +
+> > +	tuplehash =3D bpf_xdp_flow_tuple_lookup(xdp->rxq->dev, &tuple, proto);
+> > +	if (IS_ERR(tuplehash)) {
+> > +		opts->error =3D PTR_ERR(tuplehash);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	return tuplehash;
+> > +}
+> > +
+> > +__diag_pop()
+>=20
+> __bpf_kfunc_end_defs();
 
-> +#define ETH_P_IP	0x0800
-> +#define ETH_P_IPV6	0x86dd
-> +#define IP_MF		0x2000	/* "More Fragments" */
-> +#define IP_OFFSET	0x1fff	/* "Fragment Offset" */
-> +#define AF_INET		2
-> +#define AF_INET6	10
-> +
-> +struct bpf_flowtable_opts___local {
-> +	s32 error;
-> +};
-> +
-> +struct flow_offload_tuple_rhash *
-> +bpf_xdp_flow_lookup(struct xdp_md *, struct bpf_fib_lookup *,
-> +		    struct bpf_flowtable_opts___local *, u32) __ksym;
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__type(key, __u32);
-> +	__type(value, __u32);
-> +	__uint(max_entries, 1);
-> +} stats SEC(".maps");
-> +
-[...]
+ack, I will fix it in v6.
+
+Regards,
+Lorenzo
+
+>=20
+> Otherwise LGTM!
+
+--d8t7omf+zI8JIQ7G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZoBnQQAKCRA6cBh0uS2t
+rA02AQD8HNziBYwq2G8qQrHmhgRF4NAWUrRSQzqdKBYjdMsXHgD/UBDEQacX5kwR
+NkPYcgEnZHcZacv0TwROec79cRTXbgU=
+=Wn5k
+-----END PGP SIGNATURE-----
+
+--d8t7omf+zI8JIQ7G--
 
