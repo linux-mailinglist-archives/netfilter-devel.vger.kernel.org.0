@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-2920-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2919-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B218927EA4
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 23:34:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FE98927EA3
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 23:34:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0CB1C225FB
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 21:34:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00A811F22DAB
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 21:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E750143888;
-	Thu,  4 Jul 2024 21:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A564143889;
+	Thu,  4 Jul 2024 21:34:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE47139597
-	for <netfilter-devel@vger.kernel.org>; Thu,  4 Jul 2024 21:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FECE143870
+	for <netfilter-devel@vger.kernel.org>; Thu,  4 Jul 2024 21:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720128872; cv=none; b=aLDDWxioe0P03zbCFPpFobdOzztetIXTbStUtOM4VZiAyEneyh2ZLv/lJxiHDCXlwp3W7MY8yyjqn7x1+0laAomQMu8IIY5NCdEsIbD9klZhDSWTw6YB9InlQswNVvDc3nHDY0V9tcIEo8dJxzrYbAKZjh9uyyoPoVFld/HIfsI=
+	t=1720128871; cv=none; b=lPp0nKNgPZW7lTDUzQcqmOQkrwow45yEr5CqPDoLEgjJH8QLx4ZQYFxOZuvYTXgPqbS2SMAokQf9chukVmcIhrkcZmOpjoFbmdvsmfwhwW+E+ixvZnbIB21Yz+i55lrzIjs+V+OiKSW9iG0C9Vv0xLw0ETGGW6JbRThKuLrDnzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720128872; c=relaxed/simple;
-	bh=+3Ex74Ddali02HyW21y3ljM6AH4OJ6KpjnSqpYea6oA=;
+	s=arc-20240116; t=1720128871; c=relaxed/simple;
+	bh=MChetaW6NfZVO2w7cmEppsmbaUfwODxahDl1Z/oS1rs=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QfZ1yPgzyhO1Y5sUtTkfasQp2tSweVNNjBtWovpSSk1kxLF/k5YOdRTAOp8MoUvKGSvZ/mV1ItwHcYaott0spECJ3z1ZQtBn975SrW2HJlhQTQJl9p3s2/J4UogjSj6TtjZ8afevtrg6+ZTGw9/ZBFBa9VrSI8Yx4UEA5qnhgpY=
+	 MIME-Version; b=d2Jd3hqrN8BOHcO/9lNyNTDCLdTGycxG/KcH/Evhc7d1cdYJRYJEHvzl9EbIElNJ7E+umWLcRxLmUXNNKUIv69aO7pLjLlhfiXVjM9pN+jjVaeLfnJJm00L6Y/zbbIVAexGiaYFftik7u9xIu7aXiM35BaXD2atr2iP767+sYmg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 1/4] evaluate: set on expr->len for catchall set elements
-Date: Thu,  4 Jul 2024 23:34:20 +0200
-Message-Id: <20240704213423.254356-2-pablo@netfilter.org>
+Subject: [PATCH nft 2/4] segtree: set on EXPR_F_KERNEL flag for catchall elements in the cache
+Date: Thu,  4 Jul 2024 23:34:21 +0200
+Message-Id: <20240704213423.254356-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240704213423.254356-1-pablo@netfilter.org>
 References: <20240704213423.254356-1-pablo@netfilter.org>
@@ -43,49 +43,32 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Catchall elements coming from the parser provide expr->len == 0.
-However, the existing mergesort implementation requires expr->len to be
-set up to the length of the set key to properly sort elements.
+Catchall set element deletion requires this flag to be set on,
+otherwise it bogusly reports that such element does not exist
+in the set.
 
-In particular, set element deletion leverages such list sorting to find
-if elements exists in the set.
-
-Fixes: 419d19688688 ("src: add set element catch-all support")
+Fixes: f1cc44edb218 ("src: add EXPR_F_KERNEL to identify expression in the kernel")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/evaluate.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ src/segtree.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index aa9293a87856..0a31c73e4276 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -1877,6 +1877,16 @@ err_missing_flag:
- 			  set_is_map(ctx->set->flags) ? "map" : "set", expr_name(key));
- }
+diff --git a/src/segtree.c b/src/segtree.c
+index 5e6f857f85b7..4df96467c3f5 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -629,8 +629,10 @@ void interval_map_decompose(struct expr *set)
+ 	expr_free(i);
  
-+static int expr_evaluate_set_elem_catchall(struct eval_ctx *ctx, struct expr **expr)
-+{
-+	struct expr *elem = *expr;
-+
-+	if (ctx->set)
-+		elem->len = ctx->set->key->len;
-+
-+	return 0;
-+}
-+
- static const struct expr *expr_set_elem(const struct expr *expr)
- {
- 	if (expr->etype == EXPR_MAPPING)
-@@ -2996,7 +3006,7 @@ static int expr_evaluate(struct eval_ctx *ctx, struct expr **expr)
- 	case EXPR_XFRM:
- 		return expr_evaluate_xfrm(ctx, expr);
- 	case EXPR_SET_ELEM_CATCHALL:
--		return 0;
-+		return expr_evaluate_set_elem_catchall(ctx, expr);
- 	case EXPR_FLAGCMP:
- 		return expr_evaluate_flagcmp(ctx, expr);
- 	default:
+ out:
+-	if (catchall)
++	if (catchall) {
++		catchall->flags |= EXPR_F_KERNEL;
+ 		compound_expr_add(set, catchall);
++	}
+ 
+ 	free(ranges);
+ 	free(elements);
 -- 
 2.30.2
 
