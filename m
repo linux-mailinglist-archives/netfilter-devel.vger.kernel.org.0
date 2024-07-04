@@ -1,36 +1,36 @@
-Return-Path: <netfilter-devel+bounces-2924-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2925-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED3F1927EE5
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jul 2024 00:06:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BDA4927EF0
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jul 2024 00:11:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8491A1F2386B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 22:06:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 566CE284BCA
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 22:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E0E7346E;
-	Thu,  4 Jul 2024 22:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0898142624;
+	Thu,  4 Jul 2024 22:11:36 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6798B22313
-	for <netfilter-devel@vger.kernel.org>; Thu,  4 Jul 2024 22:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD8E49651
+	for <netfilter-devel@vger.kernel.org>; Thu,  4 Jul 2024 22:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720130762; cv=none; b=Nkz+hyScLRvquw/a/ZI9fSGFjjDZftQreKJL7wYPfp/wo1Zem4zx703eAA2RXav0KZqrzK/PgDw1Fz5xi64Xi6pQg2m6qUD7Jpd8p3v12dNr63cX1G71qGtKaXTB/1tkAkCsIvCzZyOhDUwpV+Z/Cs7FhKyIyIaH3Nfusif1t1M=
+	t=1720131096; cv=none; b=kC5V0j4xa/oXb+L/xNyLPmNyWr55EzSmt8bsiZk7P84aWBAyeOb5AY8rhM8GUocJ2saZOeGiz8u/9KcQRTwZ734Et7Z4o0r6HEjCovSs3HT0izMikLoMDJcfvjul3QFJNF8Xm7Y3BvFeY5/mhKQ7WeTohCUP87fW6Q+9QoP3QCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720130762; c=relaxed/simple;
-	bh=GVlSGOW0er6Qs1P+2NZ8uGaEE7SbBMycbrHFBCG5Vsc=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=EKZXMl0ILQ7zDmocfA5/MpCvhLisIwrq9EAlTud4ho6DSolZLqqAbdRUJxBjin9yn5ZvJ7TBqQipi49WMVf4pgM2SDBdd3YYdDwByrgZXrChu7MqlOMXqlgzHop/Jg9VwnpDiGyrKeB64hvTGq5NTIRlLg0GgAgqKUsVDvD/EDI=
+	s=arc-20240116; t=1720131096; c=relaxed/simple;
+	bh=2O2PDQkq56zY3pRKGdSLOfGBgU9RUO3Mu8h3IsVglCg=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=q4AoWkNmDqzDGXZo4oPIQS5qG5DlUY24Q09okG9F9F1Zj+gYJB6yTfLDjy/SXuw2remm4IGGJiAQPdBcz6S06BWBOy7D3z/eng6j+m334NmKFH5I/MTNbIMdsgF2Y6T+hS6QVKCZp8G4LoPPeOyl+5k5dy04ZUU7eNssuEzcbTU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] parser_bison: remove deprecated flow statement
-Date: Fri,  5 Jul 2024 00:05:54 +0200
-Message-Id: <20240704220554.277702-1-pablo@netfilter.org>
+Subject: [PATCH nft] parser_bison: recursive table declaration in deprecated meter statement
+Date: Fri,  5 Jul 2024 00:11:29 +0200
+Message-Id: <20240704221129.357335-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -40,55 +40,60 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Dynamic set/maps are used these days to represent what
-3ed5e31f4a32 ("src: add flow statement") provides.
+This is allowing for recursive table NAME declarations such as:
 
-Unlikely meter statement, this statement was never documented
-other than in the source code. Ditch it.
+ ... table xyz1 table xyz2 { ... }
 
+remove it.
+
+Fixes: 3ed5e31f4a32 ("src: add flow statement")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/parser_bison.y | 20 +++-----------------
- 1 file changed, 3 insertions(+), 17 deletions(-)
+To be applied before:
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20240704220554.277702-1-pablo@netfilter.org/
+
+ src/parser_bison.y | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 6b167080cd93..11ca957bbd29 100644
+index f3f71801643d..6b167080cd93 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -809,8 +809,8 @@ int nft_lex(void *, void *, void *);
- %type <val>			set_stmt_op
- %type <stmt>			map_stmt
- %destructor { stmt_free($$); }	map_stmt
--%type <stmt>			meter_stmt meter_stmt_alloc flow_stmt_legacy_alloc
--%destructor { stmt_free($$); }	meter_stmt meter_stmt_alloc flow_stmt_legacy_alloc
-+%type <stmt>			meter_stmt meter_stmt_alloc
-+%destructor { stmt_free($$); }	meter_stmt meter_stmt_alloc
- 
- %type <expr>			symbol_expr verdict_expr integer_expr variable_expr chain_expr policy_expr
- %destructor { expr_free($$); }	symbol_expr verdict_expr integer_expr variable_expr chain_expr policy_expr
-@@ -4212,21 +4212,7 @@ map_stmt		:	set_stmt_op	set_ref_expr '{' set_elem_expr_stmt	COLON	set_elem_expr_
+@@ -4212,10 +4212,11 @@ map_stmt		:	set_stmt_op	set_ref_expr '{' set_elem_expr_stmt	COLON	set_elem_expr_
  			}
  			;
  
--meter_stmt		:	flow_stmt_legacy_alloc		TABLE identifier	'{' meter_key_expr stmt '}'
--			{
--				$1->meter.name = $3;
--				$1->meter.key  = $5;
--				$1->meter.stmt = $6;
--				$$->location  = @$;
--				$$ = $1;
--			}
--			|	meter_stmt_alloc		{ $$ = $1; }
--			;
--
--flow_stmt_legacy_alloc	:	FLOW
--			{
--				$$ = meter_stmt_alloc(&@$);
--			}
-+meter_stmt		:	meter_stmt_alloc		{ $$ = $1; }
+-meter_stmt		:	flow_stmt_legacy_alloc		flow_stmt_opts	'{' meter_key_expr stmt '}'
++meter_stmt		:	flow_stmt_legacy_alloc		TABLE identifier	'{' meter_key_expr stmt '}'
+ 			{
+-				$1->meter.key  = $4;
+-				$1->meter.stmt = $5;
++				$1->meter.name = $3;
++				$1->meter.key  = $5;
++				$1->meter.stmt = $6;
+ 				$$->location  = @$;
+ 				$$ = $1;
+ 			}
+@@ -4228,19 +4229,6 @@ flow_stmt_legacy_alloc	:	FLOW
+ 			}
  			;
  
+-flow_stmt_opts		:	flow_stmt_opt
+-			{
+-				$<stmt>$	= $<stmt>0;
+-			}
+-			|	flow_stmt_opts		flow_stmt_opt
+-			;
+-
+-flow_stmt_opt		:	TABLE			identifier
+-			{
+-				$<stmt>0->meter.name = $2;
+-			}
+-			;
+-
  meter_stmt_alloc	:	METER	identifier		'{' meter_key_expr stmt '}'
+ 			{
+ 				$$ = meter_stmt_alloc(&@$);
 -- 
 2.30.2
 
