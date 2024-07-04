@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-2919-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2922-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE98927EA3
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 23:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB42927EA6
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 23:34:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00A811F22DAB
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 21:34:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 380241F22AE7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2024 21:34:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A564143889;
-	Thu,  4 Jul 2024 21:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E8E139597;
+	Thu,  4 Jul 2024 21:34:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FECE143870
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE8B143741
 	for <netfilter-devel@vger.kernel.org>; Thu,  4 Jul 2024 21:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720128871; cv=none; b=lPp0nKNgPZW7lTDUzQcqmOQkrwow45yEr5CqPDoLEgjJH8QLx4ZQYFxOZuvYTXgPqbS2SMAokQf9chukVmcIhrkcZmOpjoFbmdvsmfwhwW+E+ixvZnbIB21Yz+i55lrzIjs+V+OiKSW9iG0C9Vv0xLw0ETGGW6JbRThKuLrDnzs=
+	t=1720128872; cv=none; b=SU3UFEEkOd8b14v/y/Ngqo/wLALL7/d5xFdnQHtA5XXMyf2X9sOoIBWiCwD6JCr8g68URlOZQoAHWRi95GD7hfiDQg95Z5efNTWtsw7mrRLCI3wA5hhI3JPZNg+VzKgtyhw6gTLb28fs1WA+gS5SSkk3V0KN70H9x6+cjdovoG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720128871; c=relaxed/simple;
-	bh=MChetaW6NfZVO2w7cmEppsmbaUfwODxahDl1Z/oS1rs=;
+	s=arc-20240116; t=1720128872; c=relaxed/simple;
+	bh=mojcXQB9NoLyqPCXdyM7AlW1e2KbW6de26gDrL6/vYQ=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d2Jd3hqrN8BOHcO/9lNyNTDCLdTGycxG/KcH/Evhc7d1cdYJRYJEHvzl9EbIElNJ7E+umWLcRxLmUXNNKUIv69aO7pLjLlhfiXVjM9pN+jjVaeLfnJJm00L6Y/zbbIVAexGiaYFftik7u9xIu7aXiM35BaXD2atr2iP767+sYmg=
+	 MIME-Version; b=dsh6jRHh5CSLpccmz02gpAjfNHWoMt6NxTI95KjODLdw+2x7ArQLMlbGib0xSFcguikQju45rlpY2gJlCykk54PBmYYLdMzY6L4MZbQw5m5yq1ci6kG2872L4rkPsrq0bijhPY+UGyKHSD4UeIMSOTxMqWtM22CEUBF/wMx5mCY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/4] segtree: set on EXPR_F_KERNEL flag for catchall elements in the cache
-Date: Thu,  4 Jul 2024 23:34:21 +0200
-Message-Id: <20240704213423.254356-3-pablo@netfilter.org>
+Subject: [PATCH nft 3/4] intervals: fix element deletions with maps
+Date: Thu,  4 Jul 2024 23:34:22 +0200
+Message-Id: <20240704213423.254356-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240704213423.254356-1-pablo@netfilter.org>
 References: <20240704213423.254356-1-pablo@netfilter.org>
@@ -43,32 +43,100 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Catchall set element deletion requires this flag to be set on,
-otherwise it bogusly reports that such element does not exist
-in the set.
+Set element deletion in maps (including catchall elements) does not work.
 
-Fixes: f1cc44edb218 ("src: add EXPR_F_KERNEL to identify expression in the kernel")
+ # nft delete element ip x m { \* }
+ BUG: invalid range expression type catch-all set element
+ nft: src/expression.c:1472: range_expr_value_low: Assertion `0' failed.
+ Aborted
+
+Call interval_expr_key() to fetch expr->left in the mapping but use the
+expression that represents the mapping because it provides access to the
+EXPR_F_REMOVE flags.
+
+Moreover, assume maximum value for catchall expression by means of the
+expr->len to reuse the existing code to check if the element to be
+deleted really exists.
+
+Fixes: 3e8d934e4f72 ("intervals: support to partial deletion with automerge")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/segtree.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ src/intervals.c | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/src/segtree.c b/src/segtree.c
-index 5e6f857f85b7..4df96467c3f5 100644
---- a/src/segtree.c
-+++ b/src/segtree.c
-@@ -629,8 +629,10 @@ void interval_map_decompose(struct expr *set)
- 	expr_free(i);
+diff --git a/src/intervals.c b/src/intervals.c
+index 6c3f36fec02a..ff202be9375b 100644
+--- a/src/intervals.c
++++ b/src/intervals.c
+@@ -383,7 +383,7 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 			  struct expr *purge, struct expr *elems,
+ 			  unsigned int debug_mask)
+ {
+-	struct expr *i, *next, *prev = NULL;
++	struct expr *i, *next, *elem, *prev = NULL;
+ 	struct range range, prev_range;
+ 	int err = 0;
+ 	mpz_t rop;
+@@ -394,21 +394,26 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 	mpz_init(range.high);
+ 	mpz_init(rop);
  
- out:
--	if (catchall)
-+	if (catchall) {
-+		catchall->flags |= EXPR_F_KERNEL;
- 		compound_expr_add(set, catchall);
-+	}
+-	list_for_each_entry_safe(i, next, &elems->expressions, list) {
+-		if (i->key->etype == EXPR_SET_ELEM_CATCHALL)
+-			continue;
++	list_for_each_entry_safe(elem, next, &elems->expressions, list) {
++		i = interval_expr_key(elem);
  
- 	free(ranges);
- 	free(elements);
+-		range_expr_value_low(range.low, i);
+-		range_expr_value_high(range.high, i);
++		if (i->key->etype == EXPR_SET_ELEM_CATCHALL) {
++			/* Assume max value to simplify handling. */
++			mpz_bitmask(range.low, i->len);
++			mpz_bitmask(range.high, i->len);
++		} else {
++			range_expr_value_low(range.low, i);
++			range_expr_value_high(range.high, i);
++		}
+ 
+-		if (!prev && i->flags & EXPR_F_REMOVE) {
++		if (!prev && elem->flags & EXPR_F_REMOVE) {
+ 			expr_error(msgs, i, "element does not exist");
+ 			err = -1;
+ 			goto err;
+ 		}
+ 
+-		if (!(i->flags & EXPR_F_REMOVE)) {
+-			prev = i;
++		if (!(elem->flags & EXPR_F_REMOVE)) {
++			prev = elem;
+ 			mpz_set(prev_range.low, range.low);
+ 			mpz_set(prev_range.high, range.high);
+ 			continue;
+@@ -416,12 +421,12 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 
+ 		if (mpz_cmp(prev_range.low, range.low) == 0 &&
+ 		    mpz_cmp(prev_range.high, range.high) == 0) {
+-			if (i->flags & EXPR_F_REMOVE) {
++			if (elem->flags & EXPR_F_REMOVE) {
+ 				if (prev->flags & EXPR_F_KERNEL)
+ 					list_move_tail(&prev->list, &purge->expressions);
+ 
+-				list_del(&i->list);
+-				expr_free(i);
++				list_del(&elem->list);
++				expr_free(elem);
+ 			}
+ 		} else if (set->automerge) {
+ 			if (setelem_adjust(set, purge, &prev_range, &range, prev, i) < 0) {
+@@ -429,7 +434,7 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 				err = -1;
+ 				goto err;
+ 			}
+-		} else if (i->flags & EXPR_F_REMOVE) {
++		} else if (elem->flags & EXPR_F_REMOVE) {
+ 			expr_error(msgs, i, "element does not exist");
+ 			err = -1;
+ 			goto err;
 -- 
 2.30.2
 
