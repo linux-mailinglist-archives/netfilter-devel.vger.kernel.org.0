@@ -1,43 +1,59 @@
-Return-Path: <netfilter-devel+bounces-2965-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2967-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45AA392D4DC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jul 2024 17:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B76192D502
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jul 2024 17:33:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B36D6B21FA0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jul 2024 15:20:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2522B23DD6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jul 2024 15:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0B5194140;
-	Wed, 10 Jul 2024 15:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34CC1946C7;
+	Wed, 10 Jul 2024 15:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="h/1rbdlr"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EAE192B8F
-	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jul 2024 15:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12607641E
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jul 2024 15:33:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720624825; cv=none; b=P3c/2nvLt8/L4PYEg1O0xtCUuELyJbUARMICNSoTv3QOmjp/OThXgXVs4/OFiujbuaoZmSYptWSVJz4DPiCfWt+39LaSGVPLBcW1LfiYJZST85pmehjwFQKXC0MQX6BSaVtt+M21tbz5z+M9SIVx0nRFCXu0TCpLPCwn1IvMR+s=
+	t=1720625610; cv=none; b=Vf76ymouAcUFw1KJj8/2LY8a91v9Ts+nf5Xo5+hR/0+JgpR5FmJ9dYsonUqbmPOz98BiZA2Ev2eADpFCaCVcGWb1EvAXy8OQkho6dwb3VsC13KeCVLY5Rfk8QhoVx8vP+8BWhhpze/O9QnKxHfovYys8mYg5ez/yJbaimliyaCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720624825; c=relaxed/simple;
-	bh=H03iDug7ZsGgx708qPcffL+uuASumntyV/aBP3EaRbY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Zyblh8pgiAZIJ+7iyH4y6NqvRJGD6o8x241mSUWD19STz1fz+SIX0+Pr4/zGvnlQnXjyvfhKUoJ6q2N+s5SClYtk8h0rl+1NdwFVOuoSXd3c0zx8mX7h2Z8xX4G6z6U+VzDhZyDaMqVfrafatVcvdJgD3o7v588Iug85vnERFDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: phil@nwl.cc,
-	thaller@redhat.com,
-	jami.maenpaa@wapice.com
-Subject: [PATCH nft 2/2] libnftables: skip useable checks for /dev/stdin
-Date: Wed, 10 Jul 2024 17:20:04 +0200
-Message-Id: <20240710152004.11526-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240710152004.11526-1-pablo@netfilter.org>
-References: <20240710152004.11526-1-pablo@netfilter.org>
+	s=arc-20240116; t=1720625610; c=relaxed/simple;
+	bh=hNxemCaxoIo3Qe7A/SMplpjLhItcd5xPrI+p/nlWSTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H6hZWJ7dRyA6p06igIrWTLmUyDH2RqO0+hjeDJjLmmdtl8dGzu/k6q37iCzKcaAPUaMJCFDvIoFEKQZCuMVAGFIi7FktGzf6lXGVnH8ffmVqc94BI77UFCOudZXhmtydMtssMInIGrmgilYOc3xUZnEzHbyCKSLqoEcZLs1LwGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=h/1rbdlr; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=+GqGum9x7kBOnx3fd/0jtR0GV/4hZGAdbM098v72/AU=; b=h/1rbdlrOI6UxnZL2wqc90oufP
+	XF5nckzTRu9ynaKeuFqSp4WZ9zYPW79BZ24HJ8wzkOPyKm0nGyKTnWt6yIYwhAIW0SP9nyYxbNf4d
+	EoJW2rUxNqJgM5qITOy9SHXKd+XkyzZGsFrEPSDTBeuX8OP/ISS9rvkgnUNDiAzWdF3x7RJJbNFs+
+	ULS9sWBD7TUSYdx9PMZnk11snbDox/4DYh9H8IIkXa2TIj4WzeRRv61u4A/Z8OSgIUvVBLM0I11vh
+	M4VgWgDMEFj+xxUHkY7Rk5tabKU8CcgRDlMEEtL4y/BdwXFFvK+ooaRhn8B/syGutH4hPkFeQLf+L
+	OPoCaRhA==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1sRZJu-000000001Mp-43D7;
+	Wed, 10 Jul 2024 17:33:27 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [libnftnl PATCH 1/2] chain: Support unsetting NFTNL_CHAIN_USERDATA attribute
+Date: Wed, 10 Jul 2024 17:33:21 +0200
+Message-ID: <20240710153322.18574-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,55 +62,29 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-/dev/stdin is a placeholder, read() from STDIN_FILENO is used to fetch
-the standard input into a buffer.
+Cosmetics, but support unsetting anything that may be set.
 
-Since 5c2b2b0a2ba7 ("src: error reporting with -f and read from stdin")
-stdin is stored in a buffer to fix error reporting.
-
-This patch requires: ("parser_json: use stdin buffer if available")
-
-Fixes: 149b1c95d129 ("libnftables: refuse to open onput files other than named pipes or regular files")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 76b82c425818e ("chain: add userdata and comment support")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
-v2: no changes.
+ src/chain.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
- src/libnftables.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/src/libnftables.c b/src/libnftables.c
-index 89317f9f6049..36d6a854ff50 100644
---- a/src/libnftables.c
-+++ b/src/libnftables.c
-@@ -664,6 +664,7 @@ retry:
- 
- /* need to use stat() to, fopen() will block for named fifos and
-  * libjansson makes no checks before or after open either.
-+ * /dev/stdin is *never* used, read() from STDIN_FILENO is used instead.
-  */
- static struct error_record *filename_is_useable(struct nft_ctx *nft, const char *name)
- {
-@@ -671,6 +672,9 @@ static struct error_record *filename_is_useable(struct nft_ctx *nft, const char
- 	struct stat sb;
- 	int err;
- 
-+	if (!strcmp(name, "/dev/stdin"))
-+		return NULL;
-+
- 	err = stat(name, &sb);
- 	if (err)
- 		return error(&internal_location, "Could not open file \"%s\": %s\n",
-@@ -681,9 +685,6 @@ static struct error_record *filename_is_useable(struct nft_ctx *nft, const char
- 	if (type == S_IFREG || type == S_IFIFO)
- 		return NULL;
- 
--	if (type == S_IFCHR && 0 == strcmp(name, "/dev/stdin"))
--		return NULL;
--
- 	return error(&internal_location, "Not a regular file: \"%s\"\n", name);
- }
- 
+diff --git a/src/chain.c b/src/chain.c
+index c7026f486b104..0b68939fe21a7 100644
+--- a/src/chain.c
++++ b/src/chain.c
+@@ -185,6 +185,9 @@ void nftnl_chain_unset(struct nftnl_chain *c, uint16_t attr)
+ 			xfree(c->dev_array[i]);
+ 		xfree(c->dev_array);
+ 		break;
++	case NFTNL_CHAIN_USERDATA:
++		xfree(c->user.data);
++		break;
+ 	default:
+ 		return;
+ 	}
 -- 
-2.30.2
+2.43.0
 
 
