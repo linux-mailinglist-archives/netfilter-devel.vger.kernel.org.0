@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3003-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3005-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDB2093267B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 14:28:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC4193267D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 14:28:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97D21283331
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:28:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3DF1C2222E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2074C19A855;
-	Tue, 16 Jul 2024 12:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D628319A86A;
+	Tue, 16 Jul 2024 12:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fRFly2Tv"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="c9/tC1BU"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D171991B0
-	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 12:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E8E19A854
+	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 12:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721132895; cv=none; b=f9GmAZ8u/CZDca0Ku8g7X3Jkm2vEpoilQ4ld9DY45n74+ACFvvSmWAfOV59xDjnH6QiQNtOK2op3A0enp+dHEsahOBk+2Nhbe0EkIcC1Lzkd+53DVFppkMZT5lIOX4ya0re9knCCE+IudkTyXmo9IstDSnEe9xpq6HPfHLvozHE=
+	t=1721132896; cv=none; b=TBKcyROzY3qeedjvgfy7Zy8TrKBBLvA6hEF7VQ3Yolsshkry3vWMm9hwkSvVOVTMX6nF6DozYIUCIEFaBc56XixCLlHBlCr/BhuWYurpIRgEZTsIS+tgH6WK/rmWjy1PGrvN2KJhDF2eb0ZJIg2qrLgTI7ktBcBka/N0dLJe3Pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721132895; c=relaxed/simple;
-	bh=kqreRsjj8elBF2Gix/Fr85jjiypRibF0LpL5sVb+1VU=;
+	s=arc-20240116; t=1721132896; c=relaxed/simple;
+	bh=tx7z+EDAD+bfCstFjOCsZhtGPgkuxayz163MvUcJwew=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GX7zNR6RhqrKpTd77b8XYXJL79V4rlD4R74L4R3aDqkLS0DUw3Tu5LXd6Ukl/DUOhpK5o7djRe105Xu5Amy5sBtz0GwGNhHerjdybNAraOBligpA11ZHC60YYnayOjg4B1o0+cETuNTLFoIu5I506vyzgVqYYrKOdfa1kLdumfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fRFly2Tv; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=eTUdgtzA5rImTvRBroHGKfRxCy+s6yMdQb9cfVR1hWC52kA76H6bSvJF/dbeAIFhhkYz9NaXa9+in4sahec4hRSW+EF4CVlj3KZQ3bL+0m4CuahGHyhuX+CWVjsT5/tuQgqdKa5QFduB4DUkDUz/65z3GpG/dBEHLaJ2KgHER2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=c9/tC1BU; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,24 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=IduPTip0XZKJDPDLt2+lxkaZxLaqKo5PSxZ3HJFb5tk=; b=fRFly2TvOs1DyI2ou+m/VWzW+2
-	56NWFL7BAt8Qk6O9xts2VzDrC4ldd2SBCwREEde+zHW+7LCRjmbrM4S8zjHynrCKVtiLmO/fxwy98
-	sPIgFt4lfrZ7n1FNXnyIFgYldX9OBSLuYlo7Ttfu38ViUigqvpLAA+jJqDlq3AQjBeBV1L05jXvuw
-	/aWn4mdgT2gDSqVo7OnKK5tNmzoEuuTVS7CRhn/zBOTuyu+CwonMhJvUHM1nI5iDUgqjrdc8Q0fsA
-	gY1vFF0JJYug9cUibBGG4Hw0a9f8aw05I7zmZMl2LrK55oFti+H5h6rAVDpmjWGRGAjPcc3qWFmBH
-	LMaBWE7A==;
+	bh=d57mw90EoYFOGNEoq/FCSi0/k7Xvij4lyiAEHrZURHo=; b=c9/tC1BUkzs28/eC7cZO7nFQAa
+	mvNM6RhGxCF36qHMEWKWFbOUAsgko+Uz4FlRUTZdStaiUtifM3Odh329b7iIj1J6Jo/GCQORDNLbb
+	ZVBUXi1G72dFtEW4fi+yLJWkyZ/u2LyZz7I/HCBWzA+pX7Jyh90ZjHrjCkSntF59Ii/PVvu6eAxHq
+	srFlN4TXQsYscjui1rW5CwtSMPpOV/K/9NTCADRQiqtNjbUD6x9FUu45aUMfGISqta6SO6/n79dom
+	l4uOC6mYJNg3XhRKTWNacnKBqlikjirWRNfef9dddgRyUiILAnrlHICiLQOBzFSR2s8YEP3uoNxzH
+	uokM9ZIg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sThHv-000000007tQ-3wQD;
-	Tue, 16 Jul 2024 14:28:12 +0200
+	id 1sThHx-000000007tY-17FP;
+	Tue, 16 Jul 2024 14:28:13 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 7/8] xtables-monitor: Ignore ebtables policy rules unless tracing
-Date: Tue, 16 Jul 2024 14:28:04 +0200
-Message-ID: <20240716122805.22331-8-phil@nwl.cc>
+Subject: [RFC iptables PATCH 8/8] xtables-monitor: Print commands instead of -4/-6/-0 flags
+Date: Tue, 16 Jul 2024 14:28:05 +0200
+Message-ID: <20240716122805.22331-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240716122805.22331-1-phil@nwl.cc>
 References: <20240716122805.22331-1-phil@nwl.cc>
@@ -66,99 +66,225 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Do not expose this implementation detail to users, otherwise new
-user-defined chains are followed by a new rule event.
-
-When tracing, they are useful as they potentially terminate rule
-traversal.
+The '-4' and '-6' flags are a rarely used feature of iptables-restore.
+The '-0' flag is purely artificial and not recognized anywhere (at least
+not as an arptables rule prefix in this sense). Finally, there is no
+such flag for ebtables in the first place. Go with a more intuitively
+clear approach and instead print the typical command which added the
+rule being printed.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c                                        |  2 +-
- iptables/nft.h                                        |  1 +
- .../shell/testcases/nft-only/0012-xtables-monitor_0   | 11 ++---------
- iptables/xtables-monitor.c                            |  7 +++++++
- 4 files changed, 11 insertions(+), 10 deletions(-)
+ .../testcases/nft-only/0012-xtables-monitor_0 | 40 +++++------
+ iptables/xtables-monitor.c                    | 66 +++++++++----------
+ 2 files changed, 50 insertions(+), 56 deletions(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 884cc77e647ba..83fb81439ccb1 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -1813,7 +1813,7 @@ nft_rule_print_save(struct nft_handle *h, const struct nftnl_rule *r,
- 	return ret;
- }
- 
--static bool nft_rule_is_policy_rule(struct nftnl_rule *r)
-+bool nft_rule_is_policy_rule(struct nftnl_rule *r)
- {
- 	const struct nftnl_udata *tb[UDATA_TYPE_MAX + 1] = {};
- 	const void *data;
-diff --git a/iptables/nft.h b/iptables/nft.h
-index b2a8484f09f0a..8f17f3100a190 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -185,6 +185,7 @@ int nft_rule_list_save(struct nft_handle *h, const char *chain, const char *tabl
- int nft_rule_save(struct nft_handle *h, const char *table, unsigned int format);
- int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table, bool verbose);
- int nft_rule_zero_counters(struct nft_handle *h, const char *chain, const char *table, int rulenum);
-+bool nft_rule_is_policy_rule(struct nftnl_rule *r);
- 
- /*
-  * Operations used in userspace tools
 diff --git a/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0 b/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-index 0f0295b05ec52..ef1ec3c9446ae 100755
+index ef1ec3c9446ae..c49b7ccddeb35 100755
 --- a/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
 +++ b/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-@@ -51,7 +51,6 @@ EXP="\
-  EVENT: -6 -t filter -A FORWARD -j ACCEPT"
+@@ -42,13 +42,13 @@ monitorcheck() { # (cmd ...)
+ EXP="\
+  EVENT: nft: NEW table: table filter ip flags 0 use 1 handle 0
+  EVENT: nft: NEW chain: ip filter FORWARD use 1 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1
+- EVENT: -4 -t filter -A FORWARD -j ACCEPT"
++ EVENT: iptables -t filter -A FORWARD -j ACCEPT"
+ monitorcheck iptables -A FORWARD -j ACCEPT
+ 
+ EXP="\
+  EVENT: nft: NEW table: table filter ip6 flags 0 use 1 handle 0
+  EVENT: nft: NEW chain: ip6 filter FORWARD use 1 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1
+- EVENT: -6 -t filter -A FORWARD -j ACCEPT"
++ EVENT: ip6tables -t filter -A FORWARD -j ACCEPT"
  monitorcheck ip6tables -A FORWARD -j ACCEPT
  
--# FIXME
  EXP="\
-  EVENT: nft: NEW table: table filter bridge flags 0 use 1 handle 0
-  EVENT: nft: NEW chain: bridge filter FORWARD use 1 type filter hook forward prio -200 policy accept packets 0 bytes 0 flags 1
-@@ -70,10 +69,7 @@ monitorcheck iptables -N foo
- EXP=" EVENT: -6 -t filter -N foo"
+@@ -60,68 +60,68 @@ monitorcheck ebtables -A FORWARD -j ACCEPT
+ EXP="\
+  EVENT: nft: NEW table: table filter arp flags 0 use 1 handle 0
+  EVENT: nft: NEW chain: arp filter INPUT use 1 type filter hook input prio 0 policy accept packets 0 bytes 0 flags 1
+- EVENT: -0 -t filter -A INPUT -j ACCEPT"
++ EVENT: arptables -t filter -A INPUT -j ACCEPT"
+ monitorcheck arptables -A INPUT -j ACCEPT
+ 
+-EXP=" EVENT: -4 -t filter -N foo"
++EXP=" EVENT: iptables -t filter -N foo"
+ monitorcheck iptables -N foo
+ 
+-EXP=" EVENT: -6 -t filter -N foo"
++EXP=" EVENT: ip6tables -t filter -N foo"
  monitorcheck ip6tables -N foo
  
--# FIXME
--EXP="\
-- EVENT: nft: NEW chain: bridge filter foo use 1
-- EVENT: ebtables -t filter -A foo -j ACCEPT"
-+EXP=" EVENT: nft: NEW chain: bridge filter foo use 1"
+-EXP=" EVENT: nft: NEW chain: bridge filter foo use 1"
++EXP=" EVENT: ebtables -t filter -N foo"
  monitorcheck ebtables -N foo
  
- EXP=" EVENT: -0 -t filter -N foo"
-@@ -110,10 +106,7 @@ monitorcheck iptables -X foo
- EXP=" EVENT: -6 -t filter -X foo"
+-EXP=" EVENT: -0 -t filter -N foo"
++EXP=" EVENT: arptables -t filter -N foo"
+ monitorcheck arptables -N foo
+ 
+ # meta l4proto matches require proper nft_handle:family value
+-EXP=" EVENT: -4 -t filter -A FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
++EXP=" EVENT: iptables -t filter -A FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
+ monitorcheck iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 22 -j ACCEPT
+ 
+-EXP=" EVENT: -6 -t filter -A FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
++EXP=" EVENT: ip6tables -t filter -A FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
+ monitorcheck ip6tables -A FORWARD -i eth1 -o eth2 -p udp --sport 1337 -j ACCEPT
+ 
+ EXP=" EVENT: ebtables -t filter -A FORWARD -p IPv4 -i eth1 -o eth2 --ip-proto udp --ip-sport 1337 -j ACCEPT"
+ monitorcheck ebtables -A FORWARD -i eth1 -o eth2 -p ip --ip-protocol udp --ip-source-port 1337 -j ACCEPT
+ 
+-EXP=" EVENT: -0 -t filter -A INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
++EXP=" EVENT: arptables -t filter -A INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
+ monitorcheck arptables -A INPUT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06 -j ACCEPT
+ 
+-EXP=" EVENT: -4 -t filter -D FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
++EXP=" EVENT: iptables -t filter -D FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
+ monitorcheck iptables -D FORWARD -i eth1 -o eth2 -p tcp --dport 22 -j ACCEPT
+ 
+-EXP=" EVENT: -6 -t filter -D FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
++EXP=" EVENT: ip6tables -t filter -D FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
+ monitorcheck ip6tables -D FORWARD -i eth1 -o eth2 -p udp --sport 1337 -j ACCEPT
+ 
+ EXP=" EVENT: ebtables -t filter -D FORWARD -p IPv4 -i eth1 -o eth2 --ip-proto udp --ip-sport 1337 -j ACCEPT"
+ monitorcheck ebtables -D FORWARD -i eth1 -o eth2 -p ip --ip-protocol udp --ip-source-port 1337 -j ACCEPT
+ 
+-EXP=" EVENT: -0 -t filter -D INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
++EXP=" EVENT: arptables -t filter -D INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
+ monitorcheck arptables -D INPUT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06 -j ACCEPT
+ 
+-EXP=" EVENT: -4 -t filter -X foo"
++EXP=" EVENT: iptables -t filter -X foo"
+ monitorcheck iptables -X foo
+ 
+-EXP=" EVENT: -6 -t filter -X foo"
++EXP=" EVENT: ip6tables -t filter -X foo"
  monitorcheck ip6tables -X foo
  
--# FIXME
--EXP="\
-- EVENT: ebtables -t filter -D foo -j ACCEPT
-- EVENT: nft: DEL chain: bridge filter foo use 0"
-+EXP=" EVENT: nft: DEL chain: bridge filter foo use 0"
+-EXP=" EVENT: nft: DEL chain: bridge filter foo use 0"
++EXP=" EVENT: ebtables -t filter -X foo"
  monitorcheck ebtables -X foo
  
- EXP=" EVENT: -0 -t filter -X foo"
+-EXP=" EVENT: -0 -t filter -X foo"
++EXP=" EVENT: arptables -t filter -X foo"
+ monitorcheck arptables -X foo
+ 
+-EXP=" EVENT: -4 -t filter -D FORWARD -j ACCEPT"
++EXP=" EVENT: iptables -t filter -D FORWARD -j ACCEPT"
+ monitorcheck iptables -F FORWARD
+ 
+-EXP=" EVENT: -6 -t filter -D FORWARD -j ACCEPT"
++EXP=" EVENT: ip6tables -t filter -D FORWARD -j ACCEPT"
+ monitorcheck ip6tables -F FORWARD
+ 
+ EXP=" EVENT: ebtables -t filter -D FORWARD -j ACCEPT"
+ monitorcheck ebtables -F FORWARD
+ 
+-EXP=" EVENT: -0 -t filter -D INPUT -j ACCEPT"
++EXP=" EVENT: arptables -t filter -D INPUT -j ACCEPT"
+ monitorcheck arptables -F INPUT
+ 
+ EXP=" EVENT: nft: DEL chain: ip filter FORWARD use 0 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1"
 diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
-index 7079a039fb28b..b54a704bb1786 100644
+index b54a704bb1786..9561bd177dee4 100644
 --- a/iptables/xtables-monitor.c
 +++ b/iptables/xtables-monitor.c
-@@ -96,6 +96,13 @@ static int rule_cb(const struct nlmsghdr *nlh, void *data)
- 	arg->h->ops = nft_family_ops_lookup(family);
- 	arg->h->family = family;
+@@ -70,6 +70,22 @@ static int table_cb(const struct nlmsghdr *nlh, void *data)
+ 	return MNL_CB_OK;
+ }
  
-+	/* ignore policy rules unless tracing,
-+	 * they are reported when deleting user-defined chains */
-+	if (family == NFPROTO_BRIDGE &&
-+	    arg->is_event &&
-+	    nft_rule_is_policy_rule(r))
-+		goto err_free;
++static const char *family_cmd(int family)
++{
++	switch (family) {
++	case NFPROTO_IPV4:
++		return "iptables";
++	case NFPROTO_IPV6:
++		return "ip6tables";
++	case NFPROTO_ARP:
++		return "arptables";
++	case NFPROTO_BRIDGE:
++		return "ebtables";
++	default:
++		return NULL;
++	}
++}
 +
- 	if (arg->is_event)
- 		printf(" EVENT: ");
- 	switch (family) {
+ static bool counters;
+ static bool trace;
+ static bool events;
+@@ -103,27 +119,16 @@ static int rule_cb(const struct nlmsghdr *nlh, void *data)
+ 	    nft_rule_is_policy_rule(r))
+ 		goto err_free;
+ 
+-	if (arg->is_event)
+-		printf(" EVENT: ");
+-	switch (family) {
+-	case AF_INET:
+-	case AF_INET6:
+-		printf("-%c ", family == AF_INET ? '4' : '6');
+-		break;
+-	case NFPROTO_ARP:
+-		printf("-0 ");
+-		break;
+-	case NFPROTO_BRIDGE:
+-		printf("ebtables ");
+-		break;
+-	default:
+-		puts("");
++	if (!family_cmd(family))
+ 		goto err_free;
+-	}
+ 
+-	printf("-t %s ", nftnl_rule_get_str(r, NFTNL_RULE_TABLE));
+-	nft_rule_print_save(arg->h, r, type == NFT_MSG_NEWRULE ? NFT_RULE_APPEND :
+-							   NFT_RULE_DEL,
++	printf("%s%s -t %s ",
++	       arg->is_event ? " EVENT: " : "",
++	       family_cmd(family),
++	       nftnl_rule_get_str(r, NFTNL_RULE_TABLE));
++	nft_rule_print_save(arg->h, r,
++			    type == NFT_MSG_NEWRULE ? NFT_RULE_APPEND
++						    : NFT_RULE_DEL,
+ 			    counters ? 0 : FMT_NOCOUNTS);
+ err_free:
+ 	nftnl_rule_free(r);
+@@ -150,29 +155,18 @@ static int chain_cb(const struct nlmsghdr *nlh, void *data)
+ 	if (arg->nfproto && arg->nfproto != family)
+ 		goto err_free;
+ 
+-	if (nftnl_chain_is_set(c, NFTNL_CHAIN_PRIO))
+-		family = -1;
+-
+ 	printf(" EVENT: ");
+-	switch (family) {
+-	case NFPROTO_IPV4:
+-		family = 4;
+-		break;
+-	case NFPROTO_IPV6:
+-		family = 6;
+-		break;
+-	case NFPROTO_ARP:
+-		family = 0;
+-		break;
+-	default:
+-		nftnl_chain_snprintf(buf, sizeof(buf), c, NFTNL_OUTPUT_DEFAULT, 0);
++
++	if (nftnl_chain_is_set(c, NFTNL_CHAIN_PRIO) || !family_cmd(family)) {
++		nftnl_chain_snprintf(buf, sizeof(buf),
++				     c, NFTNL_OUTPUT_DEFAULT, 0);
+ 		printf("nft: %s chain: %s\n",
+ 		       type == NFT_MSG_NEWCHAIN ? "NEW" : "DEL", buf);
+ 		goto err_free;
+ 	}
+ 
+-	printf("-%d -t %s -%c %s\n",
+-			family,
++	printf("%s -t %s -%c %s\n",
++			family_cmd(family),
+ 			nftnl_chain_get_str(c, NFTNL_CHAIN_TABLE),
+ 			type == NFT_MSG_NEWCHAIN ? 'N' : 'X',
+ 			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME));
 -- 
 2.43.0
 
