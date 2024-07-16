@@ -1,61 +1,74 @@
-Return-Path: <netfilter-devel+bounces-2998-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3008-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 030CC9323E5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:30:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 339D19326B6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 14:38:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33AA61C20E23
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 10:30:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8566AB21D11
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E58C13A416;
-	Tue, 16 Jul 2024 10:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5647B19AA4E;
+	Tue, 16 Jul 2024 12:38:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9242243146
-	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 10:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F57E17C233;
+	Tue, 16 Jul 2024 12:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721125834; cv=none; b=mz3JiaV4nboElN+M2PrkQrfoB8ymiaTRpv5WhP8Q2SAS3UPRQEWrPeFGxdvgDnBKCK88RKHH2jmO2fgPZmUFeM4YcHUE3M7rLE/wDaGd7kiER5qMCbsG03n9YaQ2UMORLxbIwdGO4lw36A+0LBAwQKwGxixlZrdYfPNfS0Ehu04=
+	t=1721133524; cv=none; b=esUBwd1TzRDrcXKwXkIXJ2jfIGLP2LBuy5jAH5RN94SGIGX1z5hXpDclSAUVLIc2gWeTp4PyJASU0U0XjusUkO0kL/cZd7bHi+lEm+9wYdNs6hYzK0w7ZXefxwiIl5dTq+xbBuKE0pBtHaM8/8CxbWW4E3+0Kz5Tu8cnhhBlTCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721125834; c=relaxed/simple;
-	bh=vJnzNT+zhy24Xdpm1LR3S+hx007EkpJCNyjBW3scYss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NX2SmekDX4ibUzskXtuGmiLiMAYv5F7gSwo8t8buFbx+T2zSBpnQdrZasQVU9CFzqk44l1Zd6zvq1r8EmkjMo1L6kOtbO1x0cnF5sFY70XzpavN6kU2ZbYYYknkHz5mkK3vFFu0FvqkNm/t/49GW3oLGa+V3IEleosLHe99ENyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=40148 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1sTfRx-007jYK-A5; Tue, 16 Jul 2024 12:30:27 +0200
-Date: Tue, 16 Jul 2024 12:30:24 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Stephan Brunner <s.brunner@stephan-brunner.net>
-Cc: netfilter-devel@vger.kernel.org,
-	Reinhard =?utf-8?B?TmnDn2w=?= <reinhard.nissl@fee.de>
-Subject: Re: [PATCH] conntrack: tcp: fix parsing of tuple-port-src and
- tuple-port-dst
-Message-ID: <ZpZLwAibYGwCeHib@calendula>
-References: <e8786a769b04bbc6e72ff96f1527bc869f4f75af.1721052742.git.s.brunner@stephan-brunner.net>
+	s=arc-20240116; t=1721133524; c=relaxed/simple;
+	bh=0oabOHX/QPzJD+4fYrLgFnoPAHFQbC17iX5l3pOxPxE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BTUEtD1P8pPg35wDgiM+Fbc8K/XrLAOkLKMmshQhVP4KWGjkEGv0wqdDZl2YKSIWbT85b5kUOpxNUwma4hQgXYHefeUk5cDWsAfjuxBbyNUbVB1rFiIo60Hv8disKB9QEfV/0jOqXdxuZFf0JAnhLQEM3RmkWuILjSuGRTk1b0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WNdlv5JdDz1JCgk;
+	Tue, 16 Jul 2024 20:33:47 +0800 (CST)
+Received: from kwepemg100015.china.huawei.com (unknown [7.202.181.56])
+	by mail.maildlp.com (Postfix) with ESMTPS id 46685180064;
+	Tue, 16 Jul 2024 20:38:38 +0800 (CST)
+Received: from localhost.huawei.com (10.137.16.203) by
+ kwepemg100015.china.huawei.com (7.202.181.56) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 16 Jul 2024 20:38:36 +0800
+From: renmingshuai <renmingshuai@huawei.com>
+To: <pablo@netfilter.org>, <kadlec@blackhole.kfki.hu>, <fw@strlen.de>,
+	<davem@davemloft.net>, <netfilter-devel@vger.kernel.org>,
+	<coreteam@netfilter.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <renmingshuai@huawei.com>, <yanan@huawei.com>, <qiangxiaojun@huawei.com>,
+	<mengkanglai2@huawei.com>, <caowangbao@huawei.com>,
+	<chentongbiao@huawei.com>, <tanqi8@huawei.com>
+Subject: Are there Any Side Effects when net.netfilter.nf_conntrack_tcp_be_liberal is set to 1?
+Date: Tue, 16 Jul 2024 20:22:41 +0800
+Message-ID: <20240716122241.200224-1-renmingshuai@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e8786a769b04bbc6e72ff96f1527bc869f4f75af.1721052742.git.s.brunner@stephan-brunner.net>
-X-Spam-Score: -1.9 (-)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemg100015.china.huawei.com (7.202.181.56)
 
-On Mon, Jul 15, 2024 at 04:13:42PM +0200, Stephan Brunner wrote:
-> As seen in the parsing code above, L4PROTO should be set to IPPROTO_TCP, not the port number itself.
-
-Applied, thanks
+Hello, everyone:
+I want to consult a sysctl option net.netfilter.nf_conntrack_tcp_be_liberal.
+Commit fb366fc7541a ("netfilter: conntrack: correct window scaling with
+retransmitted SYN") fix bug that results in packets incorrectly being marked
+invalid for being out-of-window. I encountered this bug, and i found set
+net.netfilter.nf_conntrack_tcp_be_liberal is to 1 also can solve this problem.
+I want to enable nf_conntrack_tcp_be_liberal=1 but i don't know the side effects
+of this sysctl option, for example if this will cause some network security problem.
+If there are any other impacts, please let me know as well.
+thanks.
 
