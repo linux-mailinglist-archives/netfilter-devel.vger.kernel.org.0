@@ -1,291 +1,156 @@
-Return-Path: <netfilter-devel+bounces-3005-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3009-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC4193267D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 14:28:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3410E93330A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 22:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3DF1C2222E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:28:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7471F227FB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 20:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D628319A86A;
-	Tue, 16 Jul 2024 12:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 670ADB67F;
+	Tue, 16 Jul 2024 20:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="c9/tC1BU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BeOEnHpf"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E8E19A854
-	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 12:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3DC3224
+	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 20:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721132896; cv=none; b=TBKcyROzY3qeedjvgfy7Zy8TrKBBLvA6hEF7VQ3Yolsshkry3vWMm9hwkSvVOVTMX6nF6DozYIUCIEFaBc56XixCLlHBlCr/BhuWYurpIRgEZTsIS+tgH6WK/rmWjy1PGrvN2KJhDF2eb0ZJIg2qrLgTI7ktBcBka/N0dLJe3Pc=
+	t=1721162817; cv=none; b=CDU8B/ruzrBHMSJ4Rp0KOdHRcDDXvXd4bNgFoiHJ5MxpLMOKV9E6VLRm465HwK56yh/DurXic+4+yAq1e/P3maP3fFlnf6qxxSaoNyFaWPoz3vHBS8ihHWXFcESfbsZjY8bFhyS4mxKcop8gu/WKFiDIkCwGD+XRQlSmZ5n1x7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721132896; c=relaxed/simple;
-	bh=tx7z+EDAD+bfCstFjOCsZhtGPgkuxayz163MvUcJwew=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eTUdgtzA5rImTvRBroHGKfRxCy+s6yMdQb9cfVR1hWC52kA76H6bSvJF/dbeAIFhhkYz9NaXa9+in4sahec4hRSW+EF4CVlj3KZQ3bL+0m4CuahGHyhuX+CWVjsT5/tuQgqdKa5QFduB4DUkDUz/65z3GpG/dBEHLaJ2KgHER2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=c9/tC1BU; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=d57mw90EoYFOGNEoq/FCSi0/k7Xvij4lyiAEHrZURHo=; b=c9/tC1BUkzs28/eC7cZO7nFQAa
-	mvNM6RhGxCF36qHMEWKWFbOUAsgko+Uz4FlRUTZdStaiUtifM3Odh329b7iIj1J6Jo/GCQORDNLbb
-	ZVBUXi1G72dFtEW4fi+yLJWkyZ/u2LyZz7I/HCBWzA+pX7Jyh90ZjHrjCkSntF59Ii/PVvu6eAxHq
-	srFlN4TXQsYscjui1rW5CwtSMPpOV/K/9NTCADRQiqtNjbUD6x9FUu45aUMfGISqta6SO6/n79dom
-	l4uOC6mYJNg3XhRKTWNacnKBqlikjirWRNfef9dddgRyUiILAnrlHICiLQOBzFSR2s8YEP3uoNxzH
-	uokM9ZIg==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1sThHx-000000007tY-17FP;
-	Tue, 16 Jul 2024 14:28:13 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Cc: Florian Westphal <fw@strlen.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [RFC iptables PATCH 8/8] xtables-monitor: Print commands instead of -4/-6/-0 flags
-Date: Tue, 16 Jul 2024 14:28:05 +0200
-Message-ID: <20240716122805.22331-9-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240716122805.22331-1-phil@nwl.cc>
-References: <20240716122805.22331-1-phil@nwl.cc>
+	s=arc-20240116; t=1721162817; c=relaxed/simple;
+	bh=70pNCh0gTngXESz19XhJgIZXkfMZO1ZAwvDtsiSnZZw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=B5K3v05EwISvtuFx8JZcb+x2vLuD7B+9q1OQxuiuArPm6/5pmdnFH/ERKOH0FRWuXR0RRUGerkXJtthRIozYRfrnSopVxQP/e+FU4KlijbvTz928XKqsUioqyN73lCtUiLR4XIJyCGwxboMjZMKHAJ2TkXAfj73/TOT2UvP3pFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BeOEnHpf; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6b61bb5f6c0so19548116d6.2
+        for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 13:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721162814; x=1721767614; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hFOLRE1QEbGoioM6inAqebQ6pt+yClTlw418Sxdop1I=;
+        b=BeOEnHpf2sez93CX6h7vAkwtD9sJNopEoZH5Tfw8XZe1B70RAv5ULbhnttTPusrJ4a
+         AtZrrE4JJxXoD0eKQcHSHH1oJ23X9cmuE6D54KTYQ08M3kAa3fz9pgwJ3uQdQ+IJB8P8
+         U8K5KpvRK+7uh9mUV3O8boqkyFUbCJfrXWA/SiAmRAZsyiJpzO5vQc45GNrmJDBIlmdA
+         E4tTOj+PjEJEqGfgZyW0x9T2zp9B0OCgnJYCpb67jNEE1gz4KehMklh9aO4YB3atjud7
+         +bag5R7k2x5RXfrTYMoVITsH05/z4PGEEraSQQINCaYXs6U/hLN1JQUlll0Q2NYoEE0P
+         w1+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721162814; x=1721767614;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hFOLRE1QEbGoioM6inAqebQ6pt+yClTlw418Sxdop1I=;
+        b=XFsqhIJiNs03cn890LhJPSQ6Pjt5LrdlofcQglCZUqjw+S/HXdcPvjz6zmpNlxgWg1
+         Q3ekQYeE6ynRew6hDOwvGbX3jgfWRHSKesB73sY3rBXzAy4NzFWMZmrBhkb0mVQ1EoPE
+         Kq0P8wKArTPfZa8QRg3A/BEtltia6Qc1UgmTUb+H8F5nvBcIv1l5rv1Na/vgh59hCpk0
+         /IHokGzk48zv4EVddm0u2pxF50FXA0xbXZBtZEUeAK6eyLzhf9QsqbcTWqZpGag1WZNC
+         iNqkyFYCLmlISgl0VvRZeOamxfnNYqBdeQqnhBCPNRZFF/0+Vd+Wi9/J0HnyfN145iEJ
+         3jmw==
+X-Gm-Message-State: AOJu0YyUulD37X5rFffiVTsUh+fAC1ANuMBAHCqBaX+V9+LY5iMXlQIW
+	kEzuXgu6UYF8uVhFYPgT0jcCflzhnCIGpnVNyCa698Z7EGL2m5tA2UbUT8+29TyWHstj9syqPqz
+	c0E9sqS8WUDmQCuzPKqAJHWCtVAK3zw==
+X-Google-Smtp-Source: AGHT+IEDYSXjcOIfo3oZF8HvRhszmzbzReemPMrQ/Y8bQvS01uatTJAcGErCqU71jgKDaZIRg3Db0gG8vNug5HxaQfs=
+X-Received: by 2002:ad4:5dc5:0:b0:6b5:4e5d:7cfd with SMTP id
+ 6a1803df08f44-6b77f511356mr30679876d6.23.1721162814531; Tue, 16 Jul 2024
+ 13:46:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAEoHhZyh=Cri2gkJmSnqj-MBa3wp2xEGMV+F02iM9TOv4QeWGA@mail.gmail.com>
+In-Reply-To: <CAEoHhZyh=Cri2gkJmSnqj-MBa3wp2xEGMV+F02iM9TOv4QeWGA@mail.gmail.com>
+From: Matt Ayre <maayr3@gmail.com>
+Date: Wed, 17 Jul 2024 06:46:43 +1000
+Message-ID: <CAEoHhZyVLw74iA2a549kyok=PDXr=JJDPGN1TcqT3oNvoJy=WQ@mail.gmail.com>
+Subject: Transparent SNAT bridge with physdev module
+To: netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The '-4' and '-6' flags are a rarely used feature of iptables-restore.
-The '-0' flag is purely artificial and not recognized anywhere (at least
-not as an arptables rule prefix in this sense). Finally, there is no
-such flag for ebtables in the first place. Go with a more intuitively
-clear approach and instead print the typical command which added the
-rule being printed.
+Hi there,
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- .../testcases/nft-only/0012-xtables-monitor_0 | 40 +++++------
- iptables/xtables-monitor.c                    | 66 +++++++++----------
- 2 files changed, 50 insertions(+), 56 deletions(-)
+I have a very basic SNAT + physdev setup and I'm finding it wont work
+and it would seem to be a obvious bug to me if this scenario is
+supported, which I believe it is
 
-diff --git a/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0 b/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-index ef1ec3c9446ae..c49b7ccddeb35 100755
---- a/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-+++ b/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-@@ -42,13 +42,13 @@ monitorcheck() { # (cmd ...)
- EXP="\
-  EVENT: nft: NEW table: table filter ip flags 0 use 1 handle 0
-  EVENT: nft: NEW chain: ip filter FORWARD use 1 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1
-- EVENT: -4 -t filter -A FORWARD -j ACCEPT"
-+ EVENT: iptables -t filter -A FORWARD -j ACCEPT"
- monitorcheck iptables -A FORWARD -j ACCEPT
- 
- EXP="\
-  EVENT: nft: NEW table: table filter ip6 flags 0 use 1 handle 0
-  EVENT: nft: NEW chain: ip6 filter FORWARD use 1 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1
-- EVENT: -6 -t filter -A FORWARD -j ACCEPT"
-+ EVENT: ip6tables -t filter -A FORWARD -j ACCEPT"
- monitorcheck ip6tables -A FORWARD -j ACCEPT
- 
- EXP="\
-@@ -60,68 +60,68 @@ monitorcheck ebtables -A FORWARD -j ACCEPT
- EXP="\
-  EVENT: nft: NEW table: table filter arp flags 0 use 1 handle 0
-  EVENT: nft: NEW chain: arp filter INPUT use 1 type filter hook input prio 0 policy accept packets 0 bytes 0 flags 1
-- EVENT: -0 -t filter -A INPUT -j ACCEPT"
-+ EVENT: arptables -t filter -A INPUT -j ACCEPT"
- monitorcheck arptables -A INPUT -j ACCEPT
- 
--EXP=" EVENT: -4 -t filter -N foo"
-+EXP=" EVENT: iptables -t filter -N foo"
- monitorcheck iptables -N foo
- 
--EXP=" EVENT: -6 -t filter -N foo"
-+EXP=" EVENT: ip6tables -t filter -N foo"
- monitorcheck ip6tables -N foo
- 
--EXP=" EVENT: nft: NEW chain: bridge filter foo use 1"
-+EXP=" EVENT: ebtables -t filter -N foo"
- monitorcheck ebtables -N foo
- 
--EXP=" EVENT: -0 -t filter -N foo"
-+EXP=" EVENT: arptables -t filter -N foo"
- monitorcheck arptables -N foo
- 
- # meta l4proto matches require proper nft_handle:family value
--EXP=" EVENT: -4 -t filter -A FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
-+EXP=" EVENT: iptables -t filter -A FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
- monitorcheck iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 22 -j ACCEPT
- 
--EXP=" EVENT: -6 -t filter -A FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
-+EXP=" EVENT: ip6tables -t filter -A FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
- monitorcheck ip6tables -A FORWARD -i eth1 -o eth2 -p udp --sport 1337 -j ACCEPT
- 
- EXP=" EVENT: ebtables -t filter -A FORWARD -p IPv4 -i eth1 -o eth2 --ip-proto udp --ip-sport 1337 -j ACCEPT"
- monitorcheck ebtables -A FORWARD -i eth1 -o eth2 -p ip --ip-protocol udp --ip-source-port 1337 -j ACCEPT
- 
--EXP=" EVENT: -0 -t filter -A INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
-+EXP=" EVENT: arptables -t filter -A INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
- monitorcheck arptables -A INPUT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06 -j ACCEPT
- 
--EXP=" EVENT: -4 -t filter -D FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
-+EXP=" EVENT: iptables -t filter -D FORWARD -i eth1 -o eth2 -p tcp -m tcp --dport 22 -j ACCEPT"
- monitorcheck iptables -D FORWARD -i eth1 -o eth2 -p tcp --dport 22 -j ACCEPT
- 
--EXP=" EVENT: -6 -t filter -D FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
-+EXP=" EVENT: ip6tables -t filter -D FORWARD -i eth1 -o eth2 -p udp -m udp --sport 1337 -j ACCEPT"
- monitorcheck ip6tables -D FORWARD -i eth1 -o eth2 -p udp --sport 1337 -j ACCEPT
- 
- EXP=" EVENT: ebtables -t filter -D FORWARD -p IPv4 -i eth1 -o eth2 --ip-proto udp --ip-sport 1337 -j ACCEPT"
- monitorcheck ebtables -D FORWARD -i eth1 -o eth2 -p ip --ip-protocol udp --ip-source-port 1337 -j ACCEPT
- 
--EXP=" EVENT: -0 -t filter -D INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
-+EXP=" EVENT: arptables -t filter -D INPUT -j ACCEPT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06"
- monitorcheck arptables -D INPUT -i eth1 -s 1.2.3.4 --src-mac 01:02:03:04:05:06 -j ACCEPT
- 
--EXP=" EVENT: -4 -t filter -X foo"
-+EXP=" EVENT: iptables -t filter -X foo"
- monitorcheck iptables -X foo
- 
--EXP=" EVENT: -6 -t filter -X foo"
-+EXP=" EVENT: ip6tables -t filter -X foo"
- monitorcheck ip6tables -X foo
- 
--EXP=" EVENT: nft: DEL chain: bridge filter foo use 0"
-+EXP=" EVENT: ebtables -t filter -X foo"
- monitorcheck ebtables -X foo
- 
--EXP=" EVENT: -0 -t filter -X foo"
-+EXP=" EVENT: arptables -t filter -X foo"
- monitorcheck arptables -X foo
- 
--EXP=" EVENT: -4 -t filter -D FORWARD -j ACCEPT"
-+EXP=" EVENT: iptables -t filter -D FORWARD -j ACCEPT"
- monitorcheck iptables -F FORWARD
- 
--EXP=" EVENT: -6 -t filter -D FORWARD -j ACCEPT"
-+EXP=" EVENT: ip6tables -t filter -D FORWARD -j ACCEPT"
- monitorcheck ip6tables -F FORWARD
- 
- EXP=" EVENT: ebtables -t filter -D FORWARD -j ACCEPT"
- monitorcheck ebtables -F FORWARD
- 
--EXP=" EVENT: -0 -t filter -D INPUT -j ACCEPT"
-+EXP=" EVENT: arptables -t filter -D INPUT -j ACCEPT"
- monitorcheck arptables -F INPUT
- 
- EXP=" EVENT: nft: DEL chain: ip filter FORWARD use 0 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1"
-diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
-index b54a704bb1786..9561bd177dee4 100644
---- a/iptables/xtables-monitor.c
-+++ b/iptables/xtables-monitor.c
-@@ -70,6 +70,22 @@ static int table_cb(const struct nlmsghdr *nlh, void *data)
- 	return MNL_CB_OK;
- }
- 
-+static const char *family_cmd(int family)
-+{
-+	switch (family) {
-+	case NFPROTO_IPV4:
-+		return "iptables";
-+	case NFPROTO_IPV6:
-+		return "ip6tables";
-+	case NFPROTO_ARP:
-+		return "arptables";
-+	case NFPROTO_BRIDGE:
-+		return "ebtables";
-+	default:
-+		return NULL;
-+	}
-+}
-+
- static bool counters;
- static bool trace;
- static bool events;
-@@ -103,27 +119,16 @@ static int rule_cb(const struct nlmsghdr *nlh, void *data)
- 	    nft_rule_is_policy_rule(r))
- 		goto err_free;
- 
--	if (arg->is_event)
--		printf(" EVENT: ");
--	switch (family) {
--	case AF_INET:
--	case AF_INET6:
--		printf("-%c ", family == AF_INET ? '4' : '6');
--		break;
--	case NFPROTO_ARP:
--		printf("-0 ");
--		break;
--	case NFPROTO_BRIDGE:
--		printf("ebtables ");
--		break;
--	default:
--		puts("");
-+	if (!family_cmd(family))
- 		goto err_free;
--	}
- 
--	printf("-t %s ", nftnl_rule_get_str(r, NFTNL_RULE_TABLE));
--	nft_rule_print_save(arg->h, r, type == NFT_MSG_NEWRULE ? NFT_RULE_APPEND :
--							   NFT_RULE_DEL,
-+	printf("%s%s -t %s ",
-+	       arg->is_event ? " EVENT: " : "",
-+	       family_cmd(family),
-+	       nftnl_rule_get_str(r, NFTNL_RULE_TABLE));
-+	nft_rule_print_save(arg->h, r,
-+			    type == NFT_MSG_NEWRULE ? NFT_RULE_APPEND
-+						    : NFT_RULE_DEL,
- 			    counters ? 0 : FMT_NOCOUNTS);
- err_free:
- 	nftnl_rule_free(r);
-@@ -150,29 +155,18 @@ static int chain_cb(const struct nlmsghdr *nlh, void *data)
- 	if (arg->nfproto && arg->nfproto != family)
- 		goto err_free;
- 
--	if (nftnl_chain_is_set(c, NFTNL_CHAIN_PRIO))
--		family = -1;
--
- 	printf(" EVENT: ");
--	switch (family) {
--	case NFPROTO_IPV4:
--		family = 4;
--		break;
--	case NFPROTO_IPV6:
--		family = 6;
--		break;
--	case NFPROTO_ARP:
--		family = 0;
--		break;
--	default:
--		nftnl_chain_snprintf(buf, sizeof(buf), c, NFTNL_OUTPUT_DEFAULT, 0);
-+
-+	if (nftnl_chain_is_set(c, NFTNL_CHAIN_PRIO) || !family_cmd(family)) {
-+		nftnl_chain_snprintf(buf, sizeof(buf),
-+				     c, NFTNL_OUTPUT_DEFAULT, 0);
- 		printf("nft: %s chain: %s\n",
- 		       type == NFT_MSG_NEWCHAIN ? "NEW" : "DEL", buf);
- 		goto err_free;
- 	}
- 
--	printf("-%d -t %s -%c %s\n",
--			family,
-+	printf("%s -t %s -%c %s\n",
-+			family_cmd(family),
- 			nftnl_chain_get_str(c, NFTNL_CHAIN_TABLE),
- 			type == NFT_MSG_NEWCHAIN ? 'N' : 'X',
- 			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME));
--- 
-2.43.0
+Some of my versions here;
 
+$ sudo iptables --version
+iptables v1.8.9 (nf_tables)
+$ uname -a
+Linux us-sjc-eqnx-sv1-gw-0-5530 6.1.0-15-amd64 #1 SMP PREEMPT_DYNAMIC
+Debian 6.1.66-1 (2023-12-09) x86_64 GNU/Linux
+
+The relevant iptables configuration is this;
+
+iptables -m physdev --physdev-out ens87f6 -t nat -A POSTROUTING -s
+10.0.0.0/8 -j SNAT --to-source x.x.x.62 --persistent
+
+The result is that SNAT works in the outbound direction but on the
+reply direction when the packet is unNATed, the dmac is changed to be
+the bridge mac which causes the packet to punt to routing instead of
+being forwarded correctly
+
+I know this because of the following packet logging I subsequently
+added on the mangle prerouting and forward chains and can see whats
+happening at the intermediate stages inside the system;
+
+kernel: IPTABLES M-PR:IN=br_nat_in_3 OUT= PHYSIN=ens87f6
+MAC=52:54:00:2b:95:c9:82:71:1f:83:80:b6:08:00 SRC=52.94.29.126
+DST=x.x.x.62 LEN=84 TOS=0x00 PREC=0x00 TTL=241 ID=46108 DF PROTO=ICMP
+TYPE=0 CODE=0 ID=54612 SEQ=408
+kernel: IPTABLES M-F :IN=br_nat_in_3 OUT=br0 PHYSIN=ens87f6
+MAC=a2:20:71:68:06:df:82:71:1f:83:80:b6:08:00 SRC=52.94.29.126
+DST=10.117.117.91 LEN=84 TOS=0x00 PREC=0x00 TTL=240 ID=46108 DF
+PROTO=ICMP TYPE=0 CODE=0 ID=54612 SEQ=408
+
+$ ip link show br_nat_in_3
+226: br_nat_in_3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc
+noqueue state UP mode DEFAULT group default qlen 1000
+  link/ether a2:20:71:68:06:df brd ff:ff:ff:ff:ff:ff
+
+Same problem is visible from ebtables logging
+
+So I can imagine why in some of the use cases of different scenarios
+rewriting the dmac is necessary to push the packet back up to routing
+and get it forwarded to the correct place, but that behaviour becomes
+a problem in the transparent nat scenario
+
+Maybe its never worked or never been supported in the history of
+nftables/iptables but some of the examples I found online led me to
+believe otherwise. It does make sense to me that it never would work
+because theres no toggle to turn off this behaviour and its required
+for the other scenarios. It would need to be smart enough to turn off
+that dmac mangle behaviour when the physdev module was in use for
+bridged traffic, though possibly that would not always be the desired
+behaviour
+
+I did have a quick look into ntfables and whether it could do this but
+1) i couldnt find any documentation for this scenario or examples of
+people doing it and 2) I am understanding that both are just frontends
+for the same underlying functionality anyway since I can get the
+following output with the nft command for my iptables rule
+
+$ sudo nft list table ip nat
+# Warning: table ip nat is managed by iptables-nft, do not touch!
+table ip nat {
+    chain POSTROUTING {
+        type nat hook postrouting priority srcnat; policy accept;
+        ip saddr 10.0.0.0/8 xt match physdev counter packets 10959
+bytes 1033744 snat to x.x.x.62 persistent
+    }
+    chain PREROUTING {
+        type nat hook prerouting priority dstnat; policy accept;
+    }
+}
 
