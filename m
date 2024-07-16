@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3002-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-2999-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D8B932679
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 14:28:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3CF1932677
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 14:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28E1A1C22206
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:28:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 628EA2831B8
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2024 12:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17CC19A841;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293C019A29C;
 	Tue, 16 Jul 2024 12:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="gq0xqCoA"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PmhKU1hY"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24858199EB9
-	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 12:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB87199233
+	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jul 2024 12:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721132894; cv=none; b=ZgSvl6hJ7pQk8FlAVHPI2fQaNJKEZcVima6U+ZK2xDzk+Upe3gyYx0VwigZyo5YFnWQPai7SV6NeLtPd/+gsdscw2/uklCRKjqY3Thf2X9PVjo9kNGuyN5wkcZcKyII1e+s6ujJIvwiHdcVONlwXHqODfGwKl6u5HpXv24ouvYI=
+	t=1721132894; cv=none; b=Y+lGflYH86VDqu/VFxllqtwven8QsYTYUR2mzh7pKZSNO+8O/XXAmDQxZufqQCC6dQ5ruP7C1nP06J5yeAT4xNSVnNprH+vgrdwrAdqajcLwXMYDJ7Agy/qvTxvSV2xoSozRjfOkGkiVpPG4c/UbE1+a3WeVwa1WVS/FfSeLBnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721132894; c=relaxed/simple;
-	bh=2v9P92JqNJM+UJOLxXG1/g44RyhsFUSKs0ZMU++MewA=;
+	bh=o21GVZJNW84A5GMBFIbfCSrEzTIt2TryUybmiex1pIk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XYJNQXyNEYN2tarVce0//yzScjcR9/rrnxQ6fChkBE8j2ICGFzsjGZyAdKPlCTDHDmtKb7fPcr5efk6tc+rBLbDObtjgYN07zk0QCVxa/dNvpDXQNbY3C3XMmKTv2Rq1hQquXdTDRcL5fZxVTDuh9T9NJIMFSbmgugd80kvzaOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=gq0xqCoA; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=N39ncnv/29JO1NGM3zNYdcXG19LexjGhw3i0L3USdvpOQkBjKHY4MtZPrDz6BNgBvrTPCplHFaL5TrR+kDhkbdcG5bzdbSrEb12aUF1wSTSwh4Tug9i23kEZnl/jac4Ram8lIbyHZY8fw50d4qI3r1egFhFBb8D7RW6O+qZX6j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PmhKU1hY; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,24 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=oWAjJgBgfxNV18vi3MjpJZyKUS1RpedtrAiVKGoPQHs=; b=gq0xqCoAKxw3PCVOFZ8NPACKPE
-	l8rKNN1uFBAMgNnE68cIwdyDvKw0hJTbkg5sm4O4/0uOcTczO/4vNI+44mV7BJzGe0BNfmL0dNRrm
-	kxdyaUS504GvZgX2dWnwXiuDgiyAEwVIj4i/qyEgS1ZUDtD+tN9sJ675Mvym+z1vhSSRXoDxisQj9
-	3jfs5q1Zu1BrVINpe6AJELpTP5VoMKYAIQ09dQPfX2qhnDdNaPnlHaUwrvPsaVVaTwp+lmhXHlVym
-	2mURqJ7nUO31Qbz1Tq/g9Rkk0HW1OltvMehnInkigRHPo7ZQlfNxVTxYKNiN/Kdsj1oSW9wObYm45
-	haZRW6ow==;
+	bh=1dLEXydO5CuNrfEL7lgghAkbu8K2fNhpgqpaiTQZXe8=; b=PmhKU1hYeyr6aeb67zlrEQ1bQX
+	kuSN4TjGCZ5QiqhD/zbhUmaiVE5lbH1LojWyXdGYuaVeojJXvxlxKcgBrvs+PvQFTPoVvUE0V9Jcw
+	9lgWWpoEC0s12p0hw8QeN8Y+8QDTntG/cUq8UdnGZtxI3uCH56ChO680luBH0hyb+zsx/+SG+awfd
+	o5iKfjBSKPURWzlpCOau7FqsjRGd/DbwW2suG9X/PPEs5Qu8fmpvo/5ApE0QMFKdSAn1Dw/cusaUC
+	wfwXV6XRix3B8C9gyV59z4xR00rPJD//AZovAvNZ+ZJ3a8+OnUtIy4ihHg+NVdNNEoSNJwByWY1lo
+	XOyEXyoA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sThHv-000000007tK-1h8y;
-	Tue, 16 Jul 2024 14:28:11 +0200
+	id 1sThHt-000000007su-0IjM;
+	Tue, 16 Jul 2024 14:28:09 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [iptables PATCH 1/8] xtables-monitor: Proper re-init for rule's family
-Date: Tue, 16 Jul 2024 14:27:58 +0200
-Message-ID: <20240716122805.22331-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/8] xtables-monitor: Flush stdout after all lines of output
+Date: Tue, 16 Jul 2024 14:27:59 +0200
+Message-ID: <20240716122805.22331-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240716122805.22331-1-phil@nwl.cc>
 References: <20240716122805.22331-1-phil@nwl.cc>
@@ -66,41 +66,36 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When not running for a specific family only (via -4/-6 flags),
-xtables-monitor potentially sees events/traces for all families. To
-correctly parse rules when printing for NEWRULE, DELRULE or TRACE
-messages, nft_handle has to be reinitialized for the rule's family.
+Writing an xtables-monitor testsuite is pretty much impossible without
+this due to unreliable output flushing. Just move the fflush() call from
+trace_cb() to its caller so monitor events benefit from it as well.
 
-It is not sufficient to reset nft_handle::ops: Some expression parsers
-rely upon nft_handle::family to be properly set, too (cf. references to
-'ctx->h->family in nft-ruleparse.c). Adjusting the 'afinfo' pointer
-provided by libxtables is even more crucial, as e.g. do_parse() in
-xshared.c relies upon it for the proper optstring.
-
-This is actually a day-1 bug in xtables-monitor which surfaced due to
-commit 9075c3aa983d9 ("nft: Increase rule parser strictness"). Therefore
-make this fix the commit it is following-up.
-
-Fixes: ca69b0290dc50 ("xtables-monitor: Fix ip6tables rule printing")
+Fixes: 07af4da52ab30 ("xtables-monitor: fix rule printing")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-monitor.c | 2 ++
- 1 file changed, 2 insertions(+)
+ iptables/xtables-monitor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
-index cf2729d87968b..cf92355f76f8a 100644
+index cf92355f76f8a..90d1cc5e37f31 100644
 --- a/iptables/xtables-monitor.c
 +++ b/iptables/xtables-monitor.c
-@@ -92,7 +92,9 @@ static int rule_cb(const struct nlmsghdr *nlh, void *data)
- 	if (arg->nfproto && arg->nfproto != family)
- 		goto err_free;
+@@ -544,7 +544,6 @@ static int trace_cb(const struct nlmsghdr *nlh, struct cb_arg *arg)
+ err_free:
+ 	nftnl_trace_free(nlt);
+ err:
+-	fflush(stdout);
+ 	return MNL_CB_OK;
+ }
  
-+	xtables_set_nfproto(family);
- 	arg->h->ops = nft_family_ops_lookup(family);
-+	arg->h->family = family;
+@@ -576,6 +575,7 @@ static int monitor_cb(const struct nlmsghdr *nlh, void *data)
+ 		break;
+ 	}
  
- 	if (arg->is_event)
- 		printf(" EVENT: ");
++	fflush(stdout);
+ 	return ret;
+ }
+ 
 -- 
 2.43.0
 
