@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3013-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3015-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 191C493443B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jul 2024 23:52:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF0DA934440
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jul 2024 23:52:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22CA21C20AF3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jul 2024 21:52:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 651B8B21690
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Jul 2024 21:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD98B187325;
-	Wed, 17 Jul 2024 21:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03CBD188CB4;
+	Wed, 17 Jul 2024 21:52:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3555B36AEC;
-	Wed, 17 Jul 2024 21:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27181822F9;
+	Wed, 17 Jul 2024 21:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721253150; cv=none; b=BWt17zzgo9o4hUOPPyOO1sNgw4WBW7m6U4C35oxovoCy3+o1Ysyp8qezX2XBAAZ8xYZ28S/0rY1ALIA2GITbRj481malBVGTZLTWB3AxGGTvm7QNtFHu/C46D0mdtywjiCyyMau56eRLkOAHPN7KIv/kEQRNth+7Fa9UDqf/LVw=
+	t=1721253150; cv=none; b=nDYlEDycM3irviLQ0XeiG/TUSxKjjsgIqQFZH37u33Qjnv8glBjTc/ZUlTgy+lWE2Q9gsfW98LMfFCpiKyo9vMRfgqy6cfWtFJzpZGHPb5TPbFL1VOU8Fm+4f1sa7f4E8yuuKQdC2w0oDmSQxAslq3enM2uXkdeUKZ+w4P8bznI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721253150; c=relaxed/simple;
-	bh=vyePOu/V21C2fLF+74+Frg6UCE5nvON5C5BgJYJD2mE=;
+	bh=IKEADJ2tNUJq0VP+9bqqmHsl7Y8/YjC5GhmCilnuqkg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Rb8yvtNIoLzH4EKyhDZ7fIjK13c6jkCztfbUavZle1vssOc4BoL2opfkjFsR9gxagjYH7xRThjRxoT3JpBfmYJHtG0lhleVaqs4ZHhkfnyc58cXZO+ktoRrUv3xNERSJLZBpu2Spqf88r7dan26BQr/45HfQQZBlinQLNUTO4BU=
+	 MIME-Version; b=MyxR6Vmx7UEJ8r/B/MZC/chD/3Czm6nxD7hIayWW4KHp9yRT5iPp71AiVCpi/e/hkXZnMUpv/Q1Pe9wP/YEoyqNyTz8cbverEyQ0K7xxee89oTODhknk2468u7UbryYEjYPVEIhSW233tAHbIHhKM3o2iBGAM6HTz7nyJaa5Ft4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 2/4] netfilter: nf_set_pipapo: fix initial map fill
-Date: Wed, 17 Jul 2024 23:52:12 +0200
-Message-Id: <20240717215214.225394-3-pablo@netfilter.org>
+Subject: [PATCH net 3/4] selftests: netfilter: add test case for recent mismatch bug
+Date: Wed, 17 Jul 2024 23:52:13 +0200
+Message-Id: <20240717215214.225394-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240717215214.225394-1-pablo@netfilter.org>
 References: <20240717215214.225394-1-pablo@netfilter.org>
@@ -51,135 +51,141 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-The initial buffer has to be inited to all-ones, but it must restrict
-it to the size of the first field, not the total field size.
+Without 'netfilter: nf_set_pipapo: fix initial map fill' this fails:
 
-After each round in the map search step, the result and the fill map
-are swapped, so if we have a set where f->bsize of the first element
-is smaller than m->bsize_max, those one-bits are leaked into future
-rounds result map.
+TEST: reported issues
+  Add two elements, flush, re-add       1s                              [ OK ]
+  net,mac with reload                   1s                              [ OK ]
+  net,port,proto                        1s                              [FAIL]
+post-add: should have returned 10.5.8.0/24 . 51-60 . 6-17  but got table inet filter {
+        set test {
+                type ipv4_addr . inet_service . inet_proto
+                flags interval,timeout
+                elements = { 10.5.7.0/24 . 51-60 . 6-17 }
+        }
+}
 
-This makes pipapo find an incorrect matching results for sets where
-first field size is not the largest.
+The other sets defined in the selftest do not trigger this bug, it only
+occurs if the first field group bitsize is smaller than the largest
+group bitsize.
 
-Followup patch adds a test case to nft_concat_range.sh selftest script.
+For each added element, check 'get' works and actually returns the
+requested range.
+After map has been filled, check all added ranges can still be
+retrieved.
 
-Thanks to Stefano Brivio for pointing out that we need to zero out
-the remainder explicitly, only correcting memset() argument isn't enough.
+For each deleted element, check that 'get' fails.
 
-Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
-Reported-by: Yi Chen <yiche@redhat.com>
-Cc: Stefano Brivio <sbrivio@redhat.com>
+Based on a reproducer script from Yi Chen.
+
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_pipapo.c      |  4 ++--
- net/netfilter/nft_set_pipapo.h      | 21 +++++++++++++++++++++
- net/netfilter/nft_set_pipapo_avx2.c | 10 ++++++----
- 3 files changed, 29 insertions(+), 6 deletions(-)
+ .../net/netfilter/nft_concat_range.sh         | 76 ++++++++++++++++++-
+ 1 file changed, 75 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index 15a236bebb46..eb4c4a4ac7ac 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -434,7 +434,7 @@ bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
- 	res_map  = scratch->map + (map_index ? m->bsize_max : 0);
- 	fill_map = scratch->map + (map_index ? 0 : m->bsize_max);
+diff --git a/tools/testing/selftests/net/netfilter/nft_concat_range.sh b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
+index 6d66240e149c..47088b005390 100755
+--- a/tools/testing/selftests/net/netfilter/nft_concat_range.sh
++++ b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
+@@ -27,7 +27,7 @@ TYPES="net_port port_net net6_port port_proto net6_port_mac net6_port_mac_proto
+        net6_port_net6_port net_port_mac_proto_net"
  
--	memset(res_map, 0xff, m->bsize_max * sizeof(*res_map));
-+	pipapo_resmap_init(m, res_map);
+ # Reported bugs, also described by TYPE_ variables below
+-BUGS="flush_remove_add reload"
++BUGS="flush_remove_add reload net_port_proto_match"
  
- 	nft_pipapo_for_each_field(f, i, m) {
- 		bool last = i == m->field_count - 1;
-@@ -542,7 +542,7 @@ static struct nft_pipapo_elem *pipapo_get(const struct net *net,
- 		goto out;
- 	}
+ # List of possible paths to pktgen script from kernel tree for performance tests
+ PKTGEN_SCRIPT_PATHS="
+@@ -371,6 +371,22 @@ race_repeat	0
+ perf_duration	0
+ "
  
--	memset(res_map, 0xff, m->bsize_max * sizeof(*res_map));
-+	pipapo_resmap_init(m, res_map);
- 
- 	nft_pipapo_for_each_field(f, i, m) {
- 		bool last = i == m->field_count - 1;
-diff --git a/net/netfilter/nft_set_pipapo.h b/net/netfilter/nft_set_pipapo.h
-index 0d2e40e10f7f..4a2ff85ce1c4 100644
---- a/net/netfilter/nft_set_pipapo.h
-+++ b/net/netfilter/nft_set_pipapo.h
-@@ -278,4 +278,25 @@ static u64 pipapo_estimate_size(const struct nft_set_desc *desc)
- 	return size;
++TYPE_net_port_proto_match="
++display		net,port,proto
++type_spec	ipv4_addr . inet_service . inet_proto
++chain_spec	ip daddr . udp dport . meta l4proto
++dst		addr4 port proto
++src
++start		1
++count		9
++src_delta	9
++tools		sendip bash
++proto		udp
++
++race_repeat	0
++
++perf_duration	0
++"
+ # Set template for all tests, types and rules are filled in depending on test
+ set_template='
+ flush ruleset
+@@ -1555,6 +1571,64 @@ test_bug_reload() {
+ 	nft flush ruleset
  }
  
-+/**
-+ * pipapo_resmap_init() - Initialise result map before first use
-+ * @m:		Matching data, including mapping table
-+ * @res_map:	Result map
-+ *
-+ * Initialize all bits covered by the first field to one, so that after
-+ * the first step, only the matching bits of the first bit group remain.
-+ *
-+ * If other fields have a large bitmap, set remainder of res_map to 0.
-+ */
-+static inline void pipapo_resmap_init(const struct nft_pipapo_match *m, unsigned long *res_map)
-+{
-+	const struct nft_pipapo_field *f = m->f;
-+	int i;
++# - add ranged element, check that packets match it
++# - delete element again, check it is gone
++test_bug_net_port_proto_match() {
++	setup veth send_"${proto}" set || return ${ksft_skip}
++	rstart=${start}
 +
-+	for (i = 0; i < f->bsize; i++)
-+		res_map[i] = ULONG_MAX;
++	range_size=1
++	for i in $(seq 1 10); do
++		for j in $(seq 1 20) ; do
++			elem=$(printf "10.%d.%d.0/24 . %d1-%d0 . 6-17 " ${i} ${j} ${i} "$((i+1))")
 +
-+	for (i = f->bsize; i < m->bsize_max; i++)
-+		res_map[i] = 0ul;
++			nft "add element inet filter test { $elem }" || return 1
++			nft "get element inet filter test { $elem }" | grep -q "$elem"
++			if [ $? -ne 0 ];then
++				local got=$(nft "get element inet filter test { $elem }")
++				err "post-add: should have returned $elem but got $got"
++				return 1
++			fi
++		done
++	done
++
++	# recheck after set was filled
++	for i in $(seq 1 10); do
++		for j in $(seq 1 20) ; do
++			elem=$(printf "10.%d.%d.0/24 . %d1-%d0 . 6-17 " ${i} ${j} ${i} "$((i+1))")
++
++			nft "get element inet filter test { $elem }" | grep -q "$elem"
++			if [ $? -ne 0 ];then
++				local got=$(nft "get element inet filter test { $elem }")
++				err "post-fill: should have returned $elem but got $got"
++				return 1
++			fi
++		done
++	done
++
++	# random del and re-fetch
++	for i in $(seq 1 10); do
++		for j in $(seq 1 20) ; do
++			local rnd=$((RANDOM%10))
++			local got=""
++
++			elem=$(printf "10.%d.%d.0/24 . %d1-%d0 . 6-17 " ${i} ${j} ${i} "$((i+1))")
++			if [ $rnd -gt 0 ];then
++				continue
++			fi
++
++			nft "delete element inet filter test { $elem }"
++			got=$(nft "get element inet filter test { $elem }" 2>/dev/null)
++			if [ $? -eq 0 ];then
++				err "post-delete: query for $elem returned $got instead of error."
++				return 1
++			fi
++		done
++	done
++
++	nft flush ruleset
 +}
- #endif /* _NFT_SET_PIPAPO_H */
-diff --git a/net/netfilter/nft_set_pipapo_avx2.c b/net/netfilter/nft_set_pipapo_avx2.c
-index d08407d589ea..8910a5ac7ed1 100644
---- a/net/netfilter/nft_set_pipapo_avx2.c
-+++ b/net/netfilter/nft_set_pipapo_avx2.c
-@@ -1036,6 +1036,7 @@ static int nft_pipapo_avx2_lookup_8b_16(unsigned long *map, unsigned long *fill,
- 
- /**
-  * nft_pipapo_avx2_lookup_slow() - Fallback function for uncommon field sizes
-+ * @mdata:	Matching data, including mapping table
-  * @map:	Previous match result, used as initial bitmap
-  * @fill:	Destination bitmap to be filled with current match result
-  * @f:		Field, containing lookup and mapping tables
-@@ -1051,7 +1052,8 @@ static int nft_pipapo_avx2_lookup_8b_16(unsigned long *map, unsigned long *fill,
-  * Return: -1 on no match, rule index of match if @last, otherwise first long
-  * word index to be checked next (i.e. first filled word).
-  */
--static int nft_pipapo_avx2_lookup_slow(unsigned long *map, unsigned long *fill,
-+static int nft_pipapo_avx2_lookup_slow(const struct nft_pipapo_match *mdata,
-+					unsigned long *map, unsigned long *fill,
- 					const struct nft_pipapo_field *f,
- 					int offset, const u8 *pkt,
- 					bool first, bool last)
-@@ -1060,7 +1062,7 @@ static int nft_pipapo_avx2_lookup_slow(unsigned long *map, unsigned long *fill,
- 	int i, ret = -1, b;
- 
- 	if (first)
--		memset(map, 0xff, bsize * sizeof(*map));
-+		pipapo_resmap_init(mdata, map);
- 
- 	for (i = offset; i < bsize; i++) {
- 		if (f->bb == 8)
-@@ -1186,7 +1188,7 @@ bool nft_pipapo_avx2_lookup(const struct net *net, const struct nft_set *set,
- 			} else if (f->groups == 16) {
- 				NFT_SET_PIPAPO_AVX2_LOOKUP(8, 16);
- 			} else {
--				ret = nft_pipapo_avx2_lookup_slow(res, fill, f,
-+				ret = nft_pipapo_avx2_lookup_slow(m, res, fill, f,
- 								  ret, rp,
- 								  first, last);
- 			}
-@@ -1202,7 +1204,7 @@ bool nft_pipapo_avx2_lookup(const struct net *net, const struct nft_set *set,
- 			} else if (f->groups == 32) {
- 				NFT_SET_PIPAPO_AVX2_LOOKUP(4, 32);
- 			} else {
--				ret = nft_pipapo_avx2_lookup_slow(res, fill, f,
-+				ret = nft_pipapo_avx2_lookup_slow(m, res, fill, f,
- 								  ret, rp,
- 								  first, last);
- 			}
++
+ test_reported_issues() {
+ 	eval test_bug_"${subtest}"
+ }
 -- 
 2.30.2
 
