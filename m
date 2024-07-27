@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3085-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3079-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1F993E11B
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 23:37:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29DB293E116
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 23:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C20CC281F9A
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 21:37:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84C6AB21672
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 21:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57861862A9;
-	Sat, 27 Jul 2024 21:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440CE6F30B;
+	Sat, 27 Jul 2024 21:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Djt4splI"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="YS3u+Od7"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9A136AEC
-	for <netfilter-devel@vger.kernel.org>; Sat, 27 Jul 2024 21:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D153E2E64A
+	for <netfilter-devel@vger.kernel.org>; Sat, 27 Jul 2024 21:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722116221; cv=none; b=kkV2l2gf536VzEPFFqkJxWXmkep1APjgj2MWTiuta2gDC71FQyzvTz+ZlUN7imjaOJxeCkbcTO1acyLGDVxhXOJIcT6hh998nsUvKjLmiNrqmv5dAvBM0GhvZGMNvom/IzuF1UVQODvLh7NKlIx3mrcnm03rOyYHjs3A32WC9OY=
+	t=1722116219; cv=none; b=jYuUP4nt/f6ucyFH0r4ZvpYNP6OgJwTeBOQsiIeo/haFS7iG/sxMytyMA6p2eXT4o6AJGxDyfl/l5ms8F9JIHqm/afZpBPA+x5/LeAmrStvppxMye61GIu5wIgdxwtH+JAj91MfE0u/j2hdXbMt7UykpJdRtP6d9pMpjDdVPQFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722116221; c=relaxed/simple;
-	bh=Tku/gJLOqdRz70FSc6heW0xKcANEYLenFosoe34JPsU=;
+	s=arc-20240116; t=1722116219; c=relaxed/simple;
+	bh=YpRnN060Qy047rb2x4iXuNS9SIL/KFZIYPo5zqkRFCI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fkYp6+/aRxwcP+TQPWA7RCj++1vEXLC8RTv+ulSFnr1bdwFnxd24Os5nBEM8ih3GZ5wng+AyrmqtV3RWli76nr4q9LTKpGsCvxVUNuMp1SmIMYugp6+8SE89GdvOL1GltWcXZ3K5Uyrm0vyxJHw5DZaEJxONnuE/TRu3sB8nxKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Djt4splI; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=L6mc4TGrZHZgvVhTTlxwwaiueMgBfZpor9ABUpak1MjuQeKe+ycM3kqbG4GDuA9tEOaylq6qhoOrFS077LJ4CQWSpQFxt77ZpcuDWVsAfIzNCWzivAy5xxMpAiDDF2suEkXEtn5nW6xHXlJFcdE2K3f5adquo/efG/t3OhKpGPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=YS3u+Od7; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=EEtdWKAx9USIdSuEytvlfADj88qjfU1+8BCfXEgO+SU=; b=Djt4splIFp6Ga6rx6+g9LpFj3E
-	Sc9f8n7sC8mDsPWpHSc6Q9W+Ow6XUyh5dvBPzY9XzX/+xuWGElIjBC/x8Ki2c9lp3U9k3bjohI/yE
-	WWbuLeTc2PB9el4/IR09nY+tr7NXym7+B/G82UIXBB9XmW/TSxSoARdmwOw87yob3MUghKT/e4IIS
-	jZMAPWOjU98YNoUH4WYErmwpppyFdH2QEXMtjnaA0BpGsX1l6uayfKXKRDO8zJmZtv/xvkYuyOjfF
-	h5dAG821fsBNmRUJbKtdfNb2Myrocwm1+29Qd8dP3IEFpL2wCLx2F1jNpW0VSYrMuOB78qNl55kpV
-	Cv8o9z/w==;
+	bh=7pJwyzTPmro5mcrsLMZ1EA9tOljqBptaDDW16Zh5mJM=; b=YS3u+Od7zwu6omqzJ4JYD5iq/P
+	6M+ht6abzrLCfNUB+W2BQZtlLy3w6P/0OmTXmPhGzIXkz1LYKb4JcSuUZGPycWSPmCqQve9+L01KZ
+	J7zd4pp41dK5nmuYC9VGO9sDmfIUTkdVleattklmQelzrzoF8LGVZAgOQupP28EiieYtxesRFgqYf
+	KM2lHiV1z32/pqesBMz5/JBQJpDlUmpe0gB3JLXbJR4THIPZhvJEuhFahzCuzc0gl82DDoGC31jyy
+	kPGfHy2QorD+eDQbn08zwuTC3Bd+8If0NwUi3jqJPtvrIJuEuOoqPWX5a7x61qMwTnU+9vv2dp4my
+	vkuHhjzg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sXp63-000000002V3-0bEh
+	id 1sXp5y-000000002US-0ODx
 	for netfilter-devel@vger.kernel.org;
-	Sat, 27 Jul 2024 23:36:59 +0200
+	Sat, 27 Jul 2024 23:36:54 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 10/14] xshared: Make save_iface() static
-Date: Sat, 27 Jul 2024 23:36:44 +0200
-Message-ID: <20240727213648.28761-11-phil@nwl.cc>
+Subject: [iptables PATCH 11/14] xshared: Move NULL pointer check into save_iface()
+Date: Sat, 27 Jul 2024 23:36:45 +0200
+Message-ID: <20240727213648.28761-12-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240727213648.28761-1-phil@nwl.cc>
 References: <20240727213648.28761-1-phil@nwl.cc>
@@ -65,40 +65,49 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit 22f2e1fca127b ("xshared: Share save_rule_details() with
-legacy"), there are no callers outside of xshared.c anymore.
+Simplify callers a bit, the function tests other conditions
+disqualifying any output already.
+
+While being at it, invert the conditional - it is more readable this
+way.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.c | 2 +-
- iptables/xshared.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ iptables/xshared.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 8c7df3c986eed..1070fea42c8cf 100644
+index 1070fea42c8cf..2a5eef09c75de 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -757,7 +757,7 @@ void print_ifaces(const char *iniface, const char *outiface, uint8_t invflags,
- 	printf(FMT("%-6s ", "out %s "), iface);
+@@ -759,10 +759,8 @@ void print_ifaces(const char *iniface, const char *outiface, uint8_t invflags,
+ 
+ static void save_iface(char letter, const char *iface, int invert)
+ {
+-	if (!strlen(iface) || (!strcmp(iface, "+") && !invert))
+-		return;
+-
+-	printf("%s -%c %s", invert ? " !" : "", letter, iface);
++	if (iface && strlen(iface) && (strcmp(iface, "+") || invert))
++		printf("%s -%c %s", invert ? " !" : "", letter, iface);
  }
  
--void save_iface(char letter, const char *iface, int invert)
-+static void save_iface(char letter, const char *iface, int invert)
+ static void command_match(struct iptables_command_state *cs, bool invert)
+@@ -1095,12 +1093,8 @@ void print_rule_details(unsigned int linenum, const struct xt_counters *ctrs,
+ void save_rule_details(const char *iniface, const char *outiface,
+ 		       uint16_t proto, int frag, uint8_t invflags)
  {
- 	if (!strlen(iface) || (!strcmp(iface, "+") && !invert))
- 		return;
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 26c492ebee9ec..0018b7c70bd83 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -216,7 +216,6 @@ void save_ipv6_addr(char letter, const struct in6_addr *addr,
+-	if (iniface != NULL) {
+-		save_iface('i', iniface, invflags & IPT_INV_VIA_IN);
+-	}
+-	if (outiface != NULL) {
+-		save_iface('o', outiface, invflags & IPT_INV_VIA_OUT);
+-	}
++	save_iface('i', iniface, invflags & IPT_INV_VIA_IN);
++	save_iface('o', outiface, invflags & IPT_INV_VIA_OUT);
  
- void print_ifaces(const char *iniface, const char *outiface, uint8_t invflags,
- 		  unsigned int format);
--void save_iface(char letter, const char *iface, int invert);
- 
- void print_fragment(unsigned int flags, unsigned int invflags,
- 		    unsigned int format, bool fake);
+ 	if (proto > 0) {
+ 		const char *pname = proto_to_name(proto, true);
 -- 
 2.43.0
 
