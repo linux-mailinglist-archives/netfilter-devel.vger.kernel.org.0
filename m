@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3088-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3075-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A51E93E11D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 23:37:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF13F93E110
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 23:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3538A28207E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 21:37:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 081BB1C20B31
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 21:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71001186E3E;
-	Sat, 27 Jul 2024 21:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C85A38F91;
+	Sat, 27 Jul 2024 21:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="OKdxGHf3"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="OZdBgVoQ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88131862AE
-	for <netfilter-devel@vger.kernel.org>; Sat, 27 Jul 2024 21:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749672E62D
+	for <netfilter-devel@vger.kernel.org>; Sat, 27 Jul 2024 21:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722116223; cv=none; b=Ge7kuUBYAcuJsxthnAZqwbdf+WVnipnLrFLziyStNQZJFx8zmYL7jBH4jcVjeqasWoU8Bo1vsq0JuCikWk8wpW5Z5S8ff93yyKgvowl+OAB74GLmptBtuVMW4os0a+vY/tolFyGgTYkvkyJtmJp8WbyDqq6r7ZdhrOttr9C7Zks=
+	t=1722116217; cv=none; b=ht9RHFxngAYd2IMvL8+3fwAeAjiSQIVJQMMT7FMwEEZW74ef+LwiZnpqtZ4dJf7cvUCIzzy17BPe3eV0tfluzLze5eO+tkJltIEQhcUSBMCe7V+A18adT0tVTtJXUV/v/HKhnifYtWkNEykDVv3oKkN7rOkNJVf6+0vonjwarQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722116223; c=relaxed/simple;
-	bh=laJ4b50iABVewLmNan/yurHa/WUQoQWCNeSSkl3sy6w=;
+	s=arc-20240116; t=1722116217; c=relaxed/simple;
+	bh=jWOvhC1jFmmmj7M68maXvzu6SiTjDVg3QraTX/9ZewQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t5RwxjdElmVMD0CgPlLSLZtZ7+CYVH5EgzYfvjYIVgDA+5GV/hKFtzqV1xDGAfN6+bpM0MAxJgQhndxzzS18VyQXNFqdIoZUjTtR47ds5RHt/iroMp4SWWU+Tjn4w21kQWzQHXSKc77iTsMpW66EeFgYYRxhDTHBNmJqoB4JdOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=OKdxGHf3; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=d0faNHlHhR5JzICMdF+Ok92l+sfgenEOaHW0PKpXfGQLS85Bn5/NH3olbWUNSQFZDaDAo2PHFBachEQe3z4ee8DegcMexGDSoRJ4MEZdLdwPbPTlMCaoG3/zv4KgeUE9k9yoiGUMz1rlDVdEbJOQBrFbZiS1zv7SbmbGMimYIwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=OZdBgVoQ; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=vhJxW5RouVz/FPlXRxHVeYSuT2Sjfkr3lU76+nvsj1A=; b=OKdxGHf3cQaWXaINXboCEZq7Hd
-	KBCzo8QIU+JYO16oLUFlRALNRvIuKYtav2iQ7p8rlMhLaaIhnlv8pWqWgsta3IeMuV05E7A22okZ7
-	i12F0+rp5KdJ0ZreS5/9NsOBIW6MM+/8WjSqj4co/ZDXkamu8vNhe8e5FZ7bwsJRktuePMB2060CK
-	39QdNpUg42qFj+skW5fOAtdcHVTRLa1QNLHSoA8d5YvXpQLrZbB/5i5atT2SnE5CuqDxAUzAWhsn1
-	PaVYzd1glz/Zya0t9mOMXpPrZ/oj93bDDGusnpX1A3tVBpFd251kGJwj5QyMXlbNuquplC3qyM2Eh
-	6fstmAkA==;
+	bh=FFUYs14xPf8M8Yb1I/oAvBVrpHQ3rfRLFqXElzOYVHo=; b=OZdBgVoQZj9lWTPa6LV/pq132V
+	SL5ssGb3sZZ0ceHAtS0bQ9yYsZFgPn2VUsw3w4nzOhuSsthun2aKrYGEDQqaAYBNDUJFX0Gb7T/Iy
+	A3Izykz0f9gO8iaES7QorpC9J+05Vgxu9OIXzYql+8UP9v4X/KQkbPRs2XHh2wikO5jzXguJqiHTy
+	+Jce8GsEEjqP4aoRcSEAPaR6DFYyCjFARpC7Pj1Lv0Xhd5SstXMQtrR2o1Dp7ITD7wtIryv8q87Q+
+	my6bDa4FVI2NfSc5rsGrjGgDwLu4AhgL+ahVcySDlgs/bc1xG4lD0eZCCHXCyqYyDUM+EeAfGCJ8g
+	W3UaPR1A==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sXp64-000000002VG-2qtY
+	id 1sXp5x-000000002UO-2BS2
 	for netfilter-devel@vger.kernel.org;
-	Sat, 27 Jul 2024 23:37:00 +0200
+	Sat, 27 Jul 2024 23:36:53 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 02/14] nft: Fix for zeroing existent builtin chains
-Date: Sat, 27 Jul 2024 23:36:36 +0200
-Message-ID: <20240727213648.28761-3-phil@nwl.cc>
+Subject: [iptables PATCH 03/14] extensions: recent: Fix format string for unsigned values
+Date: Sat, 27 Jul 2024 23:36:37 +0200
+Message-ID: <20240727213648.28761-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240727213648.28761-1-phil@nwl.cc>
 References: <20240727213648.28761-1-phil@nwl.cc>
@@ -65,36 +65,51 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Previous attempt at fixing for non-existent chains actually broke
-functionality by adding a check for NFTNL_CHAIN_HANDLE right after
-unsetting the attribute.
+Both fields 'seconds' and 'hit_count' are unsigned, use '%u'
+accordingly. While being at it, also fix coding-style in those lines.
 
-The approach was flawed for another reason, too: Base chains added in
-the same batch (cf. iptables-restore) have no handle either but zeroing
-them may still be sensible.
+Basically a day-1 bug, have Fixes: point at a reasonably old commit.
 
-Instead, make use of the new fake chain annotation which identifies
-fakes more reliably.
-
-Fixes: f462975fb8049 ("nft: Fix for zeroing non-existent builtin chains")
+Fixes: af1660fe0e88c ("Move libipt_recent to libxt_recent")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ extensions/libxt_recent.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index fde3db2a22b79..243b794f3d826 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -3853,7 +3853,7 @@ static int __nft_chain_zero_counters(struct nft_chain *nc, void *data)
- 		if (!o)
- 			return -1;
- 		/* may skip if it is a fake entry */
--		o->skip = !nftnl_chain_is_set(c, NFTNL_CHAIN_HANDLE);
-+		o->skip = nc->fake;
- 	}
- 
- 	iter = nftnl_rule_iter_create(c);
+diff --git a/extensions/libxt_recent.c b/extensions/libxt_recent.c
+index 055ae35080346..0221d4462408f 100644
+--- a/extensions/libxt_recent.c
++++ b/extensions/libxt_recent.c
+@@ -193,10 +193,12 @@ static void recent_print(const void *ip, const struct xt_entry_match *match,
+ 		printf(" UPDATE");
+ 	if (info->check_set & XT_RECENT_REMOVE)
+ 		printf(" REMOVE");
+-	if(info->seconds) printf(" seconds: %d", info->seconds);
++	if (info->seconds)
++		printf(" seconds: %u", info->seconds);
+ 	if (info->check_set & XT_RECENT_REAP)
+ 		printf(" reap");
+-	if(info->hit_count) printf(" hit_count: %d", info->hit_count);
++	if (info->hit_count)
++		printf(" hit_count: %u", info->hit_count);
+ 	if (info->check_set & XT_RECENT_TTL)
+ 		printf(" TTL-Match");
+ 	printf(" name: %s", info->name);
+@@ -233,10 +235,12 @@ static void recent_save(const void *ip, const struct xt_entry_match *match,
+ 		printf(" --update");
+ 	if (info->check_set & XT_RECENT_REMOVE)
+ 		printf(" --remove");
+-	if(info->seconds) printf(" --seconds %d", info->seconds);
++	if (info->seconds)
++		printf(" --seconds %u", info->seconds);
+ 	if (info->check_set & XT_RECENT_REAP)
+ 		printf(" --reap");
+-	if(info->hit_count) printf(" --hitcount %d", info->hit_count);
++	if (info->hit_count)
++		printf(" --hitcount %u", info->hit_count);
+ 	if (info->check_set & XT_RECENT_TTL)
+ 		printf(" --rttl");
+ 	printf(" --name %s",info->name);
 -- 
 2.43.0
 
