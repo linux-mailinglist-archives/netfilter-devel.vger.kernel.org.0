@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-3094-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3090-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C53593E189
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jul 2024 02:27:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FD5E93E181
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jul 2024 02:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DF9E1F21753
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jul 2024 00:27:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B13DCB2159E
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jul 2024 00:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EB5CA62;
-	Sun, 28 Jul 2024 00:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9B71B86F8;
+	Sun, 28 Jul 2024 00:26:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF701362;
-	Sun, 28 Jul 2024 00:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1462810F1;
+	Sun, 28 Jul 2024 00:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722126387; cv=none; b=MPIRrtuGaHjQUqVXa52AC5h14r0pdCM+NXgENzPciqDj4C+KaSgOO1GyVmFIRfW4/Psfy4A/Gi8TqpvJIExi47oc0fjhXoVSkCTyZcg3cw5yjRnZgidrvV8nid5G4dJVUGmlLZfm241tStRt2spy+tXrmV3bO98kQi5M6w3SOdo=
+	t=1722126384; cv=none; b=EwjBeCK7hsu4xPlRfCvBl/tqL2OlOWA5mj5iGYqWyPczDXEpKQ0eT8ledHZDsLPeNuFBbALF4y93HSA52VMh/ReqP1dqcbwg8dbgqe68n+ETOIYEstbrA+fS6Q6NbRZ2h6Cx/lznJcXlbXjCIQhwFSlAbAvBX7oSjZ4pXTCJGPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722126387; c=relaxed/simple;
-	bh=GTZVFc0zSeeXeCyBwP5m2swx0FvR30y1JM3cEv1GDd4=;
+	s=arc-20240116; t=1722126384; c=relaxed/simple;
+	bh=LN9sJF1ELuFamW2XwjLNaIq9pF5WelaQTpeGs6NP4RA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R34MW4T03Ov9vMnC8d6CME4YoOrwBXcrQ/JyNAog7qdWfEu6ft4YAvz+BYzoEVNo/874+F0ualzqzdlCQ7Do328XCzDeKMYSJz7Eo04f5LwjtoF8u8O6qB6467/XC5L1KRTwnZdCK5zVeW3a2cLCGyLnIahJ2kNySn6jJ6uCTpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.255
+	 MIME-Version:Content-Type; b=etf8OreEEGR9lVaIvoqzZreXm6R94+vrq1ssvsaKOLvfHiw0nfpGFJHXBBXhfEtNidfxbeMpFPbmiu8Mi7LLQOCV5HiUIIdZlWBXYa8oqXmm+rrS3Y3cGkgEAzdTre4DDvgB9MRZtgV2c9olxSWzUYtaZuY4CTANobMFRO3kG9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WWj2n3N4vz1L9Df;
-	Sun, 28 Jul 2024 08:26:09 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WWj1v63Zjzncnf;
+	Sun, 28 Jul 2024 08:25:23 +0800 (CST)
 Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
-	by mail.maildlp.com (Postfix) with ESMTPS id 45EF0180105;
-	Sun, 28 Jul 2024 08:26:16 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 174B51800A4;
+	Sun, 28 Jul 2024 08:26:18 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Sun, 28 Jul 2024 08:26:14 +0800
+ 15.1.2507.39; Sun, 28 Jul 2024 08:26:16 +0800
 From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 To: <mic@digikod.net>
 CC: <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v1 2/9] landlock: Support TCP listen access-control
-Date: Sun, 28 Jul 2024 08:25:55 +0800
-Message-ID: <20240728002602.3198398-3-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v1 3/9] selftests/landlock: Support LANDLOCK_ACCESS_NET_LISTEN_TCP
+Date: Sun, 28 Jul 2024 08:25:56 +0800
+Message-ID: <20240728002602.3198398-4-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240728002602.3198398-1-ivanov.mikhail1@huawei-partners.com>
 References: <20240728002602.3198398-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,243 +62,440 @@ Content-Transfer-Encoding: 8bit
 X-ClientProxiedBy: mscpeml100004.china.huawei.com (7.188.51.133) To
  dggpemm500020.china.huawei.com (7.185.36.49)
 
-LANDLOCK_ACCESS_NET_BIND_TCP is useful to limit the scope of "bindable"
-ports to forbid a malicious sandboxed process to impersonate a legitimate
-server process. However, bind(2) might be used by (TCP) clients to set the
-source port to a (legitimate) value. Controlling the ports that can be
-used for listening would allow (TCP) clients to explicitly bind to ports
-that are forbidden for listening.
+* Add listen_variant() to simplify listen(2) return code checking.
+* Rename test_bind_and_connect() to test_restricted_net_fixture().
+* Extend current net rules with LANDLOCK_ACCESS_NET_LISTEN_TCP access.
+* Rename test port_specific.bind_connect_1023 to
+  port_specific.port_1023.
+* Check little endian port restriction for listen in
+  ipv4_tcp.port_endianness.
+* Some local renames and comment changes.
 
-Such control is implemented with a new LANDLOCK_ACCESS_NET_LISTEN_TCP
-access right that restricts listening on undesired ports with listen(2).
-
-It's worth noticing that this access right doesn't affect changing
-backlog value using listen(2) on already listening socket.
-
-* Create new LANDLOCK_ACCESS_NET_LISTEN_TCP flag.
-* Add hook to socket_listen(), which checks whether the socket is allowed
-  to listen on a binded local port.
-* Add check_tcp_socket_can_listen() helper, which validates socket
-  attributes before the actual access right check.
-* Update `struct landlock_net_port_attr` documentation with control of
-  binding to ephemeral port with listen(2) description.
-* Change ABI version to 6.
-
-Closes: https://github.com/landlock-lsm/linux/issues/15
 Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 ---
- include/uapi/linux/landlock.h                | 23 +++--
- security/landlock/limits.h                   |  2 +-
- security/landlock/net.c                      | 90 ++++++++++++++++++++
- security/landlock/syscalls.c                 |  2 +-
- tools/testing/selftests/landlock/base_test.c |  2 +-
- 5 files changed, 108 insertions(+), 11 deletions(-)
+ tools/testing/selftests/landlock/net_test.c | 198 +++++++++++---------
+ 1 file changed, 107 insertions(+), 91 deletions(-)
 
-diff --git a/include/uapi/linux/landlock.h b/include/uapi/linux/landlock.h
-index 68625e728f43..6b8df3293eee 100644
---- a/include/uapi/linux/landlock.h
-+++ b/include/uapi/linux/landlock.h
-@@ -104,13 +104,16 @@ struct landlock_net_port_attr {
- 	/**
- 	 * @port: Network port in host endianness.
- 	 *
--	 * It should be noted that port 0 passed to :manpage:`bind(2)` will
--	 * bind to an available port from a specific port range. This can be
--	 * configured thanks to the ``/proc/sys/net/ipv4/ip_local_port_range``
--	 * sysctl (also used for IPv6). A Landlock rule with port 0 and the
--	 * ``LANDLOCK_ACCESS_NET_BIND_TCP`` right means that requesting to bind
--	 * on port 0 is allowed and it will automatically translate to binding
--	 * on the related port range.
-+	 * It should be noted that some operations cause binding socket to a random
-+	 * available port from a specific port range. This can be configured thanks
-+	 * to the ``/proc/sys/net/ipv4/ip_local_port_range`` sysctl (also used for
-+	 * IPv6). Following operation requests are automatically translate to
-+	 * binding on the related port range:
-+	 *
-+	 * - A Landlock rule with port 0 and the ``LANDLOCK_ACCESS_NET_BIND_TCP``
-+	 *   right means that binding on port 0 is allowed.
-+	 * - A Landlock rule with port 0 and the ``LANDLOCK_ACCESS_NET_LISTEN_TCP``
-+	 *   right means listening without an explicit binding is allowed.
- 	 */
- 	__u64 port;
- };
-@@ -251,7 +254,7 @@ struct landlock_net_port_attr {
-  * DOC: net_access
+diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+index f21cfbbc3638..8126f5c0160f 100644
+--- a/tools/testing/selftests/landlock/net_test.c
++++ b/tools/testing/selftests/landlock/net_test.c
+@@ -2,7 +2,7 @@
+ /*
+  * Landlock tests - Network
   *
-  * Network flags
-- * ~~~~~~~~~~~~~~~~
-+ * ~~~~~~~~~~~~~
-  *
-  * These flags enable to restrict a sandboxed process to a set of network
-  * actions. This is supported since the Landlock ABI version 4.
-@@ -261,9 +264,13 @@ struct landlock_net_port_attr {
-  * - %LANDLOCK_ACCESS_NET_BIND_TCP: Bind a TCP socket to a local port.
-  * - %LANDLOCK_ACCESS_NET_CONNECT_TCP: Connect an active TCP socket to
-  *   a remote port.
-+ * - %LANDLOCK_ACCESS_NET_LISTEN_TCP: Listen for TCP socket connections on
-+ *   a local port. This access right is available since the sixth version
-+ *   of the Landlock ABI.
-  */
- /* clang-format off */
- #define LANDLOCK_ACCESS_NET_BIND_TCP			(1ULL << 0)
- #define LANDLOCK_ACCESS_NET_CONNECT_TCP			(1ULL << 1)
-+#define LANDLOCK_ACCESS_NET_LISTEN_TCP			(1ULL << 2)
- /* clang-format on */
- #endif /* _UAPI_LINUX_LANDLOCK_H */
-diff --git a/security/landlock/limits.h b/security/landlock/limits.h
-index 4eb643077a2a..2ef147389474 100644
---- a/security/landlock/limits.h
-+++ b/security/landlock/limits.h
-@@ -22,7 +22,7 @@
- #define LANDLOCK_MASK_ACCESS_FS		((LANDLOCK_LAST_ACCESS_FS << 1) - 1)
- #define LANDLOCK_NUM_ACCESS_FS		__const_hweight64(LANDLOCK_MASK_ACCESS_FS)
- 
--#define LANDLOCK_LAST_ACCESS_NET	LANDLOCK_ACCESS_NET_CONNECT_TCP
-+#define LANDLOCK_LAST_ACCESS_NET	LANDLOCK_ACCESS_NET_LISTEN_TCP
- #define LANDLOCK_MASK_ACCESS_NET	((LANDLOCK_LAST_ACCESS_NET << 1) - 1)
- #define LANDLOCK_NUM_ACCESS_NET		__const_hweight64(LANDLOCK_MASK_ACCESS_NET)
- 
-diff --git a/security/landlock/net.c b/security/landlock/net.c
-index 669ba260342f..a29cb27c3f14 100644
---- a/security/landlock/net.c
-+++ b/security/landlock/net.c
-@@ -6,10 +6,12 @@
-  * Copyright © 2022-2023 Microsoft Corporation
+- * Copyright © 2022-2023 Huawei Tech. Co., Ltd.
++ * Copyright © 2022-2024 Huawei Tech. Co., Ltd.
+  * Copyright © 2023 Microsoft Corporation
   */
  
-+#include "net/sock.h"
- #include <linux/in.h>
- #include <linux/net.h>
- #include <linux/socket.h>
- #include <net/ipv6.h>
-+#include <net/tcp.h>
+@@ -22,6 +22,17 @@
  
  #include "common.h"
- #include "cred.h"
-@@ -194,9 +196,97 @@ static int hook_socket_connect(struct socket *const sock,
- 					   LANDLOCK_ACCESS_NET_CONNECT_TCP);
+ 
++/* clang-format off */
++
++#define ACCESS_LAST LANDLOCK_ACCESS_NET_LISTEN_TCP
++
++#define ACCESS_ALL ( \
++	LANDLOCK_ACCESS_NET_BIND_TCP | \
++	LANDLOCK_ACCESS_NET_CONNECT_TCP | \
++	LANDLOCK_ACCESS_NET_LISTEN_TCP)
++
++/* clang-format on */
++
+ const short sock_port_start = (1 << 10);
+ 
+ static const char loopback_ipv4[] = "127.0.0.1";
+@@ -282,6 +293,16 @@ static int connect_variant(const int sock_fd,
+ 	return connect_variant_addrlen(sock_fd, srv, get_addrlen(srv, false));
  }
  
-+/*
-+ * Checks that socket state and attributes are correct for listen.
-+ * It is required to not wrongfully return -EACCES instead of -EINVAL.
-+ *
-+ * This checker requires sock->sk to be locked.
-+ */
-+static int check_tcp_socket_can_listen(struct socket *const sock)
++static int listen_variant(const int sock_fd, const int backlog)
 +{
-+	struct sock *sk = sock->sk;
-+	unsigned char cur_sk_state = sk->sk_state;
-+	const struct tcp_ulp_ops *icsk_ulp_ops;
++	int ret;
 +
-+	/* Allows only unconnected TCP socket to listen (cf. inet_listen). */
-+	if (sock->state != SS_UNCONNECTED)
-+		return -EINVAL;
-+
-+	/*
-+	 * Checks sock state. This is needed to ensure consistency with inet stack
-+	 * error handling (cf. __inet_listen_sk).
-+	 */
-+	if (WARN_ON_ONCE(!((1 << cur_sk_state) & (TCPF_CLOSE | TCPF_LISTEN))))
-+		return -EINVAL;
-+
-+	icsk_ulp_ops = inet_csk(sk)->icsk_ulp_ops;
-+
-+	/*
-+	 * ULP (Upper Layer Protocol) stands for protocols which are higher than
-+	 * transport protocol in OSI model. Linux has an infrastructure that
-+	 * allows TCP sockets to support logic of some ULP (e.g. TLS ULP).
-+	 *
-+	 * Sockets can listen only if ULP control hook has clone method.
-+	 */
-+	if (icsk_ulp_ops && !icsk_ulp_ops->clone)
-+		return -EINVAL;
-+	return 0;
++	ret = listen(sock_fd, backlog);
++	if (ret < 0)
++		return -errno;
++	return ret;
 +}
 +
-+static int hook_socket_listen(struct socket *const sock, const int backlog)
-+{
-+	int err = 0;
-+	int family;
-+	__be16 port;
-+	struct sock *sk;
-+	const struct landlock_ruleset *const dom = get_current_net_domain();
-+
-+	if (!dom)
-+		return 0;
-+	if (WARN_ON_ONCE(dom->num_layers < 1))
-+		return -EACCES;
-+
-+	/* Checks if it's a (potential) TCP socket. */
-+	if (sock->type != SOCK_STREAM)
-+		return 0;
-+
-+	sk = sock->sk;
-+	family = sk->__sk_common.skc_family;
-+	/*
-+	 * Socket cannot be assigned AF_UNSPEC because this type is used only
-+	 * in the context of addresses.
-+	 *
-+	 * Doesn't restrict listening for non-TCP sockets.
-+	 */
-+	if (family != AF_INET && family != AF_INET6)
-+		return 0;
-+
-+	lock_sock(sk);
-+	/*
-+	 * Calling listen(2) for a listening socket does nothing with its state and
-+	 * only changes backlog value (cf. __inet_listen_sk). Checking of listen
-+	 * access right is not required.
-+	 */
-+	if (sk->sk_state == TCP_LISTEN)
-+		goto release_nocheck;
-+
-+	err = check_tcp_socket_can_listen(sock);
-+	if (unlikely(err))
-+		goto release_nocheck;
-+
-+	port = htons(inet_sk(sk)->inet_num);
-+	release_sock(sk);
-+	return check_access_socket(dom, port, LANDLOCK_ACCESS_NET_LISTEN_TCP);
-+
-+release_nocheck:
-+	release_sock(sk);
-+	return err;
-+}
-+
- static struct security_hook_list landlock_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(socket_bind, hook_socket_bind),
- 	LSM_HOOK_INIT(socket_connect, hook_socket_connect),
-+	LSM_HOOK_INIT(socket_listen, hook_socket_listen),
+ FIXTURE(protocol)
+ {
+ 	struct service_fixture srv0, srv1, srv2, unspec_any0, unspec_srv0;
+@@ -438,9 +459,11 @@ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_unix_datagram) {
+ 	},
  };
  
- __init void landlock_add_net_hooks(void)
-diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
-index 03b470f5a85a..3752bcc033d4 100644
---- a/security/landlock/syscalls.c
-+++ b/security/landlock/syscalls.c
-@@ -149,7 +149,7 @@ static const struct file_operations ruleset_fops = {
- 	.write = fop_dummy_write,
- };
+-static void test_bind_and_connect(struct __test_metadata *const _metadata,
+-				  const struct service_fixture *const srv,
+-				  const bool deny_bind, const bool deny_connect)
++static void test_restricted_net_fixture(struct __test_metadata *const _metadata,
++					const struct service_fixture *const srv,
++					const bool deny_bind,
++					const bool deny_connect,
++					const bool deny_listen)
+ {
+ 	char buf = '\0';
+ 	int inval_fd, bind_fd, client_fd, status, ret;
+@@ -512,8 +535,14 @@ static void test_bind_and_connect(struct __test_metadata *const _metadata,
+ 		EXPECT_EQ(0, ret);
  
--#define LANDLOCK_ABI_VERSION 5
-+#define LANDLOCK_ABI_VERSION 6
+ 		/* Creates a listening socket. */
+-		if (srv->protocol.type == SOCK_STREAM)
+-			EXPECT_EQ(0, listen(bind_fd, backlog));
++		if (srv->protocol.type == SOCK_STREAM) {
++			ret = listen_variant(bind_fd, backlog);
++			if (deny_listen) {
++				EXPECT_EQ(-EACCES, ret);
++			} else {
++				EXPECT_EQ(0, ret);
++			}
++		}
+ 	}
  
- /**
-  * sys_landlock_create_ruleset - Create a new ruleset
-diff --git a/tools/testing/selftests/landlock/base_test.c b/tools/testing/selftests/landlock/base_test.c
-index 3c1e9f35b531..52b00472a487 100644
---- a/tools/testing/selftests/landlock/base_test.c
-+++ b/tools/testing/selftests/landlock/base_test.c
-@@ -75,7 +75,7 @@ TEST(abi_version)
+ 	child = fork();
+@@ -530,7 +559,7 @@ static void test_bind_and_connect(struct __test_metadata *const _metadata,
+ 		ret = connect_variant(connect_fd, srv);
+ 		if (deny_connect) {
+ 			EXPECT_EQ(-EACCES, ret);
+-		} else if (deny_bind) {
++		} else if (deny_bind || deny_listen) {
+ 			/* No listening server. */
+ 			EXPECT_EQ(-ECONNREFUSED, ret);
+ 		} else {
+@@ -545,7 +574,7 @@ static void test_bind_and_connect(struct __test_metadata *const _metadata,
+ 
+ 	/* Accepts connection from the child. */
+ 	client_fd = bind_fd;
+-	if (!deny_bind && !deny_connect) {
++	if (!deny_bind && !deny_connect && !deny_listen) {
+ 		if (srv->protocol.type == SOCK_STREAM) {
+ 			client_fd = accept(bind_fd, NULL, 0);
+ 			ASSERT_LE(0, client_fd);
+@@ -571,16 +600,15 @@ TEST_F(protocol, bind)
+ {
+ 	if (variant->sandbox == TCP_SANDBOX) {
+ 		const struct landlock_ruleset_attr ruleset_attr = {
+-			.handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					      LANDLOCK_ACCESS_NET_CONNECT_TCP,
++			.handled_access_net = ACCESS_ALL,
+ 		};
+-		const struct landlock_net_port_attr tcp_bind_connect_p0 = {
+-			.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					  LANDLOCK_ACCESS_NET_CONNECT_TCP,
++		const struct landlock_net_port_attr tcp_not_restricted_p0 = {
++			.allowed_access = ACCESS_ALL,
+ 			.port = self->srv0.port,
+ 		};
+-		const struct landlock_net_port_attr tcp_connect_p1 = {
+-			.allowed_access = LANDLOCK_ACCESS_NET_CONNECT_TCP,
++		const struct landlock_net_port_attr tcp_denied_bind_p1 = {
++			.allowed_access = ACCESS_ALL &
++					  ~LANDLOCK_ACCESS_NET_BIND_TCP,
+ 			.port = self->srv1.port,
+ 		};
+ 		int ruleset_fd;
+@@ -589,48 +617,47 @@ TEST_F(protocol, bind)
+ 						     sizeof(ruleset_attr), 0);
+ 		ASSERT_LE(0, ruleset_fd);
+ 
+-		/* Allows connect and bind for the first port.  */
++		/* Allows all actions for the first port. */
+ 		ASSERT_EQ(0,
+ 			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-					    &tcp_bind_connect_p0, 0));
++					    &tcp_not_restricted_p0, 0));
+ 
+-		/* Allows connect and denies bind for the second port. */
++		/* Allows all actions despite bind. */
+ 		ASSERT_EQ(0,
+ 			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-					    &tcp_connect_p1, 0));
++					    &tcp_denied_bind_p1, 0));
+ 
+ 		enforce_ruleset(_metadata, ruleset_fd);
+ 		EXPECT_EQ(0, close(ruleset_fd));
+ 	}
++	bool restricted = is_restricted(&variant->prot, variant->sandbox);
+ 
+ 	/* Binds a socket to the first port. */
+-	test_bind_and_connect(_metadata, &self->srv0, false, false);
++	test_restricted_net_fixture(_metadata, &self->srv0, false, false,
++				    false);
+ 
+ 	/* Binds a socket to the second port. */
+-	test_bind_and_connect(_metadata, &self->srv1,
+-			      is_restricted(&variant->prot, variant->sandbox),
+-			      false);
++	test_restricted_net_fixture(_metadata, &self->srv1, restricted, false,
++				    false);
+ 
+ 	/* Binds a socket to the third port. */
+-	test_bind_and_connect(_metadata, &self->srv2,
+-			      is_restricted(&variant->prot, variant->sandbox),
+-			      is_restricted(&variant->prot, variant->sandbox));
++	test_restricted_net_fixture(_metadata, &self->srv2, restricted,
++				    restricted, restricted);
+ }
+ 
+ TEST_F(protocol, connect)
+ {
+ 	if (variant->sandbox == TCP_SANDBOX) {
+ 		const struct landlock_ruleset_attr ruleset_attr = {
+-			.handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					      LANDLOCK_ACCESS_NET_CONNECT_TCP,
++			.handled_access_net = ACCESS_ALL,
+ 		};
+-		const struct landlock_net_port_attr tcp_bind_connect_p0 = {
+-			.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					  LANDLOCK_ACCESS_NET_CONNECT_TCP,
++		const struct landlock_net_port_attr tcp_not_restricted_p0 = {
++			.allowed_access = ACCESS_ALL,
+ 			.port = self->srv0.port,
+ 		};
+-		const struct landlock_net_port_attr tcp_bind_p1 = {
+-			.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP,
++		const struct landlock_net_port_attr tcp_denied_connect_p1 = {
++			.allowed_access = ACCESS_ALL &
++					  ~LANDLOCK_ACCESS_NET_CONNECT_TCP,
+ 			.port = self->srv1.port,
+ 		};
+ 		int ruleset_fd;
+@@ -639,28 +666,27 @@ TEST_F(protocol, connect)
+ 						     sizeof(ruleset_attr), 0);
+ 		ASSERT_LE(0, ruleset_fd);
+ 
+-		/* Allows connect and bind for the first port. */
++		/* Allows all actions for the first port. */
+ 		ASSERT_EQ(0,
+ 			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-					    &tcp_bind_connect_p0, 0));
++					    &tcp_not_restricted_p0, 0));
+ 
+-		/* Allows bind and denies connect for the second port. */
++		/* Allows all actions despite connect. */
+ 		ASSERT_EQ(0,
+ 			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-					    &tcp_bind_p1, 0));
++					    &tcp_denied_connect_p1, 0));
+ 
+ 		enforce_ruleset(_metadata, ruleset_fd);
+ 		EXPECT_EQ(0, close(ruleset_fd));
+ 	}
+-
+-	test_bind_and_connect(_metadata, &self->srv0, false, false);
+-
+-	test_bind_and_connect(_metadata, &self->srv1, false,
+-			      is_restricted(&variant->prot, variant->sandbox));
+-
+-	test_bind_and_connect(_metadata, &self->srv2,
+-			      is_restricted(&variant->prot, variant->sandbox),
+-			      is_restricted(&variant->prot, variant->sandbox));
++	bool restricted = is_restricted(&variant->prot, variant->sandbox);
++
++	test_restricted_net_fixture(_metadata, &self->srv0, false, false,
++				    false);
++	test_restricted_net_fixture(_metadata, &self->srv1, false, restricted,
++				    false);
++	test_restricted_net_fixture(_metadata, &self->srv2, restricted,
++				    restricted, restricted);
+ }
+ 
+ TEST_F(protocol, bind_unspec)
+@@ -761,7 +787,7 @@ TEST_F(protocol, connect_unspec)
+ 	ASSERT_LE(0, bind_fd);
+ 	EXPECT_EQ(0, bind_variant(bind_fd, &self->srv0));
+ 	if (self->srv0.protocol.type == SOCK_STREAM)
+-		EXPECT_EQ(0, listen(bind_fd, backlog));
++		EXPECT_EQ(0, listen_variant(bind_fd, backlog));
+ 
+ 	child = fork();
+ 	ASSERT_LE(0, child);
+@@ -1127,8 +1153,8 @@ TEST_F(tcp_layers, ruleset_overlap)
+ 	 * Forbids to connect to the socket because only one ruleset layer
+ 	 * allows connect.
+ 	 */
+-	test_bind_and_connect(_metadata, &self->srv0, false,
+-			      variant->num_layers >= 2);
++	test_restricted_net_fixture(_metadata, &self->srv0, false,
++				    variant->num_layers >= 2, false);
+ }
+ 
+ TEST_F(tcp_layers, ruleset_expand)
+@@ -1208,11 +1234,12 @@ TEST_F(tcp_layers, ruleset_expand)
+ 		EXPECT_EQ(0, close(ruleset_fd));
+ 	}
+ 
+-	test_bind_and_connect(_metadata, &self->srv0, false,
+-			      variant->num_layers >= 3);
++	test_restricted_net_fixture(_metadata, &self->srv0, false,
++				    variant->num_layers >= 3, false);
+ 
+-	test_bind_and_connect(_metadata, &self->srv1, variant->num_layers >= 1,
+-			      variant->num_layers >= 2);
++	test_restricted_net_fixture(_metadata, &self->srv1,
++				    variant->num_layers >= 1,
++				    variant->num_layers >= 2, false);
+ }
+ 
+ /* clang-format off */
+@@ -1230,16 +1257,6 @@ FIXTURE_TEARDOWN(mini)
+ {
+ }
+ 
+-/* clang-format off */
+-
+-#define ACCESS_LAST LANDLOCK_ACCESS_NET_CONNECT_TCP
+-
+-#define ACCESS_ALL ( \
+-	LANDLOCK_ACCESS_NET_BIND_TCP | \
+-	LANDLOCK_ACCESS_NET_CONNECT_TCP)
+-
+-/* clang-format on */
+-
+ TEST_F(mini, network_access_rights)
+ {
  	const struct landlock_ruleset_attr ruleset_attr = {
- 		.handled_access_fs = LANDLOCK_ACCESS_FS_READ_FILE,
- 	};
--	ASSERT_EQ(5, landlock_create_ruleset(NULL, 0,
-+	ASSERT_EQ(6, landlock_create_ruleset(NULL, 0,
- 					     LANDLOCK_CREATE_RULESET_VERSION));
+@@ -1454,8 +1471,9 @@ TEST_F(mini, tcp_port_overflow)
  
- 	ASSERT_EQ(-1, landlock_create_ruleset(&ruleset_attr, 0,
+ 	enforce_ruleset(_metadata, ruleset_fd);
+ 
+-	test_bind_and_connect(_metadata, &srv_denied, true, true);
+-	test_bind_and_connect(_metadata, &srv_max_allowed, false, false);
++	test_restricted_net_fixture(_metadata, &srv_denied, true, true, false);
++	test_restricted_net_fixture(_metadata, &srv_max_allowed, false, false,
++				    false);
+ }
+ 
+ FIXTURE(ipv4_tcp)
+@@ -1485,22 +1503,21 @@ FIXTURE_TEARDOWN(ipv4_tcp)
+ TEST_F(ipv4_tcp, port_endianness)
+ {
+ 	const struct landlock_ruleset_attr ruleset_attr = {
+-		.handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
+-				      LANDLOCK_ACCESS_NET_CONNECT_TCP,
++		.handled_access_net = ACCESS_ALL,
+ 	};
+ 	const struct landlock_net_port_attr bind_host_endian_p0 = {
+ 		.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP,
+ 		/* Host port format. */
+ 		.port = self->srv0.port,
+ 	};
+-	const struct landlock_net_port_attr connect_big_endian_p0 = {
+-		.allowed_access = LANDLOCK_ACCESS_NET_CONNECT_TCP,
++	const struct landlock_net_port_attr connect_listen_big_endian_p0 = {
++		.allowed_access = LANDLOCK_ACCESS_NET_CONNECT_TCP |
++				  LANDLOCK_ACCESS_NET_LISTEN_TCP,
+ 		/* Big endian port format. */
+ 		.port = htons(self->srv0.port),
+ 	};
+-	const struct landlock_net_port_attr bind_connect_host_endian_p1 = {
+-		.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+-				  LANDLOCK_ACCESS_NET_CONNECT_TCP,
++	const struct landlock_net_port_attr not_restricted_host_endian_p1 = {
++		.allowed_access = ACCESS_ALL,
+ 		/* Host port format. */
+ 		.port = self->srv1.port,
+ 	};
+@@ -1514,16 +1531,18 @@ TEST_F(ipv4_tcp, port_endianness)
+ 	ASSERT_EQ(0, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+ 				       &bind_host_endian_p0, 0));
+ 	ASSERT_EQ(0, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-				       &connect_big_endian_p0, 0));
++				       &connect_listen_big_endian_p0, 0));
+ 	ASSERT_EQ(0, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-				       &bind_connect_host_endian_p1, 0));
++				       &not_restricted_host_endian_p1, 0));
+ 	enforce_ruleset(_metadata, ruleset_fd);
+ 
+ 	/* No restriction for big endinan CPU. */
+-	test_bind_and_connect(_metadata, &self->srv0, false, little_endian);
++	test_restricted_net_fixture(_metadata, &self->srv0, false,
++				    little_endian, little_endian);
+ 
+ 	/* No restriction for any CPU. */
+-	test_bind_and_connect(_metadata, &self->srv1, false, false);
++	test_restricted_net_fixture(_metadata, &self->srv1, false, false,
++				    false);
+ }
+ 
+ TEST_F(ipv4_tcp, with_fs)
+@@ -1691,7 +1710,7 @@ TEST_F(port_specific, bind_connect_zero)
+ 	ret = bind_variant(bind_fd, &self->srv0);
+ 	EXPECT_EQ(0, ret);
+ 
+-	EXPECT_EQ(0, listen(bind_fd, backlog));
++	EXPECT_EQ(0, listen_variant(bind_fd, backlog));
+ 
+ 	/* Connects on port 0. */
+ 	ret = connect_variant(connect_fd, &self->srv0);
+@@ -1714,26 +1733,23 @@ TEST_F(port_specific, bind_connect_zero)
+ 	EXPECT_EQ(0, close(bind_fd));
+ }
+ 
+-TEST_F(port_specific, bind_connect_1023)
++TEST_F(port_specific, port_1023)
+ {
+ 	int bind_fd, connect_fd, ret;
+ 
+-	/* Adds a rule layer with bind and connect actions. */
++	/* Adds a rule layer with all actions. */
+ 	if (variant->sandbox == TCP_SANDBOX) {
+ 		const struct landlock_ruleset_attr ruleset_attr = {
+-			.handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					      LANDLOCK_ACCESS_NET_CONNECT_TCP
++			.handled_access_net = ACCESS_ALL
+ 		};
+ 		/* A rule with port value less than 1024. */
+-		const struct landlock_net_port_attr tcp_bind_connect_low_range = {
+-			.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					  LANDLOCK_ACCESS_NET_CONNECT_TCP,
++		const struct landlock_net_port_attr tcp_low_range_port = {
++			.allowed_access = ACCESS_ALL,
+ 			.port = 1023,
+ 		};
+ 		/* A rule with 1024 port. */
+-		const struct landlock_net_port_attr tcp_bind_connect = {
+-			.allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+-					  LANDLOCK_ACCESS_NET_CONNECT_TCP,
++		const struct landlock_net_port_attr tcp_port_1024 = {
++			.allowed_access = ACCESS_ALL,
+ 			.port = 1024,
+ 		};
+ 		int ruleset_fd;
+@@ -1744,10 +1760,10 @@ TEST_F(port_specific, bind_connect_1023)
+ 
+ 		ASSERT_EQ(0,
+ 			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-					    &tcp_bind_connect_low_range, 0));
++					    &tcp_low_range_port, 0));
+ 		ASSERT_EQ(0,
+ 			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
+-					    &tcp_bind_connect, 0));
++					    &tcp_port_1024, 0));
+ 
+ 		enforce_ruleset(_metadata, ruleset_fd);
+ 		EXPECT_EQ(0, close(ruleset_fd));
+@@ -1771,7 +1787,7 @@ TEST_F(port_specific, bind_connect_1023)
+ 	ret = bind_variant(bind_fd, &self->srv0);
+ 	clear_cap(_metadata, CAP_NET_BIND_SERVICE);
+ 	EXPECT_EQ(0, ret);
+-	EXPECT_EQ(0, listen(bind_fd, backlog));
++	EXPECT_EQ(0, listen_variant(bind_fd, backlog));
+ 
+ 	/* Connects on the binded port 1023. */
+ 	ret = connect_variant(connect_fd, &self->srv0);
+@@ -1791,7 +1807,7 @@ TEST_F(port_specific, bind_connect_1023)
+ 	/* Binds on port 1024. */
+ 	ret = bind_variant(bind_fd, &self->srv0);
+ 	EXPECT_EQ(0, ret);
+-	EXPECT_EQ(0, listen(bind_fd, backlog));
++	EXPECT_EQ(0, listen_variant(bind_fd, backlog));
+ 
+ 	/* Connects on the binded port 1024. */
+ 	ret = connect_variant(connect_fd, &self->srv0);
 -- 
 2.34.1
 
