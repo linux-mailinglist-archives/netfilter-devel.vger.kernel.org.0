@@ -1,62 +1,53 @@
-Return-Path: <netfilter-devel+bounces-3077-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3089-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9141293E113
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 23:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA6C93E179
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jul 2024 02:26:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2A4B1C20AF6
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jul 2024 21:37:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5F601C20AB0
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jul 2024 00:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A32142AAD;
-	Sat, 27 Jul 2024 21:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Xf94iET8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99E81392;
+	Sun, 28 Jul 2024 00:26:23 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEAC38396
-	for <netfilter-devel@vger.kernel.org>; Sat, 27 Jul 2024 21:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03341A35;
+	Sun, 28 Jul 2024 00:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722116218; cv=none; b=pvqA7UB5R8YILSE7GejDFfmF5fD38FLHrZAj4PDjoIUvu2ORgM4jeDS/MCht2yE1TrV1BU1AxT4eOuReQ9z0yLzeTtmxUFK5xtIyHkN9lH/TKmBOxC2sVVexS6wwfjmbsiPFEpscO1B+XKFyOdkQKA/Tyo02VFj0RdrajU74hVU=
+	t=1722126383; cv=none; b=NwTV1bNbZq0xnprlVzWoV4WkF6/cwKYt/eOENKpgZFrewbw5YE+1cH5KOcn7ZlrKD9eEI5vtw6JPapYzv5E6ecKpdhYFT0gI7pJ6f2u4dBKrHbZ03wrnpGVFu+icL8KgjrDvIN0hbetrRYcrdkiBDvYtuXDOWSKndARGAFMkZvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722116218; c=relaxed/simple;
-	bh=N451ICJEqJQ22Esxd06MPY2ryXl0sZEKeSrmmky2ihg=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AYILu9SEw9MYEQzYGikr68NBYN7yfsKVJXjsS8wQANJaz0HFgwbsIgASv3PsezUgOwV8VO7LcglxEC7PNTXTEXrrYcnVUbgSOh65AEZ+RySAEWg5gKsKLKz4yHvmyNBtt0BfjTMkftPN7J4NQU1H9njnPXrdjdWEJ0dbJd/6G0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Xf94iET8; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=3/htYBKMcf8S9ScnUwoUsJKMdGGpbL7kchvyl0WVuZA=; b=Xf94iET8YBs9cjcVfczw7falJ5
-	E2Dovv1LWIUqx0od3uWCKIlVwS3dKU79d1PBx/L7cWpZy85FEWrYs5L7IYqBdXAxSPHftAnOOJ5G8
-	WB9uygDHw78gKHj/Xgpepp8ypkYUU+TBVVTR8ooB+PlNRrAk7ib2QVUrx14DofO9hX0YNvk+x6ki3
-	FWDwKNTW2AHAYt2HvJiOgegihsJ31qFJbz86gVGWrtGtIrdANbXqTgm20xutkcONAzSYfIh+iHjrW
-	ZiHZtkFMs1w931XiYUQN5zDzFPNzH49IijIAZjpkLDlvNMlwaGrLaiQYO2gOXlSQWdXaKzQJyBh89
-	nycFwvKw==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1sXp5z-000000002Uf-3KTl
-	for netfilter-devel@vger.kernel.org;
-	Sat, 27 Jul 2024 23:36:55 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 14/14] ebtables: Omit all-wildcard interface specs from output
-Date: Sat, 27 Jul 2024 23:36:48 +0200
-Message-ID: <20240727213648.28761-15-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240727213648.28761-1-phil@nwl.cc>
-References: <20240727213648.28761-1-phil@nwl.cc>
+	s=arc-20240116; t=1722126383; c=relaxed/simple;
+	bh=ro4bdkgBTJxXixVQhErz0ISyv4OySIyBHEcBU6aJXSE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A+n3lbeLsrBWbEK31SsV17UptHPRlTSzC4fnuK1ZMJjuAf149JKAo+TaySLyLdhIhEhQ1g6zQS/PmpWYo7BeaiIO+eqGrV4d8jirHnQULzxSJhcRwiG8LP4kc5tILMlDmJ/OAGG+oM5QqZjeqp+LpOehyqIHQdhuZsIY9YZMu8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WWj2j6DvNz1L9BQ;
+	Sun, 28 Jul 2024 08:26:05 +0800 (CST)
+Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
+	by mail.maildlp.com (Postfix) with ESMTPS id A80131800D0;
+	Sun, 28 Jul 2024 08:26:12 +0800 (CST)
+Received: from mscphis02103.huawei.com (10.123.65.215) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Sun, 28 Jul 2024 08:26:11 +0800
+From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+To: <mic@digikod.net>
+CC: <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
+	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
+	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
+Subject: [RFC PATCH v1 0/9] Support TCP listen access-control
+Date: Sun, 28 Jul 2024 08:25:53 +0800
+Message-ID: <20240728002602.3198398-1-ivanov.mikhail1@huawei-partners.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,31 +55,66 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: mscpeml100004.china.huawei.com (7.188.51.133) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
 
-Regular code path doesn't hit this because the conversion to
-libnftnl_rule takes care of it already. Future changes though will cause
-iptables_command_state objects to be printed directly, making this
-relevant.
+Hello! This is v1 RFC patch dedicated to restriction of listening sockets.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft-bridge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It is based on the landlock's mic-next branch on top of v6.10 kernel
+version.
 
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index f4a3c69ac1660..0f85e21861cde 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -212,7 +212,7 @@ static bool nft_rule_to_ebtables_command_state(struct nft_handle *h,
- 
- static void print_iface(const char *option, const char *name, bool invert)
- {
--	if (*name)
-+	if (*name && (strcmp(name, "+") || invert))
- 		printf("%s%s %s ", invert ? "! " : "", option, name);
- }
- 
+Description
+===========
+LANDLOCK_ACCESS_NET_BIND_TCP is useful to limit the scope of "bindable"
+ports to forbid a malicious sandboxed process to impersonate a legitimate
+server process. However, bind(2) might be used by (TCP) clients to set the
+source port to a (legitimate) value. Controlling the ports that can be
+used for listening would allow (TCP) clients to explicitly bind to ports
+that are forbidden for listening.
+
+Such control is implemented with a new LANDLOCK_ACCESS_NET_LISTEN_TCP
+access right that restricts listening on undesired ports with listen(2).
+
+It's worth noticing that this access right doesn't affect changing 
+backlog value using listen(2) on already listening socket. For this case
+test ipv4_tcp.double_listen is provided.
+
+Closes: https://github.com/landlock-lsm/linux/issues/15
+
+Code coverage
+=============
+Code coverage(gcov) report with the launch of all the landlock selftests:
+* security/landlock:
+lines......: 93.4% (759 of 813 lines)
+functions..: 95.3% (101 of 106 functions)
+
+* security/landlock/net.c:
+lines......: 100% (77 of 77 lines)
+functions..: 100% (9 of 9 functions)
+
+Mikhail Ivanov (9):
+  landlock: Refactor current_check_access_socket() access right check
+  landlock: Support TCP listen access-control
+  selftests/landlock: Support LANDLOCK_ACCESS_NET_LISTEN_TCP
+  selftests/landlock: Test listening restriction
+  selftests/landlock: Test listen on connected socket
+  selftests/landlock: Test listening without explicit bind restriction
+  selftests/landlock: Test listen on ULP socket without clone method
+  selftests/landlock: Test changing socket backlog with listen(2)
+  samples/landlock: Support LANDLOCK_ACCESS_NET_LISTEN
+
+ include/uapi/linux/landlock.h                |  23 +-
+ samples/landlock/sandboxer.c                 |  31 +-
+ security/landlock/limits.h                   |   2 +-
+ security/landlock/net.c                      | 131 +++++-
+ security/landlock/syscalls.c                 |   2 +-
+ tools/testing/selftests/landlock/base_test.c |   2 +-
+ tools/testing/selftests/landlock/config      |   1 +
+ tools/testing/selftests/landlock/net_test.c  | 448 +++++++++++++++----
+ 8 files changed, 519 insertions(+), 121 deletions(-)
+
 -- 
-2.43.0
+2.34.1
 
 
