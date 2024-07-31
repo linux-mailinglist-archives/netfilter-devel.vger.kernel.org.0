@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3134-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3129-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EF369438D6
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 472ED9438CF
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA31BB2295F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F077B28403A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C742B16D4E2;
-	Wed, 31 Jul 2024 22:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C5716D9AA;
+	Wed, 31 Jul 2024 22:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Vvq+pmnb"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="HngpdefX"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2BF16D9A8
-	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2436E14B097
+	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722464833; cv=none; b=nTyc3xG5epPyztbedEGvgK8Ga+IIIVCgg7bHt6dAoGEl9CrjgA87pcgGbEWO/+LBuDwdx50UpZuG0mvQu7EKCITC/K7qfA1NRXroSeRea5sfxIHdyl3KdnyTn3NNmy38tPTnwPbqHLlM4jZllsywNTwx376Qlu3UYf1HxAiJ94M=
+	t=1722464832; cv=none; b=aZ3AlnQPanTu2Oy2RB3N8p3BGx7kBgAMeGxlTmx31qCKYHlsRnmJB+MELd6IqnwCPRpSvZg2Qp4VSR0BeI8lE8pGzXnZ14i3u1JpdJrJuOMWTu6w6jllDKOIyZoQTL2iPUnPnK/wZdBz54vV5hyjBJkD0g0Sf79TqlMTOVND3xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722464833; c=relaxed/simple;
-	bh=Uy/rlPF7B1O9eNM6l9sFjEK1FJ5t1EJL3HUC3RLHkuY=;
+	s=arc-20240116; t=1722464832; c=relaxed/simple;
+	bh=hNVv1WAdIl4hZiAQECAQ3MvXxkcQNKN8lwlbO2isU7s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F8uuWTzPGETTANWK/m2glG17+CIL1D9Uoqnwu0ZUtDB9cq7bSmRvR/Z3feQNsZ+oGGKUvDOmVCD/AdkkPCcOTwl9PHjjrShuxNdvEk55wsVPQb/ZkjxeIPIemjjieLC9OEh/PP3KKWyBlUNruDK+AlglOV0RvexzJjyDTJ6ZVQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Vvq+pmnb; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=r2Fu6ipSBcbXpJLdjm09cyjCSMsVM+GN87zLgOfyEncCYgB+9qM9+ik5qZxEMFAgM6/w6ADmXuvOTwJzHTNyLKCccWC2N5tU3WdT+obU5sA+pNseeeMg3w25nNh8sZi0gXd/t8GiRkcaHUNWzBghEaLmPodXxdD/PmH+te3/V+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=HngpdefX; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=h6xw4ZNlwE5iIF1GTF0lmThD8c0bnmXsYszid0siSPE=; b=Vvq+pmnbWHGD78lOquODQBl7Fr
-	RkpwZf1GqwZP72knV645lW64VRFSGXcENEHjhYOqaoJ9+0U6ZHDhLhhlLp+oLZXxDYTWIfzfnG2vI
-	gvKnE7EL9N/okJqfRFXwJ3pJ6MCX1gHYLZRJ0XhQYPU6GSdmpyLJ+Qo56JTwdeFK6QymQT2De5/Mi
-	1ckFWrZwLwk7584T2yZpi5/4V1MTMfCV8skIWdkisv7pKJIA2yl7XEHapMhPLCo8dBavnvfg1VPRv
-	N1KpOU/x+UUiqQJXIf3bpD7X4w9+SaCVwBNdIhhGhmXy7zwXy++o0xOeOPCDWJD71VzwGQvVZnXN+
-	lqzu0+QQ==;
+	bh=P21l59OpNMDw9+GkcleATfuQLKiXneVJll1Hs8aam9o=; b=HngpdefXvjGa3VBrhM4OjpFetx
+	t5dWAT9JASRo76lVK1d4aagetB0mwHiQGBsJ4TDiSHj05uTuMs6O+IZjtcjpcv+s+TYIwRrVuGpfa
+	pSEMwLqXEyaOsa9P0VsIC27N4X0H1boPIqXdvaTfr0bfTYHYc8kYj+y3r+tMnrFFqMt03xbdLClxM
+	qUIFfUTrdoya8c0U3gYENsBeUkU5Pq/Vf1R4DIlaZuIIIqghaNaWJvjAX99ZaVymMzigUlQx3RMFY
+	3f41amenALL52WwpDQXl3zZpU0aXj3CkXacXYh9KWLEV9DbD4igq9PjsZERe85QsyPsQtrdizuAUl
+	EonjBGnA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sZHmo-000000003iq-3BMy;
-	Thu, 01 Aug 2024 00:27:10 +0200
+	id 1sZHmk-000000003hz-3AEN;
+	Thu, 01 Aug 2024 00:27:06 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH 5/8] nft: ruleparse: Introduce nft_parse_rule_expr()
-Date: Thu,  1 Aug 2024 00:27:00 +0200
-Message-ID: <20240731222703.22741-6-phil@nwl.cc>
+Subject: [iptables PATCH 6/8] nft: __add_{match,target}() can't fail
+Date: Thu,  1 Aug 2024 00:27:01 +0200
+Message-ID: <20240731222703.22741-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240731222703.22741-1-phil@nwl.cc>
 References: <20240731222703.22741-1-phil@nwl.cc>
@@ -67,120 +67,137 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extract the parsing of one expression into a separate function and
-export it, preparing for following code changes.
+These functions either call xtables_error() which terminates the process
+or succeed - make them return void. While at it, export them as rule
+parsing code will call them in future. Also make input parameter const,
+they're not supposed to alter extension data.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-ruleparse.c | 73 ++++++++++++++++++++++------------------
- iptables/nft-ruleparse.h |  4 +++
- 2 files changed, 44 insertions(+), 33 deletions(-)
+ iptables/nft.c | 28 ++++++++++------------------
+ iptables/nft.h |  2 ++
+ 2 files changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
-index 1ee7a94db59de..757d3c29fc816 100644
---- a/iptables/nft-ruleparse.c
-+++ b/iptables/nft-ruleparse.c
-@@ -887,6 +887,45 @@ static void nft_parse_range(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
- 	}
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 88be5ede5171d..cabcc884b4069 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -1034,7 +1034,7 @@ int nft_chain_set(struct nft_handle *h, const char *table,
+ 	return 1;
  }
  
-+bool nft_parse_rule_expr(struct nft_handle *h,
-+			 struct nftnl_expr *expr,
-+			 struct nft_xt_ctx *ctx)
-+{
-+	const char *name = nftnl_expr_get_str(expr, NFTNL_EXPR_NAME);
-+
-+	if (strcmp(name, "counter") == 0)
-+		nft_parse_counter(expr, &ctx->cs->counters);
-+	else if (strcmp(name, "payload") == 0)
-+		nft_parse_payload(ctx, expr);
-+	else if (strcmp(name, "meta") == 0)
-+		nft_parse_meta(ctx, expr);
-+	else if (strcmp(name, "bitwise") == 0)
-+		nft_parse_bitwise(ctx, expr);
-+	else if (strcmp(name, "cmp") == 0)
-+		nft_parse_cmp(ctx, expr);
-+	else if (strcmp(name, "immediate") == 0)
-+		nft_parse_immediate(ctx, expr);
-+	else if (strcmp(name, "match") == 0)
-+		nft_parse_match(ctx, expr);
-+	else if (strcmp(name, "target") == 0)
-+		nft_parse_target(ctx, expr);
-+	else if (strcmp(name, "limit") == 0)
-+		nft_parse_limit(ctx, expr);
-+	else if (strcmp(name, "lookup") == 0)
-+		nft_parse_lookup(ctx, h, expr);
-+	else if (strcmp(name, "log") == 0)
-+		nft_parse_log(ctx, expr);
-+	else if (strcmp(name, "range") == 0)
-+		nft_parse_range(ctx, expr);
-+
-+	if (ctx->errmsg) {
-+		fprintf(stderr, "Error: %s\n", ctx->errmsg);
-+		ctx->errmsg = NULL;
-+		return false;
-+	}
-+	return true;
-+}
-+
- bool nft_rule_to_iptables_command_state(struct nft_handle *h,
- 					const struct nftnl_rule *r,
- 					struct iptables_command_state *cs)
-@@ -905,40 +944,8 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
+-static int __add_match(struct nftnl_expr *e, struct xt_entry_match *m)
++void __add_match(struct nftnl_expr *e, const struct xt_entry_match *m)
+ {
+ 	void *info;
  
- 	expr = nftnl_expr_iter_next(ctx.iter);
- 	while (expr != NULL) {
--		const char *name =
--			nftnl_expr_get_str(expr, NFTNL_EXPR_NAME);
+@@ -1044,8 +1044,6 @@ static int __add_match(struct nftnl_expr *e, struct xt_entry_match *m)
+ 	info = xtables_calloc(1, m->u.match_size);
+ 	memcpy(info, m->data, m->u.match_size - sizeof(*m));
+ 	nftnl_expr_set(e, NFTNL_EXPR_MT_INFO, info, m->u.match_size - sizeof(*m));
 -
--		if (strcmp(name, "counter") == 0)
--			nft_parse_counter(expr, &ctx.cs->counters);
--		else if (strcmp(name, "payload") == 0)
--			nft_parse_payload(&ctx, expr);
--		else if (strcmp(name, "meta") == 0)
--			nft_parse_meta(&ctx, expr);
--		else if (strcmp(name, "bitwise") == 0)
--			nft_parse_bitwise(&ctx, expr);
--		else if (strcmp(name, "cmp") == 0)
--			nft_parse_cmp(&ctx, expr);
--		else if (strcmp(name, "immediate") == 0)
--			nft_parse_immediate(&ctx, expr);
--		else if (strcmp(name, "match") == 0)
--			nft_parse_match(&ctx, expr);
--		else if (strcmp(name, "target") == 0)
--			nft_parse_target(&ctx, expr);
--		else if (strcmp(name, "limit") == 0)
--			nft_parse_limit(&ctx, expr);
--		else if (strcmp(name, "lookup") == 0)
--			nft_parse_lookup(&ctx, h, expr);
--		else if (strcmp(name, "log") == 0)
--			nft_parse_log(&ctx, expr);
--		else if (strcmp(name, "range") == 0)
--			nft_parse_range(&ctx, expr);
--
--		if (ctx.errmsg) {
--			fprintf(stderr, "Error: %s\n", ctx.errmsg);
--			ctx.errmsg = NULL;
-+		if (!nft_parse_rule_expr(h, expr, &ctx))
- 			ret = false;
--		}
--
- 		expr = nftnl_expr_iter_next(ctx.iter);
+-	return 0;
+ }
+ 
+ static int add_nft_limit(struct nftnl_rule *r, struct xt_entry_match *m)
+@@ -1378,11 +1376,10 @@ static int add_nft_udp(struct nft_handle *h, struct nftnl_rule *r,
+ 	if (udp->invflags > XT_UDP_INV_MASK ||
+ 	    udp_all_zero(udp)) {
+ 		struct nftnl_expr *expr = nftnl_expr_alloc("match");
+-		int ret;
+ 
+-		ret = __add_match(expr, m);
++		__add_match(expr, m);
+ 		nftnl_rule_add_expr(r, expr);
+-		return ret;
++		return 0;
  	}
  
-diff --git a/iptables/nft-ruleparse.h b/iptables/nft-ruleparse.h
-index 62c9160d77711..0377e4ae17a6e 100644
---- a/iptables/nft-ruleparse.h
-+++ b/iptables/nft-ruleparse.h
-@@ -133,4 +133,8 @@ int parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e, uint8_t key,
- int nft_parse_hl(struct nft_xt_ctx *ctx, struct nftnl_expr *e,
- 		 struct iptables_command_state *cs);
+ 	if (nftnl_rule_get_u32(r, NFTNL_RULE_COMPAT_PROTO) != IPPROTO_UDP)
+@@ -1431,11 +1428,10 @@ static int add_nft_tcp(struct nft_handle *h, struct nftnl_rule *r,
+ 	if (tcp->invflags & ~supported || tcp->option ||
+ 	    tcp_all_zero(tcp)) {
+ 		struct nftnl_expr *expr = nftnl_expr_alloc("match");
+-		int ret;
  
-+bool nft_parse_rule_expr(struct nft_handle *h,
-+			 struct nftnl_expr *expr,
-+			 struct nft_xt_ctx *ctx);
-+
- #endif /* _NFT_RULEPARSE_H_ */
+-		ret = __add_match(expr, m);
++		__add_match(expr, m);
+ 		nftnl_rule_add_expr(r, expr);
+-		return ret;
++		return 0;
+ 	}
+ 
+ 	if (nftnl_rule_get_u32(r, NFTNL_RULE_COMPAT_PROTO) != IPPROTO_TCP)
+@@ -1478,7 +1474,6 @@ int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	      struct nftnl_rule *r, struct xt_entry_match *m)
+ {
+ 	struct nftnl_expr *expr;
+-	int ret;
+ 
+ 	switch (ctx->command) {
+ 	case NFT_COMPAT_RULE_APPEND:
+@@ -1503,13 +1498,13 @@ int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	if (expr == NULL)
+ 		return -ENOMEM;
+ 
+-	ret = __add_match(expr, m);
++	__add_match(expr, m);
+ 	nftnl_rule_add_expr(r, expr);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+-static int __add_target(struct nftnl_expr *e, struct xt_entry_target *t)
++void __add_target(struct nftnl_expr *e, const struct xt_entry_target *t)
+ {
+ 	void *info;
+ 
+@@ -1520,8 +1515,6 @@ static int __add_target(struct nftnl_expr *e, struct xt_entry_target *t)
+ 	info = xtables_calloc(1, t->u.target_size);
+ 	memcpy(info, t->data, t->u.target_size - sizeof(*t));
+ 	nftnl_expr_set(e, NFTNL_EXPR_TG_INFO, info, t->u.target_size - sizeof(*t));
+-
+-	return 0;
+ }
+ 
+ static int add_meta_nftrace(struct nftnl_rule *r)
+@@ -1549,7 +1542,6 @@ static int add_meta_nftrace(struct nftnl_rule *r)
+ int add_target(struct nftnl_rule *r, struct xt_entry_target *t)
+ {
+ 	struct nftnl_expr *expr;
+-	int ret;
+ 
+ 	if (strcmp(t->u.user.name, "TRACE") == 0)
+ 		return add_meta_nftrace(r);
+@@ -1558,10 +1550,10 @@ int add_target(struct nftnl_rule *r, struct xt_entry_target *t)
+ 	if (expr == NULL)
+ 		return -ENOMEM;
+ 
+-	ret = __add_target(expr, t);
++	__add_target(expr, t);
+ 	nftnl_rule_add_expr(r, expr);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ int add_jumpto(struct nftnl_rule *r, const char *name, int verdict)
+diff --git a/iptables/nft.h b/iptables/nft.h
+index 8f17f3100a190..54fe5210ad1ac 100644
+--- a/iptables/nft.h
++++ b/iptables/nft.h
+@@ -192,8 +192,10 @@ bool nft_rule_is_policy_rule(struct nftnl_rule *r);
+  */
+ int add_counters(struct nftnl_rule *r, uint64_t packets, uint64_t bytes);
+ int add_verdict(struct nftnl_rule *r, int verdict);
++void __add_match(struct nftnl_expr *e, const struct xt_entry_match *m);
+ int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	      struct nftnl_rule *r, struct xt_entry_match *m);
++void __add_target(struct nftnl_expr *e, const struct xt_entry_target *t);
+ int add_target(struct nftnl_rule *r, struct xt_entry_target *t);
+ int add_jumpto(struct nftnl_rule *r, const char *name, int verdict);
+ int add_action(struct nftnl_rule *r, struct iptables_command_state *cs, bool goto_set);
 -- 
 2.43.0
 
