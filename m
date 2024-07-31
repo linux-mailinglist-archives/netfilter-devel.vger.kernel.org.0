@@ -1,43 +1,43 @@
-Return-Path: <netfilter-devel+bounces-3116-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3118-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C438C9434B6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 19:09:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 789DF9434B8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 19:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0903C1C21FA2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 17:09:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389A81F2158D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 17:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10921BD029;
-	Wed, 31 Jul 2024 17:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AB91BD014;
+	Wed, 31 Jul 2024 17:09:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0891B5AA
-	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 17:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9387B1B140E
+	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 17:09:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722445761; cv=none; b=tDQ6xwbQQ8a33sdPjcTFEImnjoUldj7oI5SkJJ7C0EbFJJgsFR61127abGVZwZQ/3H3N+65VZwhs29s5sZaHwGZEJ7MWVnpmMWA7Edh3wOhBoaViLCqaBfQwo7Ex7BYaXAEXjoZnkIUB6w1kZHFcnscAWbjZSzefylWRkN5KMDQ=
+	t=1722445764; cv=none; b=oOohtukZbuO5ZzvdokRL9SBFaLpsGoNuC3NTUp7QesVBbvUuTgiANP+O8z3key63qay5pnsk2H+wwjRl/swz4swrc39C8PG7JzQeq6uYj3LChjD+kR8GfriNgfxaQGGhFMQKxhv6K8siQA/T+MFH8WMjgOZ8LjnET+aVF2F6dsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722445761; c=relaxed/simple;
-	bh=WhnxOdOOeSa1kYMK+vys83ostf4P5diFMchWfyHsp5Q=;
+	s=arc-20240116; t=1722445764; c=relaxed/simple;
+	bh=KM5o8XRuAZbYRTPOCkP0/esRLYeu8uINnz1JTpcXN3E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Oj74DjkF28X7xW/KL3nKfah0tqSBKmEw2wMvdsCOyzSE4RT+gVoDXIaXIHVQ8X9dahYz/oXN9+WF89+AhiY/ryQcvedxg2YLmW49rAWkHbX36mqpNNLf15ew+qUcdFxzSN/7ZW2Ffl19Qu2B9P0wm0xa8m/JIa3hvZ5xH0wRVkc=
+	 MIME-Version; b=uIZbv2PUEVwF83V9/O5Qz6oViZMkFKQHSQYGV4WOUM+ChlDnzcXqRGAd4guMniurn4x8VubdL7RWqTi4BO0Fe+SzYxdmJ+R/vuvkPh/n6+h1ROi6eMUV0sXPAtMuR1I8+aorbPi0b65d7Pmwit615/uHiKMGC4BGI/XATc+o8M4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1sZCpA-0006yA-Mx; Wed, 31 Jul 2024 19:09:16 +0200
+	id 1sZCpE-0006yL-Pr; Wed, 31 Jul 2024 19:09:20 +0200
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft v2 2/5] src: mnl: make family specification more strict when listing
-Date: Wed, 31 Jul 2024 18:51:02 +0200
-Message-ID: <20240731165111.32166-3-fw@strlen.de>
+Subject: [PATCH nft v2 3/5] src: drop obsolete hook argument form hook dump functions
+Date: Wed, 31 Jul 2024 18:51:03 +0200
+Message-ID: <20240731165111.32166-4-fw@strlen.de>
 X-Mailer: git-send-email 2.44.2
 In-Reply-To: <20240731165111.32166-1-fw@strlen.de>
 References: <20240731165111.32166-1-fw@strlen.de>
@@ -49,130 +49,140 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-make "nft list hooks <family>" more strict.
+since commit b98fee20bfe2 ("mnl: revisit hook listing"), handle.chain is
+never set in this path, so 'hook' is always set to -1, so the hook arg
+can be dropped.
 
-nft list hooks: query/list all NFPROTO_XXX values, i.e.
-arp, bridge, ipv4, ipv6.
-
-If a device is also given, then do include the netdev family for
-the given device as well.
-
-"nft list hooks arp" will only dump the hooks registered
-for NFPROTO_ARP (or nothing at all if none are active).
-
-"bridge", "ip", "ip6" will list the pre/in/forward/output/postrouting
-hooks for these families, if any.
-
-"inet" serves as an alias for "ip" and "ip6".
-
-Link: https://lore.kernel.org/netfilter-devel/20240729153211.GA26048@breakpoint.cc/
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/mnl.c | 53 ++++++++++++++++++++++++-----------------------------
- 1 file changed, 24 insertions(+), 29 deletions(-)
+ include/mnl.h |  2 +-
+ src/mnl.c     | 26 +++++++++++++-------------
+ src/rule.c    |  6 +-----
+ 3 files changed, 15 insertions(+), 19 deletions(-)
 
+diff --git a/include/mnl.h b/include/mnl.h
+index cd5a2053b166..c9502f328f1c 100644
+--- a/include/mnl.h
++++ b/include/mnl.h
+@@ -90,7 +90,7 @@ int mnl_nft_flowtable_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 			  unsigned int flags);
+ int mnl_nft_flowtable_del(struct netlink_ctx *ctx, struct cmd *cmd);
+ 
+-int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook,
++int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family,
+ 			  const char *devname);
+ 
+ int mnl_nft_event_listener(struct mnl_socket *nf_sock, unsigned int debug_mask,
 diff --git a/src/mnl.c b/src/mnl.c
-index e4bbbcf6d536..88475ef4c25e 100644
+index 88475ef4c25e..1b424e427124 100644
 --- a/src/mnl.c
 +++ b/src/mnl.c
-@@ -2391,25 +2391,6 @@ static int dump_nf_hooks(const struct nlmsghdr *nlh, void *_data)
- 
- 	hook->family = nfg->nfgen_family;
- 
--	/* Netdev hooks potentially interfer with this family datapath. */
--	if (hook->family == NFPROTO_NETDEV) {
--		switch (data->family) {
--		case NFPROTO_IPV4:
--		case NFPROTO_IPV6:
--		case NFPROTO_INET:
--		case NFPROTO_BRIDGE:
--			hook->family = data->family;
--			hook->num = NF_INET_INGRESS;
--			break;
--		case NFPROTO_ARP:
--			if (hook->chain_family == NFPROTO_NETDEV) {
--				hook->family = data->family;
--				hook->num = __NF_ARP_INGRESS;
--			}
--			break;
--		}
--	}
--
- 	basehook_list_add_tail(hook, data->hook_list);
- 
- 	return MNL_CB_OK;
-@@ -2523,9 +2504,6 @@ static int mnl_nft_dump_nf(struct netlink_ctx *ctx, int family, int hook,
- {
- 	int i, err;
- 
--	/* show ingress in first place in hook listing. */
--	err = __mnl_nft_dump_nf_hooks(ctx, family, NFPROTO_NETDEV, NF_NETDEV_INGRESS, devname, hook_list);
--
- 	for (i = 0; i <= NF_INET_POST_ROUTING; i++) {
- 		int tmp;
- 
-@@ -2566,6 +2544,12 @@ static void release_hook_list(struct list_head *hook_list)
- 		basehook_free(hook);
+@@ -2499,7 +2499,7 @@ static void print_hooks(struct netlink_ctx *ctx, int family, struct list_head *h
+ 	fprintf(fp, "}\n");
  }
  
-+static void warn_if_device(struct nft_ctx *nft, const char *devname)
-+{
-+	if (devname)
-+		nft_print(&nft->output, "# device keyword (%s) unexpected for this family\n", devname);
-+}
-+
- int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook, const char *devname)
+-static int mnl_nft_dump_nf(struct netlink_ctx *ctx, int family, int hook,
++static int mnl_nft_dump_nf(struct netlink_ctx *ctx, int family,
+ 			   const char *devname, struct list_head *hook_list)
+ {
+ 	int i, err;
+@@ -2515,7 +2515,7 @@ static int mnl_nft_dump_nf(struct netlink_ctx *ctx, int family, int hook,
+ 	return err;
+ }
+ 
+-static int mnl_nft_dump_nf_arp(struct netlink_ctx *ctx, int family, int hook,
++static int mnl_nft_dump_nf_arp(struct netlink_ctx *ctx, int family,
+ 			       const char *devname, struct list_head *hook_list)
+ {
+ 	int err1, err2;
+@@ -2526,7 +2526,7 @@ static int mnl_nft_dump_nf_arp(struct netlink_ctx *ctx, int family, int hook,
+ 	return err1 ? err2 : err1;
+ }
+ 
+-static int mnl_nft_dump_nf_netdev(struct netlink_ctx *ctx, int family, int hook,
++static int mnl_nft_dump_nf_netdev(struct netlink_ctx *ctx, int family,
+ 				  const char *devname, struct list_head *hook_list)
+ {
+ 	int err;
+@@ -2550,7 +2550,7 @@ static void warn_if_device(struct nft_ctx *nft, const char *devname)
+ 		nft_print(&nft->output, "# device keyword (%s) unexpected for this family\n", devname);
+ }
+ 
+-int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook, const char *devname)
++int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, const char *devname)
  {
  	LIST_HEAD(hook_list);
-@@ -2576,30 +2560,41 @@ int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook, const c
+ 	int ret = -1, tmp;
+@@ -2559,16 +2559,16 @@ int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook, const c
+ 
  	switch (family) {
  	case NFPROTO_UNSPEC:
- 		ret = mnl_nft_dump_nf_hooks(ctx, NFPROTO_ARP, hook, NULL);
--		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_INET, hook, devname);
-+		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_INET, hook, NULL);
+-		ret = mnl_nft_dump_nf_hooks(ctx, NFPROTO_ARP, hook, NULL);
+-		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_INET, hook, NULL);
++		ret = mnl_nft_dump_nf_hooks(ctx, NFPROTO_ARP, NULL);
++		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_INET, NULL);
  		if (tmp == 0)
  			ret = 0;
- 		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_BRIDGE, hook, NULL);
- 		if (tmp == 0)
- 			ret = 0;
--		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_NETDEV, hook, devname);
--		if (tmp == 0)
--			ret = 0;
-+
-+		if (devname) {
-+			tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_NETDEV, hook, devname);
-+			if (tmp == 0)
-+				ret = 0;
-+		}
- 
- 		return ret;
- 	case NFPROTO_INET:
--		ret = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV4, hook, devname);
--		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV6, hook, devname);
-+		ret = 0;
-+		if (devname)
-+			ret = __mnl_nft_dump_nf_hooks(ctx, family, NFPROTO_NETDEV,
-+						      NF_NETDEV_INGRESS, devname, &hook_list);
-+		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV4, hook, NULL);
-+		if (tmp == 0)
-+			ret = 0;
-+		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV6, hook, NULL);
+-		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_BRIDGE, hook, NULL);
++		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_BRIDGE, NULL);
  		if (tmp == 0)
  			ret = 0;
  
--		return ret;
-+		break;
- 	case NFPROTO_IPV4:
+ 		if (devname) {
+-			tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_NETDEV, hook, devname);
++			tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_NETDEV, devname);
+ 			if (tmp == 0)
+ 				ret = 0;
+ 		}
+@@ -2579,10 +2579,10 @@ int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook, const c
+ 		if (devname)
+ 			ret = __mnl_nft_dump_nf_hooks(ctx, family, NFPROTO_NETDEV,
+ 						      NF_NETDEV_INGRESS, devname, &hook_list);
+-		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV4, hook, NULL);
++		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV4, NULL);
+ 		if (tmp == 0)
+ 			ret = 0;
+-		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV6, hook, NULL);
++		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_IPV6, NULL);
+ 		if (tmp == 0)
+ 			ret = 0;
+ 
+@@ -2591,14 +2591,14 @@ int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, int hook, const c
  	case NFPROTO_IPV6:
  	case NFPROTO_BRIDGE:
-+		warn_if_device(ctx->nft, devname);
- 		ret = mnl_nft_dump_nf(ctx, family, hook, devname, &hook_list);
+ 		warn_if_device(ctx->nft, devname);
+-		ret = mnl_nft_dump_nf(ctx, family, hook, devname, &hook_list);
++		ret = mnl_nft_dump_nf(ctx, family, devname, &hook_list);
  		break;
  	case NFPROTO_ARP:
-+		warn_if_device(ctx->nft, devname);
- 		ret = mnl_nft_dump_nf_arp(ctx, family, hook, devname, &hook_list);
+ 		warn_if_device(ctx->nft, devname);
+-		ret = mnl_nft_dump_nf_arp(ctx, family, hook, devname, &hook_list);
++		ret = mnl_nft_dump_nf_arp(ctx, family, devname, &hook_list);
  		break;
  	case NFPROTO_NETDEV:
+-		ret = mnl_nft_dump_nf_netdev(ctx, family, hook, devname, &hook_list);
++		ret = mnl_nft_dump_nf_netdev(ctx, family, devname, &hook_list);
+ 		break;
+ 	}
+ 
+diff --git a/src/rule.c b/src/rule.c
+index 545f9b2b5463..0f92ef532ece 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -2341,12 +2341,8 @@ static int do_list_set(struct netlink_ctx *ctx, struct cmd *cmd,
+ static int do_list_hooks(struct netlink_ctx *ctx, struct cmd *cmd)
+ {
+ 	const char *devname = cmd->handle.obj.name;
+-	int hooknum = -1;
+ 
+-	if (cmd->handle.chain.name)
+-		hooknum = cmd->handle.chain_id;
+-
+-	return mnl_nft_dump_nf_hooks(ctx, cmd->handle.family, hooknum, devname);
++	return mnl_nft_dump_nf_hooks(ctx, cmd->handle.family, devname);
+ }
+ 
+ static int do_command_list(struct netlink_ctx *ctx, struct cmd *cmd)
 -- 
 2.44.2
 
