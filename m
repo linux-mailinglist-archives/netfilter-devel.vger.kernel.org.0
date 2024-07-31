@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3129-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3135-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472ED9438CF
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88D7E9438D5
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F077B28403A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45725284112
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C5716D9AA;
-	Wed, 31 Jul 2024 22:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0737816D9D8;
+	Wed, 31 Jul 2024 22:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="HngpdefX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KFFDarmv"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2436E14B097
-	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB64316D4D0
+	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722464832; cv=none; b=aZ3AlnQPanTu2Oy2RB3N8p3BGx7kBgAMeGxlTmx31qCKYHlsRnmJB+MELd6IqnwCPRpSvZg2Qp4VSR0BeI8lE8pGzXnZ14i3u1JpdJrJuOMWTu6w6jllDKOIyZoQTL2iPUnPnK/wZdBz54vV5hyjBJkD0g0Sf79TqlMTOVND3xI=
+	t=1722464833; cv=none; b=eGI2nsRkK/Zsxqtf2Wucuiap+wAGvKcdKutjZJ7GLkOJm4cIIfSWTbkvOcP0ykGo6NzmpAWcaMHLnMsAkfM1kozIV4z2BW9n1QIu5pwvEEamYQkpG0KbnL1xE1bTT0S2WbFgkzHVzseGm1Pfd3hN1UbO+zH1oCCA+bxWpkv7Q94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722464832; c=relaxed/simple;
-	bh=hNVv1WAdIl4hZiAQECAQ3MvXxkcQNKN8lwlbO2isU7s=;
+	s=arc-20240116; t=1722464833; c=relaxed/simple;
+	bh=G8mnnKWCS5fteAeMjTmJ0uBe1zansgTNyWL9H6dqvHM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r2Fu6ipSBcbXpJLdjm09cyjCSMsVM+GN87zLgOfyEncCYgB+9qM9+ik5qZxEMFAgM6/w6ADmXuvOTwJzHTNyLKCccWC2N5tU3WdT+obU5sA+pNseeeMg3w25nNh8sZi0gXd/t8GiRkcaHUNWzBghEaLmPodXxdD/PmH+te3/V+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=HngpdefX; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=i/l7Yx+m9mfLortBKQhVz0w06/3FsnQp9Gp/YVmwXqeGRZdrqqfgk4wnhTUVlMqX4S59PVDyEJaqdUaO1xmCrr66q5UwGj1mSlNPEmxtBk96gpvNMf1Rfmj8RY8pmFnrOhgopTPXc3pgKluKtJsPYPpqEqdXl6zSSI9pHBA+YjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KFFDarmv; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=P21l59OpNMDw9+GkcleATfuQLKiXneVJll1Hs8aam9o=; b=HngpdefXvjGa3VBrhM4OjpFetx
-	t5dWAT9JASRo76lVK1d4aagetB0mwHiQGBsJ4TDiSHj05uTuMs6O+IZjtcjpcv+s+TYIwRrVuGpfa
-	pSEMwLqXEyaOsa9P0VsIC27N4X0H1boPIqXdvaTfr0bfTYHYc8kYj+y3r+tMnrFFqMt03xbdLClxM
-	qUIFfUTrdoya8c0U3gYENsBeUkU5Pq/Vf1R4DIlaZuIIIqghaNaWJvjAX99ZaVymMzigUlQx3RMFY
-	3f41amenALL52WwpDQXl3zZpU0aXj3CkXacXYh9KWLEV9DbD4igq9PjsZERe85QsyPsQtrdizuAUl
-	EonjBGnA==;
+	bh=E9/YT/09w4PvdAlQJAKTvpIk8XD9N9aiMzcB6JCnQ+8=; b=KFFDarmvpuaQafYCvSc3CRThlU
+	ja6eePc6LorB6EPsct5ttTRWYIVVNrJ9rHU45XmSVaukw+7veMmcWx7omtdPSBqZcw5OoyU8j4OsL
+	/dnQao+/2GTfwEfV/zgWXZyfKbbHr1dJhOJ4SCsQtxqaR2eS8NQjy78GHcxw097ARLathgCzA8Xh/
+	SrD1fXLc6PPZrjqzFFqR2madcaavgFqUBbBXbC5Vm4RmEMUmZKLp4EyeVZYvTB7bdcYcDEb7xmbKW
+	/x/u07hAepEAzcUFleCqUflG+GvghJpLgGfumiyk53Fht5229jsFk2l47LLmd1yOHHzqk5mIZFhrE
+	5ny4pylg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sZHmk-000000003hz-3AEN;
-	Thu, 01 Aug 2024 00:27:06 +0200
+	id 1sZHmm-000000003iO-2DRn;
+	Thu, 01 Aug 2024 00:27:08 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH 6/8] nft: __add_{match,target}() can't fail
-Date: Thu,  1 Aug 2024 00:27:01 +0200
-Message-ID: <20240731222703.22741-7-phil@nwl.cc>
+Subject: [iptables PATCH 7/8] nft: Introduce UDATA_TYPE_COMPAT_EXT
+Date: Thu,  1 Aug 2024 00:27:02 +0200
+Message-ID: <20240731222703.22741-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240731222703.22741-1-phil@nwl.cc>
 References: <20240731222703.22741-1-phil@nwl.cc>
@@ -67,137 +67,69 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These functions either call xtables_error() which terminates the process
-or succeed - make them return void. While at it, export them as rule
-parsing code will call them in future. Also make input parameter const,
-they're not supposed to alter extension data.
+This new rule udata attribute will contain extensions which have been
+converted to native nftables expressions for rule parsers to fall back
+to.
+
+While at it, export parse_udata_cb() as rule parsing code will call it
+in future.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 28 ++++++++++------------------
- iptables/nft.h |  2 ++
- 2 files changed, 12 insertions(+), 18 deletions(-)
+ iptables/nft.c | 11 +++--------
+ iptables/nft.h | 12 ++++++++++++
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 88be5ede5171d..cabcc884b4069 100644
+index cabcc884b4069..64ac35f2edcf3 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -1034,7 +1034,7 @@ int nft_chain_set(struct nft_handle *h, const char *table,
- 	return 1;
+@@ -1668,14 +1668,7 @@ int add_counters(struct nftnl_rule *r, uint64_t packets, uint64_t bytes)
+ 	return 0;
  }
  
--static int __add_match(struct nftnl_expr *e, struct xt_entry_match *m)
-+void __add_match(struct nftnl_expr *e, const struct xt_entry_match *m)
- {
- 	void *info;
- 
-@@ -1044,8 +1044,6 @@ static int __add_match(struct nftnl_expr *e, struct xt_entry_match *m)
- 	info = xtables_calloc(1, m->u.match_size);
- 	memcpy(info, m->data, m->u.match_size - sizeof(*m));
- 	nftnl_expr_set(e, NFTNL_EXPR_MT_INFO, info, m->u.match_size - sizeof(*m));
+-enum udata_type {
+-	UDATA_TYPE_COMMENT,
+-	UDATA_TYPE_EBTABLES_POLICY,
+-	__UDATA_TYPE_MAX,
+-};
+-#define UDATA_TYPE_MAX (__UDATA_TYPE_MAX - 1)
 -
--	return 0;
- }
- 
- static int add_nft_limit(struct nftnl_rule *r, struct xt_entry_match *m)
-@@ -1378,11 +1376,10 @@ static int add_nft_udp(struct nft_handle *h, struct nftnl_rule *r,
- 	if (udp->invflags > XT_UDP_INV_MASK ||
- 	    udp_all_zero(udp)) {
- 		struct nftnl_expr *expr = nftnl_expr_alloc("match");
--		int ret;
- 
--		ret = __add_match(expr, m);
-+		__add_match(expr, m);
- 		nftnl_rule_add_expr(r, expr);
--		return ret;
-+		return 0;
+-static int parse_udata_cb(const struct nftnl_udata *attr, void *data)
++int parse_udata_cb(const struct nftnl_udata *attr, void *data)
+ {
+ 	unsigned char *value = nftnl_udata_get(attr);
+ 	uint8_t type = nftnl_udata_type(attr);
+@@ -1689,6 +1682,8 @@ static int parse_udata_cb(const struct nftnl_udata *attr, void *data)
+ 		break;
+ 	case UDATA_TYPE_EBTABLES_POLICY:
+ 		break;
++	case UDATA_TYPE_COMPAT_EXT:
++		break;
+ 	default:
+ 		return 0;
  	}
- 
- 	if (nftnl_rule_get_u32(r, NFTNL_RULE_COMPAT_PROTO) != IPPROTO_UDP)
-@@ -1431,11 +1428,10 @@ static int add_nft_tcp(struct nft_handle *h, struct nftnl_rule *r,
- 	if (tcp->invflags & ~supported || tcp->option ||
- 	    tcp_all_zero(tcp)) {
- 		struct nftnl_expr *expr = nftnl_expr_alloc("match");
--		int ret;
- 
--		ret = __add_match(expr, m);
-+		__add_match(expr, m);
- 		nftnl_rule_add_expr(r, expr);
--		return ret;
-+		return 0;
- 	}
- 
- 	if (nftnl_rule_get_u32(r, NFTNL_RULE_COMPAT_PROTO) != IPPROTO_TCP)
-@@ -1478,7 +1474,6 @@ int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
- 	      struct nftnl_rule *r, struct xt_entry_match *m)
- {
- 	struct nftnl_expr *expr;
--	int ret;
- 
- 	switch (ctx->command) {
- 	case NFT_COMPAT_RULE_APPEND:
-@@ -1503,13 +1498,13 @@ int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
- 	if (expr == NULL)
- 		return -ENOMEM;
- 
--	ret = __add_match(expr, m);
-+	__add_match(expr, m);
- 	nftnl_rule_add_expr(r, expr);
- 
--	return ret;
-+	return 0;
- }
- 
--static int __add_target(struct nftnl_expr *e, struct xt_entry_target *t)
-+void __add_target(struct nftnl_expr *e, const struct xt_entry_target *t)
- {
- 	void *info;
- 
-@@ -1520,8 +1515,6 @@ static int __add_target(struct nftnl_expr *e, struct xt_entry_target *t)
- 	info = xtables_calloc(1, t->u.target_size);
- 	memcpy(info, t->data, t->u.target_size - sizeof(*t));
- 	nftnl_expr_set(e, NFTNL_EXPR_TG_INFO, info, t->u.target_size - sizeof(*t));
--
--	return 0;
- }
- 
- static int add_meta_nftrace(struct nftnl_rule *r)
-@@ -1549,7 +1542,6 @@ static int add_meta_nftrace(struct nftnl_rule *r)
- int add_target(struct nftnl_rule *r, struct xt_entry_target *t)
- {
- 	struct nftnl_expr *expr;
--	int ret;
- 
- 	if (strcmp(t->u.user.name, "TRACE") == 0)
- 		return add_meta_nftrace(r);
-@@ -1558,10 +1550,10 @@ int add_target(struct nftnl_rule *r, struct xt_entry_target *t)
- 	if (expr == NULL)
- 		return -ENOMEM;
- 
--	ret = __add_target(expr, t);
-+	__add_target(expr, t);
- 	nftnl_rule_add_expr(r, expr);
- 
--	return ret;
-+	return 0;
- }
- 
- int add_jumpto(struct nftnl_rule *r, const char *name, int verdict)
 diff --git a/iptables/nft.h b/iptables/nft.h
-index 8f17f3100a190..54fe5210ad1ac 100644
+index 54fe5210ad1ac..d6424f499cfcf 100644
 --- a/iptables/nft.h
 +++ b/iptables/nft.h
-@@ -192,8 +192,10 @@ bool nft_rule_is_policy_rule(struct nftnl_rule *r);
-  */
- int add_counters(struct nftnl_rule *r, uint64_t packets, uint64_t bytes);
- int add_verdict(struct nftnl_rule *r, int verdict);
-+void __add_match(struct nftnl_expr *e, const struct xt_entry_match *m);
- int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
- 	      struct nftnl_rule *r, struct xt_entry_match *m);
-+void __add_target(struct nftnl_expr *e, const struct xt_entry_target *t);
- int add_target(struct nftnl_rule *r, struct xt_entry_target *t);
- int add_jumpto(struct nftnl_rule *r, const char *name, int verdict);
- int add_action(struct nftnl_rule *r, struct iptables_command_state *cs, bool goto_set);
+@@ -276,4 +276,16 @@ void nft_assert_table_compatible(struct nft_handle *h,
+ int ebt_set_user_chain_policy(struct nft_handle *h, const char *table,
+ 			      const char *chain, const char *policy);
+ 
++struct nftnl_udata;
++
++enum udata_type {
++	UDATA_TYPE_COMMENT,
++	UDATA_TYPE_EBTABLES_POLICY,
++	UDATA_TYPE_COMPAT_EXT,
++	__UDATA_TYPE_MAX,
++};
++#define UDATA_TYPE_MAX (__UDATA_TYPE_MAX - 1)
++
++int parse_udata_cb(const struct nftnl_udata *attr, void *data);
++
+ #endif
 -- 
 2.43.0
 
