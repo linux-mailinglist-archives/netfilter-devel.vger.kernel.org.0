@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3132-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3136-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD9B9438D2
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6978A9438D7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF471F22847
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 955A31C21A2C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6018916D9C4;
-	Wed, 31 Jul 2024 22:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4143A16D9DF;
+	Wed, 31 Jul 2024 22:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dwomQpCO"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="clsuy/wQ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85A016D4FA
-	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD3616D9C8
+	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722464833; cv=none; b=VWHL1O2S0ov23r71IhkQ9/BNHp3TCqYql4HPOIfI5Ir4xxNsPR2sQQTBmTA3Yt4oPJsDk3B+RLQdhpUVU/iRRZU3SGqQG5bdNAeRG5CBr9SDbxX0aH0olc5r89tUQaYWPN/KlghwNJIooFGT8LIv7NfTSTW6mjPxg/o9NnYiVv8=
+	t=1722464835; cv=none; b=U6ikWDgmwrlzlXsV1lG+qr7OwMK6O+XVW5NAZku6mjCEmGNp3o7VivzWuZcid7ufIuHy1ChVUTYGuaKXwoPjY6pH/FPOs58iAdm85GKIb5b1xMY8YxGkxeI3x+XLyzIR1aw88IoP1XwOlsmHTzesIV0ZVFa5dRTS2N/FS5EABog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722464833; c=relaxed/simple;
-	bh=StSPAeUfHGeG6sPQZfkb4JUu3E9j20cAAYUaMkkVTA4=;
+	s=arc-20240116; t=1722464835; c=relaxed/simple;
+	bh=ypSLtoMu7wkYxMeMaK77c/TcduDtFG8TIpZYWQSr4uo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kAPgYQTTZGK9k/lDH6sgvuMKTm7wmJLYUiKsN/peYAMEiYwuruSVGyfZioVVU3XSdLjqDlfly6uTQN0Sb5nM4uHgY1E1YXYecR7jNB5EG55PaHdRPOHEchr11ZmlQ+05PkXlSsruQX+lVh7Vhq9dMQ82mgIijHxk0TYnl0HQvDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dwomQpCO; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=HzxYr7xwElv4dwsKf9bzUmuDjFSIZeu83VfUUbHCHjrQ/GJ4zxEN+FbeaR1uBYaXB0n4TEgnBDKT2xEcvPeVfWV+GQ8aOZGI3TCsgYOv+DPQ7RNztW32KZBhM3HsgFMhtk40YdrWLZFXMIYe87QC0veIbIboFaijr54qthob7uA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=clsuy/wQ; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=zgD8wmxmgfQ5aloCHoLLw/QKf53e0igplQQgPUkaHPU=; b=dwomQpCO7fnJLdok1ClpEzfuTe
-	m0Qn9UnbdBpT8lMLE4gaSdBEyvV91tITxhhFa3/0kuV//nkypcg/h3XYJwuJEyZ8MNDfPjM7h9/DC
-	eb1Ff6qhlAXVEzEklhNYk1+Sgn5B2O91cpt7p8DAxvJp8OZqBTt3b/Cl8liVZ/8c9cJBLMDipSrDY
-	RvfukSUCpXqfPO/VVNN6d1ADO2OVO9cc1T6mNZKrxqlmircqjIyXg3BzE62FYuhkG+K+7TGlPI7kj
-	IAeEi0vqz5IIuUOKfX9dajGrfGwaxHxRh4etn+yl/aQEWGLEVrg+hhCq8RFEd+iUMKQeov5UEIvkK
-	MFHiCdjw==;
+	bh=TsZ1H4vD9A+wuRMAnzbw8NVf1fActLj4IuYHulNq53E=; b=clsuy/wQN4MC3vfboTxKCftOa0
+	Xf1p0UfOl7raUVZnyNVbJmdNMifkSzVmqLRqHvNW0pjKp14f9fMABD4F1Z4TBCarH+uLXS+75WQh0
+	af3aQEa7kV04CYJ0lE+WhyHL6QQ9Hhq8NuADbC37/9E3MJN/xviiYC5zoaL6TlOwrKaMmwDcs8bJA
+	PDQ0CKSvV8ogTBpirvn5XhnCozDQQ5S3KLC0Mzk+DbCOPePou58pNJrzekSwZStQ+ksNE3LbLqrBF
+	3xd9Jxni7iXFEfMZM6kyzSBIAikju/BihArqwXpzbvXl0bYPWbuLKFuDy5f32Bz7VPd/vtPXUXqYi
+	RBMLnTXA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sZHmo-000000003ij-0hyL;
-	Thu, 01 Aug 2024 00:27:10 +0200
+	id 1sZHmp-000000003iz-3i2P;
+	Thu, 01 Aug 2024 00:27:11 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH 3/8] nft: Reduce overhead in nft_rule_find()
-Date: Thu,  1 Aug 2024 00:26:58 +0200
-Message-ID: <20240731222703.22741-4-phil@nwl.cc>
+Subject: [iptables PATCH 4/8] nft: ruleparse: Drop 'iter' variable in nft_rule_to_iptables_command_state
+Date: Thu,  1 Aug 2024 00:26:59 +0200
+Message-ID: <20240731222703.22741-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240731222703.22741-1-phil@nwl.cc>
 References: <20240731222703.22741-1-phil@nwl.cc>
@@ -67,100 +67,55 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When iterating through the list of rules in a chain comparing against a
-sample, there is no point in carrying that sample as nftnl_rule object
-and converting into iptables_command_state object prior to each
-comparison. Just do it up front and adjust the callback accordingly.
+Use the same named field in 'ctx' instead, it has to carry the value
+anyway.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ iptables/nft-ruleparse.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 8b1803181b207..88be5ede5171d 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -2392,25 +2392,22 @@ static int __nft_rule_del(struct nft_handle *h, struct nftnl_rule *r)
- }
- 
- static bool nft_rule_cmp(struct nft_handle *h, struct nftnl_rule *r,
--			 struct nftnl_rule *rule)
-+			 struct iptables_command_state *cs)
+diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
+index 3b1cbe4fa1499..1ee7a94db59de 100644
+--- a/iptables/nft-ruleparse.c
++++ b/iptables/nft-ruleparse.c
+@@ -891,7 +891,6 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
+ 					const struct nftnl_rule *r,
+ 					struct iptables_command_state *cs)
  {
--	struct iptables_command_state _cs = {}, this = {}, *cs = &_cs;
--	bool ret = false, ret_this, ret_that;
-+	struct iptables_command_state this = {};
-+	bool ret = false, ret_this;
+-	struct nftnl_expr_iter *iter;
+ 	struct nftnl_expr *expr;
+ 	struct nft_xt_ctx ctx = {
+ 		.cs = cs,
+@@ -900,12 +899,11 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
+ 	};
+ 	bool ret = true;
  
--	if (h->ops->init_cs) {
-+	if (h->ops->init_cs)
- 		h->ops->init_cs(&this);
--		h->ops->init_cs(cs);
--	}
+-	iter = nftnl_expr_iter_create(r);
+-	if (iter == NULL)
++	ctx.iter = nftnl_expr_iter_create(r);
++	if (ctx.iter == NULL)
+ 		return false;
  
- 	ret_this = h->ops->rule_to_cs(h, r, &this);
--	ret_that = h->ops->rule_to_cs(h, rule, cs);
+-	ctx.iter = iter;
+-	expr = nftnl_expr_iter_next(iter);
++	expr = nftnl_expr_iter_next(ctx.iter);
+ 	while (expr != NULL) {
+ 		const char *name =
+ 			nftnl_expr_get_str(expr, NFTNL_EXPR_NAME);
+@@ -941,10 +939,10 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
+ 			ret = false;
+ 		}
  
--	DEBUGP("comparing with... ");
-+	DEBUGP("with ... ");
- #ifdef DEBUG_DEL
- 	nft_rule_print_save(h, r, NFT_RULE_APPEND, 0);
- #endif
--	if (!ret_this || !ret_that)
--		DEBUGP("Cannot convert rules: %d %d\n", ret_this, ret_that);
-+	if (!ret_this)
-+		DEBUGP("Cannot convert rule: %d\n", ret_this);
+-		expr = nftnl_expr_iter_next(iter);
++		expr = nftnl_expr_iter_next(ctx.iter);
+ 	}
  
- 	if (!h->ops->is_same(cs, &this))
- 		goto out;
-@@ -2434,7 +2431,6 @@ static bool nft_rule_cmp(struct nft_handle *h, struct nftnl_rule *r,
- 	ret = true;
- out:
- 	h->ops->clear_cs(&this);
--	h->ops->clear_cs(cs);
- 	return ret;
- }
+-	nftnl_expr_iter_destroy(iter);
++	nftnl_expr_iter_destroy(ctx.iter);
  
-@@ -2442,6 +2438,7 @@ static struct nftnl_rule *
- nft_rule_find(struct nft_handle *h, struct nft_chain *nc,
- 	      struct nftnl_rule *rule, int rulenum)
- {
-+	struct iptables_command_state cs = {};
- 	struct nftnl_chain *c = nc->nftnl;
- 	struct nftnl_rule *r;
- 	struct nftnl_rule_iter *iter;
-@@ -2455,9 +2452,20 @@ nft_rule_find(struct nft_handle *h, struct nft_chain *nc,
- 	if (iter == NULL)
- 		return 0;
- 
-+	if (h->ops->init_cs)
-+		h->ops->init_cs(&cs);
-+
-+	if (!h->ops->rule_to_cs(h, rule, &cs))
-+		return NULL;
-+
-+	DEBUGP("comparing ... ");
-+#ifdef DEBUG_DEL
-+	nft_rule_print_save(h, rule, NFT_RULE_APPEND, 0);
-+#endif
-+
- 	r = nftnl_rule_iter_next(iter);
- 	while (r != NULL) {
--		found = nft_rule_cmp(h, r, rule);
-+		found = nft_rule_cmp(h, r, &cs);
- 		if (found)
- 			break;
- 		r = nftnl_rule_iter_next(iter);
-@@ -2465,6 +2473,8 @@ nft_rule_find(struct nft_handle *h, struct nft_chain *nc,
- 
- 	nftnl_rule_iter_destroy(iter);
- 
-+	h->ops->clear_cs(&cs);
-+
- 	return found ? r : NULL;
- }
- 
+ 	if (nftnl_rule_is_set(r, NFTNL_RULE_USERDATA)) {
+ 		const void *data;
 -- 
 2.43.0
 
