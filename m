@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3130-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3128-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2060A9438D1
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C75649438D0
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0053283FFC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 334A2B211CB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0872E16D9B3;
-	Wed, 31 Jul 2024 22:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CB116D4F3;
+	Wed, 31 Jul 2024 22:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="qqHZ9E0T"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="h96KGH+S"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5EE16D33D
-	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243C116CD3F
+	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722464832; cv=none; b=P/54fDVMp/WrGnHl3uVtouVcBnSw9x+Uws2rDeopzHVL1wfdYt9aMGSSqLsbRxW/UQDbO4ZMc6ReA2d8AFuZZkx/QOXP8MSc4PXZysMVvGq+DONUMwufYs+lHeB+oWgO1u2jG0VmLbsJpaTKACCtSAU3zWRx1ejFyZhJojcRlL8=
+	t=1722464831; cv=none; b=LtJ96Y7RvFWLfsbgTZBZeLa087YUDnJX0OO++SY4GjO2bJxdHOZzNnyewKPDFbPXbnaLNParkKs4dR22jKoiRkrAFvQejddlS78KNX5jF1l3IJOXXOUfmtojx+HQSFUnT+YL/6IW4OgPefhyF+8ysINIoYp/Q0PBqeYSrD5Q+W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722464832; c=relaxed/simple;
-	bh=LwCrtzR4aTJnl8GdN8giubDEnjxIUeCTAYL/OoPJD/o=;
+	s=arc-20240116; t=1722464831; c=relaxed/simple;
+	bh=l6OhOSEaTjyDXmNgWp05txx+OyxH3PaDy2klgnD/XDU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nvdfSMPtXrQdJueFdKwqO4UtXLNw68XKtck96+zDPN54+8Frzw/vfZrg6gpLGlTJ7cynJGYRFPUXYk3UJbbahtjqPZjI+TWcAvoxzneQiu6SYJbdbYuQXI61H0SOvI+ff9DxIgh1CAXB3ivwlf3O3YLKADxCxrflmrSRjsyLVWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=qqHZ9E0T; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=qz0RjPbyVcG3q4v6cuiwEAdZEeufXWdPLQ1EWTLCQyu0jm28qkaIcdqL3MOIizEOR7Z8xHrTGYYEQ9wwfp6U+l44IeH9UxpuYo6R9K/g84AVqkLr40hhcwfJCxWXNq/q71k1SltcJkHgQj53ZWbkKXWZlnwx6/APIHqg2G0mB3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=h96KGH+S; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=aJz19JxKWRis7mgTkcmCtU9RI1nXoc7Geak4FB0/+Gk=; b=qqHZ9E0TmZu7a+Ne1Wx8kTUi/7
-	SBqn1NQgK2ua4mRHfIhb/jJxsOrynFZT/ZW8vE20qxHqANRs1BSOy3hNr68issJC/T7ePccx9AEs6
-	1bCvuzDQ8fAsPUHO+igS+qS8LXUEGZ7KBfLXEUyMfli14oIEfcmJsxaMJjeaaUuUU9d7CUUpm4LCS
-	nU4r+W4hF1ND+MCl/KnuW9e96IKPUNwcbkxIKT/F+NuJb6aVDtAnC7tjuz5rhCPj2hHZrQp31S8HB
-	4qhKuvGZ005NCKcV6o7pQrDI3JJSAHnP1mLLWSVum2xIlkmoQW5XjwQJhaWdRHxi5OYQrM3/eh9a8
-	sOT7yG/g==;
+	bh=JcI/TTnptgxgnFBnY7D4WL+2md0ceGnhdoxyJkCWYAs=; b=h96KGH+Skm/puCERr6YVPVGece
+	Xlu8tiw1FCKaWc1sV5/co198sGnrzLYSxc6qg3z4MFrnZysMpX9d3QHSVw7EN2al1NQF3KjE3nGZ2
+	7E0AQSX4BpQ/SfdsXgOudP7ZnDwVUIytt2DvnWKSe3rH5D36fJsjG53lZ4LUM/nrnBqp169MNUZbI
+	JJev46yHTZlbbmknDDnRvfz38zpyeJMXeFCwgLAfXWrw3tCu230obPBYt9J0xtWsUbVdrew6TOAOE
+	LyjYZaUs6fsPFM5WHMX7sOLcjrlUjPqToHLANYz0rXnt67X9GfNH736SVQfkGCGGvM6zW2bvHveO9
+	QsoXdtbw==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sZHmn-000000003iV-0Ca5;
-	Thu, 01 Aug 2024 00:27:09 +0200
+	id 1sZHml-000000003i6-1RUU;
+	Thu, 01 Aug 2024 00:27:07 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH 1/8] ebtables: Zero freed pointers in ebt_cs_clean()
-Date: Thu,  1 Aug 2024 00:26:56 +0200
-Message-ID: <20240731222703.22741-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/8] ebtables: Introduce nft_bridge_init_cs()
+Date: Thu,  1 Aug 2024 00:26:57 +0200
+Message-ID: <20240731222703.22741-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240731222703.22741-1-phil@nwl.cc>
 References: <20240731222703.22741-1-phil@nwl.cc>
@@ -67,28 +67,78 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Trying to recycle an iptables_command_state object by calling first
-clear_cs then init_cs callbacks causes invalid data accesses with
-ebtables otherwise.
+The custom init done by nft_rule_to_ebtables_command_state() (which is
+also the reason for its existence in the first place) should better go
+into an ebtables-specific init_cs callback. Properly calling it from
+do_commandeb() then removes the need for that custom rule_to_cs
+callback.
 
-Fixes: fe97f60e5d2a9 ("ebtables-compat: add watchers support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-bridge.c | 1 +
- 1 file changed, 1 insertion(+)
+ iptables/nft-bridge.c | 11 +++++------
+ iptables/xtables-eb.c |  4 +++-
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index 0f85e21861cde..f75a13fbf1120 100644
+index f75a13fbf1120..1623acbac0ba6 100644
 --- a/iptables/nft-bridge.c
 +++ b/iptables/nft-bridge.c
-@@ -46,6 +46,7 @@ void ebt_cs_clean(struct iptables_command_state *cs)
- 		free(m);
- 		m = nm;
- 	}
-+	cs->match_list = NULL;
+@@ -203,12 +203,9 @@ static int nft_bridge_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	return _add_action(r, cs);
+ }
  
- 	if (cs->target) {
- 		free(cs->target->t);
+-static bool nft_rule_to_ebtables_command_state(struct nft_handle *h,
+-					       const struct nftnl_rule *r,
+-					       struct iptables_command_state *cs)
++static void nft_bridge_init_cs(struct iptables_command_state *cs)
+ {
+ 	cs->eb.bitmask = EBT_NOPROTO;
+-	return nft_rule_to_iptables_command_state(h, r, cs);
+ }
+ 
+ static void print_iface(const char *option, const char *name, bool invert)
+@@ -353,7 +350,8 @@ static void nft_bridge_print_rule(struct nft_handle *h, struct nftnl_rule *r,
+ 	if (format & FMT_LINENUMBERS)
+ 		printf("%d. ", num);
+ 
+-	nft_rule_to_ebtables_command_state(h, r, &cs);
++	nft_bridge_init_cs(&cs);
++	nft_rule_to_iptables_command_state(h, r, &cs);
+ 	__nft_bridge_save_rule(&cs, format);
+ 	ebt_cs_clean(&cs);
+ }
+@@ -699,7 +697,8 @@ struct nft_family_ops nft_family_ops_bridge = {
+ 	.print_rule		= nft_bridge_print_rule,
+ 	.save_rule		= nft_bridge_save_rule,
+ 	.save_chain		= nft_bridge_save_chain,
+-	.rule_to_cs		= nft_rule_to_ebtables_command_state,
++	.rule_to_cs		= nft_rule_to_iptables_command_state,
++	.init_cs		= nft_bridge_init_cs,
+ 	.clear_cs		= ebt_cs_clean,
+ 	.xlate			= nft_bridge_xlate,
+ };
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index 51c699defb047..45663a3ad0ee0 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -557,7 +557,6 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 		.argc = argc,
+ 		.argv = argv,
+ 		.jumpto	= "",
+-		.eb.bitmask = EBT_NOPROTO,
+ 	};
+ 	const struct builtin_table *t;
+ 	struct xtables_args args = {
+@@ -572,6 +571,9 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+ 	};
+ 	int ret = 0;
+ 
++	if (h->ops->init_cs)
++		h->ops->init_cs(&cs);
++
+ 	do_parse(argc, argv, &p, &cs, &args);
+ 
+ 	h->verbose	= p.verbose;
 -- 
 2.43.0
 
