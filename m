@@ -1,605 +1,352 @@
-Return-Path: <netfilter-devel+bounces-3133-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3137-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003BC9438D4
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 00:27:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DE29445E6
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 09:52:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB05283F63
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2024 22:27:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6D7AB210AA
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2024 07:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B281116D9CB;
-	Wed, 31 Jul 2024 22:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ANGLEUxc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB44F1581FC;
+	Thu,  1 Aug 2024 07:52:40 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20B316D333
-	for <netfilter-devel@vger.kernel.org>; Wed, 31 Jul 2024 22:27:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446411EB4A6;
+	Thu,  1 Aug 2024 07:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722464833; cv=none; b=BBkyTXxNT9+X6uCV7AhYLfJF53WZotcvnn03zaa+Bqj/TTk0FlWSna4t7OLdFOulTkCMsSvLbm3UPi1iB//bGcZW8MMtQgVJJehb00bDvSxIFZu8Syes/AWPWsdvP+aLTj+0ow7M5naA9IO+nDLUq7lbKw7/KwvZ8TRN4xvZqOs=
+	t=1722498760; cv=none; b=M+UiN5iWhiFXVXbFjQwR0z4HbyF6vxk4G4q7jTyhAr9I0ENqIP3e3MZKGxK9PyKlu0sVfEln52/SvO29Ace1WSEYB45xwa0t4L3p/cDOxM4bnqMMonV65CpCJvexr0m8unLqJ9Xv+2ArQAZDRdfeZWdjDTXUeF9uBIHii90YCyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722464833; c=relaxed/simple;
-	bh=H7IXfE+dIkWNgFxRDkpbw82A4FkJSh9aJ+FvQh/R8WY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VIPja4IjIg9CMLT8N/w9doxlRuV+zRxE5l+cAKXM7rHiJcPLpPyU1SRn1mnQQXUeB1laFd0Yo/gnUJIkpSi4IaFYZlAPVDBvGgadDLo/ZOFcRwUefyQlkuCydwXhaWMlb7g+2Pm96zcnYGkbadvESjpW1Bi7DUHpv0XdhT2z3b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=ANGLEUxc; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=4gLRHQPZP7p1smcB+HX//PzsxhJJSCWT/YJN8tkJ6ts=; b=ANGLEUxcLX1Wta+dtFZ/g202Zs
-	UcGIhklRcpeX0kOoSq46TwDbXXxqt7JffOHOcZm2VlvC59P3tp0oBWtFWb9EynM1ZIwP5oeEEhFxI
-	TuxlQfsM3DnQyU4Te5BXKNUwOgI60eSiBjIQr2x9BqDTW/p//t7dWk6JSe/Sxx8zxWV5l72109HBP
-	hibBoKk2AtxypMbQwRTE+sCq97Wak44/pKh5VOSUC8ub2BA8KMeHUKhGo8zR+tRz1ZfpLrJ9jPktj
-	c+RCbWmBsTi442zlAzO8fRjKyAuB5bMSpRHxgD/fF9+qClkkRR3JOO0s8iC3RoTod4cc6OyqZwe/o
-	IuqhIENQ==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1sZHml-000000003iH-3gWf;
-	Thu, 01 Aug 2024 00:27:08 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Cc: Florian Westphal <fw@strlen.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables RFC PATCH 8/8] nft: Support compat extensions in rule userdata
-Date: Thu,  1 Aug 2024 00:27:03 +0200
-Message-ID: <20240731222703.22741-9-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240731222703.22741-1-phil@nwl.cc>
-References: <20240731222703.22741-1-phil@nwl.cc>
+	s=arc-20240116; t=1722498760; c=relaxed/simple;
+	bh=I9u/ZgrYWBv+08q1V6Xku5BdlFnvDhaJYSor+AsmEBY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qSyxsZSLMjrZ+mrvm/HaevUaAYjdSo0taDtp6AZQILorHtLuQkBtbt1d10B08diNKHc58PEvA5Ry4p4Kf8RpzqTWkGJ2pk4vCkKJ7La6magG8WS3Fzuo5eaYXSGa5R0eaAgWxqd6hUDbTIzPL2FGDOvTypq3/ERKqLRabNGwL8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WZLhl1TqRz1HFnq;
+	Thu,  1 Aug 2024 15:49:43 +0800 (CST)
+Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
+	by mail.maildlp.com (Postfix) with ESMTPS id 22F3A1A016C;
+	Thu,  1 Aug 2024 15:52:33 +0800 (CST)
+Received: from [10.123.123.159] (10.123.123.159) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 1 Aug 2024 15:52:29 +0800
+Message-ID: <68568a44-2079-33ac-592d-c2677acf50dd@huawei-partners.com>
+Date: Thu, 1 Aug 2024 10:52:25 +0300
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 2/9] landlock: Support TCP listen access-control
+Content-Language: ru
+To: =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+CC: <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
+	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
+	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
+References: <20240728002602.3198398-1-ivanov.mikhail1@huawei-partners.com>
+ <20240728002602.3198398-3-ivanov.mikhail1@huawei-partners.com>
+ <20240731.AFooxaeR5mie@digikod.net>
+From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+In-Reply-To: <20240731.AFooxaeR5mie@digikod.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
 
-Add a mechanism providing forward compatibility for the current and
-future versions of iptables-nft (and all other nft-variants) by
-annotating nftnl rules with the extensions they were created for.
+7/31/2024 9:30 PM, Mickaël Salaün wrote:
+> On Sun, Jul 28, 2024 at 08:25:55AM +0800, Mikhail Ivanov wrote:
+>> LANDLOCK_ACCESS_NET_BIND_TCP is useful to limit the scope of "bindable"
+>> ports to forbid a malicious sandboxed process to impersonate a legitimate
+>> server process. However, bind(2) might be used by (TCP) clients to set the
+>> source port to a (legitimate) value. Controlling the ports that can be
+>> used for listening would allow (TCP) clients to explicitly bind to ports
+>> that are forbidden for listening.
+>>
+>> Such control is implemented with a new LANDLOCK_ACCESS_NET_LISTEN_TCP
+>> access right that restricts listening on undesired ports with listen(2).
+>>
+>> It's worth noticing that this access right doesn't affect changing
+>> backlog value using listen(2) on already listening socket.
+>>
+>> * Create new LANDLOCK_ACCESS_NET_LISTEN_TCP flag.
+>> * Add hook to socket_listen(), which checks whether the socket is allowed
+>>    to listen on a binded local port.
+>> * Add check_tcp_socket_can_listen() helper, which validates socket
+>>    attributes before the actual access right check.
+>> * Update `struct landlock_net_port_attr` documentation with control of
+>>    binding to ephemeral port with listen(2) description.
+>> * Change ABI version to 6.
+>>
+>> Closes: https://github.com/landlock-lsm/linux/issues/15
+>> Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+> 
+> Thanks for this series!
+> 
+> I cannot apply this patch series though, could you please provide the
+> base commit?  BTW, this can be automatically put in the cover letter
+> with the git format-patch's --base argument.
 
-Upon nftnl rule parsing failure, warn about the situation and perform a
-second attempt loading the respective compat extensions instead of the
-native expressions which replace them. The foundational assumption is
-that libxtables extensions are stable and thus the VM code created on
-their behalf does not need to be.
+base-commit: 591561c2b47b7e7225e229e844f5de75ce0c09ec
 
-Since nftnl rule userdata attributes are restricted to 255 bytes, the
-implementation focusses on low memory consumption. Therefore, extensions
-which remain in the rule as compat expressions are not also added to
-userdata. In turn, extensions in userdata are annotated by start and end
-expression number they are replacing. Also, the actual payload is
-zipped using zlib.
+Günther said that I should rebase to the latest commits, so I'll do
+it in the next version of this patchset.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- configure.ac             |   9 ++
- iptables/Makefile.am     |   1 +
- iptables/nft-compat.c    | 217 +++++++++++++++++++++++++++++++++++++++
- iptables/nft-compat.h    |  54 ++++++++++
- iptables/nft-ruleparse.c |  21 ++++
- iptables/nft.c           |  39 +++++--
- 6 files changed, 331 insertions(+), 10 deletions(-)
- create mode 100644 iptables/nft-compat.c
- create mode 100644 iptables/nft-compat.h
+> 
+>> ---
+>>   include/uapi/linux/landlock.h                | 23 +++--
+>>   security/landlock/limits.h                   |  2 +-
+>>   security/landlock/net.c                      | 90 ++++++++++++++++++++
+>>   security/landlock/syscalls.c                 |  2 +-
+>>   tools/testing/selftests/landlock/base_test.c |  2 +-
+>>   5 files changed, 108 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/uapi/linux/landlock.h b/include/uapi/linux/landlock.h
+>> index 68625e728f43..6b8df3293eee 100644
+>> --- a/include/uapi/linux/landlock.h
+>> +++ b/include/uapi/linux/landlock.h
+>> @@ -104,13 +104,16 @@ struct landlock_net_port_attr {
+>>   	/**
+>>   	 * @port: Network port in host endianness.
+>>   	 *
+>> -	 * It should be noted that port 0 passed to :manpage:`bind(2)` will
+>> -	 * bind to an available port from a specific port range. This can be
+>> -	 * configured thanks to the ``/proc/sys/net/ipv4/ip_local_port_range``
+>> -	 * sysctl (also used for IPv6). A Landlock rule with port 0 and the
+>> -	 * ``LANDLOCK_ACCESS_NET_BIND_TCP`` right means that requesting to bind
+>> -	 * on port 0 is allowed and it will automatically translate to binding
+>> -	 * on the related port range.
+>> +	 * It should be noted that some operations cause binding socket to a random
+>> +	 * available port from a specific port range. This can be configured thanks
+>> +	 * to the ``/proc/sys/net/ipv4/ip_local_port_range`` sysctl (also used for
+>> +	 * IPv6). Following operation requests are automatically translate to
+>> +	 * binding on the related port range:
+>> +	 *
+>> +	 * - A Landlock rule with port 0 and the ``LANDLOCK_ACCESS_NET_BIND_TCP``
+>> +	 *   right means that binding on port 0 is allowed.
+>> +	 * - A Landlock rule with port 0 and the ``LANDLOCK_ACCESS_NET_LISTEN_TCP``
+>> +	 *   right means listening without an explicit binding is allowed.
+>>   	 */
+>>   	__u64 port;
+>>   };
+>> @@ -251,7 +254,7 @@ struct landlock_net_port_attr {
+>>    * DOC: net_access
+>>    *
+>>    * Network flags
+>> - * ~~~~~~~~~~~~~~~~
+>> + * ~~~~~~~~~~~~~
+>>    *
+>>    * These flags enable to restrict a sandboxed process to a set of network
+>>    * actions. This is supported since the Landlock ABI version 4.
+>> @@ -261,9 +264,13 @@ struct landlock_net_port_attr {
+>>    * - %LANDLOCK_ACCESS_NET_BIND_TCP: Bind a TCP socket to a local port.
+>>    * - %LANDLOCK_ACCESS_NET_CONNECT_TCP: Connect an active TCP socket to
+>>    *   a remote port.
+>> + * - %LANDLOCK_ACCESS_NET_LISTEN_TCP: Listen for TCP socket connections on
+>> + *   a local port. This access right is available since the sixth version
+>> + *   of the Landlock ABI.
+>>    */
+>>   /* clang-format off */
+>>   #define LANDLOCK_ACCESS_NET_BIND_TCP			(1ULL << 0)
+>>   #define LANDLOCK_ACCESS_NET_CONNECT_TCP			(1ULL << 1)
+>> +#define LANDLOCK_ACCESS_NET_LISTEN_TCP			(1ULL << 2)
+>>   /* clang-format on */
+>>   #endif /* _UAPI_LINUX_LANDLOCK_H */
+>> diff --git a/security/landlock/limits.h b/security/landlock/limits.h
+>> index 4eb643077a2a..2ef147389474 100644
+>> --- a/security/landlock/limits.h
+>> +++ b/security/landlock/limits.h
+>> @@ -22,7 +22,7 @@
+>>   #define LANDLOCK_MASK_ACCESS_FS		((LANDLOCK_LAST_ACCESS_FS << 1) - 1)
+>>   #define LANDLOCK_NUM_ACCESS_FS		__const_hweight64(LANDLOCK_MASK_ACCESS_FS)
+>>   
+>> -#define LANDLOCK_LAST_ACCESS_NET	LANDLOCK_ACCESS_NET_CONNECT_TCP
+>> +#define LANDLOCK_LAST_ACCESS_NET	LANDLOCK_ACCESS_NET_LISTEN_TCP
+>>   #define LANDLOCK_MASK_ACCESS_NET	((LANDLOCK_LAST_ACCESS_NET << 1) - 1)
+>>   #define LANDLOCK_NUM_ACCESS_NET		__const_hweight64(LANDLOCK_MASK_ACCESS_NET)
+>>   
+>> diff --git a/security/landlock/net.c b/security/landlock/net.c
+>> index 669ba260342f..a29cb27c3f14 100644
+>> --- a/security/landlock/net.c
+>> +++ b/security/landlock/net.c
+>> @@ -6,10 +6,12 @@
+>>    * Copyright © 2022-2023 Microsoft Corporation
+>>    */
+>>   
+>> +#include "net/sock.h"
+> 
+> These should not be quotes.
 
-diff --git a/configure.ac b/configure.ac
-index 2293702b17a47..a18df531953d6 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -77,6 +77,14 @@ AC_ARG_WITH([xt-lock-name], AS_HELP_STRING([--with-xt-lock-name=PATH],
- AC_ARG_ENABLE([profiling],
- 	AS_HELP_STRING([--enable-profiling], [build for use of gcov/gprof]),
- 	[enable_profiling="$enableval"], [enable_profiling="no"])
-+AC_ARG_WITH([zlib], [AS_HELP_STRING([--without-zlib],
-+	    [Disable payload compression of rule compat expressions])],
-+           [], [with_zlib=yes])
-+AS_IF([test "x$with_zlib" != xno], [
-+       AC_CHECK_LIB([z], [compress], ,
-+		    AC_MSG_ERROR([No suitable version of zlib found]))
-+       AC_DEFINE([HAVE_ZLIB], [1], [Define if you have zlib])
-+])
- 
- AC_MSG_CHECKING([whether $LD knows -Wl,--no-undefined])
- saved_LDFLAGS="$LDFLAGS";
-@@ -270,6 +278,7 @@ echo "
-   nftables support:			${enable_nftables}
-   connlabel support:			${enable_connlabel}
-   profiling support:			${enable_profiling}
-+  compress rule compat expressions:	${with_zlib}
- 
- Build parameters:
-   Put plugins into executable (static):	${enable_static}
-diff --git a/iptables/Makefile.am b/iptables/Makefile.am
-index 2007cd10260bd..4855c9a7c2911 100644
---- a/iptables/Makefile.am
-+++ b/iptables/Makefile.am
-@@ -57,6 +57,7 @@ xtables_nft_multi_SOURCES += nft.c nft.h \
- 			     nft-ruleparse-arp.c nft-ruleparse-bridge.c \
- 			     nft-ruleparse-ipv4.c nft-ruleparse-ipv6.c \
- 			     nft-shared.c nft-shared.h \
-+			     nft-compat.c nft-compat.h \
- 			     xtables-monitor.c \
- 			     xtables.c xtables-arp.c xtables-eb.c \
- 			     xtables-standalone.c xtables-eb-standalone.c \
-diff --git a/iptables/nft-compat.c b/iptables/nft-compat.c
-new file mode 100644
-index 0000000000000..2e37dee6cdc43
---- /dev/null
-+++ b/iptables/nft-compat.c
-@@ -0,0 +1,217 @@
-+#include "config.h"
-+#include "nft-compat.h"
-+#include "nft-ruleparse.h"
-+#include "nft.h"
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <xtables.h>
-+
-+#ifdef HAVE_ZLIB
-+#include <zlib.h>
-+#endif
-+
-+#include <libnftnl/udata.h>
-+
-+int nftnl_rule_expr_count(const struct nftnl_rule *r)
-+{
-+	struct nftnl_expr_iter *iter = nftnl_expr_iter_create(r);
-+	int cnt = 0;
-+
-+	if (!iter)
-+		return -1;
-+
-+	while (nftnl_expr_iter_next(iter))
-+		cnt++;
-+
-+	nftnl_expr_iter_destroy(iter);
-+	return cnt;
-+}
-+
-+static struct rule_udata_ext *
-+__rule_get_udata_ext(const void *data, uint32_t data_len, uint32_t *outlen)
-+{
-+	const struct nftnl_udata *tb[UDATA_TYPE_MAX + 1] = {};
-+
-+	if (nftnl_udata_parse(data, data_len, parse_udata_cb, tb) < 0)
-+		return NULL;
-+
-+	if (!tb[UDATA_TYPE_COMPAT_EXT])
-+		return NULL;
-+
-+	if (outlen)
-+		*outlen = nftnl_udata_len(tb[UDATA_TYPE_COMPAT_EXT]);
-+	return nftnl_udata_get(tb[UDATA_TYPE_COMPAT_EXT]);
-+}
-+
-+struct rule_udata_ext *
-+rule_get_udata_ext(const struct nftnl_rule *r, uint32_t *outlen)
-+{
-+	struct nftnl_udata_buf *udata;
-+	uint32_t udatalen;
-+
-+	udata = (void *)nftnl_rule_get_data(r, NFTNL_RULE_USERDATA, &udatalen);
-+	if (!udata)
-+		return NULL;
-+
-+	return __rule_get_udata_ext(udata, udatalen, outlen);
-+}
-+
-+static void
-+pack_rule_udata_ext_data(struct rule_udata_ext *rue,
-+			 const void *data, size_t datalen)
-+{
-+	size_t datalen_out = datalen;
-+#ifdef HAVE_ZLIB
-+	compress(rue->data, &datalen_out, data, datalen);
-+	rue->zip = true;
-+#else
-+	memcpy(rue->data, data, datalen);
-+#endif
-+	rue->size = datalen_out;
-+}
-+
-+void rule_add_udata_ext(struct nftnl_rule *r,
-+			uint16_t start_idx, uint16_t end_idx,
-+			uint8_t type, uint16_t size, const void *data)
-+{
-+	struct rule_udata_ext *ext = NULL;
-+	uint32_t extlen = 0, newextlen;
-+	char *newext;
-+	void *udata;
-+
-+	ext = rule_get_udata_ext(r, &extlen);
-+	if (!ext)
-+		extlen = 0;
-+
-+	udata = nftnl_udata_buf_alloc(NFT_USERDATA_MAXLEN);
-+	if (!udata)
-+		xtables_error(OTHER_PROBLEM, "can't alloc memory!");
-+
-+	newextlen = sizeof(*ext) + size;
-+	newext = xtables_malloc(extlen + newextlen);
-+	if (extlen)
-+		memcpy(newext, ext, extlen);
-+	memset(newext + extlen, 0, newextlen);
-+
-+	ext = (struct rule_udata_ext *)(newext + extlen);
-+	ext->start_idx = start_idx;
-+	ext->end_idx = end_idx;
-+	ext->type = type;
-+	ext->orig_size = size;
-+	pack_rule_udata_ext_data(ext, data, size);
-+	newextlen = sizeof(*ext) + ext->size;
-+
-+	if (!nftnl_udata_put(udata, UDATA_TYPE_COMPAT_EXT,
-+			     extlen + newextlen, newext) ||
-+	    nftnl_rule_set_data(r, NFTNL_RULE_USERDATA,
-+				nftnl_udata_buf_data(udata),
-+				nftnl_udata_buf_len(udata)))
-+		xtables_error(OTHER_PROBLEM, "can't alloc memory!");
-+
-+	free(newext);
-+	nftnl_udata_buf_free(udata);
-+}
-+
-+static struct nftnl_expr *
-+__nftnl_expr_from_udata_ext(struct rule_udata_ext *rue, const void *data)
-+{
-+	struct nftnl_expr *expr = NULL;
-+
-+	switch (rue->type) {
-+	case RUE_TYPE_MATCH:
-+		expr = nftnl_expr_alloc("match");
-+		__add_match(expr, data);
-+		break;
-+	case RUE_TYPE_TARGET:
-+		expr = nftnl_expr_alloc("target");
-+		__add_target(expr, data);
-+		break;
-+	default:
-+		fprintf(stderr,
-+			"Warning: Unexpected udata extension type %d\n",
-+			rue->type);
-+	}
-+
-+	return expr;
-+}
-+
-+static struct nftnl_expr *
-+nftnl_expr_from_zipped_udata_ext(struct rule_udata_ext *rue)
-+{
-+#ifdef HAVE_ZLIB
-+	uLongf datalen = rue->orig_size;
-+	struct nftnl_expr *expr = NULL;
-+	void *data;
-+
-+	data = xtables_malloc(datalen);
-+	if (uncompress(data, &datalen, rue->data, rue->size) != Z_OK) {
-+		fprintf(stderr, "Warning: Failed to uncompress rule udata extension\n");
-+		goto out;
-+	}
-+
-+	expr = __nftnl_expr_from_udata_ext(rue, data);
-+out:
-+	free(data);
-+	return expr;
-+#else
-+	fprintf(stderr, "Warning: Zipped udata extensions are not supported.\n");
-+	return NULL;
-+#endif
-+}
-+
-+static struct nftnl_expr *nftnl_expr_from_udata_ext(struct rule_udata_ext *rue)
-+{
-+	if (rue->zip)
-+		return nftnl_expr_from_zipped_udata_ext(rue);
-+	else
-+		return __nftnl_expr_from_udata_ext(rue, rue->data);
-+}
-+
-+bool rule_has_udata_ext(const struct nftnl_rule *r)
-+{
-+	return rule_get_udata_ext(r, NULL) != NULL;
-+}
-+
-+#define rule_udata_ext_foreach(rue, ext, extlen)			\
-+	for (rue = (void *)(ext);					\
-+	     (char *)rue < (char *)(ext) + extlen;			\
-+	     rue = (void *)((char *)rue + sizeof(*rue) + rue->size))
-+
-+bool rule_parse_udata_ext(struct nft_xt_ctx *ctx, const struct nftnl_rule *r)
-+{
-+	struct rule_udata_ext *rue;
-+	struct nftnl_expr *expr;
-+	uint32_t extlen;
-+	bool ret = true;
-+	int eidx = 0;
-+	void *ext;
-+
-+	ext = rule_get_udata_ext(r, &extlen);
-+	if (!ext)
-+		return false;
-+
-+	rule_udata_ext_foreach(rue, ext, extlen) {
-+		for (; eidx < rue->start_idx; eidx++) {
-+			expr = nftnl_expr_iter_next(ctx->iter);
-+			if (!nft_parse_rule_expr(ctx->h, expr, ctx))
-+				ret = false;
-+		}
-+
-+		expr = nftnl_expr_from_udata_ext(rue);
-+		if (!nft_parse_rule_expr(ctx->h, expr, ctx))
-+			ret = false;
-+		nftnl_expr_free(expr);
-+
-+		for (; eidx < rue->end_idx; eidx++)
-+			nftnl_expr_iter_next(ctx->iter);
-+	}
-+	expr = nftnl_expr_iter_next(ctx->iter);
-+	while (expr != NULL) {
-+		if (!nft_parse_rule_expr(ctx->h, expr, ctx))
-+			ret = false;
-+		expr = nftnl_expr_iter_next(ctx->iter);
-+	}
-+	return ret;
-+}
-+
-diff --git a/iptables/nft-compat.h b/iptables/nft-compat.h
-new file mode 100644
-index 0000000000000..e91e2299bd2ae
---- /dev/null
-+++ b/iptables/nft-compat.h
-@@ -0,0 +1,54 @@
-+#ifndef _NFT_COMPAT_H_
-+#define _NFT_COMPAT_H_
-+
-+#include <libnftnl/rule.h>
-+
-+#include <linux/netfilter/x_tables.h>
-+
-+int nftnl_rule_expr_count(const struct nftnl_rule *r);
-+
-+enum rule_udata_ext_type {
-+	RUE_TYPE_MATCH = 0,
-+	RUE_TYPE_TARGET = 1,
-+};
-+
-+struct rule_udata_ext {
-+	uint8_t start_idx;
-+	uint8_t end_idx;
-+	uint8_t type;
-+	uint8_t zip:1;
-+	uint16_t orig_size;
-+	uint16_t size;
-+	unsigned char data[];
-+};
-+
-+struct rule_udata_ext *
-+rule_get_udata_ext(const struct nftnl_rule *r, uint32_t *outlen);
-+
-+void rule_add_udata_ext(struct nftnl_rule *r,
-+			uint16_t start_idx, uint16_t end_idx,
-+			uint8_t type, uint16_t size, const void *data);
-+static inline void
-+rule_add_udata_match(struct nftnl_rule *r,
-+		     uint16_t start_idx, uint16_t end_idx,
-+		     const struct xt_entry_match *m)
-+{
-+	rule_add_udata_ext(r, start_idx, end_idx,
-+			   RUE_TYPE_MATCH, m->u.match_size, m);
-+}
-+
-+static inline void
-+rule_add_udata_target(struct nftnl_rule *r,
-+		      uint16_t start_idx, uint16_t end_idx,
-+		      const struct xt_entry_target *t)
-+{
-+	rule_add_udata_ext(r, start_idx, end_idx,
-+			   RUE_TYPE_TARGET, t->u.target_size, t);
-+}
-+
-+struct nft_xt_ctx;
-+
-+bool rule_has_udata_ext(const struct nftnl_rule *r);
-+bool rule_parse_udata_ext(struct nft_xt_ctx *ctx, const struct nftnl_rule *r);
-+
-+#endif /* _NFT_COMPAT_H_ */
-diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
-index 757d3c29fc816..b58e16fff45cd 100644
---- a/iptables/nft-ruleparse.c
-+++ b/iptables/nft-ruleparse.c
-@@ -10,6 +10,7 @@
-  * This code has been sponsored by Sophos Astaro <http://www.sophos.com>
-  */
- 
-+#include "config.h"
- #include <stdbool.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -27,6 +28,7 @@
- 
- #include <xtables.h>
- 
-+#include "nft-compat.h"
- #include "nft-ruleparse.h"
- #include "nft.h"
- 
-@@ -948,6 +950,25 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
- 			ret = false;
- 		expr = nftnl_expr_iter_next(ctx.iter);
- 	}
-+#ifdef DEBUG_COMPAT_EXT
-+	if (rule_has_udata_ext(r))
-+		ret = false;
-+#endif
-+	if (!ret && rule_has_udata_ext(r)) {
-+		fprintf(stderr,
-+			"Warning: Rule parser failed, trying compat fallback\n");
-+
-+		h->ops->clear_cs(cs);
-+		if (h->ops->init_cs)
-+			h->ops->init_cs(cs);
-+
-+		nftnl_expr_iter_destroy(ctx.iter);
-+		ctx.iter = nftnl_expr_iter_create(r);
-+		if (!ctx.iter)
-+			return false;
-+
-+		ret = rule_parse_udata_ext(&ctx, r);
-+	}
- 
- 	nftnl_expr_iter_destroy(ctx.iter);
- 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 64ac35f2edcf3..de20d9714695f 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -9,6 +9,7 @@
-  * This code has been sponsored by Sophos Astaro <http://www.sophos.com>
-  */
- 
-+#include "config.h"
- #include <unistd.h>
- #include <fcntl.h>
- #include <sys/types.h>
-@@ -60,6 +61,7 @@
- #include "nft-cache.h"
- #include "nft-shared.h"
- #include "nft-bridge.h" /* EBT_NOPROTO */
-+#include "nft-compat.h"
- 
- static void *nft_fn;
- 
-@@ -1049,6 +1051,7 @@ void __add_match(struct nftnl_expr *e, const struct xt_entry_match *m)
- static int add_nft_limit(struct nftnl_rule *r, struct xt_entry_match *m)
- {
- 	struct xt_rateinfo *rinfo = (void *)m->data;
-+	int i, ecnt = nftnl_rule_expr_count(r);
- 	static const uint32_t mult[] = {
- 		XT_LIMIT_SCALE*24*60*60,	/* day */
- 		XT_LIMIT_SCALE*60*60,		/* hour */
-@@ -1056,7 +1059,8 @@ static int add_nft_limit(struct nftnl_rule *r, struct xt_entry_match *m)
- 		XT_LIMIT_SCALE,			/* sec */
- 	};
- 	struct nftnl_expr *expr;
--	int i;
-+
-+	rule_add_udata_match(r, ecnt, ecnt + 1, m);
- 
- 	expr = nftnl_expr_alloc("limit");
- 	if (!expr)
-@@ -1371,6 +1375,7 @@ static bool udp_all_zero(const struct xt_udp *u)
- static int add_nft_udp(struct nft_handle *h, struct nftnl_rule *r,
- 		       struct xt_entry_match *m)
- {
-+	int ret, ecnt = nftnl_rule_expr_count(r);
- 	struct xt_udp *udp = (void *)m->data;
- 
- 	if (udp->invflags > XT_UDP_INV_MASK ||
-@@ -1385,8 +1390,12 @@ static int add_nft_udp(struct nft_handle *h, struct nftnl_rule *r,
- 	if (nftnl_rule_get_u32(r, NFTNL_RULE_COMPAT_PROTO) != IPPROTO_UDP)
- 		xtables_error(PARAMETER_PROBLEM, "UDP match requires '-p udp'");
- 
--	return add_nft_tcpudp(h, r, udp->spts, udp->invflags & XT_UDP_INV_SRCPT,
--			      udp->dpts, udp->invflags & XT_UDP_INV_DSTPT);
-+	ret = add_nft_tcpudp(h, r, udp->spts, udp->invflags & XT_UDP_INV_SRCPT,
-+			     udp->dpts, udp->invflags & XT_UDP_INV_DSTPT);
-+
-+	rule_add_udata_match(r, ecnt, nftnl_rule_expr_count(r), m);
-+
-+	return ret;
- }
- 
- static int add_nft_tcpflags(struct nft_handle *h, struct nftnl_rule *r,
-@@ -1423,6 +1432,7 @@ static int add_nft_tcp(struct nft_handle *h, struct nftnl_rule *r,
- 		       struct xt_entry_match *m)
- {
- 	static const uint8_t supported = XT_TCP_INV_SRCPT | XT_TCP_INV_DSTPT | XT_TCP_INV_FLAGS;
-+	int ret, ecnt = nftnl_rule_expr_count(r);
- 	struct xt_tcp *tcp = (void *)m->data;
- 
- 	if (tcp->invflags & ~supported || tcp->option ||
-@@ -1438,23 +1448,27 @@ static int add_nft_tcp(struct nft_handle *h, struct nftnl_rule *r,
- 		xtables_error(PARAMETER_PROBLEM, "TCP match requires '-p tcp'");
- 
- 	if (tcp->flg_mask) {
--		int ret = add_nft_tcpflags(h, r, tcp->flg_cmp, tcp->flg_mask,
--					   tcp->invflags & XT_TCP_INV_FLAGS);
-+		ret = add_nft_tcpflags(h, r, tcp->flg_cmp, tcp->flg_mask,
-+				       tcp->invflags & XT_TCP_INV_FLAGS);
- 
- 		if (ret < 0)
- 			return ret;
- 	}
- 
--	return add_nft_tcpudp(h, r, tcp->spts, tcp->invflags & XT_TCP_INV_SRCPT,
--			      tcp->dpts, tcp->invflags & XT_TCP_INV_DSTPT);
-+	ret = add_nft_tcpudp(h, r, tcp->spts, tcp->invflags & XT_TCP_INV_SRCPT,
-+			     tcp->dpts, tcp->invflags & XT_TCP_INV_DSTPT);
-+
-+	rule_add_udata_match(r, ecnt, nftnl_rule_expr_count(r), m);
-+
-+	return ret;
- }
- 
- static int add_nft_mark(struct nft_handle *h, struct nftnl_rule *r,
- 			struct xt_entry_match *m)
- {
- 	struct xt_mark_mtinfo1 *mark = (void *)m->data;
-+	int op, ecnt = nftnl_rule_expr_count(r);
- 	uint8_t reg;
--	int op;
- 
- 	add_meta(h, r, NFT_META_MARK, &reg);
- 	if (mark->mask != 0xffffffff)
-@@ -1467,6 +1481,8 @@ static int add_nft_mark(struct nft_handle *h, struct nftnl_rule *r,
- 
- 	add_cmp_u32(r, mark->mark, op, reg);
- 
-+	rule_add_udata_match(r, ecnt, nftnl_rule_expr_count(r), m);
-+
- 	return 0;
- }
- 
-@@ -1517,10 +1533,13 @@ void __add_target(struct nftnl_expr *e, const struct xt_entry_target *t)
- 	nftnl_expr_set(e, NFTNL_EXPR_TG_INFO, info, t->u.target_size - sizeof(*t));
- }
- 
--static int add_meta_nftrace(struct nftnl_rule *r)
-+static int add_meta_nftrace(struct nftnl_rule *r, struct xt_entry_target *t)
- {
-+	int ecnt = nftnl_rule_expr_count(r);
- 	struct nftnl_expr *expr;
- 
-+	rule_add_udata_target(r, ecnt, ecnt + 2, t);
-+
- 	expr = nftnl_expr_alloc("immediate");
- 	if (expr == NULL)
- 		return -ENOMEM;
-@@ -1544,7 +1563,7 @@ int add_target(struct nftnl_rule *r, struct xt_entry_target *t)
- 	struct nftnl_expr *expr;
- 
- 	if (strcmp(t->u.user.name, "TRACE") == 0)
--		return add_meta_nftrace(r);
-+		return add_meta_nftrace(r, t);
- 
- 	expr = nftnl_expr_alloc("target");
- 	if (expr == NULL)
--- 
-2.43.0
+will be fixed, thanks
 
+> 
+>>   #include <linux/in.h>
+>>   #include <linux/net.h>
+>>   #include <linux/socket.h>
+>>   #include <net/ipv6.h>
+>> +#include <net/tcp.h>
+>>   
+>>   #include "common.h"
+>>   #include "cred.h"
+>> @@ -194,9 +196,97 @@ static int hook_socket_connect(struct socket *const sock,
+>>   					   LANDLOCK_ACCESS_NET_CONNECT_TCP);
+>>   }
+>>   
+>> +/*
+>> + * Checks that socket state and attributes are correct for listen.
+>> + * It is required to not wrongfully return -EACCES instead of -EINVAL.
+>> + *
+>> + * This checker requires sock->sk to be locked.
+>> + */
+>> +static int check_tcp_socket_can_listen(struct socket *const sock)
+> 
+> Is this function still useful with the listen LSM hook?
+
+Yeap, we need to validate socket structure before checking the access
+right. You can see [1] and [2] where the behavior of this function is
+tested.
+
+[1] 
+https://lore.kernel.org/all/20240728002602.3198398-6-ivanov.mikhail1@huawei-partners.com/
+[2] 
+https://lore.kernel.org/all/20240728002602.3198398-8-ivanov.mikhail1@huawei-partners.com/
+
+> 
+>> +{
+>> +	struct sock *sk = sock->sk;
+>> +	unsigned char cur_sk_state = sk->sk_state;
+>> +	const struct tcp_ulp_ops *icsk_ulp_ops;
+>> +
+>> +	/* Allows only unconnected TCP socket to listen (cf. inet_listen). */
+>> +	if (sock->state != SS_UNCONNECTED)
+>> +		return -EINVAL;
+>> +
+>> +	/*
+>> +	 * Checks sock state. This is needed to ensure consistency with inet stack
+>> +	 * error handling (cf. __inet_listen_sk).
+>> +	 */
+>> +	if (WARN_ON_ONCE(!((1 << cur_sk_state) & (TCPF_CLOSE | TCPF_LISTEN))))
+>> +		return -EINVAL;
+>> +
+>> +	icsk_ulp_ops = inet_csk(sk)->icsk_ulp_ops;
+>> +
+>> +	/*
+>> +	 * ULP (Upper Layer Protocol) stands for protocols which are higher than
+>> +	 * transport protocol in OSI model. Linux has an infrastructure that
+>> +	 * allows TCP sockets to support logic of some ULP (e.g. TLS ULP).
+>> +	 *
+>> +	 * Sockets can listen only if ULP control hook has clone method.
+>> +	 */
+>> +	if (icsk_ulp_ops && !icsk_ulp_ops->clone)
+>> +		return -EINVAL;
+>> +	return 0;
+>> +}
+>> +
+>> +static int hook_socket_listen(struct socket *const sock, const int backlog)
+>> +{
+> 
+> Why can't we just call current_check_access_socket()?
+
+I've mentioned in the message of the previous commit that this method
+has address checks for bind(2) and connect(2). In the case of listen(2)
+port is extracted from the socket structure, so calling
+current_check_access_socket() would be pointless.
+
+> 
+>> +	int err = 0;
+>> +	int family;
+>> +	__be16 port;
+>> +	struct sock *sk;
+>> +	const struct landlock_ruleset *const dom = get_current_net_domain();
+>> +
+>> +	if (!dom)
+>> +		return 0;
+>> +	if (WARN_ON_ONCE(dom->num_layers < 1))
+>> +		return -EACCES;
+>> +
+>> +	/* Checks if it's a (potential) TCP socket. */
+>> +	if (sock->type != SOCK_STREAM)
+>> +		return 0;
+>> +
+>> +	sk = sock->sk;
+>> +	family = sk->__sk_common.skc_family;
+>> +	/*
+>> +	 * Socket cannot be assigned AF_UNSPEC because this type is used only
+>> +	 * in the context of addresses.
+>> +	 *
+>> +	 * Doesn't restrict listening for non-TCP sockets.
+>> +	 */
+>> +	if (family != AF_INET && family != AF_INET6)
+>> +		return 0;
+>> +
+>> +	lock_sock(sk);
+>> +	/*
+>> +	 * Calling listen(2) for a listening socket does nothing with its state and
+>> +	 * only changes backlog value (cf. __inet_listen_sk). Checking of listen
+>> +	 * access right is not required.
+>> +	 */
+>> +	if (sk->sk_state == TCP_LISTEN)
+>> +		goto release_nocheck;
+>> +
+>> +	err = check_tcp_socket_can_listen(sock);
+>> +	if (unlikely(err))
+>> +		goto release_nocheck;
+>> +
+>> +	port = htons(inet_sk(sk)->inet_num);
+>> +	release_sock(sk);
+>> +	return check_access_socket(dom, port, LANDLOCK_ACCESS_NET_LISTEN_TCP);
+>> +
+>> +release_nocheck:
+>> +	release_sock(sk);
+>> +	return err;
+>> +}
+>> +
+>>   static struct security_hook_list landlock_hooks[] __ro_after_init = {
+>>   	LSM_HOOK_INIT(socket_bind, hook_socket_bind),
+>>   	LSM_HOOK_INIT(socket_connect, hook_socket_connect),
+>> +	LSM_HOOK_INIT(socket_listen, hook_socket_listen),
+>>   };
+>>   
+>>   __init void landlock_add_net_hooks(void)
+>> diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
+>> index 03b470f5a85a..3752bcc033d4 100644
+>> --- a/security/landlock/syscalls.c
+>> +++ b/security/landlock/syscalls.c
+>> @@ -149,7 +149,7 @@ static const struct file_operations ruleset_fops = {
+>>   	.write = fop_dummy_write,
+>>   };
+>>   
+>> -#define LANDLOCK_ABI_VERSION 5
+>> +#define LANDLOCK_ABI_VERSION 6
+>>   
+>>   /**
+>>    * sys_landlock_create_ruleset - Create a new ruleset
+>> diff --git a/tools/testing/selftests/landlock/base_test.c b/tools/testing/selftests/landlock/base_test.c
+>> index 3c1e9f35b531..52b00472a487 100644
+>> --- a/tools/testing/selftests/landlock/base_test.c
+>> +++ b/tools/testing/selftests/landlock/base_test.c
+>> @@ -75,7 +75,7 @@ TEST(abi_version)
+>>   	const struct landlock_ruleset_attr ruleset_attr = {
+>>   		.handled_access_fs = LANDLOCK_ACCESS_FS_READ_FILE,
+>>   	};
+>> -	ASSERT_EQ(5, landlock_create_ruleset(NULL, 0,
+>> +	ASSERT_EQ(6, landlock_create_ruleset(NULL, 0,
+>>   					     LANDLOCK_CREATE_RULESET_VERSION));
+>>   
+>>   	ASSERT_EQ(-1, landlock_create_ruleset(&ruleset_attr, 0,
+>> -- 
+>> 2.34.1
+>>
+>>
 
