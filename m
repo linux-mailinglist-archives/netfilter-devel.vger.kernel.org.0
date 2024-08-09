@@ -1,210 +1,108 @@
-Return-Path: <netfilter-devel+bounces-3193-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3197-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32D5894D0D4
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 15:08:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F120894D269
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 16:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA5E31F21CFD
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 13:08:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5742CB21F85
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 14:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0EE195385;
-	Fri,  9 Aug 2024 13:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C692197552;
+	Fri,  9 Aug 2024 14:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KQRmu7BU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGjJA6Uq"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582AB194AEE
-	for <netfilter-devel@vger.kernel.org>; Fri,  9 Aug 2024 13:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B067C1DFE1;
+	Fri,  9 Aug 2024 14:44:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723208867; cv=none; b=e6HcjD8W1TWqiKgc2GrzQg2F6GmjTZMljdqZ82UmmjEmBDdYySZeoTt6gdi66jh3bCDX7D3tYE4wGqJnuSERN1W+w/ks2d3EK6QtTg44Pi4F1OTU0IRWZJY1XDAxgruS/s798RGWfYYy82wjd0V8niSSjFYjxvL5egPwEet6pI4=
+	t=1723214695; cv=none; b=dapfbfIY9sb+m9ziqAmXtNqC+p7TYB61yzeDVCjTFj0H8s9sYR+4SqkIYoUxnFGNZt4pXTuxWOhPk5eZQfZ+3PhC5VtVDm2GRjtb+MBCUs4LPa71eA8AjmyM7USBX4uyTDnbc1hCmLFvNlEf/k7WSeSu9SMflswQiUCH1UoPm/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723208867; c=relaxed/simple;
-	bh=x00/V0asLG7dozd/NFEVP16gPvEUSUQt2eVZLDhOvfw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EGEake5ssPE8vOROiWNvIVgHOJvPeeQsKJfBCPh7WIscfDfz/LQIKNyXD2CoXDocU16veyKf5O3zaKxcYOM8SX1NPKQ/TE9v+jZWWkiEff8phNAvep0RHnh/WomS6Dfpqu5ccwfz17BfCMWApj234DIFsT7J67aAtmHPYLU15eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KQRmu7BU; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=sN90vpSKbriAdkJaih6CREm/SH0LNPT+Q0HnbV2jlx4=; b=KQRmu7BUTeuFd8shRMD8huKUGb
-	bs5Zc02QruIn84xWcD0w9C4Pzy0K9+SpDvcXa/9EGpUw5BCkXZCqGiXYhcCSjrba1ZxJHjFfTOpzv
-	2Mxu6fp1ct14cFuhaiWQVh54mfq6PWPQyxq05s9kYhAtrfweImEqgwWgGHX1+UEjeNxqQbEktrJo1
-	kCrAG6C4LJwaYAmHM3d8fUCSW/gjEHIn8Vqww0sjAbBLuO5Z1AEVBPB6DQAQAh6uG2F6m4UoUNYrc
-	E/zZpwHF240GugxCy35wh0FXeQn8fupxuTUZKYKH8/KbCWHTrJ9aMIssYW/7IfZsbd6UEgeJEmmHf
-	Uebl+33Q==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1scPLE-000000000DZ-1U9b;
-	Fri, 09 Aug 2024 15:07:36 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [nf PATCH v4 3/3] netfilter: nf_tables: Add locking for NFT_MSG_GETOBJ_RESET requests
-Date: Fri,  9 Aug 2024 15:07:32 +0200
-Message-ID: <20240809130732.13128-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240809130732.13128-1-phil@nwl.cc>
-References: <20240809130732.13128-1-phil@nwl.cc>
+	s=arc-20240116; t=1723214695; c=relaxed/simple;
+	bh=KeCOkdeMj7jfUARfg+0sT1kcD7hB7YWqxUDtJt3Nkw0=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
+	 MIME-Version:Content-Type; b=fr+EFaZiM9/m9Vwdf79e8NoLl6eLOZZkquLvFyJQdI+40p3P+OSOiYwFrgvez4U4gnuSjRdLHnVK0yqZvt7xFP1SHfpeTvoZ81Ax8d5tIZEA54RGrUlMl2qwxGb+7sRqggFebcC4rUKTY+RgKyXNh0nbkWSVQ4Snn329KoNdxTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGjJA6Uq; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-368526b1333so1925208f8f.1;
+        Fri, 09 Aug 2024 07:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723214692; x=1723819492; darn=vger.kernel.org;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/dMGgv1RCO9tIGQHpojzXRCbF3RQKlUcFcpP+8JAmc0=;
+        b=EGjJA6Uq6pr9on6J0Bf65x1X1Q9PPjufTYO5jW+BYb68pr1LYthL88wKetL4+Nwh12
+         V4QfbV18vIEHiXdsRxKvyhP8d+AC8f6Tn8teF99LhG4JUrP7rMVgwN5I5/2f5pt9qPOU
+         fJlRiuGF5lLIdDvl5EujQ1O8uz9ZQ3IT3J0lEn+owUX5V/D1BOORxOSWRCjZoGKExmjW
+         xaGYw5pvSCxHWwEWmXTGFw5OnVPcKIQH9JqEzf7fvWlVv4gFPgvz5aTqxU85NDcnn0xo
+         Q2yB1B08/1F8kIQzWruzKv19A38v+rrDXu5SkZQ455wwji1I+EnV1Po7bn8rS/uxzD6x
+         A7yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723214692; x=1723819492;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/dMGgv1RCO9tIGQHpojzXRCbF3RQKlUcFcpP+8JAmc0=;
+        b=YLrW21bL4AwukRQ7buJGY7NvRO/6ANc9SLGXj7C1m8rBFGNAFmugXm/P8PK4KHqv1T
+         QBCFUAUSrWlrdBFw2zE6Ad1PKSP9W9V5PUYc1sbJ0m0eQr3LBmAyVTm5ikjPt5N7cm6u
+         5xUKThOJ97HBDRonL7+yCUF+Uvwqr8S7iXGt4ZLPw8MV1ZdALXhZBjpT1PHd5NNRQ2XN
+         Wj1ulZPVmt/0sSq+fqdmtnX2kuXs6mDWC0nMJBoRNlQ/bHex3g8FLd42+NYMx9eQX0nX
+         R9s7PXOz0bAAF4SKVJTc8AC+5K4GRzUcBhGMswJvrQJR3fvKx3oYqtN/rdbLe7UFlOHf
+         2IEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXvlJ/GHsIJpA2OydJjn/peywB889BMUq9vhLk0ybO19o4kgE+zTJ+PBIf+zCsvXDmno7+jhidh5KuiTkgEZOHUB++MrMEdRyarxKdrMf9iFuJUMTEBLeSjuYlZlq9ZOWgk2YcElpdQ
+X-Gm-Message-State: AOJu0Yw01h0Xj5rpgKrBmUtqnETYM2BvIwKN5qin2L1k3hYbD+LYyOBb
+	eBHH1zG3iIAqLjgv2EZP1mKSf9N5smj+49CdcqFe/pMstUf7uS5u
+X-Google-Smtp-Source: AGHT+IGLJEeEpwsCiH7unqDJWHo9SYYYVGhxV1yRTrgqx1iRL9g/yNyfLvjK7s1a+VAILfZ9OlehiQ==
+X-Received: by 2002:a5d:66d1:0:b0:367:8fee:4434 with SMTP id ffacd0b85a97d-36d68d9de50mr1398005f8f.16.1723214691722;
+        Fri, 09 Aug 2024 07:44:51 -0700 (PDT)
+Received: from imac ([2a02:8010:60a0:0:f01e:f03a:11db:ad8e])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36d27208c81sm5558167f8f.73.2024.08.09.07.44.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Aug 2024 07:44:51 -0700 (PDT)
+From: Donald Hunter <donald.hunter@gmail.com>
+To: Simon Horman <horms@kernel.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,  Jozsef Kadlecsik
+ <kadlec@netfilter.org>,  "David S. Miller" <davem@davemloft.net>,  Eric
+ Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo
+ Abeni <pabeni@redhat.com>,  netfilter-devel@vger.kernel.org,
+  netdev@vger.kernel.org,  donald.hunter@redhat.com
+Subject: Re: [PATCH nf v1] netfilter: nfnetlink: Initialise extack before
+ use in ACKs
+In-Reply-To: <20240809090238.GF3075665@kernel.org> (Simon Horman's message of
+	"Fri, 9 Aug 2024 10:02:38 +0100")
+Date: Fri, 09 Aug 2024 12:15:55 +0100
+Message-ID: <m25xsaq74k.fsf@gmail.com>
+References: <20240806154324.40764-1-donald.hunter@gmail.com>
+	<20240809090238.GF3075665@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Objects' dump callbacks are not concurrency-safe per-se with reset bit
-set. If two CPUs perform a reset at the same time, at least counter and
-quota objects suffer from value underrun.
+Simon Horman <horms@kernel.org> writes:
 
-Prevent this by introducing dedicated locking callbacks for nfnetlink
-and the asynchronous dump handling to serialize access.
+> On Tue, Aug 06, 2024 at 04:43:24PM +0100, Donald Hunter wrote:
+>> Add missing extack initialisation when ACKing BATCH_BEGIN and BATCH_END.
+>> 
+>> Fixes: bf2ac490d28c ("netfilter: nfnetlink: Handle ACK flags for batch messages")
+>> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+>
+> Hi Donald,
+>
+> I see two other places that extack is used in nfnetlink_rcv_batch().
+> Is it safe to leave them as-is?
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- net/netfilter/nf_tables_api.c | 72 ++++++++++++++++++++++++++++-------
- 1 file changed, 59 insertions(+), 13 deletions(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index c12c9cae784d..0a2f79346958 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8020,6 +8020,19 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- 	return skb->len;
- }
- 
-+static int nf_tables_dumpreset_obj(struct sk_buff *skb,
-+				   struct netlink_callback *cb)
-+{
-+	struct nftables_pernet *nft_net = nft_pernet(sock_net(skb->sk));
-+	int ret;
-+
-+	mutex_lock(&nft_net->commit_mutex);
-+	ret = nf_tables_dump_obj(skb, cb);
-+	mutex_unlock(&nft_net->commit_mutex);
-+
-+	return ret;
-+}
-+
- static int nf_tables_dump_obj_start(struct netlink_callback *cb)
- {
- 	struct nft_obj_dump_ctx *ctx = (void *)cb->ctx;
-@@ -8036,12 +8049,18 @@ static int nf_tables_dump_obj_start(struct netlink_callback *cb)
- 	if (nla[NFTA_OBJ_TYPE])
- 		ctx->type = ntohl(nla_get_be32(nla[NFTA_OBJ_TYPE]));
- 
--	if (NFNL_MSG_TYPE(cb->nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
--		ctx->reset = true;
--
- 	return 0;
- }
- 
-+static int nf_tables_dumpreset_obj_start(struct netlink_callback *cb)
-+{
-+	struct nft_obj_dump_ctx *ctx = (void *)cb->ctx;
-+
-+	ctx->reset = true;
-+
-+	return nf_tables_dump_obj_start(cb);
-+}
-+
- static int nf_tables_dump_obj_done(struct netlink_callback *cb)
- {
- 	struct nft_obj_dump_ctx *ctx = (void *)cb->ctx;
-@@ -8100,18 +8119,43 @@ nf_tables_getobj_single(u32 portid, const struct nfnl_info *info,
- 
- static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
- 			    const struct nlattr * const nla[])
-+{
-+	u32 portid = NETLINK_CB(skb).portid;
-+	struct sk_buff *skb2;
-+
-+	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
-+		struct netlink_dump_control c = {
-+			.start = nf_tables_dump_obj_start,
-+			.dump = nf_tables_dump_obj,
-+			.done = nf_tables_dump_obj_done,
-+			.module = THIS_MODULE,
-+			.data = (void *)nla,
-+		};
-+
-+		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
-+	}
-+
-+	skb2 = nf_tables_getobj_single(portid, info, nla, false);
-+	if (IS_ERR(skb2))
-+		return PTR_ERR(skb2);
-+
-+	return nfnetlink_unicast(skb2, info->net, portid);
-+}
-+
-+static int nf_tables_getobj_reset(struct sk_buff *skb,
-+				  const struct nfnl_info *info,
-+				  const struct nlattr * const nla[])
- {
- 	struct nftables_pernet *nft_net = nft_pernet(info->net);
- 	u32 portid = NETLINK_CB(skb).portid;
- 	struct net *net = info->net;
- 	struct sk_buff *skb2;
--	bool reset = false;
- 	char *buf;
- 
- 	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
- 		struct netlink_dump_control c = {
--			.start = nf_tables_dump_obj_start,
--			.dump = nf_tables_dump_obj,
-+			.start = nf_tables_dumpreset_obj_start,
-+			.dump = nf_tables_dumpreset_obj,
- 			.done = nf_tables_dump_obj_done,
- 			.module = THIS_MODULE,
- 			.data = (void *)nla,
-@@ -8120,16 +8164,18 @@ static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
- 		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
- 	}
- 
--	if (NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
--		reset = true;
-+	if (!try_module_get(THIS_MODULE))
-+		return -EINVAL;
-+	rcu_read_unlock();
-+	mutex_lock(&nft_net->commit_mutex);
-+	skb2 = nf_tables_getobj_single(portid, info, nla, true);
-+	mutex_unlock(&nft_net->commit_mutex);
-+	rcu_read_lock();
-+	module_put(THIS_MODULE);
- 
--	skb2 = nf_tables_getobj_single(portid, info, nla, reset);
- 	if (IS_ERR(skb2))
- 		return PTR_ERR(skb2);
- 
--	if (!reset)
--		return nfnetlink_unicast(skb2, net, NETLINK_CB(skb).portid);
--
- 	buf = kasprintf(GFP_ATOMIC, "%.*s:%u",
- 			nla_len(nla[NFTA_OBJ_TABLE]),
- 			(char *)nla_data(nla[NFTA_OBJ_TABLE]),
-@@ -9421,7 +9467,7 @@ static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
- 		.policy		= nft_obj_policy,
- 	},
- 	[NFT_MSG_GETOBJ_RESET] = {
--		.call		= nf_tables_getobj,
-+		.call		= nf_tables_getobj_reset,
- 		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_OBJ_MAX,
- 		.policy		= nft_obj_policy,
--- 
-2.43.0
-
+There is a memset at the start of the main while loop that zeroes extack
+for those two cases.
 
