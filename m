@@ -1,75 +1,82 @@
-Return-Path: <netfilter-devel+bounces-3192-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3194-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7272094CD72
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 11:39:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 158BC94D0D5
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 15:08:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D2B2282EF8
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 09:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3BBF1F21CE6
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Aug 2024 13:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACDD19046B;
-	Fri,  9 Aug 2024 09:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9201953A2;
+	Fri,  9 Aug 2024 13:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dsWUeUvL"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="P7AU1pcb"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5135CBA41;
-	Fri,  9 Aug 2024 09:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 553BC194C7D
+	for <netfilter-devel@vger.kernel.org>; Fri,  9 Aug 2024 13:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723196390; cv=none; b=EqoyPX/WI9PKCfxWaUCMHZHMVyIi/oH5dWcpITNZBMavdI3LKCV2z5nwlFXnIQ5F1OOugmw/CcxmZAWiC2CUmtoW8VY61HsYs1nvk/I9oyJTF1RjqkkcXBsoI4ey/4+nPFh/OwO8lQiS2Q9KAorKy7noPBzxgFvFhA5Z7gdpR/k=
+	t=1723208867; cv=none; b=leZrxW7EplwQCVWVbIi83vqmfeRbhYpw21++7mgnMi/DiLn8UVlTp9M8cGLW2e1+wSSuPiMUlWLjPMh+vQNIpGggX3ROMtodlGTSAPRj9WiD8FH9qptwbwoqvfRlnhnidYBaw2NZeV/KmnOQHyeG7FEiqSAyb76lLfg1KEHsAYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723196390; c=relaxed/simple;
-	bh=PK7PvAZsXJ5cj6JCY6grw1kxewR519uv5Bc52JWIjkM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qo01sbWMS+Ppysyj42U4P8TX+bjf01sDpL5SCmo0+boqEpT97Y6chkRAq3J6nWqs9+7Y65g8YhXrHbwkTjEhNVaSSJID1tRU2wJYsAwpbtQ2QNp0yhpxXhPuKhwf3x/QDoq6+PF0QEB4yhIvIyzd1QjzKSxEvmeCwii6/j9bZek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dsWUeUvL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF587C32782;
-	Fri,  9 Aug 2024 09:39:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723196389;
-	bh=PK7PvAZsXJ5cj6JCY6grw1kxewR519uv5Bc52JWIjkM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dsWUeUvLd+Z6QdNDqnyI78xJ3V2bNRx3NIdYvPa66x4n3Zjsn9s2cVSDPZi4kECyI
-	 8BH5ieiaWn0F11OyV3y15lZNPart4HG4VGmnGaqREB7ig5p0kVeChZMsNRIzmgnYNK
-	 iAAgL+0EGB41tjza4PHj0ov56pG2obesIN6wkh5SrzhW6ryRVKXIKVssT71dGol1Bo
-	 MbeoTtSwyu2n79ShzO7VUGJd+xHFWnD8fx585nw7thNtXX/A8vepYtOZtNV5Oqanpf
-	 88VLS4YC9AdEmkh+XI4yOpV6+vHuv7kdpHXu+zmWrSCNmZ9LVmC0piaVKjqAhcEqC3
-	 IkMtQ2UC/z8xw==
-Date: Fri, 9 Aug 2024 10:39:45 +0100
-From: Simon Horman <horms@kernel.org>
-To: Donald Hunter <donald.hunter@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-	donald.hunter@redhat.com
-Subject: Re: [PATCH nf v1] netfilter: flowtable: initialise extack before use
-Message-ID: <20240809093945.GH3075665@kernel.org>
-References: <20240806161637.42647-1-donald.hunter@gmail.com>
+	s=arc-20240116; t=1723208867; c=relaxed/simple;
+	bh=sVGaznC/hjxOJr46kj2Q2XyYVmEnNUA+dVOP71xcPB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GLyM1CmiI8l7V/7jdMPtYcnkImG69ZMgHx1y6SlzWvbyy+srpreagWmyd/jD7aI+RS3Q/WHrAOOBvi3Ywz0XBEKn6+NViCXNDElpf5fwpcbq2SMra8d0PFskwZ/XlKL1dRBHZ/kbygvth5TGWKu7ERrffGbnz13r5JdBbk4122k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=P7AU1pcb; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=7A+r66srTjI11b+clkwZKZV7zl5oFLfEpJEhxvp0ofQ=; b=P7AU1pcbelYhfK7aiyelO31NQr
+	lSmFIZg27owj4XSQsE/OrRt4YcUK9JSRgln160hRNsuihXa3sQAOcekYda1xlDWS5FJTSx6+8FyxX
+	+JbTD/+0cjs2na8qn0u+DSzsPEo2Io08JuTsJhHo/0UJB21slL3A6YDk57Sv9INfaDQrNO/uue+E+
+	An8APxsJP2NKEKgO6fxDuupR6j8h1ywdbVsXfkuaQmWbBafo7JcZPeQQ3OfDNuo5ClY6BzKVFGHEh
+	3650252u8IMlo5ia2DwpV9PnV61I9jqBVK3nbolLXWblwQt6buci07DYLbDpPHs88tW0pvgNYhOxz
+	RtHvNlLA==;
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1scPLG-000000000Dr-1VaY;
+	Fri, 09 Aug 2024 15:07:38 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [nf PATCH v4 0/3] Add locking for NFT_MSG_GETOBJ_RESET requests
+Date: Fri,  9 Aug 2024 15:07:29 +0200
+Message-ID: <20240809130732.13128-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240806161637.42647-1-donald.hunter@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 06, 2024 at 05:16:37PM +0100, Donald Hunter wrote:
-> Fix missing initialisation of extack in flow offload.
-> 
-> Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+Analogous to getrule reset locking, prevent concurrent resetting of
+named objects' state.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Changes since v3:
+- Applied patches onto current nf.git
+
+Phil Sutter (3):
+  netfilter: nf_tables: Audit log dump reset after the fact
+  netfilter: nf_tables: Introduce nf_tables_getobj_single
+  netfilter: nf_tables: Add locking for NFT_MSG_GETOBJ_RESET requests
+
+ net/netfilter/nf_tables_api.c | 147 +++++++++++++++++++++++-----------
+ 1 file changed, 102 insertions(+), 45 deletions(-)
+
+-- 
+2.43.0
 
 
