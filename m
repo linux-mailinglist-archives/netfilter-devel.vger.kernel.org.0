@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3210-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3211-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A6D94EABF
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 12:25:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2263C94EAC1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 12:25:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03FCD1C21572
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 10:25:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07B61F22449
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 10:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1508C16F0F0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0C816EC16;
 	Mon, 12 Aug 2024 10:24:56 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5745716EBFE;
-	Mon, 12 Aug 2024 10:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684DA16EBF0;
+	Mon, 12 Aug 2024 10:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723458296; cv=none; b=UF49aH7LNDk8m/LbMbQ0jpK1KDjdApNG+axZN6YaWP0arMyVGz2zIIPjrp9AjahrEwoJz5TLxLteAObLI/b/CWLJjF3OgukCxKgSBuI4vXKaQR2wQx06ofkYoBwLVKMDsJAkbfRc64sPv6+rbdoCCjMrFvbQihjALZppDpOzJ8s=
+	t=1723458296; cv=none; b=qQ8utJSnlvVtUw0tkI0QgZ0Nvt8SVUv69GWEQXQ2AE0NN8RtgIUp5xTqWJYf4oMF71irOA30Z2Y1gETDti0Amhk+X3PPJ8GfyIQU0zBGgDL1Y2/uZxQ1QWchPBHOuP0/8xQCQjUSdul+tQmfmb7aeIyk8UhMdX6c9y8hBN6kZsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1723458296; c=relaxed/simple;
-	bh=08Xmd7jBWI2ZS++477ywCjhiYEwCkk6o1BEwlc78jJY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iM+TXZjVe1vY2Ld8L3DQEjIXcPmdRSb14NjRDboHJTfV30lpI03UgApUYDFKbij5T0swvnYEBxCtf+FiXpZVxyjuuSzAtRviF71fmmmz2TaCb8nyZDVcW3WkHocURKMcRFeIOpaY+2gMlDcWC5YRrF2IqX4Oa4KYauGXPO+Nl/Q=
+	bh=nC0TqUnF4JRiMrMS7zXCW8UkPFbb94q5A0K07uoXVRw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=sCd03e8i/HO6ftMbWofLfc7gJJ0Z9NGmp0hlcoFsmkv5+u/UDfGMJATJXc8E+AOYEvUDMg0otMRELdMIduAmpXIIWdHqei6Rn3NFLKuw761pj6dpEFiGEKSsPfDmFBjMSEm19b/zSXM9IhIAy/nNSAjDSitSBC6SMctDakGElCI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -31,10 +32,12 @@ To: netfilter-devel@vger.kernel.org
 Cc: gregkh@linuxfoundation.org,
 	sashal@kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH -stable,5.15.x 0/5] Netfilter fixes for -stable
-Date: Mon, 12 Aug 2024 12:24:41 +0200
-Message-Id: <20240812102446.369777-1-pablo@netfilter.org>
+Subject: [PATCH -stable,5.15.x 1/5] netfilter: nf_tables: set element extended ACK reporting support
+Date: Mon, 12 Aug 2024 12:24:42 +0200
+Message-Id: <20240812102446.369777-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240812102446.369777-1-pablo@netfilter.org>
+References: <20240812102446.369777-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -43,52 +46,57 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Greg, Sasha,
+commit b53c116642502b0c85ecef78bff4f826a7dd4145 upstream.
 
-This batch contains a backport for recent fixes already upstream for 5.15.x.
+Report the element that causes problems via netlink extended ACK for set
+element commands.
 
-The following list shows the backported patches, I am using original commit
-IDs for reference:
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-1) b53c11664250 ("netfilter: nf_tables: set element extended ACK reporting support")
-
-   This improves error reporting when adding more than one single element to set,
-   it is not specifically fixing up a crash.
-
-2) 7395dfacfff6 ("netfilter: nf_tables: use timestamp to check for set element timeout")
-
-3) 3c13725f43dc ("netfilter: nf_tables: bail out if stateful expression provides no .clone")
-
-4) fa23e0d4b756 ("netfilter: nf_tables: allow clone callbacks to sleep")
-
-5) cff3bd012a95 ("netfilter: nf_tables: prefer nft_chain_validate")
-
-Please, apply,
-Thanks
-
-Florian Westphal (2):
-  netfilter: nf_tables: allow clone callbacks to sleep
-  netfilter: nf_tables: prefer nft_chain_validate
-
-Pablo Neira Ayuso (3):
-  netfilter: nf_tables: set element extended ACK reporting support
-  netfilter: nf_tables: use timestamp to check for set element timeout
-  netfilter: nf_tables: bail out if stateful expression provides no .clone
-
- include/net/netfilter/nf_tables.h |  20 +++-
- net/netfilter/nf_tables_api.c     | 188 ++++++------------------------
- net/netfilter/nft_connlimit.c     |   4 +-
- net/netfilter/nft_counter.c       |   4 +-
- net/netfilter/nft_dynset.c        |   2 +-
- net/netfilter/nft_last.c          |   4 +-
- net/netfilter/nft_limit.c         |  14 ++-
- net/netfilter/nft_quota.c         |   4 +-
- net/netfilter/nft_set_hash.c      |   8 +-
- net/netfilter/nft_set_pipapo.c    |  18 +--
- net/netfilter/nft_set_rbtree.c    |   6 +-
- 11 files changed, 90 insertions(+), 182 deletions(-)
-
---
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 6e4ce511f51b..95c28893002e 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -5769,8 +5769,10 @@ static int nf_tables_getsetelem(struct sk_buff *skb,
+ 
+ 	nla_for_each_nested(attr, nla[NFTA_SET_ELEM_LIST_ELEMENTS], rem) {
+ 		err = nft_get_set_elem(&ctx, set, attr);
+-		if (err < 0)
++		if (err < 0) {
++			NL_SET_BAD_ATTR(extack, attr);
+ 			break;
++		}
+ 	}
+ 
+ 	return err;
+@@ -6589,8 +6591,10 @@ static int nf_tables_newsetelem(struct sk_buff *skb,
+ 
+ 	nla_for_each_nested(attr, nla[NFTA_SET_ELEM_LIST_ELEMENTS], rem) {
+ 		err = nft_add_set_elem(&ctx, set, attr, info->nlh->nlmsg_flags);
+-		if (err < 0)
++		if (err < 0) {
++			NL_SET_BAD_ATTR(extack, attr);
+ 			return err;
++		}
+ 	}
+ 
+ 	if (nft_net->validate_state == NFT_VALIDATE_DO)
+@@ -6866,8 +6870,10 @@ static int nf_tables_delsetelem(struct sk_buff *skb,
+ 
+ 	nla_for_each_nested(attr, nla[NFTA_SET_ELEM_LIST_ELEMENTS], rem) {
+ 		err = nft_del_setelem(&ctx, set, attr);
+-		if (err < 0)
++		if (err < 0) {
++			NL_SET_BAD_ATTR(extack, attr);
+ 			break;
++		}
+ 	}
+ 	return err;
+ }
+-- 
 2.30.2
 
 
