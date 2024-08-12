@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3206-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3207-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA40694EAB2
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 12:23:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FC994EAB4
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 12:23:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 183F31C20FF4
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 10:23:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2A641F226D3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2024 10:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA65016EBE7;
-	Mon, 12 Aug 2024 10:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6244C16EC0F;
+	Mon, 12 Aug 2024 10:23:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CE133C7;
-	Mon, 12 Aug 2024 10:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BB416DED4;
+	Mon, 12 Aug 2024 10:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723458211; cv=none; b=JNsUnK0Anelvsy46zMV5rtwqMUQ/9eznmfO33aDJciceCegBtaSASXyR0F5o8WYGjM/bGk9fJ8SVFYj5S7eeRlrobysXJh2crIvM5Yx79Gp3X48Tv0mWaUc5MQtWLCSx1EVSfYrKEb3cphdxhIJc0zivGDuC0IPfSLNOdO/xrTw=
+	t=1723458213; cv=none; b=qnWbUaFW3VUv5BJqHEpJfCqOeUlIP95xSNJOo8H/sB5wUfpaKPGD1hV2CbM+WxBs/AHj1O47xtIdpN2uIm2xnvdubqzIfD7Er1UVCQpbb9kYRlFayxwIJhIhmFUhuLFx5X4wpnz7GAm1DSNHcZGhvbSa6zJ3V3wwPe11revTucs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723458211; c=relaxed/simple;
-	bh=sS+vTrpGdf0AvaZa1f6k9mClxZ1Q2o+sA6AqYegxzwQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BoVrtvq6ka+ygIYzXsDdtuCE5PZlkYTBjwSYsGOWzYF2m84fM8rRQ0SMBZFoHRmiGDTLOY1m71xq312ql20Ma9VOch1uOdu8HZkY3BY2Pa8MGAaa9SRs5HvTijRP328Rh7exzIs3V7P2Mp9mJy0Eord52utyIiuDnot567EkUBQ=
+	s=arc-20240116; t=1723458213; c=relaxed/simple;
+	bh=Hm2W9ZPpyomXoFWnwG8tK2gBddhSsMQjKgsO9lRuNAs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=bWWI7QMMR/K90UMOLaxoEnspVebLxPpVgzRhi6J9MvL1bykZU8J+gND2pXwFotUOEUWHLP1di4xwVoV9n6aXRttE5zpf6Xol9W2OGLtsvpgUArX2qAuzHuA8mc8q+TWzqwHluX2p9RX9Thyp6HTV26Ph/qCm2R6gt7wl7AOMsxs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -31,10 +32,12 @@ To: netfilter-devel@vger.kernel.org
 Cc: gregkh@linuxfoundation.org,
 	sashal@kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH -stable,6.1.x 0/3] Netfilter fixes for -stable
-Date: Mon, 12 Aug 2024 12:23:17 +0200
-Message-Id: <20240812102320.359247-1-pablo@netfilter.org>
+Subject: [PATCH -stable,6.1.x 1/3] netfilter: nf_tables: bail out if stateful expression provides no .clone
+Date: Mon, 12 Aug 2024 12:23:18 +0200
+Message-Id: <20240812102320.359247-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240812102320.359247-1-pablo@netfilter.org>
+References: <20240812102320.359247-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -43,39 +46,43 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Greg, Sasha,
+commit 3c13725f43dcf43ad8a9bcd6a9f12add19a8f93e upstream.
 
-This batch contains a backport for recent fixes already upstream for 6.1.x.
+All existing NFT_EXPR_STATEFUL provide a .clone interface, remove
+fallback to copy content of stateful expression since this is never
+exercised and bail out if .clone interface is not defined.
 
-The following list shows the backported patches, I am using original commit
-IDs for reference:
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-1) 3c13725f43dc ("netfilter: nf_tables: bail out if stateful expression provides no .clone")
-
-2) fa23e0d4b756 ("netfilter: nf_tables: allow clone callbacks to sleep")
-
-3) cff3bd012a95 ("netfilter: nf_tables: prefer nft_chain_validate")
-
-Please, apply,
-Thanks
-
-Florian Westphal (2):
-  netfilter: nf_tables: allow clone callbacks to sleep
-  netfilter: nf_tables: prefer nft_chain_validate
-
-Pablo Neira Ayuso (1):
-  netfilter: nf_tables: bail out if stateful expression provides no .clone
-
- include/net/netfilter/nf_tables.h |   4 +-
- net/netfilter/nf_tables_api.c     | 172 ++++--------------------------
- net/netfilter/nft_connlimit.c     |   4 +-
- net/netfilter/nft_counter.c       |   4 +-
- net/netfilter/nft_dynset.c        |   2 +-
- net/netfilter/nft_last.c          |   4 +-
- net/netfilter/nft_limit.c         |  14 +--
- net/netfilter/nft_quota.c         |   4 +-
- 8 files changed, 42 insertions(+), 166 deletions(-)
-
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index d18b698139ca..85d7250a29a2 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3123,14 +3123,13 @@ int nft_expr_clone(struct nft_expr *dst, struct nft_expr *src)
+ {
+ 	int err;
+ 
+-	if (src->ops->clone) {
+-		dst->ops = src->ops;
+-		err = src->ops->clone(dst, src);
+-		if (err < 0)
+-			return err;
+-	} else {
+-		memcpy(dst, src, src->ops->size);
+-	}
++	if (WARN_ON_ONCE(!src->ops->clone))
++		return -EINVAL;
++
++	dst->ops = src->ops;
++	err = src->ops->clone(dst, src);
++	if (err < 0)
++		return err;
+ 
+ 	__module_get(src->ops->type->owner);
+ 
 -- 
 2.30.2
 
