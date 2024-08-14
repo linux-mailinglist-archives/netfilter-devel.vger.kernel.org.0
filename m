@@ -1,123 +1,133 @@
-Return-Path: <netfilter-devel+bounces-3249-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3253-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1645950E12
-	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Aug 2024 22:44:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F119512CB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 05:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09837B242D2
-	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Aug 2024 20:44:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18C191C21238
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 03:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0FA1A7047;
-	Tue, 13 Aug 2024 20:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762803BB48;
+	Wed, 14 Aug 2024 03:02:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A501A7041
-	for <netfilter-devel@vger.kernel.org>; Tue, 13 Aug 2024 20:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F9918E3F;
+	Wed, 14 Aug 2024 03:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723581839; cv=none; b=HNw6M4F5UPn51mqEnYhS1ePxEzKB21YsDAKr9bG/Sa9RNysAGO1ImJQV6594IyTtur0cnlRBRtn0iVB2s7PwSeklRWn94yIbmp+X3sKQFXDwX8r08qpX+kibSnoQWVRd0dwhWfEsbbvvRyx+/56Mz/UjFTQG3QdsJPNtYT+pDhc=
+	t=1723604533; cv=none; b=GBbcHQSstB989NbBi+LRn7YQK9I083Y4QRRTPkQ0nlyE0yheuvd5CGTl/uuRtsJ7rFzXBVbRHNEr/45D9pr85ZEKJtUxi8BbPgPc5kQcN3tLf6/VoLun9Z4Is/3mjTqWSXZzy6VxUMrvh/ngxUaTGtNeoP7REuK/SPVW7afS6PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723581839; c=relaxed/simple;
-	bh=PfLpJe7SWeKgNlK1fOSpmcVTnX1RE94jWKTyjFCwEtU=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rFBTmeGCsIP9VbCC1/+d6lQTJd0Fchs9LhNZB8pajeIvsYY3x5T6lk/6cozdR1RA0na3fw8XSwt4PBgVLC48rAoNvmDt/buBxECDR4Si20/HoQVQ0IK7ZBp69t6Z/mvHNk8jA9H0jzluwnzlwUZmGzg4wAocMSE+4lo3cddBiuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=36826 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1sdyMq-00EfPP-TS; Tue, 13 Aug 2024 22:43:47 +0200
-Date: Tue, 13 Aug 2024 22:43:44 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf-next 7/8] netfilter: nf_tables: add never expires
- marker to elements
-Message-ID: <ZrvFgG8yHDjGv3-K@calendula>
-References: <20240807142357.90493-1-pablo@netfilter.org>
- <20240807142357.90493-8-pablo@netfilter.org>
- <ZruiAlR9UGRJTW8o@orbyte.nwl.cc>
+	s=arc-20240116; t=1723604533; c=relaxed/simple;
+	bh=85FqXsHTbOgXVR6C3pvteHLeqFLBHNFzs0+bxuDluzc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=r0DCEOk2bAjvkEvsPgaThBPINzqzdwc20LAtDfw95Dk89XyeLwC4/7AjnvEjrc94XJX1Extd+0WioCjQhhLvjEjjkn75w0cG3SzLHAwRhdXaw66kHsO+UMJEgkDxoaQC8dR4RQkZ1DnoMkqb79mTbMgsspb07GgcdXqk/hfdkew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WkCbW2mYlzQpMT;
+	Wed, 14 Aug 2024 10:57:27 +0800 (CST)
+Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6BF921800A0;
+	Wed, 14 Aug 2024 11:02:01 +0800 (CST)
+Received: from mscphis02103.huawei.com (10.123.65.215) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Wed, 14 Aug 2024 11:01:59 +0800
+From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+To: <mic@digikod.net>
+CC: <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
+	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
+	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
+Subject: [RFC PATCH v2 0/9] Support TCP listen access-control
+Date: Wed, 14 Aug 2024 11:01:42 +0800
+Message-ID: <20240814030151.2380280-1-ivanov.mikhail1@huawei-partners.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZruiAlR9UGRJTW8o@orbyte.nwl.cc>
-X-Spam-Score: -1.9 (-)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: mscpeml500004.china.huawei.com (7.188.26.250) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
 
-On Tue, Aug 13, 2024 at 08:12:18PM +0200, Phil Sutter wrote:
-> Hi Pablo,
-> 
-> On Wed, Aug 07, 2024 at 04:23:56PM +0200, Pablo Neira Ayuso wrote:
-> > This patch adds a timeout marker for those elements that never expire
-> > when the element are created, so timeout updates are possible.
-> > 
-> > Note that maximum supported timeout in milliseconds which is conveyed
-> > within a netlink attribute is 0x10c6f7a0b5ec which translates to
-> > 0xffffffffffe85300 jiffies64, higher milliseconds values result in an
-> > ERANGE error. Use U64_MAX as an internal marker to be stored in the set
-> > element timeout field for permanent elements.
-> > 
-> > If userspace provides no timeout for an element, then the default set
-> > timeout applies. However, if no default set timeout is specified and
-> > timeout flag is set on, then such new element gets the never expires
-> > marker.
-> > 
-> > Note that, in older kernels, it is already possible to define elements
-> > that never expire by declaring a set with the set timeout flag set on
-> > and no global set timeout, in this case, new element with no explicit
-> > timeout never expire do not allocate the timeout extension, hence, they
-> > never expire. This approach makes it complicated to accomodate element
-> > timeout update, because element extensions do not support reallocations.
-> > Therefore, allocate the timeout extension and use the new marker for
-> > this case, but do not expose it to userspace to retain backward
-> > compatibility in the set listing.
-> 
-> I fail to miss the point why this marker is needed at all:
+Hello! This is v2 RFC patch dedicated to restriction of listening sockets.
 
-Long story short: I did my best to support this without this marker
-but I could not find a design that works without it.
+It is based on the landlock's mic-next branch on top of 6.11-rc1 kernel
+version.
 
-> Right now, new set elements receive EXT_TIMEOUT upon creation if either
-> NFTA_SET_ELEM_TIMEOUT is present (i.e., user specified per-element
-> timeout) or set->timeout is non-zero (i.e., set has a default timeout).
+Description
+===========
+LANDLOCK_ACCESS_NET_BIND_TCP is useful to limit the scope of "bindable"
+ports to forbid a malicious sandboxed process to impersonate a legitimate
+server process. However, bind(2) might be used by (TCP) clients to set the
+source port to a (legitimate) value. Controlling the ports that can be
+used for listening would allow (TCP) clients to explicitly bind to ports
+that are forbidden for listening.
 
-There is one exception though:
+Such control is implemented with a new LANDLOCK_ACCESS_NET_LISTEN_TCP
+access right that restricts listening on undesired ports with listen(2).
 
- table inet x {
-        set y {
-                typeof ip saddr
-                flags timeout
-        }
- }
+It's worth noticing that this access right doesn't affect changing 
+backlog value using listen(2) on already listening socket. For this case
+test ipv4_tcp.double_listen is provided.
 
-in this case, there is no default set timeout. Older kernels already
-allow to add elements with no EXT_TIMEOUT that never expire with this
-approach, however, this is not practical for element updates, because
-set element extension reallocation is not supported.
+Closes: https://github.com/landlock-lsm/linux/issues/15
 
-> Why not change this logic and add EXT_TIMEOUT to all elements which will
-> timeout and initialize it either to the user-defined value or the set's
-> default? Then, only elements which don't timeout remain without
-> EXT_TIMEOUT. Which is not a problem, because their expiration value does
-> not need to be reset and thus they don't need space for one.
+Code coverage
+=============
+Code coverage(gcov) report with the launch of all the landlock selftests:
+* security/landlock:
+lines......: 93.4% (759 of 813 lines)
+functions..: 95.3% (101 of 106 functions)
 
-No EXT_TIMEOUT means users cannot update the timeout policy for such
-element. I assume users can update from "timeout never" to "timeout 1h"
-as a valid usecase.
+* security/landlock/net.c:
+lines......: 100% (77 of 77 lines)
+functions..: 100% (9 of 9 functions)
 
-> The only downside is that elements which stick to the set's default
-> timeout increase in size (for the copied set->timeout value), but this
-> patch series merges EXT_EXPIRATION and EXT_TIMEOUT anyway so their size
-> increases already. OTOH, non-expiring set elements won't need a spurious
-> EXT_TIMEOUT holding never expires marker.
+General changes
+===============
+ * Rebases on Linux 6.11-rc1.
+ * Refactors 'struct landlock_net_port_attr' documentation.
+ * Uses 'protocol' fixture instead of 'ipv4_tcp' in 'listen_on_connected'
+   and 'espintcp_listen' tests.
+
+Previous versions
+=================
+v1: https://lore.kernel.org/all/20240728002602.3198398-1-ivanov.mikhail1@huawei-partners.com/
+
+Mikhail Ivanov (9):
+  landlock: Refactor current_check_access_socket() access right check
+  landlock: Support TCP listen access-control
+  selftests/landlock: Support LANDLOCK_ACCESS_NET_LISTEN_TCP
+  selftests/landlock: Test listening restriction
+  selftests/landlock: Test listen on connected socket
+  selftests/landlock: Test listening without explicit bind restriction
+  selftests/landlock: Test listen on ULP socket without clone method
+  selftests/landlock: Test changing socket backlog with listen(2)
+  samples/landlock: Support LANDLOCK_ACCESS_NET_LISTEN
+
+ include/uapi/linux/landlock.h                |  26 +-
+ samples/landlock/sandboxer.c                 |  31 +-
+ security/landlock/limits.h                   |   2 +-
+ security/landlock/net.c                      | 139 +++++-
+ security/landlock/syscalls.c                 |   2 +-
+ tools/testing/selftests/landlock/base_test.c |   2 +-
+ tools/testing/selftests/landlock/config      |   4 +
+ tools/testing/selftests/landlock/net_test.c  | 469 +++++++++++++++----
+ 8 files changed, 554 insertions(+), 121 deletions(-)
+
+
+base-commit: 8400291e289ee6b2bf9779ff1c83a291501f017b
+-- 
+2.34.1
+
 
