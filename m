@@ -1,156 +1,126 @@
-Return-Path: <netfilter-devel+bounces-3277-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3279-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2A3951EBC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 17:38:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91142951FAA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 18:19:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49B55282108
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 15:38:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A73261C22029
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 16:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C721B3F26;
-	Wed, 14 Aug 2024 15:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F9C1B9B30;
+	Wed, 14 Aug 2024 16:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="iH2PwnEG"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B3222EEF
-	for <netfilter-devel@vger.kernel.org>; Wed, 14 Aug 2024 15:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8F61B86FF
+	for <netfilter-devel@vger.kernel.org>; Wed, 14 Aug 2024 16:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723649902; cv=none; b=apwoHjUpfi7Rxu7THZ/Q1KiP6MpHL286ja+QmEIImti8ivqcXy33qNtyZQfzjCixEillbQE8eSDpsxiZpJphSrFD+28eXM2XenESGNKh5B2ZKp2Xi8i2qEgxk27pu+0g0j5vaNZiOzS/D1flhNwpAfwuHZzD+WutOHEX/eNjexE=
+	t=1723652369; cv=none; b=e1Hh1QPNWpQ8U5UDhuNsak/ho7UGV1fCUsu+8PJX1wxf+Tc8fXd/ljA2XUXemZUv3JFBpFTfQn/fzcwF4DO/R0/sTPM2QoSfvTwo0x6GqV6ntdxJIIuXo8l0zQVC/pHSU85l3BSeYtV5CGf9raLRfCyUwAt1Qi+hOlx8UmHgwCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723649902; c=relaxed/simple;
-	bh=Tt8bENeTCsMDNbPudWImSVgabsSc7n42NAwwN8UqbjY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jWNUcXySJdceSmNnRhh8aPa/AbPCUIUdJJZ7tr7Hcaxeyro0IjKXOAkfc/noEnXNcQMhwKVQ9uP18EGL72T8A5b/Yl4kX/dguf8npqrU+hwlZMwopnxi3R7ffbgjn4NOnOm6+YNzV99Ui1nX6tmqzljgeDlNYVcGz7A/WDla1ZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: nhofmeyr@sysmocom.de
-Subject: [PATCH nft] cache: populate chains on demand from error path
-Date: Wed, 14 Aug 2024 17:38:12 +0200
-Message-Id: <20240814153812.834332-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1723652369; c=relaxed/simple;
+	bh=RMYmvBGMs+/88qlWhmwnsPxj7kizN0kpg2AsCC+fkow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJrdXIYcozlzoy9QJ41BF/ZCy3KIrmmXgxWRPj+qGjSo0+IJqrBKesj9DEU+fSvLE95JjrKYGrPN6WqMAUZRchr+YaPO4Y8u3guvpSqIQHwwnEC6wiFBr6h+PCL5IKSgKOOD0wW0iCwS4Z0tugNLXuOyytxajnT8qfWUfYvzlQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=iH2PwnEG; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=wPsUYoC85q37+J65w9xo6G8SCevCZPH4KN5iq4H4/qQ=; b=iH2PwnEGtbIkyuqq4Wr/U+eNWI
+	vP1uLBHhSCEkx+XgY1JFPwkt7qzA3YzSuWdP6VWrLUhg/trWQhnq1+JcdaswmxBNUmXcyFEUOnz7A
+	WuwEG5dGhEEWGY7TPWRTyCoykFzT97aPHwyCYl/nEZVfwad4gBzyrjPsrCzZ9dqr+/wUZJF/vONwQ
+	8tmTmfDqs4AXDr6heJvCQnlC7TDnLEmntLaKxH2GqGzL2tv83vYmv3NjUKgdi41uIyF1afsKOVi+h
+	aFGcCmMyBGmKBWgYdY4aHxqzujpRuGO1gheFl19uXr9fbUiw4vofdh8rwTIfbrbHRtSHIqeLNkKCS
+	YlO+QXkQ==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1seGQh-000000004I7-2jV1;
+	Wed, 14 Aug 2024 18:00:55 +0200
+Date: Wed, 14 Aug 2024 18:00:55 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft,v2 1/2] datatype: reject rate in quota statement
+Message-ID: <ZrzUt-8mZoqdY0ai@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org
+References: <20240814115122.279041-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240814115122.279041-1-pablo@netfilter.org>
 
-Updates on verdict maps that require many non-base chains are slowed
-down due to fetching existing non-base chains into the cache.
+On Wed, Aug 14, 2024 at 01:51:21PM +0200, Pablo Neira Ayuso wrote:
+> Bail out if rate are used:
+> 
+>  ruleset.nft:5:77-106: Error: Wrong rate format, expecting bytes or kbytes or mbytes
+>  add rule netdev firewall PROTECTED_IPS update @quota_temp_before { ip daddr quota over 45000 mbytes/second } add @quota_trigger { ip daddr }
+>                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> improve error reporting while at this.
+> 
+> Fixes: 6615676d825e ("src: add per-bytes limit")
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+> v2: - change patch subject
+>     - use strndup() to fetch units in rate_parse() so limit rate does not break.
+> 
+>  src/datatype.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/src/datatype.c b/src/datatype.c
+> index d398a9c8c618..297c5d0409d5 100644
+> --- a/src/datatype.c
+> +++ b/src/datatype.c
+> @@ -1485,14 +1485,14 @@ static struct error_record *time_unit_parse(const struct location *loc,
+>  struct error_record *data_unit_parse(const struct location *loc,
+>  				     const char *str, uint64_t *rate)
+>  {
+> -	if (strncmp(str, "bytes", strlen("bytes")) == 0)
+> +	if (strcmp(str, "bytes") == 0)
+>  		*rate = 1ULL;
+> -	else if (strncmp(str, "kbytes", strlen("kbytes")) == 0)
+> +	else if (strcmp(str, "kbytes") == 0)
+>  		*rate = 1024;
+> -	else if (strncmp(str, "mbytes", strlen("mbytes")) == 0)
+> +	else if (strcmp(str, "mbytes") == 0)
+>  		*rate = 1024 * 1024;
+>  	else
+> -		return error(loc, "Wrong rate format");
+> +		return error(loc, "Wrong unit format, expecting bytes, kbytes or mbytes");
+>  
+>  	return NULL;
+>  }
 
-Chains are only required for error reporting hints if kernel reports
-ENOENT. Populate the cache from this error path only.
+I have local commits which introduce KBYTES and MBYTES keywords and
+thereby kill the need for quota_unit and limit_bytes cases in
+parser_bison.y. It still needs testing and is surely not solving all
+issues there are, but I find it nicer than the partially redundant code
+we have right now.
 
-Similar approach already exists from rule ENOENT error path since:
+My motivation for this was to maybe improve parser's ability to handle
+lack of spaces in input. I still see the scanner fall into the generic
+"string" token case which requires manual dissection in the parser.
 
-  3f1d3912c3a6 ("cache: filter out tables that are not requested")
+What is your motivation for the above changes? Maybe we could collect
+parser limitations around these units and see what helps "the most"?
 
-however, NFT_CACHE_CHAIN was toggled inconditionally for rule
-commands, rendering this on-demand cache population useless.
-
-before this patch, running Neels' nft_slew benchmark (peak values):
-
-  created idx 4992 in 52587950 ns   (128 in 7122 ms)
-  ...
-  deleted idx  128 in 43542500 ns   (127 in 6187 ms)
-
-after this patch:
-
-  created idx 4992 in 11361299 ns   (128 in 1612 ms)
-  ...
-  deleted idx 1664 in  5239633 ns   (128 in 733 ms)
-
-cache is still populated when index is used.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-A new attempt to address this issue, now that
-
-"cache: recycle existing cache with incremental updates"
-
-has been reverted.
-
- include/cache.h | 1 -
- src/cache.c     | 5 +----
- src/cmd.c       | 5 +++++
- 3 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/cache.h b/include/cache.h
-index 8ca4a9a79c03..44e8430ce1fd 100644
---- a/include/cache.h
-+++ b/include/cache.h
-@@ -31,7 +31,6 @@ enum cache_level_flags {
- 				  NFT_CACHE_SET_BIT |
- 				  NFT_CACHE_SETELEM_BIT,
- 	NFT_CACHE_RULE		= NFT_CACHE_TABLE_BIT |
--				  NFT_CACHE_CHAIN_BIT |
- 				  NFT_CACHE_RULE_BIT,
- 	NFT_CACHE_FULL		= __NFT_CACHE_MAX_BIT - 1,
- 	NFT_CACHE_TERSE		= (1 << 27),
-diff --git a/src/cache.c b/src/cache.c
-index e88cbae2ad95..06b12024003e 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -54,21 +54,19 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
- 		break;
- 	case CMD_OBJ_ELEMENTS:
- 		flags |= NFT_CACHE_TABLE |
--			 NFT_CACHE_CHAIN |
- 			 NFT_CACHE_SET |
- 			 NFT_CACHE_OBJECT |
- 			 NFT_CACHE_SETELEM_MAYBE;
- 		break;
- 	case CMD_OBJ_RULE:
- 		flags |= NFT_CACHE_TABLE |
--			 NFT_CACHE_CHAIN |
- 			 NFT_CACHE_SET |
- 			 NFT_CACHE_OBJECT |
- 			 NFT_CACHE_FLOWTABLE;
- 
- 		if (cmd->handle.index.id ||
- 		    cmd->handle.position.id)
--			flags |= NFT_CACHE_RULE | NFT_CACHE_UPDATE;
-+			flags |= NFT_CACHE_CHAIN | NFT_CACHE_RULE | NFT_CACHE_UPDATE;
- 		break;
- 	default:
- 		break;
-@@ -435,7 +433,6 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
- 		case CMD_DELETE:
- 		case CMD_DESTROY:
- 			flags |= NFT_CACHE_TABLE |
--				 NFT_CACHE_CHAIN |
- 				 NFT_CACHE_SET |
- 				 NFT_CACHE_FLOWTABLE |
- 				 NFT_CACHE_OBJECT;
-diff --git a/src/cmd.c b/src/cmd.c
-index 37d93abc2cd4..37a8d0e62aaa 100644
---- a/src/cmd.c
-+++ b/src/cmd.c
-@@ -69,12 +69,17 @@ static int table_fuzzy_check(struct netlink_ctx *ctx, const struct cmd *cmd,
- static int nft_cmd_enoent_chain(struct netlink_ctx *ctx, const struct cmd *cmd,
- 				const struct location *loc)
- {
-+	unsigned int flags = NFT_CACHE_TABLE |
-+			     NFT_CACHE_CHAIN;
- 	const struct table *table = NULL;
- 	struct chain *chain;
- 
- 	if (!cmd->handle.chain.name)
- 		return 0;
- 
-+	if (nft_cache_update(ctx->nft, flags, ctx->msgs, NULL) < 0)
-+		return 0;
-+
- 	chain = chain_lookup_fuzzy(&cmd->handle, &ctx->nft->cache, &table);
- 	/* check table first. */
- 	if (!table)
--- 
-2.30.2
-
+Cheers, Phil
 
