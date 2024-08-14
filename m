@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-3251-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3255-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62D279512C3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 05:02:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D0C79512D1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 05:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D90D1F24B34
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 03:02:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A3D2280D9B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 03:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64BD381BD;
-	Wed, 14 Aug 2024 03:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13E74C62B;
+	Wed, 14 Aug 2024 03:02:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF598485;
-	Wed, 14 Aug 2024 03:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECD61CAA2;
+	Wed, 14 Aug 2024 03:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723604532; cv=none; b=jaILJno+Hd82RsMs2o+X/zGgSw7fBA4BxHd/n/Y70daGcFg4RWAqpBKyi+Jcn5qntZSUC2GJG04sS+rQYcTFzgLhWeJwiUT7Wj6in+uA7EETMLFdlnPVh35wX0BGPC5zw8fvNACIwbEJ1Oon3qp22UO1wYVd2ukqJLK0rSoS0Tw=
+	t=1723604533; cv=none; b=Qqdpf+dKClUqToE1DVWuFVNovmbRypk2/rZtJPVOjecDHREUZGD9Hvs0uVf80dfJT5BaemnhaiF0z/3W1u1UazCzuGBaFpE3k6MAw/wLsrD6pyA8W2HWFEFjfh3ttfnAciRAU2lMyVJMSd1L3rim0QHp1Puyp23sFufHO+Rj7Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723604532; c=relaxed/simple;
-	bh=T1d68LYJQ5PF2V9H1ruSPor7SPuyYu1pjOYSMUxNP3E=;
+	s=arc-20240116; t=1723604533; c=relaxed/simple;
+	bh=wtB0l5FobLp8sTKRHYLuJrJAFDakL8hq6JSqlFDJAMo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aleYE/U4Y1zTs9v0x8meB5zydh5TFASX+9oV2OxwaypRDQ9IUhkXqemLkNj8pPVJLaE4O5y3l+IesJYJfHf2moShiD18cGkuG1HYO0bYT3/4c6feuetfZKmjH1fI8/SiG6cg7tBIO+dRVGcrkHRqsRpxGNkJ4ctnO3dx+ksDGVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=Y5QhUIxmfAY+ngWSlM+pGs2h85kPfrg+mGOsFliuT6ZE0iHDVl9ZT60YAPiKPnnIRTHQuevWeGpyt9a9zmEwQ/t155EzOKA/7dpKX3Mr9hpsdkHqGRbTO8x92QW4hAFL8wPia/lHxp29VXh5r237fSkiyYwVGqC8N880lPqxx74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WkCbf3v9xz20l6c;
-	Wed, 14 Aug 2024 10:57:34 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4WkCfp3tVZz1xtxV;
+	Wed, 14 Aug 2024 11:00:18 +0800 (CST)
 Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2A5531402CF;
-	Wed, 14 Aug 2024 11:02:08 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id CB5C21A016C;
+	Wed, 14 Aug 2024 11:02:09 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 14 Aug 2024 11:02:06 +0800
+ 15.1.2507.39; Wed, 14 Aug 2024 11:02:08 +0800
 From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 To: <mic@digikod.net>
 CC: <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v2 4/9] selftests/landlock: Test listening restriction
-Date: Wed, 14 Aug 2024 11:01:46 +0800
-Message-ID: <20240814030151.2380280-5-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v2 5/9] selftests/landlock: Test listen on connected socket
+Date: Wed, 14 Aug 2024 11:01:47 +0800
+Message-ID: <20240814030151.2380280-6-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240814030151.2380280-1-ivanov.mikhail1@huawei-partners.com>
 References: <20240814030151.2380280-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,24 +62,32 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500004.china.huawei.com (7.188.26.250) To
  dggpemm500020.china.huawei.com (7.185.36.49)
 
-Add a test for listening restriction. It's similar to protocol.bind and
-protocol.connect tests.
+Test checks that listen(2) doesn't wrongfully return -EACCES instead
+of -EINVAL when trying to listen for an incorrect socket state.
 
 Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 ---
- tools/testing/selftests/landlock/net_test.c | 44 +++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+
+Changes since v1:
+* Uses 'protocol' fixture instead of 'ipv4_tcp'.
+* Minor fixes.
+---
+ tools/testing/selftests/landlock/net_test.c | 74 +++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
 diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
-index 8126f5c0160f..b6fe9bde205f 100644
+index b6fe9bde205f..551891b18b7a 100644
 --- a/tools/testing/selftests/landlock/net_test.c
 +++ b/tools/testing/selftests/landlock/net_test.c
-@@ -689,6 +689,50 @@ TEST_F(protocol, connect)
- 				    restricted, restricted);
+@@ -926,6 +926,80 @@ TEST_F(protocol, connect_unspec)
+ 	EXPECT_EQ(0, close(bind_fd));
  }
  
-+TEST_F(protocol, listen)
++TEST_F(protocol, listen_on_connected)
 +{
++	int bind_fd, status;
++	pid_t child;
++
 +	if (variant->sandbox == TCP_SANDBOX) {
 +		const struct landlock_ruleset_attr ruleset_attr = {
 +			.handled_access_net = ACCESS_ALL,
@@ -104,7 +112,7 @@ index 8126f5c0160f..b6fe9bde205f 100644
 +			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
 +					    &tcp_not_restricted_p0, 0));
 +
-+		/* Allows all actions despite listen. */
++		/* Denies listening for the second port. */
 +		ASSERT_EQ(0,
 +			  landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_PORT,
 +					    &tcp_denied_listen_p1, 0));
@@ -112,19 +120,46 @@ index 8126f5c0160f..b6fe9bde205f 100644
 +		enforce_ruleset(_metadata, ruleset_fd);
 +		EXPECT_EQ(0, close(ruleset_fd));
 +	}
-+	bool restricted = is_restricted(&variant->prot, variant->sandbox);
 +
-+	test_restricted_net_fixture(_metadata, &self->srv0, false, false,
-+				    false);
-+	test_restricted_net_fixture(_metadata, &self->srv1, false, false,
-+				    restricted);
-+	test_restricted_net_fixture(_metadata, &self->srv2, restricted,
-+				    restricted, restricted);
++	if (variant->prot.type != SOCK_STREAM)
++		SKIP(return, "listen(2) is supported only on stream sockets");
++
++	/* Initializes listening socket. */
++	bind_fd = socket_variant(&self->srv0);
++	ASSERT_LE(0, bind_fd);
++	EXPECT_EQ(0, bind_variant(bind_fd, &self->srv0));
++	EXPECT_EQ(0, listen_variant(bind_fd, backlog));
++
++	child = fork();
++	ASSERT_LE(0, child);
++	if (child == 0) {
++		int connect_fd;
++
++		/* Closes listening socket for the child. */
++		EXPECT_EQ(0, close(bind_fd));
++
++		connect_fd = socket_variant(&self->srv1);
++		ASSERT_LE(0, connect_fd);
++		EXPECT_EQ(0, connect_variant(connect_fd, &self->srv0));
++
++		/* Tries to listen on connected socket. */
++		EXPECT_EQ(-EINVAL, listen_variant(connect_fd, backlog));
++
++		EXPECT_EQ(0, close(connect_fd));
++		_exit(_metadata->exit_code);
++		return;
++	}
++
++	EXPECT_EQ(child, waitpid(child, &status, 0));
++	EXPECT_EQ(1, WIFEXITED(status));
++	EXPECT_EQ(EXIT_SUCCESS, WEXITSTATUS(status));
++
++	EXPECT_EQ(0, close(bind_fd));
 +}
 +
- TEST_F(protocol, bind_unspec)
+ FIXTURE(ipv4)
  {
- 	const struct landlock_ruleset_attr ruleset_attr = {
+ 	struct service_fixture srv0, srv1;
 -- 
 2.34.1
 
