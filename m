@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3285-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3283-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBF0A95258E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 00:21:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DCC095258A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 00:21:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 130E61C218B3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 22:21:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E2B91F271F4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 22:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4193D14D2A6;
-	Wed, 14 Aug 2024 22:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0077149C61;
+	Wed, 14 Aug 2024 22:20:54 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B571494D6;
-	Wed, 14 Aug 2024 22:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FE714A098;
+	Wed, 14 Aug 2024 22:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723674055; cv=none; b=evoF5AAoyIhJWQ0u6hmQokCTp/1Jf8Nn+SGK0k5d11J/8RIyKAGaCFrHBI8RUpxKaDpshrEdvGlDuST8lMOvcqSM2hCBIlJH3SfIbK+iRf269UbnxmwRHhgf3La4/Bjw1MwhBOpnEs6AuNPUbh5OlxFMiM8zIL+5nkAjGGb2p8w=
+	t=1723674054; cv=none; b=SK01PPGbkkbGOPwsYI6b5oBxlBBogPu3ufzuxx1uNON06MCfH/NlUpFQ2n/5W/TVPbx458a2R1/x2uFijLR8eNSuDoxbbavGYXclb8MwIdQM+49UB1i/CHSYopZnbrMA4OtMHgQG9P9oiwcFpn9f6CRCtalLL1wyw6nXx1qxpdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723674055; c=relaxed/simple;
-	bh=FNLLVejBIWpvClxKSF4+IrpX1L+lQ9397HafDXBit1o=;
+	s=arc-20240116; t=1723674054; c=relaxed/simple;
+	bh=ec7mfZCwAb08NgjKOdtsKyttWhuWfnMBkMzTHKyxvEA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YVneXMuITkJ2Qe04+NSJz+3G+eDOiWDXOB36mImHZbE/UPALAZqFeIGMUYo7FWbHFgSg3MfgwVGCGjjwulvMLp0Xq5UCpmLaez5FG6Agkr1Z6KqHP6arTcXtRxNIdAmPOoV4OeklpBhRjmuuUtt5FlDyzzWPBGLO3pq2wAiVTRI=
+	 MIME-Version; b=dJN3SNno3ecRHYEGWtetidTF408FjpfY3lTLcYig9NaJeqvrXAB0PrvA4H4sa8KCZuZnOgGLwipzQgvkx9whdz46aPIrPLJRvobRMiq1SdguwdM3GFVe2w6C4v4f/AGZSbYkDpcLMefKzCAKyhSTtIbTspTfXnA21LbvAE83e3E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/8] netfilter: allow ipv6 fragments to arrive on different devices
-Date: Thu, 15 Aug 2024 00:20:35 +0200
-Message-Id: <20240814222042.150590-2-pablo@netfilter.org>
+Subject: [PATCH net 2/8] netfilter: nfnetlink: Initialise extack before use in ACKs
+Date: Thu, 15 Aug 2024 00:20:36 +0200
+Message-Id: <20240814222042.150590-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240814222042.150590-1-pablo@netfilter.org>
 References: <20240814222042.150590-1-pablo@netfilter.org>
@@ -49,41 +49,42 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Tom Hughes <tom@compton.nu>
+From: Donald Hunter <donald.hunter@gmail.com>
 
-Commit 264640fc2c5f4 ("ipv6: distinguish frag queues by device
-for multicast and link-local packets") modified the ipv6 fragment
-reassembly logic to distinguish frag queues by device for multicast
-and link-local packets but in fact only the main reassembly code
-limits the use of the device to those address types and the netfilter
-reassembly code uses the device for all packets.
+Add missing extack initialisation when ACKing BATCH_BEGIN and BATCH_END.
 
-This means that if fragments of a packet arrive on different interfaces
-then netfilter will fail to reassemble them and the fragments will be
-expired without going any further through the filters.
-
-Fixes: 648700f76b03 ("inet: frags: use rhashtables for reassembly units")
-Signed-off-by: Tom Hughes <tom@compton.nu>
+Fixes: bf2ac490d28c ("netfilter: nfnetlink: Handle ACK flags for batch messages")
+Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/ipv6/netfilter/nf_conntrack_reasm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/netfilter/nfnetlink.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
-index 6f0844c9315d..4120e67a8ce6 100644
---- a/net/ipv6/netfilter/nf_conntrack_reasm.c
-+++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
-@@ -154,6 +154,10 @@ static struct frag_queue *fq_find(struct net *net, __be32 id, u32 user,
- 	};
- 	struct inet_frag_queue *q;
+diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
+index 4abf660c7baf..932b3ddb34f1 100644
+--- a/net/netfilter/nfnetlink.c
++++ b/net/netfilter/nfnetlink.c
+@@ -427,8 +427,10 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
  
-+	if (!(ipv6_addr_type(&hdr->daddr) & (IPV6_ADDR_MULTICAST |
-+					    IPV6_ADDR_LINKLOCAL)))
-+		key.iif = 0;
-+
- 	q = inet_frag_find(nf_frag->fqdir, &key);
- 	if (!q)
- 		return NULL;
+ 	nfnl_unlock(subsys_id);
+ 
+-	if (nlh->nlmsg_flags & NLM_F_ACK)
++	if (nlh->nlmsg_flags & NLM_F_ACK) {
++		memset(&extack, 0, sizeof(extack));
+ 		nfnl_err_add(&err_list, nlh, 0, &extack);
++	}
+ 
+ 	while (skb->len >= nlmsg_total_size(0)) {
+ 		int msglen, type;
+@@ -577,6 +579,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 			ss->abort(net, oskb, NFNL_ABORT_NONE);
+ 			netlink_ack(oskb, nlmsg_hdr(oskb), err, NULL);
+ 		} else if (nlh->nlmsg_flags & NLM_F_ACK) {
++			memset(&extack, 0, sizeof(extack));
+ 			nfnl_err_add(&err_list, nlh, 0, &extack);
+ 		}
+ 	} else {
 -- 
 2.30.2
 
