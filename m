@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3288-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3290-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA36952594
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 00:21:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C7F952599
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 00:22:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92B871C219CB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 22:21:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF6B8B252FF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2024 22:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4E815350D;
-	Wed, 14 Aug 2024 22:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD2115382F;
+	Wed, 14 Aug 2024 22:20:59 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4ABD14B947;
-	Wed, 14 Aug 2024 22:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FD814D6E9;
+	Wed, 14 Aug 2024 22:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723674058; cv=none; b=jyJug6qLO8QofH/v+aWZh8a2Z5N5dya7X5kzZ8KlgSvwc/Ke6/OcR2feMtHWe+UI2Vw0+8KflSHYhcAU1hkcwNrKlbEuTIdX3bejPjW/9VUayyOi1xvtf0p2WRHKnJlMhtHeUeUKbyi7YxySHuMiD6PfxvibZ8jHerS0QrCkilc=
+	t=1723674059; cv=none; b=c6idqKYAbEn4XUjYNyy2Us1xVCZXDjsOffX/I/OGQIHqLGTin2zcXZppWvz4IuMuPX7A8LOggTmjZCVf0TuNjm8IipmLqHdOuk1Y3VNyj5QqQxN4FQVWH9hUXBlqRJSzUcJCjYsT2QFZJqfAx3CMBpP9ZjFwUZCPHr/cR5MlwGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723674058; c=relaxed/simple;
-	bh=x9cfzGdYD8vxaTejJ2HeMaRW0yRC6QJx5zgGA5TeA2M=;
+	s=arc-20240116; t=1723674059; c=relaxed/simple;
+	bh=V7+o/iCcRdA03ouMWE2KtpAUY+6UY/6lguGE/lXQv7s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=arl0XJykkc+lSfYEJrRd7BbP+Q9dR1ye0JqwragwZkLjYskp2VnlKvqbcRIbsje6SHsArC8Jf9QtuWMqKDPozcd1/Mt0BswwwFR/kWFOlYyTB4QaxcjPq4SJIIOlcQee4rqrxHox2M67g2R9mfD2K5UydegjPm8hY+0eiNZlCq8=
+	 MIME-Version; b=bNMxHkc+FM9TWmp9ddpEVNODvgA/aij9svXzTrE//ag7SW9AMZRvCeZGHTh/gDFNWenzDfTmLZ9WkWlx5TFCEfxwi4GOy2A+nfntIo3Ygugp8NqpbX+lxBaKTF+NksliDArpw+cDMCQ0xHZy48P9kczjVah9UGBtKNPa5VWmrYo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 6/8] netfilter: nf_tables: Audit log dump reset after the fact
-Date: Thu, 15 Aug 2024 00:20:40 +0200
-Message-Id: <20240814222042.150590-7-pablo@netfilter.org>
+Subject: [PATCH net 7/8] netfilter: nf_tables: Introduce nf_tables_getobj_single
+Date: Thu, 15 Aug 2024 00:20:41 +0200
+Message-Id: <20240814222042.150590-8-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240814222042.150590-1-pablo@netfilter.org>
 References: <20240814222042.150590-1-pablo@netfilter.org>
@@ -51,84 +51,140 @@ Content-Transfer-Encoding: 8bit
 
 From: Phil Sutter <phil@nwl.cc>
 
-In theory, dumpreset may fail and invalidate the preceeding log message.
-Fix this and use the occasion to prepare for object reset locking, which
-benefits from a few unrelated changes:
+Outsource the reply skb preparation for non-dump getrule requests into a
+distinct function. Prep work for object reset locking.
 
-* Add an early call to nfnetlink_unicast if not resetting which
-  effectively skips the audit logging but also unindents it.
-* Extract the table's name from the netlink attribute (which is verified
-  via earlier table lookup) to not rely upon validity of the looked up
-  table pointer.
-* Do not use local variable family, it will vanish.
-
-Fixes: 8e6cf365e1d5 ("audit: log nftables configuration change events")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 Reviewed-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ net/netfilter/nf_tables_api.c | 75 ++++++++++++++++++++---------------
+ 1 file changed, 44 insertions(+), 31 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 481ee78e77bc..4fa132715fcc 100644
+index 4fa132715fcc..c12c9cae784d 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -8055,6 +8055,7 @@ static int nf_tables_dump_obj_done(struct netlink_callback *cb)
- static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
- 			    const struct nlattr * const nla[])
+@@ -8052,10 +8052,10 @@ static int nf_tables_dump_obj_done(struct netlink_callback *cb)
+ }
+ 
+ /* called with rcu_read_lock held */
+-static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
+-			    const struct nlattr * const nla[])
++static struct sk_buff *
++nf_tables_getobj_single(u32 portid, const struct nfnl_info *info,
++			const struct nlattr * const nla[], bool reset)
  {
-+	const struct nftables_pernet *nft_net = nft_pernet(info->net);
+-	const struct nftables_pernet *nft_net = nft_pernet(info->net);
  	struct netlink_ext_ack *extack = info->extack;
  	u8 genmask = nft_genmask_cur(info->net);
  	u8 family = info->nfmsg->nfgen_family;
-@@ -8064,6 +8065,7 @@ static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
+@@ -8063,52 +8063,69 @@ static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 	struct net *net = info->net;
+ 	struct nft_object *obj;
  	struct sk_buff *skb2;
- 	bool reset = false;
+-	bool reset = false;
  	u32 objtype;
-+	char *buf;
+-	char *buf;
  	int err;
  
- 	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
-@@ -8102,27 +8104,23 @@ static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
+-	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
+-		struct netlink_dump_control c = {
+-			.start = nf_tables_dump_obj_start,
+-			.dump = nf_tables_dump_obj,
+-			.done = nf_tables_dump_obj_done,
+-			.module = THIS_MODULE,
+-			.data = (void *)nla,
+-		};
+-
+-		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
+-	}
+-
+ 	if (!nla[NFTA_OBJ_NAME] ||
+ 	    !nla[NFTA_OBJ_TYPE])
+-		return -EINVAL;
++		return ERR_PTR(-EINVAL);
+ 
+ 	table = nft_table_lookup(net, nla[NFTA_OBJ_TABLE], family, genmask, 0);
+ 	if (IS_ERR(table)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_OBJ_TABLE]);
+-		return PTR_ERR(table);
++		return ERR_CAST(table);
+ 	}
+ 
+ 	objtype = ntohl(nla_get_be32(nla[NFTA_OBJ_TYPE]));
+ 	obj = nft_obj_lookup(net, table, nla[NFTA_OBJ_NAME], objtype, genmask);
+ 	if (IS_ERR(obj)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_OBJ_NAME]);
+-		return PTR_ERR(obj);
++		return ERR_CAST(obj);
+ 	}
+ 
+ 	skb2 = alloc_skb(NLMSG_GOODSIZE, GFP_ATOMIC);
+ 	if (!skb2)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
++
++	err = nf_tables_fill_obj_info(skb2, net, portid,
++				      info->nlh->nlmsg_seq, NFT_MSG_NEWOBJ, 0,
++				      family, table, obj, reset);
++	if (err < 0) {
++		kfree_skb(skb2);
++		return ERR_PTR(err);
++	}
++
++	return skb2;
++}
++
++static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
++			    const struct nlattr * const nla[])
++{
++	struct nftables_pernet *nft_net = nft_pernet(info->net);
++	u32 portid = NETLINK_CB(skb).portid;
++	struct net *net = info->net;
++	struct sk_buff *skb2;
++	bool reset = false;
++	char *buf;
++
++	if (info->nlh->nlmsg_flags & NLM_F_DUMP) {
++		struct netlink_dump_control c = {
++			.start = nf_tables_dump_obj_start,
++			.dump = nf_tables_dump_obj,
++			.done = nf_tables_dump_obj_done,
++			.module = THIS_MODULE,
++			.data = (void *)nla,
++		};
++
++		return nft_netlink_dump_start_rcu(info->sk, skb, info->nlh, &c);
++	}
+ 
  	if (NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_GETOBJ_RESET)
  		reset = true;
  
--	if (reset) {
--		const struct nftables_pernet *nft_net;
--		char *buf;
--
--		nft_net = nft_pernet(net);
--		buf = kasprintf(GFP_ATOMIC, "%s:%u", table->name, nft_net->base_seq);
--
--		audit_log_nfcfg(buf,
--				family,
--				1,
--				AUDIT_NFT_OP_OBJ_RESET,
--				GFP_ATOMIC);
--		kfree(buf);
--	}
--
- 	err = nf_tables_fill_obj_info(skb2, net, NETLINK_CB(skb).portid,
- 				      info->nlh->nlmsg_seq, NFT_MSG_NEWOBJ, 0,
- 				      family, table, obj, reset);
- 	if (err < 0)
- 		goto err_fill_obj_info;
+-	err = nf_tables_fill_obj_info(skb2, net, NETLINK_CB(skb).portid,
+-				      info->nlh->nlmsg_seq, NFT_MSG_NEWOBJ, 0,
+-				      family, table, obj, reset);
+-	if (err < 0)
+-		goto err_fill_obj_info;
++	skb2 = nf_tables_getobj_single(portid, info, nla, reset);
++	if (IS_ERR(skb2))
++		return PTR_ERR(skb2);
  
-+	if (!reset)
-+		return nfnetlink_unicast(skb2, net, NETLINK_CB(skb).portid);
-+
-+	buf = kasprintf(GFP_ATOMIC, "%.*s:%u",
-+			nla_len(nla[NFTA_OBJ_TABLE]),
-+			(char *)nla_data(nla[NFTA_OBJ_TABLE]),
-+			nft_net->base_seq);
-+	audit_log_nfcfg(buf, info->nfmsg->nfgen_family, 1,
-+			AUDIT_NFT_OP_OBJ_RESET, GFP_ATOMIC);
-+	kfree(buf);
-+
- 	return nfnetlink_unicast(skb2, net, NETLINK_CB(skb).portid);
+ 	if (!reset)
+ 		return nfnetlink_unicast(skb2, net, NETLINK_CB(skb).portid);
+@@ -8121,11 +8138,7 @@ static int nf_tables_getobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 			AUDIT_NFT_OP_OBJ_RESET, GFP_ATOMIC);
+ 	kfree(buf);
  
- err_fill_obj_info:
+-	return nfnetlink_unicast(skb2, net, NETLINK_CB(skb).portid);
+-
+-err_fill_obj_info:
+-	kfree_skb(skb2);
+-	return err;
++	return nfnetlink_unicast(skb2, net, portid);
+ }
+ 
+ static void nft_obj_destroy(const struct nft_ctx *ctx, struct nft_object *obj)
 -- 
 2.30.2
 
