@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3307-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3304-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA127952D9D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 13:37:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EDE8952D99
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 13:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42A10B23F09
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 11:37:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D461C235B1
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 11:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F222917B4EE;
-	Thu, 15 Aug 2024 11:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E2551714CB;
+	Thu, 15 Aug 2024 11:37:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29BA51714C5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B167DA7A
 	for <netfilter-devel@vger.kernel.org>; Thu, 15 Aug 2024 11:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723721848; cv=none; b=PSL11dobi4Q6HaVUbXctxV28GaGCuYnGYMpjFMPP3NlJe/uA9lXBM1b+G0qN1L1+fUM5H29SvxgVavifGPhw2rbQul5kKyMSCuxsKN8w6mo3RGOtw416bQeb8Nlt/YOjVdX6KHHepSwsXqi3S/miroNPe2WJVLFtgIdD8iZIwZY=
+	t=1723721847; cv=none; b=j3/t+AhDpHt1qq8nUFRNzwGZ5ZbrbVbaRBZTLriEioi7cTwCthp1omdoPIEC/Vc/4U79Rn8ZEE3lV/I5f512LE6KyBCFWHasshDv6AIDdjvThIsszNPJRrLpPCfo63Conzw7ycwkCEd+5lH9aWEKEWnZ1lJjJAgxeWEtMNNHTa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723721848; c=relaxed/simple;
-	bh=PpJ3aT3C+CkXXvd2dZNh+h54IyOAiqSp+v5zk8ek7Zw=;
+	s=arc-20240116; t=1723721847; c=relaxed/simple;
+	bh=XK3u6QP8Eo0zYfOvc8Y0kN0H9J17crWwDy7kRml3n5w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sHrdaQ63Jmo9x3j45VJZnFgJzYIfautjWpBQf5bSxugFkugSWJ2PyEIGU9qSRtSsZ+mz66/pvUYgGzhKVF7PLFDE+2bIjwhi6w7tVY0xX/lbXJ7fdr9cov2BD5Zs5aWcSiYYBFqfu1mX7CIq82v0GoVPf3Hj124g2vW1eR26iV0=
+	 MIME-Version; b=gP06gtWo2qVlt9V+e6rf/d+ECqUc6GWtHSBsEhr5Z/MWfp3AyfQuIV4eu9W/IK/0H637fztSGpgwYL0ehVGgp3Cx09M9AzXLX2lekg5oMZDWj5idsHMWhFkHmVSqKaGvYDFdQ9yx9gyOTeq4iT5zog8YVTinJnItw/cV97G7CRQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -33,9 +33,9 @@ Cc: nhofmeyr@sysmocom.de,
 	eric@garver.life,
 	phil@nwl.cc,
 	fw@strlen.de
-Subject: [PATCH nft 2/5] cache: populate chains on demand from error path
-Date: Thu, 15 Aug 2024 13:37:09 +0200
-Message-Id: <20240815113712.1266545-3-pablo@netfilter.org>
+Subject: [PATCH nft 3/5] cache: populate objecs on demand from error path
+Date: Thu, 15 Aug 2024 13:37:10 +0200
+Message-Id: <20240815113712.1266545-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240815113712.1266545-1-pablo@netfilter.org>
 References: <20240815113712.1266545-1-pablo@netfilter.org>
@@ -47,117 +47,66 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Updates on verdict maps that require many non-base chains are slowed
-down due to fetching existing non-base chains into the cache.
-
-Chains are only required for error reporting hints if kernel reports
+Objects are only required for error reporting hints if kernel reports
 ENOENT. Populate the cache from this error path only.
-
-Similar approach already exists from rule ENOENT error path since:
-
-  deb7c5927fad ("cmd: add misspelling suggestions for rule commands")
-
-however, NFT_CACHE_CHAIN was toggled inconditionally for rule
-commands, rendering this on-demand cache population useless.
-
-before this patch, running Neels' nft_slew benchmark (peak values):
-
-  created idx 4992 in 52587950 ns   (128 in 7122 ms)
-  ...
-  deleted idx  128 in 43542500 ns   (127 in 6187 ms)
-
-after this patch:
-
-  created idx 4992 in 11361299 ns   (128 in 1612 ms)
-  ...
-  deleted idx 1664 in  5239633 ns   (128 in 733 ms)
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: fetch cache for EOPNOTSUPP errors too.
-    update nft_slew results.
+ src/cache.c | 6 +-----
+ src/cmd.c   | 4 ++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
- include/cache.h |  1 -
- src/cache.c     |  4 ----
- src/cmd.c       | 11 +++++++++++
- 3 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/include/cache.h b/include/cache.h
-index 8ca4a9a79c03..44e8430ce1fd 100644
---- a/include/cache.h
-+++ b/include/cache.h
-@@ -31,7 +31,6 @@ enum cache_level_flags {
- 				  NFT_CACHE_SET_BIT |
- 				  NFT_CACHE_SETELEM_BIT,
- 	NFT_CACHE_RULE		= NFT_CACHE_TABLE_BIT |
--				  NFT_CACHE_CHAIN_BIT |
- 				  NFT_CACHE_RULE_BIT,
- 	NFT_CACHE_FULL		= __NFT_CACHE_MAX_BIT - 1,
- 	NFT_CACHE_TERSE		= (1 << 27),
 diff --git a/src/cache.c b/src/cache.c
-index 42e60dfa1286..36c6f12d8720 100644
+index 36c6f12d8720..6ad8e2587806 100644
 --- a/src/cache.c
 +++ b/src/cache.c
-@@ -30,7 +30,6 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
- 			break;
+@@ -31,7 +31,6 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
  
  		flags |= NFT_CACHE_TABLE |
--			 NFT_CACHE_CHAIN |
  			 NFT_CACHE_SET |
- 			 NFT_CACHE_OBJECT |
+-			 NFT_CACHE_OBJECT |
  			 NFT_CACHE_FLOWTABLE;
-@@ -54,14 +53,12 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
- 		break;
+ 		list_for_each_entry(set, &cmd->table->sets, list) {
+ 			if (set->automerge)
+@@ -54,13 +53,11 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
  	case CMD_OBJ_ELEMENTS:
  		flags |= NFT_CACHE_TABLE |
--			 NFT_CACHE_CHAIN |
  			 NFT_CACHE_SET |
- 			 NFT_CACHE_OBJECT |
+-			 NFT_CACHE_OBJECT |
  			 NFT_CACHE_SETELEM_MAYBE;
  		break;
  	case CMD_OBJ_RULE:
  		flags |= NFT_CACHE_TABLE |
--			 NFT_CACHE_CHAIN |
  			 NFT_CACHE_SET |
- 			 NFT_CACHE_OBJECT |
+-			 NFT_CACHE_OBJECT |
  			 NFT_CACHE_FLOWTABLE;
-@@ -435,7 +432,6 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
- 		case CMD_DELETE:
+ 
+ 		if (cmd->handle.index.id ||
+@@ -433,8 +430,7 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
  		case CMD_DESTROY:
  			flags |= NFT_CACHE_TABLE |
--				 NFT_CACHE_CHAIN |
  				 NFT_CACHE_SET |
- 				 NFT_CACHE_FLOWTABLE |
- 				 NFT_CACHE_OBJECT;
+-				 NFT_CACHE_FLOWTABLE |
+-				 NFT_CACHE_OBJECT;
++				 NFT_CACHE_FLOWTABLE;
+ 
+ 			flags = evaluate_cache_del(cmd, flags);
+ 			break;
 diff --git a/src/cmd.c b/src/cmd.c
-index 37d93abc2cd4..381f404266de 100644
+index 381f404266de..507796bdd6a8 100644
 --- a/src/cmd.c
 +++ b/src/cmd.c
-@@ -75,6 +75,10 @@ static int nft_cmd_enoent_chain(struct netlink_ctx *ctx, const struct cmd *cmd,
- 	if (!cmd->handle.chain.name)
+@@ -169,6 +169,10 @@ static int nft_cmd_enoent_obj(struct netlink_ctx *ctx, const struct cmd *cmd,
+ 	if (!cmd->handle.obj.name)
  		return 0;
  
-+	if (nft_cache_update(ctx->nft, NFT_CACHE_TABLE | NFT_CACHE_CHAIN,
++	if (nft_cache_update(ctx->nft, NFT_CACHE_TABLE | NFT_CACHE_OBJECT,
 +			     ctx->msgs, NULL) < 0)
 +		return 0;
 +
- 	chain = chain_lookup_fuzzy(&cmd->handle, &ctx->nft->cache, &table);
+ 	obj = obj_lookup_fuzzy(cmd->handle.obj.name, &ctx->nft->cache, &table);
  	/* check table first. */
  	if (!table)
-@@ -271,6 +275,13 @@ static int nft_cmd_chain_error(struct netlink_ctx *ctx, struct cmd *cmd,
- 			return netlink_io_error(ctx, &chain->priority.loc,
- 						"Chains of type \"nat\" must have a priority value above -200");
- 
-+		if (nft_cache_update(ctx->nft, NFT_CACHE_TABLE | NFT_CACHE_CHAIN,
-+				     ctx->msgs, NULL) < 0) {
-+			return netlink_io_error(ctx, &chain->loc,
-+						"Chain of type \"%s\" is not supported, perhaps kernel support is missing?",
-+						chain->type.str);
-+		}
-+
- 		table = table_cache_find(&ctx->nft->cache.table_cache,
- 					 cmd->handle.table.name, cmd->handle.family);
- 		if (table) {
 -- 
 2.30.2
 
