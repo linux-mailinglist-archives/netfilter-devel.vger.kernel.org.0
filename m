@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3303-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3306-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4068952D98
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 13:37:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 422B8952D9A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 13:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8964C1F24C3E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 11:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8A3B2827A8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2024 11:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941BA1714C8;
-	Thu, 15 Aug 2024 11:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952051714D2;
+	Thu, 15 Aug 2024 11:37:28 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE307DA70
-	for <netfilter-devel@vger.kernel.org>; Thu, 15 Aug 2024 11:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B5E1714C4
+	for <netfilter-devel@vger.kernel.org>; Thu, 15 Aug 2024 11:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723721846; cv=none; b=iTjWWko80ttE4t1He4j7qFvionpND/3py1d/adAopuPXrfFfU12rDqpZQ0yEibufiB16cgp1YKqSmcNY6k2wfEDB8purn5LvU5XExsRSR6IF2qo4hXrsdb9oZYwV0McscAYUM8S9uXPwjkBpWZswi7tvGP2e4JONStAi2JOrw1c=
+	t=1723721848; cv=none; b=fRWN/ex/q6MYm0Kc4XeK4w206bzwpr0OEZhVUt9JpvoZoEPCUnOdO7UUrfx8CO56nmpyjtLpOZf8P4GQZlFFuOWlxz045/fvpKlL1UnQsSkATHE8rL4U6gnY5mXT8dO8od81ms/nZd2JkygxuE8XE/m+GoLH4g5JoWRdpFyq2dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723721846; c=relaxed/simple;
-	bh=7GseGzIgNvR7WaAmDch5kdTnv5RFGyDljhMU+gyKNQQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g4WFx0I8AvbKq6+8wI1C/QIiaRISSTGzmr+KzNWr5nmmmA3V43KSqp/Kbyh8tLSMkckk2YDAlWg4ayFRuQGQNcuMSmWLrEr1X9jCLSsUGyLsMxYITZrYYwTuOfNL8CO4fjyTbPDS+nqPeJcL0kvP3NlkiM42hakH5mEaBe+9rwY=
+	s=arc-20240116; t=1723721848; c=relaxed/simple;
+	bh=YDrObgj+/VLxpomSFs4QCiLuTveQ8yfKRfiBhPeDmmg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NktJa8ab2MjgtfOzOPqgqWYHhcMrt8yJ2cfYsZYWG7CiK3DrQG8PhcKmSIXkM7zdLDC0zIsTdlD7UCcq4zTLtXwsOPBjrDmP+f+enQ8ZXWEhB/l7JTr/jdgLrkiXeyt3b2c/s4LDNFOzeuVwf0uw1kzyQ1fMpOo7kcS1LI/vUWU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -32,10 +33,12 @@ Cc: nhofmeyr@sysmocom.de,
 	eric@garver.life,
 	phil@nwl.cc,
 	fw@strlen.de
-Subject: [PATCH nft 0/5] relax cache requirements, speed up incremental updates
-Date: Thu, 15 Aug 2024 13:37:07 +0200
-Message-Id: <20240815113712.1266545-1-pablo@netfilter.org>
+Subject: [PATCH nft 1/5] cache: rule by index requires full cache
+Date: Thu, 15 Aug 2024 13:37:08 +0200
+Message-Id: <20240815113712.1266545-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240815113712.1266545-1-pablo@netfilter.org>
+References: <20240815113712.1266545-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -44,34 +47,31 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+In preparation for on-demand cache population with errors, set on
+NFT_CACHE_FULL if rule index is used since this requires a full cache
+with rules.
 
-The following patchset relaxes cache requirements, this is based on the
-observation that objects are fetched to report errors and provide hints.
+This is not a fix, follow up patches relax cache requirements, add
+this patch in first place to make sure index does not break.
 
-This is a new attempt to speed up incremental updates following a
-different approach, after reverting:
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  e791dbe109b6 ("cache: recycle existing cache with incremental updates")
-
-which is fragile because cache consistency checking needs more, it should
-be still possible to explore in the future, but this seems a more simple
-approach at this stage.
-
-This is passing tests/shell and tests/py.
-
-Pablo Neira Ayuso (5):
-  cache: rule by index requires full cache
-  cache: populate chains on demand from error path
-  cache: populate objecs on demand from error path
-  cache: populate flowtable on demand from error path
-  cache: do not fetch set inconditionally on delete
-
- include/cache.h |  1 -
- src/cache.c     | 23 ++++++-----------------
- src/cmd.c       | 23 +++++++++++++++++++++++
- 3 files changed, 29 insertions(+), 18 deletions(-)
-
+diff --git a/src/cache.c b/src/cache.c
+index e88cbae2ad95..42e60dfa1286 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -68,7 +68,7 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
+ 
+ 		if (cmd->handle.index.id ||
+ 		    cmd->handle.position.id)
+-			flags |= NFT_CACHE_RULE | NFT_CACHE_UPDATE;
++			flags |= NFT_CACHE_FULL | NFT_CACHE_UPDATE;
+ 		break;
+ 	default:
+ 		break;
 -- 
 2.30.2
 
