@@ -1,38 +1,38 @@
-Return-Path: <netfilter-devel+bounces-3369-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3370-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0518E95776B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Aug 2024 00:25:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B70795776C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Aug 2024 00:25:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4D452835CB
-	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2024 22:25:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 577EE28396A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2024 22:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334221DD390;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23EE1DD392;
 	Mon, 19 Aug 2024 22:25:54 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FFD18951A
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFD91D6DC6
 	for <netfilter-devel@vger.kernel.org>; Mon, 19 Aug 2024 22:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724106354; cv=none; b=X9Gcjen44Dlkjq/e+oQVUHq4INZ5bzRUxd+FhPIkTxBwnMuQpkTo/2ty3Bubqc+lp32So/Xb4Eb2zTOYbJMl5fNtdb5HHBDJlXRA/c1fp6Ia+lhaAuPd9Kc1fUfYxJUsMDQ5sQE1V2LWuetCZ+ws4+9olAzph6izyuRhRPcigLU=
+	t=1724106354; cv=none; b=C8bGPqJPkl47jrdfqBW+1QOx6VwEVWBS0iQr/aqtFoBSP7imI05Cg9Lk21TFhwaQqfByB7+4PX0vaMKX8BXocIDnWVwbQkhuS6a4A0zVceTsFeSxJO0U80PQwO2zirRuPD1gxlneU4JR2OhjYzAUcESCXmuRFm7/6+DATKfAoA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724106354; c=relaxed/simple;
-	bh=Vq6bvja97p2dT7IAP3b7VgvK8X3A1Z8iaAJDjevUxh4=;
+	bh=vlAOuG0e27YnGooIsEF391EPcakhlnYiEA6g8P5GbCw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Om48OFCXcgSzwbNYr1hgy2qBpslp4qWRG9eHZl1zG7ZlxAaBPZ8amQhOgQubzg4PkpfF0xWRRJSnkO2mf4tagbptkDHGmrNGGfJ66/GioxyE5CoyHMMgxlNWiEDlXBGhlwbBmD1FdfBBLYRJgMWG19z6hujbGkU79FhMimycFmg=
+	 MIME-Version; b=YyWk//uIn/WN/YFExbbzIXKv6/K1s9OQjaFPPfyDPHb33r1HK0+vxnzeXo2xB0dWsk3FJjLxn28qe/E3ihcK94HdUJFXta+5//idLdyPoGDI84dvlwk6fRCs/mMPT9SXs4UQKNzPNpMU51730XJAA7UAnEc8XGlTOtVWUZPAX8A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: sebastian.walz@secunet.com
-Subject: [PATCH nft 1/4] parser_json: release buffer returned by json_dumps
-Date: Tue, 20 Aug 2024 00:23:01 +0200
-Message-Id: <20240819222304.1041208-2-pablo@netfilter.org>
+Subject: [PATCH nft 2/4] parser_json: fix several expression memleaks from error path
+Date: Tue, 20 Aug 2024 00:23:02 +0200
+Message-Id: <20240819222304.1041208-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240819222304.1041208-1-pablo@netfilter.org>
 References: <20240819222304.1041208-1-pablo@netfilter.org>
@@ -46,52 +46,42 @@ Content-Transfer-Encoding: 8bit
 
 From: "Sebastian Walz (sivizius)" <sebastian.walz@secunet.com>
 
-The signature of `json_dumps` is:
-
-`char *json_dumps(const json_t *json, size_t flags)`:
-
-It will return a pointer to an owned string, the caller must free it.
-However, `json_error` just borrows the string to format it as `%s`, but
-after printing the formatted error message, the pointer to the string is
-lost and thus never freed.
-
 Fixes: 586ad210368b ("libnftables: Implement JSON parser")
 Signed-off-by: Sebastian Walz (sivizius) <sebastian.walz@secunet.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/parser_json.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ src/parser_json.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/src/parser_json.c b/src/parser_json.c
-index 4912d3608b2b..fc20fe2969f7 100644
+index fc20fe2969f7..8ca44efbb52e 100644
 --- a/src/parser_json.c
 +++ b/src/parser_json.c
-@@ -181,8 +181,11 @@ static int json_unpack_stmt(struct json_ctx *ctx, json_t *root,
- 	assert(value);
- 
- 	if (json_object_size(root) != 1) {
-+		const char *dump = json_dumps(root, 0);
-+
- 		json_error(ctx, "Malformed object (too many properties): '%s'.",
--			   json_dumps(root, 0));
-+			   dump);
-+		free_const(dump);
- 		return 1;
+@@ -1308,6 +1308,7 @@ static struct expr *json_parse_range_expr(struct json_ctx *ctx,
+ 	expr_high = json_parse_primary_expr(ctx, high);
+ 	if (!expr_high) {
+ 		json_error(ctx, "Invalid high value in range expression.");
++		expr_free(expr_low);
+ 		return NULL;
+ 	}
+ 	return range_expr_alloc(int_loc, expr_low, expr_high);
+@@ -1889,6 +1890,8 @@ static struct stmt *json_parse_mangle_stmt(struct json_ctx *ctx,
+ 		return stmt;
+ 	default:
+ 		json_error(ctx, "Invalid mangle statement key expression type.");
++		expr_free(key);
++		expr_free(value);
+ 		return NULL;
+ 	}
+ }
+@@ -2888,6 +2891,7 @@ static struct stmt *json_parse_optstrip_stmt(struct json_ctx *ctx,
+ 	    expr->etype != EXPR_EXTHDR ||
+ 	    expr->exthdr.op != NFT_EXTHDR_OP_TCPOPT) {
+ 		json_error(ctx, "Illegal TCP optstrip argument");
++		expr_free(expr);
+ 		return NULL;
  	}
  
-@@ -3378,8 +3381,10 @@ static struct cmd *json_parse_cmd_add_set(struct json_ctx *ctx, json_t *root,
- 		} else if ((set->data = json_parse_dtype_expr(ctx, tmp))) {
- 			set->flags |= NFT_SET_MAP;
- 		} else {
--			json_error(ctx, "Invalid map type '%s'.",
--				   json_dumps(tmp, 0));
-+			const char *dump = json_dumps(tmp, 0);
-+
-+			json_error(ctx, "Invalid map type '%s'.", dump);
-+			free_const(dump);
- 			set_free(set);
- 			handle_free(&h);
- 			return NULL;
 -- 
 2.30.2
 
