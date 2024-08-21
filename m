@@ -1,45 +1,45 @@
-Return-Path: <netfilter-devel+bounces-3408-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3410-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F893959055
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2024 00:14:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FE069597FC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2024 12:43:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C9B4B215BF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Aug 2024 22:14:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA254284116
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2024 10:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538461C7B6A;
-	Tue, 20 Aug 2024 22:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7914C1D6C6D;
+	Wed, 21 Aug 2024 08:48:18 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042761C7B69
-	for <netfilter-devel@vger.kernel.org>; Tue, 20 Aug 2024 22:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AEB1D6C6C
+	for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2024 08:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724192024; cv=none; b=HvEr+qFMzLt9dji4lmp6FYsoWPUAlBbrsspMB49+QkiDN48UXgDskoaajQ0q6QGil0MnYgC5D1bM1//3EF21jEXarp7EYHLYCrEOOl5tayZXD2bs/pJ6xcmz7E1nOlHzFpl5rFZflrDQv/vEaAigzDJoqq5iJEvc1nDcyiFy08k=
+	t=1724230098; cv=none; b=mXPeZlv9H46Jc7J+rT+VHRnzaVkNNpVl2g/MQo1H/OIidJ+MAq678TZeazFfbRDnKJIdRZfAX6mRFY5iQrSLzQTH3ihTR1ofxiLvUuEFSIOA1QF8qAYVRIpOC1O1KKyqvG2syKhNV3HKjkOS5HN54XvE92yDk2qQp2JxkQJJzkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724192024; c=relaxed/simple;
-	bh=2H+Lz2XQG4LH8RWfuiFrHl0ERWVV2LWXN4rpuoSmdkQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QhoiU+Vkanqw8DhnliEyLK2ZXudbn0Z9SggE/9gqNjx4rvI3rMplLKRkTkv/uo4fRCxc0UwmTEXTfzpd0lJw2t8u8lLU8opT28LHbM0eDCHa0WDWqdyEkF3uDeMj3/6zFa8d5ZJbdRa5lc+hCpWaHUqzyAxWb92gGH4asWTkgj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1sgX6i-0002Mz-6z; Wed, 21 Aug 2024 00:13:40 +0200
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 2/2] src: mnl: always dump all netdev hooks if no interface name was given
-Date: Wed, 21 Aug 2024 00:12:27 +0200
-Message-ID: <20240820221230.7014-3-fw@strlen.de>
-X-Mailer: git-send-email 2.44.2
-In-Reply-To: <20240820221230.7014-1-fw@strlen.de>
+	s=arc-20240116; t=1724230098; c=relaxed/simple;
+	bh=GGidKl5g9ecKCHn0XgCHAXRp8NNl6rortN5249wqClY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFCRD7TAFrJx3RZ1qnXRO+YvHxJ97GhwLwAnE6dICJFGTK+H3QeIu8uqYY1+UKVqXX1ioBU7GxX8U/BYiWXMnO/0jks4mtlzojW+B4CWUwcqihmLz01KPyHNMDHsaKbMQ2ByIU3hNuSln/kjhIucyX4E7IyLP2g3Z3HDkxcHGTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=56976 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1sgh0j-0081Cu-Tz; Wed, 21 Aug 2024 10:48:11 +0200
+Date: Wed, 21 Aug 2024 10:48:08 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH 0/2 nft] mnl: query netdevices for in/egress hooks
+Message-ID: <ZsWpyDFdYzUzUf7w@calendula>
 References: <20240820221230.7014-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -47,148 +47,20 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240820221230.7014-1-fw@strlen.de>
+X-Spam-Score: -1.9 (-)
 
-Instead of not returning any results for
-  nft list hooks netdev
+On Wed, Aug 21, 2024 at 12:12:25AM +0200, Florian Westphal wrote:
+> This patchset adds a new iterator helper that allows to query
+> the existing interface cache.
+> 
+> Then it extends 'list hooks' to automatically query all active
+> interface for netdev hooks.
+> 
+> This is done for 'list hooks' and 'list hooks netdev'.
+> If a device name is given, only that device is queried.
 
-Iterate all interfaces and then query all of them.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- doc/additional-commands.txt |  8 ++++----
- include/iface.h             |  2 ++
- src/iface.c                 | 17 +++++++++++++++++
- src/mnl.c                   | 29 ++++++++++++++++++++++-------
- 4 files changed, 45 insertions(+), 11 deletions(-)
-
-diff --git a/doc/additional-commands.txt b/doc/additional-commands.txt
-index 9ad338f8c7d1..0f96fc354007 100644
---- a/doc/additional-commands.txt
-+++ b/doc/additional-commands.txt
-@@ -8,13 +8,13 @@ registered implicitly by kernel modules such as nf_conntrack. +
- [verse]
- ____
- *list hooks* ['family']
--*list hooks netdev device* 'DEVICE_NAME'
-+*list hooks netdev  [ device* 'DEVICE_NAME' ]
- ____
- 
- *list hooks* is enough to display everything that is active
--on the system, however, it does currently omit hooks that are
--tied to a specific network device (netdev family). To obtain
--those, the network device needs to be queried by name.
-+on the system.  Hooks in the netdev family are tied to a network
-+device.  If no device name is given, nft will query all network
-+devices in the current network namespace.
- Example Usage:
- 
- .List all active netfilter hooks in either the ip or ip6 stack
-diff --git a/include/iface.h b/include/iface.h
-index f41ee8be6c89..786b1dfc8f8f 100644
---- a/include/iface.h
-+++ b/include/iface.h
-@@ -2,6 +2,7 @@
- #define _NFTABLES_IFACE_H_
- 
- #include <net/if.h>
-+#include <list.h>
- 
- struct iface {
- 	struct list_head	list;
-@@ -15,4 +16,5 @@ char *nft_if_indextoname(unsigned int ifindex, char *name);
- void iface_cache_update(void);
- void iface_cache_release(void);
- 
-+const struct iface *iface_cache_get_next_entry(const struct iface *prev);
- #endif
-diff --git a/src/iface.c b/src/iface.c
-index 428acaae2eac..a85341a1703a 100644
---- a/src/iface.c
-+++ b/src/iface.c
-@@ -171,3 +171,20 @@ char *nft_if_indextoname(unsigned int ifindex, char *name)
- 	}
- 	return NULL;
- }
-+
-+const struct iface *iface_cache_get_next_entry(const struct iface *prev)
-+{
-+	if (!iface_cache_init)
-+		iface_cache_update();
-+
-+	if (list_empty(&iface_list))
-+		return NULL;
-+
-+	if (!prev)
-+		return list_first_entry(&iface_list, struct iface, list);
-+
-+	if (list_is_last(&prev->list, &iface_list))
-+		return NULL;
-+
-+	return list_next_entry(prev, list);
-+}
-diff --git a/src/mnl.c b/src/mnl.c
-index e585241d9395..12e145204ef5 100644
---- a/src/mnl.c
-+++ b/src/mnl.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <nft.h>
-+#include <iface.h>
- 
- #include <libmnl/libmnl.h>
- #include <libnftnl/common.h>
-@@ -2205,7 +2206,7 @@ static void basehook_list_add_tail(struct basehook *b, struct list_head *head)
- 	list_for_each_entry(hook, head, list) {
- 		if (hook->family != b->family)
- 			continue;
--		if (hook->num != b->num)
-+		if (!basehook_eq(hook, b))
- 			continue;
- 		if (hook->prio < b->prio)
- 			continue;
-@@ -2591,11 +2592,9 @@ int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, const char *devna
- 		if (tmp == 0)
- 			ret = 0;
- 
--		if (devname) {
--			tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_NETDEV, devname);
--			if (tmp == 0)
--				ret = 0;
--		}
-+		tmp = mnl_nft_dump_nf_hooks(ctx, NFPROTO_NETDEV, devname);
-+		if (tmp == 0)
-+			ret = 0;
- 
- 		return ret;
- 	case NFPROTO_INET:
-@@ -2622,7 +2621,23 @@ int mnl_nft_dump_nf_hooks(struct netlink_ctx *ctx, int family, const char *devna
- 		ret = mnl_nft_dump_nf_arp(ctx, family, devname, &hook_list);
- 		break;
- 	case NFPROTO_NETDEV:
--		ret = mnl_nft_dump_nf_netdev(ctx, family, devname, &hook_list);
-+		if (devname) {
-+			ret = mnl_nft_dump_nf_netdev(ctx, family, devname, &hook_list);
-+		} else {
-+			const struct iface *iface;
-+
-+			iface = iface_cache_get_next_entry(NULL);
-+			ret = 0;
-+
-+			while (iface) {
-+				tmp = mnl_nft_dump_nf_netdev(ctx, family, iface->name, &hook_list);
-+				if (tmp == 0)
-+					ret = 0;
-+
-+				iface = iface_cache_get_next_entry(iface);
-+			}
-+		}
-+
- 		break;
- 	}
- 
--- 
-2.44.2
-
+series LGTM, thanks Florian
 
