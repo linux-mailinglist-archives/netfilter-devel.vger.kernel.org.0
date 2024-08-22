@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3457-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3455-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEAF695B2C0
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 12:19:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66AFE95B2BC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 12:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9862E2815EA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 10:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 226A1283678
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 10:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C7E18308D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F2B17F4F6;
 	Thu, 22 Aug 2024 10:18:52 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09CB14EC5E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A5D171088;
 	Thu, 22 Aug 2024 10:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724321932; cv=none; b=CGhAerYllrUUjfs7jd9eP71FNNtlRGGIdmU+zsIlnkijotHHKgzp1fx02KHKIGH+OL/vS0GU8e+4+eN1Suxh9QMqG4W6CsqOUQZRrW4oQdetI/+fbnpgKof9q87+qmxUZFmQGr4gv3yU+UGdrMaWs9LPhan12qD4W+4XyxpicaY=
+	t=1724321932; cv=none; b=O1r04IwDYVP+Hec6wVukYMTZuZYh4uqOwjwFtf6VvTteZQIO77APFCsj3VCxz1QP01pI3+CnA0j8GJ7BHnihJkK3pbElfaC3rNleAUjhKn40umhkiONdKtS0gzDiZ5SB+lI3zkR9ZWc6MVL2o/kKzi/6JViYagrqMJrYBAcaPgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724321932; c=relaxed/simple;
-	bh=NTD6YLYA7x1bgFibKVrKX+RosNGeZde4qslPUCQBcsc=;
+	bh=etJO3Ha7lLG9pn1A/BVGGok6ikAhRfZhc0BKw5J7844=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=es9fn3kA/v4WdRqNuyxqxC40eFn+HBpgLN50pjtrRvni0bwlUCIHTl2mE7CZ95nupzcIChERfrlH8zVsKtNRd1lGgoXv0al9hnytwC+BkFkH8DskS4wT1vr+6weEPDZo8CSa+a0D5Vs8gxlYfUso+fEEnD/l4CzpBbl8o8YtR1M=
+	 MIME-Version; b=Nwm/PlVkC/nJBqR34wqRA4N6Kxu1w/InfOfQ6Ha1hIxKHtIhLX+Xvh4HTH+we7EoAV5SqPfrWRKBJXnEglhe0gonkxfeinWVZLCkMnZsIh1l9PBZ+lKABzO/8FACMX8+tbfoeS/4c3R9niwmqCxyl/wKt003WzKsrn7e+TAITCs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/3] netfilter: nft_counter: Disable BH in nft_counter_offload_stats().
-Date: Thu, 22 Aug 2024 12:18:40 +0200
-Message-Id: <20240822101842.4234-2-pablo@netfilter.org>
+Subject: [PATCH net 2/3] netfilter: nft_counter: Synchronize nft_counter_reset() against reader.
+Date: Thu, 22 Aug 2024 12:18:41 +0200
+Message-Id: <20240822101842.4234-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240822101842.4234-1-pablo@netfilter.org>
 References: <20240822101842.4234-1-pablo@netfilter.org>
@@ -51,48 +51,42 @@ Content-Transfer-Encoding: 8bit
 
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-The sequence counter nft_counter_seq is a per-CPU counter. There is no
-lock associated with it. nft_counter_do_eval() is using the same counter
-and disables BH which suggest that it can be invoked from a softirq.
-This in turn means that nft_counter_offload_stats(), which disables only
-preemption, can be interrupted by nft_counter_do_eval() leading to two
-writer for one seqcount_t.
-This can lead to loosing stats or reading statistics while they are
-updated.
+nft_counter_reset() resets the counter by subtracting the previously
+retrieved value from the counter. This is a write operation on the
+counter and as such it requires to be performed with a write sequence of
+nft_counter_seq to serialize against its possible reader.
 
-Disable BH during stats update in nft_counter_offload_stats() to ensure
-one writer at a time.
+Update the packets/ bytes within write-sequence of nft_counter_seq.
 
-Fixes: b72920f6e4a9d ("netfilter: nftables: counter hardware offload support")
+Fixes: d84701ecbcd6a ("netfilter: nft_counter: rework atomic dump and reset")
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Reviewed-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_counter.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nft_counter.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/net/netfilter/nft_counter.c b/net/netfilter/nft_counter.c
-index 291ed2026367..16f40b503d37 100644
+index 16f40b503d37..eab0dc66bee6 100644
 --- a/net/netfilter/nft_counter.c
 +++ b/net/netfilter/nft_counter.c
-@@ -265,7 +265,7 @@ static void nft_counter_offload_stats(struct nft_expr *expr,
+@@ -107,11 +107,16 @@ static void nft_counter_reset(struct nft_counter_percpu_priv *priv,
+ 			      struct nft_counter *total)
+ {
  	struct nft_counter *this_cpu;
- 	seqcount_t *myseq;
++	seqcount_t *myseq;
  
--	preempt_disable();
-+	local_bh_disable();
+ 	local_bh_disable();
  	this_cpu = this_cpu_ptr(priv->counter);
- 	myseq = this_cpu_ptr(&nft_counter_seq);
- 
-@@ -273,7 +273,7 @@ static void nft_counter_offload_stats(struct nft_expr *expr,
- 	this_cpu->packets += stats->pkts;
- 	this_cpu->bytes += stats->bytes;
- 	write_seqcount_end(myseq);
--	preempt_enable();
-+	local_bh_enable();
++	myseq = this_cpu_ptr(&nft_counter_seq);
++
++	write_seqcount_begin(myseq);
+ 	this_cpu->packets -= total->packets;
+ 	this_cpu->bytes -= total->bytes;
++	write_seqcount_end(myseq);
+ 	local_bh_enable();
  }
  
- void nft_counter_init_seqcount(void)
 -- 
 2.30.2
 
