@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3469-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3472-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A871A95C0B2
-	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2024 00:19:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C693895C0B8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2024 00:20:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE3B81C22F65
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 22:19:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056401C232EA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 22:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680831D0DF2;
-	Thu, 22 Aug 2024 22:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB681D1F7B;
+	Thu, 22 Aug 2024 22:19:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FC41684AE;
-	Thu, 22 Aug 2024 22:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D98188926;
+	Thu, 22 Aug 2024 22:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724365190; cv=none; b=hvSqC+0dxcPIjh3V6MK2aS8IGlQWEYP3wT4BCYShpJzn/fUMqll9nLcIR3G4B2HkIa2JWN3qLNGJBrPYbWcmkYxOrA/ZTZ5wh8CrkmH6ZrOOcjdKZ2XOrErWFHFyW5tmpbmMUO1N1sh6pbar7h5oBK3q5Btbrk3BuNo3CTr2jH4=
+	t=1724365191; cv=none; b=CRh6k/JngPTthz6FIjDvr8xhjyYXb1EnTlkP6Yz8SDkZl7kFr4PA2WAibdMhP+BXd+yAMXIl44gqO4nPuUb5XGWyfTX1rSM6QZ8aL25lxPYHMxwlKDV0oayISy+DufXg3CWP0Jz5CAv78gCcDM5rfP6vD3OynQ1zc+BayoRw7Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724365190; c=relaxed/simple;
-	bh=OYm+71XqklzghjeRY2nBgPG0DoLOf1CgjK8RxhB+oSc=;
+	s=arc-20240116; t=1724365191; c=relaxed/simple;
+	bh=hYzBsoSliziWJTfW9UvKyfE62os9S2NbGdT5kJ3tuGQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=seyKH827V2m0x78gZ15PV2vlaTVHsu1R8NPLwTFZ0XEJZXOrlZM73WrVI31wEBTt1OtQYPcePZvHABF70o4rp+y7LxD7/QRS/cUJVMM6XFcj1DGPNNJ9UR77O5LglFO/QcCrzbQwnny/MZWgdd/IoExbUHg7ZyynZUXBoiHylgw=
+	 MIME-Version; b=eY6cMdWx+m57NrKEp8m0Lp5g/0QDBYVqsDp+nhL+V5pv63+CWP4CicqIMs4P4OGQKRpTp7L7xAnMEv1GnwOeBDxUVJJ/xf+usX/HcmknFfKPSRCCe/KK/fmCgukN54wyYfIaGo4bN/ovtJM9tQjkFPOM/BalZurSAS86X8tCdzw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 1/9] netfilter: nfnetlink_queue: unbreak SCTP traffic
-Date: Fri, 23 Aug 2024 00:19:31 +0200
-Message-Id: <20240822221939.157858-2-pablo@netfilter.org>
+Subject: [PATCH net-next 2/9] selftests: netfilter: nft_queue.sh: sctp coverage
+Date: Fri, 23 Aug 2024 00:19:32 +0200
+Message-Id: <20240822221939.157858-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240822221939.157858-1-pablo@netfilter.org>
 References: <20240822221939.157858-1-pablo@netfilter.org>
@@ -51,71 +51,150 @@ Content-Transfer-Encoding: 8bit
 
 From: Antonio Ojea <aojea@google.com>
 
-when packet is enqueued with nfqueue and GSO is enabled, checksum
-calculation has to take into account the protocol, as SCTP uses a
-32 bits CRC checksum.
+Test that nfqueue with and without GSO process SCTP packets correctly.
 
-Enter skb_gso_segment() path in case of SCTP GSO packets because
-skb_zerocopy() does not support for GSO_BY_FRAGS.
-
-Joint work with Pablo.
+Joint work with Florian and Pablo.
 
 Signed-off-by: Antonio Ojea <aojea@google.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/core/dev.c                  |  1 +
- net/netfilter/nfnetlink_queue.c | 12 ++++++++++--
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/netfilter/config  |  2 +
+ .../selftests/net/netfilter/nft_queue.sh      | 85 ++++++++++++++++++-
+ 2 files changed, 86 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index e7260889d4cb..8384282acadf 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3386,6 +3386,7 @@ int skb_crc32c_csum_help(struct sk_buff *skb)
- out:
- 	return ret;
- }
-+EXPORT_SYMBOL(skb_crc32c_csum_help);
- 
- __be16 skb_network_protocol(struct sk_buff *skb, int *depth)
- {
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index e0716da256bf..d2773ce9b585 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -540,6 +540,14 @@ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
- 	return -1;
+diff --git a/tools/testing/selftests/net/netfilter/config b/tools/testing/selftests/net/netfilter/config
+index 63ef80ef47a4..b2dd4db45215 100644
+--- a/tools/testing/selftests/net/netfilter/config
++++ b/tools/testing/selftests/net/netfilter/config
+@@ -87,3 +87,5 @@ CONFIG_XFRM_USER=m
+ CONFIG_XFRM_STATISTICS=y
+ CONFIG_NET_PKTGEN=m
+ CONFIG_TUN=m
++CONFIG_INET_DIAG=m
++CONFIG_SCTP_DIAG=m
+diff --git a/tools/testing/selftests/net/netfilter/nft_queue.sh b/tools/testing/selftests/net/netfilter/nft_queue.sh
+index c61d23a8c88d..f3bdeb1271eb 100755
+--- a/tools/testing/selftests/net/netfilter/nft_queue.sh
++++ b/tools/testing/selftests/net/netfilter/nft_queue.sh
+@@ -25,6 +25,9 @@ cleanup()
  }
  
-+static int nf_queue_checksum_help(struct sk_buff *entskb)
-+{
-+	if (skb_csum_is_sctp(entskb))
-+		return skb_crc32c_csum_help(entskb);
+ checktool "nft --version" "test without nft tool"
++checktool "socat -h" "run test without socat"
 +
-+	return skb_checksum_help(entskb);
++modprobe -q sctp
+ 
+ trap cleanup EXIT
+ 
+@@ -265,7 +268,6 @@ test_tcp_forward()
+ 
+ test_tcp_localhost()
+ {
+-	dd conv=sparse status=none if=/dev/zero bs=1M count=200 of="$TMPINPUT"
+ 	timeout 5 ip netns exec "$nsrouter" socat -u TCP-LISTEN:12345 STDOUT >/dev/null &
+ 	local rpid=$!
+ 
+@@ -375,6 +377,82 @@ EOF
+ 	wait 2>/dev/null
+ }
+ 
++sctp_listener_ready()
++{
++	ss -S -N "$1" -ln -o "sport = :12345" | grep -q 12345
 +}
 +
- static struct sk_buff *
- nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 			   struct nf_queue_entry *entry,
-@@ -602,7 +610,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	case NFQNL_COPY_PACKET:
- 		if (!(queue->flags & NFQA_CFG_F_GSO) &&
- 		    entskb->ip_summed == CHECKSUM_PARTIAL &&
--		    skb_checksum_help(entskb))
-+		    nf_queue_checksum_help(entskb))
- 			return NULL;
++test_sctp_forward()
++{
++	ip netns exec "$nsrouter" nft -f /dev/stdin <<EOF
++flush ruleset
++table inet sctpq {
++        chain forward {
++        type filter hook forward priority 0; policy accept;
++                sctp dport 12345 queue num 10
++        }
++}
++EOF
++	timeout 60 ip netns exec "$ns2" socat -u SCTP-LISTEN:12345 STDOUT > "$TMPFILE1" &
++	local rpid=$!
++
++	busywait "$BUSYWAIT_TIMEOUT" sctp_listener_ready "$ns2"
++
++	ip netns exec "$nsrouter" ./nf_queue -q 10 -G -t "$timeout" &
++	local nfqpid=$!
++
++	ip netns exec "$ns1" socat -u STDIN SCTP:10.0.2.99:12345 <"$TMPINPUT" >/dev/null
++
++	if ! ip netns exec "$nsrouter" nft delete table inet sctpq; then
++		echo "FAIL:  Could not delete sctpq table"
++		exit 1
++	fi
++
++	wait "$rpid" && echo "PASS: sctp and nfqueue in forward chain"
++
++	if ! diff -u "$TMPINPUT" "$TMPFILE1" ; then
++		echo "FAIL: lost packets?!" 1>&2
++		exit 1
++	fi
++}
++
++test_sctp_output()
++{
++        ip netns exec "$ns1" nft -f /dev/stdin <<EOF
++table inet sctpq {
++        chain output {
++        type filter hook output priority 0; policy accept;
++                sctp dport 12345 queue num 11
++        }
++}
++EOF
++	# reduce test file size, software segmentation causes sk wmem increase.
++	dd conv=sparse status=none if=/dev/zero bs=1M count=50 of="$TMPINPUT"
++
++	timeout 60 ip netns exec "$ns2" socat -u SCTP-LISTEN:12345 STDOUT > "$TMPFILE1" &
++	local rpid=$!
++
++	busywait "$BUSYWAIT_TIMEOUT" sctp_listener_ready "$ns2"
++
++	ip netns exec "$ns1" ./nf_queue -q 11 -t "$timeout" &
++	local nfqpid=$!
++
++	ip netns exec "$ns1" socat -u STDIN SCTP:10.0.2.99:12345 <"$TMPINPUT" >/dev/null
++
++	if ! ip netns exec "$ns1" nft delete table inet sctpq; then
++		echo "FAIL:  Could not delete sctpq table"
++		exit 1
++	fi
++
++	# must wait before checking completeness of output file.
++	wait "$rpid" && echo "PASS: sctp and nfqueue in output chain with GSO"
++
++	if ! diff -u "$TMPINPUT" "$TMPFILE1" ; then
++		echo "FAIL: lost packets?!" 1>&2
++		exit 1
++	fi
++}
++
+ test_queue_removal()
+ {
+ 	read tainted_then < /proc/sys/kernel/tainted
+@@ -443,11 +521,16 @@ test_queue 10
+ # same.  We queue to a second program as well.
+ load_ruleset "filter2" 20
+ test_queue 20
++ip netns exec "$ns1" nft flush ruleset
  
- 		data_len = READ_ONCE(queue->copy_range);
-@@ -1014,7 +1022,7 @@ nfqnl_enqueue_packet(struct nf_queue_entry *entry, unsigned int queuenum)
- 		break;
- 	}
+ test_tcp_forward
+ test_tcp_localhost
+ test_tcp_localhost_connectclose
+ test_tcp_localhost_requeue
++test_sctp_forward
++test_sctp_output
++
++# should be last, adds vrf device in ns1 and changes routes
+ test_icmp_vrf
+ test_queue_removal
  
--	if ((queue->flags & NFQA_CFG_F_GSO) || !skb_is_gso(skb))
-+	if (!skb_is_gso(skb) || ((queue->flags & NFQA_CFG_F_GSO) && !skb_is_gso_sctp(skb)))
- 		return __nfqnl_enqueue_packet(net, queue, entry);
- 
- 	nf_bridge_adjust_skb_data(skb);
 -- 
 2.30.2
 
