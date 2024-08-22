@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3445-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3446-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D969195A8A7
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 02:17:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDF8095A8A9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 02:17:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 199AFB212F7
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 00:17:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23BD028236C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 00:17:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744411D1319;
-	Thu, 22 Aug 2024 00:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4CEB673;
+	Thu, 22 Aug 2024 00:17:18 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C394C74;
-	Thu, 22 Aug 2024 00:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C1F04C99;
+	Thu, 22 Aug 2024 00:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724285837; cv=none; b=CMSLN/IedVAkgDdd+SFBe3ktdWQi2ss59PbRmYUvb6cL3afHN1cSwwNYKgw3Dv6qddX4RuSecfSvXsd0abshcc+T6Z/CgFASy4gDVu4uPhuB7lSRojKq+K4F0f22EtRN18SNQflp71RZ2U2i1cl29aPk5DUJWw8RD67abx12Of8=
+	t=1724285838; cv=none; b=FQI/oyoU8Y6JOd6VELrkgb/OqjtDXk2Zh1x3y/iFISAByNCMLN4uQhsr/3Ehj52vDlaCP9hyw9zzTYcDriCTceSqb4nBwfeNFtkbIAJOdIHkyDTA+VDYk/6ARFRwqm5obD2hExu3EvN/3DrgTsii4trUhd8/AhgSOh4BVwVxos8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724285837; c=relaxed/simple;
-	bh=etJO3Ha7lLG9pn1A/BVGGok6ikAhRfZhc0BKw5J7844=;
+	s=arc-20240116; t=1724285838; c=relaxed/simple;
+	bh=QlkbnX3So7ybXk9gnLxo2Ib8PM6TvzIwAyY14gZWxEU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LgFwoWGBi8tDxGuyOsMx01iO/gbRLwHHlt8qGnF4JiTXqhCpmmaSy+vDSrGLziapFhAbJQ+gB96tdbTU38lAy9GWufPCjF7cRlfCUQ+PQZSXMlNAyxXyNy5gBHvBz8XvkDAsUWEc4G2n5TBo3YMJOTOGsbzhkRZ5VcMptaWuXsY=
+	 MIME-Version; b=ZYzPLOCZQcHZnNgRR0SIYlaFTx5sBguLaX/5BTdA7Ad2pRshJwTg1bMdGjZr7S6cbGIAn1Li1R9CJOiDkrYtpqan5huf300mbFFHXppwNYmcYj7urevl3pUB6E5M/U9pH32ycu3VY8kADkhIYVaCRfN5KbVg/ToG5CQbJQi2qg4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 2/3] netfilter: nft_counter: Synchronize nft_counter_reset() against reader.
-Date: Thu, 22 Aug 2024 02:17:06 +0200
-Message-Id: <20240822001707.2116-3-pablo@netfilter.org>
+Subject: [PATCH net 3/3] netfilter: flowtable: validate vlan header
+Date: Thu, 22 Aug 2024 02:17:07 +0200
+Message-Id: <20240822001707.2116-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240822001707.2116-1-pablo@netfilter.org>
 References: <20240822001707.2116-1-pablo@netfilter.org>
@@ -49,44 +49,53 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Ensure there is sufficient room to access the protocol field of the
+VLAN header, validate it once before the flowtable lookup.
 
-nft_counter_reset() resets the counter by subtracting the previously
-retrieved value from the counter. This is a write operation on the
-counter and as such it requires to be performed with a write sequence of
-nft_counter_seq to serialize against its possible reader.
+=====================================================
+BUG: KMSAN: uninit-value in nf_flow_offload_inet_hook+0x45a/0x5f0 net/netfilter/nf_flow_table_inet.c:32
+ nf_flow_offload_inet_hook+0x45a/0x5f0 net/netfilter/nf_flow_table_inet.c:32
+ nf_hook_entry_hookfn include/linux/netfilter.h:154 [inline]
+ nf_hook_slow+0xf4/0x400 net/netfilter/core.c:626
+ nf_hook_ingress include/linux/netfilter_netdev.h:34 [inline]
+ nf_ingress net/core/dev.c:5440 [inline]
 
-Update the packets/ bytes within write-sequence of nft_counter_seq.
-
-Fixes: d84701ecbcd6a ("netfilter: nft_counter: rework atomic dump and reset")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Florian Westphal <fw@strlen.de>
+Fixes: 4cd91f7c290f ("netfilter: flowtable: add vlan support")
+Reported-by: syzbot+8407d9bb88cd4c6bf61a@syzkaller.appspotmail.com
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_counter.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/netfilter/nf_flow_table_inet.c | 3 +++
+ net/netfilter/nf_flow_table_ip.c   | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/net/netfilter/nft_counter.c b/net/netfilter/nft_counter.c
-index 16f40b503d37..eab0dc66bee6 100644
---- a/net/netfilter/nft_counter.c
-+++ b/net/netfilter/nft_counter.c
-@@ -107,11 +107,16 @@ static void nft_counter_reset(struct nft_counter_percpu_priv *priv,
- 			      struct nft_counter *total)
- {
- 	struct nft_counter *this_cpu;
-+	seqcount_t *myseq;
+diff --git a/net/netfilter/nf_flow_table_inet.c b/net/netfilter/nf_flow_table_inet.c
+index 88787b45e30d..dd9a392052ee 100644
+--- a/net/netfilter/nf_flow_table_inet.c
++++ b/net/netfilter/nf_flow_table_inet.c
+@@ -17,6 +17,9 @@ nf_flow_offload_inet_hook(void *priv, struct sk_buff *skb,
  
- 	local_bh_disable();
- 	this_cpu = this_cpu_ptr(priv->counter);
-+	myseq = this_cpu_ptr(&nft_counter_seq);
+ 	switch (skb->protocol) {
+ 	case htons(ETH_P_8021Q):
++		if (!pskb_may_pull(skb, VLAN_HLEN))
++			return NF_ACCEPT;
 +
-+	write_seqcount_begin(myseq);
- 	this_cpu->packets -= total->packets;
- 	this_cpu->bytes -= total->bytes;
-+	write_seqcount_end(myseq);
- 	local_bh_enable();
- }
+ 		veth = (struct vlan_ethhdr *)skb_mac_header(skb);
+ 		proto = veth->h_vlan_encapsulated_proto;
+ 		break;
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index c2c005234dcd..9a9031e9ea1c 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -281,6 +281,9 @@ static bool nf_flow_skb_encap_protocol(struct sk_buff *skb, __be16 proto,
  
+ 	switch (skb->protocol) {
+ 	case htons(ETH_P_8021Q):
++		if (!pskb_may_pull(skb, VLAN_HLEN))
++			return false;
++
+ 		veth = (struct vlan_ethhdr *)skb_mac_header(skb);
+ 		if (veth->h_vlan_encapsulated_proto == proto) {
+ 			*offset += VLAN_HLEN;
 -- 
 2.30.2
 
