@@ -1,50 +1,43 @@
-Return-Path: <netfilter-devel+bounces-3468-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3471-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A188B95BF6F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 22:10:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F1F95C0B7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2024 00:20:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C138B22DF8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 20:10:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D16D1C22312
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 22:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80341D0DC5;
-	Thu, 22 Aug 2024 20:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SPofPW9T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254E91D1F69;
+	Thu, 22 Aug 2024 22:19:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD1B1D0498;
-	Thu, 22 Aug 2024 20:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651DDEC5;
+	Thu, 22 Aug 2024 22:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724357441; cv=none; b=mTYRAEBY5jRfY7yV4XOXwFjoBTB7bD1OTsi97oth0XspBinrtUtKd29Fp3m2kLPTeWTfGp6M45Bt4L9RCQxSYIg5HFMnyLhKsYLkMe9DzmcSllSS/omArSZu8kQCmPGIkcJYTJ7XkE9RVtFpzi/a1YnD5CJWEQk9tlRz4jKsXlE=
+	t=1724365191; cv=none; b=ot58+ZQCEDaxBZzmAnKEfin1sotG0UoTpj/lrbthovPZcVzThPaQGB++VIq4/JlHRb4tHEhcYzCNfujUqCssPnmw7wWtu3203t6KVmwQXLfb4x7IK/CnGdodsOINYB3d0WOrymOuwAd5mkNm3xJHRU2f62dgtMeKEXy3ZQ/rJe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724357441; c=relaxed/simple;
-	bh=VfzQf5sIhyCxwrOTKypIn9Tzg+S4uUV3V4N1ACjeAb0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=vDkUmFT8uL1uM7XyCj83v2ffgBlyS6DE+0NFQOYw8xRgRB0ZasP0lNS5cmtTaCJfNrCzR+BMzxU5fxL5jVxIVp+XTfVyR5z64HJCPZt2HP8GzdBgRqQT41SG7qmPB0+9unHmGg3pAugqP7yONRvgUzCHNLyri0N/hPVzgvgImvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SPofPW9T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51480C4AF12;
-	Thu, 22 Aug 2024 20:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724357441;
-	bh=VfzQf5sIhyCxwrOTKypIn9Tzg+S4uUV3V4N1ACjeAb0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=SPofPW9TJ8q9ZrXSoZrxw7OKlKL8inwRxrjAegelNHOvEZqJysXX5Kq0iDniwpvKV
-	 dfKiF38fkexNG4r0UYiRCdi4h2SfzpN2xe89Xxea4kWiNPi9GyjG8FMHXkKGlQX7h6
-	 Y0bq4RIx10zHwrKmznhPUceZon9X+w5xG34w0vSEyMuwsrfNAEJMtQ7Pp4B0ybsMCa
-	 0lt555oqQhotswDo7zKLuaDPeCKZNeYJi/xcFUDyjcdLAgberb30EgWF75o4XCRQsF
-	 ppOzzT2OUsSHWo6dukj+BB6lDkNjMZsx1q8QpHH8Uw+qd8GFO53mocIVnHLPtvIyNb
-	 XwqdqjV5NBrjg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 340BE3809A81;
-	Thu, 22 Aug 2024 20:10:42 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1724365191; c=relaxed/simple;
+	bh=bvKXhIPH4XSxDxhKsbl13VXICBG4mXNHJB1McYEY3po=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pnP4AG/4Cq5MewNbvRC4tr5rsBUmLYlCG84jnboZMemqg/E8XeXx5Pjt7G+jnsa4jMx6Wl+Cz8J95IbiZY09qoCGofeBAdluUrhouwvLTv1SIaNLaa9FT6sa266vBHwIXdG7RrxRLnH7BhK9zu6rShs/DtPzplpmcDw3x9H3ohk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de
+Subject: [PATCH net-next 0/9] Netfilter updates for net-next
+Date: Fri, 23 Aug 2024 00:19:30 +0200
+Message-Id: <20240822221939.157858-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,50 +45,115 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/3] netfilter: nft_counter: Disable BH in
- nft_counter_offload_stats().
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172435744075.2469005.11253775629517796126.git-patchwork-notify@kernel.org>
-Date: Thu, 22 Aug 2024 20:10:40 +0000
-References: <20240822101842.4234-2-pablo@netfilter.org>
-In-Reply-To: <20240822101842.4234-2-pablo@netfilter.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
- netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, fw@strlen.de
 
-Hello:
+Hi,
 
-This series was applied to netdev/net.git (main)
-by Pablo Neira Ayuso <pablo@netfilter.org>:
+The following batch contains Netfilter updates for net-next:
 
-On Thu, 22 Aug 2024 12:18:40 +0200 you wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> 
-> The sequence counter nft_counter_seq is a per-CPU counter. There is no
-> lock associated with it. nft_counter_do_eval() is using the same counter
-> and disables BH which suggest that it can be invoked from a softirq.
-> This in turn means that nft_counter_offload_stats(), which disables only
-> preemption, can be interrupted by nft_counter_do_eval() leading to two
-> writer for one seqcount_t.
-> This can lead to loosing stats or reading statistics while they are
-> updated.
-> 
-> [...]
+Patch #1 fix checksum calculation in nfnetlink_queue with SCTP,
+	 segment GSO packet since skb_zerocopy() does not support
+	 GSO_BY_FRAGS, from Antonio Ojea.
 
-Here is the summary with links:
-  - [net,1/3] netfilter: nft_counter: Disable BH in nft_counter_offload_stats().
-    https://git.kernel.org/netdev/net/c/1eacdd71b343
-  - [net,2/3] netfilter: nft_counter: Synchronize nft_counter_reset() against reader.
-    https://git.kernel.org/netdev/net/c/a0b39e2dc701
-  - [net,3/3] netfilter: flowtable: validate vlan header
-    https://git.kernel.org/netdev/net/c/6ea14ccb60c8
+Patch #2 extend nfnetlink_queue coverage to handle SCTP packets,
+	 from Antonio Ojea.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Patch #3 uses consume_skb() instead of kfree_skb() in nfnetlink,
+         from Donald Hunter.
 
+Patch #4 adds a dedicate commit list for sets to speed up
+	 intra-transaction lookups, from Florian Westphal.
 
+Patch #5 skips removal of element from abort path for the pipapo
+         backend, ditching the shadow copy of this datastructure
+	 is sufficient.
+
+Patch #6 moves nf_ct_netns_get() out of nf_conncount_init() to
+	 let users of conncoiunt decide when to enable conntrack,
+	 this is needed by openvswitch, from Xin Long.
+
+Patch #7 pass context to all nft_parse_register_load() in
+	 preparation for the next patch.
+
+Patches #8 and #9 reject loads from uninitialized registers from
+	 control plane to remove register initialization from
+	 datapath. From Florian Westphal.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-08-23
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 1bf8e07c382bd4f04ede81ecc05267a8ffd60999:
+
+  dt-binding: ptp: fsl,ptp: add pci1957,ee02 compatible string for fsl,enetc-ptp (2024-08-19 09:48:53 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-24-08-23
+
+for you to fetch changes up to c88baabf16d1ef74ab8832de9761226406af5507:
+
+  netfilter: nf_tables: don't initialize registers in nft_do_chain() (2024-08-20 12:37:25 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 24-08-23
+
+----------------------------------------------------------------
+Antonio Ojea (2):
+      netfilter: nfnetlink_queue: unbreak SCTP traffic
+      selftests: netfilter: nft_queue.sh: sctp coverage
+
+Donald Hunter (1):
+      netfilter: nfnetlink: convert kfree_skb to consume_skb
+
+Florian Westphal (4):
+      netfilter: nf_tables: store new sets in dedicated list
+      netfilter: nf_tables: pass context structure to nft_parse_register_load
+      netfilter: nf_tables: allow loads only when register is initialized
+      netfilter: nf_tables: don't initialize registers in nft_do_chain()
+
+Pablo Neira Ayuso (1):
+      netfilter: nf_tables: do not remove elements if set backend implements .abort
+
+Xin Long (1):
+      netfilter: move nf_ct_netns_get out of nf_conncount_init
+
+ include/net/netfilter/nf_conntrack_count.h         |  6 +-
+ include/net/netfilter/nf_tables.h                  |  6 +-
+ net/bridge/netfilter/nft_meta_bridge.c             |  2 +-
+ net/core/dev.c                                     |  1 +
+ net/ipv4/netfilter/nft_dup_ipv4.c                  |  4 +-
+ net/ipv6/netfilter/nft_dup_ipv6.c                  |  4 +-
+ net/netfilter/nf_conncount.c                       | 15 +---
+ net/netfilter/nf_tables_api.c                      | 75 +++++++++++++++----
+ net/netfilter/nf_tables_core.c                     |  2 +-
+ net/netfilter/nfnetlink.c                          | 14 ++--
+ net/netfilter/nfnetlink_queue.c                    | 12 ++-
+ net/netfilter/nft_bitwise.c                        |  4 +-
+ net/netfilter/nft_byteorder.c                      |  2 +-
+ net/netfilter/nft_cmp.c                            |  6 +-
+ net/netfilter/nft_ct.c                             |  2 +-
+ net/netfilter/nft_dup_netdev.c                     |  2 +-
+ net/netfilter/nft_dynset.c                         |  4 +-
+ net/netfilter/nft_exthdr.c                         |  2 +-
+ net/netfilter/nft_fwd_netdev.c                     |  6 +-
+ net/netfilter/nft_hash.c                           |  2 +-
+ net/netfilter/nft_lookup.c                         |  2 +-
+ net/netfilter/nft_masq.c                           |  4 +-
+ net/netfilter/nft_meta.c                           |  2 +-
+ net/netfilter/nft_nat.c                            |  8 +-
+ net/netfilter/nft_objref.c                         |  2 +-
+ net/netfilter/nft_payload.c                        |  2 +-
+ net/netfilter/nft_queue.c                          |  2 +-
+ net/netfilter/nft_range.c                          |  2 +-
+ net/netfilter/nft_redir.c                          |  4 +-
+ net/netfilter/nft_tproxy.c                         |  4 +-
+ net/netfilter/xt_connlimit.c                       | 15 +++-
+ net/openvswitch/conntrack.c                        |  5 +-
+ tools/testing/selftests/net/netfilter/config       |  2 +
+ tools/testing/selftests/net/netfilter/nft_queue.sh | 85 +++++++++++++++++++++-
+ 34 files changed, 226 insertions(+), 84 deletions(-)
 
