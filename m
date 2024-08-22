@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3443-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3444-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA2A95A8A2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 02:17:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F4D95A8A6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 02:17:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BEAC1F2152E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 00:17:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ADC0282B88
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 00:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C02315A8;
-	Thu, 22 Aug 2024 00:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727004405;
+	Thu, 22 Aug 2024 00:17:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0407F4405;
-	Thu, 22 Aug 2024 00:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656B5442F;
+	Thu, 22 Aug 2024 00:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724285836; cv=none; b=r+/1vjMpOdjbiJixBOTJt3Som6QnXDg/6cqkccpPuw6SQjy3zEqB8pDNpC3Jh0/uI2kw9Ozm5l4MJKTcWwbYH+vKe6Imr5TZZc6dWXrYfdODifle9v3RZyBvnN/YxwxAKKoz4vaDX9+O1Lj3hG3Ki9hfFiz9zuvA37dGI1IM0yg=
+	t=1724285837; cv=none; b=T3f9UknZS4DKdfDF1Z2ga/VF6oVUkYqSrns/qdPHe87G+cHl4edtL1G5ppQtyv4fwbJy6tvHRykyohpsyAfU3LMxndwcnfDyo6BDB3Gg06lpWXszhduM+typWdFnEzVv7RFnECBX8svzLpPLof/7ChvN1QRpeTGAiy8P4aQWtgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724285836; c=relaxed/simple;
-	bh=qDmpzNy3x7c860yQIQ/G59wbMOPGSCg5fuJv/uzcO6g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ks2AodRGUiLkfWZrtMwmAGJBZrCLq9o+pk0pmLv/d8jaRD3OTWA7IYy5CuOs5edJbqqj7krEVs32Mhysn13hxIWmCjCKcaDnzBLRNW/AVFATdUelKNb3Ez6pHB0Q+bGL0NefyBHju4ijW8VsQ9AgKBLWE/fUui92NOK35dlwoMA=
+	s=arc-20240116; t=1724285837; c=relaxed/simple;
+	bh=NTD6YLYA7x1bgFibKVrKX+RosNGeZde4qslPUCQBcsc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kGzlRRySql/+B+p5SRYRFIpYg8VOcrTb3m8/+AI8CI008ko/l4nGLNJdyxWT+XRjs6EqjLKWVjCgzLzflTu+c9oFHxScHUjt3LsUXW2Mdd92mGtKSJA5fjlYz6mmMh2iMOdrZ7CuhDzXhWjXinLlAY0XbOJa6GVFVbXpe09TPjw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -34,10 +35,12 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 0/3] Netfilter fixes for net
-Date: Thu, 22 Aug 2024 02:17:04 +0200
-Message-Id: <20240822001707.2116-1-pablo@netfilter.org>
+Subject: [PATCH net 1/3] netfilter: nft_counter: Disable BH in nft_counter_offload_stats().
+Date: Thu, 22 Aug 2024 02:17:05 +0200
+Message-Id: <20240822001707.2116-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240822001707.2116-1-pablo@netfilter.org>
+References: <20240822001707.2116-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,53 +49,51 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-The following patchset contains Netfilter fixes for net:
+The sequence counter nft_counter_seq is a per-CPU counter. There is no
+lock associated with it. nft_counter_do_eval() is using the same counter
+and disables BH which suggest that it can be invoked from a softirq.
+This in turn means that nft_counter_offload_stats(), which disables only
+preemption, can be interrupted by nft_counter_do_eval() leading to two
+writer for one seqcount_t.
+This can lead to loosing stats or reading statistics while they are
+updated.
 
-Patch #1 disable BH when collecting stats via hardware offload to ensure
-	 concurrent updates from packet path do not result in losing stats.
-	 From Sebastian Andrzej Siewior.
+Disable BH during stats update in nft_counter_offload_stats() to ensure
+one writer at a time.
 
-Patch #2 uses write seqcount to reset counters serialize against reader.
-	 Also from Sebastian Andrzej Siewior.
+Fixes: b72920f6e4a9d ("netfilter: nftables: counter hardware offload support")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nft_counter.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Patch #3 ensures vlan header is in place before accessing its fields,
-	 according to KMSAN splat triggered by syzbot.
+diff --git a/net/netfilter/nft_counter.c b/net/netfilter/nft_counter.c
+index 291ed2026367..16f40b503d37 100644
+--- a/net/netfilter/nft_counter.c
++++ b/net/netfilter/nft_counter.c
+@@ -265,7 +265,7 @@ static void nft_counter_offload_stats(struct nft_expr *expr,
+ 	struct nft_counter *this_cpu;
+ 	seqcount_t *myseq;
+ 
+-	preempt_disable();
++	local_bh_disable();
+ 	this_cpu = this_cpu_ptr(priv->counter);
+ 	myseq = this_cpu_ptr(&nft_counter_seq);
+ 
+@@ -273,7 +273,7 @@ static void nft_counter_offload_stats(struct nft_expr *expr,
+ 	this_cpu->packets += stats->pkts;
+ 	this_cpu->bytes += stats->bytes;
+ 	write_seqcount_end(myseq);
+-	preempt_enable();
++	local_bh_enable();
+ }
+ 
+ void nft_counter_init_seqcount(void)
+-- 
+2.30.2
 
-Please, pull these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-08-22
-
-Thanks.
-
-----------------------------------------------------------------
-
-The following changes since commit 807067bf014d4a3ae2cc55bd3de16f22a01eb580:
-
-  kcm: Serialise kcm_sendmsg() for the same socket. (2024-08-19 18:36:12 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-08-22
-
-for you to fetch changes up to 0509ac6c6a9a282ade4ad79b04665395691f73b1:
-
-  netfilter: flowtable: validate vlan header (2024-08-21 23:42:49 +0200)
-
-----------------------------------------------------------------
-netfilter pull request 24-08-22
-
-----------------------------------------------------------------
-Pablo Neira Ayuso (1):
-      netfilter: flowtable: validate vlan header
-
-Sebastian Andrzej Siewior (2):
-      netfilter: nft_counter: Disable BH in nft_counter_offload_stats().
-      netfilter: nft_counter: Synchronize nft_counter_reset() against reader.
-
- net/netfilter/nf_flow_table_inet.c | 3 +++
- net/netfilter/nf_flow_table_ip.c   | 3 +++
- net/netfilter/nft_counter.c        | 9 +++++++--
- 3 files changed, 13 insertions(+), 2 deletions(-)
 
