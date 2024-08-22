@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3471-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3469-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F1F95C0B7
-	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2024 00:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A871A95C0B2
+	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2024 00:19:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D16D1C22312
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 22:20:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE3B81C22F65
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2024 22:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254E91D1F69;
-	Thu, 22 Aug 2024 22:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680831D0DF2;
+	Thu, 22 Aug 2024 22:19:50 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651DDEC5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FC41684AE;
 	Thu, 22 Aug 2024 22:19:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724365191; cv=none; b=ot58+ZQCEDaxBZzmAnKEfin1sotG0UoTpj/lrbthovPZcVzThPaQGB++VIq4/JlHRb4tHEhcYzCNfujUqCssPnmw7wWtu3203t6KVmwQXLfb4x7IK/CnGdodsOINYB3d0WOrymOuwAd5mkNm3xJHRU2f62dgtMeKEXy3ZQ/rJe8=
+	t=1724365190; cv=none; b=hvSqC+0dxcPIjh3V6MK2aS8IGlQWEYP3wT4BCYShpJzn/fUMqll9nLcIR3G4B2HkIa2JWN3qLNGJBrPYbWcmkYxOrA/ZTZ5wh8CrkmH6ZrOOcjdKZ2XOrErWFHFyW5tmpbmMUO1N1sh6pbar7h5oBK3q5Btbrk3BuNo3CTr2jH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724365191; c=relaxed/simple;
-	bh=bvKXhIPH4XSxDxhKsbl13VXICBG4mXNHJB1McYEY3po=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pnP4AG/4Cq5MewNbvRC4tr5rsBUmLYlCG84jnboZMemqg/E8XeXx5Pjt7G+jnsa4jMx6Wl+Cz8J95IbiZY09qoCGofeBAdluUrhouwvLTv1SIaNLaa9FT6sa266vBHwIXdG7RrxRLnH7BhK9zu6rShs/DtPzplpmcDw3x9H3ohk=
+	s=arc-20240116; t=1724365190; c=relaxed/simple;
+	bh=OYm+71XqklzghjeRY2nBgPG0DoLOf1CgjK8RxhB+oSc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=seyKH827V2m0x78gZ15PV2vlaTVHsu1R8NPLwTFZ0XEJZXOrlZM73WrVI31wEBTt1OtQYPcePZvHABF70o4rp+y7LxD7/QRS/cUJVMM6XFcj1DGPNNJ9UR77O5LglFO/QcCrzbQwnny/MZWgdd/IoExbUHg7ZyynZUXBoiHylgw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -34,10 +35,12 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 0/9] Netfilter updates for net-next
-Date: Fri, 23 Aug 2024 00:19:30 +0200
-Message-Id: <20240822221939.157858-1-pablo@netfilter.org>
+Subject: [PATCH net-next 1/9] netfilter: nfnetlink_queue: unbreak SCTP traffic
+Date: Fri, 23 Aug 2024 00:19:31 +0200
+Message-Id: <20240822221939.157858-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240822221939.157858-1-pablo@netfilter.org>
+References: <20240822221939.157858-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,114 +49,74 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Antonio Ojea <aojea@google.com>
 
-The following batch contains Netfilter updates for net-next:
+when packet is enqueued with nfqueue and GSO is enabled, checksum
+calculation has to take into account the protocol, as SCTP uses a
+32 bits CRC checksum.
 
-Patch #1 fix checksum calculation in nfnetlink_queue with SCTP,
-	 segment GSO packet since skb_zerocopy() does not support
-	 GSO_BY_FRAGS, from Antonio Ojea.
+Enter skb_gso_segment() path in case of SCTP GSO packets because
+skb_zerocopy() does not support for GSO_BY_FRAGS.
 
-Patch #2 extend nfnetlink_queue coverage to handle SCTP packets,
-	 from Antonio Ojea.
+Joint work with Pablo.
 
-Patch #3 uses consume_skb() instead of kfree_skb() in nfnetlink,
-         from Donald Hunter.
+Signed-off-by: Antonio Ojea <aojea@google.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/core/dev.c                  |  1 +
+ net/netfilter/nfnetlink_queue.c | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-Patch #4 adds a dedicate commit list for sets to speed up
-	 intra-transaction lookups, from Florian Westphal.
+diff --git a/net/core/dev.c b/net/core/dev.c
+index e7260889d4cb..8384282acadf 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3386,6 +3386,7 @@ int skb_crc32c_csum_help(struct sk_buff *skb)
+ out:
+ 	return ret;
+ }
++EXPORT_SYMBOL(skb_crc32c_csum_help);
+ 
+ __be16 skb_network_protocol(struct sk_buff *skb, int *depth)
+ {
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index e0716da256bf..d2773ce9b585 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -540,6 +540,14 @@ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
+ 	return -1;
+ }
+ 
++static int nf_queue_checksum_help(struct sk_buff *entskb)
++{
++	if (skb_csum_is_sctp(entskb))
++		return skb_crc32c_csum_help(entskb);
++
++	return skb_checksum_help(entskb);
++}
++
+ static struct sk_buff *
+ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+ 			   struct nf_queue_entry *entry,
+@@ -602,7 +610,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+ 	case NFQNL_COPY_PACKET:
+ 		if (!(queue->flags & NFQA_CFG_F_GSO) &&
+ 		    entskb->ip_summed == CHECKSUM_PARTIAL &&
+-		    skb_checksum_help(entskb))
++		    nf_queue_checksum_help(entskb))
+ 			return NULL;
+ 
+ 		data_len = READ_ONCE(queue->copy_range);
+@@ -1014,7 +1022,7 @@ nfqnl_enqueue_packet(struct nf_queue_entry *entry, unsigned int queuenum)
+ 		break;
+ 	}
+ 
+-	if ((queue->flags & NFQA_CFG_F_GSO) || !skb_is_gso(skb))
++	if (!skb_is_gso(skb) || ((queue->flags & NFQA_CFG_F_GSO) && !skb_is_gso_sctp(skb)))
+ 		return __nfqnl_enqueue_packet(net, queue, entry);
+ 
+ 	nf_bridge_adjust_skb_data(skb);
+-- 
+2.30.2
 
-Patch #5 skips removal of element from abort path for the pipapo
-         backend, ditching the shadow copy of this datastructure
-	 is sufficient.
-
-Patch #6 moves nf_ct_netns_get() out of nf_conncount_init() to
-	 let users of conncoiunt decide when to enable conntrack,
-	 this is needed by openvswitch, from Xin Long.
-
-Patch #7 pass context to all nft_parse_register_load() in
-	 preparation for the next patch.
-
-Patches #8 and #9 reject loads from uninitialized registers from
-	 control plane to remove register initialization from
-	 datapath. From Florian Westphal.
-
-Please, pull these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-08-23
-
-Thanks.
-
-----------------------------------------------------------------
-
-The following changes since commit 1bf8e07c382bd4f04ede81ecc05267a8ffd60999:
-
-  dt-binding: ptp: fsl,ptp: add pci1957,ee02 compatible string for fsl,enetc-ptp (2024-08-19 09:48:53 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-24-08-23
-
-for you to fetch changes up to c88baabf16d1ef74ab8832de9761226406af5507:
-
-  netfilter: nf_tables: don't initialize registers in nft_do_chain() (2024-08-20 12:37:25 +0200)
-
-----------------------------------------------------------------
-netfilter pull request 24-08-23
-
-----------------------------------------------------------------
-Antonio Ojea (2):
-      netfilter: nfnetlink_queue: unbreak SCTP traffic
-      selftests: netfilter: nft_queue.sh: sctp coverage
-
-Donald Hunter (1):
-      netfilter: nfnetlink: convert kfree_skb to consume_skb
-
-Florian Westphal (4):
-      netfilter: nf_tables: store new sets in dedicated list
-      netfilter: nf_tables: pass context structure to nft_parse_register_load
-      netfilter: nf_tables: allow loads only when register is initialized
-      netfilter: nf_tables: don't initialize registers in nft_do_chain()
-
-Pablo Neira Ayuso (1):
-      netfilter: nf_tables: do not remove elements if set backend implements .abort
-
-Xin Long (1):
-      netfilter: move nf_ct_netns_get out of nf_conncount_init
-
- include/net/netfilter/nf_conntrack_count.h         |  6 +-
- include/net/netfilter/nf_tables.h                  |  6 +-
- net/bridge/netfilter/nft_meta_bridge.c             |  2 +-
- net/core/dev.c                                     |  1 +
- net/ipv4/netfilter/nft_dup_ipv4.c                  |  4 +-
- net/ipv6/netfilter/nft_dup_ipv6.c                  |  4 +-
- net/netfilter/nf_conncount.c                       | 15 +---
- net/netfilter/nf_tables_api.c                      | 75 +++++++++++++++----
- net/netfilter/nf_tables_core.c                     |  2 +-
- net/netfilter/nfnetlink.c                          | 14 ++--
- net/netfilter/nfnetlink_queue.c                    | 12 ++-
- net/netfilter/nft_bitwise.c                        |  4 +-
- net/netfilter/nft_byteorder.c                      |  2 +-
- net/netfilter/nft_cmp.c                            |  6 +-
- net/netfilter/nft_ct.c                             |  2 +-
- net/netfilter/nft_dup_netdev.c                     |  2 +-
- net/netfilter/nft_dynset.c                         |  4 +-
- net/netfilter/nft_exthdr.c                         |  2 +-
- net/netfilter/nft_fwd_netdev.c                     |  6 +-
- net/netfilter/nft_hash.c                           |  2 +-
- net/netfilter/nft_lookup.c                         |  2 +-
- net/netfilter/nft_masq.c                           |  4 +-
- net/netfilter/nft_meta.c                           |  2 +-
- net/netfilter/nft_nat.c                            |  8 +-
- net/netfilter/nft_objref.c                         |  2 +-
- net/netfilter/nft_payload.c                        |  2 +-
- net/netfilter/nft_queue.c                          |  2 +-
- net/netfilter/nft_range.c                          |  2 +-
- net/netfilter/nft_redir.c                          |  4 +-
- net/netfilter/nft_tproxy.c                         |  4 +-
- net/netfilter/xt_connlimit.c                       | 15 +++-
- net/openvswitch/conntrack.c                        |  5 +-
- tools/testing/selftests/net/netfilter/config       |  2 +
- tools/testing/selftests/net/netfilter/nft_queue.sh | 85 +++++++++++++++++++++-
- 34 files changed, 226 insertions(+), 84 deletions(-)
 
