@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-3488-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3491-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41BC95E597
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 00:47:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D9B95E59A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 00:47:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA5628244D
-	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Aug 2024 22:47:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E592D2823FE
+	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Aug 2024 22:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC6C76F17;
-	Sun, 25 Aug 2024 22:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC91E78C75;
+	Sun, 25 Aug 2024 22:47:23 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DB5762DF
-	for <netfilter-devel@vger.kernel.org>; Sun, 25 Aug 2024 22:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009A677F12
+	for <netfilter-devel@vger.kernel.org>; Sun, 25 Aug 2024 22:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724626041; cv=none; b=nDG+v+m2Em+ewYc+WP3SxCvvBctAdNFz/G+SNDVEW7U7kWACAAugN+qCkUzF6Qntiscbm/T/aOvE46Xe5vh/aYoAZ+jtoJKvBzD6RhUqIN78JzneU/LOBoLMKdqHNV6AvxKGz8rLSGS48tvh8wgSMMwxj3+1krqXQNXRC3x9HcQ=
+	t=1724626043; cv=none; b=hd9jS+nq7O6Hudab0CfFQ4RbFEA92Jyghogf6TO3kcRNUuz8cFB+rmHJ5BTJKsAX/HR6WyN54aOM0i1xlRdvhXHKOUwA5ncuY2EcFJ48SivCw89W6fAN1ok7gTEQTynhsqYnSMrI+UZSNlIkY92u68vwc/E99vLrcSZRzsc8154=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724626041; c=relaxed/simple;
-	bh=Y1GvYmmoShUdM9Yh61QaSqGdgXhfsMKygB0GtrcSsv8=;
+	s=arc-20240116; t=1724626043; c=relaxed/simple;
+	bh=wGcSmpiD8AJgGHsXJt1uWnVrx1H5ogWs+q5FBgz/8e8=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kIL8N5kRKevJkA/KqhQpp1IiX07Kcslw8tLjFJcoN3gm3v5rDdkbeUNKxWukIE1w8LNHD+I+Td1wZp4+gyMSrKbsM42B64xgsy5jX4hhFvSKsdh0BQ/vMj44pXxLxO6ok/49BQQgVKyprwrWW/wCUQPHMxFgDDF4TkhLjiM+bgg=
+	 MIME-Version; b=U0tI9Jp24yzjzatqccCztMdn4J+evLukbMx27iAJr8rEmWtroIf54uYaowKsKClz3ZTFLPOsNapqjBd7vg+edSGFV0rM6Z+dqUmYwtEKdIR26WbNBT35MhMg5WUHLvMaUyUgQuuDGFks/3FfqNuvx4u/8OMxCVTZ5CmF5Pm+5qw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 4/5] tests: shell: cover anonymous set with reset command
-Date: Mon, 26 Aug 2024 00:47:06 +0200
-Message-Id: <20240825224707.3687-5-pablo@netfilter.org>
+Subject: [PATCH nft 5/5] tests: shell: cover reset command with counter and quota
+Date: Mon, 26 Aug 2024 00:47:07 +0200
+Message-Id: <20240825224707.3687-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240825224707.3687-1-pablo@netfilter.org>
 References: <20240825224707.3687-1-pablo@netfilter.org>
@@ -43,46 +43,122 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extend existing test to reset counters for rules with anonymous set.
-
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1763
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- .../testcases/rule_management/0011reset_0     | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ tests/shell/testcases/listing/reset_objects | 104 ++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
+ create mode 100755 tests/shell/testcases/listing/reset_objects
 
-diff --git a/tests/shell/testcases/rule_management/0011reset_0 b/tests/shell/testcases/rule_management/0011reset_0
-index 3fede56fb7d8..2004b17d5822 100755
---- a/tests/shell/testcases/rule_management/0011reset_0
-+++ b/tests/shell/testcases/rule_management/0011reset_0
-@@ -4,6 +4,27 @@
- 
- set -e
- 
-+echo "loading ruleset with anonymous set"
-+$NFT -f - <<EOF
-+table t {
-+        chain dns-nat-pre {
-+                type nat hook prerouting priority filter; policy accept;
-+                meta l4proto { tcp, udp } th dport 53 ip saddr 10.24.0.0/24 ip daddr != 10.25.0.1 counter packets 1000 bytes 1000 dnat to 10.25.0.1
-+        }
+diff --git a/tests/shell/testcases/listing/reset_objects b/tests/shell/testcases/listing/reset_objects
+new file mode 100755
+index 000000000000..0b6720b62c04
+--- /dev/null
++++ b/tests/shell/testcases/listing/reset_objects
+@@ -0,0 +1,104 @@
++#!/bin/bash
++
++set -e
++
++load_ruleset()
++{
++	$NFT -f - <<EOF
++table ip test {
++	quota https-quota {
++		25 mbytes used 10 mbytes
++	}
++	counter https-counter {
++		packets 10 bytes 4096
++	}
 +}
 +EOF
++}
 +
-+echo "resetting ruleset with anonymous set"
-+$NFT reset rules
-+EXPECT='table ip t {
-+	chain dns-nat-pre {
-+		type nat hook prerouting priority filter; policy accept;
-+		meta l4proto { tcp, udp } th dport 53 ip saddr 10.24.0.0/24 ip daddr != 10.25.0.1 counter packets 0 bytes 0 dnat to 10.25.0.1
++check_list_quota()
++{
++	EXPECT="table ip test {
++	quota https-quota {
++		25 mbytes
 +	}
-+}'
-+$DIFF -u <(echo "$EXPECT") <($NFT list ruleset)
-+$NFT flush ruleset
++}"
++	$DIFF -u <(echo "$EXPECT") <($NFT list quotas)
++}
 +
- echo "loading ruleset"
- $NFT -f - <<EOF
- table ip t {
++check_list_counter()
++{
++	EXPECT="table ip test {
++	counter https-counter {
++		packets 0 bytes 0
++	}
++}"
++	$DIFF -u <(echo "$EXPECT") <($NFT list counters)
++}
++
++load_ruleset
++
++EXPECT="table ip test {
++	quota https-quota {
++		25 mbytes used 10 mbytes
++	}
++}"
++$DIFF -u <(echo "$EXPECT") <($NFT reset quotas)
++
++check_list_quota
++$NFT flush ruleset
++load_ruleset
++
++EXPECT="table ip test {
++	quota https-quota {
++		25 mbytes used 10 mbytes
++	}
++}"
++$DIFF -u <(echo "$EXPECT") <($NFT reset quotas ip)
++
++check_list_quota
++$NFT flush ruleset
++load_ruleset
++
++EXPECT="table ip test {
++	quota https-quota {
++		25 mbytes used 10 mbytes
++	}
++}"
++$DIFF -u <(echo "$EXPECT") <($NFT reset quota ip test https-quota)
++
++check_list_quota
++$NFT flush ruleset
++load_ruleset
++
++EXPECT="table ip test {
++	counter https-counter {
++		packets 10 bytes 4096
++	}
++}"
++$DIFF -u <(echo "$EXPECT") <($NFT reset counters)
++
++check_list_counter
++$NFT flush ruleset
++load_ruleset
++
++EXPECT="table ip test {
++	counter https-counter {
++		packets 10 bytes 4096
++	}
++}"
++$DIFF -u <(echo "$EXPECT") <($NFT reset counters ip)
++
++check_list_counter
++$NFT flush ruleset
++load_ruleset
++
++EXPECT="table ip test {
++	counter https-counter {
++		packets 10 bytes 4096
++	}
++}"
++$DIFF -u <(echo "$EXPECT") <($NFT reset counter ip test https-counter)
++
++check_list_counter
++$NFT flush ruleset
 -- 
 2.30.2
 
