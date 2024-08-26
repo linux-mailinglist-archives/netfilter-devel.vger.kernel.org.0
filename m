@@ -1,37 +1,40 @@
-Return-Path: <netfilter-devel+bounces-3497-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3494-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D70A95EC7A
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 10:55:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C44A95EC77
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 10:55:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1FB2B23B6D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 08:55:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF15C1C2147A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 08:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561CA13D8B3;
-	Mon, 26 Aug 2024 08:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED9713D276;
+	Mon, 26 Aug 2024 08:55:04 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A661A13C80F
-	for <netfilter-devel@vger.kernel.org>; Mon, 26 Aug 2024 08:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC6618027
+	for <netfilter-devel@vger.kernel.org>; Mon, 26 Aug 2024 08:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724662505; cv=none; b=i8FgZPRHH5nxTfEOXebDtkNuPXGK/kIPGx/mSf/ZOPLXdvQ/vRRPhTcu9eM0jsHgEzJe/LjYm8ETyL7HrIFGVqUsfS82aTwA9AAEjgPJYQCGR8bapZlLW7zYQb+RfgVvmL0u1eKglSvb1SMVUXvZKGtL7gI74T3ho/qwyi9w5/A=
+	t=1724662504; cv=none; b=Jp+Xp1Ij4WSo/9b4SSDNF2Ci21Tf+9zQF/pTAnmWp2YfsWE71lktdvBwXXC0C9LheW2mxNRiZgCd7GZQVQAXwT3xoH9WEzNC7iskMpZGYkxLnQU1g5FOCLWOK6fG3HMqvrc/7+v2JFGlRsQMkqT/an2NlKF/Gah9iL3ynmYW5Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724662505; c=relaxed/simple;
-	bh=zrn4yD5z9iIM9FW5ytUPQBUsRB3VBL3Oc9w+CWVxVkk=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=lRDh9HG0JCOR5DVhmeR2S6ASbIjL9xISLSSao1pdcxv8ge6Pz2NaXcizTdeqo0kR09D/GWhnG8g5XlLY/sDK178J8lOIlJhTFA7+yGrleAGBDor9uC1ZRsCh9u0DqB3ul1RZEH7OvcSKt7C8QhfmXogL/ra8Bk7KFjHGqYp3AJY=
+	s=arc-20240116; t=1724662504; c=relaxed/simple;
+	bh=Joq6v6FZH1+QCaDz/EcW3gJodzoPhsEgxcluPKSq8c8=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=oSDWVqru/+c6M0XZSu7aqY6f65wLXuB2waFhsOYp7D4t+c6wniO34Z3NgVs1anq95OzyZRxVdwTjcWarb7z8IEJwnvQ2UefJa61KGUEM0OtXy9nSPNILqbyPH+1x/uMs379nzae0FwP4FeRo0iv1+OuSjZLv8GVWoJTp4Ggg5zU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2 0/7] cache updates
-Date: Mon, 26 Aug 2024 10:54:48 +0200
-Message-Id: <20240826085455.163392-1-pablo@netfilter.org>
+Subject: [PATCH nft,v2 1/7] cache: reset filter for each command
+Date: Mon, 26 Aug 2024 10:54:49 +0200
+Message-Id: <20240826085455.163392-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240826085455.163392-1-pablo@netfilter.org>
+References: <20240826085455.163392-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -40,46 +43,42 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Inconditionally reset filter for each command in the batch, this is safer.
 
-The following patchset contains cache updates for nft:
+Fixes: 3f1d3912c3a6 ("cache: filter out tables that are not requested")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: new in this series
 
-Patch #1 resets filtering for each new command
+ src/cache.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Patch #2 accumulates cache flags for each command, recent patches are
-	 relaxing cache requirements which could uncover bugs.
-
-Patch #3 updates objects to use the netlink dump filtering infrastructure
-	 to build the cache (
-
-Patch #4 only dumps rules for the given table
-
-Patch #5 updates reset commands to use the cache infrastructure
-
-Patch #6 and #7 extend tests coverage for reset commands.
-
-Pablo Neira Ayuso (7):
-  cache: reset filter for each command
-  cache: accumulate flags in batch
-  cache: add filtering support for objects
-  cache: only dump rules for the given table
-  cache: consolidate reset command
-  tests: shell: cover anonymous set with reset command
-  tests: shell: cover reset command with counter and quota
-
- include/cache.h                               |  12 +-
- include/netlink.h                             |   5 -
- src/cache.c                                   | 201 ++++++++++++++----
- src/evaluate.c                                |   2 +
- src/mnl.c                                     |   7 +-
- src/netlink.c                                 |  78 -------
- src/parser_bison.y                            |   8 +-
- src/rule.c                                    |  48 +----
- tests/shell/testcases/listing/reset_objects   | 104 +++++++++
- .../testcases/rule_management/0011reset_0     |  31 ++-
- 10 files changed, 305 insertions(+), 191 deletions(-)
- create mode 100755 tests/shell/testcases/listing/reset_objects
-
+diff --git a/src/cache.c b/src/cache.c
+index 233147649263..5442da35a129 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -400,6 +400,11 @@ err_name_too_long:
+ 	return -1;
+ }
+ 
++static void reset_filter(struct nft_cache_filter *filter)
++{
++	memset(&filter->list, 0, sizeof(filter->list));
++}
++
+ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
+ 		       struct list_head *msgs, struct nft_cache_filter *filter,
+ 		       unsigned int *pflags)
+@@ -411,8 +416,7 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
+ 		if (nft_handle_validate(cmd, msgs) < 0)
+ 			return -1;
+ 
+-		if (filter->list.table && cmd->op != CMD_LIST)
+-			memset(&filter->list, 0, sizeof(filter->list));
++		reset_filter(filter);
+ 
+ 		switch (cmd->op) {
+ 		case CMD_ADD:
 -- 
 2.30.2
 
