@@ -1,66 +1,86 @@
-Return-Path: <netfilter-devel+bounces-3493-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3497-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B6795E9EC
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 09:07:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D70A95EC7A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 10:55:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEEC01F23AEC
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 07:07:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1FB2B23B6D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 08:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DA98563E;
-	Mon, 26 Aug 2024 07:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561CA13D8B3;
+	Mon, 26 Aug 2024 08:55:05 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FA981741;
-	Mon, 26 Aug 2024 07:07:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A661A13C80F
+	for <netfilter-devel@vger.kernel.org>; Mon, 26 Aug 2024 08:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724656031; cv=none; b=a2d1AwSn2XgOnbSNsBdgi12QTBq7OX9SoKIwk46IPhZM/UP+o5YOu1KGfXk4S54Z1MzRzxMCXsmdhXzkTxd6ldoZ98xhxr0hNqBJo6pQfp+0j4YOJEJLUHqUktILXyx/oVqWIqqecGoYvf5k4NaBXoBFz5+lgvpxEmHmvF2ho5g=
+	t=1724662505; cv=none; b=i8FgZPRHH5nxTfEOXebDtkNuPXGK/kIPGx/mSf/ZOPLXdvQ/vRRPhTcu9eM0jsHgEzJe/LjYm8ETyL7HrIFGVqUsfS82aTwA9AAEjgPJYQCGR8bapZlLW7zYQb+RfgVvmL0u1eKglSvb1SMVUXvZKGtL7gI74T3ho/qwyi9w5/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724656031; c=relaxed/simple;
-	bh=42zul1fG6Rl489afvdj1ec8Ys9cNKabK0VGknlfDbBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SYnhh8mvv9TJqkPrS7zEn1VSh5U7Jin9sYSTAjGOX3O6cKHa4n4hPWkhUJtmXx40MkX+FF0364ws6KCN/jvfbaM1feXZRZa9Tzt4HDK5mB+y2Qf9t7ZfRiz0q9DMOcxpTMXhGcGIhIG1YLeDYmpSFZmtWrMMg38lJP7k7eQRR/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1siToM-00033J-Jh; Mon, 26 Aug 2024 09:06:46 +0200
-Date: Mon, 26 Aug 2024 09:06:46 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Yan Zhen <yanzhen@vivo.com>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, roopa@nvidia.com,
-	razor@blackwall.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	bridge@lists.linux.dev, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH net-next v1] netfilter: Use kmemdup_array instead of
- kmemdup for multiple allocation
-Message-ID: <20240826070646.GA10527@breakpoint.cc>
-References: <20240826034136.1791485-1-yanzhen@vivo.com>
+	s=arc-20240116; t=1724662505; c=relaxed/simple;
+	bh=zrn4yD5z9iIM9FW5ytUPQBUsRB3VBL3Oc9w+CWVxVkk=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=lRDh9HG0JCOR5DVhmeR2S6ASbIjL9xISLSSao1pdcxv8ge6Pz2NaXcizTdeqo0kR09D/GWhnG8g5XlLY/sDK178J8lOIlJhTFA7+yGrleAGBDor9uC1ZRsCh9u0DqB3ul1RZEH7OvcSKt7C8QhfmXogL/ra8Bk7KFjHGqYp3AJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH nft,v2 0/7] cache updates
+Date: Mon, 26 Aug 2024 10:54:48 +0200
+Message-Id: <20240826085455.163392-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240826034136.1791485-1-yanzhen@vivo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-Yan Zhen <yanzhen@vivo.com> wrote:
-> When we are allocating an array, using kmemdup_array() to take care about
-> multiplication and possible overflows.
-> 
-> Also it makes auditing the code easier.
+Hi,
 
-Reviewed-by: Florian Westphal <fw@strlen.de>
+The following patchset contains cache updates for nft:
+
+Patch #1 resets filtering for each new command
+
+Patch #2 accumulates cache flags for each command, recent patches are
+	 relaxing cache requirements which could uncover bugs.
+
+Patch #3 updates objects to use the netlink dump filtering infrastructure
+	 to build the cache (
+
+Patch #4 only dumps rules for the given table
+
+Patch #5 updates reset commands to use the cache infrastructure
+
+Patch #6 and #7 extend tests coverage for reset commands.
+
+Pablo Neira Ayuso (7):
+  cache: reset filter for each command
+  cache: accumulate flags in batch
+  cache: add filtering support for objects
+  cache: only dump rules for the given table
+  cache: consolidate reset command
+  tests: shell: cover anonymous set with reset command
+  tests: shell: cover reset command with counter and quota
+
+ include/cache.h                               |  12 +-
+ include/netlink.h                             |   5 -
+ src/cache.c                                   | 201 ++++++++++++++----
+ src/evaluate.c                                |   2 +
+ src/mnl.c                                     |   7 +-
+ src/netlink.c                                 |  78 -------
+ src/parser_bison.y                            |   8 +-
+ src/rule.c                                    |  48 +----
+ tests/shell/testcases/listing/reset_objects   | 104 +++++++++
+ .../testcases/rule_management/0011reset_0     |  31 ++-
+ 10 files changed, 305 insertions(+), 191 deletions(-)
+ create mode 100755 tests/shell/testcases/listing/reset_objects
+
+-- 
+2.30.2
+
 
