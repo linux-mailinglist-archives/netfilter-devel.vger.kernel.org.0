@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-3495-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3498-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 851EA95EC78
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 10:55:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4E195EC7B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 10:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FB84281BC2
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 08:55:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15F9E281EA3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Aug 2024 08:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3627C13D63E;
-	Mon, 26 Aug 2024 08:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0BE13DDC6;
+	Mon, 26 Aug 2024 08:55:06 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B18455898
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2837C13B2A4
 	for <netfilter-devel@vger.kernel.org>; Mon, 26 Aug 2024 08:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724662505; cv=none; b=ag50h4HorfHEkAT6pK77etTjTzk/gq6ej4oxWkaAdPi2/clLedDDEwf/dBdAkQe24t9aEG0tgqR0ahzkp/TGCz4+u9HiocCaYXLWlo2l84dXgyUYTLdrX/2g7PScdCbMq0NU5DCtLarNOgRowh0qmscrtKtnejhtgFck0xnYAQY=
+	t=1724662505; cv=none; b=jSXPx/5HSq8XTokV8rsEpbqtDrbMEFfwJiexb3pIjmph+UTSIGmXZ+qaE1Sp3vTGSpbWeDlB+gc340AxTg5pZMn1S0sROaNYtuj6oR11FuUjqjZZVCYmrMiMYkgXgYzMGvw24eSS4FaF3DANVO0ARa+27Lt3weDf77qOXq1ERGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724662505; c=relaxed/simple;
-	bh=0YVWssDg0V8OyTglX6O2Gfz88qhR8vXrkMLSKjWMLVE=;
+	bh=7fDneFaDUTRH8gtvCyJ3jQwQ6ljUM8h84UV7wIhluEQ=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ND4lzaKQveY96FZ/FaIAUWuNzczxheZ+FU0wjOwg11B4pffByNXoN+NRdLj5iIFki4WnMjKwc/O1WtOl9lkN/USoF6Pb8yH+piLQ7EPgYLXZhPPVoxJ7WrPam5pAZ86lwTdat7Pv6IHHmPmZdKBbNXs51LS28OW1B4Ti1mSlcdQ=
+	 MIME-Version; b=QHf8OMj0DSOHZkw+lkDgnVvq1MeqCG3sIaqWRLaWqF4T3GT7vUCWFZDwzwbkENGciwO26MFBKlxQKIHVwlxA9ZuteK5/HdxyJ70ZZQeTu5l78Kc9gn1b9g8RYnDTV2cl9fFp5m4IjZPXrPX0jVxuWJzFKlxOy/sphgK0F1KAxlI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2 2/7] cache: accumulate flags in batch
-Date: Mon, 26 Aug 2024 10:54:50 +0200
-Message-Id: <20240826085455.163392-3-pablo@netfilter.org>
+Subject: [PATCH nft,v2 3/7] cache: add filtering support for objects
+Date: Mon, 26 Aug 2024 10:54:51 +0200
+Message-Id: <20240826085455.163392-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240826085455.163392-1-pablo@netfilter.org>
 References: <20240826085455.163392-1-pablo@netfilter.org>
@@ -43,69 +43,215 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Recent updates are relaxing cache requirements:
+Currently, full ruleset flag is set on to fetch objects.
 
-  babc6ee8773c ("cache: populate chains on demand from error path")
+Follow a similar approach to these patches from Phil:
 
-Flags describe cache requirements for a given batch, accumulate flags
-that are inferred from commands in this batch.
+ de961b930660 ("cache: Filter set list on server side") and
+ cb4b07d0b628 ("cache: Support filtering for a specific flowtable")
 
-Fixes: 7df42800cf89 ("src: single cache_update() call to build cache before evaluation")
+in preparation to update the reset command to use the cache
+infrastructure.
+
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: new in this series
+v2: remove check for if (filter) when evaluating cache requirements,
+    filter must be present in reset command, add assert().
 
- src/cache.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ include/cache.h |   2 +
+ src/cache.c     | 100 +++++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 89 insertions(+), 13 deletions(-)
 
+diff --git a/include/cache.h b/include/cache.h
+index 44e8430ce1fd..c72bedf542dc 100644
+--- a/include/cache.h
++++ b/include/cache.h
+@@ -54,8 +54,10 @@ struct nft_cache_filter {
+ 		uint32_t	family;
+ 		const char	*table;
+ 		const char	*chain;
++		const char	*obj;
+ 		const char	*set;
+ 		const char	*ft;
++		int		obj_type;
+ 		uint64_t	rule_handle;
+ 	} list;
+ 
 diff --git a/src/cache.c b/src/cache.c
-index 5442da35a129..082fd30b462d 100644
+index 082fd30b462d..3849a4640416 100644
 --- a/src/cache.c
 +++ b/src/cache.c
-@@ -409,13 +409,14 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
- 		       struct list_head *msgs, struct nft_cache_filter *filter,
- 		       unsigned int *pflags)
+@@ -190,6 +190,22 @@ static unsigned int evaluate_cache_rename(struct cmd *cmd, unsigned int flags)
+ 	return flags;
+ }
+ 
++static void obj_filter_setup(const struct cmd *cmd, unsigned int *flags,
++			     struct nft_cache_filter *filter, int type)
++{
++	assert(filter);
++
++	if (cmd->handle.family)
++		filter->list.family = cmd->handle.family;
++	if (cmd->handle.table.name)
++		filter->list.table = cmd->handle.table.name;
++	if (cmd->handle.obj.name)
++		filter->list.obj = cmd->handle.obj.name;
++
++	filter->list.obj_type = type;
++	*flags |= NFT_CACHE_TABLE | NFT_CACHE_OBJECT;
++}
++
+ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ 					unsigned int flags,
+ 					struct nft_cache_filter *filter)
+@@ -251,6 +267,37 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ 	case CMD_OBJ_FLOWTABLES:
+ 		flags |= NFT_CACHE_TABLE | NFT_CACHE_FLOWTABLE;
+ 		break;
++	case CMD_OBJ_COUNTER:
++	case CMD_OBJ_COUNTERS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_COUNTER);
++		break;
++	case CMD_OBJ_QUOTA:
++	case CMD_OBJ_QUOTAS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_QUOTA);
++		break;
++	case CMD_OBJ_CT_HELPER:
++	case CMD_OBJ_CT_HELPERS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_CT_HELPER);
++		break;
++	case CMD_OBJ_LIMIT:
++	case CMD_OBJ_LIMITS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_LIMIT);
++		break;
++	case CMD_OBJ_CT_TIMEOUT:
++	case CMD_OBJ_CT_TIMEOUTS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_CT_TIMEOUT);
++		break;
++	case CMD_OBJ_SECMARK:
++	case CMD_OBJ_SECMARKS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_SECMARK);
++		break;
++	case CMD_OBJ_CT_EXPECT:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_CT_EXPECT);
++		break;
++	case CMD_OBJ_SYNPROXY:
++	case CMD_OBJ_SYNPROXYS:
++		obj_filter_setup(cmd, &flags, filter, NFT_OBJECT_SYNPROXY);
++		break;
+ 	case CMD_OBJ_RULESET:
+ 	default:
+ 		flags |= NFT_CACHE_FULL;
+@@ -782,10 +829,19 @@ struct obj_cache_dump_ctx {
+ static int obj_cache_cb(struct nftnl_obj *nlo, void *arg)
  {
--	unsigned int flags = NFT_CACHE_EMPTY;
-+	unsigned int flags, batch_flags = NFT_CACHE_EMPTY;
- 	struct cmd *cmd;
+ 	struct obj_cache_dump_ctx *ctx = arg;
++	const char *obj_table;
+ 	const char *obj_name;
++	uint32_t obj_family;
+ 	struct obj *obj;
+ 	uint32_t hash;
  
- 	list_for_each_entry(cmd, cmds, list) {
- 		if (nft_handle_validate(cmd, msgs) < 0)
- 			return -1;
++	obj_table = nftnl_obj_get_str(nlo, NFTNL_OBJ_TABLE);
++	obj_family = nftnl_obj_get_u32(nlo, NFTNL_OBJ_FAMILY);
++
++	if (obj_family != ctx->table->handle.family ||
++	    strcmp(obj_table, ctx->table->handle.table.name))
++		return 0;
++
+ 	obj = netlink_delinearize_obj(ctx->nlctx, nlo);
+ 	if (!obj)
+ 		return -1;
+@@ -794,6 +850,9 @@ static int obj_cache_cb(struct nftnl_obj *nlo, void *arg)
+ 	hash = djb_hash(obj_name) % NFT_CACHE_HSIZE;
+ 	cache_add(&obj->cache, &ctx->table->obj_cache, hash);
  
-+		flags = NFT_CACHE_EMPTY;
- 		reset_filter(filter);
- 
- 		switch (cmd->op) {
-@@ -439,13 +440,13 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
- 			flags = evaluate_cache_get(cmd, flags);
- 			break;
- 		case CMD_RESET:
--			flags |= evaluate_cache_reset(cmd, flags, filter);
-+			flags = evaluate_cache_reset(cmd, flags, filter);
- 			break;
- 		case CMD_LIST:
--			flags |= evaluate_cache_list(nft, cmd, flags, filter);
-+			flags = evaluate_cache_list(nft, cmd, flags, filter);
- 			break;
- 		case CMD_MONITOR:
--			flags |= NFT_CACHE_FULL;
-+			flags = NFT_CACHE_FULL;
- 			break;
- 		case CMD_FLUSH:
- 			flags = evaluate_cache_flush(cmd, flags, filter);
-@@ -460,8 +461,9 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
- 		default:
- 			break;
- 		}
-+		batch_flags |= flags;
- 	}
--	*pflags = flags;
-+	*pflags = batch_flags;
- 
++	nftnl_obj_list_del(nlo);
++	nftnl_obj_free(nlo);
++
  	return 0;
  }
+ 
+@@ -810,13 +869,27 @@ static int obj_cache_init(struct netlink_ctx *ctx, struct table *table,
+ }
+ 
+ static struct nftnl_obj_list *obj_cache_dump(struct netlink_ctx *ctx,
+-					     const struct table *table)
++					     const struct nft_cache_filter *filter)
+ {
+ 	struct nftnl_obj_list *obj_list;
++	int type = NFT_OBJECT_UNSPEC;
++	int family = NFPROTO_UNSPEC;
++	const char *table = NULL;
++	const char *obj = NULL;
++	bool dump = true;
+ 
+-	obj_list = mnl_nft_obj_dump(ctx, table->handle.family,
+-				    table->handle.table.name, NULL,
+-				    0, true, false);
++	if (filter) {
++		family = filter->list.family;
++		if (filter->list.table)
++			table = filter->list.table;
++		if (filter->list.obj) {
++			obj = filter->list.obj;
++			dump = false;
++		}
++		if (filter->list.obj_type)
++			type = filter->list.obj_type;
++	}
++	obj_list = mnl_nft_obj_dump(ctx, family, table, obj, type, dump, false);
+ 	if (!obj_list) {
+                 if (errno == EINTR)
+ 			return NULL;
+@@ -1039,7 +1112,7 @@ static int cache_init_objects(struct netlink_ctx *ctx, unsigned int flags,
+ 	struct nftnl_flowtable_list *ft_list = NULL;
+ 	struct nftnl_chain_list *chain_list = NULL;
+ 	struct nftnl_set_list *set_list = NULL;
+-	struct nftnl_obj_list *obj_list;
++	struct nftnl_obj_list *obj_list = NULL;
+ 	struct table *table;
+ 	struct set *set;
+ 	int ret = 0;
+@@ -1056,6 +1129,13 @@ static int cache_init_objects(struct netlink_ctx *ctx, unsigned int flags,
+ 			goto cache_fails;
+ 		}
+ 	}
++	if (flags & NFT_CACHE_OBJECT_BIT) {
++		obj_list = obj_cache_dump(ctx, filter);
++		if (!obj_list) {
++			ret = -1;
++			goto cache_fails;
++		}
++	}
+ 	if (flags & NFT_CACHE_FLOWTABLE_BIT) {
+ 		ft_list = ft_cache_dump(ctx, filter);
+ 		if (!ft_list) {
+@@ -1108,15 +1188,7 @@ static int cache_init_objects(struct netlink_ctx *ctx, unsigned int flags,
+ 				goto cache_fails;
+ 		}
+ 		if (flags & NFT_CACHE_OBJECT_BIT) {
+-			obj_list = obj_cache_dump(ctx, table);
+-			if (!obj_list) {
+-				ret = -1;
+-				goto cache_fails;
+-			}
+ 			ret = obj_cache_init(ctx, table, obj_list);
+-
+-			nftnl_obj_list_free(obj_list);
+-
+ 			if (ret < 0)
+ 				goto cache_fails;
+ 		}
+@@ -1137,6 +1209,8 @@ static int cache_init_objects(struct netlink_ctx *ctx, unsigned int flags,
+ cache_fails:
+ 	if (set_list)
+ 		nftnl_set_list_free(set_list);
++	if (obj_list)
++		nftnl_obj_list_free(obj_list);
+ 	if (ft_list)
+ 		nftnl_flowtable_list_free(ft_list);
+ 
 -- 
 2.30.2
 
