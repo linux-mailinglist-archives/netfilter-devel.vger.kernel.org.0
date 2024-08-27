@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-3512-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3513-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CFA96066F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Aug 2024 11:58:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB02960671
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Aug 2024 11:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0490286E2D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Aug 2024 09:58:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE9E1C2280B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Aug 2024 09:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA2019FA86;
-	Tue, 27 Aug 2024 09:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB4C1A072B;
+	Tue, 27 Aug 2024 09:56:16 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D219FA90;
-	Tue, 27 Aug 2024 09:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559D51A00C9;
+	Tue, 27 Aug 2024 09:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724752575; cv=none; b=S2R2m3R8uq8QGc0FHNGUuo6kFy3sJmsL/Qw0dvqJe9pQdSQDqy8Bi+0jQ25wI3Ts+1jMPaKv1YGyVySDqIWFWkY0BZLYJfMdNHElb8I1n0Uo6XY+jd5DubesxSzq4tOwCeJErSyihN65g9G2fgywDiNzzwPH4uZt5VwwOIn5uYE=
+	t=1724752576; cv=none; b=qDXxYqgfsECfqik7tbwXglMlUlA5MNARSuxtgIeCVLFQT8VhGLBxVc9HQsBgTuN1wMxi+BDmEVBcqRSyCb4NVHOiDRzPqiwp5LXguieAjDXfBbgf31he0yua0QOB/0FAdfHyKedWfjBmZYmz+BG/T6mle7/VfDx2EFivUZPhcE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724752575; c=relaxed/simple;
-	bh=qpfKZaFPy1rFBJJEv+3AoCtQ8MPb5ZJY/rFUAhGq7f0=;
+	s=arc-20240116; t=1724752576; c=relaxed/simple;
+	bh=0vKOTz8kr72qexPg0zazD0uPEW2/jMu0RiXnK4QWEIY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OrZBDc1roLYucIVijP/HEoOLDILnMJoIC1rKqL6CHIdN1Ilk4cYjvUSq7wKWDuLl+EoI7dqrY81KU6kYrx1oeWWO/OgE8gu62skOkWl3+wF22yI61uQPdo4iT+JzogcFKBR4W7LO2cBETlJTqBDuU6XSbFneGCLdTcOeIbNVATE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+	 MIME-Version:Content-Type; b=YsUombkqUMedXVRnImzDc1IrSIRgJKjkSSzOOJKC7P35pb+fsieFRoUA0++CXU7kvs6W0PljiJ0gDuS+hQjsY00PdNlc61rl52aCVooq6tQkb2PvCN3Ycpb79FULlm98WaolZ5COSTeC1FXO3hrqvTnzLX43X0mwbgArKUF7+qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4WtNGT1HH3z1S99F;
-	Tue, 27 Aug 2024 17:56:01 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WtNDl3V60zpTqJ;
+	Tue, 27 Aug 2024 17:54:31 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id B9ECD1401F4;
+	by mail.maildlp.com (Postfix) with ESMTPS id E846D180064;
 	Tue, 27 Aug 2024 17:56:11 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
  (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
@@ -45,9 +45,9 @@ To: <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
 	<ying.xue@windriver.com>, <pablo@netfilter.org>, <kadlec@netfilter.org>
 CC: <netdev@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
 	<lihongbo22@huawei.com>
-Subject: [PATCH net-next 3/5] net/netfilter: make use of the helper macro LIST_HEAD()
-Date: Tue, 27 Aug 2024 18:04:05 +0800
-Message-ID: <20240827100407.3914090-4-lihongbo22@huawei.com>
+Subject: [PATCH net-next 4/5] net/ipv6: make use of the helper macro LIST_HEAD()
+Date: Tue, 27 Aug 2024 18:04:06 +0800
+Message-ID: <20240827100407.3914090-5-lihongbo22@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240827100407.3914090-1-lihongbo22@huawei.com>
 References: <20240827100407.3914090-1-lihongbo22@huawei.com>
@@ -68,25 +68,35 @@ the code.
 
 Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 ---
- net/netfilter/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/ipv6/ip6_input.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/core.c b/net/netfilter/core.c
-index b00fc285b334..93642fcd379c 100644
---- a/net/netfilter/core.c
-+++ b/net/netfilter/core.c
-@@ -655,10 +655,8 @@ void nf_hook_slow_list(struct list_head *head, struct nf_hook_state *state,
- 		       const struct nf_hook_entries *e)
+diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
+index 133610a49da6..70c0e16c0ae6 100644
+--- a/net/ipv6/ip6_input.c
++++ b/net/ipv6/ip6_input.c
+@@ -111,9 +111,8 @@ static void ip6_list_rcv_finish(struct net *net, struct sock *sk,
  {
- 	struct sk_buff *skb, *next;
+ 	struct sk_buff *skb, *next, *hint = NULL;
+ 	struct dst_entry *curr_dst = NULL;
 -	struct list_head sublist;
- 	int ret;
--
--	INIT_LIST_HEAD(&sublist);
 +	LIST_HEAD(sublist);
  
+-	INIT_LIST_HEAD(&sublist);
  	list_for_each_entry_safe(skb, next, head, list) {
- 		skb_list_del_init(skb);
+ 		struct dst_entry *dst;
+ 
+@@ -327,9 +326,8 @@ void ipv6_list_rcv(struct list_head *head, struct packet_type *pt,
+ 	struct net_device *curr_dev = NULL;
+ 	struct net *curr_net = NULL;
+ 	struct sk_buff *skb, *next;
+-	struct list_head sublist;
++	LIST_HEAD(sublist);
+ 
+-	INIT_LIST_HEAD(&sublist);
+ 	list_for_each_entry_safe(skb, next, head, list) {
+ 		struct net_device *dev = skb->dev;
+ 		struct net *net = dev_net(dev);
 -- 
 2.34.1
 
