@@ -1,44 +1,44 @@
-Return-Path: <netfilter-devel+bounces-3536-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3533-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCF6E962040
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 09:03:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E18C2962033
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 09:02:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79DC1285036
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 07:03:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049111C23A0D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 07:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FEF158548;
-	Wed, 28 Aug 2024 07:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2196F15884A;
+	Wed, 28 Aug 2024 07:02:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FBC15B554;
-	Wed, 28 Aug 2024 07:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E327156861;
+	Wed, 28 Aug 2024 07:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724828542; cv=none; b=f5VFRGd2YFzqY+gmdtBJDuzqtOTxWa0RGH/o6/3zQ8s+bKcYGvkqok3i5FJnZE+I4s191AkZLvSBTJuQcuaRN+oEMhRSEH6IR11xkHIERLuE+V28q21/kOPNJbHdfnmNmaZNT5Y+8uSHqe2AXXvpostMWhOFmNxLdI5Mde/FqNs=
+	t=1724828537; cv=none; b=J1OvGlzZLBk02nliKBX/4rFPz87R0CX99HHtH6blH9BqiYHc1MUJN/Yyed46F9UNViUuCv3OWO+6QNGvSrI5zKrx6QhUFCkbtRQGkj81bdzEG1temXrJu722m1jncW434TfQLbF7g0q9t2gJ9nWuid+aKsLd14ROYH/5JH4Ecpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724828542; c=relaxed/simple;
-	bh=cJa1hnS9lYVnIF4B8El0la0j95Um5vUaS2HneJF+CSU=;
+	s=arc-20240116; t=1724828537; c=relaxed/simple;
+	bh=rYQw2GvYk4flPgoa97He4EIDk++8BnrTx7hCVEVW6bM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Epam6rDE8dkNlUIETJPTgfCggLKJue0QdOEHsUinf65LPGScSLYw88pUwgsMYLNOINaCJwKEIywJtKVCJMaxpyXrZC4OTNc0klCSwLzxkzUqcvAC79AZicqM5vhx3uZfDEnKF+G83Sv3vuKsx6rGMbmMMnEDBsn7E/s+a2xXVns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+	 MIME-Version:Content-Type; b=HnBWvrhmqU8kFMopI+LFdk7bTtZOkG5beHjGuRYK6kz2/emRrAIPqrasKGdaGNyRGr0AXC2GzqDs9Nx7T6M4sGwJ+hTS5BPOpGHqqttYGQ4ymYpmOtuoDxsfIQ+yEjdF3njwDzApnQAiCbanKQ1p9noF+owTYvFPnU7OSmzwvOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WtwLX4RDMz13S81;
-	Wed, 28 Aug 2024 15:01:24 +0800 (CST)
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WtwKW3C99zpTvt;
+	Wed, 28 Aug 2024 15:00:31 +0800 (CST)
 Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8FB44180AE6;
-	Wed, 28 Aug 2024 15:02:12 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 37DDD180AE6;
+	Wed, 28 Aug 2024 15:02:13 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemh500013.china.huawei.com
  (7.202.181.146) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 28 Aug
- 2024 15:02:11 +0800
+ 2024 15:02:12 +0800
 From: Jinjie Ruan <ruanjinjie@huawei.com>
 To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <roopa@nvidia.com>,
 	<razor@blackwall.org>, <davem@davemloft.net>, <edumazet@google.com>,
@@ -47,9 +47,9 @@ To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <roopa@nvidia.com>,
 	<coreteam@netfilter.org>, <bridge@lists.linux.dev>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
 CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next 2/5] netfilter: Use kmemdup_array() instead of kmemdup() for multiple allocation
-Date: Wed, 28 Aug 2024 15:10:01 +0800
-Message-ID: <20240828071004.1245213-3-ruanjinjie@huawei.com>
+Subject: [PATCH -next 3/5] netfilter: arptables: Use kmemdup_array() instead of kmemdup() for multiple allocation
+Date: Wed, 28 Aug 2024 15:10:02 +0800
+Message-ID: <20240828071004.1245213-4-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240828071004.1245213-1-ruanjinjie@huawei.com>
 References: <20240828071004.1245213-1-ruanjinjie@huawei.com>
@@ -69,22 +69,22 @@ overflows.
 
 Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- net/bridge/netfilter/ebtables.c | 2 +-
+ net/ipv4/netfilter/arp_tables.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index cbd0e3586c3f..3e67d4aff419 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -1256,7 +1256,7 @@ int ebt_register_table(struct net *net, const struct ebt_table *input_table,
- 		goto free_unlock;
+diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
+index 14365b20f1c5..4493a785c1ea 100644
+--- a/net/ipv4/netfilter/arp_tables.c
++++ b/net/ipv4/netfilter/arp_tables.c
+@@ -1547,7 +1547,7 @@ int arpt_register_table(struct net *net,
+ 		goto out_free;
  	}
  
 -	ops = kmemdup(template_ops, sizeof(*ops) * num_ops, GFP_KERNEL);
 +	ops = kmemdup_array(template_ops, num_ops, sizeof(*ops), GFP_KERNEL);
  	if (!ops) {
  		ret = -ENOMEM;
- 		if (newinfo->nentries)
+ 		goto out_free;
 -- 
 2.34.1
 
