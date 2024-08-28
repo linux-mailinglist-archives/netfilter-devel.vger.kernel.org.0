@@ -1,56 +1,77 @@
-Return-Path: <netfilter-devel+bounces-3548-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3551-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E490A9626F8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 14:25:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D62B19627A6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 14:47:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23F0D1C2180E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 12:25:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FCD81F253BC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 12:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC6317ADEE;
-	Wed, 28 Aug 2024 12:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D72D176255;
+	Wed, 28 Aug 2024 12:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="OTiUTwan"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2581176233;
-	Wed, 28 Aug 2024 12:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA69328DB
+	for <netfilter-devel@vger.kernel.org>; Wed, 28 Aug 2024 12:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724847875; cv=none; b=eh+venkpb0R2FvpuRl/eMM12bVxvgEaWoQQIMUMoek5v491WZzuDcB65aDX32++FuuW0XfBkvlrE9HWGN29TgdOB3txHSXSTT8K74R3FEbi79T/R4e++82XsUG8afIA9zBPjmFos3ZJvwF02cUecXPglbhwRLrJlVIXgauSfP9E=
+	t=1724849258; cv=none; b=VGSyL2VDGCFgFmjnO2Fu0AF1bzhfqe3GXXykVyoNIDToaqoG1RZrEMGxibnCuLiQGefXJWljXMuZF7iTMkJjW5qyp7fmP9gSiSQUvypkjNnck0nm+4jRQUqJ/YeiemKX/S4PuUb8SFHGTV9wesoh91ecLL/dQRTu0ywtLm3Qo/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724847875; c=relaxed/simple;
-	bh=yamfc4O+Z5YpW9l7oNEwgRHuIPAHfmVkTKB8P+Ojc7A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f2G6bEL0zwA1TyE9XDNWGzOizx4hRF+3LaVqXzF8rueUu3f8X1IVhSzIoAdRaLwKihrjbSQ996pWjyTo63Msv8pwFIR6/yXTcNvl77/hyP5H4R9gVvOEcNgsHuExCff77tCyF1QUoE/8eU5M/rVsf0OA98n5nx8k8kbqOfBLXvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Wv3Pn01MXz20n1m;
-	Wed, 28 Aug 2024 20:19:40 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6F7C61A016C;
-	Wed, 28 Aug 2024 20:24:30 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 28 Aug
- 2024 20:24:30 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <dsahern@kernel.org>, <ralf@linux-mips.org>,
-	<jmaloy@redhat.com>, <ying.xue@windriver.com>, <dan.carpenter@linaro.org>
-CC: <netdev@vger.kernel.org>, <linux-hams@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <lihongbo22@huawei.com>
-Subject: [PATCH net-next v2 6/6] net/ipv4: net: prefer strscpy over strcpy
-Date: Wed, 28 Aug 2024 20:32:24 +0800
-Message-ID: <20240828123224.3697672-7-lihongbo22@huawei.com>
+	s=arc-20240116; t=1724849258; c=relaxed/simple;
+	bh=YO5nEXB5aTN20PPbQ77clDotHNqzxK4Ts6E+Tu3xfNo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YABqBHogdkmWIlCN5k7CeY9qame7J+HSowetIJfPcUsSVj+3zC17JM/FWAtM5/LeTGRTJz3GbAw3bUAa3QLflptoJKz2rBbVW531GROXUqhYm65/eTNjB2Ejc3L/99DB+fBHnDxqwfaZmoO3TeWzNC2C48gJ+8MONimejSe5/3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=OTiUTwan; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-371b098e699so5442309f8f.2
+        for <netfilter-devel@vger.kernel.org>; Wed, 28 Aug 2024 05:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1724849255; x=1725454055; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5iLofNFhaqYBBlXfcdbMIjK8SePu//vPrew5aKhTAGQ=;
+        b=OTiUTwanW5R+m63gsdl/mijrumyktAfsBTIHyouuyhz8aFtDf5kT8Xd506Hojqk2zP
+         mTQbJy8Qt53wnpGQWelgq+PsNYDgr5vHGm5d1f2I0y/dSAhXK1arYjPS+IHqd76FMrV2
+         s7rzVxy1954qqytJxBjb40t00H687e42tL4iiq1Nl44lSVGtNLvj3n9xDTkb/KTAYZwx
+         aggkpEypWqbWR2rbsmz0+YboKsLAWeUBnJkRBr6xke3OIVEZiYwHqsaytieJOhoXaGPi
+         7b8wDBtSWGpU0cCoeABmlbJWMLoxstxrz2f2TFKevlxsx8hyNGiB0IbU2Cx8nZ/X4PB5
+         HOSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724849255; x=1725454055;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5iLofNFhaqYBBlXfcdbMIjK8SePu//vPrew5aKhTAGQ=;
+        b=VdBglA1ba+5Iz4dTfbuwmd8CulU8392Jl7cVLGyC9ywFwUZsbgdeyfrLsGG3NFoagW
+         J/0gm19/41UGF8WkPcNBtGixJvdpNwi8kYctFORgMs1Xt0aNewxXwPL4lnEVSpxPlowV
+         L0qE/ZsLZlgKjQdOu5k2w+W9VptVNP1WP2MmYlV22t0eBVG1LTTmpw6WG3pSY0FbvAl7
+         vtygUl7Yza3BS2lLg3bkfmz+T3myAXXWxv3CkjT2k9WREOgBDVBLGs27f+AzcqZJat1E
+         gLp7Vn5zreiXQj+fK2v0UTkedzXNNeH+htvRm97gfUbIHF+TekdO/mUqVWXXx6pt873K
+         Vnyg==
+X-Gm-Message-State: AOJu0YyhdgVWBclsaBGwrcsMrWhmLxhJPlBcfDg1OFiDYWCEF4r9DsjY
+	x/pEJJbcR1eJA6//LdzimUjgNDjM3OYzboQ0g55TBEXVkNRh2n9eWwJ4yw==
+X-Google-Smtp-Source: AGHT+IFxUr08dq4fdcQcLyZXhhZgai3J+VeQ0YunNPFNyum2AX6ufcNs8c+Xlj1OtWNsEO5JvplZqg==
+X-Received: by 2002:a5d:60c7:0:b0:371:a92d:8673 with SMTP id ffacd0b85a97d-373118c852fmr12878855f8f.44.1724849254395;
+        Wed, 28 Aug 2024 05:47:34 -0700 (PDT)
+Received: from thinkpc.. (shef-16-b2-v4wan-169484-cust5160.vm3.cable.virginm.net. [92.236.212.41])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a86e5486264sm242777966b.39.2024.08.28.05.47.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2024 05:47:34 -0700 (PDT)
+From: Joshua Lant <joshualant@googlemail.com>
+X-Google-Original-From: Joshua Lant <joshualant@gmail.com>
+To: netfilter-devel@vger.kernel.org
+Cc: Joshua Lant <joshualant@gmail.com>
+Subject: [PATCH iptables 0/1] configure: Determine if musl is used for build
+Date: Wed, 28 Aug 2024 13:47:30 +0100
+Message-Id: <20240828124731.553911-1-joshualant@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240828123224.3697672-1-lihongbo22@huawei.com>
-References: <20240828123224.3697672-1-lihongbo22@huawei.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -58,63 +79,20 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500022.china.huawei.com (7.185.36.66)
 
-The deprecated helper strcpy() performs no bounds checking on the
-destination buffer. This could result in linear overflows beyond
-the end of the buffer, leading to all kinds of misbehaviors.
-The safe replacement is strscpy() [1].
+As per discussions regarding prior patch adding an option for
+building with musl, this patch automatically detects when building with
+musl in the configure.ac:
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy [1]
+https://marc.info/?l=netfilter-devel&m=172426460502909&w=2
+https://marc.info/?l=netfilter-devel&m=172086278122266&w=2
 
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
----
- net/ipv4/ip_tunnel.c            | 2 +-
- net/ipv4/netfilter/arp_tables.c | 2 +-
- net/ipv4/netfilter/ip_tables.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Joshua Lant (1):
+  configure: Determine if musl is used for build
 
-diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
-index 5cffad42fe8c..0cd2f3de100c 100644
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -1326,7 +1326,7 @@ int ip_tunnel_init(struct net_device *dev)
- 
- 	tunnel->dev = dev;
- 	tunnel->net = dev_net(dev);
--	strcpy(tunnel->parms.name, dev->name);
-+	strscpy(tunnel->parms.name, dev->name);
- 	iph->version		= 4;
- 	iph->ihl		= 5;
- 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 14365b20f1c5..42c34e8952da 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -826,7 +826,7 @@ static int get_info(struct net *net, void __user *user, const int *len)
- 		       sizeof(info.underflow));
- 		info.num_entries = private->number;
- 		info.size = private->size;
--		strcpy(info.name, name);
-+		strscpy(info.name, name);
- 
- 		if (copy_to_user(user, &info, *len) != 0)
- 			ret = -EFAULT;
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index fe89a056eb06..97e754ddc155 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -981,7 +981,7 @@ static int get_info(struct net *net, void __user *user, const int *len)
- 		       sizeof(info.underflow));
- 		info.num_entries = private->number;
- 		info.size = private->size;
--		strcpy(info.name, name);
-+		strscpy(info.name, name);
- 
- 		if (copy_to_user(user, &info, *len) != 0)
- 			ret = -EFAULT;
+ configure.ac | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
 -- 
 2.34.1
 
