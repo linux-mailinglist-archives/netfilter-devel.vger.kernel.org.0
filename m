@@ -1,44 +1,44 @@
-Return-Path: <netfilter-devel+bounces-3533-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3537-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E18C2962033
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 09:02:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62CA6962046
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 09:03:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049111C23A0D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 07:02:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18C7F1F261B9
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 07:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2196F15884A;
-	Wed, 28 Aug 2024 07:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C5815C14D;
+	Wed, 28 Aug 2024 07:02:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E327156861;
-	Wed, 28 Aug 2024 07:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F46615B560;
+	Wed, 28 Aug 2024 07:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724828537; cv=none; b=J1OvGlzZLBk02nliKBX/4rFPz87R0CX99HHtH6blH9BqiYHc1MUJN/Yyed46F9UNViUuCv3OWO+6QNGvSrI5zKrx6QhUFCkbtRQGkj81bdzEG1temXrJu722m1jncW434TfQLbF7g0q9t2gJ9nWuid+aKsLd14ROYH/5JH4Ecpo=
+	t=1724828544; cv=none; b=bns2v17Pz3W48SnFsp2VakvbCyRhWkNu4G1yDK8qtuSpC1462shHgFhhp7t+h7TFXnJ30qbxhiyA+Tuqrc2VpfmNyS4z8bg4MfCxAWhrRRp5gtKPhnN78CRCLHJQLxeSr6GmKf8TH/ZKqWL1pZLJ4CMUVfjSnG2/lRX9X/bd1ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724828537; c=relaxed/simple;
-	bh=rYQw2GvYk4flPgoa97He4EIDk++8BnrTx7hCVEVW6bM=;
+	s=arc-20240116; t=1724828544; c=relaxed/simple;
+	bh=KRea+Vl+gVbOaLY/HDCRVQFg8GITaziBqGbQ2FPwNY0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HnBWvrhmqU8kFMopI+LFdk7bTtZOkG5beHjGuRYK6kz2/emRrAIPqrasKGdaGNyRGr0AXC2GzqDs9Nx7T6M4sGwJ+hTS5BPOpGHqqttYGQ4ymYpmOtuoDxsfIQ+yEjdF3njwDzApnQAiCbanKQ1p9noF+owTYvFPnU7OSmzwvOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=nxC4ZQJ/kOO4sQAQfZrNl15y9Fv9pog6l2VlgrFn6B002U12Bieb3q1E1bMNyKJEvEsa+ZuI1UlzXBB5CP3TND9T1X7PZJX2ZNipMM/Z/VGeEy1PRHmaQ05czZFhr7DBWwGlTQCFYdLpInCjFIbEn1y0cDwDFBY1zqNM47LiWBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WtwKW3C99zpTvt;
-	Wed, 28 Aug 2024 15:00:31 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WtwFw4Jhkz20n0H;
+	Wed, 28 Aug 2024 14:57:24 +0800 (CST)
 Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
-	by mail.maildlp.com (Postfix) with ESMTPS id 37DDD180AE6;
+	by mail.maildlp.com (Postfix) with ESMTPS id C163A14013B;
 	Wed, 28 Aug 2024 15:02:13 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemh500013.china.huawei.com
  (7.202.181.146) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 28 Aug
- 2024 15:02:12 +0800
+ 2024 15:02:13 +0800
 From: Jinjie Ruan <ruanjinjie@huawei.com>
 To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <roopa@nvidia.com>,
 	<razor@blackwall.org>, <davem@davemloft.net>, <edumazet@google.com>,
@@ -47,9 +47,9 @@ To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <roopa@nvidia.com>,
 	<coreteam@netfilter.org>, <bridge@lists.linux.dev>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
 CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next 3/5] netfilter: arptables: Use kmemdup_array() instead of kmemdup() for multiple allocation
-Date: Wed, 28 Aug 2024 15:10:02 +0800
-Message-ID: <20240828071004.1245213-4-ruanjinjie@huawei.com>
+Subject: [PATCH -next 4/5] netfilter: iptables: Use kmemdup_array() instead of kmemdup() for multiple allocation
+Date: Wed, 28 Aug 2024 15:10:03 +0800
+Message-ID: <20240828071004.1245213-5-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240828071004.1245213-1-ruanjinjie@huawei.com>
 References: <20240828071004.1245213-1-ruanjinjie@huawei.com>
@@ -69,14 +69,14 @@ overflows.
 
 Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- net/ipv4/netfilter/arp_tables.c | 2 +-
+ net/ipv4/netfilter/ip_tables.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 14365b20f1c5..4493a785c1ea 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1547,7 +1547,7 @@ int arpt_register_table(struct net *net,
+diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
+index fe89a056eb06..096bfef472b1 100644
+--- a/net/ipv4/netfilter/ip_tables.c
++++ b/net/ipv4/netfilter/ip_tables.c
+@@ -1767,7 +1767,7 @@ int ipt_register_table(struct net *net, const struct xt_table *table,
  		goto out_free;
  	}
  
