@@ -1,43 +1,44 @@
-Return-Path: <netfilter-devel+bounces-3532-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3535-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B5AF962031
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 09:02:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AACB496203B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 09:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8BB61F2589A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 07:02:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6781F2853EC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2024 07:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1405F15854D;
-	Wed, 28 Aug 2024 07:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C38B15A853;
+	Wed, 28 Aug 2024 07:02:18 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEE014C5BF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0198B14F9D5;
 	Wed, 28 Aug 2024 07:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724828537; cv=none; b=c/2Y99e/HkD2iRQIkLxjm/Tx/ojJVPZ7/EkHKlX6jF5FfVtE9vjaYUlZSRW5fP9u3lvOXZoQqKzBrjg2wVDVLlQYwta3QFw9i1FowVIn5Lv3IG5FoaLXTbNqKryxn6N4dqiMrVK/J/qap2yrYyLPY9Rjb1dgv6C8B6PK8+TNj0k=
+	t=1724828537; cv=none; b=Z1sEe8wvpj/HykJuDALF3752bAZXbgp8g1fRb0sUxmYCwgDPJ94CCwttho6VWEJ4fcSofbZyX/G3CycChm5QeyKe5Y8njXw4EgGy8zkY7E4RXQEGcpCInfQRMIwOJljuE/neqSjf7cUfWc7XAMi/RXbOitR22MEe6mik3neU0Go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724828537; c=relaxed/simple;
-	bh=y3Yy8UtEbYLSW7FqOzp1afcPSCmxgE4guwIdTYLZBCY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fFjS6m0jIakxkVb7KJ18+n/fdkM+E+g78AqSr0D/Oz0x2dl8hd8DTaBjCE+uohGZPcexi8lmA+Bff8b/o9NRHIs4Dt/hb99tP00sW0kolFn7Xd7Un7weRngpR1NUj6ful3UrGO6R5EjU/0R+/qOt3dUgKBk8pf2tRxnrEBvxqk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	bh=ia+QMXx6wK488wPA1+TuPYkqM0Y+z8p8bHzHWG6wQX0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LSC167M+zwUYDfgDhxnBxCOB96bAfAXRb7zxJmbJtI5gbQsl/SwwndglT2ujX+nr0Yu9YBnY5j8iWDKFx36cAtgM1IyV7N71/2myasx4paPpAe0lBoqS3LLLJpZhM6zKALS825RBvcB8AiwQTl74KUA25zaDQY/QroehCvzfIDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WtwLW0wbMzyQVp;
-	Wed, 28 Aug 2024 15:01:23 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4WtwKB2tl1z1xwRP;
+	Wed, 28 Aug 2024 15:00:14 +0800 (CST)
 Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5DC76180AE8;
+	by mail.maildlp.com (Postfix) with ESMTPS id F0D771A016C;
 	Wed, 28 Aug 2024 15:02:11 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemh500013.china.huawei.com
  (7.202.181.146) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 28 Aug
- 2024 15:02:10 +0800
+ 2024 15:02:11 +0800
 From: Jinjie Ruan <ruanjinjie@huawei.com>
 To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <roopa@nvidia.com>,
 	<razor@blackwall.org>, <davem@davemloft.net>, <edumazet@google.com>,
@@ -46,10 +47,12 @@ To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <roopa@nvidia.com>,
 	<coreteam@netfilter.org>, <bridge@lists.linux.dev>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
 CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next 0/5] net: Use kmemdup_array() instead of kmemdup() for multiple allocation
-Date: Wed, 28 Aug 2024 15:09:59 +0800
-Message-ID: <20240828071004.1245213-1-ruanjinjie@huawei.com>
+Subject: [PATCH -next 1/5] nfc: core: Use kmemdup_array() instead of kmemdup() for multiple allocation
+Date: Wed, 28 Aug 2024 15:10:00 +0800
+Message-ID: <20240828071004.1245213-2-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240828071004.1245213-1-ruanjinjie@huawei.com>
+References: <20240828071004.1245213-1-ruanjinjie@huawei.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,25 +67,27 @@ X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
 Let the kmemdup_array() take care about multiplication and possible
 overflows.
 
-Jinjie Ruan (5):
-  nfc: core: Use kmemdup_array() instead of kmemdup() for multiple
-    allocation
-  netfilter: Use kmemdup_array() instead of kmemdup() for multiple
-    allocation
-  netfilter: arptables: Use kmemdup_array() instead of kmemdup() for
-    multiple allocation
-  netfilter: iptables: Use kmemdup_array() instead of kmemdup() for
-    multiple allocation
-  netfilter: nf_nat: Use kmemdup_array() instead of kmemdup() for
-    multiple allocation
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+---
+ net/nfc/core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
- net/bridge/netfilter/ebtables.c | 2 +-
- net/ipv4/netfilter/arp_tables.c | 2 +-
- net/ipv4/netfilter/ip_tables.c  | 2 +-
- net/netfilter/nf_nat_core.c     | 2 +-
- net/nfc/core.c                  | 5 ++---
- 5 files changed, 6 insertions(+), 7 deletions(-)
-
+diff --git a/net/nfc/core.c b/net/nfc/core.c
+index e58dc6405054..cbc2f718aece 100644
+--- a/net/nfc/core.c
++++ b/net/nfc/core.c
+@@ -790,9 +790,8 @@ int nfc_targets_found(struct nfc_dev *dev,
+ 	dev->targets = NULL;
+ 
+ 	if (targets) {
+-		dev->targets = kmemdup(targets,
+-				       n_targets * sizeof(struct nfc_target),
+-				       GFP_ATOMIC);
++		dev->targets = kmemdup_array(targets, n_targets,
++					     sizeof(struct nfc_target), GFP_ATOMIC);
+ 
+ 		if (!dev->targets) {
+ 			dev->n_targets = 0;
 -- 
 2.34.1
 
