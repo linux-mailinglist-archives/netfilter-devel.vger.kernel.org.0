@@ -1,77 +1,64 @@
-Return-Path: <netfilter-devel+bounces-3574-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3580-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F3F9640EF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 12:08:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ECAA96432C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 13:34:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D69081C247EF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 10:08:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2824B21DCB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 11:34:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0753A18E020;
-	Thu, 29 Aug 2024 10:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E63190468;
+	Thu, 29 Aug 2024 11:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="B+Uz8wcG"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4091E18CC1E;
-	Thu, 29 Aug 2024 10:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415F2158A3C
+	for <netfilter-devel@vger.kernel.org>; Thu, 29 Aug 2024 11:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724926088; cv=none; b=h/1jdFjklUW6ePX7XxXgA3DISDuAp+ZVcYgThxidb4WIrL9OyM76I+5NlGAKYgo9muShiFU+jLMC32Hc8ts74pjsioY/SAKzF6P8ZTsNzEN2LXEdkmcEGfCD82u+qqyA166YHrLkz/FbxT1VHuJu578ZwLbF8zDohCr9p/eGZ7Y=
+	t=1724931270; cv=none; b=t0GL+FwyKg/0R7d4SiBC4aOh8BD7ocRJmp9sQ0KpxwVhB2/X140HuL15PTStahejnLdbODgX7L6/5ZEcnZLUc7zh5ZvENDOHXiNTxnKxiD6uBo7yk4w8XHhawS9QHA3Fj8bP+DyCDJ7lOIIRk7QI83GQSKeAohaoxVyTHgeFIRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724926088; c=relaxed/simple;
-	bh=v7npGnWVI06jQB/GP+WqmHASzHtfMK63ymHNNGaUS9Y=;
+	s=arc-20240116; t=1724931270; c=relaxed/simple;
+	bh=tuhYNMrJVvj/jyzQxtLsktpmoM6Z/1vHuYRnX1ZkRfY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oFJqTEfxBWYlTw7dIEhoRPeMpGBO1HZ+BjEwCAKVXLrCy/So5bJet+9QX2oa+ezOJf09CouJyA1WiHvjCUWaIQPZHbQF07Pooq/aqhV+JgOzBwNAmB6QVlPXh7BqRhmYR7YO483tm/fA72Fmj0yHUWEBwv7JymzgJgSLxL5j/Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5334adf7249so645506e87.3;
-        Thu, 29 Aug 2024 03:08:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724926085; x=1725530885;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=68VfpIe/gY3b5Zsqxl5bIsvzSythZF52J8UjEnejXGE=;
-        b=XCjImMkft1QWJvHeR+XzkO47uOooNgeVvZXJrZncHO+3wurLG/Mp/itLAGg3tbc5Gi
-         ppqThxJRUoUR3FevnIgew26tSmQweyFBCnkCnnbGHTwaB4a0rhnN4Fj/QrX88anXYd34
-         y/Os9loT5b6PLTBu2wgrOpKBn5CzHI6It3vAwCXBH7qSp6hINn5ewPIQhZE0AkwIuZzF
-         QlZstIOUcFX5kanIRZrFwYtqbG30SdkRbzuWJ9l4cRlmdxRLfGZu7LHy2Ad3FrlK4vvO
-         YwNym/Iy8VeM4WEGXCqzZi0fEmydqM220GuFXcNjaiSA/T2l4IuFg1K8TQL8DvnCynKh
-         4/uA==
-X-Forwarded-Encrypted: i=1; AJvYcCUobM+cTW6kP56gbxZQWGYOgnvzCK0Mj3Ryr4hGoGZMnYiPrUvru7OeeFqdZ88bNTUe3TTEWih5@vger.kernel.org, AJvYcCUv3zcQBPDpy8b73zXUi7ByDTOZVgVwyZaoLQntjadPcAydm0Zg+RncDOv6PsE8Lw5uE61wR5hHX370jOnEts2m@vger.kernel.org, AJvYcCWWvIFXh31M4xE1sL2cQjBwUg/c40+zjEjkbFSOxFwoYDABTjw8zkXjh9ueH3neAjIznDaYQ+hDkSeptjn2z2KE@vger.kernel.org, AJvYcCXdaea2AwDn06d39g+CK60AjUClll0WF3CSDDbRe4TwsXtm92aLP98e600c2ws9e5U3pnGnDAJBEQLCAcc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz779Lk9kpY/UGZUFh/dUa7yPoqYXzkwr4jWo5+d/6c/wqZVor8
-	lINScQZpb0Uu2nsbKi2Di5E0zOUMvZuYPEl6hQ0ZNeLNxMYv3REh3wvYKA==
-X-Google-Smtp-Source: AGHT+IFmz+YxnGXgxNh++Tsg0uingdtxTTovmvly65eI0+SFc9ZOa//xepAe3YbevHsB4xnK70BHgQ==
-X-Received: by 2002:a05:6512:10d6:b0:52c:90b6:170f with SMTP id 2adb3069b0e04-5353e56eab0mr1847296e87.29.1724926084638;
-        Thu, 29 Aug 2024 03:08:04 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-113.fbsv.net. [2a03:2880:30ff:71::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a89891d6dc3sm58031766b.156.2024.08.29.03.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 03:08:04 -0700 (PDT)
-Date: Thu, 29 Aug 2024 03:08:01 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: fw@strlen.de, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	rbc@meta.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	"open list:NETFILTER" <coreteam@netfilter.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH nf-next v3 1/2] netfilter: Make IP_NF_IPTABLES_LEGACY
- selectable
-Message-ID: <ZtBIgekUyptmCqRa@gmail.com>
-References: <20240827145242.3094777-1-leitao@debian.org>
- <20240827145242.3094777-2-leitao@debian.org>
- <20240828074240.2abaa74c@kernel.org>
- <Zs88pbEadxLWLLbn@gmail.com>
- <20240828114123.3c85a9a5@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OSkA1CfcnaSf+TbJNrcc7FX08BjFEfVmkAdIupL4ShpWokGPhdd1dH8sdnnB7/yi5dtPRGfvFZKHQYz5G9xI8IQ49mRR/daGBBuYzkD6tVCGsVjmj35nKstmhSRjuthIrSC2wxqHh2zxkB28HoeLlgZmoa5hxKuJej3HZp31chk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=B+Uz8wcG; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=mUU5z69MXUaSde/LEMrB5ZFnzEo1Ct8TIMJ2DRCWDaI=; b=B+Uz8wcGYL66lDt6L7eB9cFgCK
+	JjLKNEIi1NrTHUPBcpori9rtoRAY4Qp1GA2n5co/KDkn4j4rNHGhXszibPDuCQgJxgQPLhRwM7l9p
+	ID1/DzqycfEF0ufL2AEiNhjIkGnKZStGC9Gy4aEAfJ9iAJVEv0e8XMa3Wsf/UQHSeZ/MROS/iQScQ
+	gngS2xl9r30mIy1EXaYBGvRtfDO8ZECTNmm3SNrznn+PLLGtXVWckneZdYyUOgS1gCzm8xE+G3HDr
+	TeP3QwpfnieES75H7W6Gsp8nzfHvNCq4ZMH1Du2+R3CwIjTcpJy8gTqk/K5EKquZcmSDJpSpuApcF
+	1G+CWwng==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1sjd0i-000000007mE-2s3l;
+	Thu, 29 Aug 2024 13:08:16 +0200
+Date: Thu, 29 Aug 2024 13:08:16 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Joshua Lant <joshualant@googlemail.com>
+Cc: netfilter-devel@vger.kernel.org, Joshua Lant <joshualant@gmail.com>
+Subject: Re: [PATCH iptables 1/1] configure: Determine if musl is used for
+ build
+Message-ID: <ZtBWoImxzGRBFLs2@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Joshua Lant <joshualant@googlemail.com>,
+	netfilter-devel@vger.kernel.org, Joshua Lant <joshualant@gmail.com>
+References: <20240828124731.553911-1-joshualant@gmail.com>
+ <20240828124731.553911-2-joshualant@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -80,34 +67,36 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240828114123.3c85a9a5@kernel.org>
+In-Reply-To: <20240828124731.553911-2-joshualant@gmail.com>
 
-Hello Jakub,
+Hi Joshua,
 
-On Wed, Aug 28, 2024 at 11:41:23AM -0700, Jakub Kicinski wrote:
-> On Wed, 28 Aug 2024 08:05:09 -0700 Breno Leitao wrote:
-> > On Wed, Aug 28, 2024 at 07:42:40AM -0700, Jakub Kicinski wrote:
-> > > On Tue, 27 Aug 2024 07:52:40 -0700 Breno Leitao wrote:  
-> > > > +++ b/tools/testing/selftests/net/config  
-> > > 
-> > > You gotta check all the configs, net is now fine, but bpf still breaks.
-> > > There may be more configs we don't use in CI.  
-> > 
-> > Sure, how can I find which configs I should care about?
-> 
-> There are various configs in the tree. Grep for the configs you convert
-> from select to depends on, they will all need updating.
+On Wed, Aug 28, 2024 at 01:47:31PM +0100, Joshua Lant wrote:
+> Error compiling with musl-libc:
+> The commit hash 810f8568f44f5863c2350a39f4f5c8d60f762958
+> introduces the netinet/ether.h header into xtables.h, which causes an error due
+> to the redefinition of the ethhdr struct, defined in linux/if_ether.h and
+> netinet/ether.h. This is fixed by the inclusion of -D__UAPI_DEF_ETHHDR=0 in
+> CFLAGS for musl. Automatically check for this macro, since it is defined
+> in musl but not in glibc.
 
-I am looking at all files that depend on these Kconfig options, and
-there are a lot of tests.
+Thanks for the patch! I tested and it may be simplified a bit:
 
-Thinking more about the problem, it doesn't seem to be a good idea to
-change dependency from all NF modules to NF_IPTABLES_LEGACY. In other
-words, the `s/selects/depends on/` is the part that is causing all this
-hassle, and it seems unnecessary.
+[...]
+> +	#if defined(__UAPI_DEF_ETHHDR) && __UAPI_DEF_ETHHDR == 0
+> +		return 0;
+> +	#else
+> +		#error error trying musl...
+> +	#endif
+[...]
 
-That said, I would suggest we do not change the dependency, and keep the
-"select NF_IPTABLES_LEGACY", and keep NF_IPTABLES_LEGACY user selectable.
+Since the non-failure case is the default, this is sufficient:
 
-This will make the patch safer, while fixing the problem.
+|       #if ! defined(__UAPI_DEF_ETHHDR) || __UAPI_DEF_ETHHDR != 0
+|               #error error trying musl...
+|       #endif
+
+Fine with you? If so, I'll push the modified patch out.
+
+Thanks, Phil
 
