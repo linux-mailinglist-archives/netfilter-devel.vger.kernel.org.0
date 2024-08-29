@@ -1,38 +1,38 @@
-Return-Path: <netfilter-devel+bounces-3579-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3577-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AAF0964312
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 13:32:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C77964311
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 13:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6A41F23273
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 11:32:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 776D7B2695B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 11:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70851922D0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0691940B3;
 	Thu, 29 Aug 2024 11:32:02 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BEE1922FB
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C391922FC
 	for <netfilter-devel@vger.kernel.org>; Thu, 29 Aug 2024 11:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724931122; cv=none; b=LqOBH74E/tXZ5bXQlJtx6EHQ16hlRxYO/A1Rdw9e7zbZxRgm+4OuI/7M8Ewdx73knZ88lAA2iygUjQE0fiYajUk4YiVaRXIN06HKNVQwK2dROyMKDxa8TT7tPObjy/uMmRgI4AVnFnQdxbnv0jnFCiVl8uM1gwSpImx2Gc08dnc=
+	t=1724931122; cv=none; b=kTmB/+u+QONDP81dggLwQJQLVRxd8CDzGXLSPz6CzvBt2ht/0AetFZ3nHP1SymD1yny+5kNgzdlSKwhTz3Gjt053p1PLIzTySrDZ9MaBu8JB1QNw0C4032sZNJStvevUY3pMiwphsFRtrR94IaPcYfGCYZoWLLC/Lr73SwrUCFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724931122; c=relaxed/simple;
-	bh=6AkAV5BZNNPjMkOXTpLpwChmF2ARrC/Z21WhDMqESBs=;
+	bh=g8hSIChQB4/xJbtJCOJNdFJZxs42oJVlaaaFpeCJUfw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tBPISueTv8L2Omy3ZKEkYIb048Oaqp819YMj+Z1TAcGC0McXcqwTcyV5ytRGsbUNUu4HMAhhyKM5kaRQN7sOFp8dQaCiVLt1w0xEJdMgN827m1fDz9fIwYLglibzbv9fajpdjRFw49Pw5sx/PfYXjGk7QtrN6HzC8RSgLuHqOnY=
+	 MIME-Version; b=NttJa5rwSX66Yt+sLXsc40VF1joLTLXrrT9/Y1q76r10OZ3dD1KZniO/Ek4D16bcopOjB68eXh2YDZH1Deu1tEtkXhvKJHkeyeLJ5DiZsICM5P/DaTEORltQw9fuOxXWJ9LNbsDSsOebBhtVHMcCUuN6rtCzdLeb/zz83Q3pFmM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: eric@garver.life
-Subject: [PATCH nft 4/5] cache: relax requirement for replace rule command
-Date: Thu, 29 Aug 2024 13:31:52 +0200
-Message-Id: <20240829113153.1553089-4-pablo@netfilter.org>
+Subject: [PATCH nft 5/5] cache: position does not require full cache
+Date: Thu, 29 Aug 2024 13:31:53 +0200
+Message-Id: <20240829113153.1553089-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240829113153.1553089-1-pablo@netfilter.org>
 References: <20240829113153.1553089-1-pablo@netfilter.org>
@@ -44,139 +44,33 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-No need for full cache, this command relies on the rule handle which is
-not validated from userspace. Cache requirements are similar to those
-of add/create/delete rule commands.
+position refers to the rule handle, it has similar cache requirements as
+replace rule command, relax cache requirements.
 
-This speeds up incremental updates with large rulesets.
-
-Extend tests/coverage for rule replacement.
+Commit e5382c0d08e3 ("src: Support intra-transaction rule references")
+uses position.id for index support which requires a full cache, but
+only in such case.
 
 Fixes: 01e5c6f0ed03 ("src: add cache level flags")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/cache.c                                   |  2 +-
- .../testcases/rule_management/0004replace_0   |  8 ++-
- .../dumps/0004replace_0.json-nft              | 49 ++++++++++++++++++-
- .../rule_management/dumps/0004replace_0.nft   | 11 ++++-
- 4 files changed, 65 insertions(+), 5 deletions(-)
+ src/cache.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/src/cache.c b/src/cache.c
-index fce71eed3452..db7dfd96081d 100644
+index db7dfd96081d..3f1324a2f98b 100644
 --- a/src/cache.c
 +++ b/src/cache.c
-@@ -495,7 +495,7 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
- 			flags = evaluate_cache_add(cmd, flags);
- 			break;
- 		case CMD_REPLACE:
--			flags = NFT_CACHE_FULL;
-+			flags = NFT_CACHE_TABLE | NFT_CACHE_SET;
- 			break;
- 		case CMD_DELETE:
- 		case CMD_DESTROY:
-diff --git a/tests/shell/testcases/rule_management/0004replace_0 b/tests/shell/testcases/rule_management/0004replace_0
-index c3329af500d3..18dc4a9fe30b 100755
---- a/tests/shell/testcases/rule_management/0004replace_0
-+++ b/tests/shell/testcases/rule_management/0004replace_0
-@@ -6,5 +6,9 @@
- set -e
- $NFT add table t
- $NFT add chain t c
--$NFT add rule t c accept	# should have handle 2
--$NFT replace rule t c handle 2 drop
-+$NFT 'add set t s1 { type ipv4_addr; }'
-+$NFT 'add set t s2 { type ipv4_addr; flags interval; }'
-+$NFT add rule t c accept        # should have handle 4
-+$NFT replace rule t c handle 4 drop
-+$NFT replace rule t c handle 4 ip saddr { 1.1.1.1, 2.2.2.2 }
-+$NFT replace rule t c handle 4 ip saddr @s2 ip daddr { 3.3.3.3, 4.4.4.4 }
-diff --git a/tests/shell/testcases/rule_management/dumps/0004replace_0.json-nft b/tests/shell/testcases/rule_management/dumps/0004replace_0.json-nft
-index 5d0b7d066e83..767e80f14ff2 100644
---- a/tests/shell/testcases/rule_management/dumps/0004replace_0.json-nft
-+++ b/tests/shell/testcases/rule_management/dumps/0004replace_0.json-nft
-@@ -22,6 +22,27 @@
-         "handle": 0
-       }
-     },
-+    {
-+      "set": {
-+        "family": "ip",
-+        "name": "s1",
-+        "table": "t",
-+        "type": "ipv4_addr",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "set": {
-+        "family": "ip",
-+        "name": "s2",
-+        "table": "t",
-+        "type": "ipv4_addr",
-+        "handle": 0,
-+        "flags": [
-+          "interval"
-+        ]
-+      }
-+    },
-     {
-       "rule": {
-         "family": "ip",
-@@ -30,7 +51,33 @@
-         "handle": 0,
-         "expr": [
-           {
--            "drop": null
-+            "match": {
-+              "op": "==",
-+              "left": {
-+                "payload": {
-+                  "protocol": "ip",
-+                  "field": "saddr"
-+                }
-+              },
-+              "right": "@s2"
-+            }
-+          },
-+          {
-+            "match": {
-+              "op": "==",
-+              "left": {
-+                "payload": {
-+                  "protocol": "ip",
-+                  "field": "daddr"
-+                }
-+              },
-+              "right": {
-+                "set": [
-+                  "3.3.3.3",
-+                  "4.4.4.4"
-+                ]
-+              }
-+            }
-           }
-         ]
-       }
-diff --git a/tests/shell/testcases/rule_management/dumps/0004replace_0.nft b/tests/shell/testcases/rule_management/dumps/0004replace_0.nft
-index e20952ef573e..803c0debb737 100644
---- a/tests/shell/testcases/rule_management/dumps/0004replace_0.nft
-+++ b/tests/shell/testcases/rule_management/dumps/0004replace_0.nft
-@@ -1,5 +1,14 @@
- table ip t {
-+	set s1 {
-+		type ipv4_addr
-+	}
-+
-+	set s2 {
-+		type ipv4_addr
-+		flags interval
-+	}
-+
- 	chain c {
--		drop
-+		ip saddr @s2 ip daddr { 3.3.3.3, 4.4.4.4 }
- 	}
- }
+@@ -58,8 +58,7 @@ static unsigned int evaluate_cache_add(struct cmd *cmd, unsigned int flags)
+ 		flags |= NFT_CACHE_TABLE |
+ 			 NFT_CACHE_SET;
+ 
+-		if (cmd->handle.index.id ||
+-		    cmd->handle.position.id)
++		if (cmd->handle.index.id)
+ 			flags |= NFT_CACHE_FULL | NFT_CACHE_UPDATE;
+ 		break;
+ 	default:
 -- 
 2.30.2
 
