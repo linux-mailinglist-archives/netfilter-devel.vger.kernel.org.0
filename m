@@ -1,102 +1,125 @@
-Return-Path: <netfilter-devel+bounces-3580-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3575-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ECAA96432C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 13:34:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA22796430E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 13:32:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2824B21DCB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 11:34:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F98EB25F87
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2024 11:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E63190468;
-	Thu, 29 Aug 2024 11:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="B+Uz8wcG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A6F192B97;
+	Thu, 29 Aug 2024 11:32:01 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415F2158A3C
-	for <netfilter-devel@vger.kernel.org>; Thu, 29 Aug 2024 11:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2602218A6D1
+	for <netfilter-devel@vger.kernel.org>; Thu, 29 Aug 2024 11:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724931270; cv=none; b=t0GL+FwyKg/0R7d4SiBC4aOh8BD7ocRJmp9sQ0KpxwVhB2/X140HuL15PTStahejnLdbODgX7L6/5ZEcnZLUc7zh5ZvENDOHXiNTxnKxiD6uBo7yk4w8XHhawS9QHA3Fj8bP+DyCDJ7lOIIRk7QI83GQSKeAohaoxVyTHgeFIRo=
+	t=1724931121; cv=none; b=aYDmX+IRz+n83rPAX8CptX5CP3CmJjU834nO4ozdyHHRVh2r1dQfeufhrIgvWUu4eL71gl4mrsf1SA+huBUm0t3ISxOs+Oy5Rjn3DxLAG2b9uOhCkp0Foqf97kEeB8QXnNmNa760SthKKuNeO5mVb/HZenkaEYBkGI2Vkk1eLmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724931270; c=relaxed/simple;
-	bh=tuhYNMrJVvj/jyzQxtLsktpmoM6Z/1vHuYRnX1ZkRfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OSkA1CfcnaSf+TbJNrcc7FX08BjFEfVmkAdIupL4ShpWokGPhdd1dH8sdnnB7/yi5dtPRGfvFZKHQYz5G9xI8IQ49mRR/daGBBuYzkD6tVCGsVjmj35nKstmhSRjuthIrSC2wxqHh2zxkB28HoeLlgZmoa5hxKuJej3HZp31chk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=B+Uz8wcG; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=mUU5z69MXUaSde/LEMrB5ZFnzEo1Ct8TIMJ2DRCWDaI=; b=B+Uz8wcGYL66lDt6L7eB9cFgCK
-	JjLKNEIi1NrTHUPBcpori9rtoRAY4Qp1GA2n5co/KDkn4j4rNHGhXszibPDuCQgJxgQPLhRwM7l9p
-	ID1/DzqycfEF0ufL2AEiNhjIkGnKZStGC9Gy4aEAfJ9iAJVEv0e8XMa3Wsf/UQHSeZ/MROS/iQScQ
-	gngS2xl9r30mIy1EXaYBGvRtfDO8ZECTNmm3SNrznn+PLLGtXVWckneZdYyUOgS1gCzm8xE+G3HDr
-	TeP3QwpfnieES75H7W6Gsp8nzfHvNCq4ZMH1Du2+R3CwIjTcpJy8gTqk/K5EKquZcmSDJpSpuApcF
-	1G+CWwng==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1sjd0i-000000007mE-2s3l;
-	Thu, 29 Aug 2024 13:08:16 +0200
-Date: Thu, 29 Aug 2024 13:08:16 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Joshua Lant <joshualant@googlemail.com>
-Cc: netfilter-devel@vger.kernel.org, Joshua Lant <joshualant@gmail.com>
-Subject: Re: [PATCH iptables 1/1] configure: Determine if musl is used for
- build
-Message-ID: <ZtBWoImxzGRBFLs2@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Joshua Lant <joshualant@googlemail.com>,
-	netfilter-devel@vger.kernel.org, Joshua Lant <joshualant@gmail.com>
-References: <20240828124731.553911-1-joshualant@gmail.com>
- <20240828124731.553911-2-joshualant@gmail.com>
+	s=arc-20240116; t=1724931121; c=relaxed/simple;
+	bh=LKvAjwyRIEJ1+bjpdLTIlYg48nqkj1QLYWyCFc7NVps=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HHfZZsQVYKZQfhOBT3Lutg+VyTtj/SxWcpuczVYmrkV0mGaGSSii17rMwvVgMC4HUt38QBWe1rcqB9saE73LXdfglQ6rjeZv8qNAPadiGy693amTMHRNGEHxeydGMGvqE2hh+PuYYg3fP18lxZ8PILa2jOecOfzEXfN6UCOiIQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: eric@garver.life
+Subject: [PATCH nft 1/5] cache: assert filter when calling nft_cache_evaluate()
+Date: Thu, 29 Aug 2024 13:31:49 +0200
+Message-Id: <20240829113153.1553089-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240828124731.553911-2-joshualant@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Joshua,
+nft_cache_evaluate() always takes a non-null filter, remove superfluous
+checks when calculating cache requirements via flags.
 
-On Wed, Aug 28, 2024 at 01:47:31PM +0100, Joshua Lant wrote:
-> Error compiling with musl-libc:
-> The commit hash 810f8568f44f5863c2350a39f4f5c8d60f762958
-> introduces the netinet/ether.h header into xtables.h, which causes an error due
-> to the redefinition of the ethhdr struct, defined in linux/if_ether.h and
-> netinet/ether.h. This is fixed by the inclusion of -D__UAPI_DEF_ETHHDR=0 in
-> CFLAGS for musl. Automatically check for this macro, since it is defined
-> in musl but not in glibc.
+Note that filter is still option from netlink dump path, since this can
+be called from error path to provide hints.
 
-Thanks for the patch! I tested and it may be simplified a bit:
+Fixes: 08725a9dc14c ("cache: filter out rules by chain")
+Fixes: b3ed8fd8c9f3 ("cache: missing family in cache filtering")
+Fixes: 635ee1cad8aa ("cache: filter out sets and maps that are not requested")
+Fixes: 3f1d3912c3a6 ("cache: filter out tables that are not requested")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/cache.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-[...]
-> +	#if defined(__UAPI_DEF_ETHHDR) && __UAPI_DEF_ETHHDR == 0
-> +		return 0;
-> +	#else
-> +		#error error trying musl...
-> +	#endif
-[...]
+diff --git a/src/cache.c b/src/cache.c
+index 72f2972f0259..8cddabdb7b98 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -212,18 +212,17 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ {
+ 	switch (cmd->obj) {
+ 	case CMD_OBJ_TABLE:
+-		if (filter)
+-			filter->list.family = cmd->handle.family;
++		filter->list.family = cmd->handle.family;
+ 		if (!cmd->handle.table.name) {
+ 			flags |= NFT_CACHE_TABLE;
+ 			break;
+-		} else if (filter) {
++		} else {
+ 			filter->list.table = cmd->handle.table.name;
+ 		}
+ 		flags |= NFT_CACHE_FULL;
+ 		break;
+ 	case CMD_OBJ_CHAIN:
+-		if (filter && cmd->handle.chain.name) {
++		if (cmd->handle.chain.name) {
+ 			filter->list.family = cmd->handle.family;
+ 			filter->list.table = cmd->handle.table.name;
+ 			filter->list.chain = cmd->handle.chain.name;
+@@ -236,7 +235,7 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ 		break;
+ 	case CMD_OBJ_SET:
+ 	case CMD_OBJ_MAP:
+-		if (filter && cmd->handle.table.name && cmd->handle.set.name) {
++		if (cmd->handle.table.name && cmd->handle.set.name) {
+ 			filter->list.family = cmd->handle.family;
+ 			filter->list.table = cmd->handle.table.name;
+ 			filter->list.set = cmd->handle.set.name;
+@@ -256,8 +255,7 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ 			flags |= NFT_CACHE_SETELEM;
+ 		break;
+ 	case CMD_OBJ_FLOWTABLE:
+-		if (filter &&
+-		    cmd->handle.table.name &&
++		if (cmd->handle.table.name &&
+ 		    cmd->handle.flowtable.name) {
+ 			filter->list.family = cmd->handle.family;
+ 			filter->list.table = cmd->handle.table.name;
+@@ -314,8 +312,6 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ static unsigned int evaluate_cache_reset(struct cmd *cmd, unsigned int flags,
+ 					 struct nft_cache_filter *filter)
+ {
+-	assert(filter);
+-
+ 	switch (cmd->obj) {
+ 	case CMD_OBJ_TABLE:
+ 	case CMD_OBJ_CHAIN:
+@@ -482,6 +478,8 @@ int nft_cache_evaluate(struct nft_ctx *nft, struct list_head *cmds,
+ 	unsigned int flags, batch_flags = NFT_CACHE_EMPTY;
+ 	struct cmd *cmd;
+ 
++	assert(filter);
++
+ 	list_for_each_entry(cmd, cmds, list) {
+ 		if (nft_handle_validate(cmd, msgs) < 0)
+ 			return -1;
+-- 
+2.30.2
 
-Since the non-failure case is the default, this is sufficient:
-
-|       #if ! defined(__UAPI_DEF_ETHHDR) || __UAPI_DEF_ETHHDR != 0
-|               #error error trying musl...
-|       #endif
-
-Fine with you? If so, I'll push the modified patch out.
-
-Thanks, Phil
 
