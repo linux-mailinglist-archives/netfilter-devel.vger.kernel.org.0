@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3722-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3724-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE77196E636
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Sep 2024 01:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE9396E63A
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Sep 2024 01:30:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7D91C232A5
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Sep 2024 23:29:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31F3C1C2322A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Sep 2024 23:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D959E1BA281;
-	Thu,  5 Sep 2024 23:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74FD51BAEFD;
+	Thu,  5 Sep 2024 23:29:39 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B371B5EB9;
-	Thu,  5 Sep 2024 23:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C39C1B6523;
+	Thu,  5 Sep 2024 23:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725578978; cv=none; b=OIjmTlylCdK1u9wxik2uyjgMXEulxlnHgTAKdn5xaL9Z+sB5dN3zzmRCtc3mmrGOwe1nbull3brWFWScwkwM4oMjE02g9nW3lHsZHr20S0KU/1NJnpCe66ocTODP1YlDSNwferd43zODIgoi9ooyHrgWarpT5o0eQ2R+tP3/31g=
+	t=1725578979; cv=none; b=qTrJg+iL/2HHP8ErGvyO7bCgY9TCkBuc+W4KhdZrxhtrRkM3FydDISwg6o4UokNw3mnC1ipTK2kgwlHZVnwSTsPVoJMI3WpDxL78NahQwlaTXGFqRtVUcHdJfuYeduXzBfU7zwxkqTzpsLsLIYnSDehEEEYzYwgZrieAtBwOG+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725578978; c=relaxed/simple;
-	bh=1qKpAfte+CAn5qcwcNfXUlfwIDUol4jkKfzTSoTB2JU=;
+	s=arc-20240116; t=1725578979; c=relaxed/simple;
+	bh=CibE2LviFyefwx1EHOgQusZkF7cAtFeGSa/++6zyk5M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ed8qAsYx+sB0GAdDG+Y7V3Zy7o8ws0qY99Qxwsvjdk6fApv5xnLvYcL3sEIMWtcBs68h2Dk0Bss/5dM+FK7Ee2MEkWUC3WGc7UjgaYvhX5SU7fZjPOWCjaR9JeL89s8TI9JDYYBalVS3deC3r9DAGiI3NphnpIU1E6DXy3svwgA=
+	 MIME-Version; b=oJU4AjaMkhbrkkPZu/BANcEkAf9I2v0n0EFrQ8W431sFTLnRj15fwqTArqQ1231achBLVk70pI+toSEDBh9KDFMrKvy6AWjN3Dnivb5rfyB7DvLuuXPOeA4aA02djjen28VOydZuyBM4VdHYdyEdumGJqSa8A8iD1h/AmCBGz7g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 03/16] netfilter: Use kmemdup_array instead of kmemdup for multiple allocation
-Date: Fri,  6 Sep 2024 01:29:07 +0200
-Message-Id: <20240905232920.5481-4-pablo@netfilter.org>
+Subject: [PATCH net-next 04/16] netfilter: conntrack: Convert to use ERR_CAST()
+Date: Fri,  6 Sep 2024 01:29:08 +0200
+Message-Id: <20240905232920.5481-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240905232920.5481-1-pablo@netfilter.org>
 References: <20240905232920.5481-1-pablo@netfilter.org>
@@ -49,89 +49,30 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Yan Zhen <yanzhen@vivo.com>
+From: Shen Lichuan <shenlichuan@vivo.com>
 
-When we are allocating an array, using kmemdup_array() to take care about
-multiplication and possible overflows.
+Use the ERR_CAST macro to clearly indicate that this is a pointer
+to an error value and that a type conversion was performed.
 
-Also it makes auditing the code easier.
-
-Signed-off-by: Yan Zhen <yanzhen@vivo.com>
-Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Shen Lichuan <shenlichuan@vivo.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/bridge/netfilter/ebtables.c | 2 +-
- net/ipv4/netfilter/arp_tables.c | 2 +-
- net/ipv4/netfilter/ip_tables.c  | 2 +-
- net/ipv6/netfilter/ip6_tables.c | 2 +-
- net/netfilter/nf_nat_core.c     | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ net/netfilter/nf_conntrack_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index cbd0e3586c3f..3e67d4aff419 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -1256,7 +1256,7 @@ int ebt_register_table(struct net *net, const struct ebt_table *input_table,
- 		goto free_unlock;
- 	}
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 9384426ddc06..d3cb53b008f5 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1722,7 +1722,7 @@ init_conntrack(struct net *net, struct nf_conn *tmpl,
+ 	ct = __nf_conntrack_alloc(net, zone, tuple, &repl_tuple, GFP_ATOMIC,
+ 				  hash);
+ 	if (IS_ERR(ct))
+-		return (struct nf_conntrack_tuple_hash *)ct;
++		return ERR_CAST(ct);
  
--	ops = kmemdup(template_ops, sizeof(*ops) * num_ops, GFP_KERNEL);
-+	ops = kmemdup_array(template_ops, num_ops, sizeof(*ops), GFP_KERNEL);
- 	if (!ops) {
- 		ret = -ENOMEM;
- 		if (newinfo->nentries)
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 42c34e8952da..1cdd9c28ab2d 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1547,7 +1547,7 @@ int arpt_register_table(struct net *net,
- 		goto out_free;
- 	}
- 
--	ops = kmemdup(template_ops, sizeof(*ops) * num_ops, GFP_KERNEL);
-+	ops = kmemdup_array(template_ops, num_ops, sizeof(*ops), GFP_KERNEL);
- 	if (!ops) {
- 		ret = -ENOMEM;
- 		goto out_free;
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 97e754ddc155..3d101613f27f 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1767,7 +1767,7 @@ int ipt_register_table(struct net *net, const struct xt_table *table,
- 		goto out_free;
- 	}
- 
--	ops = kmemdup(template_ops, sizeof(*ops) * num_ops, GFP_KERNEL);
-+	ops = kmemdup_array(template_ops, num_ops, sizeof(*ops), GFP_KERNEL);
- 	if (!ops) {
- 		ret = -ENOMEM;
- 		goto out_free;
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 131f7bb2110d..7d5602950ae7 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1773,7 +1773,7 @@ int ip6t_register_table(struct net *net, const struct xt_table *table,
- 		goto out_free;
- 	}
- 
--	ops = kmemdup(template_ops, sizeof(*ops) * num_ops, GFP_KERNEL);
-+	ops = kmemdup_array(template_ops, num_ops, sizeof(*ops), GFP_KERNEL);
- 	if (!ops) {
- 		ret = -ENOMEM;
- 		goto out_free;
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index 016c816d91cb..6d8da6dddf99 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -1104,7 +1104,7 @@ int nf_nat_register_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
- 	if (!nat_proto_net->nat_hook_ops) {
- 		WARN_ON(nat_proto_net->users != 0);
- 
--		nat_ops = kmemdup(orig_nat_ops, sizeof(*orig_nat_ops) * ops_count, GFP_KERNEL);
-+		nat_ops = kmemdup_array(orig_nat_ops, ops_count, sizeof(*orig_nat_ops), GFP_KERNEL);
- 		if (!nat_ops) {
- 			mutex_unlock(&nf_nat_proto_mutex);
- 			return -ENOMEM;
+ 	if (!nf_ct_add_synproxy(ct, tmpl)) {
+ 		nf_conntrack_free(ct);
 -- 
 2.30.2
 
