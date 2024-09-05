@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3725-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3728-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C19F96E63E
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Sep 2024 01:30:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B6296E642
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Sep 2024 01:30:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 970AFB22494
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Sep 2024 23:30:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9EAC286846
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Sep 2024 23:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FAB1BBBE9;
-	Thu,  5 Sep 2024 23:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EDC1BCA1E;
+	Thu,  5 Sep 2024 23:29:41 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7526D5381B;
-	Thu,  5 Sep 2024 23:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794011BAEFE;
+	Thu,  5 Sep 2024 23:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725578979; cv=none; b=Lxyim/5HtbgwsBYoc/XGoaFDdv/W7u2Wo3dHpZJNijAXH203qip6x/6CSG774y3nOvuvPpzwK/+xqZEkJo0NitDRDB5EiHK+Iys1vUPK4TUfdVxHc5ExuCFSZNlM9AO5yEJY0aARYHlpzOCaViJRzf0Pz1ESb3NFk8kcM33D/uU=
+	t=1725578980; cv=none; b=UIINjm0k1YbhZ44Gx1XQl5dpjPNtCKlzH+qJCXr9kPESFRVre0uEptl8GDFJZxhbCGEYwQEuakOsqPw7AvzmjjE2nl9t6QH90t45Zytk8DSyQtkFOG9J0X49LGKi2CkkWhbXwLnMES204F7hPBjBppS6Ctrz6jVqYaItjdnH/Bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725578979; c=relaxed/simple;
-	bh=ZR6MCAXipXmDSr9gfljm5o5bNNXdOJkiA92rqHLJo2M=;
+	s=arc-20240116; t=1725578980; c=relaxed/simple;
+	bh=2KXohVpqTfdTqdS/+RQcBX0u+iIcGxJlzVNo8eVWNpw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a4mzfOUh9b5GLbToPOyzpHcPk5mW1l0I6SvQAAtkH+yrCCROLWOlHp9tFrwvkVrN0VZFdeW+gEAjFt564y1UL+ug+5+AwFWawOvGyZpYauJVnoLq3hihZIWn9qXxR5RGCO96iHrfXkncvcPnHynDqYYmyY1iHOkksQXwb93wmOQ=
+	 MIME-Version; b=Kc8KTpExspMH/c8D/cnwnK8AaR988H8dKWr5OufZ/VsKCIM2gtP3SwEvD15yaZmGXTWp6m1pEXKH8zX8S1xSx9Vcb+UTosOQDPJ5hukltuR8n4Sm9+k9B/ljwaohDXqT/Yrk16j+LuanGcWKQXBKyFFLLmvFJL9ohaZiKNWqiIo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 08/16] netfilter: nf_tables: elements with timeout below CONFIG_HZ never expire
-Date: Fri,  6 Sep 2024 01:29:12 +0200
-Message-Id: <20240905232920.5481-9-pablo@netfilter.org>
+Subject: [PATCH net-next 09/16] netfilter: nf_tables: reject element expiration with no timeout
+Date: Fri,  6 Sep 2024 01:29:13 +0200
+Message-Id: <20240905232920.5481-10-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240905232920.5481-1-pablo@netfilter.org>
 References: <20240905232920.5481-1-pablo@netfilter.org>
@@ -49,29 +49,33 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Element timeout that is below CONFIG_HZ never expires because the
-timeout extension is not allocated given that nf_msecs_to_jiffies64()
-returns 0. Set timeout to the minimum value to honor timeout.
+If element timeout is unset and set provides no default timeout, the
+element expiration is silently ignored, reject this instead to let user
+know this is unsupported.
+
+Also prepare for supporting timeout that never expire, where zero
+timeout and expiration must be also rejected.
 
 Fixes: 8e1102d5a159 ("netfilter: nf_tables: support timeouts larger than 23 days")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index b6547fe22bd8..b49fcd7148d3 100644
+index b49fcd7148d3..da75bc1de466 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -4593,7 +4593,7 @@ int nf_msecs_to_jiffies64(const struct nlattr *nla, u64 *result)
- 		return -ERANGE;
- 
- 	ms *= NSEC_PER_MSEC;
--	*result = nsecs_to_jiffies64(ms);
-+	*result = nsecs_to_jiffies64(ms) ? : !!ms;
- 	return 0;
- }
- 
+@@ -6923,6 +6923,9 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	if (nla[NFTA_SET_ELEM_EXPIRATION] != NULL) {
+ 		if (!(set->flags & NFT_SET_TIMEOUT))
+ 			return -EINVAL;
++		if (timeout == 0)
++			return -EOPNOTSUPP;
++
+ 		err = nf_msecs_to_jiffies64(nla[NFTA_SET_ELEM_EXPIRATION],
+ 					    &expiration);
+ 		if (err)
 -- 
 2.30.2
 
