@@ -1,182 +1,84 @@
-Return-Path: <netfilter-devel+bounces-3788-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3790-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880EE972D68
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2024 11:23:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 772F8972F2D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2024 11:49:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C95B1F260CD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2024 09:23:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 377DA288562
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2024 09:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C2418801B;
-	Tue, 10 Sep 2024 09:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ipZhbniI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEA518E75B;
+	Tue, 10 Sep 2024 09:48:52 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-ed1-f74.google.com (mail-ed1-f74.google.com [209.85.208.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0CD17E8F7
-	for <netfilter-devel@vger.kernel.org>; Tue, 10 Sep 2024 09:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1E146444
+	for <netfilter-devel@vger.kernel.org>; Tue, 10 Sep 2024 09:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725960183; cv=none; b=Cg29D6BRqKxqK5qz7ISW+DvBMczQRu2CLdkWpDPGfcuz9vFFUiij54gk4Gs9f6T+C9BwrB6uhA5bCiZ/luSP2p8Qvhxci53oJERpdpJ8dX1qsEgTk7md21F2VYBMo3XUGdj9yXF/qXw9+g0zgwQ1IulOH65vjtxtOcch72nqSb4=
+	t=1725961732; cv=none; b=juroITnbypvwff2y8JOPQMRCAVxSyzyNbEAwlhHF/ehECbPE/+zj2+jIqKWFcgkDUccFTca4TZKgm1Rq5PYNEk/SNa0XjwDX/7Vybei1DgQaOT/Za/esV9Q3htuByaSgjmP3kdS4VMm708peaUV6xLRFvLx/fq6HkEODTnTvJGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725960183; c=relaxed/simple;
-	bh=2U5eh/pdV5Pfu36l56Wzjk+bxN/WpkzMkIXcUAy/CgY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pU5/+OfKM9/wVzP7h9uYrmiGXS1ADbnIbzdWsr9dK3Fgvii54gSC5D5FZwsDQG3fWpcJ9LKOvJwZOhvCtHjYRjwCezoCdUhWpmw19abeBROB12ORBlsZI9fFL12hmXs05tffPBqw+9QvwwVeoXMNDvoqMa4BlGVrEauDUKJr6i8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--gnoack.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ipZhbniI; arc=none smtp.client-ip=209.85.208.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--gnoack.bounces.google.com
-Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-5c3c24f2643so4043087a12.2
-        for <netfilter-devel@vger.kernel.org>; Tue, 10 Sep 2024 02:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725960180; x=1726564980; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hMJMyFgsL0Y0uwFcwxe8Dl2qODyk+WDjNJcqT9QUeCc=;
-        b=ipZhbniIAETU/NNXrNaJwPRk/TxSOFwA6MqCZgLd2bgNa3B5x+QvhWUpGn1rla7wFa
-         bVihiPZUSZJofauiiBDVsURSC2tlPAZ2aDGAJYbxLJtV+3dR8U5yMMge56UKTsQ4DUSS
-         KonGf7caqGYy7VEKtMtKwuwEtjRkalhKLsFBmxQTmCjV3nJMJJfZ3lJxaReZN3RgoS2x
-         PX+JnCnyKbFh34sI3woVpkzIhbrmveOuZsiJ+4iHinCpMSMmA1FQFyClRPTdUIWUh/OY
-         ydWnQNoNf3tD+Kf5Dr8ip98fSsxoAuhqlWNX5Iz/lK/KQkDLQm3AnUObG8gz+IlIrQcs
-         mjqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725960180; x=1726564980;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hMJMyFgsL0Y0uwFcwxe8Dl2qODyk+WDjNJcqT9QUeCc=;
-        b=AByTOCT6+iPj6ar/XV3k4NjNo7Y5eTXi0BO5wbA+ydMWwTzGLo91FRgqyAzlPzzob7
-         bPMLe1Vn59d7pKfcpVNSdFsIKCospJ1YcfeckKK/6+I8AwptrJm1Rta3/CTByqb+4Oi1
-         HgCbuKgQb7VOHLKmJMC0Nrhg/9U6FkMeHx++wx7uwqn4U1LGUu/Tq6dWTV/+ic2Ahorq
-         eVOkLyQjm4RPhWch3UAqTWBfHq6r9ebY2WXq+wb+uIYSo3lKcJEim6tGs4BNR5IK0jcJ
-         L3+FyGUq6wVIT2v8EF7VzaWhZvWYSEdHZkOEDT6M5cGK5XM4yHFH8aHF+jGqaAZ4HLDr
-         +XEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBQrRn1j4VDNuN1Nvkob7Ne1eKmzzBTH4vV1TSZm8mPle/t0Q9jhC0atnC/32+9rRP1/CQYPNPUKxqWHQICWc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEyc1GJf/nzPpX7y4KQOaT2uyxRkzRBdG85G4fI2tsybfewGIT
-	t/7IlqvkfEfCPzfcRiUJzkm0ypAJ0iSmFftY+Nskw8zJ+F3Z/K89P0+gG+Fsof0MOvgSoIOLRmP
-	xCQ==
-X-Google-Smtp-Source: AGHT+IEvLoIBQkVz2O3lTxQ+HO2S2UyQYSwe1/czliyr/A8tQLQoSeVybxzWfsDusd+EzFbXtdkyA2ny9Yw=
-X-Received: from swim.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:1605])
- (user=gnoack job=sendgmr) by 2002:a05:6402:358a:b0:5c2:631b:c5bb with SMTP id
- 4fb4d7f45d1cf-5c3dc7c9e87mr9281a12.7.1725960180431; Tue, 10 Sep 2024 02:23:00
- -0700 (PDT)
-Date: Tue, 10 Sep 2024 11:22:58 +0200
-In-Reply-To: <20240904104824.1844082-7-ivanov.mikhail1@huawei-partners.com>
+	s=arc-20240116; t=1725961732; c=relaxed/simple;
+	bh=8eaDIOtTLUXJ7vyhOOpKEo/YwUWp2aklxuijc009sRg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SOxaPYsMgsXfSqe39UP4B+sjXf1eh8xy3ryNy8qDxV9MlH/xkcxvgIdjcOYPMoutEscYrRwsve28MXsaA0CEeBExlsJp3DqB4AXoq00WWk5/ze1aOkdHBl58naWweOOjsYNRms0OOEd4wCiAQBihwGiUjiO7tYAT5L7QnZgk4PE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1snxUN-0002Fc-MD; Tue, 10 Sep 2024 11:48:47 +0200
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next 0/3] netfilter: conntrack: clash resolution for reverse collisions
+Date: Tue, 10 Sep 2024 11:38:13 +0200
+Message-ID: <20240910093821.4871-1-fw@strlen.de>
+X-Mailer: git-send-email 2.44.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240904104824.1844082-1-ivanov.mikhail1@huawei-partners.com> <20240904104824.1844082-7-ivanov.mikhail1@huawei-partners.com>
-Message-ID: <ZuAP8iSv_sjmlYIp@google.com>
-Subject: Re: [RFC PATCH v3 06/19] selftests/landlock: Test adding a rule for
- unhandled access
-From: "=?utf-8?Q?G=C3=BCnther?= Noack" <gnoack@google.com>
-To: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
-Cc: mic@digikod.net, willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com, 
-	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, yusongping@huawei.com, 
-	artem.kuzin@huawei.com, konstantin.meskhidze@huawei.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hi!
+This series resolves an esoteric scenario.
 
-On Wed, Sep 04, 2024 at 06:48:11PM +0800, Mikhail Ivanov wrote:
-> Add test that validates behaviour of Landlock after rule with
-> unhandled access is added.
->=20
-> Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
-> ---
-> Changes since v2:
-> * Replaces EXPECT_EQ with ASSERT_EQ for close().
-> * Refactors commit title and message.
->=20
-> Changes since v1:
-> * Refactors commit message.
-> ---
->  .../testing/selftests/landlock/socket_test.c  | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/landlock/socket_test.c b/tools/testi=
-ng/selftests/landlock/socket_test.c
-> index 811bdaa95a7a..d2fedfca7193 100644
-> --- a/tools/testing/selftests/landlock/socket_test.c
-> +++ b/tools/testing/selftests/landlock/socket_test.c
-> @@ -351,4 +351,37 @@ TEST_F(protocol, rule_with_unknown_access)
->  	ASSERT_EQ(0, close(ruleset_fd));
->  }
-> =20
-> +TEST_F(protocol, rule_with_unhandled_access)
-> +{
-> +	struct landlock_ruleset_attr ruleset_attr =3D {
-> +		.handled_access_socket =3D LANDLOCK_ACCESS_SOCKET_CREATE,
-> +	};
-> +	struct landlock_socket_attr protocol =3D {
-> +		.family =3D self->prot.family,
-> +		.type =3D self->prot.type,
-> +	};
-> +	int ruleset_fd;
-> +	__u64 access;
-> +
-> +	ruleset_fd =3D
-> +		landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
-> +	ASSERT_LE(0, ruleset_fd);
-> +
-> +	for (access =3D 1; access > 0; access <<=3D 1) {
-> +		int err;
-> +
-> +		protocol.allowed_access =3D access;
-> +		err =3D landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
-> +					&protocol, 0);
-> +		if (access =3D=3D ruleset_attr.handled_access_socket) {
-> +			EXPECT_EQ(0, err);
-> +		} else {
-> +			EXPECT_EQ(-1, err);
-> +			EXPECT_EQ(EINVAL, errno);
-> +		}
-> +	}
-> +
-> +	ASSERT_EQ(0, close(ruleset_fd));
-> +}
-> +
+Given two tasks sending UDP packets to one another, NAT engine
+can falsely detect a port collision if it happens to pick up
+a reply packet as 'new' rather than 'reply'.
 
-I should probably have noticed this on the first review round; you are not
-actually exercising any scenario here where a rule with unhandled access is
-added.
+First patch adds extra code to detect this and suppress port
+reallocation in this case.
 
-To clarify, the notion of an access right being "unhandled" means that the
-access right was not listed at ruleset creation time in the ruleset_attr's
-.handled_access_* field where it would have belonged.  If that is the case,
-adding a ruleset with that access right is going to be denied.
+Second patch extends clash resolution logic to detect such
+a reverse clash (clashing conntrack is reply to existing entry).
 
-As an example:
-If the ruleset only handles LANDLOCK_ACCESS_FS_WRITE_FILE and nothing else,
-then, if the test tries to insert a rule for LANDLOCK_ACCESS_SOCKET_CREATE,
-that call is supposed to fail -- because the "socket creation" access right=
- is
-not handled.
+Patch 3 adds a test case.
 
-IMHO the test would become more reasonable if it was more clearly "handling=
-"
-something entirely unrelated at ruleset creation time, e.g. one of the file
-system access rights.  (And we could do the same for the "net" and "fs" tes=
-ts as
-well.)
+Since this has existed forever and hasn't been reported in two
+decades I'm submitting this for -next.
 
-Your test is a copy of the same test for the "net" rights, which in turn is=
- a
-copy of teh same test for the "fs" rights.  When the "fs" test was written,=
- the
-"fs" access rights were the only ones that could be used at all to create a
-ruleset, but this is not true any more.
+Florian Westphal (3):
+  netfilter: nf_nat: don't try nat source port reallocation for reverse
+    dir clash
+  netfilter: conntrack: add clash resolution for reverse collisions
+  selftests: netfilter: add reverse-clash resolution test case
 
-=E2=80=94G=C3=BCnther
+ net/netfilter/nf_conntrack_core.c             |  56 +++++++-
+ net/netfilter/nf_nat_core.c                   | 120 ++++++++++++++++-
+ .../testing/selftests/net/netfilter/Makefile  |   2 +
+ .../net/netfilter/conntrack_reverse_clash.c   | 125 ++++++++++++++++++
+ .../net/netfilter/conntrack_reverse_clash.sh  |  51 +++++++
+ 5 files changed, 347 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/net/netfilter/conntrack_reverse_clash.c
+ create mode 100755 tools/testing/selftests/net/netfilter/conntrack_reverse_clash.sh
+
+-- 
+2.44.2
+
 
