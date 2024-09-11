@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-3817-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3815-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ABC7975D2D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 00:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A4F975D29
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 00:27:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38EA1B2124C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 22:27:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20182B24BA1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 22:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF281BDA82;
-	Wed, 11 Sep 2024 22:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B3D1BA894;
+	Wed, 11 Sep 2024 22:25:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBA91885A8;
-	Wed, 11 Sep 2024 22:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBFB1B29BA;
+	Wed, 11 Sep 2024 22:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726093535; cv=none; b=bKcGWLvR5SgWdJpXNhVAWNWVeONe+gTUUE84myb6eWSZfzzBahyj7qa8KtdsD4UTngTbkXQA7r1CudhbUrBm8216KPC0NFy7KVhEXiS5K5x/okNk+v+LbwUkoIBg9wRpNJFU0O2G7EC3zoYSDFXetiNYEZcDTBWK4hzP7GjI0qY=
+	t=1726093534; cv=none; b=B3dmMDjgj6LCRS1kg317SboM/PcOKuoo4Z/5fPlxaxOCwgshH8WZL/bom7xRiqqVW7BjTGJUO1YMo8yjjlH0GfhJLgKiA4qP36PtT4jj6+Duulu1b8hby8OYLk4cpX+Sa5W2RkLncQwAc3BUNSIV04HarxyAp6PNeB6jKC776Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726093535; c=relaxed/simple;
-	bh=6l4+mdX9jF0qzzwZ/i+JIt707Jd481DQuvHJYsXOcBU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TYS0+cqv2cJj31GEtbWfrwbzi/0MV1T/mfT3Q4zhsdnN8arwtk3LC6YRUxKm6ptSsmgF64NfdvrbKQLvZjzOpUU32IMOq0BBo4fcN9NrGxIpLEuc64ruHsxS70yW3dj1yaold6hP1TRSQLq2AdeRgNfNG/M9hlOX945zaKaj0jE=
+	s=arc-20240116; t=1726093534; c=relaxed/simple;
+	bh=x8YG39c46kJmXfXVJT7hZ54SF/qD7hvSrmd+H9Ft/ok=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=MWEoNrzfCCVgwT9ugduUcy0/2lY6C1DzZhJb5unVXnbe9Xj54HsFcVBI8VwZF3CUYC8t7PP4uR6YcdMEWiGdFrLjaNhKnnW2MwM7pj0m5QPFPDaASwQQ7SC1Cz4xN/IYN3xkorcpNN5Ex5QA0iFCAI3RegKysQCR32i/2+jhcm0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -34,10 +35,12 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 0/2] Netfilter fixes for net
-Date: Thu, 12 Sep 2024 00:25:18 +0200
-Message-Id: <20240911222520.3606-1-pablo@netfilter.org>
+Subject: [PATCH net 1/2] netfilter: nft_socket: fix sk refcount leaks
+Date: Thu, 12 Sep 2024 00:25:19 +0200
+Message-Id: <20240911222520.3606-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240911222520.3606-1-pablo@netfilter.org>
+References: <20240911222520.3606-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,43 +49,55 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Florian Westphal <fw@strlen.de>
 
-The following batch contains two fixes from Florian Westphal:
+We must put 'sk' reference before returning.
 
-Patch #1 fixes a sk refcount leak in nft_socket on mismatch.
+Fixes: 039b1f4f24ec ("netfilter: nft_socket: fix erroneous socket assignment")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nft_socket.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Patch #2 fixes cgroupsv2 matching from containers due to incorrect
-	 level in subtree.
+diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+index f30163e2ca62..765ffd6e06bc 100644
+--- a/net/netfilter/nft_socket.c
++++ b/net/netfilter/nft_socket.c
+@@ -110,13 +110,13 @@ static void nft_socket_eval(const struct nft_expr *expr,
+ 			*dest = READ_ONCE(sk->sk_mark);
+ 		} else {
+ 			regs->verdict.code = NFT_BREAK;
+-			return;
++			goto out_put_sk;
+ 		}
+ 		break;
+ 	case NFT_SOCKET_WILDCARD:
+ 		if (!sk_fullsock(sk)) {
+ 			regs->verdict.code = NFT_BREAK;
+-			return;
++			goto out_put_sk;
+ 		}
+ 		nft_socket_wildcard(pkt, regs, sk, dest);
+ 		break;
+@@ -124,7 +124,7 @@ static void nft_socket_eval(const struct nft_expr *expr,
+ 	case NFT_SOCKET_CGROUPV2:
+ 		if (!nft_sock_get_eval_cgroupv2(dest, sk, pkt, priv->level)) {
+ 			regs->verdict.code = NFT_BREAK;
+-			return;
++			goto out_put_sk;
+ 		}
+ 		break;
+ #endif
+@@ -133,6 +133,7 @@ static void nft_socket_eval(const struct nft_expr *expr,
+ 		regs->verdict.code = NFT_BREAK;
+ 	}
+ 
++out_put_sk:
+ 	if (sk != skb->sk)
+ 		sock_gen_put(sk);
+ }
+-- 
+2.30.2
 
-Please, pull these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-09-12
-
-Thanks.
-
-----------------------------------------------------------------
-
-The following changes since commit d759ee240d3c0c4a19f4d984eb21c36da76bc6ce:
-
-  Merge tag 'net-6.11-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-09-05 17:08:01 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-09-12
-
-for you to fetch changes up to 7f3287db654395f9c5ddd246325ff7889f550286:
-
-  netfilter: nft_socket: make cgroupsv2 matching work with namespaces (2024-09-12 00:16:58 +0200)
-
-----------------------------------------------------------------
-netfilter pull request 24-09-12
-
-----------------------------------------------------------------
-Florian Westphal (2):
-      netfilter: nft_socket: fix sk refcount leaks
-      netfilter: nft_socket: make cgroupsv2 matching work with namespaces
-
- net/netfilter/nft_socket.c | 48 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
 
