@@ -1,104 +1,88 @@
-Return-Path: <netfilter-devel+bounces-3814-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3817-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43225975CED
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 00:12:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABC7975D2D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 00:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD67C284DD7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 22:12:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38EA1B2124C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 22:27:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460B0176AA9;
-	Wed, 11 Sep 2024 22:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF281BDA82;
+	Wed, 11 Sep 2024 22:25:35 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9617F273FC;
-	Wed, 11 Sep 2024 22:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBA91885A8;
+	Wed, 11 Sep 2024 22:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726092731; cv=none; b=epcTlO+4DWwSI+aK9WhPMx3Az1d0P1WnMUsKa5t2CgoW9ZpvRXSxqZxW/ZIFEBRFrpPLsMJVQWGXa/Tl6aJRamuqXdEzwe6R04doUTVwGItqSzY8myIi1pB0CIqNmDWPEppJ2EhDTmFMqY2/FpZWn3+ie/yPyHeGegqzE4dcw1g=
+	t=1726093535; cv=none; b=bKcGWLvR5SgWdJpXNhVAWNWVeONe+gTUUE84myb6eWSZfzzBahyj7qa8KtdsD4UTngTbkXQA7r1CudhbUrBm8216KPC0NFy7KVhEXiS5K5x/okNk+v+LbwUkoIBg9wRpNJFU0O2G7EC3zoYSDFXetiNYEZcDTBWK4hzP7GjI0qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726092731; c=relaxed/simple;
-	bh=LHtNGOAmFIWxYkxjD253kuCAv0qxI1a/lzyf2ztRBUE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ADXppTvubB+X3oSr1Ce0SeEaGBzkUyC9A8lSGoyAoqvkFYDzqD06ANiSKFfbQirq9ba5oL+XYCBIW+AVH5dPddk4jBIl1sDgbPStjP4kmoji87UMJrXrYWbFxcO4CxyKSGnz28tBqDAfScsYgCNKVhTMsf+2i23Hn86AfN/NWPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+	s=arc-20240116; t=1726093535; c=relaxed/simple;
+	bh=6l4+mdX9jF0qzzwZ/i+JIt707Jd481DQuvHJYsXOcBU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TYS0+cqv2cJj31GEtbWfrwbzi/0MV1T/mfT3Q4zhsdnN8arwtk3LC6YRUxKm6ptSsmgF64NfdvrbKQLvZjzOpUU32IMOq0BBo4fcN9NrGxIpLEuc64ruHsxS70yW3dj1yaold6hP1TRSQLq2AdeRgNfNG/M9hlOX945zaKaj0jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=51382 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1soVZC-007Wnn-Gg; Thu, 12 Sep 2024 00:12:04 +0200
-Date: Thu, 12 Sep 2024 00:12:01 +0200
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: fw@strlen.de, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, Jozsef Kadlecsik <kadlec@netfilter.org>,
-	David Ahern <dsahern@kernel.org>, rbc@meta.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	"open list:NETFILTER" <coreteam@netfilter.org>
-Subject: Re: [PATCH nf-next v5 1/2] netfilter: Make IP6_NF_IPTABLES_LEGACY
- selectable
-Message-ID: <ZuIVsZ813wxD6Y3Q@calendula>
-References: <20240909084620.3155679-1-leitao@debian.org>
- <20240909084620.3155679-2-leitao@debian.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de
+Subject: [PATCH net 0/2] Netfilter fixes for net
+Date: Thu, 12 Sep 2024 00:25:18 +0200
+Message-Id: <20240911222520.3606-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240909084620.3155679-2-leitao@debian.org>
-X-Spam-Score: -1.9 (-)
+Content-Transfer-Encoding: 8bit
 
-One more question below.
+Hi,
 
-On Mon, Sep 09, 2024 at 01:46:18AM -0700, Breno Leitao wrote:
-> This option makes IP6_NF_IPTABLES_LEGACY user selectable, giving
-> users the option to configure iptables without enabling any other
-> config.
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->  net/ipv6/netfilter/Kconfig | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv6/netfilter/Kconfig b/net/ipv6/netfilter/Kconfig
-> index f3c8e2d918e1..425cb7a3571b 100644
-> --- a/net/ipv6/netfilter/Kconfig
-> +++ b/net/ipv6/netfilter/Kconfig
-> @@ -8,7 +8,14 @@ menu "IPv6: Netfilter Configuration"
->  
->  # old sockopt interface and eval loop
->  config IP6_NF_IPTABLES_LEGACY
-> -	tristate
-> +	tristate "Legacy IP6 tables support"
-> +	depends on INET && IPV6
-> +	select NETFILTER_XTABLES
-> +	default n
-> +	help
-> +	  ip6tables is a legacy packet classification.
+The following batch contains two fixes from Florian Westphal:
 
-                                Is "packet classifier" the right term?
+Patch #1 fixes a sk refcount leak in nft_socket on mismatch.
 
-I can mangle this patch before applying, no need to send one more.
+Patch #2 fixes cgroupsv2 matching from containers due to incorrect
+	 level in subtree.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-09-12
 
 Thanks.
 
-> +	  This is not needed if you are using iptables over nftables
-> +	  (iptables-nft).
->  
->  config NF_SOCKET_IPV6
->  	tristate "IPv6 socket lookup support"
-> -- 
-> 2.43.5
-> 
+----------------------------------------------------------------
+
+The following changes since commit d759ee240d3c0c4a19f4d984eb21c36da76bc6ce:
+
+  Merge tag 'net-6.11-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-09-05 17:08:01 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-09-12
+
+for you to fetch changes up to 7f3287db654395f9c5ddd246325ff7889f550286:
+
+  netfilter: nft_socket: make cgroupsv2 matching work with namespaces (2024-09-12 00:16:58 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 24-09-12
+
+----------------------------------------------------------------
+Florian Westphal (2):
+      netfilter: nft_socket: fix sk refcount leaks
+      netfilter: nft_socket: make cgroupsv2 matching work with namespaces
+
+ net/netfilter/nft_socket.c | 48 ++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 42 insertions(+), 6 deletions(-)
 
