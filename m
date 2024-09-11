@@ -1,43 +1,46 @@
-Return-Path: <netfilter-devel+bounces-3804-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3806-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63EB79756BC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 17:18:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98ECE9756BE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 17:18:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C5001F2735A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 15:18:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C993F1C23B42
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Sep 2024 15:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244721ABEA5;
-	Wed, 11 Sep 2024 15:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D3A1ABED4;
+	Wed, 11 Sep 2024 15:17:15 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A201AB531
-	for <netfilter-devel@vger.kernel.org>; Wed, 11 Sep 2024 15:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA00B185954
+	for <netfilter-devel@vger.kernel.org>; Wed, 11 Sep 2024 15:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726067831; cv=none; b=QSnj4ZDiNR8f2pMf4pQmR0rUUgaKnlXQlnH4AZe2neyatcOs0UDOjMXQ0UWHvyrDgkb6cSvGb800ChYBWKLGZ9r8mhAFHRh7gbE9sbcrsTEgqyhk7Co2BvbskTx1R2waZivhFbBH+SIdsljIO32VV16iuYIlLk2Xk1NAMYY7ky8=
+	t=1726067835; cv=none; b=i9oQjsTceHD85I9MeaRIS7Kiw/IDPT0aF6LATpQJio2rRcjI6f4tumM3Wui2vxcSmge/WX+GzcOjCNM2lnxJByzcGSI8jjXtuqbzta34n1sa14BJMx6pWTZOMNly1dv7jecg//Thaec1xfU4OO2f5LHMOsF2Z2JwQzxINoG/Lqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726067831; c=relaxed/simple;
-	bh=ICRDvkk52uDZn1dg+s+IxGTsjc5/IIGA9MumTSo6Pzo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kWHGaTVHX3ZmgTRJjvKPwAcaqQLR3/UNtgH1DkxulpXiroRhFiCBfmzbH/KrmkSThXHAvetOvlBEV/bKKmsDrKrtjAnml4UMFOWOJGh7dODvMBfVCGknXwWcDQVIQyT7/O1acfbY2cdAWENXqqrBinP0l8qua5nO7n3Vd5Lipzo=
+	s=arc-20240116; t=1726067835; c=relaxed/simple;
+	bh=+sasiziYmq/6C9+p1eBbvNwwt4DJvdsgPZlMl2t/608=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=gUBEB6xg/yl+ruVCTjqhBC1swO7/a2StTE1+aQiHcbXGQXiIFpjgYLZcRuv48Ypl8t7fU9q+r9uIHNLL4Cq8n7/hoCSwL/TZzsvFtTC/cCvdYnjlbCljVhCYe6GrTIjTYqTVuZqKoj90I/EICkggfX7qa97tu4s8UO84FtqFDAc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1soP5Z-0004DX-1E; Wed, 11 Sep 2024 17:17:01 +0200
+	id 1soP5d-0004Dv-C1; Wed, 11 Sep 2024 17:17:05 +0200
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next 0/5] netfilter: nf_tables: reduce set element
-Date: Wed, 11 Sep 2024 17:00:17 +0200
-Message-ID: <20240911150027.22291-1-fw@strlen.de>
+Subject: [PATCH nf-next 1/5] netfilter: nf_tables: prefer nft_trans_elem_alloc helper
+Date: Wed, 11 Sep 2024 17:00:18 +0200
+Message-ID: <20240911150027.22291-2-fw@strlen.de>
 X-Mailer: git-send-email 2.44.2
+In-Reply-To: <20240911150027.22291-1-fw@strlen.de>
+References: <20240911150027.22291-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,32 +49,43 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When doing a flush on a set or mass adding/removing elements from a
-set, each element needs to allocate 96 bytes to hold the transactional
-state.
+Reduce references to sizeof(struct nft_trans_elem).
+Preparation patch to move this to a flexiable array to store
+elem references.
 
-In such cases, virtually all the information in struct nft_trans_elem
-is the same.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_tables_api.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Change nft_trans_elem to a flex-array, i.e. a single nft_trans_elem
-can hold multiple set element pointers.
-
-The number of elements that can be stored in one nft_trans_elem is limited
-by the slab allocator, this series limits the compaction to at most 62
-elements as it caps the reallocation to 2048 bytes of memory.
-
-Florian Westphal (5):
-  netfilter: nf_tables: prefer nft_trans_elem_alloc helper
-  netfilter: nf_tables: add nft_trans_commit_list_add_elem helper
-  netfilter: nf_tables: prepare for multiple elements in nft_trans_elem
-    structure
-  netfilter: nf_tables: switch trans_elem to real flex array
-  netfilter: nf_tables: allocate element update information dynamically
-
- include/net/netfilter/nf_tables.h |  25 +--
- net/netfilter/nf_tables_api.c     | 348 +++++++++++++++++++++++-------
- 2 files changed, 283 insertions(+), 90 deletions(-)
-
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 57259b5f3ef5..0deb13dc2273 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6409,7 +6409,7 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
+ 	nfnetlink_set_err(net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
+ }
+ 
+-static struct nft_trans *nft_trans_elem_alloc(struct nft_ctx *ctx,
++static struct nft_trans *nft_trans_elem_alloc(const struct nft_ctx *ctx,
+ 					      int msg_type,
+ 					      struct nft_set *set)
+ {
+@@ -7471,13 +7471,11 @@ static int __nft_set_catchall_flush(const struct nft_ctx *ctx,
+ {
+ 	struct nft_trans *trans;
+ 
+-	trans = nft_trans_alloc_gfp(ctx, NFT_MSG_DELSETELEM,
+-				    sizeof(struct nft_trans_elem), GFP_KERNEL);
++	trans = nft_trans_elem_alloc(ctx, NFT_MSG_DELSETELEM, set);
+ 	if (!trans)
+ 		return -ENOMEM;
+ 
+ 	nft_setelem_data_deactivate(ctx->net, set, elem_priv);
+-	nft_trans_elem_set(trans) = set;
+ 	nft_trans_elem_priv(trans) = elem_priv;
+ 	nft_trans_commit_list_add_tail(ctx->net, trans);
+ 
 -- 
 2.44.2
 
