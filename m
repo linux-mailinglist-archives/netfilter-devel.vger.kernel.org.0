@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3830-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3824-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30246976973
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 14:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1302976903
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 14:22:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0DE51F2479A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 12:45:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 454AD1F22C35
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Sep 2024 12:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C09A1ABEDB;
-	Thu, 12 Sep 2024 12:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549EA1A3025;
+	Thu, 12 Sep 2024 12:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="WgNdMmRg"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="UN6aA2R4"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD9F1AB6F1
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Sep 2024 12:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B0A1A2C04
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Sep 2024 12:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726145115; cv=none; b=G7WfwsnKsyZEVhqmc3MU3lhfmAl0whLr0erMiHO8yQ/iH2ay7qGMV/6ShJ/gAaECOAESBz0rHky9FAwlAnG+z5hLzNLSwd2+LY/6ysMFuAdfHizTq9QL27SOzH4ZzZ/IHc9lvVlZSzxBCWhSWnRF14X8QxTQR7Yc4jGYOL40T/4=
+	t=1726143725; cv=none; b=GpBVPG6vze9CmeqYzqL25J6zQZfouNRIjm1PnScKG5UjNn+f5c24cAZtfQ6x8FBr6K0nniuTAUf9qgupaBECSMfZLD0kXrQIc3cuKxpgc16APy0Xy/PqNjjslMr8LByID8wFt/aZf76fWi9sRbhXOex4n26RhzpykNKEUbRUvEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726145115; c=relaxed/simple;
-	bh=8uPB9P6eBwvT20Y8b98hCkrA7UAFc1OnTcz/x+zC+d8=;
+	s=arc-20240116; t=1726143725; c=relaxed/simple;
+	bh=3cpSYypN2KJO3P8D84SoU1p+GivrQnLO0F7OLzu7uBY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FVeRdpgMFX18GeBsF6q1fZvokuNCQeZp4eTqEp+nJcLmOOZSPoxhy2ZojfES9GFN08Q7poNkkx6rP6vIyf2OBoZ/0YhbXLvlIh2TwnnEK9cDbHuvSx9lomTDj4bVW3TsnmhMtB9xri2Csw0199A6q6GkFubyeKSrU3XwwitYNbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=WgNdMmRg; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=PShilh9idldD8SgASFGR9ix3/bTnkEiA1rrP8vHBeLoGRxAb38DDBR0B52Fa8HIIW0aJzJ7UrYmoyB+kYYeabWptedUTWP1UCw/7dKG/iLK7iEqPKCU2/J8+AuYXIl5oqbkrY0GhWK94i7kaBAY/+1A1pREidZEN1MfSan2Sxb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=UN6aA2R4; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=yfJMHa0h1XWBwCoMRQ4pVotEzX9M24TwcHafwOVt+4g=; b=WgNdMmRg1+HhzT0OY51G7ehICN
-	9xgJn1eKzQtXDecYJXI8pMz/lKLZ39B/MtKM8wW5BMBT5MKrl98Fc8YV6JFXwmRDps8DNbK0KzNF8
-	Dpt2kP1l0LCF/zxtM5Te7z6bI4qFAE0/l5AUyXExGBIp0Z9r5K2kjoeR5Q1IBxq4aJpdiuMFYuo1x
-	h9FlhBQqGLvCJFnPOJ81WSqvyQ2rdiJAYFLyu9RpFDnMc2krB84oizB6hFrtA1OdnD/pCI2JEuk/F
-	Vk2WCg9NJpzQ3w+KD5CYlf8hhs1o3pBYyrdmGvOkMa1BBoC9lX1PlxsHum5W3TgYwXtbCCzt3Cmte
-	Tu34JTsw==;
+	bh=4A6IFX5iIOVX2WzyRxTIVS8kTvcU5JYQlY6tAvgX/qA=; b=UN6aA2R4H308leMaiH6SsDPrFi
+	hv8FZ0SQQ4eyKAUDLgu2qUBCY/lluBwQaNvMtS/yJTl79eg9pghDHDwW8RCrP6kF2YKE0DeOZSd3U
+	12YEd8+Gnu9zGDlivbRLNdKsUGYyovAHHBfrGb+k4foov9RwLylsNLFfeNKrMgU32U1rjHND7qgWJ
+	ms1hJnqV7e+6GGe8/EOF9yfpCJtlsnaDlgfCwjPJdQnCqcShyah3hNsiZdCRj8cLGbgpKmkiaIUTo
+	0VZdlNGKZfO2/3/6QOxxtD/7g5OPuZaf2PvcBuG7vCvFnuTJj3V2tZlvxegW+GeZbSnuRbvv3GGNR
+	lOtSnuxQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1soiph-000000004E3-0vqC;
-	Thu, 12 Sep 2024 14:21:57 +0200
+	id 1soipl-000000004Ew-3N4Q;
+	Thu, 12 Sep 2024 14:22:01 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>,
 	Eric Garver <e@erig.me>
-Subject: [nf-next PATCH v3 01/16] netfilter: nf_tables: Keep deleted flowtable hooks until after RCU
-Date: Thu, 12 Sep 2024 14:21:33 +0200
-Message-ID: <20240912122148.12159-2-phil@nwl.cc>
+Subject: [nf-next PATCH v3 02/16] netfilter: nf_tables: Flowtable hook's pf value never varies
+Date: Thu, 12 Sep 2024 14:21:34 +0200
+Message-ID: <20240912122148.12159-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240912122148.12159-1-phil@nwl.cc>
 References: <20240912122148.12159-1-phil@nwl.cc>
@@ -67,30 +67,48 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Documentation of list_del_rcu() warns callers to not immediately free
-the deleted list item. While it seems not necessary to use the
-RCU-variant of list_del() here in the first place, doing so seems to
-require calling kfree_rcu() on the deleted item as well.
+When checking for duplicate hooks in nft_register_flowtable_net_hooks(),
+comparing ops.pf value is pointless as it is always NFPROTO_NETDEV with
+flowtable hooks.
+
+Dropping the check leaves the search identical to the one in
+nft_hook_list_find() so call that function instead of open coding.
 
 Fixes: 3f0465a9ef02 ("netfilter: nf_tables: dynamically allocate hooks per net_device in flowtables")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index b6547fe22bd8..2982f49b6d55 100644
+index 2982f49b6d55..3ffb728309af 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -9180,7 +9180,7 @@ static void nf_tables_flowtable_destroy(struct nft_flowtable *flowtable)
- 		flowtable->data.type->setup(&flowtable->data, hook->ops.dev,
- 					    FLOW_BLOCK_UNBIND);
- 		list_del_rcu(&hook->list);
--		kfree(hook);
-+		kfree_rcu(hook, rcu);
- 	}
- 	kfree(flowtable->name);
- 	module_put(flowtable->data.type->owner);
+@@ -8544,7 +8544,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 					    struct list_head *hook_list,
+ 					    struct nft_flowtable *flowtable)
+ {
+-	struct nft_hook *hook, *hook2, *next;
++	struct nft_hook *hook, *next;
+ 	struct nft_flowtable *ft;
+ 	int err, i = 0;
+ 
+@@ -8553,12 +8553,9 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 			if (!nft_is_active_next(net, ft))
+ 				continue;
+ 
+-			list_for_each_entry(hook2, &ft->hook_list, list) {
+-				if (hook->ops.dev == hook2->ops.dev &&
+-				    hook->ops.pf == hook2->ops.pf) {
+-					err = -EEXIST;
+-					goto err_unregister_net_hooks;
+-				}
++			if (nft_hook_list_find(&ft->hook_list, hook)) {
++				err = -EEXIST;
++				goto err_unregister_net_hooks;
+ 			}
+ 		}
+ 
 -- 
 2.43.0
 
