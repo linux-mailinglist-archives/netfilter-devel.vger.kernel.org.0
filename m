@@ -1,28 +1,28 @@
-Return-Path: <netfilter-devel+bounces-3908-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3909-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFDFC97A8AF
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2024 23:21:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A26597A8DB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2024 23:40:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E3428A6EB
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2024 21:21:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 469121C210DC
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2024 21:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AE813CFB6;
-	Mon, 16 Sep 2024 21:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4B414A08E;
+	Mon, 16 Sep 2024 21:40:03 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFA6F9DA
-	for <netfilter-devel@vger.kernel.org>; Mon, 16 Sep 2024 21:21:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D8A158527
+	for <netfilter-devel@vger.kernel.org>; Mon, 16 Sep 2024 21:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726521703; cv=none; b=Y1yOZGTG5z6px9FygeV+LfC61nMoiu8Ed+5z8rf+bLMBv2i0mKpWE6yb7NNca+4cXJwehmsDARrXjPcoe3jSabXLtnzjx4ZOzlkQ03iAlzIFQmhc3MbSXMvwovd67z+tqVIBN1CPyNML7FGoWU2TnISWYWr8VzTUcLL9y1oh6dY=
+	t=1726522803; cv=none; b=lq52LoinmIleUD7/lBuN/9uUfCn4PF0r403hW06AdKKQJvGF5jRCsiUR3io4uSAm1+AI6CeNymmLtJj6o0THMgacRjYhnCAtx+RUzJn6QR5LB1zqmgmJg0518y2XwGDpq0W31bCXCDW0ZPuBLPgOVNhfcjeEhEA9hYFVHupIxww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726521703; c=relaxed/simple;
-	bh=2SQUqHcdW9ivFuiBMRiiQLcBceI99TteCLtlvZ4cG1U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=igBIWJHPMoD/aotCQF5QS5Z2EGLihvhNANVlM/sP+VkttNwZvKIUZJRSYgUOlgstQ0PX7xEgryWliQ7F7mefupxkLGPSP2UGAm6zdMOsK5d2RmUp+Y5HwFwu+Dadvx7yRR/WCqCQya+zd30ApBnW+v/n1wkNwSNJb4qhBgxqwME=
+	s=arc-20240116; t=1726522803; c=relaxed/simple;
+	bh=ybP1uCYn8DW3LJ6XSxH8WWcrxyTUnmUlb0oEOO/3tZk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BxIYjqU9fyVOkf76c7sogoQoZfqZ9N2m7yM6vPyg3Cx1HZaZFK6EcPnohgaQzJqR2JKOhtxkxSnjaKJVO6i89kp6hCZeU/LQmVolpov7NmaMS5/L3Jw35qC8RlRiuVn5t2+F5LHkU+ajPS71g75jaFMOzB02TelO1aKp72YGUoQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -31,9 +31,9 @@ To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de,
 	phil@nwl.cc,
 	antonio.ojea.garcia@gmail.com
-Subject: [PATCH nft,v2] doc: tproxy is non-terminal in nftables
-Date: Mon, 16 Sep 2024 23:21:32 +0200
-Message-Id: <20240916212132.646493-1-pablo@netfilter.org>
+Subject: [PATCH nft,v3] doc: tproxy is non-terminal in nftables
+Date: Mon, 16 Sep 2024 23:39:54 +0200
+Message-Id: <20240916213954.647509-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -50,14 +50,28 @@ https://lore.kernel.org/netfilter-devel/ZuSh_Io3Yt8LkyUh@orbyte.nwl.cc/T/
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- doc/statements.txt | 44 +++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 37 insertions(+), 7 deletions(-)
+v3: small update to this example:
+
++.Example ruleset for tproxy statement with logging and meta mark
++-------------------------------------
++table inet x {
++    chain y {
++        type filter hook prerouting priority mangle; policy accept;
++        udp dport 9999 goto {
++            tproxy to :1234 log prefix "packet tproxied: " meta mark set 1 accept
++            log prefix "no socket on port 1234 or not transparent?: " drop
++        }
++    }
++}
+
+ doc/statements.txt | 45 ++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 38 insertions(+), 7 deletions(-)
 
 diff --git a/doc/statements.txt b/doc/statements.txt
-index 5becf0cbdbcf..7d4e8b34bef0 100644
+index 5becf0cbdbcf..74af1d1a54e9 100644
 --- a/doc/statements.txt
 +++ b/doc/statements.txt
-@@ -583,27 +583,57 @@ this case the rule will match for both families.
+@@ -583,27 +583,58 @@ this case the rule will match for both families.
  table ip x {
      chain y {
          type filter hook prerouting priority mangle; policy accept;
@@ -95,8 +109,9 @@ index 5becf0cbdbcf..7d4e8b34bef0 100644
 +
 +.Example ruleset for tproxy statement with logging and meta mark
 +-------------------------------------
-+table t {
-+    chain c {
++table inet x {
++    chain y {
++        type filter hook prerouting priority mangle; policy accept;
 +        udp dport 9999 goto {
 +            tproxy to :1234 log prefix "packet tproxied: " meta mark set 1 accept
 +            log prefix "no socket on port 1234 or not transparent?: " drop
