@@ -1,36 +1,39 @@
-Return-Path: <netfilter-devel+bounces-3913-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3914-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E4C397B457
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Sep 2024 21:25:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD9D97B490
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Sep 2024 22:24:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81781F24AF2
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Sep 2024 19:25:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CCE41C21DD3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Sep 2024 20:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D7718B46A;
-	Tue, 17 Sep 2024 19:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D058188A2D;
+	Tue, 17 Sep 2024 20:24:53 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A329BA3D
-	for <netfilter-devel@vger.kernel.org>; Tue, 17 Sep 2024 19:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2644188A13;
+	Tue, 17 Sep 2024 20:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726601131; cv=none; b=gasGkASuLGMmNU/LhehPR7d/nS3I4RgL9f3AeRfQWgidPiMq7VnbYWR4p+NktHi3Xr2bHopt2ZbIJ9lBEHkPxH7tUcbKQAd6wfa2EZiMd6VUAndRox+mbB3VFR/5XydOLjnpCbJEzLyid3fxuDzwBFoVNHGOXcDCWg+zTJGdkm8=
+	t=1726604693; cv=none; b=YCqIu6dPIy55/ZyMc2PJ1FKikqbq/e3rOyTeCFvUPGcFr0jeFHJo9jUYhHQ9u+FPW8BNvqtZC+8I4OfvDIMmuubjdjltq6+EuYpgDtQ61ZVb2jqvCmZ7zvVktkkmfVJ92lRlUIwSMmvXzafWLysAMeBcz/4s9Ho6dNBELsps4jo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726601131; c=relaxed/simple;
-	bh=tVrE36OpgqCH7pvP0HZM40VbHcOyJvqmfNUx8Qgf/dQ=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Ur2ENVPw9C7QAuLAxktUpuPDDcnRQjAFiKlpq81mW8WsX7HJ/oQBtbFcy3xWnxK0bQrZY5b4DbgFEWYVt9iRmcaWARYiQtexy7DO3V7gbzEZGMzHkhVo08aI8Wn6isUIwrWDpZ2tKvBVBARXQaTp0kodJ9Ek9r4RG0GeklYmtMw=
+	s=arc-20240116; t=1726604693; c=relaxed/simple;
+	bh=3M+8aIklOQNGwyITZt6S+i9tybtrWlA1vSjz4P5OxaA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DiFCIeH8N/gzVRh3DqbEFpC4znezz8JGq0KuEoNnzXdT22sjkr7mzTzXEJn1X21s0SDvWaW9k+q3Rj4GeJPu25JhkiZasr7GgfBspR74RzgN2bzSFDUjEvBA5BbLK2K7Dm5yc30sh256I7NLGE1KcLHKnDn4kLkUA9TFyc61XZ4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2] cache: initialize filter when fetching implicit chains
-Date: Tue, 17 Sep 2024 21:25:23 +0200
-Message-Id: <20240917192523.316471-1-pablo@netfilter.org>
+Cc: gregkh@linuxfoundation.org,
+	sashal@kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH -stable,6.6 0/2] Netfilter fixes for -stable
+Date: Tue, 17 Sep 2024 22:24:42 +0200
+Message-Id: <20240917202444.171526-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -40,48 +43,30 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ASAN reports:
+Hi Greg, Sasha,
 
-  src/cache.c:734:25: runtime error: load of value 189, which is not a valid value for type '_Bool'
+This batch contains a backport for fixes for 6.6-stable:
 
-because filter->reset.rule remains uninitialized.
+The following list shows the backported patches, I am using original commit
+IDs for reference:
 
-Initialize filter and replace existing construct to initialize table and
-chain when filtering which was to be leaving remaining fields
-uninitialized.
+1) 29b359cf6d95 ("netfilter: nft_set_pipapo: walk over current view on netlink dump")
 
-Fixes: dbff26bfba83 ("cache: consolidate reset command")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: replace construct which does not initialize remaining fields.
+2) efefd4f00c96 ("netfilter: nf_tables: missing iterator type in lookup walk")
 
- src/cache.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Please, apply,
+Thanks
 
-diff --git a/src/cache.c b/src/cache.c
-index c8ef16033551..b75a5bf3283c 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -1118,15 +1118,14 @@ err_ctx_list:
- static int implicit_chain_cache(struct netlink_ctx *ctx, struct table *table,
- 				const char *chain_name)
- {
--	struct nft_cache_filter filter;
-+	struct nft_cache_filter filter = {};
- 	struct chain *chain;
- 	int ret = 0;
- 
- 	list_for_each_entry(chain, &table->chain_bindings, cache.list) {
--		filter.list = (typeof(filter.list)) {
--			.table = table->handle.table.name,
--			.chain = chain->handle.chain.name,
--		};
-+		filter.list.table = table->handle.table.name;
-+		filter.list.chain = chain->handle.chain.name;
-+
- 		ret = rule_init_cache(ctx, table, &filter);
- 	}
- 
+Pablo Neira Ayuso (2):
+  netfilter: nft_set_pipapo: walk over current view on netlink dump
+  netfilter: nf_tables: missing iterator type in lookup walk
+
+ include/net/netfilter/nf_tables.h | 13 +++++++++++++
+ net/netfilter/nf_tables_api.c     |  5 +++++
+ net/netfilter/nft_lookup.c        |  1 +
+ net/netfilter/nft_set_pipapo.c    |  6 ++++--
+ 4 files changed, 23 insertions(+), 2 deletions(-)
+
 -- 
 2.30.2
 
