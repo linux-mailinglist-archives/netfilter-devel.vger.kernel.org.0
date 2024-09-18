@@ -1,150 +1,231 @@
-Return-Path: <netfilter-devel+bounces-3945-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-3948-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5877797BCBA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Sep 2024 15:04:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C72F097BD1C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Sep 2024 15:35:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AAE9284E24
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Sep 2024 13:04:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57A831F2344E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Sep 2024 13:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B030189900;
-	Wed, 18 Sep 2024 13:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A49418B47C;
+	Wed, 18 Sep 2024 13:35:16 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E1A17E019;
-	Wed, 18 Sep 2024 13:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD1718B461
+	for <netfilter-devel@vger.kernel.org>; Wed, 18 Sep 2024 13:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726664659; cv=none; b=M89exNpeSJSNy/0RJ+jVcTlEVKD3RrKKXRbiiabkjPt6P7vdZf67Sg0oAMkT65JqVGBeSJF0CR0w1W7mhjLQuOZ6+ETIJTa4NwEZO5/Ld7EKiS10telGRkcSJHqJZXKwdb5La0JmDqPR+WnXIcl8JkDGCvw42XrErADIRdGpKjM=
+	t=1726666516; cv=none; b=Stcfwo/PLiZu/mGLfNpzg0TTVexzO3pWGyT4/XJobsg4NFCOjBrdTxlXzDgX8KvMXXwWqgtNuGrV8cTtRXInh8GwkM7VNCxitFtr5HoMvUpU5QHjXLoFW+/G/L50ah+389DEJR6mwqb9u+hutr5wCoYb0IfV1FdQfZNteBgFJvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726664659; c=relaxed/simple;
-	bh=Gti3B3tBG4fTGujWYxe9usSHv+WGjyz56jQdC/C2v0g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=m0E5JNhLEZ8QHMDQBvMQd3FIxUSPs/ySa2W9GnKecMAuzUsA626EIRODIGPwPB3UWKf0kZmWe1DVuMWm/aO6CEgliDptJJi3QqucA9dIWd44ExkrH0EEArrpE6zeqNGC+B2yupCPb6D95QQe059+q9eZAFJiFRE3kXdDhbX8HqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X7zP4422Yz20nwl;
-	Wed, 18 Sep 2024 21:03:52 +0800 (CST)
-Received: from kwepemj200016.china.huawei.com (unknown [7.202.194.28])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4D3D41401F0;
-	Wed, 18 Sep 2024 21:04:06 +0800 (CST)
-Received: from [10.123.123.159] (10.123.123.159) by
- kwepemj200016.china.huawei.com (7.202.194.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 18 Sep 2024 21:04:02 +0800
-Message-ID: <8f2ad9d5-3e1e-babd-0399-2111a4a2f5e0@huawei-partners.com>
-Date: Wed, 18 Sep 2024 16:03:58 +0300
+	s=arc-20240116; t=1726666516; c=relaxed/simple;
+	bh=P/qVMP9quqWitMDT99uInAbiHY2hqHj9cIjMvGokg0w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uyZwo8IgQPepRbDO5cUGDUkEjKkuIKTkXdBqC5wxL0w+k8ivsokkTDe5yzTl5/jh+0L0XJZKmz5qOBJC8b1n+2csuyc4RYrIAvdyIEPAFmf1VOOBHCFzWx1dB1B4wOk96BXiNtIHyizyujKUBMK6WgrhjL0hDi7w3A/qsB+S9vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1squpr-0004Tp-HP; Wed, 18 Sep 2024 15:35:11 +0200
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>,
+	Antonio Ojea <aojea@google.com>
+Subject: [PATCH nf] netfilter: nfnetlink_queue: remove old clash resolution logic
+Date: Wed, 18 Sep 2024 15:13:39 +0200
+Message-ID: <20240918131342.9588-1-fw@strlen.de>
+X-Mailer: git-send-email 2.44.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 07/19] selftests/landlock: Test adding a rule for
- empty access
-To: =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>
-CC: <mic@digikod.net>, <willemdebruijn.kernel@gmail.com>,
-	<gnoack3000@gmail.com>, <linux-security-module@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-	<yusongping@huawei.com>, <artem.kuzin@huawei.com>,
-	<konstantin.meskhidze@huawei.com>
-References: <20240904104824.1844082-1-ivanov.mikhail1@huawei-partners.com>
- <20240904104824.1844082-8-ivanov.mikhail1@huawei-partners.com>
- <ZurKsk0LHrIxCoV9@google.com>
-Content-Language: ru
-From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
-In-Reply-To: <ZurKsk0LHrIxCoV9@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- kwepemj200016.china.huawei.com (7.202.194.28)
 
-On 9/18/2024 3:42 PM, Günther Noack wrote:
-> On Wed, Sep 04, 2024 at 06:48:12PM +0800, Mikhail Ivanov wrote:
->> Add test that validates behaviour of Landlock after rule with
->> empty access is added.
->>
->> Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
->> ---
->> Changes since v2:
->> * Renames protocol.inval into protocol.rule_with_empty_access.
->> * Replaces ASSERT_EQ with EXPECT_EQ for landlock_add_rule().
->> * Closes ruleset_fd.
->> * Refactors commit message and title.
->> * Minor fixes.
->>
->> Changes since v1:
->> * Refactors commit message.
->> ---
->>   .../testing/selftests/landlock/socket_test.c  | 33 +++++++++++++++++++
->>   1 file changed, 33 insertions(+)
->>
->> diff --git a/tools/testing/selftests/landlock/socket_test.c b/tools/testing/selftests/landlock/socket_test.c
->> index d2fedfca7193..d323f649a183 100644
->> --- a/tools/testing/selftests/landlock/socket_test.c
->> +++ b/tools/testing/selftests/landlock/socket_test.c
->> @@ -384,4 +384,37 @@ TEST_F(protocol, rule_with_unhandled_access)
->>   	ASSERT_EQ(0, close(ruleset_fd));
->>   }
->>   
->> +TEST_F(protocol, rule_with_empty_access)
->> +{
->> +	const struct landlock_ruleset_attr ruleset_attr = {
->> +		.handled_access_socket = LANDLOCK_ACCESS_SOCKET_CREATE
->> +	};
->> +	struct landlock_socket_attr protocol_allowed = {
->> +		.allowed_access = LANDLOCK_ACCESS_SOCKET_CREATE,
->> +		.family = self->prot.family,
->> +		.type = self->prot.type,
->> +	};
->> +	struct landlock_socket_attr protocol_denied = {
->> +		.allowed_access = 0,
->> +		.family = self->prot.family,
->> +		.type = self->prot.type,
->> +	};
->> +	int ruleset_fd;
->> +
->> +	ruleset_fd =
->> +		landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
->> +	ASSERT_LE(0, ruleset_fd);
->> +
->> +	/* Checks zero access value. */
->> +	EXPECT_EQ(-1, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
->> +					&protocol_denied, 0));
->> +	EXPECT_EQ(ENOMSG, errno);
->> +
->> +	/* Adds with legitimate value. */
->> +	EXPECT_EQ(0, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
->> +				       &protocol_allowed, 0));
-> 
-> In my mind, the check with the legitimate rule is probably already done in other
-> places and does not strictly need to be duplicated here.
-> 
-> But up to you, it's fine either way. :)
+For historical reasons there are two clash resolution spots in
+netfilter, one in nfnetlink_queue and one in conntrack core.
 
-This test is a duplicate of mini.inval from net_test.c. I thought this
-line can be useful to check that adding rule with zero access does not
-affect Landlock behavior of adding a line with legitimate value. But
-this is a really weak reason and I'd like to remove this line for
-simplicity. Thank you!
+nfnetlink_queue one was added first: If a colliding entry is found, NAT
+NAT transformation is reversed by calling nat engine again with altered
+tuple.
 
-> 
-> Reviewed-by: Günther Noack <gnoack@google.com>
-> 
->> +
->> +	ASSERT_EQ(0, close(ruleset_fd));
->> +}
->> +
->>   TEST_HARNESS_MAIN
->> -- 
->> 2.34.1
->>
+See commit 368982cd7d1b ("netfilter: nfnetlink_queue: resolve clash for
+unconfirmed conntracks") for details.
+
+One problem is that nf_reroute() won't take an action if the queueing
+doesn't occur in the OUTPUT hook, i.e. when queueing in forward or
+postrouting, packet will be sent via the wrong path.
+
+Another problem is that the scenario addressed (2nd UDP packet sent with
+identical addresses while first packet is still being processed) can also
+occur without any nfqueue involvement due to threaded resolvers doing
+A and AAAA requests back-to-back.
+
+This lead us to add clash resolution logic to the conntrack core, see
+commit 6a757c07e51f ("netfilter: conntrack: allow insertion of clashing
+entries").  Instead of fixing the nfqueue based logic, lets remove it
+and let conntrack core handle this instead.
+
+Retain the ->update hook for sake of nfqueue based conntrack helpers.
+We could axe this hook completely but we'd have to split confirm and
+helper logic again, see commit ee04805ff54a ("netfilter: conntrack: make
+conntrack userspace helpers work again").
+
+This SHOULD NOT be backported to kernels earlier than v5.6; they lack
+adequate clash resolution handling.
+
+Patch was originally written by Pablo Neira Ayuso.
+
+Reported-by: Antonio Ojea <aojea@google.com>
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1766
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ include/linux/netfilter.h         |  4 --
+ net/netfilter/nf_conntrack_core.c | 85 -------------------------------
+ net/netfilter/nf_nat_core.c       |  1 -
+ 3 files changed, 90 deletions(-)
+
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 2683b2b77612..2b8aac2c70ad 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -376,15 +376,11 @@ int nf_route(struct net *net, struct dst_entry **dst, struct flowi *fl,
+ struct nf_conn;
+ enum nf_nat_manip_type;
+ struct nlattr;
+-enum ip_conntrack_dir;
+ 
+ struct nf_nat_hook {
+ 	int (*parse_nat_setup)(struct nf_conn *ct, enum nf_nat_manip_type manip,
+ 			       const struct nlattr *attr);
+ 	void (*decode_session)(struct sk_buff *skb, struct flowi *fl);
+-	unsigned int (*manip_pkt)(struct sk_buff *skb, struct nf_conn *ct,
+-				  enum nf_nat_manip_type mtype,
+-				  enum ip_conntrack_dir dir);
+ 	void (*remove_nat_bysrc)(struct nf_conn *ct);
+ };
+ 
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index d3cb53b008f5..b254f24a6b0e 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2151,80 +2151,6 @@ static void nf_conntrack_attach(struct sk_buff *nskb, const struct sk_buff *skb)
+ 	nf_conntrack_get(skb_nfct(nskb));
+ }
+ 
+-static int __nf_conntrack_update(struct net *net, struct sk_buff *skb,
+-				 struct nf_conn *ct,
+-				 enum ip_conntrack_info ctinfo)
+-{
+-	const struct nf_nat_hook *nat_hook;
+-	struct nf_conntrack_tuple_hash *h;
+-	struct nf_conntrack_tuple tuple;
+-	unsigned int status;
+-	int dataoff;
+-	u16 l3num;
+-	u8 l4num;
+-
+-	l3num = nf_ct_l3num(ct);
+-
+-	dataoff = get_l4proto(skb, skb_network_offset(skb), l3num, &l4num);
+-	if (dataoff <= 0)
+-		return NF_DROP;
+-
+-	if (!nf_ct_get_tuple(skb, skb_network_offset(skb), dataoff, l3num,
+-			     l4num, net, &tuple))
+-		return NF_DROP;
+-
+-	if (ct->status & IPS_SRC_NAT) {
+-		memcpy(tuple.src.u3.all,
+-		       ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3.all,
+-		       sizeof(tuple.src.u3.all));
+-		tuple.src.u.all =
+-			ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u.all;
+-	}
+-
+-	if (ct->status & IPS_DST_NAT) {
+-		memcpy(tuple.dst.u3.all,
+-		       ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.u3.all,
+-		       sizeof(tuple.dst.u3.all));
+-		tuple.dst.u.all =
+-			ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.u.all;
+-	}
+-
+-	h = nf_conntrack_find_get(net, nf_ct_zone(ct), &tuple);
+-	if (!h)
+-		return NF_ACCEPT;
+-
+-	/* Store status bits of the conntrack that is clashing to re-do NAT
+-	 * mangling according to what it has been done already to this packet.
+-	 */
+-	status = ct->status;
+-
+-	nf_ct_put(ct);
+-	ct = nf_ct_tuplehash_to_ctrack(h);
+-	nf_ct_set(skb, ct, ctinfo);
+-
+-	nat_hook = rcu_dereference(nf_nat_hook);
+-	if (!nat_hook)
+-		return NF_ACCEPT;
+-
+-	if (status & IPS_SRC_NAT) {
+-		unsigned int verdict = nat_hook->manip_pkt(skb, ct,
+-							   NF_NAT_MANIP_SRC,
+-							   IP_CT_DIR_ORIGINAL);
+-		if (verdict != NF_ACCEPT)
+-			return verdict;
+-	}
+-
+-	if (status & IPS_DST_NAT) {
+-		unsigned int verdict = nat_hook->manip_pkt(skb, ct,
+-							   NF_NAT_MANIP_DST,
+-							   IP_CT_DIR_ORIGINAL);
+-		if (verdict != NF_ACCEPT)
+-			return verdict;
+-	}
+-
+-	return NF_ACCEPT;
+-}
+-
+ /* This packet is coming from userspace via nf_queue, complete the packet
+  * processing after the helper invocation in nf_confirm().
+  */
+@@ -2288,17 +2214,6 @@ static int nf_conntrack_update(struct net *net, struct sk_buff *skb)
+ 	if (!ct)
+ 		return NF_ACCEPT;
+ 
+-	if (!nf_ct_is_confirmed(ct)) {
+-		int ret = __nf_conntrack_update(net, skb, ct, ctinfo);
+-
+-		if (ret != NF_ACCEPT)
+-			return ret;
+-
+-		ct = nf_ct_get(skb, &ctinfo);
+-		if (!ct)
+-			return NF_ACCEPT;
+-	}
+-
+ 	return nf_confirm_cthelper(skb, ct, ctinfo);
+ }
+ 
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 6d8da6dddf99..ffea651afa9c 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -1208,7 +1208,6 @@ static const struct nf_nat_hook nat_hook = {
+ #ifdef CONFIG_XFRM
+ 	.decode_session		= __nf_nat_decode_session,
+ #endif
+-	.manip_pkt		= nf_nat_manip_pkt,
+ 	.remove_nat_bysrc	= nf_nat_cleanup_conntrack,
+ };
+ 
+-- 
+2.44.2
+
 
