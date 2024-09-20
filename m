@@ -1,258 +1,184 @@
-Return-Path: <netfilter-devel+bounces-3998-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4003-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D60E497DA09
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 22:24:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC6D797DA17
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 22:32:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36CF2B214D7
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 20:24:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E706E1C210AE
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 20:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 990501862BB;
-	Fri, 20 Sep 2024 20:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dIdSFmgu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACD04779D;
+	Fri, 20 Sep 2024 20:32:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0FAC18593C
-	for <netfilter-devel@vger.kernel.org>; Fri, 20 Sep 2024 20:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4213917555
+	for <netfilter-devel@vger.kernel.org>; Fri, 20 Sep 2024 20:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726863843; cv=none; b=uoFebMpAzjr6a5K8+OCqFnbbAPW0nCkBkqoYsa3vUKKHrkI3qb8JcdBwmQwdYoAPj4wSpPj2XLIRouvQ6sSpLubmJlvlhDWz5YeD6rLwvfQJ+L9vMnM4+NezmjWtSznxMM6Py1tlxj9f/dMq/fEzc+dShB68i7aUdbJ19wiY52M=
+	t=1726864344; cv=none; b=l9tAV3GMSBYjHirkp16AjXpVl15VxF/KV0dx9Ln0o0SbQrlvG7yyIIVdXuVGp1rwYtn5qMCveuHvh5iZsXJrMKDDrlLPD1rvfqTcbPk/u7A14lC6BZOHadzAc3ycfZBDGfd6TpApPVB7+VQSSIAaqeCUa09hciaTrD8jBoUOlVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726863843; c=relaxed/simple;
-	bh=pGvmHzxe8QWE2uDaOUfsyHpAkQBjgL1enHfsRgpANQM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SMy3PY9HQtTZsbQp3dFLaa6beMIZyuX+sxghAVKeu+LhMGQlwJLjmS02412HNBy8xDa6Y/0CU+BUkxqr4P8N8ECpCcwM+3CkEqE4KlTJsQUfJBLdvZKPcAbo+HU8oPe8GzNCVfV491oXfEL6Uk1Iye0GXkLjnYPzpL1Lna+Sabg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dIdSFmgu; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=AvURGXYgkc0wxYONbBgoxJfbE5HiJ/COF4wnJ2i4G3Y=; b=dIdSFmguNHsv/hVZ+sIwb/Zx6p
-	VbgyG+2DyeevAathB58/Qq6wUmLexAinVYjkhkdVmARjiQUVHZLaAsnMiaUMAX7E5qQ1r4YH5Fex3
-	OFbnyVOkEV5v/VmZPTigtPPM49ukpWj7vH9RCHvQeQomZ88PTml+gEt/7JqmjVyie04T6PLfogpky
-	FfW0QqRp96Y9OimFOGEIvucZ4reoyX1IvdhWXkKRporGVwjw0WRRK2uE0Hp5UWPH41ak7pjl+S1lQ
-	9Zf+9GTM4pjgOfOVhOmaEaOC5P2ujlx9Z/IMQR8ZTmd16oyMmbsDHKMfMhmLyEhpettzjTWqZ+LhD
-	XeetH7cg==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1srkAa-000000006Jt-1FsP;
-	Fri, 20 Sep 2024 22:24:00 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org,
-	Florian Westphal <fw@strlen.de>,
-	Eric Garver <e@erig.me>
-Subject: [nf-next PATCH v4 16/16] selftests: netfilter: Torture nftables netdev hooks
-Date: Fri, 20 Sep 2024 22:23:47 +0200
-Message-ID: <20240920202347.28616-17-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240920202347.28616-1-phil@nwl.cc>
-References: <20240920202347.28616-1-phil@nwl.cc>
+	s=arc-20240116; t=1726864344; c=relaxed/simple;
+	bh=mEneWP1qBGs0CnJElUkcKJfUKMxN8NqiBW+1XFVnoRQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=dzmrLWotoLs1RnZ7qQiTCzNoVVDUjOrK8USIFxso7+AKYDYZsLsE08dgUPt9uH/329lvIkNJrhzu7yLM39cq9mxaXlAzzJwT6MfoTxtpQ2vnapOrKHPlwuq/Z7dVcjKItq7jDLY8ujqZqYt8IR5WhN2CMk6D7NwIdEhQscluJpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-39f5328fd5eso24856125ab.2
+        for <netfilter-devel@vger.kernel.org>; Fri, 20 Sep 2024 13:32:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726864342; x=1727469142;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zH4CGun5FdXs5sVSKWrYadSnvsfpjmcreRzHvorZMe8=;
+        b=KE81jTyVZSkbfNvzhJqCFxn1D3DTMhEUdFp9O34Q/cCowut3WUOSWDght9N8cwln8E
+         8SqFqo4v8omVBTW2J0/X2OiSa8b04v6HrzkDw8A1cuh7EuIWyJRRPbrZfyT6gpn5eERm
+         MS7uFilmE31gBdr2Ctjz/DUBWi5cx/gkLERZ7GyGF0ZxMC42XsI50Tqw33tEiKdYwhuq
+         UfTUVuRSA6tUb/HAyx1W/tZ+UQuX6qDtBLxqI318/j/NX+RRwOpUzZHk1BBSBo/Id42X
+         Jwxyc0VuS5QLRE8roQIRSNsejJ2iZmZOMfoF9Va9yT3xZDzg6b+/Fn2p1fuby2uTv9TU
+         z4vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXImBnGH/vVESElr9E9G1YN6azgQwZoihDloDoCOpPBIyVEIGW8vVQvmTNW+HcuQ4y1CenlViq5oFGq74yY0Dw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBmMlN7Wu3Vqo9hzO63sry/OB+TKtz2Q5HDFU/zRyM7lhDVYYj
+	3Vzh0CIVVPuLA1qmToXrTz88o3bs8LMjwEgBXDOorCgA8Raz7VMIEb4+7Lk6TbHHEyAUe46tqqn
+	16XL7uxmHCczkWYf09SgXhoRmFfpJJgxzS6oge8Cho+dVu3vWXU0yQGI=
+X-Google-Smtp-Source: AGHT+IGLD46nYhdO8KHMYv0/RE/yy1oHfRbkBTtWpimknnuvwzEg3rHsq6LbvOBKgnMU+J5M4eoVj8xQFtv5zM7LILo+KGKbk+Vf
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1a0e:b0:3a0:922f:8e9a with SMTP id
+ e9e14a558f8ab-3a0c9d6f2ffmr42851735ab.17.1726864342460; Fri, 20 Sep 2024
+ 13:32:22 -0700 (PDT)
+Date: Fri, 20 Sep 2024 13:32:22 -0700
+In-Reply-To: <000000000000ce6fdb061cc7e5b2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66eddbd6.050a0220.3195df.0013.GAE@google.com>
+Subject: Re: [syzbot] [netfilter] BUG: soft lockup in batadv_iv_send_outstanding_bat_ogm_packet
+From: syzbot <syzbot+572f6e36bc6ee6f16762@syzkaller.appspotmail.com>
+To: a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net, 
+	edumazet@google.com, kadlec@netfilter.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch, 
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
+	pablo@netfilter.org, sven@narfation.org, sw@simonwunderlich.de, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add a ruleset which binds to various interface names via netdev-family
-chains and flowtables and massage the notifiers by frequently renaming
-interfaces to match these names. While doing so:
-- Keep an 'nft monitor' running in background to receive the notifications
-- Loop over 'nft list ruleset' to exercise ruleset dump codepath
-- Have iperf running so the involved chains/flowtables see traffic
+syzbot has found a reproducer for the following issue on:
 
-If supported, also test interface wildcard support separately by
-creating a flowtable with 'wild*' interface spec and quickly add/remove
-matching dummy interfaces.
+HEAD commit:    a430d95c5efa Merge tag 'lsm-pr-20240911' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e87f00580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=44d46e514184cd24
+dashboard link: https://syzkaller.appspot.com/bug?extid=572f6e36bc6ee6f16762
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1481cca9980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14929607980000
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bdf130384fad/disk-a430d95c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c62ff195641a/vmlinux-a430d95c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4069702199e2/bzImage-a430d95c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+572f6e36bc6ee6f16762@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P1119/1:b..l
+rcu: 	(detected by 0, t=10503 jiffies, g=23913, q=347 ncpus=2)
+task:kworker/u8:6    state:R  running task     stack:24576 pid:1119  tgid:1119  ppid:2      flags:0x00004000
+Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5188 [inline]
+ __schedule+0xe37/0x5490 kernel/sched/core.c:6529
+ preempt_schedule_irq+0x51/0x90 kernel/sched/core.c:6851
+ irqentry_exit+0x36/0x90 kernel/entry/common.c:354
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:lock_acquire+0x1f2/0x560 kernel/locking/lockdep.c:5727
+Code: c1 05 ea b0 98 7e 83 f8 01 0f 85 ea 02 00 00 9c 58 f6 c4 02 0f 85 d5 02 00 00 48 85 ed 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+RSP: 0018:ffffc900045b7a70 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 1ffff920008b6f50 RCX: 0000000000000001
+RDX: 0000000000000001 RSI: ffffffff8b4cddc0 RDI: ffffffff8bb118a0
+RBP: 0000000000000200 R08: 0000000000000000 R09: fffffbfff2d39ae0
+R10: ffffffff969cd707 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffff8ddba6a0 R15: 0000000000000000
+ rcu_lock_acquire include/linux/rcupdate.h:326 [inline]
+ rcu_read_lock include/linux/rcupdate.h:838 [inline]
+ batadv_iv_ogm_slide_own_bcast_window net/batman-adv/bat_iv_ogm.c:754 [inline]
+ batadv_iv_ogm_schedule_buff+0x5ac/0x14d0 net/batman-adv/bat_iv_ogm.c:825
+ batadv_iv_ogm_schedule net/batman-adv/bat_iv_ogm.c:868 [inline]
+ batadv_iv_ogm_schedule net/batman-adv/bat_iv_ogm.c:861 [inline]
+ batadv_iv_send_outstanding_bat_ogm_packet+0x31e/0x8d0 net/batman-adv/bat_iv_ogm.c:1712
+ process_one_work+0x9c5/0x1b40 kernel/workqueue.c:3231
+ process_scheduled_works kernel/workqueue.c:3312 [inline]
+ worker_thread+0x6c8/0xf00 kernel/workqueue.c:3393
+ kthread+0x2c1/0x3a0 kernel/kthread.c:389
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+rcu: rcu_preempt kthread starved for 10529 jiffies! g23913 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:27680 pid:17    tgid:17    ppid:2      flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5188 [inline]
+ __schedule+0xe37/0x5490 kernel/sched/core.c:6529
+ __schedule_loop kernel/sched/core.c:6606 [inline]
+ schedule+0xe7/0x350 kernel/sched/core.c:6621
+ schedule_timeout+0x136/0x2a0 kernel/time/timer.c:2581
+ rcu_gp_fqs_loop+0x1eb/0xb00 kernel/rcu/tree.c:2034
+ rcu_gp_kthread+0x271/0x380 kernel/rcu/tree.c:2236
+ kthread+0x2c1/0x3a0 kernel/kthread.c:389
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+rcu: Stack dump where RCU GP kthread last ran:
+CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted 6.11.0-syzkaller-02574-ga430d95c5efa #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
+RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:92 [inline]
+RIP: 0010:acpi_safe_halt+0x1a/0x20 drivers/acpi/processor_idle.c:112
+Code: 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 65 48 8b 05 78 a2 eb 74 48 8b 00 a8 08 75 0c 66 90 0f 00 2d 68 56 a4 00 fb f4 <fa> c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffffff8da07d70 EFLAGS: 00000246
+RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffffffff8b181979
+RDX: 0000000000000001 RSI: ffff8880212b3000 RDI: ffff8880212b3064
+RBP: ffff8880212b3064 R08: 0000000000000001 R09: ffffed1017106fd9
+R10: ffff8880b8837ecb R11: 0000000000000000 R12: ffff8880212be800
+R13: ffffffff8e9faa20 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b8800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff2dde0dd58 CR3: 000000002ad40000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ </IRQ>
+ <TASK>
+ acpi_idle_enter+0xc5/0x160 drivers/acpi/processor_idle.c:702
+ cpuidle_enter_state+0xaa/0x4f0 drivers/cpuidle/cpuidle.c:264
+ cpuidle_enter+0x4e/0xa0 drivers/cpuidle/cpuidle.c:385
+ cpuidle_idle_call kernel/sched/idle.c:230 [inline]
+ do_idle+0x313/0x3f0 kernel/sched/idle.c:326
+ cpu_startup_entry+0x4f/0x60 kernel/sched/idle.c:424
+ rest_init+0x16b/0x2b0 init/main.c:747
+ start_kernel+0x3e4/0x4d0 init/main.c:1105
+ x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:507
+ x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:488
+ common_startup_64+0x13e/0x148
+ </TASK>
+
+
 ---
- .../testing/selftests/net/netfilter/Makefile  |   1 +
- .../net/netfilter/nft_interface_stress.sh     | 149 ++++++++++++++++++
- 2 files changed, 150 insertions(+)
- create mode 100755 tools/testing/selftests/net/netfilter/nft_interface_stress.sh
-
-diff --git a/tools/testing/selftests/net/netfilter/Makefile b/tools/testing/selftests/net/netfilter/Makefile
-index d13fb5ea3e89..823e0acf7171 100644
---- a/tools/testing/selftests/net/netfilter/Makefile
-+++ b/tools/testing/selftests/net/netfilter/Makefile
-@@ -21,6 +21,7 @@ TEST_PROGS += nft_concat_range.sh
- TEST_PROGS += nft_conntrack_helper.sh
- TEST_PROGS += nft_fib.sh
- TEST_PROGS += nft_flowtable.sh
-+TEST_PROGS += nft_interface_stress.sh
- TEST_PROGS += nft_meta.sh
- TEST_PROGS += nft_nat.sh
- TEST_PROGS += nft_nat_zones.sh
-diff --git a/tools/testing/selftests/net/netfilter/nft_interface_stress.sh b/tools/testing/selftests/net/netfilter/nft_interface_stress.sh
-new file mode 100755
-index 000000000000..92ce1d35ec19
---- /dev/null
-+++ b/tools/testing/selftests/net/netfilter/nft_interface_stress.sh
-@@ -0,0 +1,149 @@
-+#!/bin/bash -e
-+#
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Torture nftables' netdevice notifier callbacks and related code by frequent
-+# renaming of interfaces which netdev-family chains and flowtables hook into.
-+
-+source lib.sh
-+
-+checktool "nft --version" "run test without nft tool"
-+checktool "iperf3 --version" "run test without iperf3 tool"
-+
-+# how many seconds to torture the kernel, default to 80% of max run time
-+TEST_RUNTIME=$((${kselftest_timeout:-60} * 8 / 10))
-+
-+trap "cleanup_all_ns" EXIT
-+
-+setup_ns nsc nsr nss
-+
-+ip -net $nsc link add cr0 type veth peer name rc0 netns $nsr
-+ip -net $nsc addr add 10.0.0.1/24 dev cr0
-+ip -net $nsc link set cr0 up
-+ip -net $nsc route add default via 10.0.0.2
-+
-+ip -net $nss link add sr0 type veth peer name rs0 netns $nsr
-+ip -net $nss addr add 10.1.0.1/24 dev sr0
-+ip -net $nss link set sr0 up
-+ip -net $nss route add default via 10.1.0.2
-+
-+ip -net $nsr addr add 10.0.0.2/24 dev rc0
-+ip -net $nsr link set rc0 up
-+ip -net $nsr addr add 10.1.0.2/24 dev rs0
-+ip -net $nsr link set rs0 up
-+ip netns exec $nsr sysctl -q net.ipv4.ip_forward=1
-+ip netns exec $nsr sysctl -q net.ipv4.conf.all.forwarding=1
-+
-+{
-+	echo "table netdev t {"
-+	for ((i = 0; i < 10; i++)); do
-+		cat <<-EOF
-+		chain chain_rc$i {
-+			type filter hook ingress device rc$i priority 0
-+			counter
-+		}
-+		chain chain_rs$i {
-+			type filter hook ingress device rs$i priority 0
-+			counter
-+		}
-+		EOF
-+	done
-+	echo "}"
-+	echo "table ip t {"
-+	for ((i = 0; i < 10; i++)); do
-+		cat <<-EOF
-+		flowtable ft_${i} {
-+			hook ingress priority 0
-+			devices = { rc$i, rs$i }
-+		}
-+		EOF
-+	done
-+	echo "chain c {"
-+	echo "type filter hook forward priority 0"
-+	for ((i = 0; i < 10; i++)); do
-+		echo -n "iifname rc$i oifname rs$i "
-+		echo    "ip protocol tcp counter flow add @ft_${i}"
-+	done
-+	echo "counter"
-+	echo "}"
-+	echo "}"
-+} | ip netns exec $nsr nft -f - || {
-+	echo "SKIP: Could not load nft ruleset"
-+	exit $ksft_skip
-+}
-+
-+for ((o=0, n=1; ; o=n, n++, n %= 10)); do
-+	ip -net $nsr link set rc$o name rc$n
-+	ip -net $nsr link set rs$o name rs$n
-+done &
-+rename_loop_pid=$!
-+
-+while true; do ip netns exec $nsr nft list ruleset >/dev/null 2>&1; done &
-+nft_list_pid=$!
-+
-+ip netns exec $nsr nft monitor >/dev/null &
-+nft_monitor_pid=$!
-+
-+ip netns exec $nss iperf3 --server --daemon -1
-+summary_expr='s,^\[SUM\] .* \([0-9]\+\) Mbits/sec .* receiver,\1,p'
-+rate=$(ip netns exec $nsc iperf3 \
-+	--format m -c 10.1.0.1 --time $TEST_RUNTIME \
-+	--length 56 --parallel 10 -i 0 | sed -n "$summary_expr")
-+
-+kill $nft_list_pid
-+kill $nft_monitor_pid
-+kill $rename_loop_pid
-+wait
-+
-+ip netns exec $nsr nft -f - <<EOF
-+table ip t {
-+	flowtable ft_wild {
-+		hook ingress priority 0
-+		devices = { wild* }
-+	}
-+}
-+EOF
-+if [[ $? -ne 0 ]]; then
-+	echo "SKIP wildcard tests: not supported by host's nft?"
-+else
-+	for ((i = 0; i < 100; i++)); do
-+		ip -net $nsr link add wild$i type dummy &
-+	done
-+	wait
-+	for ((i = 80; i < 100; i++)); do
-+		ip -net $nsr link del wild$i &
-+	done
-+	for ((i = 0; i < 80; i++)); do
-+		ip -net $nsr link del wild$i &
-+	done
-+	wait
-+	for ((i = 0; i < 100; i += 10)); do
-+		(
-+		for ((j = 0; j < 10; j++)); do
-+			ip -net $nsr link add wild$((i + j)) type dummy
-+		done
-+		for ((j = 0; j < 10; j++)); do
-+			ip -net $nsr link del wild$((i + j))
-+		done
-+		) &
-+	done
-+	wait
-+fi
-+
-+[[ $(</proc/sys/kernel/tainted) -eq 0 ]] || {
-+	echo "FAIL: Kernel is tainted!"
-+	exit $ksft_fail
-+}
-+
-+[[ $rate -gt 0 ]] || {
-+	echo "FAIL: Zero throughput in iperf3"
-+	exit $ksft_fail
-+}
-+
-+[[ -f /sys/kernel/debug/kmemleak && \
-+   -n $(</sys/kernel/debug/kmemleak) ]] && {
-+	echo "FAIL: non-empty kmemleak report"
-+	exit $ksft_fail
-+}
-+
-+exit $ksft_pass
--- 
-2.43.0
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
