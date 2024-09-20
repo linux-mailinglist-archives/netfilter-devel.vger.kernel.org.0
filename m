@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-3993-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4002-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D95DA97DA04
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 22:24:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7284B97DA0D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 22:24:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F296B21289
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 20:24:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E83BF1F20EF5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Sep 2024 20:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26B7185B51;
-	Fri, 20 Sep 2024 20:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18BFF186615;
+	Fri, 20 Sep 2024 20:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="hVqFHoDw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="luwNwGRo"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB9A183CBF
-	for <netfilter-devel@vger.kernel.org>; Fri, 20 Sep 2024 20:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D561184542
+	for <netfilter-devel@vger.kernel.org>; Fri, 20 Sep 2024 20:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726863842; cv=none; b=p3LMtcDi8W/9u8QcI9sQn3isJHKciogsjhm+o3rkg0gmmNxmloBAfomIh4PEa46RjHT9A2Ii2HD6s4yBd8+BgQYbJti4+NdwtnXPjH1SW4fUMbcVtovvBQQ/J5Of1AqMQTRj+/XH0Vgdf4C/Xpfe/u8fw0Xbt6vRMuxUeT42CP0=
+	t=1726863845; cv=none; b=MWITfg08PaBnb+z4mHEYr6v5pEm/8jdcmpAIdpivbi4+hDZuuGnxLZ2NPdmSmp7VrPD/5cMoSPoTskajIKlT0iysdeTzLlbTwDnjDeXGct5GfkMRkesbAElynfYnLn4wQfJhlJ00IXlOlTSvr0n7c/EV8Eqh3AIWfv+rB7HtBug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726863842; c=relaxed/simple;
-	bh=hF2LbM6coqidUOBah4qWUziCX/jYYmBwKKQImEO6JFI=;
+	s=arc-20240116; t=1726863845; c=relaxed/simple;
+	bh=Ao5JQH2KiDVztcE8Gw73Q1OJODRH/inY/tNLv7epdsQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p2eYUBorbX0Mt1T7b8X/n2TNaxsupdDvaTT0qU93Z9sGphMwLphaSn6260uzNPgJtZYKwvTlEEeg7Xf8VigG9AaEJGOQxu4/laI+Q5LwQEOBKdWlxqxXF/3h3NK179IKEMe8/AFRfYsjvi9ULA35k9CWr1066lRx0tw2KctEI+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=hVqFHoDw; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=i4u7VqoyinCOiHoJjGwjtclaNOXWutfT/27oZk5d/mR29eZRrXELSm2Mn6F8XFiu8kpgc1df7JC6vZ4eJvGbixp9rMZ0+r7aKyW+LzEk/mL2BG0d55j5d3UWe6NoEzqZXiQVUXY4JJ0pLoHT59h9GbmqNuoX2+2XgYEBIF7Bzdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=luwNwGRo; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=yb8Oh0PjZostfgsQrogLDWBJHXlLKknJiLjPp80GWs4=; b=hVqFHoDwZSU0UtiKh3IpbWb3n2
-	qfi2ErmixsGGNadBSf9vFOGonLgDgxdvkNHnC3wREA5Vhume4pSDTOOZ/DmM0QmwK4mzfEoUQrf1n
-	9/SJs1cO0ljvX2kkUpCvaK/o/ub6uaH29Ism4Q0QRyM+uo4kdIRJXtw1eig6TWV/eawb+UXqSpdcM
-	Npo+k0LcF1F+0DBg1lr3K4+7WhqfTtTV/hO3ZpmpjG5qYUjvL6T+NUw43k8rtg+5XWXpLfFjqB6U0
-	M79Q5p2VEWTjFMj0qQJ8QlE1wJoHZt+hqxcz6qxtlhUc0Ml3nWqWeL7k9n0OeJ1L+lF4EK7kvELZt
-	Mvs1zKaQ==;
+	bh=CO1fi2rliaRWY1DuStQNXllJU+cgYZ7qaNYpRvmB2Pc=; b=luwNwGRo85mZzhylmA9ESzAQzh
+	g1LTUdAG6LZIv61KrrV3dOIEYvxA9ttE0WVKEkbCIquqWF5yf1C2QXPca6qKj3xnBPGNoquP3BCSK
+	EORwXJvqw5J1f+WzZwtzFww7a++TOFtfjc850awdPzfJB2vf12HVvZU/Mzj1F4Mxojbx01hhnd6Lx
+	b7w8ysLWHgEJ+5mpEX/l16qcoNVmXrDzN6eTu0WG+Fj+NqouFU0zHXxaQgPbDgnK8Ca2NlindWnas
+	FpgOPqHm1C5OnbuK++NUdC4jGUEq8l6sDH0p5RcoCb9iecc9SyGZRnuMLoEOmKZHE9ScQArptsUCt
+	7RuRKg+w==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1srkAU-000000006Id-2HYU;
-	Fri, 20 Sep 2024 22:23:54 +0200
+	id 1srkAa-000000006K2-3ntI;
+	Fri, 20 Sep 2024 22:24:00 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>,
 	Eric Garver <e@erig.me>
-Subject: [nf-next PATCH v4 14/16] netfilter: nf_tables: Support wildcard netdev hook specs
-Date: Fri, 20 Sep 2024 22:23:45 +0200
-Message-ID: <20240920202347.28616-15-phil@nwl.cc>
+Subject: [nf-next PATCH v4 15/16] netfilter: nf_tables: Add notications for hook changes
+Date: Fri, 20 Sep 2024 22:23:46 +0200
+Message-ID: <20240920202347.28616-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240920202347.28616-1-phil@nwl.cc>
 References: <20240920202347.28616-1-phil@nwl.cc>
@@ -67,103 +67,140 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-User space may pass non-nul-terminated NFTA_DEVICE_NAME attribute values
-to indicate a suffix wildcard.
-Expect for multiple devices to match the given prefix in
-nft_netdev_hook_alloc() and populate 'ops_list' with them all.
-When checking for duplicate hooks, compare the shortest prefix so a
-device may never match more than a single hook spec.
-Finally respect the stored prefix length when hooking into new devices
-from event handlers.
+Notify user space if netdev hooks are updated due to netdev add/remove
+events. Send minimal notification messages by introducing
+NFT_MSG_NEWDEV/DELDEV message types describing a single device only.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/netfilter/nf_tables_api.c    | 33 ++++++++++++++++----------------
- net/netfilter/nft_chain_filter.c |  2 +-
- 2 files changed, 17 insertions(+), 18 deletions(-)
+ include/net/netfilter/nf_tables.h        |  2 +
+ include/uapi/linux/netfilter/nf_tables.h |  5 +++
+ net/netfilter/nf_tables_api.c            | 56 ++++++++++++++++++++++++
+ net/netfilter/nft_chain_filter.c         |  1 +
+ 4 files changed, 64 insertions(+)
 
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index eaf2f5184bdf..f8da38e45277 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1132,6 +1132,8 @@ int nft_setelem_validate(const struct nft_ctx *ctx, struct nft_set *set,
+ int nft_set_catchall_validate(const struct nft_ctx *ctx, struct nft_set *set);
+ int nf_tables_bind_chain(const struct nft_ctx *ctx, struct nft_chain *chain);
+ void nf_tables_unbind_chain(const struct nft_ctx *ctx, struct nft_chain *chain);
++void nf_tables_chain_device_notify(const struct nft_chain *chain,
++				   const struct net_device *dev, int event);
+ 
+ enum nft_chain_types {
+ 	NFT_CHAIN_T_DEFAULT = 0,
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index d6476ca5d7a6..3a874febf1ac 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -142,6 +142,8 @@ enum nf_tables_msg_types {
+ 	NFT_MSG_DESTROYOBJ,
+ 	NFT_MSG_DESTROYFLOWTABLE,
+ 	NFT_MSG_GETSETELEM_RESET,
++	NFT_MSG_NEWDEV,
++	NFT_MSG_DELDEV,
+ 	NFT_MSG_MAX,
+ };
+ 
+@@ -1772,6 +1774,9 @@ enum nft_synproxy_attributes {
+ enum nft_devices_attributes {
+ 	NFTA_DEVICE_UNSPEC,
+ 	NFTA_DEVICE_NAME,
++	NFTA_DEVICE_TABLE,
++	NFTA_DEVICE_FLOWTABLE,
++	NFTA_DEVICE_CHAIN,
+ 	__NFTA_DEVICE_MAX
+ };
+ #define NFTA_DEVICE_MAX		(__NFTA_DEVICE_MAX - 1)
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4d40c1905735..ba2038ea56d2 100644
+index ba2038ea56d2..463ad196a32e 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2222,7 +2222,7 @@ static struct nft_hook *nft_netdev_hook_alloc(struct net *net,
- 
- 	err = nla_strscpy(hook->ifname, attr, IFNAMSIZ);
- 	if (err < 0)
--		goto err_hook_dev;
-+		goto err_ops_alloc;
- 
- 	hook->ifnamelen = nla_len(attr);
- 
-@@ -2230,24 +2230,22 @@ static struct nft_hook *nft_netdev_hook_alloc(struct net *net,
- 	 * indirectly serializing all the other holders of the commit_mutex with
- 	 * the rtnl_mutex.
- 	 */
--	dev = __dev_get_by_name(net, hook->ifname);
--	if (!dev) {
--		err = -ENOENT;
--		goto err_hook_dev;
--	}
-+	for_each_netdev(net, dev) {
-+		if (strncmp(dev->name, hook->ifname, hook->ifnamelen))
-+			continue;
- 
--	ops = kzalloc(sizeof(struct nf_hook_ops), GFP_KERNEL_ACCOUNT);
--	if (!ops) {
--		err = -ENOMEM;
--		goto err_hook_dev;
-+		ops = kzalloc(sizeof(struct nf_hook_ops), GFP_KERNEL_ACCOUNT);
-+		if (!ops) {
-+			err = -ENOMEM;
-+			goto err_ops_alloc;
-+		}
-+		ops->dev = dev;
-+		list_add_tail(&ops->list, &hook->ops_list);
- 	}
--	ops->dev = dev;
--	list_add_tail(&ops->list, &hook->ops_list);
--
- 	return hook;
- 
--err_hook_dev:
--	kfree(hook);
-+err_ops_alloc:
-+	nft_netdev_hook_free(hook);
- err_hook_alloc:
- 	return ERR_PTR(err);
+@@ -9316,6 +9316,61 @@ struct nf_hook_ops *nft_hook_find_ops(const struct nft_hook *hook,
  }
-@@ -2258,7 +2256,8 @@ static struct nft_hook *nft_hook_list_find(struct list_head *hook_list,
- 	struct nft_hook *hook;
+ EXPORT_SYMBOL_GPL(nft_hook_find_ops);
  
- 	list_for_each_entry(hook, hook_list, list) {
--		if (!strcmp(hook->ifname, this->ifname))
-+		if (!strncmp(hook->ifname, this->ifname,
-+			     min(hook->ifnamelen, this->ifnamelen)))
- 			return hook;
- 	}
- 
-@@ -9337,7 +9336,7 @@ static int nft_flowtable_event(unsigned long event, struct net_device *dev,
- 			kfree_rcu(ops, rcu);
++static void
++nf_tables_device_notify(const struct nft_table *table, int attr,
++			const char *name, const struct net_device *dev,
++			int event)
++{
++	struct net *net = dev_net(dev);
++	struct nlmsghdr *nlh;
++	struct sk_buff *skb;
++	u16 flags = 0;
++
++	if (!nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
++		return;
++
++	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
++	if (!skb)
++		goto err;
++
++	event = event == NETDEV_REGISTER ? NFT_MSG_NEWDEV : NFT_MSG_DELDEV;
++	event = nfnl_msg_type(NFNL_SUBSYS_NFTABLES, event);
++	nlh = nfnl_msg_put(skb, 0, 0, event, flags, table->family,
++			   NFNETLINK_V0, nft_base_seq(net));
++	if (!nlh)
++		goto err;
++
++	if (nla_put_string(skb, NFTA_DEVICE_TABLE, table->name) ||
++	    nla_put_string(skb, attr, name) ||
++	    nla_put_string(skb, NFTA_DEVICE_NAME, dev->name))
++		goto err;
++
++	nlmsg_end(skb, nlh);
++	nfnetlink_send(skb, net, 0, NFNLGRP_NFTABLES,
++		       nlmsg_report(nlh), GFP_KERNEL);
++	return;
++err:
++	if (skb)
++		kfree_skb(skb);
++	nfnetlink_set_err(net, 0, NFNLGRP_NFTABLES, -ENOBUFS);
++}
++
++void
++nf_tables_chain_device_notify(const struct nft_chain *chain,
++			      const struct net_device *dev, int event)
++{
++	nf_tables_device_notify(chain->table, NFTA_DEVICE_CHAIN,
++				chain->name, dev, event);
++}
++
++static void
++nf_tables_flowtable_device_notify(const struct nft_flowtable *ft,
++				  const struct net_device *dev, int event)
++{
++	nf_tables_device_notify(ft->table, NFTA_DEVICE_FLOWTABLE,
++				ft->name, dev, event);
++}
++
+ static int nft_flowtable_event(unsigned long event, struct net_device *dev,
+ 			       struct nft_flowtable *flowtable)
+ {
+@@ -9357,6 +9412,7 @@ static int nft_flowtable_event(unsigned long event, struct net_device *dev,
+ 			list_add_tail_rcu(&ops->list, &hook->ops_list);
  			break;
- 		case NETDEV_REGISTER:
--			if (strcmp(hook->ifname, dev->name))
-+			if (strncmp(hook->ifname, dev->name, hook->ifnamelen))
- 				continue;
- 			ops = kzalloc(sizeof(struct nf_hook_ops),
- 				      GFP_KERNEL_ACCOUNT);
+ 		}
++		nf_tables_flowtable_device_notify(flowtable, dev, event);
+ 	}
+ 	return 0;
+ }
 diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index 0f5706addfcb..f7290dc20a53 100644
+index f7290dc20a53..7a35b034d0c6 100644
 --- a/net/netfilter/nft_chain_filter.c
 +++ b/net/netfilter/nft_chain_filter.c
-@@ -338,7 +338,7 @@ static int nft_netdev_event(unsigned long event, struct net_device *dev,
- 			kfree_rcu(ops, rcu);
+@@ -357,6 +357,7 @@ static int nft_netdev_event(unsigned long event, struct net_device *dev,
+ 			list_add_tail_rcu(&ops->list, &hook->ops_list);
  			break;
- 		case NETDEV_REGISTER:
--			if (strcmp(hook->ifname, dev->name))
-+			if (strncmp(hook->ifname, dev->name, hook->ifnamelen))
- 				continue;
- 
- 			ops = kmemdup(&basechain->ops,
+ 		}
++		nf_tables_chain_device_notify(ctx->chain, dev, event);
+ 	}
+ 	return 0;
+ }
 -- 
 2.43.0
 
