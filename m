@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4052-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4053-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DB25984C08
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2024 22:15:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA86D984C09
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2024 22:15:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E38BF1F246A9
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2024 20:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6565E284E2C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2024 20:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A88146A83;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D691E1AB6EE;
 	Tue, 24 Sep 2024 20:14:19 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143AC13D8A3;
-	Tue, 24 Sep 2024 20:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F6F1411DE;
+	Tue, 24 Sep 2024 20:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727208858; cv=none; b=L7KISZ2Y/2aV62lc/wQBEhSlmxsqIx6SlotQIaGo+AKncPrD56F7M87IrG66SAf1mpVgrx1RoAQxGiQYOJv8l8Kh0YvQwZbOlt+Zmi6uaV0iLkZRPs/ukcq8SfSOmK9UZgUvwbWSWXziQBjtKK7rDBWLnc11WR3TUUdYzypi8xw=
+	t=1727208859; cv=none; b=nXZdkzXn9HIDMg0ruz6X61NN38+hkiFhb/KWx3NI42TVemmgQ2rvt+7mK1kMQEy8mBqhSZVNifz86JNReKxtafXeZ1OtQZJbxCvjHlD2EVqCBTFxFhR8R2Tjkn+7dThU3FlOvXu3eZcvKH3goyXj3DWsX11oY99YFe4vJan2B9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727208858; c=relaxed/simple;
-	bh=d0J+XOjoXL27hbOrukUJ95qoYSMyTJSXYFMwK47w3SQ=;
+	s=arc-20240116; t=1727208859; c=relaxed/simple;
+	bh=mKkE6S19DKhdFD9pV4wguIfAYkvqf6jVoDbU1CvR4Mc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q83NTOfrE73Oy9E5EpZpu8cHWHVBfpK88Pp4ZCpRFWXDQoHXhkCZ0fbwFzH9fVmZTR/iUoAvzjSS6E3ofRukj8CuP8gR5uP0g3G5sQcudSwA+qaHk9nyzUa5IIRHxE0V+77uce34EKm0vyMQmqVpVHfyYTBVxxpmtDEvTMGnWRY=
+	 MIME-Version; b=RHm1ZYhwkDpEGo7yKWUMe4KdXyvxVUTDH26v1JGOFL9Bc8cFpg1uAFjr/LcPNrZT3lsFCoyDAtivNIQmms0n7+H1xXmLCVKJP6qLNmdoiPPtiIV1Gq2QGsQOnw+Or6MEhnZtCqA1TiDmptABmeOgbOWeQAlnKbQSDwBBIpBeAps=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 10/14] netfilter: nf_tables: use rcu chain hook list iterator from netlink dump path
-Date: Tue, 24 Sep 2024 22:13:57 +0200
-Message-Id: <20240924201401.2712-11-pablo@netfilter.org>
+Subject: [PATCH net 11/14] netfilter: nf_tables: missing objects with no memcg accounting
+Date: Tue, 24 Sep 2024 22:13:58 +0200
+Message-Id: <20240924201401.2712-12-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240924201401.2712-1-pablo@netfilter.org>
 References: <20240924201401.2712-1-pablo@netfilter.org>
@@ -49,30 +49,192 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Lockless iteration over hook list is possible from netlink dump path,
-use rcu variant to iterate over the hook list as is done with flowtable
-hooks.
+Several ruleset objects are still not using GFP_KERNEL_ACCOUNT for
+memory accounting, update them. This includes:
 
-Fixes: b9703ed44ffb ("netfilter: nf_tables: support for adding new devices to an existing netdev chain")
-Reported-by: Phil Sutter <phil@nwl.cc>
+- catchall elements
+- compat match large info area
+- log prefix
+- meta secctx
+- numgen counters
+- pipapo set backend datastructure
+- tunnel private objects
+
+Fixes: 33758c891479 ("memcg: enable accounting for nft objects")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c  |  2 +-
+ net/netfilter/nft_compat.c     |  6 +++---
+ net/netfilter/nft_log.c        |  2 +-
+ net/netfilter/nft_meta.c       |  2 +-
+ net/netfilter/nft_numgen.c     |  2 +-
+ net/netfilter/nft_set_pipapo.c | 13 +++++++------
+ net/netfilter/nft_tunnel.c     |  5 +++--
+ 7 files changed, 17 insertions(+), 15 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 042080aeb46c..8f073e6c772a 100644
+index 8f073e6c772a..a24fe62650a7 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -1849,7 +1849,7 @@ static int nft_dump_basechain_hook(struct sk_buff *skb, int family,
- 		if (!hook_list)
- 			hook_list = &basechain->hook_list;
+@@ -6684,7 +6684,7 @@ static int nft_setelem_catchall_insert(const struct net *net,
+ 		}
+ 	}
  
--		list_for_each_entry(hook, hook_list, list) {
-+		list_for_each_entry_rcu(hook, hook_list, list) {
- 			if (!first)
- 				first = hook;
+-	catchall = kmalloc(sizeof(*catchall), GFP_KERNEL);
++	catchall = kmalloc(sizeof(*catchall), GFP_KERNEL_ACCOUNT);
+ 	if (!catchall)
+ 		return -ENOMEM;
  
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index 52cdfee17f73..7ca4f0d21fe2 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -535,7 +535,7 @@ nft_match_large_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	struct xt_match *m = expr->ops->data;
+ 	int ret;
+ 
+-	priv->info = kmalloc(XT_ALIGN(m->matchsize), GFP_KERNEL);
++	priv->info = kmalloc(XT_ALIGN(m->matchsize), GFP_KERNEL_ACCOUNT);
+ 	if (!priv->info)
+ 		return -ENOMEM;
+ 
+@@ -808,7 +808,7 @@ nft_match_select_ops(const struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL);
++	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL_ACCOUNT);
+ 	if (!ops) {
+ 		err = -ENOMEM;
+ 		goto err;
+@@ -898,7 +898,7 @@ nft_target_select_ops(const struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL);
++	ops = kzalloc(sizeof(struct nft_expr_ops), GFP_KERNEL_ACCOUNT);
+ 	if (!ops) {
+ 		err = -ENOMEM;
+ 		goto err;
+diff --git a/net/netfilter/nft_log.c b/net/netfilter/nft_log.c
+index 5defe6e4fd98..e35588137995 100644
+--- a/net/netfilter/nft_log.c
++++ b/net/netfilter/nft_log.c
+@@ -163,7 +163,7 @@ static int nft_log_init(const struct nft_ctx *ctx,
+ 
+ 	nla = tb[NFTA_LOG_PREFIX];
+ 	if (nla != NULL) {
+-		priv->prefix = kmalloc(nla_len(nla) + 1, GFP_KERNEL);
++		priv->prefix = kmalloc(nla_len(nla) + 1, GFP_KERNEL_ACCOUNT);
+ 		if (priv->prefix == NULL)
+ 			return -ENOMEM;
+ 		nla_strscpy(priv->prefix, nla, nla_len(nla) + 1);
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 8c8eb14d647b..05cd1e6e6a2f 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -952,7 +952,7 @@ static int nft_secmark_obj_init(const struct nft_ctx *ctx,
+ 	if (tb[NFTA_SECMARK_CTX] == NULL)
+ 		return -EINVAL;
+ 
+-	priv->ctx = nla_strdup(tb[NFTA_SECMARK_CTX], GFP_KERNEL);
++	priv->ctx = nla_strdup(tb[NFTA_SECMARK_CTX], GFP_KERNEL_ACCOUNT);
+ 	if (!priv->ctx)
+ 		return -ENOMEM;
+ 
+diff --git a/net/netfilter/nft_numgen.c b/net/netfilter/nft_numgen.c
+index 7d29db7c2ac0..bd058babfc82 100644
+--- a/net/netfilter/nft_numgen.c
++++ b/net/netfilter/nft_numgen.c
+@@ -66,7 +66,7 @@ static int nft_ng_inc_init(const struct nft_ctx *ctx,
+ 	if (priv->offset + priv->modulus - 1 < priv->offset)
+ 		return -EOVERFLOW;
+ 
+-	priv->counter = kmalloc(sizeof(*priv->counter), GFP_KERNEL);
++	priv->counter = kmalloc(sizeof(*priv->counter), GFP_KERNEL_ACCOUNT);
+ 	if (!priv->counter)
+ 		return -ENOMEM;
+ 
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index eb4c4a4ac7ac..7be342b495f5 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -663,7 +663,7 @@ static int pipapo_realloc_mt(struct nft_pipapo_field *f,
+ 	    check_add_overflow(rules, extra, &rules_alloc))
+ 		return -EOVERFLOW;
+ 
+-	new_mt = kvmalloc_array(rules_alloc, sizeof(*new_mt), GFP_KERNEL);
++	new_mt = kvmalloc_array(rules_alloc, sizeof(*new_mt), GFP_KERNEL_ACCOUNT);
+ 	if (!new_mt)
+ 		return -ENOMEM;
+ 
+@@ -936,7 +936,7 @@ static void pipapo_lt_bits_adjust(struct nft_pipapo_field *f)
+ 		return;
+ 	}
+ 
+-	new_lt = kvzalloc(lt_size + NFT_PIPAPO_ALIGN_HEADROOM, GFP_KERNEL);
++	new_lt = kvzalloc(lt_size + NFT_PIPAPO_ALIGN_HEADROOM, GFP_KERNEL_ACCOUNT);
+ 	if (!new_lt)
+ 		return;
+ 
+@@ -1212,7 +1212,7 @@ static int pipapo_realloc_scratch(struct nft_pipapo_match *clone,
+ 		scratch = kzalloc_node(struct_size(scratch, map,
+ 						   bsize_max * 2) +
+ 				       NFT_PIPAPO_ALIGN_HEADROOM,
+-				       GFP_KERNEL, cpu_to_node(i));
++				       GFP_KERNEL_ACCOUNT, cpu_to_node(i));
+ 		if (!scratch) {
+ 			/* On failure, there's no need to undo previous
+ 			 * allocations: this means that some scratch maps have
+@@ -1427,7 +1427,7 @@ static struct nft_pipapo_match *pipapo_clone(struct nft_pipapo_match *old)
+ 	struct nft_pipapo_match *new;
+ 	int i;
+ 
+-	new = kmalloc(struct_size(new, f, old->field_count), GFP_KERNEL);
++	new = kmalloc(struct_size(new, f, old->field_count), GFP_KERNEL_ACCOUNT);
+ 	if (!new)
+ 		return NULL;
+ 
+@@ -1457,7 +1457,7 @@ static struct nft_pipapo_match *pipapo_clone(struct nft_pipapo_match *old)
+ 		new_lt = kvzalloc(src->groups * NFT_PIPAPO_BUCKETS(src->bb) *
+ 				  src->bsize * sizeof(*dst->lt) +
+ 				  NFT_PIPAPO_ALIGN_HEADROOM,
+-				  GFP_KERNEL);
++				  GFP_KERNEL_ACCOUNT);
+ 		if (!new_lt)
+ 			goto out_lt;
+ 
+@@ -1470,7 +1470,8 @@ static struct nft_pipapo_match *pipapo_clone(struct nft_pipapo_match *old)
+ 
+ 		if (src->rules > 0) {
+ 			dst->mt = kvmalloc_array(src->rules_alloc,
+-						 sizeof(*src->mt), GFP_KERNEL);
++						 sizeof(*src->mt),
++						 GFP_KERNEL_ACCOUNT);
+ 			if (!dst->mt)
+ 				goto out_mt;
+ 
+diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
+index 60a76e6e348e..5c6ed68cc6e0 100644
+--- a/net/netfilter/nft_tunnel.c
++++ b/net/netfilter/nft_tunnel.c
+@@ -509,13 +509,14 @@ static int nft_tunnel_obj_init(const struct nft_ctx *ctx,
+ 			return err;
+ 	}
+ 
+-	md = metadata_dst_alloc(priv->opts.len, METADATA_IP_TUNNEL, GFP_KERNEL);
++	md = metadata_dst_alloc(priv->opts.len, METADATA_IP_TUNNEL,
++				GFP_KERNEL_ACCOUNT);
+ 	if (!md)
+ 		return -ENOMEM;
+ 
+ 	memcpy(&md->u.tun_info, &info, sizeof(info));
+ #ifdef CONFIG_DST_CACHE
+-	err = dst_cache_init(&md->u.tun_info.dst_cache, GFP_KERNEL);
++	err = dst_cache_init(&md->u.tun_info.dst_cache, GFP_KERNEL_ACCOUNT);
+ 	if (err < 0) {
+ 		metadata_dst_free(md);
+ 		return err;
 -- 
 2.30.2
 
