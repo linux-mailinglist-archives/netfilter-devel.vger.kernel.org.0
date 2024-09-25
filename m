@@ -1,46 +1,46 @@
-Return-Path: <netfilter-devel+bounces-4062-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4064-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B2F985920
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 13:50:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4176C985C96
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 14:50:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8E401C2357E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 11:50:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C191C245A4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 12:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191F3184538;
-	Wed, 25 Sep 2024 11:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8641D1727;
+	Wed, 25 Sep 2024 11:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cGb6Y3aS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RCwrSL6s"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75C8183090;
-	Wed, 25 Sep 2024 11:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9E81D131E;
+	Wed, 25 Sep 2024 11:59:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727264304; cv=none; b=ChlXkz9XBxJhT8JTK5HKPMJTf1mw/c0wbMvZWArkeZfeqqS/d/RheS1ae1cutAzvYTlOKjtc4Vmrc3iQ58Txdx/S6NBHZroP8i0ZerZ3yWSMAquWbYQvqAlkRq+MyepbZwFwjVHrVzYJGdUNqRIfI6HSUCNwFCZYrVpwSO/4zmI=
+	t=1727265592; cv=none; b=K7jmi/FJrgc9SMUu2oZWxY3mPDmD1kXcoXorZmhWYYQRa3wKELi8G9bRrM3yGua8r+RYqxcDRVdREpvuFuNT0x4tKyKgpavx6VsJyG4j/k0YtU7STdKNKvAcN7c569fWVtCra8kGut3au5nK9iakGCbduAFX5VHrtqMnylrfeZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727264304; c=relaxed/simple;
+	s=arc-20240116; t=1727265592; c=relaxed/simple;
 	bh=DxyhDsY+mD6RFxzE1w0Q+rgTbbD43GElQZDaZIaLLWk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t7+K1fozgI3Bi329v9GYFB/UYGRvesAXYKSokbn1q0DbSBbTbZDg9P/6NWiC3aEtJthxnrPkzqhr3ZBKHV01i3vbq5l1c2zBYwTlcalDRi+ApxZQMXzwoAzggHTb4ZB9n4O32vVOs8lvpxGEk4H2qhSAZ0I8xZnNrurTtfbZEbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cGb6Y3aS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37DADC4CEC3;
-	Wed, 25 Sep 2024 11:38:23 +0000 (UTC)
+	 MIME-Version; b=bQ8/sneghSUR76q8bRz6NgBbCB5i8NnztKdKNEOkgH/D/xj41kxT8ck4J8v7/flDNggcuPibWWZ0WGp6Ta7XrH7uIIfCyfAJea7+jCbgPVhWn1Mg8FAmTA2zJBy143m6JnYIy29C3dNU4hUruHMR2vdnK6RT0VmiPX72DOakR1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RCwrSL6s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C732C4CEC3;
+	Wed, 25 Sep 2024 11:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727264304;
+	s=k20201202; t=1727265592;
 	bh=DxyhDsY+mD6RFxzE1w0Q+rgTbbD43GElQZDaZIaLLWk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cGb6Y3aSU7Z93132pe5//OSuzDA5lomzE3TI67EU4CtBQvjtjARFbYTW9OV8PL9I9
-	 MbZUYzG7hzaeWUIbOH0LmGuu0dq2HvYHcSZMbiEU/CVPJ4+n9bTyYFNXPvgAkv4bzb
-	 ly6YOFMdJ+o3Nx4O2En5i7pNr8k5REwH6KFYalUGPrIfbeTYaUCSvDV3mTXvk6Z4Mp
-	 mkg4DlPkPHhPnRuscBw5gYEPR5+u7bjSuN8545K1LHaeV6TpRvG8ergfomcxp9jLMT
-	 8Wc1lej76yn77xWuTrEYTB5q3f0l4QtppCz+vc6TQuci+Wa3g8XFxQQ2EhPQ0AKnt+
-	 U9/O9vpmg7ITQ==
+	b=RCwrSL6sTLJXLDUK64eO4z2YjJdyUmcQmZs71sakPzjpz3/T0VLC4aJEqYuonTyHb
+	 lXLu/yqii9eOFyNw2+THhdeto1pHZkamCeJvH199b54UY1E/OElrjyxiD51KhyHDSJ
+	 KBjqpv7VTuFL8gKkEahqMtn+4j5LIy1znV6P1McMnmMOWk98qSg4PqNaOSlcGCuTgx
+	 gt9bElkKWM3RdWRX8iyYVOH99O/lqX5fOctVhfHj6GzCjiQVNYvJtnmcDbf/qYZbRV
+	 uOsTLWbYbUlKFAmsF1IqU4iSm5EGbm4Gv9iILIfKfTZfeNkrfRQ94bD3aHiNI4zQRa
+	 Slnl0XqE/6TvA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -55,12 +55,12 @@ Cc: Florian Westphal <fw@strlen.de>,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 049/244] netfilter: nf_tables: don't initialize registers in nft_do_chain()
-Date: Wed, 25 Sep 2024 07:24:30 -0400
-Message-ID: <20240925113641.1297102-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 040/197] netfilter: nf_tables: don't initialize registers in nft_do_chain()
+Date: Wed, 25 Sep 2024 07:50:59 -0400
+Message-ID: <20240925115823.1303019-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
-References: <20240925113641.1297102-1-sashal@kernel.org>
+In-Reply-To: <20240925115823.1303019-1-sashal@kernel.org>
+References: <20240925115823.1303019-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11
+X-stable-base: Linux 6.10.11
 Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
