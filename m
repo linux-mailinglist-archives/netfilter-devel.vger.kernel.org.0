@@ -1,80 +1,149 @@
-Return-Path: <netfilter-devel+bounces-4054-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4057-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA7E984C0E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2024 22:15:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C9A985468
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 09:46:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28C7CB229E4
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2024 20:15:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E15721F214D2
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 07:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC1D1AC426;
-	Tue, 24 Sep 2024 20:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ADB5148FF5;
+	Wed, 25 Sep 2024 07:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="m/BttQ2s"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FD4145346;
-	Tue, 24 Sep 2024 20:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10FF157492;
+	Wed, 25 Sep 2024 07:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727208860; cv=none; b=R6RgWP6qKuyVQJaMSYCe1/IcNmv28wJxSsb0k9dnMEZIhhzcuPaaoxjosTksrwtyCcTeq2UXM9UCXb7SHNVRfg+Tq12kGby/YlKK3YZve7hx0HC5Sso9jFtIIzFel+dPidzhMFrG0MrfnmqqYRE8xvGVeS1dlZhzrWt1Bmq9HZ8=
+	t=1727250360; cv=none; b=kTOOkbh+3j+jtLxzBRyD7U4WgXDv7M93MP8/6bV5UW62OwDXJHDFK5VLkFDZ0eJ1uoEHTuzuRk1jbcbL1usyvvXGeWTd+Y7weOeNjphAEv1BJhLltxQV0Gq8Oi4VwEEsH7pGgmzrlG/heEQ+U9+GDSee9zma5ttARGkHR6MNosQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727208860; c=relaxed/simple;
-	bh=9A0/WHC4DgcCjDTtATyqd4HzjsrzO34/cKY8pOogQNg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cqQI/6l9yHSmSS5XBtQ8tpmrfdAysge2Yi6C+sTxBQ0pludo/96jBcEtsdBcVX0bUf7f+D8lW+vbT/ktZHDz4H7Sl6FgHUZrz6w+j473G3Xtq4L+ROJLIKX1cp9jiP30NukIM48+ssZS/NR4U73Z1ujUg/j0UMGg2z3IR9MD/OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 14/14] selftests: netfilter: Avoid hanging ipvs.sh
-Date: Tue, 24 Sep 2024 22:14:01 +0200
-Message-Id: <20240924201401.2712-15-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240924201401.2712-1-pablo@netfilter.org>
-References: <20240924201401.2712-1-pablo@netfilter.org>
+	s=arc-20240116; t=1727250360; c=relaxed/simple;
+	bh=ZUProyu00ja80ci1A0RXcLmyyBjWY9msWbU/KAg4HIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G8OEnmXucA7c7mfZkJZhpVzbDahY15f1FzfuDNDGj0JRCphnB0GCvBVagZAS/yRiqySc7ZmDP7GIzoOozJfii+33BDl3Rf3Frkxie7XbmPieVDWdBk0MCVnQUZvWI1QhaaHgtCHbTX2XZMuw6LoGL1L1yqhhhvYZ7cHKB6V4+jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=m/BttQ2s; arc=none smtp.client-ip=15.184.224.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1727250326;
+	bh=sMEaKZQcq/TtGsA51jEZ9Lr0IGSJ55RWX+ZF3Zx81xc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=m/BttQ2sycPDV4kc5eWZA+RRlx1rHcpTKXrgYAJ88aD/3kNBC6f0EmBy/HJn9+ECM
+	 hb6E2z0QMz9nUnHuip7vzdmYLoo5h2HyXPikxh5heJlUJZ4rh30Rfqc2MrSMNHh2aG
+	 HzJi4o1XQFth97thO/Q4mHjJU8Ls8Zt1z30+pNS0=
+X-QQ-mid: bizesmtp78t1727250322tqckfpzb
+X-QQ-Originating-IP: fxt20V0vtp7XFP4+BckSlREbZu54Gq5LMBLejmguxFg=
+Received: from [10.20.255.96] ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 25 Sep 2024 15:45:20 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 3157228644688347360
+Message-ID: <81A3C9D37E72666E+13e8b5ef-8499-45e6-9442-060ef88152d8@uniontech.com>
+Date: Wed, 25 Sep 2024 15:45:20 +0800
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] net/bridge: Optimizing read-write locks in ebtables.c
+To: Stephen Hemminger <stephen@networkplumber.org>,
+ Eric Dumazet <edumazet@google.com>
+Cc: pablo@netfilter.org, kadlec@netfilter.org, roopa@nvidia.com,
+ razor@blackwall.org, davem@davemloft.net, kuba@kernel.org,
+ pabeni@redhat.com, netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ bridge@lists.linux.dev, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gouhao@uniontech.com
+References: <14BD7E92B23BF276+20240924090906.157995-1-yushengjin@uniontech.com>
+ <20240924063258.1edfb590@fedora>
+ <CANn89iLoBYjMmot=6e_WJrtEhcAzWikU2eV0eQExHPj7+ObGKA@mail.gmail.com>
+ <20240924094054.2d005c76@fedora>
+From: yushengjin <yushengjin@uniontech.com>
+In-Reply-To: <20240924094054.2d005c76@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-0
 
-From: Phil Sutter <phil@nwl.cc>
 
-If the client can't reach the server, the latter remains listening
-forever. Kill it after 5s of waiting.
+在 25/9/2024 上午12:40, Stephen Hemminger 写道:
+> On Tue, 24 Sep 2024 15:46:17 +0200
+> Eric Dumazet <edumazet@google.com> wrote:
+>
+>> On Tue, Sep 24, 2024 at 3:33 PM Stephen Hemminger
+>> <stephen@networkplumber.org> wrote:
+>>> On Tue, 24 Sep 2024 17:09:06 +0800
+>>> yushengjin <yushengjin@uniontech.com> wrote:
+>>>   
+>>>> When conducting WRK testing, the CPU usage rate of the testing machine was
+>>>> 100%. forwarding through a bridge, if the network load is too high, it may
+>>>> cause abnormal load on the ebt_do_table of the kernel ebtable module, leading
+>>>> to excessive soft interrupts and sometimes even directly causing CPU soft
+>>>> deadlocks.
+>>>>
+>>>> After analysis, it was found that the code of ebtables had not been optimized
+>>>> for a long time, and the read-write locks inside still existed. However, other
+>>>> arp/ip/ip6 tables had already been optimized a lot, and performance bottlenecks
+>>>> in read-write locks had been discovered a long time ago.
+>>>>
+>>>> Ref link: https://lore.kernel.org/lkml/20090428092411.5331c4a1@nehalam/
+>>>>
+>>>> So I referred to arp/ip/ip6 modification methods to optimize the read-write
+>>>> lock in ebtables.c.
+>>> What about doing RCU instead, faster and safer.
+>> Safer ? How so ?
+>>
+>> Stephen, we have used this stuff already in other netfilter components
+>> since 2011
+>>
+>> No performance issue at all.
+>>
+> I was thinking that lockdep and analysis tools do better job looking at RCU.
+> Most likely, the number of users of ebtables was small enough that nobody looked
+> hard at it until now.
 
-Fixes: 867d2190799a ("selftests: netfilter: add ipvs test script")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- tools/testing/selftests/net/netfilter/ipvs.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Even though there are few users of ebtables, there are still serious issues.
+This is the data running on the arm Kunpeng-920 (96 cpus) machine,When I 
+only run
+wrk tests, the softirq of the system will rapidly increase to 25%:
 
-diff --git a/tools/testing/selftests/net/netfilter/ipvs.sh b/tools/testing/selftests/net/netfilter/ipvs.sh
-index 4ceee9fb3949..d3edb16cd4b3 100755
---- a/tools/testing/selftests/net/netfilter/ipvs.sh
-+++ b/tools/testing/selftests/net/netfilter/ipvs.sh
-@@ -97,7 +97,7 @@ cleanup() {
- }
- 
- server_listen() {
--	ip netns exec "$ns2" socat -u -4 TCP-LISTEN:8080,reuseaddr STDOUT > "${outfile}" &
-+	ip netns exec "$ns2" timeout 5 socat -u -4 TCP-LISTEN:8080,reuseaddr STDOUT > "${outfile}" &
- 	server_pid=$!
- 	sleep 0.2
- }
--- 
-2.30.2
+02:50:07 PM  CPU %usr  %nice %sys %iowait %irq  %soft  %steal %guest  
+%gnice %idle
+02:50:25 PM  all    0.00    0.00    0.05    0.00    0.72 23.20    
+0.00    0.00    0.00   76.03
+02:50:26 PM  all    0.00    0.00    0.08    0.00    0.72 24.53    
+0.00    0.00    0.00   74.67
+02:50:27 PM  all    0.01    0.00    0.13    0.00    0.75 24.89    
+0.00    0.00    0.00   74.23
+
+If ebatlse queries, updates, and other operations are continuously 
+executed at this time, softirq
+will increase again to 50%:
+
+02:52:23 PM  all    0.00    0.00    1.18    0.00    0.54 48.91    
+0.00    0.00    0.00   49.36
+02:52:24 PM  all    0.00    0.00    1.19    0.00    0.43 48.23    
+0.00    0.00    0.00   50.15
+02:52:25 PM  all    0.00    0.00    1.20    0.00    0.50 48.29    
+0.00    0.00    0.00   50.01
+
+More seriously, soft lockup may occur:
+
+Message from syslogd@localhost at Sep 25 14:52:22 ...
+  kernel:watchdog: BUG: soft lockup - CPU#88 stuck for 23s! [ebtables:3896]
+
+So i think soft lockup is even more unbearable than performance.
+
+>
+>
 
 
