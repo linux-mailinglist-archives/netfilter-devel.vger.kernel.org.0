@@ -1,110 +1,109 @@
-Return-Path: <netfilter-devel+bounces-4063-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4065-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02D38985C46
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 14:43:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2BEA985ECE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 15:44:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA36C1C20C67
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 12:43:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91C9328A620
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2024 13:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875CF1CCB34;
-	Wed, 25 Sep 2024 11:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B631D0F5E;
+	Wed, 25 Sep 2024 12:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QL0G51iQ"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212EB1AD3EB;
-	Wed, 25 Sep 2024 11:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965581D0F5B;
+	Wed, 25 Sep 2024 12:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727265548; cv=none; b=QVt20YP792wZ/M0B2nDRIA79+W8U2MDRGwpmGAy3J5jnqqt41E1hdjSCbfFPGDbCxDGAb6itQQxiC65f52U0rvyP9NixAVpYAox+Evbo5PGnUfx//3juGEce8JtfhSGRPkprPuf1OF62d1trNoTTwWBJy8ncn/Loqt3I0yThCD0=
+	t=1727266377; cv=none; b=UV2el92p8D4nKXvsET7tlV8kzHy9Qc4BoPOzOQxoYBEkMtAcaR2XbUOyJIm549XHtFkp/8sLXUmzz6Xh1sl/WwV7b6KNXjUta8piVnRUob4WN1QjNJVayANbakc5B6C8ObkVQCEf7wRJbqG5kq2b9phKAVsDYqNSpiDa8ROKgks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727265548; c=relaxed/simple;
-	bh=PkRn6B9qktnCgt3WPUj+Onnd2cdwn+uHLAqfIQhypuo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uNog1TsMelXycvsODGBzmsev9feGSII4Yh2sxSuBvTIvdw6plhVYAsBVUJHxWH5c1/x3ecbwyyhPcPDcQFIFb7mUqTMdb9SDon5uh3X3QDbKU0Cvy30BnRjfVK5U5Bu0YtDC0qSbjWqX9+8C223uvF+/g1fnJWo8WRL3Db78WA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=53292 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1stQfT-0005hv-Pc; Wed, 25 Sep 2024 13:58:53 +0200
-Date: Wed, 25 Sep 2024 13:58:50 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Florian Westphal <fw@strlen.de>, kadlec@netfilter.org,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.11 049/244] netfilter: nf_tables: don't
- initialize registers in nft_do_chain()
-Message-ID: <ZvP6-utbwqWmP5_0@calendula>
-References: <20240925113641.1297102-1-sashal@kernel.org>
- <20240925113641.1297102-49-sashal@kernel.org>
+	s=arc-20240116; t=1727266377; c=relaxed/simple;
+	bh=9SJN0SgPf+AkuIT/R5MeKY9JII9J8ldz2TPbpr0c1RE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=MvSL0LHYW7V/HZqoy+xtJN8kk0K4rr9Eo/LASjAtPW1lgkp6J5zgvrzt1ZdYsXXDRmOFUDtxkt2JLiVBWl54Ab10HHqEjjczdqk8BwPgjzJ88842U5L6lW0wwTJr24/AIy502dnm1VVGQ5yxw3yGgQxL63XYM6VFQoqE6iF0a7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QL0G51iQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6F61C4CECD;
+	Wed, 25 Sep 2024 12:12:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727266377;
+	bh=9SJN0SgPf+AkuIT/R5MeKY9JII9J8ldz2TPbpr0c1RE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=QL0G51iQYyQvhvIusn2n6XaVW7JEaWhIznaO2RGagMxXLeuM73DKG5uS3XkPC2hyq
+	 V+9QEEHyIXfqbAfjJfy5dNL0Xjc8c4TemydKKkrJMzpHlwJlPAfvpXIlHjMeRdp8Ua
+	 0eRx3UMJ6dM01Cq72wTrj8vhV+1dfexLop9m8rHw3tuVYD/ZKr0AoXb59I5H6gyXww
+	 lLybrcehVIRxeXvPpyKt9ws5ofLmRqnVpr50VRBrgVydR5f1ux1JuYZgz3e19y4VIF
+	 d0qk/t4l/VKxipuntpLnnYOUFj3mx6GBFFN3xRLuD9I/P5PPIS8pUfLk2LhbGzgCED
+	 utR8uF8ovlyRQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Florian Westphal <fw@strlen.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Sasha Levin <sashal@kernel.org>,
+	kadlec@netfilter.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 038/139] netfilter: nf_tables: don't initialize registers in nft_do_chain()
+Date: Wed, 25 Sep 2024 08:07:38 -0400
+Message-ID: <20240925121137.1307574-38-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240925121137.1307574-1-sashal@kernel.org>
+References: <20240925121137.1307574-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240925113641.1297102-49-sashal@kernel.org>
-X-Spam-Score: -1.9 (-)
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.52
+Content-Transfer-Encoding: 8bit
 
-Hi Sasha,
+From: Florian Westphal <fw@strlen.de>
 
-This commit requires:
+[ Upstream commit c88baabf16d1ef74ab8832de9761226406af5507 ]
 
-commit 14fb07130c7ddd257e30079b87499b3f89097b09
-Author: Florian Westphal <fw@strlen.de>
-Date:   Tue Aug 20 11:56:13 2024 +0200
+revert commit 4c905f6740a3 ("netfilter: nf_tables: initialize registers in
+nft_do_chain()").
 
-    netfilter: nf_tables: allow loads only when register is initialized
+Previous patch makes sure that loads from uninitialized registers are
+detected from the control plane. in this case rule blob auto-zeroes
+registers.  Thus the explicit zeroing is not needed anymore.
 
-so either drop it or pull-in this dependency for 6.11
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_tables_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks.
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index 711c22ab701dd..3b0b6c28cca5e 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -256,7 +256,7 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
+ 	const struct net *net = nft_net(pkt);
+ 	const struct nft_expr *expr, *last;
+ 	const struct nft_rule_dp *rule;
+-	struct nft_regs regs = {};
++	struct nft_regs regs;
+ 	unsigned int stackptr = 0;
+ 	struct nft_jumpstack jumpstack[NFT_JUMP_STACK_SIZE];
+ 	bool genbit = READ_ONCE(net->nft.gencursor);
+-- 
+2.43.0
 
-On Wed, Sep 25, 2024 at 07:24:30AM -0400, Sasha Levin wrote:
-> From: Florian Westphal <fw@strlen.de>
-> 
-> [ Upstream commit c88baabf16d1ef74ab8832de9761226406af5507 ]
-> 
-> revert commit 4c905f6740a3 ("netfilter: nf_tables: initialize registers in
-> nft_do_chain()").
-> 
-> Previous patch makes sure that loads from uninitialized registers are
-> detected from the control plane. in this case rule blob auto-zeroes
-> registers.  Thus the explicit zeroing is not needed anymore.
-> 
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  net/netfilter/nf_tables_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
-> index a48d5f0e2f3e1..75598520b0fa0 100644
-> --- a/net/netfilter/nf_tables_core.c
-> +++ b/net/netfilter/nf_tables_core.c
-> @@ -256,7 +256,7 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
->  	const struct net *net = nft_net(pkt);
->  	const struct nft_expr *expr, *last;
->  	const struct nft_rule_dp *rule;
-> -	struct nft_regs regs = {};
-> +	struct nft_regs regs;
->  	unsigned int stackptr = 0;
->  	struct nft_jumpstack jumpstack[NFT_JUMP_STACK_SIZE];
->  	bool genbit = READ_ONCE(net->nft.gencursor);
-> -- 
-> 2.43.0
-> 
 
