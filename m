@@ -1,263 +1,198 @@
-Return-Path: <netfilter-devel+bounces-4100-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4105-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2E439870E1
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:57:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AFF998718F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 12:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00ED31C234E2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 09:57:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0A7D1F21EC4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 10:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CDA1AD3ED;
-	Thu, 26 Sep 2024 09:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KYD2RrWM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B601ACE0D;
+	Thu, 26 Sep 2024 10:33:09 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C310F1ABEDD
-	for <netfilter-devel@vger.kernel.org>; Thu, 26 Sep 2024 09:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03CC1ABECC
+	for <netfilter-devel@vger.kernel.org>; Thu, 26 Sep 2024 10:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727344620; cv=none; b=syKoqdo6TBPXHbPEZrgHaCEY4Lyqn3p5enQgPLdxyCfBwlaTENgUsE2TOtKbkSvp2uLdiiq3rNg3Fi/uJi82dPVm6rB48qTWL5YdMWBwl+Lt2cN5gN0pGFjd8o3dZJE/zQ7hkHtF8JZn6eikCs8dzp27HJOKj6uzIR22V5P6XzY=
+	t=1727346789; cv=none; b=I+zZgcZ/prFTnpZ5XVbdZY8IHXd/OirZVDAnZzqLzziKVLzpa9CKDxo2fne8b5tyRKtKZYTf5W10ReIXDGRzQ026h7pnur7x9mDb+QTfZ6I18mLiYY4vUG5A5+dTAIjcPWXEu0u0ASj91axhrKCIYxfebQNvO8aa5kcl1/AZu70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727344620; c=relaxed/simple;
-	bh=mmqSIpTtQNQg/qE46Qvp7c0GrRImxhT6jbV0TjqL6+Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LWOl1U0wogKs4YdSbFR31F9gJWGnuaYEGCcmxRxfP+7o3Oh4C9ZkUHXUOfUmB0MbwDa2HyAAa5kb7PCd3Z+z5j32/knEB7E8ZmY3a6eXC4Np4tRs4Bo10w489uApnTyne1jaRhxxrfVndSIXavou7lTBeh/aexlVgE5Jm0dfkQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KYD2RrWM; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=iM4k32SPTQc/FnvghelDiLY4b+VEgOV47HN5WblMF04=; b=KYD2RrWMigTRe5m/iQzUYZcha8
-	jWmP7ePLjL8eOr12JdkoswmMZvztINQRWiyr4s3hSLBDtXJjs5f4NAA7qm6Y4VCs8ICGk7iliRHYF
-	OVhkStYLese5sG+5gdSVZxHZxAajkIdyhHcCWjHQOoADcn8ONQ6dW84uitCh4U1liLGHpEighuWyu
-	VHxfHQviXz8rBPJd+QpQ5DTk9VIeAeRoSrBz6n2BE9tO1cGxPyMaX+CvQYf1V78ZXxIf2ydNhxbYU
-	GQCjcULAyQrFni4MbwJbjmSYY4bZNGsp9jYVdPVImhYPxYsGTcDiI+GJtSrlbBUyxLDj+hWD5AVQZ
-	oH8QUhSQ==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1stlF3-000000006Gj-06vt;
-	Thu, 26 Sep 2024 11:56:57 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org,
-	Florian Westphal <fw@strlen.de>,
-	Eric Garver <e@erig.me>
-Subject: [nf-next PATCH v5 18/18] selftests: netfilter: Torture nftables netdev hooks
-Date: Thu, 26 Sep 2024 11:56:43 +0200
-Message-ID: <20240926095643.8801-19-phil@nwl.cc>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240926095643.8801-1-phil@nwl.cc>
-References: <20240926095643.8801-1-phil@nwl.cc>
+	s=arc-20240116; t=1727346789; c=relaxed/simple;
+	bh=gXgdcxG9u0CzcJKxI9HTfbJPD+kSo2xnJposMGoB2OM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=klud3ixlJw0F28unL0PZbXGsQ8NWR3UgG8GuzyzzaQ3iqQkf49elyphppw1YeAc6SSn2hv67YBaO6qD0TwYD9GEuhrMjvBeKH/kvLCn5YX/N19jYchCO5ndQCbb9zzj4LqeCUbdP+ExskQLKggb1XEhrZFzC0sXGP/bb+TC3aBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=54696 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1stlnu-001PQE-BL; Thu, 26 Sep 2024 12:33:00 +0200
+Date: Thu, 26 Sep 2024 12:32:56 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] conntrack: -L doesn't take a value, so don't discard one
+ (same for -IUDGEFA)
+Message-ID: <ZvU4WBNuXWQ-wEuL@calendula>
+References: <hpsesrayjbjrtja3unjpw4a3tsou3vtu7yjhrcba7dfnrahwz2@tarta.nabijaczleweli.xyz>
+ <ZtbHMe6STK_W6yfA@calendula>
+ <bymeee6fsub6oz64xtykfru25aq6xx4k2agjbeabekzfobu4jd@tarta.nabijaczleweli.xyz>
+ <ZvQj_TOKcN7A9kmz@calendula>
+ <qe4cxltrompmuajfgfkedrecefkyy2eopi3erttlm7c3xigs2g@tarta.nabijaczleweli.xyz>
+ <ZvRze9JEBJ28ityC@calendula>
+ <2pdkunyljqasunwbqeofqdetpda2xfdqtyrqg6sqr4efwuwzlq@tarta.nabijaczleweli.xyz>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2pdkunyljqasunwbqeofqdetpda2xfdqtyrqg6sqr4efwuwzlq@tarta.nabijaczleweli.xyz>
+X-Spam-Score: -1.9 (-)
 
-Add a ruleset which binds to various interface names via netdev-family
-chains and flowtables and massage the notifiers by frequently renaming
-interfaces to match these names. While doing so:
-- Keep an 'nft monitor' running in background to receive the notifications
-- Loop over 'nft list ruleset' to exercise ruleset dump codepath
-- Have iperf running so the involved chains/flowtables see traffic
+On Thu, Sep 26, 2024 at 10:28:58AM +0200, наб wrote:
+> On Wed, Sep 25, 2024 at 10:32:59PM +0200, Pablo Neira Ayuso wrote:
+> > On Wed, Sep 25, 2024 at 05:11:01PM +0200, Ahelenia Ziemiańska wrote:
+> > > On Wed, Sep 25, 2024 at 04:53:49PM +0200, Pablo Neira Ayuso wrote:
+> > > > On Tue, Sep 03, 2024 at 04:53:46PM +0200, Ahelenia Ziemiańska wrote:
+> > > > > On Tue, Sep 03, 2024 at 10:22:09AM +0200, Pablo Neira Ayuso wrote:
+> > > > > > On Tue, Sep 03, 2024 at 04:16:21AM +0200, Ahelenia Ziemiańska wrote:
+> > > > > > > The manual says
+> > > > > > >    COMMANDS
+> > > > > > >        These options specify the particular operation to perform.
+> > > > > > >        Only one of them can be specified at any given time.
+> > > > > > > 
+> > > > > > >        -L --dump
+> > > > > > >               List connection tracking or expectation table
+> > > > > > > 
+> > > > > > > So, naturally, "conntrack -Lo extended" should work,
+> > > > > > > but it doesn't, it's equivalent to "conntrack -L",
+> > > > > > > and you need "conntrack -L -o extended".
+> > > > > > > This violates user expectations (borne of the Utility Syntax Guidelines)
+> > > > > > > and contradicts the manual.
+> > > > > > > 
+> > > > > > > optarg is unused, anyway. Unclear why any of these were :: at all?
+> > > > > > Because this supports:
+> > > > > >         -L
+> > > > > >         -L conntrack
+> > > > > >         -L expect
+> > > > > Well that's not what :: does, though; we realise this, right?
+> > > > > 
+> > > > > "L::" means that getopt() will return
+> > > > >   "-L", "conntrack" -> 'L',optarg=NULL
+> > > > >   "-Lconntrack"     -> 'L',optarg="conntrack"
+> > > > > and the parser for -L (&c.) doesn't... use optarg.
+> > > > Are you sure it does not use optarg?
+> > > > 
+> > > > static unsigned int check_type(int argc, char *argv[])
+> > > > {
+> > > >         const char *table = get_optional_arg(argc, argv);
+> > > > 
+> > > > and get_optional_arg() uses optarg.
+> > > This I've missed, but actually my diagnosis still holds:
+> > >   static unsigned int check_type(int argc, char *argv[])
+> > >   {
+> > >   	const char *table = get_optional_arg(argc, argv);
+> > >   
+> > >   	/* default to conntrack subsystem if nothing has been specified. */
+> > >   	if (table == NULL)
+> > >   		return CT_TABLE_CONNTRACK;
+> > > 
+> > >   static char *get_optional_arg(int argc, char *argv[])
+> > >   {
+> > >   	char *arg = NULL;
+> > >   
+> > >   	/* Nasty bug or feature in getopt_long ?
+> > >   	 * It seems that it behaves badly with optional arguments.
+> > >   	 * Fortunately, I just stole the fix from iptables ;) */
+> > >   	if (optarg)
+> > >   		return arg;
+> > > 
+> > > So, if you say -Lanything, then
+> > >   optarg=anything
+> > >   get_optional_arg=(null)
+> > > (notice that it says "return arg;", not "return optarg;",
+> > >  i.e. this is "return NULL").
+> > > 
+> > > It /doesn't/ use optarg, because it explicitly treats an optarg as no optarg.
+> > > 
+> > > It's unclear to me what the comment is referencing,
+> > > but I'm assuming some sort of confusion with what :: does?
+> > > Anyway, that if(){ can be removed now, since it can never be taken now.
+> > Then, this breaks:
+> > # conntrack -Lexpect
+> > conntrack v1.4.9 (conntrack-tools): Bad parameter `xpect'
+> > Try `conntrack -h' or 'conntrack --help' for more information.
+> > 
+> > Maybe your patch needs an extension to deal with this case too?
+> 
+> This doesn't "break", this is equivalent to conntrack -L -e xpect.
+> It's now correct. This was the crux of the patch, actually.
+> 
+> Compare the manual:
+>   SYNOPSIS
+>     conntrack -L [table] [options] [-z]
+>   COMMANDS
+>     -L --dump     List connection tracking or expectation table
+>   PARAMETERS
+>     -e, --event-mask [ALL|NEW|UPDATES|DESTROY][,...]
+>                   Set the bitmask of events that are to be generated by the in-kernel ctnetlink event code.  Using this parameter, you can reduce the event messages  generated
+>                   by the kernel to the types that you are actually interested in.  This option can only be used in conjunction with "-E, --event".
+> 
+> Previously, it /was/ broken: conntrack -Lexpect was as-if --dump=expect
+> (also not legal since --dump doesn't take an argument),
+> and the "expect" was ignored, so it was equivalent to conntrack -L.
+> You can trivially validate this by running an older version.
+> 
+> (Well, --dump=expect /is/ accepted. And ignored.
+>  So fix that too with s/optional_argument/no_argument/ (or s/2/0/).
+>  I didn't actually look at the longopts before.)
+> 
+> > The issue that I'm observing is that
+> >   # conntrack -Lconntrack
+> > now optarg is NULL after your patch, so 'conntrack' is ignored, so it
+> > falls back to list the conntrack table.
+> 
+> What do you mean "now". That shit was always ignored.
+> You can read trace the calls yourself if you don't believe my analysis.
+> Now it behaves as-documented (-L -c onntrack).
+> 
+> And, per
+>                 case 'c':
+>                         options |= opt2type[c];
+>                         nfct_set_attr_u32(tmpl->ct,
+>                                           opt2attr[c],
+>                                           strtoul(optarg, NULL, 0));
+>                         break;
+> -c onntrack is equivalent to -c 0.
+> This is also obviously wrong.
+> 
+> I will repeat this and you can confirm this once more
+> (or refer back to my analysis above):
+> for all of -LIUDGEFA, an optional parameter was accepted, and always discarded.
+> It now isn't, and behaves as-expected per the USG
+> ("the USG" is an annoying way to say "how getopt() works".
+> 
+> > Regarding your question, this parser is old and I shamelessly took it
+> > from the original iptables to make syntax similar.
+> So you have someone to blame it on when it turns out to be dysfunctional.
+> But you also have a huge parser that doesn't work.
+> Win some/lose some, I suppose.
 
-If supported, also test interface wildcard support separately by
-creating a flowtable with 'wild*' interface spec and quickly add/remove
-matching dummy interfaces.
+Your stuff breaks existing behaviour. I will revert and leave it as is.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v4:
-- Limit maximum run-time to 48s.
----
- .../testing/selftests/net/netfilter/Makefile  |   1 +
- .../net/netfilter/nft_interface_stress.sh     | 151 ++++++++++++++++++
- 2 files changed, 152 insertions(+)
- create mode 100755 tools/testing/selftests/net/netfilter/nft_interface_stress.sh
+There is a risk of breaking existing applications.
 
-diff --git a/tools/testing/selftests/net/netfilter/Makefile b/tools/testing/selftests/net/netfilter/Makefile
-index d13fb5ea3e89..823e0acf7171 100644
---- a/tools/testing/selftests/net/netfilter/Makefile
-+++ b/tools/testing/selftests/net/netfilter/Makefile
-@@ -21,6 +21,7 @@ TEST_PROGS += nft_concat_range.sh
- TEST_PROGS += nft_conntrack_helper.sh
- TEST_PROGS += nft_fib.sh
- TEST_PROGS += nft_flowtable.sh
-+TEST_PROGS += nft_interface_stress.sh
- TEST_PROGS += nft_meta.sh
- TEST_PROGS += nft_nat.sh
- TEST_PROGS += nft_nat_zones.sh
-diff --git a/tools/testing/selftests/net/netfilter/nft_interface_stress.sh b/tools/testing/selftests/net/netfilter/nft_interface_stress.sh
-new file mode 100755
-index 000000000000..27ef082a09a7
---- /dev/null
-+++ b/tools/testing/selftests/net/netfilter/nft_interface_stress.sh
-@@ -0,0 +1,151 @@
-+#!/bin/bash -e
-+#
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Torture nftables' netdevice notifier callbacks and related code by frequent
-+# renaming of interfaces which netdev-family chains and flowtables hook into.
-+
-+source lib.sh
-+
-+checktool "nft --version" "run test without nft tool"
-+checktool "iperf3 --version" "run test without iperf3 tool"
-+
-+# how many seconds to torture the kernel?
-+# default to 80% of max run time but don't exceed 48s
-+TEST_RUNTIME=$((${kselftest_timeout:-60} * 8 / 10))
-+[[ $TEST_RUNTIME -gt 48 ]] && TEST_RUNTIME=48
-+
-+trap "cleanup_all_ns" EXIT
-+
-+setup_ns nsc nsr nss
-+
-+ip -net $nsc link add cr0 type veth peer name rc0 netns $nsr
-+ip -net $nsc addr add 10.0.0.1/24 dev cr0
-+ip -net $nsc link set cr0 up
-+ip -net $nsc route add default via 10.0.0.2
-+
-+ip -net $nss link add sr0 type veth peer name rs0 netns $nsr
-+ip -net $nss addr add 10.1.0.1/24 dev sr0
-+ip -net $nss link set sr0 up
-+ip -net $nss route add default via 10.1.0.2
-+
-+ip -net $nsr addr add 10.0.0.2/24 dev rc0
-+ip -net $nsr link set rc0 up
-+ip -net $nsr addr add 10.1.0.2/24 dev rs0
-+ip -net $nsr link set rs0 up
-+ip netns exec $nsr sysctl -q net.ipv4.ip_forward=1
-+ip netns exec $nsr sysctl -q net.ipv4.conf.all.forwarding=1
-+
-+{
-+	echo "table netdev t {"
-+	for ((i = 0; i < 10; i++)); do
-+		cat <<-EOF
-+		chain chain_rc$i {
-+			type filter hook ingress device rc$i priority 0
-+			counter
-+		}
-+		chain chain_rs$i {
-+			type filter hook ingress device rs$i priority 0
-+			counter
-+		}
-+		EOF
-+	done
-+	echo "}"
-+	echo "table ip t {"
-+	for ((i = 0; i < 10; i++)); do
-+		cat <<-EOF
-+		flowtable ft_${i} {
-+			hook ingress priority 0
-+			devices = { rc$i, rs$i }
-+		}
-+		EOF
-+	done
-+	echo "chain c {"
-+	echo "type filter hook forward priority 0"
-+	for ((i = 0; i < 10; i++)); do
-+		echo -n "iifname rc$i oifname rs$i "
-+		echo    "ip protocol tcp counter flow add @ft_${i}"
-+	done
-+	echo "counter"
-+	echo "}"
-+	echo "}"
-+} | ip netns exec $nsr nft -f - || {
-+	echo "SKIP: Could not load nft ruleset"
-+	exit $ksft_skip
-+}
-+
-+for ((o=0, n=1; ; o=n, n++, n %= 10)); do
-+	ip -net $nsr link set rc$o name rc$n
-+	ip -net $nsr link set rs$o name rs$n
-+done &
-+rename_loop_pid=$!
-+
-+while true; do ip netns exec $nsr nft list ruleset >/dev/null 2>&1; done &
-+nft_list_pid=$!
-+
-+ip netns exec $nsr nft monitor >/dev/null &
-+nft_monitor_pid=$!
-+
-+ip netns exec $nss iperf3 --server --daemon -1
-+summary_expr='s,^\[SUM\] .* \([0-9]\+\) Mbits/sec .* receiver,\1,p'
-+rate=$(ip netns exec $nsc iperf3 \
-+	--format m -c 10.1.0.1 --time $TEST_RUNTIME \
-+	--length 56 --parallel 10 -i 0 | sed -n "$summary_expr")
-+
-+kill $nft_list_pid
-+kill $nft_monitor_pid
-+kill $rename_loop_pid
-+wait
-+
-+ip netns exec $nsr nft -f - <<EOF
-+table ip t {
-+	flowtable ft_wild {
-+		hook ingress priority 0
-+		devices = { wild* }
-+	}
-+}
-+EOF
-+if [[ $? -ne 0 ]]; then
-+	echo "SKIP wildcard tests: not supported by host's nft?"
-+else
-+	for ((i = 0; i < 100; i++)); do
-+		ip -net $nsr link add wild$i type dummy &
-+	done
-+	wait
-+	for ((i = 80; i < 100; i++)); do
-+		ip -net $nsr link del wild$i &
-+	done
-+	for ((i = 0; i < 80; i++)); do
-+		ip -net $nsr link del wild$i &
-+	done
-+	wait
-+	for ((i = 0; i < 100; i += 10)); do
-+		(
-+		for ((j = 0; j < 10; j++)); do
-+			ip -net $nsr link add wild$((i + j)) type dummy
-+		done
-+		for ((j = 0; j < 10; j++)); do
-+			ip -net $nsr link del wild$((i + j))
-+		done
-+		) &
-+	done
-+	wait
-+fi
-+
-+[[ $(</proc/sys/kernel/tainted) -eq 0 ]] || {
-+	echo "FAIL: Kernel is tainted!"
-+	exit $ksft_fail
-+}
-+
-+[[ $rate -gt 0 ]] || {
-+	echo "FAIL: Zero throughput in iperf3"
-+	exit $ksft_fail
-+}
-+
-+[[ -f /sys/kernel/debug/kmemleak && \
-+   -n $(</sys/kernel/debug/kmemleak) ]] && {
-+	echo "FAIL: non-empty kmemleak report"
-+	exit $ksft_fail
-+}
-+
-+exit $ksft_pass
--- 
-2.43.0
-
+You can use the word shit, dysfunctional, and keep augment your
+wording as many times as you want, but that does not change my point.
 
