@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4123-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4127-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEC6998728C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:13:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75535987278
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:09:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B329AB2C97C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31E0628629F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672D41B0111;
-	Thu, 26 Sep 2024 11:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158091B07D7;
+	Thu, 26 Sep 2024 11:07:40 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2F51AF4F9;
-	Thu, 26 Sep 2024 11:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F65B1AFB3A;
+	Thu, 26 Sep 2024 11:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727348858; cv=none; b=bV61kK5jxMZR0OyL3xInoJqVRTMDS8JO2bnPEOPaoS4ECpUbguTlV6PEeecSas+DhoUBw/tYRw1ql4RKOEAkGepJwYiZFRLf1+1+PaCVjUBj8VahbN+mJrim/4U9AUQjJbyNHW6YBAxVF2HtFcW+HFeBUfSJksCIXiswwgjR3MA=
+	t=1727348860; cv=none; b=UBjYObZ8sIAIktbwy3ZebUnJfuBXssMIZ03AUd5WGcRSG/+ElipIOrVWelyGvJTCC3Gcd9KhoGnw8T75US/OrO0XhHddV+Hwf+WbkAEFrFUpiqA+dOmDM4kiNj4K7yekDCxNgchJzRdFtPPWoLVuuRRSOC3DgVt9ReH9nn9gqQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727348858; c=relaxed/simple;
-	bh=fmfU+KM0WUkqeEHd60UTyWvyljaDniOOrl2STGpZ+1I=;
+	s=arc-20240116; t=1727348860; c=relaxed/simple;
+	bh=1yeclIVINjCmQyvbEhbpgimAY2FVP+s61qlE1JY1m5I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hAC6+BaaZzy9FJfVTJCgsrEG7UY6jo5x03bBc9FfAFKHuRbt3EGFuqvcqWWAlbnjdkQJqoBVW6pxRVpqtFUAFYbiFAH8mgKoVyfULKK1p/2l1bZ6DZVRfTuRkmcA2R006Y31X+c02mpoxNqiUbYsKrTDed3VCWQ9nY9vOUQ5lmY=
+	 MIME-Version; b=OdNwKz23Cv+1wK715H/db/RXMuyGMQXUKt8ZsX1yCEIlxynh7hnqi48RCP0WVlocL1mzHv+ZdZeCLv3P7U9iQYLeMuCS5RbvxsXvMjPrc1KMIPEG/jNTCgdzJ6JS+7EJXRHBoQLjPTxvIhCK7ff81siRGk6Vlat2mbt1wFjXaDk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 12/14] netfilter: nfnetlink_queue: remove old clash resolution logic
-Date: Thu, 26 Sep 2024 13:07:15 +0200
-Message-Id: <20240926110717.102194-13-pablo@netfilter.org>
+Subject: [PATCH net 13/14] kselftest: add test for nfqueue induced conntrack race
+Date: Thu, 26 Sep 2024 13:07:16 +0200
+Message-Id: <20240926110717.102194-14-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240926110717.102194-1-pablo@netfilter.org>
 References: <20240926110717.102194-1-pablo@netfilter.org>
@@ -51,186 +51,171 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-For historical reasons there are two clash resolution spots in
-netfilter, one in nfnetlink_queue and one in conntrack core.
+The netfilter race happens when two packets with the same tuple are DNATed
+and enqueued with nfqueue in the postrouting hook.
 
-nfnetlink_queue one was added first: If a colliding entry is found, NAT
-NAT transformation is reversed by calling nat engine again with altered
-tuple.
+Once one of the packet is reinjected it may be DNATed again to a different
+destination, but the conntrack entry remains the same and the return packet
+was dropped.
 
-See commit 368982cd7d1b ("netfilter: nfnetlink_queue: resolve clash for
-unconfirmed conntracks") for details.
+Based on earlier patch from Antonio Ojea.
 
-One problem is that nf_reroute() won't take an action if the queueing
-doesn't occur in the OUTPUT hook, i.e. when queueing in forward or
-postrouting, packet will be sent via the wrong path.
-
-Another problem is that the scenario addressed (2nd UDP packet sent with
-identical addresses while first packet is still being processed) can also
-occur without any nfqueue involvement due to threaded resolvers doing
-A and AAAA requests back-to-back.
-
-This lead us to add clash resolution logic to the conntrack core, see
-commit 6a757c07e51f ("netfilter: conntrack: allow insertion of clashing
-entries").  Instead of fixing the nfqueue based logic, lets remove it
-and let conntrack core handle this instead.
-
-Retain the ->update hook for sake of nfqueue based conntrack helpers.
-We could axe this hook completely but we'd have to split confirm and
-helper logic again, see commit ee04805ff54a ("netfilter: conntrack: make
-conntrack userspace helpers work again").
-
-This SHOULD NOT be backported to kernels earlier than v5.6; they lack
-adequate clash resolution handling.
-
-Patch was originally written by Pablo Neira Ayuso.
-
-Reported-by: Antonio Ojea <aojea@google.com>
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1766
+Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1766
+Co-developed-by: Antonio Ojea <aojea@google.com>
+Signed-off-by: Antonio Ojea <aojea@google.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
-Tested-by: Antonio Ojea <aojea@google.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/linux/netfilter.h         |  4 --
- net/netfilter/nf_conntrack_core.c | 85 -------------------------------
- net/netfilter/nf_nat_core.c       |  1 -
- 3 files changed, 90 deletions(-)
+ .../selftests/net/netfilter/nft_queue.sh      | 92 ++++++++++++++++++-
+ 1 file changed, 91 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-index 2683b2b77612..2b8aac2c70ad 100644
---- a/include/linux/netfilter.h
-+++ b/include/linux/netfilter.h
-@@ -376,15 +376,11 @@ int nf_route(struct net *net, struct dst_entry **dst, struct flowi *fl,
- struct nf_conn;
- enum nf_nat_manip_type;
- struct nlattr;
--enum ip_conntrack_dir;
+diff --git a/tools/testing/selftests/net/netfilter/nft_queue.sh b/tools/testing/selftests/net/netfilter/nft_queue.sh
+index d66e3c4dfec6..a9d109fcc15c 100755
+--- a/tools/testing/selftests/net/netfilter/nft_queue.sh
++++ b/tools/testing/selftests/net/netfilter/nft_queue.sh
+@@ -31,7 +31,7 @@ modprobe -q sctp
  
- struct nf_nat_hook {
- 	int (*parse_nat_setup)(struct nf_conn *ct, enum nf_nat_manip_type manip,
- 			       const struct nlattr *attr);
- 	void (*decode_session)(struct sk_buff *skb, struct flowi *fl);
--	unsigned int (*manip_pkt)(struct sk_buff *skb, struct nf_conn *ct,
--				  enum nf_nat_manip_type mtype,
--				  enum ip_conntrack_dir dir);
- 	void (*remove_nat_bysrc)(struct nf_conn *ct);
- };
+ trap cleanup EXIT
  
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 7c63fbfb8c1d..9db3e2b0b1c3 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -2197,80 +2197,6 @@ static void nf_conntrack_attach(struct sk_buff *nskb, const struct sk_buff *skb)
- 	nf_conntrack_get(skb_nfct(nskb));
+-setup_ns ns1 ns2 nsrouter
++setup_ns ns1 ns2 ns3 nsrouter
+ 
+ TMPFILE0=$(mktemp)
+ TMPFILE1=$(mktemp)
+@@ -48,6 +48,7 @@ if ! ip link add veth0 netns "$nsrouter" type veth peer name eth0 netns "$ns1" >
+     exit $ksft_skip
+ fi
+ ip link add veth1 netns "$nsrouter" type veth peer name eth0 netns "$ns2"
++ip link add veth2 netns "$nsrouter" type veth peer name eth0 netns "$ns3"
+ 
+ ip -net "$nsrouter" link set veth0 up
+ ip -net "$nsrouter" addr add 10.0.1.1/24 dev veth0
+@@ -57,8 +58,13 @@ ip -net "$nsrouter" link set veth1 up
+ ip -net "$nsrouter" addr add 10.0.2.1/24 dev veth1
+ ip -net "$nsrouter" addr add dead:2::1/64 dev veth1 nodad
+ 
++ip -net "$nsrouter" link set veth2 up
++ip -net "$nsrouter" addr add 10.0.3.1/24 dev veth2
++ip -net "$nsrouter" addr add dead:3::1/64 dev veth2 nodad
++
+ ip -net "$ns1" link set eth0 up
+ ip -net "$ns2" link set eth0 up
++ip -net "$ns3" link set eth0 up
+ 
+ ip -net "$ns1" addr add 10.0.1.99/24 dev eth0
+ ip -net "$ns1" addr add dead:1::99/64 dev eth0 nodad
+@@ -70,6 +76,11 @@ ip -net "$ns2" addr add dead:2::99/64 dev eth0 nodad
+ ip -net "$ns2" route add default via 10.0.2.1
+ ip -net "$ns2" route add default via dead:2::1
+ 
++ip -net "$ns3" addr add 10.0.3.99/24 dev eth0
++ip -net "$ns3" addr add dead:3::99/64 dev eth0 nodad
++ip -net "$ns3" route add default via 10.0.3.1
++ip -net "$ns3" route add default via dead:3::1
++
+ load_ruleset() {
+ 	local name=$1
+ 	local prio=$2
+@@ -473,6 +484,83 @@ EOF
+ 	check_output_files "$TMPINPUT" "$TMPFILE1" "sctp output"
  }
  
--static int __nf_conntrack_update(struct net *net, struct sk_buff *skb,
--				 struct nf_conn *ct,
--				 enum ip_conntrack_info ctinfo)
--{
--	const struct nf_nat_hook *nat_hook;
--	struct nf_conntrack_tuple_hash *h;
--	struct nf_conntrack_tuple tuple;
--	unsigned int status;
--	int dataoff;
--	u16 l3num;
--	u8 l4num;
--
--	l3num = nf_ct_l3num(ct);
--
--	dataoff = get_l4proto(skb, skb_network_offset(skb), l3num, &l4num);
--	if (dataoff <= 0)
--		return NF_DROP;
--
--	if (!nf_ct_get_tuple(skb, skb_network_offset(skb), dataoff, l3num,
--			     l4num, net, &tuple))
--		return NF_DROP;
--
--	if (ct->status & IPS_SRC_NAT) {
--		memcpy(tuple.src.u3.all,
--		       ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3.all,
--		       sizeof(tuple.src.u3.all));
--		tuple.src.u.all =
--			ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u.all;
--	}
--
--	if (ct->status & IPS_DST_NAT) {
--		memcpy(tuple.dst.u3.all,
--		       ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.u3.all,
--		       sizeof(tuple.dst.u3.all));
--		tuple.dst.u.all =
--			ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.u.all;
--	}
--
--	h = nf_conntrack_find_get(net, nf_ct_zone(ct), &tuple);
--	if (!h)
--		return NF_ACCEPT;
--
--	/* Store status bits of the conntrack that is clashing to re-do NAT
--	 * mangling according to what it has been done already to this packet.
--	 */
--	status = ct->status;
--
--	nf_ct_put(ct);
--	ct = nf_ct_tuplehash_to_ctrack(h);
--	nf_ct_set(skb, ct, ctinfo);
--
--	nat_hook = rcu_dereference(nf_nat_hook);
--	if (!nat_hook)
--		return NF_ACCEPT;
--
--	if (status & IPS_SRC_NAT) {
--		unsigned int verdict = nat_hook->manip_pkt(skb, ct,
--							   NF_NAT_MANIP_SRC,
--							   IP_CT_DIR_ORIGINAL);
--		if (verdict != NF_ACCEPT)
--			return verdict;
--	}
--
--	if (status & IPS_DST_NAT) {
--		unsigned int verdict = nat_hook->manip_pkt(skb, ct,
--							   NF_NAT_MANIP_DST,
--							   IP_CT_DIR_ORIGINAL);
--		if (verdict != NF_ACCEPT)
--			return verdict;
--	}
--
--	return NF_ACCEPT;
--}
--
- /* This packet is coming from userspace via nf_queue, complete the packet
-  * processing after the helper invocation in nf_confirm().
-  */
-@@ -2334,17 +2260,6 @@ static int nf_conntrack_update(struct net *net, struct sk_buff *skb)
- 	if (!ct)
- 		return NF_ACCEPT;
++udp_listener_ready()
++{
++	ss -S -N "$1" -uln -o "sport = :12345" | grep -q 12345
++}
++
++output_files_written()
++{
++	test -s "$1" && test -s "$2"
++}
++
++test_udp_ct_race()
++{
++        ip netns exec "$nsrouter" nft -f /dev/stdin <<EOF
++flush ruleset
++table inet udpq {
++	chain prerouting {
++		type nat hook prerouting priority dstnat - 5; policy accept;
++		ip daddr 10.6.6.6 udp dport 12345 counter dnat to numgen inc mod 2 map { 0 : 10.0.2.99, 1 : 10.0.3.99 }
++	}
++        chain postrouting {
++		type filter hook postrouting priority srcnat - 5; policy accept;
++		udp dport 12345 counter queue num 12
++        }
++}
++EOF
++	:> "$TMPFILE1"
++	:> "$TMPFILE2"
++
++	timeout 10 ip netns exec "$ns2" socat UDP-LISTEN:12345,fork OPEN:"$TMPFILE1",trunc &
++	local rpid1=$!
++
++	timeout 10 ip netns exec "$ns3" socat UDP-LISTEN:12345,fork OPEN:"$TMPFILE2",trunc &
++	local rpid2=$!
++
++	ip netns exec "$nsrouter" ./nf_queue -q 12 -d 1000 &
++	local nfqpid=$!
++
++	busywait "$BUSYWAIT_TIMEOUT" udp_listener_ready "$ns2"
++	busywait "$BUSYWAIT_TIMEOUT" udp_listener_ready "$ns3"
++	busywait "$BUSYWAIT_TIMEOUT" nf_queue_wait "$nsrouter" 12
++
++	# Send two packets, one should end up in ns1, other in ns2.
++	# This is because nfqueue will delay packet for long enough so that
++	# second packet will not find existing conntrack entry.
++	echo "Packet 1" | ip netns exec "$ns1" socat STDIN UDP-DATAGRAM:10.6.6.6:12345,bind=0.0.0.0:55221
++	echo "Packet 2" | ip netns exec "$ns1" socat STDIN UDP-DATAGRAM:10.6.6.6:12345,bind=0.0.0.0:55221
++
++	busywait 10000 output_files_written "$TMPFILE1" "$TMPFILE2"
++
++	kill "$nfqpid"
++
++	if ! ip netns exec "$nsrouter" bash -c 'conntrack -L -p udp --dport 12345 2>/dev/null | wc -l | grep -q "^1"'; then
++		echo "FAIL: Expected One udp conntrack entry"
++		ip netns exec "$nsrouter" conntrack -L -p udp --dport 12345
++		ret=1
++	fi
++
++	if ! ip netns exec "$nsrouter" nft delete table inet udpq; then
++		echo "FAIL: Could not delete udpq table"
++		ret=1
++		return
++	fi
++
++	NUMLINES1=$(wc -l < "$TMPFILE1")
++	NUMLINES2=$(wc -l < "$TMPFILE2")
++
++	if [ "$NUMLINES1" -ne 1 ] || [ "$NUMLINES2" -ne 1 ]; then
++		ret=1
++		echo "FAIL: uneven udp packet distribution: $NUMLINES1 $NUMLINES2"
++		echo -n "$TMPFILE1: ";cat "$TMPFILE1"
++		echo -n "$TMPFILE2: ";cat "$TMPFILE2"
++		return
++	fi
++
++	echo "PASS: both udp receivers got one packet each"
++}
++
+ test_queue_removal()
+ {
+ 	read tainted_then < /proc/sys/kernel/tainted
+@@ -512,6 +600,7 @@ EOF
+ ip netns exec "$nsrouter" sysctl net.ipv6.conf.all.forwarding=1 > /dev/null
+ ip netns exec "$nsrouter" sysctl net.ipv4.conf.veth0.forwarding=1 > /dev/null
+ ip netns exec "$nsrouter" sysctl net.ipv4.conf.veth1.forwarding=1 > /dev/null
++ip netns exec "$nsrouter" sysctl net.ipv4.conf.veth2.forwarding=1 > /dev/null
  
--	if (!nf_ct_is_confirmed(ct)) {
--		int ret = __nf_conntrack_update(net, skb, ct, ctinfo);
--
--		if (ret != NF_ACCEPT)
--			return ret;
--
--		ct = nf_ct_get(skb, &ctinfo);
--		if (!ct)
--			return NF_ACCEPT;
--	}
--
- 	return nf_confirm_cthelper(skb, ct, ctinfo);
- }
+ load_ruleset "filter" 0
  
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index d9ea2c26f309..4085c436e306 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -1324,7 +1324,6 @@ static const struct nf_nat_hook nat_hook = {
- #ifdef CONFIG_XFRM
- 	.decode_session		= __nf_nat_decode_session,
- #endif
--	.manip_pkt		= nf_nat_manip_pkt,
- 	.remove_nat_bysrc	= nf_nat_cleanup_conntrack,
- };
+@@ -549,6 +638,7 @@ test_tcp_localhost_connectclose
+ test_tcp_localhost_requeue
+ test_sctp_forward
+ test_sctp_output
++test_udp_ct_race
  
+ # should be last, adds vrf device in ns1 and changes routes
+ test_icmp_vrf
 -- 
 2.30.2
 
