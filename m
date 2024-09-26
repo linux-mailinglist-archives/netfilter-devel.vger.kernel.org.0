@@ -1,80 +1,68 @@
-Return-Path: <netfilter-devel+bounces-4125-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4128-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF799987271
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DE3D987280
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C7381C2519C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:09:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 361E51C24AA5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B571B07AC;
-	Thu, 26 Sep 2024 11:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BC51AC8AD;
+	Thu, 26 Sep 2024 11:11:23 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84ADD1AFB0E;
-	Thu, 26 Sep 2024 11:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5E31AC89C
+	for <netfilter-devel@vger.kernel.org>; Thu, 26 Sep 2024 11:11:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727348859; cv=none; b=XCXBJoY6r3/3Of2lPPcLpjixeJp+3vSpjmNhaq5eG2rSPMksmwoe2I9omVLy4HiaMqw+XdzWjx5BlawmAyDZPN2q8YUVf0wkTh2GsEFSrCWkN79o4C50DiMtD6J+GLbGQVt5DN6CoEyqxTpy20H/NXNacdatjVYa4l4UiKCukiE=
+	t=1727349083; cv=none; b=eTjKk4/FgLPxmEm3Ya/wBbCTM0i7RtcOV6qsQZbzgSxbOIIdCSMV4vk4FhHMffNs7AjDQZK7uKczWxuGMOnSdUENhd/RnWZPwzx4ntCSYnFkKMKoeax8NPIkC4odugyEfeQrq/GBMBF7mogEwEA4KIIcpaxMlcVbkyQzl9XP5MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727348859; c=relaxed/simple;
-	bh=9A0/WHC4DgcCjDTtATyqd4HzjsrzO34/cKY8pOogQNg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OY/ifwVK/g7WQdjtVX9mevBSYH/4t2255hEDVNOiNNRjAYKG1TyPIGhCI+UTYN531Gzq87bixljrxzdIo6JjT5s0QeHYlqgmsygWgQYYpKyDSs7c32kyGb9/gV+VGN4cgTGawZQvZkPaP5GgI3NNerC2zOsskJpHKOMaJpStEtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 14/14] selftests: netfilter: Avoid hanging ipvs.sh
-Date: Thu, 26 Sep 2024 13:07:17 +0200
-Message-Id: <20240926110717.102194-15-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240926110717.102194-1-pablo@netfilter.org>
-References: <20240926110717.102194-1-pablo@netfilter.org>
+	s=arc-20240116; t=1727349083; c=relaxed/simple;
+	bh=C5tiPCPUjd8nmNuSU41LjFwpAjIuUeGJdad1aDqFObs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=evduDpK67Zu5EeaTMzTwJvsDwf/f0E5BafHgiRVFRvtONdXNw1xTRLoAMx9cgz45UmH09d2Him0ShoGQ229NHDBd55VHPwl3KdJK224FV+gcj8KPXgCKLI6VileAhndWps6fwJb+U2m8a8cJaV8zcpsD7FKYRNXL429Dt8SyeKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1stmOz-0004ee-P7; Thu, 26 Sep 2024 13:11:17 +0200
+Date: Thu, 26 Sep 2024 13:11:17 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org, cmi@nvidia.com, nbd@nbd.name,
+	sven.auhagen@voleatech.de
+Subject: Re: [PATCH nf-next 5/7] netfilter: conntrack: rework offload nf_conn
+ timeout extension logic
+Message-ID: <20240926111117.GB16642@breakpoint.cc>
+References: <20240924194419.29936-1-fw@strlen.de>
+ <20240924194419.29936-6-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240924194419.29936-6-fw@strlen.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-From: Phil Sutter <phil@nwl.cc>
+Florian Westphal <fw@strlen.de> wrote:
+> +/**
+> + * nf_flow_table_tcp_timeout() - new timeout of offloaded tcp entry
+> + * @ct:		Flowtable offloaded tcp ct
+> + *
+> + * Return number of seconds when ct entry should expire.
 
-If the client can't reach the server, the latter remains listening
-forever. Kill it after 5s of waiting.
+This needs following kdoc fixup:
+- * Return number of seconds when ct entry should expire.
++ * @return: number of seconds when ct entry should expire.
 
-Fixes: 867d2190799a ("selftests: netfilter: add ipvs test script")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- tools/testing/selftests/net/netfilter/ipvs.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/net/netfilter/ipvs.sh b/tools/testing/selftests/net/netfilter/ipvs.sh
-index 4ceee9fb3949..d3edb16cd4b3 100755
---- a/tools/testing/selftests/net/netfilter/ipvs.sh
-+++ b/tools/testing/selftests/net/netfilter/ipvs.sh
-@@ -97,7 +97,7 @@ cleanup() {
- }
- 
- server_listen() {
--	ip netns exec "$ns2" socat -u -4 TCP-LISTEN:8080,reuseaddr STDOUT > "${outfile}" &
-+	ip netns exec "$ns2" timeout 5 socat -u -4 TCP-LISTEN:8080,reuseaddr STDOUT > "${outfile}" &
- 	server_pid=$!
- 	sleep 0.2
- }
--- 
-2.30.2
-
+Rest of series doesn't add kdoc warnings.
 
