@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4124-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4117-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC5CB98726F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:09:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC8B987262
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:08:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7630A1F27100
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:09:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652AF1F21881
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 016AC1B07A0;
-	Thu, 26 Sep 2024 11:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD761AFB06;
+	Thu, 26 Sep 2024 11:07:37 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3CF1AF4DB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A125A1AED4E;
 	Thu, 26 Sep 2024 11:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727348858; cv=none; b=EFceJ+OGc//WQrFNTCfx0fKWaHFyOExCLPmjlBAynb5srG7PHZpjr4CD5rxN8vg41jxCANvwpkdLVGwxwiR6fPfUCA1jnwcqPKPw8Xf353qwAqdaIHZ6sdTrqsdW2qc2zJbufqe+X8mB4YFVwaa2x0oYkIQWB+xMYApNl0yIO/o=
+	t=1727348857; cv=none; b=Nj/976WbuNK/6AAkiclx3Bzz1i2R9Q9ZYRh2Pus1pcogxbc5lEyZ8eINsLGgMGCHqqFY47gaYfQZyRyE3p0z7nehFYPQbQ9mTj+9/k99ZUAly8qjYOEQSds9Iqp60Blx2CirJDuk+Pd1vd+AtH3C+G/sOKA0N+R3gvgoTB+I/cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727348858; c=relaxed/simple;
-	bh=BIHBpMFZA+VLGFCRlyfVxoT4sx3J8q/NIwfNHE8phP0=;
+	s=arc-20240116; t=1727348857; c=relaxed/simple;
+	bh=iw5rqZhlyRRvWig+zMEW4R2IZGqmW6nnfjeUJSwKezE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W5GK0imkSEioRXO8yJ04/QbHas5vXof8c7UK7+6NoK4JlRgxW2gmp/8JOB4K/ziIZSCL9t1sz48pZuHKen2M5dAg+Sj0ffFK9pRf4n+WmskLlXI7zSoYY24Dv0hwZOxzFg7763MaHVQKa+KxVQe8eIFiqeSlUy/yFN1gw9tYnhs=
+	 MIME-Version:Content-Type; b=XNiqJAFvavlpVyBANQuDp7FmymXmMWqEECpH1fbEawn9CYSAUkABesWfSKB01GgrNYo3RQnnZGaYB5Ybrg63XLvbKBTrgFfJCRCJZn/PR8uVgYFml4X0zEdmkKNf+TuGX2qm6Nk7rLM+FXYetmjWlyVLkqPWe50LSOWPMTqHeGM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 05/14] netfilter: ctnetlink: Guard possible unused functions
-Date: Thu, 26 Sep 2024 13:07:08 +0200
-Message-Id: <20240926110717.102194-6-pablo@netfilter.org>
+Subject: [PATCH net 06/14] docs: tproxy: ignore non-transparent sockets in iptables
+Date: Thu, 26 Sep 2024 13:07:09 +0200
+Message-Id: <20240926110717.102194-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240926110717.102194-1-pablo@netfilter.org>
 References: <20240926110717.102194-1-pablo@netfilter.org>
@@ -47,56 +47,38 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: 谢致邦 (XIE Zhibang) <Yeking@Red54.com>
 
-Some of the functions may be unused (CONFIG_NETFILTER_NETLINK_GLUE_CT=n
-and CONFIG_NF_CONNTRACK_EVENTS=n), it prevents kernel builds with clang,
-`make W=1` and CONFIG_WERROR=y:
+The iptables example was added in commit d2f26037a38a (netfilter: Add
+documentation for tproxy, 2008-10-08), but xt_socket 'transparent'
+option was added in commit a31e1ffd2231 (netfilter: xt_socket: added new
+revision of the 'socket' match supporting flags, 2009-06-09).
 
-net/netfilter/nf_conntrack_netlink.c:657:22: error: unused function 'ctnetlink_acct_size' [-Werror,-Wunused-function]
-  657 | static inline size_t ctnetlink_acct_size(const struct nf_conn *ct)
-      |                      ^~~~~~~~~~~~~~~~~~~
-net/netfilter/nf_conntrack_netlink.c:667:19: error: unused function 'ctnetlink_secctx_size' [-Werror,-Wunused-function]
-  667 | static inline int ctnetlink_secctx_size(const struct nf_conn *ct)
-      |                   ^~~~~~~~~~~~~~~~~~~~~
-net/netfilter/nf_conntrack_netlink.c:683:22: error: unused function 'ctnetlink_timestamp_size' [-Werror,-Wunused-function]
-  683 | static inline size_t ctnetlink_timestamp_size(const struct nf_conn *ct)
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~~
+Now add the 'transparent' option to the iptables example to ignore
+non-transparent sockets, which is also consistent with the nft example.
 
-Fix this by guarding possible unused functions with ifdeffery.
-
-See also commit 6863f5643dd7 ("kbuild: allow Clang to find unused static
-inline functions for W=1 build").
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: 谢致邦 (XIE Zhibang) <Yeking@Red54.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_netlink.c | 2 +-
+ Documentation/networking/tproxy.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 123e2e933e9b..8fd2b9e392a7 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -652,7 +652,6 @@ static size_t ctnetlink_proto_size(const struct nf_conn *ct)
+diff --git a/Documentation/networking/tproxy.rst b/Documentation/networking/tproxy.rst
+index 00dc3a1a66b4..7f7c1ff6f159 100644
+--- a/Documentation/networking/tproxy.rst
++++ b/Documentation/networking/tproxy.rst
+@@ -17,7 +17,7 @@ The idea is that you identify packets with destination address matching a local
+ socket on your box, set the packet mark to a certain value::
  
- 	return len + len4;
- }
--#endif
+     # iptables -t mangle -N DIVERT
+-    # iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
++    # iptables -t mangle -A PREROUTING -p tcp -m socket --transparent -j DIVERT
+     # iptables -t mangle -A DIVERT -j MARK --set-mark 1
+     # iptables -t mangle -A DIVERT -j ACCEPT
  
- static inline size_t ctnetlink_acct_size(const struct nf_conn *ct)
- {
-@@ -690,6 +689,7 @@ static inline size_t ctnetlink_timestamp_size(const struct nf_conn *ct)
- 	return 0;
- #endif
- }
-+#endif
- 
- #ifdef CONFIG_NF_CONNTRACK_EVENTS
- static size_t ctnetlink_nlmsg_size(const struct nf_conn *ct)
 -- 
 2.30.2
 
