@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4120-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4122-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3F14987287
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:13:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 135BC98726A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 13:08:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B2BAB296A7
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:08:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41C121C251C7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2024 11:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158021AFB2F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537931B0105;
 	Thu, 26 Sep 2024 11:07:38 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE411AF4F3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF0E1AF4F7;
 	Thu, 26 Sep 2024 11:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727348858; cv=none; b=MyJBfqhy+igS76a/G/sXBrLYqF63189OJFMacjoY7SENyxsRjxZ3cxHNJJLf61PpwhxbydSeaD7Ax3L93fhd4xhZyh2gjyirmDjb5Enmoc8uTLnn8LI+qx8QYg2drLMoS+MFHiSq9kLbd4aPqZ00i16AuR2dv/uVHg/2wyzhtU8=
+	t=1727348858; cv=none; b=GoXJKHcSf6eqQbMRCAGnrfl+JhNd2OFmBns1tCxKwELO6lafhlGHkV9MyLLmsG9wT0In2e1g08AZfhhPpnfOFfGa+GyVH9uFnccDIuO8WGhf2i3UUOT6OQbBhW8ckcb0cKKE+E2cPygtNJndfp+KXoQmpkQ3XN7b0/AWzvr36dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727348858; c=relaxed/simple;
-	bh=sCWwNCFKtnxwvMe4XKLynhsxhNZs7Z8kEBkeVQ9aFCY=;
+	bh=7GTRjcrDHdtxAeMHhSUqmgkei9QeFrE8d18fxEId5dU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RBElKz7QVxS+tfYIK/XWI5exDqljS53eZzS3L9nCCtiWGa37DTLEI0Bfy4X1V2V9Cu0UeLymXTAZafKP7AZc0PEJO1iz2zrjN0iBYkZvTTj5DRxrgoKH4OyziX0f41/TPnRJ++Ydt9RF6vsmTGjjYWkg5o9TMjM0Vy6J0iG+yHo=
+	 MIME-Version; b=dg4oz51Y6jFGUnV9BcbD6PtrWzziyJJdH2bBL6BTBZUymI55ztu/RACqG6CnvnjUZCc7Xi+dSib0IJQyDJgj3Rcz2yx5sMzsX5uGPQq0GMuVZbtN673sy9/ZM2zik2gvyFfRTXMjISFDpbR4AeWxjBpZTcylTf7YB7ibk0dtIlo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 07/14] netfilter: nf_tables: Keep deleted flowtable hooks until after RCU
-Date: Thu, 26 Sep 2024 13:07:10 +0200
-Message-Id: <20240926110717.102194-8-pablo@netfilter.org>
+Subject: [PATCH net 08/14] netfilter: nf_reject: Fix build warning when CONFIG_BRIDGE_NETFILTER=n
+Date: Thu, 26 Sep 2024 13:07:11 +0200
+Message-Id: <20240926110717.102194-9-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240926110717.102194-1-pablo@netfilter.org>
 References: <20240926110717.102194-1-pablo@netfilter.org>
@@ -49,33 +49,109 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Phil Sutter <phil@nwl.cc>
+From: Simon Horman <horms@kernel.org>
 
-Documentation of list_del_rcu() warns callers to not immediately free
-the deleted list item. While it seems not necessary to use the
-RCU-variant of list_del() here in the first place, doing so seems to
-require calling kfree_rcu() on the deleted item as well.
+If CONFIG_BRIDGE_NETFILTER is not enabled, which is the case for x86_64
+defconfig, then building nf_reject_ipv4.c and nf_reject_ipv6.c with W=1
+using gcc-14 results in the following warnings, which are treated as
+errors:
 
-Fixes: 3f0465a9ef02 ("netfilter: nf_tables: dynamically allocate hooks per net_device in flowtables")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+net/ipv4/netfilter/nf_reject_ipv4.c: In function 'nf_send_reset':
+net/ipv4/netfilter/nf_reject_ipv4.c:243:23: error: variable 'niph' set but not used [-Werror=unused-but-set-variable]
+  243 |         struct iphdr *niph;
+      |                       ^~~~
+cc1: all warnings being treated as errors
+net/ipv6/netfilter/nf_reject_ipv6.c: In function 'nf_send_reset6':
+net/ipv6/netfilter/nf_reject_ipv6.c:286:25: error: variable 'ip6h' set but not used [-Werror=unused-but-set-variable]
+  286 |         struct ipv6hdr *ip6h;
+      |                         ^~~~
+cc1: all warnings being treated as errors
+
+Address this by reducing the scope of these local variables to where
+they are used, which is code only compiled when CONFIG_BRIDGE_NETFILTER
+enabled.
+
+Compile tested and run through netfilter selftests.
+
+Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Closes: https://lore.kernel.org/netfilter-devel/20240906145513.567781-1-andriy.shevchenko@linux.intel.com/
+Signed-off-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/netfilter/nf_reject_ipv4.c | 10 ++++------
+ net/ipv6/netfilter/nf_reject_ipv6.c |  5 ++---
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 57259b5f3ef5..042080aeb46c 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -9207,7 +9207,7 @@ static void nf_tables_flowtable_destroy(struct nft_flowtable *flowtable)
- 		flowtable->data.type->setup(&flowtable->data, hook->ops.dev,
- 					    FLOW_BLOCK_UNBIND);
- 		list_del_rcu(&hook->list);
--		kfree(hook);
-+		kfree_rcu(hook, rcu);
- 	}
- 	kfree(flowtable->name);
- 	module_put(flowtable->data.type->owner);
+diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
+index 04504b2b51df..87fd945a0d27 100644
+--- a/net/ipv4/netfilter/nf_reject_ipv4.c
++++ b/net/ipv4/netfilter/nf_reject_ipv4.c
+@@ -239,9 +239,8 @@ static int nf_reject_fill_skb_dst(struct sk_buff *skb_in)
+ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 		   int hook)
+ {
+-	struct sk_buff *nskb;
+-	struct iphdr *niph;
+ 	const struct tcphdr *oth;
++	struct sk_buff *nskb;
+ 	struct tcphdr _oth;
+ 
+ 	oth = nf_reject_ip_tcphdr_get(oldskb, &_oth, hook);
+@@ -266,14 +265,12 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	nskb->mark = IP4_REPLY_MARK(net, oldskb->mark);
+ 
+ 	skb_reserve(nskb, LL_MAX_HEADER);
+-	niph = nf_reject_iphdr_put(nskb, oldskb, IPPROTO_TCP,
+-				   ip4_dst_hoplimit(skb_dst(nskb)));
++	nf_reject_iphdr_put(nskb, oldskb, IPPROTO_TCP,
++			    ip4_dst_hoplimit(skb_dst(nskb)));
+ 	nf_reject_ip_tcphdr_put(nskb, oldskb, oth);
+ 	if (ip_route_me_harder(net, sk, nskb, RTN_UNSPEC))
+ 		goto free_nskb;
+ 
+-	niph = ip_hdr(nskb);
+-
+ 	/* "Never happens" */
+ 	if (nskb->len > dst_mtu(skb_dst(nskb)))
+ 		goto free_nskb;
+@@ -290,6 +287,7 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	 */
+ 	if (nf_bridge_info_exists(oldskb)) {
+ 		struct ethhdr *oeth = eth_hdr(oldskb);
++		struct iphdr *niph = ip_hdr(nskb);
+ 		struct net_device *br_indev;
+ 
+ 		br_indev = nf_bridge_get_physindev(oldskb, net);
+diff --git a/net/ipv6/netfilter/nf_reject_ipv6.c b/net/ipv6/netfilter/nf_reject_ipv6.c
+index dedee264b8f6..69a78550261f 100644
+--- a/net/ipv6/netfilter/nf_reject_ipv6.c
++++ b/net/ipv6/netfilter/nf_reject_ipv6.c
+@@ -283,7 +283,6 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	const struct tcphdr *otcph;
+ 	unsigned int otcplen, hh_len;
+ 	const struct ipv6hdr *oip6h = ipv6_hdr(oldskb);
+-	struct ipv6hdr *ip6h;
+ 	struct dst_entry *dst = NULL;
+ 	struct flowi6 fl6;
+ 
+@@ -339,8 +338,7 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	nskb->mark = fl6.flowi6_mark;
+ 
+ 	skb_reserve(nskb, hh_len + dst->header_len);
+-	ip6h = nf_reject_ip6hdr_put(nskb, oldskb, IPPROTO_TCP,
+-				    ip6_dst_hoplimit(dst));
++	nf_reject_ip6hdr_put(nskb, oldskb, IPPROTO_TCP, ip6_dst_hoplimit(dst));
+ 	nf_reject_ip6_tcphdr_put(nskb, oldskb, otcph, otcplen);
+ 
+ 	nf_ct_attach(nskb, oldskb);
+@@ -355,6 +353,7 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
+ 	 */
+ 	if (nf_bridge_info_exists(oldskb)) {
+ 		struct ethhdr *oeth = eth_hdr(oldskb);
++		struct ipv6hdr *ip6h = ipv6_hdr(nskb);
+ 		struct net_device *br_indev;
+ 
+ 		br_indev = nf_bridge_get_physindev(oldskb, net);
 -- 
 2.30.2
 
