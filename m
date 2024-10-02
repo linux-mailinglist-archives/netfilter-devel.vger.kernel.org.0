@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-4208-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4200-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D1D898E39A
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Oct 2024 21:39:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D8D98E392
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Oct 2024 21:39:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4460B285DB0
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Oct 2024 19:39:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9B881C23491
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Oct 2024 19:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34CA5216A01;
-	Wed,  2 Oct 2024 19:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0971C215F63;
+	Wed,  2 Oct 2024 19:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dsbraUPJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="e28bWNfj"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C010D1D173A
-	for <netfilter-devel@vger.kernel.org>; Wed,  2 Oct 2024 19:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A48F1D173A
+	for <netfilter-devel@vger.kernel.org>; Wed,  2 Oct 2024 19:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727897945; cv=none; b=DlP5VlXLKlons3Jx6dTDeEnFDWuAFk0+zxXmkHwq32C3eCnQIGExLLv7um+UKj54Uk7a5GF9SvtuGJrjwvMo3SR0Ovhqqt2HFw85Fcl1xOZ+ATEdeHKvVrKlfKvqpyPyAEQ1ZDb09M/3sS9zdpdfx7oMAv76h5aunt/pZ/h/Icw=
+	t=1727897940; cv=none; b=tNlbb/IkdMOMuilHSmA0q6jpSLlBqbkd79LCsO8s8KWwJ5wLQgLN8p1gUiGrsCMXeTEsao/wl7zQqAPwuwxtdQ8xBtQ+jA6iS762aUIxmbgJv5M3oQtAI4gdWyNfCl4HwpgV50gr/KzWqLttmpkTP37Fq6YeZoaiBfw4EB13/V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727897945; c=relaxed/simple;
-	bh=eLNda0Wnk+IMfrpjF6NFArZJ4iLcMpBxjUM2NkduRVU=;
+	s=arc-20240116; t=1727897940; c=relaxed/simple;
+	bh=tkITBLXaBNCmUlQG1kOlkhIw8JVZpPiXeIE8QafDVok=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UFz4dDAg/XDZyQ3DtQjfdZW4gog3PAgFAhMnj1hzbx4Ih+hPDgjFQgCBEPohb2kxY7/9lS6aocRZAwBjpXf7xzhprv50DcdUthYtrbvxIdlmvqZbjJOefjVTnWGZsaTLO5vu1tMrv6xK4JXTdpaZoIY72EtrRQw9tk65lpf+pgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dsbraUPJ; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=sYRWKc4FllaDrzrG+APU5WZp25L6P3vw8foAgESBJzdV1KPGVS8akap7n5Trmtxj5Udk3lwFXr/2GgGziRimLEtDL1eeTRQt6FDXR1wvmvramettK3kAlprlmMpJq0Iop6ENewUNcdT3iLp09Y0sXXlYWJhQTsQXdNNhMWMgac8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=e28bWNfj; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=hAZ75g/LWhELt0dEh5Q/uOCIuhCuQx4iRWkWGP75SQ4=; b=dsbraUPJvJ4E/bprmY40juoWj0
-	wthPqbkT0TNM6/Dk3Lw4vSH4R0VOtk1Q4dlvN53ag2tEEk6fAbLu9Xjjq8qARxILdxO25peFXn9m8
-	e1rvAAQZ7+VTy4G1/pACrSD56pUEdGdfxhoqw6ykF7TK5uXDiYhrj75jLcJXabeLtKKkct4xAS/tT
-	a6/o8vRidt7OFt2lL4SxOX1C7I+x0L4jZD2edytNPe/cPu34IZnnhajEKV3JXYAXEg2aAb2kAUqtO
-	bZfCd0FQDODrLlYddI9Mo/rkW34aXbgQq7zIP86Xm6svlNU+RmKPBq9WlzaqViz+Ep/vvoiEit+Nn
-	WplHIVnA==;
+	bh=Iv0viVwM4zRZjTBOd8ED+p0XahLKdgVU0tvc17PtuQ4=; b=e28bWNfjcgwARLF5nkGN9E7E1n
+	8xsfbCcidiBz3Odnm2IrYt2sauUYXoQnbRMtOJ9T5ckXpDbs0c5ehBtNWnZqxqjamxVZR3kaFYFA/
+	on/8aldKHlDRJGdqE9RHeIyM1PFS4jbRuMcw+5xXV1NqO6ccgfFmzMHeaYA8jkHlH57X6ONXqVa1b
+	zcWIyrBOLaC+vX9QFjUqumG5pVLnU91/4fSoayypvziUJ/UdgK6TFwj12hFBXVYc/2k8ohpbhGJWr
+	PxfnUwyUozSItfL+eZPbLXLrSRH9Ud4a0I3qSd/yHbra/yys70rstZSbs7igUHHvPGbTgArHr/poI
+	YzRVtpmA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1sw5Be-0000000031Q-1sUT;
-	Wed, 02 Oct 2024 21:39:02 +0200
+	id 1sw5BZ-0000000030Z-3dzP;
+	Wed, 02 Oct 2024 21:38:57 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 4/9] tests: monitor: Run in own netns
-Date: Wed,  2 Oct 2024 21:38:48 +0200
-Message-ID: <20241002193853.13818-5-phil@nwl.cc>
+Subject: [nft PATCH 5/9] mnl: Support simple wildcards in netdev hooks
+Date: Wed,  2 Oct 2024 21:38:49 +0200
+Message-ID: <20241002193853.13818-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241002193853.13818-1-phil@nwl.cc>
 References: <20241002193853.13818-1-phil@nwl.cc>
@@ -65,43 +65,71 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Have the script call itself prefixed by unshare. This won't prevent
-clashing test case contents, but at least leave the host netns alone.
+When building NFTA_FLOWTABLE_HOOK_DEVS, NFTA_HOOK_DEV or NFTA_HOOK_DEVS
+attributes, detect trailing asterisks in interface names and reduce
+attribute length accordingly. Kernel will use strncmp(), effectively
+performing a prefix search this way.
+
+Deserialization (i.e., appending asterisk to interface names which don't
+include a trailing nul-char) happens in libnftnl.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/monitor/run-tests.sh | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ src/mnl.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/tests/monitor/run-tests.sh b/tests/monitor/run-tests.sh
-index f1ac790acf80c..214512d269e8d 100755
---- a/tests/monitor/run-tests.sh
-+++ b/tests/monitor/run-tests.sh
-@@ -120,6 +120,14 @@ echo_run_test() {
- 	return $rc
- }
+diff --git a/src/mnl.c b/src/mnl.c
+index db53a60b43cb9..4faf027ce1027 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -787,18 +787,24 @@ static void mnl_nft_chain_devs_build(struct nlmsghdr *nlh, struct cmd *cmd)
+ {
+ 	const struct expr *dev_expr = cmd->chain->dev_expr;
+ 	const struct nft_dev *dev_array;
++	int i, len, num_devs = 0;
+ 	struct nlattr *nest_dev;
+-	int i, num_devs = 0;
  
-+netns=true
-+for arg in "$@"; do
-+	[[ "$arg" == "--no-netns" ]] && netns=false
-+done
-+if $netns; then
-+	exec unshare -n $0 --no-netns "$@"
-+fi
-+
- testcases=""
- while [ -n "$1" ]; do
- 	case "$1" in
-@@ -131,6 +139,9 @@ while [ -n "$1" ]; do
- 		test_json=true
- 		shift
- 		;;
-+	--no-netns)
-+		shift
-+		;;
- 	-H|--host)
- 		nft=nft
- 		shift
+ 	dev_array = nft_dev_array(dev_expr, &num_devs);
+ 	if (num_devs == 1) {
+ 		cmd_add_loc(cmd, nlh->nlmsg_len, dev_array[0].location);
+-		mnl_attr_put_strz(nlh, NFTA_HOOK_DEV, dev_array[0].ifname);
++		len = strlen(dev_array[0].ifname) + 1;
++		if (dev_array[0].ifname[len - 2] == '*')
++			len -= 2;
++		mnl_attr_put(nlh, NFTA_HOOK_DEV, len, dev_array[0].ifname);
+ 	} else {
+ 		nest_dev = mnl_attr_nest_start(nlh, NFTA_HOOK_DEVS);
+ 		for (i = 0; i < num_devs; i++) {
+ 			cmd_add_loc(cmd, nlh->nlmsg_len, dev_array[i].location);
+-			mnl_attr_put_strz(nlh, NFTA_DEVICE_NAME, dev_array[i].ifname);
++			len = strlen(dev_array[i].ifname) + 1;
++			if (dev_array[i].ifname[len - 2] == '*')
++				len -= 2;
++			mnl_attr_put(nlh, NFTA_DEVICE_NAME, len, dev_array[i].ifname);
+ 			mnl_attr_nest_end(nlh, nest_dev);
+ 		}
+ 	}
+@@ -1999,14 +2005,17 @@ static void mnl_nft_ft_devs_build(struct nlmsghdr *nlh, struct cmd *cmd)
+ {
+ 	const struct expr *dev_expr = cmd->flowtable->dev_expr;
+ 	const struct nft_dev *dev_array;
++	int i, len, num_devs = 0;
+ 	struct nlattr *nest_dev;
+-	int i, num_devs= 0;
+ 
+ 	dev_array = nft_dev_array(dev_expr, &num_devs);
+ 	nest_dev = mnl_attr_nest_start(nlh, NFTA_FLOWTABLE_HOOK_DEVS);
+ 	for (i = 0; i < num_devs; i++) {
+ 		cmd_add_loc(cmd, nlh->nlmsg_len, dev_array[i].location);
+-		mnl_attr_put_strz(nlh, NFTA_DEVICE_NAME, dev_array[i].ifname);
++		len = strlen(dev_array[i].ifname) + 1;
++		if (dev_array[i].ifname[len - 2] == '*')
++			len -= 2;
++		mnl_attr_put(nlh, NFTA_DEVICE_NAME, len, dev_array[i].ifname);
+ 	}
+ 
+ 	mnl_attr_nest_end(nlh, nest_dev);
 -- 
 2.43.0
 
