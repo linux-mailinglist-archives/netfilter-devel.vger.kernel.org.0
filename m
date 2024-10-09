@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-4303-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4307-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B62259967AC
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 12:51:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F17509967B0
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 12:51:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E84B01C243FE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 10:51:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D62B1F2380F
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 10:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9194819047D;
-	Wed,  9 Oct 2024 10:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2444819068E;
+	Wed,  9 Oct 2024 10:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="hKzSt1sX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="U/StTOLB"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CCA190462
-	for <netfilter-devel@vger.kernel.org>; Wed,  9 Oct 2024 10:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A915419047F
+	for <netfilter-devel@vger.kernel.org>; Wed,  9 Oct 2024 10:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728471051; cv=none; b=tzxYne7Y9cbCPnEz5Q/h6sTygwA9Zl7ivhLvb5kekY3J6ABIIpOQYrouhu+U9rYfa1BU7fYXVrIdtpdcZGGrJyPZq8MXXks2LWm/penFw0d8z4q7SerWiZ1sKJaxYJdtdkhIaLXyChFRsXFzlPtgD6nIqlORQhI3bWBNy+L6VZo=
+	t=1728471053; cv=none; b=plWz0PImWbK8saEgzmaWdOiN9Jmq1DoE0TwEfL9N3TOGf1RZbSFfzUO8yE9WlcTl9h8fR8fLLr/z3VUmu+5R/ZBqsg6FgvobzFpxkLpOQOFAcDt0+wHTGdOTVeCFfchcxaH+pqdrmE6qEAcA8b6TrJ0RPBq5NPqxL5t6SoBHB30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728471051; c=relaxed/simple;
-	bh=PP0PdBRRWs2rthGFQ52dz0l0v8tH3F+pTxoTSebv92E=;
+	s=arc-20240116; t=1728471053; c=relaxed/simple;
+	bh=di4v5lrzhBqk9ZM/7PoAFHnqkQ4ktHyi6ZeXUgzu0S0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hwz5exsvA3YtspoGbzM3Br2qowDFAfOX/QRyeoC/0CAngWuHxyzHPucI6vdm08+uxFltE6kL5kcyaWIUt2S8U8IxAUzpNzIpE9w7QkAgBJNKLzPJaDflS9WTVUE4HTCdYlcNxtqmunHRnu2dWsrM8y+UK9Gm5mikedvfS1FFtA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=hKzSt1sX; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=CC99gn03MIE2njKSBzepw0EGqx4DSwI619rvmxTPBe4rgLJGo/Hmm+jg/eRxRlAVZusWwkwiMQolm8C8/HzrmV8g2oygF/krB6ngHOu3BimsAXKt059wZF9/047YkLprkqBUbvKJqF8t5T76LXNHOWvtK7vUEpR0ugMkeOFPCK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=U/StTOLB; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=SwdhLEobVP70CQnLNoHpdR3nRLwOWjF1nRPEvCt2GP8=; b=hKzSt1sXCYniQCvqiN+gcD0zsZ
-	N7IBzmrDBh80obGGD52Kyv8i5ZAUNgGMf6Hvd6K05tv7DUPzmDzqgzn4gFwp/BuNrGf2z8wGEztAm
-	mvDNz0fyhNY288DT5M9WHQ5q23yt4uwpWVjzMmbLgt5YkicS5sTI6lo9M2KGOz9k9cfuOz9aY/wwR
-	PbveGVu37aRYkmgISGZo9hVYprKjH39ke2HO8QpI8FNXJd64CvLc53LwMMoUr6hdxFw8HCjY+TeMc
-	/fTH7bVsJt3sLXOLtrDx32kON0wryxbPYIudwqucYrWdX937mVCfrMouM3AOx/cNnpNycynbYt51P
-	wv73ojcQ==;
+	bh=pcTlrKRCDONI7q0Tee0nW2e1Fq432lW+L0dXxfSLMbk=; b=U/StTOLBKsqPAAHiHq6+v5u58o
+	Cb3H6KY+K1prlAR9ReHYmcxQF4fgqplgTWdDBGwrunVRd/utaNG1GW2KtDlz84YdDKI6mDO1n4wMp
+	vPQElZlOgJfkoZhwxLjrZYkvuT3GmP5Ptd0zzEMHaQSvVuoacWEF+0mVb6zeYO0zT4souWw81Xlyu
+	HDNj4ThmaqCzs7THAlWNo7r8MBx8uhsJa2IJqsgoOhEmuPSzNjySr3GvXcsHaA6zmNZZ6UkkLJ8DJ
+	DwwA0/lasOaDSLsrM4nPW7u5wIgJuWe7ASPIQnNapmNFADU0mVElkemfQ77FgX1/D3Ny3p/aLCIS9
+	MOUGpAHQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1syUHC-000000007QQ-2asY
+	id 1syUHD-000000007QY-2z69
 	for netfilter-devel@vger.kernel.org;
-	Wed, 09 Oct 2024 12:50:42 +0200
+	Wed, 09 Oct 2024 12:50:43 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/5] gitignore: Ignore generated arptables-translate.8
-Date: Wed,  9 Oct 2024 12:50:36 +0200
-Message-ID: <20241009105037.30114-5-phil@nwl.cc>
+Subject: [iptables PATCH 5/5] xshared: iptables does not support '-b'
+Date: Wed,  9 Oct 2024 12:50:37 +0200
+Message-ID: <20241009105037.30114-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241009105037.30114-1-phil@nwl.cc>
 References: <20241009105037.30114-1-phil@nwl.cc>
@@ -65,23 +65,28 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It is a semantic link created by the build system.
+This flag is merely known to iptables-restore but actively rejected
+there and it does not use IPT_OPTSTRING at all.
 
-Fixes: 68ff869e94a1b ("Makefile: Install arptables-translate link and man page")
+Fixes: 384958620abab ("use nf_tables and nf_tables compatibility interface")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+ iptables/xshared.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/iptables/.gitignore b/iptables/.gitignore
-index 8141e34d8b629..b922239279654 100644
---- a/iptables/.gitignore
-+++ b/iptables/.gitignore
-@@ -1,3 +1,4 @@
-+/arptables-translate.8
- /ebtables-translate.8
- /ip6tables
- /ip6tables.8
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 0018b7c70bd83..a111e79793b54 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -80,7 +80,7 @@ struct xtables_rule_match;
+ struct xtables_target;
+ 
+ #define OPTSTRING_COMMON "-:A:C:D:E:F::I:L::M:N:P:R:S::VX::Z::" "c:d:i:j:o:p:s:t:v"
+-#define IPT_OPTSTRING	OPTSTRING_COMMON "W::" "46bfg:h::m:nw::x"
++#define IPT_OPTSTRING	OPTSTRING_COMMON "W::" "46fg:h::m:nw::x"
+ #define ARPT_OPTSTRING	OPTSTRING_COMMON "h::l:nx" /* "m:" */
+ #define EBT_OPTSTRING	OPTSTRING_COMMON "h"
+ 
 -- 
 2.43.0
 
