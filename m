@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-4304-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4308-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F8AF9967AD
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 12:51:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDABD9967B1
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 12:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EB231C2442B
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 10:51:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C09C1C2477F
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 10:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9336C19047E;
-	Wed,  9 Oct 2024 10:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761FB191473;
+	Wed,  9 Oct 2024 10:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="jweSOrjx"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KZtGRhTU"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F140D18EFE6
-	for <netfilter-devel@vger.kernel.org>; Wed,  9 Oct 2024 10:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5B519048A
+	for <netfilter-devel@vger.kernel.org>; Wed,  9 Oct 2024 10:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728471051; cv=none; b=OBx84ELGQZOKhGf/wKkwZWEMJQSVfvL11VtHHIME4mVf6gv01Ej8ebKjCbDDLICrmiVqh63Z80x1IYKKGaJpFExTShZODCrmN4Kf0VejzKvslEKBHHVHKCxVOu/OnoFvB1kEhIZZN/XvV78MvcEwYo0IQ//qWLVzl5cdJTEJltY=
+	t=1728471053; cv=none; b=FkagIPTJKh5AKZWYCQ8uzU5AyHl8gMX3yT9w7+nCIeK9sCnZrvdh7fdaagOWSbYSfbcQ7xlG4PLd2zxXtgH3eh0asKKLhfHxNOR24mAtT8RICXpvKw1VVwnzojsJug/fIdAHgqIiwkEUhq8n0MYwpRCp7xZxXu1k/OKsIlA8rtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728471051; c=relaxed/simple;
-	bh=mxqDOZ6OESGMCJZky6ffqf4PyMjZkq8CavBE1178bng=;
+	s=arc-20240116; t=1728471053; c=relaxed/simple;
+	bh=MfcZeYV9sMDerxPl93oFnRskAaaNAcnWWp6NZAAFpm0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r2zp4jcLoR0aDxAwhbY3lHy8nGH6ap0AB6xkVKeAHs0NWaXSH/l/KycFMiDHiGAa+Bdr01v1XiLxsBgcn3CLXJFozh3BzQU7wQYF75cZe8snZpDI4BxLN9aQJsS0l64seXl4g4PVQaVdMYPY5O1nt/slR3lq1pYllznyhZaPk34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=jweSOrjx; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=qE76nf4dVkqcL6LW5E2BXDKpHbyI15nwmk7fj4UX/Ik56+WJy8UAl45roiPrju1qhOH5XJp7RQSxqY0xKTYpF+kvdhWjOOHgApGMVx+5vDVk4jfmdmMI2cvTX1jjFuouf7ofwQPPbCSPJw+Pl+WkZ3eBQWBWkH6Mis072irmSyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KZtGRhTU; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=BIsHHDPTL9xy5GaEqrWr2YYDwDiY2wjAa0X1Vst8ILc=; b=jweSOrjxC6OK3eWxndeCMsz+wc
-	F9ZMLPCAm7osGgkmaF+n42KfsS/UZfHzMQigHYx9IStEGuqNateMsoLEt7n/uxF2KFwwiXyuq2yyp
-	EME1xlxSuMCSBQ79Oeo/CrHW+jCTsPZu/S3oNBMH5DZ78HMKVOaS+oFWCk5TuElPKBEQ6rmycguDx
-	wnBD2WfdpaEBlgEpwUXhRwQviSd2GM8FzZNNEQFZFdLwJzkiisKKhMsmvsCDL6MzrdxKFr9Q3tw2x
-	H1+oPMIIKuYDAz0X3hGMnOCo2/JiJn9vbyEIhvfVCY9oCgcVAghY5WJLS+Io8o+UZNsjDXTBPwoGS
-	dOvdjQJA==;
+	bh=28cR+y0Nx4MItjoOmSzUdkg1s0LO1pfL4IqYV1KlbgA=; b=KZtGRhTU9AYB81eoTekWxFWf1A
+	e0CM0QtrOO5S0ZYC+RbciUgvrzAP6ZFZvWWadZokgzwI+PYg49pPFaFdLF/VGuVBF9uYLcZTv510b
+	taMtc8nmbsfrsrUQT9GLN4lAGOkAAHtAJH7iHobG584RB++PROrdWSgkFyzNJAdO/qivGEKp0BgXo
+	Z5vqy2K1s8JR+Ml6ePJLo2B0hxkhw1OEy7tufBj3bXCWrqXBYyu11s6N1/U1AwUCWbzoO+XztXING
+	ZOBnG02uDqM0KIn7u49lOR2kQCcpqPhYdzyFj6eNlv4990LcALqIXIzMiMn6Wt7SQWmidXev1Q4d6
+	4D8CoQyQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1syUHB-000000007Q2-1cll
+	id 1syUHE-000000007Qc-190j
 	for netfilter-devel@vger.kernel.org;
-	Wed, 09 Oct 2024 12:50:41 +0200
+	Wed, 09 Oct 2024 12:50:44 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/5] tests: iptables-test: Append stderr output to log file
-Date: Wed,  9 Oct 2024 12:50:33 +0200
-Message-ID: <20241009105037.30114-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/5] man: xtables-legacy.8: Join two paragraphs
+Date: Wed,  9 Oct 2024 12:50:34 +0200
+Message-ID: <20241009105037.30114-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241009105037.30114-1-phil@nwl.cc>
 References: <20241009105037.30114-1-phil@nwl.cc>
@@ -65,46 +65,26 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Right now this merely contains a number of intrapositioned negation
-warnings, but might be useful in future when debugging unexpected
-failures.
+The second one referring to xtables-monitor seems out of context without
+the first one, join them.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables-test.py | 6 ++++++
- 1 file changed, 6 insertions(+)
+ iptables/xtables-legacy.8 | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/iptables-test.py b/iptables-test.py
-index cefe42335d25d..77278925d7217 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -132,6 +132,8 @@ STDERR_IS_TTY = sys.stderr.isatty()
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-     out, err = proc.communicate()
-+    if len(err):
-+        print(err, file=log_file)
+diff --git a/iptables/xtables-legacy.8 b/iptables/xtables-legacy.8
+index 6db7d2cb4357a..fa26a555c5e90 100644
+--- a/iptables/xtables-legacy.8
++++ b/iptables/xtables-legacy.8
+@@ -63,7 +63,6 @@ updates might be lost.  This can be worked around partially with the \-\-wait op
  
-     #
-     # check for segfaults
-@@ -333,6 +335,8 @@ STDERR_IS_TTY = sys.stderr.isatty()
-                             stderr = subprocess.PIPE)
-     restore_data = "\n".join(restore_data) + "\n"
-     out, err = proc.communicate(input = restore_data)
-+    if len(err):
-+        print(err, file=log_file)
- 
-     if proc.returncode == -11:
-         reason = iptables + "-restore segfaults!"
-@@ -358,6 +362,8 @@ STDERR_IS_TTY = sys.stderr.isatty()
-                             stdout = subprocess.PIPE,
-                             stderr = subprocess.PIPE)
-     out, err = proc.communicate()
-+    if len(err):
-+        print(err, file=log_file)
- 
-     if proc.returncode == -11:
-         reason = iptables + "-save segfaults!"
+ There is also no method to monitor changes to the ruleset, except periodically calling
+ iptables-legacy-save and checking for any differences in output.
+-
+ .B xtables\-monitor(8)
+ will need the
+ .B xtables\-nft(8)
 -- 
 2.43.0
 
