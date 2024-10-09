@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-4315-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4317-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A79996930
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 13:48:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622E3996932
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 13:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC0F7B257BD
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 11:48:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14A692825B6
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 11:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E51192B61;
-	Wed,  9 Oct 2024 11:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF64D192B76;
+	Wed,  9 Oct 2024 11:48:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="V4RZV+6y"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KvLtu/a3"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E291922F1
-	for <netfilter-devel@vger.kernel.org>; Wed,  9 Oct 2024 11:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8A41925A0
+	for <netfilter-devel@vger.kernel.org>; Wed,  9 Oct 2024 11:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728474509; cv=none; b=iI2fOg8ZNAvFb3/6dfcxJABgx+yEB+b1aHmHUM/xTJaqSoE7aMKzsfsmhg77Vs7Lct8N/zbNAOsgzQa5H8a4wVunH9PGkPZabhkdhfk/Kq8fn0POnp3alcAC3R0kd6d3VlkMCmnMkpfgFjAV4YlQA6w7x2CHpnrJF1kmSLoku1E=
+	t=1728474510; cv=none; b=YmgvNeIlzcIDQtauqvXIWd1Mq9XAq33tEzNcNUog9ZVisBkxdNXDS/HU/swqON5D7XF8o8oiGrtjZxRoORyao79jqAePULRBqs4d2cU+5PCQOOZ0XHp5Jqp8QJTjbr+TYoPa/fi1bYDBiAqOr+I2wsMM+2r3YTK38z4dsFS/rno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728474509; c=relaxed/simple;
-	bh=Yglo4cw6b8wlu80i7xIrPGHVrx1lSdQwp8eU5n1+iLs=;
+	s=arc-20240116; t=1728474510; c=relaxed/simple;
+	bh=3d6MS4wPVQP/SQ9Fsy/IhGqxZqbsk/BtvsQk7Bb7Orw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fb+U3ZNqRXL637UtYlRztUJ8pjSV1nyfC+yRDWg2oiSmpkTtDa/bdbliFupNSdMf7Jx5AzyUIYx3WvEYADezf7bo9OhD1GFAcSGnDw4pvJ+maDhnGKLbgVw4ayfkTxk5hVAmnPMDGxtZXJtxg6wGK5Cx9s+oh7VxBJk49PKkJ+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=V4RZV+6y; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=bWmJOkwJ6qHa+O+dVz7eWB9/4YWMxwQGn9MfqTjNOjwvAbp+KqfOKb9q8Lt5ikq3kg5R0z/eqMN8GW+1MqP8vBEjrqv2ESsLyE1tkbogwLxEk7dn5RqaBo9TLiOV1r64QVe0pjLjraCK8ylfivGB2LjfkDElRUfju1EzKOt/IA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KvLtu/a3; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=AWJDo+zj40CvuAoMCnQ1XQZTcUdUGPHPmK7MdAe6lP8=; b=V4RZV+6yvl6sSsQ2E/WmZ6Obpr
-	FUqqoqthE2VtWsscj29Ps/hmw5JfZ7W9LzIvpevfGG7/bhy2eaQb5d51eucy5u4qvhoXwUzrJwbyh
-	uyp+KScFdni7gHjZv9ZGd7kPOSVRt7IUvLhWs0GLUG2gro3ebESmQhugYpFZJ+6B5vc4LG3hyR9s4
-	inQfrzV/v2FjpvZHUmP+HgKutuM4aCWvtAPHxp7OtuMcKks7t5cjmb3PSgq+RF3u5umfDZTm5389e
-	rYTGFGd9D68zspmPf0wij21ZburI4Q1sr8QOQmlLUsw8ZQIdLei1qTpsBHiD0gmH3kPX4imWuwXmb
-	ugHNWqIw==;
+	bh=3D4wrLy2cAH1Y9N5GeLq4Cjd7AcNsuCrRl45831acGA=; b=KvLtu/a3Pp/kEeoUKfMaSrXW2A
+	lmeExe5olIgrMck7tRlrAXroaEZQlm43S1wvAc8+t1NAmAU8mWMaUO85f16/lAhR6WcbeFhu7/7bp
+	OHzJqhXdTXm+y1bQ+N9hfJxEzeEMbefyN74uQN4LtaJyZfCpML7pUidn+/8PvXSLK/HlbbZH8PyUY
+	NZAiNTcARy8dnRnSXqLkcnoMcsqDdekDL1n5Qmhk+t3/2T70VzEFdZ0sQO8y29fAOADU+wj0NaiJO
+	cfQdofUsCrtdsmklQvULnJuyAc8Gvel9O+LrUhxb/cKRuAc43r+Fv/EF0W+8XnVKuwD9qk4RE+Rjj
+	GueJwRHg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1syVB4-000000008Hi-1hfn;
-	Wed, 09 Oct 2024 13:48:26 +0200
+	id 1syVB5-000000008Hw-2YUd;
+	Wed, 09 Oct 2024 13:48:27 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH v2 5/8] nft-ruleparse: Fallback to compat expressions in userdata
-Date: Wed,  9 Oct 2024 13:48:16 +0200
-Message-ID: <20241009114819.15379-6-phil@nwl.cc>
+Subject: [iptables PATCH v2 6/8] nft: Pass nft_handle into add_{action,match}()
+Date: Wed,  9 Oct 2024 13:48:17 +0200
+Message-ID: <20241009114819.15379-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241009114819.15379-1-phil@nwl.cc>
 References: <20241009114819.15379-1-phil@nwl.cc>
@@ -67,292 +67,151 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If parsing of a rule fails (e.g. due to an unknown native expression),
-check if userdata contains a UDATA_TYPE_COMPAT_EXT attribute and retry
-parsing the rule preferring the contained extensions instead of native
-expressions.
+Creation of compat extensions in rule userdata will depend on a flag in
+nft_handle.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- configure.ac             |   9 +++
- iptables/Makefile.am     |   1 +
- iptables/nft-compat.c    | 148 +++++++++++++++++++++++++++++++++++++++
- iptables/nft-compat.h    |  29 ++++++++
- iptables/nft-ruleparse.c |  17 +++++
- 5 files changed, 204 insertions(+)
- create mode 100644 iptables/nft-compat.c
- create mode 100644 iptables/nft-compat.h
+ iptables/nft-arp.c    | 2 +-
+ iptables/nft-bridge.c | 9 +++++----
+ iptables/nft-ipv4.c   | 2 +-
+ iptables/nft-ipv6.c   | 2 +-
+ iptables/nft.c        | 9 +++++----
+ iptables/nft.h        | 6 ++++--
+ 6 files changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index a19a60c03c5b2..4cc4960598822 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -77,6 +77,14 @@ AC_ARG_WITH([xt-lock-name], AS_HELP_STRING([--with-xt-lock-name=PATH],
- AC_ARG_ENABLE([profiling],
- 	AS_HELP_STRING([--enable-profiling], [build for use of gcov/gprof]),
- 	[enable_profiling="$enableval"], [enable_profiling="no"])
-+AC_ARG_WITH([zlib], [AS_HELP_STRING([--without-zlib],
-+	    [Disable payload compression of rule compat expressions])],
-+           [], [with_zlib=yes])
-+AS_IF([test "x$with_zlib" != xno], [
-+       AC_CHECK_LIB([z], [compress], ,
-+		    AC_MSG_ERROR([No suitable version of zlib found]))
-+       AC_DEFINE([HAVE_ZLIB], [1], [Define if you have zlib])
-+])
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index 264864c3fb2b2..8837c236bf2a0 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -167,7 +167,7 @@ static int nft_arp_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 		else if (strcmp(cs->jumpto, XTC_LABEL_RETURN) == 0)
+ 			ret = add_verdict(r, NFT_RETURN);
+ 		else
+-			ret = add_target(r, cs->target->t);
++			ret = add_target(h, r, cs->target->t);
+ 	} else if (strlen(cs->jumpto) > 0) {
+ 		/* No goto in arptables */
+ 		ret = add_jumpto(r, cs->jumpto, NFT_JUMP);
+diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
+index 1623acbac0ba6..6a236846702a3 100644
+--- a/iptables/nft-bridge.c
++++ b/iptables/nft-bridge.c
+@@ -88,7 +88,8 @@ static int add_meta_broute(struct nftnl_rule *r)
+ 	return 0;
+ }
  
- AC_MSG_CHECKING([whether $LD knows -Wl,--no-undefined])
- saved_LDFLAGS="$LDFLAGS";
-@@ -289,6 +297,7 @@ echo "
-   nftables support:			${enable_nftables}
-   connlabel support:			${enable_connlabel}
-   profiling support:			${enable_profiling}
-+  compress rule compat expressions:	${with_zlib}
+-static int _add_action(struct nftnl_rule *r, struct iptables_command_state *cs)
++static int _add_action(struct nft_handle *h, struct nftnl_rule *r,
++		       struct iptables_command_state *cs)
+ {
+ 	const char *table = nftnl_rule_get_str(r, NFTNL_RULE_TABLE);
  
- Build parameters:
-   Put plugins into executable (static):	${enable_static}
-diff --git a/iptables/Makefile.am b/iptables/Makefile.am
-index 2007cd10260bd..4855c9a7c2911 100644
---- a/iptables/Makefile.am
-+++ b/iptables/Makefile.am
-@@ -57,6 +57,7 @@ xtables_nft_multi_SOURCES += nft.c nft.h \
- 			     nft-ruleparse-arp.c nft-ruleparse-bridge.c \
- 			     nft-ruleparse-ipv4.c nft-ruleparse-ipv6.c \
- 			     nft-shared.c nft-shared.h \
-+			     nft-compat.c nft-compat.h \
- 			     xtables-monitor.c \
- 			     xtables.c xtables-arp.c xtables-eb.c \
- 			     xtables-standalone.c xtables-eb-standalone.c \
-diff --git a/iptables/nft-compat.c b/iptables/nft-compat.c
-new file mode 100644
-index 0000000000000..1edf08851c579
---- /dev/null
-+++ b/iptables/nft-compat.c
-@@ -0,0 +1,148 @@
-+/*
-+ * (C) 2024 Red Hat GmbH
-+ * Author: Phil Sutter <phil@nwl.cc>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ */
-+#include "config.h"
-+#include "nft-compat.h"
-+#include "nft-ruleparse.h"
-+#include "nft.h"
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <xtables.h>
-+
-+#ifdef HAVE_ZLIB
-+#include <zlib.h>
-+#endif
-+
-+#include <libnftnl/udata.h>
-+
-+static struct rule_udata_ext *
-+rule_get_udata_ext(const struct nftnl_rule *r, uint32_t *outlen)
-+{
-+	const struct nftnl_udata *tb[UDATA_TYPE_MAX + 1] = {};
-+	struct nftnl_udata_buf *udata;
-+	uint32_t udatalen;
-+
-+	udata = (void *)nftnl_rule_get_data(r, NFTNL_RULE_USERDATA, &udatalen);
-+	if (!udata)
-+		return NULL;
-+
-+	if (nftnl_udata_parse(udata, udatalen, parse_udata_cb, tb) < 0)
-+		return NULL;
-+
-+	if (!tb[UDATA_TYPE_COMPAT_EXT])
-+		return NULL;
-+
-+	if (outlen)
-+		*outlen = nftnl_udata_len(tb[UDATA_TYPE_COMPAT_EXT]);
-+	return nftnl_udata_get(tb[UDATA_TYPE_COMPAT_EXT]);
-+}
-+
-+static struct nftnl_expr *
-+__nftnl_expr_from_udata_ext(struct rule_udata_ext *rue, const void *data)
-+{
-+	struct nftnl_expr *expr = NULL;
-+
-+	switch (rue->flags & RUE_FLAG_TYPE_BITS) {
-+	case RUE_FLAG_MATCH_TYPE:
-+		expr = nftnl_expr_alloc("match");
-+		__add_match(expr, data);
-+		break;
-+	case RUE_FLAG_TARGET_TYPE:
-+		expr = nftnl_expr_alloc("target");
-+		__add_target(expr, data);
-+		break;
-+	default:
-+		fprintf(stderr,
-+			"Warning: Unexpected udata extension type %d\n",
-+			rue->flags & RUE_FLAG_TYPE_BITS);
-+	}
-+
-+	return expr;
-+}
-+
-+static struct nftnl_expr *
-+nftnl_expr_from_zipped_udata_ext(struct rule_udata_ext *rue)
-+{
-+#ifdef HAVE_ZLIB
-+	uLongf datalen = rue->orig_size;
-+	struct nftnl_expr *expr = NULL;
-+	void *data;
-+
-+	data = xtables_malloc(datalen);
-+	if (uncompress(data, &datalen, rue->data, rue->size) != Z_OK) {
-+		fprintf(stderr, "Warning: Failed to uncompress rule udata extension\n");
-+		goto out;
-+	}
-+
-+	expr = __nftnl_expr_from_udata_ext(rue, data);
-+out:
-+	free(data);
-+	return expr;
-+#else
-+	fprintf(stderr, "Warning: Zipped udata extensions are not supported.\n");
-+	return NULL;
-+#endif
-+}
-+
-+static struct nftnl_expr *nftnl_expr_from_udata_ext(struct rule_udata_ext *rue)
-+{
-+	if (rue->flags & RUE_FLAG_ZIP)
-+		return nftnl_expr_from_zipped_udata_ext(rue);
-+	else
-+		return __nftnl_expr_from_udata_ext(rue, rue->data);
-+}
-+
-+bool rule_has_udata_ext(const struct nftnl_rule *r)
-+{
-+	return rule_get_udata_ext(r, NULL) != NULL;
-+}
-+
-+#define rule_udata_ext_foreach(rue, ext, extlen)			\
-+	for (rue = (void *)(ext);					\
-+	     (char *)rue < (char *)(ext) + extlen;			\
-+	     rue = (void *)((char *)rue + sizeof(*rue) + rue->size))
-+
-+bool rule_parse_udata_ext(struct nft_xt_ctx *ctx, const struct nftnl_rule *r)
-+{
-+	struct rule_udata_ext *rue;
-+	struct nftnl_expr *expr;
-+	uint32_t extlen;
-+	bool ret = true;
-+	int eidx = 0;
-+	void *ext;
-+
-+	ext = rule_get_udata_ext(r, &extlen);
-+	if (!ext)
-+		return false;
-+
-+	rule_udata_ext_foreach(rue, ext, extlen) {
-+		for (; eidx < rue->start_idx; eidx++) {
-+			expr = nftnl_expr_iter_next(ctx->iter);
-+			if (!nft_parse_rule_expr(ctx->h, expr, ctx))
-+				ret = false;
-+		}
-+
-+		expr = nftnl_expr_from_udata_ext(rue);
-+		if (!nft_parse_rule_expr(ctx->h, expr, ctx))
-+			ret = false;
-+		nftnl_expr_free(expr);
-+
-+		for (; eidx < rue->end_idx; eidx++)
-+			nftnl_expr_iter_next(ctx->iter);
-+	}
-+	expr = nftnl_expr_iter_next(ctx->iter);
-+	while (expr != NULL) {
-+		if (!nft_parse_rule_expr(ctx->h, expr, ctx))
-+			ret = false;
-+		expr = nftnl_expr_iter_next(ctx->iter);
-+	}
-+	return ret;
-+}
-+
-diff --git a/iptables/nft-compat.h b/iptables/nft-compat.h
-new file mode 100644
-index 0000000000000..1147f08a0b6d5
---- /dev/null
-+++ b/iptables/nft-compat.h
-@@ -0,0 +1,29 @@
-+#ifndef _NFT_COMPAT_H_
-+#define _NFT_COMPAT_H_
-+
-+#include <libnftnl/rule.h>
-+
-+#include <linux/netfilter/x_tables.h>
-+
-+enum rule_udata_ext_flags {
-+	RUE_FLAG_MATCH_TYPE	= (1 << 0),
-+	RUE_FLAG_TARGET_TYPE	= (1 << 1),
-+	RUE_FLAG_ZIP		= (1 << 7),
-+};
-+#define RUE_FLAG_TYPE_BITS	(RUE_FLAG_MATCH_TYPE | RUE_FLAG_TARGET_TYPE)
-+
-+struct rule_udata_ext {
-+	uint8_t start_idx;
-+	uint8_t end_idx;
-+	uint8_t flags;
-+	uint16_t orig_size;
-+	uint16_t size;
-+	unsigned char data[];
-+};
-+
-+struct nft_xt_ctx;
-+
-+bool rule_has_udata_ext(const struct nftnl_rule *r);
-+bool rule_parse_udata_ext(struct nft_xt_ctx *ctx, const struct nftnl_rule *r);
-+
-+#endif /* _NFT_COMPAT_H_ */
-diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
-index 757d3c29fc816..34270e46ae888 100644
---- a/iptables/nft-ruleparse.c
-+++ b/iptables/nft-ruleparse.c
-@@ -10,6 +10,7 @@
-  * This code has been sponsored by Sophos Astaro <http://www.sophos.com>
-  */
- 
-+#include "config.h"
- #include <stdbool.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -27,6 +28,7 @@
- 
- #include <xtables.h>
- 
-+#include "nft-compat.h"
- #include "nft-ruleparse.h"
- #include "nft.h"
- 
-@@ -948,6 +950,21 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
- 			ret = false;
- 		expr = nftnl_expr_iter_next(ctx.iter);
+@@ -104,7 +105,7 @@ static int _add_action(struct nftnl_rule *r, struct iptables_command_state *cs)
+ 		}
  	}
-+	if (!ret && rule_has_udata_ext(r)) {
-+		fprintf(stderr,
-+			"Warning: Rule parser failed, trying compat fallback\n");
-+
-+		h->ops->clear_cs(cs);
-+		if (h->ops->init_cs)
-+			h->ops->init_cs(cs);
-+
-+		nftnl_expr_iter_destroy(ctx.iter);
-+		ctx.iter = nftnl_expr_iter_create(r);
-+		if (!ctx.iter)
-+			return false;
-+
-+		ret = rule_parse_udata_ext(&ctx, r);
-+	}
  
- 	nftnl_expr_iter_destroy(ctx.iter);
+-	return add_action(r, cs, false);
++	return add_action(h, r, cs, false);
+ }
  
+ static int
+@@ -192,7 +193,7 @@ static int nft_bridge_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 			if (nft_bridge_add_match(h, fw, ctx, r, iter->u.match->m))
+ 				break;
+ 		} else {
+-			if (add_target(r, iter->u.watcher->t))
++			if (add_target(h, r, iter->u.watcher->t))
+ 				break;
+ 		}
+ 	}
+@@ -200,7 +201,7 @@ static int nft_bridge_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	if (add_counters(r, cs->counters.pcnt, cs->counters.bcnt) < 0)
+ 		return -1;
+ 
+-	return _add_action(r, cs);
++	return _add_action(h, r, cs);
+ }
+ 
+ static void nft_bridge_init_cs(struct iptables_command_state *cs)
+diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
+index 740928757b7e2..91369ec47ba2f 100644
+--- a/iptables/nft-ipv4.c
++++ b/iptables/nft-ipv4.c
+@@ -95,7 +95,7 @@ static int nft_ipv4_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	if (add_counters(r, cs->counters.pcnt, cs->counters.bcnt) < 0)
+ 		return -1;
+ 
+-	return add_action(r, cs, !!(cs->fw.ip.flags & IPT_F_GOTO));
++	return add_action(h, r, cs, !!(cs->fw.ip.flags & IPT_F_GOTO));
+ }
+ 
+ static bool nft_ipv4_is_same(const struct iptables_command_state *a,
+diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
+index b184f8af3e6ed..e68d41e56afef 100644
+--- a/iptables/nft-ipv6.c
++++ b/iptables/nft-ipv6.c
+@@ -81,7 +81,7 @@ static int nft_ipv6_add(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	if (add_counters(r, cs->counters.pcnt, cs->counters.bcnt) < 0)
+ 		return -1;
+ 
+-	return add_action(r, cs, !!(cs->fw6.ipv6.flags & IP6T_F_GOTO));
++	return add_action(h, r, cs, !!(cs->fw6.ipv6.flags & IP6T_F_GOTO));
+ }
+ 
+ static bool nft_ipv6_is_same(const struct iptables_command_state *a,
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 2cc654e2dd91d..9888debca16b4 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -1539,7 +1539,8 @@ static int add_meta_nftrace(struct nftnl_rule *r)
+ 	return 0;
+ }
+ 
+-int add_target(struct nftnl_rule *r, struct xt_entry_target *t)
++int add_target(struct nft_handle *h, struct nftnl_rule *r,
++	       struct xt_entry_target *t)
+ {
+ 	struct nftnl_expr *expr;
+ 
+@@ -1589,8 +1590,8 @@ int add_verdict(struct nftnl_rule *r, int verdict)
+ 
+ static int add_log(struct nftnl_rule *r, struct iptables_command_state *cs);
+ 
+-int add_action(struct nftnl_rule *r, struct iptables_command_state *cs,
+-	       bool goto_set)
++int add_action(struct nft_handle *h, struct nftnl_rule *r,
++	       struct iptables_command_state *cs, bool goto_set)
+ {
+ 	int ret = 0;
+ 
+@@ -1606,7 +1607,7 @@ int add_action(struct nftnl_rule *r, struct iptables_command_state *cs,
+ 		else if (strcmp(cs->jumpto, "NFLOG") == 0)
+ 			ret = add_log(r, cs);
+ 		else
+-			ret = add_target(r, cs->target->t);
++			ret = add_target(h, r, cs->target->t);
+ 	} else if (strlen(cs->jumpto) > 0) {
+ 		/* Not standard, then it's a go / jump to chain */
+ 		if (goto_set)
+diff --git a/iptables/nft.h b/iptables/nft.h
+index f1a58b9e52865..e2004ba6e8292 100644
+--- a/iptables/nft.h
++++ b/iptables/nft.h
+@@ -196,9 +196,11 @@ void __add_match(struct nftnl_expr *e, const struct xt_entry_match *m);
+ int add_match(struct nft_handle *h, struct nft_rule_ctx *ctx,
+ 	      struct nftnl_rule *r, struct xt_entry_match *m);
+ void __add_target(struct nftnl_expr *e, const struct xt_entry_target *t);
+-int add_target(struct nftnl_rule *r, struct xt_entry_target *t);
++int add_target(struct nft_handle *h, struct nftnl_rule *r,
++	       struct xt_entry_target *t);
+ int add_jumpto(struct nftnl_rule *r, const char *name, int verdict);
+-int add_action(struct nftnl_rule *r, struct iptables_command_state *cs, bool goto_set);
++int add_action(struct nft_handle *h, struct nftnl_rule *r,
++	       struct iptables_command_state *cs, bool goto_set);
+ char *get_comment(const void *data, uint32_t data_len);
+ 
+ enum nft_rule_print {
 -- 
 2.43.0
 
