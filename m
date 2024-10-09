@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4331-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4333-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1589A9977A1
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 23:39:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D9069977A5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 23:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E871C222B7
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 21:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A17FF284BD3
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2024 21:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57EF1E2853;
-	Wed,  9 Oct 2024 21:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F3B1E32C1;
+	Wed,  9 Oct 2024 21:39:09 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61641E1A14;
-	Wed,  9 Oct 2024 21:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7AB41E260E;
+	Wed,  9 Oct 2024 21:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728509947; cv=none; b=LgnxXeW3sZZtPvwP4aD/zlknlHm0XSK5sfqQNZ4qYM1o+a7JXS3r9HKMrPo57+4CPwQamsvo8iOZK3MtEQqMvUY943c52TLJUXMYsT4Am+1IWCg9b2kDeiQ6aHnCfKEPw+/8SWdS+e4p2X8LAvjDY59bRmPSOn95n0GQ0+OFL/8=
+	t=1728509948; cv=none; b=hGvTLOxEXvmNr47kmhGV2T665rvt0/NM8kFpEkiUhcW9gyrCCVQeN8w9dwp0bZ5HhWxJRgVidNRz2sgG0TP6rj+U9KIxArk4lXfM/u1tVhzFPlJmhBxFR9VCX2jyrMBituQhjeqkyNDxHQSIMepO7PJygmkgKnUbGv13yufpbE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728509947; c=relaxed/simple;
-	bh=cyRvjgt8aNDaX/Ur722LwwvdsjsJSPxhZVpFD3PFIjA=;
+	s=arc-20240116; t=1728509948; c=relaxed/simple;
+	bh=4zoZNq9poeHvSsjDP93oEWX2HsZ72OIXz5JR3VwnDkI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UtB1OEUMdGpsdwxXA5U+GI/x/+CmcATjU9QHGIVxO/L10SbRf7SFXIveJj0yXhNWA6+50Gm24mO2q7Eb/PzwM6fosr3rSFe0bGH51VlbDUC8pnjo3oxvDz2mE7yDeyODdOicYSTNi9jtATJCe3WKeKloVBzqT4YL1QO30Ot4PMA=
+	 MIME-Version; b=UdICVQvDMlQx3FKUXVDx8Rebunidub06gRy/fEUqvHzpUxILdPwJdhbmvxMJZglLTiN74o+0CqF8oOAaMHROaTsD02TaNiHGCcMiJNJ+HUpjR4kN2CMQjndoQYvstM7MV1xZaH5VQW5Ass+iXr8q/83bN1jW57NPYIlIYJAAus4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 2/3] netfilter: fib: check correct rtable in vrf setups
-Date: Wed,  9 Oct 2024 23:38:57 +0200
-Message-Id: <20241009213858.3565808-3-pablo@netfilter.org>
+Subject: [PATCH net 3/3] selftests: netfilter: conntrack_vrf.sh: add fib test case
+Date: Wed,  9 Oct 2024 23:38:58 +0200
+Message-Id: <20241009213858.3565808-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241009213858.3565808-1-pablo@netfilter.org>
 References: <20241009213858.3565808-1-pablo@netfilter.org>
@@ -51,73 +51,92 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-We need to init l3mdev unconditionally, else main routing table is searched
-and incorrect result is returned unless strict (iif keyword) matching is
-requested.
+meta iifname veth0 ip daddr ... fib daddr oif
 
-Next patch adds a selftest for this.
+... is expected to return "dummy0" interface which is part of same vrf
+as veth0.
 
-Fixes: 2a8a7c0eaa87 ("netfilter: nft_fib: Fix for rpath check with VRF devices")
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1761
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/ipv4/netfilter/nft_fib_ipv4.c | 4 +---
- net/ipv6/netfilter/nft_fib_ipv6.c | 5 +++--
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ .../selftests/net/netfilter/conntrack_vrf.sh  | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/net/ipv4/netfilter/nft_fib_ipv4.c b/net/ipv4/netfilter/nft_fib_ipv4.c
-index 00da1332bbf1..09fff5d424ef 100644
---- a/net/ipv4/netfilter/nft_fib_ipv4.c
-+++ b/net/ipv4/netfilter/nft_fib_ipv4.c
-@@ -65,6 +65,7 @@ void nft_fib4_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 		.flowi4_scope = RT_SCOPE_UNIVERSE,
- 		.flowi4_iif = LOOPBACK_IFINDEX,
- 		.flowi4_uid = sock_net_uid(nft_net(pkt), NULL),
-+		.flowi4_l3mdev = l3mdev_master_ifindex_rcu(nft_in(pkt)),
- 	};
- 	const struct net_device *oif;
- 	const struct net_device *found;
-@@ -83,9 +84,6 @@ void nft_fib4_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	else
- 		oif = NULL;
+diff --git a/tools/testing/selftests/net/netfilter/conntrack_vrf.sh b/tools/testing/selftests/net/netfilter/conntrack_vrf.sh
+index 073e8e62d350..e95ecb37c2b1 100755
+--- a/tools/testing/selftests/net/netfilter/conntrack_vrf.sh
++++ b/tools/testing/selftests/net/netfilter/conntrack_vrf.sh
+@@ -32,6 +32,7 @@ source lib.sh
  
--	if (priv->flags & NFTA_FIB_F_IIF)
--		fl4.flowi4_l3mdev = l3mdev_master_ifindex_rcu(oif);
--
- 	if (nft_hook(pkt) == NF_INET_PRE_ROUTING &&
- 	    nft_fib_is_loopback(pkt->skb, nft_in(pkt))) {
- 		nft_fib_store_result(dest, priv, nft_in(pkt));
-diff --git a/net/ipv6/netfilter/nft_fib_ipv6.c b/net/ipv6/netfilter/nft_fib_ipv6.c
-index 36dc14b34388..c9f1634b3838 100644
---- a/net/ipv6/netfilter/nft_fib_ipv6.c
-+++ b/net/ipv6/netfilter/nft_fib_ipv6.c
-@@ -41,8 +41,6 @@ static int nft_fib6_flowi_init(struct flowi6 *fl6, const struct nft_fib *priv,
- 	if (ipv6_addr_type(&fl6->daddr) & IPV6_ADDR_LINKLOCAL) {
- 		lookup_flags |= RT6_LOOKUP_F_IFACE;
- 		fl6->flowi6_oif = get_ifindex(dev ? dev : pkt->skb->dev);
--	} else if (priv->flags & NFTA_FIB_F_IIF) {
--		fl6->flowi6_l3mdev = l3mdev_master_ifindex_rcu(dev);
- 	}
+ IP0=172.30.30.1
+ IP1=172.30.30.2
++DUMMYNET=10.9.9
+ PFXL=30
+ ret=0
  
- 	if (ipv6_addr_type(&fl6->saddr) & IPV6_ADDR_UNICAST)
-@@ -75,6 +73,8 @@ static u32 __nft_fib6_eval_type(const struct nft_fib *priv,
- 	else if (priv->flags & NFTA_FIB_F_OIF)
- 		dev = nft_out(pkt);
+@@ -54,6 +55,7 @@ setup_ns ns0 ns1
+ ip netns exec "$ns0" sysctl -q -w net.ipv4.conf.default.rp_filter=0
+ ip netns exec "$ns0" sysctl -q -w net.ipv4.conf.all.rp_filter=0
+ ip netns exec "$ns0" sysctl -q -w net.ipv4.conf.all.rp_filter=0
++ip netns exec "$ns0" sysctl -q -w net.ipv4.conf.all.forwarding=1
  
-+	fl6.flowi6_l3mdev = l3mdev_master_ifindex_rcu(dev);
+ if ! ip link add veth0 netns "$ns0" type veth peer name veth0 netns "$ns1" > /dev/null 2>&1; then
+ 	echo "SKIP: Could not add veth device"
+@@ -65,13 +67,18 @@ if ! ip -net "$ns0" li add tvrf type vrf table 9876; then
+ 	exit $ksft_skip
+ fi
+ 
++ip -net "$ns0" link add dummy0 type dummy
 +
- 	nft_fib6_flowi_init(&fl6, priv, pkt, dev, iph);
+ ip -net "$ns0" li set veth0 master tvrf
++ip -net "$ns0" li set dummy0 master tvrf
+ ip -net "$ns0" li set tvrf up
+ ip -net "$ns0" li set veth0 up
++ip -net "$ns0" li set dummy0 up
+ ip -net "$ns1" li set veth0 up
  
- 	if (dev && nf_ipv6_chk_addr(nft_net(pkt), &fl6.daddr, dev, true))
-@@ -165,6 +165,7 @@ void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 		.flowi6_iif = LOOPBACK_IFINDEX,
- 		.flowi6_proto = pkt->tprot,
- 		.flowi6_uid = sock_net_uid(nft_net(pkt), NULL),
-+		.flowi6_l3mdev = l3mdev_master_ifindex_rcu(nft_in(pkt)),
- 	};
- 	struct rt6_info *rt;
- 	int lookup_flags;
+ ip -net "$ns0" addr add $IP0/$PFXL dev veth0
+ ip -net "$ns1" addr add $IP1/$PFXL dev veth0
++ip -net "$ns0" addr add $DUMMYNET.1/$PFXL dev dummy0
+ 
+ listener_ready()
+ {
+@@ -212,9 +219,35 @@ EOF
+ 	fi
+ }
+ 
++test_fib()
++{
++ip netns exec "$ns0" nft -f - <<EOF
++flush ruleset
++table ip t {
++	counter fibcount { }
++
++	chain prerouting {
++		type filter hook prerouting priority 0;
++		meta iifname veth0 ip daddr $DUMMYNET.2 fib daddr oif dummy0 counter name fibcount notrack
++	}
++}
++EOF
++	ip -net "$ns1" route add 10.9.9.0/24 via "$IP0" dev veth0
++	ip netns exec "$ns1" ping -q -w 1 -c 1 "$DUMMYNET".2 > /dev/null
++
++	if ip netns exec "$ns0" nft list counter t fibcount | grep -q "packets 1"; then
++		echo "PASS: fib lookup returned exepected output interface"
++	else
++		echo "FAIL: fib lookup did not return exepected output interface"
++		ret=1
++		return
++	fi
++}
++
+ test_ct_zone_in
+ test_masquerade_vrf "default"
+ test_masquerade_vrf "pfifo"
+ test_masquerade_veth
++test_fib
+ 
+ exit $ret
 -- 
 2.30.2
 
