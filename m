@@ -1,83 +1,112 @@
-Return-Path: <netfilter-devel+bounces-4348-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4350-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFCC6998869
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 15:54:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34DCF998D8E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 18:35:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B8451C2293C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 13:54:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA0E31F21F64
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 16:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942191C9DE9;
-	Thu, 10 Oct 2024 13:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393CD199FA2;
+	Thu, 10 Oct 2024 16:34:26 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from a3.inai.de (a3.inai.de [144.76.212.145])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301741C9EAB;
-	Thu, 10 Oct 2024 13:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.212.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE5D19B5AC
+	for <netfilter-devel@vger.kernel.org>; Thu, 10 Oct 2024 16:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728568441; cv=none; b=SOB1FBcVvSYBW7+FFlv/YcMWCc7g2CAwd8Va0Z1orVeGTsf13AExJy0CcYSGuL5xarJLwgCQ6AV3nKa2uMIqZ0iZ3oSV1UoXeKW71yZYOmn4QibrqIErCbrW9O2m0xLkjuUtM5zFh/B6FIriDYXxUFjxAyKF6vJv7eAtF8S/4Oc=
+	t=1728578066; cv=none; b=bW6he8vhhgXko0lVW2HuYhn0i0ojosIfT4MJlqFj5xAOE3GgQaX8NTx/4leDzNtyV9BoB9+bIITSsut0gqHBifZapwmSiGlf8VMNF7jNeEMKbtO+JDASmLftUddcNXRIQOGNUfb7oxZ5wkIGxBpxFH4Noqcz4zSzB7KI+UvfTk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728568441; c=relaxed/simple;
-	bh=/3g+rKYvTqXXNiQj+qxHRmKbKsjubcdqbQmufXDhlJY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=BFVD76UwzJ+QZssFpcJ+vZDWNsY7iSg+87CLS7GTYNCHMYqQi0Ates1/wbkQ12VAe4hnEHD9JFdgRooHdVwVTdAg2S5RlvGcMYnsM3KG8ywCBmSYERMBZkmL7jAI8gqvaCqK3zxtcYZzSI84/6wqOJUNkaQBZWvEXoe1P32CSYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=fail smtp.mailfrom=inai.de; arc=none smtp.client-ip=144.76.212.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=inai.de
-Received: by a3.inai.de (Postfix, from userid 25121)
-	id C87A01003C4C01; Thu, 10 Oct 2024 15:53:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by a3.inai.de (Postfix) with ESMTP id C676A1100AC240;
-	Thu, 10 Oct 2024 15:53:48 +0200 (CEST)
-Date: Thu, 10 Oct 2024 15:53:48 +0200 (CEST)
-From: Jan Engelhardt <ej@inai.de>
-To: Florian Westphal <fw@strlen.de>
-cc: Richard Weinberger <richard@sigma-star.at>, 
-    Richard Weinberger <richard@nod.at>, upstream@sigma-star.at, 
-    netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-    netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com, 
-    kuba@kernel.org, edumazet@google.com, davem@davemloft.net, 
-    kadlec@netfilter.org, pablo@netfilter.org, rgb@redhat.com, 
-    paul@paul-moore.com, upstream+net@sigma-star.at
-Subject: Re: [PATCH] netfilter: Record uid and gid in xt_AUDIT
-In-Reply-To: <20241010134827.GC30424@breakpoint.cc>
-Message-ID: <612s9310-r348-960q-893n-79nns3o69p38@vanv.qr>
-References: <20241009203218.26329-1-richard@nod.at> <20241009213345.GC3714@breakpoint.cc> <3048359.FXINqZMJnI@somecomputer> <20241010134827.GC30424@breakpoint.cc>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
+	s=arc-20240116; t=1728578066; c=relaxed/simple;
+	bh=TVF7TBx5N5OgMUQNbqVHB2rmXlW3TzhngSp9KRT7q/I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JuljVE3PG9HedPNRQOe1Oveb173tffv1Az3F61HFVwHBYUz/HQ8nQP5iYT3pEO9t5ZOHP4z6Hux2DCuH9BEHUQ39ICm3oT8QXf23Qci4aBn4jCTZBUJqi+h/C4NGjfwmcj3HfWzGNOHG5LSS/pq+ogTHQWpcbeMkXbhD78ykiP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1syw7I-0002gj-LP; Thu, 10 Oct 2024 18:34:20 +0200
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: syzkaller-bugs@googlegroups.com,
+	Florian Westphal <fw@strlen.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Lai, Yi" <yi1.lai@linux.intel.com>
+Subject: [PATCH nf] netfilter: bpf: must hold reference on net namespace
+Date: Thu, 10 Oct 2024 18:34:05 +0200
+Message-ID: <20241010163414.797374-1-fw@strlen.de>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
+BUG: KASAN: slab-use-after-free in __nf_unregister_net_hook+0x640/0x6b0
+Read of size 8 at addr ffff8880106fe400 by task repro/72=
+bpf_nf_link_release+0xda/0x1e0
+bpf_link_free+0x139/0x2d0
+bpf_link_release+0x68/0x80
+__fput+0x414/0xb60
 
-On Thursday 2024-10-10 15:48, Florian Westphal wrote:
->Richard Weinberger <richard@sigma-star.at> wrote:
->> Am Mittwoch, 9. Oktober 2024, 23:33:45 CEST schrieb Florian Westphal:
->> > There is no need to follow ->file backpointer anymore, see
->> > 6acc5c2910689fc6ee181bf63085c5efff6a42bd and
->> > 86741ec25462e4c8cdce6df2f41ead05568c7d5e,
->> > "net: core: Add a UID field to struct sock.".
->> 
->> Oh, neat!
->>  
->> > I think we could streamline all the existing paths that fetch uid
->> > from sock->file to not do that and use sock_net_uid() instead as well.
->>  
->> Also xt_owner?
->
->sk->sk_uid is already used e.g. for fib lookups so I think it makes
->sense to be consistent, so, yes, xt_owner, nfqueue, nft_meta.c, all can
->be converted.
+Eric says:
+ It seems that bpf was able to defer the __nf_unregister_net_hook()
+ after exit()/close() time.
+ Perhaps a netns reference is missing, because the netns has been
+ dismantled/freed already.
+ bpf_nf_link_attach() does :
+ link->net = net;
+ But I do not see a reference being taken on net.
 
-I doubt it. We've been there before... if a process does setuid,
-some uid field doesn't change, and others do, so that's user-visible
-behavior you can't just change.
+Add such a reference and release it after hook unreg.
+Note that I was unable to get syzbot reproducer to work, so I
+do not know if this resolves this splat.
+
+Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
+Diagnosed-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Lai, Yi <yi1.lai@linux.intel.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_bpf_link.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+index 5257d5e7eb09..e5e79a08c10b 100644
+--- a/net/netfilter/nf_bpf_link.c
++++ b/net/netfilter/nf_bpf_link.c
+@@ -23,6 +23,7 @@ static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+ struct bpf_nf_link {
+ 	struct bpf_link link;
+ 	struct nf_hook_ops hook_ops;
++	netns_tracker ns_tracker;
+ 	struct net *net;
+ 	u32 dead;
+ 	const struct nf_defrag_hook *defrag_hook;
+@@ -120,6 +121,7 @@ static void bpf_nf_link_release(struct bpf_link *link)
+ 	if (!cmpxchg(&nf_link->dead, 0, 1)) {
+ 		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+ 		bpf_nf_disable_defrag(nf_link);
++		put_net_track(nf_link->net, &nf_link->ns_tracker);
+ 	}
+ }
+ 
+@@ -257,6 +259,8 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+ 		return err;
+ 	}
+ 
++	get_net_track(net, &link->ns_tracker, GFP_KERNEL);
++
+ 	return bpf_link_settle(&link_primer);
+ }
+ 
+-- 
+2.47.0
+
 
