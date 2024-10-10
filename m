@@ -1,37 +1,43 @@
-Return-Path: <netfilter-devel+bounces-4346-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4349-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60AA49986E7
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 14:59:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7665A998897
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 16:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82AC41C23193
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 12:59:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 216DD1F272AD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2024 14:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7342B1C7B6A;
-	Thu, 10 Oct 2024 12:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C4B1C7B6A;
+	Thu, 10 Oct 2024 14:01:18 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1081C6F76
-	for <netfilter-devel@vger.kernel.org>; Thu, 10 Oct 2024 12:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6102A1C9DD8
+	for <netfilter-devel@vger.kernel.org>; Thu, 10 Oct 2024 14:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728565153; cv=none; b=n/bb44PE9wKWfvmW6FuCqCSAFNq5ZrPoGOaufQNWxBiHF74FVMYM5Qw8eaUiXJXha/feMGIuxHe2tkNa0Yi0tpIgbfh204Y+7Y6BmO/UWmrabUWoNyxj2J+rOshNjrz7is9Fs6nWN4moDeK9liEHDtVn5jdaWfShWjh3QNHnW5s=
+	t=1728568878; cv=none; b=sm7hQNm+CRf7PGm9ZfxaQ8NYF+2nVxPKk3Il6bJtnC0821wfYYMrcp48j0TZaEwF/Vu/BLS49sRFzvoVFcmJztHheykV9/HBN+tgypQr1wKicUvQaLsvoOvDCSavp/A0DCpdn9ubkTFNf8SGH4/tS8yCi6bfFA2c2z6TfKe9SuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728565153; c=relaxed/simple;
-	bh=sj8TFk+3kTLEdBPRQmmzR1BgYoNy2VFLsoyCLElRUwI=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=hLhvQvthHlLgjed4G3TDGxg6xaJu/OYQT5cRr2OkBSOK/hi6NLE4cYTe8rlw3f0BeyCwGnV3AjejVx5VLjvj1tRgvy0TH0A4oWh8GdstbFHQw+4dhLLsjNUx+m1VQYubZ9ECWBWTXWFnXd0GUmmbMOIAUewkBsQPo4UwpSnW1AA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH libnftnl] include: refresh nf_tables.h copy
-Date: Thu, 10 Oct 2024 14:58:58 +0200
-Message-Id: <20241010125858.1540-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1728568878; c=relaxed/simple;
+	bh=7Sg0qOCUoD8fWpfmdA2GSdXinNFe+bu7VelvSQDaQnI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LxSVxLLRKjDhldlBuiH+eC6Ki8wqNkOQELPl+LoFBOAiWz7yj1BTwpq08iVBgws3N4/k6kJpKgk8qSXuoGkFRsGCasMrlvtJZDJ9D4/PJzGy46KUsTLJxWvuO7aAONqbRl4D2iVyDljO8o0MJwcOcZQkSiKYb+TBKiG3YTx38sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1sytj7-00018e-H2; Thu, 10 Oct 2024 16:01:13 +0200
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] doc: extend description of fib expression
+Date: Thu, 10 Oct 2024 15:37:42 +0200
+Message-ID: <20241010133745.28765-1-fw@strlen.de>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -40,179 +46,127 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fetch what we have in the kernel tree.
+Describe the input keys and the result types.
+Mention which input keys are mandatory and which keys are mutually
+exclusive.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Describe which hooks can be used with the various lookup modifiers
+and extend the examples with more information on fib expression
+capabilities.
+
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1663
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/linux/netfilter/nf_tables.h | 46 +++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 9 deletions(-)
+ doc/primary-expression.txt | 75 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 63 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
-index c48b19333630..9e9079321380 100644
---- a/include/linux/netfilter/nf_tables.h
-+++ b/include/linux/netfilter/nf_tables.h
-@@ -97,6 +97,15 @@ enum nft_verdicts {
-  * @NFT_MSG_NEWFLOWTABLE: add new flow table (enum nft_flowtable_attributes)
-  * @NFT_MSG_GETFLOWTABLE: get flow table (enum nft_flowtable_attributes)
-  * @NFT_MSG_DELFLOWTABLE: delete flow table (enum nft_flowtable_attributes)
-+ * @NFT_MSG_GETRULE_RESET: get rules and reset stateful expressions (enum nft_obj_attributes)
-+ * @NFT_MSG_DESTROYTABLE: destroy a table (enum nft_table_attributes)
-+ * @NFT_MSG_DESTROYCHAIN: destroy a chain (enum nft_chain_attributes)
-+ * @NFT_MSG_DESTROYRULE: destroy a rule (enum nft_rule_attributes)
-+ * @NFT_MSG_DESTROYSET: destroy a set (enum nft_set_attributes)
-+ * @NFT_MSG_DESTROYSETELEM: destroy a set element (enum nft_set_elem_attributes)
-+ * @NFT_MSG_DESTROYOBJ: destroy a stateful object (enum nft_object_attributes)
-+ * @NFT_MSG_DESTROYFLOWTABLE: destroy flow table (enum nft_flowtable_attributes)
-+ * @NFT_MSG_GETSETELEM_RESET: get set elements and reset attached stateful expressions (enum nft_set_elem_attributes)
-  */
- enum nf_tables_msg_types {
- 	NFT_MSG_NEWTABLE,
-@@ -124,6 +133,15 @@ enum nf_tables_msg_types {
- 	NFT_MSG_NEWFLOWTABLE,
- 	NFT_MSG_GETFLOWTABLE,
- 	NFT_MSG_DELFLOWTABLE,
-+	NFT_MSG_GETRULE_RESET,
-+	NFT_MSG_DESTROYTABLE,
-+	NFT_MSG_DESTROYCHAIN,
-+	NFT_MSG_DESTROYRULE,
-+	NFT_MSG_DESTROYSET,
-+	NFT_MSG_DESTROYSETELEM,
-+	NFT_MSG_DESTROYOBJ,
-+	NFT_MSG_DESTROYFLOWTABLE,
-+	NFT_MSG_GETSETELEM_RESET,
- 	NFT_MSG_MAX,
- };
+diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
+index 782494bda6f3..1cc06f3466b8 100644
+--- a/doc/primary-expression.txt
++++ b/doc/primary-expression.txt
+@@ -310,17 +310,48 @@ table inet x {
+ FIB EXPRESSIONS
+ ~~~~~~~~~~~~~~~
+ [verse]
+-*fib* {*saddr* | *daddr* | *mark* | *iif* | *oif*} [*.* ...] {*oif* | *oifname* | *type*}
++*fib* 'FIB_TUPLE' 'FIB_RESULT'
++'FIB_TUPLE' := { *saddr* | *daddr*} [ *.* { *iif* | *oif* } *.* *mark* ]
++'FIB_RESULT'  := { *oif* | *oifname* | *type* }
  
-@@ -161,13 +179,17 @@ enum nft_hook_attributes {
-  * enum nft_table_flags - nf_tables table flags
-  *
-  * @NFT_TABLE_F_DORMANT: this table is not active
-+ * @NFT_TABLE_F_OWNER:   this table is owned by a process
-+ * @NFT_TABLE_F_PERSIST: this table shall outlive its owner
-  */
- enum nft_table_flags {
- 	NFT_TABLE_F_DORMANT	= 0x1,
- 	NFT_TABLE_F_OWNER	= 0x2,
-+	NFT_TABLE_F_PERSIST	= 0x4,
- };
- #define NFT_TABLE_F_MASK	(NFT_TABLE_F_DORMANT | \
--				 NFT_TABLE_F_OWNER)
-+				 NFT_TABLE_F_OWNER | \
-+				 NFT_TABLE_F_PERSIST)
+-A fib expression queries the fib (forwarding information base) to obtain
+-information such as the output interface index a particular address would use.
+-The input is a tuple of elements that is used as input to the fib lookup
+-functions.
  
- /**
-  * enum nft_table_attributes - nf_tables table netlink attributes
-@@ -245,6 +267,7 @@ enum nft_chain_attributes {
-  * @NFTA_RULE_USERDATA: user data (NLA_BINARY, NFT_USERDATA_MAXLEN)
-  * @NFTA_RULE_ID: uniquely identifies a rule in a transaction (NLA_U32)
-  * @NFTA_RULE_POSITION_ID: transaction unique identifier of the previous rule (NLA_U32)
-+ * @NFTA_RULE_CHAIN_ID: add the rule to chain by ID, alternative to @NFTA_RULE_CHAIN (NLA_U32)
-  */
- enum nft_rule_attributes {
- 	NFTA_RULE_UNSPEC,
-@@ -266,9 +289,11 @@ enum nft_rule_attributes {
- /**
-  * enum nft_rule_compat_flags - nf_tables rule compat flags
-  *
-+ * @NFT_RULE_COMPAT_F_UNUSED: unused
-  * @NFT_RULE_COMPAT_F_INV: invert the check result
-  */
- enum nft_rule_compat_flags {
-+	NFT_RULE_COMPAT_F_UNUSED = (1 << 0),
- 	NFT_RULE_COMPAT_F_INV	= (1 << 1),
- 	NFT_RULE_COMPAT_F_MASK	= NFT_RULE_COMPAT_F_INV,
- };
-@@ -411,7 +436,7 @@ enum nft_set_elem_flags {
-  * @NFTA_SET_ELEM_KEY: key value (NLA_NESTED: nft_data)
-  * @NFTA_SET_ELEM_DATA: data value of mapping (NLA_NESTED: nft_data_attributes)
-  * @NFTA_SET_ELEM_FLAGS: bitmask of nft_set_elem_flags (NLA_U32)
-- * @NFTA_SET_ELEM_TIMEOUT: timeout value (NLA_U64)
-+ * @NFTA_SET_ELEM_TIMEOUT: timeout value, zero means never times out (NLA_U64)
-  * @NFTA_SET_ELEM_EXPIRATION: expiration time (NLA_U64)
-  * @NFTA_SET_ELEM_USERDATA: user data (NLA_BINARY)
-  * @NFTA_SET_ELEM_EXPR: expression (NLA_NESTED: nft_expr_attributes)
-@@ -669,7 +694,7 @@ enum nft_range_ops {
-  * enum nft_range_attributes - nf_tables range expression netlink attributes
-  *
-  * @NFTA_RANGE_SREG: source register of data to compare (NLA_U32: nft_registers)
-- * @NFTA_RANGE_OP: cmp operation (NLA_U32: nft_cmp_ops)
-+ * @NFTA_RANGE_OP: cmp operation (NLA_U32: nft_range_ops)
-  * @NFTA_RANGE_FROM_DATA: data range from (NLA_NESTED: nft_data_attributes)
-  * @NFTA_RANGE_TO_DATA: data range to (NLA_NESTED: nft_data_attributes)
-  */
-@@ -783,6 +808,7 @@ enum nft_payload_csum_flags {
- enum nft_inner_type {
- 	NFT_INNER_UNSPEC	= 0,
- 	NFT_INNER_VXLAN,
-+	NFT_INNER_GENEVE,
- };
+-.fib expression specific types
++A fib expression queries the fib (forwarding information base) to obtain information
++such as the output interface index.
++
++The first arguments to the *fib* expression are the input keys to be passed to the fib lookup function.
++One of *saddr* or *daddr* is mandatory, they are also mutually exclusive.
++
++*mark*, *iif* and *oif* keywords are optional modifiers to influence the search result, see
++the *FIB_TUPLE* keyword table below for a description.
++The *iif* and *oif* tuple keywords are also mutually exclusive.
++
++The last argument to the *fib* expression is the desired result type.
++
++*oif* asks to obtain the interface index that would be used to send packets to the packets source
++(*saddr* key) or destination (*daddr* key).  If no routing entry is found, the returned interface
++index is 0.
++
++*oifname* is like *oif*, but it fills the interface name instead.  This is useful to check dynamic
++interfaces such as ppp devices.  If no entry is found, an empty interface name is returned.
++
++*type* returns the address type such as unicast or multicast.
++
++.FIB_TUPLE keywords
+ [options="header"]
+ |==================
+-|Keyword| Description| Type
++|flag| Description
++|daddr| Perform a normal route lookup: search fib for route to the *destination address* of the packet.
++|saddr| Perform a reverse route lookup: search the fib for route to the *source address* of the packet.
++|mark | consider the packet mark (nfmark) when querying the fib.
++|iif  | fail fib lookup unless route exists and its output interface is identical to the packets input interface
++|oif  | fail fib lookup unless route exists and its output interface is identical to the packets output interface.  This flag can only be used with the *type* result.
++
++|=======================
++
++.FIB_RESULT keywords
++[options="header"]
++|==================
++|Keyword| Description| Result Type
+ |oif|
+ Output interface index|
+ integer (32 bit)
+@@ -334,20 +365,40 @@ fib_addrtype
  
- enum nft_inner_flags {
-@@ -792,7 +818,7 @@ enum nft_inner_flags {
- 	NFT_INNER_TH		= (1 << 3),
- };
- #define NFT_INNER_MASK		(NFT_INNER_HDRSIZE | NFT_INNER_LL | \
--				 NFT_INNER_NH |  NFT_INNER_TH)
-+				 NFT_INNER_NH | NFT_INNER_TH)
+ Use *nft* *describe* *fib_addrtype* to get a list of all address types.
  
- enum nft_inner_attributes {
- 	NFTA_INNER_UNSPEC,
-@@ -842,12 +868,14 @@ enum nft_exthdr_flags {
-  * @NFT_EXTHDR_OP_TCP: match against tcp options
-  * @NFT_EXTHDR_OP_IPV4: match against ipv4 options
-  * @NFT_EXTHDR_OP_SCTP: match against sctp chunks
-+ * @NFT_EXTHDR_OP_DCCP: match against dccp otions
-  */
- enum nft_exthdr_op {
- 	NFT_EXTHDR_OP_IPV6,
- 	NFT_EXTHDR_OP_TCPOPT,
- 	NFT_EXTHDR_OP_IPV4,
- 	NFT_EXTHDR_OP_SCTP,
-+	NFT_EXTHDR_OP_DCCP,
- 	__NFT_EXTHDR_OP_MAX
- };
- #define NFT_EXTHDR_OP_MAX	(__NFT_EXTHDR_OP_MAX - 1)
-@@ -861,7 +889,7 @@ enum nft_exthdr_op {
-  * @NFTA_EXTHDR_LEN: extension header length (NLA_U32)
-  * @NFTA_EXTHDR_FLAGS: extension header flags (NLA_U32)
-  * @NFTA_EXTHDR_OP: option match type (NLA_U32)
-- * @NFTA_EXTHDR_SREG: option match type (NLA_U32)
-+ * @NFTA_EXTHDR_SREG: source register (NLA_U32: nft_registers)
-  */
- enum nft_exthdr_attributes {
- 	NFTA_EXTHDR_UNSPEC,
-@@ -1245,10 +1273,10 @@ enum nft_last_attributes {
- /**
-  * enum nft_log_attributes - nf_tables log expression netlink attributes
-  *
-- * @NFTA_LOG_GROUP: netlink group to send messages to (NLA_U32)
-+ * @NFTA_LOG_GROUP: netlink group to send messages to (NLA_U16)
-  * @NFTA_LOG_PREFIX: prefix to prepend to log messages (NLA_STRING)
-  * @NFTA_LOG_SNAPLEN: length of payload to include in netlink message (NLA_U32)
-- * @NFTA_LOG_QTHRESHOLD: queue threshold (NLA_U32)
-+ * @NFTA_LOG_QTHRESHOLD: queue threshold (NLA_U16)
-  * @NFTA_LOG_LEVEL: log level (NLA_U32)
-  * @NFTA_LOG_FLAGS: logging flags (NLA_U32)
-  */
-@@ -1348,7 +1376,7 @@ enum nft_secmark_attributes {
- #define NFTA_SECMARK_MAX	(__NFTA_SECMARK_MAX - 1)
++The *oif* and *oifname* result is only valid in the *prerouting*, *input* and *forward* hooks.
++The *type* can be queried from any one of *prerouting*, *input*, *forward* *output* and *postrouting*.
++
++For *type*, the presence of the *iif* keyword in the 'FIB_TUPLE' modifiers restrict the available
++hooks to those where the packet is associated with an incoming interface, i.e. *prerouting*, *input* and *forward*.
++Likewise, the *oif* keyword in the 'FIB_TUPLE' modifier list will limit the available hooks to
++*forward*, *output* and *postrouting*.
++
+ .Using fib expressions
+ ----------------------
+ # drop packets without a reverse path
+ filter prerouting fib saddr . iif oif missing drop
  
- /* Max security context length */
--#define NFT_SECMARK_CTX_MAXLEN		256
-+#define NFT_SECMARK_CTX_MAXLEN		4096
+-In this example, 'saddr . iif' looks up routing information based on the source address and the input interface.
+-oif picks the output interface index from the routing information.
++In this example, 'saddr . iif' looks up a route to the *source address* of the packet and restricts matching
++results to the interface that the packet arrived on, then stores the output interface index from the obtained
++fib route result.
++
+ If no route was found for the source address/input interface combination, the output interface index is zero.
+-In case the input interface is specified as part of the input key, the output interface index is always the same as the input interface index or zero.
+-If only 'saddr oif' is given, then oif can be any interface index or zero.
++Hence, this rule will drop all packets that do not have a strict reverse path (hypothetical reply packet
++would be sent via the interface the tested packet arrived on).
++
++If only 'saddr oif' is used as the input key, then this rule would only drop packets where the fib cannot
++find a route. In most setups this will never drop packets because the default route is returned.
  
- /**
-  * enum nft_reject_types - nf_tables reject expression reject types
-@@ -1666,7 +1694,7 @@ enum nft_flowtable_flags {
-  *
-  * @NFTA_FLOWTABLE_TABLE: name of the table containing the expression (NLA_STRING)
-  * @NFTA_FLOWTABLE_NAME: name of this flow table (NLA_STRING)
-- * @NFTA_FLOWTABLE_HOOK: netfilter hook configuration(NLA_U32)
-+ * @NFTA_FLOWTABLE_HOOK: netfilter hook configuration (NLA_NESTED)
-  * @NFTA_FLOWTABLE_USE: number of references to this flow table (NLA_U32)
-  * @NFTA_FLOWTABLE_HANDLE: object handle (NLA_U64)
-  * @NFTA_FLOWTABLE_FLAGS: flags (NLA_U32)
+-# drop packets to address not configured on incoming interface
++# drop packets if the destination ip address is not configured on the incoming interface
+ filter prerouting fib daddr . iif type != { local, broadcast, multicast } drop
+ 
++This queries the fib based on the current packets' destination address and the incoming interface.
++
++If the packet is sent to a unicast address that is configured on a different interface, then the packet
++will be dropped as such an address would be classified as 'unicast' type.
++Without the 'iif' modifier, any address configured on the local machine is 'local', and unicast addresses
++not configured on any interface would return the type 'unicast'.
++
+ # perform lookup in a specific 'blackhole' table (0xdead, needs ip appropriate ip rule)
+ filter prerouting meta mark set 0xdead fib daddr . mark type vmap { blackhole : drop, prohibit : jump prohibited, unreachable : drop }
+ ----------------------
 -- 
-2.30.2
+2.45.2
 
 
