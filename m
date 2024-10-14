@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4451-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4454-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEF5499C881
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:17:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74D4999C887
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:18:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02E881C241B8
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:17:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EDC91F21305
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26561A00E7;
-	Mon, 14 Oct 2024 11:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D235C1A3AB7;
+	Mon, 14 Oct 2024 11:14:30 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB33417BECA;
-	Mon, 14 Oct 2024 11:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2E915DBBA;
+	Mon, 14 Oct 2024 11:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728904469; cv=none; b=ha99KXQ+iLXPwnbg+7j/6sl7stR3nBdOcQ8mtKoD7ovs/3YBe2QIYppNd8QIaQWg8RYXzwTljmVUu2lweoyijRbZNv64FwZQmW0nN3jC1Nhc8nHe281caA1PVJHl0Hcsug3Or1VR6R9T3X1qRu/zF4jB8T6PTYtoxrdJEA25wBA=
+	t=1728904470; cv=none; b=gpxn+RFqJLf7VrxPpzdirNtCHxgW77zqgzzg/7TB7cWBH3xk2qivS/+8EMsns1Z75ECp2RQ4TPa8xVmPFKXTEfxPebsd40ArEyWVyMM4fWZzOPAACdiTCOwi+g5GOVvUu9R/KDkMqcO1PDhV3u3WJxtkS7AvFoOFxhmmI6LWdgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728904469; c=relaxed/simple;
-	bh=kj4opEKkbC23Nkk+DhAR5RFISU84LX1aLJJ3F/yuDog=;
+	s=arc-20240116; t=1728904470; c=relaxed/simple;
+	bh=FCPtCk4CbWFDou0Q9B78YNMopnFHk8hDYJhakoxBbdE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=avdvcHgy/ruPbNnLOpLwBNr1799GBH6lBU/4NPpVkLap0uOfUAtU7f9YHyC7sIaPpaBm1QRrFHlWbU9RnV6Or7OBywjVhvZtr5tH35IluwIYmXd7wHpdCznpC8+CPR1TalMDuK1U+FPBwO5F2N09EnPxJkcqZOMtug0Fm8YPM1w=
+	 MIME-Version; b=FRBXzrZ2FeBNihkEl4qGGiaCx+TFBG/v8yloW9kYUNDTl7AqeQvqA+DSVqhW7ZoMaW564SUf2fz/lRSxxKV+DIUyf5uW0Yh0iPpDVeXmf1DN0GvQiiPBJNIcd1XTHagR/4PAKdTpzpvsGTOlhwbN9VTGz7cCjFUZ6/FVkzID1Fs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 1/9] netfilter: nf_tables: Fix percpu address space issues in nf_tables_api.c
-Date: Mon, 14 Oct 2024 13:14:12 +0200
-Message-Id: <20241014111420.29127-2-pablo@netfilter.org>
+Subject: [PATCH net-next 2/9] netfilter: nf_tables: replace deprecated strncpy with strscpy_pad
+Date: Mon, 14 Oct 2024 13:14:13 +0200
+Message-Id: <20241014111420.29127-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241014111420.29127-1-pablo@netfilter.org>
 References: <20241014111420.29127-1-pablo@netfilter.org>
@@ -49,88 +49,49 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Uros Bizjak <ubizjak@gmail.com>
+From: Justin Stitt <justinstitt@google.com>
 
-Compiling nf_tables_api.c results in several sparse warnings:
+strncpy() is deprecated for use on NUL-terminated destination strings [1] and
+as such we should prefer more robust and less ambiguous string interfaces.
 
-nf_tables_api.c:2077:31: warning: incorrect type in return expression (different address spaces)
-nf_tables_api.c:2080:31: warning: incorrect type in return expression (different address spaces)
-nf_tables_api.c:2084:31: warning: incorrect type in return expression (different address spaces)
+In this particular instance, the usage of strncpy() is fine and works as
+expected. However, towards the goal of [2], we should consider replacing
+it with an alternative as many instances of strncpy() are bug-prone. Its
+removal from the kernel promotes better long term health for the
+codebase.
 
-nf_tables_api.c:2740:23: warning: incorrect type in assignment (different address spaces)
-nf_tables_api.c:2752:38: warning: incorrect type in assignment (different address spaces)
-nf_tables_api.c:2798:21: warning: incorrect type in argument 1 (different address spaces)
+The current usage of strncpy() likely just wants the NUL-padding
+behavior offered by strncpy() and doesn't care about the
+NUL-termination. Since the compiler doesn't know the size of @dest, we
+can't use strtomem_pad(). Instead, use strscpy_pad() which behaves
+functionally the same as strncpy() in this context -- as we expect
+br_dev->name to be NUL-terminated itself.
 
-Use {ERR_PTR,IS_ERR,PTR_ERR}_PCPU() macros when crossing between generic
-and percpu address spaces and add __percpu annotation to *stats pointer
-to fix these warnings.
-
-Found by GCC's named address space checks.
-
-There were no changes in the resulting object files.
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90 [2]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+Cc: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ net/bridge/netfilter/nft_meta_bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index a24fe62650a7..6552ec616745 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2082,14 +2082,14 @@ static struct nft_stats __percpu *nft_stats_alloc(const struct nlattr *attr)
- 	err = nla_parse_nested_deprecated(tb, NFTA_COUNTER_MAX, attr,
- 					  nft_counter_policy, NULL);
- 	if (err < 0)
--		return ERR_PTR(err);
-+		return ERR_PTR_PCPU(err);
- 
- 	if (!tb[NFTA_COUNTER_BYTES] || !tb[NFTA_COUNTER_PACKETS])
--		return ERR_PTR(-EINVAL);
-+		return ERR_PTR_PCPU(-EINVAL);
- 
- 	newstats = netdev_alloc_pcpu_stats(struct nft_stats);
- 	if (newstats == NULL)
--		return ERR_PTR(-ENOMEM);
-+		return ERR_PTR_PCPU(-ENOMEM);
- 
- 	/* Restore old counters on this cpu, no problem. Per-cpu statistics
- 	 * are not exposed to userspace.
-@@ -2533,10 +2533,10 @@ static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
- 
- 		if (nla[NFTA_CHAIN_COUNTERS]) {
- 			stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
--			if (IS_ERR(stats)) {
-+			if (IS_ERR_PCPU(stats)) {
- 				nft_chain_release_hook(&hook);
- 				kfree(basechain);
--				return PTR_ERR(stats);
-+				return PTR_ERR_PCPU(stats);
- 			}
- 			rcu_assign_pointer(basechain->stats, stats);
- 		}
-@@ -2650,7 +2650,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 	struct nft_table *table = ctx->table;
- 	struct nft_chain *chain = ctx->chain;
- 	struct nft_chain_hook hook = {};
--	struct nft_stats *stats = NULL;
-+	struct nft_stats __percpu *stats = NULL;
- 	struct nft_hook *h, *next;
- 	struct nf_hook_ops *ops;
- 	struct nft_trans *trans;
-@@ -2746,8 +2746,8 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 		}
- 
- 		stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
--		if (IS_ERR(stats)) {
--			err = PTR_ERR(stats);
-+		if (IS_ERR_PCPU(stats)) {
-+			err = PTR_ERR_PCPU(stats);
- 			goto err_hooks;
- 		}
+diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
+index d12a221366d6..5adced1e7d0c 100644
+--- a/net/bridge/netfilter/nft_meta_bridge.c
++++ b/net/bridge/netfilter/nft_meta_bridge.c
+@@ -63,7 +63,7 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
+ 		return nft_meta_get_eval(expr, regs, pkt);
  	}
+ 
+-	strncpy((char *)dest, br_dev ? br_dev->name : "", IFNAMSIZ);
++	strscpy_pad((char *)dest, br_dev ? br_dev->name : "", IFNAMSIZ);
+ 	return;
+ err:
+ 	regs->verdict.code = NFT_BREAK;
 -- 
 2.30.2
 
