@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4452-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4455-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A7F99C884
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF6D99C889
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:18:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77A2E1C242AA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:17:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD86E1C233CF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75915158DD0;
-	Mon, 14 Oct 2024 11:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D5B1A7047;
+	Mon, 14 Oct 2024 11:14:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D5319E96E;
-	Mon, 14 Oct 2024 11:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD1B19F11F;
+	Mon, 14 Oct 2024 11:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728904470; cv=none; b=FA+70vRB59fZEU6c0u6s0Hw/qYs8p8DfBzLOqCvqL9F5iP0G29dqveKm+VIP9De//Z4Y7/Uamv6koGzY/kl/NCC8YwhTdbGF6tgy7/9bdiMKqCz3xkJlXDgRf8UKKymAs/19gQD16CJn5cckx1DmpvyYxXnVUhUeqPzcnDXcAOs=
+	t=1728904471; cv=none; b=UBnpclFbFiRfnxRcax5U6Sz5RXRLqwIgmc1T5gUS1zBoQ/y0Q/IRCJa1GLf1PRzlU4M3M4QdtqsCkxQo12ibAnRwFXS6kBJPPEMMuTFNxilEMH4u5cxdw1DVWQUKl7jPYLOWOOC1PvzG2XuvWHq0v8+F7E53bEcNN/IphfXE934=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728904470; c=relaxed/simple;
-	bh=AEaA0JJR/WksV/gnncrFfBOzBvc7oT8d74oY4m+0b44=;
+	s=arc-20240116; t=1728904471; c=relaxed/simple;
+	bh=ifMvoQSFzBxO0fcod2MXbMid4k6jlcT8Pao/OTL/C4o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HqQM4iB7uxZdwHToxsKguEsHmiWvzJa7Yz8DO1h8f+mYf2/G3dkEp8HEBMuGevDrmG88y/JNSUMOkyKTKeLtTADgZDLiKbtTrJAALwsbiiYt2N4rdjSdtQvjTr6TZaiE89oUEsJ0cNyhD5lG/7SY4YjWD4NZL5un3WzlN5G7wUY=
+	 MIME-Version; b=LBlU11v6S3TipvGBFur2S3yy+EbSP+r0uBtdHcog2xp+6NXmTqmenn7+Piyxatg8x/fm8tcRmgreR0Ql6lctPrElYJeRMzHjd0euc7KQtIxNz/7YA4orzFbtOyKqlWIaNMxhi0ZHqfB4/e90XQ4bPm1XX4lYg1ltjBc/opdPLMk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 3/9] netfilter: nf_tables: prefer nft_trans_elem_alloc helper
-Date: Mon, 14 Oct 2024 13:14:14 +0200
-Message-Id: <20241014111420.29127-4-pablo@netfilter.org>
+Subject: [PATCH net-next 4/9] netfilter: nf_tables: add nft_trans_commit_list_add_elem helper
+Date: Mon, 14 Oct 2024 13:14:15 +0200
+Message-Id: <20241014111420.29127-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241014111420.29127-1-pablo@netfilter.org>
 References: <20241014111420.29127-1-pablo@netfilter.org>
@@ -51,44 +51,89 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-Reduce references to sizeof(struct nft_trans_elem).
-Preparation patch to move this to a flexiable array to store
-elem references.
+Add and use a wrapper to append trans_elem structures to the
+transaction log.
+
+Unlike the existing helper, pass a gfp_t to indicate if sleeping
+is allowed.
+
+This will be used by a followup patch to realloc nft_trans_elem
+structures after they gain a flexible array member to reduce
+number of such container structures on the transaction list.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 6552ec616745..30331688301e 100644
+index 30331688301e..99bf8abb7ffb 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -6409,7 +6409,7 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
- 	nfnetlink_set_err(net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -421,6 +421,17 @@ static void nft_trans_commit_list_add_tail(struct net *net, struct nft_trans *tr
+ 	}
  }
  
--static struct nft_trans *nft_trans_elem_alloc(struct nft_ctx *ctx,
-+static struct nft_trans *nft_trans_elem_alloc(const struct nft_ctx *ctx,
- 					      int msg_type,
- 					      struct nft_set *set)
- {
-@@ -7471,13 +7471,11 @@ static int __nft_set_catchall_flush(const struct nft_ctx *ctx,
++static void nft_trans_commit_list_add_elem(struct net *net, struct nft_trans *trans,
++					   gfp_t gfp)
++{
++	WARN_ON_ONCE(trans->msg_type != NFT_MSG_NEWSETELEM &&
++	             trans->msg_type != NFT_MSG_DELSETELEM);
++
++	might_alloc(gfp);
++
++	nft_trans_commit_list_add_tail(net, trans);
++}
++
+ static int nft_trans_table_add(struct nft_ctx *ctx, int msg_type)
  {
  	struct nft_trans *trans;
+@@ -7183,7 +7194,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 					if (update_flags) {
+ 						nft_trans_elem_priv(trans) = elem_priv;
+ 						nft_trans_elem_update_flags(trans) = update_flags;
+-						nft_trans_commit_list_add_tail(ctx->net, trans);
++						nft_trans_commit_list_add_elem(ctx->net, trans, GFP_KERNEL);
+ 						goto err_elem_free;
+ 					}
+ 				}
+@@ -7207,7 +7218,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	}
  
--	trans = nft_trans_alloc_gfp(ctx, NFT_MSG_DELSETELEM,
--				    sizeof(struct nft_trans_elem), GFP_KERNEL);
-+	trans = nft_trans_elem_alloc(ctx, NFT_MSG_DELSETELEM, set);
- 	if (!trans)
- 		return -ENOMEM;
+ 	nft_trans_elem_priv(trans) = elem.priv;
+-	nft_trans_commit_list_add_tail(ctx->net, trans);
++	nft_trans_commit_list_add_elem(ctx->net, trans, GFP_KERNEL);
+ 	return 0;
+ 
+ err_set_full:
+@@ -7424,7 +7435,7 @@ static int nft_del_setelem(struct nft_ctx *ctx, struct nft_set *set,
+ 	nft_setelem_data_deactivate(ctx->net, set, elem.priv);
+ 
+ 	nft_trans_elem_priv(trans) = elem.priv;
+-	nft_trans_commit_list_add_tail(ctx->net, trans);
++	nft_trans_commit_list_add_elem(ctx->net, trans, GFP_KERNEL);
+ 	return 0;
+ 
+ fail_ops:
+@@ -7460,7 +7471,7 @@ static int nft_setelem_flush(const struct nft_ctx *ctx,
+ 	nft_setelem_data_deactivate(ctx->net, set, elem_priv);
+ 	nft_trans_elem_set(trans) = set;
+ 	nft_trans_elem_priv(trans) = elem_priv;
+-	nft_trans_commit_list_add_tail(ctx->net, trans);
++	nft_trans_commit_list_add_elem(ctx->net, trans, GFP_ATOMIC);
+ 
+ 	return 0;
+ }
+@@ -7477,7 +7488,7 @@ static int __nft_set_catchall_flush(const struct nft_ctx *ctx,
  
  	nft_setelem_data_deactivate(ctx->net, set, elem_priv);
--	nft_trans_elem_set(trans) = set;
  	nft_trans_elem_priv(trans) = elem_priv;
- 	nft_trans_commit_list_add_tail(ctx->net, trans);
+-	nft_trans_commit_list_add_tail(ctx->net, trans);
++	nft_trans_commit_list_add_elem(ctx->net, trans, GFP_KERNEL);
  
+ 	return 0;
+ }
 -- 
 2.30.2
 
