@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4457-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4460-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94CC999C88D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:18:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8187E99C8CF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:25:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52514288F92
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:18:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7900B2BF2F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11991A707F;
-	Mon, 14 Oct 2024 11:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313641AA78C;
+	Mon, 14 Oct 2024 11:14:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471DC1A4F20;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F7D1A4F34;
 	Mon, 14 Oct 2024 11:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728904472; cv=none; b=TA2AgBsbQzVU+0pBA1f++nUMRF4FZqua88czodoK+jaII5VZvt1vyTsXbeImM9foxYEQSxgWO3LNCa7dCy7+KdhJKwzYiITK6sK5FLUy+YnEsuyQGOoKEWkfCZz5ia+OgXslwoIV/sFHPvbnWUYx/zKfRgiIQE6jE+gvpur0c1I=
+	t=1728904474; cv=none; b=WiK7R6s5RBGL8YzBP0QGA5Slkc1bMP79tyhihQa3bRtTG4OhtbDYzsLtOr1FKHP0Ns7uw9EFXvLaK/W2YzX346SJBi3uZB2yKPfGk1rk5jilmAh06/6WTFtiEJzcsZstpDtXdr4ev+nNBXho33f711mnxXztsyjW0sMthjhsLMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728904472; c=relaxed/simple;
-	bh=sDy6e0NOO8bufxr2+M672puIVSIYTU5coulkomP+7xM=;
+	s=arc-20240116; t=1728904474; c=relaxed/simple;
+	bh=1GrudrhIV6eBfIdpQvWB6IvF86UzOLzBrncdKE0RLbY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LLEWoTVQ0E64MvTzymjC1y/KzPwK3UCAYeSSwTV+xsEMnZicXVDP1eJ722a2hZsUV+y3OcDFnzGBUiZoAnfz120qdUP7ENTIZ3/K1ubfZMyXPI7DB3JvfCzkc3I9nWRYIAGIevyAY92vQHDmoTv0wBTZ/vSLofpY83Mf+A8PX3M=
+	 MIME-Version; b=oNib9YNvVoL2LuMvPFieUlLisRSIR+Pfs+mimoeS4sMZxAfqRs0YL3S7cdy5U0qP6PnN8H7w1tP0KokO0iLAmfEYfvzbUanzipNXrMQETQwYvYZ9EHEjsDQum/OqiybMfi8THsC1acmDqtSITpsd6vhRo/1P2HDpp0efmgVrxi0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 8/9] netfilter: Make legacy configs user selectable
-Date: Mon, 14 Oct 2024 13:14:19 +0200
-Message-Id: <20241014111420.29127-9-pablo@netfilter.org>
+Subject: [PATCH net-next 9/9] netfilter: replace call_rcu by kfree_rcu for simple kmem_cache_free callback
+Date: Mon, 14 Oct 2024 13:14:20 +0200
+Message-Id: <20241014111420.29127-10-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241014111420.29127-1-pablo@netfilter.org>
 References: <20241014111420.29127-1-pablo@netfilter.org>
@@ -49,98 +49,99 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Breno Leitao <leitao@debian.org>
+From: Julia Lawall <Julia.Lawall@inria.fr>
 
-This option makes legacy Netfilter Kconfig user selectable, giving users
-the option to configure iptables without enabling any other config.
+Since SLOB was removed and since
+commit 6c6c47b063b5 ("mm, slab: call kvfree_rcu_barrier() from kmem_cache_destroy()"),
+it is not necessary to use call_rcu when the callback only performs
+kmem_cache_free. Use kfree_rcu() directly.
 
-Make the following KConfig entries user selectable:
- * BRIDGE_NF_EBTABLES_LEGACY
- * IP_NF_ARPTABLES
- * IP_NF_IPTABLES_LEGACY
- * IP6_NF_IPTABLES_LEGACY
+The changes were made using Coccinelle.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/bridge/netfilter/Kconfig |  8 +++++++-
- net/ipv4/netfilter/Kconfig   | 16 ++++++++++++++--
- net/ipv6/netfilter/Kconfig   |  9 ++++++++-
- 3 files changed, 29 insertions(+), 4 deletions(-)
+ net/netfilter/nf_conncount.c        | 10 +---------
+ net/netfilter/nf_conntrack_expect.c | 10 +---------
+ net/netfilter/xt_hashlimit.c        |  9 +--------
+ 3 files changed, 3 insertions(+), 26 deletions(-)
 
-diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
-index 104c0125e32e..f16bbbbb9481 100644
---- a/net/bridge/netfilter/Kconfig
-+++ b/net/bridge/netfilter/Kconfig
-@@ -41,7 +41,13 @@ config NF_CONNTRACK_BRIDGE
+diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
+index 4890af4dc263..6a7a6c2d6ebc 100644
+--- a/net/netfilter/nf_conncount.c
++++ b/net/netfilter/nf_conncount.c
+@@ -275,14 +275,6 @@ bool nf_conncount_gc_list(struct net *net,
+ }
+ EXPORT_SYMBOL_GPL(nf_conncount_gc_list);
  
- # old sockopt interface and eval loop
- config BRIDGE_NF_EBTABLES_LEGACY
--	tristate
-+	tristate "Legacy EBTABLES support"
-+	depends on BRIDGE && NETFILTER_XTABLES
-+	default n
-+	help
-+	 Legacy ebtables packet/frame classifier.
-+	 This is not needed if you are using ebtables over nftables
-+	 (iptables-nft).
+-static void __tree_nodes_free(struct rcu_head *h)
+-{
+-	struct nf_conncount_rb *rbconn;
+-
+-	rbconn = container_of(h, struct nf_conncount_rb, rcu_head);
+-	kmem_cache_free(conncount_rb_cachep, rbconn);
+-}
+-
+ /* caller must hold tree nf_conncount_locks[] lock */
+ static void tree_nodes_free(struct rb_root *root,
+ 			    struct nf_conncount_rb *gc_nodes[],
+@@ -295,7 +287,7 @@ static void tree_nodes_free(struct rb_root *root,
+ 		spin_lock(&rbconn->list.list_lock);
+ 		if (!rbconn->list.count) {
+ 			rb_erase(&rbconn->node, root);
+-			call_rcu(&rbconn->rcu_head, __tree_nodes_free);
++			kfree_rcu(rbconn, rcu_head);
+ 		}
+ 		spin_unlock(&rbconn->list.list_lock);
+ 	}
+diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
+index 21fa550966f0..9dcaef6f3663 100644
+--- a/net/netfilter/nf_conntrack_expect.c
++++ b/net/netfilter/nf_conntrack_expect.c
+@@ -367,18 +367,10 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_expect_init);
  
- menuconfig BRIDGE_NF_EBTABLES
- 	tristate "Ethernet Bridge tables (ebtables) support"
-diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
-index 1b991b889506..ef8009281da5 100644
---- a/net/ipv4/netfilter/Kconfig
-+++ b/net/ipv4/netfilter/Kconfig
-@@ -12,7 +12,13 @@ config NF_DEFRAG_IPV4
+-static void nf_ct_expect_free_rcu(struct rcu_head *head)
+-{
+-	struct nf_conntrack_expect *exp;
+-
+-	exp = container_of(head, struct nf_conntrack_expect, rcu);
+-	kmem_cache_free(nf_ct_expect_cachep, exp);
+-}
+-
+ void nf_ct_expect_put(struct nf_conntrack_expect *exp)
+ {
+ 	if (refcount_dec_and_test(&exp->use))
+-		call_rcu(&exp->rcu, nf_ct_expect_free_rcu);
++		kfree_rcu(exp, rcu);
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_expect_put);
  
- # old sockopt interface and eval loop
- config IP_NF_IPTABLES_LEGACY
--	tristate
-+	tristate "Legacy IP tables support"
-+	default	n
-+	select NETFILTER_XTABLES
-+	help
-+	  iptables is a legacy packet classifier.
-+	  This is not needed if you are using iptables over nftables
-+	  (iptables-nft).
+diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
+index 0859b8f76764..c2b9b954eb53 100644
+--- a/net/netfilter/xt_hashlimit.c
++++ b/net/netfilter/xt_hashlimit.c
+@@ -256,18 +256,11 @@ dsthash_alloc_init(struct xt_hashlimit_htable *ht,
+ 	return ent;
+ }
  
- config NF_SOCKET_IPV4
- 	tristate "IPv4 socket lookup support"
-@@ -318,7 +324,13 @@ endif # IP_NF_IPTABLES
- 
- # ARP tables
- config IP_NF_ARPTABLES
--	tristate
-+	tristate "Legacy ARPTABLES support"
-+	depends on NETFILTER_XTABLES
-+	default n
-+	help
-+	  arptables is a legacy packet classifier.
-+	  This is not needed if you are using arptables over nftables
-+	  (iptables-nft).
- 
- config NFT_COMPAT_ARP
- 	tristate
-diff --git a/net/ipv6/netfilter/Kconfig b/net/ipv6/netfilter/Kconfig
-index f3c8e2d918e1..e087a8e97ba7 100644
---- a/net/ipv6/netfilter/Kconfig
-+++ b/net/ipv6/netfilter/Kconfig
-@@ -8,7 +8,14 @@ menu "IPv6: Netfilter Configuration"
- 
- # old sockopt interface and eval loop
- config IP6_NF_IPTABLES_LEGACY
--	tristate
-+	tristate "Legacy IP6 tables support"
-+	depends on INET && IPV6
-+	select NETFILTER_XTABLES
-+	default n
-+	help
-+	  ip6tables is a legacy packet classifier.
-+	  This is not needed if you are using iptables over nftables
-+	  (iptables-nft).
- 
- config NF_SOCKET_IPV6
- 	tristate "IPv6 socket lookup support"
+-static void dsthash_free_rcu(struct rcu_head *head)
+-{
+-	struct dsthash_ent *ent = container_of(head, struct dsthash_ent, rcu);
+-
+-	kmem_cache_free(hashlimit_cachep, ent);
+-}
+-
+ static inline void
+ dsthash_free(struct xt_hashlimit_htable *ht, struct dsthash_ent *ent)
+ {
+ 	hlist_del_rcu(&ent->node);
+-	call_rcu(&ent->rcu, dsthash_free_rcu);
++	kfree_rcu(ent, rcu);
+ 	ht->count--;
+ }
+ static void htable_gc(struct work_struct *work);
 -- 
 2.30.2
 
