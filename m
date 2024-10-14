@@ -1,135 +1,133 @@
-Return-Path: <netfilter-devel+bounces-4450-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4453-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 119B199C880
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A07199C8E5
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 13:30:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6374B2B0E0
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:17:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF5FEB2B824
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2024 11:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D51618A6A0;
-	Mon, 14 Oct 2024 11:12:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60961A38E3;
+	Mon, 14 Oct 2024 11:14:30 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from a3.inai.de (a3.inai.de [144.76.212.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336C1156F3A
-	for <netfilter-devel@vger.kernel.org>; Mon, 14 Oct 2024 11:12:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.212.145
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BE2132117;
+	Mon, 14 Oct 2024 11:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728904340; cv=none; b=WzyvP9SG1FTzVB+o/FXxjG1tmJXO7QGAdhHqh08JdNzpuwAND436yY1poiSYiYi+es6jcG+7yfjXe36N/Ev/SJl0aWvZhG0BdnJ96GpF0UF8ce/XqQ+XtQ++tvi9ghg996JCXY3qWyVOi7K3KI84SQ2SrcZxjFEJy81InztkqEE=
+	t=1728904470; cv=none; b=JmxkL/PTOCosU04q2ORsbly7e0dv+XOhEmbZZ8YBtQDMTK4CpeE3ctAhCwi1zhTYi000/eic0CYeCHcZWj3k8l1bXqDUnyRTFvDbtsqEC3tuQkZ41sx6eSaFSVw26Ls1vYSad/OvN/bkOVEa+PnPkf9PQ6wTz3ChESXlrlYc8yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728904340; c=relaxed/simple;
-	bh=JCDMh6s+9Dw0oAy/bcn+Scib5aGRF1yGPLg55qjrXdI=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=jBPbbKvBT8NPz3rPWcIF8Jbw+Pjowu1VjUVCQiJoleYxdPgJL9WtjrAa4C06wh4AGyjdzEljkj29zYu1HVbIVYVrTWu8kiB71vsuItRJPuqHyLxRByUpFy4/dAZekjPQddTbEpxN+cMkxuBIQnqXea30pyw34aAuCuwk2LS3J/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=fail smtp.mailfrom=inai.de; arc=none smtp.client-ip=144.76.212.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=inai.de
-Received: by a3.inai.de (Postfix, from userid 25121)
-	id 0B0E010041713A; Mon, 14 Oct 2024 13:12:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by a3.inai.de (Postfix) with ESMTP id 0AC4A1100B1489;
-	Mon, 14 Oct 2024 13:12:02 +0200 (CEST)
-Date: Mon, 14 Oct 2024 13:12:02 +0200 (CEST)
-From: Jan Engelhardt <ej@inai.de>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-cc: Netfilter Development <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH libmnl] build: do not build documentation automatically
-In-Reply-To: <ZwzRn6EQpRJWxYA-@calendula>
-Message-ID: <n4r27125-61q3-r7p2-ns82-77334r0oo3s3@vanv.qr>
-References: <20241012171521.33453-1-pablo@netfilter.org> <ZwzOgRoMzOiNfgn0@slk15.local.net> <ZwzRn6EQpRJWxYA-@calendula>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
+	s=arc-20240116; t=1728904470; c=relaxed/simple;
+	bh=m3oA3DjQG0zAgXDJR6EQNfJPvp53CEpoyvjfzeSTx1I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cm5zJI4LNHzZHGIsuWMhUC/yMOitrB0dDxWDJSCu6fEQC56Ui1o6BfjGj5ldIY1ERiINGIrtv91SzYU+TljmcqN/cA7kkhDhM0SlJ2SqfmhuZ4FkGeRiGDmKp4dP6DPQylzTCNqA7gyUoT4ZnoQI1D1YdnHeGJc7rlqVmadL2ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de
+Subject: [PATCH net-next 0/9] Netfilter updates for net-net
+Date: Mon, 14 Oct 2024 13:14:11 +0200
+Message-Id: <20241014111420.29127-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
->Duncan Roe wrote:
->> 
->> Distributors typically use the default config to make a package. That would mean
->> libmnl would go out without any documentation, hardly an encouragement to use
->> it.
+The following series contains Netfilter updates for net-next:
 
-It is true that distros commonly go with upstream default. When the 
-upstream default is on "auto" however, it becomes a distro default,
-which, due to a blank recipe, quickly becomes "no-documentation".
-(Because of this, openSUSE was embarassingly not building libmnl-doc.)
+1) Fix sparse warning in nf_tables related to use of percpu counters,
+   from Uros Bizjak.
 
-As to whether that is an impediment to creating libmnl-exercising 
-software, I cannot say.
+2) use strscpy_pad in nft_meta_bridge, from Justin Stitt.
 
-Having worked extensively with wxWidgets (also doxygenated) in the past 
-however, I found that when the API is large, needs frequent lookup, 
-documentation has many pages, and online retrieval latency becomes a 
-factor, I prefer a local copy as a quality-of-live improvement.
+3) A series from patch #3 to patch #7 to reduce memory footprint of set
+   element transactions, Florian Westphal says:
 
+   When doing a flush on a set or mass adding/removing elements from a
+   set, each element needs to allocate 96 bytes to hold the transactional
+   state.
 
-On Monday 2024-10-14 10:09, Pablo Neira Ayuso wrote:
->
->We do not have control over the specific items that distributors
->choose to include in their packages.
->[...] the final decisions regarding package contents
->rest solely with the distributors.
+   In such cases, virtually all the information in struct nft_trans_elem
+   is the same.
 
-Well, not quite.
+   Change nft_trans_elem to a flex-array, i.e. a single nft_trans_elem
+   can hold multiple set element pointers.
 
-Removals are a powerful action that is seldomly undone at the distro
-levels, so it can be regarded as the final say (well, in "95% of
-cases"). Think of:
+   The number of elements that can be stored in one nft_trans_elem is limited
+   by the slab allocator, this series limits the compaction to at most 62
+   elements as it caps the reallocation to 2048 bytes of memory.
 
-* deprecated C APIs (distros would rather patch consumer programs to
-  work with the new ones)
+4) Document legacy toggles for xtables packet classifiers, from
+   Bruno Leitao.
 
-* GNOME desktop, which is infamous for removing stuff due to
-  confusion ([1])
-[1] https://medium.com/@fulalas/gnome-linux-a-complete-disaster-feb27b13a5c2
+5) Use kfree_rcu() instead of call_rcu() + kmem_cache_free(), from Julia Lawall.
 
-Hiding stuff behind a configure knob is not a removal though,
-so it is not too big a deal.
+Please, pull these changes from:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-10-14
 
->Moreover, documentation is specifically designed for developers who
->are engaged in the technical aspects. Most users of this software are
->building it because it is a dependency for their software.
-                                            ^^^^^^^^^^^^^^
+Thanks.
 
-The way it's phrased makes those users users of the libmnl API (i.e.
-developers), and documentation is warranted.
+----------------------------------------------------------------
 
-(The following statement would be more accurate:
+The following changes since commit f66ebf37d69cc700ca884c6a18c2258caf8b151b:
 
->Most users of this software are
->building it because it is a dependency for someone else's software
->they want to utilize.
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-10-03 10:05:55 -0700)
 
+are available in the Git repository at:
 
-Anyway, looking at what distros _are_ doing is an indicator what
-"users" (intermediate consumers, or users at the end of the build
-chain) desire and what is worth doing upstream somehow.
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-24-10-14
 
-* ICU manages documentation separately; in a sense you could see
-  this as --enable-doc=no. The ICU APIs are however apparently
-  complicated enough that documentation is desirable to have
-  available, and so you do find libicu-doc/icu-doc in distros.
+for you to fetch changes up to 9539446cc659e390942b46df871f8abdd4750999:
 
-* the closer a software is to the bootstrap core, and the more
-  outrageous the build requirements for some (sub)component(s) are,
-  there more likely it is for those (sub)component(s) to be built in
-  a two-phase build or be completely omitted due to complexity.
+  netfilter: replace call_rcu by kfree_rcu for simple kmem_cache_free callback (2024-10-14 12:30:20 +0200)
 
-	* texlive
-	* pandoc
-	* ant/maven
-	* rust/ghc/go
+----------------------------------------------------------------
+netfilter pull request 24-10-14
 
-docbook/asciidoc seems right on the edge (because of its potential
-to depend on a latex backend), but doxygen seems easy.
+----------------------------------------------------------------
+Breno Leitao (1):
+      netfilter: Make legacy configs user selectable
+
+Florian Westphal (5):
+      netfilter: nf_tables: prefer nft_trans_elem_alloc helper
+      netfilter: nf_tables: add nft_trans_commit_list_add_elem helper
+      netfilter: nf_tables: prepare for multiple elements in nft_trans_elem structure
+      netfilter: nf_tables: switch trans_elem to real flex array
+      netfilter: nf_tables: allocate element update information dynamically
+
+Julia Lawall (1):
+      netfilter: replace call_rcu by kfree_rcu for simple kmem_cache_free callback
+
+Justin Stitt (1):
+      netfilter: nf_tables: replace deprecated strncpy with strscpy_pad
+
+Uros Bizjak (1):
+      netfilter: nf_tables: Fix percpu address space issues in nf_tables_api.c
+
+ include/net/netfilter/nf_tables.h      |  25 +--
+ net/bridge/netfilter/Kconfig           |   8 +-
+ net/bridge/netfilter/nft_meta_bridge.c |   2 +-
+ net/ipv4/netfilter/Kconfig             |  16 +-
+ net/ipv6/netfilter/Kconfig             |   9 +-
+ net/netfilter/nf_conncount.c           |  10 +-
+ net/netfilter/nf_conntrack_expect.c    |  10 +-
+ net/netfilter/nf_tables_api.c          | 370 +++++++++++++++++++++++++--------
+ net/netfilter/xt_hashlimit.c           |   9 +-
+ 9 files changed, 330 insertions(+), 129 deletions(-)
 
