@@ -1,53 +1,56 @@
-Return-Path: <netfilter-devel+bounces-4538-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4535-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12629A209A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 13:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 683309A2092
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 13:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CA1DB212BE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 11:06:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D24DFB25027
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 11:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977BE1D414F;
-	Thu, 17 Oct 2024 11:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349F11DC04C;
+	Thu, 17 Oct 2024 11:05:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136AB1D3566;
-	Thu, 17 Oct 2024 11:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D121D31A8;
+	Thu, 17 Oct 2024 11:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729163163; cv=none; b=c2Atdkv9HWZ+URmwPQaoTaKBU+hiRLu1UsvEAOwxTlagihbQTEVrLb00sA9u0INp9AxTGSqgoIWXvfZ/zqi32HE3kwEQwKkjN5RcePRpsooknxYy8oTcYc971o0QGVlZOStucG+9Rm4ep/SxdWOg92+xWok6PhXcSIrDs7o9sy8=
+	t=1729163134; cv=none; b=c4A84NXi6c0WLlA+p+h1GFyeJPzfCN/RfE9Kj5spV/3s7GwQXtt6HlV1KNDQEKJsb0iYmVz5k6NulKx0dI2OhYwKVgflhNdlth8cgoJhLABh/Rlo8acNJXZMEuqAFRy2xpd+bh9igXFJAWt+UOT/jgD9sHjeTtDUdSWxh2HOq90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729163163; c=relaxed/simple;
-	bh=Y26YuhEeOV5g2D/6jd/R/t6rMuzkgD6XOXI9VxnJb7s=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sxX97Oo8W7PwaaXoWciG/pqyxAX7XVjzmB0M2iCAXboDlwgn/IG0lRazGtlzEp+D9WbPY2F14BchYzB/pjkncL1SqGXnbfKqK+Amm1jinmfRpc/5pJBAUOSnq2wODjTuBXQzhQ3/SGJmN8rQG7IjBltMxRR+tUrCRO9WJ4ScpGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.190
+	s=arc-20240116; t=1729163134; c=relaxed/simple;
+	bh=GYAQ/AAExQ+JQsOxqy/LCiWPZr5UqpIYvsBQuLBlPZE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Y+gvFYnYRN/j47olCmj5osz8AWX19xUpHDuM+WxDjFsplU6l7iQhBqeI2O9C1/uDMynFDXK1OxnbJ0bXJK4YrUPiZ4n38lGrApgaEv+cO5gNHplJsBE9BGd83xwh6jKC9cBWXMMy1HvgDodhoq3lO7mnPsNFwBzDavomZVA4vzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XTlMQ6WL9z2DdSM;
-	Thu, 17 Oct 2024 19:04:02 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XTlP25FHHz1yn45;
+	Thu, 17 Oct 2024 19:05:26 +0800 (CST)
 Received: from kwepemj200016.china.huawei.com (unknown [7.202.194.28])
-	by mail.maildlp.com (Postfix) with ESMTPS id 698F61A0188;
-	Thu, 17 Oct 2024 19:05:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 9F58D1402C6;
+	Thu, 17 Oct 2024 19:05:20 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  kwepemj200016.china.huawei.com (7.202.194.28) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 17 Oct 2024 19:05:16 +0800
+ 15.2.1544.11; Thu, 17 Oct 2024 19:05:18 +0800
 From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 To: <mic@digikod.net>, <gnoack@google.com>
 CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v2 0/8] Fix non-TCP restriction and inconsistency of TCP errors
-Date: Thu, 17 Oct 2024 19:04:46 +0800
-Message-ID: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v2 1/8] landlock: Fix non-TCP sockets restriction
+Date: Thu, 17 Oct 2024 19:04:47 +0800
+Message-ID: <20241017110454.265818-2-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
+References: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -59,71 +62,42 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500003.china.huawei.com (7.188.49.51) To
  kwepemj200016.china.huawei.com (7.202.194.28)
 
-Hello!
-This patchset provides two general fixes for TCP Landlock hooks:
+Do not check TCP access right if socket protocol is not IPPROTO_TCP.
+LANDLOCK_ACCESS_NET_BIND_TCP and LANDLOCK_ACCESS_NET_CONNECT_TCP
+should not restrict bind(2) and connect(2) for non-TCP protocols
+(SCTP, MPTCP, SMC).
 
-First one fixes incorrect restriction of non-TCP bind/connect actions.
-There is two commits related to testing MPTCP and SCTP protocols which were
-incorrectly restricted. SCTP implementation has invalid check for minimal
-address length in bind(2) call [1], therefore commit with SCTP testing can be
-applied later after necessary SCTP fixes.
+sk_is_tcp() is used for this to check address family of the socket
+before doing INET-specific address length validation. This is required
+for error consistency.
 
-[1] https://lore.kernel.org/all/20241004.Hohpheipieh2@digikod.net/
 Closes: https://github.com/landlock-lsm/linux/issues/40
+Fixes: fff69fb03dde ("landlock: Support network rules with TCP bind and connect")
+Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+---
 
-Second one fixes inconsistency of errors in bind and connect hooks for
-TCP sockets. It provides per-operation helpers, which consist of a set
-of checks from the TCP network stack. Due to TCP connect(2) implementation
-it's not possible to obtain full consistency, but the unhandled cases are
-rather special scenarios that should almost should not normally appear.
-Two new tests were implemented to validate errors consistency.
+Changes since v1:
+* Validate socket family (=INET{,6}) before any other checks
+  with sk_is_tcp().
+---
+ security/landlock/net.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Diffs of second and third commits were unreadable, so I've decided to
-rewrite net.c file to simplify reviewing process.
-
-Code coverage
-=============
-Code coverage(gcov) report with the launch of net_test selftest:
- * security/landlock/net.c:
-lines......: 98.8% (79 of 80 lines)
-functions..: 100% (8 of 8 functions)
-
-One uncovered line is documented in check_tcp_connect_consistency_and_get_port().
-
-General changes
-===============
- * Rebases on current linux-mic/next (based on Linux v6.12-rc3)
- * Fixes inconsistency of TCP actions errors and implements two related
-   tests.
- * Removes SMC test suits.
- * Adds separate commit for SCTP test suits.
- * Adds test suits of protocol fixture for sockets created with
-   protocol=IPPROTO_TCP (C.f. socket(2)).
-
-Previous versions
-=================
-v1: https://lore.kernel.org/all/20241003143932.2431249-1-ivanov.mikhail1@huawei-partners.com/
-
-Mikhail Ivanov (8):
-  landlock: Fix non-TCP sockets restriction
-  landlock: Make network stack layer checks explicit for each TCP action
-  landlock: Fix inconsistency of errors for TCP actions
-  selftests/landlock: Test TCP accesses with protocol=IPPROTO_TCP
-  selftests/landlock: Test that MPTCP actions are not restricted
-  selftests/landlock: Test consistency of errors for TCP actions
-  landlock: Add note about errors consistency in documentation
-  selftests/landlock: Test that SCTP actions are not restricted
-
- Documentation/userspace-api/landlock.rst    |   3 +-
- security/landlock/net.c                     | 501 +++++++++++-------
- tools/testing/selftests/landlock/common.h   |   1 +
- tools/testing/selftests/landlock/config     |   4 +
- tools/testing/selftests/landlock/net_test.c | 532 ++++++++++++++++++--
- 5 files changed, 825 insertions(+), 216 deletions(-)
- rewrite security/landlock/net.c (36%)
-
-
-base-commit: fe76bd133024aaef12d12a7d58fa3e8d138d3bf3
+diff --git a/security/landlock/net.c b/security/landlock/net.c
+index fdc1bb0a9c5d..1e80782ba239 100644
+--- a/security/landlock/net.c
++++ b/security/landlock/net.c
+@@ -66,8 +66,8 @@ static int current_check_access_socket(struct socket *const sock,
+ 	if (WARN_ON_ONCE(dom->num_layers < 1))
+ 		return -EACCES;
+ 
+-	/* Checks if it's a (potential) TCP socket. */
+-	if (sock->type != SOCK_STREAM)
++	/* Do not restrict non-TCP sockets. */
++	if (!sk_is_tcp(sock->sk))
+ 		return 0;
+ 
+ 	/* Checks for minimal header length to safely read sa_family. */
 -- 
 2.34.1
 
