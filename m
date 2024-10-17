@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-4536-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4539-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C134E9A2094
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 13:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A662B9A209C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 13:06:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CAEE1F277AA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 11:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28AA91F2780A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 11:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43CCB1DB92E;
-	Thu, 17 Oct 2024 11:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D403A1DC196;
+	Thu, 17 Oct 2024 11:06:04 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F36191DC1B2;
-	Thu, 17 Oct 2024 11:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3312F1D88C7;
+	Thu, 17 Oct 2024 11:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729163140; cv=none; b=Zt+jk/4NuPVc3GmRMu5P8bCZS7nVKZbUzbgVWDMilYfCW5g4D51RbQ8eFiN1CFh6uSucEprVYo+ioME6g8fwgB4vFdhjXet8O0CuOWAOcJVkWYHJEFoq1Uc2hMtTtE+y76CdwRKjbLk9aanmke80U/MmtZDTSqtAv7cjF1bUqXQ=
+	t=1729163164; cv=none; b=ovsLIkHhBdPLiVPwxO3y3rnSccVJGq1eV87lsm5h7jSkTzW0BBB5MAuYC5TDAuBp9Qssv5RV7AE7g1QdM/rHXNRuZ2sBIF8q0pvXfecgRr4SCehUejNFhRH48/EmMjSOXlhV8Gl0IFV2wsmOa2j7RxLLg09qiaZeyQY8QcvQMg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729163140; c=relaxed/simple;
-	bh=aiZUdN9CrJgffhvAzeA9go8XeX4Cx1wM9+TSjIIY92M=;
+	s=arc-20240116; t=1729163164; c=relaxed/simple;
+	bh=7hy/y+njkQ+wmUrDxXAkntJvM3F5c3M0E/VMN2VyrZw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gEFOepOKLG90FxetEfL8+NkSXxbpvGm0D6uTvjPh3pthNERREaYNMrEajcWpIANgh85jaPuq5UAz+UDB44RvdkJFXRuq9n2Ypz2XOW9YDZfiv0chaJvre+WzbSN8TLsLpGuKpu8/lrmlVptBg9wWqeHsdGOtAVpuEomIuqwGfhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.189
+	 MIME-Version:Content-Type; b=q52ka64rtLHokMTdMoyPOsClpXfllbvA+hs56MtNS7/IVQ9CU7kJ+6xSI3E1RS1zOczOqftBbi/UKH4Yxt1NLhBHjGone4FRMFmfDNy7tObZWR5XkiPh7NSV+3S+Ye4PUzic5i1FflfI5GnZB8yj9Kw3Ah3xjVq8RFIrcZITOgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4XTlNJ1BHvzQrmG;
-	Thu, 17 Oct 2024 19:04:48 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XTlMm19kQz2DdqL;
+	Thu, 17 Oct 2024 19:04:20 +0800 (CST)
 Received: from kwepemj200016.china.huawei.com (unknown [7.202.194.28])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9B6591800D2;
-	Thu, 17 Oct 2024 19:05:33 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A7297140360;
+	Thu, 17 Oct 2024 19:05:35 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  kwepemj200016.china.huawei.com (7.202.194.28) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 17 Oct 2024 19:05:31 +0800
+ 15.2.1544.11; Thu, 17 Oct 2024 19:05:33 +0800
 From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 To: <mic@digikod.net>, <gnoack@google.com>
 CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v2 7/8] landlock: Add note about errors consistency in documentation
-Date: Thu, 17 Oct 2024 19:04:53 +0800
-Message-ID: <20241017110454.265818-8-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v2 8/8] selftests/landlock: Test that SCTP actions are not restricted
+Date: Thu, 17 Oct 2024 19:04:54 +0800
+Message-ID: <20241017110454.265818-9-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
 References: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,28 +62,197 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500003.china.huawei.com (7.188.49.51) To
  kwepemj200016.china.huawei.com (7.202.194.28)
 
-Add recommendation to specify Landlock first in CONFIG_LSM list, so user
-can have better LSM errors consistency provided by Landlock.
+Extend protocol fixture with test suits for SCTP protocol.
+Add CONFIG_IP_SCTP option in config.
 
 Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 ---
- Documentation/userspace-api/landlock.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/landlock/config     |  1 +
+ tools/testing/selftests/landlock/net_test.c | 83 ++++++++++++++++++---
+ 2 files changed, 73 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/userspace-api/landlock.rst
-index bb7480a05e2c..0db5eee9bffa 100644
---- a/Documentation/userspace-api/landlock.rst
-+++ b/Documentation/userspace-api/landlock.rst
-@@ -610,7 +610,8 @@ time as the other security modules.  The list of security modules enabled by
- default is set with ``CONFIG_LSM``.  The kernel configuration should then
- contains ``CONFIG_LSM=landlock,[...]`` with ``[...]``  as the list of other
- potentially useful security modules for the running system (see the
--``CONFIG_LSM`` help).
-+``CONFIG_LSM`` help). It is recommended to specify Landlock first of all other
-+modules in CONFIG_LSM list since it provides better errors consistency.
+diff --git a/tools/testing/selftests/landlock/config b/tools/testing/selftests/landlock/config
+index 52988e8a56cc..a96d42dc850d 100644
+--- a/tools/testing/selftests/landlock/config
++++ b/tools/testing/selftests/landlock/config
+@@ -1,6 +1,7 @@
+ CONFIG_CGROUPS=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_INET=y
++CONFIG_IP_SCTP=y
+ CONFIG_IPV6=y
+ CONFIG_KEYS=y
+ CONFIG_LSM="landlock"
+diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+index 30b29bf10bdc..fa382a2e3b58 100644
+--- a/tools/testing/selftests/landlock/net_test.c
++++ b/tools/testing/selftests/landlock/net_test.c
+@@ -97,13 +97,28 @@ static void setup_loopback(struct __test_metadata *const _metadata)
+ 	clear_ambient_cap(_metadata, CAP_NET_ADMIN);
+ }
  
- Boot time configuration
- -----------------------
+-static bool prot_is_tcp(const struct protocol_variant *const prot)
++static bool prot_is_inet_stream(const struct protocol_variant *const prot)
+ {
+ 	return (prot->domain == AF_INET || prot->domain == AF_INET6) &&
+-	       prot->type == SOCK_STREAM &&
++	       prot->type == SOCK_STREAM;
++}
++
++static bool prot_is_tcp(const struct protocol_variant *const prot)
++{
++	return prot_is_inet_stream(prot) &&
+ 	       (prot->protocol == IPPROTO_TCP || prot->protocol == IPPROTO_IP);
+ }
+ 
++static bool prot_is_sctp(const struct protocol_variant *const prot)
++{
++	return prot_is_inet_stream(prot) && prot->protocol == IPPROTO_SCTP;
++}
++
++static bool prot_is_unix_stream(const struct protocol_variant *const prot)
++{
++	return prot->domain == AF_UNIX && prot->type == SOCK_STREAM;
++}
++
+ static bool is_restricted(const struct protocol_variant *const prot,
+ 			  const enum sandbox_type sandbox)
+ {
+@@ -357,6 +372,17 @@ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_mptcp) {
+ 	},
+ };
+ 
++/* clang-format off */
++FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_sctp) {
++	/* clang-format on */
++	.sandbox = NO_SANDBOX,
++	.prot = {
++		.domain = AF_INET,
++		.type = SOCK_STREAM,
++		.protocol = IPPROTO_SCTP,
++	},
++};
++
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_tcp1) {
+ 	/* clang-format on */
+@@ -391,6 +417,17 @@ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_mptcp) {
+ 	},
+ };
+ 
++/* clang-format off */
++FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_sctp) {
++	/* clang-format on */
++	.sandbox = NO_SANDBOX,
++	.prot = {
++		.domain = AF_INET6,
++		.type = SOCK_STREAM,
++		.protocol = IPPROTO_SCTP,
++	},
++};
++
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_udp) {
+ 	/* clang-format on */
+@@ -465,6 +502,17 @@ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_mptcp) {
+ 	},
+ };
+ 
++/* clang-format off */
++FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_sctp) {
++	/* clang-format on */
++	.sandbox = TCP_SANDBOX,
++	.prot = {
++		.domain = AF_INET,
++		.type = SOCK_STREAM,
++		.protocol = IPPROTO_SCTP,
++	},
++};
++
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_tcp1) {
+ 	/* clang-format on */
+@@ -499,6 +547,17 @@ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_mptcp) {
+ 	},
+ };
+ 
++/* clang-format off */
++FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_sctp) {
++	/* clang-format on */
++	.sandbox = TCP_SANDBOX,
++	.prot = {
++		.domain = AF_INET6,
++		.type = SOCK_STREAM,
++		.protocol = IPPROTO_SCTP,
++	},
++};
++
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_udp) {
+ 	/* clang-format on */
+@@ -793,7 +852,7 @@ TEST_F(protocol, bind_unspec)
+ 
+ 	/* Allowed bind on AF_UNSPEC/INADDR_ANY. */
+ 	ret = bind_variant(bind_fd, &self->unspec_any0);
+-	if (variant->prot.domain == AF_INET) {
++	if (variant->prot.domain == AF_INET && !prot_is_sctp(&variant->prot)) {
+ 		EXPECT_EQ(0, ret)
+ 		{
+ 			TH_LOG("Failed to bind to unspec/any socket: %s",
+@@ -819,7 +878,7 @@ TEST_F(protocol, bind_unspec)
+ 
+ 	/* Denied bind on AF_UNSPEC/INADDR_ANY. */
+ 	ret = bind_variant(bind_fd, &self->unspec_any0);
+-	if (variant->prot.domain == AF_INET) {
++	if (variant->prot.domain == AF_INET && !prot_is_sctp(&variant->prot)) {
+ 		if (is_restricted(&variant->prot, variant->sandbox)) {
+ 			EXPECT_EQ(-EACCES, ret);
+ 		} else {
+@@ -834,7 +893,7 @@ TEST_F(protocol, bind_unspec)
+ 	bind_fd = socket_variant(&self->srv0);
+ 	ASSERT_LE(0, bind_fd);
+ 	ret = bind_variant(bind_fd, &self->unspec_srv0);
+-	if (variant->prot.domain == AF_INET) {
++	if (variant->prot.domain == AF_INET && !prot_is_sctp(&variant->prot)) {
+ 		EXPECT_EQ(-EAFNOSUPPORT, ret);
+ 	} else {
+ 		EXPECT_EQ(-EINVAL, ret)
+@@ -899,17 +958,18 @@ TEST_F(protocol, connect_unspec)
+ 
+ 		/* Disconnects already connected socket, or set peer. */
+ 		ret = connect_variant(connect_fd, &self->unspec_any0);
+-		if (self->srv0.protocol.domain == AF_UNIX &&
+-		    self->srv0.protocol.type == SOCK_STREAM) {
++		if (prot_is_unix_stream(&variant->prot)) {
+ 			EXPECT_EQ(-EINVAL, ret);
++		} else if (prot_is_sctp(&variant->prot)) {
++			EXPECT_EQ(-EOPNOTSUPP, ret);
+ 		} else {
+ 			EXPECT_EQ(0, ret);
+ 		}
+ 
+ 		/* Tries to reconnect, or set peer. */
+ 		ret = connect_variant(connect_fd, &self->srv0);
+-		if (self->srv0.protocol.domain == AF_UNIX &&
+-		    self->srv0.protocol.type == SOCK_STREAM) {
++		if (prot_is_unix_stream(&variant->prot) ||
++		    prot_is_sctp(&variant->prot)) {
+ 			EXPECT_EQ(-EISCONN, ret);
+ 		} else {
+ 			EXPECT_EQ(0, ret);
+@@ -926,9 +986,10 @@ TEST_F(protocol, connect_unspec)
+ 		}
+ 
+ 		ret = connect_variant(connect_fd, &self->unspec_any0);
+-		if (self->srv0.protocol.domain == AF_UNIX &&
+-		    self->srv0.protocol.type == SOCK_STREAM) {
++		if (prot_is_unix_stream(&variant->prot)) {
+ 			EXPECT_EQ(-EINVAL, ret);
++		} else if (prot_is_sctp(&variant->prot)) {
++			EXPECT_EQ(-EOPNOTSUPP, ret);
+ 		} else {
+ 			/* Always allowed to disconnect. */
+ 			EXPECT_EQ(0, ret);
 -- 
 2.34.1
 
