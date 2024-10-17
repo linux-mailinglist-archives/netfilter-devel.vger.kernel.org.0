@@ -1,166 +1,130 @@
-Return-Path: <netfilter-devel+bounces-4533-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4538-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC2659A1E07
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 11:17:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B12629A209A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 13:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C8822841D4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 09:17:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CA1DB212BE
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Oct 2024 11:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A051D89F7;
-	Thu, 17 Oct 2024 09:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="OgRzISqj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977BE1D414F;
+	Thu, 17 Oct 2024 11:06:03 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from nbd.name (nbd.name [46.4.11.11])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9DF1D88CA;
-	Thu, 17 Oct 2024 09:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136AB1D3566;
+	Thu, 17 Oct 2024 11:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729156665; cv=none; b=Q74K6E2HT/hohVpDCdDdaUPgFpSIengB4gmJRQbSiMIRgDW8DOk9HSDw+JByNmrMpCdUquxcrDmlhyE57kMmIl57FNwaOVTcNeDKxrrZhu8f73p1Or6fddX1T1up/5S8yX90FTGV3YmZd9FbAG0xk92dKgPBiuW1+5yIl2KyEMA=
+	t=1729163163; cv=none; b=c2Atdkv9HWZ+URmwPQaoTaKBU+hiRLu1UsvEAOwxTlagihbQTEVrLb00sA9u0INp9AxTGSqgoIWXvfZ/zqi32HE3kwEQwKkjN5RcePRpsooknxYy8oTcYc971o0QGVlZOStucG+9Rm4ep/SxdWOg92+xWok6PhXcSIrDs7o9sy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729156665; c=relaxed/simple;
-	bh=LtUdGluhJQnO5q9WMuZrsQssfT2AVjf8JPJtouetojY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rxwJtpw4SGh56Tap/KeMjOwKHnjSERY6s+Cm53WTB7DBxu3IRQBVm7qNFKkI9iCPZPwP7l6PPwU1IKjaAtD1T2Rmd867tuWKls2iFjMBJ4swnzCsxM/+/r7WpAtiIXz4NZ4XIbDA3Wsw9ciFZy9I54DqltHso6bVvO4ypZhQwEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=OgRzISqj; arc=none smtp.client-ip=46.4.11.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-	s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=vyyN1RNPlXPbDrkywEKlZ9/QZaS+KKztH3bMbKcpF+4=; b=OgRzISqjEiT64CW5kkJjlVrIyE
-	Iv+yEA9FPWAumsPKtJ2BfmK1spk6A6bCflS2xdf8BbbgZbF7D5gCxoa8p1EpoKPgDGk8fMVtE6dZK
-	gJIhN7qKY9lhY1YAmDgBtI5kvhfSpockOoJtSQ2kNRvufy979o9fkP9Urj66qzQJCdIo=;
-Received: from p4ff13b65.dip0.t-ipconnect.de ([79.241.59.101] helo=nf.local)
-	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <nbd@nbd.name>)
-	id 1t1Md4-00Amar-0Z;
-	Thu, 17 Oct 2024 11:17:10 +0200
-Message-ID: <b5739f78-9cd5-4fd0-ae63-d80a5a37aaf0@nbd.name>
-Date: Thu, 17 Oct 2024 11:17:09 +0200
+	s=arc-20240116; t=1729163163; c=relaxed/simple;
+	bh=Y26YuhEeOV5g2D/6jd/R/t6rMuzkgD6XOXI9VxnJb7s=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sxX97Oo8W7PwaaXoWciG/pqyxAX7XVjzmB0M2iCAXboDlwgn/IG0lRazGtlzEp+D9WbPY2F14BchYzB/pjkncL1SqGXnbfKqK+Amm1jinmfRpc/5pJBAUOSnq2wODjTuBXQzhQ3/SGJmN8rQG7IjBltMxRR+tUrCRO9WJ4ScpGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XTlMQ6WL9z2DdSM;
+	Thu, 17 Oct 2024 19:04:02 +0800 (CST)
+Received: from kwepemj200016.china.huawei.com (unknown [7.202.194.28])
+	by mail.maildlp.com (Postfix) with ESMTPS id 698F61A0188;
+	Thu, 17 Oct 2024 19:05:18 +0800 (CST)
+Received: from mscphis02103.huawei.com (10.123.65.215) by
+ kwepemj200016.china.huawei.com (7.202.194.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 17 Oct 2024 19:05:16 +0800
+From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+To: <mic@digikod.net>, <gnoack@google.com>
+CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
+	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
+	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
+Subject: [RFC PATCH v2 0/8] Fix non-TCP restriction and inconsistency of TCP errors
+Date: Thu, 17 Oct 2024 19:04:46 +0800
+Message-ID: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v1 net-next 00/12] bridge-fastpath and related
- improvements
-To: Eric Woudstra <ericwouds@gmail.com>,
- Nikolay Aleksandrov <razor@blackwall.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Pablo Neira Ayuso <pablo@netfilter.org>,
- Jozsef Kadlecsik <kadlec@netfilter.org>, Roopa Prabhu <roopa@nvidia.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Jiri Pirko <jiri@resnulli.us>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Frank Wunderlich <frank-w@public-files.de>,
- Daniel Golle <daniel@makrotopia.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
- bridge@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20241013185509.4430-1-ericwouds@gmail.com>
- <9f9f3cf0-7a78-40f1-b8d5-f06a2d428210@blackwall.org>
- <a07cadd3-a8ff-4d1c-9dca-27a5dba907c3@gmail.com>
- <0b0a92f2-2e80-429c-8fcd-d4dc162e6e1f@nbd.name>
- <137aa23a-db21-43c2-8fb0-608cfe221356@gmail.com>
- <a7ab80d5-ff49-4277-ba73-db46547a8a8e@nbd.name>
- <d7d48102-4c52-4161-a21c-4d5b42539fbb@gmail.com>
-From: Felix Fietkau <nbd@nbd.name>
-Content-Language: en-US
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <d7d48102-4c52-4161-a21c-4d5b42539fbb@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: mscpeml500003.china.huawei.com (7.188.49.51) To
+ kwepemj200016.china.huawei.com (7.202.194.28)
 
-On 16.10.24 17:59, Eric Woudstra wrote:
-> 
-> 
-> On 10/15/24 9:44 PM, Felix Fietkau wrote:
->> On 15.10.24 15:32, Eric Woudstra wrote:
->>>
->>>
->>> On 10/15/24 2:16 PM, Felix Fietkau wrote:
->>>> Hi Eric,
->>>>
->>>> On 14.10.24 20:29, Eric Woudstra wrote:
->>>>> It would be no problem for me to change the subject and body, if you
->>>>> think that is better.
->>>>>
->>>>> The thing is, these patches actually make it possible to set up a fully
->>>>> functional software fastpath between bridged interfaces. Only after the
->>>>> software fastpath is set up and functional, it can be offloaded, which
->>>>> happens to by my personal motivation to write this patch-set.
->>>>>
->>>>> If the offload flag is set in the flowtable, the software fastpath will
->>>>> be offloaded. But in this patch-set, there is nothing that changes
->>>>> anything there, the existing code is used unchanged.
->>>>
->>>> FWIW, a while back, I also wanted to add a software fast path for the
->>>> bridge layer to the kernel, also with the intention of using it for
->>>> hardware offload. It wasn't accepted back then, because (if I remember
->>>> correctly) people didn't want any extra complexity in the network stack
->>>> to make the bridge layer faster.
->>>
->>> Hello Felix,
->>>
->>> I think this patch-set is a clear showcase it is not very complex at
->>> all. The core of making it possible only consists a few patches. Half of
->>> this patch-set involves improvements that also apply to the
->>> forward-fastpath.
->> 
->> It's definitely an interesting approach. How does it deal with devices
->> roaming from one bridge port to another? I couldn't find that in the code.
-> 
-> It is handled in the same manner when dealing with the forward-fastpath,
-> with the aid of conntrack. If roaming is problematic, then it would be
-> for both the forward-fastpath and the bridge-fastpath. I have a topic on
-> the banana-pi forum about this patch-set, so I think long discussions
-> about additional details we could have there, keeping the mailing list
-> more clean.
+Hello!
+This patchset provides two general fixes for TCP Landlock hooks:
 
-You forgot to include a link to the forum topic :)
+First one fixes incorrect restriction of non-TCP bind/connect actions.
+There is two commits related to testing MPTCP and SCTP protocols which were
+incorrectly restricted. SCTP implementation has invalid check for minimal
+address length in bind(2) call [1], therefore commit with SCTP testing can be
+applied later after necessary SCTP fixes.
 
-By the way, based on some reports that I received, I do believe that the 
-existing forwarding fastpath also doesn't handle roaming properly.
-I just didn't have the time to properly look into that yet.
+[1] https://lore.kernel.org/all/20241004.Hohpheipieh2@digikod.net/
+Closes: https://github.com/landlock-lsm/linux/issues/40
 
-- Felix
+Second one fixes inconsistency of errors in bind and connect hooks for
+TCP sockets. It provides per-operation helpers, which consist of a set
+of checks from the TCP network stack. Due to TCP connect(2) implementation
+it's not possible to obtain full consistency, but the unhandled cases are
+rather special scenarios that should almost should not normally appear.
+Two new tests were implemented to validate errors consistency.
+
+Diffs of second and third commits were unreadable, so I've decided to
+rewrite net.c file to simplify reviewing process.
+
+Code coverage
+=============
+Code coverage(gcov) report with the launch of net_test selftest:
+ * security/landlock/net.c:
+lines......: 98.8% (79 of 80 lines)
+functions..: 100% (8 of 8 functions)
+
+One uncovered line is documented in check_tcp_connect_consistency_and_get_port().
+
+General changes
+===============
+ * Rebases on current linux-mic/next (based on Linux v6.12-rc3)
+ * Fixes inconsistency of TCP actions errors and implements two related
+   tests.
+ * Removes SMC test suits.
+ * Adds separate commit for SCTP test suits.
+ * Adds test suits of protocol fixture for sockets created with
+   protocol=IPPROTO_TCP (C.f. socket(2)).
+
+Previous versions
+=================
+v1: https://lore.kernel.org/all/20241003143932.2431249-1-ivanov.mikhail1@huawei-partners.com/
+
+Mikhail Ivanov (8):
+  landlock: Fix non-TCP sockets restriction
+  landlock: Make network stack layer checks explicit for each TCP action
+  landlock: Fix inconsistency of errors for TCP actions
+  selftests/landlock: Test TCP accesses with protocol=IPPROTO_TCP
+  selftests/landlock: Test that MPTCP actions are not restricted
+  selftests/landlock: Test consistency of errors for TCP actions
+  landlock: Add note about errors consistency in documentation
+  selftests/landlock: Test that SCTP actions are not restricted
+
+ Documentation/userspace-api/landlock.rst    |   3 +-
+ security/landlock/net.c                     | 501 +++++++++++-------
+ tools/testing/selftests/landlock/common.h   |   1 +
+ tools/testing/selftests/landlock/config     |   4 +
+ tools/testing/selftests/landlock/net_test.c | 532 ++++++++++++++++++--
+ 5 files changed, 825 insertions(+), 216 deletions(-)
+ rewrite security/landlock/net.c (36%)
+
+
+base-commit: fe76bd133024aaef12d12a7d58fa3e8d138d3bf3
+-- 
+2.34.1
+
 
