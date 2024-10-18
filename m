@@ -1,109 +1,119 @@
-Return-Path: <netfilter-devel+bounces-4561-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4559-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2186F9A3AD9
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Oct 2024 12:06:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759CC9A3A4E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Oct 2024 11:43:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF9E51F299EA
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Oct 2024 10:06:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A6DD1C23BF3
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Oct 2024 09:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C060F1E3DE3;
-	Fri, 18 Oct 2024 10:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1838920010B;
+	Fri, 18 Oct 2024 09:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ttm/+w35"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from cmccmta1.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA06200CB1;
-	Fri, 18 Oct 2024 10:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.22.67.139
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB36B13A88A;
+	Fri, 18 Oct 2024 09:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729245975; cv=none; b=k2baaYHB+TjSnV6gBL0IKHLsBjR5BiLRghoWAfd/68mDs3dYOcodrxN2McbeURMklGxLIu7tzFjqh60OPw2K/gYhuMtQEhb0kJk5JYa3cE0m4ohcg+oG4+V11a+tArjTWL+zupFOzr6iILF74uvtSRWfa01vDD4+OLytXJv8Xjk=
+	t=1729244586; cv=none; b=odsrilnzM3z9zfAYqJ8XEY3gfQrB6l8HB48t0+pZrkgQX+fPWfHueAhLMiadRr2nozgbeRRGd5mK1myE+mhVjkTDce1PgekRPfwo02ooM9ldquBOIrc3PoGUqwy74bV3Xlu5hFacPgwood8u4cBo/lxZVPhwJDQDSS14mTzysDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729245975; c=relaxed/simple;
-	bh=3iXNkN+muYWd12s6ZYLKS7emj/P3LYE6I00jYi0PHow=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dz3fqn0Hd1RfwbxIJyRecc2qbClOuizhTnD1HObe8/e8dZ+Qlt9HyRq0+eBSaseYRZ0VGneltQilWjE8EnT+OMHKYYe+B1Cg0YIPZp/nfnLdAHWs8w1a0PEIj+j95qkoyA8x5LuRf1BHx8Mj9rjMFtDrZtOkwfVq22+RUoVnC64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com; spf=pass smtp.mailfrom=cmss.chinamobile.com; arc=none smtp.client-ip=111.22.67.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
-	by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee16712330afd5-118e4;
-	Fri, 18 Oct 2024 18:06:02 +0800 (CST)
-X-RM-TRANSID:2ee16712330afd5-118e4
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG:00000000
-Received:from localhost.localdomain.localdomain (unknown[10.55.1.69])
-	by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee46712330915d-b9138;
-	Fri, 18 Oct 2024 18:06:02 +0800 (CST)
-X-RM-TRANSID:2ee46712330915d-b9138
-From: Liu Jing <liujing@cmss.chinamobile.com>
-To: pablo@netfilter.org
-Cc: kadlec@netfilter.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	shuah@kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Liu Jing <liujing@cmss.chinamobile.com>
-Subject: [PATCH] selftests: netfilter: remove unused rplnlh parameter
-Date: Thu, 17 Oct 2024 15:25:34 +0800
-Message-Id: <20241017072534.127519-1-liujing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.27.0
+	s=arc-20240116; t=1729244586; c=relaxed/simple;
+	bh=fLIrvQDX07IoKF46VFq158a7yUx1ZCpiEymxP3YbaIA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=VNbUqM2lKi0j+r2uGLXkYhIJiUytPquwoBznAGqPgqa/OT6oPvAHZAuwUgCztZs4DFrdgG25ayd5B7hRKZIg1WjG6GhgRyUecLDgqm8w//nYdnneMbuy8c1+0HCuHlkwIR9VkT2/Oo1y/lM/w5jGY/c7pqobmlg16Q/hG7Wsfp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ttm/+w35; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0FA3C4CEC3;
+	Fri, 18 Oct 2024 09:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729244585;
+	bh=fLIrvQDX07IoKF46VFq158a7yUx1ZCpiEymxP3YbaIA=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Ttm/+w35PWgvY/wiDeBn0di87HB3K+xVy0Vh0d9yNyLgBhdSyEM/eEpRfmvfytQH+
+	 dHZKqYioESVaFmBpLh3TIR2h7oeg8XGERgD5c4WcnribPvm4CRQ75jYhPnKxUuViah
+	 YujFEaJwXZ6upg3U8XeU1JulArdlnjC8kIXN0AQuoxs2DX+lH0q/jsdEQgqAhbeyos
+	 umf+0WZAoZ46QYHNocYMECj8PDWZjcrLm47xQ7misCSIDt/2BXE7/8vG+knhT5nqDu
+	 xL73qKWGuDr/YG7ZFlGhestMkJ60RepDaEMASv4Z113IJC7R9hHhcbLIS0GttO2Mn1
+	 yez06pSMnbE/A==
+From: Simon Horman <horms@kernel.org>
+Date: Fri, 18 Oct 2024 10:42:58 +0100
+Subject: [PATCH nf-next] netfilter: bpf: Pass string literal as format
+ argument of request_module()
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241018-nf-mod-fmt-v1-1-b5a275d6861c@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAKEtEmcC/x2MQQqAIBAAvyJ7bkEtMPpKdKhcaw9qaEQg/j3pO
+ DAzBTIlpgyTKJDo4cwxNFCdgP1cw0HItjFoqQcl1YjBoY8Wnb/RaNsbKVe92Q1acCVy/P6zGZo
+ X6L1hqfUDXk1BCWUAAAA=
+To: Pablo Neira Ayuso <pablo@netfilter.org>, 
+ Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Nathan Chancellor <nathan@kernel.org>, 
+ Nick Desaulniers <ndesaulniers@google.com>, 
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+ netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+X-Mailer: b4 0.14.0
 
-The rplnlh parameter is not used in many functions, so delete it.
+Both gcc-14 and clang-18 report that passing a non-string literal as the
+format argument of request_module() is potentially insecure.
 
-Signed-off-by: Liu Jing <liujing@cmss.chinamobile.com>
+E.g. clang-18 says:
+
+.../nf_bpf_link.c:46:24: warning: format string is not a string literal (potentially insecure) [-Wformat-security]
+   46 |                 err = request_module(mod);
+      |                                      ^~~
+.../kmod.h:25:55: note: expanded from macro 'request_module'
+   25 | #define request_module(mod...) __request_module(true, mod)
+      |                                                       ^~~
+.../nf_bpf_link.c:46:24: note: treat the string as an argument to avoid this
+   46 |                 err = request_module(mod);
+      |                                      ^
+      |                                      "%s",
+.../kmod.h:25:55: note: expanded from macro 'request_module'
+   25 | #define request_module(mod...) __request_module(true, mod)
+      |                                                       ^
+
+It is always the case where the contents of mod is safe to pass as the
+format argument. That is, in my understanding, it never contains any
+format escape sequences.
+
+But, it seems better to be safe than sorry. And, as a bonus, compiler
+output becomes less verbose by addressing this issue as suggested by
+clang-18.
+
+No functional change intended.
+Compile tested only.
+
+Signed-off-by: Simon Horman <horms@kernel.org>
 ---
- tools/testing/selftests/net/netfilter/conntrack_dump_flush.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/netfilter/nf_bpf_link.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c b/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-index bd9317bf5ada..e03ddc60b5d4 100644
---- a/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-+++ b/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-@@ -96,7 +96,6 @@ static int conntrack_data_insert(struct mnl_socket *sock, struct nlmsghdr *nlh,
- 				 uint16_t zone)
- {
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
--	struct nlmsghdr *rplnlh;
- 	unsigned int portid;
- 	int err, ret;
+diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+index 5257d5e7eb09..6b9c9d71906d 100644
+--- a/net/netfilter/nf_bpf_link.c
++++ b/net/netfilter/nf_bpf_link.c
+@@ -42,7 +42,7 @@ get_proto_defrag_hook(struct bpf_nf_link *link,
+ 	hook = rcu_dereference(*ptr_global_hook);
+ 	if (!hook) {
+ 		rcu_read_unlock();
+-		err = request_module(mod);
++		err = request_module("%s", mod);
+ 		if (err)
+ 			return ERR_PTR(err < 0 ? err : -EINVAL);
  
-@@ -212,7 +211,7 @@ static int count_entries(const struct nlmsghdr *nlh, void *data)
- static int conntracK_count_zone(struct mnl_socket *sock, uint16_t zone)
- {
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
--	struct nlmsghdr *nlh, *rplnlh;
-+	struct nlmsghdr *nlh;
- 	struct nfgenmsg *nfh;
- 	struct nlattr *nest;
- 	unsigned int portid;
-@@ -259,7 +258,7 @@ static int conntracK_count_zone(struct mnl_socket *sock, uint16_t zone)
- static int conntrack_flush_zone(struct mnl_socket *sock, uint16_t zone)
- {
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
--	struct nlmsghdr *nlh, *rplnlh;
-+	struct nlmsghdr *nlh;
- 	struct nfgenmsg *nfh;
- 	struct nlattr *nest;
- 	unsigned int portid;
--- 
-2.27.0
-
-
 
 
