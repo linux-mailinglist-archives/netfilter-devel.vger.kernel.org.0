@@ -1,45 +1,46 @@
-Return-Path: <netfilter-devel+bounces-4589-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4591-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9549F9A6082
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Oct 2024 11:46:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F2B9A60D3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Oct 2024 11:57:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D1212845C5
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Oct 2024 09:46:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33B29B242D9
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Oct 2024 09:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7CC1E3DF5;
-	Mon, 21 Oct 2024 09:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172101E3DD6;
+	Mon, 21 Oct 2024 09:57:02 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7789D79CC;
-	Mon, 21 Oct 2024 09:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33D01E3DD5;
+	Mon, 21 Oct 2024 09:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729503946; cv=none; b=k4oTO3GsrHZumyFGHR0ugXcrlKBDBZtTK1l4xwfyd9pCwkZjfTZTAXuXB5csppa8a3s3DlKGFcoCSzVD72aD4HW/zvQ5QpsVeK2LoPMISrs3OTvkcJjxrKlAUhA/2B7SMsR9cnAPVelx9k9/wjIuzPdlYzvimZS8cmFCEggmiMs=
+	t=1729504622; cv=none; b=MnRZd3sKh80TD0Po09eWNy3d6W8CRVvJ3g/vs6GL7cuw4F+pgLBAaFO2hEGvdjYGszB2Wb1sUYzXwohxOh9ia8ghw5LYRQ3IGPWUj7C+qf9b3XZJkxnYurXkk2qeZEItZMfKOYiwnVLWwJuFGNQVLkfAZCq7Y6XlaQBD5hK75Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729503946; c=relaxed/simple;
-	bh=sC1Noah5XIo9ITK3vhr9wTJ8moZWb+tjbb2GJg03WW8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k+2pmGhcTR+Piyhpt2kj7Rvsn5fFBbebYWsfxee1ae0VHJwVzrBvuqreJmKvYvtehvbHawlYqIaOgP0SdtxioC1aiJ3P6n52NGtKmVE6MaYvDZTP0kIStG7xnduzGJaQBAWXgQt/KT0pVosFGjc5J9d4bDQFNOfHJvIVH/+ArrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+	s=arc-20240116; t=1729504622; c=relaxed/simple;
+	bh=WApnRZSRYctn0BYrd8y444R3i2EGibb+k3MCB64f7cc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OaHu+6vFPL+xYmvbzSThZExSdNICxMqNLhQFLndLoUL9tZMaPjSLqrexWAdzjbhDIBQsi50xCPKAZdS3tRloI10EhIE/jbUMnb8LBqtTH+9WbCgojEc2eEnTYZeYiHAsNwF12fMZHxSxMjPke5Png+A58kjkIxEsFHAeiN/F1KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=47138 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1t2p9c-009qLe-UA; Mon, 21 Oct 2024 11:56:50 +0200
+Date: Mon, 21 Oct 2024 11:56:47 +0200
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 2/2] netfilter: xtables: fix typo causing some targets not to load on IPv6
-Date: Mon, 21 Oct 2024 11:45:36 +0200
-Message-Id: <20241021094536.81487-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241021094536.81487-1-pablo@netfilter.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+	pabeni@redhat.com, edumazet@google.com, fw@strlen.de
+Subject: Re: [PATCH net 0/2] Netfilter fixes for net (v2)
+Message-ID: <ZxYlX1XW43OhdrPg@calendula>
 References: <20241021094536.81487-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -47,68 +48,25 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241021094536.81487-1-pablo@netfilter.org>
+X-Spam-Score: -1.7 (-)
 
-- There is no NFPROTO_IPV6 family for mark and NFLOG.
-- TRACE is also missing module autoload with NFPROTO_IPV6.
+Apologies for incomplete cover letter sentence, see below.
 
-This results in ip6tables failing to restore a ruleset. This issue has been
-reported by several users providing incomplete patches.
-
-Very similar to Ilya Katsnelson's patch including a missing chunk in the
-TRACE extension.
-
-Fixes: 0bfcb7b71e73 ("netfilter: xtables: avoid NFPROTO_UNSPEC where needed")
-Reported-by: Ignat Korchagin <ignat@cloudflare.com>
-Reported-by: Ilya Katsnelson <me@0upti.me>
-Reported-by: Krzysztof Olędzki <ole@ans.pl>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/xt_NFLOG.c | 2 +-
- net/netfilter/xt_TRACE.c | 1 +
- net/netfilter/xt_mark.c  | 2 +-
- 3 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/xt_NFLOG.c b/net/netfilter/xt_NFLOG.c
-index d80abd6ccaf8..6dcf4bc7e30b 100644
---- a/net/netfilter/xt_NFLOG.c
-+++ b/net/netfilter/xt_NFLOG.c
-@@ -79,7 +79,7 @@ static struct xt_target nflog_tg_reg[] __read_mostly = {
- 	{
- 		.name       = "NFLOG",
- 		.revision   = 0,
--		.family     = NFPROTO_IPV4,
-+		.family     = NFPROTO_IPV6,
- 		.checkentry = nflog_tg_check,
- 		.destroy    = nflog_tg_destroy,
- 		.target     = nflog_tg,
-diff --git a/net/netfilter/xt_TRACE.c b/net/netfilter/xt_TRACE.c
-index f3fa4f11348c..a642ff09fc8e 100644
---- a/net/netfilter/xt_TRACE.c
-+++ b/net/netfilter/xt_TRACE.c
-@@ -49,6 +49,7 @@ static struct xt_target trace_tg_reg[] __read_mostly = {
- 		.target		= trace_tg,
- 		.checkentry	= trace_tg_check,
- 		.destroy	= trace_tg_destroy,
-+		.me		= THIS_MODULE,
- 	},
- #endif
- };
-diff --git a/net/netfilter/xt_mark.c b/net/netfilter/xt_mark.c
-index f76fe04fc9a4..65b965ca40ea 100644
---- a/net/netfilter/xt_mark.c
-+++ b/net/netfilter/xt_mark.c
-@@ -62,7 +62,7 @@ static struct xt_target mark_tg_reg[] __read_mostly = {
- 	{
- 		.name           = "MARK",
- 		.revision       = 2,
--		.family         = NFPROTO_IPV4,
-+		.family         = NFPROTO_IPV6,
- 		.target         = mark_tg,
- 		.targetsize     = sizeof(struct xt_mark_tginfo2),
- 		.me             = THIS_MODULE,
--- 
-2.30.2
-
+On Mon, Oct 21, 2024 at 11:45:34AM +0200, Pablo Neira Ayuso wrote:
+[...]
+> Hi,
+> 
+> This patchset contains Netfilter fixes for net:
+> 
+> 1) syzkaller managed to triger UaF due to missing reference on netns in
+>    bpf infrastructure, from Florian Westphal.
+> 
+> 2) Fix incorrect conversion from NFPROTO_UNSPEC to NFPROTO_{IPV4,IPV6}
+>    in the following xtables targets: MARK and NFLOG. Moreover, add
+>    missing
+            ^
+     missing THIS_MODULE reference to TRACE target.
 
