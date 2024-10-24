@@ -1,87 +1,110 @@
-Return-Path: <netfilter-devel+bounces-4693-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4696-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967679AE2CA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 12:41:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DA69AEB59
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 18:03:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 227F6B218FC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 10:41:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5571A285716
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 16:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85F01C07FE;
-	Thu, 24 Oct 2024 10:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B481F76A3;
+	Thu, 24 Oct 2024 16:02:59 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A953C1C07D8
-	for <netfilter-devel@vger.kernel.org>; Thu, 24 Oct 2024 10:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4021EABDB
+	for <netfilter-devel@vger.kernel.org>; Thu, 24 Oct 2024 16:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729766469; cv=none; b=lDdNYWA80UIMS1TM2ldgTHRngEUZ0jEBsQH0MQqv50kPVE1QkmpUWzun++kWqG3SNRF8IncSQS2+ZEhsLN+RSTvkNUhRYw6OSTomcl0EnkCTtIc86sB3kQnJoYLkxbCuyWAynCvw7zb3onqQA5nh44BzUiqnrpE+9Y62og20Ho0=
+	t=1729785779; cv=none; b=E4e1eF4RqqFcaFDrxiWmFM/sKwgju3NtUnO7ILBjgHNuGK80K5gkWmqy9RU2SK7jVzhGVbZFIVCgalPXma6z9biAWWnk1mCoCWEitTiXMYKVWuus9YRBJHpVpbWqrazkKOqXR3VJieS+zlEiAndfEchbt3ztA9DiwqzZcxx/AZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729766469; c=relaxed/simple;
-	bh=D67y5SU324u6LPh3DdNNpdI20yQ6W/3eNBQY30nGw70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YuD1w4i3++MauahqObesyEbAht7sO453ZZPYIXMfS4jG3YZINxt9g1+82ks69XnKr2kN3qaFfrWkg4MEBD7ZUaKcLfmb5f/Da82VHzjQIn5UWwtdwF7ZBF2AKJsxJSUfINU4kccxhcDB2pMiKi790ZIj1rO/L1F5TXCDy3buLT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1t3vH5-00072s-Kp; Thu, 24 Oct 2024 12:41:03 +0200
-Date: Thu, 24 Oct 2024 12:41:03 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] doc: extend description of fib expression
-Message-ID: <20241024104103.GA25923@breakpoint.cc>
-References: <20241010133745.28765-1-fw@strlen.de>
- <ZwqlbhdH4Fw__daA@calendula>
- <20241018120825.GC28324@breakpoint.cc>
- <ZxeNzTZLxw1NdgL2@calendula>
+	s=arc-20240116; t=1729785779; c=relaxed/simple;
+	bh=PobYiVIDXZbWRVSyS9/4jLEUE0VpP86Xtfrhsbafd+M=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=T11r/NYN+cRbPJ1Cyy3gC2WwEpqvIwBP5683oV1mZ6tPRHVAcoO3adUirNqYCVUSq5bPyx+0nVZHLTaa1pwFHlYbSwf/XX9tBNcZE+8u69jws1poz5yaN0m9+G/c8K5xoUD01YP2aqEpvPcEtsMUsiPeC2pGvrhuj6C3qluYplY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH nft,v2 1/4] mnl: rename to mnl_seqnum_alloc() to mnl_seqnum_inc()
+Date: Thu, 24 Oct 2024 18:02:47 +0200
+Message-Id: <20241024160250.871045-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZxeNzTZLxw1NdgL2@calendula>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote> > since _OIF and _OIFNAME was restricted to prerouting, nf hookfn has NULL
-> > output interface, so there is nothing we could compare against.
-> > 
-> > Now its available in forward too so it could be selectively relaxed for
-> > this, but, what is the use case?
-> > 
-> > Do a RPF in forward, then we need to compare vs. incoming interface.
-> 
-> This is for an esoteric scenario: Policy-based routing using input
-> interface as key. The fib rule for RPF does not work from prerouting
-> because iif cannot be inferred, there is no way to know if route in
-> the reverse direction exists until the route lookup for this direction
-> is done.
+rename mnl_seqnum_alloc() to mnl_seqnum_inc().
 
-Yes, that internally sets fibs iif to the oif.
+No functional change is intended.
 
-> > But for outgoing interface, we'd do a normal route lookup, but the stack
-> > already did that for us (as packet is already being forwarded).
-> >
-> > So what would be the desired outcome for a 'fib daddr . oif' check?
-> 
-> Hm, this always evaluates true from forward and any later hook.
-> 
-> I missing now, what is the point of . oif in general?
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: no changes
 
-Its for use with the 'type' output, i.e. consult fib to determine
-the type of the daddr (multicast, broadcast etc).
+ include/mnl.h     | 2 +-
+ src/libnftables.c | 6 +++---
+ src/mnl.c         | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-I don't see an application for the fib case, with exception
-of the 'rpf lookup in forward' case.
+diff --git a/include/mnl.h b/include/mnl.h
+index c9502f328f1c..7c465d4426c4 100644
+--- a/include/mnl.h
++++ b/include/mnl.h
+@@ -8,7 +8,7 @@
+ 
+ struct mnl_socket *nft_mnl_socket_open(void);
+ 
+-uint32_t mnl_seqnum_alloc(uint32_t *seqnum);
++uint32_t mnl_seqnum_inc(uint32_t *seqnum);
+ uint32_t mnl_genid_get(struct netlink_ctx *ctx);
+ 
+ struct mnl_err {
+diff --git a/src/libnftables.c b/src/libnftables.c
+index 2834c9922486..3550961d5d0e 100644
+--- a/src/libnftables.c
++++ b/src/libnftables.c
+@@ -37,9 +37,9 @@ static int nft_netlink(struct nft_ctx *nft,
+ 	if (list_empty(cmds))
+ 		goto out;
+ 
+-	batch_seqnum = mnl_batch_begin(ctx.batch, mnl_seqnum_alloc(&seqnum));
++	batch_seqnum = mnl_batch_begin(ctx.batch, mnl_seqnum_inc(&seqnum));
+ 	list_for_each_entry(cmd, cmds, list) {
+-		ctx.seqnum = cmd->seqnum = mnl_seqnum_alloc(&seqnum);
++		ctx.seqnum = cmd->seqnum = mnl_seqnum_inc(&seqnum);
+ 		ret = do_command(&ctx, cmd);
+ 		if (ret < 0) {
+ 			netlink_io_error(&ctx, &cmd->location,
+@@ -50,7 +50,7 @@ static int nft_netlink(struct nft_ctx *nft,
+ 		num_cmds++;
+ 	}
+ 	if (!nft->check)
+-		mnl_batch_end(ctx.batch, mnl_seqnum_alloc(&seqnum));
++		mnl_batch_end(ctx.batch, mnl_seqnum_inc(&seqnum));
+ 
+ 	if (!mnl_batch_ready(ctx.batch))
+ 		goto out;
+diff --git a/src/mnl.c b/src/mnl.c
+index db53a60b43cb..c1691da2e51b 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -70,7 +70,7 @@ struct mnl_socket *nft_mnl_socket_open(void)
+ 	return nf_sock;
+ }
+ 
+-uint32_t mnl_seqnum_alloc(unsigned int *seqnum)
++uint32_t mnl_seqnum_inc(unsigned int *seqnum)
+ {
+ 	return (*seqnum)++;
+ }
+-- 
+2.30.2
 
 
