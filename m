@@ -1,40 +1,53 @@
-Return-Path: <netfilter-devel+bounces-4677-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4679-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 438D19AD78F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 00:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7CB19AD965
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 03:46:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F307F2830DF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Oct 2024 22:27:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799C2282EE4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2024 01:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDBA91FEFB3;
-	Wed, 23 Oct 2024 22:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A063A2BAEB;
+	Thu, 24 Oct 2024 01:46:54 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BE61FAC50
-	for <netfilter-devel@vger.kernel.org>; Wed, 23 Oct 2024 22:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BC52C9A;
+	Thu, 24 Oct 2024 01:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729722463; cv=none; b=B3CLntCukbp4GnOYufkmzliejywGT4I14Mf087h6p0HpAZDayVimvbuASF2SzeGibp1rvlV6SYP0fPVtMgJKcgyn5YmJCITei8RG2iOr1vqFrYfma/ftGQ2IDmoAFwnd3+NShUS4C//q+qcFDfAot1hAIIgDT5YcweE9tJKHYA8=
+	t=1729734414; cv=none; b=tPth/FTAeOrriEIk8IyN2daTQbyp57OQSHoD8O8aMmB0tIrFmjSG7vSxKR8BdsqV/FvWh8D1c6ia/7FAKPiLsh4O5fBqlxocO826HNX/eA6yQ6Ryjabseb2ANoTWwuU7tRPjWMbCfy3WQWBON13kFYjbStMLlVDXfTJ8N+cli3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729722463; c=relaxed/simple;
-	bh=WNhcHADij89nBxQp2WYPIx5AauKJeWlQC+jNJ7d7p3o=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jSdCEvsUoR6j+H/Ua5VRHtiiND3i12/uLxdXgUqT9v558wDI6O0CML8gwPCHCJgHPDJLwF5VghwaWTH+JNhujXx4irL0k0GGjhKxOszLurCMNmfFGDWfwVSQvVJUVGv7DWdW01G/soHM6GGwkaj3fD9qunoKEa8XO2WCgQntVXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 4/4] src: fix extended netlink error reporting with large set elements
-Date: Thu, 24 Oct 2024 00:27:27 +0200
-Message-Id: <20241023222727.251229-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241023222727.251229-1-pablo@netfilter.org>
-References: <20241023222727.251229-1-pablo@netfilter.org>
+	s=arc-20240116; t=1729734414; c=relaxed/simple;
+	bh=JJ3pxSuWPTEwJ9w0DNfAWH/58BCS2BCuUzUwJsNLduA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UgM6xyh0HZl4s+57hfsC7e+xsTPC66BEpH/IOqo1UUR48RVycKEz7i9HEu6Oxck82Pto+v5085TIB3t4gAl8r3Es17qfG9whl46FaOYGwkhCN5WNapTpHvqA5kXyo8P528lhHlEo8sCYUZOPlYpahSYVNa9CtEalJy+LBcmYW+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XYpdW6JlWz2FbJM;
+	Thu, 24 Oct 2024 09:45:19 +0800 (CST)
+Received: from kwepemd100023.china.huawei.com (unknown [7.221.188.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id D2ACE1A0188;
+	Thu, 24 Oct 2024 09:46:43 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ kwepemd100023.china.huawei.com (7.221.188.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 24 Oct 2024 09:46:42 +0800
+From: Dong Chenchen <dongchenchen2@huawei.com>
+To: <pablo@netfilter.org>, <kadlec@netfilter.org>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<fw@strlen.de>, <kuniyu@amazon.com>
+CC: <netfilter-devel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<yuehaibing@huawei.com>, Dong Chenchen <dongchenchen2@huawei.com>
+Subject: [PATCH net v2] net: netfilter: Fix use-after-free in get_info()
+Date: Thu, 24 Oct 2024 09:47:01 +0800
+Message-ID: <20241024014701.2086286-1-dongchenchen2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -42,186 +55,77 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100023.china.huawei.com (7.221.188.33)
 
-Large sets can expand into several netlink messages, use sequence number
-and attribute offset to correlate the set element and the error.
+ip6table_nat module unload has refcnt warning for UAF. call trace is:
 
-Update struct cmd to store the range of netlink messages that result
-from this command.
+WARNING: CPU: 1 PID: 379 at kernel/module/main.c:853 module_put+0x6f/0x80
+Modules linked in: ip6table_nat(-)
+CPU: 1 UID: 0 PID: 379 Comm: ip6tables Not tainted 6.12.0-rc4-00047-gc2ee9f594da8-dirty #205
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+RIP: 0010:module_put+0x6f/0x80
+Call Trace:
+ <TASK>
+ get_info+0x128/0x180
+ do_ip6t_get_ctl+0x6a/0x430
+ nf_getsockopt+0x46/0x80
+ ipv6_getsockopt+0xb9/0x100
+ rawv6_getsockopt+0x42/0x190
+ do_sock_getsockopt+0xaa/0x180
+ __sys_getsockopt+0x70/0xc0
+ __x64_sys_getsockopt+0x20/0x30
+ do_syscall_64+0xa2/0x1a0
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-struct nlerr_loc remains in the same size in x86_64.
+Concurrent execution of module unload and get_info() trigered the warning.
+The root cause is as follows:
 
- # nft -f set-65535.nft
- set-65535.nft:65029:22-32: Error: Could not process rule: File exists
- create element x y { 1.1.254.253 }
-                      ^^^^^^^^^^^
+cpu0				      cpu1
+module_exit
+//mod->state = MODULE_STATE_GOING
+  ip6table_nat_exit
+    xt_unregister_template
+	kfree(t)
+	//removed from templ_list
+				      getinfo()
+					  t = xt_find_table_lock
+						list_for_each_entry(tmpl, &xt_templates[af]...)
+							if (strcmp(tmpl->name, name))
+								continue;  //table not found
+							try_module_get
+						list_for_each_entry(t, &xt_net->tables[af]...)
+							return t;  //not get refcnt
+					  module_put(t->me) //uaf
+    unregister_pernet_subsys
+    //remove table from xt_net list
 
-Fixes: f8aec603aa7e ("src: initial extended netlink error reporting")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+While xt_table module was going away and has been removed from
+xt_templates list, we couldnt get refcnt of xt_table->me. Check
+module in xt_net->tables list re-traversal to fix it.
+
+Fixes: fdacd57c79b7 ("netfilter: x_tables: never register tables by default")
+Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
 ---
- include/rule.h    |  4 +++-
- src/cmd.c         |  6 ++++--
- src/libnftables.c | 12 ++++++++----
- src/mnl.c         |  9 +++++----
- src/parser_json.c |  4 ++--
- 5 files changed, 22 insertions(+), 13 deletions(-)
+ net/netfilter/x_tables.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/rule.h b/include/rule.h
-index 3fcfa445d103..48e148e6afdd 100644
---- a/include/rule.h
-+++ b/include/rule.h
-@@ -695,6 +695,7 @@ void monitor_free(struct monitor *m);
- #define NFT_NLATTR_LOC_MAX 32
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index da5d929c7c85..709840612f0d 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1269,7 +1269,7 @@ struct xt_table *xt_find_table_lock(struct net *net, u_int8_t af,
  
- struct nlerr_loc {
-+	uint32_t		seqnum;
- 	uint32_t		offset;
- 	const struct location	*location;
- };
-@@ -717,7 +718,8 @@ struct cmd {
- 	enum cmd_ops		op;
- 	enum cmd_obj		obj;
- 	struct handle		handle;
--	uint32_t		seqnum;
-+	uint32_t		seqnum_from;
-+	uint32_t		seqnum_to;
- 	union {
- 		void		*data;
- 		struct expr	*expr;
-diff --git a/src/cmd.c b/src/cmd.c
-index 78a2aa3025ed..3f5605c0ab7a 100644
---- a/src/cmd.c
-+++ b/src/cmd.c
-@@ -24,6 +24,7 @@ void cmd_add_loc(struct cmd *cmd, const struct nlmsghdr *nlh, const struct locat
- 		cmd->attr = xrealloc(cmd->attr, sizeof(struct nlerr_loc) * cmd->attr_array_len);
- 	}
+ 	/* and once again: */
+ 	list_for_each_entry(t, &xt_net->tables[af], list)
+-		if (strcmp(t->name, name) == 0)
++		if (strcmp(t->name, name) == 0 && owner == t->me)
+ 			return t;
  
-+	cmd->attr[cmd->num_attrs].seqnum = nlh->nlmsg_seq;
- 	cmd->attr[cmd->num_attrs].offset = nlh->nlmsg_len;
- 	cmd->attr[cmd->num_attrs].location = loc;
- 	cmd->num_attrs++;
-@@ -323,9 +324,10 @@ void nft_cmd_error(struct netlink_ctx *ctx, struct cmd *cmd,
- 	uint32_t i;
- 
- 	for (i = 0; i < cmd->num_attrs; i++) {
--		if (!cmd->attr[i].offset)
-+		if (!cmd->attr[i].seqnum || !cmd->attr[i].offset)
- 			break;
--		if (cmd->attr[i].offset == err->offset)
-+		if (cmd->attr[i].seqnum == err->seqnum &&
-+		    cmd->attr[i].offset == err->offset)
- 			loc = cmd->attr[i].location;
- 	}
- 
-diff --git a/src/libnftables.c b/src/libnftables.c
-index 3550961d5d0e..1df22b3cb57d 100644
---- a/src/libnftables.c
-+++ b/src/libnftables.c
-@@ -39,7 +39,7 @@ static int nft_netlink(struct nft_ctx *nft,
- 
- 	batch_seqnum = mnl_batch_begin(ctx.batch, mnl_seqnum_inc(&seqnum));
- 	list_for_each_entry(cmd, cmds, list) {
--		ctx.seqnum = cmd->seqnum = mnl_seqnum_inc(&seqnum);
-+		ctx.seqnum = cmd->seqnum_from = mnl_seqnum_inc(&seqnum);
- 		ret = do_command(&ctx, cmd);
- 		if (ret < 0) {
- 			netlink_io_error(&ctx, &cmd->location,
-@@ -47,6 +47,8 @@ static int nft_netlink(struct nft_ctx *nft,
- 					 strerror(errno));
- 			goto out;
- 		}
-+		seqnum = cmd->seqnum_to = ctx.seqnum;
-+		mnl_seqnum_inc(&seqnum);
- 		num_cmds++;
- 	}
- 	if (!nft->check)
-@@ -80,12 +82,14 @@ static int nft_netlink(struct nft_ctx *nft,
- 			cmd = list_first_entry(cmds, struct cmd, list);
- 
- 		list_for_each_entry_from(cmd, cmds, list) {
--			last_seqnum = cmd->seqnum;
--			if (err->seqnum == cmd->seqnum ||
-+			last_seqnum = cmd->seqnum_to;
-+			if ((err->seqnum >= cmd->seqnum_from &&
-+			     err->seqnum <= cmd->seqnum_to) ||
- 			    err->seqnum == batch_seqnum) {
- 				nft_cmd_error(&ctx, cmd, err);
- 				errno = err->err;
--				if (err->seqnum == cmd->seqnum) {
-+				if (err->seqnum >= cmd->seqnum_from ||
-+				    err->seqnum <= cmd->seqnum_to) {
- 					mnl_err_list_free(err);
- 					break;
- 				}
-diff --git a/src/mnl.c b/src/mnl.c
-index 42d1b0d87ec1..12a6345cbed8 100644
---- a/src/mnl.c
-+++ b/src/mnl.c
-@@ -1722,7 +1722,7 @@ static void netlink_dump_setelem_done(struct netlink_ctx *ctx)
- static int mnl_nft_setelem_batch(const struct nftnl_set *nls, struct cmd *cmd,
- 				 struct nftnl_batch *batch,
- 				 enum nf_tables_msg_types msg_type,
--				 unsigned int flags, uint32_t seqnum,
-+				 unsigned int flags, uint32_t *seqnum,
- 				 const struct expr *set,
- 				 struct netlink_ctx *ctx)
- {
-@@ -1741,7 +1741,7 @@ static int mnl_nft_setelem_batch(const struct nftnl_set *nls, struct cmd *cmd,
- next:
- 	nlh = nftnl_nlmsg_build_hdr(nftnl_batch_buffer(batch), msg_type,
- 				    nftnl_set_get_u32(nls, NFTNL_SET_FAMILY),
--				    flags, seqnum);
-+				    flags, *seqnum);
- 
- 	if (nftnl_set_is_set(nls, NFTNL_SET_TABLE)) {
-                 mnl_attr_put_strz(nlh, NFTA_SET_ELEM_LIST_TABLE,
-@@ -1774,6 +1774,7 @@ next:
- 		if (mnl_nft_attr_nest_overflow(nlh, nest1, nest2)) {
- 			mnl_attr_nest_end(nlh, nest1);
- 			mnl_nft_batch_continue(batch);
-+			mnl_seqnum_inc(seqnum);
- 			goto next;
- 		}
- 	}
-@@ -1808,7 +1809,7 @@ int mnl_nft_setelem_add(struct netlink_ctx *ctx, struct cmd *cmd,
- 	netlink_dump_set(nls, ctx);
- 
- 	err = mnl_nft_setelem_batch(nls, cmd, ctx->batch, NFT_MSG_NEWSETELEM,
--				    flags, ctx->seqnum, expr, ctx);
-+				    flags, &ctx->seqnum, expr, ctx);
- 	nftnl_set_free(nls);
- 
- 	return err;
-@@ -1868,7 +1869,7 @@ int mnl_nft_setelem_del(struct netlink_ctx *ctx, struct cmd *cmd,
- 		msg_type = NFT_MSG_DESTROYSETELEM;
- 
- 	err = mnl_nft_setelem_batch(nls, cmd, ctx->batch, msg_type, 0,
--				    ctx->seqnum, init, ctx);
-+				    &ctx->seqnum, init, ctx);
- 	nftnl_set_free(nls);
- 
- 	return err;
-diff --git a/src/parser_json.c b/src/parser_json.c
-index bbe3b1c59192..37ec34cb7796 100644
---- a/src/parser_json.c
-+++ b/src/parser_json.c
-@@ -4269,13 +4269,13 @@ static json_t *seqnum_to_json(const uint32_t seqnum)
- 		cur = json_cmd_assoc_list;
- 		json_cmd_assoc_list = cur->next;
- 
--		key = cur->cmd->seqnum % CMD_ASSOC_HSIZE;
-+		key = cur->cmd->seqnum_from % CMD_ASSOC_HSIZE;
- 		hlist_add_head(&cur->hnode, &json_cmd_assoc_hash[key]);
- 	}
- 
- 	key = seqnum % CMD_ASSOC_HSIZE;
- 	hlist_for_each_entry(cur, n, &json_cmd_assoc_hash[key], hnode) {
--		if (cur->cmd->seqnum == seqnum)
-+		if (cur->cmd->seqnum_from == seqnum)
- 			return cur->json;
- 	}
- 
+ 	module_put(owner);
 -- 
-2.30.2
+2.25.1
 
 
