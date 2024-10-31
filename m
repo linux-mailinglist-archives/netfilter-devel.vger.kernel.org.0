@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4812-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4813-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE0BB9B7844
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 11:02:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72AF99B7846
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 11:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65D33B2706B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 10:02:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 376AC288619
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 10:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF56A19A292;
-	Thu, 31 Oct 2024 10:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1603F19ABAC;
+	Thu, 31 Oct 2024 10:01:28 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1FC19925D;
-	Thu, 31 Oct 2024 10:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9CD1199FA5;
+	Thu, 31 Oct 2024 10:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730368887; cv=none; b=nDv5upVMvlFvEFRF5KHZPR9tZUkUHb/Spv1Ts37hIMZjFyVdMYcft/nKgRPKhk/9qODcGSuzDt/BfFPiaIuUax4uAvlOv8uvSEGuvTa3ZOt6HmevkXcqvwdfI1otw+KxHf6+BU2fP6LbJ3hjaeCakbEaTQ0ls4o3S/MT86gVhp4=
+	t=1730368888; cv=none; b=ocjJTyaQo/PHWJy8fR933YQ6gA3DXmZ2Jrik96MfwQFywzj6n9seV2jk+BPP12frd/0ohuUeXLKoy+U8UuwmfIC3N68bRkW1H/80b4fgkp1WKqS+qDiDEOlkrSfTNXym2YrxEd8SfwKAKCcJaPY5d229KzNGVDps6QNCNCT+J2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730368887; c=relaxed/simple;
-	bh=wVRTrWiIbds7p0oRXM3JkntNU0FVah64IXh8GSUFh9c=;
+	s=arc-20240116; t=1730368888; c=relaxed/simple;
+	bh=lLs9oUb2/8Ru36+7b/0XJXoRG2kEbMpytjl91j8SWj0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pGlspWib/uE+J6cC9Z6LfY2IydODWv6cc79+I8SBY/5tcZnTTQr5K9AKJ8DVuyY+Bp19s2/4BB3opoTJ2/PMfSeVaQ+NQpSk2l8M+G2KbLTeaCNmgZFdG1zDItH1hT5de2oNV34G4m9DbZ4pDULa4mwAbsK+r9aMHIssJKRAf/4=
+	 MIME-Version; b=gHnwgAJLHel0xFhhHRU5xV+xK3V2th+zONkXc7owha9huQWuXVyRTJIlSx5qmgdNuzusIYbM8ESIAYuoqznG34F/iL+6sx3HebvKrVp7nh+iJosBwZEWmCDACFvymxmJdLHGT+AgSthlqt5w1MmQ6fz7oEP4E9dgwxdoNNDQpjk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 1/4] selftests: netfilter: remove unused parameter
-Date: Thu, 31 Oct 2024 11:01:14 +0100
-Message-Id: <20241031100117.152995-2-pablo@netfilter.org>
+Subject: [PATCH net 2/4] netfilter: Fix use-after-free in get_info()
+Date: Thu, 31 Oct 2024 11:01:15 +0100
+Message-Id: <20241031100117.152995-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241031100117.152995-1-pablo@netfilter.org>
 References: <20241031100117.152995-1-pablo@netfilter.org>
@@ -49,47 +49,76 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Liu Jing <liujing@cmss.chinamobile.com>
+From: Dong Chenchen <dongchenchen2@huawei.com>
 
-err is never used, remove it.
+ip6table_nat module unload has refcnt warning for UAF. call trace is:
 
-Signed-off-by: Liu Jing <liujing@cmss.chinamobile.com>
+WARNING: CPU: 1 PID: 379 at kernel/module/main.c:853 module_put+0x6f/0x80
+Modules linked in: ip6table_nat(-)
+CPU: 1 UID: 0 PID: 379 Comm: ip6tables Not tainted 6.12.0-rc4-00047-gc2ee9f594da8-dirty #205
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+RIP: 0010:module_put+0x6f/0x80
+Call Trace:
+ <TASK>
+ get_info+0x128/0x180
+ do_ip6t_get_ctl+0x6a/0x430
+ nf_getsockopt+0x46/0x80
+ ipv6_getsockopt+0xb9/0x100
+ rawv6_getsockopt+0x42/0x190
+ do_sock_getsockopt+0xaa/0x180
+ __sys_getsockopt+0x70/0xc0
+ __x64_sys_getsockopt+0x20/0x30
+ do_syscall_64+0xa2/0x1a0
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Concurrent execution of module unload and get_info() trigered the warning.
+The root cause is as follows:
+
+cpu0				      cpu1
+module_exit
+//mod->state = MODULE_STATE_GOING
+  ip6table_nat_exit
+    xt_unregister_template
+	kfree(t)
+	//removed from templ_list
+				      getinfo()
+					  t = xt_find_table_lock
+						list_for_each_entry(tmpl, &xt_templates[af]...)
+							if (strcmp(tmpl->name, name))
+								continue;  //table not found
+							try_module_get
+						list_for_each_entry(t, &xt_net->tables[af]...)
+							return t;  //not get refcnt
+					  module_put(t->me) //uaf
+    unregister_pernet_subsys
+    //remove table from xt_net list
+
+While xt_table module was going away and has been removed from
+xt_templates list, we couldnt get refcnt of xt_table->me. Check
+module in xt_net->tables list re-traversal to fix it.
+
+Fixes: fdacd57c79b7 ("netfilter: x_tables: never register tables by default")
+Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+Reviewed-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- .../testing/selftests/net/netfilter/conntrack_dump_flush.c  | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/netfilter/x_tables.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c b/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-index dc056fec993b..254ff03297f0 100644
---- a/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-+++ b/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-@@ -98,7 +98,7 @@ static int conntrack_data_insert(struct mnl_socket *sock, struct nlmsghdr *nlh,
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
- 	struct nlmsghdr *rplnlh;
- 	unsigned int portid;
--	int err, ret;
-+	int ret;
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index da5d929c7c85..709840612f0d 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1269,7 +1269,7 @@ struct xt_table *xt_find_table_lock(struct net *net, u_int8_t af,
  
- 	portid = mnl_socket_get_portid(sock);
+ 	/* and once again: */
+ 	list_for_each_entry(t, &xt_net->tables[af], list)
+-		if (strcmp(t->name, name) == 0)
++		if (strcmp(t->name, name) == 0 && owner == t->me)
+ 			return t;
  
-@@ -217,7 +217,7 @@ static int conntracK_count_zone(struct mnl_socket *sock, uint16_t zone)
- 	struct nfgenmsg *nfh;
- 	struct nlattr *nest;
- 	unsigned int portid;
--	int err, ret;
-+	int ret;
- 
- 	portid = mnl_socket_get_portid(sock);
- 
-@@ -264,7 +264,7 @@ static int conntrack_flush_zone(struct mnl_socket *sock, uint16_t zone)
- 	struct nfgenmsg *nfh;
- 	struct nlattr *nest;
- 	unsigned int portid;
--	int err, ret;
-+	int ret;
- 
- 	portid = mnl_socket_get_portid(sock);
- 
+ 	module_put(owner);
 -- 
 2.30.2
 
