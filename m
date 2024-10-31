@@ -1,46 +1,50 @@
-Return-Path: <netfilter-devel+bounces-4814-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4816-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EB09B7847
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 11:02:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A809B798F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 12:20:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87E4228866E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 10:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21F1A285699
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2024 11:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1616719ABB3;
-	Thu, 31 Oct 2024 10:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DD31991CB;
+	Thu, 31 Oct 2024 11:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FEgcAG8l"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B94199936;
-	Thu, 31 Oct 2024 10:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4628479;
+	Thu, 31 Oct 2024 11:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730368888; cv=none; b=Sd/finCUGSg1QE+GFSThJzjY9vKpR//SOz9IAKaUAHIb8CyLPyfrUwNtvT8yeIs2X7DGkBf3eFbLpTN08cx3SLDEv/OfVxFHp5sjnI5NM92+3qSWjxxa/2yPBTWngJ1f/RuHMwp06pTuYc+/f3nUxjuzxQ184dgcfWgeitGj368=
+	t=1730373623; cv=none; b=IAqhrbEiNxOasGEeLXxuesfbrP9k84cObBbNjb/43r6gnJHAcPcJB7yRbIxnZL0TlTY2w+tfFimdPuCQUDkvj+A0PgkJeE2ug7TIlKh0Zz9K8z33nw7+1iPwB90sarYox4N7cOz3HiH8h4BCv40FRQszsnjLm11tRTVuPCxQ8U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730368888; c=relaxed/simple;
-	bh=n2YCcxRWAkMaCAzg5bpKKhTVz0sdILj8PWv2IcBG+lI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pZMKUGare8/73pCuLPIxmYGk/OkvUYlnMQwOy4JFWmcC8E44s0dViyra/O8LJLD+sG2SFLVwo8LDcJKOogch5KeLKrsFYVTAGvhaD1U5djpWg/XyJJrlYzsv+IQy6Vmjx7ba43V6JJE03v1yDTseqIM3iO4oVDaAVopb8KGjFLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 4/4] netfilter: nft_payload: sanitize offset and length before calling skb_checksum()
-Date: Thu, 31 Oct 2024 11:01:17 +0100
-Message-Id: <20241031100117.152995-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241031100117.152995-1-pablo@netfilter.org>
-References: <20241031100117.152995-1-pablo@netfilter.org>
+	s=arc-20240116; t=1730373623; c=relaxed/simple;
+	bh=bcUV1oO0taCkOr+m0J9rZ3aYP2Ij3NCj+Qi0cbZ1QC0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=j7rhfHTC0GBsiLQHm2WNX69suOi9qy9NylajuC2AO+kwziIJjWX6jrTSlr+y6GxS8Ded1AV9nh2c8iNJTRVpvjKr9BLYZ4/Hf+c9M+lZ/7gcV2phI2Xqm6UuGWy554uOLXKWpdsrjHQVLCR6A/VjYBDE+cPigXSfMPjqmXcuo3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FEgcAG8l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B16AC4DE09;
+	Thu, 31 Oct 2024 11:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730373623;
+	bh=bcUV1oO0taCkOr+m0J9rZ3aYP2Ij3NCj+Qi0cbZ1QC0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=FEgcAG8lUZsicgOUPX1Jm5pfpmILWtRYmPgBNS5Qybk0+KHjsW4ehPnWqZr5wHbkg
+	 jNjDp4XIztLsf5//M483Hc9cS3IL4mlN3C7/PL2Ext0sD3PLTg9feFZOCoPp+qKReK
+	 j4C7coNHzW+XHaLw+79k7yZGrdUSgk0rFbCyasoRQElHerFpwUDpi0eYo+kJoUjuzS
+	 mXE4swuI69foNZNe6eAcxvvh+oJdiK5uOiNsSut6UevSWKABdbGj5+tmpLCLkkQ3LB
+	 oJSJdKt28xt6+PZ2FD0/U8hYs8mqSMIB069ku8MLNfMPP+SQ5cRdZqZLtE7r24S5Bl
+	 UlmoyJiHWSf1Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D58380AC02;
+	Thu, 31 Oct 2024 11:20:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -48,36 +52,47 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/4] Netfilter fixes for net
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173037363103.1933707.12664103566543266487.git-patchwork-notify@kernel.org>
+Date: Thu, 31 Oct 2024 11:20:31 +0000
+References: <20241031100117.152995-1-pablo@netfilter.org>
+In-Reply-To: <20241031100117.152995-1-pablo@netfilter.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
+ netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, fw@strlen.de
 
-If access to offset + length is larger than the skbuff length, then
-skb_checksum() triggers BUG_ON().
+Hello:
 
-skb_checksum() internally subtracts the length parameter while iterating
-over skbuff, BUG_ON(len) at the end of it checks that the expected
-length to be included in the checksum calculation is fully consumed.
+This series was applied to netdev/net.git (main)
+by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-Fixes: 7ec3f7b47b8d ("netfilter: nft_payload: add packet mangling support")
-Reported-by: Slavin Liu <slavin-ayu@qq.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_payload.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Thu, 31 Oct 2024 11:01:13 +0100 you wrote:
+> Hi,
+> 
+> The following patchset contains Netfilter fixes for net:
+> 
+> 1) Remove unused parameters in conntrack_dump_flush.c used by
+>    selftests, from Liu Jing.
+> 
+> [...]
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 330609a76fb2..7dfc5343dae4 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -904,6 +904,9 @@ static void nft_payload_set_eval(const struct nft_expr *expr,
- 	    ((priv->base != NFT_PAYLOAD_TRANSPORT_HEADER &&
- 	      priv->base != NFT_PAYLOAD_INNER_HEADER) ||
- 	     skb->ip_summed != CHECKSUM_PARTIAL)) {
-+		if (offset + priv->len > skb->len)
-+			goto err;
-+
- 		fsum = skb_checksum(skb, offset, priv->len, 0);
- 		tsum = csum_partial(src, priv->len, 0);
- 
+Here is the summary with links:
+  - [net,1/4] selftests: netfilter: remove unused parameter
+    https://git.kernel.org/netdev/net/c/76342e842587
+  - [net,2/4] netfilter: Fix use-after-free in get_info()
+    https://git.kernel.org/netdev/net/c/f48d258f0ac5
+  - [net,3/4] netfilter: nf_reject_ipv6: fix potential crash in nf_send_reset6()
+    https://git.kernel.org/netdev/net/c/4ed234fe793f
+  - [net,4/4] netfilter: nft_payload: sanitize offset and length before calling skb_checksum()
+    https://git.kernel.org/netdev/net/c/d5953d680f7e
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
