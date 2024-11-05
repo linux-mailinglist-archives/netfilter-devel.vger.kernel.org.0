@@ -1,62 +1,59 @@
-Return-Path: <netfilter-devel+bounces-4913-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4914-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94FC49BD71B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Nov 2024 21:36:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36CBE9BD71C
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Nov 2024 21:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F0471F236E6
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Nov 2024 20:35:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B534EB21ADE
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Nov 2024 20:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E700C1F755A;
-	Tue,  5 Nov 2024 20:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A611F7570;
+	Tue,  5 Nov 2024 20:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dk3jzD4r"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="HflONKOD"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D21215F50
-	for <netfilter-devel@vger.kernel.org>; Tue,  5 Nov 2024 20:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDB41F5829
+	for <netfilter-devel@vger.kernel.org>; Tue,  5 Nov 2024 20:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730838952; cv=none; b=rWf6MqNRzfr0Pr4biypFF+D8wUQszcYHmG6p0bMj879QxoKulgePfI4/4LTadjby9UuO/A9pamxzMxmGri0DGh8jLV7IDyHdTU2cVS6vsYGazy3BgyBsJQ/EjW3rzbas6X6o9VCGFyPWfy9YSaP9upP7hztcLjs7oglhFa5z+sw=
+	t=1730838978; cv=none; b=lWE8NuVo4+JdZkYQk0in8v04KH6no1kvLE5t+Akb/iBdc6cXuxoX50XccEU0bvVX8FfialBFZgpXXpCHz2oR4oL/mYroz408bn96FRZ1326Roly5wTnS62MrTFI+1OrUYlNTUkw8E9JNorjN1D0lS0QBOhQS+zBbK1gI0aSO0Ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730838952; c=relaxed/simple;
-	bh=SmkYLWnMTPOJOyp3c6FvtcvWKSBoD3xoVGHV+Yyq7n8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YyQIUhAHpnoGaIS/PlN70f3dxF2pe7LsqUq2/zLqRyEI/F0jTKzeLiNR9m5DVUubLoSLPMtlZW6eClNRmgb0AdfGL8Q5gDW39RnoVBaWZcbC21CnNya3h6aRvBYGqtpuHcZ7Xe7veYYt9HG8/P68vsCJfRAKzuyri32v0vjBsJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dk3jzD4r; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1730838978; c=relaxed/simple;
+	bh=BtXdt+yHFLdkg5PHLZerZGNIWXmZWMJhss0JhLzu0kA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=jBr2/6mYnpDUZwPcXDuxM2oTMxTdJA68/VMbFaB7DfBEhom1lYPtQ+sBU6g8uPETt1DaiFG8IYWnQRzY3VwmiLy+pNOQMA5Xam22W7K5v05AnuECyTwEAmf+t2XbWEg30Heudtll6wlKXaPtUXYLLyLyM4L2hB5aMg0OtCNh6CU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=HflONKOD; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=uc2q5pZnLodLKZwZk+tserQmPD5H3rVEQV3n8/R787k=; b=dk3jzD4reMvCmrXPu9Rwlo57Ic
-	DLtTYxhAUIjuWwaoAtuUoY+JZtaUSxP4iNCR2pgq/TeFQd8X6QZRtuROf4ipRVGij8yziCLf1mbXw
-	7WeiPzyaxA28GpsVvf1sMQ6H122ZmFU4QreeFAONHFfmkwXYWYgt1Q/9zNDFjRQqOQL5BCCAvwwhh
-	hnf9g38qgESrtvHEwHuxHfaIMEacsJ18inxfa8jwRMiGexvSHFCSYL13Bxs+3AWxYWoH/d++exhdo
-	Fe9k7EHVSGRJ2GMqer/7ktTMNERGI18qGplZKYiRf+fP76Oj2dRvqJIBmvEDeOqxng0UFcO0tF0gs
-	n/JYlhZA==;
+	bh=kZHrQrav0Tq0wQssGviCZsndBZOS31/m2EPHpEbvWMU=; b=HflONKODjbr/ts0NBkYrQqGDLU
+	AZfvauGxuFSIspGfY5dj2bdW82Clo8MFCG+RTBLuE4TlpBGzWXLxRbjouvRThNyiyhKI/w2G0k2DW
+	2J22jPN5J5f7f+SRzwgwdXX8YhGgH60XJrasUdOuFXjj1CjK8emRK4rK92O4Br3QRJwJ4y6mzhwBz
+	CammLQpkY/FJ0oiLjex8lXDfdzL6eNp4+fQ4G3XuTz3FUIpM8adP8fSBx0k7jzAPT+Ebs7YPNHRZY
+	W6w5GhICzhsgU3TXwHUfPj481ZrW4NJApCSUQgoXbGGVXOglcZGDp7w1VBOmRZtUvUPTReztyCTba
+	ctK03/EA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1t8QHE-000000002vs-1cIE
+	id 1t8QHe-000000002ws-4Bdy
 	for netfilter-devel@vger.kernel.org;
-	Tue, 05 Nov 2024 21:35:48 +0100
+	Tue, 05 Nov 2024 21:36:15 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/3] tests: shell: Test ebtables-restore deleting among matches
-Date: Tue,  5 Nov 2024 21:35:43 +0100
-Message-ID: <20241105203543.10545-3-phil@nwl.cc>
+Subject: [iptables PATCH 1/2] tests: iptables-test: Properly assert rule deletion errors
+Date: Tue,  5 Nov 2024 21:36:10 +0100
+Message-ID: <20241105203611.11182-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241105203543.10545-1-phil@nwl.cc>
-References: <20241105203543.10545-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -65,39 +62,47 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rules containing among match would spuriously fail to compare if there
-was a previous rule with larger among match payload.
+Capture any non-zero return code, iptables not necessarily returns 1 on
+error.
 
+A known issue with trying to delete a rule by spec is the unsupported
+--set-counters option. Strip it before deleting the rule.
+
+Fixes: c8b7aaabbe1fc ("add iptables unit test infrastructure")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- .../ebtables/0012-restore-delete-among_0       | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
- create mode 100755 iptables/tests/shell/testcases/ebtables/0012-restore-delete-among_0
+ iptables-test.py | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/iptables/tests/shell/testcases/ebtables/0012-restore-delete-among_0 b/iptables/tests/shell/testcases/ebtables/0012-restore-delete-among_0
-new file mode 100755
-index 0000000000000..165745e169f89
---- /dev/null
-+++ b/iptables/tests/shell/testcases/ebtables/0012-restore-delete-among_0
-@@ -0,0 +1,18 @@
-+#!/bin/bash -e
+diff --git a/iptables-test.py b/iptables-test.py
+index 0d2f30dfb0d7c..413e3fdccc9e3 100755
+--- a/iptables-test.py
++++ b/iptables-test.py
+@@ -58,10 +58,23 @@ STDERR_IS_TTY = sys.stderr.isatty()
+ def delete_rule(iptables, rule, filename, lineno, netns = None):
+     '''
+     Removes an iptables rule
 +
-+case "$XT_MULTI" in
-+*xtables-nft-multi)
-+	;;
-+*)
-+	echo "skip $XT_MULTI"
-+	exit 0
-+	;;
-+esac
++    Remove any --set-counters arguments, --delete rejects them.
+     '''
++    delrule = rule.split()
++    for i in range(len(delrule)):
++        if delrule[i] in ['-c', '--set-counters']:
++            delrule.pop(i)
++            if ',' in delrule.pop(i):
++                break
++            if len(delrule) > i and delrule[i].isnumeric():
++                delrule.pop(i)
++            break
++    rule = " ".join(delrule)
 +
-+RULESET='*filter
-+-A FORWARD --among-dst de:ad:0:be:ee:ff,c0:ff:ee:0:ba:be
-+-A FORWARD --among-dst de:ad:0:be:ee:ff'
-+
-+$XT_MULTI ebtables-restore <<< "$RULESET"
-+echo "$RULESET" | sed -e 's/-A/-D/' | $XT_MULTI ebtables-restore --noflush
-+
+     cmd = iptables + " -D " + rule
+     ret = execute_cmd(cmd, filename, lineno, netns)
+-    if ret == 1:
++    if ret != 0:
+         reason = "cannot delete: " + iptables + " -I " + rule
+         print_error(reason, filename, lineno)
+         return -1
 -- 
 2.47.0
 
