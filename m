@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4962-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4966-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14ED89BFA5B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:46:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A549BFA64
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411081C21FC0
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:46:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C65291C2282E
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AF920C303;
-	Wed,  6 Nov 2024 23:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7D420E32F;
+	Wed,  6 Nov 2024 23:46:45 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FF21917D7;
-	Wed,  6 Nov 2024 23:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013911DED51;
+	Wed,  6 Nov 2024 23:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730936803; cv=none; b=cEuBfa2Ut5k1KBJZgo9oQXPYX0Gv7cOFiBKMCbEspeTEYpXTebAlT8roh8wupysPVR/y+nwwevsmPUSyd6ot4Oz44luAKuh6MqSJC9tvJZry44r6nFkeZxhLem/t/lJOOt7mhk/+d/IvU3QS9dGiDvc6+vMdq5ld5iur9nXPQRk=
+	t=1730936804; cv=none; b=rhIE7n5TtX5N9PVRKNWD8YfLs6nk6NldMFkfqrI4l8CzshUaaPrSKQyPGRY8rTG8IbiUokmyHs32eO/IoAtteCYbpbQeTmlu2k2RAQG4+JQkYNnTGqkEdt7FFdSRI0CeVhh50J2Z0wsxZeHGdBeEVsQgPX2rOfKkT9qk/3tIiAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730936803; c=relaxed/simple;
-	bh=6/MVy899qQ45oLAPpA6Mm2wuDappAXUAZWnu+IVK5So=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iVISeNmYAAlo/etKmydtQp7SnfjV3mWb9/TldZ0oNUoSYYQg0WnpajAeFveX0gcL0Ocaqo9Csgxr6zLpviB4H4LHADnwU6Hp9cgRGqN+iYiUAnxU88CocfFBe31NLnglR5GHRzle+W9X/dlAP29PzDbRQRg3NjLIyWCsQbmZUsI=
+	s=arc-20240116; t=1730936804; c=relaxed/simple;
+	bh=sDy6e0NOO8bufxr2+M672puIVSIYTU5coulkomP+7xM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=slJ8TbveAdlc91U9WjzEtDew9Gmor8f3Xtb54sBDfCmAIPCGMaDcMK6bDon5lfYKIGVOdg9pgYZCWkXd4htTiD28z8brxhhx+ztd/gybxEKF0R4NBwxw61JY+niKOaFnWyrzGbHR6VDcQzoYTXCXGZ4KJARPmiGdwzszxERdCx8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -34,10 +35,12 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 00/11] Netfilter updates for net-next
-Date: Thu,  7 Nov 2024 00:46:14 +0100
-Message-Id: <20241106234625.168468-1-pablo@netfilter.org>
+Subject: [PATCH net-next 01/11] netfilter: Make legacy configs user selectable
+Date: Thu,  7 Nov 2024 00:46:15 +0100
+Message-Id: <20241106234625.168468-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20241106234625.168468-1-pablo@netfilter.org>
+References: <20241106234625.168468-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,90 +49,99 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Breno Leitao <leitao@debian.org>
 
-The following series contains Netfilter updates for net-next:
+This option makes legacy Netfilter Kconfig user selectable, giving users
+the option to configure iptables without enabling any other config.
 
-1) Make legacy xtables configs user selectable, from Breno Leitao.
+Make the following KConfig entries user selectable:
+ * BRIDGE_NF_EBTABLES_LEGACY
+ * IP_NF_ARPTABLES
+ * IP_NF_IPTABLES_LEGACY
+ * IP6_NF_IPTABLES_LEGACY
 
-2) Fix a few sparse warnings related to percpu, from Uros Bizjak.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/bridge/netfilter/Kconfig |  8 +++++++-
+ net/ipv4/netfilter/Kconfig   | 16 ++++++++++++++--
+ net/ipv6/netfilter/Kconfig   |  9 ++++++++-
+ 3 files changed, 29 insertions(+), 4 deletions(-)
 
-3) Use strscpy_pad, from Justin Stitt.
+diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
+index 104c0125e32e..f16bbbbb9481 100644
+--- a/net/bridge/netfilter/Kconfig
++++ b/net/bridge/netfilter/Kconfig
+@@ -41,7 +41,13 @@ config NF_CONNTRACK_BRIDGE
+ 
+ # old sockopt interface and eval loop
+ config BRIDGE_NF_EBTABLES_LEGACY
+-	tristate
++	tristate "Legacy EBTABLES support"
++	depends on BRIDGE && NETFILTER_XTABLES
++	default n
++	help
++	 Legacy ebtables packet/frame classifier.
++	 This is not needed if you are using ebtables over nftables
++	 (iptables-nft).
+ 
+ menuconfig BRIDGE_NF_EBTABLES
+ 	tristate "Ethernet Bridge tables (ebtables) support"
+diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
+index 1b991b889506..ef8009281da5 100644
+--- a/net/ipv4/netfilter/Kconfig
++++ b/net/ipv4/netfilter/Kconfig
+@@ -12,7 +12,13 @@ config NF_DEFRAG_IPV4
+ 
+ # old sockopt interface and eval loop
+ config IP_NF_IPTABLES_LEGACY
+-	tristate
++	tristate "Legacy IP tables support"
++	default	n
++	select NETFILTER_XTABLES
++	help
++	  iptables is a legacy packet classifier.
++	  This is not needed if you are using iptables over nftables
++	  (iptables-nft).
+ 
+ config NF_SOCKET_IPV4
+ 	tristate "IPv4 socket lookup support"
+@@ -318,7 +324,13 @@ endif # IP_NF_IPTABLES
+ 
+ # ARP tables
+ config IP_NF_ARPTABLES
+-	tristate
++	tristate "Legacy ARPTABLES support"
++	depends on NETFILTER_XTABLES
++	default n
++	help
++	  arptables is a legacy packet classifier.
++	  This is not needed if you are using arptables over nftables
++	  (iptables-nft).
+ 
+ config NFT_COMPAT_ARP
+ 	tristate
+diff --git a/net/ipv6/netfilter/Kconfig b/net/ipv6/netfilter/Kconfig
+index f3c8e2d918e1..e087a8e97ba7 100644
+--- a/net/ipv6/netfilter/Kconfig
++++ b/net/ipv6/netfilter/Kconfig
+@@ -8,7 +8,14 @@ menu "IPv6: Netfilter Configuration"
+ 
+ # old sockopt interface and eval loop
+ config IP6_NF_IPTABLES_LEGACY
+-	tristate
++	tristate "Legacy IP6 tables support"
++	depends on INET && IPV6
++	select NETFILTER_XTABLES
++	default n
++	help
++	  ip6tables is a legacy packet classifier.
++	  This is not needed if you are using iptables over nftables
++	  (iptables-nft).
+ 
+ config NF_SOCKET_IPV6
+ 	tristate "IPv6 socket lookup support"
+-- 
+2.30.2
 
-4) Use nft_trans_elem_alloc() in catchall flush, from Florian Westphal.
-
-5) A series of 7 patches to fix false positive with CONFIG_RCU_LIST=y.
-   Florian also sees possible issue with 10 while module load/removal
-   when requesting an expression that is available via module. As for
-   patch 11, object is being updated so reference on the module already
-   exists so I don't see any real issue.
-
-   Florian says:
-
-   "Unfortunately there are many more errors, and not all are false positives.
-
-   First patches pass lockdep_commit_lock_is_held() to the rcu list traversal
-   macro so that those splats are avoided.
-
-   The last two patches are real code change as opposed to
-   'pass the transaction mutex to relax rcu check':
-
-   Those two lists are not protected by transaction mutex so could be altered
-   in parallel.
-
-   This targets nf-next because these are long-standing issues."
-
-Please, pull these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-11-07
-
-Thanks.
-
-----------------------------------------------------------------
-
-The following changes since commit f66ebf37d69cc700ca884c6a18c2258caf8b151b:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-10-03 10:05:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-24-11-07
-
-for you to fetch changes up to cddc04275f95ca3b18da5c0fb111705ac173af89:
-
-  netfilter: nf_tables: must hold rcu read lock while iterating object type list (2024-11-05 22:07:12 +0100)
-
-----------------------------------------------------------------
-netfilter pull request 24-11-07
-
-----------------------------------------------------------------
-Breno Leitao (1):
-      netfilter: Make legacy configs user selectable
-
-Florian Westphal (8):
-      netfilter: nf_tables: prefer nft_trans_elem_alloc helper
-      netfilter: nf_tables: avoid false-positive lockdep splat on rule deletion
-      netfilter: nf_tables: avoid false-positive lockdep splats with sets
-      netfilter: nf_tables: avoid false-positive lockdep splats with flowtables
-      netfilter: nf_tables: avoid false-positive lockdep splats in set walker
-      netfilter: nf_tables: avoid false-positive lockdep splats with basechain hook
-      netfilter: nf_tables: must hold rcu read lock while iterating expression type list
-      netfilter: nf_tables: must hold rcu read lock while iterating object type list
-
-Justin Stitt (1):
-      netfilter: nf_tables: replace deprecated strncpy with strscpy_pad
-
-Uros Bizjak (1):
-      netfilter: nf_tables: Fix percpu address space issues in nf_tables_api.c
-
- include/net/netfilter/nf_tables.h      |   3 +-
- net/bridge/netfilter/Kconfig           |   8 +-
- net/bridge/netfilter/nft_meta_bridge.c |   2 +-
- net/ipv4/netfilter/Kconfig             |  16 +++-
- net/ipv6/netfilter/Kconfig             |   9 ++-
- net/netfilter/nf_tables_api.c          | 132 +++++++++++++++++++--------------
- net/netfilter/nft_flow_offload.c       |   4 +-
- net/netfilter/nft_set_bitmap.c         |  10 ++-
- net/netfilter/nft_set_hash.c           |   3 +-
- 9 files changed, 119 insertions(+), 68 deletions(-)
 
