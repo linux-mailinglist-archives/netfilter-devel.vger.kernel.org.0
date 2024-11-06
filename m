@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4966-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4963-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A549BFA64
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:47:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D4569BFA5E
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C65291C2282E
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05EB61F22B8C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7D420E32F;
-	Wed,  6 Nov 2024 23:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A904E20E00D;
+	Wed,  6 Nov 2024 23:46:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013911DED51;
-	Wed,  6 Nov 2024 23:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0132D1DE4C7;
+	Wed,  6 Nov 2024 23:46:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730936804; cv=none; b=rhIE7n5TtX5N9PVRKNWD8YfLs6nk6NldMFkfqrI4l8CzshUaaPrSKQyPGRY8rTG8IbiUokmyHs32eO/IoAtteCYbpbQeTmlu2k2RAQG4+JQkYNnTGqkEdt7FFdSRI0CeVhh50J2Z0wsxZeHGdBeEVsQgPX2rOfKkT9qk/3tIiAs=
+	t=1730936803; cv=none; b=V+eAK4PQhhaAL7Y1BTwxi5DEUL7SxWPYqUkmCVJgvRFNXPki9/gcvzQSPG6REUihoqmg8ubOOdttEw4cgNgzjONc8ybwhHd2sTq0YvFae5iv+soliefNRK+y3mTQTm/qhYwkhToJITXuUjn8rntHqRTY8wWqdCMHkVAMaDdAlck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730936804; c=relaxed/simple;
-	bh=sDy6e0NOO8bufxr2+M672puIVSIYTU5coulkomP+7xM=;
+	s=arc-20240116; t=1730936803; c=relaxed/simple;
+	bh=kj4opEKkbC23Nkk+DhAR5RFISU84LX1aLJJ3F/yuDog=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=slJ8TbveAdlc91U9WjzEtDew9Gmor8f3Xtb54sBDfCmAIPCGMaDcMK6bDon5lfYKIGVOdg9pgYZCWkXd4htTiD28z8brxhhx+ztd/gybxEKF0R4NBwxw61JY+niKOaFnWyrzGbHR6VDcQzoYTXCXGZ4KJARPmiGdwzszxERdCx8=
+	 MIME-Version; b=TPkf7Cf/gAu+usSr9m93X3VmbQDRvK2tdR2zi4D6+/VbAspdpTsLv5tsFPXfTovj+A4T54oITF6CHpfoqDzl7nDzYADZ78yhZ7hPFN1ghccpiYYxozBPqcRJBKa2ct6lBipVOZJYIhXgm885ZsJI3VVfzIp64qljVHAjkT2c6nM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 01/11] netfilter: Make legacy configs user selectable
-Date: Thu,  7 Nov 2024 00:46:15 +0100
-Message-Id: <20241106234625.168468-2-pablo@netfilter.org>
+Subject: [PATCH net-next 02/11] netfilter: nf_tables: Fix percpu address space issues in nf_tables_api.c
+Date: Thu,  7 Nov 2024 00:46:16 +0100
+Message-Id: <20241106234625.168468-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241106234625.168468-1-pablo@netfilter.org>
 References: <20241106234625.168468-1-pablo@netfilter.org>
@@ -49,98 +49,88 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Breno Leitao <leitao@debian.org>
+From: Uros Bizjak <ubizjak@gmail.com>
 
-This option makes legacy Netfilter Kconfig user selectable, giving users
-the option to configure iptables without enabling any other config.
+Compiling nf_tables_api.c results in several sparse warnings:
 
-Make the following KConfig entries user selectable:
- * BRIDGE_NF_EBTABLES_LEGACY
- * IP_NF_ARPTABLES
- * IP_NF_IPTABLES_LEGACY
- * IP6_NF_IPTABLES_LEGACY
+nf_tables_api.c:2077:31: warning: incorrect type in return expression (different address spaces)
+nf_tables_api.c:2080:31: warning: incorrect type in return expression (different address spaces)
+nf_tables_api.c:2084:31: warning: incorrect type in return expression (different address spaces)
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
+nf_tables_api.c:2740:23: warning: incorrect type in assignment (different address spaces)
+nf_tables_api.c:2752:38: warning: incorrect type in assignment (different address spaces)
+nf_tables_api.c:2798:21: warning: incorrect type in argument 1 (different address spaces)
+
+Use {ERR_PTR,IS_ERR,PTR_ERR}_PCPU() macros when crossing between generic
+and percpu address spaces and add __percpu annotation to *stats pointer
+to fix these warnings.
+
+Found by GCC's named address space checks.
+
+There were no changes in the resulting object files.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/bridge/netfilter/Kconfig |  8 +++++++-
- net/ipv4/netfilter/Kconfig   | 16 ++++++++++++++--
- net/ipv6/netfilter/Kconfig   |  9 ++++++++-
- 3 files changed, 29 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
-index 104c0125e32e..f16bbbbb9481 100644
---- a/net/bridge/netfilter/Kconfig
-+++ b/net/bridge/netfilter/Kconfig
-@@ -41,7 +41,13 @@ config NF_CONNTRACK_BRIDGE
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index a24fe62650a7..6552ec616745 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2082,14 +2082,14 @@ static struct nft_stats __percpu *nft_stats_alloc(const struct nlattr *attr)
+ 	err = nla_parse_nested_deprecated(tb, NFTA_COUNTER_MAX, attr,
+ 					  nft_counter_policy, NULL);
+ 	if (err < 0)
+-		return ERR_PTR(err);
++		return ERR_PTR_PCPU(err);
  
- # old sockopt interface and eval loop
- config BRIDGE_NF_EBTABLES_LEGACY
--	tristate
-+	tristate "Legacy EBTABLES support"
-+	depends on BRIDGE && NETFILTER_XTABLES
-+	default n
-+	help
-+	 Legacy ebtables packet/frame classifier.
-+	 This is not needed if you are using ebtables over nftables
-+	 (iptables-nft).
+ 	if (!tb[NFTA_COUNTER_BYTES] || !tb[NFTA_COUNTER_PACKETS])
+-		return ERR_PTR(-EINVAL);
++		return ERR_PTR_PCPU(-EINVAL);
  
- menuconfig BRIDGE_NF_EBTABLES
- 	tristate "Ethernet Bridge tables (ebtables) support"
-diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
-index 1b991b889506..ef8009281da5 100644
---- a/net/ipv4/netfilter/Kconfig
-+++ b/net/ipv4/netfilter/Kconfig
-@@ -12,7 +12,13 @@ config NF_DEFRAG_IPV4
+ 	newstats = netdev_alloc_pcpu_stats(struct nft_stats);
+ 	if (newstats == NULL)
+-		return ERR_PTR(-ENOMEM);
++		return ERR_PTR_PCPU(-ENOMEM);
  
- # old sockopt interface and eval loop
- config IP_NF_IPTABLES_LEGACY
--	tristate
-+	tristate "Legacy IP tables support"
-+	default	n
-+	select NETFILTER_XTABLES
-+	help
-+	  iptables is a legacy packet classifier.
-+	  This is not needed if you are using iptables over nftables
-+	  (iptables-nft).
+ 	/* Restore old counters on this cpu, no problem. Per-cpu statistics
+ 	 * are not exposed to userspace.
+@@ -2533,10 +2533,10 @@ static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
  
- config NF_SOCKET_IPV4
- 	tristate "IPv4 socket lookup support"
-@@ -318,7 +324,13 @@ endif # IP_NF_IPTABLES
+ 		if (nla[NFTA_CHAIN_COUNTERS]) {
+ 			stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
+-			if (IS_ERR(stats)) {
++			if (IS_ERR_PCPU(stats)) {
+ 				nft_chain_release_hook(&hook);
+ 				kfree(basechain);
+-				return PTR_ERR(stats);
++				return PTR_ERR_PCPU(stats);
+ 			}
+ 			rcu_assign_pointer(basechain->stats, stats);
+ 		}
+@@ -2650,7 +2650,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 	struct nft_table *table = ctx->table;
+ 	struct nft_chain *chain = ctx->chain;
+ 	struct nft_chain_hook hook = {};
+-	struct nft_stats *stats = NULL;
++	struct nft_stats __percpu *stats = NULL;
+ 	struct nft_hook *h, *next;
+ 	struct nf_hook_ops *ops;
+ 	struct nft_trans *trans;
+@@ -2746,8 +2746,8 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 		}
  
- # ARP tables
- config IP_NF_ARPTABLES
--	tristate
-+	tristate "Legacy ARPTABLES support"
-+	depends on NETFILTER_XTABLES
-+	default n
-+	help
-+	  arptables is a legacy packet classifier.
-+	  This is not needed if you are using arptables over nftables
-+	  (iptables-nft).
- 
- config NFT_COMPAT_ARP
- 	tristate
-diff --git a/net/ipv6/netfilter/Kconfig b/net/ipv6/netfilter/Kconfig
-index f3c8e2d918e1..e087a8e97ba7 100644
---- a/net/ipv6/netfilter/Kconfig
-+++ b/net/ipv6/netfilter/Kconfig
-@@ -8,7 +8,14 @@ menu "IPv6: Netfilter Configuration"
- 
- # old sockopt interface and eval loop
- config IP6_NF_IPTABLES_LEGACY
--	tristate
-+	tristate "Legacy IP6 tables support"
-+	depends on INET && IPV6
-+	select NETFILTER_XTABLES
-+	default n
-+	help
-+	  ip6tables is a legacy packet classifier.
-+	  This is not needed if you are using iptables over nftables
-+	  (iptables-nft).
- 
- config NF_SOCKET_IPV6
- 	tristate "IPv6 socket lookup support"
+ 		stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
+-		if (IS_ERR(stats)) {
+-			err = PTR_ERR(stats);
++		if (IS_ERR_PCPU(stats)) {
++			err = PTR_ERR_PCPU(stats);
+ 			goto err_hooks;
+ 		}
+ 	}
 -- 
 2.30.2
 
