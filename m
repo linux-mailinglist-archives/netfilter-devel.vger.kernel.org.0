@@ -1,59 +1,62 @@
-Return-Path: <netfilter-devel+bounces-4953-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4955-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4BDD9BF376
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 17:42:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E919BF37A
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 17:42:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CB251F20AA7
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 16:42:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 564A1B23FC1
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 16:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361A920513F;
-	Wed,  6 Nov 2024 16:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F63204F76;
+	Wed,  6 Nov 2024 16:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Zp9lfKlC"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="oTc+t/f6"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F4E13C67C
-	for <netfilter-devel@vger.kernel.org>; Wed,  6 Nov 2024 16:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8342420408D
+	for <netfilter-devel@vger.kernel.org>; Wed,  6 Nov 2024 16:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730911367; cv=none; b=NhJhoBIgBPtcqJaU2de2tDun1Sx1MhrZ2gYbIjKsZZUHvFQZ5Za6QBkOZ8wOdK2moYd66yrqIVl1X/s/DHHdByYgx/aFfL0DGkWYFfKrqEwf7kHYhjo9CVa1vhsroLp3XPO3kfzUZfIlziDOQ+UhtEK6F1e1N83U1fQJWDaFeRw=
+	t=1730911368; cv=none; b=YM6FJ7c1q1elNrEzu4ZwzhFIDKpkwG7nN0azz5cNfgzuyIYoSc84YTHohIJMpp5o9qRWF8ki9NAL6rh8pY5bvBiuqyNJcvczBDSClRHXCYgVEkp5F2kYsZgBBwZ1izFQaOvTdiWyFe/0bzpKKX25yGdzsjru6CVd6KNJWIwcCEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730911367; c=relaxed/simple;
-	bh=ljqzVcnu61wG/tWomQqyPQ/A1Y0zLh9zpJJNiz0b7BI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=oYMi462zIRmjTPAz+eaz80tnOLBy0oN+9r8oTVDWRuAyryX5+rn8yRMLW9bXi/xGw64VcRxbK202UPU8U4seOuEEbZYPRUeaIh9SOyUU2ZrT1TiNKZsXNiQPmQaiSsWIvIBgwCzMAUnmtw4b8yfR9X1MKuEs1dUASeh/EGkHmwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Zp9lfKlC; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1730911368; c=relaxed/simple;
+	bh=cDqrYMgQCReT2+/nC2aCv4YEpEVFUwGWbcHXs9xDagg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=V0Q+++UzSZtY0hJuFc/4D0xI6Ybto4Py1FL0p2Aibg0kXDlpQzrT3TO1CtkAAumB6kHDiyiBNeooRAM57Wu2lcxtnsEYjKZzhG8rm40nK8TmXGrsnZp2vCa8iiU4H/zK7jvURID6JxX6cCcvIrA62vhCgfED2C0TOdlpot9EI7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=oTc+t/f6; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=fihzXb6abj/sD++g6BjFlBPmhwbcL8TQpHn/E9tGni0=; b=Zp9lfKlCjiaXXLHM1ujjWn3pwI
-	He9UiguURV76uQV5yhJqWDAoMz8XSAJGJDHM3B4wXKPKOtQUUOdJTLPH4FHbop0uW5TBHZLz6ghUv
-	HihGoZoqOvgFJQgyXgi1gMEYXTZX3ep89sadsKtCa6eB29rxdQI/5gEk0Yjxl137VeOYGSa1WUxbs
-	8L5slw2tPZcXI8kH7J7ym+P4p1xkUl659BRD/PTuVD5isb93Fon4IhwrC3ma82UtFKA22Rq3CeUP1
-	oAVBu9a1F5Jkq18Mx5fEt7XNR4PJQqu4u/MZ7pnAK7jZyg9+F2BmXuoRczVDk2lRIyMRilsq/rUsp
-	hgjZLa7Q==;
+	bh=NXUWLLwQ7GRlMj82sr4gVTLukl1vokPSqU634JQ1cO0=; b=oTc+t/f61kCsQk+Xui1RswX+4r
+	+T4SwdZHt4AWiadWtYT0MkUOviu8G7YNbvqTicQlfd5A2Jt8d7YC+exooxXOjTCpfPtn5eeLHSkCg
+	AGSTiW+y38oYrqdF2tUb+OKtxxKX6IpsK2RJADQrpE2s/4I2gZOQFMipohMPZmYQbEJLVl7yiCZwy
+	2yilW3P+mq6eOxEBt71jo4dAc+ta5YTCt4Xi8Slnw54TeuKoRMgFuq77Tzha+2IPZbr2mc2S4Kkeq
+	WpPny5AOKEZpORNpWPj8sQhlmWtddfJzh+It95pJjfP9FsH+PF+ktlEIcPNSF8GUy9krM6lKgD08Y
+	rV50YyKQ==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1t8j76-000000005Ou-2eOK
+	id 1t8j78-000000005P9-1EZO
 	for netfilter-devel@vger.kernel.org;
-	Wed, 06 Nov 2024 17:42:36 +0100
+	Wed, 06 Nov 2024 17:42:38 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/5] tests: shell: iptables/0010-wait_0 is unreliable
-Date: Wed,  6 Nov 2024 17:42:28 +0100
-Message-ID: <20241106164232.3384-1-phil@nwl.cc>
+Subject: [iptables PATCH 2/5] tests: shell: Print escape sequences with terminals only
+Date: Wed,  6 Nov 2024 17:42:29 +0100
+Message-ID: <20241106164232.3384-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20241106164232.3384-1-phil@nwl.cc>
+References: <20241106164232.3384-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -62,29 +65,36 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Sometimes the test would fail, especially after removing
-/run/xtables.lock file. Looks like the supposedly blocking
-iptables-restore coproc sometimes takes a moment to set things up.
+If stdout is not a terminal, don't print the '[EXECUTING]' status line
+which has to be cleared again.
 
-Fixes: 63ab5b8906f69 ("iptables-legacy: Fix for mandatory lock waiting")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/tests/shell/testcases/iptables/0010-wait_0 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ iptables/tests/shell/run-tests.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/iptables/tests/shell/testcases/iptables/0010-wait_0 b/iptables/tests/shell/testcases/iptables/0010-wait_0
-index 4481f966ce435..37a7a58fc5dca 100755
---- a/iptables/tests/shell/testcases/iptables/0010-wait_0
-+++ b/iptables/tests/shell/testcases/iptables/0010-wait_0
-@@ -11,7 +11,7 @@ esac
+diff --git a/iptables/tests/shell/run-tests.sh b/iptables/tests/shell/run-tests.sh
+index 2ad259c21644c..565b654e9f134 100755
+--- a/iptables/tests/shell/run-tests.sh
++++ b/iptables/tests/shell/run-tests.sh
+@@ -165,7 +165,7 @@ do_test() {
  
- coproc RESTORE { $XT_MULTI iptables-restore; }
- echo "*filter" >&${RESTORE[1]}
--
-+sleep 0.5
+ 	rc_spec=`echo $(basename ${testfile}) | cut -d _ -f2-`
  
- $XT_MULTI iptables -A FORWARD -j ACCEPT &
- ipt_pid=$!
+-	msg_info "[EXECUTING]   $testfile"
++	[ -t 1 ] && msg_info "[EXECUTING]   $testfile"
+ 
+ 	if [ "$VERBOSE" = "y" ]; then
+ 		XT_MULTI=$xtables_multi unshare -n ${testfile}
+@@ -173,7 +173,7 @@ do_test() {
+ 	else
+ 		XT_MULTI=$xtables_multi unshare -n ${testfile} > /dev/null 2>&1
+ 		rc_got=$?
+-		echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
++		[ -t 1 ] && echo -en "\033[1A\033[K" # clean the [EXECUTING] foobar line
+ 	fi
+ 
+ 	if [ "$rc_got" == "$rc_spec" ] ; then
 -- 
 2.47.0
 
