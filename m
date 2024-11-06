@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-4954-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4956-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13A09BF377
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 17:42:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3779BF378
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 17:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2DC01C21F4B
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 16:42:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30DC81F210A4
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 16:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7621D205AC7;
-	Wed,  6 Nov 2024 16:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0DE3205E0C;
+	Wed,  6 Nov 2024 16:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="cAbCRqWw"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="jJND9TUx"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8347F204F76
-	for <netfilter-devel@vger.kernel.org>; Wed,  6 Nov 2024 16:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54176204F94
+	for <netfilter-devel@vger.kernel.org>; Wed,  6 Nov 2024 16:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730911367; cv=none; b=GnWfAnphcKIZEuwpRcPh7QQiP88Ug79Orsz9uRsf/CId1b7aiz7eA7XntCOwBuPDo4l+pkD+SgJRt5Mw/m45+iXl/FZPe0AlxepxHUtOCIV30NI4B/eiZHP+nhI8Zo4mL6JK78bMNfWaaQo5/AsHDC2p+HZuTgxfLBtI3sMSjUo=
+	t=1730911368; cv=none; b=jic2bEnJjwP1MGQ1zjMQHEn/dTVntEqoC0cvTz4IY75i5qX6iMiFG+gxgBDaYgtzDyIfXHNA17IAb7shz+3zJUURgQllwy5X3b22W8H3R6DK31h8wYbsZy76M7qekWJl1eudx0XPnZC9hDQAvkp1le106T5I4qLBxPoY8M6zn2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730911367; c=relaxed/simple;
-	bh=/TdvhV+DvjjV5g9DKdRFP+ZEmPAQmC0xuGrUBcyz+N0=;
+	s=arc-20240116; t=1730911368; c=relaxed/simple;
+	bh=VHm+zxD+9dcuMBPyVIwLn5GeHISHVDrFQBifQRg1DIY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rc0gY1d+fGR+ZH0nWGOVht/fvv0/mcLvOff9Dr0Wa0Caaztnb5f7kc763pXsqVOKHepsh5UspUx3RVbT4gaWdjj33tbyOgCkT2jfhZ96TpTLFRWoRjDGzvuDlUNffvSuj8gsjxZmhEP/E6LUOFfH511W7nG0dGVxMMJjJR1WWoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=cAbCRqWw; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=NrYcai1FURQi80Hxd/h+RmY49o/KsgMNNVPaiIT+I0/1/nKQtmyawoLfjEYj3NDkOXfrochdR8JXdfrFb2xIoWH2c52JEt3whFaeyyFLGPyCsivXtYVGwGutp/u7R/eLn136QuLscIqPb8VFTBbIBCj6aC2S5lKGHRxmTe9kVkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=jJND9TUx; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,23 +37,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=aNOrLLimL9kTESuQ7Oj5amxku+BTZaKjRcHWdtzgWAI=; b=cAbCRqWwTUSBtTMZlc4lUfp+fH
-	LhTpIwxVAw1L/xpMSyvkFwIZbWxaMl4dBB7XjMCoHy8kdOIClgo+5usf8ttXxY3v8g6aJK6nqAOt5
-	uzxwuD7WYqUoxGX7o4f5qgk24JEvgLlHEWWRx9bHlrXVo7Kdnc4ceOtYy6PWov3Ik58iI9jPMZs0D
-	hRSkjOF2XWureMw4ol0qdjbc23ntpnyXCjmTk2TDpqJhyhSmTuEGyTMGGKDEdb1KIXc65PUdPF50d
-	D/eHFas7PFlbZ7+3YmoOEiWKmHI7/jepvGJ+6dn7TwKbVjLRKupbo3ZT5EmEEDk5H+ibzlG7QsJ22
-	FcYXVmvA==;
+	bh=tyIkU1Ig/MT+ZMqvM5Yf01oljtjCNhqh2pmM7nCaq64=; b=jJND9TUxAHQagyPhAxG1THxdZf
+	VUl0UOzuqnRfnsdj1B5TNzrLeswLSz/YlEbyp3v1hsSuXkNp5JY87jPB8iDU4K4FIrw93bVL1yfiS
+	bY1F3oX2AsCjOKLDAcQ7PyFReVjL4E41F+CF21+5qQCrpzmgpDyhc7jI6AZBlmVAWo6p1TidRmD7h
+	H3GrEZDfImP+LQ9PCKRi5D+wZdJBSVGTTrpDwmpRzWyW+gl20zHxEhIpMY6Y41h/SYaRY1SN4PXIH
+	mcWOWpMh64owAQkfZEKihW31dlhK8XZCLtUr368+VKwK8j9+aS5sh98fADLuoCHhXeLC1NOX1ZMaz
+	1qMxP3QA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1t8j77-000000005P5-3BHn
+	id 1t8j78-000000005PD-3TK8
 	for netfilter-devel@vger.kernel.org;
-	Wed, 06 Nov 2024 17:42:37 +0100
+	Wed, 06 Nov 2024 17:42:38 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/5] tests: xlate-test: Fix for 'make distcheck'
-Date: Wed,  6 Nov 2024 17:42:31 +0100
-Message-ID: <20241106164232.3384-4-phil@nwl.cc>
+Subject: [iptables PATCH 5/5] Makefile.am: Revert to old serial test harness
+Date: Wed,  6 Nov 2024 17:42:32 +0100
+Message-ID: <20241106164232.3384-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241106164232.3384-1-phil@nwl.cc>
 References: <20241106164232.3384-1-phil@nwl.cc>
@@ -65,31 +65,29 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Similar problem as with the other suites: The build directory does not
-contain test cases, only build results.
+Running the different testsuites in parallel is dangerous since despite
+running in different netns, legacy iptables still synchronizes via the
+common XTABLES_LOCKFILE.
 
+Fixes: e1eaa04e31e44 ("Makefile.am: Integrate testsuites")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- xlate-test.py | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/xlate-test.py b/xlate-test.py
-index b6a78bb250e27..1c8cfe71ffd46 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -188,8 +188,10 @@ xtables_nft_multi = 'xtables-nft-multi'
+diff --git a/Makefile.am b/Makefile.am
+index 299ab46d7b8e2..d0ba059c00110 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,7 +1,7 @@
+ # -*- Makefile -*-
  
- def load_test_files():
-     test_files = total_tests = total_passed = total_error = total_failed = 0
--    tests = sorted(os.listdir("extensions"))
--    for test in ['extensions/' + f for f in tests if f.endswith(".txlate")]:
-+    tests_path = os.path.join(os.path.dirname(sys.argv[0]), "extensions")
-+    tests = sorted(os.listdir(tests_path))
-+    for test in [os.path.join(tests_path, f)
-+                 for f in tests if f.endswith(".txlate")]:
-         with open(test, "r") as payload:
-             tests, passed, failed, errors = run_test(test, payload)
-             test_files += 1
+ ACLOCAL_AMFLAGS  = -I m4
+-AUTOMAKE_OPTIONS = foreign subdir-objects dist-xz no-dist-gzip
++AUTOMAKE_OPTIONS = foreign subdir-objects dist-xz no-dist-gzip serial-tests
+ 
+ SUBDIRS          = libiptc libxtables
+ if ENABLE_DEVEL
 -- 
 2.47.0
 
