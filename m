@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4970-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4967-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 648219BFA6C
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:47:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817249BFA65
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F4202B21F28
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:47:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46E83284593
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2C220F5B0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189A720EA46;
 	Wed,  6 Nov 2024 23:46:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A99F20E306;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A94320E305;
 	Wed,  6 Nov 2024 23:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730936806; cv=none; b=XWylYeQeQygopIel9xAYi7zrHpOoVmaGg80ige+DKpiaqJuAKzrUDTv1cgwJZ7qAoFTVpUgGDK6C2LlmMdE+lhPXpkCZTMQc80yPz3PfU4uNZIcDQHEKUjlWWCM91bJs08PDBMoUPkDnAsKnhRagqFnGtT/VM+ZElaStpOqKWbU=
+	t=1730936806; cv=none; b=bgJG5vnqnQCknpE038T79fVzfKmL7DHvIchlbBhNuWOifn3B6F36mVomBIoRYMrkYufCmomunsiT1wDMywMJsyF9igInTPMmL7lpIwe+bLFMbZNBE0ctWeW5ztgQuq60GO7FtseiG5xCR96nlPutEdS6sLWMYlQdf9xsw7D4Ueg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1730936806; c=relaxed/simple;
-	bh=lmA1M+nRgDRNH7jgOfdg8eDIR/GW143ObDBeIRDcuN8=;
+	bh=s2uMFqYfZw4cZRLKB4QAB/WB93KA64y+fuCGv46XHVU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TEh/UbFT0gNp5E7Ov4TEKzUNNvUMrjgz37TowaWxYljRPrd+swoS2YVjMHErFA+XUM21UGC2CBxD2B9vv2746WbPAnV2K1poTIr/4vL3iDldSaXFbJL5ri9YBbSBaSmTZO9u2pMoI+zBdHSrVGaNEN4yrclZ+psbcj8hK1FLRmQ=
+	 MIME-Version; b=eGBMt9G+iVSPuHssfkIQEZpl38MHCmMkeUguhIHbVG58llwPkx5CeuKt73LpZGNzfqBKH2eJzFlulkfZuGy90LrwG4fIDOFEWl7slaQp7MpAfhhbwxZcOya3JHquNklBxo/CTdU9UpW9xQ6gacq+S9u/MDCgX90ICRpPHfR2oPk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 05/11] netfilter: nf_tables: avoid false-positive lockdep splat on rule deletion
-Date: Thu,  7 Nov 2024 00:46:19 +0100
-Message-Id: <20241106234625.168468-6-pablo@netfilter.org>
+Subject: [PATCH net-next 06/11] netfilter: nf_tables: avoid false-positive lockdep splats with sets
+Date: Thu,  7 Nov 2024 00:46:20 +0100
+Message-Id: <20241106234625.168468-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241106234625.168468-1-pablo@netfilter.org>
 References: <20241106234625.168468-1-pablo@netfilter.org>
@@ -51,125 +51,125 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-On rule delete we get:
- WARNING: suspicious RCU usage
- net/netfilter/nf_tables_api.c:3420 RCU-list traversed in non-reader section!!
- 1 lock held by iptables/134:
-   #0: ffff888008c4fcc8 (&nft_net->commit_mutex){+.+.}-{3:3}, at: nf_tables_valid_genid (include/linux/jiffies.h:101) nf_tables
+Same as previous patch.  All set handling functions here can be called
+with transaction mutex held (but not the rcu read lock).
 
-Code is fine, no other CPU can change the list because we're holding
-transaction mutex.
+The transaction mutex prevents concurrent add/delete, so this is fine.
 
-Pass the needed lockdep annotation to the iterator and fix
-two comments for functions that are no longer restricted to rcu-only
-context.
-
-This is enough to resolve rule delete, but there are several other
-missing annotations, added in followup-patches.
-
-Fixes: 28875945ba98 ("rcu: Add support for consolidated-RCU reader checking")
-Reported-by: Matthieu Baerts <matttbe@kernel.org>
-Tested-by: Matthieu Baerts <matttbe@kernel.org>
-Closes: https://lore.kernel.org/netfilter-devel/da27f17f-3145-47af-ad0f-7fd2a823623e@kernel.org/
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ net/netfilter/nf_tables_api.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 30331688301e..80c285ac7e07 100644
+index 80c285ac7e07..a51731d76401 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -3411,13 +3411,15 @@ void nft_expr_destroy(const struct nft_ctx *ctx, struct nft_expr *expr)
-  * Rules
-  */
+@@ -3986,7 +3986,8 @@ int nft_set_catchall_validate(const struct nft_ctx *ctx, struct nft_set *set)
+ 	struct nft_set_ext *ext;
+ 	int ret = 0;
  
--static struct nft_rule *__nft_rule_lookup(const struct nft_chain *chain,
-+static struct nft_rule *__nft_rule_lookup(const struct net *net,
-+					  const struct nft_chain *chain,
- 					  u64 handle)
+-	list_for_each_entry_rcu(catchall, &set->catchall_list, list) {
++	list_for_each_entry_rcu(catchall, &set->catchall_list, list,
++				lockdep_commit_lock_is_held(ctx->net)) {
+ 		ext = nft_set_elem_ext(set, catchall->elem);
+ 		if (!nft_set_elem_active(ext, dummy_iter.genmask))
+ 			continue;
+@@ -4459,7 +4460,8 @@ static const struct nla_policy nft_set_desc_policy[NFTA_SET_DESC_MAX + 1] = {
+ 	[NFTA_SET_DESC_CONCAT]		= NLA_POLICY_NESTED_ARRAY(nft_concat_policy),
+ };
+ 
+-static struct nft_set *nft_set_lookup(const struct nft_table *table,
++static struct nft_set *nft_set_lookup(const struct net *net,
++				      const struct nft_table *table,
+ 				      const struct nlattr *nla, u8 genmask)
  {
- 	struct nft_rule *rule;
- 
- 	// FIXME: this sucks
--	list_for_each_entry_rcu(rule, &chain->rules, list) {
-+	list_for_each_entry_rcu(rule, &chain->rules, list,
-+				lockdep_commit_lock_is_held(net)) {
- 		if (handle == rule->handle)
- 			return rule;
- 	}
-@@ -3425,13 +3427,14 @@ static struct nft_rule *__nft_rule_lookup(const struct nft_chain *chain,
- 	return ERR_PTR(-ENOENT);
- }
- 
--static struct nft_rule *nft_rule_lookup(const struct nft_chain *chain,
-+static struct nft_rule *nft_rule_lookup(const struct net *net,
-+					const struct nft_chain *chain,
- 					const struct nlattr *nla)
- {
+ 	struct nft_set *set;
+@@ -4467,7 +4469,8 @@ static struct nft_set *nft_set_lookup(const struct nft_table *table,
  	if (nla == NULL)
  		return ERR_PTR(-EINVAL);
  
--	return __nft_rule_lookup(chain, be64_to_cpu(nla_get_be64(nla)));
-+	return __nft_rule_lookup(net, chain, be64_to_cpu(nla_get_be64(nla)));
- }
+-	list_for_each_entry_rcu(set, &table->sets, list) {
++	list_for_each_entry_rcu(set, &table->sets, list,
++				lockdep_commit_lock_is_held(net)) {
+ 		if (!nla_strcmp(nla, set->name) &&
+ 		    nft_active_genmask(set, genmask))
+ 			return set;
+@@ -4517,7 +4520,7 @@ struct nft_set *nft_set_lookup_global(const struct net *net,
+ {
+ 	struct nft_set *set;
  
- static const struct nla_policy nft_rule_policy[NFTA_RULE_MAX + 1] = {
-@@ -3732,7 +3735,7 @@ static int nf_tables_dump_rules_done(struct netlink_callback *cb)
- 	return 0;
- }
+-	set = nft_set_lookup(table, nla_set_name, genmask);
++	set = nft_set_lookup(net, table, nla_set_name, genmask);
+ 	if (IS_ERR(set)) {
+ 		if (!nla_set_id)
+ 			return set;
+@@ -4893,7 +4896,7 @@ static int nf_tables_getset(struct sk_buff *skb, const struct nfnl_info *info,
+ 	if (!nla[NFTA_SET_TABLE])
+ 		return -EINVAL;
  
--/* called with rcu_read_lock held */
-+/* Caller must hold rcu read lock or transaction mutex */
- static struct sk_buff *
- nf_tables_getrule_single(u32 portid, const struct nfnl_info *info,
- 			 const struct nlattr * const nla[], bool reset)
-@@ -3759,7 +3762,7 @@ nf_tables_getrule_single(u32 portid, const struct nfnl_info *info,
- 		return ERR_CAST(chain);
+-	set = nft_set_lookup(table, nla[NFTA_SET_NAME], genmask);
++	set = nft_set_lookup(net, table, nla[NFTA_SET_NAME], genmask);
+ 	if (IS_ERR(set)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_SET_NAME]);
+ 		return PTR_ERR(set);
+@@ -5229,7 +5232,7 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+ 
+-	set = nft_set_lookup(table, nla[NFTA_SET_NAME], genmask);
++	set = nft_set_lookup(net, table, nla[NFTA_SET_NAME], genmask);
+ 	if (IS_ERR(set)) {
+ 		if (PTR_ERR(set) != -ENOENT) {
+ 			NL_SET_BAD_ATTR(extack, nla[NFTA_SET_NAME]);
+@@ -5431,7 +5434,7 @@ static int nf_tables_delset(struct sk_buff *skb, const struct nfnl_info *info,
+ 		set = nft_set_lookup_byhandle(table, attr, genmask);
+ 	} else {
+ 		attr = nla[NFTA_SET_NAME];
+-		set = nft_set_lookup(table, attr, genmask);
++		set = nft_set_lookup(net, table, attr, genmask);
  	}
  
--	rule = nft_rule_lookup(chain, nla[NFTA_RULE_HANDLE]);
-+	rule = nft_rule_lookup(net, chain, nla[NFTA_RULE_HANDLE]);
- 	if (IS_ERR(rule)) {
- 		NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_HANDLE]);
- 		return ERR_CAST(rule);
-@@ -4057,7 +4060,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	if (IS_ERR(set)) {
+@@ -5495,7 +5498,8 @@ static int nft_set_catchall_bind_check(const struct nft_ctx *ctx,
+ 	struct nft_set_ext *ext;
+ 	int ret = 0;
  
- 	if (nla[NFTA_RULE_HANDLE]) {
- 		handle = be64_to_cpu(nla_get_be64(nla[NFTA_RULE_HANDLE]));
--		rule = __nft_rule_lookup(chain, handle);
-+		rule = __nft_rule_lookup(net, chain, handle);
- 		if (IS_ERR(rule)) {
- 			NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_HANDLE]);
- 			return PTR_ERR(rule);
-@@ -4079,7 +4082,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+-	list_for_each_entry_rcu(catchall, &set->catchall_list, list) {
++	list_for_each_entry_rcu(catchall, &set->catchall_list, list,
++				lockdep_commit_lock_is_held(ctx->net)) {
+ 		ext = nft_set_elem_ext(set, catchall->elem);
+ 		if (!nft_set_elem_active(ext, genmask))
+ 			continue;
+@@ -6261,7 +6265,7 @@ static int nft_set_dump_ctx_init(struct nft_set_dump_ctx *dump_ctx,
+ 		return PTR_ERR(table);
+ 	}
  
- 		if (nla[NFTA_RULE_POSITION]) {
- 			pos_handle = be64_to_cpu(nla_get_be64(nla[NFTA_RULE_POSITION]));
--			old_rule = __nft_rule_lookup(chain, pos_handle);
-+			old_rule = __nft_rule_lookup(net, chain, pos_handle);
- 			if (IS_ERR(old_rule)) {
- 				NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_POSITION]);
- 				return PTR_ERR(old_rule);
-@@ -4296,7 +4299,7 @@ static int nf_tables_delrule(struct sk_buff *skb, const struct nfnl_info *info,
+-	set = nft_set_lookup(table, nla[NFTA_SET_ELEM_LIST_SET], genmask);
++	set = nft_set_lookup(net, table, nla[NFTA_SET_ELEM_LIST_SET], genmask);
+ 	if (IS_ERR(set)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_SET_ELEM_LIST_SET]);
+ 		return PTR_ERR(set);
+@@ -7493,7 +7497,8 @@ static int nft_set_catchall_flush(const struct nft_ctx *ctx,
+ 	struct nft_set_ext *ext;
+ 	int ret = 0;
  
- 	if (chain) {
- 		if (nla[NFTA_RULE_HANDLE]) {
--			rule = nft_rule_lookup(chain, nla[NFTA_RULE_HANDLE]);
-+			rule = nft_rule_lookup(info->net, chain, nla[NFTA_RULE_HANDLE]);
- 			if (IS_ERR(rule)) {
- 				if (PTR_ERR(rule) == -ENOENT &&
- 				    NFNL_MSG_TYPE(info->nlh->nlmsg_type) == NFT_MSG_DESTROYRULE)
-@@ -8101,7 +8104,7 @@ static int nf_tables_dump_obj_done(struct netlink_callback *cb)
- 	return 0;
- }
+-	list_for_each_entry_rcu(catchall, &set->catchall_list, list) {
++	list_for_each_entry_rcu(catchall, &set->catchall_list, list,
++				lockdep_commit_lock_is_held(ctx->net)) {
+ 		ext = nft_set_elem_ext(set, catchall->elem);
+ 		if (!nft_set_elem_active(ext, genmask))
+ 			continue;
+@@ -7543,7 +7548,7 @@ static int nf_tables_delsetelem(struct sk_buff *skb,
+ 		return PTR_ERR(table);
+ 	}
  
--/* called with rcu_read_lock held */
-+/* Caller must hold rcu read lock or transaction mutex */
- static struct sk_buff *
- nf_tables_getobj_single(u32 portid, const struct nfnl_info *info,
- 			const struct nlattr * const nla[], bool reset)
+-	set = nft_set_lookup(table, nla[NFTA_SET_ELEM_LIST_SET], genmask);
++	set = nft_set_lookup(net, table, nla[NFTA_SET_ELEM_LIST_SET], genmask);
+ 	if (IS_ERR(set)) {
+ 		NL_SET_BAD_ATTR(extack, nla[NFTA_SET_ELEM_LIST_SET]);
+ 		return PTR_ERR(set);
 -- 
 2.30.2
 
