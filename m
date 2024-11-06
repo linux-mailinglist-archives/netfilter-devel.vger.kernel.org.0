@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-4971-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-4973-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 559A89BFA6E
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:47:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3B99BFA71
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 00:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A7F7284580
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:47:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91AA91C2242B
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Nov 2024 23:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B8C20F5C7;
-	Wed,  6 Nov 2024 23:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CB420FA8B;
+	Wed,  6 Nov 2024 23:46:47 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489EC20EA26;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1D820EA38;
 	Wed,  6 Nov 2024 23:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730936806; cv=none; b=sAJxIJ9DDXBVmJPX0Tl70i5Clhl0RkYQkKhywy3iQcGpHy3T3OmvotZuEwhJ7clKbJcIPAFFrk4QQ+k6WH6cC7s5EZWPcB5PdJTTgR3+tlECuz3qevRYMGcP/9VcQtqm22lKwlRJHQkWW6whPnObxOmMRTrx5lqsUCk26k3EMIU=
+	t=1730936807; cv=none; b=huVdqupgF3U/VO0Jc2qc8zeEd2YTV2K0WIy/BN526b/aEVWxseTvxQRMQkxDrrKtl7tvZR5jKZ72up2xmSGgxi66D0DRwQ3oI6tItrKAviHup1GhFVN3MjEs9vJE4AbR98B4rYHZkHbah+SS03evbbmM/cUgCgfIcB9K2Yy7YSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730936806; c=relaxed/simple;
-	bh=G1adiYwVMrktORMer56qqXyb91XcP+g6hjmFt5htjaA=;
+	s=arc-20240116; t=1730936807; c=relaxed/simple;
+	bh=vSRNT4hnRNjOvax/2yhMZp64EHIcsvTri/wD0aFNVTg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n0imwvqnWVM1eTgC1BtIzLjwfMJfS4/yzFfG8x5ki0eI16oeMYXrC+jM+Nwg/G/REmpcfl8wXeoRTyaM19gURhufXnHuKIMsOS0NnwUB9oUATVSkdQskdjQ8uCMepnNqDjd0EW5Q2mwez71UlUg4GKujW7YCDI0eaIdnHB2AloE=
+	 MIME-Version; b=O+IKMmVraHKxus1rxtKZZFreCKdzthhhZoLmEMY8ZaMEXbHffEsR7WLMzQ8wrh0LGt3WapTdvOjbJB9aC54joCeLSbZ8zQCBCui45JSQpFr28ceXShS99X/qS9x9n8dV0gg+cUKp2kdvHLGDymlwBbq70js6aYXJkEPry9LmsBQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 10/11] netfilter: nf_tables: must hold rcu read lock while iterating expression type list
-Date: Thu,  7 Nov 2024 00:46:24 +0100
-Message-Id: <20241106234625.168468-11-pablo@netfilter.org>
+Subject: [PATCH net-next 11/11] netfilter: nf_tables: must hold rcu read lock while iterating object type list
+Date: Thu,  7 Nov 2024 00:46:25 +0100
+Message-Id: <20241106234625.168468-12-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241106234625.168468-1-pablo@netfilter.org>
 References: <20241106234625.168468-1-pablo@netfilter.org>
@@ -51,75 +51,66 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-nft shell tests trigger:
- WARNING: suspicious RCU usage
- net/netfilter/nf_tables_api.c:3125 RCU-list traversed in non-reader section!!
- 1 lock held by nft/2068:
-  #0: ffff888106c6f8c8 (&nft_net->commit_mutex){+.+.}-{4:4}, at: nf_tables_valid_genid+0x3c/0xf0
+Update of stateful object triggers:
+WARNING: suspicious RCU usage
+net/netfilter/nf_tables_api.c:7759 RCU-list traversed in non-reader section!!
 
-But the transaction mutex doesn't protect this list, the nfnl subsystem
-mutex would, but we can't acquire it here without risk of ABBA
-deadlocks.
+other info that might help us debug this:
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by nft/3060:
+ #0: ffff88810f0578c8 (&nft_net->commit_mutex){+.+.}-{4:4}, [..]
 
-Acquire the rcu read lock to avoid this issue.
+... but this list is not protected by the transaction mutex but the
+nfnl nftables subsystem mutex.
 
-v3: add a comment that explains the ->inner_ops check implies
-expression is builtin and lack of a module owner reference is ok.
+Switch to nft_obj_type_get which will acquire rcu read lock,
+bump refcount, and returns the result.
 
-Fixes: 3a07327d10a0 ("netfilter: nft_inner: support for inner tunnel header matching")
+v3: Dan Carpenter points out nft_obj_type_get returns error pointer, not
+NULL, on error.
+
+Fixes: dad3bdeef45f ("netfilter: nf_tables: fix memory leak during stateful obj update").
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ net/netfilter/nf_tables_api.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 3b5154f2dd79..de8e48a5c62d 100644
+index de8e48a5c62d..b7a817e483aa 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -3296,25 +3296,37 @@ int nft_expr_inner_parse(const struct nft_ctx *ctx, const struct nlattr *nla,
- 	if (!tb[NFTA_EXPR_DATA] || !tb[NFTA_EXPR_NAME])
- 		return -EINVAL;
+@@ -7809,9 +7809,7 @@ static int nf_tables_updobj(const struct nft_ctx *ctx,
+ 	struct nft_trans *trans;
+ 	int err = -ENOMEM;
  
-+	rcu_read_lock();
-+
- 	type = __nft_expr_type_get(ctx->family, tb[NFTA_EXPR_NAME]);
--	if (!type)
+-	if (!try_module_get(type->owner))
 -		return -ENOENT;
-+	if (!type) {
-+		err = -ENOENT;
-+		goto out_unlock;
-+	}
+-
++	/* caller must have obtained type->owner reference. */
+ 	trans = nft_trans_alloc(ctx, NFT_MSG_NEWOBJ,
+ 				sizeof(struct nft_trans_obj));
+ 	if (!trans)
+@@ -7879,15 +7877,16 @@ static int nf_tables_newobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 		if (info->nlh->nlmsg_flags & NLM_F_REPLACE)
+ 			return -EOPNOTSUPP;
  
--	if (!type->inner_ops)
--		return -EOPNOTSUPP;
-+	if (!type->inner_ops) {
-+		err = -EOPNOTSUPP;
-+		goto out_unlock;
-+	}
+-		type = __nft_obj_type_get(objtype, family);
+-		if (WARN_ON_ONCE(!type))
+-			return -ENOENT;
+-
+ 		if (!obj->ops->update)
+ 			return 0;
  
- 	err = nla_parse_nested_deprecated(info->tb, type->maxattr,
- 					  tb[NFTA_EXPR_DATA],
- 					  type->policy, NULL);
- 	if (err < 0)
--		goto err_nla_parse;
-+		goto out_unlock;
++		type = nft_obj_type_get(net, objtype, family);
++		if (WARN_ON_ONCE(IS_ERR(type)))
++			return PTR_ERR(type);
++
+ 		nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
  
- 	info->attr = nla;
- 	info->ops = type->inner_ops;
- 
-+	/* No module reference will be taken on type->owner.
-+	 * Presence of type->inner_ops implies that the expression
-+	 * is builtin, so it cannot go away.
-+	 */
-+	rcu_read_unlock();
- 	return 0;
- 
--err_nla_parse:
-+out_unlock:
-+	rcu_read_unlock();
- 	return err;
- }
++		/* type->owner reference is put when transaction object is released. */
+ 		return nf_tables_updobj(&ctx, type, nla[NFTA_OBJ_DATA], obj);
+ 	}
  
 -- 
 2.30.2
