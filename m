@@ -1,82 +1,82 @@
-Return-Path: <netfilter-devel+bounces-5006-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5008-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66FEB9C06C1
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 14:06:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9110A9C06D4
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 14:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1AFFB237B0
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 13:06:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A89F41C24DE0
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 13:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68DFF2170B6;
-	Thu,  7 Nov 2024 12:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C8721219D;
+	Thu,  7 Nov 2024 13:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="skbpCdXw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UCwRFupW"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E5D2170A3
-	for <netfilter-devel@vger.kernel.org>; Thu,  7 Nov 2024 12:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42FCF21218A
+	for <netfilter-devel@vger.kernel.org>; Thu,  7 Nov 2024 13:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730984302; cv=none; b=FRncEeK7oPIwXEN9G7SR7WUGvSRLJR8L6epT64XlRKFDVvHiGm/97JYuQBtSROn/h+7ovH4mI8YKPWUOfp8TIFirxjxY7nhrsP2iB8P8oj3J07esJs32lOnGRec7e0geMQRD8rSqD0mnA5hz+wEK9d7KUzYxkWRc5vWlcMMbppg=
+	t=1730984450; cv=none; b=IJ7XW/Xwz0hF909Xw16aa3kj0iSVLIZLkKXyXW+CqGtPqjR4s2GGbrtTLhobn9gXKRUaaljnsrUVMFdkDle7dQXR4v+FXS3sHHsltxL8UAWKP/aU/55kyQyYxEOKTSp/b7IiJiNSgk+j/Y8BoxkN8IKbyGgjuEUrmhK6fbWnLLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730984302; c=relaxed/simple;
-	bh=rREI2uB/V7gITxR+FOWEnJEJj7Zp3xpW1kT6EnF6GGg=;
+	s=arc-20240116; t=1730984450; c=relaxed/simple;
+	bh=p4UEKjXCdABntYejobRIzxDpqOYdvcSt0E1838hsm8A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tSJpWEGxAFez5BjjGDNbzlHDcLonlb94c6Zh1TumGQjPRBa6AYT75Y2H7K+LKJi4RRFGMAccGbNL/m0nwGdQhuERKcWlDbMgZ5ORgZe7y/xeMjxqjN6o2vz0EB6Yy6moqIaBF/hQy1Oox/NSWDmVk5ZyqzTZfFNULh8ZXfgWaNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=skbpCdXw; arc=none smtp.client-ip=209.85.166.50
+	 To:Cc:Content-Type; b=KcO+HAK5dslDgLxncnzS1mv9H5Gi5MbsdMmiiBxL+JITroKgWygJYQe2SToq99SaVWoBFS7LP8UdiVzMptXQ0EagkiRo2s2QtZWQSqfMCGDqruRAO7lz2wl396m4L4o8VN8beJPBnQE0NECWGFVDDkF2X+DaKStZJ5c86xzjmAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UCwRFupW; arc=none smtp.client-ip=209.85.166.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-83b430a4cfdso41375639f.2
-        for <netfilter-devel@vger.kernel.org>; Thu, 07 Nov 2024 04:58:20 -0800 (PST)
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-83abc039b25so36898939f.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 07 Nov 2024 05:00:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1730984300; x=1731589100; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1730984448; x=1731589248; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rREI2uB/V7gITxR+FOWEnJEJj7Zp3xpW1kT6EnF6GGg=;
-        b=skbpCdXwJBG3FGC/3cRT+KVeKXU4yQTcnJqXu2BZnOFy9VhPb38QQyBv/lQMAaycKh
-         5xusSgBIuE87Upwy7eU+Rh80cALiUKEWtfVJPsCQ4D0/AhoSRo91mbIm7oCVZ+zPJNl/
-         rc3rnI9vlGHt7Yogq5Kmkq0KmH+OOt5JgVBaR57iZj6zksGoCqVoReRMzlnRE9AYu0z2
-         ua+wcCsEtdb+ReYnRxpKlfUqpPB4YD7KMFa8fU/bgjyV19fhIOH1C71eBcxp/venA4qF
-         c5/Rq0D6lzwVwo9x1DCYyDnL0vQggt8INSAnc13x3bqcyZB/nLTKSZxcNhpCGVyyYAB2
-         m88Q==
+        bh=p4UEKjXCdABntYejobRIzxDpqOYdvcSt0E1838hsm8A=;
+        b=UCwRFupWw+JktWP4pwjBDobTKh6OZk3ch6R/8PPujFQvvdrjoLCTJZIiyTaqpYeW4t
+         8f1Lqa6SNzK0j7yisBKF1h6wd5ZMnyZoQz8dPr+8NdexQC8oemXM6/u0N1uNY/HwbM1p
+         uIvrOcLZcO2wgDYqWPan+7RLgpw26YBLcROQQfqtMpyHZaVuTyAgihJwku8Fz3HOjQ/8
+         mmpf/AsdBJUuowMdDQekFdrsdKxYDqPUnnyHz26O0ks/PmbbV/h4nR8ZIkxRTSVyyuoF
+         MoEH9/HNcJNNkoie4on/zIhhqWk4SHeDYmMkUZv7M+2fXUQHSZ4FDLSweynXUy9Mz2Uv
+         bF9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730984300; x=1731589100;
+        d=1e100.net; s=20230601; t=1730984448; x=1731589248;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rREI2uB/V7gITxR+FOWEnJEJj7Zp3xpW1kT6EnF6GGg=;
-        b=MI7oXPUw9eY8NlTVX2Or3e0KI8edfrR5NmGMdisrOCPq/BaL75RWu8/a4vPu69QSZY
-         MIw/Bt3BAsValNMAKoKFzvg+hpNQFlJd5rfXdjA2nLYPcbu07caDQe/cZPMslc/9Jsmw
-         5Mt79tvR2IL3jpkOhGhR+7J/L7hGJ0j8UO2SX5OhHlWEFK1v6li4MYgYj7aQAQbUT+X5
-         uGGmSG9GyW3rr9cp8W5UUK/pICzBXSjICkaX/E3juaXjTTnXPjQdT1ydfGsn9KvVrKSI
-         KymImm9SiyOYv/fekx1HynOOhQTdNtA5m1M7kQYvB/SuW6QS7tTH1YCGpn58SX7/UMTr
-         zM5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVhCLSGE5XTlWZK/lS1hLapWu9la6m3UUWeK/+z/xa9FXpgAYeRK3IwzLuQuIGN+B5V9KhAAbdR5CU+d0o7Kxk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlBio7M7fek/gV8YGdXguwya3mHdGewcP/2jBa9yWkxwdRGHQD
-	/yBVZAPdf8yE1fO0chKhyvQuqyL2bKPPP7lsGf5e7wWjCoaLiq/I98knVFGAvUpgxkiW04PtwJX
-	u/ItzhqJmWmrzqBfoGWN0zjHG5ygfTWKDaCmM
-X-Google-Smtp-Source: AGHT+IHscjrM5yEnv7CrhyReHBjY7qQl+IXVp7qcac6OeEOBi7Zjcp2eWSsM0avGdTAuio9QA1rDs6cVw4QugdFls4Q=
-X-Received: by 2002:a05:6602:1354:b0:82c:f85a:4dcb with SMTP id
- ca18e2360f4ac-83b1c3e7acbmr5270606939f.6.1730984299791; Thu, 07 Nov 2024
- 04:58:19 -0800 (PST)
+        bh=p4UEKjXCdABntYejobRIzxDpqOYdvcSt0E1838hsm8A=;
+        b=rvINdoy7+Au+ySyxYN8U6MfPtpWXk+9o2qtI7p5ml8vkUtzi7zbKB9Ejj3veUUuTxH
+         hKVlUYu5tNw4CrCxQLEHxB3QgP8R4YMk+wBRf1XeqseTHrs0De1KIP8RHfLIdFeln+sI
+         vDEndCKYpitNAbxfjcCgJs6J3LgjiVulvu6d4Zb0Bjal8n1r3aJD9R5dqLHr6arYH9gg
+         9xLUbgHCzf1YebyVFXyjRgdHF/VfKaOUNrDEHDkuL2V5kA6sMSfkqbndLCmxoBxdXRW7
+         Q8RQWALFW8Jh3wyBtAfAJcurNrT3ONYPDJxal9obtWLTP8/S5IYIS7xJ1mubz4sCGoLY
+         xlUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWoMreJ2Pql2zEyWrAbza6mfZ7EYRgs3cKaf5C7ZK/dH9hVV34doxrrIrLtCRcw+3L+3pfoFRy4dv1LcqOR8Xg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+pPqb7JnGpbAeWWP6G5wbahP5+9nyNovUTgr/Ovb0sA+Yfooa
+	eNbOwi3tqBOiIXLPbvM8X3ATHL2rQinygy6oWkJmjJEKNItBqZUMMAbxDPDC7KVuvKBKm4Fbyu1
+	5fIs64Pdm+bzHboUBjOJB98oND2zbzdvcBvlv
+X-Google-Smtp-Source: AGHT+IHZQS/HhfwkvGWUZIAeVlAFJWzHuuER3nlOt+WywBAjpvJLtzoplwoRmTjIUwT28kqkEHyJXODIdEmT2sTfWLE=
+X-Received: by 2002:a05:6602:19d0:b0:83d:e526:fde7 with SMTP id
+ ca18e2360f4ac-83de526fe52mr680897239f.6.1730984447792; Thu, 07 Nov 2024
+ 05:00:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241105100647.117346-1-chia-yu.chang@nokia-bell-labs.com> <20241105100647.117346-13-chia-yu.chang@nokia-bell-labs.com>
-In-Reply-To: <20241105100647.117346-13-chia-yu.chang@nokia-bell-labs.com>
+References: <20241105100647.117346-1-chia-yu.chang@nokia-bell-labs.com> <20241105100647.117346-14-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20241105100647.117346-14-chia-yu.chang@nokia-bell-labs.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 7 Nov 2024 13:58:06 +0100
-Message-ID: <CANn89iLjhS-bTjxDH37K6NOVHU6FgD6KL3LT0nRGyZBvtADYjg@mail.gmail.com>
-Subject: Re: [PATCH v5 net-next 12/13] tcp: Pass flags to __tcp_send_ack
+Date: Thu, 7 Nov 2024 14:00:35 +0100
+Message-ID: <CANn89iL3Wc9FGBGB7s0jHm2MZ0i+xA38NqR31AJpL-4nnBHcJA@mail.gmail.com>
+Subject: Re: [PATCH v5 net-next 13/13] tcp: fast path functions later
 To: chia-yu.chang@nokia-bell-labs.com
 Cc: netdev@vger.kernel.org, dsahern@gmail.com, davem@davemloft.net, 
 	dsahern@kernel.org, pabeni@redhat.com, joel.granados@kernel.org, 
@@ -94,11 +94,15 @@ On Tue, Nov 5, 2024 at 11:07=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.com>=
 >
 > From: Ilpo J=C3=A4rvinen <ij@kernel.org>
 >
-> Accurate ECN needs to send custom flags to handle IP-ECN
-> field reflection during handshake.
+> The following patch will use tcp_ecn_mode_accecn(),
+> TCP_ACCECN_CEP_INIT_OFFSET, TCP_ACCECN_CEP_ACE_MASK in
+> __tcp_fast_path_on() to make new flag for AccECN.
+>
+> No functional changes.
 >
 > Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> Signed-off-by: Chai-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+I guess this patch should not land in this series, but in the following one=
+.
 
