@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-5014-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5016-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F57E9C0BEA
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 17:45:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA1E29C0CF6
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 18:33:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB3F4B229FF
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 16:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE9AD2855BA
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Nov 2024 17:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D02215F51;
-	Thu,  7 Nov 2024 16:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D544521315C;
+	Thu,  7 Nov 2024 17:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="qwMdGWaS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="d+1lA4h+"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967EC215037
-	for <netfilter-devel@vger.kernel.org>; Thu,  7 Nov 2024 16:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58554185B56
+	for <netfilter-devel@vger.kernel.org>; Thu,  7 Nov 2024 17:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730997896; cv=none; b=q3Vs7qu3KXJsQz4P/r5dLI/+z0k5G2pEp38UJFbNzdLkC8k5R3c9MSnq6Vj4CbNHMGH9nlAuFDiOG1RWFHq/bGcNh5oHqG/GzpkUyh90ESGMpjUwvXQd096qFV4lHF+XFN8MKuDZEBUroW0bKJPOrrmJ15oXi6hVcAT2aA1BIYg=
+	t=1731000811; cv=none; b=D8f1kSqjkvcT4zQQgHKRpUXFLmN6jvereH3J5nTJWL26GK1eklKRAP6U878nfKbcC4byXXCXuaBinJ2NgNX+Q4HOoJphnmMrHfPzy7I9CVl+N75SA1jVL927Z24xv+1acnZLMKn0nVtThLXyHocXDfSgjDBA7V89fpp47HVgkf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730997896; c=relaxed/simple;
-	bh=dcBBIhHilmEMCbVqZgT6+pb/e/BOCHFkEowRR6UMX4o=;
+	s=arc-20240116; t=1731000811; c=relaxed/simple;
+	bh=xSlyG0t06zAHAefo88/wwHPOHl5xI4FMjwor8itpGlU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nAwGs8lr+0KUHybm1f9alJwYQA1VLQti9uIwPpi9kdCItlp+gFPTLyqhUb9YpTsNAJLQ5KBmykjNMenvpRODdOitywzvzECzpglF0L0e8e8hrTLJiczVrty0MEPEOKlCt5+3HgxuqCEEF2DMrn4/OvQRTKylKkXOOT7CVj/mYNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=qwMdGWaS; arc=none smtp.client-ip=151.80.46.58
+	 Content-Type:Content-Disposition:In-Reply-To; b=aYVUPkZjtj2dhOfSIU5XshVUxWTojRm1fLiVVCI6phxZGTtqymWLscLwBLtN13ZWv1CNbSEm2asEto+P9fCYdvb6FVURGix3u6yHeqXa6zqghSM/FXo0jebesRunZQ3VwV4+KVMsOjJkOgzQ73eRhj50UnZsngp3jccb5xh8sDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=d+1lA4h+; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,29 +37,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Y4un4HtusRxIvMxm1nAS7iOxiw/b3bOIFGGHA8yDhUs=; b=qwMdGWaSAsdWVhvfSoQ7ax2ck8
-	LRmQJsPRc0KRrPerMhj9wRP4Y0juRXkelYWptUzFm9g62zA0nhuYwS2v/xtnM4a9kuJF1PM0tdivG
-	QRpNwpfS7FaEiyMMowjvxnHaZAaeeLjJ+xHIk/G7cSvTvQiyn7uWZiWfEwVwdlaZfIR0H75UNtaYL
-	fH8v39OIENYpAaXGEMMZihh+Mx6Pmj6I8vtXJIBrGbVOjMQ+wgJht4l8xQcJbXRnprBbRPpzf/MOv
-	OG69UcR3KyZR3yEl1s1kpaWGGxFh9uI5D+d1qFylNktSnnpPM6C4/qk4Awofx4WThUDF3I10fJ6jD
-	2ZsU6Jtw==;
+	bh=pWo5ra9W8npV+Tbl8j7zGF8tnFPdfwJbJlhask9fp38=; b=d+1lA4h+2Q8Y7BlMjf6gWzQtAz
+	0iIBWmp3uQt0+UPribyszMKEdnbKt8vtqM6WqMuoYtRIlP7u7svqJLNNb+nvzNvwdxFxyJ4MXy48I
+	geB8DGSwfFRH0stZ5hgm73splYcGmCUKCw8Eao2ESI5Wofw0Ko1bn+cXqkkXqnhFULej+UCyFKek8
+	CnD2DyWTe+5NaTBUS9J4xFms/PIkYWmhnRY5s6VVssTbl0v3jQvhVt/E52ThJaxEJVN3sUkdUvwDm
+	pAlJa7p4Ik/BJAPjBAVd3pa4s7skc0OPEv9TJ1nCozo+0sKjqpDz9W0CAFmXua8kbKguG12WfRLLf
+	BXtn6cew==;
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1t95ck-000000005L1-39av;
-	Thu, 07 Nov 2024 17:44:46 +0100
-Date: Thu, 7 Nov 2024 17:44:46 +0100
+	id 1t96Nq-0000000067H-3nUO;
+	Thu, 07 Nov 2024 18:33:27 +0100
+Date: Thu, 7 Nov 2024 18:33:26 +0100
 From: Phil Sutter <phil@nwl.cc>
-To: Jan Engelhardt <ej@inai.de>
-Cc: netfilter-devel@vger.kernel.org,
-	Pablo Neira Ayuso <pablo@netfilter.org>, coreteam@netfilter.org
-Subject: Re: [iptables PATCH] libxtables: Hide xtables_strtoul_base() symbol
-Message-ID: <ZyzufuOtzaToGLv8@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>, Jan Engelhardt <ej@inai.de>,
-	netfilter-devel@vger.kernel.org,
-	Pablo Neira Ayuso <pablo@netfilter.org>, coreteam@netfilter.org
-References: <ZyzYApZKx79g8jqm@calendula>
- <20241107161233.22665-1-phil@nwl.cc>
- <8361oqo4-qnss-089n-885s-nqqq6520r6r8@vanv.qr>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: Re: [nft PATCH] tests: monitor: Become $PWD agnostic
+Message-ID: <Zyz55j3XMzjUpIpg@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+References: <20241107134636.9069-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -68,28 +65,16 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8361oqo4-qnss-089n-885s-nqqq6520r6r8@vanv.qr>
+In-Reply-To: <20241107134636.9069-1-phil@nwl.cc>
 
-On Thu, Nov 07, 2024 at 05:43:10PM +0100, Jan Engelhardt wrote:
+On Thu, Nov 07, 2024 at 02:46:36PM +0100, Phil Sutter wrote:
+> The call to 'cd' is problematic since later the script tries to 'exec
+> unshare -n $0'. This is not the only problem though: Individual test
+> cases specified on command line are expected to be relative to the
+> script's directory, too. Just get rid of these nonsensical restrictions.
 > 
-> On Thursday 2024-11-07 17:12, Phil Sutter wrote:
-> 
-> >diff --git a/include/xtables_internal.h b/include/xtables_internal.h
-> >new file mode 100644
-> >index 0000000000000..a87a40cc8dae5
-> >--- /dev/null
-> >+++ b/include/xtables_internal.h
-> >@@ -0,0 +1,7 @@
-> >+#ifndef XTABLES_INTERNAL_H
-> >+#define XTABLES_INTERNAL_H 1
-> >+
-> >+extern bool xtables_strtoul_base(const char *, char **, uintmax_t *,
-> >+	uintmax_t, uintmax_t, unsigned int);
-> >+
-> >+#endif /* XTABLES_INTERNAL_H */
-> 
-> Don't we already have xshared.h for this?
+> Reported-by: Florian Westphal <fw@strlen.de>
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
-That's iptables/xshared.h and it's not included outside of that
-subfolder.
+Patch applied.
 
