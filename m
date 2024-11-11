@@ -1,46 +1,53 @@
-Return-Path: <netfilter-devel+bounces-5051-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5052-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B445A9C3BFA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 11 Nov 2024 11:31:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4790A9C3C2E
+	for <lists+netfilter-devel@lfdr.de>; Mon, 11 Nov 2024 11:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 793B52812A0
-	for <lists+netfilter-devel@lfdr.de>; Mon, 11 Nov 2024 10:31:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 606C71C2029D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 11 Nov 2024 10:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BC4155C9E;
-	Mon, 11 Nov 2024 10:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4982915B554;
+	Mon, 11 Nov 2024 10:38:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C4DB1C28E
-	for <netfilter-devel@vger.kernel.org>; Mon, 11 Nov 2024 10:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873D6158555
+	for <netfilter-devel@vger.kernel.org>; Mon, 11 Nov 2024 10:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731321016; cv=none; b=D/u6VF8DCUkPiXN8P+eCWPZWaYfJywn1L+q57QaXO/fVCtreSX+FWP5tugw9pqWVmhIN83p3igfatYu+A9gDM4HKfqodQJ+mI/V6mKCKQ5lIqotoZXMCdZ3BkRAirP6/zm9NzkCN9OkvnI6e6CYxa+kJqMpoiOEJhT5OK+MP98Y=
+	t=1731321524; cv=none; b=rkDmfBELNo6GE+/CbkgCcoyKaj7Amti93seA0OBxPZGALuTwy3iGPXVfVrtBzlFq51E3A3Or8DXudwti2HA818ar01XXX8+8mYFEYkybCc8hwfNMgtLqJxYsrpMIRuPqXN2OoKKn1e4N7c5SYm7ZnJyg38rwsr3ztXkC/alAy/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731321016; c=relaxed/simple;
-	bh=ssmBkvUVicg0o0VTaRtFYAmrjLb6TeJ5pu1zvjifZWc=;
+	s=arc-20240116; t=1731321524; c=relaxed/simple;
+	bh=hI7J5zF4MRRRJorEoOvrTdT0CgLpNMzOiuWoYT9nntU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bAiwbls7k53RIXOBliXi7Zmv01vTWekDlGlIvt7+updyrtoBrTYefV5ZIKcboDjGjDflkajWRvmF79AxNjfBzR3/nE4klxmilWpTrG+nEh/CE6CpDoD/RwT553MEivdXa+aDj10a9Fd8JOhILB4hsnOQGqZRg5uCAICPw42LI8A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=tRkxSVmCzgkVj/DbYAr8VTJ2n0Mi3mziDORPvXP7oK3Y1vl2YP9teR2JMYy2JEHgYfGIlzHcboWA0cbJA0TbHwxB2WK4yZZWkXh9FrxZv7M+2hsETTb5WiPcpItIQnVfiEaaedkbG0yCHEY7DUUyF6TMT5muSH+gEojffXAq+1k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=48114 helo=gnumonks.org)
+Received: from [78.30.37.63] (port=42308 helo=gnumonks.org)
 	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <pablo@gnumonks.org>)
-	id 1tARgP-001Xui-Ak; Mon, 11 Nov 2024 11:30:11 +0100
-Date: Mon, 11 Nov 2024 11:30:08 +0100
+	id 1tARoZ-001bgf-Ut; Mon, 11 Nov 2024 11:38:38 +0100
+Date: Mon, 11 Nov 2024 11:38:35 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Duncan Roe <duncan_roe@optusnet.com.au>
+To: Florian Westphal <fw@strlen.de>
 Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH libmnl] whitespace: remove spacing irregularities
-Message-ID: <ZzHcsEYWLdt_j0Iy@calendula>
-References: <20241111025608.8683-1-duncan_roe@optusnet.com.au>
+Subject: Re: [PATCH nft] src: allow to map key to nfqueue number
+Message-ID: <ZzHeq3qclcVgQZgE@calendula>
+References: <20241025074729.12412-1-fw@strlen.de>
+ <Zytu_YJeGyF-RaxI@calendula>
+ <20241106135244.GA11098@breakpoint.cc>
+ <20241106143253.GA12653@breakpoint.cc>
+ <ZyuTa9lmkXRAvSfn@calendula>
+ <Zyv3tBgF9jW5D0v-@calendula>
+ <Zyv9D385olTWUv1k@calendula>
+ <20241108120854.GA23569@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -49,49 +56,21 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241111025608.8683-1-duncan_roe@optusnet.com.au>
-X-Spam-Score: -1.9 (-)
+In-Reply-To: <20241108120854.GA23569@breakpoint.cc>
+X-Spam-Score: -1.8 (-)
 
-On Mon, Nov 11, 2024 at 01:56:08PM +1100, Duncan Roe wrote:
-> Two distinct actions:
->  1. Remove trailing spaces and tabs.
->  2. Remove spaces that are followed by a tab, inserting extra tabs
->     as required.
-> Action 2 is only performed in the indent region of a line.
+On Fri, Nov 08, 2024 at 01:08:54PM +0100, Florian Westphal wrote:
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > On Thu, Nov 07, 2024 at 12:11:53AM +0100, Pablo Neira Ayuso wrote:
+> > > On Wed, Nov 06, 2024 at 05:03:55PM +0100, Pablo Neira Ayuso wrote:
+> > > > I can take a look later today based on your patch, I think I can reuse
+> > > > 90% of it, it is just a subtle detail what I am referring to.
+> > > 
+> > > See attachment, not better than your proposal, just a different focus.
+> > 
+> > Actually, this attachment.
 > 
-> Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
-> ---
->  include/linux/netlink.h | 6 +++---
->  src/callback.c          | 4 ++--
->  src/socket.c            | 6 +++---
->  3 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/netlink.h b/include/linux/netlink.h
-> index ced0e1a..7c26175 100644
-> --- a/include/linux/netlink.h
-> +++ b/include/linux/netlink.h
-> @@ -14,7 +14,7 @@
->  #define NETLINK_SELINUX		7	/* SELinux event notifications */
->  #define NETLINK_ISCSI		8	/* Open-iSCSI */
->  #define NETLINK_AUDIT		9	/* auditing */
-> -#define NETLINK_FIB_LOOKUP	10	
-> +#define NETLINK_FIB_LOOKUP	10
->  #define NETLINK_CONNECTOR	11
->  #define NETLINK_NETFILTER	12	/* netfilter subsystem */
->  #define NETLINK_IP6_FW		13
-> @@ -29,13 +29,13 @@
->  
->  #define NETLINK_INET_DIAG	NETLINK_SOCK_DIAG
->  
-> -#define MAX_LINKS 32		
-> +#define MAX_LINKS 32
+> Just apply this.
 
-Submit uapi/netlink.h update upstream via netdev@
-
-This is a cached copy of uapi/netlink.h
-
-If I take this, the extra line spaces and indentation will come back
-sooner or later.
-
-Thanks.
+Done.
 
