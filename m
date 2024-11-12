@@ -1,105 +1,120 @@
-Return-Path: <netfilter-devel+bounces-5069-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5071-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2365F9C6246
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 21:11:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77E2A9C6206
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 20:59:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1401B2CE80
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 18:26:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BF3C283828
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 19:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A907216A21;
-	Tue, 12 Nov 2024 18:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2742194BD;
+	Tue, 12 Nov 2024 19:59:38 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD462178FC
-	for <netfilter-devel@vger.kernel.org>; Tue, 12 Nov 2024 18:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D5920B218;
+	Tue, 12 Nov 2024 19:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731435958; cv=none; b=P0uWDYm0tLGwuvhaS2PXKeX9R+xOmJn2NqI6oa9mUJd3huuYFv8ktSlAD0OBD+ZDhvZGazU2TgWQ5ySK8/QrjPODaB7YR/BQL78uDQVxhR0shqT2dCtX+YDE7OlHISJwSLiBNWXwasQ3+ZWQwXgTLerl94LaYNLP3QJUtgIUfPI=
+	t=1731441578; cv=none; b=vEbUWnCwc0lmHWFWGOGdNdx697YNUiYTq7RFaUAYsNAc9OVeESo1oQ1MS+lww+RuJlYqZ7In8fgdHQTXIrl13fiUacnuDk5YVtiHUi2AbGxYEcOzdshIIwO9+MPqI65P38RYF56tzihSb3SjBR/VfSCHvcxbLyT90SLHVQx6ZIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731435958; c=relaxed/simple;
-	bh=9g45UXidN5osGZ1et9t+OfaOQ4lIp41oelxYyZyQvPQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d6Of59R3JrqkD+YtrAp4SLAPhc9zjx8rJ0YeggFNw6DaWlyimysJOl6/qhAW/pTrCXVuThJkMgexEc7LsdTfQwE4q0+TjYKqcY7r4AGEVWpW1HQQTj2kuDWCymBh6HKqRvInKAcaWYgEfA670U+PifkIiXGMxdfiPrm+ATJ9qZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1tAvaL-0007aH-8u; Tue, 12 Nov 2024 19:25:53 +0100
-Date: Tue, 12 Nov 2024 19:25:53 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org, Nadia Pinaeva <n.m.pinaeva@gmail.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH nf-next] netfilter: conntrack: add conntrack event
- timestamp
-Message-ID: <20241112182553.GC28817@breakpoint.cc>
-References: <20241107194117.32116-1-fw@strlen.de>
+	s=arc-20240116; t=1731441578; c=relaxed/simple;
+	bh=rC+0ugHNvw01z7Q9STlYyR40J3xB/OsK/Djp3RNVyos=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gba/tHTmyP82ppiqIDekJA3hML+b7cXYTfJtZPzRf7kFBWTKUUBgeZ9SleC2EbnEZh0bWXrf5QNiCDq8B/PfISQDrq2V8VDxcwXL5ciqXliXv7rzqF9WwCWiIDvWywt7HYgaQPQqYwtLqoABT1powfmVhX7DMF45NYaJ9A0zcrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.kfki.hu (Postfix) with ESMTP id B5C8432E01CF;
+	Tue, 12 Nov 2024 20:50:23 +0100 (CET)
+X-Virus-Scanned: Debian amavis at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+ by localhost (smtp2.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id ytOsMQz8XMno; Tue, 12 Nov 2024 20:50:21 +0100 (CET)
+Received: from mentat.rmki.kfki.hu (94-21-33-116.pool.digikabel.hu [94.21.33.116])
+	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
+	by smtp2.kfki.hu (Postfix) with ESMTPSA id 5FB7E32E01CD;
+	Tue, 12 Nov 2024 20:50:21 +0100 (CET)
+Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
+	id F05421428C3; Tue, 12 Nov 2024 20:50:20 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mentat.rmki.kfki.hu (Postfix) with ESMTP id ECDFC1401AE;
+	Tue, 12 Nov 2024 20:50:20 +0100 (CET)
+Date: Tue, 12 Nov 2024 20:50:20 +0100 (CET)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: Jeongjun Park <aha310510@gmail.com>
+cc: pablo@netfilter.org, davem@davemloft.net, edumazet@google.com, 
+    kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, kaber@trash.net, 
+    netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+    netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    stable@vger.kernel.org, 
+    syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com
+Subject: Re: [PATCH net] netfilter: ipset: add missing range check in
+ bitmap_ip_uadt
+In-Reply-To: <20241112113434.58975-1-aha310510@gmail.com>
+Message-ID: <85b3a08c-f148-ef3c-6489-e34aadc4e735@netfilter.org>
+References: <20241112113434.58975-1-aha310510@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241107194117.32116-1-fw@strlen.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+X-deepspam: ham 1%
 
-Florian Westphal <fw@strlen.de> wrote:
-> Nadia Pinaeva writes:
->   I am working on a tool that allows collecting network performance
->   metrics by using conntrack events.
->   Start time of a conntrack entry is used to evaluate seen_reply
->   latency, therefore the sooner it is timestamped, the better the
->   precision is.
->   In particular, when using this tool to compare the performance of the
->   same feature implemented using iptables/nftables/OVS it is crucial
->   to have the entry timestamped earlier to see any difference.
+Hello Jeongjun,
+
+On Tue, 12 Nov 2024, Jeongjun Park wrote:
+
+> In the bitmap_ip_uadt function, if ip is greater than ip_to, they are swapped.
+> However, there is no check to see if ip is smaller than map->first, which
+> causes an out-of-bounds vulnerability. Therefore, you need to add a missing
+> bounds check to prevent out-of-bounds.
+
+It's a good catch, thanks! However, with the patch below the 
+
+                        if (ip < map->first_ip)
+                                return -IPSET_ERR_BITMAP_RANGE;
+
+lines in the branch just after swapping the from/to addresses becomes 
+unnecessary. Could you send a second version of the patch with the lines
+above removed?
+
+Best regards,
+Jozsef
+
+> Cc: <stable@vger.kernel.org>
+> Reported-by: syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com
+> Fixes: 72205fc68bd1 ("netfilter: ipset: bitmap:ip set type support")
+> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> ---
+>  net/netfilter/ipset/ip_set_bitmap_ip.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> At this time, conntrack events can only get timestamped at recv time in
-> userspace, so there can be some delay between the event being generated
-> and the userspace process consuming the message.
+> diff --git a/net/netfilter/ipset/ip_set_bitmap_ip.c b/net/netfilter/ipset/ip_set_bitmap_ip.c
+> index e4fa00abde6a..705c316b001a 100644
+> --- a/net/netfilter/ipset/ip_set_bitmap_ip.c
+> +++ b/net/netfilter/ipset/ip_set_bitmap_ip.c
+> @@ -178,7 +178,7 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
+>  		ip_to = ip;
+>  	}
+>  
+> -	if (ip_to > map->last_ip)
+> +	if (ip < map->first_ip || ip_to > map->last_ip)
+>  		return -IPSET_ERR_BITMAP_RANGE;
+>  
+>  	for (; !before(ip_to, ip); ip += map->hosts) {
+> --
 > 
-> There is sys/net/netfilter/nf_conntrack_timestamp, which adds a
-> 64bit timestamp (ns resolution) that records start and stop times,
-> but its not suited for this either, start time is the 'hashtable insertion
-> time', not 'conntrack allocation time'.
-> 
-> There is concern that moving the start-time moment to conntrack
-> allocation will add overhead in case of flooding, where conntrack
-> entries are allocated and released right away without getting inserted
-> into the hashtable.
-> 
-> Also, even if this was changed it would not with events other than
-> new (start time) and destroy (stop time).
-> 
-> Pablo suggested to add new CTA_TIMESTAMP_EVENT, this adds this feature.
-> The timestamp is recorded in case both events are requested and the
-> sys/net/netfilter/nf_conntrack_timestamp toggle is enabled.
 
-I was about to send v2 of this patch, but I found following comment in
-ulogd source code (input/flow/ulogd_inpflow_NFCT.c):
-
- *      - add nanosecond-accurate packet receive timestamp of event-changing
- *        packets to {ip,nf}_conntrack_netlink, so we can have accurate IPFIX
- *        flowStart / flowEnd NanoSeconds.
-
-
-I'm leaning towards reworking this patch to replace ktime_get_real_ns()
-by
-
-ktime_to_ns(skb_tstamp_cond(skb, 1)))
-
-so that the event carries the packet receive timestamp if that was
-available or the current clock time as fallback.
-
-Thoughts?  Otherwise I can ignore above comment and keep
-ktime_get_real_ns() usage.
+-- 
+E-mail : kadlec@netfilter.org, kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+Address: Wigner Research Centre for Physics
+         H-1525 Budapest 114, POB. 49, Hungary
 
