@@ -1,183 +1,123 @@
-Return-Path: <netfilter-devel+bounces-5064-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5066-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 885EE9C529D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 11:03:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA5299C56B2
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 12:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2027728546B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 10:03:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 820B41F23EF0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 11:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BA319E992;
-	Tue, 12 Nov 2024 10:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1EB2309B0;
+	Tue, 12 Nov 2024 11:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NEIQsW8p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMf4fMJI"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337AF18A6BF
-	for <netfilter-devel@vger.kernel.org>; Tue, 12 Nov 2024 10:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9E723098E;
+	Tue, 12 Nov 2024 11:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731405829; cv=none; b=TeOiVXQnO33NZdEG7CxUpHVAtEPVqw773C+c4cCzt6QNll4fnHvtDFsZK/+wOHcfCNrfFgQxLp7B7TFRhnbMInprEeD1v88CRGbIaoyxpFcjd0x3XPKc+xc21i9Qos+7T94Bj/ZUBtej3r5JrGz+N8mHC9U/egDIsoN1tkaBxzE=
+	t=1731411292; cv=none; b=c0bivMnj3l0xLjVQBFf5tpm0L4pLjKkhNugq15i1BAa5bLfe3kFTv5LL5nmTzQBe9UpZ3sUo/OjPGcVOWKBLKsSVTBmCnk1CR2mvcUUc2nE2fhVTvFrJAd2t5BPKkCnAb5XoP9yx3D7slNaHrruBuxTTtPYg2KlvPOSz6p052SI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731405829; c=relaxed/simple;
-	bh=AfijD7bJCJegDVJb9doH4aKt85yfX3drG5swjIEqV/I=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QdKCRcMmqosOxKz/FU6Ri9NcHBHGIKvjmIJseeKESRZyJQEOA/Lr1Dwp95yQZ9c7z6l4M4mrjszeh5V14vTqx3+uUDZY051LusRG1EX2W/TbCwVw2iE+EgLCSmCJUjDiwNfuH3hoFo4iYhBjqQeodjE6XJOScm0T6izcodqnQEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=optusnet.com.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NEIQsW8p; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=optusnet.com.au
+	s=arc-20240116; t=1731411292; c=relaxed/simple;
+	bh=tGWkef8oRPVbKIm8lxPB39He4I6ZPEkKKg+zvLwwrKg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VMHakSFlRlT6DiLViIO7/UQZjQHFXh0QpcdiCGPLZfK9K7lxliQAYv2pjDzPH+xmzHo//vyiQH+lCFMoR8bsfm6Ksj70UDb8hPM66E8k5oevl2XSeaLvCAVVyYAvYxw0/XBF3q+fWfxwE9/ZHQShpSvEFRe9c4QDNNtXS/Ljrbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMf4fMJI; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-20cdbe608b3so54864085ad.1
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 Nov 2024 02:03:47 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20caea61132so47585675ad.2;
+        Tue, 12 Nov 2024 03:34:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731405826; x=1732010626; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:reply-to:message-id:subject:cc:to:date:from:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DKAW/5mS4sIWJfWJBGPlCs4ZQv0oRG04rODoHn5qDX4=;
-        b=NEIQsW8pF1hg9n94LDaX6V6A2KC7uWPsYt4ovtfzlV4bflh2vHW4FcclUDAGjR21e5
-         k7ecPBOh7Otn3/mw/9fKu32FeO7FU/GefwYeaT0tavN1ZeUZbH4iFbKN8F6m07MU3USs
-         yZCGs30PWTfzO0pP3nbJ5uZf4eMxBK3O3GOScWIio8U0Czuv+LLThTFTJjfquxvOcD3g
-         4/Xs/acTtvV7HUvTMSwCdzo9MSTzFdgsrZX3qVWbbfedr1lgxeZCCwXRRfRCyc7kD7LT
-         lRs99opHpjxLHpIO6udrAAmlYNoxbrzFWQzP45EwyaO8jNYeODYaQ2o2waNa3KEzU41b
-         NLxw==
+        d=gmail.com; s=20230601; t=1731411290; x=1732016090; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BBciCWF098p8Q9R480GusPAiYwzzotgDMxNExmqOzhg=;
+        b=gMf4fMJIhckfnIQszAjyfl6/JQWB9qr/t6yaPbqDzn6IhZqNHVDfrPevUYFQmsNcmV
+         VGO1Z7GuJwgxTwmQhVziI15DAKby1/fcWvQULeKwxuvJIuO2kI4gSmje5VPPZyNDXINb
+         Kf7rvtowq7vh4aSr0Rxs+hHd3NosoWUfQPMo4jEUlkgLGuqGwcmG47DYvXCkhCLBNaF3
+         1ihHRKlLqayXJFGQiLXviYIUpTWGMGITXlV3/CGmUUxAUiJQzho/UPfkxKl5zuRNq81L
+         CQkyquuVPBDP/nOmZSRZ7KNIIeq3waDRfhBTqACB+3cF+Yg3cxrQOR3xMnYUOIylXCkZ
+         dKQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731405826; x=1732010626;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:reply-to:message-id:subject:cc:to:date:from:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DKAW/5mS4sIWJfWJBGPlCs4ZQv0oRG04rODoHn5qDX4=;
-        b=ZvJ5eeeEzRSf/G6Qr9UQEwHG3uAToBCo7uM8tOFVu9EQ+h0/1DwNt6GeRcQn0eIf4w
-         DyJqswBUDIGXVnyFg7HxOh2/V2jVTNwUCmr0I21HM4iBORqTkaUIdYWqCgh1GmsaMPLR
-         lb2I2S8kOB2mi/13+Vnqn3M76j5D5hw0h/pmvc30rf6yHbmNezTn/DUlnj3j6NFeVElS
-         34f9P/Y4f8H1+xW2VRUHEhoLNSDespbxKaoY9XLWd/r69cS2r0dRUOVNxALTqXdMs5yR
-         zcRVdfuXgL7dA4O9IaAX149j6OfEleiOMOUx7Tl7C5FxhUI6r1SxCdxJ4Nkz/hyEdELg
-         HYDQ==
-X-Gm-Message-State: AOJu0YzkxQnkxPra5N9cVDryz8+nZ+vTJxuHpZ4eglM6Ze9+sUCk2WN6
-	VMjiRlOBnFH3Lt4Zzez7AUIuZCmjLyLU5gk+LM1GAMRviQc/94bwLciqPg==
-X-Google-Smtp-Source: AGHT+IGDVEd2QWpNLKe4d66Oj7UjvRgT6Q4GRbML3qolKDEbSS47P1AB4YOxiLAszjEIsUdMyI+7KQ==
-X-Received: by 2002:a17:903:228b:b0:20c:5533:36da with SMTP id d9443c01a7336-211ab9ccf30mr25962725ad.42.1731405826356;
-        Tue, 12 Nov 2024 02:03:46 -0800 (PST)
-Received: from slk15.local.net (n175-33-111-144.meb22.vic.optusnet.com.au. [175.33.111.144])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177e4148esm88277825ad.125.2024.11.12.02.03.44
+        d=1e100.net; s=20230601; t=1731411290; x=1732016090;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BBciCWF098p8Q9R480GusPAiYwzzotgDMxNExmqOzhg=;
+        b=rGq2RfA1/UYsy6C8N1wTpHCE5R7ROqf7UfUu8tGCKVMMsqsYwNhdZ7yjP9trY9e+w8
+         vkicgJv/YXye2RSVMWloMcvn0yxLyDaIhUODy2Bypu4qPBYuTuO9x8e+tRMH13SBzZjr
+         yzjaFs3ae+UwvsXkd6eZHTLMCDJ5jixKvmj/0SgLyuN/IsoVTMj2CSoHK8qUoAA/OtHK
+         v4hqyjHu9aScU3089MCZTv88J+3M0Ef7GLJrl2f9iSWX7xMPTOy6V6H+i84eCgY80LVe
+         ieGCgXvHQqdBn6mMFhMCjF5djmgh7FXoBFWd8BLquJxcV1V6PRTxgjZL6LgxLPot+xIw
+         X42A==
+X-Forwarded-Encrypted: i=1; AJvYcCUrW8nYPiLMxDEg6g/76B+aOtsXIR3rRFjzW6a4KvkvSzwA+bcBOtjaioTe1RJKr4J6uuAE2HWBBIH7oVSK0I9F@vger.kernel.org, AJvYcCW6GCYygZS/j/gIUFp2vnWYF7h5ICjKB7AitQB3lGGyVwQq7Qh95EGwH4iHpmw5yiE0fVmHdZYVSkz+pKs=@vger.kernel.org, AJvYcCWbZMjvjlPk3h5h+JIa1yYAmInohA4blntKCzduQnjHDBVZR9MbVU0ntvi9hYnINd/0+eksZM+X@vger.kernel.org, AJvYcCXhxIxwkSBCZ1E+ungnTphAqtC1SZs2Yg2CDCnzRHtMEoMU2mFsCMXDxf0FU1cWDxcnJ45T33+a@vger.kernel.org
+X-Gm-Message-State: AOJu0YyntLHwJEZjhcMj0yxBYbtFIg7G3U5jb9V7f4uzsi6vc4bilG2x
+	gwRiruY77hADs+g6Ab68RN5IBFW/+1Lkj0SjaFRM8Ll/pO4EE/dUQyjZxJceAzY=
+X-Google-Smtp-Source: AGHT+IE3TJwzhFldsUlkBu1cbuT+lJaCxhF62RVb0VmyLIfgheqvWGnc4SfZmeez3miWxOIdNgnJOw==
+X-Received: by 2002:a17:90b:3911:b0:2e2:f04d:9f0d with SMTP id 98e67ed59e1d1-2e9b170c3camr21923226a91.16.1731411290233;
+        Tue, 12 Nov 2024 03:34:50 -0800 (PST)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e99a348dd6sm12466928a91.0.2024.11.12.03.34.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2024 02:03:45 -0800 (PST)
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-X-Google-Original-From: Duncan Roe <dunc@slk15.local.net>
-Date: Tue, 12 Nov 2024 21:03:42 +1100
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Netfilter Development <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH libmnl] whitespace: remove spacing irregularities
-Message-ID: <ZzMn/kNbAymOjeaZ@slk15.local.net>
-Reply-To: duncan_roe@optusnet.com.au
-Mail-Followup-To: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Netfilter Development <netfilter-devel@vger.kernel.org>
-References: <20241111025608.8683-1-duncan_roe@optusnet.com.au>
- <ZzHcsEYWLdt_j0Iy@calendula>
+        Tue, 12 Nov 2024 03:34:49 -0800 (PST)
+From: Jeongjun Park <aha310510@gmail.com>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	kaber@trash.net,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH net] netfilter: ipset: add missing range check in bitmap_ip_uadt
+Date: Tue, 12 Nov 2024 20:34:34 +0900
+Message-Id: <20241112113434.58975-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZzHcsEYWLdt_j0Iy@calendula>
+Content-Transfer-Encoding: 8bit
 
-Hi Pablo,
+In the bitmap_ip_uadt function, if ip is greater than ip_to, they are swapped.
+However, there is no check to see if ip is smaller than map->first, which
+causes an out-of-bounds vulnerability. Therefore, you need to add a missing
+bounds check to prevent out-of-bounds.
 
-On Mon, Nov 11, 2024 at 11:30:08AM +0100, Pablo Neira Ayuso wrote:
-> On Mon, Nov 11, 2024 at 01:56:08PM +1100, Duncan Roe wrote:
-> > Two distinct actions:
-> >  1. Remove trailing spaces and tabs.
-> >  2. Remove spaces that are followed by a tab, inserting extra tabs
-> >     as required.
-> > Action 2 is only performed in the indent region of a line.
-> >
-> > Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
-> > ---
-> >  include/linux/netlink.h | 6 +++---
-> >  src/callback.c          | 4 ++--
-> >  src/socket.c            | 6 +++---
-> >  3 files changed, 8 insertions(+), 8 deletions(-)
->
-> Submit uapi/netlink.h update upstream via netdev@
->
-> This is a cached copy of uapi/netlink.h
->
-> If I take this, the extra line spaces and indentation will come back
-> sooner or later.
->
-> Thanks.
+Cc: <stable@vger.kernel.org>
+Reported-by: syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com
+Fixes: 72205fc68bd1 ("netfilter: ipset: bitmap:ip set type support")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+---
+ net/netfilter/ipset/ip_set_bitmap_ip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for that advice, I've submitted a v2 which only fixes spacing in 2
-.c files. The .c files are the ones giving me grief because q, the editor I
-use, is configured to fix spacing on saving any file. I could change the
-configuration but would rather not.
-
-As for uapi/linux/netlink.h, well hmm. One of the q editor's "party tricks"
-is to go through the entire kernel tree correcting all the space irregularities.
-I've wondered about sending a kernel-wide patch except there are a few
-sources which seem to assume 4-char tabs: I'd leave them out for now.
-
-q finds 120 space-irregular files under uapi/linux alone, but obviously only a
-few are appropriate for netdev@.
-
-Just these 2?
-
-| include/uapi/linux/netlink.h                        |   6 +++---
-| include/uapi/linux/rtnetlink.h                      |   8 ++++----
-
-Or these as well?
-
-| include/uapi/linux/netfilter/nf_conntrack_common.h  |   2 +-
-| include/uapi/linux/netfilter/nfnetlink.h            |   6 +++---
-| include/uapi/linux/netfilter/nfnetlink_compat.h     |   8 ++++----
-| include/uapi/linux/netfilter/x_tables.h             |   4 ++--
-| include/uapi/linux/netfilter/xt_NFQUEUE.h           |   2 +-
-| include/uapi/linux/netfilter/xt_ecn.h               |   2 +-
-| include/uapi/linux/netfilter_arp/arp_tables.h       |   2 +-
-| include/uapi/linux/netfilter_bridge.h               |   2 +-
-| include/uapi/linux/netfilter_bridge/ebt_802_3.h     |   2 +-
-| include/uapi/linux/netfilter_bridge/ebt_among.h     |   4 ++--
-| include/uapi/linux/netfilter_bridge/ebt_vlan.h      |   2 +-
-| include/uapi/linux/netfilter_bridge/ebtables.h      |  10 +++++-----
-| include/uapi/linux/netfilter_ipv4.h                 |   2 +-
-| include/uapi/linux/netfilter_ipv4/ip_tables.h       |   2 +-
-| include/uapi/linux/netfilter_ipv4/ipt_ECN.h         |   2 +-
-| include/uapi/linux/netfilter_ipv6.h                 |   4 ++--
-| include/uapi/linux/netfilter_ipv6/ip6_tables.h      |   6 +++---
-| include/uapi/linux/netfilter_ipv6/ip6t_ipv6header.h |   2 +-
-
-and what about this lot?
-
-| include/uapi/linux/ax25.h                           |  14 +++++++-------
-| include/uapi/linux/icmpv6.h                         |  24 ++++++++++++------------
-| include/uapi/linux/if.h                             |   6 +++---
-| include/uapi/linux/if_eql.h                         |   2 +-
-| include/uapi/linux/if_hippi.h                       |   6 +++---
-| include/uapi/linux/if_plip.h                        |   2 +-
-| include/uapi/linux/if_pppox.h                       |  14 +++++++-------
-| include/uapi/linux/if_slip.h                        |   8 ++++----
-| include/uapi/linux/if_tun.h                         |   8 ++++----
-| include/uapi/linux/if_vlan.h                        |   6 +++---
-| include/uapi/linux/in.h                             |   2 +-
-| include/uapi/linux/in6.h                            |   8 ++++----
-| include/uapi/linux/inet_diag.h                      |   2 +-
-| include/uapi/linux/ip.h                             |   2 +-
-| include/uapi/linux/ipv6.h                           |   4 ++--
-| include/uapi/linux/ipv6_route.h                     |   6 +++---
-| include/uapi/linux/netdevice.h                      |  14 +++++++-------
-| include/uapi/linux/ppp_defs.h                       |   2 +-
-| include/uapi/linux/sockios.h                        |   8 ++++----
-| include/uapi/linux/x25.h                            |   4 ++--
-
-Any advice greatly appreciated,
-
-Cheers ... Duncan.
+diff --git a/net/netfilter/ipset/ip_set_bitmap_ip.c b/net/netfilter/ipset/ip_set_bitmap_ip.c
+index e4fa00abde6a..705c316b001a 100644
+--- a/net/netfilter/ipset/ip_set_bitmap_ip.c
++++ b/net/netfilter/ipset/ip_set_bitmap_ip.c
+@@ -178,7 +178,7 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
+ 		ip_to = ip;
+ 	}
+ 
+-	if (ip_to > map->last_ip)
++	if (ip < map->first_ip || ip_to > map->last_ip)
+ 		return -IPSET_ERR_BITMAP_RANGE;
+ 
+ 	for (; !before(ip_to, ip); ip += map->hosts) {
+--
 
