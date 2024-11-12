@@ -1,119 +1,71 @@
-Return-Path: <netfilter-devel+bounces-5065-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5067-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D439C573F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 13:04:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 019979C5716
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 12:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD984B34F74
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 11:15:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3BC5B32739
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 11:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801BB21FD9F;
-	Tue, 12 Nov 2024 10:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oRouAyQD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B042309BA;
+	Tue, 12 Nov 2024 11:36:58 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4503821FD95;
-	Tue, 12 Nov 2024 10:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02BA23098C;
+	Tue, 12 Nov 2024 11:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731408622; cv=none; b=HrfXnxf2DEIKMddbkKmaOo4HKwdTeLUdXpVo+5RrEsO8MGsFLOnnkH8eUkMma0eL50oWmkqU/KhpWEJRaZVKse04OyCjcX87btTday3V3W9iMQtZ4g6I3iYZbz7svwDWeQ63bV6BNC/mcVGRluAj8ZnI+RhjYNVq/TVqeNWVqE0=
+	t=1731411418; cv=none; b=bEQunAc/Nm/ycuPfHWKmf72SZkLkHsOJEUBJdCfUAPhQ07c/CciwVTMkWn180JJ4mKgiep4AwarNlYBRB2cMUewBpCzoAg3OAUaAVJT4RvK0k/Mtv80DGsqw5oRAl76saPFdusbYfQgCmGO+6yJyNJeZiQZ9uU+/i2VJDnzWP1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731408622; c=relaxed/simple;
-	bh=KJ2F7sc2bf+xv1D/2D+hIJxzrNK6jbesAQAvmCnlx5o=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=B9nRZdzVNo/D2NQPKOrepGYW72r2oLLk0a4tp1XUCdToke6L7v13kX0EcSEP8zGtVmdo3znXPMW8/bt8Fbn1lX4WbbYp4Ed1xJj2415MqaarC/wV3FTQ67QW4eMTICMLGKbjDy/EIEaDkElvM8+JA2R5vCbU8meQtFcYtVr9F4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oRouAyQD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFDE4C4CECD;
-	Tue, 12 Nov 2024 10:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731408621;
-	bh=KJ2F7sc2bf+xv1D/2D+hIJxzrNK6jbesAQAvmCnlx5o=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=oRouAyQDUPBGdu5xet77fXKCQrGNTYLitrbvb3S9EB8YGWSfVX2Y1zPewarNRQVcd
-	 40OkvXMnkRyfBGS+SLsq/HQuaJaFLmjRCoen/ST58PNlV+EEIMv6+y49b8Nqqvd2GT
-	 i2ecONHDXWVRwZBpCc66xPCt3/LJICE5+5AQpMAkLLCedezx9KWJnt4bf9Z+90gMHD
-	 axbfQfTRI2G3ushpeQq+aOj6m49tpmxEVXliMd7sEpkeqZ1U8EkhLlJ2eiTlKkMMyW
-	 SNimJ0v5/d2gevDQ6juWhEypqWvp4ZnGwjFRsiB8p9CdbELP8Ks0xwl/3HGBdNA78f
-	 AJXjpuEFTRLYw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DEC3809A80;
-	Tue, 12 Nov 2024 10:50:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1731411418; c=relaxed/simple;
+	bh=Rie9EXgiEfgE8cUOZHfpTlQo1q64m9Pjp3ivppCnqIY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YfplOIYRg0w5qwkUgmVMo+qCjFvwXjrngUD72RgDB3ZfL8OfbEU5UPEnMd78qWDjlgjGgomhxI8HwUqZiojVn/VPYqUKDvXWgjP1c1+JcB/4ZlHJI+ciMfnsRo0CUmQzBHiknKi4u7rbEpdGsf13w95BX8yQbVpDfYAtJaveU7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=51386 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1tApCN-007di6-JZ; Tue, 12 Nov 2024 12:36:45 +0100
+Date: Tue, 12 Nov 2024 12:36:42 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Simon Horman <horms@kernel.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH nf-next] netfilter: bpf: Pass string literal as format
+ argument of request_module()
+Message-ID: <ZzM9yvTopClYt4W-@calendula>
+References: <20241111-nf-bpf-fmt-v1-1-5f061b6fe35b@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/9] net: ip: add drop reasons to input route
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173140863199.479628.7032457382507846655.git-patchwork-notify@kernel.org>
-Date: Tue, 12 Nov 2024 10:50:31 +0000
-References: <20241107125601.1076814-1-dongml2@chinatelecom.cn>
-In-Reply-To: <20241107125601.1076814-1-dongml2@chinatelecom.cn>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: pabeni@redhat.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, horms@kernel.org, dsahern@kernel.org, pablo@netfilter.org,
- kadlec@netfilter.org, roopa@nvidia.com, razor@blackwall.org,
- gnault@redhat.com, bigeasy@linutronix.de, hawk@kernel.org, idosch@nvidia.com,
- dongml2@chinatelecom.cn, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, bridge@lists.linux.dev, bpf@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241111-nf-bpf-fmt-v1-1-5f061b6fe35b@kernel.org>
+X-Spam-Score: -1.9 (-)
 
-Hello:
+On Mon, Nov 11, 2024 at 02:47:51PM +0000, Simon Horman wrote:
+> Both gcc-14 and clang-18 report that passing a non-string literal as the
+> format argument of request_module() is potentially insecure.
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Thu,  7 Nov 2024 20:55:52 +0800 you wrote:
-> In this series, we mainly add some skb drop reasons to the input path of
-> ip routing, and we make the following functions return drop reasons:
-> 
->   fib_validate_source()
->   ip_route_input_mc()
->   ip_mc_validate_source()
->   ip_route_input_slow()
->   ip_route_input_rcu()
->   ip_route_input_noref()
->   ip_route_input()
->   ip_mkroute_input()
->   __mkroute_input()
->   ip_route_use_hint()
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v5,1/9] net: ip: make fib_validate_source() support drop reasons
-    https://git.kernel.org/netdev/net-next/c/37653a0b8a6f
-  - [net-next,v5,2/9] net: ip: make ip_route_input_mc() return drop reason
-    https://git.kernel.org/netdev/net-next/c/c6c670784b86
-  - [net-next,v5,3/9] net: ip: make ip_mc_validate_source() return drop reason
-    https://git.kernel.org/netdev/net-next/c/d46f827016d8
-  - [net-next,v5,4/9] net: ip: make ip_route_input_slow() return drop reasons
-    https://git.kernel.org/netdev/net-next/c/5b92112acd8e
-  - [net-next,v5,5/9] net: ip: make ip_route_input_rcu() return drop reasons
-    https://git.kernel.org/netdev/net-next/c/61b95c70f344
-  - [net-next,v5,6/9] net: ip: make ip_route_input_noref() return drop reasons
-    https://git.kernel.org/netdev/net-next/c/82d9983ebeb8
-  - [net-next,v5,7/9] net: ip: make ip_route_input() return drop reasons
-    https://git.kernel.org/netdev/net-next/c/50038bf38e65
-  - [net-next,v5,8/9] net: ip: make ip_mkroute_input/__mkroute_input return drop reasons
-    https://git.kernel.org/netdev/net-next/c/d9340d1e0277
-  - [net-next,v5,9/9] net: ip: make ip_route_use_hint() return drop reasons
-    https://git.kernel.org/netdev/net-next/c/479aed04e84a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied to nf-next
 
