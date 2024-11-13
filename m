@@ -1,130 +1,103 @@
-Return-Path: <netfilter-devel+bounces-5073-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5075-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981B19C6469
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 23:42:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB36F9C659F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Nov 2024 01:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 659EEB279F5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Nov 2024 20:52:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F4C92843DB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Nov 2024 00:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE8D218D7C;
-	Tue, 12 Nov 2024 20:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AABD23A6;
+	Wed, 13 Nov 2024 00:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FbkZLzG9"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="NOYshMNV"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F766216446
-	for <netfilter-devel@vger.kernel.org>; Tue, 12 Nov 2024 20:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82113C2FB
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Nov 2024 00:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731444761; cv=none; b=DnGijDbGng33UHkGPOE7+YSsMXOQRWbhhJjTiATHFB1p/1rlbJAEGIhjAzIf2U7YmQeRSEnKP0SLKI+NhXEAGqXy+jhbMUSy2JqpsskHarTs0hy4Ni4t6l7A+3kEcUcm9z3cK/qpLV/pNHtnO2IAfw2HJ+aDvSgc1peiwE8/fxc=
+	t=1731456066; cv=none; b=df+1MZ2L6TT1sG2umFgd96aIqBXOktW7sUMccFHl6X8Z0owMWVV+71s4+uLzPTzxIcOoMMDF3LNlXL+RmZSmc9NKBr/WEnJh11VGoy7jC86Rd0Wse3jaoAR/SmpKZL2mqo2GPIzW3xwHoiT6Dh7Wdlad+SqTwiwfvngQxjjbkEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731444761; c=relaxed/simple;
-	bh=+SZL0JrjSa1Hbt9vX0pWBt9prNTHQqntRGBTkanoPjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RpZe8VgHXuSjOFseV7ZXJBOOxpFTUSitZtw/6QQKz2iuEpE5buz8fvDrZu5fcJGeGRaRaYUAcmGYXQyAIYqglkn+1tuFaWCnyxGaEJr4h2gL1e3pCnQcR/KM43cqo8j7WAbfcbXssg1UYC5qgTFv3SoiB3EoyhQPmV04eF7FIrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FbkZLzG9; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=sC6KXM7SeMKJXVC/SKyViV149OK1bOtFfqbpsxmMm60=; b=FbkZLzG92M4o07s2/7Mxkr3rtX
-	y/T7MrShDinaQ3e2CX7InK0tJzvx/zHc8CFKRxXm/Yt7GXEQgCGKC4HtHqTtgp1dEKqqsRj2dJ2Zb
-	2b5ZHNRYP8ask9swHbvQg+ZvWdDfr6sR8gc6bRTcQBCL5owkHVItmMGx3qSgSqRqezXo3cxOFyrxu
-	GZA8riLZ9nop/xvupD7//IGsmQd4DTEBaZLWC+S7a1Ww94m83iJKAC0L3RLNNbRn3/l89Mr99TPTN
-	Z05lxIgZJ448DMOdBUV6O66RXu/8mz2SqhDIwOi6BobzzowPp9IyiYGi0q3uPDBz+ObqYgAmJB18G
-	gsFh5dxA==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1tAxsJ-000000000G9-2uad;
-	Tue, 12 Nov 2024 21:52:35 +0100
-Date: Tue, 12 Nov 2024 21:52:35 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, eric@garver.life
-Subject: Re: [PATCH nft] json: collapse set element commands from parser
-Message-ID: <ZzPAE3Gj6qoA8ZAk@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org, eric@garver.life
-References: <20241031220411.165942-1-pablo@netfilter.org>
+	s=arc-20240116; t=1731456066; c=relaxed/simple;
+	bh=FoGmaHNM63GqBq0BQy8qKOtath3he6N2gYMwzHPG5lI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=l/ZXiXuZ7mEV0zFxJufW7pg94+xnLilpTN6U4Katbj0C2olsaaUtuOQiR4Klv0/YDyBstNVfx+bDQKzqgv0WlZ1Y5qz4s0soN1+8hL2p6UYVevaG9qGe5RN4o5MGAQvD6Jbm2JVaF1pOsHdeyyAIoY24LQ0zQslUf0ShfIxfoBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=NOYshMNV; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-720d01caa66so5987926b3a.2
+        for <netfilter-devel@vger.kernel.org>; Tue, 12 Nov 2024 16:01:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1731456064; x=1732060864; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FoGmaHNM63GqBq0BQy8qKOtath3he6N2gYMwzHPG5lI=;
+        b=NOYshMNVjSOTVgdvo3zfE6mXikzn4pYqNHipj0T21Z3Hebul9xRMKp7a+PtzsHjzKZ
+         XalpWnvHO7XPWIqwHoQXHBVX9K7RF+rSzyQF9iW+lRslUFGXvpspzxj36JfvPnMILaJJ
+         ClgMLJgafCGgmuBE5k1X0cmnHNG0enMQz9c9mlZD8wjOhxi8wcMf5DtcwcdAjpQBiyQq
+         q/iPcgNsM4k/VdpGffIFODf3oOV6u5iYjUkC70Z4DzhYfGu8bZQnhBFOFMG1HNLGjoQn
+         kNLzSSZadhtSSVvoVUVQx7Etq2EIHBbt20cykdaPXgR1UGzMpqFx46YUgsDb3qc9R72R
+         0tWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731456064; x=1732060864;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FoGmaHNM63GqBq0BQy8qKOtath3he6N2gYMwzHPG5lI=;
+        b=nYM5GFImBTqjvangq0+G6kGVJKPL5e/GWU1bayO6RBaK9mPRKbBa4qlicnQnIvRg1C
+         2UFADl8kCWtypnLr4X9no7mXIdiRWmalB2uV2SCPqgTTB9h+h1o93qoslRBqPUiAdJ8p
+         OJbHikPhlz7IC6TQC4G+iKxK/Nxa3XdhIEBZtE7rmKVNSpVN4WBZPbT3+8HgMlGmjO3o
+         cz8uy++8Yoh7dk5ZYTogdJzRp6Y0IGH6DsMhmI6ERZaA/cZNjqZkC9DPPn8xitU7yS09
+         KT77axvSMpVCd+IIRxk8qWBaeNSbOrJpDZFqWczs1zH5w42i+R4Jtu2Q8tQO3UeL6wXW
+         z4mg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNHHetnRPYkvIMF6ZDmoqQsBvZt6u+cOOnNUa0c9RiE6vlHLyM8nyqBpEmsjKFsFDxr1xORT/KjmT3zeEMCBY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz43RWJ6IsV2OLSzGMcn4nICuaxCpqhuAUgBGbX6jJ23NG7E52z
+	zWLVZQoq+BkRAqG/aw7rl0E4+6eyQSLxZGihZdW7pEUaw5vvQCR71GYcBxdRuO6iLFLCK5/rLYH
+	oPtH0jCwdrMRYXICtFW1BS+6yr+K8lVgCKjWw
+X-Google-Smtp-Source: AGHT+IEYm3xrjN3OhpDff0TCYzAQLcLBy7Ie7ujNcFbKW96oksbJ7FAxRHHehy6fUA3rjkmHB85DZUo8zI+0z4ZkvRQ=
+X-Received: by 2002:a05:6a20:734b:b0:1db:eb2c:a74 with SMTP id
+ adf61e73a8af0-1dc7037a94dmr1440958637.12.1731456063780; Tue, 12 Nov 2024
+ 16:01:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="2K0Rw+evxlsTLrNh"
-Content-Disposition: inline
-In-Reply-To: <20241031220411.165942-1-pablo@netfilter.org>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 12 Nov 2024 19:00:52 -0500
+Message-ID: <CAM0EoMmoLXpz70sF6z301OccU-ghgNSOad9cQVhizipy-is-Lw@mail.gmail.com>
+Subject: 0x19: Call For Submissions open!
+To: people <people@netdevconf.info>
+Cc: Linux Kernel Network Developers <netdev@vger.kernel.org>, Christie Geldart <christie@ambedia.com>, 
+	Kimberley Jeffries <kimberleyjeffries@gmail.com>, lwn@lwn.net, 
+	Lael Santos <lael.santos@expertisesolutions.com.br>, 
+	"board@netdevconf.org" <board@netdevconf.info>, linux-wireless <linux-wireless@vger.kernel.org>, 
+	netfilter-devel@vger.kernel.org, lartc@vger.kernel.org, 
+	Bruno Banelli <bruno.banelli@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 
+We are pleased to announce the opening of Call For Submissions(CFS)
+for Netdev conf 0x19.
+Netdev conf 0x19 is going to be a hybrid conference with the physical
+component being in Zagreb, Croatia.
 
---2K0Rw+evxlsTLrNh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For overview of topics, submissions and requirements please visit:
+https://netdevconf.info/0x19/pages/submit-proposal.html
+For all submitted sessions, we employ a blind review process carried
+out by the Program Committee.
 
-Hi Pablo,
+Important dates:
+Closing of CFS: Jan 17th, 2025
+Notification by: Jan 26th, 2025
+Conference dates: March 10th-14th 2025
 
-On Thu, Oct 31, 2024 at 11:04:11PM +0100, Pablo Neira Ayuso wrote:
-> Side note: While profiling, I can still see lots json objects, this
-> results in memory consumption that is 5 times than native
-> representation. Error reporting is also lagging behind, it should be
-> possible to add a json_t pointer to struct location to relate
-> expressions and json objects.
+Please take this opportunity to share your work and ideas with the community
 
-I can't quite reproduce this. When restoring a ruleset with ~12.7k
-elements in individual standard syntax commands, valgrind prints:
-
-| HEAP SUMMARY:
-|     in use at exit: 59,802 bytes in 582 blocks
-|   total heap usage: 954,970 allocs,
-|                     954,388 frees,
-|                  18,300,874 bytes allocated
-
-Repeating the same in JSON syntax, I get:
-
-| HEAP SUMMARY:
-|     in use at exit: 61,592 bytes in 647 blocks
-|   total heap usage: 1,200,164 allocs,
-|                     1,199,517 frees,
-|                    38,612,257 bytes allocated
-
-So this is 38MB vs 18MB? At least far from the mentioned 5 times. Would
-you mind sharing how you got to that number?
-
-Please kindly find my reproducers attached for reference.
-
-Thanks, Phil
-
---2K0Rw+evxlsTLrNh
-Content-Type: application/x-sh
-Content-Disposition: attachment; filename="standard_many_elems.sh"
-Content-Transfer-Encoding: quoted-printable
-
-#!/bin/bash=0A=0A(=0A	echo 'add table ip t'=0A	echo "add set ip t s { type =
-ipv4_addr; }"=0A	for ((i =3D 0; i < 50; i++)); do=0A		for ((j =3D 1; j < 25=
-5; j++)); do=0A			echo "add element ip t s { 10.0.$i.$j }"=0A		done=0A	done=
-=0A) | ../install/sbin/nft -f -=0A=0A
---2K0Rw+evxlsTLrNh
-Content-Type: application/x-sh
-Content-Disposition: attachment; filename="json_many_elems.sh"
-Content-Transfer-Encoding: quoted-printable
-
-#!/bin/bash=0A=0A(=0A	echo '{"nftables": ['=0A	echo '{"add": {"table": {"fa=
-mily": "ip", "name": "t"}}},'=0A	echo '{"add": {"set": {"family": "ip", "na=
-me": "s", "table": "t", "type": "ipv4_addr"}}},'=0A	for ((i =3D 0; i < 50; =
-i++)); do=0A		for ((j =3D 1; j < 255; j++)); do=0A			sep=3D''=0A			[[ $i -e=
-q 49 && $j -eq 254 ]] || sep=3D','=0A			echo '{"add": {"element": {"family"=
-: "ip", "table": "t", "name": "s", "elem": [{"set": ["10.0.'$i'.'$j'"]}]}}}=
-'$sep=0A		done=0A	done=0A	echo ']}'=0A) | ../install/sbin/nft -j -f -=0A=0A
---2K0Rw+evxlsTLrNh--
+cheers,
+jamal (on behalf of the Netdev Society)
 
