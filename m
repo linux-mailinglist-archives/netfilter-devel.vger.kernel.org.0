@@ -1,90 +1,98 @@
-Return-Path: <netfilter-devel+bounces-5100-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5103-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1DC49C8986
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 13:09:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6BC79C8B6A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 14:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014F41F21514
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 12:09:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AD1728588E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 13:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8B81F8F09;
-	Thu, 14 Nov 2024 12:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2932E1FB3C0;
+	Thu, 14 Nov 2024 13:05:14 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6DF18BC2C;
-	Thu, 14 Nov 2024 12:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EAB1F9EC7;
+	Thu, 14 Nov 2024 13:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731586154; cv=none; b=DkNNTuNvrrfwHFUJZ0XdxzvgWLBWHv2qxHLCFsgEJ+9fFRgtfHHX6AhvAYVkQbS8W0Kqq0UD4ZxKUqtfqbViBbcrMZVoCsj8VI2Ko+aztuqAatnN1MnyrtSl2zpzZoCq+USFM1dygD5QbB17r9CMGCzSFQC7cvAaXF58MFNPRVQ=
+	t=1731589514; cv=none; b=iuxUB/QlbZLf76321SjBL0ZGLg0pnMNHA2R9tDMc0X+I+YobUbW+RjSBJ9tc9gSXZjrAmRBhkNA7VA0pftn5Q8E4xvMe5t/MYq1LXfBRp5rI1Y93+u0tFP367zXUOHASYhlQWLj4gUdm2F3eJI8fD65+Uq/1RvbIV/swD5KukBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731586154; c=relaxed/simple;
-	bh=zFjM9nD1eEcwNAhJr7GI0uPQTnedXfW/j65cRd8uHaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SVjkd4JQKLCcMLNPNCv0WmJ405AMbciNQXQc/yUhqrIfZC1FxmRXZk0/QcEezWjdj2TBm6LDNYbQVk00u+7cqwfXosojecyEqxBta8yAvJ2F9AJ9ecGrwXzJnTxYz1TvuqguA0/gtJ6gMveKlJPyyupYSYrkCO6e6H1rlie013U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+	s=arc-20240116; t=1731589514; c=relaxed/simple;
+	bh=e5D2qOgFKSBwHV7XhRukm34CjjDqrco4rYeRnDSVQ3w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=acNvmARs0B9KkmdfIyZ+m+TkLGRmU6/ZhNrZBiuZ+NipNHQC/nprrG3fbi3v0J4g1V5W5pWhBl6KyA2DiyTi/ovo6xVOei++yvjIAvlON8FkhEu8IgHQUrLIEmP6ZD0IMChaPHGkmMMRljoT+jAoQldRgYgffWH8bpUtAXQk404=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=39690 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1tBYep-002ARd-BK; Thu, 14 Nov 2024 13:09:09 +0100
-Date: Thu, 14 Nov 2024 13:09:05 +0100
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Paolo Abeni <pabeni@redhat.com>, Jeongjun Park <aha310510@gmail.com>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	horms@kernel.org, kaber@trash.net, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com
-Subject: Re: [PATCH net v2] netfilter: ipset: add missing range check in
- bitmap_ip_uadt
-Message-ID: <ZzXoYcxjSpejl9pC@calendula>
-References: <20241113130209.22376-1-aha310510@gmail.com>
- <ff1c1622-a57c-471e-b41f-8fb4cb2f233d@redhat.com>
- <ZzXfDDNSeO0vh1US@calendula>
- <759eccdd-f75b-f3a7-8686-d4c49c72df41@blackhole.kfki.hu>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de
+Subject: [PATCH net 0/3] Netfilter fixes for net
+Date: Thu, 14 Nov 2024 13:57:20 +0100
+Message-Id: <20241114125723.82229-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <759eccdd-f75b-f3a7-8686-d4c49c72df41@blackhole.kfki.hu>
-X-Spam-Score: -1.9 (-)
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 14, 2024 at 12:46:29PM +0100, Jozsef Kadlecsik wrote:
-> On Thu, 14 Nov 2024, Pablo Neira Ayuso wrote:
-> 
-> > On Thu, Nov 14, 2024 at 12:10:05PM +0100, Paolo Abeni wrote:
-> > > On 11/13/24 14:02, Jeongjun Park wrote:
-> > > > When tb[IPSET_ATTR_IP_TO] is not present but tb[IPSET_ATTR_CIDR] exists,
-> > > > the values of ip and ip_to are slightly swapped. Therefore, the range check
-> > > > for ip should be done later, but this part is missing and it seems that the
-> > > > vulnerability occurs.
-> > > > 
-> > > > So we should add missing range checks and remove unnecessary range checks.
-> > > > 
-> > > > Cc: <stable@vger.kernel.org>
-> > > > Reported-by: syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com
-> > > > Fixes: 72205fc68bd1 ("netfilter: ipset: bitmap:ip set type support")
-> > > > Signed-off-by: Jeongjun Park <aha310510@gmail.com>
-> > > 
-> > > @Pablo, @Jozsef: despite the subj prefix, I guess this should go via
-> > > your tree. Please LMK if you prefer otherwise.
-> > 
-> > Patch LGTM. I am waiting for Jozsef to acknowledge this fix.
-> 
-> Sorry for the delay at acking the patch. Please apply it to the stable 
-> branches too because those are affected as well.
+Hi,
 
-No problem, preparing PR. Thanks Jozsef.
+The following patchset contains Netfilter fixes for net:
+
+1) Update .gitignore in selftest to skip conntrack_reverse_clash,
+   from Li Zhijian.
+
+2) Fix conntrack_dump_flush return values, from Guan Jing.
+
+3) syzbot found that ipset's bitmap type does not properly checks for
+   bitmap's first ip, from Jeongjun Park.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-11-14
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 50ae879de107ca2fe2ca99180f6ba95770f32a62:
+
+  Merge tag 'nf-24-10-31' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf (2024-10-31 12:13:08 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-11-14
+
+for you to fetch changes up to 35f56c554eb1b56b77b3cf197a6b00922d49033d:
+
+  netfilter: ipset: add missing range check in bitmap_ip_uadt (2024-11-14 13:47:26 +0100)
+
+----------------------------------------------------------------
+netfilter pull request 24-11-14
+
+----------------------------------------------------------------
+Jeongjun Park (1):
+      netfilter: ipset: add missing range check in bitmap_ip_uadt
+
+Li Zhijian (1):
+      selftests: netfilter: Add missing gitignore file
+
+guanjing (1):
+      selftests: netfilter: Fix missing return values in conntrack_dump_flush
+
+ net/netfilter/ipset/ip_set_bitmap_ip.c                       | 7 ++-----
+ tools/testing/selftests/net/netfilter/.gitignore             | 1 +
+ tools/testing/selftests/net/netfilter/conntrack_dump_flush.c | 6 ++++++
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
