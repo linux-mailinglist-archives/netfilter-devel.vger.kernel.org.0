@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5102-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5104-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9147E9C8B67
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 14:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A8B29C8B6B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 14:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CB931F24A37
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 13:05:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1B31F25165
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 13:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EA81FAF01;
-	Thu, 14 Nov 2024 13:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DBF1FB3C9;
+	Thu, 14 Nov 2024 13:05:14 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75B61FAC5D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F5F1FAC51;
 	Thu, 14 Nov 2024 13:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731589513; cv=none; b=G/3O/ranOpu/VDoEikuNMqpbvTt4gB7fZL/Dw/61lsCUlwkJCV4VHp0ii6ncPxB6UlATNFckEljQxgLsfoWxHgD3oxXNMYNe0YPIXxoYwAjN+dn6+DCuZjnJ9WI/ssk7OQQfGM92VfY1QxJkr0gtLRJq92kBD+Whx0qNuPfBOTc=
+	t=1731589514; cv=none; b=IIO8KhPH97CXEDC4EPxKo03ZU9NMNbMNPD7hnrpyQiwnYAiLZREoLEFjx4Zdr0qMlJFw8SMzP991ywBaBZyqWk4/4pUYWQcH/H8+WZkdGVKuIuU4CxiPGwTdKUUgUSLXT6PDcrTC4t4LR/6BGbH+JYkDa1F8/yxbIVZ7JwE50XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731589513; c=relaxed/simple;
-	bh=QPUiEAZl3lzHLwvEjSCy0Y1PfyOgnhOXErZmHXPZ0zk=;
+	s=arc-20240116; t=1731589514; c=relaxed/simple;
+	bh=Y6wopE0ov8SSG4Zzo1TJXLDsACiB1Z4n9kSwNR6kVq4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UtHgzjCKVD+7L39qKPaKFrKf3Ea6eIDPZtF26frr+u3I8o5IDiKHgNejBQV3kzJ7xfjGDEtUKzpTxBFACbAG73VXLe0f+skpoH1CMLPzfUT1mQa4kyuoO720IAtNiuIajitDPP3k41Ua/oThrnsEwZBhvWdoct3ay3OuWc4nITY=
+	 MIME-Version; b=L6TEri6mIUKNYXYuR4AzJlLq+m2uq7P+6D1EzEXB1/7dik/zTFpAQG0lIwI3qLnH1ZcYYK80k+jbtEJkt5pCMkJS2d0OfrG7PqKGZlLZMYRptqkoCt6Wb4eeDDqGLZv+lOe0cUPpkU8zLKlD27xQ/sziubBCYM3V5d6EBRqqHLg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 2/3] selftests: netfilter: Fix missing return values in conntrack_dump_flush
-Date: Thu, 14 Nov 2024 13:57:22 +0100
-Message-Id: <20241114125723.82229-3-pablo@netfilter.org>
+Subject: [PATCH net 3/3] netfilter: ipset: add missing range check in bitmap_ip_uadt
+Date: Thu, 14 Nov 2024 13:57:23 +0100
+Message-Id: <20241114125723.82229-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241114125723.82229-1-pablo@netfilter.org>
 References: <20241114125723.82229-1-pablo@netfilter.org>
@@ -49,48 +49,51 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: guanjing <guanjing@cmss.chinamobile.com>
+From: Jeongjun Park <aha310510@gmail.com>
 
-Fix the bug of some functions were missing return values.
+When tb[IPSET_ATTR_IP_TO] is not present but tb[IPSET_ATTR_CIDR] exists,
+the values of ip and ip_to are slightly swapped. Therefore, the range check
+for ip should be done later, but this part is missing and it seems that the
+vulnerability occurs.
 
-Fixes: eff3c558bb7e ("netfilter: ctnetlink: support filtering by zone")
-Signed-off-by: Guan Jing <guanjing@cmss.chinamobile.com>
+So we should add missing range checks and remove unnecessary range checks.
+
+Cc: <stable@vger.kernel.org>
+Reported-by: syzbot+58c872f7790a4d2ac951@syzkaller.appspotmail.com
+Fixes: 72205fc68bd1 ("netfilter: ipset: bitmap:ip set type support")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+Acked-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- .../testing/selftests/net/netfilter/conntrack_dump_flush.c  | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/netfilter/ipset/ip_set_bitmap_ip.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c b/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-index 254ff03297f0..5f827e10717d 100644
---- a/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-+++ b/tools/testing/selftests/net/netfilter/conntrack_dump_flush.c
-@@ -43,6 +43,8 @@ static int build_cta_tuple_v4(struct nlmsghdr *nlh, int type,
- 	mnl_attr_nest_end(nlh, nest_proto);
+diff --git a/net/netfilter/ipset/ip_set_bitmap_ip.c b/net/netfilter/ipset/ip_set_bitmap_ip.c
+index e4fa00abde6a..5988b9bb9029 100644
+--- a/net/netfilter/ipset/ip_set_bitmap_ip.c
++++ b/net/netfilter/ipset/ip_set_bitmap_ip.c
+@@ -163,11 +163,8 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
+ 		ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP_TO], &ip_to);
+ 		if (ret)
+ 			return ret;
+-		if (ip > ip_to) {
++		if (ip > ip_to)
+ 			swap(ip, ip_to);
+-			if (ip < map->first_ip)
+-				return -IPSET_ERR_BITMAP_RANGE;
+-		}
+ 	} else if (tb[IPSET_ATTR_CIDR]) {
+ 		u8 cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
  
- 	mnl_attr_nest_end(nlh, nest);
-+
-+	return 0;
- }
+@@ -178,7 +175,7 @@ bitmap_ip_uadt(struct ip_set *set, struct nlattr *tb[],
+ 		ip_to = ip;
+ 	}
  
- static int build_cta_tuple_v6(struct nlmsghdr *nlh, int type,
-@@ -71,6 +73,8 @@ static int build_cta_tuple_v6(struct nlmsghdr *nlh, int type,
- 	mnl_attr_nest_end(nlh, nest_proto);
+-	if (ip_to > map->last_ip)
++	if (ip < map->first_ip || ip_to > map->last_ip)
+ 		return -IPSET_ERR_BITMAP_RANGE;
  
- 	mnl_attr_nest_end(nlh, nest);
-+
-+	return 0;
- }
- 
- static int build_cta_proto(struct nlmsghdr *nlh)
-@@ -90,6 +94,8 @@ static int build_cta_proto(struct nlmsghdr *nlh)
- 	mnl_attr_nest_end(nlh, nest_proto);
- 
- 	mnl_attr_nest_end(nlh, nest);
-+
-+	return 0;
- }
- 
- static int conntrack_data_insert(struct mnl_socket *sock, struct nlmsghdr *nlh,
+ 	for (; !before(ip_to, ip); ip += map->hosts) {
 -- 
 2.30.2
 
