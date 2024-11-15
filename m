@@ -1,324 +1,104 @@
-Return-Path: <netfilter-devel+bounces-5117-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5119-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709579C93DA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 22:14:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FB09CD50F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2024 02:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7B49B22C5F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Nov 2024 21:14:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9C721F207C4
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2024 01:30:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C321F1AE863;
-	Thu, 14 Nov 2024 21:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFE227468;
+	Fri, 15 Nov 2024 01:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LDXoSL0b"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0855029A1
-	for <netfilter-devel@vger.kernel.org>; Thu, 14 Nov 2024 21:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30F5374FF;
+	Fri, 15 Nov 2024 01:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731618837; cv=none; b=fgCfpeHi3QBd9FWLl6l/T8xwZuxG1g24c4GNa0pdLal7mQ7UdNF8wGp2tZ8y4hU7KOnDpsKyMCkUdop4VzM+PLp6H8Rv7q7JdtVfZ5/ePvfNnFe70rmxwJCvsJef/2hGHTVHt/DNw+Z0j3YIVtnRT/8kStcNgcoTkPk/nO9tU28=
+	t=1731634222; cv=none; b=qnPapH16bquE0zMqb3u4aIgoKALpL9CewYa5EIjDcpbmN5uKZGGwyM6sWFE8J0RDwtOtOlxlT6/gaI0WQrz54XFVoY5g5nw1t9cuuz2z6FQC72+cAA4+tX3RZuWQQt4dJkyEEBG/3aRF9bkISbk7h46JW6enZhfJqcs2B7vNqCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731618837; c=relaxed/simple;
-	bh=OIhnvDZhyF36v1LnE9QTd0THwlm1/dv8eS1JebOVWvQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OnNbtaqlApFSkVEk2xWPcyiyk+wu6YuRU2N0iqCu6bYbmCtXZ8RbMBGb+pjmWXvqrDrY9jgIquW7cPqfZCahHIrALubzwTGX9wOivABORvMecBOO8Uz0LMcuDOM9U5ACC5PMuq9HYnAuOUij7lXXXahbeBdnHSepDd89DcxsPT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: jeremy@azazel.net
-Subject: [PATCH nf-next 2/2] netfilter: bitwise: add support for doing AND, OR and XOR directly
-Date: Thu, 14 Nov 2024 22:13:47 +0100
-Message-Id: <20241114211347.24700-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241114211347.24700-1-pablo@netfilter.org>
-References: <20241114211347.24700-1-pablo@netfilter.org>
+	s=arc-20240116; t=1731634222; c=relaxed/simple;
+	bh=fTf7rEuFlp3tVd7pNE4f3mFqJW1hNrKxt4LO6XPSTMY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OYWFSY48M8Y/GjU0vRNRKJvKNDj62zYixqRb79hioL9DTLj/+Wyqsig0CiSkD43N4l7aqJWcdUHrpUBBXc/YwZhA6HuO3z6Xo+YnZvC3e+F112t1TdCDXOK2NT8chnuaJaw0Vj03ZocXP6EczsDQm2jhNhKYK3yQjlPjEBF21IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LDXoSL0b; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7b153047b29so77944685a.3;
+        Thu, 14 Nov 2024 17:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731634219; x=1732239019; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fTf7rEuFlp3tVd7pNE4f3mFqJW1hNrKxt4LO6XPSTMY=;
+        b=LDXoSL0bIyBsaqE4IYtdpUJ/AA0MnZpb8tztCU8cldSlLJ9gdPV5PEJvYhcf69jzkW
+         TPPxAcz3DjTwuoL9/zeICKOOilXlths4lJVTu/8mHLprEu+xIqJ+mPude1Jd9SJ6gt3s
+         t4X4SaAD2UCzw3jKybEoZgmCOu4iJS7pY3VP/vJAaDrCG4XAkRlR8hypAWQd7q7MG7vL
+         LEM1NrJuIrDs2kKtUYEwyR+b8diDLgHAo0AWDHstjcxE6tPede/t4NkqiBqoEYNTTc2D
+         agNNJQW/uBJtndZhyL7Wl14yi3b4c88sNjMKXR4tvI9YMcLdc5a2N/iA9pQ0ZrkYYs/K
+         A/CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731634219; x=1732239019;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fTf7rEuFlp3tVd7pNE4f3mFqJW1hNrKxt4LO6XPSTMY=;
+        b=hkAwwOrDoAhSTHzIcFSsEU1ei8xi21YLgp+NB3+jc1Pp09gML08jqDI8aFCr409X6l
+         WUAhtmCIOtHdDq2h2wDuDtGeL2BAFvOYEGMc9aNDpKYGFlqtxSXp+xszxj0qhi8lKgUp
+         BnQoiLn6B2Iw1DjQnRLgH8i8ZjMB6qwhGHdzpDDewj+3sRCKc+j7cEdW8G9qqRbMK4H3
+         g/pak000/I0k5BmVDcS9me7sMMQ9HF9Hi8Zx5QOrgxDtV95+lnHqaVUWC1V1kAqYYLkB
+         yeJVZqxxvwsvOOxUAGmtVAB88HN8OQ2qzqtClZr8IhQl+GyP/oFOYnRblRRNhXx/Vc2w
+         rbOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW38LQxgy2aeixId/JXI+E1JWRk4be9q5jpymq/zAAeB+scgKzp2RIHVCXuO4x6OpvbbZH6TeAVoTA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZLC2xzfhnQohhPrEFH1cUwOEMjSFslsHCYyhZuRINGUywvNIS
+	oxNn9iXRSyo36SuUb1Du4n9keiFtG6cRtPlwoXzGeCBXFviRzhYypWVOD+99
+X-Google-Smtp-Source: AGHT+IHo+lzY2Iw6tYR7Cgb585T7WW7OwOetsOyFv+CWLnWn3Nc31swGSy8fKqKk48nB25RQNuKNnw==
+X-Received: by 2002:a05:620a:424b:b0:7b1:7f5f:4975 with SMTP id af79cd13be357-7b3622f55f5mr150444785a.36.1731634218565;
+        Thu, 14 Nov 2024 17:30:18 -0800 (PST)
+Received: from playground ([204.111.179.234])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b35ca4d070sm108542285a.103.2024.11.14.17.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2024 17:30:18 -0800 (PST)
+Date: Thu, 14 Nov 2024 20:30:14 -0500
+From: <imnozi@gmail.com>
+To: Thomas =?UTF-8?B?S8O2bGxlcg==?= <thomas@koeller.dyndns.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Subject: Re: Dropping of the end of a chain
+Message-ID: <20241114203014.38526924@playground>
+In-Reply-To: <f6857dc4-84a7-4bc5-aefe-c3b893671e8c@koeller.dyndns.org>
+References: <f6857dc4-84a7-4bc5-aefe-c3b893671e8c@koeller.dyndns.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Jeremy Sowden <jeremy@azazel.net>
+On Thu, 14 Nov 2024 15:01:33 +0100
+Thomas K=C3=B6ller <thomas@koeller.dyndns.org> wrote:
 
-Hitherto, these operations have been converted in user space to
-mask-and-xor operations on one register and two immediate values, and it
-is the latter which have been evaluated by the kernel.  We add support
-for evaluating these operations directly in kernel space on one register
-and either an immediate value or a second register.
+> The nft manpage states that if the end of a chain invoked via 'goto' is=20
+> reached without a verdict, 'evaluation will continue at the last chain=20
+> instead of the one containing the goto statement'. I cannot make sense=20
+> of this; what is the 'last chain'?
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/uapi/linux/netfilter/nf_tables.h |   8 ++
- net/netfilter/nft_bitwise.c              | 133 +++++++++++++++++++++--
- 2 files changed, 131 insertions(+), 10 deletions(-)
 
-diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index 487542234ccd..49c944e78463 100644
---- a/include/uapi/linux/netfilter/nf_tables.h
-+++ b/include/uapi/linux/netfilter/nf_tables.h
-@@ -568,11 +568,17 @@ enum nft_immediate_attributes {
-  *                        and XOR boolean operations
-  * @NFT_BITWISE_LSHIFT: left-shift operation
-  * @NFT_BITWISE_RSHIFT: right-shift operation
-+ * @NFT_BITWISE_AND: and operation
-+ * @NFT_BITWISE_OR: or operation
-+ * @NFT_BITWISE_XOR: xor operation
-  */
- enum nft_bitwise_ops {
- 	NFT_BITWISE_MASK_XOR,
- 	NFT_BITWISE_LSHIFT,
- 	NFT_BITWISE_RSHIFT,
-+	NFT_BITWISE_AND,
-+	NFT_BITWISE_OR,
-+	NFT_BITWISE_XOR,
- };
- /*
-  * Old name for NFT_BITWISE_MASK_XOR.  Retained for backwards-compatibility.
-@@ -590,6 +596,7 @@ enum nft_bitwise_ops {
-  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
-  * @NFTA_BITWISE_DATA: argument for non-boolean operations
-  *                     (NLA_NESTED: nft_data_attributes)
-+ * @NFTA_BITWISE_SREG2: second source register (NLA_U32: nft_registers)
-  *
-  * The bitwise expression supports boolean and shift operations.  It implements
-  * the boolean operations by performing the following operation:
-@@ -613,6 +620,7 @@ enum nft_bitwise_attributes {
- 	NFTA_BITWISE_XOR,
- 	NFTA_BITWISE_OP,
- 	NFTA_BITWISE_DATA,
-+	NFTA_BITWISE_SREG2,
- 	__NFTA_BITWISE_MAX
- };
- #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
-diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
-index 7f6a4f800537..7e7e6d59c01f 100644
---- a/net/netfilter/nft_bitwise.c
-+++ b/net/netfilter/nft_bitwise.c
-@@ -17,6 +17,7 @@
- 
- struct nft_bitwise {
- 	u8			sreg;
-+	u8			sreg2;
- 	u8			dreg;
- 	enum nft_bitwise_ops	op:8;
- 	u8			len;
-@@ -60,28 +61,72 @@ static void nft_bitwise_eval_rshift(u32 *dst, const u32 *src,
- 	}
- }
- 
-+static void nft_bitwise_eval_and(u32 *dst, const u32 *src, const u32 *src2,
-+				 const struct nft_bitwise *priv)
-+{
-+	unsigned int i, n;
-+
-+	for (i = 0, n = DIV_ROUND_UP(priv->len, sizeof(u32)); i < n; i++)
-+		dst[i] = src[i] & src2[i];
-+}
-+
-+static void nft_bitwise_eval_or(u32 *dst, const u32 *src, const u32 *src2,
-+				const struct nft_bitwise *priv)
-+{
-+	unsigned int i, n;
-+
-+	for (i = 0, n = DIV_ROUND_UP(priv->len, sizeof(u32)); i < n; i++)
-+		dst[i] = src[i] | src2[i];
-+}
-+
-+static void nft_bitwise_eval_xor(u32 *dst, const u32 *src, const u32 *src2,
-+				 const struct nft_bitwise *priv)
-+{
-+	unsigned int i, n;
-+
-+	for (i = 0, n = DIV_ROUND_UP(priv->len, sizeof(u32)); i < n; i++)
-+		dst[i] = src[i] ^ src2[i];
-+}
-+
- void nft_bitwise_eval(const struct nft_expr *expr,
- 		      struct nft_regs *regs, const struct nft_pktinfo *pkt)
- {
- 	const struct nft_bitwise *priv = nft_expr_priv(expr);
--	const u32 *src = &regs->data[priv->sreg];
-+	const u32 *src = &regs->data[priv->sreg], *src2;
- 	u32 *dst = &regs->data[priv->dreg];
- 
--	switch (priv->op) {
--	case NFT_BITWISE_MASK_XOR:
-+	if (priv->op == NFT_BITWISE_MASK_XOR) {
- 		nft_bitwise_eval_mask_xor(dst, src, priv);
--		break;
--	case NFT_BITWISE_LSHIFT:
-+		return;
-+	}
-+	if (priv->op == NFT_BITWISE_LSHIFT) {
- 		nft_bitwise_eval_lshift(dst, src, priv);
--		break;
--	case NFT_BITWISE_RSHIFT:
-+		return;
-+	}
-+	if (priv->op == NFT_BITWISE_RSHIFT) {
- 		nft_bitwise_eval_rshift(dst, src, priv);
--		break;
-+		return;
-+	}
-+
-+	src2 = priv->sreg2 ? &regs->data[priv->sreg2] : priv->data.data;
-+
-+	if (priv->op == NFT_BITWISE_AND) {
-+		nft_bitwise_eval_and(dst, src, src2, priv);
-+		return;
-+	}
-+	if (priv->op == NFT_BITWISE_OR) {
-+		nft_bitwise_eval_or(dst, src, src2, priv);
-+		return;
-+	}
-+	if (priv->op == NFT_BITWISE_XOR) {
-+		nft_bitwise_eval_xor(dst, src, src2, priv);
-+		return;
- 	}
- }
- 
- static const struct nla_policy nft_bitwise_policy[NFTA_BITWISE_MAX + 1] = {
- 	[NFTA_BITWISE_SREG]	= { .type = NLA_U32 },
-+	[NFTA_BITWISE_SREG2]	= { .type = NLA_U32 },
- 	[NFTA_BITWISE_DREG]	= { .type = NLA_U32 },
- 	[NFTA_BITWISE_LEN]	= { .type = NLA_U32 },
- 	[NFTA_BITWISE_MASK]	= { .type = NLA_NESTED },
-@@ -105,7 +150,8 @@ static int nft_bitwise_init_mask_xor(struct nft_bitwise *priv,
- 	};
- 	int err;
- 
--	if (tb[NFTA_BITWISE_DATA])
-+	if (tb[NFTA_BITWISE_DATA] ||
-+	    tb[NFTA_BITWISE_SREG2])
- 		return -EINVAL;
- 
- 	if (!tb[NFTA_BITWISE_MASK] ||
-@@ -139,7 +185,8 @@ static int nft_bitwise_init_shift(struct nft_bitwise *priv,
- 	int err;
- 
- 	if (tb[NFTA_BITWISE_MASK] ||
--	    tb[NFTA_BITWISE_XOR])
-+	    tb[NFTA_BITWISE_XOR]  ||
-+	    tb[NFTA_BITWISE_SREG2])
- 		return -EINVAL;
- 
- 	if (!tb[NFTA_BITWISE_DATA])
-@@ -157,6 +204,45 @@ static int nft_bitwise_init_shift(struct nft_bitwise *priv,
- 	return 0;
- }
- 
-+static int nft_bitwise_init_bool2(const struct nft_ctx *ctx,
-+				  struct nft_bitwise *priv,
-+				  const struct nlattr *const tb[])
-+{
-+	struct nft_data_desc desc = {
-+		.type	= NFT_DATA_VALUE,
-+		.size	= sizeof(priv->data),
-+		.len	= sizeof(u32),
-+	};
-+	int err;
-+
-+	if (tb[NFTA_BITWISE_MASK] ||
-+	    tb[NFTA_BITWISE_XOR])
-+		return -EINVAL;
-+
-+	if ((!tb[NFTA_BITWISE_DATA] && !tb[NFTA_BITWISE_SREG2]) ||
-+	    (tb[NFTA_BITWISE_DATA] && tb[NFTA_BITWISE_SREG2]))
-+		return -EINVAL;
-+
-+	if (tb[NFTA_BITWISE_DATA]) {
-+		err = nft_data_init(NULL, &priv->data, &desc,
-+				    tb[NFTA_BITWISE_DATA]);
-+		if (err < 0)
-+			return err;
-+
-+		if (priv->data.data[0] >= BITS_PER_TYPE(u32)) {
-+			nft_data_release(&priv->data, desc.type);
-+			return -EINVAL;
-+		}
-+	} else {
-+		err = nft_parse_register_load(ctx, tb[NFTA_BITWISE_SREG2],
-+					      &priv->sreg2, priv->len);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static int nft_bitwise_init(const struct nft_ctx *ctx,
- 			    const struct nft_expr *expr,
- 			    const struct nlattr * const tb[])
-@@ -188,6 +274,9 @@ static int nft_bitwise_init(const struct nft_ctx *ctx,
- 		case NFT_BITWISE_MASK_XOR:
- 		case NFT_BITWISE_LSHIFT:
- 		case NFT_BITWISE_RSHIFT:
-+		case NFT_BITWISE_AND:
-+		case NFT_BITWISE_OR:
-+		case NFT_BITWISE_XOR:
- 			break;
- 		default:
- 			return -EOPNOTSUPP;
-@@ -204,6 +293,11 @@ static int nft_bitwise_init(const struct nft_ctx *ctx,
- 	case NFT_BITWISE_RSHIFT:
- 		err = nft_bitwise_init_shift(priv, tb);
- 		break;
-+	case NFT_BITWISE_AND:
-+	case NFT_BITWISE_OR:
-+	case NFT_BITWISE_XOR:
-+		err = nft_bitwise_init_bool2(ctx, priv, tb);
-+		break;
- 	}
- 
- 	return err;
-@@ -232,6 +326,19 @@ static int nft_bitwise_dump_shift(struct sk_buff *skb,
- 	return 0;
- }
- 
-+static int nft_bitwise_dump_bool2(struct sk_buff *skb,
-+				 const struct nft_bitwise *priv)
-+{
-+	if (nft_dump_register(skb, NFTA_BITWISE_SREG2, priv->sreg2))
-+		return -1;
-+
-+	if (nft_data_dump(skb, NFTA_BITWISE_DATA, &priv->data,
-+			  NFT_DATA_VALUE, sizeof(u32)) < 0)
-+		return -1;
-+
-+	return 0;
-+}
-+
- static int nft_bitwise_dump(struct sk_buff *skb,
- 			    const struct nft_expr *expr, bool reset)
- {
-@@ -255,6 +362,11 @@ static int nft_bitwise_dump(struct sk_buff *skb,
- 	case NFT_BITWISE_RSHIFT:
- 		err = nft_bitwise_dump_shift(skb, priv);
- 		break;
-+	case NFT_BITWISE_AND:
-+	case NFT_BITWISE_OR:
-+	case NFT_BITWISE_XOR:
-+		err = nft_bitwise_dump_bool2(skb, priv);
-+		break;
- 	}
- 
- 	return err;
-@@ -299,6 +411,7 @@ static bool nft_bitwise_reduce(struct nft_regs_track *track,
- 	    track->regs[priv->dreg].bitwise &&
- 	    track->regs[priv->dreg].bitwise->ops == expr->ops &&
- 	    priv->sreg == bitwise->sreg &&
-+	    priv->sreg2 == bitwise->sreg2 &&
- 	    priv->dreg == bitwise->dreg &&
- 	    priv->op == bitwise->op &&
- 	    priv->len == bitwise->len &&
--- 
-2.30.2
+I believe 'last chain' means the chain that called the one containing the '=
+goto'. In programming, 'goto' differs from 'gosub'. Here, 'goto' has the sa=
+me connotations in that it skips the 'calling conventions' so that returnin=
+g from the called chain without a verdict is the same as returning from the=
+ calling chain without a verdict.
 
+N
 
