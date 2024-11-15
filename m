@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5127-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5133-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C779CE008
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2024 14:33:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF5AF9CE012
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2024 14:33:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68683B28AE8
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2024 13:33:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74BF9282FE4
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2024 13:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0441CDFB4;
-	Fri, 15 Nov 2024 13:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A2B1CEAC4;
+	Fri, 15 Nov 2024 13:32:25 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2CC1CD213;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3491CD214;
 	Fri, 15 Nov 2024 13:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731677544; cv=none; b=IvGj0Hy4d+Ihe7yswLAIF28f4Db+ytLG8DlgoKt41Rc5sW5pv4KeRfVftDLm+DGIIGReeKMRY1iWdXrQ/VL6MeJviJgPmV3ljTEEJuzt0dxIgSgEopHjKwgkPIm9Hd+2de15LWjSV2gPGAZkPvF9PHW/sHpVDXXAyeTnvppvVHc=
+	t=1731677545; cv=none; b=aAQU2pcnsYyr1j1MuWUKclqmm6i9nQ4YM8ObozZoeDpF2F7eQgAQ4nvYZ6u1zGMYBb0gn0KbH2DTOnWxzBXgt/R6rU4MXiDE2bWqSb+qPHlyCaU8wWuQDMge6IMRVNM22uZQjpDtpiNd6yGlkfaTwgbipNCo3ScLPJRgUMggD5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731677544; c=relaxed/simple;
-	bh=AeYqxV4k8SsN68NRq6U751zU4sGPlP6WAkGt/O3vNeY=;
+	s=arc-20240116; t=1731677545; c=relaxed/simple;
+	bh=Sj45/yAP8FW0CXeUrL4Ak6V5Ne0/KjRwcAoPkRGn0rE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hfIZbcMT8VWqf8Y6OlCHoy/fkUW+iziWETJsXf33fKAOkaPubNCnkOG0/SW/u1BzuAE3ROvaUJlrhrQQXxiDv+gpnlfs0lJLbXv0g6EDC/NFB+u1p1YKafwf9f/AU2I1VGCq5osWzqKMeYihEDmJpYBi+xCrPXzdYd0Yu5wS56s=
+	 MIME-Version; b=BYuTwQlA0Um0lPkUWB3Gv4iiqO7aCJI8xLN0eMxcYOLtCH9QHHMaturIXgUBTeZQjyev2gveU4l51dt5h7bxhhis34FKvm75rOeAlhkHcl9nEh6T6ER3q10CH+9tPtG5tJOxuQk9UMhJKsSb9MctGC7PjO6ne5cBJ1YJxVkFrbo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 05/14] netfilter: nf_tables: prepare nft audit for set element compaction
-Date: Fri, 15 Nov 2024 14:31:58 +0100
-Message-Id: <20241115133207.8907-6-pablo@netfilter.org>
+Subject: [PATCH net-next 06/14] netfilter: nf_tables: switch trans_elem to real flex array
+Date: Fri, 15 Nov 2024 14:31:59 +0100
+Message-Id: <20241115133207.8907-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241115133207.8907-1-pablo@netfilter.org>
 References: <20241115133207.8907-1-pablo@netfilter.org>
@@ -51,81 +51,158 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-nftables audit log format emits the number of added/deleted rules, sets,
-set elements and so on, to userspace:
+When queueing a set element add or removal operation to the transaction
+log, check if the previous operation already asks for a the identical
+operation on the same set.
 
-    table=t1 family=2 entries=4 op=nft_register_set
-                      ~~~~~~~~~
+If so, store the element reference in the preceding operation.
+This significantlty reduces memory consumption when many set add/delete
+operations appear in a single transaction.
 
-At this time, the 'entries' key is the number of transactions that will
-be applied.
+Example: 10k elements require 937kb of memory (10k allocations from
+kmalloc-96 slab).
 
-The upcoming set element compression will coalesce subsequent
-adds/deletes to the same set requests in the same transaction
-request to conseve memory.
+Assuming we can compact 4 elements in the same set, 468 kbytes
+are needed (64 bytes for base struct, nft_trans_elemn, 32 bytes
+for nft_trans_one_elem structure, so 2500 allocations from kmalloc-192
+slab).
 
-Without this patch, we'd under-report the number of altered elements.
+For large batch updates we can compact up to 62 elements
+into one single nft_trans_elem structure (~65% mem reduction):
+(64 bytes for base struct, nft_trans_elem, 32 byte for nft_trans_one_elem
+ struct).
 
-Increment the audit counter by the number of elements to keep the reported
-entries value the same.
-
-Without this, nft_audit.sh selftest fails because the recorded
-(expected) entries key is smaller than the expected one.
+We can halve size of nft_trans_one_elem struct by moving
+timeout/expire/update_flags into a dynamically allocated structure,
+this allows to store 124 elements in a 2k slab nft_trans_elem struct.
+This is done in a followup patch.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ net/netfilter/nf_tables_api.c | 90 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 0882f78c2204..5b5178841553 100644
+index 5b5178841553..679312d71bbe 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -10398,9 +10398,24 @@ static void nf_tables_commit_audit_free(struct list_head *adl)
- 	}
+@@ -26,6 +26,9 @@
+ #define NFT_MODULE_AUTOLOAD_LIMIT (MODULE_NAME_LEN - sizeof("nft-expr-255-"))
+ #define NFT_SET_MAX_ANONLEN 16
+ 
++/* limit compaction to avoid huge kmalloc/krealloc sizes. */
++#define NFT_MAX_SET_NELEMS ((2048 - sizeof(struct nft_trans_elem)) / sizeof(struct nft_trans_one_elem))
++
+ unsigned int nf_tables_net_id __read_mostly;
+ 
+ static LIST_HEAD(nf_tables_expressions);
+@@ -391,6 +394,86 @@ static void nf_tables_unregister_hook(struct net *net,
+ 	return __nf_tables_unregister_hook(net, table, chain, false);
  }
  
-+/* nft audit emits the number of elements that get added/removed/updated,
-+ * so NEW/DELSETELEM needs to increment based on the total elem count.
-+ */
-+static unsigned int nf_tables_commit_audit_entrycount(const struct nft_trans *trans)
++static bool nft_trans_collapse_set_elem_allowed(const struct nft_trans_elem *a, const struct nft_trans_elem *b)
 +{
++	/* NB: the ->bound equality check is defensive, at this time we only merge
++	 * a new nft_trans_elem transaction request with the transaction tail
++	 * element, but a->bound != b->bound would imply a NEWRULE transaction
++	 * is queued in-between.
++	 *
++	 * The set check is mandatory, the NFT_MAX_SET_NELEMS check prevents
++	 * huge krealloc() requests.
++	 */
++	return a->set == b->set && a->bound == b->bound && a->nelems < NFT_MAX_SET_NELEMS;
++}
++
++static bool nft_trans_collapse_set_elem(struct nftables_pernet *nft_net,
++					struct nft_trans_elem *tail,
++					struct nft_trans_elem *trans,
++					gfp_t gfp)
++{
++	unsigned int nelems, old_nelems = tail->nelems;
++	struct nft_trans_elem *new_trans;
++
++	if (!nft_trans_collapse_set_elem_allowed(tail, trans))
++		return false;
++
++	/* "cannot happen", at this time userspace element add
++	 * requests always allocate a new transaction element.
++	 *
++	 * This serves as a reminder to adjust the list_add_tail
++	 * logic below in case this ever changes.
++	 */
++	if (WARN_ON_ONCE(trans->nelems != 1))
++		return false;
++
++	if (check_add_overflow(old_nelems, trans->nelems, &nelems))
++		return false;
++
++	/* krealloc might free tail which invalidates list pointers */
++	list_del_init(&tail->nft_trans.list);
++
++	new_trans = krealloc(tail, struct_size(tail, elems, nelems), gfp);
++	if (!new_trans) {
++		list_add_tail(&tail->nft_trans.list, &nft_net->commit_list);
++		return false;
++	}
++
++	/*
++	 * new_trans->nft_trans.list contains garbage, but
++	 * list_add_tail() doesn't care.
++	 */
++	new_trans->nelems = nelems;
++	new_trans->elems[old_nelems] = trans->elems[0];
++	list_add_tail(&new_trans->nft_trans.list, &nft_net->commit_list);
++
++	return true;
++}
++
++static bool nft_trans_try_collapse(struct nftables_pernet *nft_net,
++				   struct nft_trans *trans, gfp_t gfp)
++{
++	struct nft_trans *tail;
++
++	if (list_empty(&nft_net->commit_list))
++		return false;
++
++	tail = list_last_entry(&nft_net->commit_list, struct nft_trans, list);
++
++	if (tail->msg_type != trans->msg_type)
++		return false;
++
 +	switch (trans->msg_type) {
 +	case NFT_MSG_NEWSETELEM:
 +	case NFT_MSG_DELSETELEM:
-+		return nft_trans_container_elem(trans)->nelems;
++		return nft_trans_collapse_set_elem(nft_net,
++						   nft_trans_container_elem(tail),
++						   nft_trans_container_elem(trans), gfp);
 +	}
 +
-+	return 1;
++	return false;
 +}
 +
- static void nf_tables_commit_audit_collect(struct list_head *adl,
--					   struct nft_table *table, u32 op)
-+					   const struct nft_trans *trans, u32 op)
+ static void nft_trans_commit_list_add_tail(struct net *net, struct nft_trans *trans)
  {
-+	const struct nft_table *table = trans->table;
- 	struct nft_audit_data *adp;
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+@@ -424,11 +507,18 @@ static void nft_trans_commit_list_add_tail(struct net *net, struct nft_trans *tr
+ static void nft_trans_commit_list_add_elem(struct net *net, struct nft_trans *trans,
+ 					   gfp_t gfp)
+ {
++	struct nftables_pernet *nft_net = nft_pernet(net);
++
+ 	WARN_ON_ONCE(trans->msg_type != NFT_MSG_NEWSETELEM &&
+ 		     trans->msg_type != NFT_MSG_DELSETELEM);
  
- 	list_for_each_entry(adp, adl, list) {
-@@ -10410,7 +10425,7 @@ static void nf_tables_commit_audit_collect(struct list_head *adl,
- 	WARN_ONCE(1, "table=%s not expected in commit list", table->name);
- 	return;
- found:
--	adp->entries++;
-+	adp->entries += nf_tables_commit_audit_entrycount(trans);
- 	if (!adp->op || adp->op > op)
- 		adp->op = op;
+ 	might_alloc(gfp);
+ 
++	if (nft_trans_try_collapse(nft_net, trans, gfp)) {
++		kfree(trans);
++		return;
++	}
++
+ 	nft_trans_commit_list_add_tail(net, trans);
  }
-@@ -10569,7 +10584,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
  
- 		nft_ctx_update(&ctx, trans);
- 
--		nf_tables_commit_audit_collect(&adl, table, trans->msg_type);
-+		nf_tables_commit_audit_collect(&adl, trans, trans->msg_type);
- 		switch (trans->msg_type) {
- 		case NFT_MSG_NEWTABLE:
- 			if (nft_trans_table_update(trans)) {
 -- 
 2.30.2
 
