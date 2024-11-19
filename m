@@ -1,38 +1,38 @@
-Return-Path: <netfilter-devel+bounces-5262-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5260-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F65A9D2A05
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 16:47:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8DEC9D2A7A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 17:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9B5F2842F3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 15:47:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAE44B3655A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 15:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ECDC1D0947;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125561D07BA;
 	Tue, 19 Nov 2024 15:42:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B181D0157
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103501D0174
 	for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2024 15:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030975; cv=none; b=OUVCxBg8b0lbgXL2nwGSEX94f/DsuY1Osz9zi5GA/9//iPo6brmN97flj6FbslQog+5oQ6d6PhwFwB45lvwAuXFzJ0E9/lfpUEjKN7wVbR4YTSgduhck1T1CPnB6c7SVHzP/JiUMXd8wmUME12ScfHxMpp0ruyAJapg7ofTXQ2A=
+	t=1732030975; cv=none; b=kF/K725EGAThGwS5sVwdRjBb1yb+qiRl8QsgyhVwDSaSkFSJaPf8wlWoweKMaSkP5t2ibHgnH9Sa9VuwOzjVD08e3uEKXYrH1l/UAho6M7oUD0kVwzZoHjlTHwU6sSS/PtRsdIObZ2N1aAcCg8deg0/SueXXdL6hHbjw+2L8hEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732030975; c=relaxed/simple;
-	bh=t6GpqHZV6ICLJzjgA+tmMEV/AFUvswknxf3ecnhTaSs=;
+	bh=itRAIvMgrZVYohe4N2aLBxEWXIizi7M9VQfVPXc7Qyc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TFw5caNhpl3/B+wBYndj27eGmnnlo2ytQBnZsdm/UU5Bu8jV53eLzqoCYw251bhu1jf63RwLeTQVXhIoDFcxrmTE7OGLT3TSZyFyNooBSmLlJY4rslfmJlSbL9/6GD8wyl/B7tNQP4cCpIS0LmJN0g/6Ze78JAkWsqLMbkAvK44=
+	 MIME-Version; b=NjzsNPrWz/k5wbwAzUUKzvn+U3H5omOoPvhl1pCifenShC8SJNX3pqnUERvovK0FQnfTzPH/MUI2L88g60omXcXQQm7sU17Cokfel8JBiZzk/zdi47PK6joCdEGJAITQrASCJxHYUmhXxqIFbawpZCEwiNsL4w0RuHYfEWEnZL8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: jeremy@azazel.net
-Subject: [PATCH libnftnl,v2 2/5] expr: bitwise: rename some boolean operation functions
-Date: Tue, 19 Nov 2024 16:42:42 +0100
-Message-Id: <20241119154245.442961-3-pablo@netfilter.org>
+Subject: [PATCH libnftnl,v2 3/5] expr: bitwise: add support for kernel space AND, OR and XOR operations
+Date: Tue, 19 Nov 2024 16:42:43 +0100
+Message-Id: <20241119154245.442961-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241119154245.442961-1-pablo@netfilter.org>
 References: <20241119154245.442961-1-pablo@netfilter.org>
@@ -46,150 +46,154 @@ Content-Transfer-Encoding: 8bit
 
 From: Jeremy Sowden <jeremy@azazel.net>
 
-In the next patch we add support for doing AND, OR and XOR operations
-directly in the kernel, so rename some functions and an enum constant
-related to mask-and-xor boolean operations.
+Hitherto, the kernel has only supported boolean operations of the form:
+
+  dst = (src & mask) ^ xor
+
+where `src` is held in a register, and `mask` and `xor` are immediate
+values.  User space has converted AND, OR and XOR operations to this
+form, and so one operand has had to be immediate.  The kernel now
+supports performing AND, OR and XOR operations directly, on one register
+and an immediate value or on two registers, so we make that support
+available to user space.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/expr/bitwise.c            |  8 ++++----
- tests/nft-expr_bitwise-test.c | 34 +++++++++++++++++-----------------
- 2 files changed, 21 insertions(+), 21 deletions(-)
+ include/libnftnl/expr.h |  1 +
+ src/expr/bitwise.c      | 57 +++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 56 insertions(+), 2 deletions(-)
 
+diff --git a/include/libnftnl/expr.h b/include/libnftnl/expr.h
+index fba121062244..1c07b54139a5 100644
+--- a/include/libnftnl/expr.h
++++ b/include/libnftnl/expr.h
+@@ -139,6 +139,7 @@ enum {
+ 	NFTNL_EXPR_BITWISE_XOR,
+ 	NFTNL_EXPR_BITWISE_OP,
+ 	NFTNL_EXPR_BITWISE_DATA,
++	NFTNL_EXPR_BITWISE_SREG2,
+ 	__NFTNL_EXPR_BITWISE_MAX
+ };
+ 
 diff --git a/src/expr/bitwise.c b/src/expr/bitwise.c
-index 1a945e9167c6..9385219a38b5 100644
+index 9385219a38b5..cac47a550099 100644
 --- a/src/expr/bitwise.c
 +++ b/src/expr/bitwise.c
-@@ -198,8 +198,8 @@ nftnl_expr_bitwise_parse(struct nftnl_expr *e, struct nlattr *attr)
+@@ -19,6 +19,7 @@
+ 
+ struct nftnl_expr_bitwise {
+ 	enum nft_registers	sreg;
++	enum nft_registers	sreg2;
+ 	enum nft_registers	dreg;
+ 	enum nft_bitwise_ops	op;
+ 	unsigned int		len;
+@@ -37,6 +38,9 @@ nftnl_expr_bitwise_set(struct nftnl_expr *e, uint16_t type,
+ 	case NFTNL_EXPR_BITWISE_SREG:
+ 		memcpy(&bitwise->sreg, data, data_len);
+ 		break;
++	case NFTNL_EXPR_BITWISE_SREG2:
++		memcpy(&bitwise->sreg2, data, sizeof(bitwise->sreg2));
++		break;
+ 	case NFTNL_EXPR_BITWISE_DREG:
+ 		memcpy(&bitwise->dreg, data, data_len);
+ 		break;
+@@ -66,6 +70,9 @@ nftnl_expr_bitwise_get(const struct nftnl_expr *e, uint16_t type,
+ 	case NFTNL_EXPR_BITWISE_SREG:
+ 		*data_len = sizeof(bitwise->sreg);
+ 		return &bitwise->sreg;
++	case NFTNL_EXPR_BITWISE_SREG2:
++		*data_len = sizeof(bitwise->sreg2);
++		return &bitwise->sreg2;
+ 	case NFTNL_EXPR_BITWISE_DREG:
+ 		*data_len = sizeof(bitwise->dreg);
+ 		return &bitwise->dreg;
+@@ -98,6 +105,7 @@ static int nftnl_expr_bitwise_cb(const struct nlattr *attr, void *data)
+ 
+ 	switch(type) {
+ 	case NFTA_BITWISE_SREG:
++	case NFTA_BITWISE_SREG2:
+ 	case NFTA_BITWISE_DREG:
+ 	case NFTA_BITWISE_OP:
+ 	case NFTA_BITWISE_LEN:
+@@ -123,6 +131,8 @@ nftnl_expr_bitwise_build(struct nlmsghdr *nlh, const struct nftnl_expr *e)
+ 
+ 	if (e->flags & (1 << NFTNL_EXPR_BITWISE_SREG))
+ 		mnl_attr_put_u32(nlh, NFTA_BITWISE_SREG, htonl(bitwise->sreg));
++	if (e->flags & (1 << NFTNL_EXPR_BITWISE_SREG2))
++		mnl_attr_put_u32(nlh, NFTA_BITWISE_SREG2, htonl(bitwise->sreg2));
+ 	if (e->flags & (1 << NFTNL_EXPR_BITWISE_DREG))
+ 		mnl_attr_put_u32(nlh, NFTA_BITWISE_DREG, htonl(bitwise->dreg));
+ 	if (e->flags & (1 << NFTNL_EXPR_BITWISE_OP))
+@@ -169,6 +179,10 @@ nftnl_expr_bitwise_parse(struct nftnl_expr *e, struct nlattr *attr)
+ 		bitwise->sreg = ntohl(mnl_attr_get_u32(tb[NFTA_BITWISE_SREG]));
+ 		e->flags |= (1 << NFTNL_EXPR_BITWISE_SREG);
+ 	}
++	if (tb[NFTA_BITWISE_SREG2]) {
++		bitwise->sreg2 = ntohl(mnl_attr_get_u32(tb[NFTA_BITWISE_SREG2]));
++		e->flags |= (1 << NFTNL_EXPR_BITWISE_SREG2);
++	}
+ 	if (tb[NFTA_BITWISE_DREG]) {
+ 		bitwise->dreg = ntohl(mnl_attr_get_u32(tb[NFTA_BITWISE_DREG]));
+ 		e->flags |= (1 << NFTNL_EXPR_BITWISE_DREG);
+@@ -240,6 +254,31 @@ nftnl_expr_bitwise_snprintf_shift(char *buf, size_t remain, const char *op,
+ 	return offset;
  }
  
++static int
++nftnl_expr_bitwise_snprintf_bool(char *buf, size_t remain, const char *op,
++				 const struct nftnl_expr *e,
++				 const struct nftnl_expr_bitwise *bitwise)
++{
++	int offset = 0, ret;
++
++	ret = snprintf(buf, remain, "reg %u = ( reg %u %s ",
++		       bitwise->dreg, bitwise->sreg, op);
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
++	if (e->flags & (1 << NFTNL_EXPR_BITWISE_SREG2))
++		ret = snprintf(buf + offset, remain, "reg %u ", bitwise->sreg2);
++	else
++		ret = nftnl_data_reg_snprintf(buf + offset, remain,
++					      &bitwise->data,
++					      0, DATA_VALUE);
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
++	ret = snprintf(buf + offset, remain, ") ");
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
++	return offset;
++}
++
  static int
--nftnl_expr_bitwise_snprintf_bool(char *buf, size_t remain,
--				 const struct nftnl_expr_bitwise *bitwise)
-+nftnl_expr_bitwise_snprintf_mask_xor(char *buf, size_t remain,
-+				     const struct nftnl_expr_bitwise *bitwise)
- {
- 	int offset = 0, ret;
- 
-@@ -248,8 +248,8 @@ nftnl_expr_bitwise_snprintf(char *buf, size_t size,
- 	int err = -1;
- 
- 	switch (bitwise->op) {
--	case NFT_BITWISE_BOOL:
--		err = nftnl_expr_bitwise_snprintf_bool(buf, size, bitwise);
-+	case NFT_BITWISE_MASK_XOR:
-+		err = nftnl_expr_bitwise_snprintf_mask_xor(buf, size, bitwise);
+ nftnl_expr_bitwise_snprintf(char *buf, size_t size,
+ 			    uint32_t flags, const struct nftnl_expr *e)
+@@ -252,10 +291,24 @@ nftnl_expr_bitwise_snprintf(char *buf, size_t size,
+ 		err = nftnl_expr_bitwise_snprintf_mask_xor(buf, size, bitwise);
  		break;
  	case NFT_BITWISE_LSHIFT:
- 		err = nftnl_expr_bitwise_snprintf_shift(buf, size, "<<", bitwise);
-diff --git a/tests/nft-expr_bitwise-test.c b/tests/nft-expr_bitwise-test.c
-index d98569ce4a8f..04bf95c7ff6b 100644
---- a/tests/nft-expr_bitwise-test.c
-+++ b/tests/nft-expr_bitwise-test.c
-@@ -22,32 +22,32 @@ static void print_err(const char *test, const char *msg)
- 	printf("\033[31mERROR:\e[0m [%s] %s\n", test, msg);
- }
- 
--static void cmp_nftnl_expr_bool(struct nftnl_expr *rule_a,
--				struct nftnl_expr *rule_b)
-+static void cmp_nftnl_expr_mask_xor(struct nftnl_expr *rule_a,
-+				    struct nftnl_expr *rule_b)
- {
- 	uint32_t maska, maskb;
- 	uint32_t xora, xorb;
- 
- 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_DREG) !=
- 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_DREG))
--		print_err("bool", "Expr BITWISE_DREG mismatches");
-+		print_err("mask & xor", "Expr BITWISE_DREG mismatches");
- 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_SREG) !=
- 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_SREG))
--		print_err("bool", "Expr BITWISE_SREG mismatches");
-+		print_err("mask & xor", "Expr BITWISE_SREG mismatches");
- 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_OP) !=
- 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_OP))
--		print_err("bool", "Expr BITWISE_OP mismatches");
-+		print_err("mask & xor", "Expr BITWISE_OP mismatches");
- 	if (nftnl_expr_get_u16(rule_a, NFTNL_EXPR_BITWISE_LEN) !=
- 	    nftnl_expr_get_u16(rule_b, NFTNL_EXPR_BITWISE_LEN))
--		print_err("bool", "Expr BITWISE_LEN mismatches");
-+		print_err("mask & xor", "Expr BITWISE_LEN mismatches");
- 	nftnl_expr_get(rule_a, NFTNL_EXPR_BITWISE_MASK, &maska);
- 	nftnl_expr_get(rule_b, NFTNL_EXPR_BITWISE_MASK, &maskb);
- 	if (maska != maskb)
--		print_err("bool", "Size of BITWISE_MASK mismatches");
-+		print_err("mask & xor", "Size of BITWISE_MASK mismatches");
- 	nftnl_expr_get(rule_a, NFTNL_EXPR_BITWISE_XOR, &xora);
- 	nftnl_expr_get(rule_b, NFTNL_EXPR_BITWISE_XOR, &xorb);
- 	if (xora != xorb)
--		print_err("bool", "Size of BITWISE_XOR mismatches");
-+		print_err("mask & xor", "Size of BITWISE_XOR mismatches");
- }
- 
- static void cmp_nftnl_expr_lshift(struct nftnl_expr *rule_a,
-@@ -96,7 +96,7 @@ static void cmp_nftnl_expr_rshift(struct nftnl_expr *rule_a,
- 		print_err("rshift", "Expr BITWISE_DATA mismatches");
- }
- 
--static void test_bool(void)
-+static void test_mask_xor(void)
- {
- 	struct nftnl_rule *a, *b = NULL;
- 	struct nftnl_expr *ex = NULL;
-@@ -110,10 +110,10 @@ static void test_bool(void)
- 	a = nftnl_rule_alloc();
- 	b = nftnl_rule_alloc();
- 	if (a == NULL || b == NULL)
--		print_err("bool", "OOM");
-+		print_err("mask & xor", "OOM");
- 	ex = nftnl_expr_alloc("bitwise");
- 	if (ex == NULL)
--		print_err("bool", "OOM");
-+		print_err("mask & xor", "OOM");
- 
- 	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_SREG, 0x12345678);
- 	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_DREG, 0x78123456);
-@@ -128,26 +128,26 @@ static void test_bool(void)
- 	nftnl_rule_nlmsg_build_payload(nlh, a);
- 
- 	if (nftnl_rule_nlmsg_parse(nlh, b) < 0)
--		print_err("bool", "parsing problems");
-+		print_err("mask & xor", "parsing problems");
- 
- 	iter_a = nftnl_expr_iter_create(a);
- 	iter_b = nftnl_expr_iter_create(b);
- 	if (iter_a == NULL || iter_b == NULL)
--		print_err("bool", "OOM");
-+		print_err("mask & xor", "OOM");
- 
- 	rule_a = nftnl_expr_iter_next(iter_a);
- 	rule_b = nftnl_expr_iter_next(iter_b);
- 	if (rule_a == NULL || rule_b == NULL)
--		print_err("bool", "OOM");
-+		print_err("mask & xor", "OOM");
- 
- 	if (nftnl_expr_iter_next(iter_a) != NULL ||
- 	    nftnl_expr_iter_next(iter_b) != NULL)
--		print_err("bool", "More 1 expr.");
-+		print_err("mask & xor", "More 1 expr.");
- 
- 	nftnl_expr_iter_destroy(iter_a);
- 	nftnl_expr_iter_destroy(iter_b);
- 
--	cmp_nftnl_expr_bool(rule_a,rule_b);
-+	cmp_nftnl_expr_mask_xor(rule_a,rule_b);
- 
- 	nftnl_rule_free(a);
- 	nftnl_rule_free(b);
-@@ -263,7 +263,7 @@ static void test_rshift(void)
- 
- int main(int argc, char *argv[])
- {
--	test_bool();
-+	test_mask_xor();
- 	if (!test_ok)
- 		exit(EXIT_FAILURE);
+-		err = nftnl_expr_bitwise_snprintf_shift(buf, size, "<<", bitwise);
++		err = nftnl_expr_bitwise_snprintf_shift(buf, size, "<<",
++							bitwise);
+ 		break;
+ 	case NFT_BITWISE_RSHIFT:
+-		err = nftnl_expr_bitwise_snprintf_shift(buf, size, ">>", bitwise);
++		err = nftnl_expr_bitwise_snprintf_shift(buf, size, ">>",
++							bitwise);
++		break;
++	case NFT_BITWISE_AND:
++		err = nftnl_expr_bitwise_snprintf_bool(buf, size, "&", e,
++						       bitwise);
++		break;
++	case NFT_BITWISE_OR:
++		err = nftnl_expr_bitwise_snprintf_bool(buf, size, "|", e,
++						       bitwise);
++		break;
++	case NFT_BITWISE_XOR:
++		err = nftnl_expr_bitwise_snprintf_bool(buf, size, "^", e,
++						       bitwise);
+ 		break;
+ 	}
  
 -- 
 2.30.2
