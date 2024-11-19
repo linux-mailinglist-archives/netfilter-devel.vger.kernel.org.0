@@ -1,38 +1,41 @@
-Return-Path: <netfilter-devel+bounces-5259-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5261-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621209D2A04
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 16:47:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FF99D2A4F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 16:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27F31283F56
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 15:47:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FE80B3659B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 15:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F5D1D0438;
-	Tue, 19 Nov 2024 15:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1E51D0943;
+	Tue, 19 Nov 2024 15:42:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BE51CF5C7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3BE1CC174
 	for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2024 15:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030974; cv=none; b=X1Ei976XCcRNVLz92qs67LfExB31xfGivbL6rQQ1aRZgza4pvj3KiB1IMUGqdbiJM4AvHZsVZaeD4tePFV+2O7C9mDOPCXE3mSm9qHkBXQet/nzKUaeVk5d8C+ITgYXazE6C4wWoiVO2kGwOJLXXlw2zvletljPQR0SIxpwpSDw=
+	t=1732030975; cv=none; b=TYTuSNyyOh1hrAEjlE+vjAf4zwJjQyc2hZId6kn8vmnbQLbaG28rq4Ra32cz4UXMqBVY0Wxbd7pIOhdzwuFHir6zhel3hzuOzODS3TFFkjOYK1DiWShvOc9Hs1f/AGYB6CS8T4KwHeQxPg/dBwRVMlI/iNfjQg2bnAfY/IyKSXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732030974; c=relaxed/simple;
-	bh=sLPEtKHVknFLRvoAYtcrHch0qKxb0YKsdX5Q+CdkqBQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F8vvN0hXi7QExAHyBLgm6QCklHaEG+C7e1En2FOMTKafDuJfajixQS8hUzs4sicfb+0uYXrRJo9sRArVgUFGJlGTtLcWXg/qZntPWLUXS21hMy6RGZ5jI0uCnFfS4tK3dNGR3/T6w3t5cvCONSkhbynsG9Nwf3tS/sjMr/D0F9Y=
+	s=arc-20240116; t=1732030975; c=relaxed/simple;
+	bh=Oa7pZku9IsR3wYv7DbH5rotzau56f+8e04LF/CZya4s=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=BHGc3AzGkiuux+A3mWvPk23IXxJfsukymSySVTiySUvR2zQFB/s3BhTD1NzVhme00d3WVVpuiggq9ulto3pOM5/WkrdLXCYqdzR6japFlpQ3sn3klayLvrmycH10DcwCqIBJk7Pn/drA+IDzdnidFhmRrhteoe2WZueONs/lnIE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: jeremy@azazel.net
-Subject: [PATCH libnftnl,v2 0/5] bitwise multiregister support
-Date: Tue, 19 Nov 2024 16:42:40 +0100
-Message-Id: <20241119154245.442961-1-pablo@netfilter.org>
+Subject: [PATCH libnftnl,v2 1/5] include: add new bitwise boolean attributes to nf_tables.h
+Date: Tue, 19 Nov 2024 16:42:41 +0100
+Message-Id: <20241119154245.442961-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20241119154245.442961-1-pablo@netfilter.org>
+References: <20241119154245.442961-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -41,28 +44,67 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Jeremy Sowden <jeremy@azazel.net>
 
-This is just a rebase and reposting original series from Jeremy.
+The kernel now has native support for AND, OR and XOR bitwise
+operations.
 
-I removed a userspace check to disallow to combine _DATA and _SREG2
-which kernel should reject already.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/linux/netfilter/nf_tables.h | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-I posted the series from the wrong branch.
-
-Jeremy Sowden (5):
-  include: add new bitwise boolean attributes to nf_tables.h
-  expr: bitwise: rename some boolean operation functions
-  expr: bitwise: add support for kernel space AND, OR and XOR operations
-  tests: bitwise: refactor shift tests
-  tests: bitwise: add tests for new boolean operations
-
- include/libnftnl/expr.h             |   1 +
- include/linux/netfilter/nf_tables.h |  18 ++-
- src/expr/bitwise.c                  |  65 +++++++-
- tests/nft-expr_bitwise-test.c       | 220 ++++++++++++++++------------
- 4 files changed, 205 insertions(+), 99 deletions(-)
-
+diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
+index 9e9079321380..49c944e78463 100644
+--- a/include/linux/netfilter/nf_tables.h
++++ b/include/linux/netfilter/nf_tables.h
+@@ -564,16 +564,26 @@ enum nft_immediate_attributes {
+ /**
+  * enum nft_bitwise_ops - nf_tables bitwise operations
+  *
+- * @NFT_BITWISE_BOOL: mask-and-xor operation used to implement NOT, AND, OR and
+- *                    XOR boolean operations
++ * @NFT_BITWISE_MASK_XOR: mask-and-xor operation used to implement NOT, AND, OR
++ *                        and XOR boolean operations
+  * @NFT_BITWISE_LSHIFT: left-shift operation
+  * @NFT_BITWISE_RSHIFT: right-shift operation
++ * @NFT_BITWISE_AND: and operation
++ * @NFT_BITWISE_OR: or operation
++ * @NFT_BITWISE_XOR: xor operation
+  */
+ enum nft_bitwise_ops {
+-	NFT_BITWISE_BOOL,
++	NFT_BITWISE_MASK_XOR,
+ 	NFT_BITWISE_LSHIFT,
+ 	NFT_BITWISE_RSHIFT,
++	NFT_BITWISE_AND,
++	NFT_BITWISE_OR,
++	NFT_BITWISE_XOR,
+ };
++/*
++ * Old name for NFT_BITWISE_MASK_XOR.  Retained for backwards-compatibility.
++ */
++#define NFT_BITWISE_BOOL NFT_BITWISE_MASK_XOR
+ 
+ /**
+  * enum nft_bitwise_attributes - nf_tables bitwise expression netlink attributes
+@@ -586,6 +596,7 @@ enum nft_bitwise_ops {
+  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
+  * @NFTA_BITWISE_DATA: argument for non-boolean operations
+  *                     (NLA_NESTED: nft_data_attributes)
++ * @NFTA_BITWISE_SREG2: second source register (NLA_U32: nft_registers)
+  *
+  * The bitwise expression supports boolean and shift operations.  It implements
+  * the boolean operations by performing the following operation:
+@@ -609,6 +620,7 @@ enum nft_bitwise_attributes {
+ 	NFTA_BITWISE_XOR,
+ 	NFTA_BITWISE_OP,
+ 	NFTA_BITWISE_DATA,
++	NFTA_BITWISE_SREG2,
+ 	__NFTA_BITWISE_MAX
+ };
+ #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
 -- 
 2.30.2
 
