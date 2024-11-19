@@ -1,132 +1,143 @@
-Return-Path: <netfilter-devel+bounces-5269-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5271-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259E99D303B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 23:03:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B459D303D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 23:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 834EC283A50
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 22:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E57132838AC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2024 22:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733F219CC36;
-	Tue, 19 Nov 2024 22:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA2C19AD8B;
+	Tue, 19 Nov 2024 22:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="kBX3tpNU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KqZAjfMP"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775B119AD8B
-	for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2024 22:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDC514A60C
+	for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2024 22:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732053806; cv=none; b=SYBHcKK2jysmbd5o4rAO6kwDpg+7GiQHgXXnVXYA3uk5NKd/8czKpAzP7Y+tRTgUQy8aWytxWccmirkOi/2ORr6NKCzUWuxWmHtyLL2/t6BaaV2RnJFREUIBn3sNdPEbjK+TJDE0DCvnJG7uGuaMZmLFHFBK7hgtQZoM//dPffE=
+	t=1732053821; cv=none; b=cjApQtjTQU9pi9NdVYHEQpfVmr4vJsMkHdQSymUUG2ampgOL1+UrMUF3T1elUE2VFoBYZBM+0vOcd7Z7j+TVIzmYTZVnHfcE3HQDQp4mkY6yKiWNhqUYNeApTWVIQJQoPlAoF0Mb/KHTTlZG48WTXqA+XoArHWMagsjiRSrwokQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732053806; c=relaxed/simple;
-	bh=vg1749YQ7QkTG8vCSCjBi98oHh4KKGrNL2VaboKH+gc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ezLP5AXMTWyHRebT23YuiywI4F7lv8jIMRxEBWZdBvVBNvFXOYDOfaD1kSPE6Iyl5OlPOSOalev4Mf6ntoJBi0QN4Y5jkJ3Wkc/tl/3RtcHxPTvnhBXW2Lm4PrvprQiIj4cZAIXoUizVjnK8b7M1mgka8JsVh8KY/mfSQNapwuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=kBX3tpNU; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1732053821; c=relaxed/simple;
+	bh=M3ZzGYfKaRa8Ct+FhZXSmIP8nN4biqE0/3ae+VWPsRo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YcMejMqzHi4klaSjUSxxeC6kOmjM+gcifBX9oi5EEzKRRSIjw+9grirm52Qv0Ge66rl1TN96LrqJ+EiXVlSb9wWmDYhRmoroT5L3uXGoCdsdO5VXbCthLRgDDId4WhJuonVrbbQPRSngG1T3ohNnwWLJmu3nmnZy2mi2IVNusNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KqZAjfMP; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=RsdrOOTgM9to9je0u0KAQP/KokmjMV1gONkbJTegMoM=; b=kBX3tpNUOJ8tQUGMjbZtdgynAu
-	QcielGtPF7vJG6iM3+215JOc14f8bYkYcX3h+K9R0Q5/s/wrgZ+mY9ROqNycSwor/pBygQqzEGg+A
-	bkB6n5Pm4GXlHPRqkSkEcwJE8nE675WG23vu4QAK3aUhH2Av2sZv0DI6dV+wuBkDwuEImi5rwVYyZ
-	OtnGhw//6XyjI/KSEgDIE5SUhtMf7alnk9epZJuD6ebJI4mfg4iVQS493jJG6KD5SKRtr0b/QQ2Ip
-	v+C+FnrqGD5xSAvv1NveQiDdmgdXHaubk6Kopc+UAG++A+ubk3Pm3pv+C9M7pTWkmG7tFtzsc7BI0
-	98gugk9w==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	bh=qHEp6rxGo8E2zlBFJ+wNZNSb13Mlhh6W30/rEptzPLo=; b=KqZAjfMP7wgVBxvOqi37JRuQMc
+	7ComEMUOSCeXG822yDmpZU+RMVK0CqQfEmNS0ZjOyeA7Kt07FdBK8CRK5fPfn0ADevBfec9v0p4UZ
+	xorhvyTwjncIQfLoTx8+Hk7Lq+fKO/QluKNCID79ODEkFVsteRWIMJMUEjhi/z1q6Zs++w2IeUU85
+	Tr5xwh3oVXb/RX8q5X1RfljMDxKLDidG7GuUeQMNk/qF+1OnHbCh7fWyhSF2HqrXu9yzUkJ9iDnjQ
+	HLZvgPFMTMTqdgXRHvMIruyBtPhIDogighwwxHZmy3+7LCKZwYjb23uTZ52zF9CcdFG3MQrCTolXu
+	d0zN///Q==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1tDWJd-000000001Dl-16k3;
-	Tue, 19 Nov 2024 23:03:21 +0100
+	id 1tDWJt-000000001Dz-0BeR;
+	Tue, 19 Nov 2024 23:03:37 +0100
+Date: Tue, 19 Nov 2024 23:03:36 +0100
 From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Cc: Jeremy Sowden <jeremy@azazel.net>
-Subject: [iptables PATCH v2 2/2] nft: Drop interface mask leftovers from post_parse callbacks
-Date: Tue, 19 Nov 2024 23:03:25 +0100
-Message-ID: <20241119220325.30700-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241119220325.30700-1-phil@nwl.cc>
-References: <20241119220325.30700-1-phil@nwl.cc>
+To: Jeremy Sowden <jeremy@azazel.net>
+Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>,
+	Eric Garver <eric@garver.life>
+Subject: Re: [PATCH iptables] nft: fix interface comparisons in `-C` commands
+Message-ID: <Zz0LOMLVD7hVEiBs@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Jeremy Sowden <jeremy@azazel.net>,
+	Netfilter Devel <netfilter-devel@vger.kernel.org>,
+	Eric Garver <eric@garver.life>
+References: <20241118135650.510715-1-jeremy@azazel.net>
+ <ZzyQn9E0cPi7t98b@orbyte.nwl.cc>
+ <20241119200700.GA3017153@celephais.dreamlands>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241119200700.GA3017153@celephais.dreamlands>
 
-Fixed commit only adjusted the IPv4-specific callback for unclear
-reasons.
+On Tue, Nov 19, 2024 at 08:07:00PM +0000, Jeremy Sowden wrote:
+> On 2024-11-19, at 14:20:31 +0100, Phil Sutter wrote:
+> > On Mon, Nov 18, 2024 at 01:56:50PM +0000, Jeremy Sowden wrote:
+> > > Remove the mask parameters from `is_same_interfaces`.  Add a test-case.
+> > 
+> > Thanks for the fix and test-case!
+> > 
+> > Some remarks below:
+> > 
+> > [...]
+> > >  bool is_same_interfaces(const char *a_iniface, const char *a_outiface,
+> > > -			unsigned const char *a_iniface_mask,
+> > > -			unsigned const char *a_outiface_mask,
+> > > -			const char *b_iniface, const char *b_outiface,
+> > > -			unsigned const char *b_iniface_mask,
+> > > -			unsigned const char *b_outiface_mask)
+> > > +			const char *b_iniface, const char *b_outiface)
+> > >  {
+> > >  	int i;
+> > >  
+> > >  	for (i = 0; i < IFNAMSIZ; i++) {
+> > > -		if (a_iniface_mask[i] != b_iniface_mask[i]) {
+> > > -			DEBUGP("different iniface mask %x, %x (%d)\n",
+> > > -			a_iniface_mask[i] & 0xff, b_iniface_mask[i] & 0xff, i);
+> > > -			return false;
+> > > -		}
+> > > -		if ((a_iniface[i] & a_iniface_mask[i])
+> > > -		    != (b_iniface[i] & b_iniface_mask[i])) {
+> > > +		if (a_iniface[i] != b_iniface[i]) {
+> > >  			DEBUGP("different iniface\n");
+> > >  			return false;
+> > >  		}
+> > > -		if (a_outiface_mask[i] != b_outiface_mask[i]) {
+> > > -			DEBUGP("different outiface mask\n");
+> > > -			return false;
+> > > -		}
+> > > -		if ((a_outiface[i] & a_outiface_mask[i])
+> > > -		    != (b_outiface[i] & b_outiface_mask[i])) {
+> > > +		if (a_outiface[i] != b_outiface[i]) {
+> > >  			DEBUGP("different outiface\n");
+> > >  			return false;
+> > >  		}
+> > 
+> > My draft fix converts this to strncmp() calls, I don't think we should
+> > inspect bytes past the NUL-char. Usually we parse into a zeroed
+> > iptables_command_state, but if_indextoname(3P) does not define output
+> > buffer contents apart from "shall place in this buffer the name of the
+> > interface", so it may put garbage in there (although unlikely).
+> 
+> Seems reasonable.  I was so focussed on the masks and bit-twiddling that
+> I lost sight of the fact that the code is looping to compare strings. :)
+> 
+> > Another thing is a potential follow-up: There are remains in
+> > nft_arp_post_parse() and ipv6_post_parse(), needless filling of the mask
+> > buffers. They may be dropped along with the now unused mask fields in
+> > struct xtables_args.
+> 
+> Yes, I spotted those.  I couldn't see how they were used, but I was
+> reasonably sure that they weren't related to this bug, so I stopped
+> looking.
+> 
+> > WDYT?
+> 
+> Agreed on both counts.  Shall I incorporate your suggestions and send a
+> v2 or do you have something already prepared?
 
-Fixes: fe70364b36119 ("xshared: Do not populate interface masks per default")
-Cc: Jeremy Sowden <jeremy@azazel.net>
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- New patch
----
- iptables/nft-arp.c | 3 ---
- iptables/xshared.c | 5 -----
- iptables/xshared.h | 1 -
- 3 files changed, 9 deletions(-)
+Sent a v2, please review.
 
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index c11d64c368638..fa2dd558b1f89 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -459,10 +459,7 @@ static void nft_arp_post_parse(int command,
- 	cs->arp.arp.invflags = args->invflags;
- 
- 	memcpy(cs->arp.arp.iniface, args->iniface, IFNAMSIZ);
--	memcpy(cs->arp.arp.iniface_mask, args->iniface_mask, IFNAMSIZ);
--
- 	memcpy(cs->arp.arp.outiface, args->outiface, IFNAMSIZ);
--	memcpy(cs->arp.arp.outiface_mask, args->outiface_mask, IFNAMSIZ);
- 
- 	cs->arp.counters.pcnt = args->pcnt_cnt;
- 	cs->arp.counters.bcnt = args->bcnt_cnt;
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 2a5eef09c75de..2f663f9762016 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -2104,12 +2104,7 @@ void ipv6_post_parse(int command, struct iptables_command_state *cs,
- 	cs->fw6.ipv6.invflags = args->invflags;
- 
- 	memcpy(cs->fw6.ipv6.iniface, args->iniface, IFNAMSIZ);
--	memcpy(cs->fw6.ipv6.iniface_mask,
--	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
--
- 	memcpy(cs->fw6.ipv6.outiface, args->outiface, IFNAMSIZ);
--	memcpy(cs->fw6.ipv6.outiface_mask,
--	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
- 
- 	if (args->goto_set)
- 		cs->fw6.ipv6.flags |= IP6T_F_GOTO;
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index a111e79793b54..af756738e7c44 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -262,7 +262,6 @@ struct xtables_args {
- 	uint8_t		flags;
- 	uint16_t	invflags;
- 	char		iniface[IFNAMSIZ], outiface[IFNAMSIZ];
--	unsigned char	iniface_mask[IFNAMSIZ], outiface_mask[IFNAMSIZ];
- 	char		bri_iniface[IFNAMSIZ], bri_outiface[IFNAMSIZ];
- 	bool		goto_set;
- 	const char	*shostnetworkmask, *dhostnetworkmask;
--- 
-2.47.0
-
+Thanks, Phil
 
