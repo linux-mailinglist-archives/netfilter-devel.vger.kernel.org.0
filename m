@@ -1,157 +1,153 @@
-Return-Path: <netfilter-devel+bounces-5376-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5378-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5146E9E2294
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Dec 2024 16:26:23 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BE2B9E29D8
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Dec 2024 18:47:36 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17EFC16C85B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Dec 2024 15:21:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0858C28A551
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Dec 2024 17:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6502C1F7585;
-	Tue,  3 Dec 2024 15:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l041LLGt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61D21FAC51;
+	Tue,  3 Dec 2024 17:47:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C083D1EF0AE;
-	Tue,  3 Dec 2024 15:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57A91F9F77
+	for <netfilter-devel@vger.kernel.org>; Tue,  3 Dec 2024 17:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733239283; cv=none; b=gjl9YOos7gQQ0ULCgjDXPr7gRJUN9nbLMjCJTndQNGq41x+Ess0tUj5ZLQ6fkNmjQ/6X6rrmdCFCd1G5117QnqevJmLpOV3EVMApnEhN3NNFNrPMyH1voMgHvQchGaT7xFa0CVfebB5KlbiuhBH1r5Qhxdk3wnUNXcm8OyDkc7c=
+	t=1733248032; cv=none; b=sDP6die6osfmtPmHjO2FflpPXrRE64dOONh50PV1Ul7mLuB3FRg/KjPuYLD5Sw/GfDtwYN+Zw4GVgpHNekNz7BuDMimQ7V4YHQASaS1Zc91iUPxeSgQ2gpKN93KSUW4hF3uhVJaD4B8+21Kx865yVUBKcDX26uiZD2S1jW2KiIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733239283; c=relaxed/simple;
-	bh=t8yscXsYjfpe/1tcoMvCTfOcyi3GhvMr0P2NT0AZHzk=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=NDOTvpYXolAMvRnkODBz9ftwwnokmEUXpBuxvbS6IPchbs0U0sR4z9KRDZh/rmdwxf/ZXpmwy8Y8dJmgBcQh6PItk6N1sWvXmKL05ECSuivB7CmsRwJsKfORn82a+b655/pAmfOrRttyoy0MOtUPi0bQ6xNSa5vpkxJjDaG56TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l041LLGt; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-466966d8dbaso45712501cf.3;
-        Tue, 03 Dec 2024 07:21:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733239280; x=1733844080; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VqsVHmCOaWiBo6waU1R1vraLU/LK0vRFjavrsVUjZLY=;
-        b=l041LLGtQ09D5k9YVBUQuBVvQ8Q6hMoDvDvrGkEdSwkOK8gnKxMD+RTAhmJ8ioGzNS
-         5Iyt9SRcV/JXbqOP96OJGr/UmP5yyTMfsTcJ4Y2xhovpEDW0UErs1gfmgOJC8iUQulan
-         46EP+dxFoM6ZxrL4s5ILxNK/q4tkEUMXTwI7a3K8qhPo6Tzwbmyy8vaKHgPRwI/P3yT/
-         wJXLQulArcn+0E7DskiJCzgdBidYcFVBlA4Py9q2t9ecekhde5Tmy2GVu5wjJ024984M
-         aExkXDxAYhlVvLN06Mzn4H6Jx6YXZHh2I4H0ORIOrkq3IqW3xOgb8BcSjQhD5Qspx4ww
-         ZWOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733239280; x=1733844080;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VqsVHmCOaWiBo6waU1R1vraLU/LK0vRFjavrsVUjZLY=;
-        b=Mexig+DofDUwVTNGN5G8TKshCoajvQvlzcTIFdpDoEbN33+Wpg18Vo4EjbuGXBgIPT
-         3vjRi5E+nnChK9BxdD/WPn6Vlhi/l+YS/cysywCoOF7B3eewDxrcZ4AFhOYaqYXsDgmn
-         aDnIJC7DVrjca0+ooIBQBHLcQr3+maPSI6mPsz1QKeDM/A0YrHAGF3Shps5x7kTOhyUS
-         PFEzmLCLYTURr1lWz7Mr9ZBs47aJjJS/zLdU2NFI+MuUYpFnwJ888vseEkUXy2qO/qeT
-         6oh1ulpQBG84l1gtynB1YVpgigHv/vJCS+1ahx6JI3uZeSt1MseiOy885khYFjYoInLU
-         E83A==
-X-Forwarded-Encrypted: i=1; AJvYcCU5/P+d2WqQgIndwYFoJ8P7ueJ3gqAsO4EYkOgUZIiBgGkAz3rIoipftKar3dD6vhir9iWKTA89@vger.kernel.org, AJvYcCU80hH145bh54fJjVz7ibwQjl/A3ljRFZUdpc5Um6lKDU6LmKFhHmgNGaU5PJSvy2QtfBZtEXAPvAHR5C0O@vger.kernel.org, AJvYcCUKttrQNS2eaPFdJms1IDmY383EE8A1oYSfiAYiiBPTo2mk/LUlfNK3I3/4WRQI9kelh0lM6bs1AUPU@vger.kernel.org, AJvYcCXVNEr2WK+l//1EZ3cnMT2kdAOyvXOClKQwSqHr1HVU3xrwI5Tri7yuYU7vmdpDiBav72p3B0pp7It5+W8m2PIo@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJXIx7Lac+uUo0BHx1Y7QYQU+cyKJqzhpLoFTtuRJEHGDia/HD
-	7grfsPBoHcpBQKHvoxL5aZu0f/tzA9KcxeVHA8H+tofJm/8mylx0
-X-Gm-Gg: ASbGnctU6OSh2uWgz/+vqPFd/lfrqgFGKwu1qQCcyQBAt/qwSUS1rY1T38X/WL55aAj
-	NTxAV4AkeHFbwxuf4KQFdNbldy4lUcIFd0MUHHRqpXoUCtm0IDiLqvsg+ImbOHB1EnO0LAkQfs2
-	D4Bf1p66L5BKUn2gf2wMuYtcc7XPFj6Zc61wRLs4iIP3zYHzccBIAci5QPvuSQVzGFdHavXQ9Px
-	7iyMuNjSta+9Xdoru903ZmR8lL6saX76ZI89RD9MYRx9JenK3jjOtkuNTUUiwKgYLhrQRF+u1Y7
-	tGFft1DxPj6jQkfvJOGf1w==
-X-Google-Smtp-Source: AGHT+IGPHit5+V6UhQpAx4/BlJFXSsgH9I6LPVgBePoc1CSG05dOym+Yqu7WxRzxJcebBY0CylhigA==
-X-Received: by 2002:ad4:5b8f:0:b0:6d8:99cf:d2e3 with SMTP id 6a1803df08f44-6d8b737d8d2mr41162076d6.22.1733239280369;
-        Tue, 03 Dec 2024 07:21:20 -0800 (PST)
-Received: from localhost (250.4.48.34.bc.googleusercontent.com. [34.48.4.250])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d875195da6sm61747786d6.57.2024.12.03.07.21.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 07:21:19 -0800 (PST)
-Date: Tue, 03 Dec 2024 10:21:19 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Kenjiro Nakayama <nakayamakenjiro@gmail.com>, 
- Pablo Neira Ayuso <pablo@netfilter.org>, 
- Jozsef Kadlecsik <kadlec@netfilter.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, 
- Alan Stern <stern@rowland.harvard.edu>, 
- Andrea Parri <parri.andrea@gmail.com>, 
- Will Deacon <will@kernel.org>, 
- Peter Zijlstra <peterz@infradead.org>, 
- Boqun Feng <boqun.feng@gmail.com>, 
- Nicholas Piggin <npiggin@gmail.com>, 
- David Howells <dhowells@redhat.com>, 
- Jade Alglave <j.alglave@ucl.ac.uk>, 
- Luc Maranget <luc.maranget@inria.fr>, 
- "Paul E. McKenney" <paulmck@kernel.org>, 
- Akira Yokosawa <akiyks@gmail.com>, 
- Daniel Lustig <dlustig@nvidia.com>, 
- Joel Fernandes <joel@joelfernandes.org>, 
- Shuah Khan <shuah@kernel.org>
-Cc: netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- linux-arch@vger.kernel.org, 
- lkmm@lists.linux.dev, 
- linux-kselftest@vger.kernel.org, 
- Kenjiro Nakayama <nakayamakenjiro@gmail.com>
-Message-ID: <674f21ef3048c_19a62294c6@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20241202232129.7139-1-nakayamakenjiro@gmail.com>
-References: <20241202232129.7139-1-nakayamakenjiro@gmail.com>
-Subject: Re: [PATCH] selftests/net: call sendmmsg via udpgso_bench.sh
+	s=arc-20240116; t=1733248032; c=relaxed/simple;
+	bh=Q95+gOI7pTAZtpI5+UrdylhdkgXfWijiKSsgRKgGNcI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=eXWU13mymmbPuvXQOpHd2a3bQYont4W3eeWiavQCpb1+xSDl4YWDtK/3202psNyvMmKJWP+RYb45DRG7WJA6EAJqd4POnJ5GJ2ZUi9l7T7BBNhMchYC43PiBnzy7S2jKiYzZIJ3FvsnjnUR1FmeFzihsUL4KFigdgLvZc+DyOFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <l.stach@pengutronix.de>)
+	id 1tIWyE-0003sq-Mm; Tue, 03 Dec 2024 18:45:58 +0100
+Message-ID: <fc624e3fd4a4a38dedf02e31be9e4f1c85fb40a0.camel@pengutronix.de>
+Subject: Re: [PATCH 09/22] drm/etnaviv: Convert timeouts to secs_to_jiffies()
+From: Lucas Stach <l.stach@pengutronix.de>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, Pablo Neira Ayuso
+ <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>, Simon Horman
+ <horms@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>,  Nicolas Palix
+ <nicolas.palix@imag.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Russell King <linux@armlinux.org.uk>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Ofir
+ Bitton <obitton@habana.ai>, Oded Gabbay <ogabbay@kernel.org>, Lucas De
+ Marchi <lucas.demarchi@intel.com>, Thomas =?ISO-8859-1?Q?Hellstr=F6m?=
+ <thomas.hellstrom@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Shailend Chand <shailend@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ James Smart <james.smart@broadcom.com>, Dick Kennedy
+ <dick.kennedy@broadcom.com>, "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Roger Pau =?ISO-8859-1?Q?Monn=E9?=
+ <roger.pau@citrix.com>, Jens Axboe <axboe@kernel.dk>, Kalle Valo
+ <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Andrew Morton <akpm@linux-foundation.org>, Jack
+ Wang <jinpu.wang@cloud.ionos.com>, Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz
+ <luiz.dentz@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
+ internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Xiubo
+ Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,  Josh Poimboeuf
+ <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>, Miroslav Benes
+ <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Joe Lawrence
+ <joe.lawrence@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, Russell King <linux+etnaviv@armlinux.org.uk>, Christian
+ Gmeiner <christian.gmeiner@gmail.com>,  Louis Peens
+ <louis.peens@corigine.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Naveen N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, cocci@inria.fr, 
+ linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org, 
+ linux-scsi@vger.kernel.org, xen-devel@lists.xenproject.org, 
+ linux-block@vger.kernel.org, linux-wireless@vger.kernel.org, 
+ ath11k@lists.infradead.org, linux-mm@kvack.org,
+ linux-bluetooth@vger.kernel.org,  linux-staging@lists.linux.dev,
+ linux-rpi-kernel@lists.infradead.org,  ceph-devel@vger.kernel.org,
+ live-patching@vger.kernel.org,  linux-sound@vger.kernel.org,
+ etnaviv@lists.freedesktop.org,  oss-drivers@corigine.com,
+ linuxppc-dev@lists.ozlabs.org, Anna-Maria Behnsen <anna-maria@linutronix.de>
+Date: Tue, 03 Dec 2024 18:45:50 +0100
+In-Reply-To: <20241115-converge-secs-to-jiffies-v1-9-19aadc34941b@linux.microsoft.com>
+References: 
+	<20241115-converge-secs-to-jiffies-v1-0-19aadc34941b@linux.microsoft.com>
+	 <20241115-converge-secs-to-jiffies-v1-9-19aadc34941b@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: netfilter-devel@vger.kernel.org
 
-Kenjiro Nakayama wrote:
-> Currently, sendmmsg is implemented in udpgso_bench_tx.c,
-> but it is not called by any test script.
-> 
-> This patch adds a test for sendmmsg in udpgso_bench.sh.
-> This allows for basic API testing and benchmarking
-> comparisons with GSO.
+Am Freitag, dem 15.11.2024 um 21:22 +0000 schrieb Easwar Hariharan:
+> Changes made with the following Coccinelle rules:
+>=20
+> @@ constant C; @@
+>=20
+> - msecs_to_jiffies(C * 1000)
+> + secs_to_jiffies(C)
+>=20
+> @@ constant C; @@
+>=20
+> - msecs_to_jiffies(C * MSEC_PER_SEC)
+> + secs_to_jiffies(C)
+>=20
+Thanks, applied to etnaviv/next.
 
-The change looks fine to me, but the commit is missing your
-Signed-off-by.
+Regards,
+Lucas
 
-Also, if resubmitting, please mark [PATCH net-next v2].
-
+> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 > ---
->  tools/testing/selftests/net/udpgso_bench.sh | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/net/udpgso_bench.sh b/tools/testing/selftests/net/udpgso_bench.sh
-> index 640bc43452fa..88fa1d53ba2b 100755
-> --- a/tools/testing/selftests/net/udpgso_bench.sh
-> +++ b/tools/testing/selftests/net/udpgso_bench.sh
-> @@ -92,6 +92,9 @@ run_udp() {
->  	echo "udp"
->  	run_in_netns ${args}
->  
-> +	echo "udp sendmmsg"
-> +	run_in_netns ${args} -m
-> +
->  	echo "udp gso"
->  	run_in_netns ${args} -S 0
->  
-> -- 
-> 2.39.3 (Apple Git-146)
-> 
-
+>  drivers/gpu/drm/etnaviv/etnaviv_cmdbuf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_cmdbuf.c b/drivers/gpu/drm/e=
+tnaviv/etnaviv_cmdbuf.c
+> index 721d633aece9d4c81f0019e4c55884f26ee61c60..0f5a2c885d0ab7029c7248e15=
+d6ea3c31823b782 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_cmdbuf.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_cmdbuf.c
+> @@ -100,7 +100,7 @@ int etnaviv_cmdbuf_init(struct etnaviv_cmdbuf_suballo=
+c *suballoc,
+>  		mutex_unlock(&suballoc->lock);
+>  		ret =3D wait_event_interruptible_timeout(suballoc->free_event,
+>  						       suballoc->free_space,
+> -						       msecs_to_jiffies(10 * 1000));
+> +						       secs_to_jiffies(10));
+>  		if (!ret) {
+>  			dev_err(suballoc->dev,
+>  				"Timeout waiting for cmdbuf space\n");
+>=20
 
 
