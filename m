@@ -1,47 +1,46 @@
-Return-Path: <netfilter-devel+bounces-5382-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5384-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 759B79E3CBC
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 15:31:25 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 635AE9E3D0D
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 15:45:00 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 475721600B5
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 14:31:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2468A281E29
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 14:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B096D203704;
-	Wed,  4 Dec 2024 14:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7953820A5D8;
+	Wed,  4 Dec 2024 14:44:58 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907241F759E
-	for <netfilter-devel@vger.kernel.org>; Wed,  4 Dec 2024 14:31:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977B420ADCF
+	for <netfilter-devel@vger.kernel.org>; Wed,  4 Dec 2024 14:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733322668; cv=none; b=iP3wY2sXbgNS3/gtMOV8AZxLEfu9e8ZdRaPPqIQOYMztSI+PEbTGDsv6pQGHGSp3lqdoNko0agjdwmLi62ys1Nx9b75tx7BZDDFaHGLCQ5V2MZUkP4HBUSQOlr/K1cEcl1JfKiPIbjc1WcCPtQCGTyPJ05w1KSeuXUJjenZGT6Q=
+	t=1733323498; cv=none; b=VCuQ+tn/8/BL4iPdDIemgPCmz3RwVLVPBLPgayAsgBsV3cOdPqYR46WLMFs7fitNU70R30111sHgm6pP7lMH2knSGDSJT7ko/4JH2A83jQUBjb13rox7TPAwuc13oRVpqg0jaWLcDKqvtXtrapWI4Myp1PfeEv2qB/D6M6W4nXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733322668; c=relaxed/simple;
-	bh=ia2b/OjLV93h8mQOh1Jih48jy80sk2ZcDyGjIb0C2js=;
+	s=arc-20240116; t=1733323498; c=relaxed/simple;
+	bh=IlEjRgoA5LVn2cQmEHddw8awqSVoXujSX5tdXEBFNNI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sV93Y6WIGX7xCJdALTXKAX7hnZwxi39tAlgmAegSV6vnesDIBZ2xYCQW51JdyzeNBBmqdVasCnM5JEN0EPhr4Mcp7AzDLNpcfPQLzdzEwL8nUUUR4N44BAf11cmI/oOSC3QPWLny5IV5UG2Sw+U3tZ9ClOQZZBvsMxG+dHXg1wk=
+	 Content-Type:Content-Disposition:In-Reply-To; b=OE+L5efAbMlqfHTsbQDPdj+2qiB+R8JaSWaxMrJ+wS4gYO1IoXmkcDOO6FZ1oi1X4BFse2Ck5kuL7TG4OIw8vjk/ui5Y1bhRI2RP7hqQ/+4noUDT/opvbT/zg10MbvLbsMt+DlaO9hykgpuzjYd9I9m4Bc1Gy1kfLMUuqBPveRw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.39.247] (port=43626 helo=gnumonks.org)
+Received: from [78.30.39.247] (port=58192 helo=gnumonks.org)
 	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <pablo@gnumonks.org>)
-	id 1tIqP4-00985K-AK; Wed, 04 Dec 2024 15:31:00 +0100
-Date: Wed, 4 Dec 2024 15:30:56 +0100
+	id 1tIqcT-009Blt-36; Wed, 04 Dec 2024 15:44:51 +0100
+Date: Wed, 4 Dec 2024 15:44:48 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Phil Sutter <phil@nwl.cc>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [libnftnl PATCH 1/3] set: Fix for array overrun when setting
- NFTNL_SET_DESC_CONCAT
-Message-ID: <Z1BnoHnLGem-1KFV@calendula>
-References: <20241127180103.15076-1-phil@nwl.cc>
+To: netfilter-devel@vger.kernel.org
+Cc: jeremy@azazel.net
+Subject: Re: [PATCH libnftnl,v2 0/5] bitwise multiregister support
+Message-ID: <Z1Bq4N5p-MJIhv4N@calendula>
+References: <20241119154245.442961-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -50,51 +49,18 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241127180103.15076-1-phil@nwl.cc>
+In-Reply-To: <20241119154245.442961-1-pablo@netfilter.org>
 X-Spam-Score: -1.9 (-)
 
-Hi Phil,
+Hi,
 
-On Wed, Nov 27, 2024 at 07:01:01PM +0100, Phil Sutter wrote:
-> Assuming max data_len of 16 * 4B and no zero bytes in 'data':
-> The while loop will increment field_count, use it as index for the
-> field_len array and afterwards make sure it hasn't increased to
-> NFT_REG32_COUNT. Thus a value of NFT_REG32_COUNT - 1 (= 15) will pass
-> the check, get incremented to 16 and used as index to the 16 fields long
-> array.
-> Use a less fancy for-loop to avoid the increment vs. check problem.
-
-for-loop is indeed better.
-
-Patch LGTM, thanks.
-
-> Fixes: 407f616ea5318 ("set: buffer overflow in NFTNL_SET_DESC_CONCAT setter")
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-
-Reviewed-by: Pablo Neira Ayuso <pablo@netfilter.org>
-
-> ---
->  src/set.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+On Tue, Nov 19, 2024 at 04:42:40PM +0100, Pablo Neira Ayuso wrote:
+> Hi,
 > 
-> diff --git a/src/set.c b/src/set.c
-> index f127c19b7b8b8..5746397277c48 100644
-> --- a/src/set.c
-> +++ b/src/set.c
-> @@ -185,8 +185,10 @@ int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
->  			return -1;
->  
->  		memcpy(&s->desc.field_len, data, data_len);
-> -		while (s->desc.field_len[++s->desc.field_count]) {
-> -			if (s->desc.field_count >= NFT_REG32_COUNT)
-> +		for (s->desc.field_count = 0;
-> +		     s->desc.field_count < NFT_REG32_COUNT;
-> +		     s->desc.field_count++) {
-> +			if (!s->desc.field_len[s->desc.field_count])
->  				break;
->  		}
->  		break;
-> -- 
-> 2.47.0
+> This is just a rebase and reposting original series from Jeremy.
 > 
+> I removed a userspace check to disallow to combine _DATA and _SREG2
+> which kernel should reject already.
+
+I have pushed out this now that 6.13-rc1 is out, so it gets more testing.
 
