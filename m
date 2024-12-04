@@ -1,46 +1,47 @@
-Return-Path: <netfilter-devel+bounces-5384-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5386-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635AE9E3D0D
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 15:45:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 507F99E3D79
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 15:59:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2468A281E29
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 14:44:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4576B35DDF
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2024 14:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7953820A5D8;
-	Wed,  4 Dec 2024 14:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F2E1FC100;
+	Wed,  4 Dec 2024 14:45:39 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977B420ADCF
-	for <netfilter-devel@vger.kernel.org>; Wed,  4 Dec 2024 14:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CF6433C4
+	for <netfilter-devel@vger.kernel.org>; Wed,  4 Dec 2024 14:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733323498; cv=none; b=VCuQ+tn/8/BL4iPdDIemgPCmz3RwVLVPBLPgayAsgBsV3cOdPqYR46WLMFs7fitNU70R30111sHgm6pP7lMH2knSGDSJT7ko/4JH2A83jQUBjb13rox7TPAwuc13oRVpqg0jaWLcDKqvtXtrapWI4Myp1PfeEv2qB/D6M6W4nXs=
+	t=1733323539; cv=none; b=EZgd+OntmIc4sus+EktEpzTkykbk4D1cFtLAYTUkeQ5ijYnzVR9BiNJ9I6iZdRDBxT+UntIUZk326VgXLM9YH4iSunyNsJ7dMdGvBbyg9BDYxa8ZfNMda9RVksWNuBST5wcXlyEu+j7t6wCkPQ1LLhazmpn1+aMSe5avb6BrqgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733323498; c=relaxed/simple;
-	bh=IlEjRgoA5LVn2cQmEHddw8awqSVoXujSX5tdXEBFNNI=;
+	s=arc-20240116; t=1733323539; c=relaxed/simple;
+	bh=ZTIxemQ2NeYFfPfIRCSI6IFulM3qSvghFyF86pcUsgk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OE+L5efAbMlqfHTsbQDPdj+2qiB+R8JaSWaxMrJ+wS4gYO1IoXmkcDOO6FZ1oi1X4BFse2Ck5kuL7TG4OIw8vjk/ui5Y1bhRI2RP7hqQ/+4noUDT/opvbT/zg10MbvLbsMt+DlaO9hykgpuzjYd9I9m4Bc1Gy1kfLMUuqBPveRw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=bSE47aoc4eWeKJMbLxDZzHAUn5smjSXn5eCj+VZun4WLYiFmRgayi02NnV/qn1e56TKt0BwAmDh+a/3jhjSJuNbcJamePaFUkhSCdrFtgaDYCo6BadQ8h1IMH84NJGxXQhLTaQS3kb76ekev8O8pm1V6psHc6Glf33DmYdyH5pQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.39.247] (port=58192 helo=gnumonks.org)
+Received: from [78.30.39.247] (port=34144 helo=gnumonks.org)
 	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <pablo@gnumonks.org>)
-	id 1tIqcT-009Blt-36; Wed, 04 Dec 2024 15:44:51 +0100
-Date: Wed, 4 Dec 2024 15:44:48 +0100
+	id 1tIqd9-009BpT-EO; Wed, 04 Dec 2024 15:45:33 +0100
+Date: Wed, 4 Dec 2024 15:45:30 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: jeremy@azazel.net
-Subject: Re: [PATCH libnftnl,v2 0/5] bitwise multiregister support
-Message-ID: <Z1Bq4N5p-MJIhv4N@calendula>
-References: <20241119154245.442961-1-pablo@netfilter.org>
+Subject: Re: [PATCH nft] src: allow binop expressions with variable
+ right-hand operands
+Message-ID: <Z1BrCr7-3yhmqcZt@calendula>
+References: <20241119123158.185298-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -49,18 +50,41 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241119154245.442961-1-pablo@netfilter.org>
-X-Spam-Score: -1.9 (-)
+In-Reply-To: <20241119123158.185298-1-pablo@netfilter.org>
+X-Spam-Score: -1.8 (-)
 
-Hi,
-
-On Tue, Nov 19, 2024 at 04:42:40PM +0100, Pablo Neira Ayuso wrote:
-> Hi,
+On Tue, Nov 19, 2024 at 01:31:58PM +0100, Pablo Neira Ayuso wrote:
+> From: Jeremy Sowden <jeremy@azazel.net>
 > 
-> This is just a rebase and reposting original series from Jeremy.
+> Hitherto, the kernel has required constant values for the `xor` and
+> `mask` attributes of boolean bitwise expressions.  This has meant that
+> the right-hand operand of a boolean binop must be constant.  Now the
+> kernel has support for AND, OR and XOR operations with right-hand
+> operands passed via registers, we can relax this restriction.  Allow
+> non-constant right-hand operands if the left-hand operand is not
+> constant, e.g.:
 > 
-> I removed a userspace check to disallow to combine _DATA and _SREG2
-> which kernel should reject already.
+>   ct mark & 0xffff0000 | meta mark & 0xffff
+> 
+> The kernel now supports performing AND, OR and XOR operations directly,
+> on one register and an immediate value or on two registers, so we need
+> to be able to generate and parse bitwise boolean expressions of this
+> form.
+> 
+> If a boolean operation has a constant RHS, we continue to send a
+> mask-and-xor expression to the kernel.
+> 
+> Add tests for {ct,meta} mark with variable RHS operands.
+> 
+> JSON support is also included.
+> 
+> This requires Linux kernel >= 6.13-rc.
+> 
+> [ Originally posted as patch 1/8 and 6/8 which has been collapsed and
+>   simplified to focus on initial {ct,meta} mark support. Tests have
+>   been extracted from 8/8 including a tests/py fix to payload output
+>   due to incorrect output in original patchset. JSON support has been
+>   extracted from patch 7/8 --pablo]
 
-I have pushed out this now that 6.13-rc1 is out, so it gets more testing.
+This is now applied.
 
