@@ -1,143 +1,190 @@
-Return-Path: <netfilter-devel+bounces-5434-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5436-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B9C9EA092
-	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 21:49:34 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A93569EA14A
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 22:36:39 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85B1C163C81
-	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 20:49:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED0A728298C
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 21:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92CA198A08;
-	Mon,  9 Dec 2024 20:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e21RIY1V"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A14E199EAF;
+	Mon,  9 Dec 2024 21:36:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372721E515;
-	Mon,  9 Dec 2024 20:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D5B46B8
+	for <netfilter-devel@vger.kernel.org>; Mon,  9 Dec 2024 21:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733777369; cv=none; b=B88TnrI0TUI95l7hk0Wu3ymgiTJD/gy/fPKhRHj35PVbnA2BNEWfIRUEHOn5IqNTPLeGeORegKbWEgeSnFeL0s4edI1Tb47S87vWIZyvtpRYTZ+wFk6eyey7SrRIiaPMVBeUns1npLpu3trJeoo8ardH+mtXHEZGz8LLDO7XriE=
+	t=1733780194; cv=none; b=oPkJ2gn0136AdmUy+ukP97+nPaNp/giT+8HeNR///tzB5Ywb6FhdnJEJNV1fBm7u2tHW8A6rjelPMoQvo7hyxl1Rz5WHn/u9nAv8tWF7/B1PESGi+Zv/pvbmStp61ArEotBW1qCxN4OR1O5JysK8ZPhatM6ml4JzbhjIRFlEQ+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733777369; c=relaxed/simple;
-	bh=EVRrlBUan9IJen8L8ZTGEotUSBgDrI7b0HaSIgMYPh8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IXsmyUwFNVJdvygt5tq811O1fFY2XvKwuqR5GSKuT+9BDv0HDW7hvQ3jqP+ynBdj2GvJygPR5w76jucfETn8lCzzMELV87zE+oqRUtGjrIm/caq+UflLRSMv/ZJqERrpRndpHVBPvBAYrPsvh/ErOdAnpiHy4r2+AEmxpy6xvcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e21RIY1V; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5d3d143376dso4274049a12.3;
-        Mon, 09 Dec 2024 12:49:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733777364; x=1734382164; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LDsdf4awSMe7aA0DWqf+TXfsRJBfTWDAmXcZTcbb9RI=;
-        b=e21RIY1VFhScTzIjN/vlZh4gM9Lzxg21vVMtmZF6F0hzKaEU5IdjFFaLF14g9i1pVX
-         r7gsOwc8rpK4mw7wT72cimMtxK6pwaOhz9IsJuvDFuS+rA610/2iBln6au6QLKmknUuU
-         /Lr6d9gR8Iif3oekfqa5PONaNpyAjbeh5xsFwkwX05PRH2scU4BDt6ptcz980P/t9gZo
-         yXEJaUhyS44+NA9zgNfCcCDt57yyYEJzYn4i4wuEZWRxW+4jOOUUkbK209GmjVjtTcsG
-         /D7yt4RFaRcngUWH2txSsUcPQSmzAk2AsVjC73iace+ZMc+hiZorkLzLoLlZfn7ugQgD
-         X/VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733777364; x=1734382164;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LDsdf4awSMe7aA0DWqf+TXfsRJBfTWDAmXcZTcbb9RI=;
-        b=q1u88M8VI6ufO25SopOAKpJT5dVmvZXTwJb7gTOHivZ7mmGYuDrh6HNNSWl2qR1MNf
-         yAJxvtjBXR9z7u8WlFAPsdbFob0W8R60HFgJdExPp9sYrtE+rFVXvqg5rBpuyveIuKq9
-         GC9s356ejzT1w/ltuAmoFwZD9jTpyLeLHVyqB6FImfqmtMFAtC7hURdaV35QaBJHsSdN
-         Ts0eLTC+AGaFetaIZOOQfMqw8qoL+/fajvV6zzjDo4LzK/PNhvWMqaBNqmnwmiRtqw9B
-         X1/8felFn+FY6animm9mczgiQWOFIptNvZlwaz/5WFE3KkAyYyMX8qu0hWOMYLkzBihs
-         dwAA==
-X-Forwarded-Encrypted: i=1; AJvYcCVBHXMh5iIwV3KJwjpIXb5p0CQdJronGVYgjmpCs0v/8s6mOARjOM2p8ICVh/C/iNo6ffivhhL4uJpwS0Q=@vger.kernel.org, AJvYcCW5tfRah6kLlO49W6nh0VTK7Sm3JmZNUVt2YAPB9oSli3OvQqMZEh3hpbPQ0NrU6r+s5oTn6d3k@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT7f9k5D+4IdiWmYPmy9Xe/TJlLBvPj3pbi/KEy8dG4/b5Nslh
-	xOHH8rmgTyaxOYJHIiNloeefHqodrEP06ALi7AdGP9bOl2B5UnA2
-X-Gm-Gg: ASbGncum2OWQNNyVSvd1kXeZQAP70mvwp9kH0SoDxM3aON+YATbh8prlO5w4sU7CUt1
-	yJ+CxSVVMgTGLi9lge5gyfLHkrQoVkSBUL2Hkw54uFegUZiEorjBSkuJOVOW6qUan/t13V0dT4N
-	HA9M+9wJYGG+Ax/8Bi4ejTbhUtdgsG/hl1o9nZx3vljYrgW19MD7/ARbSTj8vijH9od6CQfyKsL
-	oxLpVBrpvsaQoMqz5cruu0hi9F2S5doLR/7zjTrXp9lVCKawV4Rg+feLftg95mY
-X-Google-Smtp-Source: AGHT+IGh5VLwEyyN4rrxLprwiJ8QE3yGZmKhKKNw85NDHq9xP13bymyIefM+JbsyFTHJYS+H/wcotw==
-X-Received: by 2002:a05:6402:4408:b0:5d3:cf08:d64d with SMTP id 4fb4d7f45d1cf-5d41863c2a7mr2255139a12.32.1733777362658;
-        Mon, 09 Dec 2024 12:49:22 -0800 (PST)
-Received: from localhost.localdomain ([83.168.79.145])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d3ea09245bsm3323202a12.78.2024.12.09.12.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 12:49:21 -0800 (PST)
-From: Karol Przybylski <karprzy7@gmail.com>
-To: karprzy7@gmail.com,
-	pablo@netfilter.org,
-	kadlec@netfilter.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org
-Cc: netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org
-Subject: [PATCH] netfilter: nfnetlink_queue: Fix redundant comparison of unsigned value
-Date: Mon,  9 Dec 2024 21:49:18 +0100
-Message-Id: <20241209204918.56943-1-karprzy7@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1733780194; c=relaxed/simple;
+	bh=PNiXulPw/4rsnMtUXmJz8Fk8s4wbvCnqvsclns3lITs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JDhMz8ugtNnh85qHt4MErpLxn5AtLcZ0qDoJ6tqMCt2Q+kNeqlc8exeO7r1xIb5RM3hDW3LZOirizurTzHPHiCPnzRKmSi5xpDp4ArCfvmBmHjYcqmWPe5zwqXAn24K0PeLvNCInp0r0M/8kGENl1/gMzLDAcXG9Ru4q0UQcs0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.39.247] (port=34972 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1tKlHj-00GAFh-30; Mon, 09 Dec 2024 22:27:21 +0100
+Date: Mon, 9 Dec 2024 22:27:18 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel <netfilter-devel@vger.kernel.org>,
+	syzkaller-bugs@googlegroups.com,
+	syzbot+b26935466701e56cfdc2@syzkaller.appspotmail.com
+Subject: Re: [PATCH nf] netfilter: nf_tables: do not defer rule destruction
+ via call_rcu
+Message-ID: <Z1dgtm5IhoJW5vGL@calendula>
+References: <67478d92.050a0220.253251.0062.GAE@google.com>
+ <20241207111459.7191-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241207111459.7191-1-fw@strlen.de>
+X-Spam-Score: -1.8 (-)
 
-The comparison seclen >= 0 in net/netfilter/nfnetlink_queue.c is redundant because seclen is an unsigned value, and such comparisons are always true.
+Hi Florian,
 
-This patch removes the unnecessary comparison replacing it with just 'greater than'
+Thanks a lot for your quick fix.
 
-Discovered in coverity, CID 1602243
+On Sat, Dec 07, 2024 at 12:14:48PM +0100, Florian Westphal wrote:
+> nf_tables_chain_destroy can sleep, it can't be used from call_rcu
+> callbacks.
+> 
+> Moreover, nf_tables_rule_release() is only safe for error unwinding,
+> while transaction mutex is held and the to-be-desroyed rule was not
+> exposed to either dataplane or dumps, as it deactives+frees without
+> the required synchronize_rcu() in-between.
+> 
+> nft_rule_expr_deactivate() callbacks will change ->use counters
+> of other chains/sets, see e.g. nft_lookup .deactivate callback, these
+> must be serialized via transaction mutex.
+> 
+> Also add a few lockdep asserts to make this more explicit.
+> 
+> Calling synchronize_rcu() isn't ideal, but fixing this without is hard
+> and way more intrusive.  As-is, we can get:
+> 
+> WARNING: .. net/netfilter/nf_tables_api.c:5515 nft_set_destroy+0x..
 
-Signed-off-by: Karol Przybylski <karprzy7@gmail.com>
----
- net/netfilter/nfnetlink_queue.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Right, rhash needs this, that is why there is a workqueue to release
+objects from nftables commit path.
 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index 5110f29b2..eacb34ffb 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -643,7 +643,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 
- 	if ((queue->flags & NFQA_CFG_F_SECCTX) && entskb->sk) {
- 		seclen = nfqnl_get_sk_secctx(entskb, &ctx);
--		if (seclen >= 0)
-+		if (seclen > 0)
- 			size += nla_total_size(seclen);
- 	}
- 
-@@ -810,7 +810,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	}
- 
- 	nlh->nlmsg_len = skb->len;
--	if (seclen >= 0)
-+	if (seclen > 0)
- 		security_release_secctx(&ctx);
- 	return skb;
- 
-@@ -819,7 +819,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	kfree_skb(skb);
- 	net_err_ratelimited("nf_queue: error creating packet message\n");
- nlmsg_failure:
--	if (seclen >= 0)
-+	if (seclen > 0)
- 		security_release_secctx(&ctx);
- 	return NULL;
- }
--- 
-2.34.1
+> Workqueue: events nf_tables_trans_destroy_work
+> RIP: 0010:nft_set_destroy+0x3fe/0x5c0
+> Call Trace:
+>  <TASK>
+>  nf_tables_trans_destroy_work+0x6b7/0xad0
+>  process_one_work+0x64a/0xce0
+>  worker_thread+0x613/0x10d0
+> 
+> In case the synchronize_rcu becomes an issue, we can explore alternatives.
+> 
+> One way would be to allocate nft_trans_rule objects + one nft_trans_chain
+> object, deactivate the rules + the chain and then defer the freeing to the
+> nft destroy workqueue.  We'd still need to keep the synchronize_rcu path as
+> a fallback to handle -ENOMEM corner cases though.
 
+I think it can be done _without_ nft_trans objects.
+
+Since the commit mutex is held in this netdev event path: Remove this
+basechain, deactivate rules and add basechain to global list protected
+with spinlock, it invokes worker. Then, worker zaps this list
+basechains, it calls synchronize_rcu() and it destroys rules and then
+basechain. No memory allocations needed in this case?
+
+Thanks.
+
+> Reported-by: syzbot+b26935466701e56cfdc2@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/67478d92.050a0220.253251.0062.GAE@google.com/T/
+> Fixes: c03d278fdf35 ("netfilter: nf_tables: wait for rcu grace period on net_device removal")
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  net/netfilter/nf_tables_api.c | 31 +++++++++++++++----------------
+>  1 file changed, 15 insertions(+), 16 deletions(-)
+> 
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index 21b6f7410a1f..a3b6b6b32f72 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -3987,8 +3987,11 @@ void nf_tables_rule_destroy(const struct nft_ctx *ctx, struct nft_rule *rule)
+>  	kfree(rule);
+>  }
+>  
+> +/* can only be used if rule is no longer visible to dumps */
+>  static void nf_tables_rule_release(const struct nft_ctx *ctx, struct nft_rule *rule)
+>  {
+> +	lockdep_commit_lock_is_held(ctx->net);
+> +
+>  	nft_rule_expr_deactivate(ctx, rule, NFT_TRANS_RELEASE);
+>  	nf_tables_rule_destroy(ctx, rule);
+>  }
+> @@ -5757,6 +5760,8 @@ void nf_tables_deactivate_set(const struct nft_ctx *ctx, struct nft_set *set,
+>  			      struct nft_set_binding *binding,
+>  			      enum nft_trans_phase phase)
+>  {
+> +	lockdep_commit_lock_is_held(ctx->net);
+> +
+>  	switch (phase) {
+>  	case NFT_TRANS_PREPARE_ERROR:
+>  		nft_set_trans_unbind(ctx, set);
+> @@ -11695,19 +11700,6 @@ static void __nft_release_basechain_now(struct nft_ctx *ctx)
+>  	nf_tables_chain_destroy(ctx->chain);
+>  }
+>  
+> -static void nft_release_basechain_rcu(struct rcu_head *head)
+> -{
+> -	struct nft_chain *chain = container_of(head, struct nft_chain, rcu_head);
+> -	struct nft_ctx ctx = {
+> -		.family	= chain->table->family,
+> -		.chain	= chain,
+> -		.net	= read_pnet(&chain->table->net),
+> -	};
+> -
+> -	__nft_release_basechain_now(&ctx);
+> -	put_net(ctx.net);
+> -}
+> -
+>  int __nft_release_basechain(struct nft_ctx *ctx)
+>  {
+>  	struct nft_rule *rule;
+> @@ -11722,11 +11714,18 @@ int __nft_release_basechain(struct nft_ctx *ctx)
+>  	nft_chain_del(ctx->chain);
+>  	nft_use_dec(&ctx->table->use);
+>  
+> -	if (maybe_get_net(ctx->net))
+> -		call_rcu(&ctx->chain->rcu_head, nft_release_basechain_rcu);
+> -	else
+> +	if (!maybe_get_net(ctx->net)) {
+>  		__nft_release_basechain_now(ctx);
+> +		return 0;
+> +	}
+> +
+> +	/* wait for ruleset dumps to complete.  Owning chain is no longer in
+> +	 * lists, so new dumps can't find any of these rules anymore.
+> +	 */
+> +	synchronize_rcu();
+>  
+> +	__nft_release_basechain_now(ctx);
+> +	put_net(ctx->net);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(__nft_release_basechain);
+> -- 
+> 2.47.1
+> 
+> 
 
