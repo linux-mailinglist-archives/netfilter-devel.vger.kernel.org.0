@@ -1,40 +1,37 @@
-Return-Path: <netfilter-devel+bounces-5431-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5433-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E08859E9D1F
-	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 18:33:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759F59E9DB9
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 19:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5029166A24
-	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 17:33:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50D111883344
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Dec 2024 18:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F15B13775E;
-	Mon,  9 Dec 2024 17:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76012156F5F;
+	Mon,  9 Dec 2024 18:00:16 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFACDDD3
-	for <netfilter-devel@vger.kernel.org>; Mon,  9 Dec 2024 17:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8CF823315A
+	for <netfilter-devel@vger.kernel.org>; Mon,  9 Dec 2024 18:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733765630; cv=none; b=ORqo69wH8qoyMhLYvu8JJpjYtQztsWYFT2PTTKPuy53EYIdZDz08NvOktL/Axp8BmgX0vhp8oSiqbOQoW4d+LXuPRvEd1MGWsupzqSFGKFwBgnetJhOS9JAtrKUlKk5ldiGpxn57JbLmbDWE3f7jAQ6ufy10lg4ymi/dt1q9Xzo=
+	t=1733767216; cv=none; b=lLsX+R0ysRLWVhoK4rS3Eocf9Px1IM/yR6IqFiImHv2blpjoMmv065CSFDTv8YGv/2dk3xZ+RqjQrJ2nUC7GmLu2fAHSYZ6VVgSnRL6VQNy3rEHRSouD3SidbC+YWTipp/RmWTY8xilIQTHKaYww/TNMyG/1v/kgz86OCpQLmmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733765630; c=relaxed/simple;
-	bh=6R7QPz9b++0QYCD0gDXQA4y2J9rBn1TiQjI2TwEXnBw=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mY0CnDocVT+qEW59y/Hqh0Bmo0eBNiRLrsm7I4VdYTg2nsSnyYIhgOEFRSA+M64a8VmaLKX1TInjjfEPwlmHNME6fCDolZcm1MqSFJJT3RGkRkbKrDNrjgs66gcZt7XF+FHJBcTuV6bwvRo6q/CDZjHUoKgQnkeQrQa03lWR0hA=
+	s=arc-20240116; t=1733767216; c=relaxed/simple;
+	bh=hYbz7TOqEjaFjrYgkNtEnMB6XRP8wyAK50IyEi9xTgs=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=E9/KUePdQsnkmLxwUg6nb8ZB0oqlklAMWZNWKCG//+rUq4vQs8xabqRVJ998LsbS6OdI1Dg+vGGnFWzLs9P6czyHOVfAhrVivLcTeGwEZhx8k0crlBHq+h/cNwnr/EG0XX55ZUsPWT62iaylaMFAUnt8pcYFu50BT9N1GYE6P1o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/2] src: remove unused token_offset from struct location
-Date: Mon,  9 Dec 2024 18:33:34 +0100
-Message-Id: <20241209173334.512591-2-pablo@netfilter.org>
+Subject: [PATCH] intervals: set internal element location with the deletion trigger
+Date: Mon,  9 Dec 2024 19:00:09 +0100
+Message-Id: <20241209180009.518915-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241209173334.512591-1-pablo@netfilter.org>
-References: <20241209173334.512591-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -43,64 +40,104 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This saves 8 bytes in x86_64 in struct location which is embedded in
-every expression.
+set location of internal elements (already in the kernel) to the one
+that partial or fully deletes it.
 
-This shrinks struct expr to 120 bytes according to pahole.
+Otherwise, error reporting refers to internal location.
 
+Before this patch:
+
+ # nft delete element x y { 1.1.1.3 }
+ Error: Could not process rule: Too many open files in system
+ delete element x y { 1.1.1.3 }
+                      ^^^^^^^
+
+After this patch:
+
+ # nft delete element x y { 1.1.1.3 }
+ Error: Could not process rule: Too many open files in system
+ delete element x y { 1.1.1.3 }
+                      ^^^^^^^
+
+This occurs after splitting an existing interval in two:
+
+ remove: [1010100-10101ff]
+ add: [1010100-1010102]
+ add: [1010104-10101ff]
+
+which results in two additions after removing the existing interval
+that is split.
+
+Fixes: 81e36530fcac ("src: replace interval segment tree overlap and automerge")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-low hanging fruit to shrink struct expr.
+ src/intervals.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
- include/nftables.h | 1 -
- src/parser_bison.y | 2 --
- src/scanner.l      | 1 -
- 3 files changed, 4 deletions(-)
-
-diff --git a/include/nftables.h b/include/nftables.h
-index c25deb3676dd..7d891b439a2d 100644
---- a/include/nftables.h
-+++ b/include/nftables.h
-@@ -158,7 +158,6 @@ struct location {
- 	const struct input_descriptor		*indesc;
- 	union {
- 		struct {
--			off_t			token_offset;
- 			off_t			line_offset;
- 
- 			unsigned int		first_line;
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 6e6f3cf8335d..6e8b639104fc 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -102,7 +102,6 @@ static void location_update(struct location *loc, struct location *rhs, int n)
+diff --git a/src/intervals.c b/src/intervals.c
+index ff202be9375b..a58ec5b26397 100644
+--- a/src/intervals.c
++++ b/src/intervals.c
+@@ -86,6 +86,7 @@ static void remove_overlapping_range(struct set_automerge_ctx *ctx,
+ 				     struct expr *prev, struct expr *i)
  {
- 	if (n) {
- 		loc->indesc       = rhs[n].indesc;
--		loc->token_offset = rhs[1].token_offset;
- 		loc->line_offset  = rhs[1].line_offset;
- 		loc->first_line   = rhs[1].first_line;
- 		loc->first_column = rhs[1].first_column;
-@@ -110,7 +109,6 @@ static void location_update(struct location *loc, struct location *rhs, int n)
- 		loc->last_column  = rhs[n].last_column;
- 	} else {
- 		loc->indesc       = rhs[0].indesc;
--		loc->token_offset = rhs[0].token_offset;
- 		loc->line_offset  = rhs[0].line_offset;
- 		loc->first_line   = loc->last_line   = rhs[0].last_line;
- 		loc->first_column = loc->last_column = rhs[0].last_column;
-diff --git a/src/scanner.l b/src/scanner.l
-index c825fa79cfd9..ecdba404b2cd 100644
---- a/src/scanner.l
-+++ b/src/scanner.l
-@@ -90,7 +90,6 @@ static void update_offset(struct parser_state *state, struct location *loc,
- 			  unsigned int len)
+ 	if (i->flags & EXPR_F_KERNEL) {
++		i->location = prev->location;
+ 		purge_elem(ctx, i);
+ 		return;
+ 	}
+@@ -104,12 +105,14 @@ static bool merge_ranges(struct set_automerge_ctx *ctx,
+ 			 struct range *prev_range, struct range *range)
  {
- 	state->indesc->token_offset	+= len;
--	loc->token_offset		= state->indesc->token_offset;
- 	loc->line_offset		= state->indesc->line_offset;
- }
+ 	if (prev->flags & EXPR_F_KERNEL) {
++		prev->location = i->location;
+ 		purge_elem(ctx, prev);
+ 		expr_free(i->key->left);
+ 		i->key->left = expr_get(prev->key->left);
+ 		mpz_set(prev_range->high, range->high);
+ 		return true;
+ 	} else if (i->flags & EXPR_F_KERNEL) {
++		i->location = prev->location;
+ 		purge_elem(ctx, i);
+ 		expr_free(prev->key->right);
+ 		prev->key->right = expr_get(i->key->right);
+@@ -304,6 +307,7 @@ static void __adjust_elem_left(struct set *set, struct expr *prev, struct expr *
+ static void adjust_elem_left(struct set *set, struct expr *prev, struct expr *i,
+ 			     struct expr *purge)
+ {
++	prev->location = i->location;
+ 	remove_elem(prev, set, purge);
+ 	__adjust_elem_left(set, prev, i);
  
+@@ -323,6 +327,7 @@ static void __adjust_elem_right(struct set *set, struct expr *prev, struct expr
+ static void adjust_elem_right(struct set *set, struct expr *prev, struct expr *i,
+ 			      struct expr *purge)
+ {
++	prev->location = i->location;
+ 	remove_elem(prev, set, purge);
+ 	__adjust_elem_right(set, prev, i);
+ 
+@@ -335,6 +340,8 @@ static void split_range(struct set *set, struct expr *prev, struct expr *i,
+ {
+ 	struct expr *clone;
+ 
++	prev->location = i->location;
++
+ 	if (prev->flags & EXPR_F_KERNEL) {
+ 		clone = expr_clone(prev);
+ 		list_move_tail(&clone->list, &purge->expressions);
+@@ -422,8 +429,10 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 		if (mpz_cmp(prev_range.low, range.low) == 0 &&
+ 		    mpz_cmp(prev_range.high, range.high) == 0) {
+ 			if (elem->flags & EXPR_F_REMOVE) {
+-				if (prev->flags & EXPR_F_KERNEL)
++				if (prev->flags & EXPR_F_KERNEL) {
++					prev->location = elem->location;
+ 					list_move_tail(&prev->list, &purge->expressions);
++				}
+ 
+ 				list_del(&elem->list);
+ 				expr_free(elem);
 -- 
 2.30.2
 
