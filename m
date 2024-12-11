@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5510-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5512-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A67C39EDAAE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 00:01:47 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A4A9EDAB2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 00:02:00 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0227B1687C3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Dec 2024 23:01:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73F8E28409C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Dec 2024 23:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CCF1EC4FF;
-	Wed, 11 Dec 2024 23:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCE51F2C37;
+	Wed, 11 Dec 2024 23:01:45 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151F21C07D8;
-	Wed, 11 Dec 2024 23:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D76A1DD0FE;
+	Wed, 11 Dec 2024 23:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733958103; cv=none; b=stuUsO1PQVRGpl+4ZaJHYRFs2Ec2m5rXiBKGtnDRCl5dcK2tyEbuop/mGEeeFiNvR6ybLzjdpYw2pnI8qRMcUuGcOCOVF8/qI+Ra0XKdvpAt0YBLqWeZZ3k/c0fAnrLbXRDXm6mlMSUDk6Uc5q0YQXrsCL3VYNfg9K0fUA+haxs=
+	t=1733958105; cv=none; b=TdebJ0coU0ZbLyvsrJJRDMXVb/Hh2snI+wG+VqPeyImvq6YPfVdAg6k7/90Nlso3UhEwRtzTGho/k+ki4OihD0UQiuEU67hMP975dmmrqHAR3x/uFxQRQ+ac2q8G6zliJ2JUNaTVQxjPzxumEx2zsYTmiY63mVIxMPWBmTdmhfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733958103; c=relaxed/simple;
-	bh=42T/xrKErMOh83l9sTZL+EWwQ1rbLEDjNUpsmsm/yNY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lCOupSJ7/z7bSgQbLpBNw6Y9ixSfnlb3ywThPJDclmHZ4lVobOGFzKQnpW2qWs/r0tPgkLjUXw68cAsGrtE5VPQgeH327SyZV8oKuCjHyhQWw/Iltzu01hMFrZqEbq5oqxNmFWjx5VmGwi5MARZfobfw2+6lRl/u8ac1oL2+OwA=
+	s=arc-20240116; t=1733958105; c=relaxed/simple;
+	bh=jF6aZVIKGs2z0glJGb/foE/SdXqX/dhp9xSLKYLZxF8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=aTmAD31iHB8SIQkTs/0w8bHsqLw8WJGF1yBggy9IAmGvid89EDtqPgGxkg1KtcLoimZ850TuzRLFZP8ArJjQ0e+n65RfrgdNH/WkLy+IHU1gQcXNgW8osk61r30jacU5aplI2UoPlJwFoxmxJdtZB0Qd28VcQl5THK0um/2DQeo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,10 +36,12 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	phil@netfilter.org
-Subject: [PATCH net 0/3] Netfilter fixes for net
-Date: Thu, 12 Dec 2024 00:01:27 +0100
-Message-Id: <20241211230130.176937-1-pablo@netfilter.org>
+Subject: [PATCH net 1/3] selftests: netfilter: Stabilize rpath.sh
+Date: Thu, 12 Dec 2024 00:01:28 +0100
+Message-Id: <20241211230130.176937-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20241211230130.176937-1-pablo@netfilter.org>
+References: <20241211230130.176937-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -47,56 +50,74 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Phil Sutter <phil@nwl.cc>
 
-The following patchset contains Netfilter fixes for net:
+On some systems, neighbor discoveries from ns1 for fec0:42::1 (i.e., the
+martian trap address) would happen at the wrong time and cause
+false-negative test result.
 
-1) Fix bogus test reports in rpath.sh selftest by adding permanent
-   neighbor entries, from Phil Sutter.
+Problem analysis also discovered that IPv6 martian ping test was broken
+in that sent neighbor discoveries, not echo requests were inadvertently
+trapped
 
-2) Lockdep reports possible ABBA deadlock in xt_IDLETIMER, fix it by
-   removing sysfs out of the mutex section, also from Phil Sutter.
+Avoid the race condition by introducing the neighbors to each other
+upfront. Also pin down the firewall rules to matching on echo requests
+only.
 
-3) It is illegal to release basechain via RCU callback, for several
-   reasons. Keep it simple and safe by calling synchronize_rcu() instead.
-   This is a partially reverting a botched recent attempt of me to fix
-   this basechain release path on netdevice removal.
-   From Florian Westphal.
+Fixes: efb056e5f1f0 ("netfilter: ip6t_rpfilter: Fix regression with VRF interfaces")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ tools/testing/selftests/net/netfilter/rpath.sh | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-Please, pull these changes from:
+diff --git a/tools/testing/selftests/net/netfilter/rpath.sh b/tools/testing/selftests/net/netfilter/rpath.sh
+index 4485fd7675ed..86ec4e68594d 100755
+--- a/tools/testing/selftests/net/netfilter/rpath.sh
++++ b/tools/testing/selftests/net/netfilter/rpath.sh
+@@ -61,9 +61,20 @@ ip -net "$ns2" a a 192.168.42.1/24 dev d0
+ ip -net "$ns1" a a fec0:42::2/64 dev v0 nodad
+ ip -net "$ns2" a a fec0:42::1/64 dev d0 nodad
+ 
++# avoid neighbor lookups and enable martian IPv6 pings
++ns2_hwaddr=$(ip -net "$ns2" link show dev v0 | \
++	     sed -n 's, *link/ether \([^ ]*\) .*,\1,p')
++ns1_hwaddr=$(ip -net "$ns1" link show dev v0 | \
++	     sed -n 's, *link/ether \([^ ]*\) .*,\1,p')
++ip -net "$ns1" neigh add fec0:42::1 lladdr "$ns2_hwaddr" nud permanent dev v0
++ip -net "$ns1" neigh add fec0:23::1 lladdr "$ns2_hwaddr" nud permanent dev v0
++ip -net "$ns2" neigh add fec0:42::2 lladdr "$ns1_hwaddr" nud permanent dev d0
++ip -net "$ns2" neigh add fec0:23::2 lladdr "$ns1_hwaddr" nud permanent dev v0
++
+ # firewall matches to test
+ [ -n "$iptables" ] && {
+ 	common='-t raw -A PREROUTING -s 192.168.0.0/16'
++	common+=' -p icmp --icmp-type echo-request'
+ 	if ! ip netns exec "$ns2" "$iptables" $common -m rpfilter;then
+ 		echo "Cannot add rpfilter rule"
+ 		exit $ksft_skip
+@@ -72,6 +83,7 @@ ip -net "$ns2" a a fec0:42::1/64 dev d0 nodad
+ }
+ [ -n "$ip6tables" ] && {
+ 	common='-t raw -A PREROUTING -s fec0::/16'
++	common+=' -p icmpv6 --icmpv6-type echo-request'
+ 	if ! ip netns exec "$ns2" "$ip6tables" $common -m rpfilter;then
+ 		echo "Cannot add rpfilter rule"
+ 		exit $ksft_skip
+@@ -82,8 +94,10 @@ ip -net "$ns2" a a fec0:42::1/64 dev d0 nodad
+ table inet t {
+ 	chain c {
+ 		type filter hook prerouting priority raw;
+-		ip saddr 192.168.0.0/16 fib saddr . iif oif exists counter
+-		ip6 saddr fec0::/16 fib saddr . iif oif exists counter
++		ip saddr 192.168.0.0/16 icmp type echo-request \
++			fib saddr . iif oif exists counter
++		ip6 saddr fec0::/16 icmpv6 type echo-request \
++			fib saddr . iif oif exists counter
+ 	}
+ }
+ EOF
+-- 
+2.30.2
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-12-11
-
-Thanks.
-
-----------------------------------------------------------------
-
-The following changes since commit 31f1b55d5d7e531cd827419e5d71c19f24de161c:
-
-  net :mana :Request a V2 response version for MANA_QUERY_GF_STAT (2024-12-05 12:02:15 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-12-11
-
-for you to fetch changes up to b04df3da1b5c6f6dc7cdccc37941740c078c4043:
-
-  netfilter: nf_tables: do not defer rule destruction via call_rcu (2024-12-11 23:27:50 +0100)
-
-----------------------------------------------------------------
-netfilter pull request 24-12-11
-
-----------------------------------------------------------------
-Florian Westphal (1):
-      netfilter: nf_tables: do not defer rule destruction via call_rcu
-
-Phil Sutter (2):
-      selftests: netfilter: Stabilize rpath.sh
-      netfilter: IDLETIMER: Fix for possible ABBA deadlock
-
- include/net/netfilter/nf_tables.h              |  4 --
- net/netfilter/nf_tables_api.c                  | 32 ++++++++--------
- net/netfilter/xt_IDLETIMER.c                   | 52 ++++++++++++++------------
- tools/testing/selftests/net/netfilter/rpath.sh | 18 ++++++++-
- 4 files changed, 59 insertions(+), 47 deletions(-)
 
