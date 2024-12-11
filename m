@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5511-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5513-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDBA19EDAB1
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 00:01:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D66739EDAB5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 00:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B55501889C30
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Dec 2024 23:01:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E86F1889D7D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Dec 2024 23:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9F01F2396;
-	Wed, 11 Dec 2024 23:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5391F2C55;
+	Wed, 11 Dec 2024 23:01:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D71C1C1F2F;
-	Wed, 11 Dec 2024 23:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DB31F238D;
+	Wed, 11 Dec 2024 23:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733958104; cv=none; b=OfceAzEtFijQJYu1eNC3g7/2o4pccNNyvqorJcMsr47JfYeaNkqdY46IkUeG4oiuphjCbow7tTr9P+2HWzJMRWfAP7+YYjx66QgsOpejNmWog1/iiJ77XPgIOPpM7X6xls6OjBWcCElGM/Ct47YfnC83wMllBxx81iKLShV1AKk=
+	t=1733958106; cv=none; b=QbEuumbz9QDNvUy5ZMV1clchuQ6bc6pXL3P6/gIP0pwaQLRW/tgVaxinkkaR91FWX5A2nVOs6cnCzSXkbDFdERG0kF/maArlWfVvoIzNbkufoWlK7mv8AL5AQRbkv6KqPHFSoquwuFal5zOwAfCf4RcGYbN2q2r/6vDEV76MIRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733958104; c=relaxed/simple;
-	bh=LR3mbaWIOrSc78aLlgRKjl76IaI/JO0hIskJHCX8kps=;
+	s=arc-20240116; t=1733958106; c=relaxed/simple;
+	bh=HnYs3YFW5I2tWogr+BjysEtwRdl15oez4VWXYrp5+AM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZsWVWzxs+JkqdNzv5pUpGhfsnqYO38BzTMsFOwY9Q0Wsbj+IsiciR1eZaF8wK8pSnROT5JcMC5PF7uKjiXwJAKGd8TWERsDvTxchtkajikSlV6PCY1fMZt4/5RERz9WDduCL0iyvScTcfJrgz1M37XE0572Hnq4S+R1XSsA3aWo=
+	 MIME-Version; b=PUm1rDRZvvDtyPHmL9soufJnfsX9yvwT/PQ82g2ao1CSB5RLh0DCbi7VVOW+D5IMXJnsuCP2hCJf/SmzuCSKMZ1bXptq10FSBY5u1fW3JJJfannbCPoFwzQRVWL0h2Y1xM5ZAfPggriKv98b+KUMsQ72BPovB3zy4ogiC1EOzkk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -36,9 +36,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	phil@netfilter.org
-Subject: [PATCH net 2/3] netfilter: IDLETIMER: Fix for possible ABBA deadlock
-Date: Thu, 12 Dec 2024 00:01:29 +0100
-Message-Id: <20241211230130.176937-3-pablo@netfilter.org>
+Subject: [PATCH net 3/3] netfilter: nf_tables: do not defer rule destruction via call_rcu
+Date: Thu, 12 Dec 2024 00:01:30 +0100
+Message-Id: <20241211230130.176937-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241211230130.176937-1-pablo@netfilter.org>
 References: <20241211230130.176937-1-pablo@netfilter.org>
@@ -50,125 +50,162 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Phil Sutter <phil@nwl.cc>
+From: Florian Westphal <fw@strlen.de>
 
-Deletion of the last rule referencing a given idletimer may happen at
-the same time as a read of its file in sysfs:
+nf_tables_chain_destroy can sleep, it can't be used from call_rcu
+callbacks.
 
-| ======================================================
-| WARNING: possible circular locking dependency detected
-| 6.12.0-rc7-01692-g5e9a28f41134-dirty #594 Not tainted
-| ------------------------------------------------------
-| iptables/3303 is trying to acquire lock:
-| ffff8881057e04b8 (kn->active#48){++++}-{0:0}, at: __kernfs_remove+0x20
-|
-| but task is already holding lock:
-| ffffffffa0249068 (list_mutex){+.+.}-{3:3}, at: idletimer_tg_destroy_v]
-|
-| which lock already depends on the new lock.
+Moreover, nf_tables_rule_release() is only safe for error unwinding,
+while transaction mutex is held and the to-be-desroyed rule was not
+exposed to either dataplane or dumps, as it deactives+frees without
+the required synchronize_rcu() in-between.
 
-A simple reproducer is:
+nft_rule_expr_deactivate() callbacks will change ->use counters
+of other chains/sets, see e.g. nft_lookup .deactivate callback, these
+must be serialized via transaction mutex.
 
-| #!/bin/bash
-|
-| while true; do
-|         iptables -A INPUT -i foo -j IDLETIMER --timeout 10 --label "testme"
-|         iptables -D INPUT -i foo -j IDLETIMER --timeout 10 --label "testme"
-| done &
-| while true; do
-|         cat /sys/class/xt_idletimer/timers/testme >/dev/null
-| done
+Also add a few lockdep asserts to make this more explicit.
 
-Avoid this by freeing list_mutex right after deleting the element from
-the list, then continuing with the teardown.
+Calling synchronize_rcu() isn't ideal, but fixing this without is hard
+and way more intrusive.  As-is, we can get:
 
-Fixes: 0902b469bd25 ("netfilter: xtables: idletimer target implementation")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+WARNING: .. net/netfilter/nf_tables_api.c:5515 nft_set_destroy+0x..
+Workqueue: events nf_tables_trans_destroy_work
+RIP: 0010:nft_set_destroy+0x3fe/0x5c0
+Call Trace:
+ <TASK>
+ nf_tables_trans_destroy_work+0x6b7/0xad0
+ process_one_work+0x64a/0xce0
+ worker_thread+0x613/0x10d0
+
+In case the synchronize_rcu becomes an issue, we can explore alternatives.
+
+One way would be to allocate nft_trans_rule objects + one nft_trans_chain
+object, deactivate the rules + the chain and then defer the freeing to the
+nft destroy workqueue.  We'd still need to keep the synchronize_rcu path as
+a fallback to handle -ENOMEM corner cases though.
+
+Reported-by: syzbot+b26935466701e56cfdc2@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/67478d92.050a0220.253251.0062.GAE@google.com/T/
+Fixes: c03d278fdf35 ("netfilter: nf_tables: wait for rcu grace period on net_device removal")
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/xt_IDLETIMER.c | 52 +++++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 24 deletions(-)
+ include/net/netfilter/nf_tables.h |  4 ----
+ net/netfilter/nf_tables_api.c     | 32 +++++++++++++++----------------
+ 2 files changed, 15 insertions(+), 21 deletions(-)
 
-diff --git a/net/netfilter/xt_IDLETIMER.c b/net/netfilter/xt_IDLETIMER.c
-index 85f017e37cfc..9f54819eb52c 100644
---- a/net/netfilter/xt_IDLETIMER.c
-+++ b/net/netfilter/xt_IDLETIMER.c
-@@ -407,21 +407,23 @@ static void idletimer_tg_destroy(const struct xt_tgdtor_param *par)
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 80a537ac26cd..4afa64c81304 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1103,7 +1103,6 @@ struct nft_rule_blob {
+  *	@name: name of the chain
+  *	@udlen: user data length
+  *	@udata: user data in the chain
+- *	@rcu_head: rcu head for deferred release
+  *	@blob_next: rule blob pointer to the next in the chain
+  */
+ struct nft_chain {
+@@ -1121,7 +1120,6 @@ struct nft_chain {
+ 	char				*name;
+ 	u16				udlen;
+ 	u8				*udata;
+-	struct rcu_head			rcu_head;
  
- 	mutex_lock(&list_mutex);
- 
--	if (--info->timer->refcnt == 0) {
--		pr_debug("deleting timer %s\n", info->label);
--
--		list_del(&info->timer->entry);
--		timer_shutdown_sync(&info->timer->timer);
--		cancel_work_sync(&info->timer->work);
--		sysfs_remove_file(idletimer_tg_kobj, &info->timer->attr.attr);
--		kfree(info->timer->attr.attr.name);
--		kfree(info->timer);
--	} else {
-+	if (--info->timer->refcnt > 0) {
- 		pr_debug("decreased refcnt of timer %s to %u\n",
- 			 info->label, info->timer->refcnt);
-+		mutex_unlock(&list_mutex);
-+		return;
- 	}
- 
-+	pr_debug("deleting timer %s\n", info->label);
-+
-+	list_del(&info->timer->entry);
- 	mutex_unlock(&list_mutex);
-+
-+	timer_shutdown_sync(&info->timer->timer);
-+	cancel_work_sync(&info->timer->work);
-+	sysfs_remove_file(idletimer_tg_kobj, &info->timer->attr.attr);
-+	kfree(info->timer->attr.attr.name);
-+	kfree(info->timer);
+ 	/* Only used during control plane commit phase: */
+ 	struct nft_rule_blob		*blob_next;
+@@ -1265,7 +1263,6 @@ static inline void nft_use_inc_restore(u32 *use)
+  *	@sets: sets in the table
+  *	@objects: stateful objects in the table
+  *	@flowtables: flow tables in the table
+- *	@net: netnamespace this table belongs to
+  *	@hgenerator: handle generator state
+  *	@handle: table handle
+  *	@use: number of chain references to this table
+@@ -1285,7 +1282,6 @@ struct nft_table {
+ 	struct list_head		sets;
+ 	struct list_head		objects;
+ 	struct list_head		flowtables;
+-	possible_net_t			net;
+ 	u64				hgenerator;
+ 	u64				handle;
+ 	u32				use;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 21b6f7410a1f..0b9f1e8dfe49 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -1596,7 +1596,6 @@ static int nf_tables_newtable(struct sk_buff *skb, const struct nfnl_info *info,
+ 	INIT_LIST_HEAD(&table->sets);
+ 	INIT_LIST_HEAD(&table->objects);
+ 	INIT_LIST_HEAD(&table->flowtables);
+-	write_pnet(&table->net, net);
+ 	table->family = family;
+ 	table->flags = flags;
+ 	table->handle = ++nft_net->table_handle;
+@@ -3987,8 +3986,11 @@ void nf_tables_rule_destroy(const struct nft_ctx *ctx, struct nft_rule *rule)
+ 	kfree(rule);
  }
  
- static void idletimer_tg_destroy_v1(const struct xt_tgdtor_param *par)
-@@ -432,25 +434,27 @@ static void idletimer_tg_destroy_v1(const struct xt_tgdtor_param *par)
++/* can only be used if rule is no longer visible to dumps */
+ static void nf_tables_rule_release(const struct nft_ctx *ctx, struct nft_rule *rule)
+ {
++	lockdep_commit_lock_is_held(ctx->net);
++
+ 	nft_rule_expr_deactivate(ctx, rule, NFT_TRANS_RELEASE);
+ 	nf_tables_rule_destroy(ctx, rule);
+ }
+@@ -5757,6 +5759,8 @@ void nf_tables_deactivate_set(const struct nft_ctx *ctx, struct nft_set *set,
+ 			      struct nft_set_binding *binding,
+ 			      enum nft_trans_phase phase)
+ {
++	lockdep_commit_lock_is_held(ctx->net);
++
+ 	switch (phase) {
+ 	case NFT_TRANS_PREPARE_ERROR:
+ 		nft_set_trans_unbind(ctx, set);
+@@ -11695,19 +11699,6 @@ static void __nft_release_basechain_now(struct nft_ctx *ctx)
+ 	nf_tables_chain_destroy(ctx->chain);
+ }
  
- 	mutex_lock(&list_mutex);
- 
--	if (--info->timer->refcnt == 0) {
--		pr_debug("deleting timer %s\n", info->label);
+-static void nft_release_basechain_rcu(struct rcu_head *head)
+-{
+-	struct nft_chain *chain = container_of(head, struct nft_chain, rcu_head);
+-	struct nft_ctx ctx = {
+-		.family	= chain->table->family,
+-		.chain	= chain,
+-		.net	= read_pnet(&chain->table->net),
+-	};
 -
--		list_del(&info->timer->entry);
--		if (info->timer->timer_type & XT_IDLETIMER_ALARM) {
--			alarm_cancel(&info->timer->alarm);
--		} else {
--			timer_shutdown_sync(&info->timer->timer);
--		}
--		cancel_work_sync(&info->timer->work);
--		sysfs_remove_file(idletimer_tg_kobj, &info->timer->attr.attr);
--		kfree(info->timer->attr.attr.name);
--		kfree(info->timer);
--	} else {
-+	if (--info->timer->refcnt > 0) {
- 		pr_debug("decreased refcnt of timer %s to %u\n",
- 			 info->label, info->timer->refcnt);
-+		mutex_unlock(&list_mutex);
-+		return;
- 	}
+-	__nft_release_basechain_now(&ctx);
+-	put_net(ctx.net);
+-}
+-
+ int __nft_release_basechain(struct nft_ctx *ctx)
+ {
+ 	struct nft_rule *rule;
+@@ -11722,11 +11713,18 @@ int __nft_release_basechain(struct nft_ctx *ctx)
+ 	nft_chain_del(ctx->chain);
+ 	nft_use_dec(&ctx->table->use);
  
-+	pr_debug("deleting timer %s\n", info->label);
-+
-+	list_del(&info->timer->entry);
- 	mutex_unlock(&list_mutex);
-+
-+	if (info->timer->timer_type & XT_IDLETIMER_ALARM) {
-+		alarm_cancel(&info->timer->alarm);
-+	} else {
-+		timer_shutdown_sync(&info->timer->timer);
+-	if (maybe_get_net(ctx->net))
+-		call_rcu(&ctx->chain->rcu_head, nft_release_basechain_rcu);
+-	else
++	if (!maybe_get_net(ctx->net)) {
+ 		__nft_release_basechain_now(ctx);
++		return 0;
 +	}
-+	cancel_work_sync(&info->timer->work);
-+	sysfs_remove_file(idletimer_tg_kobj, &info->timer->attr.attr);
-+	kfree(info->timer->attr.attr.name);
-+	kfree(info->timer);
++
++	/* wait for ruleset dumps to complete.  Owning chain is no longer in
++	 * lists, so new dumps can't find any of these rules anymore.
++	 */
++	synchronize_rcu();
+ 
++	__nft_release_basechain_now(ctx);
++	put_net(ctx->net);
+ 	return 0;
  }
- 
- 
+ EXPORT_SYMBOL_GPL(__nft_release_basechain);
 -- 
 2.30.2
 
