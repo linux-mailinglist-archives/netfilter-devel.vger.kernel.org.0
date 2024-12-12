@@ -1,114 +1,217 @@
-Return-Path: <netfilter-devel+bounces-5516-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5519-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 022A69EE705
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 13:47:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EAD39EFB50
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 19:43:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66E8A1886E88
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 12:47:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F31EB16C8A8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2024 18:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD548213E84;
-	Thu, 12 Dec 2024 12:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7434223C46;
+	Thu, 12 Dec 2024 18:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="JZhqhtGF"
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="0hnM4hc8"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from smtp-bc08.mail.infomaniak.ch (smtp-bc08.mail.infomaniak.ch [45.157.188.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BCB2135D5
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Dec 2024 12:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BAE223C7B
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Dec 2024 18:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734007662; cv=none; b=CrSbnTEoR/TKZTdeHhy5nmCXo9D4n+gAYsnHOIvwEPO36LwA6kUMSzJwa76cyHm4biUWUdZDTVsa0UPH5E5YbXioNn4kHIS9g+w5DrTjYkfRGovyGzhkULfDRsNHU4LBPsljeK+NTdNj2yXi59KRUkwy4o1rzwCylroDnUiTg3I=
+	t=1734028999; cv=none; b=U+8H+d53I70u9BYYObTdOHSQjXlnD1dtX5pweZDdkIP9n4OSWWU4AYV+D4W4Nn57iGvd4gTHnnbwheIzftUFnLdtdE4qB4fmSneWaby4z/zapaEpyKlFj7VkjKE4w87OENPBOTG5w0bVJrNL4OW9itEEZJx/DwGZmfSrsBrhfPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734007662; c=relaxed/simple;
-	bh=A0mVqtafhyCHRb9/n2ujUjjlm25qwU++WypifyqEvAY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l2lzyDRTA/V5+vpX/+vYljlQ2mk5yinF+OWlZi5xGNRZGkAzSnviMpsT3tHyBS55VWg2jwxvp9Ea5OjU9hC8IdgCU+MsqvRp2e4oNvGzhS7hypGqQpFEthAQAbLNW/DhSDcDQQSxnAHlM637/3hG3ry2WzA6viDL8FendjCX2Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=JZhqhtGF; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=c9/JLQ/rzfZUdNWL3xlwp9KMs++QnnCPvZsmCRh8F4c=; b=JZhqhtGFvsqg9/8D1OIiGF2vFT
-	aNaLiy5alwGxGMAAbPjPMqAtk+mpIVQJZw4UJzy65IKlpVUU4qAZgNhUqbwwK0j1RGAARzaPOOyTi
-	vkOGLHIhFOmWahlZhzup8PUjEpwoY78DLii7uK4JvASlLlLorgk/z6zfpiiw5a5u/BgAwA+6FlMM4
-	ITLGoYyVnXS8+1chyXoq4EElyl/Tftrzri9P0mUHMfbCizBMPYlofN8XiF7CsneX0mRpjluFPAbt1
-	5uwBa1SMo7zeKlpanvMa/YHhylvOd5hDlxhvpLQPTEfB17TDrLKb0BONGWZ+HAqB9keG92F6qGFDh
-	RZKybomg==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1tLibN-000000000az-0RMh;
-	Thu, 12 Dec 2024 13:47:33 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [ipset PATCH 3/3] tests: runtest.sh: Keep running, print summary of failed tests
-Date: Thu, 12 Dec 2024 13:47:33 +0100
-Message-ID: <20241212124733.14407-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241212124733.14407-1-phil@nwl.cc>
-References: <20241212124733.14407-1-phil@nwl.cc>
+	s=arc-20240116; t=1734028999; c=relaxed/simple;
+	bh=o2bVeZbhajJiWN0U8WTCLKosJC2kpjq4OkmKZ9+CpAo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Irx0rObectLc4Fl9ji+/6CIYl30oTf8WeOR3Ex8fGkquBxyGVkCrm+ZoLqju2JLHYdb43poxsISfv3K5VDS/bFX3fuBuNEiYHWNBh96XEekhllcCZkjIhc+k1OuYDwqEwTXRaYMD7dud5186CYagOFNXmJehfRI/62B759Scvyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=0hnM4hc8; arc=none smtp.client-ip=45.157.188.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Y8LvJ3g1lzRfV;
+	Thu, 12 Dec 2024 19:43:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1734028988;
+	bh=Mmtm9fyTo5/r0MKZuqf9t/MEms75sx9RiuSVOLDMjIM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0hnM4hc8hqjkyoqr9BFrIZOoT0mF0wylgwIGNE6Igbk3XV5TtYm5XJqDuONfX9XFf
+	 VzdGhGE99QhQevM9+D6EoQsGHcArpLQ+dul8AJb7xCLaUMkmF39xvioQxaatZFj7DY
+	 KFAL9We+7K5tDAg+3OyUOsh8AhM0pHEs1uA+egqQ=
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Y8LvH45x0zQ3r;
+	Thu, 12 Dec 2024 19:43:07 +0100 (CET)
+Date: Thu, 12 Dec 2024 19:43:04 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+Cc: Matthieu Baerts <matttbe@kernel.org>, gnoack@google.com, 
+	willemdebruijn.kernel@gmail.com, matthieu@buffet.re, linux-security-module@vger.kernel.org, 
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, yusongping@huawei.com, 
+	artem.kuzin@huawei.com, konstantin.meskhidze@huawei.com, 
+	MPTCP Linux <mptcp@lists.linux.dev>, David Laight <David.Laight@aculab.com>
+Subject: Re: [RFC PATCH v2 1/8] landlock: Fix non-TCP sockets restriction
+Message-ID: <20241212.ief4eingaeVa@digikod.net>
+References: <20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com>
+ <20241017110454.265818-2-ivanov.mikhail1@huawei-partners.com>
+ <49bc2227-d8e1-4233-8bc4-4c2f0a191b7c@kernel.org>
+ <20241018.Kahdeik0aaCh@digikod.net>
+ <20241204.fahVio7eicim@digikod.net>
+ <20241204.acho8AiGh6ai@digikod.net>
+ <a24b33c1-57c8-11bb-f3aa-32352b289a5c@huawei-partners.com>
+ <20241210.Eenohkipee9f@digikod.net>
+ <20241210.ohC4die2hi8v@digikod.net>
+ <b8726b37-8819-2289-40ec-81d875b13eba@huawei-partners.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8726b37-8819-2289-40ec-81d875b13eba@huawei-partners.com>
+X-Infomaniak-Routing: alpha
 
-Do not exit at each failure.
+On Wed, Dec 11, 2024 at 06:24:53PM +0300, Mikhail Ivanov wrote:
+> On 12/10/2024 9:05 PM, Mickaël Salaün wrote:
+> > On Tue, Dec 10, 2024 at 07:04:15PM +0100, Mickaël Salaün wrote:
+> > > On Mon, Dec 09, 2024 at 01:19:19PM +0300, Mikhail Ivanov wrote:
+> > > > On 12/4/2024 10:35 PM, Mickaël Salaün wrote:
+> > > > > On Wed, Dec 04, 2024 at 08:27:58PM +0100, Mickaël Salaün wrote:
+> > > > > > On Fri, Oct 18, 2024 at 08:08:12PM +0200, Mickaël Salaün wrote:
+> > > > > > > On Thu, Oct 17, 2024 at 02:59:48PM +0200, Matthieu Baerts wrote:
+> > > > > > > > Hi Mikhail and Landlock maintainers,
+> > > > > > > > 
+> > > > > > > > +cc MPTCP list.
+> > > > > > > 
+> > > > > > > Thanks, we should include this list in the next series.
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > On 17/10/2024 13:04, Mikhail Ivanov wrote:
+> > > > > > > > > Do not check TCP access right if socket protocol is not IPPROTO_TCP.
+> > > > > > > > > LANDLOCK_ACCESS_NET_BIND_TCP and LANDLOCK_ACCESS_NET_CONNECT_TCP
+> > > > > > > > > should not restrict bind(2) and connect(2) for non-TCP protocols
+> > > > > > > > > (SCTP, MPTCP, SMC).
+> > > > > > > > 
+> > > > > > > > Thank you for the patch!
+> > > > > > > > 
+> > > > > > > > I'm part of the MPTCP team, and I'm wondering if MPTCP should not be
+> > > > > > > > treated like TCP here. MPTCP is an extension to TCP: on the wire, we can
+> > > > > > > > see TCP packets with extra TCP options. On Linux, there is indeed a
+> > > > > > > > dedicated MPTCP socket (IPPROTO_MPTCP), but that's just internal,
+> > > > > > > > because we needed such dedicated socket to talk to the userspace.
+> > > > > > > > 
+> > > > > > > > I don't know Landlock well, but I think it is important to know that an
+> > > > > > > > MPTCP socket can be used to discuss with "plain" TCP packets: the kernel
+> > > > > > > > will do a fallback to "plain" TCP if MPTCP is not supported by the other
+> > > > > > > > peer or by a middlebox. It means that with this patch, if TCP is blocked
+> > > > > > > > by Landlock, someone can simply force an application to create an MPTCP
+> > > > > > > > socket -- e.g. via LD_PRELOAD -- and bypass the restrictions. It will
+> > > > > > > > certainly work, even when connecting to a peer not supporting MPTCP.
+> > > > > > > > 
+> > > > > > > > Please note that I'm not against this modification -- especially here
+> > > > > > > > when we remove restrictions around MPTCP sockets :) -- I'm just saying
+> > > > > > > > it might be less confusing for users if MPTCP is considered as being
+> > > > > > > > part of TCP. A bit similar to what someone would do with a firewall: if
+> > > > > > > > TCP is blocked, MPTCP is blocked as well.
+> > > > > > > 
+> > > > > > > Good point!  I don't know well MPTCP but I think you're right.  Given
+> > > > > > > it's close relationship with TCP and the fallback mechanism, it would
+> > > > > > > make sense for users to not make a difference and it would avoid bypass
+> > > > > > > of misleading restrictions.  Moreover the Landlock rules are simple and
+> > > > > > > only control TCP ports, not peer addresses, which seems to be the main
+> > > > > > > evolution of MPTCP.
+> > > > > > 
+> > > > > > Thinking more about this, this makes sense from the point of view of the
+> > > > > > network stack, but looking at external (potentially bogus) firewalls or
+> > > > > > malware detection systems, it is something different.  If we don't
+> > > > > > provide a way for users to differenciate the control of SCTP from TCP,
+> > > > > > malicious use of SCTP could still bypass this kind of bogus security
+> > > > > > appliances.  It would then be safer to stick to the protocol semantic by
+> > > > > > clearly differenciating TCP from MPTCP (or any other protocol).
+> > > > 
+> > > > You mean that these firewals have protocol granularity (e.g. different
+> > > > restrictions for MPTCP and TCP sockets)?
+> > > 
+> > > Yes, and more importantly they can miss the MTCP semantic and then not
+> > > properly filter such packet, which can be use to escape the network
+> > > policy.  See some issues here:
+> > > https://en.wikipedia.org/wiki/Multipath_TCP
+> > > 
+> > > The point is that we cannot assume anything about other networking
+> > > stacks, and if Landlock can properly differentiate between TCP and MTCP
+> > > (e.g. with new LANDLOCK_ACCESS_NET_CONNECT_MTCP) users of such firewalls
+> > > could still limit the impact of their firewall's bugs.  However, if
+> > > Landlock treats TCP and MTCP the same way, we'll not be able to only
+> > > deny MTCP.  In most use cases, the network policy should treat both TCP
+> > > and MTCP the same way though, but we should let users decide according
+> > > to their context.
+> > > 
+> > >  From an implementation point of view, adding MTCP support should be
+> > > simple, mainly tests will grow.
+> > 
+> > s/MTCP/MPTCP/g of course.
+> 
+> That's reasonable, thanks for explanation!
+> 
+> We should also consider control of other protocols that use TCP
+> internally [1], since it should be easy to bypass TCP restriction by
+> using them (e.g. provoking a fallback of MPTCP or SMC connection to
+> TCP).
+> 
+> The simplest solution is to implement separate access rights for SMC and
+> RDS, as well as for MPTCP. I think we should stick to it.
+> 
+> I was worried if there was a case where it would be useful to allow only
+> SMC (and deny TCP). If there are any, it would be more correct to
+> restrict only the fallback SMC -> TCP with TCP access rights. But such
+> logic seems too complicated for the kernel and implicit for SMC
+> applications that can rely on a TCP connection.
+> 
+> [1] https://lore.kernel.org/all/62336067-18c2-3493-d0ec-6dd6a6d3a1b5@huawei-partners.com/
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- tests/runtest.sh | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Let's continue the discussion on this thread.
 
-diff --git a/tests/runtest.sh b/tests/runtest.sh
-index 7afa1dd0eb20d..fc4fd3c13dc6b 100755
---- a/tests/runtest.sh
-+++ b/tests/runtest.sh
-@@ -76,6 +76,7 @@ fi
- # Make sure the scripts are executable
- chmod a+x check_* *.sh
- 
-+failcount=0
- for types in $tests; do
-     $ipset -X test >/dev/null 2>&1
-     if [ -f $types ]; then
-@@ -116,7 +117,8 @@ for types in $tests; do
- 		echo "FAILED"
- 		echo "Failed test: $cmd"
- 		cat .foo.err
--		exit 1
-+		let "failcount++"
-+		break
- 	fi
- 	# sleep 1
-     done < $filename
-@@ -136,5 +138,9 @@ for x in $tests; do
- done
- rmmod ip_set >/dev/null 2>&1
- rm -f .foo*
--echo "All tests are passed"
--
-+if [ "$failcount" -eq 0 ]; then
-+	echo "All tests are passed"
-+else
-+	echo "$failcount tests have failed"
-+	exit 1
-+fi
--- 
-2.47.0
+> 
+> > 
+> > > 
+> > > > 
+> > > > > > 
+> > > > > > Mikhail, could you please send a new patch series containing one patch
+> > > > > > to fix the kernel and another to extend tests?
+> > > > > 
+> > > > > No need to squash them in one, please keep the current split of the test
+> > > > > patches.  However, it would be good to be able to easily backport them,
+> > > > > or at least the most relevant for this fix, which means to avoid
+> > > > > extended refactoring.
+> > > > 
+> > > > No problem, I'll remove the fix of error consistency from this patchset.
+> > > > BTW, what do you think about second and third commits? Should I send the
+> > > > new version of them as well (in separate patch)?
+> > > 
+> > > According to the description, patch 2 may be included in this series if
+> > > it can be tested with any other LSM, but I cannot read these patches:
+> > > https://lore.kernel.org/all/20241017110454.265818-3-ivanov.mikhail1@huawei-partners.com/
+> 
+> Ok I'll do this, since this patch doesn't make any functional changes.
+> 
+> About readability, a lot of code blocks were moved in this patch, and
+> because of this, the regular diff file has become too unreadable.
+> So, I decided to re-generate it with --break-rewrites option of git
+> format- patch. Do you have any advice on how best to compose a diff for
+> this patch?
 
+The changes are not clear to me so I don't know.  If a lot of parts are
+changed, maybe splitting this patch into a few patches would help.  I'm
+a bit worried that too much parts are changed though.
+
+When I try to apply this series I get:
+
+  Patch failed at 0002 landlock: Make network stack layer checks explicit
+  for each TCP action
+  error: patch failed: security/landlock/net.c:1
+  error: security/landlock/net.c: patch does not apply
 
