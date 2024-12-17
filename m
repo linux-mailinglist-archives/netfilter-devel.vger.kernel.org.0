@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-5543-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5539-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73BE29F58BF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2024 22:29:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525519F5891
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2024 22:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3837189686C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2024 21:21:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ADE8161A36
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2024 21:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135011F9F75;
-	Tue, 17 Dec 2024 21:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F111DDC3C;
+	Tue, 17 Dec 2024 21:15:30 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B0B1F9ECD
-	for <netfilter-devel@vger.kernel.org>; Tue, 17 Dec 2024 21:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D231DD0C7
+	for <netfilter-devel@vger.kernel.org>; Tue, 17 Dec 2024 21:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734470465; cv=none; b=aRg8BCsP7JIPV4Zd5gg7SfWYxDnZLCkoqxkAB8tBFNGJBcyy+64qWUTpyrbwjSdRLoeItr/nwrAtrKOv8PNVo4sTnbJO1NxDwLY0h6wz5quUOxDm5awxWGhzZvHbZc7R704hx3Z1ugPwdqHhNYoCZ/PBrEeU0iwn648wRfNoOFI=
+	t=1734470130; cv=none; b=VCVUZ3eufyYee56h1irjWmFi8820DwXB8GBUYYsiVAA6miIPd8NFs/IYEDppjz8lks5wUhM1nXM02R+nJBIGFLGk/ikwvfPMbZQEh57CaKS1KfQSOl1HLzQu6xmeq9NigMx4V6aAIVCeDzDVFyw0M2LuywVQfk2QaueECAiLW2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734470465; c=relaxed/simple;
-	bh=f+kAFma0JdvdUREsF+uOaXxJl8HKI69w+Df0iJcegBE=;
+	s=arc-20240116; t=1734470130; c=relaxed/simple;
+	bh=nTcdr8XEYXahW9MEKbBnQZtqQiQ7P9/MwmO4AoucH0U=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QFLJPFP6p8HisOgvj++x+3gldZZSai9K86/ZF9B1Zzs+muS7SIsM84/VF02TfytscLuSuRToq27nTrnjGRpssUN0G6J5M9G6AwIeUW9kHWecwtrScZyXhgo60dmx/fm6SDXa/GZvtPMu0LaSVFDFVW5mgse1ODUNhmnmSgCnM7Y=
+	 MIME-Version; b=Y8hLCECFOWIRkruWEolaZJRd5XRS1C5afrhKLzfgEpaHM1Xefe/k9rDajJSaB3WRJ+9gzAtCmcQ10VlqUSRFO7zYYo3XevF0CrPXolG58gQaDJwki1HcvGv7j5TXfWUy5ZvvabCR2dI99Uc5xgRxNpD88FmJDj8g9hRk6BNlYm4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 4/6] rule: constify set_is_non_concat_range()
-Date: Tue, 17 Dec 2024 22:15:14 +0100
-Message-Id: <20241217211516.1644623-5-pablo@netfilter.org>
+Subject: [PATCH nft 5/6] mnl: rename list of expression in mnl_nft_setelem_batch()
+Date: Tue, 17 Dec 2024 22:15:15 +0100
+Message-Id: <20241217211516.1644623-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20241217211516.1644623-1-pablo@netfilter.org>
 References: <20241217211516.1644623-1-pablo@netfilter.org>
@@ -43,26 +43,55 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is read-only, constify it.
+Rename set to init to prepare to pass struct set to this function in
+the follow up patch. No functional changes are intended.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/rule.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/mnl.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/rule.h b/include/rule.h
-index 238be23eca90..86477c709544 100644
---- a/include/rule.h
-+++ b/include/rule.h
-@@ -423,7 +423,7 @@ static inline bool set_is_interval(uint32_t set_flags)
- 	return set_flags & NFT_SET_INTERVAL;
- }
- 
--static inline bool set_is_non_concat_range(struct set *s)
-+static inline bool set_is_non_concat_range(const struct set *s)
+diff --git a/src/mnl.c b/src/mnl.c
+index 88fac5bd0393..52085d6d960a 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -1731,7 +1731,7 @@ static int mnl_nft_setelem_batch(const struct nftnl_set *nls, struct cmd *cmd,
+ 				 struct nftnl_batch *batch,
+ 				 enum nf_tables_msg_types msg_type,
+ 				 unsigned int flags, uint32_t *seqnum,
+-				 const struct expr *set,
++				 const struct expr *init,
+ 				 struct netlink_ctx *ctx)
  {
- 	return (s->flags & NFT_SET_INTERVAL) && s->desc.field_count <= 1;
- }
+ 	struct nlattr *nest1, *nest2;
+@@ -1743,8 +1743,8 @@ static int mnl_nft_setelem_batch(const struct nftnl_set *nls, struct cmd *cmd,
+ 	if (msg_type == NFT_MSG_NEWSETELEM)
+ 		flags |= NLM_F_CREATE;
+ 
+-	if (set)
+-		expr = list_first_entry(&set->expressions, struct expr, list);
++	if (init)
++		expr = list_first_entry(&init->expressions, struct expr, list);
+ 
+ next:
+ 	nlh = nftnl_nlmsg_build_hdr(nftnl_batch_buffer(batch), msg_type,
+@@ -1764,13 +1764,13 @@ next:
+ 				 htonl(nftnl_set_get_u32(nls, NFTNL_SET_ID)));
+ 	}
+ 
+-	if (!set || list_empty(&set->expressions))
++	if (!init || list_empty(&init->expressions))
+ 		return 0;
+ 
+ 	assert(expr);
+ 	nest1 = mnl_attr_nest_start(nlh, NFTA_SET_ELEM_LIST_ELEMENTS);
+-	list_for_each_entry_from(expr, &set->expressions, list) {
+-		nlse = alloc_nftnl_setelem(set, expr);
++	list_for_each_entry_from(expr, &init->expressions, list) {
++		nlse = alloc_nftnl_setelem(init, expr);
+ 
+ 		cmd_add_loc(cmd, nlh, &expr->location);
+ 		nest2 = mnl_attr_nest_start(nlh, ++i);
 -- 
 2.30.2
 
