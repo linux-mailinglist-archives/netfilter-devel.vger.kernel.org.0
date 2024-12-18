@@ -1,28 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5547-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5549-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3B09F7114
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Dec 2024 00:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8DD69F7118
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Dec 2024 00:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94A9D16E0F5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Dec 2024 23:43:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00BC316E3D6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Dec 2024 23:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917401FDE29;
-	Wed, 18 Dec 2024 23:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C79D1FE469;
+	Wed, 18 Dec 2024 23:41:53 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E081FCFF4;
-	Wed, 18 Dec 2024 23:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D211FAC55;
+	Wed, 18 Dec 2024 23:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734565312; cv=none; b=AC49P4uBux0XhaLmk1Ro/fVXLi7v1gPi2XYoVNWxiDXSUahC8IwjuBlNy2RVBt88JjxUeGuapoCePywRmJmyDivFbeZs05jcTghWYwpRvPUreeQw2d0OHPitTmK0NYu1Dzj128LabBsGDDkdFTmFxXbMA+NnfxYfQCqlVLrDvbk=
+	t=1734565313; cv=none; b=U2fcP8mknqeEcU5ecb8dNpVpNtawmcD2Tr4QDA7qsRQcYEOq9LE2QTCfLkDKjKURVYQsHx77pyKRCH8XsQW9caopGrtTAZpqYf+LqZhhdRo5bAozhLYsZnxefW+tar/Pob/m1JZo+/4w9aLtkWAODvbuz2rtU78sClC0MwwVN4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734565312; c=relaxed/simple;
-	bh=uMSG5ER061vR6o17OJ5d/JzFjjqUwmyqr69/UYhN8E8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cqT6D7JLLCX2rfiTqje+YidGLiLp6bO/hplK82Q54kXe0R3hM24PH6z4/O3EMg7ycP4R37xJQX6EuZOa2OHenSAcYkno05QDpEdHHemuqm/Iw9upKUUGYLf+yd7XzEBBgQBLgnJpLjLZpabg9FlzKbK9k91xm8vMcSxEF/nK9qk=
+	s=arc-20240116; t=1734565313; c=relaxed/simple;
+	bh=hlTUwRtcm8X5JqChNop5tLa5z5lb/W4oTXOG4zmP21s=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hAMGojv4rRNyNeGj7CApysukSeoyiFTZv/InOfAdLz3zuoETzT/prtXxiBevZlTfCe8SJjVGYRNJuTD63TvKIKk938d5ovtQ8j20xUXjA3wonWqsy4Blggth44WCIdhie4Vyhpxxawci5dHg/1gQiH34UrKziAYFx4uLaGm2kFQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -34,10 +35,12 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net 0/2] Netfilter/IPVS fixes for net
-Date: Thu, 19 Dec 2024 00:41:35 +0100
-Message-Id: <20241218234137.1687288-1-pablo@netfilter.org>
+Subject: [PATCH net 1/2] ipvs: Fix clamp() of ip_vs_conn_tab on small memory systems
+Date: Thu, 19 Dec 2024 00:41:36 +0100
+Message-Id: <20241218234137.1687288-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20241218234137.1687288-1-pablo@netfilter.org>
+References: <20241218234137.1687288-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,47 +49,54 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: David Laight <David.Laight@ACULAB.COM>
 
-The following series contains two fixes for Netfilter/IPVS:
+The 'max_avail' value is calculated from the system memory
+size using order_base_2().
+order_base_2(x) is defined as '(x) ? fn(x) : 0'.
+The compiler generates two copies of the code that follows
+and then expands clamp(max, min, PAGE_SHIFT - 12) (11 on 32bit).
+This triggers a compile-time assert since min is 5.
 
-1) Possible build failure in IPVS on systems with less than 512MB
-   memory due to incorrect use of clamp(), from David Laight.
+In reality a system would have to have less than 512MB memory
+for the bounds passed to clamp to be reversed.
 
-2) Fix bogus lockdep nesting splat with ipset list:set type,
-   from Phil Sutter.
+Swap the order of the arguments to clamp() to avoid the warning.
 
-Please, pull these changes from:
+Replace the clamp_val() on the line below with clamp().
+clamp_val() is just 'an accident waiting to happen' and not needed here.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-24-12-19
+Detected by compile time checks added to clamp(), specifically:
+minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
 
-Thanks.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Closes: https://lore.kernel.org/all/CA+G9fYsT34UkGFKxus63H6UVpYi5GRZkezT9MRLfAbM3f6ke0g@mail.gmail.com/
+Fixes: 4f325e26277b ("ipvs: dynamically limit the connection hash table")
+Tested-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: David Laight <david.laight@aculab.com>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/ipvs/ip_vs_conn.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-----------------------------------------------------------------
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index 98d7dbe3d787..c0289f83f96d 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1495,8 +1495,8 @@ int __init ip_vs_conn_init(void)
+ 	max_avail -= 2;		/* ~4 in hash row */
+ 	max_avail -= 1;		/* IPVS up to 1/2 of mem */
+ 	max_avail -= order_base_2(sizeof(struct ip_vs_conn));
+-	max = clamp(max, min, max_avail);
+-	ip_vs_conn_tab_bits = clamp_val(ip_vs_conn_tab_bits, min, max);
++	max = clamp(max_avail, min, max);
++	ip_vs_conn_tab_bits = clamp(ip_vs_conn_tab_bits, min, max);
+ 	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
+ 	ip_vs_conn_tab_mask = ip_vs_conn_tab_size - 1;
+ 
+-- 
+2.30.2
 
-The following changes since commit 954a2b40719a21e763a1bba2f0da92347e058fce:
-
-  rtnetlink: Try the outer netns attribute in rtnl_get_peer_net(). (2024-12-17 17:54:18 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-24-12-19
-
-for you to fetch changes up to 70b6f46a4ed8bd56c85ffff22df91e20e8c85e33:
-
-  netfilter: ipset: Fix for recursive locking warning (2024-12-19 00:28:47 +0100)
-
-----------------------------------------------------------------
-netfilter pull request 24-12-19
-
-----------------------------------------------------------------
-David Laight (1):
-      ipvs: Fix clamp() of ip_vs_conn_tab on small memory systems
-
-Phil Sutter (1):
-      netfilter: ipset: Fix for recursive locking warning
-
- net/netfilter/ipset/ip_set_list_set.c | 3 +++
- net/netfilter/ipvs/ip_vs_conn.c       | 4 ++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
 
