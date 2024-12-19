@@ -1,106 +1,115 @@
-Return-Path: <netfilter-devel+bounces-5548-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5550-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8920B9F7117
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Dec 2024 00:43:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 472699F73D6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Dec 2024 06:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13E031890A96
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Dec 2024 23:43:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 217A81690A2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Dec 2024 05:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8381FE456;
-	Wed, 18 Dec 2024 23:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2623216612;
+	Thu, 19 Dec 2024 05:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="6QNb3x+E"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D6F1FCFFC;
-	Wed, 18 Dec 2024 23:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3771B154C15;
+	Thu, 19 Dec 2024 05:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734565313; cv=none; b=IsjeG8T6KxE4/WSx5m/oYiOL6OMx3gBRt969AbAidqGiYCa0HZmSfNvqyewJGzkhRI9ocAwuhaBotc0ThIyUhbtsn9mLjnX7svNiWBsuDrHmW4B1XyOdl7h3KvkauHOQxxbN3SpLQfWxJHJvjH5ALedDcsjhMk+njb7apUMzJOE=
+	t=1734584811; cv=none; b=bqrdA4JWHaAMOs/94hiSPlz1WEQT7qjPaCS8Bux3IWGyskInY3L7lZTkzm7ogtjb9wuG8ohF5ugvUapjGgwWz5W+CvVOymWrVAdTnJCaCssDVd8n+f0J9pgTOamsxo0SXnJiurPpeMCdImqv4bd6aAf3v75FSp1s6D9tGxJH5Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734565313; c=relaxed/simple;
-	bh=W6Rh9drXZGBhudlE8EIvnNLID+8DxwUsFw/aBZceDzQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iFtFSgJf+8n3Vjiu4nI8a+Df7J+lCFXmWswtNQPeMcB3lavz3VycepLXX8kIJUaisMT0cSknLoLYYjQs6ct9JEgAp7IN+K32UxuPEPpoP+29F0xKb2HksLzXcOjEslzALP8OFxsPvBlZi0e7oKgCJCvZQiSjO7MZR+AdjbaFUio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de
-Subject: [PATCH net 2/2] netfilter: ipset: Fix for recursive locking warning
-Date: Thu, 19 Dec 2024 00:41:37 +0100
-Message-Id: <20241218234137.1687288-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20241218234137.1687288-1-pablo@netfilter.org>
-References: <20241218234137.1687288-1-pablo@netfilter.org>
+	s=arc-20240116; t=1734584811; c=relaxed/simple;
+	bh=Z32VB8nanEUnJPIfQ/z+55VU6zYxBzUbLWcwQ9lFLYA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=tMIIGFNa6foWIGVfbomBtk4+SlITzu4MgN5xzjj1KC5zl1lqmADgexjw87Q52P7Wz6ie++zNjnbxiElbFszbqLZoSvZuyg89WZENXFqJqKgnLXyd1gE4v+7HPZ26vK28gKOVtSsApk+H6nrCRJ/uD6zqWGJI2Xn22A6YOkfyBMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=6QNb3x+E; arc=none smtp.client-ip=193.238.174.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mx.ssi.bg (localhost [127.0.0.1])
+	by mx.ssi.bg (Potsfix) with ESMTP id 4A24A23565;
+	Thu, 19 Dec 2024 07:06:34 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
+	:content-type:content-type:date:from:from:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
+	 bh=1cOVO0SaylYhhURTaPnk/qOmR5sKtjr4wVU6mmJAdqo=; b=6QNb3x+EUBmT
+	TABz1BtAb78ANqrDJ01HMZP1kjtrkQmt0aO02df8e6EcVWtWa+w4QeP+qWRzYSG2
+	HVOOV59uV2SsZ24WwCrP1ZFr9pP/v4B5TYwJM/iHeUQU+1D2XJSI8aZt0DhtMjQp
+	TWJKDDkhrjC+sWHlKT5y1S5qQDFevfwlvxrAnWWtFC6wG0PzzLL6IHdBn4cJkRnQ
+	HkzWXYaeZcDKJAJ4t05mNYrVaZCJ29dipGbUnR/glev2aO//HpekCu1PMVFFa28V
+	q250M5yXbWcmNqdn5gJJGGafX8D9a5Ix1jsggjhXCIe5WLx3ELkVWmDzDyaSP01S
+	ieK8fhby7i68zWKxV0SUh+2wm8PgLKg9o5yMj1kDdmy/F7nODzUzTirThcgA6Q+L
+	lgAqcM8VYq6VZefsz7rhleFIuYe3PU1kT6WU/gSaohh+/lKgLkjuylwQaYJwt+sD
+	IzB/fmt2y9wEGyqmnL8iQ5TKRErzNDNWgZGifEw6gqGRCORePB15WEOG1eZxIlW0
+	wsmYjkJf0MF8gVk5UZm5Q7+N2GwOD3WmT4HxAkNThyTkg+1l7ba4g+dK8c//UBCX
+	xS40AxJRSDU7kcGK1jqu+S5bbpPgJuBLghr93C4UUsxPc+mqODOmcyCztsn8FLUZ
+	/h+HBBM4Q7BIMT1E4xGNf/4XZzIrAuY=
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mx.ssi.bg (Potsfix) with ESMTPS;
+	Thu, 19 Dec 2024 07:06:33 +0200 (EET)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id 7E04615EB0;
+	Thu, 19 Dec 2024 07:06:26 +0200 (EET)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.18.1/8.17.1) with ESMTP id 4BJ56GQl005317;
+	Thu, 19 Dec 2024 07:06:17 +0200
+Date: Thu, 19 Dec 2024 07:06:16 +0200 (EET)
+From: Julian Anastasov <ja@ssi.bg>
+To: David Laight <David.Laight@ACULAB.COM>
+cc: "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>,
+        "'Naresh Kamboju'" <naresh.kamboju@linaro.org>,
+        "'Dan Carpenter'" <dan.carpenter@linaro.org>,
+        "'pablo@netfilter.org'" <pablo@netfilter.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "'open list'" <linux-kernel@vger.kernel.org>,
+        "'lkft-triage@lists.linaro.org'" <lkft-triage@lists.linaro.org>,
+        "'Linux Regressions'" <regressions@lists.linux.dev>,
+        "'Linux ARM'" <linux-arm-kernel@lists.infradead.org>,
+        "'netfilter-devel@vger.kernel.org'" <netfilter-devel@vger.kernel.org>,
+        Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org
+Subject: Re: [PATCH net-next] Fix clamp() of ip_vs_conn_tab on small memory
+ systems.
+In-Reply-To: <5e288aa5-5374-5542-b730-f3b923ba5a36@ssi.bg>
+Message-ID: <a0ebe11c-4ca2-d2f3-8e53-0d9f44bfdda0@ssi.bg>
+References: <24a6bfd0811b4931b6ef40098b33c9ee@AcuMS.aculab.com> <5e288aa5-5374-5542-b730-f3b923ba5a36@ssi.bg>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-From: Phil Sutter <phil@nwl.cc>
 
-With CONFIG_PROVE_LOCKING, when creating a set of type bitmap:ip, adding
-it to a set of type list:set and populating it from iptables SET target
-triggers a kernel warning:
+	Hello,
 
-| WARNING: possible recursive locking detected
-| 6.12.0-rc7-01692-g5e9a28f41134-dirty #594 Not tainted
-| --------------------------------------------
-| ping/4018 is trying to acquire lock:
-| ffff8881094a6848 (&set->lock){+.-.}-{2:2}, at: ip_set_add+0x28c/0x360 [ip_set]
-|
-| but task is already holding lock:
-| ffff88811034c048 (&set->lock){+.-.}-{2:2}, at: ip_set_add+0x28c/0x360 [ip_set]
+On Tue, 17 Dec 2024, Julian Anastasov wrote:
 
-This is a false alarm: ipset does not allow nested list:set type, so the
-loop in list_set_kadd() can never encounter the outer set itself. No
-other set type supports embedded sets, so this is the only case to
-consider.
+> On Sat, 14 Dec 2024, David Laight wrote:
+> 
+> > The 'max_avail' value is calculated from the system memory
+> > size using order_base_2().
+> > order_base_2(x) is defined as '(x) ? fn(x) : 0'.
+> > The compiler generates two copies of the code that follows
+> > and then expands clamp(max, min, PAGE_SHIFT - 12) (11 on 32bit).
+> > This triggers a compile-time assert since min is 5.
+> 
+> 	8 ?
+> 
+> > 
+> > In reality a system would have to have less than 512MB memory
 
-To avoid the false report, create a distinct lock class for list:set
-type ipset locks.
+	Also, note that this is 512KB (practically impossible),
+not 512MB. So, it can fail only on build.
 
-Fixes: f830837f0eed ("netfilter: ipset: list:set set type support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/ipset/ip_set_list_set.c | 3 +++
- 1 file changed, 3 insertions(+)
+Regards
 
-diff --git a/net/netfilter/ipset/ip_set_list_set.c b/net/netfilter/ipset/ip_set_list_set.c
-index bfae7066936b..db794fe1300e 100644
---- a/net/netfilter/ipset/ip_set_list_set.c
-+++ b/net/netfilter/ipset/ip_set_list_set.c
-@@ -611,6 +611,8 @@ init_list_set(struct net *net, struct ip_set *set, u32 size)
- 	return true;
- }
- 
-+static struct lock_class_key list_set_lockdep_key;
-+
- static int
- list_set_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
- 		u32 flags)
-@@ -627,6 +629,7 @@ list_set_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
- 	if (size < IP_SET_LIST_MIN_SIZE)
- 		size = IP_SET_LIST_MIN_SIZE;
- 
-+	lockdep_set_class(&set->lock, &list_set_lockdep_key);
- 	set->variant = &set_variant;
- 	set->dsize = ip_set_elem_len(set, tb, sizeof(struct set_elem),
- 				     __alignof__(struct set_elem));
--- 
-2.30.2
+--
+Julian Anastasov <ja@ssi.bg>
 
 
