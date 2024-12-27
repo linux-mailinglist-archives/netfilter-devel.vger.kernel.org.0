@@ -1,43 +1,43 @@
-Return-Path: <netfilter-devel+bounces-5574-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5576-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7334B9FD75B
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2024 20:14:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0BA79FD761
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2024 20:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 054D73A2635
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2024 19:14:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72704162AA1
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2024 19:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08D91F9EA4;
-	Fri, 27 Dec 2024 19:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB9F1F9ED5;
+	Fri, 27 Dec 2024 19:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="r3jX2mH8"
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="UXZ+y6hx"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2059.outbound.protection.outlook.com [40.107.249.59])
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2087.outbound.protection.outlook.com [40.107.247.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0259C1F9AA4;
-	Fri, 27 Dec 2024 19:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84441F9EAF;
+	Fri, 27 Dec 2024 19:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.87
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735326781; cv=fail; b=NrKnFLMYtRgzepdZFKFavV9jf5R8kXcBCutwwnr+0maFUdu9eXeBthclxGtluE6ETb5BfmBlrGkcoMUPcjkPqsmTQbOpe9El4YmOYWglw8iPgu6H50RSz5e7jkMVFMx8HAAFC8i4yll4DEG2ueI3yz/2JndTsjhrJghYzsl3+p8=
+	t=1735326784; cv=fail; b=CfEdyf7mAXMBN7jGpuIACMY3GOvq0qRzgeU7D7VFO4NLGbmDnU0nMuRXVspJXE03TACEhMqtvQKFHbZVwKkADo8Nw5HNdYxhvE+7wWRRKbjQJMwQSucYtCL1ga7Skdr3l0ngFx8BsmMXdkQGpTevhQGrgd32hcExqIXey/pjOfg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735326781; c=relaxed/simple;
-	bh=GP62ZfWUyy0KbnGWOga0bPjibK4UvOphB5r2d5YGoSc=;
+	s=arc-20240116; t=1735326784; c=relaxed/simple;
+	bh=pbw2OQSAnpi5DuF5pan8o462KTTkkzZeZ5Ycd2Q2SlM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MJ6f2MILq1TNHdajxGekyRKrkUdJHDucvlAI5bCzZRDUM6Cz/zaOFGtI9CtzJ16Hh0Yc1s7M03eOY1g58szbr1jwK6NyoL7Ubby5VB10AToUbA05DpY3VDLhL/dRLzEhf1rhYEmvNaFInPjOGkVi7QhZwY0+F5qpV8yJL9thmXQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=r3jX2mH8; arc=fail smtp.client-ip=40.107.249.59
+	 MIME-Version:Content-Type; b=h7g5Un1JwgLw3Xi7huFqCBmkPMAYg4hRH+XspjfN5+RN/kb+Xx2SK5T0bVDKbDu8L8YK4JBW+dh99ym0lz3F52sI07Vd3q8BETrOPL5dPm9DQpsYLB1/69uSORmelhyDMcQ4T2gVMFMnEALf/W7FmyZIv5dYnUMt3/iyz+4YCag=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=UXZ+y6hx; arc=fail smtp.client-ip=40.107.247.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KMMupRA8Vt7fMCp7TVucXJqlyHHQehq9McxKkePBxgdTrc9layexo5VpbHhJ/weIHw9xYo0d89jm4Ave+gxPTv+8OzXKPvX1mQgaR1QMhABMwYrnKIZGhfdIY1bUyqVkO+DL6fuC1lqVaZ18EdpCZi7kOX+G39753CN1ApulfDsobS/FS8mNhoOPx+e6XjVCjYABXBqVZ8P8ZtUQfhO1h0FQaPvkEmj9MMcmZF02hvm1iXIFtWPDgcVzie0kHgaUsAJyigbjJI76qsMW+Z0BQSzj9G5Cx9SvHC/VuEl47L/i3iHBsliBtMWCFUbkG5Rrmn1mPpIDZUnTU1tiMqYE2g==
+ b=om0C+EIp8DF8v1Ky6wsfRSP4lE23pWCkJ93x9+7Il6DOzR1SgE1fgiif53rtBwaHdPsGVt95nmPKYnyKgIHsBOh+7mENlCDiA8Oinmr8AGpZFoD6EzUXOHnb8pG5zsNIbgk/6YGyEdBALQBUIY6QyRZ/lB3nEtE9DQ07xlZfsLEcCPTGaXiJl2i/EmZggot0OfYUfAHn8mk81pLuWfOe4Zbs0QiuMkm1gAvo/Efvy7Ya/ZSVuJ22+v35a0dwb3+Zhb/QolAHTjb6F9K5VU6iTTotCNWNZYfCjpvKP0NP+Cxdo+M2w9sLfp4NtGgHsZ9CBiI66OzJXMpChSDqww1osg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+VqEgAWYI3pftBss5XPYOgP4FcqnsRU8olVRBdFFM38=;
- b=kpnBGJRCIkpDxyHtjWAz99va07Ga+4FVAWOZldWZUvQpOpCfDR3BfrzmIuVdSPvvYHwWrOTuJXszgb+ETVj31EegDffuL60gnmdm+E3E01B2A7vEdj0dhrfLgwoa+aHYLe2GbxiVDMRvkjFkqFVYufqqnYOvqJO843ujZnb2lPE1HezubSR6BWD7waRg5CgVLbY0nLrPMM9TbRYQpt5gQsVPhthBQqFsCkIAkpb3cZ9/Xub1tGjULe3ECzEFtmOKsHsCFfmuwVaVQUlqXy53JZyn9LCQZtqYh6ftj7/v3orsZQNaTCMRZJRBHqbVdQKUxg0Q5w1aK22fHDEAlSCLqw==
+ bh=YQriCZl2bTyHn9004OYreULPeiNFubb7hKAwAYFJBMQ=;
+ b=DYctmiFh5Iy7DMTwZEbHyxzJVjmJqUIb5umdbjk2+oYxYPsHXttTHKH1Ak2xa0PpnFar6Rzl2Tn6V6HXFfAYMTF9pVfCgdT+dWE19gfLDln8dfzzUdQmLWt0uB5F8lAwXKPX4kFUZnickaljkR2dFZ3HzG7WZl55+r7tfliyPA+9YBfVLEfWZ7Ob7RFxGG2+LpUd3mZcXnZqgvOOuxPspbBTmAobU1ebdzcvpibcemmtA/+zvhld9LF/lL8P4SFfFcMsc2aOuF/ANL3SoHUTKnwmSZqQtik/fCdwB8k11Y/zDaOmqrCjJHmd9lO8Pp0DgmjDayYYr1xX7zmb0kqjDg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  131.228.6.100) smtp.rcpttodomain=nokia-bell-labs.com
  smtp.mailfrom=nokia-bell-labs.com; dmarc=pass (p=reject sp=reject pct=100)
@@ -46,18 +46,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+VqEgAWYI3pftBss5XPYOgP4FcqnsRU8olVRBdFFM38=;
- b=r3jX2mH8MIwLsW3RPWr5VNbpA3xPl1kFCPQyeYEB3T47DMJfE0s7XTv2umT47OBzeQe2ZUclzRPwoJwSr1QefOiPsuXasKgHICZ5n/dqEUtzhEYt+SxpqWBicJ7afVyPoxvPEQKX11mgaTzCBY5hG8MUeRTT76jkQelwREwdiWRsWMXIYT2KLMx4AnqQyB9572j0Z2SawHQ+apdvREPrFjFrZkljO/egxWJOyFe8PgXzttHpqQi28MBKzAYDEXXdG8KjSiyubXvVYjWs/7PtsEooPjl38CuP3tth+ighQTnvy/R+2GN5KOZkaVhw0ANes0DAjkTWArwUvoDhpqQ25w==
-Received: from AM5PR0601CA0066.eurprd06.prod.outlook.com (2603:10a6:206::31)
- by AM7PR07MB6280.eurprd07.prod.outlook.com (2603:10a6:20b:142::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8293.16; Fri, 27 Dec
- 2024 19:12:52 +0000
-Received: from AM3PEPF00009B9D.eurprd04.prod.outlook.com
- (2603:10a6:206:0:cafe::df) by AM5PR0601CA0066.outlook.office365.com
- (2603:10a6:206::31) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8293.16 via Frontend Transport; Fri,
- 27 Dec 2024 19:12:52 +0000
+ bh=YQriCZl2bTyHn9004OYreULPeiNFubb7hKAwAYFJBMQ=;
+ b=UXZ+y6hxzfuypgTZsRvjEAmDS0v3aGKhkv3t+30qYQTtVSCLNFxoLrx6tRSE0Kn42yLFj/5M5tK0mkhiKks17ia4k2vAZXlenYGx2KTHLvND0TrBnaKMiH+i9R2JUwgAvVS/1qATKGvDNt54RH8tO4U1kktbIz9g42JGYaM4g9wt75KgxZ7joyvw8mWlWpB0ST1xXpFI6dc+9iz/zBsOpT091IFBQy9ElX6Wa77JUxZEtdxhz/rl+CuRg0I42mXbg6Vihsrta2l7DN2KAQ35qhHYBrE9or34giHPKV6MVB6fCcPLPcEUGOPCBZ7PJS/VDVhpir28ep0ZxcvmeyMSbA==
+Received: from DUZPR01CA0297.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:4b7::8) by AM7PR07MB6214.eurprd07.prod.outlook.com
+ (2603:10a6:20b:13a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8293.15; Fri, 27 Dec
+ 2024 19:12:54 +0000
+Received: from DB1PEPF000509FB.eurprd03.prod.outlook.com
+ (2603:10a6:10:4b7:cafe::74) by DUZPR01CA0297.outlook.office365.com
+ (2603:10a6:10:4b7::8) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8293.15 via Frontend Transport; Fri,
+ 27 Dec 2024 19:12:54 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.6.100)
  smtp.mailfrom=nokia-bell-labs.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nokia-bell-labs.com;
@@ -66,12 +66,12 @@ Received-SPF: Pass (protection.outlook.com: domain of nokia-bell-labs.com
  receiver=protection.outlook.com; client-ip=131.228.6.100;
  helo=fr711usmtp2.zeu.alcatel-lucent.com; pr=C
 Received: from fr711usmtp2.zeu.alcatel-lucent.com (131.228.6.100) by
- AM3PEPF00009B9D.mail.protection.outlook.com (10.167.16.22) with Microsoft
+ DB1PEPF000509FB.mail.protection.outlook.com (10.167.242.37) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8293.12 via Frontend Transport; Fri, 27 Dec 2024 19:12:52 +0000
+ 15.20.8293.12 via Frontend Transport; Fri, 27 Dec 2024 19:12:53 +0000
 Received: from sarah.nbl.nsn-rdnet.net (sarah.nbl.nsn-rdnet.net [10.0.73.150])
-	by fr711usmtp2.zeu.alcatel-lucent.com (GMO) with ESMTP id 4BRJCH2a011940;
-	Fri, 27 Dec 2024 19:12:52 GMT
+	by fr711usmtp2.zeu.alcatel-lucent.com (GMO) with ESMTP id 4BRJCH2b011940;
+	Fri, 27 Dec 2024 19:12:54 GMT
 From: chia-yu.chang@nokia-bell-labs.com
 To: netdev@vger.kernel.org, dsahern@gmail.com, davem@davemloft.net,
         edumazet@google.com, dsahern@kernel.org, pabeni@redhat.com,
@@ -87,9 +87,9 @@ To: netdev@vger.kernel.org, dsahern@gmail.com, davem@davemloft.net,
         cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com,
         vidhi_goel@apple.com
 Cc: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-Subject: [PATCH v6 net-next 10/14] net: hns3/mlx5e: avoid corrupting CWR flag when receiving GRO packet
-Date: Fri, 27 Dec 2024 20:12:07 +0100
-Message-Id: <20241227191211.12485-11-chia-yu.chang@nokia-bell-labs.com>
+Subject: [PATCH v6 net-next 11/14] virtio_net: Accurate ECN flag in virtio_net_hdr
+Date: Fri, 27 Dec 2024 20:12:08 +0100
+Message-Id: <20241227191211.12485-12-chia-yu.chang@nokia-bell-labs.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241227191211.12485-1-chia-yu.chang@nokia-bell-labs.com>
 References: <20241227191211.12485-1-chia-yu.chang@nokia-bell-labs.com>
@@ -102,104 +102,246 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM3PEPF00009B9D:EE_|AM7PR07MB6280:EE_
+X-MS-TrafficTypeDiagnostic: DB1PEPF000509FB:EE_|AM7PR07MB6214:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: bea8b68d-13e1-4a88-1119-08dd26aa7605
+X-MS-Office365-Filtering-Correlation-Id: 6d691234-adfd-41d5-9891-08dd26aa7700
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700013|1800799024|7416014|376014|921020;
+	BCL:0;ARA:13230040|1800799024|36860700013|376014|7416014|82310400026|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+Hz3nyMsWcjLYzPz6RyIDke8dTROTQTnUU1r/RMWsLMi5RJ3UxBCg7Iin9Wg?=
- =?us-ascii?Q?NiOBxtfzSxrrg+f5FgEZWFxM5Uz047B0mqE2v/I7ESRJWCd5nepP69F2B3PF?=
- =?us-ascii?Q?s2PprwvRfm9zbGCnZ7sQfD+ck/QCalHwB6zSXnSjKqRkSU/MHhpvPrLXykkL?=
- =?us-ascii?Q?tigdjIiGil4fxvxIVUicM4gLR3U3zg+R8w8ftIasX8Dxw+tb5Pt4XQZ7lCYu?=
- =?us-ascii?Q?TFy41MheiVcZj/Ul/ngs3jS7qKJHWygl+Ub/4yC0Ag7pLMOd3HsZHKp76XzS?=
- =?us-ascii?Q?Jsu8xbqEH01HzKT/aj9MdoiWqzPMM75WL+3SiHCOhYywym4ZhIooohJk+4TI?=
- =?us-ascii?Q?TH3G1M4MO0j6Sw84u4vclIFLeTTpfxq3F3kFE3iXFReeS7zeWMo5HFoJg5Vb?=
- =?us-ascii?Q?+0wvlFeB5dxirNvxmlb83EY81roEECyIiYlIuiSfy/idNddbEf/kDujjIuV/?=
- =?us-ascii?Q?C1hR3zeXVx1z4pkdiPE3pt8ESIrSWh+8n8XDK8ALFNtEswI7KHutFljSRlF6?=
- =?us-ascii?Q?FIIwDQPb70V762ansZE+G8zZzX8MLkVDw4CTVa7W9cBSzbCFEOdCU+kRmul4?=
- =?us-ascii?Q?3BsuvhGmqMllW2xEkE2g5jJ7yI4cLkBuW4rvcRTFC5GTsAE2Q6B7RTjPOcXA?=
- =?us-ascii?Q?KUqzf39gLxg3I4uNp7DAXnjgKaExy2TQykMIqJuGUONh8Z+sxlvpx4uWJIeQ?=
- =?us-ascii?Q?AJeiULwJ1pzHhlJv//dEhB0N6Un9q9sYB/ONvs4neNN37W9spYsaVYewEbCL?=
- =?us-ascii?Q?/7bqP1WkXCBAxu9Yhgg5OF+CRxyzjv1vxpBqVN+3ClDtvB+8W2Nh0uRsVMuI?=
- =?us-ascii?Q?ty/X0fG0Yc4N7H+iaWcp9ZF3ZtFzIOGFqK/dH2WFXM3GnoCKM/6c6oxcRIGu?=
- =?us-ascii?Q?29xZtmZwo/QjPsjB6P62lGP2fC/yeYeWnoFZRgp0DysSlKSKiRlir3fEqCVF?=
- =?us-ascii?Q?WyTsRTP0Gg2q25df26WNm8JrIqJbzMFIGd1DgCwzOGH8OgV2jhU4Hx5BnSDA?=
- =?us-ascii?Q?Yw6m6Iy+u/e4FwlsrvvBOoY6oX2N1v8NvrlwA3ZdOj9iFZxEvY84rbTkYu77?=
- =?us-ascii?Q?iN6QlV2CPSCdZWwr6gn+QZkA6sbXw08rm2wLgwN1bOrDGcUjqHeEuZItvTzq?=
- =?us-ascii?Q?Cm2RrZzZTt+hLOVPvdCGFU19MRRl7FMXFwPIL57FRzBfSYc/P0BN9L0a/t3b?=
- =?us-ascii?Q?8UTe7fMQ+5zamrtxXSQ+NtnBS08r+zAToMDx5VfdQXywfdLUOIvEpV2QNX3j?=
- =?us-ascii?Q?VqP14bHE1LO1wuqgCKbVx7RN0KzZzZXqSlS5x6Xv2OYOhTgGCbP4n6xY+Hn1?=
- =?us-ascii?Q?D2exdz5DfklOjJGPv8DxBtKwHbJddnW/8FsrSL/foMiYfbcdWMULZAbBowbo?=
- =?us-ascii?Q?s00/MuyK7jf7++1NJvLxJ4AWlOwL3x46P4dGRaR2VhU70MrvlbQS+kQh0+SC?=
- =?us-ascii?Q?Zi87FoT1hHSWreXWXLikjJUCmNsAVVxg5GOxKbv8bjX2P1nPtOxX3n97e2cY?=
- =?us-ascii?Q?UtcJlQe70klCTjA=3D?=
+	=?us-ascii?Q?mwrE89yqZHO+xy3voJ0WpygHyjdF5ot7lBa/H1nSFqw8IMkmz98l1euaNLF8?=
+ =?us-ascii?Q?mqQdkPjpsIBOgIj3GnZjKsMAPNvldnNZqvwzTvhW0vll/L+y3hKyLUPAyY0R?=
+ =?us-ascii?Q?F9fLXyThs781zqp2vL/LVQwrFmW143I/edwaOn0vJ4eoLOGVNL3RJOdR0FgB?=
+ =?us-ascii?Q?1j0n1Pz8aNnTlY+2BS51Tw7G3UZsmccAOBRSOcxaWNEjicbxfEGy7/mqszAO?=
+ =?us-ascii?Q?/vYK6VBwbjGtk1ZRqXOJzbBg8v02HbjiuZNMRu8q5psr7JzxY0QqXavTyBq2?=
+ =?us-ascii?Q?7cZQXsuTD98SXuDfTnIHrC7krpd1fK+we+4SXRZpKB8pCktemWTz0YlAkAyd?=
+ =?us-ascii?Q?HFt+G4ZYBXRahbDQCi9XtdxmfYMiFmXmXznUjjzbS5raD3uIuEbKvV+mVAmV?=
+ =?us-ascii?Q?qmU53m0JFamlp2BtqPeaVmqsa1gosONNodBCUG7KCMH7SnHeZtCL3iEvhn/3?=
+ =?us-ascii?Q?aKIcfFrb1OtARq45hOo8AIwRwhOQrsX31carCvU3DlM+Yty+1IsQ/JjI5SVI?=
+ =?us-ascii?Q?c7AnKgHGM78BKe9aorPQP7Hlw9YrPhGiILZ3OIL+3kptHzEBen52cydku8HF?=
+ =?us-ascii?Q?6U8ksTR/73ShtLmE7WjgDUVSSBuQTTkzL/L0c0WIUgMi7NT4TrNp4nq3k5/h?=
+ =?us-ascii?Q?tF8aqbjkUV/w0bAAxRw53Es5TlVylGFC1IFqc/kemfV+n83FLyMCPaBWNh/V?=
+ =?us-ascii?Q?LrIAiu/aDsYgGIR8Q1qEK3+Oqx6Spqi0mvwdBOU2Dnc9xYyVnA8iEAWOQxrt?=
+ =?us-ascii?Q?DmmT792pzAdPmsGFUQaTroRbgbtDpemmq/X1eZRAzxXN9j78lsrdfEjloN8o?=
+ =?us-ascii?Q?AzG+gvLVODYsZdUTxAFlm/5gfNmqYerXmcyOIvOa+PhVgBgqiYkLLGXweNA8?=
+ =?us-ascii?Q?GkYtSeSI85UwjLnWN9pi3GYRK9At0tjXWbWUfbcENx+xA7VVR4IbzWaemtMM?=
+ =?us-ascii?Q?erJ00qkchlJvApb6m9G+VWAohNfrcSCT43Rz7rabdrz/G2R1Um+vrdV8iF79?=
+ =?us-ascii?Q?TMELcuQyYv3laBQycdc557EjtiqsUS6ni3sWgRJLk7dYFcy+1v1V/JIl1ys+?=
+ =?us-ascii?Q?AsIXyObTPWHLG1XDKW9cSJ4+EGnmEbFz21yM+QaP5MKbbAQX+HiLjBAYDPls?=
+ =?us-ascii?Q?KRnP45yUZjar8+FWDwhiSDzwHW/U32Mfej1w4nWQRaQOKu9hs+ymuMM/Vx5C?=
+ =?us-ascii?Q?rZvvsFWEscHN07qpRlV32s6Nht1/bhovTPRjI3B5CXkTk7dKmlfkXfSQTMHx?=
+ =?us-ascii?Q?O9Eg2170DUN9gwVQwn2RlCG7K6gErwmhQDgWMG88hCja3pSuZ7R6SPOXKGzu?=
+ =?us-ascii?Q?9xBq/yXj4WdCejJgwv0Ke4NFUDDLKE8Tzos1U92F6HKVcqYOC+O8xLi+rDGg?=
+ =?us-ascii?Q?YivdKbQMz11Wjbt817Ave5WYy5qSwSvW446/HT6UCGXjowIN6mvP0G2XZMWc?=
+ =?us-ascii?Q?2zuqUUd2olyk6PK1cvG1UbdGrEa6s23/gVIxeLYaPP6OpeuErwY7vxaBw7Qw?=
+ =?us-ascii?Q?GQ1AfGgTarX/0Ms+hcylSxZXuE9uzvKufj0a?=
 X-Forefront-Antispam-Report:
-	CIP:131.228.6.100;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fr711usmtp2.zeu.alcatel-lucent.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
+	CIP:131.228.6.100;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fr711usmtp2.zeu.alcatel-lucent.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(7416014)(82310400026)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2024 19:12:52.1880
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2024 19:12:53.7895
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bea8b68d-13e1-4a88-1119-08dd26aa7605
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d691234-adfd-41d5-9891-08dd26aa7700
 X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.6.100];Helo=[fr711usmtp2.zeu.alcatel-lucent.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	AM3PEPF00009B9D.eurprd04.prod.outlook.com
+	DB1PEPF000509FB.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR07MB6280
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR07MB6214
 
 From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 
-In Accurate ECN, ACE counter (AE, ECE, CWR flags) changes only when new
-CE packets arrive, while setting SKB_GSO_TCP_ECN in case of not knowing
-the ECN variant can result in header change that corrupts the ACE field.
-The new flag SKB_GSO_TCP_ACCECN is to prevent SKB_GSO_TCP_ECN or
-NETIF_F_TSO_ECN offloading to be used because they would corrupt CWR
-flag somewhere.
+Unlike RFC 3168 ECN, accurate ECN uses the CWR flag as part of the ACE
+field to count new packets with CE mark; however, it will be corrupted
+by the RFC 3168 ECN-aware TSO. Therefore, fallback shall be applied by
+seting NETIF_F_GSO_ACCECN to ensure that the CWR flag should not be
+changed within a super-skb.
+
+To apply the aforementieond new AccECN GSO for virtio, new featue bits
+for host and guest are added for feature negotiation between driver and
+device. And the translation of Accurate ECN GSO flag between
+virtio_net_hdr and skb header for NETIF_F_GSO_ACCECN is also added to
+avoid CWR flag corruption due to RFC3168 ECN TSO.
 
 Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/virtio_net.c        | 14 +++++++++++---
+ drivers/vdpa/pds/debugfs.c      |  6 ++++++
+ include/linux/virtio_net.h      | 16 ++++++++++------
+ include/uapi/linux/virtio_net.h |  5 +++++
+ 4 files changed, 32 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 43377a7b2426..a6238a625d6f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3855,7 +3855,7 @@ static int hns3_gro_complete(struct sk_buff *skb, u32 l234info)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 7646ddd9bef7..470c70fa6868 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -58,6 +58,7 @@ static const unsigned long guest_offloads[] = {
+ 	VIRTIO_NET_F_GUEST_TSO4,
+ 	VIRTIO_NET_F_GUEST_TSO6,
+ 	VIRTIO_NET_F_GUEST_ECN,
++	VIRTIO_NET_F_GUEST_ACCECN,
+ 	VIRTIO_NET_F_GUEST_UFO,
+ 	VIRTIO_NET_F_GUEST_CSUM,
+ 	VIRTIO_NET_F_GUEST_USO4,
+@@ -68,6 +69,7 @@ static const unsigned long guest_offloads[] = {
+ #define GUEST_OFFLOAD_GRO_HW_MASK ((1ULL << VIRTIO_NET_F_GUEST_TSO4) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
++				(1ULL << VIRTIO_NET_F_GUEST_ACCECN) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_UFO)  | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_USO4) | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_USO6))
+@@ -5886,6 +5888,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	    && (virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+ 	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+ 	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
++		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ACCECN) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) ||
+@@ -6549,6 +6552,7 @@ static bool virtnet_check_guest_gso(const struct virtnet_info *vi)
+ 	return virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
++		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ACCECN) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+ 		(virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) &&
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO6));
+@@ -6663,6 +6667,8 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 			dev->hw_features |= NETIF_F_TSO6;
+ 		if (virtio_has_feature(vdev, VIRTIO_NET_F_HOST_ECN))
+ 			dev->hw_features |= NETIF_F_TSO_ECN;
++		if (virtio_has_feature(vdev, VIRTIO_NET_F_HOST_ACCECN))
++			dev->hw_features |= NETIF_F_GSO_ACCECN;
+ 		if (virtio_has_feature(vdev, VIRTIO_NET_F_HOST_USO))
+ 			dev->hw_features |= NETIF_F_GSO_UDP_L4;
  
- 	skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
- 	if (th->cwr)
--		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ECN;
-+		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ACCECN;
+@@ -7061,9 +7067,11 @@ static struct virtio_device_id id_table[] = {
+ 	VIRTIO_NET_F_CSUM, VIRTIO_NET_F_GUEST_CSUM, \
+ 	VIRTIO_NET_F_MAC, \
+ 	VIRTIO_NET_F_HOST_TSO4, VIRTIO_NET_F_HOST_UFO, VIRTIO_NET_F_HOST_TSO6, \
+-	VIRTIO_NET_F_HOST_ECN, VIRTIO_NET_F_GUEST_TSO4, VIRTIO_NET_F_GUEST_TSO6, \
+-	VIRTIO_NET_F_GUEST_ECN, VIRTIO_NET_F_GUEST_UFO, \
+-	VIRTIO_NET_F_HOST_USO, VIRTIO_NET_F_GUEST_USO4, VIRTIO_NET_F_GUEST_USO6, \
++	VIRTIO_NET_F_HOST_ECN, VIRTIO_NET_F_HOST_ACCECN, \
++	VIRTIO_NET_F_GUEST_TSO4, VIRTIO_NET_F_GUEST_TSO6, \
++	VIRTIO_NET_F_GUEST_ECN, VIRTIO_NET_F_GUEST_ACCECN, \
++	VIRTIO_NET_F_GUEST_UFO, VIRTIO_NET_F_HOST_USO, \
++	VIRTIO_NET_F_GUEST_USO4, VIRTIO_NET_F_GUEST_USO6, \
+ 	VIRTIO_NET_F_MRG_RXBUF, VIRTIO_NET_F_STATUS, VIRTIO_NET_F_CTRL_VQ, \
+ 	VIRTIO_NET_F_CTRL_RX, VIRTIO_NET_F_CTRL_VLAN, \
+ 	VIRTIO_NET_F_GUEST_ANNOUNCE, VIRTIO_NET_F_MQ, \
+diff --git a/drivers/vdpa/pds/debugfs.c b/drivers/vdpa/pds/debugfs.c
+index c328e694f6e7..90bd95db0245 100644
+--- a/drivers/vdpa/pds/debugfs.c
++++ b/drivers/vdpa/pds/debugfs.c
+@@ -78,6 +78,9 @@ static void print_feature_bits_all(struct seq_file *seq, u64 features)
+ 		case BIT_ULL(VIRTIO_NET_F_GUEST_ECN):
+ 			seq_puts(seq, " VIRTIO_NET_F_GUEST_ECN");
+ 			break;
++		case BIT_ULL(VIRTIO_NET_F_GUEST_ACCECN):
++			seq_puts(seq, " VIRTIO_NET_F_GUEST_ACCECN");
++			break;
+ 		case BIT_ULL(VIRTIO_NET_F_GUEST_UFO):
+ 			seq_puts(seq, " VIRTIO_NET_F_GUEST_UFO");
+ 			break;
+@@ -90,6 +93,9 @@ static void print_feature_bits_all(struct seq_file *seq, u64 features)
+ 		case BIT_ULL(VIRTIO_NET_F_HOST_ECN):
+ 			seq_puts(seq, " VIRTIO_NET_F_HOST_ECN");
+ 			break;
++		case BIT_ULL(VIRTIO_NET_F_HOST_ACCECN):
++			seq_puts(seq, " VIRTIO_NET_F_HOST_ACCECN");
++			break;
+ 		case BIT_ULL(VIRTIO_NET_F_HOST_UFO):
+ 			seq_puts(seq, " VIRTIO_NET_F_HOST_UFO");
+ 			break;
+diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+index 02a9f4dc594d..3b71465f0ddb 100644
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -11,7 +11,7 @@
  
- 	if (l234info & BIT(HNS3_RXD_GRO_FIXID_B))
- 		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_FIXEDID;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 1963bc5adb18..b9611cc223b3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1286,7 +1286,7 @@ static void mlx5e_shampo_update_ipv4_tcp_hdr(struct mlx5e_rq *rq, struct iphdr *
- 	skb->csum_offset = offsetof(struct tcphdr, check);
+ static inline bool virtio_net_hdr_match_proto(__be16 protocol, __u8 gso_type)
+ {
+-	switch (gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
++	switch (gso_type & ~VIRTIO_NET_HDR_GSO_ECN_FLAGS) {
+ 	case VIRTIO_NET_HDR_GSO_TCPV4:
+ 		return protocol == cpu_to_be16(ETH_P_IP);
+ 	case VIRTIO_NET_HDR_GSO_TCPV6:
+@@ -31,7 +31,7 @@ static inline int virtio_net_hdr_set_proto(struct sk_buff *skb,
+ 	if (skb->protocol)
+ 		return 0;
  
- 	if (tcp->cwr)
--		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ECN;
-+		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ACCECN;
- }
+-	switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
++	switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN_FLAGS) {
+ 	case VIRTIO_NET_HDR_GSO_TCPV4:
+ 	case VIRTIO_NET_HDR_GSO_UDP:
+ 	case VIRTIO_NET_HDR_GSO_UDP_L4:
+@@ -58,7 +58,7 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+ 	unsigned int ip_proto;
  
- static void mlx5e_shampo_update_ipv6_tcp_hdr(struct mlx5e_rq *rq, struct ipv6hdr *ipv6,
-@@ -1307,7 +1307,7 @@ static void mlx5e_shampo_update_ipv6_tcp_hdr(struct mlx5e_rq *rq, struct ipv6hdr
- 	skb->csum_offset = offsetof(struct tcphdr, check);
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+-		switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
++		switch (hdr->gso_type & ~VIRTIO_NET_HDR_GSO_ECN_FLAGS) {
+ 		case VIRTIO_NET_HDR_GSO_TCPV4:
+ 			gso_type = SKB_GSO_TCPV4;
+ 			ip_proto = IPPROTO_TCP;
+@@ -84,7 +84,9 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+ 			return -EINVAL;
+ 		}
  
- 	if (tcp->cwr)
--		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ECN;
-+		skb_shinfo(skb)->gso_type |= SKB_GSO_TCP_ACCECN;
- }
+-		if (hdr->gso_type & VIRTIO_NET_HDR_GSO_ECN)
++		if (hdr->gso_type & VIRTIO_NET_HDR_GSO_ACCECN)
++			gso_type |= SKB_GSO_TCP_ACCECN;
++		else if (hdr->gso_type & VIRTIO_NET_HDR_GSO_ECN)
+ 			gso_type |= SKB_GSO_TCP_ECN;
  
- static void mlx5e_shampo_update_hdr(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe, bool match)
+ 		if (hdr->gso_size == 0)
+@@ -158,7 +160,7 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+ 		unsigned int nh_off = p_off;
+ 		struct skb_shared_info *shinfo = skb_shinfo(skb);
+ 
+-		switch (gso_type & ~SKB_GSO_TCP_ECN) {
++		switch (gso_type & ~(SKB_GSO_TCP_ECN | SKB_GSO_TCP_ACCECN)) {
+ 		case SKB_GSO_UDP:
+ 			/* UFO may not include transport header in gso_size. */
+ 			nh_off -= thlen;
+@@ -223,7 +225,9 @@ static inline int virtio_net_hdr_from_skb(const struct sk_buff *skb,
+ 			hdr->gso_type = VIRTIO_NET_HDR_GSO_UDP_L4;
+ 		else
+ 			return -EINVAL;
+-		if (sinfo->gso_type & SKB_GSO_TCP_ECN)
++		if (sinfo->gso_type & SKB_GSO_TCP_ACCECN)
++			hdr->gso_type |= VIRTIO_NET_HDR_GSO_ACCECN;
++		else if (sinfo->gso_type & SKB_GSO_TCP_ECN)
+ 			hdr->gso_type |= VIRTIO_NET_HDR_GSO_ECN;
+ 	} else
+ 		hdr->gso_type = VIRTIO_NET_HDR_GSO_NONE;
+diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+index ac9174717ef1..65a13b7d4eed 100644
+--- a/include/uapi/linux/virtio_net.h
++++ b/include/uapi/linux/virtio_net.h
+@@ -56,6 +56,8 @@
+ #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
+ 					 * Steering */
+ #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
++#define VIRTIO_NET_F_HOST_ACCECN 25	/* Host can handle GSO of Accurate ECN */
++#define VIRTIO_NET_F_GUEST_ACCECN 26	/* Guest can handle GSO of Accurate ECN */
+ #define VIRTIO_NET_F_DEVICE_STATS 50	/* Device can provide device-level statistics. */
+ #define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
+ #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
+@@ -137,7 +139,10 @@ struct virtio_net_hdr_v1 {
+ #define VIRTIO_NET_HDR_GSO_UDP		3	/* GSO frame, IPv4 UDP (UFO) */
+ #define VIRTIO_NET_HDR_GSO_TCPV6	4	/* GSO frame, IPv6 TCP */
+ #define VIRTIO_NET_HDR_GSO_UDP_L4	5	/* GSO frame, IPv4& IPv6 UDP (USO) */
++#define VIRTIO_NET_HDR_GSO_ACCECN	0x40	/* TCP AccECN segmentation */
+ #define VIRTIO_NET_HDR_GSO_ECN		0x80	/* TCP has ECN set */
++#define VIRTIO_NET_HDR_GSO_ECN_FLAGS	(VIRTIO_NET_HDR_GSO_ECN | \
++					 VIRTIO_NET_HDR_GSO_ACCECN)
+ 	__u8 gso_type;
+ 	__virtio16 hdr_len;	/* Ethernet + IP + tcp/udp hdrs */
+ 	__virtio16 gso_size;	/* Bytes to append to hdr_len per frame */
 -- 
 2.34.1
 
