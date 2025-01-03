@@ -1,80 +1,127 @@
-Return-Path: <netfilter-devel+bounces-5610-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5612-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7183BA00CF8
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jan 2025 18:40:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD8EBA00E0D
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jan 2025 19:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468651647A4
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jan 2025 17:40:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B73EE3A1C32
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jan 2025 18:49:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E843F1FC7EF;
-	Fri,  3 Jan 2025 17:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6FD1B87FA;
+	Fri,  3 Jan 2025 18:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jvp6idgm"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870931FC11D
-	for <netfilter-devel@vger.kernel.org>; Fri,  3 Jan 2025 17:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422681B21B9
+	for <netfilter-devel@vger.kernel.org>; Fri,  3 Jan 2025 18:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735925994; cv=none; b=pyURd04xVz+5rqSCaeP6v8VkRoE+WKKNUYNbTo/251Get55Lb1hmahie2IRzQwZMiHZ95sX/z8N03OpTaEfZSjtv7tyKT1wRwTuSB8Tu0/bBjdEEiy1Fs2/kqPntfExsPAD+Y65hEHJxKvk2GauemM8MvdsaWpFZj2K6J6RHcKU=
+	t=1735930158; cv=none; b=H9EGHqjZ+Pb75Ufo4ksGDJIeDvsmkJfA4u7ioxwdO3a2bgaGSv/9rULhnDxxjor5VbYEHXWTi+tPH8gWQnhal7UtR0csh205css7hsJL2QgR3OGWxpgm2OfhAyrLuX7feCv7FLFjiGEeXyUfUiJhZF06+qq7JCoCSi8vLRYCiJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735925994; c=relaxed/simple;
-	bh=cYiBEg22nw6sjbxRaOEPGiPwpBvRyyPhOT/Z6MtWw3s=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e8iZ9njfbx4kP3PlbpI1fOyQv4xvdS/GsTvxnp9wUEqDLHZFfbIMkUvhZ87ik+E3BwS0ZmMU+k6cJTbpa1NOgBKBfw7G3yw/EAVSNSGs8WnaKI/pD9JsyfsI0EQ+k99diutheztYrdzzFDDLVpbcAXYeh/hMBOeEbmiPTXNUZa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-X-Spam-Level: 
-Date: Fri, 3 Jan 2025 18:39:48 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: nf_tables: imbalance in flowtable binding
-Message-ID: <Z3gg5N3j1Rge8pdb@calendula>
-References: <20250102154443.2252675-1-pablo@netfilter.org>
- <Z3ggQ_KxCOBPfsPa@orbyte.nwl.cc>
+	s=arc-20240116; t=1735930158; c=relaxed/simple;
+	bh=Qm2GI8eKvHzeSTXrz8DN9UOA66LyyHqIPo1x9xMd9d8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tkHx80q2eQu+CwFxln9/Fl0XgXnKnIMn6Pq2qZtwLXdv4j26gMUd+0x7Ns+hZ+N4CZMVLiCTaEzFsHufv6yfnVIf5Qva7H+VDI0rECtcizVLEsLrgvbgJrxgSz3N4R4A+pekdTtXVvpgM2GZXWyAfd2TpkjqOltH/VZrQk8Y0DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jvp6idgm; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5d3f65844deso20874399a12.0
+        for <netfilter-devel@vger.kernel.org>; Fri, 03 Jan 2025 10:49:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1735930154; x=1736534954; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aTcVLIJ74PxU1fTS0H3rfnT+JSeKqq4DP3qwUoq2k9I=;
+        b=jvp6idgmO6XiFzeyD9zSl2BdJNg6GYco1v41GxhYWs7vCcECHfy+GWhXJfyeDnyJP7
+         LmunMwxnIJZmKUL3/OKZbP69zlgOZ8mgYgzcVuhM6FXrJtaeC7mU3s5TavQQDTDlNMrD
+         wR79INjFWbP66Uynf9B9HV7uH4M362YBoGpzxMUmdvpReN3p2hfDtWRX7WLYwkc0WwZB
+         3LgrZClQeOFft0g85HB0+yEJL9sGZp05ghrFPCAK5i8KruaHbaM3VPHKjYI81w7fSgx9
+         gb2+96Bncicow9S5bDZqr8ej4WE82UvKqzzQ575zGxfQHCAirWAu3384HAxU4wI5pGXY
+         a5pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735930154; x=1736534954;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aTcVLIJ74PxU1fTS0H3rfnT+JSeKqq4DP3qwUoq2k9I=;
+        b=srtcHQ4JWRDvdX5cZO2i0vcJODgTnXd5OKSaxS6Ca5IxWgIA63StywyTcDZjLIX7yr
+         wuDmr8/uRoz0DcCenZbsZej3jRzAyXsZ5FxLEuQIETioFbmJPBjn3iQSgykkCypaKwHz
+         /KLoxjjKiJMi/Jz4/h1fWMJweppMFqiDlAXAUmrSxnYPKYARyMGoVLJ91eCxngihCK6D
+         mwJ+J1MHg+ZUUkyWPegTkV8RwmoDc02AY9u8YIodaIb2zTpwB2FOZfQSWzC+r/LtF1Cz
+         jIjjpKm6FuUnQvSTU1Jz6XVuiw990YC2RK373IGVU7fq+ki2MpjtVtxuVRTFhBm+CKzf
+         J+4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVTjkmxq/FgjGxL8bPCHt0Bcp+qN47muQEOQfEhF7ZoR72xbn9u1IQYjQyBp44BLSgJ1yU1NOrSUsd3jrPmBr8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUVG2prhq/Z1oqGgUiODxuna0M7nemwvDn//+sjXg5AvGYlwhT
+	iq993ZpaXdk4Z07omKlIA+A++gJ3BtToJ8v7F2k1felP1dwRHYK/WONW9ojUGiQE3n8JUAVcv6m
+	27CwIgg6+DyGF+W4P3poMwh+caWRMdaODVMAA
+X-Gm-Gg: ASbGnctcOPDONCalw7YYOjHJZYTt7laaKn1dACDVu0jmLk0yyGT/DdfOA/fl3bkxtj9
+	h/BbNmcZ4NrPmv4cAIJYwtRoNpsX0hk4iD5eMRA==
+X-Google-Smtp-Source: AGHT+IEbLEExJ2JQjtuwLVLY6Di2pqvorwo/QQtScoZJP10Wltqbc2JwCR0qbk8x+mXLv/UejZK5BMwULOGtEfLLQ1U=
+X-Received: by 2002:a50:cc46:0:b0:5d9:a59:854a with SMTP id
+ 4fb4d7f45d1cf-5d90a59945bmr4740573a12.13.1735930152985; Fri, 03 Jan 2025
+ 10:49:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Z3ggQ_KxCOBPfsPa@orbyte.nwl.cc>
+References: <6742badd.050a0220.1cc393.0034.GAE@google.com> <CANn89iJbfy890gJuqAU-tY76ZSGS0W130KO7=9jvtHYUVzdSmQ@mail.gmail.com>
+ <Z3fOdnotJMKWjCNe@calendula>
+In-Reply-To: <Z3fOdnotJMKWjCNe@calendula>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 3 Jan 2025 19:49:02 +0100
+Message-ID: <CANn89i+NNUFqOyFo0M1J=goz_jK7=zVNYh2jo47eUYWFr-ovow@mail.gmail.com>
+Subject: Re: [syzbot] [netfilter?] INFO: task hung in htable_put (2)
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: syzbot <syzbot+013daa7966d4340a8b8f@syzkaller.appspotmail.com>, 
+	coreteam@netfilter.org, davem@davemloft.net, horms@kernel.org, 
+	kadlec@netfilter.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 03, 2025 at 06:37:07PM +0100, Phil Sutter wrote:
-> Hi Pablo,
-> 
-> On Thu, Jan 02, 2025 at 04:44:43PM +0100, Pablo Neira Ayuso wrote:
-> > All these cases cause imbalance between BIND and UNBIND calls:
-> > 
-> > - Delete an interface from a flowtable with multiple interfaces
-> > 
-> > - Add a (device to a) flowtable with --check flag
-> > 
-> > - Delete a netns containing a flowtable
-> > 
-> > - In an interactive nft session, create a table with owner flag and
-> >   flowtable inside, then quit.
-> > 
-> > Fix it by calling FLOW_BLOCK_UNBIND when unregistering hooks, then
-> > remove late FLOW_BLOCK_UNBIND call when destroying flowtable.
-> > 
-> > Fixes: ff4bf2f42a40 ("netfilter: nf_tables: add nft_unregister_flowtable_hook()")
-> > Reported-by: Phil Sutter <phil@nwl.cc>
-> > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> Tested-by: Phil Sutter <phil@nwl.cc>
-> 
-> Added printk calls for debugging and recreated the above scenarios, no
-> imbalance found. Thanks for your fix!
+On Fri, Jan 3, 2025 at 12:48=E2=80=AFPM Pablo Neira Ayuso <pablo@netfilter.=
+org> wrote:
+>
+> Hi Eric,
+>
+> On Fri, Jan 03, 2025 at 10:52:54AM +0100, Eric Dumazet wrote:
+> > On Sun, Nov 24, 2024 at 6:34=E2=80=AFAM syzbot
+> > <syzbot+013daa7966d4340a8b8f@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    cfaaa7d010d1 Merge tag 'net-6.12-rc8' of git://git.ke=
+rnel...
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D13fd6b5f9=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd2aeec8c0=
+b2e420c
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D013daa7966d=
+4340a8b8f
+> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
+ Debian) 2.40
+> > >
+> [...]
+> > I do not think I got any feedback from
+> > https://lore.kernel.org/netdev/20241206113839.3421469-1-edumazet@google=
+.com/T/
+> >
+> > Should  I repost this patch ?
+>
+> No need to, I will add this to nf-next now as you requested.
 
-Thanks for testing.
-
-> I have to rebase my pending patch series upon this one now. :)
-
-Please go ahead, thanks Phil.
+Thanks Pablo !
 
