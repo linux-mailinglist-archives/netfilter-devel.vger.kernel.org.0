@@ -1,96 +1,133 @@
-Return-Path: <netfilter-devel+bounces-5623-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5627-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E01A01C04
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jan 2025 22:27:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9AAA01CB1
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jan 2025 00:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739671620BA
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jan 2025 21:27:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7B9918830A7
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jan 2025 23:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDED145B39;
-	Sun,  5 Jan 2025 21:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0817155C9E;
+	Sun,  5 Jan 2025 23:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="cxdd3jIu"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=freemail.hu header.i=@freemail.hu header.b="duzNuhzp"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp-out.freemail.hu (fmfe28.freemail.hu [46.107.16.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B218821;
-	Sun,  5 Jan 2025 21:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0691448E3;
+	Sun,  5 Jan 2025 23:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.107.16.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736112452; cv=none; b=hivvDJ98xp5BwtwvFLj3/8F9dSLhMCROLsOxlzNh7th0lUSxgvmHrfkVUe8eg+myT64Drj3XGBf6GrXilkLpBlU5zqA6bqK75RXaJ0AcAuU8D2Ubm5vykUkFLZ+4btqjcI1+rOhlxblejTo1Zat0bJX0IKYGLsTNQeKsht/0m4U=
+	t=1736119649; cv=none; b=QPhCMab8OOCZH+ByG7pXzFGDv9/VMexSuYW+TStllxPzN4Syf7hAULRyV4O0RobWyvcu3i1yQ+qKZ4luzzlVD6BKE68iKqSOpxDuZuDEwYiDCRx248JZCoLcVl7JnnUYUvw/ihaLIo2tKh42i9P6zWannFHAOjMUO/sHTVgUvFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736112452; c=relaxed/simple;
-	bh=895jQ6KmShmN/1Q7OR882jtxe7EZPgAXTpZU6tcqXjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Id6gJ/zm8G0hb9BIeZuMBOHrPwzVQYgFDaQ1uMvfPHh8CvM0mxp94608ze6/ZAkJZ08lM/GTWWyRT/KkGqHmhRgx53evrF5xKTAMzghIwr5Hv/hQX4ruoC2PnUJ6eFst4iXxeasCX0iGxCWgeGfuxb9wS/Zv439ZHTULEooqECk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=cxdd3jIu; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=n5e0Ar8czLiyyASqRBMjDuDdvknA5TmVikDZAjiNWOQ=; b=cx
-	dd3jIu2FcegjK0EP09jegbWjTx1I0bvNeTFnJ/TOaUq7Ij0oAw+u8u/Fz9jQ4l60D9k8oqjLdkqEG
-	ZeO49qPlmEJJfW0rGa+yIOA49fozDAPJawqcBY3Aoi8ycNGJHK40rFC0/DWM8PLQS2hbHFSKpf+i6
-	oQgMeEwdjJ6I1Mo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1tUY9J-001g3X-NG; Sun, 05 Jan 2025 22:27:05 +0100
-Date: Sun, 5 Jan 2025 22:27:05 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: egyszeregy@freemail.hu
-Cc: fw@strlen.de, pablo@netfilter.org, lorenzo@kernel.org,
-	daniel@iogearbox.net, leitao@debian.org, amiculas@cisco.com,
-	kadlec@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1736119649; c=relaxed/simple;
+	bh=b4Xlpn4xY22Hrm7sN1J4WJTJh9JVnslnxbACFyHRKv4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OXqzk5tda+trE96+t5CMXxIVAH0l2XfMbEFrn8cNqZlVW/oGJx/12z2zHq7XVJOYD13VZ9sj8liSTSVYCUFsTwTRY4u8MbcpoAX5/pB/IFjwqz1HqUQD69MYAdhjJpQeal08gzC02YjWFjTxUlDOslSynQPuoxViBsMihvdpx70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freemail.hu; spf=pass smtp.mailfrom=freemail.hu; dkim=fail (2048-bit key) header.d=freemail.hu header.i=@freemail.hu header.b=duzNuhzp reason="signature verification failed"; arc=none smtp.client-ip=46.107.16.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freemail.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=freemail.hu
+Received: from fizweb.elte.hu (fizweb.elte.hu [157.181.183.248])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.freemail.hu (Postfix) with ESMTPSA id 4YRCtp4XgGz15T9;
+	Mon, 06 Jan 2025 00:19:14 +0100 (CET)
+From: egyszeregy@freemail.hu
+To: fw@strlen.de,
+	pablo@netfilter.org,
+	lorenzo@kernel.org,
+	daniel@iogearbox.net,
+	leitao@debian.org,
+	amiculas@cisco.com,
+	kadlec@netfilter.org,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] netfilter: x_tables: Merge xt_*.h and ipt_*.h
- files which has same name.
-Message-ID: <43f658e7-b33e-4ac9-8152-42b230a416b7@lunn.ch>
-References: <20250105203452.101067-1-egyszeregy@freemail.hu>
+Cc: =?UTF-8?q?Benjamin=20Sz=C5=91ke?= <egyszeregy@freemail.hu>
+Subject: [PATCH v6 0/3] netfilter: x_tables: Merge xt_*.c source files which has same name.
+Date: Mon,  6 Jan 2025 00:18:57 +0100
+Message-ID: <20250105231900.6222-1-egyszeregy@freemail.hu>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250105203452.101067-1-egyszeregy@freemail.hu>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=simple/relaxed; t=1736119155;
+	s=20181004; d=freemail.hu;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+	l=2235; bh=MMxCPOIVvWiJrrqO4m9wxpLQBvyRSOcUO6+lnHBYZsE=;
+	b=duzNuhzpADKOm92EtpABVd/uTBfo6tF6KZOoZhuf85agqPaZYMUv1mEZCgiu/2wJ
+	CCRuLD3Lo+ohKDvPvwxs3Zs7aUEcVk7YVy22cireerPv3H/PuorgLRbb56+bwck2WGi
+	EYBtEFfC45Uiu1wK27su25CX4phCMyseiEGFOVfyqeUOpwcXSIvUvJmopgBhuTyiyED
+	ZfU/xxcXHB/als7IMI+lsu3X5T1CG5APmeqexmO54+kaYhcLn7OmXsMB0WC4SVrZXvq
+	AVlHkOO25eJjoW32CKhv3YMviIInsrPHH3SNZZ85ViNkXguywvFsWwhy3OklhHF3I7/
+	ByXlpXVHiA==
 
-On Sun, Jan 05, 2025 at 09:34:52PM +0100, egyszeregy@freemail.hu wrote:
-> From: Benjamin Szőke <egyszeregy@freemail.hu>
-> 
-> Merge xt_*.h, ipt_*.h and ip6t_*.h header files, which has
-> same upper and lower case name format.
-> 
-> Add #pragma message about recommended to use
-> header files with lower case format in the future.
+From: Benjamin Szőke <egyszeregy@freemail.hu>
 
-It looks like only patch 1/3 make it to the list.
+Merge and refactoring xt_*.h, ipt_*.h and ip6t_*.h header and xt_*.c
+source files, which has same upper and lower case name format. Combining
+these modules should provide some decent code size and memory savings.
 
-Also, with a patchset, please include a patch 0/X which gives the big
-picture of what the patchset does. The text will be used for the merge
-commit, so keep it formal. 'git format-patch --cover-letter' will
-create the empty 0/X patch you can edit, or if you are using b4 prep,
-you can use 'b4 prep --edit-cover' and then 'b4 send' will
-automatically generate and send it.
+- netfilter: x_tables: Merge xt_*.h and ipt_*.h files
+- netfilter: x_tables: Merge xt_*.c files which has same
+- netfilter: x_tables: Adjust code style for xt_*.h/c
 
-https://docs.kernel.org/process/maintainer-netdev.html
-https://docs.kernel.org/process/submitting-patches.html
+Benjamin Szőke (3):
+  netfilter: x_tables: Merge xt_*.h and ipt_*.h files which has same
+    name.
+  netfilter: x_tables: Merge xt_*.c files which has same name.
+  netfilter: x_tables: Adjust code style for xt_*.h/c and ipt_*.h files.
 
-    Andrew
+ include/uapi/linux/netfilter/xt_CONNMARK.h  |   8 +-
+ include/uapi/linux/netfilter/xt_DSCP.h      |  22 +-
+ include/uapi/linux/netfilter/xt_MARK.h      |   8 +-
+ include/uapi/linux/netfilter/xt_RATEEST.h   |  12 +-
+ include/uapi/linux/netfilter/xt_TCPMSS.h    |  14 +-
+ include/uapi/linux/netfilter/xt_connmark.h  |   7 +-
+ include/uapi/linux/netfilter/xt_dscp.h      |  26 +-
+ include/uapi/linux/netfilter/xt_mark.h      |   6 +-
+ include/uapi/linux/netfilter/xt_rateest.h   |  19 +-
+ include/uapi/linux/netfilter/xt_tcpmss.h    |  16 +-
+ include/uapi/linux/netfilter_ipv4/ipt_ECN.h |  29 +-
+ include/uapi/linux/netfilter_ipv4/ipt_TTL.h |  25 +-
+ include/uapi/linux/netfilter_ipv4/ipt_ecn.h |  26 ++
+ include/uapi/linux/netfilter_ipv4/ipt_ttl.h |  26 +-
+ include/uapi/linux/netfilter_ipv6/ip6t_HL.h |  26 +-
+ include/uapi/linux/netfilter_ipv6/ip6t_hl.h |  25 +-
+ net/ipv4/netfilter/ipt_ECN.c                |   2 +-
+ net/netfilter/Kconfig                       |  84 +++++
+ net/netfilter/Makefile                      |  12 +-
+ net/netfilter/xt_DSCP.c                     | 161 ---------
+ net/netfilter/xt_HL.c                       | 159 ---------
+ net/netfilter/xt_RATEEST.c                  | 248 --------------
+ net/netfilter/xt_TCPMSS.c                   | 345 -------------------
+ net/netfilter/xt_dscp.c                     | 160 ++++++++-
+ net/netfilter/xt_hl.c                       | 160 ++++++++-
+ net/netfilter/xt_rateest.c                  | 255 +++++++++++++-
+ net/netfilter/xt_tcpmss.c                   | 353 +++++++++++++++++++-
+ 27 files changed, 1120 insertions(+), 1114 deletions(-)
+ delete mode 100644 net/netfilter/xt_DSCP.c
+ delete mode 100644 net/netfilter/xt_HL.c
+ delete mode 100644 net/netfilter/xt_RATEEST.c
+ delete mode 100644 net/netfilter/xt_TCPMSS.c
 
----
-pw-bot: cr
+-- 
+2.43.5
+
 
