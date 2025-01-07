@@ -1,41 +1,42 @@
-Return-Path: <netfilter-devel+bounces-5688-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5682-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 511B2A0499F
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jan 2025 19:53:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34DD6A0497B
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jan 2025 19:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4988F1670FD
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jan 2025 18:53:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 057E17A348D
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jan 2025 18:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5131F2C35;
-	Tue,  7 Jan 2025 18:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCD11F4290;
+	Tue,  7 Jan 2025 18:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=freemail.hu header.i=@freemail.hu header.b="HzFqlysy"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=freemail.hu header.i=@freemail.hu header.b="Ue7eZAk9"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp-out.freemail.hu (fmfe34.freemail.hu [46.107.16.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D191F4720;
-	Tue,  7 Jan 2025 18:53:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8F41F37C0;
+	Tue,  7 Jan 2025 18:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.107.16.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736275990; cv=none; b=jNM1gTpUFzKOtP9inhexJ568j3WdxCRgQN8+/1y0w1TeF6vBChbKCY1OJajGPI399NYkZ4QhF7sgLL4Zct1H80e2KnUZ7nu4ZS1GnlwhPq29EjEr6gQilIcmoh32x5IaFII06mAvGPrueXPBkDWYfoTpyIgjFM1aDYoRHDUfyLo=
+	t=1736275669; cv=none; b=bhX3+GFn2N+Tuv9w99MrO6CyfUXsHUTFYe9t2IZEaoZtEItsX2YttBPRQw042/lxrM8it34ob0PfgsjvTCwfB8/aJx26GuliPL19oBmSmM21H9H3JhPlwjZhbgH82kDMsSx9xxFUmrHrOgS5m0yHP8s95JfWQHNrGZABlkpxZL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736275990; c=relaxed/simple;
-	bh=GOng8ZIGtTSQgvNaD7xzP/6JyDKAysORsRiFtxSnCkU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gWXJlgAVdMgk7MvAvrILGFdKq20oqVLi62uvNTBZ5RxSLSSTvSDoPyIFJJHpUz1DUVgWuuEsll5Qm1Hm0tpT55Al0sOs/GPcibXDX+vdsSQ5Ny4UYXyTqksxP8sMH+mz9wSK5JRiCLBGXw/XMdNvhRcl9IubK0t5Ktku/cPdhU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freemail.hu; spf=pass smtp.mailfrom=freemail.hu; dkim=fail (2048-bit key) header.d=freemail.hu header.i=@freemail.hu header.b=HzFqlysy reason="signature verification failed"; arc=none smtp.client-ip=46.107.16.239
+	s=arc-20240116; t=1736275669; c=relaxed/simple;
+	bh=QtZykaW6f1yhllS+f4ktOrrhEiAJHcuH4HkLqdZd/g4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L/vTw/8jK6pahbSoB3zLZyQkrA01IKv65zw+cRydUDMnJFJKQbVrzjvjngo3TUlNx7JwXnLloPiCpnHbVmzdhRks9IPgS+6wesBEt65umWHoV4LPfuMN0W+iozBSK+yaqOyTuJKFEYOoeLHhx6i8MenBMvoEWtA9tTbb6+020ZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freemail.hu; spf=pass smtp.mailfrom=freemail.hu; dkim=fail (2048-bit key) header.d=freemail.hu header.i=@freemail.hu header.b=Ue7eZAk9 reason="signature verification failed"; arc=none smtp.client-ip=46.107.16.239
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freemail.hu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=freemail.hu
 Received: from fizweb.elte.hu (fizweb.elte.hu [157.181.183.248])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.freemail.hu (Postfix) with ESMTPSA id 4YSKmN6zsLzycR;
-	Tue, 07 Jan 2025 19:47:32 +0100 (CET)
+	by smtp.freemail.hu (Postfix) with ESMTPSA id 4YSKmZ5Tk4zyj4;
+	Tue, 07 Jan 2025 19:47:42 +0100 (CET)
 From: egyszeregy@freemail.hu
 To: fw@strlen.de,
 	pablo@netfilter.org,
@@ -55,10 +56,12 @@ To: fw@strlen.de,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: =?UTF-8?q?Benjamin=20Sz=C5=91ke?= <egyszeregy@freemail.hu>
-Subject: [PATCH 0/6] netfilter: x_tables: Merge xt_*.c files which has same name.
-Date: Tue,  7 Jan 2025 19:47:18 +0100
-Message-ID: <20250107184724.56223-1-egyszeregy@freemail.hu>
+Subject: [PATCH 1/6] netfilter: x_tables: Format code of xt_*.c files.
+Date: Tue,  7 Jan 2025 19:47:19 +0100
+Message-ID: <20250107184724.56223-2-egyszeregy@freemail.hu>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20250107184724.56223-1-egyszeregy@freemail.hu>
+References: <20250107184724.56223-1-egyszeregy@freemail.hu>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -67,84 +70,191 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=simple/relaxed; t=1736275653;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=simple/relaxed; t=1736275663;
 	s=20181004; d=freemail.hu;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-	l=2170; bh=rmTvNQXtFqt/OwQrK0u7GcxP5ZmAjOkhc4/8HI0TN0Y=;
-	b=HzFqlysyJfPets51os+nLxoZlMcTrzMX5QcM0W/1uPWOC7NQPTi+VdkoBHqpKEN9
-	YL/YagdcWUn5OaS+d5lz6DAwrEA3pR3Gas6odwwtfAI8ZdUBAUCNTYRwCTkCF5z3ZWX
-	Bdzl+QV7kZg91jtvQcNXk4wKnXF7hOuuql0Kv/oHMHdE+BoNw0OVo8BxhwVy4/fgrE2
-	yJi2ylkDjfnMTRd9JBxmgpR/0OQSHa8APhcs7pOEosghsdIVnXQRxc9xV6fMpaWwGGx
-	XS/86z1oFm2GNDD3yroiusswZbAsGAC051HE2PW7XOWI6PwaI7goOJ10skdWbrp1d6F
-	ud+3GQFu2w==
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
+	l=5682; bh=aZ5a6+8Lu2K6ZE5CeZeSpS6BAvHMB6jITlIYidHZ0gs=;
+	b=Ue7eZAk9ULF3DgVcqOPapTIaIGCErkudwLrnSjpg4f4I0K3X3IIt1KOcuLc11Q/n
+	LqYyjPvSwa3pXha9u6i6IqPEormVWcQHFuovMGnCeR7449ugf9S8IV1bVn5uGIcg2ZQ
+	10lYdXaJ2fVSSiBoD8cIDeS4+b0bxUCNWS6eO8XUQVa43aZgWX/1WtgLimiLfgA36oT
+	dAH7iSHpaO4zULfOoaxNa1/SnR51JIlX2UhFOnfRn+aYZFt75kqQ/t66hQ9rjwwv7Pf
+	psbMbDj778YVCsQ2+zFA1EQsH1S5yLGyIQgIlTE7pdRGYG1gOs68oOPwslYvPeMlWan
+	TwaasAvA3Q==
 
 From: Benjamin Szőke <egyszeregy@freemail.hu>
 
-Merge xt_*.c source files, which has same upper and
-lowercase name format. Combining these modules should
-provide some decent code size and memory savings.
+Adjuste code style to be compatbile with checkpatch.pl checks in
+the following files: xt_DSCP.c, xt_HL.c, xt_RATEEST.c, xt_TCPMSS.c
 
-test-build:
-$ mkdir build
-$ wget -O ./build/.config https://pastebin.com/raw/teShg1sp
-$ make O=./build/ ARCH=x86 -j 16
+- Change to use u8, u16 and u32 types.
+- Fix coding style of math operations and brackets.
 
-x86_64-before:
-text    data     bss     dec     hex filename
- 716     432       0    1148     47c xt_dscp.o
-1142     432       0    1574     626 xt_DSCP.o
- 593     224       0     817     331 xt_hl.o
- 934     224       0    1158     486 xt_HL.o
-1099     120       0    1219     4c3 xt_rateest.o
-2126     365       4    2495     9bf xt_RATEEST.o
- 747     224       0     971     3cb xt_tcpmss.o
-2824     352       0    3176     c68 xt_TCPMSS.o
-total data: 2373
+Signed-off-by: Benjamin Szőke <egyszeregy@freemail.hu>
+---
+ net/netfilter/xt_DSCP.c    |  9 ++++-----
+ net/netfilter/xt_HL.c      |  3 +--
+ net/netfilter/xt_RATEEST.c |  1 +
+ net/netfilter/xt_TCPMSS.c  | 26 ++++++++++++++------------
+ 4 files changed, 20 insertions(+), 19 deletions(-)
 
-x86_64-after:
-text    data     bss     dec     hex filename
-1709     848       0    2557     9fd xt_dscp.o
-1352     448       0    1800     708 xt_hl.o
-3075     481       4    3560     de8 xt_rateest.o
-3423     576       0    3999     f9f xt_tcpmss.o
-total data: 2353
-
-Build as a module it can provide 50% reduction in
-run-time memory use.
-
-x86_64-before:
-$ lsmod
-xt_TCPMSS              12288  0
-xt_tcpmss              12288  0
-
-x86_64-after:
-$ lsmod
-xt_tcpmss              12288  0
-
-Benjamin Szőke (6):
-  netfilter: x_tables: Format code of xt_*.c files.
-  netfilter: x_tables: Merge xt_DSCP.c to xt_dscp.c
-  netfilter: x_tables: Merge xt_HL.c to xt_hl.c
-  netfilter: x_tables: Merge xt_RATEEST.c to xt_rateest.c
-  netfilter: x_tables: Merge xt_TCPMSS.c to xt_tcpmss.c
-  netfilter: x_tables: Adjust code style of xt_*.c files.
-
- net/netfilter/Kconfig      |  84 +++++++++
- net/netfilter/Makefile     |  12 +-
- net/netfilter/xt_DSCP.c    | 161 -----------------
- net/netfilter/xt_HL.c      | 159 -----------------
- net/netfilter/xt_RATEEST.c | 248 --------------------------
- net/netfilter/xt_TCPMSS.c  | 345 ------------------------------------
- net/netfilter/xt_dscp.c    | 159 ++++++++++++++++-
- net/netfilter/xt_hl.c      | 163 +++++++++++++++--
- net/netfilter/xt_rateest.c | 255 +++++++++++++++++++++++++--
- net/netfilter/xt_tcpmss.c  | 352 +++++++++++++++++++++++++++++++++++--
- 10 files changed, 972 insertions(+), 966 deletions(-)
- delete mode 100644 net/netfilter/xt_DSCP.c
- delete mode 100644 net/netfilter/xt_HL.c
- delete mode 100644 net/netfilter/xt_RATEEST.c
- delete mode 100644 net/netfilter/xt_TCPMSS.c
-
+diff --git a/net/netfilter/xt_DSCP.c b/net/netfilter/xt_DSCP.c
+index 90f24a6a26c5..a76701fd31ab 100644
+--- a/net/netfilter/xt_DSCP.c
++++ b/net/netfilter/xt_DSCP.c
+@@ -30,7 +30,7 @@ static unsigned int
+ dscp_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct xt_DSCP_info *dinfo = par->targinfo;
+-	u_int8_t dscp = ipv4_get_dsfield(ip_hdr(skb)) >> XT_DSCP_SHIFT;
++	u8 dscp = ipv4_get_dsfield(ip_hdr(skb)) >> XT_DSCP_SHIFT;
+ 
+ 	if (dscp != dinfo->dscp) {
+ 		if (skb_ensure_writable(skb, sizeof(struct iphdr)))
+@@ -38,7 +38,6 @@ dscp_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ 
+ 		ipv4_change_dsfield(ip_hdr(skb), XT_DSCP_ECN_MASK,
+ 				    dinfo->dscp << XT_DSCP_SHIFT);
+-
+ 	}
+ 	return XT_CONTINUE;
+ }
+@@ -47,7 +46,7 @@ static unsigned int
+ dscp_tg6(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct xt_DSCP_info *dinfo = par->targinfo;
+-	u_int8_t dscp = ipv6_get_dsfield(ipv6_hdr(skb)) >> XT_DSCP_SHIFT;
++	u8 dscp = ipv6_get_dsfield(ipv6_hdr(skb)) >> XT_DSCP_SHIFT;
+ 
+ 	if (dscp != dinfo->dscp) {
+ 		if (skb_ensure_writable(skb, sizeof(struct ipv6hdr)))
+@@ -73,7 +72,7 @@ tos_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct xt_tos_target_info *info = par->targinfo;
+ 	struct iphdr *iph = ip_hdr(skb);
+-	u_int8_t orig, nv;
++	u8 orig, nv;
+ 
+ 	orig = ipv4_get_dsfield(iph);
+ 	nv   = (orig & ~info->tos_mask) ^ info->tos_value;
+@@ -93,7 +92,7 @@ tos_tg6(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct xt_tos_target_info *info = par->targinfo;
+ 	struct ipv6hdr *iph = ipv6_hdr(skb);
+-	u_int8_t orig, nv;
++	u8 orig, nv;
+ 
+ 	orig = ipv6_get_dsfield(iph);
+ 	nv   = (orig & ~info->tos_mask) ^ info->tos_value;
+diff --git a/net/netfilter/xt_HL.c b/net/netfilter/xt_HL.c
+index a847d7a7eacd..1e1b30b27fef 100644
+--- a/net/netfilter/xt_HL.c
++++ b/net/netfilter/xt_HL.c
+@@ -54,8 +54,7 @@ ttl_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ 	}
+ 
+ 	if (new_ttl != iph->ttl) {
+-		csum_replace2(&iph->check, htons(iph->ttl << 8),
+-					   htons(new_ttl << 8));
++		csum_replace2(&iph->check, htons(iph->ttl << 8), htons(new_ttl << 8));
+ 		iph->ttl = new_ttl;
+ 	}
+ 
+diff --git a/net/netfilter/xt_RATEEST.c b/net/netfilter/xt_RATEEST.c
+index a86bb0e4bb42..d56276b965fa 100644
+--- a/net/netfilter/xt_RATEEST.c
++++ b/net/netfilter/xt_RATEEST.c
+@@ -20,6 +20,7 @@
+ #define RATEEST_HSIZE	16
+ 
+ struct xt_rateest_net {
++	/* To synchronize concurrent synchronous rate estimator operations. */
+ 	struct mutex hash_lock;
+ 	struct hlist_head hash[RATEEST_HSIZE];
+ };
+diff --git a/net/netfilter/xt_TCPMSS.c b/net/netfilter/xt_TCPMSS.c
+index 3dc1320237c2..9944ca1eb950 100644
+--- a/net/netfilter/xt_TCPMSS.c
++++ b/net/netfilter/xt_TCPMSS.c
+@@ -31,13 +31,13 @@ MODULE_ALIAS("ipt_TCPMSS");
+ MODULE_ALIAS("ip6t_TCPMSS");
+ 
+ static inline unsigned int
+-optlen(const u_int8_t *opt, unsigned int offset)
++optlen(const u8 *opt, unsigned int offset)
+ {
+ 	/* Beware zero-length options: make finite progress */
+-	if (opt[offset] <= TCPOPT_NOP || opt[offset+1] == 0)
++	if (opt[offset] <= TCPOPT_NOP || opt[offset + 1] == 0)
+ 		return 1;
+ 	else
+-		return opt[offset+1];
++		return opt[offset + 1];
+ }
+ 
+ static u_int32_t tcpmss_reverse_mtu(struct net *net,
+@@ -46,10 +46,11 @@ static u_int32_t tcpmss_reverse_mtu(struct net *net,
+ {
+ 	struct flowi fl;
+ 	struct rtable *rt = NULL;
+-	u_int32_t mtu     = ~0U;
++	u32 mtu     = ~0U;
+ 
+ 	if (family == PF_INET) {
+ 		struct flowi4 *fl4 = &fl.u.ip4;
++
+ 		memset(fl4, 0, sizeof(*fl4));
+ 		fl4->daddr = ip_hdr(skb)->saddr;
+ 	} else {
+@@ -60,7 +61,7 @@ static u_int32_t tcpmss_reverse_mtu(struct net *net,
+ 	}
+ 
+ 	nf_route(net, (struct dst_entry **)&rt, &fl, false, family);
+-	if (rt != NULL) {
++	if (rt) {
+ 		mtu = dst_mtu(&rt->dst);
+ 		dst_release(&rt->dst);
+ 	}
+@@ -110,15 +111,16 @@ tcpmss_mangle_packet(struct sk_buff *skb,
+ 			return -1;
+ 		}
+ 		newmss = min_mtu - minlen;
+-	} else
++	} else {
+ 		newmss = info->mss;
++	}
+ 
+ 	opt = (u_int8_t *)tcph;
+ 	for (i = sizeof(struct tcphdr); i <= tcp_hdrlen - TCPOLEN_MSS; i += optlen(opt, i)) {
+-		if (opt[i] == TCPOPT_MSS && opt[i+1] == TCPOLEN_MSS) {
+-			u_int16_t oldmss;
++		if (opt[i] == TCPOPT_MSS && opt[i + 1] == TCPOLEN_MSS) {
++			u16 oldmss;
+ 
+-			oldmss = (opt[i+2] << 8) | opt[i+3];
++			oldmss = (opt[i + 2] << 8) | opt[i + 3];
+ 
+ 			/* Never increase MSS, even when setting it, as
+ 			 * doing so results in problems for hosts that rely
+@@ -127,8 +129,8 @@ tcpmss_mangle_packet(struct sk_buff *skb,
+ 			if (oldmss <= newmss)
+ 				return 0;
+ 
+-			opt[i+2] = (newmss & 0xff00) >> 8;
+-			opt[i+3] = newmss & 0x00ff;
++			opt[i + 2] = (newmss & 0xff00) >> 8;
++			opt[i + 3] = newmss & 0x00ff;
+ 
+ 			inet_proto_csum_replace2(&tcph->check, skb,
+ 						 htons(oldmss), htons(newmss),
+@@ -186,7 +188,7 @@ tcpmss_mangle_packet(struct sk_buff *skb,
+ 	inet_proto_csum_replace4(&tcph->check, skb, 0, *((__be32 *)opt), false);
+ 
+ 	oldval = ((__be16 *)tcph)[6];
+-	tcph->doff += TCPOLEN_MSS/4;
++	tcph->doff += TCPOLEN_MSS / 4;
+ 	inet_proto_csum_replace2(&tcph->check, skb,
+ 				 oldval, ((__be16 *)tcph)[6], false);
+ 	return TCPOLEN_MSS;
 -- 
 2.43.5
 
