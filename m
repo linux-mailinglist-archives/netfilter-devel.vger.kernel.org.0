@@ -1,50 +1,63 @@
-Return-Path: <netfilter-devel+bounces-5745-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5749-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263D9A07E3D
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jan 2025 18:00:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A2C9A07EC7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jan 2025 18:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81B56169B1E
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jan 2025 17:00:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E27CD188D18A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jan 2025 17:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72AF18FC7B;
-	Thu,  9 Jan 2025 17:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687D818DF65;
+	Thu,  9 Jan 2025 17:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G8Rw+jU0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fU0HDRdm"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FB218EFD4;
-	Thu,  9 Jan 2025 17:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A6718A6DF
+	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jan 2025 17:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736442029; cv=none; b=Qgokd+oGwECxHy6uh9S24ExFj1mYoj63cAqcIoIJwmq6jri+EIwHOLmezKKIZ4JW40U1ffeFfjZBirJD1cOsmB223PaARa2vo3x4eVWwUyIIlP3f955U7unfNI1QjOU/T6NA0eomjYnA7eBMkh62zB6mcWapUVxuWIUdSKMZXJ0=
+	t=1736443907; cv=none; b=V1zJK2FiFU2HEVyUUyEnHPDw+Fc60OrS0H4ffHQooa5a/X6jRfYjPPr1fJmm1JI9bMVA8LpNvK/QmntQYbiZaWEZR+O1wubmu+2tNVB9sENpRNa56cCkwb0wMSPdepMO0UJqxG0nDwEYvQ0FP0eYKF/H8qVQeW37s5/QHhc+wro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736442029; c=relaxed/simple;
-	bh=RGcbmkp5R199fM6Pee+V30xTkmnsrNtH0sOMVIS+t7Q=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=E455j842M44J+yvpfoIAUHzb/1qX784cyioG0ilRXMG1A/x1IfzWROLMry2y3oX9Ojg3XBb80qMFER9GcupdKPeLC575ZFBwg735VOTN7gAuDLAQxoTJd7QyaO0xZLiTXG+0yX1YmOVEVNJX190YzMW0eCFDQPzfd6cFxoXgy7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G8Rw+jU0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2707CC4CED2;
-	Thu,  9 Jan 2025 17:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736442028;
-	bh=RGcbmkp5R199fM6Pee+V30xTkmnsrNtH0sOMVIS+t7Q=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=G8Rw+jU095YC7zTE9+QRDrFVAFsEW9tgxRFuX3yTnSawVEjlZbN29Duomh3ETGRhM
-	 2/TmQUaO7i58x5vGF+xXPWc+TgWSPxfcMaEsp7aAcEMnZDduGq+ig7AQTmH1cDymvq
-	 MYwo48MUDOY/VqunZpCVRXmjq6ZpOvTBh4AnaXLJ1UPAa92VSmffMvjondN5ZV4+Xe
-	 icZefIRaWmlhme7yQ4rqtXfbNCkepimcTm53vWE+C/NbnZUwSBfWVhShjOECDW8sgM
-	 JQaDLsKSwDY++8dNDxfAKEyN53ItrfktCdVS4sRUvUdVnVGuKcm5n/E2du9zkfYqLg
-	 UITHv7DcLb5ig==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 1A3C4380A97E;
-	Thu,  9 Jan 2025 17:00:51 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1736443907; c=relaxed/simple;
+	bh=t6CpprbTMH+SRhT5PLqZa2u94zhnbd4cAepqj2DVp4I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nTcWT82WEKS21YgORgQFwCZRWvqzz6mbOHnVuxIVQo/6hC+k0Dzbm+xZSWnMmQQYugb+UrGjE9N/voosheKZ7FncSNiF6NHl6vKVSLk4laMSScSgiYuHFSjrCUuO1p/8IXO3PXTMjk61gpmpG7B37QyuMRZjS2sVoMQs+PN6y6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fU0HDRdm; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=tpH2TNxR1NMTFDXN34D9b6/O2vzTB6MIQGv7XC4YT6M=; b=fU0HDRdm2wCdNFDN5VVjSt2wGE
+	S40ucDFJT/iNIbwLlf9Aur2eQs0Kr2qMJvoh+sf913aJnDsW/BRBqbAgz73ij9xM9yeCiNhj5X+by
+	8ADtBPIayjWC7pCQ9govDQuueXjwx0OfcqQglqlY2+qvFVmRT2o5uUUQVR9750/6mld7HBY4quKDV
+	S7py18yzUhvNi8tRFwjIpfOkMqxnT5sk8DmTU5ylQFjibBnzZw/G9iqOuaz7pyBISwrO2h15E8wMD
+	/IPhwQYPiWXZc6OyZbs1E2o9dBzlKIFervA7TrF1+g6I14MWS23236fXCJUl/N6kVqWJfwqV30ZfA
+	xNd+uDlw==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1tVwNh-000000006MY-3HD7;
+	Thu, 09 Jan 2025 18:31:41 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>,
+	Eric Garver <e@erig.me>
+Subject: [nf-next PATCH v7 0/6] Dynamic hook interface binding part 1
+Date: Thu,  9 Jan 2025 18:31:31 +0100
+Message-ID: <20250109173137.17954-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,44 +65,41 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/2] netfilter: nf_tables: imbalance in flowtable binding
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173644205002.1449021.7734848326971151272.git-patchwork-notify@kernel.org>
-Date: Thu, 09 Jan 2025 17:00:50 +0000
-References: <20250109123806.42021-1-pablo@netfilter.org>
-In-Reply-To: <20250109123806.42021-1-pablo@netfilter.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
- netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, fw@strlen.de
 
-Hello:
+Changes since v6:
+- Rebase onto "netfilter: nf_tables: imbalance in flowtable binding"
+  patch which is in nf-25-01-09 tag but missing in nf-next
+- Drop patch 7 which removed __nft_unregister_flowtable_net_hooks(): The
+  function is no longer a duplicate of nft_netdev_unregister_hooks()
 
-This series was applied to netdev/net.git (main)
-by Pablo Neira Ayuso <pablo@netfilter.org>:
+This series makes netdev hooks store the interface name spec they were
+created for and establishes this stored name as the key identifier. The
+previous one which is the hook's 'ops.dev' pointer is thereby freed to
+vanish, so a vanishing netdev no longer has to drag the hook along with
+it. (Patches 2-4)
 
-On Thu,  9 Jan 2025 13:38:05 +0100 you wrote:
-> All these cases cause imbalance between BIND and UNBIND calls:
-> 
-> - Delete an interface from a flowtable with multiple interfaces
-> 
-> - Add a (device to a) flowtable with --check flag
-> 
-> - Delete a netns containing a flowtable
-> 
-> [...]
+Furthermore, it aligns behaviour of netdev-family chains with that of
+flowtables in situations of vanishing interfaces. When previously a
+chain losing its last interface was torn down and deleted, it may now
+remain in place (albeit with no remaining interfaces). (Patch 5)
 
-Here is the summary with links:
-  - [net,1/2] netfilter: nf_tables: imbalance in flowtable binding
-    https://git.kernel.org/netdev/net/c/13210fc63f35
-  - [net,2/2] netfilter: conntrack: clamp maximum hashtable size to INT_MAX
-    https://git.kernel.org/netdev/net/c/b541ba7d1f5a
+Patch 6 is a cleanup following patch 5, patch 1 is an independent
+code simplification.
 
-You are awesome, thank you!
+Phil Sutter (6):
+  netfilter: nf_tables: Flowtable hook's pf value never varies
+  netfilter: nf_tables: Store user-defined hook ifname
+  netfilter: nf_tables: Use stored ifname in netdev hook dumps
+  netfilter: nf_tables: Compare netdev hooks based on stored name
+  netfilter: nf_tables: Tolerate chains with no remaining hooks
+  netfilter: nf_tables: Simplify chain netdev notifier
+
+ include/net/netfilter/nf_tables.h |  4 +-
+ net/netfilter/nf_tables_api.c     | 74 ++++++++-----------------------
+ net/netfilter/nft_chain_filter.c  | 48 ++++++--------------
+ 3 files changed, 33 insertions(+), 93 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.47.1
 
 
