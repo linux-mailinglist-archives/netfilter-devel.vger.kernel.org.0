@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5773-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5775-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF7E6A0A69D
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jan 2025 00:08:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1E3A0A6A2
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jan 2025 00:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB42B1889CAF
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jan 2025 23:08:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE00166E06
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jan 2025 23:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F651BD027;
-	Sat, 11 Jan 2025 23:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3891C2317;
+	Sat, 11 Jan 2025 23:08:11 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06861CFBC;
-	Sat, 11 Jan 2025 23:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652FE1BBBD3;
+	Sat, 11 Jan 2025 23:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736636890; cv=none; b=uSocqzRBwuHwOY8TJqxcs8AR925B2/oXP75YfZSqZE0VlsW+sxXpbKOGTsOmf9d/c344iQwU+11Ro9ehSrvlu5DgE+JIPQIBUOvwGBhqwDWEC4/gfWct6++43i6Z7RhAS8AwI8rtup76gf69xLkS9+ag4JWcSfY1lM52o82wb70=
+	t=1736636891; cv=none; b=lnoJaO1afE1ljeyVRxa1/EkxJWtR0GczEOuhH2MZLobSR02FfvKepdlgxByO9QZZpTxBAIZn0vY8ZhGWtbQj/h28Uo+XWjoH4wPNjXtgU/xpnUGnDfs05m7t31BTQRO9uxIryyvoTJITFpZRzAtnxeboSr2tJxCoZgxNm/JjRJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736636890; c=relaxed/simple;
-	bh=92EaKkeevPv19MH0eBUuD5KCmOqEQ8K6HwML4uHUX1M=;
+	s=arc-20240116; t=1736636891; c=relaxed/simple;
+	bh=5BBujJnzs13bQBzd2BKpJQXOIZnHmbKqBsFueEYWZVk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DsoUfGIqHs1J3YWCr8/AVTVJGlnfb18NharXIMiaSwwdjUMipO0m5FCWonOtdktZZ4UM1X5ayeAgo/jdEE6vgQpVRu7yb99oHUny8jhk57qcsf9KgaTxMSEGRmGG7G3WbQ6K5dM3EyXM1Uu+Y42azxajHqlhfIJ+Clx02GVnu3U=
+	 MIME-Version; b=RffjxKVlu/WQC/+xhUax9qz4QzpH2eqZ99fZMn2LxuuYObJ40v1nfx5hJkogPYOkBC8jjDrhH2Ms7Dui/vMwK0DT57ffYjLbCbH151M6SZLV+xQ+N8uReX2bx0XyhRa6onVA2eaJ1RQxu8o6Re554mp4aySdtCFtFWzGmmW4dWw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -36,9 +36,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	kadlec@netfilter.org
-Subject: [PATCH net-next 1/4] netfilter: nf_tables: remove the genmask parameter
-Date: Sun, 12 Jan 2025 00:07:57 +0100
-Message-Id: <20250111230800.67349-2-pablo@netfilter.org>
+Subject: [PATCH net-next 2/4] ipvs: speed up reads from ip_vs_conn proc file
+Date: Sun, 12 Jan 2025 00:07:58 +0100
+Message-Id: <20250111230800.67349-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250111230800.67349-1-pablo@netfilter.org>
 References: <20250111230800.67349-1-pablo@netfilter.org>
@@ -50,44 +50,143 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: tuqiang <tu.qiang35@zte.com.cn>
+From: Florian Westphal <fw@strlen.de>
 
-The genmask parameter is not used within the nf_tables_addchain function
- body. It should be removed to simplify the function parameter list.
+Reading is very slow because ->start() performs a linear re-scan of the
+entire hash table until it finds the successor to the last dumped
+element.  The current implementation uses 'pos' as the 'number of
+elements to skip, then does linear iteration until it has skipped
+'pos' entries.
 
-Signed-off-by: tuqiang <tu.qiang35@zte.com.cn>
-Signed-off-by: Jiang Kun <jiang.kun2@zte.com.cn>
-Reviewed-by: Simon Horman <horms@kernel.org>
+Store the last bucket and the number of elements to skip in that
+bucket instead, so we can resume from bucket b directly.
+
+before this patch, its possible to read ~35k entries in one second, but
+each read() gets slower as the number of entries to skip grows:
+
+time timeout 60 cat /proc/net/ip_vs_conn > /tmp/all; wc -l /tmp/all
+real    1m0.007s
+user    0m0.003s
+sys     0m59.956s
+140386 /tmp/all
+
+Only ~100k more got read in remaining the remaining 59s, and did not get
+nowhere near the 1m entries that are stored at the time.
+
+after this patch, dump completes very quickly:
+time cat /proc/net/ip_vs_conn > /tmp/all; wc -l /tmp/all
+real    0m2.286s
+user    0m0.004s
+sys     0m2.281s
+1000001 /tmp/all
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Acked-by: Julian Anastasov <ja@ssi.bg>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ net/netfilter/ipvs/ip_vs_conn.c | 50 ++++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 0b9f1e8dfe49..f7ca7165e66e 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2598,9 +2598,8 @@ int nft_chain_add(struct nft_table *table, struct nft_chain *chain)
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index c0289f83f96d..20a1727e2457 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1046,28 +1046,35 @@ ip_vs_conn_new(const struct ip_vs_conn_param *p, int dest_af,
+ #ifdef CONFIG_PROC_FS
+ struct ip_vs_iter_state {
+ 	struct seq_net_private	p;
+-	struct hlist_head	*l;
++	unsigned int		bucket;
++	unsigned int		skip_elems;
+ };
  
- static u64 chain_id;
- 
--static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
--			      u8 policy, u32 flags,
--			      struct netlink_ext_ack *extack)
-+static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 policy,
-+			      u32 flags, struct netlink_ext_ack *extack)
+-static void *ip_vs_conn_array(struct seq_file *seq, loff_t pos)
++static void *ip_vs_conn_array(struct ip_vs_iter_state *iter)
  {
- 	const struct nlattr * const *nla = ctx->nla;
- 	struct nft_table *table = ctx->table;
-@@ -3038,7 +3037,7 @@ static int nf_tables_newchain(struct sk_buff *skb, const struct nfnl_info *info,
- 					  extack);
+ 	int idx;
+ 	struct ip_vs_conn *cp;
+-	struct ip_vs_iter_state *iter = seq->private;
+ 
+-	for (idx = 0; idx < ip_vs_conn_tab_size; idx++) {
++	for (idx = iter->bucket; idx < ip_vs_conn_tab_size; idx++) {
++		unsigned int skip = 0;
++
+ 		hlist_for_each_entry_rcu(cp, &ip_vs_conn_tab[idx], c_list) {
+ 			/* __ip_vs_conn_get() is not needed by
+ 			 * ip_vs_conn_seq_show and ip_vs_conn_sync_seq_show
+ 			 */
+-			if (pos-- == 0) {
+-				iter->l = &ip_vs_conn_tab[idx];
++			if (skip >= iter->skip_elems) {
++				iter->bucket = idx;
+ 				return cp;
+ 			}
++
++			++skip;
+ 		}
++
++		iter->skip_elems = 0;
+ 		cond_resched_rcu();
  	}
  
--	return nf_tables_addchain(&ctx, family, genmask, policy, flags, extack);
-+	return nf_tables_addchain(&ctx, family, policy, flags, extack);
++	iter->bucket = idx;
+ 	return NULL;
  }
  
- static int nft_delchain_hook(struct nft_ctx *ctx,
+@@ -1076,9 +1083,14 @@ static void *ip_vs_conn_seq_start(struct seq_file *seq, loff_t *pos)
+ {
+ 	struct ip_vs_iter_state *iter = seq->private;
+ 
+-	iter->l = NULL;
+ 	rcu_read_lock();
+-	return *pos ? ip_vs_conn_array(seq, *pos - 1) :SEQ_START_TOKEN;
++	if (*pos == 0) {
++		iter->skip_elems = 0;
++		iter->bucket = 0;
++		return SEQ_START_TOKEN;
++	}
++
++	return ip_vs_conn_array(iter);
+ }
+ 
+ static void *ip_vs_conn_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+@@ -1086,28 +1098,22 @@ static void *ip_vs_conn_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 	struct ip_vs_conn *cp = v;
+ 	struct ip_vs_iter_state *iter = seq->private;
+ 	struct hlist_node *e;
+-	struct hlist_head *l = iter->l;
+-	int idx;
+ 
+ 	++*pos;
+ 	if (v == SEQ_START_TOKEN)
+-		return ip_vs_conn_array(seq, 0);
++		return ip_vs_conn_array(iter);
+ 
+ 	/* more on same hash chain? */
+ 	e = rcu_dereference(hlist_next_rcu(&cp->c_list));
+-	if (e)
++	if (e) {
++		iter->skip_elems++;
+ 		return hlist_entry(e, struct ip_vs_conn, c_list);
+-
+-	idx = l - ip_vs_conn_tab;
+-	while (++idx < ip_vs_conn_tab_size) {
+-		hlist_for_each_entry_rcu(cp, &ip_vs_conn_tab[idx], c_list) {
+-			iter->l = &ip_vs_conn_tab[idx];
+-			return cp;
+-		}
+-		cond_resched_rcu();
+ 	}
+-	iter->l = NULL;
+-	return NULL;
++
++	iter->skip_elems = 0;
++	iter->bucket++;
++
++	return ip_vs_conn_array(iter);
+ }
+ 
+ static void ip_vs_conn_seq_stop(struct seq_file *seq, void *v)
 -- 
 2.30.2
 
