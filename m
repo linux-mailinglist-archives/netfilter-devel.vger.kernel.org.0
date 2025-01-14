@@ -1,77 +1,101 @@
-Return-Path: <netfilter-devel+bounces-5795-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5796-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B0EA107DE
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2025 14:32:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB3BA10C40
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2025 17:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB75E188885A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2025 13:32:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B27D73A5D8E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2025 16:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54CBC234CEC;
-	Tue, 14 Jan 2025 13:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0441CAA74;
+	Tue, 14 Jan 2025 16:27:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C2320F998
-	for <netfilter-devel@vger.kernel.org>; Tue, 14 Jan 2025 13:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FF91B6CE4
+	for <netfilter-devel@vger.kernel.org>; Tue, 14 Jan 2025 16:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736861533; cv=none; b=I04P/phON0xqogADfUDuLoracKBTS8RmxRE8Z4AEmLh2MR8Zg+UMLoAMRe3gk6tdY6PAHGpqxT/32rKVluTTwngjETBrrVkTUB6cG0XF3xwjc2hJwaKI0iL3OPS0qZ7dKJtbVQ7zTSNH0EuQBP+LCRUx5nXGK1Y2Zwh82DjInWE=
+	t=1736872037; cv=none; b=NuIINPwJPywYmEwdEt/DSeZONIdAxxmkGnaATf7zm9SUCZCf45TDTVqClQtDJd2kxwbBUmLsPKXBmRbIENaNLhWvSvsClGGfvjrpMWvacv66U0tWHuMrv+Dewauu++t/dvlIESb1w9nXEpVrTVekh5X6ad3xCGopNpXsX6bqEU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736861533; c=relaxed/simple;
-	bh=59J08IGJ8iBHJvPxtrDEL4ZpX8FMPXzs+1qmCDFQ9gQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gSy7WWSTbRcGKUfrF1xz41Er6YgSzmGaQWrtnWJTmG2Z2c4GvpfaO7xc20bmaMGpCMslYydOM9zAIAmRlLM1F/tZzrJGLpCqDBGtO6bNzMzj+2aAU+zyM6OCH/KRifzg4FAI1t7s7AcS0I0j/MPwjKRlqvEp1rxxf9f12tEIRxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1tXh1a-00021q-RE; Tue, 14 Jan 2025 14:32:06 +0100
-Date: Tue, 14 Jan 2025 14:32:06 +0100
-From: Florian Westphal <fw@strlen.de>
-To: =?utf-8?B?7KCV7J6s7JykL1Rhc2sgTGVhZGVyL1NXIFBsYXRmb3JtKOyXsCnshKDtlolQ?=
-	=?utf-8?B?bGF0Zm9ybeqwnOuwnOyLpCDsi5zsiqTthZxTVw==?= Task <jaeyoon.jung@lge.com>
-Cc: Florian Westphal <fw@strlen.de>,
-	=?utf-8?B?7KGw7ZmN7IudL+yxheyehOyXsOq1rOybkC9TVyBTZWN1cml0eeqwnOuwnA==?=
-	=?utf-8?B?7Iuk?= SW Security TP <hongsik.jo@lge.com>,
-	"netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-	=?utf-8?B?7IaQ7JiB7IStL+yxheyehOyXsOq1rOybkC9TVyBTZWN1cml0eeqwnOuwnA==?=
-	=?utf-8?B?7Iuk?= SW Security TP <loth.son@lge.com>,
-	=?utf-8?B?64Ko7KCV7KO8L+yxheyehOyXsOq1rOybkC9TVyBTZWN1cml0eeqwnOuwnA==?=
-	=?utf-8?B?7Iuk?= SW Security TP <jungjoo.nahm@lge.com>
-Subject: Re: Symbol Collision between ulogd and jansson
-Message-ID: <20250114133206.GA5817@breakpoint.cc>
-References: <SE1P216MB155825DDA1CD5809E1569DDE8F1F2@SE1P216MB1558.KORP216.PROD.OUTLOOK.COM>
- <20250114104114.GA1924@breakpoint.cc>
- <PU4P216MB15179D0909B9BEB9770F24F09A182@PU4P216MB1517.KORP216.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1736872037; c=relaxed/simple;
+	bh=jR0qPx4YnfTXcAlpqXQq/Eiz2jCY67YKG90HF9loF08=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QsBYWvFb+cpRk7DGdA09vFs2AY26ewOU1JGB8ArmHb/DWyz+mgQGoQjPtk8JGXaLn+c44t8oB20uMlvrV47ZZs+sD+PqejESFIWZS/quFnwYzuxoT7zyo76f9HOuOwXbb8Y4aLSU6pBzX41D0cf8xEEpC+8FTOYiF5F2OQ+w/20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: fw@strlen.de
+Subject: [PATCH nf-next,v2 1/6] netfilter: nft_flow_offload: clear tcp MAXACK flag before moving to slowpath
+Date: Tue, 14 Jan 2025 17:26:57 +0100
+Message-Id: <20250114162702.9128-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <PU4P216MB15179D0909B9BEB9770F24F09A182@PU4P216MB1517.KORP216.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 
-정재윤/Task Leader/SW Platform(연)선행Platform개발실 시스템SW Task <jaeyoon.jung@lge.com> wrote:
-> Hi,
-> 
-> It's 2.14 being built with CMake.
-> It looks like '-export-symbols-regex' isn't set with CMake.
+From: Florian Westphal <fw@strlen.de>
 
-Can you file a report with jansson? Libraries should not pollute
-the namespace like this.  I can confirm that its fine with autotools
-but cmake generated .so has everyting exported :-(
+This state reset is racy, no locks are held here.
 
-[ I also find it very questionable to have two build systems; it
-makes these bugs harder to find for everyone, but thats a
-different issue ].
+Since commit
+8437a6209f76 ("netfilter: nft_flow_offload: set liberal tracking mode for tcp"),
+the window checks are disabled for normal data packets, but MAXACK flag
+is checked when validating TCP resets.
+
+Clear the flag so tcp reset validation checks are ignored.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: no changes
+
+ net/netfilter/nf_flow_table_core.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index df72b0376970..bdde469bbbd1 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -161,10 +161,20 @@ void flow_offload_route_init(struct flow_offload *flow,
+ }
+ EXPORT_SYMBOL_GPL(flow_offload_route_init);
+ 
+-static void flow_offload_fixup_tcp(struct ip_ct_tcp *tcp)
++static void flow_offload_fixup_tcp(struct nf_conn *ct)
+ {
++	struct ip_ct_tcp *tcp = &ct->proto.tcp;
++
++	spin_lock_bh(&ct->lock);
++	/* Conntrack state is outdated due to offload bypass.
++	 * Clear IP_CT_TCP_FLAG_MAXACK_SET, otherwise conntracks
++	 * TCP reset validation will fail.
++	 */
+ 	tcp->seen[0].td_maxwin = 0;
++	tcp->seen[0].flags &= ~IP_CT_TCP_FLAG_MAXACK_SET;
+ 	tcp->seen[1].td_maxwin = 0;
++	tcp->seen[1].flags &= ~IP_CT_TCP_FLAG_MAXACK_SET;
++	spin_unlock_bh(&ct->lock);
+ }
+ 
+ static void flow_offload_fixup_ct(struct nf_conn *ct)
+@@ -176,7 +186,7 @@ static void flow_offload_fixup_ct(struct nf_conn *ct)
+ 	if (l4num == IPPROTO_TCP) {
+ 		struct nf_tcp_net *tn = nf_tcp_pernet(net);
+ 
+-		flow_offload_fixup_tcp(&ct->proto.tcp);
++		flow_offload_fixup_tcp(ct);
+ 
+ 		timeout = tn->timeouts[ct->proto.tcp.state];
+ 		timeout -= tn->offload_timeout;
+-- 
+2.30.2
+
 
