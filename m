@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5812-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5813-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B039A140A0
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 18:19:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20DF2A140A4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 18:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6049B3AA86D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 17:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD4FB188DEA6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 17:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7F822E409;
-	Thu, 16 Jan 2025 17:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCA222FAF9;
+	Thu, 16 Jan 2025 17:19:23 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (unknown [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F621917F1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F06153808;
 	Thu, 16 Jan 2025 17:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737047962; cv=none; b=d3vT+Bm3N9Sa0beNr8gDK2lTTmapTBSdjyu8w2Enj8MJw70O5I2Jk/5AmEyDZ0N5k+fhyk6NCWWO3CGwJbCygXjUG125kHO9iZp7TzjxHRskPqgNwBuLAS7KtfFR/1b3r3vZ/9jMSVhv+m46ZRmSL6+0tggK0713bC0phF4JWIs=
+	t=1737047963; cv=none; b=fCYTJMPptQwKWwBWwMg2wNgItBgJe+nJKJllQdQLEVBk6O3fh/hs+g8pyK1NHb7/KeG9Ul5ODX4qB34Av7MCPHEsmFYduj+zl2Fon3e8ohMlEOsrWvob0SGrTuBru/4aWxl4WILi7I+KGOf4rOJwbaCuGVZ6P2ooVRjlYaSETtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737047962; c=relaxed/simple;
-	bh=sD4stBf1DJAqhPgon8HexB2qc/HARSwB2akVvF2B5O0=;
+	s=arc-20240116; t=1737047963; c=relaxed/simple;
+	bh=YCUIgTXnZXL17oryx4O46qWOfHe2x1XhubsaVrXO574=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RWfjo+q+Hst1wOGq3IWNk2HrfYDMpRI1V3pcqUkgtG5x1Yw38QchwaPHlOnDdcilnvtvG2AtS0rdAlp9n4YqP4Q8lH363t14SpAmxS4lEC0qniqS5Y8JvH2Xbq8ec9oCpOPZnwOW5Q9UGdmvIihZwvC5zyPhmwWfRzUFioWrQjg=
+	 MIME-Version; b=XEqBqg7s4Sc7wacUOHueVCZzg9WoGiSKOmcUbH3uBqAbZqXaJ7YgN13n76IYMCSDBHaJ0e6rqnhSo4qtkKf9rMYHY4aGE7PmHLYRJ1G2dm2PFxWPQ0DgBmoKnZ6hzHpdtG0AUns9m6FrB7akZ7nJrbHC+cZzj64urPHcZxTrWqM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 02/14] netfilter: br_netfilter: remove unused conditional and dead code
-Date: Thu, 16 Jan 2025 18:18:50 +0100
-Message-Id: <20250116171902.1783620-3-pablo@netfilter.org>
+Subject: [PATCH net-next 03/14] netfilter: nf_tables: Flowtable hook's pf value never varies
+Date: Thu, 16 Jan 2025 18:18:51 +0100
+Message-Id: <20250116171902.1783620-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250116171902.1783620-1-pablo@netfilter.org>
 References: <20250116171902.1783620-1-pablo@netfilter.org>
@@ -49,74 +49,50 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Phil Sutter <phil@nwl.cc>
 
-The SKB_DROP_REASON_IP_INADDRERRORS drop reason is never returned from
-any function, as such it cannot be returned from the ip_route_input call
-tree. The 'reason != SKB_DROP_REASON_IP_INADDRERRORS' conditional is
-thus always true.
+When checking for duplicate hooks in nft_register_flowtable_net_hooks(),
+comparing ops.pf value is pointless as it is always NFPROTO_NETDEV with
+flowtable hooks.
 
-Looking back at history, commit 50038bf38e65 ("net: ip: make
-ip_route_input() return drop reasons") changed the ip_route_input
-returned value check in br_nf_pre_routing_finish from -EHOSTUNREACH to
-SKB_DROP_REASON_IP_INADDRERRORS. It turns out -EHOSTUNREACH could not be
-returned either from the ip_route_input call tree and this since commit
-251da4130115 ("ipv4: Cache ip_error() routes even when not
-forwarding.").
+Dropping the check leaves the search identical to the one in
+nft_hook_list_find() so call that function instead of open coding.
 
-Not a fix as this won't change the behavior. While at it use
-kfree_skb_reason.
-
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/bridge/br_netfilter_hooks.c | 30 +-----------------------------
- 1 file changed, 1 insertion(+), 29 deletions(-)
+ net/netfilter/nf_tables_api.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
-index 451e45b9a6a5..94cbe967d1c1 100644
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -393,38 +393,10 @@ static int br_nf_pre_routing_finish(struct net *net, struct sock *sk, struct sk_
- 		reason = ip_route_input(skb, iph->daddr, iph->saddr,
- 					ip4h_dscp(iph), dev);
- 		if (reason) {
--			struct in_device *in_dev = __in_dev_get_rcu(dev);
--
--			/* If err equals -EHOSTUNREACH the error is due to a
--			 * martian destination or due to the fact that
--			 * forwarding is disabled. For most martian packets,
--			 * ip_route_output_key() will fail. It won't fail for 2 types of
--			 * martian destinations: loopback destinations and destination
--			 * 0.0.0.0. In both cases the packet will be dropped because the
--			 * destination is the loopback device and not the bridge. */
--			if (reason != SKB_DROP_REASON_IP_INADDRERRORS || !in_dev ||
--			    IN_DEV_FORWARD(in_dev))
--				goto free_skb;
--
--			rt = ip_route_output(net, iph->daddr, 0,
--					     ip4h_dscp(iph), 0,
--					     RT_SCOPE_UNIVERSE);
--			if (!IS_ERR(rt)) {
--				/* - Bridged-and-DNAT'ed traffic doesn't
--				 *   require ip_forwarding. */
--				if (rt->dst.dev == dev) {
--					skb_dst_drop(skb);
--					skb_dst_set(skb, &rt->dst);
--					goto bridged_dnat;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index de9c4335ef47..e41c77e5eefd 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8895,7 +8895,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 					    struct list_head *hook_list,
+ 					    struct nft_flowtable *flowtable)
+ {
+-	struct nft_hook *hook, *hook2, *next;
++	struct nft_hook *hook, *next;
+ 	struct nft_flowtable *ft;
+ 	int err, i = 0;
+ 
+@@ -8904,12 +8904,9 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 			if (!nft_is_active_next(net, ft))
+ 				continue;
+ 
+-			list_for_each_entry(hook2, &ft->hook_list, list) {
+-				if (hook->ops.dev == hook2->ops.dev &&
+-				    hook->ops.pf == hook2->ops.pf) {
+-					err = -EEXIST;
+-					goto err_unregister_net_hooks;
 -				}
--				ip_rt_put(rt);
--			}
--free_skb:
--			kfree_skb(skb);
-+			kfree_skb_reason(skb, reason);
- 			return 0;
- 		} else {
- 			if (skb_dst(skb)->dev == dev) {
--bridged_dnat:
- 				skb->dev = br_indev;
- 				nf_bridge_update_protocol(skb);
- 				nf_bridge_push_encap_header(skb);
++			if (nft_hook_list_find(&ft->hook_list, hook)) {
++				err = -EEXIST;
++				goto err_unregister_net_hooks;
+ 			}
+ 		}
+ 
 -- 
 2.30.2
 
