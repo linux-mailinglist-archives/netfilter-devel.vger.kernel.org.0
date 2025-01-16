@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5814-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5820-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47195A140A2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 18:19:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95D8EA140B4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 18:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F676168459
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 17:19:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 362521887A1F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2025 17:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0BF922FAFF;
-	Thu, 16 Jan 2025 17:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194AE23F275;
+	Thu, 16 Jan 2025 17:19:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (unknown [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D306A1547D8;
-	Thu, 16 Jan 2025 17:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607EB234964;
+	Thu, 16 Jan 2025 17:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737047963; cv=none; b=cmIlPtmXcotyFR4dJU9S15HLv+VKD48EbhxCkyZzFdr9BWhojRcdqAcVenghKwSp77PbBnDpo3ZGIUwG6C8lHFHHvkb0+Y7eHRpV7CwepG4LWtMnBQpcoX3yuYekPpujshTE9pfbFj1bwnLsXmzFWgKsNfKu+WJbAe+Evyfmd7g=
+	t=1737047972; cv=none; b=IQFDtehbSRkaathJZT1ic+gKCtM89kQDNTD43pmi/HB14zqFCv+DyM4S1sav86/z1S87Axuj22tkV/qDSs5AExabG/Np+TjGUNUQEfduhhDHOeVxHTViRfby+jhedP63s9yUZBVqhoFVDZ7QhFp3j06NAdFuiLyEi6OGpOM1/zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737047963; c=relaxed/simple;
-	bh=qeu8DXk77WA52Oinxzb134Fm5lfLpbVOpYGurIMNy6Q=;
+	s=arc-20240116; t=1737047972; c=relaxed/simple;
+	bh=Nkd46QEpYCHldISYDFEY+9AVgnHq3zTgxeiRXfhjR1E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fed+ONhb7JjlqpYXIP6TT9mRjfCUcv2JrZOZT6kcn0VYINgOvY2qQBCK8L2i1cVcDyAU7csfImf7So6KfnvD1/ubRtsRFJSMqZIqMjl6KC87FxjiggzOaTl6oW1K1D0ZLyX/qeJPhGDocichv8UBG6w2e7LBMm1/AOwd2U/S32k=
+	 MIME-Version; b=rjxHrn4Kx+L/9/so56qyaveicEkGHOLCoe8TgD6lS3QcNwe1luvAD42+Q0VXopaBo5afPyzxsjBBjse0ewv/G4bwH/J9Z7JhzT84UmmddN1URvIAWLbSzGqqfjeTS/RG86+gC/aY1QBK25xB4nGLtRedHwDweHQ+XstzHZp8q1k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 04/14] netfilter: nf_tables: Store user-defined hook ifname
-Date: Thu, 16 Jan 2025 18:18:52 +0100
-Message-Id: <20250116171902.1783620-5-pablo@netfilter.org>
+Subject: [PATCH net-next 05/14] netfilter: nf_tables: Use stored ifname in netdev hook dumps
+Date: Thu, 16 Jan 2025 18:18:53 +0100
+Message-Id: <20250116171902.1783620-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250116171902.1783620-1-pablo@netfilter.org>
 References: <20250116171902.1783620-1-pablo@netfilter.org>
@@ -51,62 +51,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Phil Sutter <phil@nwl.cc>
 
-Prepare for hooks with NULL ops.dev pointer (due to non-existent device)
-and store the interface name and length as specified by the user upon
-creation. No functional change intended.
+The stored ifname and ops.dev->name may deviate after creation due to
+interface name changes. Prefer the more deterministic stored name in
+dumps which also helps avoiding inadvertent changes to stored ruleset
+dumps.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/net/netfilter/nf_tables.h |  2 ++
- net/netfilter/nf_tables_api.c     | 10 +++++++---
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ net/netfilter/nf_tables_api.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 7dcea247f853..d1f274af5b70 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1198,6 +1198,8 @@ struct nft_hook {
- 	struct list_head	list;
- 	struct nf_hook_ops	ops;
- 	struct rcu_head		rcu;
-+	char			ifname[IFNAMSIZ];
-+	u8			ifnamelen;
- };
- 
- /**
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e41c77e5eefd..95d8d33589b1 100644
+index 95d8d33589b1..87175cd1d39b 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2276,7 +2276,6 @@ static struct nft_hook *nft_netdev_hook_alloc(struct net *net,
- 					      const struct nlattr *attr)
- {
- 	struct net_device *dev;
--	char ifname[IFNAMSIZ];
- 	struct nft_hook *hook;
- 	int err;
+@@ -1956,15 +1956,16 @@ static int nft_dump_basechain_hook(struct sk_buff *skb,
+ 			if (!first)
+ 				first = hook;
  
-@@ -2286,12 +2285,17 @@ static struct nft_hook *nft_netdev_hook_alloc(struct net *net,
- 		goto err_hook_alloc;
+-			if (nla_put_string(skb, NFTA_DEVICE_NAME,
+-					   hook->ops.dev->name))
++			if (nla_put(skb, NFTA_DEVICE_NAME,
++				    hook->ifnamelen, hook->ifname))
+ 				goto nla_put_failure;
+ 			n++;
+ 		}
+ 		nla_nest_end(skb, nest_devs);
+ 
+ 		if (n == 1 &&
+-		    nla_put_string(skb, NFTA_HOOK_DEV, first->ops.dev->name))
++		    nla_put(skb, NFTA_HOOK_DEV,
++			    first->ifnamelen, first->ifname))
+ 			goto nla_put_failure;
  	}
+ 	nla_nest_end(skb, nest);
+@@ -9324,7 +9325,8 @@ static int nf_tables_fill_flowtable_info(struct sk_buff *skb, struct net *net,
  
--	nla_strscpy(ifname, attr, IFNAMSIZ);
-+	err = nla_strscpy(hook->ifname, attr, IFNAMSIZ);
-+	if (err < 0)
-+		goto err_hook_dev;
-+
-+	hook->ifnamelen = nla_len(attr);
-+
- 	/* nf_tables_netdev_event() is called under rtnl_mutex, this is
- 	 * indirectly serializing all the other holders of the commit_mutex with
- 	 * the rtnl_mutex.
- 	 */
--	dev = __dev_get_by_name(net, ifname);
-+	dev = __dev_get_by_name(net, hook->ifname);
- 	if (!dev) {
- 		err = -ENOENT;
- 		goto err_hook_dev;
+ 	list_for_each_entry_rcu(hook, hook_list, list,
+ 				lockdep_commit_lock_is_held(net)) {
+-		if (nla_put_string(skb, NFTA_DEVICE_NAME, hook->ops.dev->name))
++		if (nla_put(skb, NFTA_DEVICE_NAME,
++			    hook->ifnamelen, hook->ifname))
+ 			goto nla_put_failure;
+ 	}
+ 	nla_nest_end(skb, nest_devs);
 -- 
 2.30.2
 
