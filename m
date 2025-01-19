@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5831-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5839-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF480A1633A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 18:21:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B027A1634A
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 18:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 189C118852EB
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 17:21:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C75B3A12AD
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 17:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF52F1DF988;
-	Sun, 19 Jan 2025 17:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BF21E00AC;
+	Sun, 19 Jan 2025 17:21:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B70C537E9;
-	Sun, 19 Jan 2025 17:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6F886331;
+	Sun, 19 Jan 2025 17:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737307267; cv=none; b=LboKcvC4NA74JJc5efknhNRq3NdDB6wYgoLkQ6wJD/K8+Zwocqzu46Yl9n4WGLRCMj8yj+foqAZgTs8PGgKzVV4eC/6Dv0Y/yC2b5uyUsmjf47zQL6jRlVt7GDXgkR+5CjqN4qpAWfh921ox1C6ykG9MQRFzxmCqZuLoYGqaWPc=
+	t=1737307270; cv=none; b=TnPYp/Rcv9eW8l7dO4XkiPebdB2rRjFRRjm3hcy/oiMgeAouhQaDkhunaMhevWGGHlPxcd2YTOMmyyOZhUET7An6rd0m747Dyw51pVStHIlDhwt6fMJk2KCHqQqFb2w4Q3MoZvZrhX4s75OPlP6Hkio4iHpsftRYKy6ojp4CdVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737307267; c=relaxed/simple;
-	bh=YCUIgTXnZXL17oryx4O46qWOfHe2x1XhubsaVrXO574=;
+	s=arc-20240116; t=1737307270; c=relaxed/simple;
+	bh=LWcSmBspHWeka0sHNHkTYxSbwhWDR4iq8THQAIynXuY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FFYTYVUvN7KGFcp1TKmdSOcp41j20RbQYocfrjnJBXNVbbPRLJYyIwPROgBh4Sr0dfgAXEakysNLWvFx1tMn0qFAb3+PSu2OZz1xzQgSJzJj+ONenlRUY7EE5d55oE2QdC7B/ypziHefMPI6wfT/uH3drEdGpseOirWqt2/Q9ac=
+	 MIME-Version; b=vE5Y/ZmT0M/XhKTBx+9mTJCzIur7FuwA05G6rKomIA6mZKK0JKGdC6cjYuwvxx8omxDJty0nNFGnt4s1BjVa0IyOmKyjFEhPijcazWr6nXYeVQRqZZ66bA5DT6XgjkqMHlH1d+GF7deH7RoLE+wbjflr1KVOpN0Vemd/r0L0xtk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 03/14] netfilter: nf_tables: Flowtable hook's pf value never varies
-Date: Sun, 19 Jan 2025 18:20:40 +0100
-Message-Id: <20250119172051.8261-4-pablo@netfilter.org>
+Subject: [PATCH net-next 04/14] netfilter: nf_tables: Store user-defined hook ifname
+Date: Sun, 19 Jan 2025 18:20:41 +0100
+Message-Id: <20250119172051.8261-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250119172051.8261-1-pablo@netfilter.org>
 References: <20250119172051.8261-1-pablo@netfilter.org>
@@ -51,48 +51,62 @@ Content-Transfer-Encoding: 8bit
 
 From: Phil Sutter <phil@nwl.cc>
 
-When checking for duplicate hooks in nft_register_flowtable_net_hooks(),
-comparing ops.pf value is pointless as it is always NFPROTO_NETDEV with
-flowtable hooks.
-
-Dropping the check leaves the search identical to the one in
-nft_hook_list_find() so call that function instead of open coding.
+Prepare for hooks with NULL ops.dev pointer (due to non-existent device)
+and store the interface name and length as specified by the user upon
+creation. No functional change intended.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ include/net/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_tables_api.c     | 10 +++++++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index f6958118986a..bd93d085b6fb 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1201,6 +1201,8 @@ struct nft_hook {
+ 	struct list_head	list;
+ 	struct nf_hook_ops	ops;
+ 	struct rcu_head		rcu;
++	char			ifname[IFNAMSIZ];
++	u8			ifnamelen;
+ };
+ 
+ /**
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index de9c4335ef47..e41c77e5eefd 100644
+index e41c77e5eefd..95d8d33589b1 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -8895,7 +8895,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
- 					    struct list_head *hook_list,
- 					    struct nft_flowtable *flowtable)
+@@ -2276,7 +2276,6 @@ static struct nft_hook *nft_netdev_hook_alloc(struct net *net,
+ 					      const struct nlattr *attr)
  {
--	struct nft_hook *hook, *hook2, *next;
-+	struct nft_hook *hook, *next;
- 	struct nft_flowtable *ft;
- 	int err, i = 0;
+ 	struct net_device *dev;
+-	char ifname[IFNAMSIZ];
+ 	struct nft_hook *hook;
+ 	int err;
  
-@@ -8904,12 +8904,9 @@ static int nft_register_flowtable_net_hooks(struct net *net,
- 			if (!nft_is_active_next(net, ft))
- 				continue;
+@@ -2286,12 +2285,17 @@ static struct nft_hook *nft_netdev_hook_alloc(struct net *net,
+ 		goto err_hook_alloc;
+ 	}
  
--			list_for_each_entry(hook2, &ft->hook_list, list) {
--				if (hook->ops.dev == hook2->ops.dev &&
--				    hook->ops.pf == hook2->ops.pf) {
--					err = -EEXIST;
--					goto err_unregister_net_hooks;
--				}
-+			if (nft_hook_list_find(&ft->hook_list, hook)) {
-+				err = -EEXIST;
-+				goto err_unregister_net_hooks;
- 			}
- 		}
- 
+-	nla_strscpy(ifname, attr, IFNAMSIZ);
++	err = nla_strscpy(hook->ifname, attr, IFNAMSIZ);
++	if (err < 0)
++		goto err_hook_dev;
++
++	hook->ifnamelen = nla_len(attr);
++
+ 	/* nf_tables_netdev_event() is called under rtnl_mutex, this is
+ 	 * indirectly serializing all the other holders of the commit_mutex with
+ 	 * the rtnl_mutex.
+ 	 */
+-	dev = __dev_get_by_name(net, ifname);
++	dev = __dev_get_by_name(net, hook->ifname);
+ 	if (!dev) {
+ 		err = -ENOENT;
+ 		goto err_hook_dev;
 -- 
 2.30.2
 
