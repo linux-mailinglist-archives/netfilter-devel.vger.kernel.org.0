@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5836-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5835-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2310BA16344
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 18:21:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E47A16343
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 18:21:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3824164879
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 17:21:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5367A3A5A52
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 17:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7B81DFE37;
-	Sun, 19 Jan 2025 17:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27631DFE16;
+	Sun, 19 Jan 2025 17:21:09 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DCB1DFD95;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE3A1DFD96;
 	Sun, 19 Jan 2025 17:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737307269; cv=none; b=PbmqwtsBhGs4Ni4EFJZFgctWhwFUnbrd0tNeyq5BynaYYMrc2FNO4lxEBzTy6nzeGQzQRTJaAghjrCZwC3tdU0PLfberE+w75RnHg+MaCZSwc3RCcUJ0aEqtf3HHgks/v1mieaYu8hFTw2BNz6j3vHA3e70Hvr1AJkiYoegOkcI=
+	t=1737307269; cv=none; b=XjowtedDapnLrlVKHue9j4unTkkK0UW4pWKUQQQXVqa7Q4970htkLw/p5/81srB4utC0+/1lt016oqrlsBNUH01TocdV5cnj0BGUqFaZyP5v5l7r1R8vIikt5YQw79BvOF8sdk5McYIxHANk9zuiqc8PwIeFxqD6laZVzVSxRwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737307269; c=relaxed/simple;
-	bh=hLeU07LEfyCNFFqaijcYqYURZ7xtyHtGz9nvUa6jwx4=;
+	bh=6ddK21dq6yMTvfYMZwaXs6sdIX5DTKQsflnlcsiwT3w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jUrnznlgrY4f+j4tLjK8dA6YcphovpI2A8creaXVuw5xxTaUxyGJKAhlzdF86h4uZSUdsVGRghU8j6gswEwoKbBfARYi/L4f1q1S6dFrrvsFbEgQubcoaBQunXEDqOMKRZS2c7z4Sd7SYU/pjdk1IPjKPCeAel+hGjukK4fRPE8=
+	 MIME-Version; b=Ag4KFSuzcSjIwpL84pbME9T6a3Tp2j1u9HuFN+J/AtLe6DGlNP4TWszzANGF3rjMbQawzDmv/mz65bjfaK6H0gXUcYh0Qg7izh2R+pZgNgJ7/tbxZHWFzTgOki0bUl/T2NNO0VEyJKJ3TnHYAEbV5Tkn2kUY3IloeJdH4WsxDWw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 07/14] netfilter: nf_tables: Tolerate chains with no remaining hooks
-Date: Sun, 19 Jan 2025 18:20:44 +0100
-Message-Id: <20250119172051.8261-8-pablo@netfilter.org>
+Subject: [PATCH net-next 08/14] netfilter: nf_tables: Simplify chain netdev notifier
+Date: Sun, 19 Jan 2025 18:20:45 +0100
+Message-Id: <20250119172051.8261-9-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250119172051.8261-1-pablo@netfilter.org>
 References: <20250119172051.8261-1-pablo@netfilter.org>
@@ -51,135 +51,80 @@ Content-Transfer-Encoding: 8bit
 
 From: Phil Sutter <phil@nwl.cc>
 
-Do not drop a netdev-family chain if the last interface it is registered
-for vanishes. Users dumping and storing the ruleset upon shutdown to
-restore it upon next boot may otherwise lose the chain and all contained
-rules. They will still lose the list of devices, a later patch will fix
-that. For now, this aligns the event handler's behaviour with that for
-flowtables.
-The controversal situation at netns exit should be no problem here:
-event handler will unregister the hooks, core nftables cleanup code will
-drop the chain itself.
+With conditional chain deletion gone, callback code simplifies: Instead
+of filling an nft_ctx object, just pass basechain to the per-chain
+function. Also plain list_for_each_entry() is safe now.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/net/netfilter/nf_tables.h |  2 --
- net/netfilter/nf_tables_api.c     | 41 -------------------------------
- net/netfilter/nft_chain_filter.c  | 29 ++++++----------------
- 3 files changed, 7 insertions(+), 65 deletions(-)
+ net/netfilter/nft_chain_filter.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index bd93d085b6fb..60d5dcdb289c 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1238,8 +1238,6 @@ static inline bool nft_is_base_chain(const struct nft_chain *chain)
- 	return chain->flags & NFT_CHAIN_BASE;
- }
- 
--int __nft_release_basechain(struct nft_ctx *ctx);
--
- unsigned int nft_do_chain(struct nft_pktinfo *pkt, void *priv);
- 
- static inline bool nft_use_inc(u32 *use)
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index ed15c52e3c65..667459256e4c 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -11741,47 +11741,6 @@ int nft_data_dump(struct sk_buff *skb, int attr, const struct nft_data *data,
- }
- EXPORT_SYMBOL_GPL(nft_data_dump);
- 
--static void __nft_release_basechain_now(struct nft_ctx *ctx)
--{
--	struct nft_rule *rule, *nr;
--
--	list_for_each_entry_safe(rule, nr, &ctx->chain->rules, list) {
--		list_del(&rule->list);
--		nf_tables_rule_release(ctx, rule);
--	}
--	nf_tables_chain_destroy(ctx->chain);
--}
--
--int __nft_release_basechain(struct nft_ctx *ctx)
--{
--	struct nft_rule *rule;
--
--	if (WARN_ON_ONCE(!nft_is_base_chain(ctx->chain)))
--		return 0;
--
--	nf_tables_unregister_hook(ctx->net, ctx->chain->table, ctx->chain);
--	list_for_each_entry(rule, &ctx->chain->rules, list)
--		nft_use_dec(&ctx->chain->use);
--
--	nft_chain_del(ctx->chain);
--	nft_use_dec(&ctx->table->use);
--
--	if (!maybe_get_net(ctx->net)) {
--		__nft_release_basechain_now(ctx);
--		return 0;
--	}
--
--	/* wait for ruleset dumps to complete.  Owning chain is no longer in
--	 * lists, so new dumps can't find any of these rules anymore.
--	 */
--	synchronize_rcu();
--
--	__nft_release_basechain_now(ctx);
--	put_net(ctx->net);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(__nft_release_basechain);
--
- static void __nft_release_hook(struct net *net, struct nft_table *table)
- {
- 	struct nft_flowtable *flowtable;
 diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index 7010541fcca6..543f258b7c6b 100644
+index 543f258b7c6b..19a553550c76 100644
 --- a/net/netfilter/nft_chain_filter.c
 +++ b/net/netfilter/nft_chain_filter.c
-@@ -322,34 +322,19 @@ static void nft_netdev_event(unsigned long event, struct net_device *dev,
- 			     struct nft_ctx *ctx)
+@@ -319,17 +319,16 @@ static const struct nft_chain_type nft_chain_filter_netdev = {
+ };
+ 
+ static void nft_netdev_event(unsigned long event, struct net_device *dev,
+-			     struct nft_ctx *ctx)
++			     struct nft_base_chain *basechain)
  {
- 	struct nft_base_chain *basechain = nft_base_chain(ctx->chain);
--	struct nft_hook *hook, *found = NULL;
--	int n = 0;
-+	struct nft_hook *hook;
+-	struct nft_base_chain *basechain = nft_base_chain(ctx->chain);
+ 	struct nft_hook *hook;
  
  	list_for_each_entry(hook, &basechain->hook_list, list) {
--		if (hook->ops.dev == dev)
--			found = hook;
--
--		n++;
--	}
--	if (!found)
--		return;
-+		if (hook->ops.dev != dev)
-+			continue;
+ 		if (hook->ops.dev != dev)
+ 			continue;
  
--	if (n > 1) {
- 		if (!(ctx->chain->table->flags & NFT_TABLE_F_DORMANT))
--			nf_unregister_net_hook(ctx->net, &found->ops);
-+			nf_unregister_net_hook(ctx->net, &hook->ops);
+-		if (!(ctx->chain->table->flags & NFT_TABLE_F_DORMANT))
+-			nf_unregister_net_hook(ctx->net, &hook->ops);
++		if (!(basechain->chain.table->flags & NFT_TABLE_F_DORMANT))
++			nf_unregister_net_hook(dev_net(dev), &hook->ops);
  
--		list_del_rcu(&found->list);
--		kfree_rcu(found, rcu);
--		return;
-+		list_del_rcu(&hook->list);
-+		kfree_rcu(hook, rcu);
-+		break;
+ 		list_del_rcu(&hook->list);
+ 		kfree_rcu(hook, rcu);
+@@ -343,25 +342,20 @@ static int nf_tables_netdev_event(struct notifier_block *this,
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct nft_base_chain *basechain;
+ 	struct nftables_pernet *nft_net;
+-	struct nft_chain *chain, *nr;
++	struct nft_chain *chain;
+ 	struct nft_table *table;
+-	struct nft_ctx ctx = {
+-		.net	= dev_net(dev),
+-	};
+ 
+ 	if (event != NETDEV_UNREGISTER)
+ 		return NOTIFY_DONE;
+ 
+-	nft_net = nft_pernet(ctx.net);
++	nft_net = nft_pernet(dev_net(dev));
+ 	mutex_lock(&nft_net->commit_mutex);
+ 	list_for_each_entry(table, &nft_net->tables, list) {
+ 		if (table->family != NFPROTO_NETDEV &&
+ 		    table->family != NFPROTO_INET)
+ 			continue;
+ 
+-		ctx.family = table->family;
+-		ctx.table = table;
+-		list_for_each_entry_safe(chain, nr, &table->chains, list) {
++		list_for_each_entry(chain, &table->chains, list) {
+ 			if (!nft_is_base_chain(chain))
+ 				continue;
+ 
+@@ -370,8 +364,7 @@ static int nf_tables_netdev_event(struct notifier_block *this,
+ 			    basechain->ops.hooknum != NF_INET_INGRESS)
+ 				continue;
+ 
+-			ctx.chain = chain;
+-			nft_netdev_event(event, dev, &ctx);
++			nft_netdev_event(event, dev, basechain);
+ 		}
  	}
--
--	/* UNREGISTER events are also happening on netns exit.
--	 *
--	 * Although nf_tables core releases all tables/chains, only this event
--	 * handler provides guarantee that hook->ops.dev is still accessible,
--	 * so we cannot skip exiting net namespaces.
--	 */
--	__nft_release_basechain(ctx);
- }
- 
- static int nf_tables_netdev_event(struct notifier_block *this,
+ 	mutex_unlock(&nft_net->commit_mutex);
 -- 
 2.30.2
 
