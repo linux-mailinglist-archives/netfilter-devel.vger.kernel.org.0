@@ -1,29 +1,29 @@
-Return-Path: <netfilter-devel+bounces-5835-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5838-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E47A16343
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 18:21:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B1AA16349
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 18:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5367A3A5A52
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 17:21:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CF8A188550E
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2025 17:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27631DFE16;
-	Sun, 19 Jan 2025 17:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EECC1E0091;
+	Sun, 19 Jan 2025 17:21:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE3A1DFD96;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81ACC1DFDA5;
 	Sun, 19 Jan 2025 17:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737307269; cv=none; b=XjowtedDapnLrlVKHue9j4unTkkK0UW4pWKUQQQXVqa7Q4970htkLw/p5/81srB4utC0+/1lt016oqrlsBNUH01TocdV5cnj0BGUqFaZyP5v5l7r1R8vIikt5YQw79BvOF8sdk5McYIxHANk9zuiqc8PwIeFxqD6laZVzVSxRwY=
+	t=1737307270; cv=none; b=iiBUGmTP7j+X5LMQv2eOMen+76jw7xJamehJekvFHjVVc+/fzhIBOKDsb+3Kxy2DF1O8d7nBxA0mC57XMdQriMG0uwePq0kwjLY9yk5z5TCKyg8FBpgjLMidtmySqBxrF782j02diU18T6yhADwim0bYVnn7MvJKML7XUZA9ey4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737307269; c=relaxed/simple;
-	bh=6ddK21dq6yMTvfYMZwaXs6sdIX5DTKQsflnlcsiwT3w=;
+	s=arc-20240116; t=1737307270; c=relaxed/simple;
+	bh=bf4U92hBPyNGdkOqWr/Gm0rDjv1jB2B0iEc2B3V9aSI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ag4KFSuzcSjIwpL84pbME9T6a3Tp2j1u9HuFN+J/AtLe6DGlNP4TWszzANGF3rjMbQawzDmv/mz65bjfaK6H0gXUcYh0Qg7izh2R+pZgNgJ7/tbxZHWFzTgOki0bUl/T2NNO0VEyJKJ3TnHYAEbV5Tkn2kUY3IloeJdH4WsxDWw=
+	 MIME-Version; b=Hwb9Ltu10I2jdkvVCHE3Dltcij6j3NdvenpQeqZz6sNg86Xp6hTyQTnumwZ1D96wxdrqI8++tM4zL6y75bigiCtb9P3ASFd5rJdBgWr14Al5TdiG3YZRDa3MW1s+99qKvqhBVamMhYREX40xqpVZEnqTX+c67P5/OnCTUP4uruc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
@@ -35,9 +35,9 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
 	fw@strlen.de
-Subject: [PATCH net-next 08/14] netfilter: nf_tables: Simplify chain netdev notifier
-Date: Sun, 19 Jan 2025 18:20:45 +0100
-Message-Id: <20250119172051.8261-9-pablo@netfilter.org>
+Subject: [PATCH net-next 09/14] netfilter: nft_flow_offload: clear tcp MAXACK flag before moving to slowpath
+Date: Sun, 19 Jan 2025 18:20:46 +0100
+Message-Id: <20250119172051.8261-10-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250119172051.8261-1-pablo@netfilter.org>
 References: <20250119172051.8261-1-pablo@netfilter.org>
@@ -49,82 +49,58 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Phil Sutter <phil@nwl.cc>
+From: Florian Westphal <fw@strlen.de>
 
-With conditional chain deletion gone, callback code simplifies: Instead
-of filling an nft_ctx object, just pass basechain to the per-chain
-function. Also plain list_for_each_entry() is safe now.
+This state reset is racy, no locks are held here.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Since commit
+8437a6209f76 ("netfilter: nft_flow_offload: set liberal tracking mode for tcp"),
+the window checks are disabled for normal data packets, but MAXACK flag
+is checked when validating TCP resets.
+
+Clear the flag so tcp reset validation checks are ignored.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_chain_filter.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ net/netfilter/nf_flow_table_core.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index 543f258b7c6b..19a553550c76 100644
---- a/net/netfilter/nft_chain_filter.c
-+++ b/net/netfilter/nft_chain_filter.c
-@@ -319,17 +319,16 @@ static const struct nft_chain_type nft_chain_filter_netdev = {
- };
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index df72b0376970..bdde469bbbd1 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -161,10 +161,20 @@ void flow_offload_route_init(struct flow_offload *flow,
+ }
+ EXPORT_SYMBOL_GPL(flow_offload_route_init);
  
- static void nft_netdev_event(unsigned long event, struct net_device *dev,
--			     struct nft_ctx *ctx)
-+			     struct nft_base_chain *basechain)
+-static void flow_offload_fixup_tcp(struct ip_ct_tcp *tcp)
++static void flow_offload_fixup_tcp(struct nf_conn *ct)
  {
--	struct nft_base_chain *basechain = nft_base_chain(ctx->chain);
- 	struct nft_hook *hook;
++	struct ip_ct_tcp *tcp = &ct->proto.tcp;
++
++	spin_lock_bh(&ct->lock);
++	/* Conntrack state is outdated due to offload bypass.
++	 * Clear IP_CT_TCP_FLAG_MAXACK_SET, otherwise conntracks
++	 * TCP reset validation will fail.
++	 */
+ 	tcp->seen[0].td_maxwin = 0;
++	tcp->seen[0].flags &= ~IP_CT_TCP_FLAG_MAXACK_SET;
+ 	tcp->seen[1].td_maxwin = 0;
++	tcp->seen[1].flags &= ~IP_CT_TCP_FLAG_MAXACK_SET;
++	spin_unlock_bh(&ct->lock);
+ }
  
- 	list_for_each_entry(hook, &basechain->hook_list, list) {
- 		if (hook->ops.dev != dev)
- 			continue;
+ static void flow_offload_fixup_ct(struct nf_conn *ct)
+@@ -176,7 +186,7 @@ static void flow_offload_fixup_ct(struct nf_conn *ct)
+ 	if (l4num == IPPROTO_TCP) {
+ 		struct nf_tcp_net *tn = nf_tcp_pernet(net);
  
--		if (!(ctx->chain->table->flags & NFT_TABLE_F_DORMANT))
--			nf_unregister_net_hook(ctx->net, &hook->ops);
-+		if (!(basechain->chain.table->flags & NFT_TABLE_F_DORMANT))
-+			nf_unregister_net_hook(dev_net(dev), &hook->ops);
+-		flow_offload_fixup_tcp(&ct->proto.tcp);
++		flow_offload_fixup_tcp(ct);
  
- 		list_del_rcu(&hook->list);
- 		kfree_rcu(hook, rcu);
-@@ -343,25 +342,20 @@ static int nf_tables_netdev_event(struct notifier_block *this,
- 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
- 	struct nft_base_chain *basechain;
- 	struct nftables_pernet *nft_net;
--	struct nft_chain *chain, *nr;
-+	struct nft_chain *chain;
- 	struct nft_table *table;
--	struct nft_ctx ctx = {
--		.net	= dev_net(dev),
--	};
- 
- 	if (event != NETDEV_UNREGISTER)
- 		return NOTIFY_DONE;
- 
--	nft_net = nft_pernet(ctx.net);
-+	nft_net = nft_pernet(dev_net(dev));
- 	mutex_lock(&nft_net->commit_mutex);
- 	list_for_each_entry(table, &nft_net->tables, list) {
- 		if (table->family != NFPROTO_NETDEV &&
- 		    table->family != NFPROTO_INET)
- 			continue;
- 
--		ctx.family = table->family;
--		ctx.table = table;
--		list_for_each_entry_safe(chain, nr, &table->chains, list) {
-+		list_for_each_entry(chain, &table->chains, list) {
- 			if (!nft_is_base_chain(chain))
- 				continue;
- 
-@@ -370,8 +364,7 @@ static int nf_tables_netdev_event(struct notifier_block *this,
- 			    basechain->ops.hooknum != NF_INET_INGRESS)
- 				continue;
- 
--			ctx.chain = chain;
--			nft_netdev_event(event, dev, &ctx);
-+			nft_netdev_event(event, dev, basechain);
- 		}
- 	}
- 	mutex_unlock(&nft_net->commit_mutex);
+ 		timeout = tn->timeouts[ct->proto.tcp.state];
+ 		timeout -= tn->offload_timeout;
 -- 
 2.30.2
 
