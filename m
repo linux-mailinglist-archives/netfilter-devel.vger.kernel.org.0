@@ -1,44 +1,46 @@
-Return-Path: <netfilter-devel+bounces-5905-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5907-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F2AA2336F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2025 18:50:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA83DA23371
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2025 18:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C71D3A342F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2025 17:50:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68C997A331B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2025 17:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB381EBFE2;
-	Thu, 30 Jan 2025 17:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5291EB9E1;
+	Thu, 30 Jan 2025 17:50:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACFC1E503D
-	for <netfilter-devel@vger.kernel.org>; Thu, 30 Jan 2025 17:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF911E503D
+	for <netfilter-devel@vger.kernel.org>; Thu, 30 Jan 2025 17:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738259429; cv=none; b=YpGNADWg9b2jm0fp9ZJ//uN7GxxdLzoZOYdzoV6Aj3MYikkxtrsb+vHfM82Fm4CII3NZyjFTb7Mcp/hZYWupYh0m4oxxS2qE2uw5v/KwdL5hLAi0FeJp65YbvvBF0Rf0q7dK9RuVa7E6LmGVlfxR7hjcQwvDVBU33ktPRf+Ty7U=
+	t=1738259432; cv=none; b=R1H8ChZdi5Rldn08cCtbKm5+IkRAqTOTYKzIMfX7rGpRxVtYPO5sMpQmabdm18yo+ay225CbZcH0zFatDAX5PSvfRBrruVoaguLZYwSPJJNa8QPJ8K5bBBSkAG5D9jFThFR/mnkibAwzQXadO+9rSZwRM/fuhF3uE5AQcYz8VKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738259429; c=relaxed/simple;
-	bh=+yILWXFRMXf2uJpa9nAhny1Lr5Zrdxl8t7bPATK9Oro=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j9ONyZdybYl226hwRN4iNSQTTfJgLaoQ4kQhcZX0M/VPFzQrIXa5OKrEXUQUN+vm4ULzd41pFeC8+ahhRZNVoIXnyLpW5wOHY0ZxwCP/TOoEC+YK7z9by+cwU3bEKcWaOx+/yeWY/m/nDioqO/e6fUEVrCr/bg4XNpugEfbp8PQ=
+	s=arc-20240116; t=1738259432; c=relaxed/simple;
+	bh=L43gpkK9AVUBUqmy73ETfxStvOZg6MfWpOv5wwDx9QM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VEPYINgLrFiBpU3MMuG8SG3BoBfGCV9KpOQNt/KnYdRyK/xwLWzlEI5DsAM1SKaFlypbM892DL1dzReibwYgehJZp4hFYklSn8X8SEbaBkQ40l1Va4rik0kbiPPcHIrvfmd8Lp+GHe05CcSIdHc8qJTnW5JKlAQgv+i7LthIe6A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@breakpoint.cc>)
-	id 1tdYgE-00018y-PC; Thu, 30 Jan 2025 18:50:18 +0100
+	id 1tdYgI-000198-S9; Thu, 30 Jan 2025 18:50:22 +0100
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>,
-	Sunny73Cr <Sunny73Cr@protonmail.com>
-Subject: [PATCH nft 1/3] netlink_delinarize: fix bogus munging of mask value
-Date: Thu, 30 Jan 2025 18:47:12 +0100
-Message-ID: <20250130174718.6644-1-fw@strlen.de>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft 2/3] src: add and use payload_expr_trim_force
+Date: Thu, 30 Jan 2025 18:47:13 +0100
+Message-ID: <20250130174718.6644-2-fw@strlen.de>
 X-Mailer: git-send-email 2.45.3
+In-Reply-To: <20250130174718.6644-1-fw@strlen.de>
+References: <20250130174718.6644-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -47,162 +49,224 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Given following input:
-table ip t {
- chain c {
-  @ih,58,6 set 0 @ih,86,6 set 0 @ih,170,22 set 0
- }
-}
+Previous commit fixed erroneous handling of raw expressions when RHS sets
+a zero value.
 
-nft will produce following output:
-chain c {
- @ih,48,16 set @ih,48,16 & 0x3f @ih,80,16 set @ih,80,16 & 0x3f0 @ih,160,32 set @ih,160,32 & 0x3fffff
-}
+Input: @ih,58,6 set 0 @ih,86,6 set 0 @ih,170,22 set 0
+Output:@ih,48,16 set @ih,48,16 & 0xffc0 @ih,80,16 set \
+	@ih,80,16 & 0xfc0f @ih,160,32 set @ih,160,32 & 0xffc00000
 
-The input side is correct, the generated expressions sent to kernel are:
+After this patch, this will instead display:
 
-1  [ payload load 2b @ inner header + 6 => reg 1 ]
-2  [ bitwise reg 1 = ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-3  [ payload write reg 1 => 2b @ inner header + 6 .. ]
-4  [ payload load 2b @ inner header + 10 => reg 1 ]
-5  [ bitwise reg 1 = ( reg 1 & 0x00000ffc ) ^ 0x00000000 ]
-6  [ payload write reg 1 => 2b @ inner header + 10 .. ]
-7  [ payload load 4b @ inner header + 20 => reg 1 ]
-8  [ bitwise reg 1 = ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-9  [ payload write reg 1 => 4b @ inner header + 20 .. ]
+@ih,58,6 set 0x0 @ih,86,6 set 0x0 @ih,170,22 set 0x0
 
-@ih,58,6 set 0 <- Zero 6 bits, starting with bit 58
+payload_expr_trim_force() only works when the payload has no known
+protocol (template) attached, i.e. will be printed as raw payload syntax.
 
-Changes to inner header mandate a checksum update, which only works for
-even byte counts (except for last byte in the payload).
+It performs sanity checks on @mask and then adjusts the payload expression
+length and offset according to the mask.
 
-Thus, we load 2b at offet 6. (16bits, offset 48).
+Also add this check in __binop_postprocess() so we can also discard masks
+when matching, e.g.
 
-Because we want to zero 6 bits, we need a mask that retains 10 bits and
-clears 6: b1111111111000000 (first 8 bit retains 48-57, last 6 bit clear
-58-63).  The '0xc0ff' is not correct, but thats because debug output comes
-from libnftnl which prints values in host byte order, the value will be
-interpreted as big endian on kernel side, so this will do the right thing.
+'@ih,7,5 2' becomes '@ih,7,5 0x2', not '@ih,0,16 & 0xffc0 == 0x20'.
 
-Next, same problem:
+binop_postprocess now returns if it performed an action or not; if this
+returns true then arguments might have been freed so callers must no longer
+refer to any of the expressions attached to the binop.
 
-@ih,86,6 set 0 <- Zero 6 bits, starting with bit 86.
+Next patch adds test cases for this.
 
-nft needs to round down to even-sized byte offset, 10, then retain first
-6 bits (80 + 6 == 86), then clear 6 bits (86-91), then keep 4 more as-is
-(92-95).
-
-So mask is 0xfc0f (in big endian) would be correct (b1111110000001111).
-
-Last expression, @ih,170,22 set 0, asks to clear 22 bits starting with bit
-170, nft correctly rounds this down to a 32 bit read at offset 160.
-
-Required mask keeps first 10 bits, then clears 22
-(b11111111110000000000000000000000).  Required mask would be 0xffc00000,
-which corresponds to the wrong-endian-printed value in line 8 above.
-
-Now that we convinced ourselves that the input side is correct, fix up
-netlink delinearize to undo the mask alterations if we can't find a
-template to print a human-readable payload expression.
-
-With this patch, we get this output:
-
-  @ih,48,16 set @ih,48,16 & 0xffc0 @ih,80,16 set @ih,80,16 & 0xfc0f @ih,160,32 set @ih,160,32 & 0xffc00000
-
-... which isn't ideal.  We should fixup the payload expression to display
-the same output as the input, i.e. adjust payload->len and offset as per
-mask and discard the mask instead.
-
-This will be done in a followup patch.
-
-Fixes: 50ca788ca4d0 ("netlink: decode payload statment")
-Reported-by: Sunny73Cr <Sunny73Cr@protonmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/netlink_delinearize.c | 57 ++++++++++++++++++++++++---------------
- 1 file changed, 35 insertions(+), 22 deletions(-)
+ include/payload.h         |  2 ++
+ src/netlink_delinearize.c | 31 +++++++++++++++++-----
+ src/payload.c             | 54 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 81 insertions(+), 6 deletions(-)
 
+diff --git a/include/payload.h b/include/payload.h
+index 08e45f7f79e2..6685dad6f9f7 100644
+--- a/include/payload.h
++++ b/include/payload.h
+@@ -62,6 +62,8 @@ extern struct expr *payload_expr_join(const struct expr *e1,
+ 
+ bool payload_expr_trim(struct expr *expr, struct expr *mask,
+ 		       const struct proto_ctx *ctx, unsigned int *shift);
++bool payload_expr_trim_force(struct expr *expr, struct expr *mask,
++			     unsigned int *shift);
+ extern void payload_expr_expand(struct list_head *list, struct expr *expr,
+ 				const struct proto_ctx *ctx);
+ extern void payload_expr_complete(struct expr *expr,
 diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index db8b6bbe13e8..046e7a472b8d 100644
+index 046e7a472b8d..86c8602860f6 100644
 --- a/src/netlink_delinearize.c
 +++ b/src/netlink_delinearize.c
-@@ -3226,41 +3226,54 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
- 		break;
+@@ -2451,7 +2451,7 @@ static void binop_adjust(const struct expr *binop, struct expr *right,
  	}
- 	case EXPR_PAYLOAD: /* II? */
--		value = expr->right;
--		if (value->etype != EXPR_VALUE)
-+		payload = expr->left;
-+		mask = expr->right;
+ }
+ 
+-static void __binop_postprocess(struct rule_pp_ctx *ctx,
++static bool __binop_postprocess(struct rule_pp_ctx *ctx,
+ 				struct expr *expr,
+ 				struct expr *left,
+ 				struct expr *mask,
+@@ -2501,17 +2501,27 @@ static void __binop_postprocess(struct rule_pp_ctx *ctx,
+ 			expr_set_type(right, left->dtype, left->byteorder);
+ 
+ 		expr_free(binop);
++		return true;
++	} else if (left->etype == EXPR_PAYLOAD &&
++		   expr->right->etype == EXPR_VALUE &&
++		   payload_expr_trim_force(left, mask, &shift)) {
++			mpz_rshift_ui(expr->right->value, shift);
++			*expr_binop = expr_get(left);
++			expr_free(binop);
++			return true;
+ 	}
 +
-+		if (mask->etype != EXPR_VALUE)
-+			return;
-+
-+		if (!payload_expr_cmp(stmt->payload.expr, payload))
++	return false;
+ }
+ 
+-static void binop_postprocess(struct rule_pp_ctx *ctx, struct expr *expr,
++static bool binop_postprocess(struct rule_pp_ctx *ctx, struct expr *expr,
+ 			      struct expr **expr_binop)
+ {
+ 	struct expr *binop = *expr_binop;
+ 	struct expr *left = binop->left;
+ 	struct expr *mask = binop->right;
+ 
+-	__binop_postprocess(ctx, expr, left, mask, expr_binop);
++	return __binop_postprocess(ctx, expr, left, mask, expr_binop);
+ }
+ 
+ static void map_binop_postprocess(struct rule_pp_ctx *ctx, struct expr *expr)
+@@ -3178,6 +3188,7 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
+ 
+ 	switch (expr->left->etype) {
+ 	case EXPR_BINOP: {/* I? */
++		unsigned int shift = 0;
+ 		mpz_t tmp;
+ 
+ 		if (expr->op != OP_OR)
+@@ -3211,13 +3222,18 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
+ 		mpz_set(mask->value, bitmask);
+ 		mpz_clear(bitmask);
+ 
+-		binop_postprocess(ctx, expr, &expr->left);
+-		if (!payload_is_known(payload)) {
++		if (!binop_postprocess(ctx, expr, &expr->left) &&
++		    !payload_is_known(payload) &&
++		    !payload_expr_trim_force(payload,
++					     mask, &shift)) {
+ 			mpz_set(mask->value, tmp);
+ 			mpz_clear(tmp);
  			return;
- 
- 		switch (expr->op) {
--		case OP_AND: /* IIa */
--			payload = expr->left;
-+		case OP_AND: { /* IIa */
-+			mpz_t tmp;
-+
-+			mpz_init(tmp);
-+			mpz_set(tmp, mask->value);
-+
- 			mpz_init_bitmask(bitmask, payload->len);
--			mpz_xor(bitmask, bitmask, value->value);
--			mpz_set(value->value, bitmask);
-+			mpz_xor(bitmask, bitmask, mask->value);
-+			mpz_set(mask->value, bitmask);
- 			mpz_clear(bitmask);
--			break;
--		case OP_OR: /* IIb */
--			break;
--		default: /* No idea */
--			return;
--		}
- 
--		stmt_payload_binop_pp(ctx, expr);
--		if (!payload_is_known(expr->left))
--			return;
-+			stmt_payload_binop_pp(ctx, expr);
-+			if (!payload_is_known(expr->left)) {
-+				mpz_set(mask->value, tmp);
-+				mpz_clear(tmp);
-+				return;
-+			}
- 
--		expr_free(stmt->payload.expr);
-+			mpz_clear(tmp);
- 
--		switch (expr->op) {
--		case OP_AND:
--			/* Mask was used to match payload, i.e.
--			 * user asked to set zero value.
-+			/* Mask was used to match payload, i.e. user asked to
-+			 * clear the payload expression.
-+			 * The "mask" value becomes new stmt->payload.value
-+			 * so set this to 0.
- 			 */
--			mpz_set_ui(value->value, 0);
-+			mpz_set_ui(mask->value, 0);
- 			break;
--		default:
-+		}
-+		case OP_OR:  /* IIb */
-+			stmt_payload_binop_pp(ctx, expr);
-+			if (!payload_is_known(expr->left))
-+				return;
- 			break;
-+		default: /* No idea what to do */
-+			return;
  		}
  
-+		expr_free(stmt->payload.expr);
- 		stmt->payload.expr = expr_get(expr->left);
- 		stmt->payload.val = expr_get(expr->right);
- 		expr_free(expr);
++		if (shift)
++			mpz_rshift_ui(value->value, shift);
++
+ 		mpz_clear(tmp);
+ 		expr_free(stmt->payload.expr);
+ 		stmt->payload.expr = expr_get(payload);
+@@ -3237,6 +3253,7 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
+ 
+ 		switch (expr->op) {
+ 		case OP_AND: { /* IIa */
++			unsigned int shift_unused;
+ 			mpz_t tmp;
+ 
+ 			mpz_init(tmp);
+@@ -3248,7 +3265,8 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
+ 			mpz_clear(bitmask);
+ 
+ 			stmt_payload_binop_pp(ctx, expr);
+-			if (!payload_is_known(expr->left)) {
++			if (!payload_is_known(expr->left) &&
++			    !payload_expr_trim_force(expr->left, mask, &shift_unused)) {
+ 				mpz_set(mask->value, tmp);
+ 				mpz_clear(tmp);
+ 				return;
+@@ -3260,6 +3278,7 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
+ 			 * clear the payload expression.
+ 			 * The "mask" value becomes new stmt->payload.value
+ 			 * so set this to 0.
++			 * Also the reason why &shift_unused is ignored.
+ 			 */
+ 			mpz_set_ui(mask->value, 0);
+ 			break;
+diff --git a/src/payload.c b/src/payload.c
+index 44aa834cc07b..f8b192b5f2fa 100644
+--- a/src/payload.c
++++ b/src/payload.c
+@@ -1046,6 +1046,7 @@ static unsigned int mask_length(const struct expr *mask)
+  * @expr:	the payload expression
+  * @mask:	mask to use when searching templates
+  * @ctx:	protocol context
++ * @shift:	shift adjustment to fix up RHS value
+  *
+  * Walk the template list and determine if a match can be found without
+  * using the provided mask.
+@@ -1106,6 +1107,59 @@ bool payload_expr_trim(struct expr *expr, struct expr *mask,
+ 	return false;
+ }
+ 
++/**
++ * payload_expr_trim_force - adjust payload len/offset according to mask
++ *
++ * @expr:	the payload expression
++ * @mask:	mask to use when searching templates
++ * @shift:	shift adjustment to fix up RHS value
++ *
++ * Force-trim an unknown payload expression according to mask.
++ *
++ * This is only useful for unkown payload expressions that need
++ * to be printed in raw syntax (@base,offset,length).  The kernel
++ * can only deal with byte-divisible offsets/length, e.g. @th,16,8.
++ * In such case we might be able to get rid of the mask.
++ * @base,offset,length & MASK OPERATOR VALUE then becomes
++ * @base,offset,length VALUE, where at least one of offset increases
++ * and length decreases.
++ *
++ * This function also returns the shift for the right hand
++ * constant side of the expression.
++ *
++ * @return: true if @expr was adjusted and mask can be discarded.
++ */
++bool payload_expr_trim_force(struct expr *expr, struct expr *mask, unsigned int *shift)
++{
++	unsigned int payload_offset = expr->payload.offset;
++	unsigned int mask_len = mask_length(mask);
++	unsigned int off, real_len;
++
++	if (payload_is_known(expr) || expr->len <= mask_len)
++		return false;
++
++	/* This provides the payload offset to use.
++	 * mask->len is the total length of the mask, e.g. 16.
++	 * mask_len holds the last bit number that will be zeroed,
++	 */
++	off = round_up(mask->len, BITS_PER_BYTE) - mask_len;
++	payload_offset += off;
++
++	/* kernel only allows offsets <= 255 */
++	if (round_up(payload_offset, BITS_PER_BYTE) > 255)
++		return false;
++
++	real_len = mpz_popcount(mask->value);
++	if (real_len > expr->len)
++		return false;
++
++	expr->payload.offset = payload_offset;
++	expr->len = real_len;
++
++	*shift = mask_to_offset(mask);
++	return true;
++}
++
+ /**
+  * payload_expr_expand - expand raw merged adjacent payload expressions into its
+  * 			 original components
 -- 
 2.45.3
 
