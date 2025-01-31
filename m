@@ -1,46 +1,69 @@
-Return-Path: <netfilter-devel+bounces-5906-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5908-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7CCBA23370
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2025 18:50:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D529AA23C74
+	for <lists+netfilter-devel@lfdr.de>; Fri, 31 Jan 2025 11:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F00F1888BCE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2025 17:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBA7C3A8A5A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 31 Jan 2025 10:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3021EEA3C;
-	Thu, 30 Jan 2025 17:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF85917BB21;
+	Fri, 31 Jan 2025 10:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="KA/YM6U6";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="KA/YM6U6"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC6A1EB9E1
-	for <netfilter-devel@vger.kernel.org>; Thu, 30 Jan 2025 17:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91B01CA81
+	for <netfilter-devel@vger.kernel.org>; Fri, 31 Jan 2025 10:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738259430; cv=none; b=lhwpSLE9puD5B8qg8W1tNjMe28b3oF4ET8Dr40rONPvHM/rx//CeiUPCqCyozT2nVUrWVyQD6WVssP+AtZHqRmcaPItesFSD6lHHHn19nHZfGpZglzCu1GGa62X80eyjZl/451pDner6XJKZXxlfyb7/qZMVlAZ43aG2qRsgBtY=
+	t=1738320449; cv=none; b=YJnFRXnXAVnZzoOsM+OipF7utgzuDibq7UhWwwxKP2zDOHBUgrovAaJAqf7BSQfsg+0Exn5nkFR6tyNe6LSIj9FyO2fY2iQ++jl8UqZYWZtsXNKizJTZRydfwbHS47VENQWQq04Co4gYMsf0gLZzqfeKSAxU78qG5ibbMUrhcDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738259430; c=relaxed/simple;
-	bh=sYhiIIsGeKrlbXXwobhsIi3J30fwiwhwOv20jAPPGWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qQ32mL/RW57I3IlwupYPUCNEUvW5YN1NjUwGTcl5a5XT0026QRbqmYlXJJrvqgrrEIEG++pS66mc/I3ms+tl0seK1H0kPXgTkw25Q2A/eHFELYxqY4qOh26EPinH3rcqWjPiQrUJ5WsORgO2VKWxczBF9gzbK1pL8t5yyYCshqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1tdYgM-00019H-Tt; Thu, 30 Jan 2025 18:50:26 +0100
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 3/3] tests: py: extend raw payload match tests
-Date: Thu, 30 Jan 2025 18:47:14 +0100
-Message-ID: <20250130174718.6644-3-fw@strlen.de>
-X-Mailer: git-send-email 2.45.3
-In-Reply-To: <20250130174718.6644-1-fw@strlen.de>
-References: <20250130174718.6644-1-fw@strlen.de>
+	s=arc-20240116; t=1738320449; c=relaxed/simple;
+	bh=HMkSYM1xZbM36dpFDLFNkwn/GAAcrrN1k2q+dN0pFvw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dYz0H9UwZeX6Ozm0GhuVYHQ3JYGKdAXDOVeEhKqe8eR3dSCB7LvEAD7ZGvBGBDYfZjRb/09jJToAqFMqWI8QInXvwaKagECAUfkuuIhn2tdtzMqvSc0p38dgF6+am2YZ96wXQc/fAFADAHeAVWBwAMCpN4fsdqRWBxje/04Za+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=KA/YM6U6; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=KA/YM6U6; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id A02126028F; Fri, 31 Jan 2025 11:47:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1738320443;
+	bh=nUJAyYEZXz93/xPnWk7HhGN9xyp/QkczgBliARiiCkM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KA/YM6U6g6DhLrvy2fb0tfCzaENSpC+fZj4H4IzdbotgwZCg/ilFLy62cYBwiOvLW
+	 9tHYdD6qGwg/URFUghV4/0qtiI/WbIgxDBpeXYjdA6uXsbgN+jDP6tYNjXgsKSkuIw
+	 cwGBvf2qKR9dHWb4+hRe8Y2HbNECxESztdAEu0CIByAskw55HDf2WE6j9LWR4gWd8z
+	 H5gak0nSL/fvfn2uSlJfNbiE7TJYfH0G4biUiJtXCVfPBaXBP9ExaPDTzUNhI/rvgT
+	 cmVqLvmdkm5B0ZQn93+dm0TjEYqTbvndnTtir2O6dzW/w0XXh3hHxR8s2EwVT4i6JL
+	 Mq9VE2Cv6VCWg==
+X-Spam-Level: 
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 1131160287;
+	Fri, 31 Jan 2025 11:47:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1738320443;
+	bh=nUJAyYEZXz93/xPnWk7HhGN9xyp/QkczgBliARiiCkM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KA/YM6U6g6DhLrvy2fb0tfCzaENSpC+fZj4H4IzdbotgwZCg/ilFLy62cYBwiOvLW
+	 9tHYdD6qGwg/URFUghV4/0qtiI/WbIgxDBpeXYjdA6uXsbgN+jDP6tYNjXgsKSkuIw
+	 cwGBvf2qKR9dHWb4+hRe8Y2HbNECxESztdAEu0CIByAskw55HDf2WE6j9LWR4gWd8z
+	 H5gak0nSL/fvfn2uSlJfNbiE7TJYfH0G4biUiJtXCVfPBaXBP9ExaPDTzUNhI/rvgT
+	 cmVqLvmdkm5B0ZQn93+dm0TjEYqTbvndnTtir2O6dzW/w0XXh3hHxR8s2EwVT4i6JL
+	 Mq9VE2Cv6VCWg==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: akashavkin@gmail.com
+Subject: [PATCH nft 1/2] ipopt: use ipv4 address datatype for address field in ip options
+Date: Fri, 31 Jan 2025 11:47:15 +0100
+Message-Id: <20250131104716.492246-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -49,265 +72,65 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add more test cases to exercise binop elimination for raw
-payload matches.
+So user does not have to play integer arithmetics to match on IPv4
+address.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Before:
+
+ # nft describe ip option lsrr addr
+ exthdr expression, datatype integer (integer), 32 bits
+
+After:
+
+ # nft describe ip option lsrr addr
+ exthdr expression, datatype ipv4_addr (IPv4 address) (basetype integer), 32 bits
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tests/py/any/rawpayload.t         |   7 ++
- tests/py/any/rawpayload.t.json    | 157 ++++++++++++++++++++++++++++++
- tests/py/any/rawpayload.t.payload |  53 ++++++++++
- 3 files changed, 217 insertions(+)
+ src/ipopt.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tests/py/any/rawpayload.t b/tests/py/any/rawpayload.t
-index 5bc9d35f7465..745b4a615e6c 100644
---- a/tests/py/any/rawpayload.t
-+++ b/tests/py/any/rawpayload.t
-@@ -15,6 +15,7 @@ meta l4proto tcp @th,16,16 { 22, 23, 80};ok;tcp dport { 22, 23, 80}
+diff --git a/src/ipopt.c b/src/ipopt.c
+index 37f779d468ab..ddb42f5712d4 100644
+--- a/src/ipopt.c
++++ b/src/ipopt.c
+@@ -24,7 +24,7 @@ static const struct exthdr_desc ipopt_lsrr = {
+ 		[IPOPT_FIELD_TYPE]		= PHT("type",    0,  8),
+ 		[IPOPT_FIELD_LENGTH]		= PHT("length",  8,  8),
+ 		[IPOPT_FIELD_PTR]		= PHT("ptr",    16,  8),
+-		[IPOPT_FIELD_ADDR_0]		= PHT("addr",   24, 32),
++		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
+ 	},
+ };
  
- @ll,0,0 2;fail
- @ll,0,1;fail
-+@ll,1,0 1;fail
- @ll,0,1 1;ok;@ll,0,8 & 0x80 == 0x80
- @ll,0,8 & 0x80 == 0x80;ok
- @ll,0,128 0xfedcba987654321001234567890abcde;ok
-@@ -22,3 +23,9 @@ meta l4proto tcp @th,16,16 { 22, 23, 80};ok;tcp dport { 22, 23, 80}
- meta l4proto 91 @th,400,16 0x0 accept;ok
+@@ -35,7 +35,7 @@ static const struct exthdr_desc ipopt_rr = {
+ 		[IPOPT_FIELD_TYPE]		= PHT("type",   0,   8),
+ 		[IPOPT_FIELD_LENGTH]		= PHT("length",  8,  8),
+ 		[IPOPT_FIELD_PTR]		= PHT("ptr",    16,  8),
+-		[IPOPT_FIELD_ADDR_0]		= PHT("addr",   24, 32),
++		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
+ 	},
+ };
  
- @ih,32,32 0x14000000;ok
-+@ih,58,6 set 0 @ih,86,6 set 0 @ih,170,22 set 0;ok;@ih,58,6 set 0x0 @ih,86,6 set 0x0 @ih,170,22 set 0x0
-+@ih,58,6 set 0x1 @ih,86,6 set 0x2 @ih,170,22 set 0x3;ok
-+@ih,58,6 0x0 @ih,86,6 0x0 @ih,170,22 0x0;ok
-+@ih,1,1 0x2;fail
-+@ih,1,2 0x2;ok
-+@ih,35,3 0x2;ok
-diff --git a/tests/py/any/rawpayload.t.json b/tests/py/any/rawpayload.t.json
-index 4cae4d493da3..4a06c5987a7b 100644
---- a/tests/py/any/rawpayload.t.json
-+++ b/tests/py/any/rawpayload.t.json
-@@ -204,3 +204,160 @@
-     }
- ]
+@@ -46,7 +46,7 @@ static const struct exthdr_desc ipopt_ssrr = {
+ 		[IPOPT_FIELD_TYPE]		= PHT("type",   0,   8),
+ 		[IPOPT_FIELD_LENGTH]		= PHT("length",  8,  8),
+ 		[IPOPT_FIELD_PTR]		= PHT("ptr",    16,  8),
+-		[IPOPT_FIELD_ADDR_0]		= PHT("addr",   24, 32),
++		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
+ 	},
+ };
  
-+# @ih,58,6 set 0 @ih,86,6 set 0 @ih,170,22 set 0
-+[
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 6,
-+                    "offset": 58
-+                }
-+            },
-+            "value": 0
-+        }
-+    },
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 6,
-+                    "offset": 86
-+                }
-+            },
-+            "value": 0
-+        }
-+    },
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 22,
-+                    "offset": 170
-+                }
-+            },
-+            "value": 0
-+        }
-+    }
-+]
-+
-+# @ih,58,6 set 0x1 @ih,86,6 set 0x2 @ih,170,22 set 0x3
-+[
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 6,
-+                    "offset": 58
-+                }
-+            },
-+            "value": 1
-+        }
-+    },
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 6,
-+                    "offset": 86
-+                }
-+            },
-+            "value": 2
-+        }
-+    },
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 22,
-+                    "offset": 170
-+                }
-+            },
-+            "value": 3
-+        }
-+    }
-+]
-+
-+# @ih,58,6 0x0 @ih,86,6 0x0 @ih,170,22 0x0
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 6,
-+                    "offset": 58
-+                }
-+            },
-+            "op": "==",
-+            "right": 0
-+        }
-+    },
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 6,
-+                    "offset": 86
-+                }
-+            },
-+            "op": "==",
-+            "right": 0
-+        }
-+    },
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 22,
-+                    "offset": 170
-+                }
-+            },
-+            "op": "==",
-+            "right": 0
-+        }
-+    }
-+]
-+
-+# @ih,1,2 0x2
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 2,
-+                    "offset": 1
-+                }
-+            },
-+            "op": "==",
-+            "right": 2
-+        }
-+    }
-+]
-+
-+# @ih,35,3 0x2
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "base": "ih",
-+                    "len": 3,
-+                    "offset": 35
-+                }
-+            },
-+            "op": "==",
-+            "right": 2
-+        }
-+    }
-+]
-+
-diff --git a/tests/py/any/rawpayload.t.payload b/tests/py/any/rawpayload.t.payload
-index fe2377e65a77..8984eef6a481 100644
---- a/tests/py/any/rawpayload.t.payload
-+++ b/tests/py/any/rawpayload.t.payload
-@@ -61,3 +61,56 @@ inet test-inet input
-   [ payload load 4b @ inner header + 4 => reg 1 ]
-   [ cmp eq reg 1 0x00000014 ]
+@@ -56,7 +56,7 @@ static const struct exthdr_desc ipopt_ra = {
+ 	.templates	= {
+ 		[IPOPT_FIELD_TYPE]		= PHT("type",   0,   8),
+ 		[IPOPT_FIELD_LENGTH]		= PHT("length", 8,   8),
+-		[IPOPT_FIELD_VALUE]		= PHT("value",  16, 16),
++		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
+ 	},
+ };
  
-+# @ih,58,6 set 0 @ih,86,6 set 0 @ih,170,22 set 0
-+inet test-inet input
-+  [ payload load 2b @ inner header + 6 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-+  [ payload write reg 1 => 2b @ inner header + 6 csum_type 0 csum_off 0 csum_flags 0x1 ]
-+  [ payload load 2b @ inner header + 10 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x00000ffc ) ^ 0x00000000 ]
-+  [ payload write reg 1 => 2b @ inner header + 10 csum_type 0 csum_off 0 csum_flags 0x1 ]
-+  [ payload load 4b @ inner header + 20 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-+  [ payload write reg 1 => 4b @ inner header + 20 csum_type 0 csum_off 0 csum_flags 0x1 ]
-+
-+# @ih,58,6 set 0x1 @ih,86,6 set 0x2 @ih,170,22 set 0x3
-+inet test-inet input
-+  [ payload load 2b @ inner header + 6 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000c0ff ) ^ 0x00000100 ]
-+  [ payload write reg 1 => 2b @ inner header + 6 csum_type 0 csum_off 0 csum_flags 0x1 ]
-+  [ payload load 2b @ inner header + 10 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x00000ffc ) ^ 0x00002000 ]
-+  [ payload write reg 1 => 2b @ inner header + 10 csum_type 0 csum_off 0 csum_flags 0x1 ]
-+  [ payload load 4b @ inner header + 20 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000c0ff ) ^ 0x03000000 ]
-+  [ payload write reg 1 => 4b @ inner header + 20 csum_type 0 csum_off 0 csum_flags 0x1 ]
-+
-+# @ih,58,6 0x0 @ih,86,6 0x0 @ih,170,22 0x0
-+inet test-inet input
-+  [ payload load 1b @ inner header + 7 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000003f ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000000 ]
-+  [ payload load 2b @ inner header + 10 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000f003 ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000000 ]
-+  [ payload load 3b @ inner header + 21 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x00ffff3f ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000000 ]
-+
-+# @ih,1,2 0x2
-+inet test-inet input
-+  [ payload load 1b @ inner header + 0 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x00000060 ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000040 ]
-+
-+# @ih,2,1 0x1
-+inet test-inet input
-+  [ payload load 1b @ inner header + 0 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x00000020 ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000020 ]
-+
-+# @ih,35,3 0x2
-+inet test-inet input
-+  [ payload load 1b @ inner header + 4 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x0000001c ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000008 ]
 -- 
-2.45.3
+2.30.2
 
 
