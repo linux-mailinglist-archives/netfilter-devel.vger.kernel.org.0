@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-5934-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5932-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98BC1A286AD
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 10:37:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EECEBA286A8
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 10:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB0B3162DA6
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 09:37:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9E7188A192
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 09:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5739622A818;
-	Wed,  5 Feb 2025 09:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4523022A7E2;
+	Wed,  5 Feb 2025 09:37:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B6822A4CB;
-	Wed,  5 Feb 2025 09:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D1D229B36;
+	Wed,  5 Feb 2025 09:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738748233; cv=none; b=PBcrF4m6HUyyCPy8bJOCWZA+Ov8gMrtYyoBH/WGx7yIiROSwSBp9a3VL2vyOIjJwAcuphWChvLOJ6E9eHpvv1XDClVXYaOKKRPvo9EGFnDM30hMwnrmMDLxKaOCkjQmh8vkK7cGSqF7VU3HbyWQTjy0foCEHrmGN6fD7dG/NYUU=
+	t=1738748232; cv=none; b=U+M903hltS3tNH9jAEoXFKTJUKzcDJBF2T2HC9+gF4cEnMGC7unLJOwgz9fo8MvBzVQzk1CV733OWzu+CEmzXoRMX/DZbgV6yE5Q/uO22rc3TEwd6E4aE6wQo5HtGMfRU9JisquCtNSJTZ/ZbUA9nP18oyAF0jpfZ0tsRllMlR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738748233; c=relaxed/simple;
-	bh=/lvyM+4c00Uptw1xb4EFCq+H97FPcCnRl4CUQIR/xCo=;
+	s=arc-20240116; t=1738748232; c=relaxed/simple;
+	bh=A7+g72QjPlUQUIWPTKMLnaCm8tb54u9e4q8eS9BE0lU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fQaFs/E04nOIxJhHbJICrSO0+0HQTdhsdW6F/CHEVPFuCyRo7lEtGjuZ21yxjUo2NnBgNQI3vpwcRJINU8el3dmUPMF+D2ttK4YRQgLsNXxPMUHvB9kafTM3qt0zh5kPYcw5CO6It1utYi+H3fsIHK9Y0KrpxbM3w1kHZgC/D2E=
+	 MIME-Version:Content-Type; b=cBLdlilEuwLkm7G049IiITzoV4D5qppF3nElrvfMZHZt3u+W75rlMWHGDZ4SPq87qFO7hg+pAIxUWT+K4/Ez3byDZvq/JXgg30Mq3x1XbbQXF2tS4FUwXgHp8dhsGCbaiGjYgXNQBlBm4ioa/MnI5DmrmAyi2W96JKgkWMkRN90=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
 Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ynw7B3DpCz6M4S4;
-	Wed,  5 Feb 2025 17:34:46 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ynw8k6SLkz6K9Cb;
+	Wed,  5 Feb 2025 17:36:06 +0800 (CST)
 Received: from mscpeml500004.china.huawei.com (unknown [7.188.26.250])
-	by mail.maildlp.com (Postfix) with ESMTPS id D2C04140498;
+	by mail.maildlp.com (Postfix) with ESMTPS id E4AD71404C4;
 	Wed,  5 Feb 2025 17:37:01 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  mscpeml500004.china.huawei.com (7.188.26.250) with Microsoft SMTP Server
@@ -45,9 +45,9 @@ CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v3 2/3] selftests/landlock: Test TCP accesses with protocol=IPPROTO_TCP
-Date: Wed, 5 Feb 2025 17:36:50 +0800
-Message-ID: <20250205093651.1424339-3-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v3 3/3] selftests/landlock: Test that MPTCP actions are not restricted
+Date: Wed, 5 Feb 2025 17:36:51 +0800
+Message-ID: <20250205093651.1424339-4-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250205093651.1424339-1-ivanov.mikhail1@huawei-partners.com>
 References: <20250205093651.1424339-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,172 +62,108 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500004.china.huawei.com (7.188.26.250) To
  mscpeml500004.china.huawei.com (7.188.26.250)
 
-Extend protocol_variant structure with protocol field (Cf. socket(2)).
-
-Extend protocol fixture with TCP test suits with protocol=IPPROTO_TCP
-which can be used as an alias for IPPROTO_IP (=0) in socket(2).
+Extend protocol fixture with test suits for MPTCP protocol.
+Add CONFIG_MPTCP and CONFIG_MPTCP_IPV6 options in config.
 
 Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 ---
- tools/testing/selftests/landlock/common.h   |  1 +
- tools/testing/selftests/landlock/net_test.c | 80 +++++++++++++++++----
- 2 files changed, 67 insertions(+), 14 deletions(-)
 
-diff --git a/tools/testing/selftests/landlock/common.h b/tools/testing/selftests/landlock/common.h
-index a604ea5d8297..6064c9ac0532 100644
---- a/tools/testing/selftests/landlock/common.h
-+++ b/tools/testing/selftests/landlock/common.h
-@@ -207,6 +207,7 @@ enforce_ruleset(struct __test_metadata *const _metadata, const int ruleset_fd)
- struct protocol_variant {
- 	int domain;
- 	int type;
-+	int protocol;
- };
- 
- struct service_fixture {
+Changes since v1:
+* Removes SMC test suits and puts SCTP test suits in a separate commit.
+---
+ tools/testing/selftests/landlock/config     |  2 +
+ tools/testing/selftests/landlock/net_test.c | 44 +++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+
+diff --git a/tools/testing/selftests/landlock/config b/tools/testing/selftests/landlock/config
+index 29af19c4e9f9..a8982da4acbd 100644
+--- a/tools/testing/selftests/landlock/config
++++ b/tools/testing/selftests/landlock/config
+@@ -3,6 +3,8 @@ CONFIG_CGROUP_SCHED=y
+ CONFIG_INET=y
+ CONFIG_IPV6=y
+ CONFIG_KEYS=y
++CONFIG_MPTCP=y
++CONFIG_MPTCP_IPV6=y
+ CONFIG_NET=y
+ CONFIG_NET_NS=y
+ CONFIG_OVERLAY_FS=y
 diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
-index 4e0aeb53b225..333263780fae 100644
+index 333263780fae..d9de0ee49ebc 100644
 --- a/tools/testing/selftests/landlock/net_test.c
 +++ b/tools/testing/selftests/landlock/net_test.c
-@@ -85,18 +85,18 @@ static void setup_loopback(struct __test_metadata *const _metadata)
- 	clear_ambient_cap(_metadata, CAP_NET_ADMIN);
- }
- 
-+static bool prot_is_tcp(const struct protocol_variant *const prot)
-+{
-+	return (prot->domain == AF_INET || prot->domain == AF_INET6) &&
-+	       prot->type == SOCK_STREAM &&
-+	       (prot->protocol == IPPROTO_TCP || prot->protocol == IPPROTO_IP);
-+}
-+
- static bool is_restricted(const struct protocol_variant *const prot,
- 			  const enum sandbox_type sandbox)
- {
--	switch (prot->domain) {
--	case AF_INET:
--	case AF_INET6:
--		switch (prot->type) {
--		case SOCK_STREAM:
--			return sandbox == TCP_SANDBOX;
--		}
--		break;
--	}
-+	if (sandbox == TCP_SANDBOX)
-+		return prot_is_tcp(prot);
- 	return false;
- }
- 
-@@ -105,7 +105,7 @@ static int socket_variant(const struct service_fixture *const srv)
- 	int ret;
- 
- 	ret = socket(srv->protocol.domain, srv->protocol.type | SOCK_CLOEXEC,
--		     0);
-+		     srv->protocol.protocol);
- 	if (ret < 0)
- 		return -errno;
- 	return ret;
-@@ -290,22 +290,48 @@ FIXTURE_TEARDOWN(protocol)
- }
- 
- /* clang-format off */
--FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_tcp) {
-+FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_tcp1) {
- 	/* clang-format on */
- 	.sandbox = NO_SANDBOX,
- 	.prot = {
- 		.domain = AF_INET,
- 		.type = SOCK_STREAM,
-+		/* IPPROTO_IP == 0 */
-+		.protocol = IPPROTO_IP,
+@@ -312,6 +312,17 @@ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_tcp2) {
  	},
  };
  
- /* clang-format off */
--FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_tcp) {
-+FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_tcp2) {
++/* clang-format off */
++FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_mptcp) {
 +	/* clang-format on */
 +	.sandbox = NO_SANDBOX,
 +	.prot = {
 +		.domain = AF_INET,
 +		.type = SOCK_STREAM,
-+		.protocol = IPPROTO_TCP,
++		.protocol = IPPROTO_MPTCP,
 +	},
 +};
 +
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_tcp1) {
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_tcp1) {
  	/* clang-format on */
- 	.sandbox = NO_SANDBOX,
- 	.prot = {
- 		.domain = AF_INET6,
- 		.type = SOCK_STREAM,
-+		/* IPPROTO_IP == 0 */
-+		.protocol = IPPROTO_IP,
-+	},
-+};
-+
+@@ -335,6 +346,17 @@ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_tcp2) {
+ 	},
+ };
+ 
 +/* clang-format off */
-+FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_tcp2) {
++FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv6_mptcp) {
 +	/* clang-format on */
 +	.sandbox = NO_SANDBOX,
 +	.prot = {
 +		.domain = AF_INET6,
 +		.type = SOCK_STREAM,
-+		.protocol = IPPROTO_TCP,
++		.protocol = IPPROTO_MPTCP,
++	},
++};
++
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_ipv4_udp) {
+ 	/* clang-format on */
+@@ -398,6 +420,17 @@ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_tcp2) {
  	},
  };
  
-@@ -350,22 +376,48 @@ FIXTURE_VARIANT_ADD(protocol, no_sandbox_with_unix_datagram) {
- };
- 
- /* clang-format off */
--FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_tcp) {
-+FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_tcp1) {
++/* clang-format off */
++FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_mptcp) {
 +	/* clang-format on */
 +	.sandbox = TCP_SANDBOX,
 +	.prot = {
 +		.domain = AF_INET,
 +		.type = SOCK_STREAM,
-+		/* IPPROTO_IP == 0 */
-+		.protocol = IPPROTO_IP,
++		.protocol = IPPROTO_MPTCP,
 +	},
 +};
 +
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_tcp2) {
+ /* clang-format off */
+ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_tcp1) {
  	/* clang-format on */
- 	.sandbox = TCP_SANDBOX,
- 	.prot = {
- 		.domain = AF_INET,
- 		.type = SOCK_STREAM,
-+		.protocol = IPPROTO_TCP,
-+	},
-+};
-+
+@@ -421,6 +454,17 @@ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_tcp2) {
+ 	},
+ };
+ 
 +/* clang-format off */
-+FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_tcp1) {
++FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_mptcp) {
 +	/* clang-format on */
 +	.sandbox = TCP_SANDBOX,
 +	.prot = {
 +		.domain = AF_INET6,
 +		.type = SOCK_STREAM,
-+		/* IPPROTO_IP == 0 */
-+		.protocol = IPPROTO_IP,
- 	},
- };
- 
++		.protocol = IPPROTO_MPTCP,
++	},
++};
++
  /* clang-format off */
--FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_tcp) {
-+FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv6_tcp2) {
+ FIXTURE_VARIANT_ADD(protocol, tcp_sandbox_with_ipv4_udp) {
  	/* clang-format on */
- 	.sandbox = TCP_SANDBOX,
- 	.prot = {
- 		.domain = AF_INET6,
- 		.type = SOCK_STREAM,
-+		.protocol = IPPROTO_TCP,
- 	},
- };
- 
 -- 
 2.34.1
 
