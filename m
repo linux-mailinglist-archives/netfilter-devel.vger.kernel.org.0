@@ -1,38 +1,39 @@
-Return-Path: <netfilter-devel+bounces-5935-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5933-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED26A286B0
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 10:37:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A20B4A286AC
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 10:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9161627F0
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 09:37:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1302188A179
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Feb 2025 09:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2BE22A81D;
-	Wed,  5 Feb 2025 09:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D040A22A7F8;
+	Wed,  5 Feb 2025 09:37:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45BD222A4E8;
-	Wed,  5 Feb 2025 09:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7CAD21A452;
+	Wed,  5 Feb 2025 09:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738748233; cv=none; b=F6y5rQ21CJxBnbQ9XhP+MTh3j3IXgJ9KpowhmcOUueyG15PFwZjzaelJTV2Hh7NFD3GsZBLec5EldHoSGTq01GBsXDHyfnRdvBF6qMTLRLxCJnWsY+JmLbrk6Ecvt6+i6M4zxvxGCMSmzxNj35LpY+OK6Rnk8i2UDH9s63KdEko=
+	t=1738748232; cv=none; b=EJqhu0bVPL2BC0DjfKCbzUixpDT+gzcGWj7YvvzLXa3isvqI1M3L9ke3w0ocTADfIfjpcRHcH9ISKNlW2ieQJ1D8ztp4T8+YXmpKCiGMBB3YyZN4GyHlQrtikW8ae+1gF1F1GHJT7AhaVhQi9t0FM1WJfzOs2cdhDYE5V8c4Ugg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738748233; c=relaxed/simple;
-	bh=Lg1j6RbsiZx0WEcUvereTbE7lg7iw5fnvk+9en3k8D8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=khY8aStfr+nJpCs7Krw56rTUH+LlGynwsi8rgJBzd55VfBwuSrPTsvJXIGjn1/eP7wuP3EbXfBe6tgcmlq+b+r27gWetcfUZZjcRBfmzJfPgWgofD2mijR1DfwJajOd5wSiqGsQ36pR9G4WegcMV/6dJDfXy/C6+eRLkiSKgQJQ=
+	s=arc-20240116; t=1738748232; c=relaxed/simple;
+	bh=o8N3nlFHQ51Ewq6RWAFYCFswhaWCt9+7rp61KnQqDXo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=X53ZM06Dhuo7UcpnBl77TtSYEFFfxbtiLXYPLb0HZ+iEHdmLNIARZ1EUntzJExPDYsEFqc5/XONra+ORoENynbWYUfDwiIAzqUQLVBOBeWW10m1084xP7JiLXcq5IfVnqzOLuFgOfvu+4IzO/lKybwuSugvZMY7ofmE1j5lQiOI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
 Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ynw7B1zcmz6M4KQ;
-	Wed,  5 Feb 2025 17:34:46 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ynw8k5QQMz6K9B6;
+	Wed,  5 Feb 2025 17:36:06 +0800 (CST)
 Received: from mscpeml500004.china.huawei.com (unknown [7.188.26.250])
-	by mail.maildlp.com (Postfix) with ESMTPS id AEFA814034E;
+	by mail.maildlp.com (Postfix) with ESMTPS id C1125140442;
 	Wed,  5 Feb 2025 17:37:01 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  mscpeml500004.china.huawei.com (7.188.26.250) with Microsoft SMTP Server
@@ -44,10 +45,12 @@ CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v3 0/3] Fix non-TCP sockets restriction
-Date: Wed, 5 Feb 2025 17:36:48 +0800
-Message-ID: <20250205093651.1424339-1-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v3 1/3] landlock: Fix non-TCP sockets restriction
+Date: Wed, 5 Feb 2025 17:36:49 +0800
+Message-ID: <20250205093651.1424339-2-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250205093651.1424339-1-ivanov.mikhail1@huawei-partners.com>
+References: <20250205093651.1424339-1-ivanov.mikhail1@huawei-partners.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -59,37 +62,57 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500004.china.huawei.com (7.188.26.250) To
  mscpeml500004.china.huawei.com (7.188.26.250)
 
-Hello!
+Use sk_is_tcp() to check if socket is TCP in bind(2) and connect(2) hooks.
 
-This patch fixes incorrect restriction of non-TCP bind/connect actions.
-There is two commits that extend TCP tests with MPTCP test suits and
-IPPROTO_TCP test suits.
+SMC, MPTCP, SCTP protocols are currently restricted by TCP access rights.
+The purpose of TCP access rights is to provide control over ports that
+can be used by userland to establish a TCP connection. Therefore, it is
+incorrect to deny bind(2) and connect(2) requests for a socket of another
+protocol.
+
+However, SMC, MPTCP and RDS implementations use TCP internal sockets to
+establish communication or even to exchange packets over a TCP connection
+[1]. Landlock rules that configure bind(2) and connect(2) usage for TCP
+sockets should not cover requests for sockets of such protocols. These
+protocols have different set of security issues and security properties,
+therefore, it is necessary to provide the userland with the ability to
+distinguish between them (eg. [2]).
+
+Control over TCP connection used by other protocols can be achieved with
+upcoming support of socket creation control [3].
+
+[1] https://lore.kernel.org/all/62336067-18c2-3493-d0ec-6dd6a6d3a1b5@huawei-partners.com/
+[2] https://lore.kernel.org/all/20241204.fahVio7eicim@digikod.net/
+[3] https://lore.kernel.org/all/20240904104824.1844082-1-ivanov.mikhail1@huawei-partners.com/
 
 Closes: https://github.com/landlock-lsm/linux/issues/40
+Fixes: fff69fb03dde ("landlock: Support network rules with TCP bind and connect")
+Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
+---
+Changes since v2:
+* Improves commit message.
 
-General changes after v2
-========================
- * Rebases on current linux-mic/next
- * Extracts non-TCP restriction fix into separate patchset
+Changes since v1:
+* Validates socket family (=INET{,6}) before any other checks
+  with sk_is_tcp().
+---
+ security/landlock/net.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Previous versions
-=================
-v2: https://lore.kernel.org/all/20241017110454.265818-1-ivanov.mikhail1@huawei-partners.com/
-v1: https://lore.kernel.org/all/20241003143932.2431249-1-ivanov.mikhail1@huawei-partners.com/
-
-Mikhail Ivanov (3):
-  landlock: Fix non-TCP sockets restriction
-  selftests/landlock: Test TCP accesses with protocol=IPPROTO_TCP
-  selftests/landlock: Test that MPTCP actions are not restricted
-
- security/landlock/net.c                     |   3 +-
- tools/testing/selftests/landlock/common.h   |   1 +
- tools/testing/selftests/landlock/config     |   2 +
- tools/testing/selftests/landlock/net_test.c | 124 +++++++++++++++++---
- 4 files changed, 114 insertions(+), 16 deletions(-)
-
-
-base-commit: 24a8e44deae4b549b0fe5fbb271fe8d169f0933f
+diff --git a/security/landlock/net.c b/security/landlock/net.c
+index d5dcc4407a19..104b6c01fe50 100644
+--- a/security/landlock/net.c
++++ b/security/landlock/net.c
+@@ -63,8 +63,7 @@ static int current_check_access_socket(struct socket *const sock,
+ 	if (WARN_ON_ONCE(dom->num_layers < 1))
+ 		return -EACCES;
+ 
+-	/* Checks if it's a (potential) TCP socket. */
+-	if (sock->type != SOCK_STREAM)
++	if (!sk_is_tcp(sock->sk))
+ 		return 0;
+ 
+ 	/* Checks for minimal header length to safely read sa_family. */
 -- 
 2.34.1
 
