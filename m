@@ -1,88 +1,174 @@
-Return-Path: <netfilter-devel+bounces-5996-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-5998-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5565FA2FB1E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Feb 2025 21:54:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE57A30D00
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Feb 2025 14:33:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A07FF1888938
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Feb 2025 20:54:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AF4A1888DAE
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Feb 2025 13:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D3719F47E;
-	Mon, 10 Feb 2025 20:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pywgIed9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AEC23CEFB;
+	Tue, 11 Feb 2025 13:32:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2913D264609;
-	Mon, 10 Feb 2025 20:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07787236A7C
+	for <netfilter-devel@vger.kernel.org>; Tue, 11 Feb 2025 13:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739220880; cv=none; b=Xc28zJLeV+PHhbA6pOWFHlV4wSLjQuErPRXohWs/6LLoOODbZWGcrLbnS97k+caRQUijuvbyuMF/QGIxVYQZwHK5pP3lMygzVRPn0FbjPF9Ax9/BzduHfNJn238HvikH7PHiUW68moEnrRGnjuOGQXyCRfHVVA43NuNUpyLa+Ic=
+	t=1739280754; cv=none; b=tgSPYJZ5L8OXOTqetzvFK27Tx49jYkHoEG4wNGMZFbrpNCjOU09YZiPwWNpneOwokZmdQ7Jy+EEkRFm/yrr/AaQflFbJz+oQKNlIah+4Buf1Xr3mnRSOYtu7T8fZkY5kBX1c8csqBwqpri7sPEs8cWIKKOJzUsbxw6huL3NJ1ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739220880; c=relaxed/simple;
-	bh=6l+7RC1vw0ZzHR9nnCstKHP4Gh+PCbZGc5teky9kJtg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L8vZQqeo4Y0644MPucewhdAh5kpm6WtI/cPIPZE6bw9Hvy4SxupjkfeBTII9fl2J+jhnuUlAEAQL8OAfEpdTp1wutUJuTm9GzFzQyjiv/7rSv4Zo3fbw+6c+ZHek4Y0CKzsV+Iw6hnFFpOdzasmzQ7MD5USsc8bYaANiDzD+BPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pywgIed9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EB58C4CED1;
-	Mon, 10 Feb 2025 20:54:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739220879;
-	bh=6l+7RC1vw0ZzHR9nnCstKHP4Gh+PCbZGc5teky9kJtg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pywgIed9ZhvGhm6okkFOyKkExt7BkePZTnexqYC7VOr7SflK6bPE6K2NR8/dB2zYW
-	 IOkWUaOgZqZqOktcgRC3oAUpD89wTn+BkeFBaWvZe5ItkYm5HIhLIpmfaOhKX2CMnG
-	 mB1tj3n1Jn47AmHs3um5uIElNb0ILJvDsYwOpVWMwM5KfOZwDodl9N5hKOcFdoxkJE
-	 uXtt5I4T0V7YimLV4UpLNbPGTLEOedEKjuzhsGhrPjUyq6llLqFBeoSQMwCo7lJu+p
-	 kFUAjJCNX2wAC+9BUcX3HqFoxxjvfBDWRbUUgM94VyNfkVJRgOVDFG/II/rXjfQNY0
-	 1fVx473v4gIbA==
-Date: Mon, 10 Feb 2025 12:54:38 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
- donald.hunter@gmail.com
-Subject: Re: [PATCH v2 net-next] netlink: specs: add conntrack dump and
- stats dump support
-Message-ID: <20250210125438.48560003@kernel.org>
-In-Reply-To: <20250210202703.GA12476@breakpoint.cc>
-References: <20250210152159.41077-1-fw@strlen.de>
-	<20250210103926.3ec4e377@kernel.org>
-	<20250210202703.GA12476@breakpoint.cc>
+	s=arc-20240116; t=1739280754; c=relaxed/simple;
+	bh=ih//v6mL88R00Zl8z9xOoTcVurl5bLY+F5jKlIIdISQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EcD18NJwePbR2UG9c9zENpNEFg4cxy+6/LhY9i84HXK640eqzrD4tdKF0NJ1eyQEU5/PpeDHqy/xlGEfKVSbU+RucaPhIwkjhfMqhykRrSEKVng46WNJIrkbNIHHJbVQgTmG8OfXr71of/y/CMuw37H5G+51+/2xBnkShBaA8UM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1thqNJ-0003gQ-1S; Tue, 11 Feb 2025 14:32:29 +0100
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: nf_conntrack: speed up reads from nf_conntrack proc file
+Date: Tue, 11 Feb 2025 14:03:06 +0100
+Message-ID: <20250211130313.31433-1-fw@strlen.de>
+X-Mailer: git-send-email 2.45.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, 10 Feb 2025 21:27:03 +0100 Florian Westphal wrote:
-> Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Mon, 10 Feb 2025 16:21:52 +0100 Florian Westphal wrote: =20
-> > > This adds support to dump the connection tracking table
-> > > ("conntrack -L") and the conntrack statistics, ("conntrack -S"). =20
-> >=20
-> > Hi Florian!
-> >=20
-> > Some unhappiness in the HTML doc generation coming from this spec:
-> >=20
-> > /home/doc-build/testing/Documentation/networking/netlink_spec/ctnetlink=
-.rst:68: WARNING: duplicate label conntrack-definition-nfgenmsg, other inst=
-ance in /home/doc-build/testing/Documentation/networking/netlink_spec/connt=
-rack.rst =20
->=20
-> Looks like the tree has both v1 and v2 appliedto it.
->=20
-> v1 added 'ctnetlink.yaml', I renamed it to 'conntrack.yaml' in v2 as
-> thats what Donald requested.
+Dumping all conntrack entries via proc interface can take hours due to
+linear search to skip entries dumped so far in each cycle.
 
-I see. We need to clean the HTML output more thoroughly in the CI =F0=9F=A4=
-=94=EF=B8=8F
-I brought the patch back, let's see what happens on next run.
+Apply same strategy used to speed up ipvs proc reading done in
+commit 178883fd039d ("ipvs: speed up reads from ip_vs_conn proc file")
+to nf_conntrack.
+
+Note that the ctnetlink interface doesn't suffer from this problem.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_conntrack_standalone.c | 73 +++++++++++++------------
+ 1 file changed, 38 insertions(+), 35 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+index 502cf10aab41..2a79e690470a 100644
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -98,51 +98,34 @@ struct ct_iter_state {
+ 	struct seq_net_private p;
+ 	struct hlist_nulls_head *hash;
+ 	unsigned int htable_size;
++	unsigned int skip_elems;
+ 	unsigned int bucket;
+ 	u_int64_t time_now;
+ };
+ 
+-static struct hlist_nulls_node *ct_get_first(struct seq_file *seq)
++static struct nf_conntrack_tuple_hash *ct_get_next(struct ct_iter_state *st)
+ {
+-	struct ct_iter_state *st = seq->private;
++	struct nf_conntrack_tuple_hash *h;
+ 	struct hlist_nulls_node *n;
++	unsigned int i;
+ 
+-	for (st->bucket = 0;
+-	     st->bucket < st->htable_size;
+-	     st->bucket++) {
+-		n = rcu_dereference(
+-			hlist_nulls_first_rcu(&st->hash[st->bucket]));
+-		if (!is_a_nulls(n))
+-			return n;
+-	}
+-	return NULL;
+-}
++	for (i = st->bucket; i < st->htable_size; i++) {
++		unsigned int skip = 0;
+ 
+-static struct hlist_nulls_node *ct_get_next(struct seq_file *seq,
+-				      struct hlist_nulls_node *head)
+-{
+-	struct ct_iter_state *st = seq->private;
++		hlist_nulls_for_each_entry(h, n, &st->hash[i], hnnode) {
++			if (skip >= st->skip_elems) {
++				st->bucket = i;
++				return h;
++			}
+ 
+-	head = rcu_dereference(hlist_nulls_next_rcu(head));
+-	while (is_a_nulls(head)) {
+-		if (likely(get_nulls_value(head) == st->bucket)) {
+-			if (++st->bucket >= st->htable_size)
+-				return NULL;
++			++skip;
+ 		}
+-		head = rcu_dereference(
+-			hlist_nulls_first_rcu(&st->hash[st->bucket]));
+-	}
+-	return head;
+-}
+ 
+-static struct hlist_nulls_node *ct_get_idx(struct seq_file *seq, loff_t pos)
+-{
+-	struct hlist_nulls_node *head = ct_get_first(seq);
++		st->skip_elems = 0;
++	}
+ 
+-	if (head)
+-		while (pos && (head = ct_get_next(seq, head)))
+-			pos--;
+-	return pos ? NULL : head;
++	st->bucket = i;
++	return NULL;
+ }
+ 
+ static void *ct_seq_start(struct seq_file *seq, loff_t *pos)
+@@ -154,13 +137,33 @@ static void *ct_seq_start(struct seq_file *seq, loff_t *pos)
+ 	rcu_read_lock();
+ 
+ 	nf_conntrack_get_ht(&st->hash, &st->htable_size);
+-	return ct_get_idx(seq, *pos);
++
++	if (*pos == 0) {
++		st->skip_elems = 0;
++		st->bucket = 0;
++	}
++
++	return ct_get_next(st);
+ }
+ 
+ static void *ct_seq_next(struct seq_file *s, void *v, loff_t *pos)
+ {
++	struct nf_conntrack_tuple_hash *h = v;
++	struct ct_iter_state *st = s->private;
++	struct hlist_nulls_node *n;
++
+ 	(*pos)++;
+-	return ct_get_next(s, v);
++
++	/* more on same hash chain? */
++	n = rcu_dereference(hlist_nulls_next_rcu(&h->hnnode));
++	if (n && !is_a_nulls(n)) {
++		st->skip_elems++;
++		return hlist_nulls_entry(n, struct nf_conntrack_tuple_hash, hnnode);
++	}
++
++	st->skip_elems = 0;
++	st->bucket++;
++	return ct_get_next(st);
+ }
+ 
+ static void ct_seq_stop(struct seq_file *s, void *v)
+-- 
+2.45.3
+
 
