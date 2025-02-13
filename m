@@ -1,50 +1,75 @@
-Return-Path: <netfilter-devel+bounces-6007-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6008-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8349A336B0
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 05:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11DE3A33BF9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 11:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 654C2168EB1
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 04:11:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80764163E08
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 10:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4BE207662;
-	Thu, 13 Feb 2025 04:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB6B2135BC;
+	Thu, 13 Feb 2025 10:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2Ia6qfF"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="nJqs8vBA";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="nUg2jIhN"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A161E2066C7;
-	Thu, 13 Feb 2025 04:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BBA213244;
+	Thu, 13 Feb 2025 10:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739419811; cv=none; b=Ga+Z7SlTBLKMlxHxpRqX0HuLSFLTQYZfG7KqcbaAJDZjzjTfTqAyRC9AuAPTs5TR2pMzTxAjfu9lw1Q7qGTaaTQiTtjVhZ6lsww1c0Jh+xA7unSRdxBqeA0uu9SKU4kR/jrioPT0WVvFbQvBsaTUloU13fNlaQbHpqGQUNevdlg=
+	t=1739441125; cv=none; b=cjh8CRsES4j5qscElW/kqknAPNfgWPk8RTxPGKRmn0PvrFUgN/UaYuaeQaB/LcKcScjv0RN1Of8NjIfOxntYuifHwd449j5IGtjcyc0sXXvowuOKDMW+lCgueBXvBxXPp2ruLB4tENUaLIxM4cK0ebbaAnGmQct4Niaa2NvR9/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739419811; c=relaxed/simple;
-	bh=vBzPi+le8yHNaQQfyJswqWZw30/rpF7MDxZ2rLyouKg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=W2KzKIejq6dpINyqiwryRMQSXx3Y4tDsAgS5cE0EkmBTuIUV30DvQUrijjvHjjaNPpmA+WViLn4APaWDcVl2997J72doldvE+4HOIegvWh+HkpvIq4za51I3cXDtn1tu5A5mlaoKYd/18Ntnm6FhtHIu9MY+ep6pTqgzP6W84nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2Ia6qfF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7FEC4CEE6;
-	Thu, 13 Feb 2025 04:10:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739419811;
-	bh=vBzPi+le8yHNaQQfyJswqWZw30/rpF7MDxZ2rLyouKg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=V2Ia6qfFgjt36bW7eKuZFf7GO3Eu4tr7mMKngVAf5p74yKD/D+LWTkFTtg3CN70IG
-	 q9Pr7QlRJdxb2fnPCbON9f619V4MSPHNd/6aHFCB3xgF7qoVOFAEYzs/h67PR5ogwE
-	 f+h54L8zn9UAwjsbWoZksGXTOdXhUW3R9zIZIx9Ht7qHrr+4WUUpv06zAuC3Ub9KuU
-	 0ywSSDjYE1JoEBqHjXbWIs0uHXtj7Nhqa2RbR+GiBWusM3KbNfrXRq72cettzRTNFb
-	 X/aJqC3QtyWGfnk86iDpvTO6wGwEeuH6Sn1+/4uGWUYPUHKfyg0jf8zqdz/R1rBiPR
-	 Qh+11lyGLJPAw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E89380CEDC;
-	Thu, 13 Feb 2025 04:10:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1739441125; c=relaxed/simple;
+	bh=knOoCyqKBam6Pf0TCdS+SFILRF2xIiNlVO7MLrcfpCI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ddA2oESHPjN5/BqXxfHwNwik+LzpLdCAZNrHTkT+keuDgpz1KG00CyGnqV57Aeag4vjUeOA+NgMvbtN+h2DtE+t28Yf99svPGXwVxSXB+OK1TgU8FkltS3p1ZzEFJr1sKtLrkHIiQ0pCmV8OlGuM+0lxULboI1jr8eIjJiysFsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nJqs8vBA; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nUg2jIhN; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id F2283603AA; Thu, 13 Feb 2025 11:05:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1739441115;
+	bh=swm0n+eXf4Aw19LZqJrL1ixb0Ye++eEGcYlKWWhEWrU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nJqs8vBA00Onmi2Yp0/N1e7WgGMITiQiZWBJDixxSazGynmBE7nnkpvMZ5q+vtgFw
+	 F9NkB/qo78maSJK75wl6zfO0OYAggoh6DzfKc4EmUVW+jf9E2NtjAVrDDAPjlSPqDv
+	 J5+G22YkMGCyUqAcGi9OOmmt/XZG+piPwDnoPBuNdh73aB8x6XU9PsX3JB99PHK14S
+	 Bw8kjevVPmE/SEaEN4Nm9+oYO7co0QP1E6rTGi1n3klol8VU6BCjwqnj1A1gK8GGEo
+	 tEEHnwqOIhSozZxVhz79q156kDvaoD1JCeLmbelwuQvfKhuA1gVWlodY1W9BDhEKBr
+	 wX0UiWgS0CErw==
+X-Spam-Level: 
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 05B8C603AA;
+	Thu, 13 Feb 2025 11:05:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1739441113;
+	bh=swm0n+eXf4Aw19LZqJrL1ixb0Ye++eEGcYlKWWhEWrU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nUg2jIhNLmjEXvfp88oF++rB/L4SRyAkSO2RG0h/BU8ShEyPvuBWgIMvIwrrvYdYN
+	 30iAb1sRGCt7MiR7M6yeksqWFZ4K3ih6wMo40caFeOh5wmybEi/405P/9CvBaa8XDz
+	 ws7VPeoiDaXiAkpfVZbeNI5sCQkce5bq5Pd+bR47welAqVNiMDpnFxhheqy9BOpuSl
+	 tVnPz0ounh1G6lzBrTXyOgeZLnbfGIdIJHOeKchclvnETHQJNmYzrxQ/fFdMANPciO
+	 oqpL/QwQWer+DT0eat2RMPHCRyOd07HWrV0XTaKjOJxcb1AIaouiDiDM6pp2X42gLY
+	 gSI3tnTky6Mgg==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org
+Subject: [PATCH net 0/1] Netfilter fixes for net
+Date: Thu, 13 Feb 2025 11:05:01 +0100
+Message-Id: <20250213100502.3983-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,75 +77,42 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] netlink: specs: add conntrack dump and stats dump
- support
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173941983999.756055.3251715310058890855.git-patchwork-notify@kernel.org>
-Date: Thu, 13 Feb 2025 04:10:39 +0000
-References: <20250210152159.41077-1-fw@strlen.de>
-In-Reply-To: <20250210152159.41077-1-fw@strlen.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
- donald.hunter@gmail.com
 
-Hello:
+Hi,
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+The following batch contains one revert for:
 
-On Mon, 10 Feb 2025 16:21:52 +0100 you wrote:
-> This adds support to dump the connection tracking table
-> ("conntrack -L") and the conntrack statistics, ("conntrack -S").
-> 
-> Example conntrack dump:
-> tools/net/ynl/pyynl/cli.py --spec Documentation/netlink/specs/conntrack.yaml --dump get
-> [{'id': 59489769,
->   'mark': 0,
->   'nfgen-family': 2,
->   'protoinfo': {'protoinfo-tcp': {'tcp-flags-original': {'flags': {'maxack',
->                                                                    'sack-perm',
->                                                                    'window-scale'},
->                                                          'mask': set()},
->                                   'tcp-flags-reply': {'flags': {'maxack',
->                                                                 'sack-perm',
->                                                                 'window-scale'},
->                                                       'mask': set()},
->                                   'tcp-state': 'established',
->                                   'tcp-wscale-original': 7,
->                                   'tcp-wscale-reply': 8}},
->   'res-id': 0,
->   'secctx': {'secctx-name': 'system_u:object_r:unlabeled_t:s0'},
->   'status': {'assured',
->              'confirmed',
->              'dst-nat-done',
->              'seen-reply',
->              'src-nat-done'},
->   'timeout': 431949,
->   'tuple-orig': {'tuple-ip': {'ip-v4-dst': '34.107.243.93',
->                               'ip-v4-src': '192.168.0.114'},
->                  'tuple-proto': {'proto-dst-port': 443,
->                                  'proto-num': 6,
->                                  'proto-src-port': 37104}},
->   'tuple-reply': {'tuple-ip': {'ip-v4-dst': '192.168.0.114',
->                                'ip-v4-src': '34.107.243.93'},
->                   'tuple-proto': {'proto-dst-port': 37104,
->                                   'proto-num': 6,
->                                   'proto-src-port': 443}},
->   'use': 1,
->   'version': 0},
->  {'id': 3402229480,
-> 
-> [...]
+1) Revert flowtable entry teardown cycle when skbuff exceeds mtu to
+   deal with DF flag unset scenarios. This is reverts a patch coming
+   in the previous merge window (available in 6.14-rc releases).
 
-Here is the summary with links:
-  - [v2,net-next] netlink: specs: add conntrack dump and stats dump support
-    https://git.kernel.org/netdev/net-next/c/23fc9311a526
+Please, pull these changes from:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-25-02-13
 
+Thanks.
 
+----------------------------------------------------------------
+
+The following changes since commit e589adf5b70c07b1ab974d077046fdbf583b2f36:
+
+  iavf: Fix a locking bug in an error path (2025-02-11 18:02:04 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-25-02-13
+
+for you to fetch changes up to cf56aa8dd26328a9af4ffe7fb0bd8fcfa9407112:
+
+  Revert "netfilter: flowtable: teardown flow if cached mtu is stale" (2025-02-12 10:35:20 +0100)
+
+----------------------------------------------------------------
+netfilter pull request 25-02-13
+
+----------------------------------------------------------------
+Pablo Neira Ayuso (1):
+      Revert "netfilter: flowtable: teardown flow if cached mtu is stale"
+
+ net/netfilter/nf_flow_table_ip.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
