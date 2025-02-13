@@ -1,131 +1,100 @@
-Return-Path: <netfilter-devel+bounces-6009-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6010-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D670A33BFA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 11:06:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECD49A33F39
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 13:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFDAC3A56E9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 10:05:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705F73A9F8E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Feb 2025 12:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD8C2135BD;
-	Thu, 13 Feb 2025 10:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="TEZxhGFy";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="XPYHNgOn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E71E221705;
+	Thu, 13 Feb 2025 12:34:25 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBC72135A6;
-	Thu, 13 Feb 2025 10:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1E31E86E
+	for <netfilter-devel@vger.kernel.org>; Thu, 13 Feb 2025 12:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739441125; cv=none; b=EwMPZyCkZI4VosWFng/nkZ4X7GefUjHUdNihp/xQoCeFzy7pIJBez1lmiCVaoF+1l0mQlcTWxDhYwLZFwzQKeaBpxv5K+BB8gaIbkIwX46uxeYELHrMOfR8jMhsqmQD5mJx1YilV46kTjwr3lJxSDiJ9dO4Yw3Jc11pb7Rf00jE=
+	t=1739450065; cv=none; b=JQTdduOJH2T6QD/HZFaZNV97ggj8cehjiLgXkzRfwBrU9bJIekIzUh4QAKREiVxvAWO5JYXAHi0roT6D1rNIajZRh2nUCn/BdzRT3Elyrqm55EvOrb5rMSsGkXnCkF8xxN7kp14O2pn84nxfvaRW7A14TL/FQfg+lVvNlAfY4aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739441125; c=relaxed/simple;
-	bh=WmsomkJ100p7pSf7xL38z54aaFNpB7l8QlDbE8kCpLQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uN+jVFIgK5DPCwQE70u/T/faJliwKKt2P+/J/w0bqhOkfAPt7atPyJc9bfzDkze9Ws+qUqw4Ezm12k/TFajuWI0r5xXjse/TVpfifUGjXUqNijUWwfRiguggPiVbI/UWOr9Nfj6UQgHDn01PzIUaDWN140RbhCUIck+MQISz5Ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=TEZxhGFy; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XPYHNgOn; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 442D66056C; Thu, 13 Feb 2025 11:05:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1739441116;
-	bh=0FjhRGzxaA/4a6gzXP9+0Iz4nUTyuEMmSJ2bbQBb32o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TEZxhGFye5Wp67UjZL4Ev8PWK9/jpSO7asoomZQdsGqScKi22OMwg5Kk4Ye1J4i+G
-	 MqqkIBkpv+BPSxfX14Sf34Dmp6ScfcjnFp+3hSYp7IIuaAreA32boInIV2OLf3mGFD
-	 bg5kh9MqLYfhfijdcfEokzVZd+hlpIxENxS6NEmPYgNiX+net/gZm+xrpGnlwsjmCx
-	 sIsB7UObYPeZDyUw3d6qKfVbEDmc3lTbsSozpmxjyerpVHtc55IQt8sz8R1oG6jqsx
-	 VqGiyXmlTPBh10UHf2wjflimfk0rXisfGACEfB2e94agdd/CusHJvTZqJJulXnn59i
-	 u2SHdP5DUuNPA==
-X-Spam-Level: 
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id A399160568;
-	Thu, 13 Feb 2025 11:05:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1739441115;
-	bh=0FjhRGzxaA/4a6gzXP9+0Iz4nUTyuEMmSJ2bbQBb32o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XPYHNgOnpkLeUGd7aG78UzgcHGdUZrSdNrzLEOX8dyWn0KnjTJ4MDqrkP+2QUHx6n
-	 5tvU19tg8MAeVHYG35eFpzMrTdLSXkdnpqH+KHPvxJBifZ52fTSkyJnzdi6wGBReqR
-	 T5oPWacsEjIFn7IvYJsYXoiojv9n2m5SPAIk98FSg5OscxhkWNUZiHbjeVCafGhspM
-	 ZI2Wl37yudRcZ71Thj/ebXcBxu0TSZa8vQu4/VTD4fkTnEIP7dY9zgBpMUhiJSJWbY
-	 pnXBV1bn/bOmqL6jACq5OMPSQgJ3ffChnBjXgKxJbXtdv19iodabbrkKHtzJVsUN6C
-	 LpuVoxENZu5ug==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de,
-	horms@kernel.org
-Subject: [PATCH net 1/1] Revert "netfilter: flowtable: teardown flow if cached mtu is stale"
-Date: Thu, 13 Feb 2025 11:05:02 +0100
-Message-Id: <20250213100502.3983-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20250213100502.3983-1-pablo@netfilter.org>
-References: <20250213100502.3983-1-pablo@netfilter.org>
+	s=arc-20240116; t=1739450065; c=relaxed/simple;
+	bh=sD5mXAs0RA1YhX4PpW9ed8iq/PD4N4vdb5CxzL1bD0A=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=m1ZTWE8dmUfi8p5W1/WQ4/5ZNd5hmIh4nxIbK6saNqDpwk6kL1x0je+Wmf4xkVCcn5E8AVZ9rcny/LLD4ZyNK7nfR2+J3svV3nU4dfdzQx7GeEEHbDplTyAGU7+XYBe5AikQn9q8Odjn3/ybjIfXqeyqs88gpBX5wEhIl3Rq9Io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3ce8dadfb67so6381495ab.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 13 Feb 2025 04:34:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739450063; x=1740054863;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iOsijhvCigFjzeUnrAKfzrHq02qk08wDCDqZc+XWjnk=;
+        b=eNCTKnqYJhsQkyktcY98Wp3yhMpiXMlXY7unAX4IcWSaBsR98TF0c/vr2vwiD1TZe6
+         oOOPssPGY+MsEHQNW1vUcrku3UnIygZfx4AHHGBZkyltQ2zXhZipQO7Tmgtna1Mo8OBy
+         gAVWJQszFwJ2N+gCrN9UBVKUDi/uf8em7dKf51oKWCtZ7kCfUuji17QnSNgqlaf46LGU
+         AG76/ci+Bh5O1rBGeuIUwkYDOyPeocP30ltiem/sSB/UA93Z1dqA6tMtTpRdmJzNzLYy
+         3ka0GGZDvqUI6JK3wnNeCJ5FxOnqfca+nA176g6/U4Jj3svxaU7ELlr1kYGLMaxCo8VP
+         D43A==
+X-Forwarded-Encrypted: i=1; AJvYcCX0gZoCzGhIdeqWOPvyJZ8IoqOrKkJTzeWZ092KVu01xTy5b2JXCoSFDn45tvS3ekot1ct3zvRcz8ky87tcv5o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxichLHo90ndIfR82BH29bPhdXO0NNoKG+yBIaG3oSdSjVoQfkt
+	1grCgnCvOjnuYrvpvwyxDo5nW2JgYRNlUAp83Y+yqaRgDvVmjbwXu8g7yr27DnHVbU15ylG8ZaF
+	PC6hiZy2eOTJ3KbmzosJa19AqtFdJkCaQPeVcUev1B0+qnIVUHz9Spq0=
+X-Google-Smtp-Source: AGHT+IGxqZHI1riEKhbV8ypBp5pEp0wgedke4FH5wNKfZsx2F6WsH05HnMBiuuS/DdikDfJQVcg41QmB4I8m6WTWMEWCGOaRQ/w7
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1ca4:b0:3cf:bc71:94ee with SMTP id
+ e9e14a558f8ab-3d17bfe4532mr51179275ab.14.1739450063243; Thu, 13 Feb 2025
+ 04:34:23 -0800 (PST)
+Date: Thu, 13 Feb 2025 04:34:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67ade6cf.050a0220.110943.005b.GAE@google.com>
+Subject: [syzbot] Monthly netfilter report (Feb 2025)
+From: syzbot <syzbot+lista9445699986af9d74946@syzkaller.appspotmail.com>
+To: kadlec@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, pablo@netfilter.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This reverts commit b8baac3b9c5cc4b261454ff87d75ae8306016ffd.
+Hello netfilter maintainers/developers,
 
-IPv4 packets with no DF flag set on result in frequent flow entry
-teardown cycles, this is visible in the network topology that is used in
-the nft_flowtable.sh test.
+This is a 31-day syzbot report for the netfilter subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/netfilter
 
-nft_flowtable.sh test ocassionally fails reporting that the dscp_fwd
-test sees no packets going through the flowtable path.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 9 issues are still open and 181 have already been fixed.
 
-Fixes: b8baac3b9c5c ("netfilter: flowtable: teardown flow if cached mtu is stale")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 128     Yes   INFO: rcu detected stall in gc_worker (3)
+                  https://syzkaller.appspot.com/bug?extid=eec403943a2a2455adaa
+<2> 11      Yes   KMSAN: uninit-value in ip6table_mangle_hook (3)
+                  https://syzkaller.appspot.com/bug?extid=6023ea32e206eef7920a
+<3> 4       Yes   INFO: rcu detected stall in tcp_setsockopt
+                  https://syzkaller.appspot.com/bug?extid=1a11c39caf29450eac9f
+
 ---
- net/netfilter/nf_flow_table_ip.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 97c6eb8847a0..8cd4cf7ae211 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -381,10 +381,8 @@ static int nf_flow_offload_forward(struct nf_flowtable_ctx *ctx,
- 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
- 
- 	mtu = flow->tuplehash[dir].tuple.mtu + ctx->offset;
--	if (unlikely(nf_flow_exceeds_mtu(skb, mtu))) {
--		flow_offload_teardown(flow);
-+	if (unlikely(nf_flow_exceeds_mtu(skb, mtu)))
- 		return 0;
--	}
- 
- 	iph = (struct iphdr *)(skb_network_header(skb) + ctx->offset);
- 	thoff = (iph->ihl * 4) + ctx->offset;
-@@ -662,10 +660,8 @@ static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
- 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
- 
- 	mtu = flow->tuplehash[dir].tuple.mtu + ctx->offset;
--	if (unlikely(nf_flow_exceeds_mtu(skb, mtu))) {
--		flow_offload_teardown(flow);
-+	if (unlikely(nf_flow_exceeds_mtu(skb, mtu)))
- 		return 0;
--	}
- 
- 	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
- 	thoff = sizeof(*ip6h) + ctx->offset;
--- 
-2.30.2
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
