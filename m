@@ -1,78 +1,78 @@
-Return-Path: <netfilter-devel+bounces-6084-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6087-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C56FFA44C6B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Feb 2025 21:19:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36B01A44C8D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Feb 2025 21:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3B663A283C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Feb 2025 20:19:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09DA442431C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Feb 2025 20:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F801215F79;
-	Tue, 25 Feb 2025 20:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9FD219307;
+	Tue, 25 Feb 2025 20:16:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+bWoZfW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="idCeSiBz"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1F4215179;
-	Tue, 25 Feb 2025 20:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1689921578A;
+	Tue, 25 Feb 2025 20:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740514599; cv=none; b=hEDu2te2iAVRMP0OfYE7v97xwrHaKw86T9QrR2dczVbhwlBzfv4cLXO1mto6MseMShRrGVDyfssRjKzex8O3lpZMEFGBCVCi34jNbkyXiAZRR1C6hhRdr+37V4XRYtEi60b+eh5lhR6yZP98cZH33d9DpJkdfrrYbFVsTp/uN5U=
+	t=1740514602; cv=none; b=etggu6ul3CV8mNuWuGA9KZ24wLaCOjoTJOCHRMM598FkWM71SAJCfADmJtqDo8H70IPCBkqJSjq65g2aU+KefOXNpatrFPJDe1kvMFyUVJncZNknd81cbVkuvcv53JH/DAI1D5ptOHUG57Uc5ZlcBNk9f2beFVQ3RMxvI3+HwuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740514599; c=relaxed/simple;
-	bh=Vja1w1A/Wnz062ttT6Bt+MXuQBy3cdFVFTFu9bvZ8Ag=;
+	s=arc-20240116; t=1740514602; c=relaxed/simple;
+	bh=Xf5mlATXYp8EYoXU9a3w+XGI157o2p4WZAmB5ikh7tM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lqiePzd1Nal21RwIY9wk59YlHJTb6S4FmJ6sydy/ur24VlkUsflZuKlm4SG1fkXA0KUvuG27/DRHcLnNSNzk13zUoSFO3gRyEnR3fWOhGaTQTZbJWLpSkDHaoooxITk08rUHWgWqIU02pcGWuSTah1DOv4lmGigsjf2iTsLdPUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+bWoZfW; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version; b=Wmh4nq1sPX2FjrXJ8ou8gK9KuMxh9wdAvTG5wPvtLLcYDKh7+sAxOPr3H3lwZygRDI9J9I7duFRMecmI9uaxKrPiBhA2y2zLTgFKUvfmP1onF9cxGo+budeFjbufq2yDmd/Z86+jPEUHDTUnpTvIbGBzl8p5uCDau7TlP1T5+j4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=idCeSiBz; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-abb75200275so962807266b.3;
-        Tue, 25 Feb 2025 12:16:37 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-abbb12bea54so1038174566b.0;
+        Tue, 25 Feb 2025 12:16:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740514596; x=1741119396; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740514597; x=1741119397; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gr1wMzwLJ3r114jkr+fSh/N13xzOYrfc9OnXbfM4Z7I=;
-        b=Q+bWoZfWr2sPJocVwfZ4R8UPvc44ySZOu8qRnf750Pn7prhYko/krV5Whumt/GYvjU
-         CIo2OjWNgYedtC+YyR0qagKFrymOxHjfXeDBIaiaFXvGkkwG2jiYuGwbOQZV0sw3clhK
-         Ki0dJgMGHK7Fw2ZURHn+jbjtb3wTwultzHKekax46qUF+nf2IquyGPWtb+5OgyF3UTVC
-         MFeTYV7StGYt7DSu4wesnSFeYXDlRfoNzqhRuyqpSPu3GUEa+eoG8mHh/lr/ofgPU5fb
-         GLxsUq3ARZdIqiAeSIaE0EQrbnB3p/+2CTl/xzlA5EGZ6e05Obw1csrvDLRjeDWsKldT
-         K71Q==
+        bh=mNvAyhAv6GepxNEYkCskllQBVi38mrCeZ4SsbbR7WSY=;
+        b=idCeSiBzuzKiqwPiJtOWl5S+b4bRt5HGLA4SzsVFqAGiox5Npa1KPrMMjxBJAe9/WL
+         Q6/5d7JKezdYiWo5sMg9m80cAX+4o6EJTzewJJhWa5bKC+63xHPfMohSYfuVuzaTy+Zx
+         gnpSvrs1fUHIW28dsKDvHxCOBJShuSYKb7BN+AqcU+j0uNaXGRJ9ZewK7oYNSYBVYiZE
+         dpZrbGnGahw+UcsXNj+5iD3q/LbQdvpdgF76QjHp3JmBWcIUxpFvmXpbOk8Q0TRX0WPc
+         qfkW6+CMAFB07ihBwfzVJj1XCurV2hFhh+grsPAh6whPx+sUKMtIrnvxXcJy80HbFfrK
+         WKsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740514596; x=1741119396;
+        d=1e100.net; s=20230601; t=1740514597; x=1741119397;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Gr1wMzwLJ3r114jkr+fSh/N13xzOYrfc9OnXbfM4Z7I=;
-        b=R6UhEW3MeOLULzG2xDpubLUUlK+Z5gJikjWQdD5E8Kr7yJdnU+xpwkgVyGHbJN4nqJ
-         Fv5F5xjmA5taaXWLyhjrKLpa2CZsQpYDo2/psiwTzJwZy0YzFWVGvqAmmItyzBiAlbzf
-         qGPJ5z//caxNRCwGDQuV4xAkx3YHmK2dx1aO0iTbExDeUqdxg8SJybQXKXQZKmkzzZ+t
-         bdKXU/hZprD1JKmdmUNKDoB9T8tb3bFN6EKQmUKISulZtRkK8l94PlU4ijFlfhkwtu0m
-         s4gXF1Uh3UvGvA3u3hfvhUffLpOpJRuTfKwhcH+IWLtmSpogxIvIZmigZLe1GTY7+E9q
-         ztWA==
-X-Forwarded-Encrypted: i=1; AJvYcCUHzWiECqG0XXeKVXh1kA4L4w7Dbm8J6ILd43q/LqbfMxFAxCo3mTwmnQoIQxv+lD/ktPsYIRMO8+F53ms=@vger.kernel.org, AJvYcCW2eNhhh/JpYrOrjJ2JvQSV8CVJ3+nek54mvl27wtp9AFlMjfuei+F4uP0SoWH4A1kd8dxK62tr27UYwVX90J36@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1JdJCjB7mkI4nS3NJPkWaVSTeTVEdbaNEK2pqy7AxVGzDZQyD
-	EzHqnWMeD2opp9a9AlFglZ6EAmgMRTniJaZyWmJmI+MvPVhsjd4m
-X-Gm-Gg: ASbGncuIejMD0FNcJ1LIM1n/B2ZWCXdxN3WOfMQ3hrRNg7eKqVrYYpx4LLpN5cBd44F
-	R7DywkuBTCgINQ3If7tNsLXG6YV/Z+KkrQstWdhpgwp8SxCTI/ukmGYmFnWBVIbjG7aw23nnaq3
-	T6TlEypA4D4RNaWdXJiJb1KfOwpBnuF4rYQlmqTKmO+2hU48m52PBsv87iOQd89SmkEbpwJiTMz
-	7uQ7tSsiSFBokduTizS4yB9q/iBBeR49SH29Q5j025AIIwV+q/ERNIXYkTU8O5soxFb489AY20q
-	GpvEmA4pu3b5nArCFCaGFXdKKSvF0GuedGx0P7XwfIrF4vEgy6YnrTufULr82MUsuOdpTkzsYj7
-	ZU1YNuOVMkJfZGKHqSGS6lb/h0j4CloWTPwYIoOb2Wvs=
-X-Google-Smtp-Source: AGHT+IFQrPMr/zga3A1PXJqgdsJBXZ3US5klRSnZht6r010E2CvDfRMDZ8BFvHY6Z6/b4s4s1eKUxw==
-X-Received: by 2002:a17:906:30c4:b0:abe:ea7e:d1af with SMTP id a640c23a62f3a-abeea7ed9e3mr122695566b.50.1740514595791;
-        Tue, 25 Feb 2025 12:16:35 -0800 (PST)
+        bh=mNvAyhAv6GepxNEYkCskllQBVi38mrCeZ4SsbbR7WSY=;
+        b=ShEwbMqmBPiouQjPcUIAMmkOGsv+t7NAN5fCfC9moZzKKz7cf6aGizi2Bxq1nHnG8M
+         aEaFyEwbJ8z7UwI5yLAbspJx5s82MRENrpCdUnpZ8Uqk/iKy77bpDs4OwMBPJMe888xM
+         xHWra8XuXFcOIwI7gO2kMFND2tL+F9rr+/6bwR31HXPA5U372WZX3dFGqJx5pWBZknp4
+         CL+FgOFMfiIa5/QUPgcms5F459IXO8zlbFJ99ZaQdg2JVJglNuhMTLU4AshyXyONSw0B
+         zGbhiv8cSCSGNtDjSpGrbn/iBDsueOb/jEYv5CDU79w4bTn69FK/qx9RhHB+8Ux1vwNc
+         /3AQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWxtahtp6wByESae9iG3kSNdCd4CXEVK4imFaUu0+u35DK5pYfxNsjzX7gJqa47X3sEi9x48UEUb3+/Nv/kV7Zd@vger.kernel.org, AJvYcCX54v8tM8egwVo5yLenSWu0HQhdSGkqvoN0z8CPr/sE6H9HfmCnTQwsiZaQzCAt9ea/lMbFmNsuYj+P6pk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0cAtCUTOFdwJPB1+dJU81IwY5DxBmggKUYJvWWnu5de+ZCNDp
+	hDwHyWjLrmh3iA72RQAImmYqRZD43jQuafVN7UT7V2iEhUfHgCO2
+X-Gm-Gg: ASbGnct/AwbRUlug8hFyARo01qFt3RTwJw3EKsZtzXPMnt147I3gmOhu4ri3xcA6InU
+	1yp+8Bro9WA84TXzD3lQRroy9AzSaGlXxmsL/NpwHEBUz7gHTAXCmw84dXXQ2guPRV2KsV+TNfe
+	kBq+/iLCu2yOwuwYgHynNLzg5WVy3bC5Hfl20MmEB1u4XA+H8yslvaYaDyTCtuB7V/Dv0x9cucI
+	FeoGne6CciCIfbJ17XIXcTuahfujAHkdFuoNT2x5+D66cMwPYzW/3BtXM10rwZ+ghTJrNOvZPoN
+	gRKlnWrNItlPhCht9+YXEeBFBow1RkbIUlJGs2u5a2OLxsPnPt9KqcKdBWa72VvAr8EIC5GKFJo
+	hRz3u5Bg5KPBWD4ekvqIfMYnuPgHej+wY4NlNBIMvngc=
+X-Google-Smtp-Source: AGHT+IGxUdijvIUHSsavOxjOEGtqnGWOKkNqobQSxe06Fq+xOGdhhx0QApPI1c+j5z6WHzO8JVwaLA==
+X-Received: by 2002:a17:907:1ca4:b0:ab6:d575:9540 with SMTP id a640c23a62f3a-abed1076c86mr522925566b.50.1740514597100;
+        Tue, 25 Feb 2025 12:16:37 -0800 (PST)
 Received: from corebook.localdomain (2001-1c00-020d-1300-1b1c-4449-176a-89ea.cable.dynamic.v6.ziggo.nl. [2001:1c00:20d:1300:1b1c:4449:176a:89ea])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abed201218fsm194319666b.104.2025.02.25.12.16.34
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abed201218fsm194319666b.104.2025.02.25.12.16.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 12:16:35 -0800 (PST)
+        Tue, 25 Feb 2025 12:16:36 -0800 (PST)
 From: Eric Woudstra <ericwouds@gmail.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -103,9 +103,9 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	Eric Woudstra <ericwouds@gmail.com>
-Subject: [PATCH v7 net-next 09/14] netfilter: nft_flow_offload: Add NFPROTO_BRIDGE to validate
-Date: Tue, 25 Feb 2025 21:16:11 +0100
-Message-ID: <20250225201616.21114-10-ericwouds@gmail.com>
+Subject: [PATCH v7 net-next 10/14] netfilter: nft_flow_offload: Add DEV_PATH_MTK_WDMA to nft_dev_path_info()
+Date: Tue, 25 Feb 2025 21:16:12 +0100
+Message-ID: <20250225201616.21114-11-ericwouds@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250225201616.21114-1-ericwouds@gmail.com>
 References: <20250225201616.21114-1-ericwouds@gmail.com>
@@ -117,29 +117,47 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Need to add NFPROTO_BRIDGE to nft_flow_offload_validate() to support
-the bridge-fastpath.
+In case of using mediatek wireless, in nft_dev_fill_forward_path(), the
+forward path is filled, ending with mediatek wlan1.
 
-Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
+Because DEV_PATH_MTK_WDMA is unknown inside nft_dev_path_info() it returns
+with info.indev = NULL. Then nft_dev_forward_path() returns without
+setting the direct transmit parameters.
+
+This results in a neighbor transmit, and direct transmit not possible.
+But we want to use it for flow between bridged interfaces.
+
+So this patch adds DEV_PATH_MTK_WDMA to nft_dev_path_info() and makes
+direct transmission possible.
+
 Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
 ---
- net/netfilter/nft_flow_offload.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/netfilter/nft_flow_offload.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
-index 5ef2f4ba7ab8..323c531c7046 100644
+index 323c531c7046..b9e6d9e6df66 100644
 --- a/net/netfilter/nft_flow_offload.c
 +++ b/net/netfilter/nft_flow_offload.c
-@@ -421,7 +421,8 @@ static int nft_flow_offload_validate(const struct nft_ctx *ctx,
+@@ -105,6 +105,7 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 		switch (path->type) {
+ 		case DEV_PATH_ETHERNET:
+ 		case DEV_PATH_DSA:
++		case DEV_PATH_MTK_WDMA:
+ 		case DEV_PATH_VLAN:
+ 		case DEV_PATH_PPPOE:
+ 			info->indev = path->dev;
+@@ -117,6 +118,10 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 				i = stack->num_paths;
+ 				break;
+ 			}
++			if (path->type == DEV_PATH_MTK_WDMA) {
++				i = stack->num_paths;
++				break;
++			}
  
- 	if (ctx->family != NFPROTO_IPV4 &&
- 	    ctx->family != NFPROTO_IPV6 &&
--	    ctx->family != NFPROTO_INET)
-+	    ctx->family != NFPROTO_INET &&
-+	    ctx->family != NFPROTO_BRIDGE)
- 		return -EOPNOTSUPP;
- 
- 	return nft_chain_validate_hooks(ctx->chain, hook_mask);
+ 			/* DEV_PATH_VLAN and DEV_PATH_PPPOE */
+ 			if (info->num_encaps >= NF_FLOW_TABLE_ENCAP_MAX) {
 -- 
 2.47.1
 
