@@ -1,44 +1,44 @@
-Return-Path: <netfilter-devel+bounces-6105-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6106-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4915A48373
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 16:48:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50E06A48380
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 16:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 693161886A47
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 15:48:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 476C03AA966
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 15:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A9C14D43D;
-	Thu, 27 Feb 2025 15:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C9218DB35;
+	Thu, 27 Feb 2025 15:49:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9397433C8
-	for <netfilter-devel@vger.kernel.org>; Thu, 27 Feb 2025 15:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A341427002F
+	for <netfilter-devel@vger.kernel.org>; Thu, 27 Feb 2025 15:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740671290; cv=none; b=BJ309KGZwt2LqnnzQfV2vXejDbxeMYGsyrja1OydqiFYcAOgCqDR+X/YmGuIv88bPPqMMSNp4CTHefmiblXkaVWHlRz6RO+t2+ia8WwvXLa7IiIpTZ6GC8z46f3XclEFDC4ZxQ5SLNxriXsPu0wqOLS7GDutbyTQM1lM1BFvhbI=
+	t=1740671384; cv=none; b=YjoDsdMTjPc1ke7yeLKn+XU2qFR5iEiiL3Sjvdayp+KAhlnLysfqznTPqOqcwxJ034R0pUp8YQJXjv/kj9o5XycruP0AtTyVaco2XpTtt7S7BoUe6ACu87L7TUdrrV/eLfVH49ICoF5EDmxRBqNweaY7CQuPuJ8L1i1F8cQ+Th8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740671290; c=relaxed/simple;
-	bh=d6sBSkjnp8VHUtyuGPvMJRmCNZejHNc/XRssyswjKZE=;
+	s=arc-20240116; t=1740671384; c=relaxed/simple;
+	bh=DsrUfXp+mEhD12TxO2IQBXaKPSvL7KIKH1E12qtC0dg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gupvbJFTDqvXzQssAHCLAFZ+tJcxzPDX0hndNg/69sO8RPbnazkCItOkAtDjtaztHC6K591pjvVCg2W1i1p1AbD5D5QdmOQj4QWJxY4iHfSe0qnytUq0fpoMoLNJfz5OkdpG/jjqs3aeLARijJIxylOzvGh4J75t+C+Jw4hzLGI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=ADnRyxjvhz9r5WqBJuqxmbPn1TZu3KJy9/Dsah1qchMzML4vcklu2H0T8j5awnP6Y/dA9aYXNX8p8KPDFoiJdadokOc2Rx+PcOURuaUiTR7asw5HqFzDw9LuGvvUunRXHSDZRUyZ41/DFYKNXvLqmi45y9u+eXLgx/nXLvmRsZQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@strlen.de>)
-	id 1tng7J-0002os-As; Thu, 27 Feb 2025 16:48:05 +0100
-Date: Thu, 27 Feb 2025 16:48:05 +0100
+	id 1tng8p-0002pV-6p; Thu, 27 Feb 2025 16:49:39 +0100
+Date: Thu, 27 Feb 2025 16:49:39 +0100
 From: Florian Westphal <fw@strlen.de>
 To: "Jensen, Nicklas Bo" <njensen@akamai.com>
 Cc: "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
 Subject: Re: [PATCH] Fix bug where garbage collection for nf_conncount is not
  skipped when jiffies wrap around
-Message-ID: <20250227154805.GA7952@breakpoint.cc>
+Message-ID: <20250227154939.GB7952@breakpoint.cc>
 References: <EC4CB996-F5A1-4368-AAB7-F77E1B2E6A4D@akamai.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -57,8 +57,6 @@ Jensen, Nicklas Bo <njensen@akamai.com> wrote:
 > The problem is that last_gc in the nf_conncount_list struct is an u32, but jiffies is an unsigned long which is 8 bytes on my systems. When those two are compared it only works until last_gc wraps around.
 > 
 > See bug report https://bugzilla.netfilter.org/show_bug.cgi?id=1778 for more details.
-> 
-> Signed-off-by: Nicklas Bo Jensen <njensen@akamai.com>
 
-Reviewed-by: Florian Westphal <fw@strlen.de>
+Fixes: d265929930e2 ("netfilter: nf_conncount: reduce unnecessary GC")
 
