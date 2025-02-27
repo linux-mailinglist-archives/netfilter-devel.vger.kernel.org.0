@@ -1,222 +1,64 @@
-Return-Path: <netfilter-devel+bounces-6103-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6105-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C42A48212
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 15:53:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4915A48373
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 16:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2AB83A85AA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 14:52:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 693161886A47
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Feb 2025 15:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F6E25DB09;
-	Thu, 27 Feb 2025 14:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A9C14D43D;
+	Thu, 27 Feb 2025 15:48:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6004F25DB05
-	for <netfilter-devel@vger.kernel.org>; Thu, 27 Feb 2025 14:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9397433C8
+	for <netfilter-devel@vger.kernel.org>; Thu, 27 Feb 2025 15:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740667983; cv=none; b=U2P0DSm9l+LSgOD1JkK/U/GfaWuYK1xdYa1QBVj5x4IWGcviPX4RrRJW4guwCe4dKX5uvTnYVhDknHvGi7w3FoQCOmwMq2xgW4kjVyl2uki3JL8Jzx0bSAkfs+A0Y81bAxNsCDYFvk3BrIivObbg6MLcu8uFuhgxSFTmaambN1o=
+	t=1740671290; cv=none; b=BJ309KGZwt2LqnnzQfV2vXejDbxeMYGsyrja1OydqiFYcAOgCqDR+X/YmGuIv88bPPqMMSNp4CTHefmiblXkaVWHlRz6RO+t2+ia8WwvXLa7IiIpTZ6GC8z46f3XclEFDC4ZxQ5SLNxriXsPu0wqOLS7GDutbyTQM1lM1BFvhbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740667983; c=relaxed/simple;
-	bh=JNlvRm4smN1/dM/4DG3jJgACidJohbZC/NKPzlB+Pmg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q0Q3TfyHtGPKxPIgzTy3DChq422ojOUQvQayPz2MQBHajvAoVYf7Kd+cO4tDbfks6615AsKlkBBtsZOzJ4VuozykBY4FLWQd3V7QBTYkrCDco3n3313RW1EAY+rXPHyqNhjCablnSnQVCnRjWqA+BL8zjERnE4ghGqYXsjc/C3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+	s=arc-20240116; t=1740671290; c=relaxed/simple;
+	bh=d6sBSkjnp8VHUtyuGPvMJRmCNZejHNc/XRssyswjKZE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gupvbJFTDqvXzQssAHCLAFZ+tJcxzPDX0hndNg/69sO8RPbnazkCItOkAtDjtaztHC6K591pjvVCg2W1i1p1AbD5D5QdmOQj4QWJxY4iHfSe0qnytUq0fpoMoLNJfz5OkdpG/jjqs3aeLARijJIxylOzvGh4J75t+C+Jw4hzLGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1tnfFz-0002N6-MO; Thu, 27 Feb 2025 15:52:59 +0100
+	(envelope-from <fw@strlen.de>)
+	id 1tng7J-0002os-As; Thu, 27 Feb 2025 16:48:05 +0100
+Date: Thu, 27 Feb 2025 16:48:05 +0100
 From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 4/4] expression: expr_build_udata_recurse should recurse
-Date: Thu, 27 Feb 2025 15:52:10 +0100
-Message-ID: <20250227145214.27730-5-fw@strlen.de>
-X-Mailer: git-send-email 2.45.3
-In-Reply-To: <20250227145214.27730-1-fw@strlen.de>
-References: <20250227145214.27730-1-fw@strlen.de>
+To: "Jensen, Nicklas Bo" <njensen@akamai.com>
+Cc: "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH] Fix bug where garbage collection for nf_conncount is not
+ skipped when jiffies wrap around
+Message-ID: <20250227154805.GA7952@breakpoint.cc>
+References: <EC4CB996-F5A1-4368-AAB7-F77E1B2E6A4D@akamai.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <EC4CB996-F5A1-4368-AAB7-F77E1B2E6A4D@akamai.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-If we see EXPR_BINOP, recurse: ->left can be another EXPR_BINOP.
+Jensen, Nicklas Bo <njensen@akamai.com> wrote:
+> nf_conncount is supposed to skip garbage collection if it has already run garbage collection in the same jiffy. Unfortunately, this is broken when jiffies wrap around which this patch fixes.
+> 
+> The problem is that last_gc in the nf_conncount_list struct is an u32, but jiffies is an unsigned long which is 8 bytes on my systems. When those two are compared it only works until last_gc wraps around.
+> 
+> See bug report https://bugzilla.netfilter.org/show_bug.cgi?id=1778 for more details.
+> 
+> Signed-off-by: Nicklas Bo Jensen <njensen@akamai.com>
 
-This is irrelevant for 'typeof' named sets, but for anonymous sets, the
-key is derived from the concat expression that builds the lookup key for
-the anonymous set.
-
- tcp option mptcp subtype . ip daddr { mp-join. 10.0.0.1, ..
-
- needs two binops back-to-back:
-
-  [ exthdr load tcpopt 1b @ 30 + 2 => reg 1 ]
-  [ bitwise reg 1 = ( reg 1 & 0x000000f0 ) ^ 0x00000000 ]
-  [ bitwise reg 1 = ( reg 1 >> 0x00000004 ) ]
-
-This bug prevents concat_expr_build_udata() from creating the userdata key
-at load time.
-
-When listing the rules, we get an assertion:
- nft: src/mergesort.c:23: concat_expr_msort_value: Assertion `ilen > 0' failed.
-
-because the set has a key with 0-length integers.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/expression.c              |  2 +-
- tests/py/any/tcpopt.t         |  1 +
- tests/py/any/tcpopt.t.json    | 77 +++++++++++++++++++++++++++++++++++
- tests/py/any/tcpopt.t.payload | 13 ++++++
- 4 files changed, 92 insertions(+), 1 deletion(-)
-
-diff --git a/src/expression.c b/src/expression.c
-index d2fa46509262..8a90e09dd1c5 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -1078,7 +1078,7 @@ static struct expr *expr_build_udata_recurse(struct expr *e)
- {
- 	switch (e->etype) {
- 	case EXPR_BINOP:
--		return e->left;
-+		return expr_build_udata_recurse(e->left);
- 	default:
- 		break;
- 	}
-diff --git a/tests/py/any/tcpopt.t b/tests/py/any/tcpopt.t
-index 79699e23a4b1..3d46c0efc231 100644
---- a/tests/py/any/tcpopt.t
-+++ b/tests/py/any/tcpopt.t
-@@ -54,6 +54,7 @@ tcp option mptcp exists;ok
- tcp option mptcp subtype mp-capable;ok
- tcp option mptcp subtype 1;ok;tcp option mptcp subtype mp-join
- tcp option mptcp subtype { mp-capable, mp-join, remove-addr, mp-prio, mp-fail, mp-fastclose, mp-tcprst };ok
-+tcp option mptcp subtype . tcp dport { mp-capable . 10, mp-join . 100, add-addr . 200, remove-addr . 300, mp-prio . 400, mp-fail . 500, mp-fastclose . 600, mp-tcprst . 700 };ok
- 
- reset tcp option mptcp;ok
- reset tcp option 2;ok;reset tcp option maxseg
-diff --git a/tests/py/any/tcpopt.t.json b/tests/py/any/tcpopt.t.json
-index a02e71b66c36..e712a5e0ed56 100644
---- a/tests/py/any/tcpopt.t.json
-+++ b/tests/py/any/tcpopt.t.json
-@@ -591,6 +591,83 @@
-    }
- ]
- 
-+# tcp option mptcp subtype . tcp dport { mp-capable . 10, mp-join . 100, add-addr . 200, remove-addr . 300, mp-prio . 400, mp-fail . 500, mp-fastclose . 600, mp-tcprst . 700 }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "concat": [
-+                    {
-+                        "tcp option": {
-+                            "field": "subtype",
-+                            "name": "mptcp"
-+                        }
-+                    },
-+                    {
-+                        "payload": {
-+                            "field": "dport",
-+                            "protocol": "tcp"
-+                        }
-+                    }
-+                ]
-+            },
-+            "op": "==",
-+            "right": {
-+                "set": [
-+                    {
-+                        "concat": [
-+                            "mp-capable",
-+                            10
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "remove-addr",
-+                            300
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "mp-fastclose",
-+                            600
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "mp-join",
-+                            100
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "mp-prio",
-+                            400
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "mp-tcprst",
-+                            700
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "add-addr",
-+                            200
-+                        ]
-+                    },
-+                    {
-+                        "concat": [
-+                            "mp-fail",
-+                            500
-+                        ]
-+                    }
-+                ]
-+            }
-+        }
-+    }
-+]
-+
- # reset tcp option mptcp
- [
-     {
-diff --git a/tests/py/any/tcpopt.t.payload b/tests/py/any/tcpopt.t.payload
-index af8c4317e567..437e073aae1c 100644
---- a/tests/py/any/tcpopt.t.payload
-+++ b/tests/py/any/tcpopt.t.payload
-@@ -189,6 +189,19 @@ ip test-ip4 input
-   [ bitwise reg 1 = ( reg 1 & 0x000000f0 ) ^ 0x00000000 ]
-   [ lookup reg 1 set __set%d ]
- 
-+# tcp option mptcp subtype . tcp dport { mp-capable . 10, mp-join . 100, add-addr . 200, remove-addr . 300, mp-prio . 400, mp-fail . 500, mp-fastclose . 600, mp-tcprst . 700 }
-+__set%d test-ip4 3
-+__set%d test-ip4 0
-+        element 00000000 00000a00  : 0 [end]    element 00000001 00006400  : 0 [end]    element 00000003 0000c800  : 0 [end]    element 00000004 00002c01  : 0 [end]    element 00000005 00009001  : 0 [end]    element 00000006 0000f401  : 0 [end]    element 00000007 00005802  : 0 [end]    element 00000008 0000bc02  : 0 [end]
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ exthdr load tcpopt 1b @ 30 + 2 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x000000f0 ) ^ 0x00000000 ]
-+  [ bitwise reg 1 = ( reg 1 >> 0x00000004 ) ]
-+  [ payload load 2b @ transport header + 2 => reg 9 ]
-+  [ lookup reg 1 set __set%d ]
-+
- # reset tcp option mptcp
- ip test-ip4 input
-   [ exthdr reset tcpopt 30 ]
--- 
-2.45.3
-
+Reviewed-by: Florian Westphal <fw@strlen.de>
 
