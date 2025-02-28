@@ -1,68 +1,71 @@
-Return-Path: <netfilter-devel+bounces-6129-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6130-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1078BA4A484
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE8FA4A486
 	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Feb 2025 22:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 140F117014E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Feb 2025 21:10:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98FF21897E91
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Feb 2025 21:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACA11D14FF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6DC1D5142;
 	Fri, 28 Feb 2025 21:09:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="MiDj7Yl2";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="MiDj7Yl2"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Vzctql1f";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Vzctql1f"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7492717A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749781C5D4D
 	for <netfilter-devel@vger.kernel.org>; Fri, 28 Feb 2025 21:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740776994; cv=none; b=GFy83tFb+tdcYty6f8HDMVFPDBSa3a92ukNG+mkZnowkM89cewlRPdTJtY8/p4t2AeO6hj5Vcm6rDyFsbhcpJqwxqraqDj/Ox6x/ZwcI8v+UixwKbxDKStCfZS6RA/uIzMZxBRR7vv+4mVZv7K9rn87brHjiBPlnYcqMExs+JnM=
+	t=1740776994; cv=none; b=Wb8dMunHT0+rGcRdvBmYMPd4SHV1oyXWBONFPoT7xH77v9b+ZT4NFeO9lvz5B9CIjl6zSo19AL7eRhGl7LjwC4N/hP2dLgj7qJmEeehs2Ofb5dxuo7SaEm3sdoUDd6Pvdx4cZjcOYQbd859VaI+T9ykbSOmsAWEBwnBWcMOZ7qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1740776994; c=relaxed/simple;
-	bh=ocmlUg1DqNu0YjevI4iXcpFrBXTZyqv7TcsGMJExJwM=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=cFCNpQizllEQv0//OxxXzY9CaWRdsrC/OisHc41USfXA6UIu7iCA81UVDCWTNHqAsWW7OaCuRnsoHaUSmBWQvNhmiqiJbFXxsr53w0PleosCHJ0ladpJ0GcQxRqH5oEmet9ZVEEPUt6hxeW+qoTByZhNjVLHvH36LkFCAsf1C6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=MiDj7Yl2; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=MiDj7Yl2; arc=none smtp.client-ip=217.70.190.124
+	bh=ldwpT/AX5H+eFoI4Xz73tSbsvDbFZJHMumWClf32o70=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pkuAKU2Z5yvctlf4PYqvslC1DuRw2y66fiQTzyXGkDh7+pEe70bqn30cGxscOva1rF9NNiIaAk8Y8MAD/+37EfGICXO4nTsT+aOR2YMYrNl3/fvaVlxh9vD4krsJDi8JNwvcbCztM55T80GDlfAKzJvp+B46hyVWODOgiYlGu7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Vzctql1f; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Vzctql1f; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 5323660311; Fri, 28 Feb 2025 22:09:43 +0100 (CET)
+	id 66D1860313; Fri, 28 Feb 2025 22:09:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1740776983;
-	bh=lIljgY+tCoPP7DbIRkm+xV6S2lAUE/vzhWT7dhyY1X4=;
-	h=From:To:Subject:Date:From;
-	b=MiDj7Yl2aO6gBLCe/6lp/W9jbc5iHMFgZkneX3NJQiByyO1z8SA2NjHUFRzXqrLcQ
-	 xbx+Wv6ex1AtprSzM8Pwj5yluafG6WSmciLO2dbVwosveWzQ6KEthJ8WchkqNlRJx1
-	 nV8HcApeACu5advBSboDjBbzHbSwgqI/QIITtry2VIIVkUnZ/fX45XocgXNuDY/7Td
-	 HTJDfdrWOq2NvYK+Liv5e6sMgP0iqgOfChB6jqcjXChvsjMRrrJ+9bbJd4228iYuB+
-	 pYId707bH7baH9OQgD0Dtxvkvx1TkY5oOfyEAKjwc8ZLV4BblnAmeA476aorKFzDQe
-	 GPqFfo4P8XJdg==
+	s=2025; t=1740776984;
+	bh=HlC2KQLqTAYyK4i2eEySWsEblTRy9PqYnIYV1EEflio=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=Vzctql1fAXxk2UG3NSNN2XRA1ASBcIbad+yU3SbpYfl5oUm82Zw51zLCJ3KbFwCBU
+	 y0RiyApfydLYMof+AaEfFOJgWB3KxwTEyZgfnAxbSvMgjdITyLsKtFT/6rFj87dzuv
+	 XzRoxaWJP+7rhrYTiIuYBFRdFKfMo/VwxIwLuqk3JZCxR9Deve4Vw4HY48gWRMQt6P
+	 uMI/ychsIRu5AjfCAMJc6biAY2mMtlP4aLB28ZpFfCjq21RuD1SCb9B/6HQ+LUxO4o
+	 FEDt1e3yKYFyGorhXfhwCj7UeCQ8I+IvkdZUS+DUkAEpsnpbWQAu/JRTwpQcmR0QmH
+	 YMgt9tYaqgkUg==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id DBED86030A
-	for <netfilter-devel@vger.kernel.org>; Fri, 28 Feb 2025 22:09:42 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 1357A6030A
+	for <netfilter-devel@vger.kernel.org>; Fri, 28 Feb 2025 22:09:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1740776983;
-	bh=lIljgY+tCoPP7DbIRkm+xV6S2lAUE/vzhWT7dhyY1X4=;
-	h=From:To:Subject:Date:From;
-	b=MiDj7Yl2aO6gBLCe/6lp/W9jbc5iHMFgZkneX3NJQiByyO1z8SA2NjHUFRzXqrLcQ
-	 xbx+Wv6ex1AtprSzM8Pwj5yluafG6WSmciLO2dbVwosveWzQ6KEthJ8WchkqNlRJx1
-	 nV8HcApeACu5advBSboDjBbzHbSwgqI/QIITtry2VIIVkUnZ/fX45XocgXNuDY/7Td
-	 HTJDfdrWOq2NvYK+Liv5e6sMgP0iqgOfChB6jqcjXChvsjMRrrJ+9bbJd4228iYuB+
-	 pYId707bH7baH9OQgD0Dtxvkvx1TkY5oOfyEAKjwc8ZLV4BblnAmeA476aorKFzDQe
-	 GPqFfo4P8XJdg==
+	s=2025; t=1740776984;
+	bh=HlC2KQLqTAYyK4i2eEySWsEblTRy9PqYnIYV1EEflio=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=Vzctql1fAXxk2UG3NSNN2XRA1ASBcIbad+yU3SbpYfl5oUm82Zw51zLCJ3KbFwCBU
+	 y0RiyApfydLYMof+AaEfFOJgWB3KxwTEyZgfnAxbSvMgjdITyLsKtFT/6rFj87dzuv
+	 XzRoxaWJP+7rhrYTiIuYBFRdFKfMo/VwxIwLuqk3JZCxR9Deve4Vw4HY48gWRMQt6P
+	 uMI/ychsIRu5AjfCAMJc6biAY2mMtlP4aLB28ZpFfCjq21RuD1SCb9B/6HQ+LUxO4o
+	 FEDt1e3yKYFyGorhXfhwCj7UeCQ8I+IvkdZUS+DUkAEpsnpbWQAu/JRTwpQcmR0QmH
+	 YMgt9tYaqgkUg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 0/4] payload mangling enhancements
-Date: Fri, 28 Feb 2025 22:09:35 +0100
-Message-Id: <20250228210939.3319333-1-pablo@netfilter.org>
+Subject: [PATCH nft 1/4] evaluate: payload statement evaluation for bitfields
+Date: Fri, 28 Feb 2025 22:09:36 +0100
+Message-Id: <20250228210939.3319333-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20250228210939.3319333-1-pablo@netfilter.org>
+References: <20250228210939.3319333-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -71,44 +74,47 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Instead of allocating a lshift expression and relying on the binary
+operation transfer propagate this to the mask value, lshift the mask
+value immediately.
 
-This series improves payload statement support for mangling bitfields, eg.
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/evaluate.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
- # nft add rule x y tcp flags set tcp flags & (fin | syn | rst | psh | ack | urg)
- inet test-inet input
-   [ meta load l4proto => reg 1 ]
-   [ cmp eq reg 1 0x00000006 ]
-   [ payload load 2b @ transport header + 12 => reg 1 ]
-   [ bitwise reg 1 = ( reg 1 & 0x00003fff ) ^ 0x00000000 ]
-   [ payload write reg 1 => 2b @ transport header + 12 csum_type 1 csum_off 16 csum_flags 0x0 ]
-
-This requires no kernel upgrade.
-
-Related to: https://bugzilla.netfilter.org/show_bug.cgi?id=1698
-
-I did not implement the shortcut to compact flags as described by
-the bugzilla ticket.
-
-Pablo Neira Ayuso (4):
-  evaluate: payload statement evaluation for bitfields
-  evaluate: reject unsupported expressions in payload statement for bitfields
-  evaluate: support for bitfield payload statement with binary operation
-  netlink_delinearize: support for bitfield payload statement with
-    binary operation
-
- include/payload.h               |   2 +
- src/evaluate.c                  |  81 +++++--
- src/netlink_delinearize.c       |  15 +-
- src/payload.c                   | 168 +++++++++++++++
- tests/py/ip/ip.t                |  17 ++
- tests/py/ip/ip.t.json           | 336 +++++++++++++++++++++++++++++
- tests/py/ip/ip.t.payload        |  82 +++++++
- tests/py/ip/ip.t.payload.bridge | 365 ++++++++++++++++++++++++++++++++
- tests/py/ip/ip.t.payload.inet   | 280 ++++++++++++++++++++++++
- tests/py/ip/ip.t.payload.netdev |  88 ++++++++
- 10 files changed, 1419 insertions(+), 15 deletions(-)
-
+diff --git a/src/evaluate.c b/src/evaluate.c
+index f79667bd41ea..c090aebe2cca 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -3345,20 +3345,13 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+ 		}
+ 	}
+ 
+-	if (shift_imm) {
+-		struct expr *off, *lshift;
+-
+-		off = constant_expr_alloc(&payload->location,
+-					  expr_basetype(payload),
+-					  BYTEORDER_HOST_ENDIAN,
+-					  sizeof(shift_imm), &shift_imm);
+-
+-		lshift = binop_expr_alloc(&payload->location, OP_LSHIFT,
+-					  stmt->payload.val, off);
+-		lshift->dtype     = payload->dtype;
+-		lshift->byteorder = payload->byteorder;
+-
+-		stmt->payload.val = lshift;
++	switch (stmt->payload.val->etype) {
++	case EXPR_VALUE:
++		if (shift_imm)
++			mpz_lshift_ui(stmt->payload.val->value, shift_imm);
++		break;
++	default:
++		break;
+ 	}
+ 
+ 	masklen = payload_byte_size * BITS_PER_BYTE;
 -- 
 2.30.2
 
