@@ -1,78 +1,78 @@
-Return-Path: <netfilter-devel+bounces-6168-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6170-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E85A4FBF7
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Mar 2025 11:30:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5944BA4FC02
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Mar 2025 11:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60D2A3ABC60
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Mar 2025 10:30:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C6ED1714A6
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Mar 2025 10:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BACD5207E0A;
-	Wed,  5 Mar 2025 10:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D325620967F;
+	Wed,  5 Mar 2025 10:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G9eChVED"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHNx/iit"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7A5207DF4;
-	Wed,  5 Mar 2025 10:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9685207E07;
+	Wed,  5 Mar 2025 10:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741170607; cv=none; b=Pl9kn1mAY3a901LuOKkObhy+dM6l51eN22H3/h2xcGmqfHpEjAdJLnaN9wYXC03bwR5M1ntfDmLYbSQftrqAzWnXVtc1FyTX7CkgKyj4VQ3ZF0/E8m7xuyXt6ZEdyo71EbTN+J3/3GFiW72tqvfGNURpoDx7XYZ84rX2hfPRzE4=
+	t=1741170610; cv=none; b=TWmoHlJg+hdKeEKbNjExYzZ7wyawVIJkYqLBv8YOZuOTrQirnPUGKjXjAqc6cuG1BhSBhzcS4XXgdcbxWt0xgMB85LHqWDwRtQBx16oRZyb0LRPnYatqyh1Fkh0cs7FrMnkAzlr596Rrovu2YWfxGbV3kyR9FazqGzgXsmp+nu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741170607; c=relaxed/simple;
-	bh=4chn1/0IJNSwJ1oT95Yplw/ROsSLsSsjiBPzOuAxsgg=;
+	s=arc-20240116; t=1741170610; c=relaxed/simple;
+	bh=wMUZpUs1MP0v4aGWSuV5DzAXHNdRlbpPAoNl+5GV7TA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FLuf036whkFwBSP0IDKx3sKFmlcUIAzONFQhVMPEqR3H5ucJWzRLSLDTMSYpIdOvMF0K83mUeWwyLzbTTJrOrv+07vSP56Y2a+f4ywxEEJOl/dANO5NxCWQeHhqoFYmFI+vjtUTJlKVUik+JW1XfwjX0n4n5Tex/x+lg70pBg5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G9eChVED; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version; b=VKbyAKxsQrkhFuWVb8sYLQiwf/As66nqXD53HTwC3wRk5OIAShHs6MhoeNzLTEvY4RjIEnrpQgG4EHbEbum06hoYE3JZW40WGZN7Ah7ep17LsVfTJZdhbUpOeJ0St5yrK83I8+JW54xT8UBysW6HEEwZKNIy4lvhwTL6JwKtpDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHNx/iit; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-abf48293ad0so699086466b.0;
-        Wed, 05 Mar 2025 02:30:05 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5e0373c7f55so10236497a12.0;
+        Wed, 05 Mar 2025 02:30:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741170604; x=1741775404; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741170606; x=1741775406; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UWSHNbB5JKEbeWuUj8vjDFfUx12Bd6PhpeoYLsDsQTU=;
-        b=G9eChVEDb0pzmzecohmxB2UWNYUHEeHbNEzsTRJwRJ8HUkvHe739KZLX3cnG7APQUr
-         CQjLe65k1VoNwbaf7Ym0Uz6qnxhL0he+GpriYlHwAtLiJNiRNkSMMDZdHNdP0zYqmL6M
-         hgnR8DxjLN+ekrYKDzopwThFlFQIHYeILmvLku4soTubRMrD01T/9QPrMbXsYDFMjKUs
-         /QyekwrgmTRu0YwUsQHN6R468TEd1by4LnO8GHWn8EIyv08XEUoU+aZXn3JbLRBJzxXs
-         z+/seNEXQ4JoEKB94Y4tahaHsObRPJsh3Od1nTNlfunqmNV9bd3ynlYzFSdv9ncG8MPy
-         dJsw==
+        bh=VGr0DGFtdF9vUQZNuQxbjKzErqMA9pCa8F2vVWAZr6U=;
+        b=YHNx/iit5N+ABn69tPwh5Mb4w7Z7j3sF9l3PUxToKwTzXTwr3OrrWm+N1Q8fbrU9KZ
+         tMLS9qJWCFCliCWyCvBjIHQZDZaIFGllFzWvF1ELWPXzrnlK1zlHzgIidYbkVu8CZ8oX
+         p/Bh8gZZFIsea4BATPonEJu4VJi9J2SKC+ki/EN+npD1YKD2nEPxhYBAEfqZ8JeyWfIZ
+         tQybpdKKWORzZ/3q/5nf9ahnvAs0pxImJBae8xe5jcRHAk2KRUmSOvUo2qGXADO49cmH
+         rWKpcoS7Nr/3k/e6c1bA4MvQzpamWx1SWjXgUrBErs5ocXogGsH+zCejT4pQMAhM37yU
+         YAqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741170604; x=1741775404;
+        d=1e100.net; s=20230601; t=1741170606; x=1741775406;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UWSHNbB5JKEbeWuUj8vjDFfUx12Bd6PhpeoYLsDsQTU=;
-        b=nuLqGTt+/ZVURJkQSWMTivl1fv6BGmzRWrG1FzII7YMoFQl5pTzRgE7/7vdxdXLfIK
-         f7T0EC0U1iRMmHF2SDdxwF6GDG9ZpYkYYGKHmKjPRbztjZnUXgFlK1UayxHp7ZhhlOXN
-         a7m9lp1nsR1SybykJPymuwqNhVrVBAGDLa4Kkg5EBZ7y8AchIiR2CETAzKUp0Nj9KDX5
-         BkeMO3VSztd+vGHi5jiz9WYbqtSgkbncoJ8+bkXHipGhpDGnLlQjeS8H+9XL74g33SYg
-         hRT94Qpb4bz1h3icHAdqVEStBEBFVPd5w1zTQlZrAAJcTH+7pRKQJXtucYNvwS1e9IuG
-         DPyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUV+U440nfcvmHUyGQgbBcbt64lsezXZ56fYySACbY2BkIeDraDpuw44HvPOMigd9BafB80jtWSizlXDzOM4bKf@vger.kernel.org, AJvYcCVa5Qsk1UGrqgQgvTC7ODLSUQkb5/HMFJAS1KYycA3c5KKI56smcDF1fo2tUcVXvNYBBH1W2y2/O1nDP+dw@vger.kernel.org, AJvYcCXYBosG1+b9vc6dXIuyz+0Utj0h7zTdj2Wz+0D+IuhmI0AOnldm/xMkNleQNw2qrrG7gyQjc6WEruxCw739xOs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9OH4gwc64JqSyiXZybrXe++3Am0obZAhl3+WYsEdk751Z9jNd
-	aChXVMxHAZ3Q7BA2SoxzFRUnJlo3YnidEIUBntjD1sw5D8vta/g0
-X-Gm-Gg: ASbGncufJdkALghjrX1NPtZKjC+vqZY8FKvxILLVi5UjKRUKAJQnPctqvZoB2KL/tk4
-	cUZYbYUOkWC30Reur3WtEuS/rGKOpBIpKyNlJLxYEnGKVkmC5O5GgDLgflQp7JDUgZERlIVypIH
-	epSmp5+KjCnwCOM/16Pi2k9aqit1xKohN3HnVEUhwrTsM3FqZZmafXEhjE4LA0cCkBlA71u13Gf
-	OitfwYfIxRNZNv9taoKSbO10RbtC7v/YofPyaQaKJOdWvfVWXVgxCfLXCA4XUiydW4v0DABBvDf
-	21XqurD9uonVpOJHeFh4baxy7/HZyxm8gu9McqA9blVc3GoQBOltHUvOKsjAvJMHxs8hFCbLWgJ
-	OUyPh+ehjD5GSQAurq+ulOMYGb9EhCX6oVS1eveFKgUSkhjnafdu4PAEb8NedSA==
-X-Google-Smtp-Source: AGHT+IFmOl+znPOCyIBVoWXbUGUsHEWWessyONqSdjDiGli0zSAoB+kKDiPnSaw44bEm0nFmaT3VhQ==
-X-Received: by 2002:a17:907:3f0a:b0:ac1:ddaa:2c03 with SMTP id a640c23a62f3a-ac20d036458mr300465466b.0.1741170603887;
-        Wed, 05 Mar 2025 02:30:03 -0800 (PST)
+        bh=VGr0DGFtdF9vUQZNuQxbjKzErqMA9pCa8F2vVWAZr6U=;
+        b=HKX34gEVMouvcou/fqmMR82pHyDOkKXnAV/8ubB8ZaFPrfCiJ5hJL8z1rqSkLYe8Zc
+         K4NTb8X/K/oMBvbLdc8/Yfb1NVBOangRntIENu7zj19z4SK9Qf5ASK3EABs/zDel+Px0
+         uJ3/3zVQzEbZTBeQk7OXri59Y5QIwTtLnZ3vSuJi0NcrpE5+sfJQv613pUtM1wMjsPlJ
+         i7sVBqU9RucuuKs2VX/2ggw53HTi2kqiH4ezmcMVOQqAMzZRjoMzCVpg0r2P6yZK6r9Y
+         YJw2pb7yommm445p6A6j1Ky6SC+QZ6btL2mTfUEtAiLwJuFzLmh1HagsY3CbX5NR4+VX
+         e1/g==
+X-Forwarded-Encrypted: i=1; AJvYcCWHa0a5bNOqmTdqvi/Ymj953cCs7dYdSyyESzx7mbKb0tUduMo37paiMJUU3bcVJTgyyMVhlda3D0bu4kF8hngG@vger.kernel.org, AJvYcCWO2Rlh/VO9v9f/cDN7xgl4Iyu7lkksxhFVArO314HuqEiaQo5AF27Bunjt4CaJPTVWmWsHycNaon6HLU6j@vger.kernel.org, AJvYcCXPUSct3JAOKLRMdBKszHrJvZiboid4IYLJ/jtehiWdoaduUXyrnsXo75y6aXk3cSCq4NlUns5acWwOfFEp1yo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsVBlbb6KoZDjMpIGm7Fj9dxfz9/ORdaQqH2ntPR2CcVDhCglq
+	2ouPXEgyigFq4KfjSrmAcxDleaRCFvIJDer7PmNiRUdHdEEQzQxa
+X-Gm-Gg: ASbGncucPTrvllLxU81bTEW5bx0g+Q1+KZlBOUDl2XzNwE0DhNy5aSXOt7WJGcCYQwu
+	hnGl49KYRJ0sBVCJEfvpVbXr4q9vzpTM/JFM7bqXZkODb6ZMk30pf0o25F+F0dxK2QhhHBXzuRM
+	ns4+F+5LfU7a+/VI7JNjfecMCBCBplS3gUioRYKFcyDzDpri6FPooIQJnQnuMpd5boSoDle3rBo
+	x8juKDsNOgwVsVZ0rYlpE5/c6ITm2RRsCWjy5yFagg5Eu99v4/FRDWcINum2tKAEzAB9Fj8MQ5n
+	zClc13mkxiQluszWSRImHZBCuZVVZpPWjCFyrs0B4Ds5eDLFO/epd3OGRo0vR4MD3CZwYimoFBI
+	KuJwqzMA8iciD0awID8Ch/EyULY7g6FlJiBYJMTSJ+UHr7fpcULO1vZqzsyn1pQ==
+X-Google-Smtp-Source: AGHT+IHy767DUvvq2GdNzFTZgEtw2mmlhPb8tvwjOW0NV0rTz/8fH6TDIbFvmbmwfZNkQ6dAvscC7w==
+X-Received: by 2002:a17:907:7e8b:b0:ac1:ea5c:8711 with SMTP id a640c23a62f3a-ac20d97e6cfmr241289466b.1.1741170605663;
+        Wed, 05 Mar 2025 02:30:05 -0800 (PST)
 Received: from corebook.localdomain (2001-1c00-020d-1300-1b1c-4449-176a-89ea.cable.dynamic.v6.ziggo.nl. [2001:1c00:20d:1300:1b1c:4449:176a:89ea])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac1f7161a4esm247154266b.161.2025.03.05.02.30.02
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac1f7161a4esm247154266b.161.2025.03.05.02.30.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 02:30:03 -0800 (PST)
+        Wed, 05 Mar 2025 02:30:04 -0800 (PST)
 From: Eric Woudstra <ericwouds@gmail.com>
 To: Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -106,9 +106,9 @@ Cc: netdev@vger.kernel.org,
 	Kees Cook <kees@kernel.org>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Eric Woudstra <ericwouds@gmail.com>
-Subject: [PATCH v9 nf 01/15] net: pppoe: avoid zero-length arrays in struct pppoe_hdr
-Date: Wed,  5 Mar 2025 11:29:35 +0100
-Message-ID: <20250305102949.16370-2-ericwouds@gmail.com>
+Subject: [PATCH v9 nf 02/15] netfilter: nf_flow_table_offload: Add nf_flow_encap_push() for xmit direct
+Date: Wed,  5 Mar 2025 11:29:36 +0100
+Message-ID: <20250305102949.16370-3-ericwouds@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250305102949.16370-1-ericwouds@gmail.com>
 References: <20250305102949.16370-1-ericwouds@gmail.com>
@@ -120,64 +120,200 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Jakub Kicinski suggested following patch:
+Loosely based on wenxu's patches:
 
-W=1 C=1 GCC build gives us:
+"nf_flow_table_offload: offload the vlan/PPPoE encap in the flowtable".
 
-net/bridge/netfilter/nf_conntrack_bridge.c: note: in included file (through
-../include/linux/if_pppox.h, ../include/uapi/linux/netfilter_bridge.h,
-../include/linux/netfilter_bridge.h): include/uapi/linux/if_pppox.h:
-153:29: warning: array of flexible structures
+Fixed double vlan and pppoe packets, almost entirely rewriting the patch.
 
-It doesn't like that hdr has a zero-length array which overlaps proto.
-The kernel code doesn't currently need those arrays.
+After this patch, it is possible to transmit packets in the fastpath with
+outgoing encaps, without using vlan- and/or pppoe-devices.
 
-PPPoE connection is functional after applying this patch.
+This makes it possible to use more different kinds of network setups.
+For example, when bridge tagging is used to egress vlan tagged
+packets using the forward fastpath. Another example is passing 802.1q
+tagged packets through a bridge using the bridge fastpath.
+
+This also makes the software fastpath process more similar to the
+hardware offloaded fastpath process, where encaps are also pushed.
+
+After applying this patch, always info->outdev = info->hw_outdev,
+so the netfilter code can be further cleaned up by removing:
+ * hw_outdev from struct nft_forward_info
+ * out.hw_ifindex from struct nf_flow_route
+ * out.hw_ifidx from struct flow_offload_tuple
 
 Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
 ---
- drivers/net/ppp/pppoe.c       | 2 +-
- include/uapi/linux/if_pppox.h | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ net/netfilter/nf_flow_table_ip.c | 96 +++++++++++++++++++++++++++++++-
+ net/netfilter/nft_flow_offload.c |  6 +-
+ 2 files changed, 96 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
-index 68e631718ab0..17946af6a8cf 100644
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -882,7 +882,7 @@ static int pppoe_sendmsg(struct socket *sock, struct msghdr *m,
- 	skb->protocol = cpu_to_be16(ETH_P_PPP_SES);
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index 8cd4cf7ae211..d0c3c459c4d2 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -306,6 +306,92 @@ static bool nf_flow_skb_encap_protocol(struct sk_buff *skb, __be16 proto,
+ 	return false;
+ }
  
- 	ph = skb_put(skb, total_len + sizeof(struct pppoe_hdr));
--	start = (char *)&ph->tag[0];
-+	start = (char *)ph + sizeof(*ph);
++static int nf_flow_vlan_inner_push(struct sk_buff *skb, __be16 proto, u16 id)
++{
++	struct vlan_hdr *vhdr;
++
++	if (skb_cow_head(skb, VLAN_HLEN))
++		return -1;
++
++	__skb_push(skb, VLAN_HLEN);
++	skb_reset_network_header(skb);
++
++	vhdr = (struct vlan_hdr *)(skb->data);
++	vhdr->h_vlan_TCI = htons(id);
++	vhdr->h_vlan_encapsulated_proto = skb->protocol;
++	skb->protocol = proto;
++
++	return 0;
++}
++
++static int nf_flow_ppoe_push(struct sk_buff *skb, u16 id)
++{
++	struct ppp_hdr {
++		struct pppoe_hdr hdr;
++		__be16 proto;
++	} *ph;
++	int data_len = skb->len + 2;
++	__be16 proto;
++
++	if (skb_cow_head(skb, PPPOE_SES_HLEN))
++		return -1;
++
++	if (skb->protocol == htons(ETH_P_IP))
++		proto = htons(PPP_IP);
++	else if (skb->protocol == htons(ETH_P_IPV6))
++		proto = htons(PPP_IPV6);
++	else
++		return -1;
++
++	__skb_push(skb, PPPOE_SES_HLEN);
++	skb_reset_network_header(skb);
++
++	ph = (struct ppp_hdr *)(skb->data);
++	ph->hdr.ver  = 1;
++	ph->hdr.type = 1;
++	ph->hdr.code = 0;
++	ph->hdr.sid  = htons(id);
++	ph->hdr.length = htons(data_len);
++	ph->proto = proto;
++	skb->protocol = htons(ETH_P_PPP_SES);
++
++	return 0;
++}
++
++static int nf_flow_encap_push(struct sk_buff *skb,
++			      struct flow_offload_tuple_rhash *tuplehash,
++			      unsigned short *type)
++{
++	int i = 0, ret = 0;
++
++	if (!tuplehash->tuple.encap_num)
++		return 0;
++
++	if (tuplehash->tuple.encap[i].proto == htons(ETH_P_8021Q) ||
++	    tuplehash->tuple.encap[i].proto == htons(ETH_P_8021AD)) {
++		__vlan_hwaccel_put_tag(skb, tuplehash->tuple.encap[i].proto,
++				       tuplehash->tuple.encap[i].id);
++		i++;
++		if (i >= tuplehash->tuple.encap_num)
++			return 0;
++	}
++
++	switch (tuplehash->tuple.encap[i].proto) {
++	case htons(ETH_P_8021Q):
++		*type = ETH_P_8021Q;
++		ret = nf_flow_vlan_inner_push(skb,
++					      tuplehash->tuple.encap[i].proto,
++					      tuplehash->tuple.encap[i].id);
++		break;
++	case htons(ETH_P_PPP_SES):
++		*type = ETH_P_PPP_SES;
++		ret = nf_flow_ppoe_push(skb,
++					tuplehash->tuple.encap[i].id);
++		break;
++	}
++	return ret;
++}
++
+ static void nf_flow_encap_pop(struct sk_buff *skb,
+ 			      struct flow_offload_tuple_rhash *tuplehash)
+ {
+@@ -335,6 +421,7 @@ static void nf_flow_encap_pop(struct sk_buff *skb,
  
- 	error = memcpy_from_msg(start, m, total_len);
- 	if (error < 0) {
-diff --git a/include/uapi/linux/if_pppox.h b/include/uapi/linux/if_pppox.h
-index 9abd80dcc46f..29b804aa7474 100644
---- a/include/uapi/linux/if_pppox.h
-+++ b/include/uapi/linux/if_pppox.h
-@@ -122,7 +122,9 @@ struct sockaddr_pppol2tpv3in6 {
- struct pppoe_tag {
- 	__be16 tag_type;
- 	__be16 tag_len;
-+#ifndef __KERNEL__
- 	char tag_data[];
-+#endif
- } __attribute__ ((packed));
+ static unsigned int nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
+ 				       const struct flow_offload_tuple_rhash *tuplehash,
++				       struct flow_offload_tuple_rhash *other_tuplehash,
+ 				       unsigned short type)
+ {
+ 	struct net_device *outdev;
+@@ -343,6 +430,9 @@ static unsigned int nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
+ 	if (!outdev)
+ 		return NF_DROP;
  
- /* Tag identifiers */
-@@ -150,7 +152,9 @@ struct pppoe_hdr {
- 	__u8 code;
- 	__be16 sid;
- 	__be16 length;
-+#ifndef __KERNEL__
- 	struct pppoe_tag tag[];
-+#endif
- } __packed;
++	if (nf_flow_encap_push(skb, other_tuplehash, &type) < 0)
++		return NF_DROP;
++
+ 	skb->dev = outdev;
+ 	dev_hard_header(skb, skb->dev, type, tuplehash->tuple.out.h_dest,
+ 			tuplehash->tuple.out.h_source, skb->len);
+@@ -462,7 +552,8 @@ nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
+ 		ret = NF_STOLEN;
+ 		break;
+ 	case FLOW_OFFLOAD_XMIT_DIRECT:
+-		ret = nf_flow_queue_xmit(state->net, skb, tuplehash, ETH_P_IP);
++		ret = nf_flow_queue_xmit(state->net, skb, tuplehash,
++					 &flow->tuplehash[!dir], ETH_P_IP);
+ 		if (ret == NF_DROP)
+ 			flow_offload_teardown(flow);
+ 		break;
+@@ -757,7 +848,8 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ 		ret = NF_STOLEN;
+ 		break;
+ 	case FLOW_OFFLOAD_XMIT_DIRECT:
+-		ret = nf_flow_queue_xmit(state->net, skb, tuplehash, ETH_P_IPV6);
++		ret = nf_flow_queue_xmit(state->net, skb, tuplehash,
++					 &flow->tuplehash[!dir], ETH_P_IPV6);
+ 		if (ret == NF_DROP)
+ 			flow_offload_teardown(flow);
+ 		break;
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index 46a6d280b09c..b4baee519e18 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -124,13 +124,12 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 				info->indev = NULL;
+ 				break;
+ 			}
+-			if (!info->outdev)
+-				info->outdev = path->dev;
+ 			info->encap[info->num_encaps].id = path->encap.id;
+ 			info->encap[info->num_encaps].proto = path->encap.proto;
+ 			info->num_encaps++;
+ 			if (path->type == DEV_PATH_PPPOE)
+ 				memcpy(info->h_dest, path->encap.h_dest, ETH_ALEN);
++			info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
+ 			break;
+ 		case DEV_PATH_BRIDGE:
+ 			if (is_zero_ether_addr(info->h_source))
+@@ -158,8 +157,7 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 			break;
+ 		}
+ 	}
+-	if (!info->outdev)
+-		info->outdev = info->indev;
++	info->outdev = info->indev;
  
- /* Length of entire PPPoE + PPP header */
+ 	info->hw_outdev = info->indev;
+ 
 -- 
 2.47.1
 
