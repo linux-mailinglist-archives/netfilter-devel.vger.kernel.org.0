@@ -1,276 +1,137 @@
-Return-Path: <netfilter-devel+bounces-6220-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6223-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95378A54D59
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Mar 2025 15:16:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA12A54F46
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Mar 2025 16:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C32F8188A15A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Mar 2025 14:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 034EC169062
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Mar 2025 15:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1FE71747;
-	Thu,  6 Mar 2025 14:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D36420FA97;
+	Thu,  6 Mar 2025 15:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b4nrgDXV"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="gr69QlAM";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="bW5lT3xQ"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE934C6E
-	for <netfilter-devel@vger.kernel.org>; Thu,  6 Mar 2025 14:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991CA18E054;
+	Thu,  6 Mar 2025 15:34:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741270594; cv=none; b=rbUs+EoVtpLti14W3Ax2hrCrYYxaw/0Y9vMEj2LKBpWq1OeCPEF2awSNBa52aRVD2siYxdBmspXPcEYU0lOFJK2J+veER6omn7Vjk9JImsnHBMX0vcmU8RUsJZm0Tezfx6c2N2Ob4lIjIMSwNkYfEmkDf/mORtMpkEjx2klywSU=
+	t=1741275303; cv=none; b=QtVoYMPTjRj6wPUslaQbD3GOnd48YiTH8bRYcXZ5p/OmTnl5lTSFAElZ1GX02wNUHgS6oCY9hO/scKALN0QiX+wBUvRQAF3PuiignN0OmhKE0z/a8w9Mlvq55UMHVhqB32DfOLVAZjj1RdKgQVJurFISIzu0gBWHbvAI3SqL9tE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741270594; c=relaxed/simple;
-	bh=0ICkcQ25t4cydgXHlQ8/CoIQa3X5/2De9qbFmlCuZ7g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=poTqIuo/w/8LwhyD8M14AeXebGgdV1HmEwnTSsqADpmmtAZf1K8y8IIS1jXdHtqauRjn6paYZiHRylQMMyd4yVAfwohHQ5eQRXFrnteCSLCeQYn3g7c6urSNVQWXm+B9LmV4x6W+hHB7COStV8Y62ufqYg9Wl2FYgZ67wdM0/uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garver.life; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b4nrgDXV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garver.life
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741270591;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+yuOLuJq7K+w2EM5a9Bh0w91cZM9IrQQGclAGi/93/U=;
-	b=b4nrgDXVNZdj3J3LlV9S/GajuLKSfCA80OuZhAVcgRXuIg41VhsTQM28Ux7/ZuJWYfP6ss
-	U23xtd/ZvtCPGT1mPt/C0t6t6IHMr3tv3h2T2rdfnzE/w4JezfJXhoPA2I7YLB440hzp75
-	pRKNrhmFfVtz0PldnZUNVKa7M7qLFiU=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-584-scBErTdYMB6L2JzlBwJJFA-1; Thu,
- 06 Mar 2025 09:16:11 -0500
-X-MC-Unique: scBErTdYMB6L2JzlBwJJFA-1
-X-Mimecast-MFC-AGG-ID: scBErTdYMB6L2JzlBwJJFA_1741270570
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ED767180AF6A;
-	Thu,  6 Mar 2025 14:16:09 +0000 (UTC)
-Received: from localhost (unknown [10.22.65.44])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 041CF300019E;
-	Thu,  6 Mar 2025 14:16:07 +0000 (UTC)
-Date: Thu, 6 Mar 2025 09:16:05 -0500
-From: Eric Garver <eric@garver.life>
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: netfilter-devel@vger.kernel.org, fw@strlen.de, pablo@netfilter.org
-Subject: Re: [PATCH] tools: add a systemd unit for static rulesets
-Message-ID: <Z8muJWOYP3y-giAP@egarver-mac>
-Mail-Followup-To: Eric Garver <eric@garver.life>,
-	Jan Engelhardt <jengelh@inai.de>, netfilter-devel@vger.kernel.org,
-	fw@strlen.de, pablo@netfilter.org
-References: <20250228205935.59659-1-jengelh@inai.de>
+	s=arc-20240116; t=1741275303; c=relaxed/simple;
+	bh=SIMrxnR6CRgdLuJ43aqdD5f3kYmdlm/srJC0O33eMQE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sLPHBhgI2RCblMnOjKlZNEU2I8KUttKu+kYBbAiJ89XUhTd5mrR3uIHKkY/xxqHCZ8nMEDg8CudrVM7JgF9MDJ9WJzM9Ro6XRyhNMjjePp7AGjepnjnV6pPNeduhL9dxlL2gNNo1r7fkI/eVFqGV/UIHDOLEfKGkdbImyeUmvio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=gr69QlAM; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=bW5lT3xQ; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 5A02D602FF; Thu,  6 Mar 2025 16:34:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1741275292;
+	bh=ubsqguGlhFw0mjx+KC1rrow+/cN6Y0E/ZO8cgSci2rA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gr69QlAMOQc7KhfqJiRwFItBlCe9AvEZk9IpI9m4UmCzRYLCKYgFb7qDenT8S3OfF
+	 CIPXIFcYkSsVPNdE9RkY+uD+6RDzU5jfBMb0a59T9746tLkzWSS+cUk2qlkHPmAHWD
+	 pe9Ee9siKg7TfrcO2WhSsGTSu/81pyGUO7fOle7tpIZvInsvlfoBfqKamVuA5z0GLR
+	 uWjwoKdZaJBmHZgKXyUtpzBkFhepAdG0js2bjwpI2AdgT10Xt76CdBZwgOQB1ZUh7c
+	 hdhC+Oj0SoltifFvHWlglfPiUdfdjhqj0q3vK/sIOQfK8hvM6WLcejq4ep7roZACOb
+	 NCpm20OVzD+9A==
+X-Spam-Level: 
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 43672602FF;
+	Thu,  6 Mar 2025 16:34:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1741275290;
+	bh=ubsqguGlhFw0mjx+KC1rrow+/cN6Y0E/ZO8cgSci2rA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bW5lT3xQSO/5SJGVAmMkBiuh+0xfPXX5SdiwEUTWy3N+1FNjEYvIHUXB8qGqHtkVD
+	 LZ2nx5qg/HHKxNwmQ+h5VOq4PKqJgvgrv55S0f7vL+M9J8JQZSv0W8BGddGK6P8HhJ
+	 ZOsvwL5635OSCws4uVjqNlYB2nGYEd4mG1COmUbXbBwaGXE6YBhVJCI1LAohDccP2w
+	 NSnFFFmkgmRJdTqG3L49+o0P9lRgIVdHsLbR5CMyV3Le6N0iArjQ1a26qgyy+Ik598
+	 kC8cbRDnfSxBNozMCbDp2986lseiPX4xPclKYfmIAGp+YEWMBQBlEDNBywfM8GjRqY
+	 eDYwaGjM89b8w==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org
+Subject: [PATCH net 0/3] Netfilter fixes for net
+Date: Thu,  6 Mar 2025 16:34:43 +0100
+Message-Id: <20250306153446.46712-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250228205935.59659-1-jengelh@inai.de>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 28, 2025 at 09:59:35PM +0100, Jan Engelhardt wrote:
-> There is a customer request (bugreport) for wanting to trivially load a ruleset
-> from a well-known location on boot, forwarded to me by M. Gerstner. A systemd
-> service unit is hereby added to provide that functionality. This is based on
-> various distributions attempting to do same, cf.
-> 
-> https://src.fedoraproject.org/rpms/nftables/tree/rawhide
-> https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/nftables/nftables.initd
-> https://gitlab.archlinux.org/archlinux/packaging/packages/nftables
-> 
-> Cc: Matthias Gerstner <matthias.gerstner@suse.com>
-> ---
->  .gitignore                |  1 +
->  Makefile.am               | 16 ++++++++++++----
->  configure.ac              | 10 ++++++++++
->  files/nftables/main.nft   | 24 ++++++++++++++++++++++++
->  tools/nftables.service.8  | 18 ++++++++++++++++++
->  tools/nftables.service.in | 21 +++++++++++++++++++++
->  6 files changed, 86 insertions(+), 4 deletions(-)
->  create mode 100644 files/nftables/main.nft
->  create mode 100644 tools/nftables.service.8
->  create mode 100644 tools/nftables.service.in
-> 
-> diff --git a/.gitignore b/.gitignore
-> index a62e31f3..f92187ef 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -14,6 +14,7 @@ autom4te.cache
->  build-aux/
->  libnftables.pc
->  libtool
-> +tools/nftables.service
->  
->  # cscope files
->  /cscope.*
-> diff --git a/Makefile.am b/Makefile.am
-> index fb64105d..050991f4 100644
-> --- a/Makefile.am
-> +++ b/Makefile.am
-> @@ -375,18 +375,19 @@ dist_pkgdata_DATA = \
->  	files/nftables/netdev-ingress.nft \
->  	$(NULL)
->  
-> -pkgdocdir = ${docdir}/examples
-> +exampledir = ${docdir}/examples
->  
-> -dist_pkgdoc_SCRIPTS = \
-> +dist_example_SCRIPTS = \
->  	files/examples/ct_helpers.nft \
->  	files/examples/load_balancing.nft \
->  	files/examples/secmark.nft \
->  	files/examples/sets_and_maps.nft \
->  	$(NULL)
->  
-> -pkgsysconfdir = ${sysconfdir}/nftables/osf
-> +pkgsysconfdir = ${sysconfdir}/${PACKAGE}
-> +osfdir = ${pkgsysconfdir}/osf
->  
-> -dist_pkgsysconf_DATA = \
-> +dist_osf_DATA = \
->  	files/osf/pf.os \
->  	$(NULL)
->  
-> @@ -410,3 +411,10 @@ EXTRA_DIST += \
->  
->  pkgconfigdir = $(libdir)/pkgconfig
->  pkgconfig_DATA = libnftables.pc
-> +unit_DATA = tools/nftables.service
-> +man_MANS = tools/nftables.service.8
-> +doc_DATA = files/nftables/main.nft
-> +
-> +tools/nftables.service: tools/nftables.service.in ${top_builddir}/config.status
-> +	${AM_V_GEN}${MKDIR_P} tools
-> +	${AM_V_at}sed -e 's|@''sbindir''@|${sbindir}|g;s|@''pkgsysconfdir''@|${pkgsysconfdir}|g' <${srcdir}/tools/nftables.service.in >$@
-> diff --git a/configure.ac b/configure.ac
-> index 80a64813..64a164e5 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -114,6 +114,16 @@ AC_CHECK_DECLS([getprotobyname_r, getprotobynumber_r, getservbyport_r], [], [],
->  #include <netdb.h>
->  ]])
->  
-> +AC_ARG_WITH([unitdir],
-> +	[AS_HELP_STRING([--with-unitdir=PATH], [Path to systemd service unit directory])],
-> +	[unitdir="$withval"],
-> +	[
-> +		unitdir=$("$PKG_CONFIG" systemd --variable systemdsystemunitdir 2>/dev/null)
-> +		AS_IF([test -z "$unitdir"], [unitdir='${prefix}/lib/systemd/system'])
-> +	])
-> +AC_SUBST([unitdir])
-> +
-> +
->  AC_CONFIG_FILES([					\
->  		Makefile				\
->  		libnftables.pc				\
-> diff --git a/files/nftables/main.nft b/files/nftables/main.nft
-> new file mode 100644
-> index 00000000..8e62f9bc
-> --- /dev/null
-> +++ b/files/nftables/main.nft
-> @@ -0,0 +1,24 @@
-> +#!/usr/sbin/nft -f
-> +
-> +# template static firewall configuration file
-> +#
-> +# copy this over to /etc/nftables/rules/main.nft as a starting point for
-> +# configuring a rule set which will be loaded by nftables.service.
-> +
-> +flush ruleset
-> +
-> +table inet filter {
-> +	chain input {
-> +		type filter hook input priority filter;
-> +	}
-> +	chain forward {
-> +		type filter hook forward priority filter;
-> +	}
-> +	chain output {
-> +		type filter hook output priority filter;
-> +	}
-> +}
-> +
-> +# this can be used to split the rule set into multiple smaller files concerned
-> +# with specific topics, like forwarding rules
-> +#include "/etc/nftables/rules/forwarding.nft"
-> diff --git a/tools/nftables.service.8 b/tools/nftables.service.8
-> new file mode 100644
-> index 00000000..4a83b01c
-> --- /dev/null
-> +++ b/tools/nftables.service.8
-> @@ -0,0 +1,18 @@
-> +.TH nftables.service 8 "" "nftables" "nftables admin reference"
-> +.SH Name
-> +nftables.service \(em Static Firewall Configuration with nftables.service
-> +.SH Description
-> +An nftables systemd service is provided which allows to setup static firewall
-> +rulesets based on a configuration file.
-> +.PP
-> +To use this service, you need to create the main configuration file in
-> +/etc/nftables/rules/main.nft. A template for this can be copied from
-> +/usr/share/doc/nftables/main.nft. The static firewall configuration can be
-> +split up into multiple files which are included from the main.nft
-> +configuration file.
+Hi,
 
-I think it's worth mentioning that a user could alternatively do:
+The following patchset contains Netfilter fixes for net:
 
-  # nft list ruleset > /etc/nftables/rules/main.nft
+1) Fix racy non-atomic read-then-increment operation with
+   PREEMPT_RT in nft_ct, from Sebastian Andrzej Siewior.
 
-to save the entire running ruleset. That's what I do. Mostly because I
-want to make sure runtime accepts it before I make it permanent.
+2) GC is not skipped when jiffies wrap around in nf_conncount,
+   from Nicklas Bo Jensen.
 
-Perhaps this is not mentioned due to the `flush ruleset`. We could
-suggest saving runtime to a file that's included from main.nft, thus
-retaining the flush.
+3) flush_work() on nf_tables_destroy_work waits for the last queued
+   instance, this could be an instance that is different from the one
+   that we must wait for, then make destruction work queue.
 
-> +.PP
-> +Once the desired static firewall configuration is in place, it can be tested by
-> +running `systemctl start nftables.service`. To enable the service at boot time,
-> +run `systemctl enable nftables.service`.
-> +.SH See also
-> +\fBnft\fP(8)
-> diff --git a/tools/nftables.service.in b/tools/nftables.service.in
-> new file mode 100644
-> index 00000000..8d94e0fc
-> --- /dev/null
-> +++ b/tools/nftables.service.in
-> @@ -0,0 +1,21 @@
-> +[Unit]
-> +Description=nftables static rule set
-> +Documentation=nftables.service(8)
-> +Wants=network-pre.target
-> +Before=network-pre.target shutdown.target
-> +Conflicts=shutdown.target
-> +DefaultDependencies=no
-> +ConditionPathExists=@pkgsysconfdir@/rules/main.nft
-> +
-> +[Service]
-> +Type=oneshot
-> +RemainAfterExit=yes
-> +StandardInput=null
-> +ProtectSystem=full
-> +ProtectHome=true
-> +ExecStart=@sbindir@/nft -f @pkgsysconfdir@/rules/main.nft
-> +ExecReload=@sbindir@/nft -f @pkgsysconfdir@/rules/main.nft
-> +ExecStop=@sbindir@/nft flush ruleset
-> +
-> +[Install]
-> +WantedBy=sysinit.target
+Please, pull these changes from:
 
-The service definition is pretty close to the RHEL one [1]. The major
-difference is DefaultDependencies=no, i.e. early boot service. I think
-setting this to 'no' is okay for nftables. I don't see any
-incompatibilities with the RHEL version.
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-25-03-06
 
-[1]: https://gitlab.com/redhat/centos-stream/rpms/nftables/-/blob/6e830a1e31e5984cec278fe33de2518e2000514b/nftables.service
+Thanks.
 
+P.S: This is coming late after net-6.14-rc6, please, apply after your
+pending pull request is accepted. Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit a466fd7e9fafd975949e5945e2f70c33a94b1a70:
+
+  caif_virtio: fix wrong pointer check in cfv_probe() (2025-02-28 18:04:23 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-25-03-06
+
+for you to fetch changes up to fb8286562ecfb585e26b033c5e32e6fb85efb0b3:
+
+  netfilter: nf_tables: make destruction work queue pernet (2025-03-06 13:35:54 +0100)
+
+----------------------------------------------------------------
+netfilter pull request 25-03-06
+
+----------------------------------------------------------------
+Florian Westphal (1):
+      netfilter: nf_tables: make destruction work queue pernet
+
+Nicklas Bo Jensen (1):
+      netfilter: nf_conncount: garbage collection is not skipped when jiffies wrap around
+
+Sebastian Andrzej Siewior (1):
+      netfilter: nft_ct: Use __refcount_inc() for per-CPU nft_ct_pcpu_template.
+
+ include/net/netfilter/nf_tables.h |  4 +++-
+ net/netfilter/nf_conncount.c      |  4 ++--
+ net/netfilter/nf_tables_api.c     | 24 ++++++++++++++----------
+ net/netfilter/nft_compat.c        |  8 ++++----
+ net/netfilter/nft_ct.c            |  6 ++++--
+ 5 files changed, 27 insertions(+), 19 deletions(-)
 
