@@ -1,67 +1,93 @@
-Return-Path: <netfilter-devel+bounces-6243-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6245-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26D8A56E5F
-	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Mar 2025 17:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDB5A56E76
+	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Mar 2025 17:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD4BE3ACE17
-	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Mar 2025 16:52:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5453AEE07
+	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Mar 2025 16:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07AA423ED5A;
-	Fri,  7 Mar 2025 16:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C224D23E35E;
+	Fri,  7 Mar 2025 16:59:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=temperror (0-bit key) header.d=aruba.it header.i=@aruba.it header.b="b27fCrbB"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from a3.inai.de (a3.inai.de [144.76.212.145])
+Received: from smtpcmd03116.aruba.it (smtpcmd03116.aruba.it [62.149.158.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500D623E34E
-	for <netfilter-devel@vger.kernel.org>; Fri,  7 Mar 2025 16:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.212.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8FA23E338
+	for <netfilter-devel@vger.kernel.org>; Fri,  7 Mar 2025 16:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.158.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741366314; cv=none; b=IQ0IHlCABzPnEvRxABly5AfNaH8tM9zVJn2U9WrjgLKhbUApbWCf8W7NQMUHNrmefurTwtCjGUTvn8OmSvndnVRkK2yDySfQox/hkiHcf0XV423FfTGbBArrSk2cq63o8Axw+VD+i+wloG8gjh8BZKNN2DJD9k+DWjSnupxtJO0=
+	t=1741366771; cv=none; b=kiAuMqAbRKmcEPD3sv8HtIHG2l4fsAoPHid2C9TLSuh3k/iQ7AjrORwLxTcIxNSzN0/uom445Pg8Qs8HfIVJ+uDmFH7cDVtN0lZWmVGeU+qPkOKPSLs2v2GDLjn9toLaIZsW9HXuEskTeDTjJbk1fkiwJMF3qlY96Fl5qyi9oug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741366314; c=relaxed/simple;
-	bh=ZXtGEDrZDaRRg9qeyOWuvt9GaVp8shecJxAGkGi0NAM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=md28DPsBUKmXjrliPKPMIn8zS7lATCDerxiiHMsV6ZKiY45pxdGVyBIXr3hWzttv1NDz5bKnEKZvcpTsQ+rqKadgO+29gUGRqBoAqVsjiHiiYjTXAN7DvIkdgoS86XoWglii83YjKNo1Uf4B+A9TIeUBBUkOC9V62JlA9JHa4qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=pass smtp.mailfrom=inai.de; arc=none smtp.client-ip=144.76.212.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inai.de
-Received: by a3.inai.de (Postfix, from userid 25121)
-	id 215791003BB141; Fri,  7 Mar 2025 17:51:47 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by a3.inai.de (Postfix) with ESMTP id 211541100AD650;
-	Fri,  7 Mar 2025 17:51:47 +0100 (CET)
-Date: Fri, 7 Mar 2025 17:51:47 +0100 (CET)
-From: Jan Engelhardt <ej@inai.de>
-To: Guido Trentalancia <guido@trentalancia.com>
-cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH iptables]: xtables: tolerate DNS lookup failures
-In-Reply-To: <1741361076.5380.3.camel@trentalancia.com>
-Message-ID: <931rns88-4o59-s61q-6400-4prp16prsqs7@vanv.qr>
-References: <1741354928.22595.4.camel@trentalancia.com>  <qn655027-4830-ps48-87po-r61npps888s5@vanv.qr> <1741361076.5380.3.camel@trentalancia.com>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
+	s=arc-20240116; t=1741366771; c=relaxed/simple;
+	bh=Lj0s33zchuZjo4LIT2AOCPUcPlsY6eRShwf5LqI3bF0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Mime-Version; b=qzATjtuhgxaHGOBVs0Fj0fPsQbNtNrXpKbaRhojCEQSLeNFfSkLdxJbsQoiZA1D00+F+M9yOt/Vvj9/QeHCIngSzel3r6umayBpn1mxW7Fw5gkjUvwnYGIs2Qi+L8Ja+z2ynSpwseWvpNvGsklX1R4wtmAwjVzD2D8AlPRyv/7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=trentalancia.com; spf=pass smtp.mailfrom=trentalancia.com; dkim=temperror (0-bit key) header.d=aruba.it header.i=@aruba.it header.b=b27fCrbB; arc=none smtp.client-ip=62.149.158.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=trentalancia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trentalancia.com
+Received: from [192.168.43.2] ([109.54.139.178])
+	by Aruba SMTP with ESMTPSA
+	id qazhtOirsmHkSqazitVo84; Fri, 07 Mar 2025 17:56:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1741366578; bh=Lj0s33zchuZjo4LIT2AOCPUcPlsY6eRShwf5LqI3bF0=;
+	h=Subject:From:To:Date:Content-Type:Mime-Version;
+	b=b27fCrbBj+jdseve1ScPCvjn11eIrj22Ro9t1Uv/7ebJtOe5RmBdBwXv+CS4im/lh
+	 O9y8KgKYbDe3q/qJc433Ez0UAy6/L3XHx4WNEMFQoFoPt+hiSGHGnHmZcY2RRalDlK
+	 Zz79UvESVQw4yz38mgzt3cDyYG7jyKoMRftpWqfUwbxCBtT1U6uIJ8QU26ERKqyC96
+	 U+OeNtXcZ1l9gP5MUL6QK+do6ZF7ZLTol0gXjxKQtlaIRSmIn/dLu1baJMZeNwJ9U5
+	 sR+tI+PYzKDmD+Ezch1W6gwirmBp1RM1eAqsFJoutQewHYG/EucQYiQSt8tl0JYYlk
+	 DS3HcjQv87VSQ==
+Message-ID: <1741366577.5380.21.camel@trentalancia.com>
+Subject: Re: Signature for newly released iptables-1.8.11 package
+From: Guido Trentalancia <guido@trentalancia.com>
+To: Jeremy Sowden <jeremy@azazel.net>
+Cc: netfilter-devel@vger.kernel.org
+Date: Fri, 07 Mar 2025 17:56:17 +0100
+In-Reply-To: <20250307164948.GB255870@celephais.dreamlands>
+References: <1741365601.5380.19.camel@trentalancia.com>
+	 <20250307164948.GB255870@celephais.dreamlands>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBD2uYBXWRBmEux9QyJkthqaQl5sx4VpGjoMs78uGm2/dGu/wESDR0gJkUj1lnBKYl2CAYSu1MNgBuIedtw//etFnLs2UJVZLs9iG+CSt9iBufHyOBP7
+ tIVAGTnBeQ+Ms/TkX7hUFqwlMsyVP+EIYtGn1EUTgqgZr/zJPvcX2tTss6uS2zLnwnnnUaoRCaFwbuHK6hKdr0gLWnq1Aom14F7YvNg4S4hxyDaqBflxCnMa
+ /d2LzKjzxXkGjBfocjQXww==
 
+Thanks Jeremy.
 
-On Friday 2025-03-07 16:24, Guido Trentalancia wrote:
+Ideally the key should be also published on public keyserver for
+maximum efficacy and security.
 
->Of course, if the DNS is not available the "evil hacker" rule is
->skipped when this patch is merged.
->
->However the drawbacks of not applying this patch are far worse, because
-> if the DNS is not available and some rules in the table contain domain
->names, then all rules are skipped and the operation is aborted even for
->numeric IP addresses and resolvable names.
+Regards,
 
-A silent/ignored error is much worse than an explicit error;
-the latter you can at least test for, scripting or otherwise.
+Guido
+
+On Fri, 07/03/2025 at 16.49 +0000, Jeremy Sowden wrote:
+> On 2025-03-07, at 17:40:01 +0100, Guido Trentalancia wrote:
+> > The newly released iptables version 1.8.11 source package has been
+> > signed using a new gpg key
+> > 8C5F7146A1757A65E2422A94D70D1A666ACF2B21.
+> > 
+> > Unfortunately it seems that such key has not been published yet on
+> > public keyservers.
+> > 
+> > Can someone please publish the new gpg key used to sign newer
+> > iptables
+> > releases ?
+> 
+> It's here: https://netfilter.org/about.html#gpg.
+> 
+> J.
 
