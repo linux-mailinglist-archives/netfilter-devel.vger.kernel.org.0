@@ -1,149 +1,168 @@
-Return-Path: <netfilter-devel+bounces-6288-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6290-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED51A58A21
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Mar 2025 02:49:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C093EA58D47
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Mar 2025 08:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E41A03AC0F2
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Mar 2025 01:49:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EAF0188ADF4
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Mar 2025 07:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189114204E;
-	Mon, 10 Mar 2025 01:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l8YWqiER"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E20F2046BF;
+	Mon, 10 Mar 2025 07:50:47 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB4879C4
-	for <netfilter-devel@vger.kernel.org>; Mon, 10 Mar 2025 01:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0D01A23BE
+	for <netfilter-devel@vger.kernel.org>; Mon, 10 Mar 2025 07:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741571363; cv=none; b=mveiCT96Ml8iBg5Cb0gMYaHbnk+6F+guXfSQ2aKe2WvnKrjgyqF8POj1HliMXIQ558IbtfRiHTrzCOWgUBEcZ1KyrOwBQ4MvR6ZRPOyGJ8zeig1OYtrdXU4uSmsLWha1M3gExV1/9a8iFxR+t/tt55xsA84by9TlJ92Ij/L254w=
+	t=1741593047; cv=none; b=OArQjGR3uDtWab/NjNnK76Hv+lw2MxoH+QU1gDQglNUsL7m2uthTYj/+hG//nJuWC5Xty7YGGic90M+Yk/EpBcym2Ynbpc7KxeOrYOxij6ZSBxsAeq4QI/n1YxuSdb2XRlBcxgoCfBJSnhP1ee3bZK4hAJBZbF6I+Epeunwdekw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741571363; c=relaxed/simple;
-	bh=JLJTNwcDwD02w9U8RtyfYilnyW+/ohBpG+XOvIL0R8k=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eYDcWpYjgmJ5DVD28wPZbT2UOyayl68A7+i6qTLsGxJkcby/Q+5isuR9Q2HJV9mABargQmxYXryXPmo3USBzmZCjUUFFTo/6OMoN7v7sOtPTgBdkqE7UrEKI9BVKcTTP4tvwFwz06ATtixIMrpoIGn8BcVjyn8Hj+rC91r1FDK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=optusnet.com.au; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l8YWqiER; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=optusnet.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-223f4c06e9fso60481695ad.1
-        for <netfilter-devel@vger.kernel.org>; Sun, 09 Mar 2025 18:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741571360; x=1742176160; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:reply-to:message-id:subject:cc:to:date:from:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rjqxQxe1FyXRHxVxpUi4QlsQydWyqZrkC/Fh6NLA6i4=;
-        b=l8YWqiERAHvfFkgR8EHJEZfzH/OtbKN7W2iR4dcWtNOcMOwUbViwv+hFyaY9sNgIk0
-         wY9ROhe04jiuucPTMz34cTDRPMWqvrPZQ0ZQtZO0s7v49qZH4drRx6HYOwBiWKR6BJJu
-         /wFnYLmof5CaYB254mSKuatPHVFdE2e+CAPKCoGCv3fMp19FQPBs6Q2m9At2db4RIgNM
-         9IAxUyCQUHCvhND0r1gQeZ9rKqxUsOOjJdO4hLeWs1BOoxkHYNi24/FYQ7gwD4uwtAhs
-         VKbXTOc2PvYCXPmqd0d5cFgwVb+yh4sc9q3N0KDm1RmcaQZKCcb3KhU9zPjsgejGUQnc
-         5UKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741571360; x=1742176160;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:reply-to:message-id:subject:cc:to:date:from:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rjqxQxe1FyXRHxVxpUi4QlsQydWyqZrkC/Fh6NLA6i4=;
-        b=l1t5a6v2yxj4JfrIdFzJU/ZjA4njhp0BpBZ+NibmS/+DIQ1QChST5VzJCWDJq/VGA4
-         R6RSy4ZQO6+y2cYFux3UDENax5BtyylzJqNwvHu2NmbfD2yF9PO2PBIRirMBraBV52nZ
-         ADRzKN4SZKpXmXuFKH8OC8622Om50pMwSlUtTtYoyHeCQyY8fxa3LPUr17A97VEyCqBA
-         /XJhlvbx+2k9GFcIwWvIoV4MH05/Xf68wWW5McI2IFLFlVjI0apEiQWFIOteze5oDipu
-         HUB1m9aoos5I6GnFJRAYd81dI8kzDqHzWeTI3+cHreYkEzz7/tm6vpRj8U/TPPQrGfOk
-         5OZQ==
-X-Gm-Message-State: AOJu0Yzw1O7wEdJHqlBmIT6OGHyYwH9c9sR9Jym1gE7ZcO4o0mL0kxPY
-	RdVLzAWvVPBZgKqo01GvFI4BgXC4k+qdXLwAtd5q2U3Fa6LqVi1BjUz1FQ==
-X-Gm-Gg: ASbGnctRoPE5SjaKnEomRmCjBoY9+S9Y4WWWfY/zVhXTbqtD+SLLWaLfhTTSRT9hzDj
-	Bykfy24WT14YlYH9pP0HxsiIS8llWM6W+1E8SjHUvaK/rngF/CWekC0kMOnnKSm/fjlIUNJuF9N
-	c8908o5tAtLRcV0B/eigPyEygNrVmvtLyuXItsIVBznUZ7bfQK2CPRzW9taf4PNfSah2X7Rf2vJ
-	fCIEDp5BT0HBKusxiuzeLBnwtTlDzMBh35GVMEDdXV6pKD7mtn4pzaJPs0AiDN5QmmamB8oGChI
-	C8kRXfEZuuEFjhYcyqMltOu2CvvkwMAupIaCNJcty8LetECrDeH3RsOvTXTbT8Onl+FGkhxQaKE
-	BIY7Ah5O0aRtWhJVsrmt9FQ==
-X-Google-Smtp-Source: AGHT+IFvCngrNgYOkmAg/hEYCpzc2bdyLMlN75MiKNbSI4353uWnicGalGfkEQM/u1/akXAramxykQ==
-X-Received: by 2002:a17:902:ce09:b0:21f:2e:4e4e with SMTP id d9443c01a7336-2244f057fd4mr133845665ad.5.1741571360113;
-        Sun, 09 Mar 2025 18:49:20 -0700 (PDT)
-Received: from slk15.local.net (n175-33-111-144.meb22.vic.optusnet.com.au. [175.33.111.144])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410a91babsm65773305ad.196.2025.03.09.18.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Mar 2025 18:49:19 -0700 (PDT)
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-X-Google-Original-From: Duncan Roe <dunc@slk15.local.net>
-Date: Mon, 10 Mar 2025 12:49:15 +1100
-To: Florian Westphal <fw@strlen.de>
-Cc: Netfilter Development <netfilter-devel@vger.kernel.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH libnetfilter_log] autoconf: don't curl build script
-Message-ID: <Z85FG/1qImu3tiSS@slk15.local.net>
-Reply-To: duncan_roe@optusnet.com.au
-Mail-Followup-To: Florian Westphal <fw@strlen.de>,
-	Netfilter Development <netfilter-devel@vger.kernel.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20250309105529.42132-1-fw@strlen.de>
+	s=arc-20240116; t=1741593047; c=relaxed/simple;
+	bh=5cJGUpQgxU0M+h5mlTM+g3ttnGN0+KApOqCHXq1QGTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g0qcOtbRUKDsbwOCs4xzHl/F5qp4LNIzu0zdJH6rEBamtaJd8JyikaKxb4QN0q1Wzy3d9yxPAVBx+ftfHYhB8evzYesEJnffqyDISJtwI9BNX/2b49zxyymmJaJ8fVtT7Ex5hhyEBeDSkAGbqRoWQPCzadK8bAZIXvBRKcDF/Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1trXuM-0001eD-HM; Mon, 10 Mar 2025 08:50:42 +0100
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] evaluate: don't crash if range has same start and end interval
+Date: Mon, 10 Mar 2025 08:29:37 +0100
+Message-ID: <20250310072940.5524-1-fw@strlen.de>
+X-Mailer: git-send-email 2.45.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250309105529.42132-1-fw@strlen.de>
+Content-Transfer-Encoding: 8bit
 
-Hi Florian,
+In this case, evaluation step replaces the range expression with a
+single value and we'd crash as range->left/right contain garbage
+values.
 
-On Sun, Mar 09, 2025 at 11:55:19AM +0100, Florian Westphal wrote:
-> This is a bad idea; cloning repo followed by "./autogen.sh" brings
-> repository into a changed state.
->
-> Partial revert of 74576db959cb
-> ("build: doc: `make` generates requested documentation")
->
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  autogen.sh | 8 --------
->  1 file changed, 8 deletions(-)
->
-> diff --git a/autogen.sh b/autogen.sh
-> index 93e2a23135d4..5e1344a85402 100755
-> --- a/autogen.sh
-> +++ b/autogen.sh
-> @@ -1,12 +1,4 @@
->  #!/bin/sh -e
->
-> -BUILD_MAN=doxygen/build_man.sh
-> -
-> -# Allow to override build_man.sh url for local testing
-> -# E.g. export NFQ_URL=file:///usr/src/libnetfilter_queue
-> -curl ${NFQ_URL:-https://git.netfilter.org/libnetfilter_queue/plain}/$BUILD_MAN\
-> -  -o$BUILD_MAN
-> -chmod a+x $BUILD_MAN
-> -
->  autoreconf -fi
->  rm -Rf autom4te.cache
-> --
-> 2.48.1
->
->
-| This is a bad idea; cloning repo followed by "./autogen.sh" brings
-| repository into a changed state.
+Simply replace the input expression with the evaluation result.
 
-Agree with the above, except IMHO the "bad idea" is to have a frozen version of
-build_man.sh in the repository at all.
+Also add a test case modeled on the afl reproducer.
 
-Pablo did that - I didn't like to quibble at the time but I thought no good
-would come of it.
+Fixes: fe6cc0ad29cd ("evaluate: consolidate evaluation of symbol range expression")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ src/evaluate.c                                |  5 +++
+ .../dumps/range_with_same_start_end.json-nft  | 35 +++++++++++++++++++
+ .../sets/dumps/range_with_same_start_end.nft  |  7 ++++
+ .../testcases/sets/range_with_same_start_end  | 13 +++++++
+ 4 files changed, 60 insertions(+)
+ create mode 100644 tests/shell/testcases/sets/dumps/range_with_same_start_end.json-nft
+ create mode 100644 tests/shell/testcases/sets/dumps/range_with_same_start_end.nft
+ create mode 100755 tests/shell/testcases/sets/range_with_same_start_end
 
-I've sent in an alternative patch to remove build_man.sh from the repo and add
-it to .gitignore.
+diff --git a/src/evaluate.c b/src/evaluate.c
+index e27d08ce7ef8..722c11a23c2d 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2351,6 +2351,10 @@ static int expr_evaluate_symbol_range(struct eval_ctx *ctx, struct expr **exprp)
+ 		expr_free(range);
+ 		return -1;
+ 	}
++
++	if (range->etype != EXPR_RANGE)
++		goto out_done;
++
+ 	left = range->left;
+ 	right = range->right;
+ 
+@@ -2371,6 +2375,7 @@ static int expr_evaluate_symbol_range(struct eval_ctx *ctx, struct expr **exprp)
+ 		return 0;
+ 	}
+ 
++out_done:
+ 	expr_free(expr);
+ 	*exprp = range;
+ 
+diff --git a/tests/shell/testcases/sets/dumps/range_with_same_start_end.json-nft b/tests/shell/testcases/sets/dumps/range_with_same_start_end.json-nft
+new file mode 100644
+index 000000000000..c4682475917e
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/range_with_same_start_end.json-nft
+@@ -0,0 +1,35 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "t",
++        "handle": 0
++      }
++    },
++    {
++      "set": {
++        "family": "ip",
++        "name": "X",
++        "table": "t",
++        "type": "inet_service",
++        "handle": 0,
++        "flags": [
++          "interval"
++        ],
++        "elem": [
++          10,
++          30,
++          35
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/sets/dumps/range_with_same_start_end.nft b/tests/shell/testcases/sets/dumps/range_with_same_start_end.nft
+new file mode 100644
+index 000000000000..78979e9e0d5e
+--- /dev/null
++++ b/tests/shell/testcases/sets/dumps/range_with_same_start_end.nft
+@@ -0,0 +1,7 @@
++table ip t {
++	set X {
++		type inet_service
++		flags interval
++		elements = { 10, 30, 35 }
++	}
++}
+diff --git a/tests/shell/testcases/sets/range_with_same_start_end b/tests/shell/testcases/sets/range_with_same_start_end
+new file mode 100755
+index 000000000000..127f0921f0de
+--- /dev/null
++++ b/tests/shell/testcases/sets/range_with_same_start_end
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++set -e
++
++$NFT -f - <<EOF
++table ip t {
++	set X {
++		type inet_service
++		flags interval
++		elements = { 10, 30-30, 30, 35 }
++	}
++}
++EOF
+-- 
+2.45.3
 
-With this patch git clone followed by "./autogen.sh" behaves as it should.
-
-Cheers ... Duncan.
 
