@@ -1,89 +1,75 @@
-Return-Path: <netfilter-devel+bounces-6315-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6316-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D5EA5D852
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Mar 2025 09:37:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD408A5D899
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Mar 2025 09:50:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CF2A189D780
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Mar 2025 08:37:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1AE27A160B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Mar 2025 08:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D01C23278D;
-	Wed, 12 Mar 2025 08:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C8E22FF58;
+	Wed, 12 Mar 2025 08:50:01 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EF41DB356
-	for <netfilter-devel@vger.kernel.org>; Wed, 12 Mar 2025 08:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F982F43
+	for <netfilter-devel@vger.kernel.org>; Wed, 12 Mar 2025 08:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741768641; cv=none; b=l5maNo41HRDKfjaoAaz0em3wW8qdzTjXHNQY3plCV6IBmf1TGkQIZgsRO1FSL2Jz2XLG2uKzseV6Xtjtgi0zb70rdIexaXS/YjSS5kkFyvKUcqg2qS1nDtypvXHRQIbA3IPdkeBeTDa0gMBSOvKTXoe9A2UHwzSZkLR0XoxHQM4=
+	t=1741769401; cv=none; b=Nd5KMxO5DWdvyHjiBdNjIKCeaAqDLm6B5oGHvV6RTO+9baxe9Ful8XuhaMJL7KkOKWBVV1+yxkd4s/PosYANZA1hXP50aoSgLivnAoMuUvLDYvYuSwSUmz2Tn/MKz1nj547bJ4n3eF5+OvfJb782gcPyrmtAJnzDf2+HA9sjaa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741768641; c=relaxed/simple;
-	bh=6hk5ORo4r2gkeTIz/wT8ycmO2sGMcUb8FsbmgIt+VBg=;
+	s=arc-20240116; t=1741769401; c=relaxed/simple;
+	bh=+mCLel4Zc2NQ+O0w8LfR9LpaWYzkc8LQc+lge3I6k+c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oJ+ynlfVCcOY8MsReZ9semR7OWdkOd8f59BNa06REqj3aSs6QdipKrjv64k7cXiG7mNfeXBbAGycIeWJ19+K5/3uNvWdaXLL7fhf4u8rs8FxK1T0p906jSye/On4ZY8HzJuJxPP0JdmHovi6sPQULcMPz69l7bbDwpziaC2XaA4=
+	 Content-Type:Content-Disposition:In-Reply-To; b=bFIWGFFKmG/RoOoYa1FgeNGpjB2R/I16UgXpW7hx7DNjGHHklobNrX018J3v/rwXuDphVHtNOxoJaLAiHl61obJ0Ix6HqQCRG3Bwu5m4163RUQ8FM2JdlS/pKReUl2HXSdzhOVxlE25CV1dETaZnxG2ifLm2Kil4PJI809o9s1o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@strlen.de>)
-	id 1tsHaW-0003kT-Oy; Wed, 12 Mar 2025 09:37:16 +0100
-Date: Wed, 12 Mar 2025 09:37:16 +0100
+	id 1tsHmn-0003sC-4j; Wed, 12 Mar 2025 09:49:57 +0100
+Date: Wed, 12 Mar 2025 09:49:56 +0100
 From: Florian Westphal <fw@strlen.de>
-To: Corubba Smith <corubba@gmx.de>
+To: =?iso-8859-1?Q?G=E9rald?= Colangelo <gerald.colangelo@weblib.eu>
 Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH ulogd2] nfct: add network namespace support
-Message-ID: <20250312083716.GA14222@breakpoint.cc>
-References: <7d1478b6-ec25-4286-a365-ce28293f4a40@gmx.de>
+Subject: Re: Bug in ulogd2 when destroying a stack that failed to start (with
+ fix attached)
+Message-ID: <Z9FKtEEoHCsCJ5wl@strlen.de>
+References: <CAEqktHuJ7T8R6CmYd-R7tufUPdLBT22S6G3_-_PG9s9c_4t5EA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <7d1478b6-ec25-4286-a365-ce28293f4a40@gmx.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEqktHuJ7T8R6CmYd-R7tufUPdLBT22S6G3_-_PG9s9c_4t5EA@mail.gmail.com>
 
-Corubba Smith <corubba@gmx.de> wrote:
-> Add a new option which allows opening the netlink socket in a different
-> network namespace. This way you can run ulogd in one (management)
-> network namespace which is able to talk with your export target (e.g.
-> database or IPFIX collector), and import flows from multiple (customer)
-> network namespaces.
-
-Makes sense to me.
-
-> This commit only implements it for NFCT. I wanted to gather some
-> feedback before also implementing it for the other netlink-based
-> plugins.
-
-Does it make sense to have this configured on a per-plugin basis?
-
->    Input plugins:
->      NFLOG plugin:			${enable_nflog}
->      NFCT plugin:			${enable_nfct}
-
-> +#ifdef NETNS_SUPPORT
-> +	if (strlen(target_netns_path) > 0) {
-> +		errno = 0;
-> +		original_netns_fd = open("/proc/self/ns/net", O_RDONLY | O_CLOEXEC);
-> +		if (original_netns_fd < 0) {
-> +			ulogd_log(ULOGD_FATAL, "error opening original network namespace: %s\n", strerror(errno));
-> +			goto err_ons;
+Gérald Colangelo <gerald.colangelo@weblib.eu> wrote:
+> +cleanup_fail:
+> +	stop = pi;
+> +	llist_for_each_entry(pi, &stack->list, list) {
+> +		if (pi == stop)
+> +			/* the one that failed, stops the cleanup here */
+> +			break;
+> +		if (!pi->plugin->stop) 
+> +			continue;
+> +		ret = pi->plugin->stop(pi);
+> +		if (ret < 0) {
+> +			ulogd_log(ULOGD_ERROR,
+> +			"error stopping `%s'\n",
+> +			pi->id);
 > +		}
+> +	}
+> +	return -1;
 
-I think that in order to not have copypastry in all relevant plugins
-it would be better to turn code in the NETNS_SUPPORT ifdefs section
-into library helpers.
+Looks good, but I think you also need to add a second loop to free()
+the stack elements, as done in stop_pluginstances().
 
-The helpers would always exist; in case ulogd2 is built without
-support they would raise an error.
-
-That would also keep the ifdef out of plugin code.
 
