@@ -1,107 +1,122 @@
-Return-Path: <netfilter-devel+bounces-6589-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6592-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 698D3A70555
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Mar 2025 16:43:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29EC9A7077E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Mar 2025 17:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 409EB3A8B2F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Mar 2025 15:39:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19C1B7A351A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Mar 2025 16:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A32D1A3AB8;
-	Tue, 25 Mar 2025 15:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 462CD25FA12;
+	Tue, 25 Mar 2025 16:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CLE7y3ot"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="koG3ucBz";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/lEzBtRF"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43571A238D;
-	Tue, 25 Mar 2025 15:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B931F78F39
+	for <netfilter-devel@vger.kernel.org>; Tue, 25 Mar 2025 16:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742917199; cv=none; b=AAnlVkW/H2meFg4F1G9UaUwGVa2nFqESZLhxVwK0/RKwQz0YeGveZxbwx35WU8eq2bQazXpooZ87cYE9o+F6gKXQTtDMVtQosg/fUMiENa7cwDHhKQZCl3aTiooQlfEuX0L02RCPAOWDi8Heva8UmBpiBAOi+3712cIgzecO2qE=
+	t=1742921933; cv=none; b=Q9apkdjtUHWtEF6coyeZVjrd5VU2Gc2Vv1bmpubxrG7g9M/JjsGX/TFJq2KCnUYHU7l3F7J18ftreNTPfif1cKHPUeTXwszyujqiQoFoOlvXUFBQjWuzlfS7RxHeKAEtlvJXLCqFv/DEWa8SOKhVpo1fEdfVxGqewT9EiQN/e7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742917199; c=relaxed/simple;
-	bh=am9FunDcKx0MSc3x6dOTCpKV2sXz1d5Pqt7ld9PVGEU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NuaRRN5dBG8zkUiqrpkMf6U1oYRdy9DpWfojlN+iNGPIMpt9ayBvwYyFs3+NIauNg1hHA2IZIBV4GcsLKLwqKIftyVHQ1RZpsFbx/1bgTB6hvqXWJ8HBpJJ8ln2v72N7UwtvDSDlEETr9uHxBg3H+QCTqNRW9YIzwkigMXn7JPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CLE7y3ot; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3DE7C4CEE4;
-	Tue, 25 Mar 2025 15:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742917198;
-	bh=am9FunDcKx0MSc3x6dOTCpKV2sXz1d5Pqt7ld9PVGEU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CLE7y3otIxitxaKDJUh6LoFJnrjkIyTTf/KyDLDDGw2mREPGjL9hlHkqOo+Lh7PK8
-	 FoRfIHRNs50pMNxKu01Suy9e07boGr6AU7V3Ou6X3ABikWock07dPIc5rTuHOwoSxr
-	 IrPwY1zW425UrSXsOP5CM6fY3hBd7i09mhSwHUz9NUlrW898CU1SgFIjvYF5ESHKv1
-	 XzFWb0YiSvwu8GTaYzReLVTzQzmzuABKMKslxQbhktkPADqobM7RI3rm41UW95MFGm
-	 talwCVQ486a/F29VcZ8cAGBGWYQNUDZmnR7zRISLB0r9LY2siTAjqhmMI2OdUR+eYY
-	 iD52aic6UYuwg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 341E7380CFE7;
-	Tue, 25 Mar 2025 15:40:36 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1742921933; c=relaxed/simple;
+	bh=HsyQOqO/ZUaWmLeqm0Cu5w1iedY0tgvP52k3ffnPnFQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=awCYhbyBOWZM4KdL15jAcqflJkvsqoBIpqV/cUWkzEkWoj1upDaBsmC71w9Y6HaU5vHFun2CQ0P//chDkLwkoEXOPVYTqJK7y8FHY+uVJhFRrGv/9L6JUDuhc3oLML7eQ4ntRG0Trd4UKEEPbA0ulEOqdmXdap+prHJfeloHx2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=koG3ucBz; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/lEzBtRF; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1742921923;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DPXWaaJGm0Bnu+Dn4NFf3r2IOONcOqxrMf17GIhXFGE=;
+	b=koG3ucBzTqt4m0aVzvcZ3l0VBjX6OILZ+UeQ2UftIEGOlQ4shHIg2IbPWDBLm0wVR4V9MV
+	s9y03De/vfByuZdZQDOfh7EXsjpMhdxQTMPGWPVCQ6emZRr28ANIICemJ+YZcBTl7kckWB
+	mhGTcW/MSAOgXBJrT5oH3HxrIcrrewkRnLDHTVGcUkSLUgsehwVSNHEkQmVrgDiCsZ3RnY
+	6cI0QaaYXmMdRSJ4xR6nz2FQrH2Fe+/gPTbDLiPcM0tZDgWMAAlRn7d80ZaV1ydOQgBbc6
+	zKbTKv2vx5nom8GfwqTikpElDXDnNJkDx4xGEu6/hGa4qEWaOvEJ42KxmBnYZw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1742921923;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DPXWaaJGm0Bnu+Dn4NFf3r2IOONcOqxrMf17GIhXFGE=;
+	b=/lEzBtRF+1H6Rdqd+LD7p/4OyrP/ySCdK2Q1x6e/dsiX2GYQG3/LYPUI4h/mlRSwxdCj6j
+	FreXJYyeuhSH4NAw==
+To: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-rt-devel@lists.linux.dev
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [net-next v3 0/3] Disable LEGACY iptables on PREEMPT_RT
+Date: Tue, 25 Mar 2025 17:58:29 +0100
+Message-ID: <20250325165832.3110004-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/7] netfilter: xt_hashlimit: replace vmalloc calls
- with kvmalloc
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174291723501.621610.11595803602695403455.git-patchwork-notify@kernel.org>
-Date: Tue, 25 Mar 2025 15:40:35 +0000
-References: <20250323100922.59983-2-pablo@netfilter.org>
-In-Reply-To: <20250323100922.59983-2-pablo@netfilter.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
- netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, fw@strlen.de, horms@kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+The per-CPU xt_recseq is a custom netfilter seqcount. It provides
+synchronisation for the replacement of the xt_table::private pointer and
+ensures that the two counter in xt_counters are properly observed during
+an update on 32bit architectures. xt_recseq also supports recursion.
 
-This series was applied to netdev/net-next.git (main)
-by Pablo Neira Ayuso <pablo@netfilter.org>:
+This construct is less than optimal on PREMPT_RT because the lack of an
+associated lock (with the seqcount) can lead to a deadlock if a high
+priority reader interrupts a writer. Also xt_recseq relies on locking
+with BH-disable which becomes problematic if the lock, currently part of
+local_bh_disable() on PREEMPT_RT, gets removed.
 
-On Sun, 23 Mar 2025 11:09:16 +0100 you wrote:
-> From: Denis Kirjanov <kirjanov@gmail.com>
-> 
-> Replace vmalloc allocations with kvmalloc since
-> kvmalloc is more flexible in memory allocation
-> 
-> Signed-off-by: Denis Kirjanov <kirjanov@gmail.com>
-> Reviewed-by: Florian Westphal <fw@strlen.de>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> [...]
+Based on discussion with Pablo and Florian the legacy code is disabled
+on PREEMPT_RT. I picked up the patches referenced by Florian and tried
+to fix them up as suggested plus the bits we talked about.
 
-Here is the summary with links:
-  - [net-next,1/7] netfilter: xt_hashlimit: replace vmalloc calls with kvmalloc
-    https://git.kernel.org/netdev/net-next/c/ddf8dec6db31
-  - [net-next,2/7] netfilter: conntrack: Bound nf_conntrack sysctl writes
-    https://git.kernel.org/netdev/net-next/c/8b6861390ffe
-  - [net-next,3/7] netfilter: fib: avoid lookup if socket is available
-    https://git.kernel.org/netdev/net-next/c/eaaff9b6702e
-  - [net-next,4/7] netfilter: nfnetlink_queue: Initialize ctx to avoid memory allocation error
-    https://git.kernel.org/netdev/net-next/c/778b09d91baa
-  - [net-next,5/7] netfilter: xtables: Use strscpy() instead of strscpy_pad()
-    https://git.kernel.org/netdev/net-next/c/3b4aff61ca5d
-  - [net-next,6/7] netfilter: socket: Lookup orig tuple for IPv6 SNAT
-    https://git.kernel.org/netdev/net-next/c/932b32ffd760
-  - [net-next,7/7] netfilter: nf_tables: Only use nf_skip_indirect_calls() when MITIGATION_RETPOLINE
-    https://git.kernel.org/netdev/net-next/c/e3a4182edd1a
+v2=E2=80=A6v3 https://lore.kernel.org/all/20250221133143.5058-1-bigeasy@lin=
+utronix.de/
+  - Instead of getting LEGACY code to work for PREEMPT_RT the code is
+    now disabled on PREEMPT_RT. Since the long term plan is to get rid of
+    it anyway, it might be less painful for everyone.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+v1=E2=80=A6v2 https://lore.kernel.org/all/20250216125135.3037967-1-bigeasy@=
+linutronix.de/
+  - Updated kerneldoc in 2/3 so that the renamed parameter is part of
+    it.
+  - Updated description 1/3 in case there are complains regarding the
+    synchronize_rcu(). The suggested course of action is to motivate
+    people to move away from "legacy" towards "nft" tooling. Last resort
+    is not to wait for the in-flight counter and just copy what is
+    there.
 
+Pablo Neira Ayuso (1):
+  netfilter: replace select by depends on for IP{6}_NF_IPTABLES_LEGACY
+
+Sebastian Andrzej Siewior (2):
+  netfilter: Let IP6_NF_IPTABLES_LEGACY select IP6_NF_IPTABLES.
+  netfilter: Introduce NETFILTER_LEGACY to group all legacy code.
+
+ net/Kconfig                  | 10 ++++++++++
+ net/bridge/netfilter/Kconfig |  8 ++++----
+ net/ipv4/netfilter/Kconfig   | 15 ++++++++-------
+ net/ipv6/netfilter/Kconfig   | 13 +++++++------
+ net/netfilter/x_tables.c     | 16 +++++++++++-----
+ 5 files changed, 40 insertions(+), 22 deletions(-)
+
+--=20
+2.49.0
 
 
