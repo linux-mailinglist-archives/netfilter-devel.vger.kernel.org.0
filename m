@@ -1,119 +1,125 @@
-Return-Path: <netfilter-devel+bounces-6632-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6634-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635F3A73576
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Mar 2025 16:17:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0625A735DC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Mar 2025 16:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A873A189AB32
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Mar 2025 15:17:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 703AC188D33A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Mar 2025 15:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9541714AC;
-	Thu, 27 Mar 2025 15:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2A1199949;
+	Thu, 27 Mar 2025 15:43:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="HgrTApLh";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="hBxZU+RM"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44023224F0
-	for <netfilter-devel@vger.kernel.org>; Thu, 27 Mar 2025 15:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680E71991C9
+	for <netfilter-devel@vger.kernel.org>; Thu, 27 Mar 2025 15:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743088655; cv=none; b=lMfZd5uhOn8hZmlT9TT5RoMGf+cXU2atTbegJgpsbwSvqNMgW52j1JRLxZ4nckhCx7mXBltRQFsSI9nNzx1t8RFJY3gMGJYGUmYhKXu4vZ9Ucn5wssv44imw71cz+E1t2tODybnnKjjtoZy0KXnJaJcN9zryXtpKAEY0UF0WxXo=
+	t=1743090201; cv=none; b=aVH3VUKX6zGamtKGF/fenh3iWUaKaNGGQPz28rrjVMNAZD5ev22Hv9bz4s9uY4HB4dUep9H3C6a62smXvdyf21bWaOMPXLQBmeWR14gKzQdrd+XpK118BuvAk62cVxRu2eTDrM9zLOGuITvCQVo7y6FV4178j+MCiialnxHN40c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743088655; c=relaxed/simple;
-	bh=wwJD9tP3Sgt1ioDNyiklzdy0jlpfgl5I+YoZi50s9X0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NtIYlB6SMc9uVD5NyFGNrevsY5eU1QQ09EKZFR1LuELcVAyq+3Eig8VRMNbPOQ+Awp2UKYLcaUGasMT9DwUxBSRzEfvtCP/HAkETwgqgMjSs14l4aqKRl534gyYcmeYnSw4UUMenN8ZqbOzah+mZ/m9lwqRiqlD8I1tYBBMOTRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1txoz5-0007Zj-6C; Thu, 27 Mar 2025 16:17:31 +0100
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] expression: don't try to import empty string
-Date: Thu, 27 Mar 2025 16:17:11 +0100
-Message-ID: <20250327151720.17204-1-fw@strlen.de>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1743090201; c=relaxed/simple;
+	bh=yBhLvKASpsCqtKDJeOyGP4YCvqgEJe5Oij/uC8xaYGE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PsY2tv50sstxCBSF1LYSdOw1hHXm9AGkXOA1PMrSoNFS1pmOTaJDX/jBqFRIIfIqWidYp4E9Gx3MSP+7DTf4CMQivpEnpcxb5oZrQrQvxUu7OSV62zS8VQv9TAxpCwmoTZThSgxYtHXZYPq+ffnOFktBCzXqg4e7EAoNLnPItxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=HgrTApLh; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=hBxZU+RM; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 238C260613; Thu, 27 Mar 2025 16:34:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1743089640;
+	bh=/4RMw844gfqAN3CMgajKjPgOXWkYhYOrhc+nF4Dzrvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HgrTApLhK7KpB7YcHQTB0objJMsQ4yGBjB/oA4kr/CNqKQUtpksQdZcs7Y3JgEK6j
+	 FnA8y3lYJ5WWx2AIYdEVSw2FtRjWPYA92+FQtmkliX8oB6oScKuLqnRsdIbLvW/F4q
+	 qO4MJb/MIP+yp/c5HW4IHH3pM9pPgpF/zwWIcwOdUXODiyioVgpzHSKwimD9Nzm/Ug
+	 c1NR5bRfS4pE2bebiynpN7v2YXU+yCmy/yUtLY4BxdYoVTr9fQvIiEYjXSfDRPCCqC
+	 9o89Y/OAvaNPq1IIwRyku8hHQIwXyfVrZ/zkUp7MLEz5NS5yl1hF162fixjWcGcakT
+	 SRWAEccLKM5Wg==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 7D72160613;
+	Thu, 27 Mar 2025 16:33:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1743089639;
+	bh=/4RMw844gfqAN3CMgajKjPgOXWkYhYOrhc+nF4Dzrvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hBxZU+RMcEYFcnn73QApoIZg+Ji8Y7Jpw2DiTVIHOevHxyFd3HRHaaCg9oFyVDdOq
+	 EYsX5yribNG0Z1asJahgOinepq9ZmCMR03jYvF8LtL2LofeiKFEWXOP6uRTNQThLOf
+	 FNGdqeP4abKCQ8X4rUS8mMxZQ2KWU+BOWwOjfP0VeUnvkCQSuBp/bRYSX3U5P7hoaa
+	 RjEOeqXwEjMnBtBudGvsptOv3c+0f9Rb198iZVIQExkwNdcBpENThHQnrHgu/xTLvD
+	 zApUSkWkkdQcYYC9LKuOfbvDcSqeHNWHFmGn6LvVzdleJzTU+fw8f23MYb2A1ALoOv
+	 C6TkIeuynC4ig==
+Date: Thu, 27 Mar 2025 16:33:57 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] evaluate: tolerate empty concatenation
+Message-ID: <Z-Vv1R-OmC2QukpS@calendula>
+References: <20250324115301.11579-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="4QXrznYuPLGaHlyg"
+Content-Disposition: inline
+In-Reply-To: <20250324115301.11579-1-fw@strlen.de>
 
-The bogon will trigger the assertion in mpz_import_data:
-src/expression.c:418: constant_expr_alloc: Assertion `(((len) + (8) - 1) / (8)) > 0' failed.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/expression.c                              |  2 +-
- .../bogons/nft-j-f/constant_expr_alloc_assert | 38 +++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
- create mode 100644 tests/shell/testcases/bogons/nft-j-f/constant_expr_alloc_assert
+--4QXrznYuPLGaHlyg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-diff --git a/src/expression.c b/src/expression.c
-index 156a66eb37f0..f230f5ad8935 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -494,7 +494,7 @@ struct expr *constant_expr_alloc(const struct location *loc,
- 	expr->flags = EXPR_F_CONSTANT | EXPR_F_SINGLETON;
+Hi Florian,
+
+On Mon, Mar 24, 2025 at 12:52:58PM +0100, Florian Westphal wrote:
+> Don't rely on a successful evaluation of set->key.
+> With this input, set->key fails validation but subsequent
+> element evaluation asserts because the context points at
+> the set key -- an empty concatenation.
+> 
+> Causes:
+> nft: src/evaluate.c:1681: expr_evaluate_concat: Assertion `!list_empty(&ctx->ectx.key->expressions)' failed.
+> 
+> After patch:
+> internal:0:0-0: Error: unqualified type  specified in set definition. Try "typeof expression" instead of "type datatype".
+> internal:0:0-0: Error: Could not parse symbolic invalid expression
+
+Maybe block this from the json parser itself?
+
+--4QXrznYuPLGaHlyg
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment; filename="x.patch"
+
+diff --git a/src/parser_json.c b/src/parser_json.c
+index 17bc38b565ae..8d5aa480ae04 100644
+--- a/src/parser_json.c
++++ b/src/parser_json.c
+@@ -3395,6 +3395,14 @@ static struct cmd *json_parse_cmd_add_set(struct json_ctx *ctx, json_t *root,
+ 		return NULL;
+ 	}
  
- 	mpz_init2(expr->value, len);
--	if (data != NULL)
-+	if (data != NULL && len)
- 		mpz_import_data(expr->value, data, byteorder,
- 				div_round_up(len, BITS_PER_BYTE));
- 
-diff --git a/tests/shell/testcases/bogons/nft-j-f/constant_expr_alloc_assert b/tests/shell/testcases/bogons/nft-j-f/constant_expr_alloc_assert
-new file mode 100644
-index 000000000000..9c40030212ef
---- /dev/null
-+++ b/tests/shell/testcases/bogons/nft-j-f/constant_expr_alloc_assert
-@@ -0,0 +1,38 @@
-+{
-+  "nftables": [
-+    {
-+      "table": {
-+        "family": "ip",
-+        "name": "t",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "chain": {
-+        "family": "ip",
-+        "table": "t",
-+        "name": "testchain",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "map": {
-+        "family": "ip",
-+        "name": "testmap",
-+        "table": "t",
-+        "type": "ipv4_addr",
-+        "handle": 0,
-+        "map": "verdict",
-+        "elem": [
-+          [
-+            {
-+              "jump": {
-+                "target": ""
-+              }
-+            }
-+          ]
-+        ]
-+      }
-+    }
-+  ]
-+}
--- 
-2.48.1
++	if (set->key->etype == EXPR_CONCAT &&
++	    list_empty(&set->key->expressions)) {
++		json_error(ctx, "Empty set type.");
++		set_free(set);
++		handle_free(&h);
++		return NULL;
++	}
++
+ 	if (!json_unpack(root, "{s:o}", "map", &tmp)) {
+ 		if (json_is_string(tmp)) {
+ 			const char *s = json_string_value(tmp);
 
+--4QXrznYuPLGaHlyg--
 
