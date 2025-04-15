@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-6868-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6879-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6007A8A33A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Apr 2025 17:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E039A8B617
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Apr 2025 11:56:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59C331886C63
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Apr 2025 15:45:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCBA3189DD9C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Apr 2025 09:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A63049659;
-	Tue, 15 Apr 2025 15:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9B42376F9;
+	Wed, 16 Apr 2025 09:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dQHbRJin"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="lbeSHTBF"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CCC1A5B96
-	for <netfilter-devel@vger.kernel.org>; Tue, 15 Apr 2025 15:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83712DFA49
+	for <netfilter-devel@vger.kernel.org>; Wed, 16 Apr 2025 09:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744731901; cv=none; b=rpAThoKve8L4mAvGR/wa4fLev5b3kNhcaeE0v0XGDVAbjAooCYHaoTygI6X3NPLguuKJV2stIW7QBVyUKZvtlPtrdKGPBTWNIYe8wmlGv8zl0cpXHQGC6MlcDQ6SocVRWaGmMvucFdaMAWepVOnFjgLxnyYrcUYdp2IYULGa+aY=
+	t=1744797287; cv=none; b=fMTc67LcfZX6ALZOG3P3lm7vpQJrba7m5NMkZ7fieMaZby2hycgMK46ZQdroHUoE+yicANGuKU6+2E0asNnBm+ohxsZtb4Dq4S7B5lLOGhy0UhqEh7YDbyYFmF+JSjXlfqEOlLcx0RRIKxxdlSBgVUyCuhvL3wl2GLQLq66Zm/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744731901; c=relaxed/simple;
-	bh=7c4OD5+pIebKG9l5eA1Y40xnWCQKLrzKiavLx+lwXos=;
+	s=arc-20240116; t=1744797287; c=relaxed/simple;
+	bh=AaStFWIdLvevOUD/oxK7X3enzRlcF2CptAaoagQ3Pwg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qz+6Z7+vbSrjgqcJsCKemXs9/w395CNMA2uINVUXEF54mMoDPywkNOmDNM9ap5kittEDhpzHN130bp1H1AQsvmXCJGGka3m0WgIgEarkct+1WKey5b+VGtVZRlxXZ4Ruf51RPxnloULlaXQBHl87jOffRat8OXN5czfUbPnSP08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dQHbRJin; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=r9N5D8f758p1iLPav8cW3DGpA7nsMBZZRB5izy+YpIzVkIPh4zd6/ljCi++TndMJ93kHJuNNbps7ZYqYN17t90Ui0PN3XMVo4YRRcBNM4kwdI+QjkvijQFKDAw+rIPoKbRPNyoBcBfTsDmpIHTO+6mbFAMknUaD132L5lOj0zLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=lbeSHTBF; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,27 +37,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=7jqzKgk108zEnAn6ULT6M4HsxlQhfy/lu/Dt9lE6src=; b=dQHbRJinwUn9nax+DXLIQVrhT6
-	dNCG+ncKQMRz1OY2vRik44IlMYUp1e8QYFaYauO7e0ETbsc+EWIJ/Ywza+RYp2/sVZbg8ngyshaAq
-	y2MXRkHV6HHcWy+ihDE0pkBdxLeKAM6y8zIbNzzpiDYxRWOlpLI4TwV9VKxLYwKbxBfA8pnMfjxFG
-	GhXnls8KCHbIgIf4ANxZGCtkJHnENkZzQFrMwoi2E8gZrQ4gSzJM5llmhPD9BYab4j1h7yTtnKgqC
-	aM94K/pVWQKbWS5G9RLGBp9XYLt8l5WCcYie1ZH6TRJ5MJv5Zs9zY/MHqUcDVftAOanOpTueISsNO
-	Hshb7plw==;
+	bh=lD1Abl4EJnmzOi4+anPoz7JhKrzz+V2j6+yzwjufhM4=; b=lbeSHTBFN5M6mmpsdkyJQK7hhh
+	6LKgkoOJffqt0Qnzo8osxHaVSEuVENFhoTASVwXPxrogxA3iv4V8y4HmIGntwLwgzIcu0Y6UwBFtC
+	7qp1Xih9bE2qRxtOFq5KknazP/szKx1wejlvVLj1Rthi0n/hJmtyRi35gHqpbZEd9xGaI+WyTB3cf
+	G68WgFmtguMMSgxk4TPQb/DU1dj9u0uI5I3XtrRNPA7tYtguLRLq7Q4u4OCtwKGbX90XDxGFbT7aL
+	ZZbpzOHglx/AsSAXv6yoZbx/vgv7X8/lumn2cxHlqjRT3G86jwB4kvnbzBUkXjBwU3ZAntKu4P+AY
+	yt4WHIZg==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1u4iSw-000000004yE-3vSp;
-	Tue, 15 Apr 2025 17:44:51 +0200
+	id 1u4zTe-000000006fi-3lrL;
+	Wed, 16 Apr 2025 11:54:42 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>,
 	Eric Garver <e@erig.me>
-Subject: [nf-next PATCH v6 11/12] netfilter: nf_tables: Add notications for hook changes
-Date: Tue, 15 Apr 2025 17:44:39 +0200
-Message-ID: <20250415154440.22371-12-phil@nwl.cc>
+Subject: [nf-next PATCH v6 12/12] selftests: netfilter: Torture nftables netdev hooks
+Date: Tue, 15 Apr 2025 17:44:40 +0200
+Message-ID: <20250415154440.22371-13-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250415154440.22371-1-phil@nwl.cc>
 References: <20250415154440.22371-1-phil@nwl.cc>
@@ -69,163 +69,200 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Notify user space if netdev hooks are updated due to netdev add/remove
-events. Send minimal notification messages by introducing
-NFT_MSG_NEWDEV/DELDEV message types describing a single device only.
+Add a ruleset which binds to various interface names via netdev-family
+chains and flowtables and massage the notifiers by frequently renaming
+interfaces to match these names. While doing so:
+- Keep an 'nft monitor' running in background to receive the notifications
+- Loop over 'nft list ruleset' to exercise ruleset dump codepath
+- Have iperf running so the involved chains/flowtables see traffic
 
-Upon NETDEV_CHANGENAME, the callback has no information about the
-interface's old name. To provide a clear message to user space, include
-the hook's stored interface name in the notification.
+If supported, also test interface wildcard support separately by
+creating a flowtable with 'wild*' interface spec and quickly add/remove
+matching dummy interfaces.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
-Changes since v4:
-- Introduce NFTA_DEVICE_SPEC to contain the hook's stored ifname
----
- include/net/netfilter/nf_tables.h        |  5 ++
- include/uapi/linux/netfilter/nf_tables.h | 10 ++++
- net/netfilter/nf_tables_api.c            | 59 ++++++++++++++++++++++++
- net/netfilter/nft_chain_filter.c         |  2 +
- 4 files changed, 76 insertions(+)
+Changes since v5:
+- Have iperf report rates in Kbits/s, the value in Mbits/s may contain a
+  decimal point and therefore break the following zero value check
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 5e49619ae49c..e4d8e451e935 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1142,6 +1142,11 @@ int nft_set_catchall_validate(const struct nft_ctx *ctx, struct nft_set *set);
- int nf_tables_bind_chain(const struct nft_ctx *ctx, struct nft_chain *chain);
- void nf_tables_unbind_chain(const struct nft_ctx *ctx, struct nft_chain *chain);
- 
-+struct nft_hook;
-+void nf_tables_chain_device_notify(const struct nft_chain *chain,
-+				   const struct nft_hook *hook,
-+				   const struct net_device *dev, int event);
+Changes since v4:
+- Limit maximum run-time to 48s.
+---
+ .../testing/selftests/net/netfilter/Makefile  |   1 +
+ .../net/netfilter/nft_interface_stress.sh     | 151 ++++++++++++++++++
+ 2 files changed, 152 insertions(+)
+ create mode 100755 tools/testing/selftests/net/netfilter/nft_interface_stress.sh
+
+diff --git a/tools/testing/selftests/net/netfilter/Makefile b/tools/testing/selftests/net/netfilter/Makefile
+index ffe161fac8b5..e7f8985bc903 100644
+--- a/tools/testing/selftests/net/netfilter/Makefile
++++ b/tools/testing/selftests/net/netfilter/Makefile
+@@ -23,6 +23,7 @@ TEST_PROGS += nft_concat_range.sh
+ TEST_PROGS += nft_conntrack_helper.sh
+ TEST_PROGS += nft_fib.sh
+ TEST_PROGS += nft_flowtable.sh
++TEST_PROGS += nft_interface_stress.sh
+ TEST_PROGS += nft_meta.sh
+ TEST_PROGS += nft_nat.sh
+ TEST_PROGS += nft_nat_zones.sh
+diff --git a/tools/testing/selftests/net/netfilter/nft_interface_stress.sh b/tools/testing/selftests/net/netfilter/nft_interface_stress.sh
+new file mode 100755
+index 000000000000..11d82d11495e
+--- /dev/null
++++ b/tools/testing/selftests/net/netfilter/nft_interface_stress.sh
+@@ -0,0 +1,151 @@
++#!/bin/bash -e
++#
++# SPDX-License-Identifier: GPL-2.0
++#
++# Torture nftables' netdevice notifier callbacks and related code by frequent
++# renaming of interfaces which netdev-family chains and flowtables hook into.
 +
- enum nft_chain_types {
- 	NFT_CHAIN_T_DEFAULT = 0,
- 	NFT_CHAIN_T_ROUTE,
-diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index 49c944e78463..80d5f23263c3 100644
---- a/include/uapi/linux/netfilter/nf_tables.h
-+++ b/include/uapi/linux/netfilter/nf_tables.h
-@@ -142,6 +142,8 @@ enum nf_tables_msg_types {
- 	NFT_MSG_DESTROYOBJ,
- 	NFT_MSG_DESTROYFLOWTABLE,
- 	NFT_MSG_GETSETELEM_RESET,
-+	NFT_MSG_NEWDEV,
-+	NFT_MSG_DELDEV,
- 	NFT_MSG_MAX,
- };
- 
-@@ -1780,10 +1782,18 @@ enum nft_synproxy_attributes {
-  * enum nft_device_attributes - nf_tables device netlink attributes
-  *
-  * @NFTA_DEVICE_NAME: name of this device (NLA_STRING)
-+ * @NFTA_DEVICE_TABLE: table containing the flowtable or chain hooking into the device (NLA_STRING)
-+ * @NFTA_DEVICE_FLOWTABLE: flowtable hooking into the device (NLA_STRING)
-+ * @NFTA_DEVICE_CHAIN: chain hooking into the device (NLA_STRING)
-+ * @NFTA_DEVICE_SPEC: hook spec matching the device (NLA_STRING)
-  */
- enum nft_devices_attributes {
- 	NFTA_DEVICE_UNSPEC,
- 	NFTA_DEVICE_NAME,
-+	NFTA_DEVICE_TABLE,
-+	NFTA_DEVICE_FLOWTABLE,
-+	NFTA_DEVICE_CHAIN,
-+	NFTA_DEVICE_SPEC,
- 	__NFTA_DEVICE_MAX
- };
- #define NFTA_DEVICE_MAX		(__NFTA_DEVICE_MAX - 1)
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 04712e5363fb..bd86ddf8915b 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -9662,6 +9662,64 @@ struct nf_hook_ops *nft_hook_find_ops_rcu(const struct nft_hook *hook,
- }
- EXPORT_SYMBOL_GPL(nft_hook_find_ops_rcu);
- 
-+static void
-+nf_tables_device_notify(const struct nft_table *table, int attr,
-+			const char *name, const struct nft_hook *hook,
-+			const struct net_device *dev, int event)
++source lib.sh
++
++checktool "nft --version" "run test without nft tool"
++checktool "iperf3 --version" "run test without iperf3 tool"
++
++# how many seconds to torture the kernel?
++# default to 80% of max run time but don't exceed 48s
++TEST_RUNTIME=$((${kselftest_timeout:-60} * 8 / 10))
++[[ $TEST_RUNTIME -gt 48 ]] && TEST_RUNTIME=48
++
++trap "cleanup_all_ns" EXIT
++
++setup_ns nsc nsr nss
++
++ip -net $nsc link add cr0 type veth peer name rc0 netns $nsr
++ip -net $nsc addr add 10.0.0.1/24 dev cr0
++ip -net $nsc link set cr0 up
++ip -net $nsc route add default via 10.0.0.2
++
++ip -net $nss link add sr0 type veth peer name rs0 netns $nsr
++ip -net $nss addr add 10.1.0.1/24 dev sr0
++ip -net $nss link set sr0 up
++ip -net $nss route add default via 10.1.0.2
++
++ip -net $nsr addr add 10.0.0.2/24 dev rc0
++ip -net $nsr link set rc0 up
++ip -net $nsr addr add 10.1.0.2/24 dev rs0
++ip -net $nsr link set rs0 up
++ip netns exec $nsr sysctl -q net.ipv4.ip_forward=1
++ip netns exec $nsr sysctl -q net.ipv4.conf.all.forwarding=1
++
 +{
-+	struct net *net = dev_net(dev);
-+	struct nlmsghdr *nlh;
-+	struct sk_buff *skb;
-+	u16 flags = 0;
-+
-+	if (!nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
-+		return;
-+
-+	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!skb)
-+		goto err;
-+
-+	event = event == NETDEV_REGISTER ? NFT_MSG_NEWDEV : NFT_MSG_DELDEV;
-+	event = nfnl_msg_type(NFNL_SUBSYS_NFTABLES, event);
-+	nlh = nfnl_msg_put(skb, 0, 0, event, flags, table->family,
-+			   NFNETLINK_V0, nft_base_seq(net));
-+	if (!nlh)
-+		goto err;
-+
-+	if (nla_put_string(skb, NFTA_DEVICE_TABLE, table->name) ||
-+	    nla_put_string(skb, attr, name) ||
-+	    nla_put(skb, NFTA_DEVICE_SPEC, hook->ifnamelen, hook->ifname) ||
-+	    nla_put_string(skb, NFTA_DEVICE_NAME, dev->name))
-+		goto err;
-+
-+	nlmsg_end(skb, nlh);
-+	nfnetlink_send(skb, net, 0, NFNLGRP_NFTABLES,
-+		       nlmsg_report(nlh), GFP_KERNEL);
-+	return;
-+err:
-+	if (skb)
-+		kfree_skb(skb);
-+	nfnetlink_set_err(net, 0, NFNLGRP_NFTABLES, -ENOBUFS);
++	echo "table netdev t {"
++	for ((i = 0; i < 10; i++)); do
++		cat <<-EOF
++		chain chain_rc$i {
++			type filter hook ingress device rc$i priority 0
++			counter
++		}
++		chain chain_rs$i {
++			type filter hook ingress device rs$i priority 0
++			counter
++		}
++		EOF
++	done
++	echo "}"
++	echo "table ip t {"
++	for ((i = 0; i < 10; i++)); do
++		cat <<-EOF
++		flowtable ft_${i} {
++			hook ingress priority 0
++			devices = { rc$i, rs$i }
++		}
++		EOF
++	done
++	echo "chain c {"
++	echo "type filter hook forward priority 0"
++	for ((i = 0; i < 10; i++)); do
++		echo -n "iifname rc$i oifname rs$i "
++		echo    "ip protocol tcp counter flow add @ft_${i}"
++	done
++	echo "counter"
++	echo "}"
++	echo "}"
++} | ip netns exec $nsr nft -f - || {
++	echo "SKIP: Could not load nft ruleset"
++	exit $ksft_skip
 +}
 +
-+void
-+nf_tables_chain_device_notify(const struct nft_chain *chain,
-+			      const struct nft_hook *hook,
-+			      const struct net_device *dev, int event)
-+{
-+	nf_tables_device_notify(chain->table, NFTA_DEVICE_CHAIN,
-+				chain->name, hook, dev, event);
++for ((o=0, n=1; ; o=n, n++, n %= 10)); do
++	ip -net $nsr link set rc$o name rc$n
++	ip -net $nsr link set rs$o name rs$n
++done &
++rename_loop_pid=$!
++
++while true; do ip netns exec $nsr nft list ruleset >/dev/null 2>&1; done &
++nft_list_pid=$!
++
++ip netns exec $nsr nft monitor >/dev/null &
++nft_monitor_pid=$!
++
++ip netns exec $nss iperf3 --server --daemon -1
++summary_expr='s,^\[SUM\] .* \([0-9\.]\+\) Kbits/sec .* receiver,\1,p'
++rate=$(ip netns exec $nsc iperf3 \
++	--format k -c 10.1.0.1 --time $TEST_RUNTIME \
++	--length 56 --parallel 10 -i 0 | sed -n "$summary_expr")
++
++kill $nft_list_pid
++kill $nft_monitor_pid
++kill $rename_loop_pid
++wait
++
++ip netns exec $nsr nft -f - <<EOF
++table ip t {
++	flowtable ft_wild {
++		hook ingress priority 0
++		devices = { wild* }
++	}
++}
++EOF
++if [[ $? -ne 0 ]]; then
++	echo "SKIP wildcard tests: not supported by host's nft?"
++else
++	for ((i = 0; i < 100; i++)); do
++		ip -net $nsr link add wild$i type dummy &
++	done
++	wait
++	for ((i = 80; i < 100; i++)); do
++		ip -net $nsr link del wild$i &
++	done
++	for ((i = 0; i < 80; i++)); do
++		ip -net $nsr link del wild$i &
++	done
++	wait
++	for ((i = 0; i < 100; i += 10)); do
++		(
++		for ((j = 0; j < 10; j++)); do
++			ip -net $nsr link add wild$((i + j)) type dummy
++		done
++		for ((j = 0; j < 10; j++)); do
++			ip -net $nsr link del wild$((i + j))
++		done
++		) &
++	done
++	wait
++fi
++
++[[ $(</proc/sys/kernel/tainted) -eq 0 ]] || {
++	echo "FAIL: Kernel is tainted!"
++	exit $ksft_fail
 +}
 +
-+static void
-+nf_tables_flowtable_device_notify(const struct nft_flowtable *ft,
-+				  const struct nft_hook *hook,
-+				  const struct net_device *dev, int event)
-+{
-+	nf_tables_device_notify(ft->table, NFTA_DEVICE_FLOWTABLE,
-+				ft->name, hook, dev, event);
++[[ $rate -gt 0 ]] || {
++	echo "FAIL: Zero throughput in iperf3"
++	exit $ksft_fail
 +}
 +
- static int nft_flowtable_event(unsigned long event, struct net_device *dev,
- 			       struct nft_flowtable *flowtable, bool changename)
- {
-@@ -9709,6 +9767,7 @@ static int nft_flowtable_event(unsigned long event, struct net_device *dev,
- 			list_add_tail_rcu(&ops->list, &hook->ops_list);
- 			break;
- 		}
-+		nf_tables_flowtable_device_notify(flowtable, hook, dev, event);
- 		break;
- 	}
- 	return 0;
-diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index 2a0c50f7c65d..e6d965a56a7a 100644
---- a/net/netfilter/nft_chain_filter.c
-+++ b/net/netfilter/nft_chain_filter.c
-@@ -363,6 +363,8 @@ static int nft_netdev_event(unsigned long event, struct net_device *dev,
- 			list_add_tail_rcu(&ops->list, &hook->ops_list);
- 			break;
- 		}
-+		nf_tables_chain_device_notify(&basechain->chain,
-+					      hook, dev, event);
- 	}
- 	return 0;
- }
++[[ -f /sys/kernel/debug/kmemleak && \
++   -n $(</sys/kernel/debug/kmemleak) ]] && {
++	echo "FAIL: non-empty kmemleak report"
++	exit $ksft_fail
++}
++
++exit $ksft_pass
 -- 
 2.49.0
 
