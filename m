@@ -1,277 +1,215 @@
-Return-Path: <netfilter-devel+bounces-6877-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6881-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDDFA8A646
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Apr 2025 20:03:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0A94A90808
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Apr 2025 17:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A1717FC16
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Apr 2025 18:03:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB19F17EDBC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Apr 2025 15:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5ABD21A952;
-	Tue, 15 Apr 2025 18:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488011B3930;
+	Wed, 16 Apr 2025 15:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="aDS+XGP5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N6NafiTO"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA842DFA3A
-	for <netfilter-devel@vger.kernel.org>; Tue, 15 Apr 2025 18:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B4F1DED77
+	for <netfilter-devel@vger.kernel.org>; Wed, 16 Apr 2025 15:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744740183; cv=none; b=Ae2H56/RL6Wg3BI5AOiPDYtZ6HJioHbyGkdnq16QfMsH4khxOnwFj6nUHCS6h84u4FO8pXZYMlpdQzyG4vMqiQtQalcHy0qPgotYwf4K7Cw2tViVkyyPwfQMMQmnW3y2j20Sczq4PwpzzKtSPd0ngnlBpVU3ejYg7yM4Kbkf8k0=
+	t=1744818812; cv=none; b=Bb7oLT6YpVb94vmDhTw9wGmtSNyIrZDupD6CAMeUY7q3rl4sqhMpuY2OqApIqN0tO6WUpFNGJs/fp8JIzEdCA9CwhqXqEIGCnBz/LlB/WbY0DleALvx/ac355jg5VGoxKQ9pmKiD2IdnZn4obBHMF1qNBIWDGTRaHdPr0PA8Yc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744740183; c=relaxed/simple;
-	bh=rp6ouUx7C1S7etjLAfzMnN2t7KGJ82oQol6oWVpZNsM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t4Z9zVmwihV/uBJw82A3IqqfXRuQOwQmtrvIsX+Ys5yVfRu688+PnbYovQBsQXtbUABmCEG/2a8LSFEoBredodN/VnNVwNfoBuVwVnVlUCPPKoBNsFXrYszwQkmI093ebPo7YkC3SP4Y8nUEbCZ5BKhr2I//mZzd/QMxtwXXEo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=aDS+XGP5; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	s=arc-20240116; t=1744818812; c=relaxed/simple;
+	bh=UEZx/l4ZzU95JhsSIcNTUKgjjg+USykIIj/3wAMm9i4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PWjcSd23pBIwt6+2Y2fLzCb2uGkXXoPXuVFpQevwm32wiEeC9niA5r7GB9w+zrqLZUgrlRIR8+TlDD+hbk60j5R66EETd/kc5BoeJKA1VF8/bssTTvsoMfpSYPzLjlJsh5OeGmpm1grj5yT+dG2Cnu8A/hPxI8umo6A/ZFUwnhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N6NafiTO; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744818809;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5wAEIksNTMhftEI9ksYATaXuBQvBfVXYVSLa7gcAGIc=;
+	b=N6NafiTOurrZXjZYkc8EWSWy9RPO41FUVeXvDS4PFNaArWsObu2d2DTsztrxOuDqcV27yS
+	4rvPM/8tDO1l//rNii2YOsrCYmXC285K1+mSxWKA1wblLeXrLdIri0NIdXY4AjgaFrKCcn
+	LzFv+H8mCxJ+PKH1N+l/21Jp55XN1ns=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-393-CPCqf0RINqKtm-qXrethUQ-1; Wed,
+ 16 Apr 2025 11:53:26 -0400
+X-MC-Unique: CPCqf0RINqKtm-qXrethUQ-1
+X-Mimecast-MFC-AGG-ID: CPCqf0RINqKtm-qXrethUQ_1744818805
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4ZcX7n3LRnz9x16;
-	Tue, 15 Apr 2025 18:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1744740181; bh=rp6ouUx7C1S7etjLAfzMnN2t7KGJ82oQol6oWVpZNsM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aDS+XGP5hGOlQk8RIjnvmGbTREYXf5VWjZJfL47D9rUxedDvoAfO2dcLGa2VpN9Dl
-	 NIRV3pFk0SHkMBSiksAc8I898qQo47eja18o45s7bwA6OcfgiB3cLJ1aVaD8rRoPnb
-	 /4KDV4t2RXAYZRi6+y7RYvnc19qv3Krruihaz1cA=
-X-Riseup-User-ID: 3028CC693BB20178A4CD5A7E8BF64AD9B42B48E5CA8460F535BDB896ACA8F739
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4ZcX7m56PvzJtt0;
-	Tue, 15 Apr 2025 18:03:00 +0000 (UTC)
-Message-ID: <55a55750-4eaf-4a0d-ac17-aafe865723e7@riseup.net>
-Date: Tue, 15 Apr 2025 20:02:58 +0200
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 54F94180087F;
+	Wed, 16 Apr 2025 15:53:25 +0000 (UTC)
+Received: from yiche-laptop.redhat.com (unknown [10.72.112.8])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 76EF41956095;
+	Wed, 16 Apr 2025 15:53:23 +0000 (UTC)
+From: Yi Chen <yiche@redhat.com>
+To: netfilter-devel@vger.kernel.org
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH] tests: shell: Update packetpath/flowtables
+Date: Wed, 16 Apr 2025 23:53:20 +0800
+Message-ID: <20250416155320.16390-1-yiche@redhat.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2 libnftnl] tunnel: add support to geneve
-To: netfilter-devel@vger.kernel.org
-Cc: pablo@netfilter.org
-References: <20250415175643.4060-1-ffmancera@riseup.net>
- <20250415175643.4060-2-ffmancera@riseup.net>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <ffmancera@riseup.net>
-In-Reply-To: <20250415175643.4060-2-ffmancera@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
+1. The socat receiver should not use the pipfile as output where the sender
+   reads data from, this could create an infinite data loop.
+2. Sending a packet right after establishing the connection helped uncover
+   a new bug.
+3. Optimize test log output
 
+Signed-off-by: Yi Chen <yiche@redhat.com>
+---
+ tests/shell/testcases/packetpath/flowtables | 77 +++++++++++++--------
+ 1 file changed, 50 insertions(+), 27 deletions(-)
 
-On 4/15/25 7:56 PM, Fernando Fernandez Mancera wrote:
-> Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
-> ---
->   include/libnftnl/object.h |   5 ++
->   include/obj.h             |   6 +++
->   src/obj/tunnel.c          | 103 ++++++++++++++++++++++++++++++++++++++
->   3 files changed, 114 insertions(+)
-> 
-> diff --git a/include/libnftnl/object.h b/include/libnftnl/object.h
-> index 9930355..0c695ea 100644
-> --- a/include/libnftnl/object.h
-> +++ b/include/libnftnl/object.h
-> @@ -117,9 +117,14 @@ enum {
->   	NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX,
->   	NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID,
->   	NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR,
-> +	NFTNL_OBJ_TUNNEL_GENEVE_CLASS,
-> +	NFTNL_OBJ_TUNNEL_GENEVE_TYPE,
-> +	NFTNL_OBJ_TUNNEL_GENEVE_DATA,
->   	__NFTNL_OBJ_TUNNEL_MAX,
->   };
->   
-> +#define NFTNL_TUNNEL_GENEVE_DATA_MAXLEN	126
-> +
-
-I just noticed this should be 127.. anyway, it doesn't matter much as 
-any length not divisible by 4 will be an invalid argument on kernel side 
-so 127 won't make a difference. Maybe 124 is better?
-
->   enum {
->   	NFTNL_OBJ_SECMARK_CTX	= NFTNL_OBJ_BASE,
->   	__NFTNL_OBJ_SECMARK_MAX,
-> diff --git a/include/obj.h b/include/obj.h
-> index fc78e2a..e6c1cbf 100644
-> --- a/include/obj.h
-> +++ b/include/obj.h
-> @@ -92,6 +92,12 @@ struct nftnl_obj {
->   						} v2;
->   					} u;
->   				} tun_erspan;
-> +				struct {
-> +					uint16_t	geneve_class;
-> +					uint8_t		type;
-> +					uint8_t		data[NFTNL_TUNNEL_GENEVE_DATA_MAXLEN];
-> +					uint32_t	data_len;
-> +				} tun_geneve;
->   			} u;
->   		} tunnel;
->   		struct nftnl_obj_secmark {
-> diff --git a/src/obj/tunnel.c b/src/obj/tunnel.c
-> index 8941e39..27a6acd 100644
-> --- a/src/obj/tunnel.c
-> +++ b/src/obj/tunnel.c
-> @@ -72,6 +72,16 @@ nftnl_obj_tunnel_set(struct nftnl_obj *e, uint16_t type,
->   	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR:
->   		memcpy(&tun->u.tun_erspan.u.v2.dir, data, data_len);
->   		break;
-> +	case NFTNL_OBJ_TUNNEL_GENEVE_CLASS:
-> +		memcpy(&tun->u.tun_geneve.geneve_class, data, data_len);
-> +		break;
-> +	case NFTNL_OBJ_TUNNEL_GENEVE_TYPE:
-> +		memcpy(&tun->u.tun_geneve.type, data, data_len);
-> +		break;
-> +	case NFTNL_OBJ_TUNNEL_GENEVE_DATA:
-> +		memcpy(&tun->u.tun_geneve.data, data, data_len);
-> +		tun->u.tun_geneve.data_len = data_len;
-> +		break;
->   	}
->   	return 0;
->   }
-> @@ -131,6 +141,15 @@ nftnl_obj_tunnel_get(const struct nftnl_obj *e, uint16_t type,
->   	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR:
->   		*data_len = sizeof(tun->u.tun_erspan.u.v2.dir);
->   		return &tun->u.tun_erspan.u.v2.dir;
-> +	case NFTNL_OBJ_TUNNEL_GENEVE_CLASS:
-> +		*data_len = sizeof(tun->u.tun_geneve.geneve_class);
-> +		return &tun->u.tun_geneve.geneve_class;
-> +	case NFTNL_OBJ_TUNNEL_GENEVE_TYPE:
-> +		*data_len = sizeof(tun->u.tun_geneve.type);
-> +		return &tun->u.tun_geneve.type;
-> +	case NFTNL_OBJ_TUNNEL_GENEVE_DATA:
-> +		*data_len = tun->u.tun_geneve.data_len;
-> +		return &tun->u.tun_geneve.data;
->   	}
->   	return NULL;
->   }
-> @@ -240,6 +259,21 @@ nftnl_obj_tunnel_build(struct nlmsghdr *nlh, const struct nftnl_obj *e)
->   		mnl_attr_nest_end(nlh, nest_inner);
->   		mnl_attr_nest_end(nlh, nest);
->   	}
-> +	if (e->flags & (1ULL << NFTNL_OBJ_TUNNEL_GENEVE_CLASS) &&
-> +	    e->flags & (1ULL << NFTNL_OBJ_TUNNEL_GENEVE_TYPE) &&
-> +	    e->flags & (1ULL << NFTNL_OBJ_TUNNEL_GENEVE_DATA)) {
-> +		nest = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS);
-> +		nest_inner = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS_GENEVE);
-> +		mnl_attr_put_u16(nlh, NFTA_TUNNEL_KEY_GENEVE_CLASS,
-> +				 htons(tun->u.tun_geneve.geneve_class));
-> +		mnl_attr_put_u8(nlh, NFTA_TUNNEL_KEY_GENEVE_TYPE,
-> +				tun->u.tun_geneve.type);
-> +		mnl_attr_put(nlh, NFTA_TUNNEL_KEY_GENEVE_DATA,
-> +			     tun->u.tun_geneve.data_len,
-> +			     tun->u.tun_geneve.data);
-> +		mnl_attr_nest_end(nlh, nest_inner);
-> +		mnl_attr_nest_end(nlh, nest);
-> +	}
->   }
->   
->   static int nftnl_obj_tunnel_ip_cb(const struct nlattr *attr, void *data)
-> @@ -335,6 +369,68 @@ static int nftnl_obj_tunnel_parse_ip6(struct nftnl_obj *e, struct nlattr *attr,
->   	return 0;
->   }
->   
-> +static int nftnl_obj_tunnel_geneve_cb(const struct nlattr *attr, void *data)
-> +{
-> +	const struct nlattr **tb = data;
-> +	int type = mnl_attr_get_type(attr);
-> +
-> +	if (mnl_attr_type_valid(attr, NFTA_TUNNEL_KEY_GENEVE_MAX) < 0)
-> +		return MNL_CB_OK;
-> +
-> +	switch (type) {
-> +	case NFTA_TUNNEL_KEY_GENEVE_CLASS:
-> +		if (mnl_attr_validate(attr, MNL_TYPE_U16) < 0)
-> +			abi_breakage();
-> +		break;
-> +	case NFTA_TUNNEL_KEY_GENEVE_TYPE:
-> +		if (mnl_attr_validate(attr, MNL_TYPE_U8) < 0)
-> +			abi_breakage();
-> +		break;
-> +	case NFTA_TUNNEL_KEY_GENEVE_DATA:
-> +		if (mnl_attr_validate(attr, MNL_TYPE_BINARY) < 0)
-> +			abi_breakage();
-> +		break;
-> +	}
-> +
-> +	tb[type] = attr;
-> +	return MNL_CB_OK;
-> +}
-> +
-> +static int
-> +nftnl_obj_tunnel_parse_geneve(struct nftnl_obj *e, struct nlattr *attr,
-> +			      struct nftnl_obj_tunnel *tun)
-> +{
-> +	struct nlattr *tb[NFTA_TUNNEL_KEY_GENEVE_MAX + 1] = {};
-> +
-> +	if (mnl_attr_parse_nested(attr, nftnl_obj_tunnel_geneve_cb, tb) < 0)
-> +		return -1;
-> +
-> +	if (tb[NFTA_TUNNEL_KEY_GENEVE_CLASS]) {
-> +		tun->u.tun_geneve.geneve_class =
-> +			ntohs(mnl_attr_get_u16(tb[NFTA_TUNNEL_KEY_GENEVE_CLASS]));
-> +		e->flags |= (1ULL << NFTNL_OBJ_TUNNEL_GENEVE_CLASS);
-> +	}
-> +
-> +	if (tb[NFTA_TUNNEL_KEY_GENEVE_TYPE]) {
-> +		tun->u.tun_geneve.type =
-> +			mnl_attr_get_u8(tb[NFTA_TUNNEL_KEY_GENEVE_TYPE]);
-> +		e->flags |= (1ULL << NFTNL_OBJ_TUNNEL_GENEVE_TYPE);
-> +	}
-> +
-> +	if (tb[NFTA_TUNNEL_KEY_GENEVE_DATA]) {
-> +		uint32_t len = mnl_attr_get_payload_len(tb[NFTA_TUNNEL_KEY_GENEVE_DATA]);
-> +
-> +		memcpy(tun->u.tun_geneve.data,
-> +		       mnl_attr_get_payload(tb[NFTA_TUNNEL_KEY_GENEVE_DATA]),
-> +		       len);
-> +		tun->u.tun_geneve.data_len = len;
-> +
-> +		e->flags |= (1ULL << NFTNL_OBJ_TUNNEL_GENEVE_DATA);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static int nftnl_obj_tunnel_vxlan_cb(const struct nlattr *attr, void *data)
->   {
->   	const struct nlattr **tb = data;
-> @@ -441,6 +537,7 @@ static int nftnl_obj_tunnel_opts_cb(const struct nlattr *attr, void *data)
->   	switch (type) {
->   	case NFTA_TUNNEL_KEY_OPTS_VXLAN:
->   	case NFTA_TUNNEL_KEY_OPTS_ERSPAN:
-> +	case NFTA_TUNNEL_KEY_OPTS_GENEVE:
->   		if (mnl_attr_validate(attr, MNL_TYPE_NESTED) < 0)
->   			abi_breakage();
->   		break;
-> @@ -466,6 +563,9 @@ nftnl_obj_tunnel_parse_opts(struct nftnl_obj *e, struct nlattr *attr,
->   	} else if (tb[NFTA_TUNNEL_KEY_OPTS_ERSPAN]) {
->   		err = nftnl_obj_tunnel_parse_erspan(e, tb[NFTA_TUNNEL_KEY_OPTS_ERSPAN],
->   						    tun);
-> +	} else if (tb[NFTA_TUNNEL_KEY_OPTS_GENEVE]) {
-> +		err = nftnl_obj_tunnel_parse_geneve(e, tb[NFTA_TUNNEL_KEY_OPTS_GENEVE],
-> +						    tun);
->   	}
->   
->   	return err;
-> @@ -549,6 +649,9 @@ static struct attr_policy obj_tunnel_attr_policy[__NFTNL_OBJ_TUNNEL_MAX] = {
->   	[NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX] = { .maxlen = sizeof(uint32_t) },
->   	[NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID] = { .maxlen = sizeof(uint8_t) },
->   	[NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR] = { .maxlen = sizeof(uint8_t) },
-> +	[NFTNL_OBJ_TUNNEL_GENEVE_CLASS]	= { .maxlen = sizeof(uint16_t) },
-> +	[NFTNL_OBJ_TUNNEL_GENEVE_TYPE]	= { .maxlen = sizeof(uint8_t) },
-> +	[NFTNL_OBJ_TUNNEL_GENEVE_DATA]	= { .maxlen = NFTNL_TUNNEL_GENEVE_DATA_MAXLEN},
->   };
->   
->   struct obj_ops obj_ops_tunnel = {
+diff --git a/tests/shell/testcases/packetpath/flowtables b/tests/shell/testcases/packetpath/flowtables
+index d4e0a5bd..b68c5dd4 100755
+--- a/tests/shell/testcases/packetpath/flowtables
++++ b/tests/shell/testcases/packetpath/flowtables
+@@ -3,8 +3,6 @@
+ # NFT_TEST_REQUIRES(NFT_TEST_HAVE_socat)
+ # NFT_TEST_SKIP(NFT_TEST_SKIP_slow)
+ 
+-set -x
+-
+ rnd=$(mktemp -u XXXXXXXX)
+ R="flowtable-router-$rnd"
+ C="flowtable-client-$rnd"
+@@ -17,9 +15,33 @@ cleanup()
+ 		ip netns del $i
+ 	done
+ }
+-
+ trap cleanup EXIT
+ 
++assert_pass()
++{
++	local ret=$?
++	if [ $ret != 0 ]
++	then
++		echo "FAIL: ${@}"
++		ip netns exec $R cat /proc/net/nf_conntrack
++		exit 1
++	else
++		echo "PASS: ${@}"
++	fi
++}
++assert_fail()
++{
++	local ret=$?
++	if [ $ret == 0 ]
++	then
++		echo "FAIL: ${@}"
++		ip netns exec $R cat /proc/net/nf_conntrack
++		exit 1
++	else
++		echo "PASS: ${@}"
++	fi
++}
++
+ ip netns add $R
+ ip netns add $S
+ ip netns add $C
+@@ -35,14 +57,15 @@ ip netns exec $S ip -6 addr add 2001:db8:ffff:22::1/64 dev s_r
+ ip netns exec $C ip -6 addr add 2001:db8:ffff:21::2/64 dev c_r
+ ip netns exec $R ip -6 addr add 2001:db8:ffff:22::fffe/64 dev r_s
+ ip netns exec $R ip -6 addr add 2001:db8:ffff:21::fffe/64 dev r_c
+-ip netns exec $R sysctl -w net.ipv6.conf.all.forwarding=1
++ip netns exec $R sysctl -wq net.ipv6.conf.all.forwarding=1
+ ip netns exec $C ip route add 2001:db8:ffff:22::/64 via 2001:db8:ffff:21::fffe dev c_r
+ ip netns exec $S ip route add 2001:db8:ffff:21::/64 via 2001:db8:ffff:22::fffe dev s_r
+ ip netns exec $S ethtool -K s_r tso off
+ ip netns exec $C ethtool -K c_r tso off
+-
+ sleep 3
+-ip netns exec $C ping -6 2001:db8:ffff:22::1 -c1 || exit 1
++
++ip netns exec $C ping -q -6 2001:db8:ffff:22::1 -c1
++assert_pass "topo initialization"
+ 
+ ip netns exec $R nft -f - <<EOF
+ table ip6 filter {
+@@ -61,6 +84,7 @@ table ip6 filter {
+         }
+ }
+ EOF
++assert_pass "apply nft ruleset"
+ 
+ if [ ! -r /proc/net/nf_conntrack ]
+ then
+@@ -68,32 +92,31 @@ then
+ 	exit 77
+ fi
+ 
+-ip netns exec $R nft list ruleset
+-ip netns exec $R sysctl -w net.netfilter.nf_flowtable_tcp_timeout=5 || {
+-	echo "E: set net.netfilter.nf_flowtable_tcp_timeout fail, skipping" >&2
+-        exit 77
+-}
+-ip netns exec $R sysctl -w net.netfilter.nf_conntrack_tcp_timeout_established=86400 || {
+-        echo "E: set net.netfilter.nf_conntrack_tcp_timeout_established fail, skipping" >&2
+-        exit 77
++ip netns exec $R sysctl -wq net.netfilter.nf_flowtable_tcp_timeout=5
++assert_pass "set net.netfilter.nf_flowtable_tcp_timeout=5"
+ 
+-}
++ip netns exec $R sysctl -wq net.netfilter.nf_conntrack_tcp_timeout_established=86400
++assert_pass "set net.netfilter.nf_conntrack_tcp_timeout_established=86400"
+ 
+ # A trick to control the timing to send a packet
+-ip netns exec $S socat TCP6-LISTEN:10001 GOPEN:/tmp/pipefile-$rnd,ignoreeof &
++ip netns exec $S socat TCP6-LISTEN:10001 GOPEN:/tmp/socat-$rnd,ignoreeof &
+ sleep 1
+ ip netns exec $C socat -b 2048 PIPE:/tmp/pipefile-$rnd 'TCP:[2001:db8:ffff:22::1]:10001' &
+ sleep 1
+-ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   || { echo "check [OFFLOAD] tag (failed)"; exit 1; }
+-ip netns exec $R cat /proc/net/nf_conntrack
++ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd        ; assert_pass "send a packet"
++ip netns exec $R grep -q 'OFFLOAD' /proc/net/nf_conntrack     ; assert_pass "check [OFFLOAD] tag"
+ sleep 6
+-ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   && { echo "CT OFFLOAD timeout, fail back to classical path (failed)"; exit 1; }
+-ip netns exec $R grep '8639[0-9]' /proc/net/nf_conntrack || { echo "check nf_conntrack_tcp_timeout_established (failed)"; exit 1; }
+-ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd
+-ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   || { echo "traffic seen, back to OFFLOAD path (failed)"; exit 1; }
+-ip netns exec $C sleep 3
+-ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd
+-ip netns exec $C sleep 3
+-ip netns exec $R grep 'OFFLOAD' /proc/net/nf_conntrack   || { echo "Traffic seen in 5s (nf_flowtable_tcp_timeout), so stay in OFFLOAD (failed)"; exit 1; }
+-
++ip netns exec $R grep -q 'OFFLOAD' /proc/net/nf_conntrack     ; assert_fail "CT OFFLOAD timeout, back to the classical path"
++ip netns exec $R grep -q '863[89][0-9]' /proc/net/nf_conntrack; assert_pass "check timeout adopt nf_conntrack_tcp_timeout_established"
++ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd        ; assert_pass "send a packet"
++ip netns exec $R grep -q 'OFFLOAD' /proc/net/nf_conntrack     ; assert_pass "packet detected, back to the OFFLOAD path"
++
++i=3; while ((i--))
++do
++	sleep 3
++	ip netns exec $C echo "send sth" >> /tmp/pipefile-$rnd; assert_pass "send a packet"
++	sleep 3
++	ip netns exec $R grep -q 'OFFLOAD' /proc/net/nf_conntrack
++	assert_pass "Traffic seen in 5s (nf_flowtable_tcp_timeout), should stay in OFFLOAD"
++done
+ exit 0
+-- 
+2.49.0
 
 
