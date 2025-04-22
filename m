@@ -1,120 +1,165 @@
-Return-Path: <netfilter-devel+bounces-6921-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6923-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1796A9762D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Apr 2025 21:53:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4518A97734
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Apr 2025 22:25:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A5797A84D4
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Apr 2025 19:52:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFDD7462109
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Apr 2025 20:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9C229898F;
-	Tue, 22 Apr 2025 19:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A9D2C2ADD;
+	Tue, 22 Apr 2025 20:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="u3/UwnWJ";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="JzluCHEx"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Cvh5DzyY";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="WLWG5ISL"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03F92980D3
-	for <netfilter-devel@vger.kernel.org>; Tue, 22 Apr 2025 19:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425562C108E;
+	Tue, 22 Apr 2025 20:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745351594; cv=none; b=WWX5EwyRsfgMnvt/yuvAhPzWVCzWIujnbyu2SZH2Em7BSonCncf2mPetqRgU9BSCof4zmrQ1DIhcyQjga43A1CwW0MNs9HkvTCxFRdZlRh//6FEp/5+YlEwbFe7enonV9HOYwU15bCTOCm9dbKsIEQ/OUMqVE0ZPYpwe4f8FtZ4=
+	t=1745353437; cv=none; b=o+Xb8z3NllAMgUMGKft7zXrNiWEkg9Z/IAFB7JgvHmYEYEQzob24USEY+mJLXsxEjJa2tYxZzE2R8HrsGD6qDtiQH7soiVfqB2hV5F9eajaDGgZ2mkdBA6dga/DFDovGl9Sm5lIE6TacRYs9VpfG18Y4lvneg6W2gDvwYNRUoJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745351594; c=relaxed/simple;
-	bh=HHBWUoqLwLfzbiD/G5qb6Ve89T5kcVj3f34yReTGNtg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Dw2H7lzV1wTxENjk5yPwcfJB/a489T8EUgx4ZVYdas9vFLI1cZU0GjugiHYBGpv08d+Gb5iXqLve4+7w/B/8EGhFZeOE3e1bsw07HYCciU2Qtg68rO/1c9IvEPhsvkFtpZVdjsOUKhFjYKxJHMjgUg+/qXXMv5qOZSH7kookP6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=u3/UwnWJ; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=JzluCHEx; arc=none smtp.client-ip=217.70.190.124
+	s=arc-20240116; t=1745353437; c=relaxed/simple;
+	bh=cfqlclV7rlb58wBm3clmCBE6P26650KIuUuZUS1/9IY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=QYqnYAtqRFtEsaKqg/P9JsDBoa3xsSpNW/pqOlguYGEr8wrYe+LatH9ro3fsrHtfLxynsjqNKjPiIKijN/HITPv4NnUncDUBmJDj11tZAj8dDpxIhnTZGrRAHmKUN+cejVWRcF6OmZ9Dvj2NMBF5ZIvzkv9k5EPzjLuyxN/cb0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Cvh5DzyY; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=WLWG5ISL; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 2A76860926; Tue, 22 Apr 2025 21:53:02 +0200 (CEST)
+	id 98B24609B3; Tue, 22 Apr 2025 22:23:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1745351582;
-	bh=IBit/rYpegMxa+gLX0mMx4udsePlNTGidd00wy3tdJw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u3/UwnWJglxeOH3iJnArSR21V1eeNEmAYppH/m9J3x8I7rToCgviRfe4O9jW970e7
-	 OiipBWnz8sxGWpSP0by9RZ8+7AfxRSSD6Ln8WeiL5CPLuo4KJhyDNvNWTQjB+8O0PR
-	 M+VdKgVexUKv2PKWACyLrlXG/MeEuH4piXT04WRtpljYoSRW7+eyf5KFzc/p/KCloh
-	 ogPmUuIeS6p91djV7Tzzbk2MzHNNeJlq1u9OOzPhlbu+KItM3UkB1J8nhe2CAnsohO
-	 2Q57AzHbhg8V8S5HWBwbQkp1fWIYzPhyf6k4F+xIhUjx6uF26734efL0qJULMJs28F
-	 2msDQTlkHr4/g==
+	s=2025; t=1745353432;
+	bh=RMDD+4XAInnUNqQ2tUcnfN0YgiUr0xjTvaHXu9jLJcw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Cvh5DzyY8Q2D+WB/V7GxU03s2YCcafm/gxuyslCg/nn34f0VZK1KADIa8n5Fqskdw
+	 OSuML2+QnZIv2UhxcLyMHW4ZEvNqHpSC6UMJ6JLYk5X6u2bAzwzKFEGqdX75XCvA9o
+	 UUmubbPeKFpRxX4O8S1V/udn+AA+B3P7dIzdpnvsoaiuoqdjewjN3a7vKEtOx4IXRl
+	 bICW9pEi/CcoVuFuVkgSHQuYWhzF9scV4v5pYDiHCuT1QIaBJVWO/u7yrOy8tD4Aun
+	 5Jcj4f0D1na+qW+1+7oQJY+piWGTTkUMVuUniwW5eCFjAZYviJ6XaCG8oIYMGFs+GF
+	 sZAusTbxptKYw==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 85D4960915;
-	Tue, 22 Apr 2025 21:53:01 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 1048B609AF;
+	Tue, 22 Apr 2025 22:23:47 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1745351581;
-	bh=IBit/rYpegMxa+gLX0mMx4udsePlNTGidd00wy3tdJw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JzluCHExF0qQM/qCPPYEIuxz32euvI9+2rLNu3p3KEVlDYAzaELzluO60Gf8CLn5A
-	 hiIHXK00kv8YQ/gsTpE1HVwaXhyTnMJfRBOHLViYoXPzfvSaS33JfCeKn5WPuEl0/N
-	 Tjf5KUheiJYCJk8aN2FS3sD+OvP2MuRv5CVgyZWar+zD/rJ8Faia4JBCyt6sfZbFpi
-	 nCprXVDyAiJ8iLTjgBBym7ox/8H9TDn8bgluv/IsmOjdnHP5qAn+iXlNzXbKDhO7qk
-	 RsLgpJyf3yY6TmcwVa1QXHm+prVc4h1uhE2Xu6y3hspz1ES/XPbCbYIWIVoWMYhcRH
-	 4LybGJ9dFrSOA==
+	s=2025; t=1745353427;
+	bh=RMDD+4XAInnUNqQ2tUcnfN0YgiUr0xjTvaHXu9jLJcw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WLWG5ISLtVJPQdVYIc4wwG0q4hGxt/DMe090EdgGk3rGUp0LkfV7u4EO3QhIOGrBH
+	 CW54q2GYjN6e3hledMjb87a5FhP4PoviTk7U8W8AbkfRY0pd5/8Vo2LPgmbaSdR1bv
+	 rO22+G6wNGats/UIc4TlRtjJBu6z2cPw7ozd+KovFjKZDkwgySWV2fSvgBRQQ7S8UX
+	 lJs1Rb5bzLKCoDdiuXZL7hAZlPve+SRWw0v+G+qMPnQ3LEd/L1BmKCWUbnJfHb0cVE
+	 oh/h1GnSxK8uA6Nf962IuzdDP7tIQlBOiyGMl01goqahORDtWFEYP1j3G+/5fKVXr2
+	 moDO883ulxi9g==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: sbrivio@redhat.com
-Subject: [PATCH nf-next,v2 2/2] netfilter: nft_set_pipapo: clamp maximum map bucket size to INT_MAX
-Date: Tue, 22 Apr 2025 21:52:44 +0200
-Message-Id: <20250422195244.269803-2-pablo@netfilter.org>
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org
+Subject: [PATCH net-next 0/7] Netfilter updates for net-next
+Date: Tue, 22 Apr 2025 22:23:20 +0200
+Message-Id: <20250422202327.271536-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20250422195244.269803-1-pablo@netfilter.org>
-References: <20250422195244.269803-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Otherwise, it is possible to hit WARN_ON_ONCE in __kvmalloc_node_noprof()
-when resizing hashtable because __GFP_NOWARN is unset.
+Hi,
 
-Similar to:
+The following batch contains Netfilter updates for net-next:
 
-  b541ba7d1f5a ("netfilter: conntrack: clamp maximum hashtable size to INT_MAX")
+1) Replace msecs_to_jiffies() by secs_to_jiffies(), from Easwar Hariharan.
 
-Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: no changes.
+2) Allow to compile xt_cgroup with cgroupsv2 support only, from Michal Koutny.
 
- net/netfilter/nft_set_pipapo.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+3) Prepare for sock_cgroup_classid() removal by wrapping it around
+   ifdef, also from Michal Koutny.
 
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index 0529e4ef7520..c5855069bdab 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -663,6 +663,9 @@ static int pipapo_realloc_mt(struct nft_pipapo_field *f,
- 	    check_add_overflow(rules, extra, &rules_alloc))
- 		return -EOVERFLOW;
- 
-+	if (rules_alloc > (INT_MAX / sizeof(*new_mt)))
-+		return -ENOMEM;
-+
- 	new_mt = kvmalloc_array(rules_alloc, sizeof(*new_mt), GFP_KERNEL_ACCOUNT);
- 	if (!new_mt)
- 		return -ENOMEM;
-@@ -1499,6 +1502,9 @@ static struct nft_pipapo_match *pipapo_clone(struct nft_pipapo_match *old)
- 		       src->groups * NFT_PIPAPO_BUCKETS(src->bb));
- 
- 		if (src->rules > 0) {
-+			if (src->rules_alloc > (INT_MAX / sizeof(*src->mt)))
-+				goto out_mt;
-+
- 			dst->mt = kvmalloc_array(src->rules_alloc,
- 						 sizeof(*src->mt),
- 						 GFP_KERNEL_ACCOUNT);
--- 
-2.30.2
+4) Disable xtables legacy with PREEMPT_RT, from Sebastian Andrzej Siewior
+   and Florian Westphal.
 
+5) Remove redundant pointer fetch on conntrack template, from Xuanqiang Luo.
+
+6) Re-format one block in the tproxy documentation for consistency,
+   from Chen Linxuan.
+
+7) Expose set element count and type via netlink attributes,
+   from Florian Westphal.
+
+This is an initial batch with updates, more updates coming soon.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-25-04-22
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 45bd443bfd8697a7da308c16c3e75e2bb353b3d1:
+
+  net: 802: Remove unused p8022 code (2025-04-22 07:04:02 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-25-04-22
+
+for you to fetch changes up to 2cbe307c60463dc47bf590bc93709398c4c4b3bb:
+
+  netfilter: nf_tables: export set count and backend name to userspace (2025-04-22 22:17:07 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 25-04-22
+
+----------------------------------------------------------------
+Chen Linxuan (1):
+      docs: tproxy: fix formatting for nft code block
+
+Easwar Hariharan (1):
+      netfilter: xt_IDLETIMER: convert timeouts to secs_to_jiffies()
+
+Florian Westphal (1):
+      netfilter: nf_tables: export set count and backend name to userspace
+
+Michal Koutný (2):
+      netfilter: xt_cgroup: Make it independent from net_cls
+      net: cgroup: Guard users of sock_cgroup_classid()
+
+Pablo Neira Ayuso (1):
+      netfilter: Exclude LEGACY TABLES on PREEMPT_RT.
+
+Xuanqiang Luo (1):
+      netfilter: conntrack: Remove redundant NFCT_ALIGN call
+
+ Documentation/networking/tproxy.rst      |  4 ++--
+ include/uapi/linux/netfilter/nf_tables.h |  4 ++++
+ net/Kconfig                              | 10 ++++++++++
+ net/bridge/netfilter/Kconfig             |  8 ++++----
+ net/ipv4/inet_diag.c                     |  2 +-
+ net/ipv4/netfilter/Kconfig               | 15 ++++++++-------
+ net/ipv6/netfilter/Kconfig               | 13 +++++++------
+ net/netfilter/Kconfig                    |  2 +-
+ net/netfilter/nf_conntrack_core.c        |  4 +---
+ net/netfilter/nf_tables_api.c            | 26 ++++++++++++++++++++++++++
+ net/netfilter/x_tables.c                 | 16 +++++++++++-----
+ net/netfilter/xt_IDLETIMER.c             | 12 ++++++------
+ net/netfilter/xt_TCPOPTSTRIP.c           |  4 ++--
+ net/netfilter/xt_cgroup.c                | 26 ++++++++++++++++++++++++++
+ net/netfilter/xt_mark.c                  |  2 +-
+ 15 files changed, 110 insertions(+), 38 deletions(-)
 
