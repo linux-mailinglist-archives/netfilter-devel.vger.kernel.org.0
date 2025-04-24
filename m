@@ -1,63 +1,63 @@
-Return-Path: <netfilter-devel+bounces-6961-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-6963-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29794A9B9B1
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Apr 2025 23:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 025FEA9B9B7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Apr 2025 23:17:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B7441B68DA9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Apr 2025 21:16:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A35518949ED
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Apr 2025 21:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6958A2918EF;
-	Thu, 24 Apr 2025 21:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53A1293478;
+	Thu, 24 Apr 2025 21:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="lr9y4a25";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="gRoyyvSO"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="PHfitAbG";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="JWa95ESd"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CD5291176;
-	Thu, 24 Apr 2025 21:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261CE2918DC;
+	Thu, 24 Apr 2025 21:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745529326; cv=none; b=U4BEtx7V6WV1pz08K/NErlmFKUMRM+hL1lcxNEjmcj4aL4oi7tXta/cPtxfHNZXe74oe+ZAcSXGrbyzZuyJC20GuRy8vT3KTAVUzg+v8AC7LOChFK8sMYsDaGYX1V+mAoCjKtC9kQkcUyPdogPho775KmYtAhJU0YFiHVpWkqbc=
+	t=1745529327; cv=none; b=XCOInMy0h5WEQ0Zd7+mW+3I4mpbJSxU5cJaWiy/c41gIVvkEdXYCiWkK5qSnZjp0k7McuD6mvXqc1S0HwG2dNRmxKrqA+UL3Y8iwA6CDKu9FeO7TAFrhNLD9Qegm09iDJW9D6iQ9BJs8TPPUPkOuhFeiad38hYeg28gUxDOizHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745529326; c=relaxed/simple;
-	bh=Obpy6Gk9BM7Cii4f8ARMhEnscTfegUK0L4kYnsY1s94=;
+	s=arc-20240116; t=1745529327; c=relaxed/simple;
+	bh=xjQUqdHomWBGV+L9OFBYKbZJrG26ub27QJgU0MZfnfo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WVsqCJwVy39noLDGpuzBJ6ZX5cKBNHqfKCzoLihMLw6aswKEzZt9iAF6lLO6CUNyP4e2s0KehxVI5Od6q6bKUDl5X1Dd6r3OeWQh+GmvVkb2VNMGO+W10uZb5N5Cpygr3n+tCgVNo8uEjV9H027jnGNrvA/VbybcsSmHP1+5zi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=lr9y4a25; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=gRoyyvSO; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=lD4XzBaPubU3jY56jAWNHfwaVMt5yyf2jipzEPvwtZ/A3rWJkSNQFNofPXiARgtO/SVeJXEILa4h14rO8NvzSUOdCO5dsB+LdYHY1/CQPMkG2ldgUpMwtj4EoSOoGn5wzpzSQ2UEDE2r9nykP40XzZ8cg1Rp2HT/RqeHdXaNwPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=PHfitAbG; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=JWa95ESd; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 5155F60716; Thu, 24 Apr 2025 23:15:23 +0200 (CEST)
+	id 876056071D; Thu, 24 Apr 2025 23:15:24 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1745529323;
-	bh=/EEmQF7EDJiKm8KlBu3EyGVNLb/l73f/WI9g4RoKC6g=;
+	s=2025; t=1745529324;
+	bh=Kx0D9pn3i6pERyxfuCLZBf3n2d0K6uejemARtibfXZ4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lr9y4a25XICKQfSAhLeyryYnrUKxVv0xeUsZH0SHTW5WVzQltVTh+hJpR1A/0tg/0
-	 1+lYEbvvFTwWpP/5ljDjd3oZbOE72Y8kEQZ6Apok2U0YxYK82LakKblYTWZgDSWYCW
-	 lYXnnQPykxO5ksDmYbC3lPAWgnLt0nwqZisAHE7kxULOE9PT1OyJ4bHjxvvewzSm6Z
-	 xwGIi39pq6uC18CdatLBsx+2w+z2bKm+n170f+CdCovtvTbrVwuS12wQyLVY7GUNF5
-	 RX4mh42QcFNv/VCj9NYtOemS9tXP+ZLO/E/RCstaO1SwqLGd2TNN95Q+9qy0Vz7Siv
-	 cCcSBmGKrjQ0w==
+	b=PHfitAbGIH7ELemg0+ilYGUgFv1C2wmHgFUT3HXTki3X+KClSd8GWGAoAwFWTNkR7
+	 9u1nDLVi3WvDXpkKoUoyzPUdPMepMExLcr5lx4ERPtUoX92B15s68/zKr+HfAYWwKX
+	 WkC7xGCuEyQ/LJhtZp2MRCt0bb1AbaLe/C5vpmRSM4gzgqVswWcCaom9v7sxhu8K9u
+	 Qbyolvx5183/TR4ufD9BApPSO36fFffm8l2LA+Ig+F4MGcUm3ASkvyHFyYZdTbyACl
+	 DlCwzJvRDPys+Jz7tiDkL0wfByqJylZW9ERL3QIYRxLXscxo9rQLLqtpWew7F6KaM4
+	 +4gUmBowfh5Jw==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 0735060717;
-	Thu, 24 Apr 2025 23:15:14 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id BA06B60724;
+	Thu, 24 Apr 2025 23:15:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1745529315;
-	bh=/EEmQF7EDJiKm8KlBu3EyGVNLb/l73f/WI9g4RoKC6g=;
+	s=2025; t=1745529316;
+	bh=Kx0D9pn3i6pERyxfuCLZBf3n2d0K6uejemARtibfXZ4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gRoyyvSOfcQdYC8P15LQBCQdw9eUs+8a8S6hUGoKBkl1ne3Nd7LbvtlU/hAZ0Opw4
-	 HiIFynaIxNkL/K4MIxkhZ0SX9/xJj2UMo66WHwjSkE/lzzkC09H+vBIZbILeoK13qr
-	 pXU+vdGzplAi80gckINkyuRPTrKvSFGbCFMYkSeiSUfle6JLeqrXIjLKQTfqOKmii9
-	 wcP4HK5Gz+tdXLAPeKMmVkkkK2+Irc5jSNkZqX9WwPhxvoFGus7I32R+czATXNGBC4
-	 kLRiNf0oCAuJSc7Be96ycETvqQTEJSH0YR6ul1A3/o1h/vM/lmBFVZkX0FS5AEvgj2
-	 ymFG2DOXexTbw==
+	b=JWa95ESdsf95uGduKd0R6/j5FoeiFb7L++MmuXmhNC1bkcY56BI5cTUYc/HSU5GEl
+	 MwTBVpeDuD4LXcyfzEbAJ7cUa1YF55A0G842cNBnvpZc2H0vBZFYh+Y9WIyxUYy2k2
+	 bcJ+IRS17W3XKDEq0FBqzJcEKoSLksQFfNSazVAOaGAUB4n+Nn5jgLR0WpEafgjVAv
+	 M2o+e8w1nYOuJQI6lYBPYNp0Ow2bkNvHUMHSvd4sbWF53vaGZ/dgPt3TeKoKESQBAQ
+	 NPO5bLJDYZIGnN+n4z3XEgF5dMVdCuDiMqrfUkQ4wVLlHt6KTaSrFQy8QRQMghNWS3
+	 OBqPv+dAT1upQ==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -67,9 +67,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 6/7] docs: tproxy: fix formatting for nft code block
-Date: Thu, 24 Apr 2025 23:14:54 +0200
-Message-Id: <20250424211455.242482-7-pablo@netfilter.org>
+Subject: [PATCH net-next 7/7] netfilter: nf_tables: export set count and backend name to userspace
+Date: Thu, 24 Apr 2025 23:14:55 +0200
+Message-Id: <20250424211455.242482-8-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250424211455.242482-1-pablo@netfilter.org>
 References: <20250424211455.242482-1-pablo@netfilter.org>
@@ -81,35 +81,95 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Chen Linxuan <chenlinxuan@uniontech.com>
+From: Florian Westphal <fw@strlen.de>
 
-The nft command snippet for redirecting traffic isn't formatted
-in a literal code block like the rest of snippets.
-Fix the formatting inconsistency.
+nf_tables picks a suitable set backend implementation (bitmap, hash,
+rbtree..) based on the userspace requirements.
 
-Signed-off-by: Chen Linxuan <chenlinxuan@uniontech.com>
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Figuring out the chosen backend requires information about the set flags
+and the kernel version.  Export this to userspace so nft can include this
+information in '--debug=netlink' output.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- Documentation/networking/tproxy.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h |  4 ++++
+ net/netfilter/nf_tables_api.c            | 26 ++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/Documentation/networking/tproxy.rst b/Documentation/networking/tproxy.rst
-index 7f7c1ff6f159..75e4990cc3db 100644
---- a/Documentation/networking/tproxy.rst
-+++ b/Documentation/networking/tproxy.rst
-@@ -69,9 +69,9 @@ add rules like this to the iptables ruleset above::
-     # iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY \
-       --tproxy-mark 0x1/0x1 --on-port 50080
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 49c944e78463..7d6bc19a0153 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -394,6 +394,8 @@ enum nft_set_field_attributes {
+  * @NFTA_SET_HANDLE: set handle (NLA_U64)
+  * @NFTA_SET_EXPR: set expression (NLA_NESTED: nft_expr_attributes)
+  * @NFTA_SET_EXPRESSIONS: list of expressions (NLA_NESTED: nft_list_attributes)
++ * @NFTA_SET_TYPE: set backend type (NLA_STRING)
++ * @NFTA_SET_COUNT: number of set elements (NLA_U32)
+  */
+ enum nft_set_attributes {
+ 	NFTA_SET_UNSPEC,
+@@ -415,6 +417,8 @@ enum nft_set_attributes {
+ 	NFTA_SET_HANDLE,
+ 	NFTA_SET_EXPR,
+ 	NFTA_SET_EXPRESSIONS,
++	NFTA_SET_TYPE,
++	NFTA_SET_COUNT,
+ 	__NFTA_SET_MAX
+ };
+ #define NFTA_SET_MAX		(__NFTA_SET_MAX - 1)
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index a133e1c175ce..b28f6730e26d 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -4569,6 +4569,8 @@ static const struct nla_policy nft_set_policy[NFTA_SET_MAX + 1] = {
+ 	[NFTA_SET_HANDLE]		= { .type = NLA_U64 },
+ 	[NFTA_SET_EXPR]			= { .type = NLA_NESTED },
+ 	[NFTA_SET_EXPRESSIONS]		= NLA_POLICY_NESTED_ARRAY(nft_expr_policy),
++	[NFTA_SET_TYPE]			= { .type = NLA_REJECT },
++	[NFTA_SET_COUNT]		= { .type = NLA_REJECT },
+ };
  
--Or the following rule to nft:
-+Or the following rule to nft::
+ static const struct nla_policy nft_concat_policy[NFTA_SET_FIELD_MAX + 1] = {
+@@ -4763,6 +4765,27 @@ static u32 nft_set_userspace_size(const struct nft_set_ops *ops, u32 size)
+ 	return size;
+ }
  
--# nft add rule filter divert tcp dport 80 tproxy to :50080 meta mark set 1 accept
-+    # nft add rule filter divert tcp dport 80 tproxy to :50080 meta mark set 1 accept
++static noinline_for_stack int
++nf_tables_fill_set_info(struct sk_buff *skb, const struct nft_set *set)
++{
++	unsigned int nelems;
++	char str[40];
++	int ret;
++
++	ret = snprintf(str, sizeof(str), "%ps", set->ops);
++
++	/* Not expected to happen and harmless: NFTA_SET_TYPE is dumped
++	 * to userspace purely for informational/debug purposes.
++	 */
++	DEBUG_NET_WARN_ON_ONCE(ret >= sizeof(str));
++
++	if (nla_put_string(skb, NFTA_SET_TYPE, str))
++		return -EMSGSIZE;
++
++	nelems = nft_set_userspace_size(set->ops, atomic_read(&set->nelems));
++	return nla_put_be32(skb, NFTA_SET_COUNT, htonl(nelems));
++}
++
+ static int nf_tables_fill_set(struct sk_buff *skb, const struct nft_ctx *ctx,
+ 			      const struct nft_set *set, u16 event, u16 flags)
+ {
+@@ -4843,6 +4866,9 @@ static int nf_tables_fill_set(struct sk_buff *skb, const struct nft_ctx *ctx,
  
- Note that for this to work you'll have to modify the proxy to enable (SOL_IP,
- IP_TRANSPARENT) for the listening socket.
+ 	nla_nest_end(skb, nest);
+ 
++	if (nf_tables_fill_set_info(skb, set))
++		goto nla_put_failure;
++
+ 	if (set->num_exprs == 1) {
+ 		nest = nla_nest_start_noflag(skb, NFTA_SET_EXPR);
+ 		if (nf_tables_fill_expr_info(skb, set->exprs[0], false) < 0)
 -- 
 2.30.2
 
