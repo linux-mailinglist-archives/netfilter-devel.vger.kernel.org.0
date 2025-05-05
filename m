@@ -1,63 +1,63 @@
-Return-Path: <netfilter-devel+bounces-7016-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7020-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C43AAB7DD
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 08:21:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CAABAAB7D3
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 08:20:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C19A5464AEA
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 06:19:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20B5C7B2B08
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 06:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5656A29DB88;
-	Tue,  6 May 2025 01:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B60E35464F;
+	Tue,  6 May 2025 01:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="NcQOIkYN";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="nkzVsfmr"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="KVeTctyf";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Rhlcb+2T"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9321F30C1E0;
-	Mon,  5 May 2025 23:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A31030C1F1;
+	Mon,  5 May 2025 23:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746488528; cv=none; b=Dql651J8IkHU8F5G+rA1N8xub70FkC7JxYFtrjqzRvjdqxX2nZcfi0SSIssMK12dPGYNyv8XQXFo1K9ytcFjgFjzWgcb/blF/3X4ay8qAcXLJYTiy2hlN+P+l+WuTZrHiWBAUruj2tuE08qHYnD7fUxFixOTXsAj8vkYW8B8Fro=
+	t=1746488531; cv=none; b=r/EzE221rFTXSrwhEYpyxjabB0s038wJpY/Kki3JrdtRLKHXbh3+tjr2BsFNOrd2W936ct8cY4sBxddlTvikvp0xN/mOhGj1Mcse6KzIHB5MlT/OE+ZSC0bDa1LjAAE9TZrKiZgxdZJe2yG///PG8bPg/rREzXisODluwjPEc4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746488528; c=relaxed/simple;
-	bh=ZH1ZzqA69lXuCKWl8Ws0pw2Vc0tcQ8gsneoCOXXbufc=;
+	s=arc-20240116; t=1746488531; c=relaxed/simple;
+	bh=kdd3mQVBwB7++tB5TY+m3Ktr1QzFHuWr1UG2utClnjI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=suTteaCpI+v9m244yqcoohM+9hWbZ6uZfdpog60f3wFvjSgISk2MWXCLdrJMX8LA1REeZ6Lnu7dAa3oFiIkNDBKAmKCz2a+kwSLR2xgeDNZ12KasSFjrI1ppaAWuEcu4NVu3uQe6jirMBSSfEaeYaZUXsNcArs02GLOseNRPugw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=NcQOIkYN; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nkzVsfmr; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=IYwKwczvkXd1uR1njgOFNTvoBt6bbRRi2f7i1+vTouD6bVy+TQmBJtByhoapeU9AE1ArGIT4PeUnmS8uEFK5NNbKt7a3SLFrPIu9a8Xg9S/dtKOFVxY6aGITUMX0/pr/pV+c5YaxbZwJkzgWc/UMML3Zqkq79TAZYNJ3b72JMiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=KVeTctyf; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Rhlcb+2T; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 11E4B6065E; Tue,  6 May 2025 01:42:05 +0200 (CEST)
+	id 09E6C6065C; Tue,  6 May 2025 01:42:07 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1746488525;
-	bh=X6lkzL4xDqlKfS4sQJUKU3QpUlZ3xfXhNKhaCPkcJBQ=;
+	s=2025; t=1746488527;
+	bh=/dUMYkJorBYhwIl8gqxS3G3TNKe7omnKRnv1Di8RrCM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NcQOIkYNsmfqPD+oz2AVPTkfHoOL5f8/mOUrH/6c06sUW/NDHlpbwvSy0dvCre4dO
-	 9DmvfQgTKRfF25dYovYyHUyp+ifTOqPtQZCzYxdCOXoamEeEUyJyTRiS4jBkObNj/p
-	 Mdh9CBWtkD0ZZ84ZaipAki/p+sRNN8P9xtOCitSbcHfFhT83XWqNLldkLa214+f64S
-	 +WLsVphsw36KpBuoioYYwOYPaFMUIyfb+EbXMhSZn7ELjeaAyqbHXP7lRzG0XC7YgG
-	 qivf3r36ftE01ErLe/6anRJ7vvAQo89yvWT11yafgGfCFbyAe9jiiFT1rWhWxPbdD9
-	 sZcBZMVKzoQMw==
+	b=KVeTctyfIOtAmpE0E7QCkDhzSeFajNVZ532TtbstqRA/YvWEEgXv+c77vHrNAZkyb
+	 Zdv2WRI2xTEkH4q85dEG5KEgy2jVuzk9x8uLEiRI1h1D6T91zwHAL2+00dN5YJkkx6
+	 dqFgrzUijDGeNnFHSUoV8W3a8SK8H0uu3WtEGAgvA8+V63KM6qqnvoFEm9xd2YZopP
+	 45Nv5zVlCUlgwli/9NcHbxSLzA+0XmhullGQU5TmsGXEVf4lwYeyOUg+Vq2mLcRVVr
+	 bWGOgmk6RTgSQBUiectGhvhgYkch3D/ZH+b3GoLO8W7ehkcMSMgMpL/9zhHMJr48ej
+	 8DUL8/GbTd09A==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 2E94F6065C;
+	by mail.netfilter.org (Postfix) with ESMTPSA id EAB5060657;
 	Tue,  6 May 2025 01:41:58 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1746488518;
-	bh=X6lkzL4xDqlKfS4sQJUKU3QpUlZ3xfXhNKhaCPkcJBQ=;
+	s=2025; t=1746488519;
+	bh=/dUMYkJorBYhwIl8gqxS3G3TNKe7omnKRnv1Di8RrCM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nkzVsfmr/k/w2UXnLxgCbgosE4Z1f/GKFYJMpOzq6rHIflQIGSRvA1la18yf9FhPd
-	 ZdMvWdkhx/Pw9HId0fxIiVxHRZL8i2tHedqEDNILb5MFfB/JU8u2rn3FMw3yGxOFTL
-	 +duYONTYEVDN026G8g2bkOB7NxYkS1PXZ+IB5n7QWUHVNscSi5C77sYwyb0Ha8fDMS
-	 BRd8kco4AloXCDb/GTqeS5af14RlRqMwMwhVVxBc4qKvbPLTO38pEforU8xF8e5ZnR
-	 iivdHqBZGNGQTiRUBdfESbUQty3y3uQ8NeEwTf/k1D4qwLsIdh198KlCkS+077fC+P
-	 7FkQoimTo3+3g==
+	b=Rhlcb+2T/Sw1LX+RxdnmdWDjZu0zfCGyWzvfXiBM85CB5tJ+1EV9psLyNPADU+bPM
+	 inpKC/gzmRuzy58Z6LQhColpspQN/ocimEw7pJUENNrLeOV6NBhO3Jq82xzgizDkNj
+	 5ViAUdOkuNsCmqoBIugYro98lr5/V501zcbdiYiYNT8ut1LKweOe6kdlrYTue+XMXr
+	 lc/q4PBzmE5WKQxvunfXwel7X2rI1xtFYNvx3zYlq2Agr9k5sKc56uOlm2+OlF9+lS
+	 Y+knhTxtM681v1/39KH3B7gnC/ERfFeLOPD09Rf9WH22BHjuYK+6DGpYNxOFX9aBSJ
+	 x20Rvqhn3zzzw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -67,9 +67,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH nf-next 3/7] netfilter: nft_quota: match correctly when the quota just depleted
-Date: Tue,  6 May 2025 01:41:47 +0200
-Message-Id: <20250505234151.228057-4-pablo@netfilter.org>
+Subject: [PATCH nf-next 4/7] netfilter: nf_conntrack: speed up reads from nf_conntrack proc file
+Date: Tue,  6 May 2025 01:41:48 +0200
+Message-Id: <20250505234151.228057-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250505234151.228057-1-pablo@netfilter.org>
 References: <20250505234151.228057-1-pablo@netfilter.org>
@@ -81,73 +81,151 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zhongqiu Duan <dzq.aishenghu0@gmail.com>
+From: Florian Westphal <fw@strlen.de>
 
-The xt_quota compares skb length with remaining quota, but the nft_quota
-compares it with consumed bytes.
+Dumping all conntrack entries via proc interface can take hours due to
+linear search to skip entries dumped so far in each cycle.
 
-The xt_quota can match consumed bytes up to quota at maximum. But the
-nft_quota break match when consumed bytes equal to quota.
+Apply same strategy used to speed up ipvs proc reading done in
+commit 178883fd039d ("ipvs: speed up reads from ip_vs_conn proc file")
+to nf_conntrack.
 
-i.e., nft_quota match consumed bytes in [0, quota - 1], not [0, quota].
+Note that the ctnetlink interface doesn't suffer from this problem, but
+many scripts depend on the nf_conntrack proc interface.
 
-Fixes: 795595f68d6c ("netfilter: nft_quota: dump consumed quota")
-Signed-off-by: Zhongqiu Duan <dzq.aishenghu0@gmail.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_quota.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ net/netfilter/nf_conntrack_standalone.c | 88 +++++++++++++++----------
+ 1 file changed, 53 insertions(+), 35 deletions(-)
 
-diff --git a/net/netfilter/nft_quota.c b/net/netfilter/nft_quota.c
-index 9b2d7463d3d3..df0798da2329 100644
---- a/net/netfilter/nft_quota.c
-+++ b/net/netfilter/nft_quota.c
-@@ -19,10 +19,16 @@ struct nft_quota {
+diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+index 2f666751c7e7..6c4cff10357d 100644
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -98,69 +98,87 @@ struct ct_iter_state {
+ 	struct seq_net_private p;
+ 	struct hlist_nulls_head *hash;
+ 	unsigned int htable_size;
++	unsigned int skip_elems;
+ 	unsigned int bucket;
+ 	u_int64_t time_now;
  };
  
- static inline bool nft_overquota(struct nft_quota *priv,
--				 const struct sk_buff *skb)
-+				 const struct sk_buff *skb,
-+				 bool *report)
+-static struct hlist_nulls_node *ct_get_first(struct seq_file *seq)
++static struct nf_conntrack_tuple_hash *ct_get_next(const struct net *net,
++						   struct ct_iter_state *st)
  {
--	return atomic64_add_return(skb->len, priv->consumed) >=
--	       atomic64_read(&priv->quota);
-+	u64 consumed = atomic64_add_return(skb->len, priv->consumed);
-+	u64 quota = atomic64_read(&priv->quota);
+-	struct ct_iter_state *st = seq->private;
++	struct nf_conntrack_tuple_hash *h;
+ 	struct hlist_nulls_node *n;
++	unsigned int i;
+ 
+-	for (st->bucket = 0;
+-	     st->bucket < st->htable_size;
+-	     st->bucket++) {
+-		n = rcu_dereference(
+-			hlist_nulls_first_rcu(&st->hash[st->bucket]));
+-		if (!is_a_nulls(n))
+-			return n;
+-	}
+-	return NULL;
+-}
++	for (i = st->bucket; i < st->htable_size; i++) {
++		unsigned int skip = 0;
+ 
+-static struct hlist_nulls_node *ct_get_next(struct seq_file *seq,
+-				      struct hlist_nulls_node *head)
+-{
+-	struct ct_iter_state *st = seq->private;
++restart:
++		hlist_nulls_for_each_entry_rcu(h, n, &st->hash[i], hnnode) {
++			struct nf_conn *ct = nf_ct_tuplehash_to_ctrack(h);
++			struct hlist_nulls_node *tmp = n;
+ 
+-	head = rcu_dereference(hlist_nulls_next_rcu(head));
+-	while (is_a_nulls(head)) {
+-		if (likely(get_nulls_value(head) == st->bucket)) {
+-			if (++st->bucket >= st->htable_size)
+-				return NULL;
++			if (!net_eq(net, nf_ct_net(ct)))
++				continue;
 +
-+	if (report)
-+		*report = consumed >= quota;
++			if (++skip <= st->skip_elems)
++				continue;
 +
-+	return consumed > quota;
++			/* h should be returned, skip to nulls marker. */
++			while (!is_a_nulls(tmp))
++				tmp = rcu_dereference(hlist_nulls_next_rcu(tmp));
++
++			/* check if h is still linked to hash[i] */
++			if (get_nulls_value(tmp) != i) {
++				skip = 0;
++				goto restart;
++			}
++
++			st->skip_elems = skip;
++			st->bucket = i;
++			return h;
+ 		}
+-		head = rcu_dereference(
+-			hlist_nulls_first_rcu(&st->hash[st->bucket]));
+-	}
+-	return head;
+-}
+ 
+-static struct hlist_nulls_node *ct_get_idx(struct seq_file *seq, loff_t pos)
+-{
+-	struct hlist_nulls_node *head = ct_get_first(seq);
++		skip = 0;
++		if (get_nulls_value(n) != i)
++			goto restart;
++
++		st->skip_elems = 0;
++	}
+ 
+-	if (head)
+-		while (pos && (head = ct_get_next(seq, head)))
+-			pos--;
+-	return pos ? NULL : head;
++	st->bucket = i;
++	return NULL;
  }
  
- static inline bool nft_quota_invert(struct nft_quota *priv)
-@@ -34,7 +40,7 @@ static inline void nft_quota_do_eval(struct nft_quota *priv,
- 				     struct nft_regs *regs,
- 				     const struct nft_pktinfo *pkt)
+ static void *ct_seq_start(struct seq_file *seq, loff_t *pos)
+ 	__acquires(RCU)
  {
--	if (nft_overquota(priv, pkt->skb) ^ nft_quota_invert(priv))
-+	if (nft_overquota(priv, pkt->skb, NULL) ^ nft_quota_invert(priv))
- 		regs->verdict.code = NFT_BREAK;
+ 	struct ct_iter_state *st = seq->private;
++	struct net *net = seq_file_net(seq);
+ 
+ 	st->time_now = ktime_get_real_ns();
+ 	rcu_read_lock();
+ 
+ 	nf_conntrack_get_ht(&st->hash, &st->htable_size);
+-	return ct_get_idx(seq, *pos);
++
++	if (*pos == 0) {
++		st->skip_elems = 0;
++		st->bucket = 0;
++	} else if (st->skip_elems) {
++		/* resume from last dumped entry */
++		st->skip_elems--;
++	}
++
++	return ct_get_next(net, st);
  }
  
-@@ -51,13 +57,13 @@ static void nft_quota_obj_eval(struct nft_object *obj,
- 			       const struct nft_pktinfo *pkt)
+ static void *ct_seq_next(struct seq_file *s, void *v, loff_t *pos)
  {
- 	struct nft_quota *priv = nft_obj_data(obj);
--	bool overquota;
-+	bool overquota, report;
++	struct ct_iter_state *st = s->private;
++	struct net *net = seq_file_net(s);
++
+ 	(*pos)++;
+-	return ct_get_next(s, v);
++	return ct_get_next(net, st);
+ }
  
--	overquota = nft_overquota(priv, pkt->skb);
-+	overquota = nft_overquota(priv, pkt->skb, &report);
- 	if (overquota ^ nft_quota_invert(priv))
- 		regs->verdict.code = NFT_BREAK;
- 
--	if (overquota &&
-+	if (report &&
- 	    !test_and_set_bit(NFT_QUOTA_DEPLETED_BIT, &priv->flags))
- 		nft_obj_notify(nft_net(pkt), obj->key.table, obj, 0, 0,
- 			       NFT_MSG_NEWOBJ, 0, nft_pf(pkt), 0, GFP_ATOMIC);
+ static void ct_seq_stop(struct seq_file *s, void *v)
 -- 
 2.30.2
 
