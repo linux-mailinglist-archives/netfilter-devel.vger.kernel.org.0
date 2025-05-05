@@ -1,155 +1,151 @@
-Return-Path: <netfilter-devel+bounces-7015-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7017-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8B3AAB7A0
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 08:15:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AD77AAB829
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 08:27:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 246AB4E4FF3
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 06:13:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32BAF3A7731
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 May 2025 06:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5542C34950E;
-	Tue,  6 May 2025 00:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496603537CE;
+	Tue,  6 May 2025 01:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRGy9K5u"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="nVAkFbts";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="OpX7j1iA"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4A93ACFEE;
-	Mon,  5 May 2025 23:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D80630C1C6;
+	Mon,  5 May 2025 23:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746487159; cv=none; b=g7kqKoOfy4i26TGMkcbMoXlvArGfby8qsOb7+97PqTvLpQLL+fwAJLgdwUcRohayHKA1VmazCSw5f8if1c6GqmhJ7ZTavTbilRy/kr5e2lOzMkJs+tsDG8mp2wvgDOVME0FWOKgGqU4xe8vKOpSsMCs14/TFMgJlxiOwZMY7Bwk=
+	t=1746488523; cv=none; b=jxehqS4BSTj8lJKBNiBkfx0LpvvuLtDA4YJwAdcUOvn1ng4SzemFw+Bo5Pg/Xk0fqCr0xXVUVaGsJkI6rZWVcnmmi3/Q4ONs4i8yASGeEf0gqhLkY3PXW69ox0gYm42tczAJvpo1w+xJlBG/2mXaFThu5qst03JgBUH3i5nZ+RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746487159; c=relaxed/simple;
-	bh=sMwPyvXBpK7TDRml1p1f82FV+kXU0/d7luIOBrkuOvo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZxcgBYVK1nl1swXqcRCN7cNzbZr6ZyHM3g9Ql+X1xy9eaixaci+oGpDOPrjUixtzS0LR1rb+ZNMXBFSqNVDJc05J1rjRwat806V5q6dOhazy0nPbNWCSiwDXUtqkvE56xJR6gJii5rMhspREScLFV0rD8Q2ArWZAZj00Ga8i0Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pRGy9K5u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03607C4CEED;
-	Mon,  5 May 2025 23:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487159;
-	bh=sMwPyvXBpK7TDRml1p1f82FV+kXU0/d7luIOBrkuOvo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pRGy9K5u6ds7DKD+JKsESg4l2M33LrhOps55WZ9POcP19NkjDudN1u3zVtToPsfXK
-	 ObCChZexZmCGUH28SMrfU7GiyPaQvW0VHJI0kSR0FEASLP5/HmaUY5nuQ/FYdFa8P7
-	 n8RCmlesww6F6xkz2pq7G/NfW9avVpnc0gaHRkY9yiMYsKKbP/V1WSi4dq40g1VMfq
-	 7s+K8wFvDJbLvPOXrP23ic2kvinbQ7R7lpMLbHGWV8pyXVnLWL/utUEbjLvte8Srag
-	 oegfl3nhnm1lKe+H28hiQ5ayyXVaTXsTPfMM276YhpoLNBOOeJ0ImjWO2BhGFfZoGW
-	 DNRt2onu3FZFg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Sasha Levin <sashal@kernel.org>,
-	kadlec@netfilter.org,
-	davem@davemloft.net,
-	edumazet@google.com,
+	s=arc-20240116; t=1746488523; c=relaxed/simple;
+	bh=MaMkf53SEIRP4bQtihcD1yyrGguY6LuXqAfw+XKt1/U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oVOuWLOc1L4CdMrZT5UrRbBX9ISOncLCfe0TAlNBtRXEcwqOSTgx6/IMUS6EZDbUU/CJr6LwLMAz6NSiOGIy9xpKPx5pXOw3NSm6DrPrDvvzNsqx04+X+l5eXLhlPFAKNLeppUqkqAiGPR//qObT3SCMAA53W30+xac096ydbPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nVAkFbts; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=OpX7j1iA; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 11EF56065D; Tue,  6 May 2025 01:41:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1746488518;
+	bh=LfiaJP+Uo+z2Z0JoRS0aywKhfv0uxsPSHVVFel78Bko=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nVAkFbtsaPUFj3hkjJaV2O3uyeK2Gl1ksr415cZn84XZSwBj6I4r98GgT5pzxaCRe
+	 mxOI1Sb1wsjAWnZGOKbXj8N5xwPql2uUfxvfr002G0L0rLUS97XXlRxnONcBOI/m+A
+	 0112M96R9Bc32HWTM3n5UmpuklqvVhcXg6VNPUaPKY9oGjMGnI3YLVNe7knwm+bTku
+	 A7Yryn4B8vu5nMWM3Ac7E3horgwbq5PO0jKP5ArFyTls8r1RueeQSCkrO6AFMxH1Nr
+	 U+sUCtyIKQ/Ntapgj/wWQNOmT2uTlIr+c8S7WXUU1uJuONXsw0Ym3MpfBuH80NQKdb
+	 ZrCl5QyVZeJIg==
+X-Spam-Level: 
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 684DA60654;
+	Tue,  6 May 2025 01:41:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1746488515;
+	bh=LfiaJP+Uo+z2Z0JoRS0aywKhfv0uxsPSHVVFel78Bko=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OpX7j1iAzQvnfpDsHF28r7LeG2KouyiRK/jJTgy1Y3cFsXyHzp5SkSfteMGSBbtr+
+	 qgE+7VSITVSuPbqlM020XefnXGVy/n0t5e8M2o2+FG3M+UbkKfCW0BExM1wKRUQpxh
+	 v2M04BoYw/kPZE9LYwTfnnJ3Wd8PiHXzQhGmYs0S/eeLsyuvDroZDuyeIANCRoJkmO
+	 LWuvN24T1KSRQObUaGeINDJ3IqBIVE26UJSNi7RBbLqaafzKK3kC70+jBhlzl6kkfC
+	 d80LzY0ayKp1C8RUbqO34/hX0tNIZOOygDjnFI8rL3sXlqOh1zEH7XzshGyLuicWJy
+	 Oa1k+M+wJ0Llg==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
 	kuba@kernel.org,
 	pabeni@redhat.com,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 033/114] netfilter: conntrack: Bound nf_conntrack sysctl writes
-Date: Mon,  5 May 2025 19:16:56 -0400
-Message-Id: <20250505231817.2697367-33-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505231817.2697367-1-sashal@kernel.org>
-References: <20250505231817.2697367-1-sashal@kernel.org>
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org
+Subject: [PATCH nf-next 0/7] Netfilter updates for net-next
+Date: Tue,  6 May 2025 01:41:44 +0200
+Message-Id: <20250505234151.228057-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.237
 Content-Transfer-Encoding: 8bit
 
-From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+Hi,
 
-[ Upstream commit 8b6861390ffee6b8ed78b9395e3776c16fec6579 ]
+The following patchset contains Netfilter updates for net-next:
 
-nf_conntrack_max and nf_conntrack_expect_max sysctls were authorized to
-be written any negative value, which would then be stored in the
-unsigned int variables nf_conntrack_max and nf_ct_expect_max variables.
+1) Apparently, nf_conntrack_bridge changes the way in which fragments
+   are handled, dealing to packet drop. From Huajian Yang.
 
-While the do_proc_dointvec_conv function is supposed to limit writing
-handled by proc_dointvec proc_handler to INT_MAX. Such a negative value
-being written in an unsigned int leads to a very high value, exceeding
-this limit.
+2) Add a selftest to stress the conntrack subsystem, from Florian Westphal.
 
-Moreover, the nf_conntrack_expect_max sysctl documentation specifies the
-minimum value is 1.
+3) nft_quota depletion is off-by-one byte, Zhongqiu Duan.
 
-The proc_handlers have thus been updated to proc_dointvec_minmax in
-order to specify the following write bounds :
+4) Rewrites the procfs to read the conntrack table to speed it up,
+   from Florian Westphal.
 
-* Bound nf_conntrack_max sysctl writings between SYSCTL_ZERO
-  and SYSCTL_INT_MAX.
+5) Two patches to prevent overflow in nft_pipapo lookup table and to
+   clamp the maximum bucket size.
 
-* Bound nf_conntrack_expect_max sysctl writings between SYSCTL_ONE
-  and SYSCTL_INT_MAX as defined in the sysctl documentation.
+6) Update nft_fib selftest to check for loopback packet bypass.
+   From Florian Westphal.
 
-With this patch applied, sysctl writes outside the defined in the bound
-will thus lead to a write error :
+Please, pull these changes from:
 
-```
-sysctl -w net.netfilter.nf_conntrack_expect_max=-1
-sysctl: setting key "net.netfilter.nf_conntrack_expect_max": Invalid argument
-```
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-25-05-06
 
-Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/netfilter/nf_conntrack_standalone.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Thanks.
 
-diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
-index 8498bf27a3531..abf558868db11 100644
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -613,7 +613,9 @@ static struct ctl_table nf_ct_sysctl_table[] = {
- 		.data		= &nf_conntrack_max,
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	[NF_SYSCTL_CT_COUNT] = {
- 		.procname	= "nf_conntrack_count",
-@@ -652,7 +654,9 @@ static struct ctl_table nf_ct_sysctl_table[] = {
- 		.data		= &nf_ct_expect_max,
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ONE,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	[NF_SYSCTL_CT_ACCT] = {
- 		.procname	= "nf_conntrack_acct",
-@@ -931,7 +935,9 @@ static struct ctl_table nf_ct_netfilter_table[] = {
- 		.data		= &nf_conntrack_max,
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_INT_MAX,
- 	},
- 	{ }
- };
--- 
-2.39.5
+----------------------------------------------------------------
 
+The following changes since commit 836b313a14a316290886dcc2ce7e78bf5ecc8658:
+
+  ipv4: Honor "ignore_routes_with_linkdown" sysctl in nexthop selection (2025-05-03 21:52:38 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-25-05-06
+
+for you to fetch changes up to fc91d5e6d948733773af35ef3b95504d8e588e4f:
+
+  selftests: netfilter: nft_fib.sh: check lo packets bypass fib lookup (2025-05-05 13:17:32 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 25-05-06
+
+----------------------------------------------------------------
+Florian Westphal (3):
+      selftests: netfilter: add conntrack stress test
+      netfilter: nf_conntrack: speed up reads from nf_conntrack proc file
+      selftests: netfilter: nft_fib.sh: check lo packets bypass fib lookup
+
+Huajian Yang (1):
+      netfilter: bridge: Move specific fragmented packet to slow_path instead of dropping it
+
+Pablo Neira Ayuso (2):
+      netfilter: nft_set_pipapo: prevent overflow in lookup table allocation
+      netfilter: nft_set_pipapo: clamp maximum map bucket size to INT_MAX
+
+Zhongqiu Duan (1):
+      netfilter: nft_quota: match correctly when the quota just depleted
+
+ net/bridge/netfilter/nf_conntrack_bridge.c         |  12 +-
+ net/ipv6/netfilter.c                               |  12 +-
+ net/netfilter/nf_conntrack_standalone.c            |  88 +++--
+ net/netfilter/nft_quota.c                          |  20 +-
+ net/netfilter/nft_set_pipapo.c                     |  64 +++-
+ tools/testing/selftests/net/netfilter/Makefile     |   1 +
+ tools/testing/selftests/net/netfilter/config       |   1 +
+ .../selftests/net/netfilter/conntrack_resize.sh    | 406 +++++++++++++++++++++
+ tools/testing/selftests/net/netfilter/nft_fib.sh   |  23 ++
+ 9 files changed, 559 insertions(+), 68 deletions(-)
+ create mode 100755 tools/testing/selftests/net/netfilter/conntrack_resize.sh
 
