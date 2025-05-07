@@ -1,72 +1,108 @@
-Return-Path: <netfilter-devel+bounces-7042-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7044-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6803FAAE366
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 May 2025 16:43:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2906AAE3E7
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 May 2025 17:08:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6863B3A4751
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 May 2025 14:38:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9A81C03857
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 May 2025 15:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E690C25E832;
-	Wed,  7 May 2025 14:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2230A28A1E0;
+	Wed,  7 May 2025 15:08:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="cRl698SE"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CD7289363;
-	Wed,  7 May 2025 14:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADF3233133
+	for <netfilter-devel@vger.kernel.org>; Wed,  7 May 2025 15:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746628724; cv=none; b=QUeQhkW9DIJVlektU2SVIuZh2nuB0oLj8CAO0cNwJ6JRrEiIUVa396JPIv9pIvCbZ/VfuEM+DOu+9IYOUyWoJIRos3m1s7q8YMD0pIptSUZwhZzoTKBi7XP6bQPGCLJANXKLPICHb/ODYhg0oVdEk1bhUsh9/ZLEC4wiBXkmZKc=
+	t=1746630494; cv=none; b=k4mvjmkh+F83ZcIOH8QJ2FQlZw0y0KcERLYGpvZChGjLMHG1P3Z4ZZ6hjOWIWJ32GkxFkkCODzTbF5+fotBUQEhsjr0wWCNblCWS4zHAbI2hRrVNeYTTn0GSO3KaZhMeo1lfwQpe911EZpheLtr9xjRemILlIy9YcNarG7u/nWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746628724; c=relaxed/simple;
-	bh=SKMiGV/a5vX4UvXYmAF/sPCupdNjXubsNhKo+TEu59c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fgxVemusmDiF5xAkXPuCddYt1ahiq54bTzVrw+gvbbGBgv7aM2yw8o/vgpTHwjjsTGqLWjolIsFkckjTAHGux93jWjM3g610+i8A2Jm9NfgXMWg+lisK5gZMGs5cDJT9U/PAVf+tLs6R3XVun4g8vEX10BH/jynumbVCQwSR3KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1uCfui-0004II-GR; Wed, 07 May 2025 16:38:24 +0200
-Date: Wed, 7 May 2025 16:38:24 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Andrea Mayer <andrea.mayer@uniroma2.it>,
-	Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-	linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH net-next 5/6] selftests: netfilter: remove rp_filter
- configuration
-Message-ID: <20250507143824.GA16483@breakpoint.cc>
-References: <20250507131856.78393-1-liuhangbin@gmail.com>
- <20250507131856.78393-6-liuhangbin@gmail.com>
+	s=arc-20240116; t=1746630494; c=relaxed/simple;
+	bh=/vLKvneKcXYoRlZTfrPU4Bsn5vrGSt8r+aidONeMLng=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RMF6W9hzTKT8pUt3lyUl6fIb8XCzLjVfeyItJGiYcePbcUCtj0rsNv365Nrh5G8mShXokWz9Xgn8oBzNKI8xsueerEsYN1nm8bMz7R+2kA4nkj6A/M4WkiacOnLhhP6ELHksUJ9VDRrGv+6hYAAKs70SqKYidmGCEFv6jL4f4gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=cRl698SE; arc=none smtp.client-ip=148.6.0.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
+Received: from localhost (localhost [127.0.0.1])
+	by smtp1.kfki.hu (Postfix) with ESMTP id 21C9A5C001A8;
+	Wed,  7 May 2025 17:02:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
+	:from:from:received:received:received; s=20151130; t=1746630119;
+	 x=1748444520; bh=S4Bqc/mh1+b8i+Fu0WaPfwKrdFxunSAGKRyWAulsSjw=; b=
+	cRl698SE32lOEKL580Ztg5WXqm55hsEKsami1CPXRH9HUxuC7S6UAs+sHo4aXdah
+	i1jW0qUoTy/6tL6dRmCUZje9Hsj0m+LIAPGLQUSwT5bTC1EiWm9IcrAYJulpzezn
+	YjlAdjRsysdrd364xG9bvvuY8hHtYPxiLPOieSgCyUI=
+X-Virus-Scanned: Debian amavis at smtp1.kfki.hu
+Received: from smtp1.kfki.hu ([127.0.0.1])
+ by localhost (smtp1.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id W_58wSSOXmgH; Wed,  7 May 2025 17:01:59 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [IPv6:2001:738:5001:1::240:2])
+	by smtp1.kfki.hu (Postfix) with ESMTP id 1C0B65C001A4;
+	Wed,  7 May 2025 17:01:59 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+	id 1554334316A; Wed,  7 May 2025 17:01:59 +0200 (CEST)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 0/1] ipset patch to fix region locking
+Date: Wed,  7 May 2025 17:01:58 +0200
+Message-Id: <20250507150159.3443812-1-kadlec@netfilter.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250507131856.78393-6-liuhangbin@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 
-Hangbin Liu <liuhangbin@gmail.com> wrote:
-> Remove the manual rp_filter configuration, as setup_ns already sets it
-> appropriately by default
+Hi Pablo,
 
-Acked-by: Florian Westphal <fw@strlen.de>
+Please apply the next patch which fixes the region locking in the hash
+type of sets.=20
+
+Region locking was introduced to break up operation on the whole hashes
+into smaller parts in order to avoid to keep the locking too long
+continuously. That required three macros: two to calculate the start and=20
+end buckets belonging to a region lock and a third one to give back the=20
+region lock of a given hash bucket. The third one was incorrect which can
+lead to a race condition between the internal garbage collector and addin=
+g
+new entries to the hash simultaneously.
+
+The bug affects all hash types, since the region locking was introduced a=
+nd
+it was reported by Kota Toda <kota.toda@gmo-cybersecurity.com>.
+
+Best regards,
+Jozsef
+
+The following changes since commit 3e52667a9c328b3d1a1ddbbb6b8fbf63a217bd=
+a3:
+
+  Merge branch 'lan78xx-phylink-prep' (2025-05-07 12:57:06 +0100)
+
+are available in the Git repository at:
+
+  git://blackhole.kfki.hu/nf-next e2b52b09f1166fce2
+
+for you to fetch changes up to e2b52b09f1166fce29f4888ad9b86a7cfec7ad8a:
+
+  netfilter: ipset: fix region locking in hash types (2025-05-07 16:48:30=
+ +0200)
+
+----------------------------------------------------------------
+Jozsef Kadlecsik (1):
+      netfilter: ipset: fix region locking in hash types
+
+ net/netfilter/ipset/ip_set_hash_gen.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
