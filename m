@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7071-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7075-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EA68AB057B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 23:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C1EAB057F
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 23:47:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CE21BC2AEB
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 21:47:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C98951BC6875
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 21:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50ABA221FDB;
-	Thu,  8 May 2025 21:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CED1216E05;
+	Thu,  8 May 2025 21:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PRJxFJEE"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="LyXoluFy"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF281E22E9
-	for <netfilter-devel@vger.kernel.org>; Thu,  8 May 2025 21:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF5921CC43
+	for <netfilter-devel@vger.kernel.org>; Thu,  8 May 2025 21:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746740852; cv=none; b=r/q2YlSpRiC+vV9lfI6v/kaIM6YGy/Xn6Z998SAP3g958r+jOKm8RYWj2VGOvZRQhQC4d7orQ57aBM9r3DuZJhiyjhrz/rUi8R4RjIAxcNVfYIu75Cr4YXTuJ3PoQrtHVfdRRJK+8jfV7Kkzhqe6LYAgDNs41vwDi0oGXN1ynUI=
+	t=1746740853; cv=none; b=B8X81Nid2xFPmjjkahYfkpeFyTx/29N36nGRa7XPoRv3/4gyRXGdoGuCdugkHa7f8Vsu1578cvCBFv4nJ2Ac4isuR3nmH5sj/mrgCVDdYPgtYREmd+OMGxIyOnVNMyajo3zeA+O/G+fwHFXipvHIYSA8XKSGJxee1FLifLJiZuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746740852; c=relaxed/simple;
-	bh=uLv1CIwHLBYzQzQsRElb0KZoJwIH1BQUGteHCRiDDtM=;
+	s=arc-20240116; t=1746740853; c=relaxed/simple;
+	bh=bJyE9Y0t251xp6MHrSTZoPq89lBSZdGlgEp/QUEU9tY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HU7VGdPxKPlBIeGx6TZyxA1efPADA3QQjBlAGt5hqAUJprtMBkvULrKZcPBEUa+afeSsxC/5+C93FxAP3QV3YomNn+NZEUr1Bc1998zpSY/3WZeXfEnTlSe7fHlq+rLARBpmk262acYssogk4uAnvQUHkn066gWlHxuYKH+7YE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PRJxFJEE; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=rAuzjzMV6a1bmzho0UgQCjRs7GTT+ue3YeSi4OcWXCkFYBxTRVhiw6eB8epZB/PyzjO8EvcRuoewWOUiwfuxoQ+6T+yPwRvNFnGMMQXWNBUtsFh0BpR1JdeythcOMHIgKXtkduDGELaI21QLvQ9GybnPaoK7MrYlabbsn7BB+f0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=LyXoluFy; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=G/FzAYQgFnpjfa3wCsISza8Y3t0ir/XkyAzqqTxupn8=; b=PRJxFJEE/1eV+IHtA+Cqwxpx7o
-	oCC61/kW2V3+VHGPjAsvewFA/u7XVzTuuIvl0ER37tRowqg6yBKyyTUuD5ZgE/wJnNbE04oCvSz/x
-	yYD8Ca/VDeetTQY4DTqV3JxZEJ1hPKFgrukEmXovFAQfSXZO6eLg2dUvq9ceOWIhHl2UwSxLT4c2y
-	MEH496E8STc9GvjcwRfy9nOvjsNxGIoY4szPgTgIGACokPcAPoqW6Ro2T6bstoW4zd1R4ix0k5gRI
-	/ihXd1E8ubGGVmKfZr/1OjARar9vZCONK9wNhnVEC83wMlMDzVjUR3Kiu1lcQgIFtrvDqfeOpUmCM
-	Twp4mA7A==;
+	bh=oW2UHsJlNvz452CVEVmaUGyBRFONi2kE8SkiYvXtSm8=; b=LyXoluFyFDYmSeXxsrI4qbKR8w
+	zIqlhwY+/Xd2B/70pnd/Ls9UZ+9fbhRO9H/j+dToltnFtufD7tXbX58wqUWL3V+CMYomUHKmNKMGx
+	S7cvaP+IAkD9qRuOEuoZRW6wc4zPTXYPLrPd+GzqZWMyWp/LXHl8iO4EkD3AiK8V+vSHuMje9Toqy
+	LtZ9G+Le2Hgz9+ocnLGp6a0dI9viB5Fw/T3D7QFmWAaQxe8COm6Xh+QXU3Ah28gxyzeji7sVbtLEV
+	poDiocy74Kd8ATh5EZ8vo/JlwIC8PwEGg8tUkQhxe9WJUQDnKPIhWgg3FIQaWMX2UlSBkgnvR9unM
+	Q6R2hdOQ==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uD95U-000000000mn-1ety;
-	Thu, 08 May 2025 23:47:28 +0200
+	id 1uD95W-000000000nG-1uIv;
+	Thu, 08 May 2025 23:47:30 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 3/6] json: Print single fib flag as non-array
-Date: Thu,  8 May 2025 23:47:19 +0200
-Message-ID: <20250508214722.20808-4-phil@nwl.cc>
+Subject: [nft PATCH 4/6] json: Print single synproxy flags as non-array
+Date: Thu,  8 May 2025 23:47:20 +0200
+Message-ID: <20250508214722.20808-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250508214722.20808-1-phil@nwl.cc>
 References: <20250507222830.22525-1-phil@nwl.cc>
@@ -68,38 +68,32 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Check array size and reduce the array if possible.
-
-The zero array length check is dead code here due to the surrounding 'if
-(flags)' block, but it's a common idiom one could replace by a shared
-routine later.
-
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/json.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ src/json.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/src/json.c b/src/json.c
-index 6b27ccb927017..a8b0abeba6396 100644
+index a8b0abeba6396..0034c02f678ff 100644
 --- a/src/json.c
 +++ b/src/json.c
-@@ -939,7 +939,15 @@ json_t *fib_expr_json(const struct expr *expr, struct output_ctx *octx)
- 		}
- 		if (flags)
- 			json_array_append_new(tmp, json_integer(flags));
--		json_object_set_new(root, "flags", tmp);
-+
-+		if (json_array_size(tmp) > 1) {
-+			json_object_set_new(root, "flags", tmp);
-+		} else {
-+			if (json_array_size(tmp))
-+				json_object_set(root, "flags",
-+						json_array_get(tmp, 0));
-+			json_decref(tmp);
-+		}
- 	}
- 	return json_pack("{s:o}", "fib", root);
- }
+@@ -1686,10 +1686,14 @@ json_t *synproxy_stmt_json(const struct stmt *stmt, struct output_ctx *octx)
+ 	if (stmt->synproxy.flags & NF_SYNPROXY_OPT_SACK_PERM)
+ 		json_array_append_new(flags, json_string("sack-perm"));
+ 
+-	if (json_array_size(flags) > 0)
++	if (json_array_size(flags) > 1) {
+ 		json_object_set_new(root, "flags", flags);
+-	else
++	} else {
++		if (json_array_size(flags))
++			json_object_set(root, "flags",
++					json_array_get(flags, 0));
+ 		json_decref(flags);
++	}
+ 
+ 	if (!json_object_size(root)) {
+ 		json_decref(root);
 -- 
 2.49.0
 
