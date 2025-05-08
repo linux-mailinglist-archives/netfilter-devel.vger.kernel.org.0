@@ -1,43 +1,64 @@
-Return-Path: <netfilter-devel+bounces-7070-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7077-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88735AAFF55
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 17:36:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4349AAB0580
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 23:47:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37CBE9C7C47
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 15:34:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 129E01BC61A2
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 21:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E072797BE;
-	Thu,  8 May 2025 15:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929F1224246;
+	Thu,  8 May 2025 21:47:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="XqmL7SUn"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47948278E42
-	for <netfilter-devel@vger.kernel.org>; Thu,  8 May 2025 15:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DAB21ADA3
+	for <netfilter-devel@vger.kernel.org>; Thu,  8 May 2025 21:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746718482; cv=none; b=e9rvicdvErKROqszeRrP7d1k6mcgDJRFEE9whRIY7STXgyU3y8aqIr2gJHtTSs4jpvkFewvkMCyC2JDL4+N76NWDvYwhPmkVCvQIDA+L/ata27KfiGpxYJFh/4Kr+aw66pPP9lFPjfFDNw/+/2Qov8BkhfSF0wrDxpy8Y/zgUx0=
+	t=1746740853; cv=none; b=t3ryjWlYs77BpQNeujPwAmNKlgVvQnXHwxfUZ/B7G9Fu6jYKe2fGfEBPiNBxqipVV86Kp6qcRV5OsjCsVtetX9MLTkWPxofoa4rrhSr8G0R+86CZnZ0j5ZSEiuzRfyZOa3aFFTzw6gt+zNlXBgRMVuSm/RYZ9VRm+23qGqKwudc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746718482; c=relaxed/simple;
-	bh=m0nc4BsPKeO6fzCOo3xMJ9hk2iXRN2kDeSef+lCWMco=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=buiQ5jyaDHZz82NYdULrFbKu+jBq9X8QEEINnuQTFYMEQL5xJFrrqgVYVCnrhX0kSaEfnmnLdtM5xV54dmkncQqPLBacvGqVQgZRms874jzWtGYkkSq7Agz6bGmg8sfrlokIQM+YspkhsfGV2v8PXBXq+9hKZAEA0EtAuN25PlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1uD3Gg-00056G-IV; Thu, 08 May 2025 17:34:38 +0200
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] src: add conntrack information to trace monitor mode
-Date: Thu,  8 May 2025 17:33:56 +0200
-Message-ID: <20250508153358.8015-1-fw@strlen.de>
+	s=arc-20240116; t=1746740853; c=relaxed/simple;
+	bh=LjvmQ2q0LJjgwPwPBcwb/Ar7NdlbTC9MKSbYTNOh0fU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SQvgb5gf/O937SV5I91lofeh1t9dxz0TzpqfhjUvb7JCZi9nJ6ohVcaJfxdYpPqSKzcRdHRcVjPLGacJDqICxXMX/viYVRNohC2lD2KdR6NQACY5EIFPovnjqTVDPYKt4T3pURVhNi9/gNb+UZNLaIdQllDEkrtI5RphaTNXRKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=XqmL7SUn; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=x7fPDt483Yq4VU3STxn0iXTKvHl6ubQ/BGSVZEKcgMw=; b=XqmL7SUnstf3OlMR/hjISGwx0D
+	Spcv2HBFvKBqC27ikqcapfiA89JNBnBs2QMgWHIqCW56LlrA5komHn9+i/vVU7QHIsuxLOwD1oGCX
+	zaF1kN87xPawVdm2ZLCexUSwDcOOn2higoQPsBnRaR+eqe3StsrP8UaAWyC09myVRcYIiZz7oYAbX
+	sD7KONOir4El6QKJOzEesiOFVeB+SmN0Aqf0aRzdXdJKQ4/LQGc7sNJB6jSme+qbQSoIujEn0Jd9V
+	/JE+Lfsvj6+vNM5Mh+l4itQnnJMYhVN9dW1+nBpLguOnEILWGXi5s1LDu0saXtVs/5xGQa87w/39t
+	1VHa17/A==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1uD95V-000000000n9-3u5x;
+	Thu, 08 May 2025 23:47:29 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/6] Add test for parse_flags_array()
+Date: Thu,  8 May 2025 23:47:16 +0200
+Message-ID: <20250508214722.20808-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250507222830.22525-1-phil@nwl.cc>
+References: <20250507222830.22525-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,181 +67,106 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Upcoming kernel change provides the packets conntrack state in the
-trace message data.
+The function introduced in previous patch relaxes JSON syntax in parsing
+selected properties which usually contain an array as value to also
+accept a string representing the only array element.
 
-This allows to see if packet is seen as original or reply, the conntrack
-state (new, establieshed, related) and the status bits which show if e.g.
-NAT was applied.  Alsoi include conntrack ID so users can use conntrack
-tool to query the kernel for more information via ctnetlink.
+The test asserting correct parsing of such properties exposed JSON
+printer's limitation in some properties to not reduce the array value
+when possible.
 
-This improves debugging when e.g. packets do not pick up the expected
-NAT mapping, which could e.g. also happen because of expectations
-following the NAT binding of the owning conntrack entry.
+To make things consistent, This series enhances the JSON printer by
+support for array reduction where missing (patches 2-4), then introduces
+a shared routine to combine the common idiom in patch 5. Patch 6 finally
+adds the actual shell test case. Patch 1 is merely fallout, a trivial
+fix identified when working on the test implementation.
 
-Example output ("conntrack: " lines are new):
+Phil Sutter (6):
+  doc: Fix typo in nat statement 'prefix' description
+  json: Print single set flag as non-array
+  json: Print single fib flag as non-array
+  json: Print single synproxy flags as non-array
+  json: Introduce json_add_array_new()
+  tests: shell: Add test case for JSON 'flags' arrays
 
-trace id 32 t PRE_RAW packet: iif "enp0s3" ether saddr [..]
-trace id 32 t PRE_RAW rule tcp flags syn meta nftrace set 1 (verdict continue)
-trace id 32 t PRE_RAW policy accept
-trace id 32 t PRE_MANGLE conntrack: ct direction original ct state new ct id 2641368242
-trace id 32 t PRE_MANGLE packet: iif "enp0s3" ether saddr [..]
-trace id 32 t ct_new_pre rule jump rpfilter (verdict jump rpfilter)
-trace id 32 t PRE_MANGLE policy accept
-trace id 32 t INPUT conntrack: ct direction original ct state new ct status dnat-done ct id 2641368242
-trace id 32 t INPUT packet: iif "enp0s3" [..]
-trace id 32 t public_in rule tcp dport 443 accept (verdict accept)
+ doc/statements.txt                            |   2 +-
+ src/json.c                                    |  89 +++------
+ .../cache/dumps/0002_interval_0.json-nft      |   4 +-
+ .../json/dumps/0001set_statements_0.json-nft  |   4 +-
+ tests/shell/testcases/json/single_flag        | 189 ++++++++++++++++++
+ .../listing/dumps/0010sets_0.json-nft         |   8 +-
+ .../listing/dumps/0012sets_0.json-nft         |   8 +-
+ .../listing/dumps/0022terse_0.json-nft        |   4 +-
+ ...5interval_map_add_many_elements_0.json-nft |   4 +-
+ .../dumps/0006interval_map_overlap_0.json-nft |   4 +-
+ .../dumps/0008interval_map_delete_0.json-nft  |   4 +-
+ .../maps/dumps/0012map_concat_0.json-nft      |   4 +-
+ .../testcases/maps/dumps/0013map_0.json-nft   |   4 +-
+ .../maps/dumps/map_with_flags_0.json-nft      |   4 +-
+ .../maps/dumps/named_limits.json-nft          |   8 +-
+ .../maps/dumps/pipapo_double_flush.json-nft   |   4 +-
+ .../dumps/typeof_maps_add_delete.json-nft     |   4 +-
+ .../maps/dumps/typeof_maps_update_0.json-nft  |   8 +-
+ .../maps/dumps/vmap_timeout.json-nft          |   8 +-
+ .../nft-f/dumps/0025empty_dynset_0.json-nft   |  12 +-
+ .../optimizations/dumps/merge_vmaps.json-nft  |   4 +-
+ .../dumps/skip_unsupported.json-nft           |   4 +-
+ .../packetpath/dumps/set_lookups.json-nft     |   8 +-
+ .../dumps/0004replace_0.json-nft              |   4 +-
+ .../dumps/0011reset_0.json-nft                |   4 +-
+ .../sets/dumps/0001named_interval_0.json-nft  |  16 +-
+ .../0002named_interval_automerging_0.json-nft |   4 +-
+ .../0004named_interval_shadow_0.json-nft      |   4 +-
+ .../0005named_interval_shadow_0.json-nft      |   4 +-
+ .../dumps/0008comments_interval_0.json-nft    |   4 +-
+ .../dumps/0009comments_timeout_0.json-nft     |   4 +-
+ .../sets/dumps/0015rulesetflush_0.json-nft    |   4 +-
+ .../dumps/0022type_selective_flush_0.json-nft |   4 +-
+ .../sets/dumps/0024synproxy_0.json-nft        |   4 +-
+ .../sets/dumps/0027ipv6_maps_ipv4_0.json-nft  |   4 +-
+ .../sets/dumps/0028autoselect_0.json-nft      |  12 +-
+ .../sets/dumps/0028delete_handle_0.json-nft   |   4 +-
+ .../dumps/0032restore_set_simple_0.json-nft   |   8 +-
+ .../dumps/0033add_set_simple_flat_0.json-nft  |   8 +-
+ .../sets/dumps/0034get_element_0.json-nft     |  12 +-
+ .../0035add_set_elements_flat_0.json-nft      |   4 +-
+ .../sets/dumps/0038meter_list_0.json-nft      |   4 +-
+ .../sets/dumps/0039delete_interval_0.json-nft |   4 +-
+ .../0040get_host_endian_elements_0.json-nft   |   4 +-
+ .../sets/dumps/0041interval_0.json-nft        |   4 +-
+ .../sets/dumps/0042update_set_0.json-nft      |   4 +-
+ .../dumps/0043concatenated_ranges_1.json-nft  |   8 +-
+ .../dumps/0044interval_overlap_1.json-nft     |   4 +-
+ .../sets/dumps/0049set_define_0.json-nft      |   4 +-
+ .../dumps/0051set_interval_counter_0.json-nft |   4 +-
+ .../sets/dumps/0052overlap_0.json-nft         |   4 +-
+ .../sets/dumps/0054comments_set_0.json-nft    |   8 +-
+ .../sets/dumps/0055tcpflags_0.json-nft        |   4 +-
+ .../sets/dumps/0060set_multistmt_1.json-nft   |   4 +-
+ .../sets/dumps/0062set_connlimit_0.json-nft   |   8 +-
+ .../sets/dumps/0063set_catchall_0.json-nft    |   4 +-
+ .../sets/dumps/0064map_catchall_0.json-nft    |   4 +-
+ .../sets/dumps/0069interval_merge_0.json-nft  |   4 +-
+ .../0071unclosed_prefix_interval_0.json-nft   |   8 +-
+ .../sets/dumps/0073flat_interval_set.json-nft |   4 +-
+ .../dumps/0074nested_interval_set.json-nft    |   4 +-
+ .../sets/dumps/concat_interval_0.json-nft     |   8 +-
+ .../sets/dumps/dynset_missing.json-nft        |   4 +-
+ .../sets/dumps/exact_overlap_0.json-nft       |   4 +-
+ .../testcases/sets/dumps/inner_0.json-nft     |   4 +-
+ .../sets/dumps/meter_set_reuse.json-nft       |   4 +-
+ .../dumps/range_with_same_start_end.json-nft  |   4 +-
+ .../set_element_timeout_updates.json-nft      |   4 +-
+ .../testcases/sets/dumps/set_eval_0.json-nft  |   4 +-
+ .../sets/dumps/sets_with_ifnames.json-nft     |  12 +-
+ .../transactions/dumps/0037set_0.json-nft     |   4 +-
+ .../transactions/dumps/0038set_0.json-nft     |   4 +-
+ .../transactions/dumps/0039set_0.json-nft     |   4 +-
+ .../transactions/dumps/0047set_0.json-nft     |   4 +-
+ .../transactions/dumps/doubled-set.json-nft   |   4 +-
+ 75 files changed, 311 insertions(+), 353 deletions(-)
+ create mode 100755 tests/shell/testcases/json/single_flag
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/ct.c      |   4 ++
- src/netlink.c | 110 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 114 insertions(+)
-
-diff --git a/src/ct.c b/src/ct.c
-index 71ebb9483893..fc43bf63f02c 100644
---- a/src/ct.c
-+++ b/src/ct.c
-@@ -98,7 +98,11 @@ static const struct symbol_table ct_status_tbl = {
- 		SYMBOL("confirmed",	IPS_CONFIRMED),
- 		SYMBOL("snat",		IPS_SRC_NAT),
- 		SYMBOL("dnat",		IPS_DST_NAT),
-+		SYMBOL("seq-adjust",	IPS_SEQ_ADJUST),
-+		SYMBOL("snat-done",	IPS_SRC_NAT_DONE),
-+		SYMBOL("dnat-done",	IPS_DST_NAT_DONE),
- 		SYMBOL("dying",		IPS_DYING),
-+		SYMBOL("fixed-timeout",	IPS_FIXED_TIMEOUT),
- 		SYMBOL_LIST_END
- 	},
- };
-diff --git a/src/netlink.c b/src/netlink.c
-index 86ca32144f02..b1d1dc7f4bd1 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -2116,6 +2116,114 @@ next:
- 	}
- }
- 
-+static struct expr *trace_alloc_list(const struct datatype *dtype,
-+				     enum byteorder byteorder,
-+				     unsigned int len, const void *data)
-+{
-+	struct expr *list_expr;
-+	unsigned int i;
-+	mpz_t value;
-+	uint32_t v;
-+
-+	if (len != sizeof(v))
-+		return constant_expr_alloc(&netlink_location,
-+					   dtype, byteorder,
-+					   len * BITS_PER_BYTE, data);
-+
-+	list_expr = list_expr_alloc(&netlink_location);
-+
-+	mpz_init2(value, 32);
-+	mpz_import_data(value, data, byteorder, len);
-+	v = mpz_get_uint32(value);
-+	if (v == 0) {
-+		mpz_clear(value);
-+		return NULL;
-+	}
-+
-+	for (i = 0; i < 32; i++) {
-+		uint32_t bitv = v & (1 << i);
-+
-+		if (bitv == 0)
-+			continue;
-+
-+		compound_expr_add(list_expr,
-+				  constant_expr_alloc(&netlink_location,
-+						      dtype, byteorder,
-+						      len * BITS_PER_BYTE,
-+						      &bitv));
-+	}
-+
-+	mpz_clear(value);
-+	return list_expr;
-+}
-+
-+static void trace_print_ct_expr(const struct nftnl_trace *nlt, unsigned int attr,
-+				enum nft_ct_keys key, struct output_ctx *octx)
-+{
-+	struct expr *lhs, *rhs, *rel;
-+	const void *data;
-+	uint32_t len;
-+
-+	data = nftnl_trace_get_data(nlt, attr, &len);
-+	lhs = ct_expr_alloc(&netlink_location, key, -1);
-+
-+	switch (key) {
-+	case NFT_CT_STATUS:
-+		rhs = trace_alloc_list(lhs->dtype, lhs->byteorder, len, data);
-+		if (!rhs) {
-+			expr_free(lhs);
-+			return;
-+		}
-+		rel  = binop_expr_alloc(&netlink_location, OP_IMPLICIT, lhs, rhs);
-+		break;
-+	case NFT_CT_DIRECTION:
-+	case NFT_CT_STATE:
-+	case NFT_CT_ID:
-+		/* fallthrough */
-+	default:
-+		rhs  = constant_expr_alloc(&netlink_location,
-+					   lhs->dtype, lhs->byteorder,
-+					   len * BITS_PER_BYTE, data);
-+		rel  = relational_expr_alloc(&netlink_location, OP_IMPLICIT, lhs, rhs);
-+		break;
-+	}
-+
-+	expr_print(rel, octx);
-+	nft_print(octx, " ");
-+	expr_free(rel);
-+}
-+
-+static void trace_print_ct(const struct nftnl_trace *nlt,
-+			   struct output_ctx *octx)
-+{
-+	bool ct = nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_STATE);
-+
-+	if (!ct)
-+		return;
-+
-+	trace_print_hdr(nlt, octx);
-+
-+	nft_print(octx, "conntrack: ");
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_DIRECTION))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_DIRECTION,
-+				    NFT_CT_DIRECTION, octx);
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_STATE))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_STATE,
-+				    NFT_CT_STATE, octx);
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_STATUS))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_STATUS,
-+				    NFT_CT_STATUS, octx);
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_ID))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_ID,
-+				    NFT_CT_ID, octx);
-+
-+	nft_print(octx, "\n");
-+}
-+
- static void trace_print_packet(const struct nftnl_trace *nlt,
- 			        struct output_ctx *octx)
- {
-@@ -2127,6 +2235,8 @@ static void trace_print_packet(const struct nftnl_trace *nlt,
- 	uint32_t nfproto;
- 	struct stmt *stmt, *next;
- 
-+	trace_print_ct(nlt, octx);
-+
- 	trace_print_hdr(nlt, octx);
- 
- 	nft_print(octx, "packet: ");
 -- 
 2.49.0
 
