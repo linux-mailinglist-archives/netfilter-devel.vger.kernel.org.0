@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7077-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7072-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4349AAB0580
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 23:47:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6071AB057C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 23:47:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 129E01BC61A2
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 21:47:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B63689E5971
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 May 2025 21:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929F1224246;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DF3223DDC;
 	Thu,  8 May 2025 21:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="XqmL7SUn"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="EksvKkZJ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DAB21ADA3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 592A7216E05
 	for <netfilter-devel@vger.kernel.org>; Thu,  8 May 2025 21:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746740853; cv=none; b=t3ryjWlYs77BpQNeujPwAmNKlgVvQnXHwxfUZ/B7G9Fu6jYKe2fGfEBPiNBxqipVV86Kp6qcRV5OsjCsVtetX9MLTkWPxofoa4rrhSr8G0R+86CZnZ0j5ZSEiuzRfyZOa3aFFTzw6gt+zNlXBgRMVuSm/RYZ9VRm+23qGqKwudc=
+	t=1746740853; cv=none; b=lMn/JN4Y7E6umlidthUrqEyp+G73mgGhQAM+on2Om0xUuN0FcvhoJJoLkLf41cXn59SI3KKcSw9VgrYZc5MvhsclFZW8UppJY45YwZusdIsF1f35k225uaZxm6/ANhP0NdCe1dEqXVfhFveOCKrF66YcsADZPBLFCtfV6Q8ez2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746740853; c=relaxed/simple;
-	bh=LjvmQ2q0LJjgwPwPBcwb/Ar7NdlbTC9MKSbYTNOh0fU=;
+	bh=smlRrKd8+i+IisLwf+F0UZiu5ALQZ8ZKa+0wufdCwWY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SQvgb5gf/O937SV5I91lofeh1t9dxz0TzpqfhjUvb7JCZi9nJ6ohVcaJfxdYpPqSKzcRdHRcVjPLGacJDqICxXMX/viYVRNohC2lD2KdR6NQACY5EIFPovnjqTVDPYKt4T3pURVhNi9/gNb+UZNLaIdQllDEkrtI5RphaTNXRKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=XqmL7SUn; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=ann5vCQr4/5P6YHVvDPHf9clp5zOJe8l6kPiY5ZcsXHWn8MYNGEzbUd6pJyvCzSbV5AkRcJwz+0W0jvA3k1YMW8fDP0/HEVAPjSL6aLvjYu1M3Xwu85CZBoy/3DxhHNQIbrLIwJAjzcgmIfNzYCmrL89Ncb1/HaXL5yYKsBDerA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=EksvKkZJ; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,28 +37,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=x7fPDt483Yq4VU3STxn0iXTKvHl6ubQ/BGSVZEKcgMw=; b=XqmL7SUnstf3OlMR/hjISGwx0D
-	Spcv2HBFvKBqC27ikqcapfiA89JNBnBs2QMgWHIqCW56LlrA5komHn9+i/vVU7QHIsuxLOwD1oGCX
-	zaF1kN87xPawVdm2ZLCexUSwDcOOn2higoQPsBnRaR+eqe3StsrP8UaAWyC09myVRcYIiZz7oYAbX
-	sD7KONOir4El6QKJOzEesiOFVeB+SmN0Aqf0aRzdXdJKQ4/LQGc7sNJB6jSme+qbQSoIujEn0Jd9V
-	/JE+Lfsvj6+vNM5Mh+l4itQnnJMYhVN9dW1+nBpLguOnEILWGXi5s1LDu0saXtVs/5xGQa87w/39t
-	1VHa17/A==;
+	bh=JtZS1sD4hE5TA471wSFLZeoORl0p5wDkwk8SSOxNTjk=; b=EksvKkZJrjIUXHtGisBQ1q1Hqx
+	oDgvhQ3qfvIVPphFDUq3e1jpZPYGdQY4tfj/8I6DgTW5uiHBz+ZXyShTgIkQPLfJlAQ5o9HS0dMv9
+	NeeS+zlRYIKtKuzuCAQpY8m4pvhBP+U0BHXXRWe203RXLk4+B7tjvS6vg1ewvWO7IE/9EDkP+lcyc
+	t8C1OSSch1kRStKrYnm/RTAFE2yssIRaXpIofQWLqnZ5ByOpaFrx5I99GLD8RhO+7VOo0IqkeThRv
+	OWD4dMPbii9046iy4++A87yNbzb03nU0nDmf7QpK+AeJ134V7fn43o9sZGpsU9mNEXz8ntf5Gaf/w
+	DdBUEyaA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uD95V-000000000n9-3u5x;
+	id 1uD95V-000000000my-1nqw;
 	Thu, 08 May 2025 23:47:29 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 0/6] Add test for parse_flags_array()
-Date: Thu,  8 May 2025 23:47:16 +0200
-Message-ID: <20250508214722.20808-1-phil@nwl.cc>
+Subject: [nft PATCH 1/6] doc: Fix typo in nat statement 'prefix' description
+Date: Thu,  8 May 2025 23:47:17 +0200
+Message-ID: <20250508214722.20808-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250507222830.22525-1-phil@nwl.cc>
+In-Reply-To: <20250508214722.20808-1-phil@nwl.cc>
 References: <20250507222830.22525-1-phil@nwl.cc>
+ <20250508214722.20808-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -67,106 +68,27 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The function introduced in previous patch relaxes JSON syntax in parsing
-selected properties which usually contain an array as value to also
-accept a string representing the only array element.
+No point in repeating 'to map' here.
 
-The test asserting correct parsing of such properties exposed JSON
-printer's limitation in some properties to not reduce the array value
-when possible.
+Fixes: 19d73ccdd39fa ("doc: add nat examples")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ doc/statements.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-To make things consistent, This series enhances the JSON printer by
-support for array reduction where missing (patches 2-4), then introduces
-a shared routine to combine the common idiom in patch 5. Patch 6 finally
-adds the actual shell test case. Patch 1 is merely fallout, a trivial
-fix identified when working on the test implementation.
-
-Phil Sutter (6):
-  doc: Fix typo in nat statement 'prefix' description
-  json: Print single set flag as non-array
-  json: Print single fib flag as non-array
-  json: Print single synproxy flags as non-array
-  json: Introduce json_add_array_new()
-  tests: shell: Add test case for JSON 'flags' arrays
-
- doc/statements.txt                            |   2 +-
- src/json.c                                    |  89 +++------
- .../cache/dumps/0002_interval_0.json-nft      |   4 +-
- .../json/dumps/0001set_statements_0.json-nft  |   4 +-
- tests/shell/testcases/json/single_flag        | 189 ++++++++++++++++++
- .../listing/dumps/0010sets_0.json-nft         |   8 +-
- .../listing/dumps/0012sets_0.json-nft         |   8 +-
- .../listing/dumps/0022terse_0.json-nft        |   4 +-
- ...5interval_map_add_many_elements_0.json-nft |   4 +-
- .../dumps/0006interval_map_overlap_0.json-nft |   4 +-
- .../dumps/0008interval_map_delete_0.json-nft  |   4 +-
- .../maps/dumps/0012map_concat_0.json-nft      |   4 +-
- .../testcases/maps/dumps/0013map_0.json-nft   |   4 +-
- .../maps/dumps/map_with_flags_0.json-nft      |   4 +-
- .../maps/dumps/named_limits.json-nft          |   8 +-
- .../maps/dumps/pipapo_double_flush.json-nft   |   4 +-
- .../dumps/typeof_maps_add_delete.json-nft     |   4 +-
- .../maps/dumps/typeof_maps_update_0.json-nft  |   8 +-
- .../maps/dumps/vmap_timeout.json-nft          |   8 +-
- .../nft-f/dumps/0025empty_dynset_0.json-nft   |  12 +-
- .../optimizations/dumps/merge_vmaps.json-nft  |   4 +-
- .../dumps/skip_unsupported.json-nft           |   4 +-
- .../packetpath/dumps/set_lookups.json-nft     |   8 +-
- .../dumps/0004replace_0.json-nft              |   4 +-
- .../dumps/0011reset_0.json-nft                |   4 +-
- .../sets/dumps/0001named_interval_0.json-nft  |  16 +-
- .../0002named_interval_automerging_0.json-nft |   4 +-
- .../0004named_interval_shadow_0.json-nft      |   4 +-
- .../0005named_interval_shadow_0.json-nft      |   4 +-
- .../dumps/0008comments_interval_0.json-nft    |   4 +-
- .../dumps/0009comments_timeout_0.json-nft     |   4 +-
- .../sets/dumps/0015rulesetflush_0.json-nft    |   4 +-
- .../dumps/0022type_selective_flush_0.json-nft |   4 +-
- .../sets/dumps/0024synproxy_0.json-nft        |   4 +-
- .../sets/dumps/0027ipv6_maps_ipv4_0.json-nft  |   4 +-
- .../sets/dumps/0028autoselect_0.json-nft      |  12 +-
- .../sets/dumps/0028delete_handle_0.json-nft   |   4 +-
- .../dumps/0032restore_set_simple_0.json-nft   |   8 +-
- .../dumps/0033add_set_simple_flat_0.json-nft  |   8 +-
- .../sets/dumps/0034get_element_0.json-nft     |  12 +-
- .../0035add_set_elements_flat_0.json-nft      |   4 +-
- .../sets/dumps/0038meter_list_0.json-nft      |   4 +-
- .../sets/dumps/0039delete_interval_0.json-nft |   4 +-
- .../0040get_host_endian_elements_0.json-nft   |   4 +-
- .../sets/dumps/0041interval_0.json-nft        |   4 +-
- .../sets/dumps/0042update_set_0.json-nft      |   4 +-
- .../dumps/0043concatenated_ranges_1.json-nft  |   8 +-
- .../dumps/0044interval_overlap_1.json-nft     |   4 +-
- .../sets/dumps/0049set_define_0.json-nft      |   4 +-
- .../dumps/0051set_interval_counter_0.json-nft |   4 +-
- .../sets/dumps/0052overlap_0.json-nft         |   4 +-
- .../sets/dumps/0054comments_set_0.json-nft    |   8 +-
- .../sets/dumps/0055tcpflags_0.json-nft        |   4 +-
- .../sets/dumps/0060set_multistmt_1.json-nft   |   4 +-
- .../sets/dumps/0062set_connlimit_0.json-nft   |   8 +-
- .../sets/dumps/0063set_catchall_0.json-nft    |   4 +-
- .../sets/dumps/0064map_catchall_0.json-nft    |   4 +-
- .../sets/dumps/0069interval_merge_0.json-nft  |   4 +-
- .../0071unclosed_prefix_interval_0.json-nft   |   8 +-
- .../sets/dumps/0073flat_interval_set.json-nft |   4 +-
- .../dumps/0074nested_interval_set.json-nft    |   4 +-
- .../sets/dumps/concat_interval_0.json-nft     |   8 +-
- .../sets/dumps/dynset_missing.json-nft        |   4 +-
- .../sets/dumps/exact_overlap_0.json-nft       |   4 +-
- .../testcases/sets/dumps/inner_0.json-nft     |   4 +-
- .../sets/dumps/meter_set_reuse.json-nft       |   4 +-
- .../dumps/range_with_same_start_end.json-nft  |   4 +-
- .../set_element_timeout_updates.json-nft      |   4 +-
- .../testcases/sets/dumps/set_eval_0.json-nft  |   4 +-
- .../sets/dumps/sets_with_ifnames.json-nft     |  12 +-
- .../transactions/dumps/0037set_0.json-nft     |   4 +-
- .../transactions/dumps/0038set_0.json-nft     |   4 +-
- .../transactions/dumps/0039set_0.json-nft     |   4 +-
- .../transactions/dumps/0047set_0.json-nft     |   4 +-
- .../transactions/dumps/doubled-set.json-nft   |   4 +-
- 75 files changed, 311 insertions(+), 353 deletions(-)
- create mode 100755 tests/shell/testcases/json/single_flag
-
+diff --git a/doc/statements.txt b/doc/statements.txt
+index 74af1d1a54e9a..79a01384660f6 100644
+--- a/doc/statements.txt
++++ b/doc/statements.txt
+@@ -438,7 +438,7 @@ Before kernel 4.18 nat statements require both prerouting and postrouting base c
+ to be present since otherwise packets on the return path won't be seen by
+ netfilter and therefore no reverse translation will take place.
+ 
+-The optional *prefix* keyword allows to map to map *n* source addresses to *n*
++The optional *prefix* keyword allows to map *n* source addresses to *n*
+ destination addresses.  See 'Advanced NAT examples' below.
+ 
+ .NAT statement values
 -- 
 2.49.0
 
