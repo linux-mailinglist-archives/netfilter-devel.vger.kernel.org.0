@@ -1,153 +1,89 @@
-Return-Path: <netfilter-devel+bounces-7094-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7096-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD777AB34E5
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 May 2025 12:29:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E680AB3CF0
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 May 2025 18:04:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC9353B98CB
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 May 2025 10:28:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C82F93ADAE4
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 May 2025 16:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECB23265CC1;
-	Mon, 12 May 2025 10:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666E9246783;
+	Mon, 12 May 2025 16:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GipB8GnG";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Dn+pJdzY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n+U6Jdwf"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D9A265CA3
-	for <netfilter-devel@vger.kernel.org>; Mon, 12 May 2025 10:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337281AAE08;
+	Mon, 12 May 2025 16:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747045734; cv=none; b=cyf72KRPzvzwMckRAPokBSKlX3WMW0CKNW7xPnXZ6/Z1usBtvJJLf9lZyd2WmZ/eEKs78SEhw+52Hq147vND9VbL9QC9ghauat/4mxOTmr5tF+h44RoWgQCHziVt9R5ZJ+F5LhrApzoJbmXVqO38r8DDbEC2PRwd8v05Q9tLxl8=
+	t=1747065867; cv=none; b=JE99+P8KnqHK+xyb09Dnw285FXhG2v7owGjceZyw/gqmmK6TuKSeuR7N/ugre1K4jhiJdoidXILB0n1BvY4gOedrfe1YcTpzO2WOpRqQ0jpoorlc5c6JJo2xsxklzd4CNmkPQH8XlN5YJkZKZREUf+dowWkwQVNxUGs0FH9Lga4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747045734; c=relaxed/simple;
-	bh=gAhJX9eAemw9+PWS8n+n+qxiyOMGRf1Y501+OX8uDNg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pehU4NfxHdpDMN9w2U0ackl7kwJ0kThlNbKNsaaedSzKX4P4WvWp3w6V/PoM70nPMbdN5AJDDA7EOKgqPvZuKAV9AzCy4dnMi9xlPXmTJy+KT1uLy63RD/0X4MNO52uDNSIT3ybK74INzz/Ptij6lD5NgiQAbiHkE5MZeMvciH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GipB8GnG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Dn+pJdzY; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1747045731;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dgeuGMr/JXNZkp67Cj25IB+ttfZNxcT5LQr2SIje890=;
-	b=GipB8GnGFaM2P2HeCLykaA8p61a4CbHb4K/c2ODpx7nP0vi9+UvNnYLpEgyngRiZJgVx4O
-	S+snih/63sk4BsfEZk3jSS8h7HHptnCqhLACkbjFegF5uyW3Q5uQCLWJ15fnibciquMc/a
-	CRtUfPQ9OjhyBS0yKmc2758HIEmu/+zm3LQKmG7iN2KuutxCts0Kagzsh9DfZCtyW66lkS
-	8EMIIX4lbVF6K2SrCLDU+5ic9d7o+QXnfg53wD94C86Pt6ubaB5KLUW0u1xLabDiwDZ2qv
-	n/qfQWHPAIM+6IRzACcCRWtk7IGFbMmYNPjNGskPL2WvY8ky0m3JRC/yYhhPNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1747045731;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dgeuGMr/JXNZkp67Cj25IB+ttfZNxcT5LQr2SIje890=;
-	b=Dn+pJdzYfrNSpwlPUxgcgOKbl2u+Ff7p1rljaYWRjtHsyPcUXxzBh+Y9FquUswzgrxhfIj
-	8bE5z4I2Dk+yVnBA==
-To: netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	linux-rt-devel@lists.linux.dev
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	s=arc-20240116; t=1747065867; c=relaxed/simple;
+	bh=syJvETKrlZB42kjU9fnlmjti0G9JCoO/nUPSovUn/Wc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZT+6Xzun5HXemb3WLKK8WX3hlHVcGCFazUKxk1x7GqnCXn09QTIZT162avIpbbfRCF/4Mel5KJXLMDJx72TelUjOWkFoaWF9mp4O/T1Ew9cJOoOixgLvAwZYdhEI0DwO0VOQfov+45zHJkZqsMYMj7nzm48DW2WU5NFzheYF/8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n+U6Jdwf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BE1C4CEE7;
+	Mon, 12 May 2025 16:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747065866;
+	bh=syJvETKrlZB42kjU9fnlmjti0G9JCoO/nUPSovUn/Wc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n+U6JdwfUjcO+sz4FBodf84HB5LFPPdDx2JkX7xvDrmoxLMd74QMQoOQ9KBy0XxKs
+	 I9NDBCOh3oqKi70fBjESh69xvcZiERWkNYHucMu348QMJ4hlr8rOKFaYl+yCa9QykE
+	 YMflrJFEHImdLIzf+2OWKrn2vlEqn7/Qvu9oHTv4+rxc9DfIq26TBoKl4gL9+dkv8j
+	 2gtDQpLkFl/v10c1OUzpp2NK9hHHI6QnUFLmcwJsDsRRNWxx2KHGs7VwCZsWIkLWoh
+	 n34HYPKdXQjKo6QxUfVJhWSn6WvSyMiFhwXIDIvh+nMA4ieRrgp4T3HYZh4rNkT3Ba
+	 shfiwAcN8MBaQ==
+Date: Mon, 12 May 2025 17:04:21 +0100
+From: Simon Horman <horms@kernel.org>
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, Matthieu Baerts <matttbe@kernel.org>,
+	Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH nf-next v1 3/3] netfilter: nf_dup_netdev: Move the recursion counter struct netdev_xmit
-Date: Mon, 12 May 2025 12:28:46 +0200
-Message-ID: <20250512102846.234111-4-bigeasy@linutronix.de>
-In-Reply-To: <20250512102846.234111-1-bigeasy@linutronix.de>
-References: <20250512102846.234111-1-bigeasy@linutronix.de>
+	Andrea Mayer <andrea.mayer@uniroma2.it>,
+	Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+	linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [PATCHv2 net-next 1/6] selftests: net: disable rp_filter after
+ namespace initialization
+Message-ID: <20250512160421.GO3339421@horms.kernel.org>
+References: <20250508081910.84216-1-liuhangbin@gmail.com>
+ <20250508081910.84216-2-liuhangbin@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250508081910.84216-2-liuhangbin@gmail.com>
 
-nf_dup_skb_recursion is a per-CPU variable and relies on disabled BH for its
-locking. Without per-CPU locking in local_bh_disable() on PREEMPT_RT
-this data structure requires explicit locking.
+On Thu, May 08, 2025 at 08:19:05AM +0000, Hangbin Liu wrote:
+> Some distributions enable rp_filter globally by default. To ensure consistent
+> behavior across environments, we explicitly disable it in several test cases.
+> 
+> This patch moves the rp_filter disabling logic to immediately after the
+> network namespace is initialized. With this change, individual test cases
+> with creating namespace via setup_ns no longer need to disable rp_filter
+> again.
+> 
+> This helps avoid redundancy and ensures test consistency.
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 
-Move nf_dup_skb_recursion to struct netdev_xmit, provide wrappers.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/netdevice_xmit.h |  3 +++
- net/netfilter/nf_dup_netdev.c  | 22 ++++++++++++++++++----
- 2 files changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/netdevice_xmit.h b/include/linux/netdevice_xmit.h
-index 38325e0702968..3bbbc1a9860a3 100644
---- a/include/linux/netdevice_xmit.h
-+++ b/include/linux/netdevice_xmit.h
-@@ -8,6 +8,9 @@ struct netdev_xmit {
- #ifdef CONFIG_NET_EGRESS
- 	u8  skip_txqueue;
- #endif
-+#if IS_ENABLED(CONFIG_NF_DUP_NETDEV)
-+	u8 nf_dup_skb_recursion;
-+#endif
- };
-=20
- #endif
-diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
-index a8e2425e43b0d..fab8b9011098f 100644
---- a/net/netfilter/nf_dup_netdev.c
-+++ b/net/netfilter/nf_dup_netdev.c
-@@ -15,12 +15,26 @@
-=20
- #define NF_RECURSION_LIMIT	2
-=20
--static DEFINE_PER_CPU(u8, nf_dup_skb_recursion);
-+#ifndef CONFIG_PREEMPT_RT
-+static u8 *nf_get_nf_dup_skb_recursion(void)
-+{
-+	return this_cpu_ptr(&softnet_data.xmit.nf_dup_skb_recursion);
-+}
-+#else
-+
-+static u8 *nf_get_nf_dup_skb_recursion(void)
-+{
-+	return &current->net_xmit.nf_dup_skb_recursion;
-+}
-+
-+#endif
-=20
- static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *de=
-v,
- 				enum nf_dev_hooks hook)
- {
--	if (__this_cpu_read(nf_dup_skb_recursion) > NF_RECURSION_LIMIT)
-+	u8 *nf_dup_skb_recursion =3D nf_get_nf_dup_skb_recursion();
-+
-+	if (*nf_dup_skb_recursion > NF_RECURSION_LIMIT)
- 		goto err;
-=20
- 	if (hook =3D=3D NF_NETDEV_INGRESS && skb_mac_header_was_set(skb)) {
-@@ -32,9 +46,9 @@ static void nf_do_netdev_egress(struct sk_buff *skb, stru=
-ct net_device *dev,
-=20
- 	skb->dev =3D dev;
- 	skb_clear_tstamp(skb);
--	__this_cpu_inc(nf_dup_skb_recursion);
-+	(*nf_dup_skb_recursion)++;
- 	dev_queue_xmit(skb);
--	__this_cpu_dec(nf_dup_skb_recursion);
-+	(*nf_dup_skb_recursion)--;
- 	return;
- err:
- 	kfree_skb(skb);
---=20
-2.49.0
+Reviewed-by: Simon Horman <horms@kernel.org>
 
 
