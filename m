@@ -1,310 +1,127 @@
-Return-Path: <netfilter-devel+bounces-7121-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7123-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29D9CAB7822
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 May 2025 23:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68500AB7AD5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 May 2025 03:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB4851B6795F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 May 2025 21:43:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21B2A1BA666B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 May 2025 01:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42BDC223709;
-	Wed, 14 May 2025 21:42:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEBE213E8E;
+	Thu, 15 May 2025 01:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="JJCXIQI1";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="cqrv7b3P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jrMTxWeA"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B99222590
-	for <netfilter-devel@vger.kernel.org>; Wed, 14 May 2025 21:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EAE801
+	for <netfilter-devel@vger.kernel.org>; Thu, 15 May 2025 01:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747258957; cv=none; b=RlaLKbKCCLfqQUnnpyyMlLGDQtaB651G3t/laiyBbrYPOmy7FTb8qE+3K/GN0RYhIKQt2pIZtnHQj2m6jUMR1Yt9I4pZrWXHfnw2Bc+d0TNSghapcFiIoEKpBAYj6L1ryXQrgyZDnxhBml1K3BJcQXVsUj/1ECy0bNH/mTTVr84=
+	t=1747271372; cv=none; b=srCFJGWazmTnJrGkAaExYtUmZD7CGyZBEUDx2tRNfXgMi4FpE4it9Ld07ov8SQtldAhgLmvjPIyMalPzDlP6ZNT+6lWgi5yhU7ZqPMNZlAjpAHfgIJDXhQ8SjW/ShkpJWjoxdana71+GUuxZ1Y0Fj3Okm6GeQtspHMmj8VFb/Gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747258957; c=relaxed/simple;
-	bh=WVRzIbhEAKIwtc66tOxUxP7Nw7KOOX/Uv51u+yqEiaw=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RHFw0qWLpbGOak9B+J0uVIZ5Xzs7Yr0h2hNcXJpeTGxL03YyqRhvwaxHBuMAinWGVbGtYoj0DMZ3VG0PjGzADulfDpQXihTlJdP4FI13RsNJ8hk3epQuUfQ/R/sldE/u4EBLPAi5JQae1kYcTqqJdgyNuMcOoJ7iPL1J+5S9VNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=JJCXIQI1; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=cqrv7b3P; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 50CC260746; Wed, 14 May 2025 23:42:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1747258952;
-	bh=zoFFxGf4Wd0ugl7NFox+NgVCw9jheIvcCpOBjQhn86s=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JJCXIQI1ZpauyHmlINAqyA4Dn3w0lDbidlQlTBRde0SYNTJdjsVkfRd9CpidLTfUX
-	 8mp1+TOzmyTX2OmX69uo7FiGVLBYfcyS/2N+pRG7MKtYadC+FubxrNO1VkuWW4GSwR
-	 RXIbYscdlKNRVeGWv4V+N4T3Kphruu8Dx10GAy2SEQ6DLVcJhn3KoKI0o4Lg/aHgiD
-	 EIYe68FFr5t2/SJuRLAiV768EBuQzMcG0Wxeqqmzuc8ND0onCNkC4Wj4HeJHyZw5xk
-	 DjdAzfpO8HG+d8b/YfrIAEFFKj7oaxbHbOp11cEv5q+N1mO9VjyaZwCQieHZTrYE+D
-	 pzL6Q6KPYH6Aw==
-X-Spam-Level: 
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 5FB5860744
-	for <netfilter-devel@vger.kernel.org>; Wed, 14 May 2025 23:42:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1747258951;
-	bh=zoFFxGf4Wd0ugl7NFox+NgVCw9jheIvcCpOBjQhn86s=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=cqrv7b3PAotWbvL4Kb4fQfTVaK/R+EEOEw2UebyiUFUlcI3dKyXCG+yKI8U12B+kU
-	 /uldkRLNXLFPfdaUfut+diQQY2Zzi+WW0vwpBzvTGZ4YuPEOUcTl8GjGpsFXhmIq2e
-	 bqSlOSGjAWiwpUv2lggSblvYaNCHxd06FJzJ5wTErQh0PRGOFmSHKb1BPSdFpPJoDw
-	 dx0d/zrjJDktLnChZA2EkuGIBjB7MuzVyv71nF4MTr4FqPAPTl/f0+TVpfxv0EZ2G+
-	 URa0FHRQsHD058SxPgrmtG3C1dnM0brMgU+C7bggUzLMQ6h5V6XAlNRbCyofm5HilQ
-	 00WCNOOUeqVeA==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v1 6/6] netfilter: nf_tables: add support for validating incremental ruleset updates
-Date: Wed, 14 May 2025 23:42:16 +0200
-Message-Id: <20250514214216.828862-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20250514214216.828862-1-pablo@netfilter.org>
-References: <20250514214216.828862-1-pablo@netfilter.org>
+	s=arc-20240116; t=1747271372; c=relaxed/simple;
+	bh=zHaA5NnaNR8vB0QBtR0co6v3T+tjyWDWF9fl+rF2O/0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FmqWxVqpqeXWuECn0/O5v38Mf8YNQKG0Enb1oXdpkqwBrv12S7DL3YTKtcj70jbzurpPZpVxuWXwSzcHtc4DMAhJv76dq4PT03gGl7ZHj6HVM6H4A3aqA08YRxlXcRsRmlxTJvW4C0nXGXVwKRjp3LudTq4yTMRZCdAaCYbCq78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jrMTxWeA; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6f0ad74483fso5071886d6.1
+        for <netfilter-devel@vger.kernel.org>; Wed, 14 May 2025 18:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747271370; x=1747876170; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ob5lPTQZ3p6gkLLFtuuMoJxIWILx8ax9skOWmwDcFXs=;
+        b=jrMTxWeAfMn1yXG++V6eQe+NPm4MpZ6Ol+o2+4szVDKCnGaTHqNQCM1LtGcEgpu279
+         RkZmvAQJiU1zYtH7eQKgYfHDOLlKwu3AA2e9ohNgFBbpfynROB3mQtLu/n6WpjljNyVg
+         +9pkJremg/lcr/dEbvRovU3mvRF6ml3yA9Qnfcd6JIBFeywAF2jHUTNP142wgS6cSu+N
+         xWSHZBSMEzbBInkfaRswwxDydLzjA9xsWc3/Hho+xN7AF1R4F0fOW9tStmGGY5qtGlIH
+         mtDdE9LVyIYopYQj+7PuGSM+VHosO+FWnxl+3+3/Jyhg+qbP5FrSUBVE08e5ANZSucI0
+         xZjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747271370; x=1747876170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ob5lPTQZ3p6gkLLFtuuMoJxIWILx8ax9skOWmwDcFXs=;
+        b=wnbxZOww2mxksVMwtmBmUCtADGqZw9biowCdgCDLtxX6IhjrVeF85RkWZxN5KGE2Nb
+         u/vStHlqohjhP/pxehG7+Hp2nRJzVjtKqNXrUZTBAEV3+igLImNabifXcAlxMXDLc3fe
+         Ro71ttZQ9JIItFcHa8RaQtsCCkgctsQVxBis4kffg78pow5gB7iq0xWzRvux9cz7CSFq
+         x2c7F7zDdNF8kJGmeSmjJnpL3t2DCHw+j1KNhBjESDlZzqNob+6Hy17uR+vTWqGPa690
+         7WrQBcKQDZfwV5RTLTJTZxftQErpX1fROeDhly1g6Ba0NnEVMeT99URL0ZWso3iyLkkO
+         r8pA==
+X-Forwarded-Encrypted: i=1; AJvYcCUus8wWmJGggffeNfhmy7jAd3uLogTbYlzXcghTOQ/gxqogeO2Ebfc3aRY7LVi8p8AKdZHl7eIZwQta3kR4WV4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjyUoMG5qzdgS3Goq09xRFkeRB8pHXXVzLZcK07Gq+s+/QOWLX
+	+nW14TeGiXdXRuOE1mtb+lFKPJ4q7WTBDfOCWfWfk+zlTg2O8oqf
+X-Gm-Gg: ASbGnctLg+l0yDQ65mLAc0KLuCYa5AhKT5BycktFVxvDwIop4X0jtI0eBsEf+zr/c3y
+	Tx2xFa1JniIh4Pj6emLPRl415hAUhKZ1H1e062LcFLQO8sRPGRriH5XEXxofBWanCrF3Bv2PXgb
+	R5KFIB8Yb8HWqRxiZ8Q1Ij6p+fBpLPCxluor05YdNgEYa6LQZJeyZaQmBreYfoFUJrsfPmRr9dd
+	zwhj+JDx/yEsMuGnylI3H7UHqbeJrX6F4RpvPMHaumPHssC6dFcxGgyis1Bfw7Rx4gezDAHtXf4
+	m51RIUrmwLPwcY1UhnADrMLN1xhUeE8USmJ5U0Rc9iXfdukAmnOUN39yHao+kyqkfgN9Y02YBju
+	FdcymrNVUAOOldoYkwpc=
+X-Google-Smtp-Source: AGHT+IEGvPlMFoffb9gHIgqeEpzSGY68SKD3OODZamqSZ5PEOPr8OF/RBYed3h+5nK5bybrxKMPfMw==
+X-Received: by 2002:a05:6214:234e:b0:6f2:b094:430e with SMTP id 6a1803df08f44-6f896e35c98mr91309606d6.25.1747271369480;
+        Wed, 14 May 2025 18:09:29 -0700 (PDT)
+Received: from fedora (syn-075-188-033-214.res.spectrum.com. [75.188.33.214])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f6e3a538f8sm87315206d6.114.2025.05.14.18.09.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 May 2025 18:09:29 -0700 (PDT)
+Date: Wed, 14 May 2025 21:09:27 -0400
+From: Shaun Brady <brady.1345@gmail.com>
+To: Florian Westphal <fw@strlen.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org, ppwaskie@kernel.org
+Subject: Re: [PATCH v3] netfilter: nf_tables: Implement jump limit for
+ nft_table_validate
+Message-ID: <aCU-x4SbsJ_Jy7RM@fedora>
+References: <20250513020856.2466270-1-brady.1345@gmail.com>
+ <aCRPkxvH5LCtc7Bi@calendula>
+ <aCSJiV5Hz-MTMFLd@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aCSJiV5Hz-MTMFLd@strlen.de>
 
-Use the new binding graph to validate incremental ruleset updates.
+On Wed, May 14, 2025 at 02:16:09PM +0200, Florian Westphal wrote:
+> > Maybe it is better to have a global limit for all tables, regardless
+> > the family, in a non-init-netns?
+> 
+> Looks like it would be simpler.
+> 
+> The only cases where processing is disjunct is ipv4 vs. ipv6.
+> 
+> And arp. But large arp rulesets are unicorns so we should not bother
+> with that.
 
-Perform full validation if the table is new, which is the case of the
-initial ruleset reload. Subsequent incremental ruleset updates use the
-validation list which contains chains with new rules or chains that can
-be now reached via jump/goto from another rule/set element.
+I'm good with the simpler condition.  Let me double check my
+understanding:
 
-When validating a chain from commit/abort phase, backtrack to collect
-the basechains that can reach this chain, then perform the validation of
-rules in this chain. If no basechains can be reached, then skip
-validation for this chain. However, if basechains are off the jump stack
-limit, then resort to full ruleset validation. This is to prevent
-inconsistent validation between the preparation and commit/abort phase
-validations.
+Each table will keep a running jump count.  When validating a table
+(rule modification), sum every other table in the netns, with the single condition set being
 
-As for loop checking, stick to the existing approach which uses the jump
-stack limit to detect cycles.
+if sibling_table->family == NFPROTO_IPV4 && table->family == NFPROTO_IPV6
+||
+   sibling_table->family == NFPROTO_IPV6 && table->family == NFPROTO_IPV4
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 188 +++++++++++++++++++++++++++++++++-
- 1 file changed, 183 insertions(+), 5 deletions(-)
+   do not include in total for netns (break).
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e92cccc834d9..0f183abbc94f 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -10397,6 +10397,160 @@ static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
- 	},
- };
- 
-+struct basechain_array {
-+	const struct nft_chain	**basechain;
-+	uint32_t		num_basechains;
-+	uint32_t		max_basechains;
-+	int			max_level;
-+};
-+
-+static int basechain_array_add(struct basechain_array *array,
-+			       const struct nft_chain *chain, int level)
-+{
-+	const struct nft_chain **new_basechain;
-+	uint32_t new_max_basechains;
-+
-+	if (array->num_basechains == array->max_basechains) {
-+		new_max_basechains = array->max_basechains + 16;
-+		new_basechain = krealloc_array(array->basechain, new_max_basechains, sizeof(struct nft_chain *), GFP_KERNEL);
-+		if (!new_basechain)
-+			return -ENOMEM;
-+
-+		array->basechain = new_basechain;
-+		array->max_basechains = new_max_basechains;
-+	}
-+	array->basechain[array->num_basechains++] = chain;
-+
-+	if (level > array->max_level)
-+		array->max_level = level;
-+
-+	return 0;
-+}
-+
-+static int nft_chain_validate_backtrack(struct basechain_array *array,
-+					const struct list_head *backbinding_list,
-+					int *level)
-+{
-+	struct nft_binding *binding;
-+	int err;
-+
-+	/* Basechain is unreachable, fall back to slow path validation. */
-+	if (*level >= NFT_JUMP_STACK_SIZE)
-+		return -ENOENT;
-+
-+	list_for_each_entry(binding, backbinding_list, backlist) {
-+		if (binding->from.type == NFT_BIND_CHAIN &&
-+		    binding->from.chain->flags & NFT_CHAIN_BASE &&
-+		    binding->use > 0) {
-+			if (basechain_array_add(array, binding->from.chain, *level) < 0)
-+				return -ENOMEM;
-+
-+			continue;
-+		}
-+
-+		switch (binding->from.type) {
-+		case NFT_BIND_CHAIN:
-+			if (binding->use == 0)
-+				break;
-+
-+			(*level)++;
-+			err = nft_chain_validate_backtrack(array,
-+							   &binding->from.chain->backbinding_list,
-+							   level);
-+			if (err < 0)
-+				return err;
-+
-+			(*level)--;
-+			break;
-+		case NFT_BIND_SET:
-+			if (binding->use == 0)
-+				break;
-+
-+			/* no level update for sets. */
-+			err = nft_chain_validate_backtrack(array,
-+							   &binding->from.set->backbinding_list,
-+							   level);
-+			if (err < 0)
-+				return err;
-+
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int nft_chain_validate_incremental(struct net *net,
-+					  const struct nft_chain *chain)
-+{
-+	struct basechain_array array = {};
-+	uint32_t i, level = 1;
-+	int err;
-+
-+	array.max_basechains = 16;
-+	array.basechain = kcalloc(16, sizeof(struct nft_chain *), GFP_KERNEL);
-+	if (!array.basechain)
-+		return -ENOMEM;
-+
-+	if (nft_is_base_chain(chain)) {
-+		err = basechain_array_add(&array, chain, 0);
-+		if (err < 0) {
-+			kfree(array.basechain);
-+			return -ENOMEM;
-+		}
-+	} else {
-+		err = nft_chain_validate_backtrack(&array,
-+						   &chain->backbinding_list,
-+						   &level);
-+		if (err < 0) {
-+			kfree(array.basechain);
-+			return err;
-+		}
-+	}
-+
-+	for (i = 0; i < array.num_basechains; i++) {
-+		struct nft_ctx ctx = {
-+			.net	= net,
-+			.family	= chain->table->family,
-+			.table	= chain->table,
-+			.chain	= (struct nft_chain *)array.basechain[i],
-+			.level	= array.max_level,
-+		};
-+
-+		if (WARN_ON_ONCE(!nft_is_base_chain(array.basechain[i])))
-+			continue;
-+
-+		err = nft_chain_validate(&ctx, chain);
-+		if (err < 0)
-+			break;
-+	}
-+
-+	kfree(array.basechain);
-+
-+	return err;
-+}
-+
-+static int nft_validate_incremental(struct net *net, struct nft_table *table)
-+{
-+	struct nftables_pernet *nft_net = nft_pernet(net);
-+	struct nft_chain *chain, *next;
-+	int err;
-+
-+	err = 0;
-+	list_for_each_entry_safe(chain, next, &nft_net->validate_list, validate_list) {
-+		if (chain->table != table)
-+			continue;
-+
-+		if (err >= 0)
-+			err = nft_chain_validate_incremental(net, chain);
-+
-+		list_del(&chain->validate_list);
-+		chain->validate = 0;
-+	}
-+
-+	return err;
-+}
-+
- static void nft_validate_chain_release(struct net *net)
- {
- 	struct nftables_pernet *nft_net = nft_pernet(net);
-@@ -10422,12 +10576,36 @@ static int nf_tables_validate(struct net *net)
- 			nft_validate_state_update(table, NFT_VALIDATE_DO);
- 			fallthrough;
- 		case NFT_VALIDATE_DO:
--			err = nft_table_validate(net, table);
--			if (err < 0) {
--				if (err == EINTR)
--					goto err_eintr;
-+			/* If this table is new, then this is the initial
-+			 * ruleset restore, perform full table validation,
-+			 * otherwise, perform incremental validation.
-+			 */
-+			if (!nft_is_active(net, table)) {
-+				err = nft_table_validate(net, table);
-+				if (err < 0) {
-+					if (err == EINTR)
-+						goto err_eintr;
- 
--				return -EAGAIN;
-+					return -EAGAIN;
-+				}
-+			} else {
-+				err = nft_validate_incremental(net, table);
-+				if (err < 0) {
-+					if (err != -ENOMEM && err != -ENOENT)
-+						return -EAGAIN;
-+
-+					/* Either no memory or it cannot reach
-+					 * basechain, then fallback to full
-+					 * validation.
-+					 */
-+					err = nft_table_validate(net, table);
-+					if (err < 0) {
-+						if (err == EINTR)
-+							goto err_eintr;
-+
-+						return -EAGAIN;
-+					}
-+				}
- 			}
- 			nft_validate_state_update(table, NFT_VALIDATE_SKIP);
- 			break;
--- 
-2.30.2
 
+Assuming this logic is sound, I'll do v4.
+
+
+Thanks!
+
+
+SB
 
