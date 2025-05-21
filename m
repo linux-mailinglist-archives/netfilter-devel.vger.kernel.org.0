@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7202-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7204-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F25ABF5BC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 May 2025 15:13:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3E4ABF5C0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 May 2025 15:13:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1DF14A45A1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 May 2025 13:13:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8989188E595
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 May 2025 13:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085E4274678;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79218277035;
 	Wed, 21 May 2025 13:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="dxdMbkmY"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="h4ObZWn0"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C750B26983B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75D526C387
 	for <netfilter-devel@vger.kernel.org>; Wed, 21 May 2025 13:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747833178; cv=none; b=fa69OMM8mXbeOOba6Icnh1GjMqxLPckLfMyjF0epWIcPBMF0mAVMwZNOx/MpRfFPk7OUFXS945dGTmIplAJlZHI9/aYEcYNJihOhDAJctgeRO9s+hQsRQAUKIU2bZuLBgzFWBS9NMyzAg8o0uU6HkTLPqx9yl8D/CDYWAtN1bLg=
+	t=1747833179; cv=none; b=f7+UlZ0G4UFOIFTXBi4/aBixz6YpaXG84Y/YElRD+ph9s7gxah8Sc/czNTCwqvc6xe/VQGGL8bILXVzVWYp/ohg97xWn/uhd5umPogRQ2iEGdoZtKesr0qDMdT2gdM6XGeWZOFdwUc2JuMcurrFX9vgcpRY/BvSXCKo7ssbrWbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747833178; c=relaxed/simple;
-	bh=PES2UDvouxmX/8vyXGzvX2oZCSjPnrRBMlMJtg80dSM=;
+	s=arc-20240116; t=1747833179; c=relaxed/simple;
+	bh=raz/s2S+CIkUECLNzL8RWleQxsJw+AlHEqrs5QuOSJs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FqG0IaiUn9NSqZo5Vn5nWR+lP71e7sZJ8I1TPfo3rjDqImWQ1TH+ei4xnTWHMExbR/SaLVEAy0XshY11jAEgy7wXyF6YwhmM5d5AAnjjuttE2V86QyD4doVj3eItq6LGIpBi29TFB3ctnRXkjYXECMwOQdJYuasZ+YanYqLd91A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=dxdMbkmY; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=IXnzY9kA1P500RdmyN2RHi6hCnkV6vwezwd34upozI1MaAGDsVheNNmIll4PWnGJYvsMH1yOz3k5PGp8z232i72XDfBIKEkHdAKp7rtNKn8Rx+8y+2sxfxjkLGp+0fUCn31ewvieSogwjl6gabYmAnmbwKF1x6ETbYWZqpiW9es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=h4ObZWn0; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,26 +37,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=VtHjXfQmLkVcnMJasYDxPOsM5S9mt3LCXTAgj7jxW0M=; b=dxdMbkmYlKxyGKW4Ffzttq9H7N
-	HkLUwa9VMA61Tk3gLRVNh0SA8kGPXDwI+Ps2r6lc0v2dBXMrxt/TT56snHIVzKLZzuiP6iX3RULJb
-	mU4LOEoK48qF16mV4e/jDroCsvDQ7k8cLdy2XpzDQ/yt5RoQW2EHtwh8DsWr3QOO/haZ+u9HUNef/
-	sTJGEED0bTTxUZgfsVn9KIGERJIG3Tz1662LWXJRNayCarMh5Yr3kn4M/t1W/ZqDitAuiE+fNwGaJ
-	lVHGLuzzBi/E7YYjoWLq4kOXNnB1UvE/evV/h7T3t0tj/WNrJs/ht7C7HQZ1rSnOKc9TSXCI1tI+C
-	M3FA8x4A==;
+	bh=KLlL47uLbVdg6bDjPLEmafJxrCwya3p8Q0rEDutLJR8=; b=h4ObZWn0KYB5IXq/D8liX1SQHk
+	lIScNj9LK/V1c+iJHc9Gyy6Re52qotYZ1przgKDpFzX4Wvopr/XRTwMcujKaTk1Gm1FGDBi0Q1AT/
+	8Ru2o23UWt0UIDJj7sGt9Tw3MrGYRStyxFzAS6PyPt1mpdFsYze3h1XZHHDP1JxUgIrVOymsjP2R2
+	VcA4ctmuXTzZA4RoEEFNqNbS4baW8qEkKXp2xKKGjgMLa03B6CEfjWGE+9BwJCwkt204TYtB0kUDj
+	71MZA7NcIRs54sOfxKoxWrC5jJBP7ncN81Rm2R7NMkFWcwLoxmVLk1EghRGnGKe/fwiO63CoCy5uT
+	hqynDxxw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uHjFY-0000000083e-1w71;
-	Wed, 21 May 2025 15:12:48 +0200
+	id 1uHjFX-0000000083Q-1pGN;
+	Wed, 21 May 2025 15:12:47 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Florian Westphal <fw@strlen.de>,
 	netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 1/4] netlink_delinearize: Replace some BUG()s by error messages
-Date: Wed, 21 May 2025 15:12:39 +0200
-Message-ID: <20250521131242.2330-2-phil@nwl.cc>
+Subject: [nft PATCH 2/4] netlink: Pass netlink_ctx to netlink_delinearize_setelem()
+Date: Wed, 21 May 2025 15:12:40 +0200
+Message-ID: <20250521131242.2330-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250521131242.2330-1-phil@nwl.cc>
 References: <20250521131242.2330-1-phil@nwl.cc>
@@ -68,72 +68,98 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Netlink parser tries to keep going despite errors. Faced with an
-incompatible ruleset, this is much more user-friendly than exiting the
-program upon the first obstacle. This patch fixes three more spots to
-support this.
+Prepare for calling netlink_io_error() which needs the context pointer.
+Trade this in for the cache pointer since no caller uses a special one.
+No functional change intended.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/netlink_delinearize.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ include/netlink.h |  6 +++---
+ src/monitor.c     |  7 +++----
+ src/netlink.c     | 11 ++++++-----
+ 3 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index f7c10fb5af316..79bef0bb299ab 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -605,7 +605,8 @@ static void netlink_parse_bitwise(struct netlink_parse_ctx *ctx,
- 						   sreg, left);
- 		break;
- 	default:
--		BUG("invalid bitwise operation %u\n", op);
-+		return netlink_error(ctx, loc,
-+				     "Invalid bitwise operation %u", op);
- 	}
+diff --git a/include/netlink.h b/include/netlink.h
+index e9667a24b0d11..c7da6f9e3bcbb 100644
+--- a/include/netlink.h
++++ b/include/netlink.h
+@@ -172,9 +172,9 @@ extern int netlink_list_setelems(struct netlink_ctx *ctx,
+ extern int netlink_get_setelem(struct netlink_ctx *ctx, const struct handle *h,
+ 			       const struct location *loc, struct set *cache_set,
+ 			       struct set *set, struct expr *init, bool reset);
+-extern int netlink_delinearize_setelem(struct nftnl_set_elem *nlse,
+-				       struct set *set,
+-				       struct nft_cache *cache);
++extern int netlink_delinearize_setelem(struct netlink_ctx *ctx,
++				       struct nftnl_set_elem *nlse,
++				       struct set *set);
  
- 	dreg = netlink_parse_register(nle, NFTNL_EXPR_BITWISE_DREG);
-@@ -616,6 +617,7 @@ static void netlink_parse_byteorder(struct netlink_parse_ctx *ctx,
- 				    const struct location *loc,
- 				    const struct nftnl_expr *nle)
+ extern int netlink_list_objs(struct netlink_ctx *ctx, const struct handle *h);
+ extern struct obj *netlink_delinearize_obj(struct netlink_ctx *ctx,
+diff --git a/src/monitor.c b/src/monitor.c
+index 0db40895babf9..7556dfd350e4e 100644
+--- a/src/monitor.c
++++ b/src/monitor.c
+@@ -472,8 +472,8 @@ static int netlink_events_setelem_cb(const struct nlmsghdr *nlh, int type,
+ 			nftnl_set_elems_iter_destroy(nlsei);
+ 			goto out;
+ 		}
+-		if (netlink_delinearize_setelem(nlse, dummyset,
+-						&monh->ctx->nft->cache) < 0) {
++		if (netlink_delinearize_setelem(monh->ctx,
++						nlse, dummyset) < 0) {
+ 			set_free(dummyset);
+ 			nftnl_set_elems_iter_destroy(nlsei);
+ 			goto out;
+@@ -829,8 +829,7 @@ static void netlink_events_cache_addsetelem(struct netlink_mon_handler *monh,
+ 
+ 	nlse = nftnl_set_elems_iter_next(nlsei);
+ 	while (nlse != NULL) {
+-		if (netlink_delinearize_setelem(nlse, set,
+-						&monh->ctx->nft->cache) < 0) {
++		if (netlink_delinearize_setelem(monh->ctx, nlse, set) < 0) {
+ 			fprintf(stderr,
+ 				"W: Unable to cache set_elem. "
+ 				"Delinearize failed.\n");
+diff --git a/src/netlink.c b/src/netlink.c
+index fe02120def035..1222919458bae 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -1435,12 +1435,13 @@ static void set_elem_parse_udata(struct nftnl_set_elem *nlse,
+ 	}
+ }
+ 
+-int netlink_delinearize_setelem(struct nftnl_set_elem *nlse,
+-				struct set *set, struct nft_cache *cache)
++int netlink_delinearize_setelem(struct netlink_ctx *ctx,
++				struct nftnl_set_elem *nlse,
++				struct set *set)
  {
-+	uint32_t opval = nftnl_expr_get_u32(nle, NFTNL_EXPR_BYTEORDER_OP);
- 	enum nft_registers sreg, dreg;
- 	struct expr *expr, *arg;
- 	enum ops op;
-@@ -627,7 +629,7 @@ static void netlink_parse_byteorder(struct netlink_parse_ctx *ctx,
- 				     "Byteorder expression has no left "
- 				     "hand side");
+ 	struct setelem_parse_ctx setelem_parse_ctx = {
+ 		.set	= set,
+-		.cache	= cache,
++		.cache	= &ctx->nft->cache,
+ 	};
+ 	struct nft_data_delinearize nld;
+ 	struct expr *expr, *key, *data;
+@@ -1498,7 +1499,7 @@ int netlink_delinearize_setelem(struct nftnl_set_elem *nlse,
+ 		struct stmt *stmt;
  
--	switch (nftnl_expr_get_u32(nle, NFTNL_EXPR_BYTEORDER_OP)) {
-+	switch (opval) {
- 	case NFT_BYTEORDER_NTOH:
- 		op = OP_NTOH;
- 		break;
-@@ -635,8 +637,9 @@ static void netlink_parse_byteorder(struct netlink_parse_ctx *ctx,
- 		op = OP_HTON;
- 		break;
- 	default:
--		BUG("invalid byteorder operation %u\n",
--		    nftnl_expr_get_u32(nle, NFTNL_EXPR_BYTEORDER_OP));
-+		expr_free(arg);
-+		return netlink_error(ctx, loc,
-+				     "Invalid byteorder operation %u\n", opval);
- 	}
+ 		nle = nftnl_set_elem_get(nlse, NFTNL_SET_ELEM_EXPR, NULL);
+-		stmt = netlink_parse_set_expr(set, cache, nle);
++		stmt = netlink_parse_set_expr(set, &ctx->nft->cache, nle);
+ 		list_add_tail(&stmt->list, &setelem_parse_ctx.stmt_list);
+ 	} else if (nftnl_set_elem_is_set(nlse, NFTNL_SET_ELEM_EXPRESSIONS)) {
+ 		nftnl_set_elem_expr_foreach(nlse, set_elem_parse_expressions,
+@@ -1575,7 +1576,7 @@ int netlink_delinearize_setelem(struct nftnl_set_elem *nlse,
+ static int list_setelem_cb(struct nftnl_set_elem *nlse, void *arg)
+ {
+ 	struct netlink_ctx *ctx = arg;
+-	return netlink_delinearize_setelem(nlse, ctx->set, &ctx->nft->cache);
++	return netlink_delinearize_setelem(ctx, nlse, ctx->set);
+ }
  
- 	expr = unary_expr_alloc(loc, op, arg);
-@@ -733,8 +736,10 @@ static void netlink_parse_inner(struct netlink_parse_ctx *ctx,
- 		expr->meta.inner_desc = inner_desc;
- 		break;
- 	default:
--		assert(0);
--		break;
-+		netlink_error(ctx, loc, "Unsupported inner expression type %s",
-+			      expr_ops(expr)->name);
-+		expr_free(expr);
-+		return;
- 	}
- 
- 	netlink_set_register(ctx, ctx->inner_reg, expr);
+ static int list_setelem_debug_cb(struct nftnl_set_elem *nlse, void *arg)
 -- 
 2.49.0
 
