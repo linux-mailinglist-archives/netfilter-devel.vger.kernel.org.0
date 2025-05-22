@@ -1,78 +1,123 @@
-Return-Path: <netfilter-devel+bounces-7246-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7249-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B7F6AC0D61
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 15:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81337AC0D6D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 15:59:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08B9C7A1AD5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 13:52:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05D137A4DF4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 13:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB4B28C2B1;
-	Thu, 22 May 2025 13:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E252828A1DC;
+	Thu, 22 May 2025 13:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QODs/v5P"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aluGZemL"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 226FB2882BC;
-	Thu, 22 May 2025 13:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656BB1F94D
+	for <netfilter-devel@vger.kernel.org>; Thu, 22 May 2025 13:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747922017; cv=none; b=FcCSsH8pdK8Slm9bBjLVy3K7IMl4Y/VFnL4nRqKNsBK9tUm+Yu1PsvbNiZ1GtB2vYo3DpTV/QRFN2whVkPQaGLFdHU0N9DiRE2xsHSdqN7u2GjbYUhnelO0gCENVZk7s5nLwVthwx+uLD90bITup2X5UOBMQm591HUtKyfr4CzU=
+	t=1747922346; cv=none; b=mSLAJRJLrp3wSD+IErDHGwYbLyjLZxmpFEzzdrWbEPXM2Z15Ln6bGr4coCaTkpwiKlYjHH7+g65U98OniVTcy0k13VE3y1tFcaY1jljHhgZ/FTLbO+ZfdG23TC4wFzIoDgvUTt4Ec8R8/YumheYyitmQEmxxQkUENXuC66K6kx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747922017; c=relaxed/simple;
-	bh=Sa/Gpq4MDNOi2J3fwC+rO1gFlrYFv2SlfwaB39iQP08=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oBTVaTOdZX7AMWNRmCsuaswgPSnAljD0THd+x+OLtrlQwFiXS3yTzdR7LHIdtiFTALEqvK9YY+efod0w+CItji74nCoJv3gV7Vgvh85k18Ws6d8qbNdymkPYAcw5/6qWNwkWJPVl4Ifow0jAiMDCZug2bUNeQxFAyo70wfTb1Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QODs/v5P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5552DC4CEEB;
-	Thu, 22 May 2025 13:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747922016;
-	bh=Sa/Gpq4MDNOi2J3fwC+rO1gFlrYFv2SlfwaB39iQP08=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QODs/v5P1zGJQh7drAiLaZZuUTWJQqseEnQ+N5Xq4oAJU1zkekElCGd6lxkvLHlDG
-	 7iEb6zIWWDNyAK4ejDFl8TbfwUVjNOUNhpcMRJaYJ3kpR2eUGa6AfxsinHuiAtnvNN
-	 E7phopTcD9SxY50QxRQYOFdhNXAlbKCdS/E2xz0z1rNF0ZbkFZ5BbGmNP6aeJ2DlDl
-	 LMjmwOfT9j1Y4kZCEaoM9/d8tWey+JzA9ZX3vZXRFMtnGTzWAxYNYTpuE8L2GkIrB3
-	 +yVnp3woRPGPAsyzZVfPZdr59DLmSXDfZE8o2gM/pbvLea6/0h01DND5HVWiccrL6k
-	 Wc1yef8U8eEFg==
-Date: Thu, 22 May 2025 06:53:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Florian Westphal <fw@strlen.de>, Pablo Neira Ayuso
- <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>,
- "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: nft_queues.sh failures
-Message-ID: <20250522065335.1cc26362@kernel.org>
-In-Reply-To: <584524ef-9fd7-4326-9f1b-693ca62c5692@redhat.com>
-References: <584524ef-9fd7-4326-9f1b-693ca62c5692@redhat.com>
+	s=arc-20240116; t=1747922346; c=relaxed/simple;
+	bh=VgVZFlJbbO8gVWDD6POpyMTYahmpyFKPPKnI3MI5cv0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S9MQ82+gjO5MN+f5WbeZorYKkIJKagFN0FJSQkuIhNX23DbYQSJnVqAVvptWciRdWeSOrYJJnrTT0Fzi0/Ji27L7j2HFjWgW2ACaQj1MzP1PnJ3DlL4R+duruzLtT04DsE3Lr5+NVY2CsZAdxl4warpQaciS89+/kMktPIoi1FU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aluGZemL; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <85c18336-f029-457c-ad75-ab15e05050ee@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1747922340;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JfrNA2h8hoGkFc6ifKeWxZfX62Ca0zc75XtAmNAQVYc=;
+	b=aluGZemLvtjhu5NzJhDxB1gLzpUuYUkED7TS83WodjXzigil4zgly0i3wZAE0Vyo3857Bb
+	1HfsO0l3tyFU7EIcFjVSwP7kcKjnyZlrEu2yCzTmc9fz7BkShJlmvxzMN3hqzyv1SsnlsD
+	FodZEs9hKRLdC6XPoc+Y3sZgosxGaCM=
+Date: Thu, 22 May 2025 21:58:41 +0800
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [RESEND PATCH 1/1] netfilter: load nf_log_syslog on enabling
+ nf_conntrack_log_invalid
+Content-Language: en-US
+To: Florian Westphal <fw@strlen.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Lance Yang
+ <ioworker0@gmail.com>, kadlec@netfilter.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, Zi Li <zi.li@linux.dev>
+References: <20250514053751.2271-1-lance.yang@linux.dev>
+ <aC2lyYN72raND8S0@calendula> <aC23TW08pieLxpsf@strlen.de>
+ <6f35a7af-bae7-472d-8db6-7d33fb3e5a96@linux.dev> <aC4aNCpZMoYJ7R02@strlen.de>
+ <1c21a452-e1f4-42e0-93c0-0c49e4612dcd@linux.dev> <aC7Fg0KGari3NQ3Z@strlen.de>
+ <ac51507e-28ca-404d-a784-7cc3721ee624@linux.dev>
+ <0e89bc09-c0ee-49d0-bbde-430cca361fd6@linux.dev> <aC8keoPd6oj4-zIV@strlen.de>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <aC8keoPd6oj4-zIV@strlen.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 22 May 2025 12:09:01 +0200 Paolo Abeni wrote:
-> Recently the nipa CI infra went through some tuning, and the mentioned
-> self-test now often fails.
+
+
+On 2025/5/22 21:19, Florian Westphal wrote:
+> Lance Yang <lance.yang@linux.dev> wrote:
+>> Does this helper look correct?
 > 
-> As I could not find any applied or pending relevant change, I have a
-> vague suspect that the timeout applied to the server command now
-> triggers due to different timing. Could you please have a look?
+> Yes, but ...
+>> /**
+>>    * nf_log_is_registered - Check if NF_LOG is registered for a protocol
+>>    * family
+>>    *
+>>    * @pf: protocol family (e.g., NFPROTO_IPV4)
+>>    *
+>>    * Returns true if NF_LOG is registered, false otherwise.
+>>    */
+>> bool nf_log_is_registered(int pf)
+>> {
+>>           struct nf_logger *logger;
+>>
+>>           logger = nf_logger_find_get(pf, NF_LOG_TYPE_LOG);
+>>           if (logger) {
+>>                   nf_logger_put(pf, NF_LOG_TYPE_LOG);
+>>                   return true;
+>>           }
+>>
+>>           logger = nf_logger_find_get(pf, NF_LOG_TYPE_ULOG);
+>>           if (logger) {
+>>                   nf_logger_put(pf, NF_LOG_TYPE_ULOG);
+>>                   return true;
+>>           }
+>>
+>>           return false;
+>> }
+> 
+> Why not simply do:
+> 
+> bool nf_log_is_registered(int pf)
+> {
+> 	int i;
+> 
+> 	for (i = 0; i < NF_LOG_TYPE_MAX; i++) {
+> 		if (rcu_access_pointer(loggers[pf][i]))
+> 			return true;
+> 	}
+> 
+> 	return false;
+> }
 
-Oh, I was just staring at:
-https://lore.kernel.org/all/20250522031835.4395-1-shiming.cheng@mediatek.com/
-do you think it's not that?
-
-I'll hide both that patch and Florian's fix from the queue for now, 
-for a test.
+Yeah, it's simpler and better. Thanks!
 
