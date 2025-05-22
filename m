@@ -1,63 +1,63 @@
-Return-Path: <netfilter-devel+bounces-7259-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7257-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBE5DAC117D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 18:53:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 643DBAC1176
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 18:53:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 690D417CCF3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 16:53:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95A8818906B0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 May 2025 16:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C629ACCD;
-	Thu, 22 May 2025 16:53:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0B129AAEE;
+	Thu, 22 May 2025 16:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="L7caK4Wa";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ZTUqGCl9"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="hC3IUuKi";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="XS8llhgo"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45ECE29AAE9;
-	Thu, 22 May 2025 16:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BAC24679F;
+	Thu, 22 May 2025 16:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747932782; cv=none; b=ShV3rC92YgvH4phFUdEmxhXYkSoKeMHLu4roJAe+/6q8nmZqTReyc3dgvahNE9pzGkdvNpVD/t/Y8qKLLDdHjE1dz9RB5uMaJ8M6kU5eXWLbUqi8jBXdk0a4YI2ssJdoI0UJi34yoG9i2D4Bkm5cnv/E9dknBwM72FMZN5pOEOY=
+	t=1747932781; cv=none; b=OOwFV8jyHTQB1XNddQgsZnGVsidA50RLt6cfDMQhkqrBLyozUBmVnxhFxo2yfLkEhDulivJ0yVMZ2AHuY9XLAjLPmc8xPboaiNvOd97jIZaO/luSGCCeycFs8J4tKAxwwgtiU00PBwv4BIWt+NAUfeoTwHOwPBUmC3BxZX0v/kA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747932782; c=relaxed/simple;
-	bh=mgqTcRk5lDodkOacgm4jt0uZo2sncko0Ps7MvStnnlg=;
+	s=arc-20240116; t=1747932781; c=relaxed/simple;
+	bh=ksEvzO03lp3GriT1qWSzNE0pZj+Mm2UAUdagusr9T54=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MLMszKBC5aGTL5w40hx1M5caP2KXUoV+b6gFJiM9aeZPQmVqwX0OfmovG14sUN1eR2HfcFTOuVqAJ5wt9pPd9B6hicDBJj2I+j3WedSs8qodWyUiNUVZDZFrPvMy4qm79dyVThDDYLfdx9hXtXuO7fn8JoYPj0O4oIeUC7Y0bGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=L7caK4Wa; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ZTUqGCl9; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=DnGkc/tng7AQKKZJkRuX/sN0L8MK761lCNivemmEM6aIhB3viCMSceZLGoBvqiQJ6uZjU5PHXhLlU5EQpYve+eeZLdZXhkxfWh5fulB1aL//TXtOLuEdlBmwCsAWUF6EU+yAPZHSqJ7Lue/X3BCmKKjVJcbpfCXfqd80grbLfCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=hC3IUuKi; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XS8llhgo; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id AE5706073E; Thu, 22 May 2025 18:52:53 +0200 (CEST)
+	id 72E1B6073F; Thu, 22 May 2025 18:52:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1747932773;
-	bh=GNlWsZ+ScZ75VSYxJ+O1kBeOG6IyVu/QjO85aPWEEuI=;
+	s=2025; t=1747932777;
+	bh=XA0KyrDRGAr/mtk3l0D4aVQyTki2uhJ6pWoHJucWZ/o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L7caK4Wa34SmAxgjZLH2bANYf4f5L+9/Xf5kDbuSroPZDuTlK9ZAiXw7+sMPWXfEP
-	 414Mzvhux9+UNx8Tih9tIRgv0lWLV+xdHuYkE0dY0rzxdNj4s1ef7sZmhAWZbooEdz
-	 Fz3CUcL7o8F6NcBe+N6N9CiXLoUgCK6/1LEa8qnlzc2u3viNpsgfb14GGCZW1k6Ksj
-	 ruppxA5QOFlH6ro9d12ZG+tfLvM63ZUiVY3AIag1Ua4KIOPTGX44UMIZW18DxDv0aF
-	 msbifOXoB8g/NVRK8mbiziL1KNpdvTLUL6f83hNCzbI9jF01QH+j7VCK4bboc10aZT
-	 +O0cAW8tKsuOA==
+	b=hC3IUuKiUQEMe1/50Md7ZvIGdb0mzYBzJVwp+T7slUFJ9yOUYpoBjTsVUudNBp/7I
+	 L0IW7UsLoBHrCIgVRHkwBCQy/csMvqlxYqMLyPBASJCbMwxbiWlP/O/f77UFGb69jM
+	 5R+Fsu4zrp5boOMdt3ZIwtxilCBtCZ71zr+uL6QLiA+tDMYGr7XkU9/3dXqcsr3QMW
+	 Kvtwa4Z1I+QDWKhWzPjgu0TAR0Vk0my4kaFIPIXhLE5tQgvOfWH+jhmu+rKk8zZytK
+	 nvoUR/bKS2zF/CMPiXtHkGSwJb9SAqhrxnjY1xaGVHApw91ltXl89U4QOkA6xxwoYH
+	 lhhRn4Qe54pEQ==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id E8EF36071E;
-	Thu, 22 May 2025 18:52:47 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 9DB7E60722;
+	Thu, 22 May 2025 18:52:48 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1747932768;
-	bh=GNlWsZ+ScZ75VSYxJ+O1kBeOG6IyVu/QjO85aPWEEuI=;
+	s=2025; t=1747932769;
+	bh=XA0KyrDRGAr/mtk3l0D4aVQyTki2uhJ6pWoHJucWZ/o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZTUqGCl92xp4C+JjB5gIJ2R561x5EtwV2CvJEWNnU0lXqy27gOpLLFrtnFqp7UCXs
-	 6YvV1MyO9v0SSLBryq9fVm7bgEhS8NTeFyPqg9Kk+pmn2WSGRcjNDdOHUXhFWI6nDd
-	 N/E+VVCKb67hnfN10JIBRqNC/hQwQlYyf7xjotoSsmwtUQXO9MFc7wT4sWnQsfrohm
-	 +xSnZuXawCQHuoNU64JJ8JzAHNktPkwyaJ/Z+aOn4VdGXhh819AyUMOkR6/7jf+dvH
-	 AOj1xtqomFMm0byESIQkh7hrYCoCYJyN2JWK42uUlaajYbFvm2id4RP3yKa488UQ97
-	 TPIMee6ym482g==
+	b=XS8llhgoXmLelgJIvpg+rLOVUN7gqygZaFJ+94Q3OLcuHopg2uJfMY8DjY0+oGeI8
+	 BOUAUeZi69UK9+qZbwHLmmX8rSu3MUMFKt/TJIIqmStrGmpGN3g4PmywbcWwU0GR6L
+	 z1Kp0glQajDi61HEJThWcmB8B8aVoTRbPeQvRfLZLhAgwgpvRylZR7VBYC5+FGmHqu
+	 Zo4SNoPImLWs743WusC6ti1FwTLg2sLe6GuUREdkcIBBJEv1YExjXI6Z4HZZfl1GYa
+	 kWssQMQn44Xl2QgyW0lT5faied14VphvWo8cRJWhQlY2F+035bkCJyB5U64xnY0m9E
+	 J+I02Ib7Z1LAg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -67,9 +67,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 02/26] netfilter: xtables: support arpt_mark and ipv6 optstrip for iptables-nft only builds
-Date: Thu, 22 May 2025 18:52:14 +0200
-Message-Id: <20250522165238.378456-3-pablo@netfilter.org>
+Subject: [PATCH net-next 03/26] selftests: netfilter: nft_fib.sh: add 'type' mode tests
+Date: Thu, 22 May 2025 18:52:15 +0200
+Message-Id: <20250522165238.378456-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250522165238.378456-1-pablo@netfilter.org>
 References: <20250522165238.378456-1-pablo@netfilter.org>
@@ -83,59 +83,267 @@ Content-Transfer-Encoding: 8bit
 
 From: Florian Westphal <fw@strlen.de>
 
-Its now possible to build a kernel that has no support for the classic
-xtables get/setsockopt interfaces and builtin tables.
+fib can either lookup the interface id/name of the output interface that
+would be used for the given address, or it can check for the type of the
+address according to the fib, e.g. local, unicast, multicast and so on.
 
-In this case, we have CONFIG_IP6_NF_MANGLE=n and
-CONFIG_IP_NF_ARPTABLES=n.
+This can be used to e.g. make a locally configured address only reachable
+through its interface.
 
-For optstript, the ipv6 code is so small that we can enable it if
-netfilter ipv6 support exists. For mark, check if either classic
-arptables or NFT_ARP_COMPAT is set.
+Example: given eth0:10.1.1.1 and eth1:10.1.2.1 then 'fib daddr type' for
+10.1.1.1 arriving on eth1 will be 'local', but 'fib daddr . iif type' is
+expected to return 'unicast', whereas 'fib daddr' and 'fib daddr . iif'
+are expected to indicate 'local' if such a packet arrives on eth0.
 
-Fixes: a9525c7f6219 ("netfilter: xtables: allow xtables-nft only builds")
+So far nft_fib.sh only covered oif/oifname, not type.
+
+Repeat tests both with default and a policy (ip rule) based setup.
+
+Also try to run all remaining tests even if a subtest has failed.
+
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/xt_TCPOPTSTRIP.c | 4 ++--
- net/netfilter/xt_mark.c        | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ .../selftests/net/netfilter/nft_fib.sh        | 184 +++++++++++++++++-
+ 1 file changed, 174 insertions(+), 10 deletions(-)
 
-diff --git a/net/netfilter/xt_TCPOPTSTRIP.c b/net/netfilter/xt_TCPOPTSTRIP.c
-index 30e99464171b..93f064306901 100644
---- a/net/netfilter/xt_TCPOPTSTRIP.c
-+++ b/net/netfilter/xt_TCPOPTSTRIP.c
-@@ -91,7 +91,7 @@ tcpoptstrip_tg4(struct sk_buff *skb, const struct xt_action_param *par)
- 	return tcpoptstrip_mangle_packet(skb, par, ip_hdrlen(skb));
+diff --git a/tools/testing/selftests/net/netfilter/nft_fib.sh b/tools/testing/selftests/net/netfilter/nft_fib.sh
+index 82780b39277c..4b93e4954536 100755
+--- a/tools/testing/selftests/net/netfilter/nft_fib.sh
++++ b/tools/testing/selftests/net/netfilter/nft_fib.sh
+@@ -3,6 +3,10 @@
+ # This tests the fib expression.
+ #
+ # Kselftest framework requirement - SKIP code is 4.
++#
++#  10.0.1.99     10.0.1.1           10.0.2.1         10.0.2.99
++# dead:1::99    dead:1::1          dead:2::1        dead:2::99
++# ns1 <-------> [ veth0 ] nsrouter [veth1] <-------> ns2
+ 
+ source lib.sh
+ 
+@@ -72,6 +76,89 @@ table inet filter {
+ EOF
  }
  
--#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
-+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
- static unsigned int
- tcpoptstrip_tg6(struct sk_buff *skb, const struct xt_action_param *par)
- {
-@@ -119,7 +119,7 @@ static struct xt_target tcpoptstrip_tg_reg[] __read_mostly = {
- 		.targetsize = sizeof(struct xt_tcpoptstrip_target_info),
- 		.me         = THIS_MODULE,
- 	},
--#if IS_ENABLED(CONFIG_IP6_NF_MANGLE)
-+#if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
- 	{
- 		.name       = "TCPOPTSTRIP",
- 		.family     = NFPROTO_IPV6,
-diff --git a/net/netfilter/xt_mark.c b/net/netfilter/xt_mark.c
-index 65b965ca40ea..59b9d04400ca 100644
---- a/net/netfilter/xt_mark.c
-+++ b/net/netfilter/xt_mark.c
-@@ -48,7 +48,7 @@ static struct xt_target mark_tg_reg[] __read_mostly = {
- 		.targetsize     = sizeof(struct xt_mark_tginfo2),
- 		.me             = THIS_MODULE,
- 	},
--#if IS_ENABLED(CONFIG_IP_NF_ARPTABLES)
-+#if IS_ENABLED(CONFIG_IP_NF_ARPTABLES) || IS_ENABLED(CONFIG_NFT_COMPAT_ARP)
- 	{
- 		.name           = "MARK",
- 		.revision       = 2,
++load_type_ruleset() {
++	local netns=$1
++
++	for family in ip ip6;do
++ip netns exec "$netns" nft -f /dev/stdin <<EOF
++table $family filter {
++	chain type_match_in {
++		fib daddr type local counter comment "daddr configured on other iface"
++		fib daddr . iif type local counter comment "daddr configured on iif"
++		fib daddr type unicast counter comment "daddr not local"
++		fib daddr . iif type unicast counter comment "daddr not configured on iif"
++	}
++
++	chain type_match_out {
++		fib daddr type unicast counter
++		fib daddr . oif type unicast counter
++		fib daddr type local counter
++		fib daddr . oif type local counter
++	}
++
++	chain prerouting {
++		type filter hook prerouting priority 0;
++		icmp type echo-request counter jump type_match_in
++		icmpv6 type echo-request counter jump type_match_in
++	}
++
++	chain input {
++		type filter hook input priority 0;
++		icmp type echo-request counter jump type_match_in
++		icmpv6 type echo-request counter jump type_match_in
++	}
++
++	chain forward {
++		type filter hook forward priority 0;
++		icmp type echo-request counter jump type_match_in
++		icmpv6 type echo-request counter jump type_match_in
++	}
++
++	chain output {
++		type filter hook output priority 0;
++		icmp type echo-request counter jump type_match_out
++		icmpv6 type echo-request counter jump type_match_out
++	}
++
++	chain postrouting {
++		type filter hook postrouting priority 0;
++		icmp type echo-request counter jump type_match_out
++		icmpv6 type echo-request counter jump type_match_out
++	}
++}
++EOF
++done
++}
++
++reload_type_ruleset() {
++	ip netns exec "$1" nft flush table ip filter
++	ip netns exec "$1" nft flush table ip6 filter
++	load_type_ruleset "$1"
++}
++
++check_fib_type_counter_family() {
++	local family="$1"
++	local want="$2"
++	local ns="$3"
++	local chain="$4"
++	local what="$5"
++	local errmsg="$6"
++
++	if ! ip netns exec "$ns" nft list chain "$family" filter "$chain" | grep "$what" | grep -q "packets $want";then
++		echo "Netns $ns $family fib type counter doesn't match expected packet count of $want for $what $errmsg" 1>&2
++		ip netns exec "$ns" nft list chain "$family" filter "$chain"
++		ret=1
++		return 1
++	fi
++
++	return 0
++}
++
++check_fib_type_counter() {
++	check_fib_type_counter_family "ip" "$@" || return 1
++	check_fib_type_counter_family "ip6" "$@" || return 1
++}
++
+ load_ruleset_count() {
+ 	local netns=$1
+ 
+@@ -90,6 +177,7 @@ check_drops() {
+ 	if dmesg | grep -q ' nft_rpfilter: ';then
+ 		dmesg | grep ' nft_rpfilter: '
+ 		echo "FAIL: rpfilter did drop packets"
++		ret=1
+ 		return 1
+ 	fi
+ 
+@@ -164,17 +252,70 @@ test_ping() {
+   return 0
+ }
+ 
++test_fib_type() {
++	local notice="$1"
++	local errmsg="addr-on-if"
++	local lret=0
++
++	if ! load_type_ruleset "$nsrouter";then
++		echo "SKIP: Could not load fib type ruleset"
++		[ $ret -eq 0 ] && ret=$ksft_skip
++		return
++	fi
++
++	# makes router receive packet for addresses configured on incoming
++	# interface.
++	test_ping 10.0.1.1 dead:1::1 || return 1
++
++	# expectation: triggers all 'local' in prerouting/input.
++	check_fib_type_counter 2 "$nsrouter" "type_match_in" "fib daddr type local" "$errmsg" || lret=1
++	check_fib_type_counter 2 "$nsrouter" "type_match_in" "fib daddr . iif type local" "$errmsg" || lret=1
++
++	reload_type_ruleset "$nsrouter"
++	# makes router receive packet for address configured on a different (but local)
++	# interface.
++	test_ping 10.0.2.1 dead:2::1 || return 1
++
++	# expectation: triggers 'unicast' in prerouting/input for daddr . iif and local for 'daddr'.
++	errmsg="addr-on-host"
++	check_fib_type_counter 2 "$nsrouter" "type_match_in" "fib daddr type local" "$errmsg" || lret=1
++	check_fib_type_counter 2 "$nsrouter" "type_match_in" "fib daddr . iif type unicast" "$errmsg" || lret=1
++
++	reload_type_ruleset "$nsrouter"
++	test_ping 10.0.2.99 dead:2::99 || return 1
++	errmsg="addr-on-otherhost"
++	check_fib_type_counter 2 "$nsrouter" "type_match_in" "fib daddr type unicast" "$errmsg" || lret=1
++	check_fib_type_counter 2 "$nsrouter" "type_match_in" "fib daddr . iif type unicast" "$errmsg" || lret=1
++
++	if [ $lret -eq 0 ];then
++		echo "PASS: fib expression address types match ($notice)"
++	else
++		echo "FAIL: fib expression address types match ($notice)"
++		ret=1
++	fi
++}
++
+ ip netns exec "$nsrouter" sysctl net.ipv6.conf.all.forwarding=1 > /dev/null
+ ip netns exec "$nsrouter" sysctl net.ipv4.conf.veth0.forwarding=1 > /dev/null
+ ip netns exec "$nsrouter" sysctl net.ipv4.conf.veth1.forwarding=1 > /dev/null
+ 
+ test_ping 10.0.2.1 dead:2::1 || exit 1
+-check_drops || exit 1
++check_drops
+ 
+ test_ping 10.0.2.99 dead:2::99 || exit 1
+-check_drops || exit 1
++check_drops
+ 
+-echo "PASS: fib expression did not cause unwanted packet drops"
++[ $ret -eq 0 ] && echo "PASS: fib expression did not cause unwanted packet drops"
++
++load_input_ruleset "$ns1"
++
++test_ping 127.0.0.1 ::1
++check_drops
++
++test_ping 10.0.1.99 dead:1::99
++check_drops
++
++[ $ret -eq 0 ] && echo "PASS: fib expression did not discard loopback packets"
+ 
+ load_input_ruleset "$ns1"
+ 
+@@ -234,7 +375,7 @@ ip -net "$nsrouter" addr del dead:2::1/64 dev veth0
+ # ... pbr ruleset for the router, check iif+oif.
+ if ! load_pbr_ruleset "$nsrouter";then
+ 	echo "SKIP: Could not load fib forward ruleset"
+-	exit $ksft_skip
++	[ "$ret" -eq 0 ] && ret=$ksft_skip
+ fi
+ 
+ ip -net "$nsrouter" rule add from all table 128
+@@ -245,11 +386,34 @@ ip -net "$nsrouter" route add table 129 to 10.0.2.0/24 dev veth1
+ # drop main ipv4 table
+ ip -net "$nsrouter" -4 rule delete table main
+ 
+-if ! test_ping 10.0.2.99 dead:2::99;then
+-	ip -net "$nsrouter" nft list ruleset
+-	echo "FAIL: fib mismatch in pbr setup"
+-	exit 1
++if test_ping 10.0.2.99 dead:2::99;then
++	echo "PASS: fib expression forward check with policy based routing"
++else
++	echo "FAIL: fib expression forward check with policy based routing"
++	ret=1
+ fi
+ 
+-echo "PASS: fib expression forward check with policy based routing"
+-exit 0
++test_fib_type "policy routing"
++ip netns exec "$nsrouter" nft delete table ip filter
++ip netns exec "$nsrouter" nft delete table ip6 filter
++
++# Un-do policy routing changes
++ip -net "$nsrouter" rule del from all table 128
++ip -net "$nsrouter" rule del from all iif veth0 table 129
++
++ip -net "$nsrouter" route del table 128 to 10.0.1.0/24 dev veth0
++ip -net "$nsrouter" route del table 129 to 10.0.2.0/24 dev veth1
++
++ip -net "$ns1" -4 route del default
++ip -net "$ns1" -6 route del default
++
++ip -net "$ns1" -4 route add default via 10.0.1.1
++ip -net "$ns1" -6 route add default via dead:1::1
++
++ip -net "$nsrouter" -4 rule add from all table main priority 32766
++
++test_fib_type "default table"
++ip netns exec "$nsrouter" nft delete table ip filter
++ip netns exec "$nsrouter" nft delete table ip6 filter
++
++exit $ret
 -- 
 2.30.2
 
