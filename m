@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7338-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7336-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3029AC4367
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 19:20:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AADDAC4365
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 19:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AAD31899A1E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 17:20:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B75D17652B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 17:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEC423ED63;
-	Mon, 26 May 2025 17:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D9123E320;
+	Mon, 26 May 2025 17:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="NrXRCjU5"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="cxAfC3go"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7C420127B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6D37483
 	for <netfilter-devel@vger.kernel.org>; Mon, 26 May 2025 17:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748279994; cv=none; b=G3LbGcbrB2djZEJwz16YAOkE8SCOL930dDaURd8zrkmwBqM71c2BFzYtTK807IZmiPfrqDpBs8xfkfRHUkFQg6AIeq9FcJKZNDo2j4nsA+QrqM4xxH/dRYWGV+5Uw2jsZ6hnx8lGouRubDun4LLJF5UZtywFDeprt54qO6gbio0=
+	t=1748279993; cv=none; b=fx2duDtQhDEywBUQkGI4oO9es0IrOyyEBhAgLjerxr2OxT7vdtlfhPx+TssADtVoeXMLBNerl6Hc0aSLy/ADcGyZvb6XA8YPXkh0MxZ5X2bxdu64yq6/g0/oCugSuf4aWcPQqYjBK7RbimgGkQnHOMCqMcl9waaUfCE9KG+k9ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748279994; c=relaxed/simple;
-	bh=eITOckIy0XMGlbuGVdzNwRamju67jqsmyK3vCNQNAWU=;
+	s=arc-20240116; t=1748279993; c=relaxed/simple;
+	bh=s2e2m4gyc0y+GKmsPpTIKC3WC3wE4iiSWJ0mPNdFurM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VJh8gGY9iUAdobGFIZ5BNLF4Oty5fuPCiuW0mka6tQu1F34JqdeAYyVMm3bM6C+R/M0ZDcrWN7gZcQvy5/+hNAIN5xzcJ8lhPHAtpChzgjuSsSfY+D0qm8jy558Fxu6KuXCTUnj61ForyJvLCmBdJq3AVWlZBAAYUMJMaK0tdfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=NrXRCjU5; arc=none smtp.client-ip=35.176.194.208
+	 MIME-Version; b=tZKMjUxMQR+ODLBKCUIhXzFX9GJ3Y+IdQmQilJFA8giACUX+DhBPPtT4WP/86fRsylPhzYt6qqqwDfrb1/G4P6ALr+tEcSS4ZFjFEfKmC7dqWj0Amoj/DNlf26E/MN3Z255tu5K3l2SoZ1STpyaq1wyiDtD7PajCflU+Z0LDFKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=cxAfC3go; arc=none smtp.client-ip=35.176.194.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -37,24 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=UTlrKAHIsbzkqgNYf+4Ks9NXm/+4VrTUa+/jig3Q3pA=; b=NrXRCjU5z0gQY0JsGGycf6tn8l
-	9pJziiD1XSm6i2m6cBM3Z94pDVOpkLjbyAf5V7NAn2tn7hNW0EVFzm0qvobpc+Bist0i9bNNWOsLq
-	5wVCXC1eiOjA3udnZ57vMxQgQ7sMjFeASyAiwlpCTkTAXDHXx/S4Fq5rR/86t96+iwSeSS1hNbkNV
-	guf4qgxjLyK4zw+jYy/6qfhkzaUoVXk7dw+2SypfyOM0Ho8zdX9crq9OfByQFWA6Oa/xJA1QlAreK
-	DYUSuPEDkdQdblKSzgfIETbnCIopH5vNRisGv0Qu/m2Jqgr4VSNk8FsdAyou7+xPPN1C0znm+vXcJ
-	R3LqgLyA==;
+	bh=Xxb3pTXQy5bynke0jlOQqWbZ1SIi9W5BlDQJwLMHgd4=; b=cxAfC3goIRY0yr+dtRhz/nYd1/
+	yjAIY3YEEi9g6hUUz1CMDjbb8WlI0Q9wf/q7gacqH2+0R3NC7j3wwJlOxzdcaPuZwyGMTkFB9BIXB
+	L9iSCATq5aEXfutwXMIJuZlXb3JAS+3Qao//swCJTUa3pEF+4Z7wgel/40pSLOlfQ9ZYsmD/7nYDW
+	vdwCVi7mVbaOuU++gtP20VFDtxZDLUuSpXolhNODkESfvoMACLzYuPolv6tvtgGDy9+eq/lb116YQ
+	WpnsKSXRu51wCoBpM72F9O43DdHOcg0jIpXphtgjpFg9Fu3NZ0/g3c6Ehbiebi0cimShbRvGfJvRK
+	23p8jUjw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
 	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1uJbUK-000rKJ-1X;
+	id 1uJbUK-000rKJ-1g;
 	Mon, 26 May 2025 18:19:48 +0100
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc: Slavko <linux@slavino.sk>
-Subject: [PATCH ulogd2 v2 2/4] IP2BIN, IP2HBIN, IP2STR: refactor `interp` call-backs
-Date: Mon, 26 May 2025 18:19:02 +0100
-Message-ID: <20250526171904.1733009-3-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v2 3/4] Use `NFPROTO_*` constants for protocol families
+Date: Mon, 26 May 2025 18:19:03 +0100
+Message-ID: <20250526171904.1733009-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250526171904.1733009-1-jeremy@azazel.net>
 References: <20250526171904.1733009-1-jeremy@azazel.net>
@@ -69,343 +69,332 @@ X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-IP2STR and IP2BIN do all family checks inside the for-loop that converts the
-address fields, whereas IP2HBIN does the checks once before the loop.  Refactor
-the former to do as the latter.
+Netfilter has a set of `NFPROTO_*` constants for the protocol families that it
+supports, in part because it supports protocols and pseudo-protocols that do not
+have `PF_*` (and `AF_*`) constants.  Currently, ulogd uses `AF_*` constants for
+protocol families, because it does not support any families which do not have
+`AF_*` constants.  Switch to `NFPROTO_*` constants instead, so we can add ARP
+support later.
 
-Also, move all the remaining contents of the for-loops, apart from the
-`pp_is_valid` checks, into `ip2*` functions.
+In the IP2* filters, retain `AF_*` for address family variables.
+
+Remove a stray semicolon.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- filter/ulogd_filter_IP2BIN.c  | 86 +++++++++++++++++------------------
- filter/ulogd_filter_IP2HBIN.c | 52 +++++++++++----------
- filter/ulogd_filter_IP2STR.c  | 76 ++++++++++++++++---------------
- 3 files changed, 110 insertions(+), 104 deletions(-)
+ filter/raw2packet/ulogd_raw2packet_BASE.c |  9 +++++----
+ filter/ulogd_filter_IP2BIN.c              | 17 ++++++++++-------
+ filter/ulogd_filter_IP2HBIN.c             | 17 ++++++++++-------
+ filter/ulogd_filter_IP2STR.c              | 17 ++++++++++-------
+ input/flow/ulogd_inpflow_NFCT.c           | 23 ++++++++++++-----------
+ input/packet/ulogd_inppkt_UNIXSOCK.c      |  7 ++++---
+ util/printpkt.c                           |  7 ++++---
+ 7 files changed, 55 insertions(+), 42 deletions(-)
 
+diff --git a/filter/raw2packet/ulogd_raw2packet_BASE.c b/filter/raw2packet/ulogd_raw2packet_BASE.c
+index 09e931349acf..4b6096421b71 100644
+--- a/filter/raw2packet/ulogd_raw2packet_BASE.c
++++ b/filter/raw2packet/ulogd_raw2packet_BASE.c
+@@ -44,6 +44,7 @@
+ #include <ulogd/ipfix_protocol.h>
+ #include <netinet/if_ether.h>
+ #include <string.h>
++#include <linux/netfilter.h>
+ #include <linux/types.h>
+ 
+ enum input_keys {
+@@ -937,7 +938,7 @@ static int _interp_bridge(struct ulogd_pluginstance *pi, uint32_t len)
+ 		_interp_arp(pi, len);
+ 		break;
+ 	/* ETH_P_8021Q ?? others? */
+-	};
++	}
+ 
+ 	return ULOGD_IRET_OK;
+ }
+@@ -953,11 +954,11 @@ static int _interp_pkt(struct ulogd_pluginstance *pi)
+ 		     ikey_get_u16(&pi->input.keys[INKEY_OOB_PROTOCOL]));
+ 
+ 	switch (family) {
+-	case AF_INET:
++	case NFPROTO_IPV4:
+ 		return _interp_iphdr(pi, len);
+-	case AF_INET6:
++	case NFPROTO_IPV6:
+ 		return _interp_ipv6hdr(pi, len);
+-	case AF_BRIDGE:
++	case NFPROTO_BRIDGE:
+ 		return _interp_bridge(pi, len);
+ 	}
+ 	return ULOGD_IRET_OK;
 diff --git a/filter/ulogd_filter_IP2BIN.c b/filter/ulogd_filter_IP2BIN.c
-index f1ca4eee7d76..2667a2a7f717 100644
+index 2667a2a7f717..9bbeebbb711e 100644
 --- a/filter/ulogd_filter_IP2BIN.c
 +++ b/filter/ulogd_filter_IP2BIN.c
-@@ -114,14 +114,42 @@ static struct ulogd_key ip2bin_keys[] = {
+@@ -25,6 +25,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <arpa/inet.h>
++#include <linux/netfilter.h>
+ #include <ulogd/ulogd.h>
+ #include <netinet/if_ether.h>
  
- static char ipbin_array[MAX_KEY - START_KEY + 1][FORMAT_IPV6_BUFSZ];
+@@ -145,14 +146,16 @@ static int interp_ip2bin(struct ulogd_pluginstance *pi)
+ 	proto_family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
  
--static int ip2bin(struct ulogd_key *inp, int index, int oindex)
-+static void ip2bin(struct ulogd_key *inp, int i, struct ulogd_key *outp, int o,
-+		   uint8_t addr_family)
- {
--	char family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
--	char convfamily = family;
--	struct in6_addr *addr;
--	struct in6_addr ip4_addr;
-+	struct in6_addr *addr, ip4_addr;
-+
-+	switch (addr_family) {
-+	case AF_INET6:
-+		addr = (struct in6_addr *)ikey_get_u128(&inp[i]);
+ 	switch (proto_family) {
+-	case AF_INET6:
+-	case AF_INET:
+-		addr_family = proto_family;
++	case NFPROTO_IPV6:
++		addr_family = AF_INET6;
 +		break;
-+	case AF_INET:
-+		/* Convert IPv4 to IPv4 in IPv6 */
-+		addr = &ip4_addr;
-+		uint32_to_ipv6(ikey_get_u32(&inp[i]), addr);
-+		break;
-+	}
-+
-+	format_ipv6(ipbin_array[o], sizeof(ipbin_array[o]), addr);
-+
-+	okey_set_ptr(&outp[o], ipbin_array[o]);
-+}
-+
-+static int interp_ip2bin(struct ulogd_pluginstance *pi)
-+{
-+	struct ulogd_key *outp = pi->output.keys;
-+	struct ulogd_key *inp = pi->input.keys;
-+	uint8_t proto_family, addr_family;
-+	int i, o;
-+
-+	proto_family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
- 
--	if (family == AF_BRIDGE) {
-+	switch (proto_family) {
-+	case AF_INET6:
-+	case AF_INET:
-+		addr_family = proto_family;
-+		break;
-+	case AF_BRIDGE:
++	case NFPROTO_IPV4:
++		addr_family = AF_INET;
+ 		break;
+-	case AF_BRIDGE:
++	case NFPROTO_BRIDGE:
  		if (!pp_is_valid(inp, KEY_OOB_PROTOCOL)) {
  			ulogd_log(ULOGD_NOTICE,
- 				  "No protocol inside AF_BRIDGE packet\n");
-@@ -129,56 +157,28 @@ static int ip2bin(struct ulogd_key *inp, int index, int oindex)
+-				  "No protocol inside AF_BRIDGE packet\n");
++				  "No protocol inside NFPROTO_BRIDGE packet\n");
+ 			return ULOGD_IRET_ERR;
  		}
  		switch (ikey_get_u16(&inp[KEY_OOB_PROTOCOL])) {
- 		case ETH_P_IPV6:
--			convfamily = AF_INET6;
-+			addr_family = AF_INET6;
- 			break;
- 		case ETH_P_IP:
--			convfamily = AF_INET;
--			break;
- 		case ETH_P_ARP:
--			convfamily = AF_INET;
-+			addr_family = AF_INET;
+@@ -165,13 +168,13 @@ static int interp_ip2bin(struct ulogd_pluginstance *pi)
  			break;
  		default:
  			ulogd_log(ULOGD_NOTICE,
- 				  "Unknown protocol inside AF_BRIDGE packet\n");
+-				  "Unknown protocol inside AF_BRIDGE packet\n");
++				  "Unexpected protocol inside NFPROTO_BRIDGE packet\n");
  			return ULOGD_IRET_ERR;
  		}
-+		break;
-+	default:
-+		/* TODO handle error */
-+		ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
-+		return ULOGD_IRET_ERR;
- 	}
- 
--	switch (convfamily) {
--		case AF_INET6:
--			addr = (struct in6_addr *)ikey_get_u128(&inp[index]);
--			break;
--		case AF_INET:
--			/* Convert IPv4 to IPv4 in IPv6 */
--			addr = &ip4_addr;
--			uint32_to_ipv6(ikey_get_u32(&inp[index]), addr);
--			break;
--		default:
--			/* TODO handle error */
--			ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
--			return ULOGD_IRET_ERR;
--	}
--
--	format_ipv6(ipbin_array[oindex], sizeof(ipbin_array[oindex]), addr);
--
--	return ULOGD_IRET_OK;
--}
--
--static int interp_ip2bin(struct ulogd_pluginstance *pi)
--{
--	struct ulogd_key *ret = pi->output.keys;
--	struct ulogd_key *inp = pi->input.keys;
--	int i;
--	int fret;
--
- 	/* Iter on all addr fields */
--	for(i = START_KEY; i <= MAX_KEY; i++) {
-+	for (i = START_KEY, o = 0; i <= MAX_KEY; i++, o++) {
- 		if (pp_is_valid(inp, i)) {
--			fret = ip2bin(inp, i, i - START_KEY);
--			if (fret != ULOGD_IRET_OK)
--				return fret;
--			okey_set_ptr(&ret[i - START_KEY],
--				     ipbin_array[i - START_KEY]);
-+			ip2bin(inp, i, outp, o, addr_family);
- 		}
+ 		break;
+ 	default:
+ 		/* TODO handle error */
+-		ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
++		ulogd_log(ULOGD_NOTICE, "Unexpected protocol family\n");
+ 		return ULOGD_IRET_ERR;
  	}
  
 diff --git a/filter/ulogd_filter_IP2HBIN.c b/filter/ulogd_filter_IP2HBIN.c
-index 48ea6a2cbc14..42ffc9497584 100644
+index 42ffc9497584..081b757a6f1a 100644
 --- a/filter/ulogd_filter_IP2HBIN.c
 +++ b/filter/ulogd_filter_IP2HBIN.c
-@@ -112,17 +112,32 @@ static struct ulogd_key ip2hbin_keys[] = {
- 	},
- };
+@@ -26,6 +26,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <arpa/inet.h>
++#include <linux/netfilter.h>
+ #include <ulogd/ulogd.h>
+ #include <netinet/if_ether.h>
  
-+static void ip2hbin(struct ulogd_key *inp, int i, struct ulogd_key *outp, int o,
-+		   uint8_t addr_family)
-+{
-+	switch (addr_family) {
-+	case AF_INET6:
-+		okey_set_u128(&outp[o], ikey_get_u128(&inp[i]));
-+		break;
-+	case AF_INET:
-+		okey_set_u32(&outp[o], ntohl(ikey_get_u32(&inp[i])));
-+		break;
-+	}
-+}
-+
- static int interp_ip2hbin(struct ulogd_pluginstance *pi)
- {
--	struct ulogd_key *ret = pi->output.keys;
-+	struct ulogd_key *outp = pi->output.keys;
- 	struct ulogd_key *inp = pi->input.keys;
--	uint8_t family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
--	uint8_t convfamily = family;
--	int i;
-+	uint8_t proto_family, addr_family;
-+	int i, o;
+@@ -135,14 +136,16 @@ static int interp_ip2hbin(struct ulogd_pluginstance *pi)
+ 	proto_family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
  
--	switch (family) {
+ 	switch (proto_family) {
+-	case AF_INET6:
 -	case AF_INET:
-+	proto_family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
-+
-+	switch (proto_family) {
- 	case AF_INET6:
-+	case AF_INET:
-+		addr_family = proto_family;
+-		addr_family = proto_family;
++	case NFPROTO_IPV6:
++		addr_family = AF_INET6;
++		break;
++	case NFPROTO_IPV4:
++		addr_family = AF_INET;
  		break;
- 	case AF_BRIDGE:
+-	case AF_BRIDGE:
++	case NFPROTO_BRIDGE:
  		if (!pp_is_valid(inp, KEY_OOB_PROTOCOL)) {
-@@ -132,13 +147,11 @@ static int interp_ip2hbin(struct ulogd_pluginstance *pi)
+ 			ulogd_log(ULOGD_NOTICE,
+-				  "No protocol inside AF_BRIDGE packet\n");
++				  "No protocol inside NFPROTO_BRIDGE packet\n");
+ 			return ULOGD_IRET_ERR;
  		}
  		switch (ikey_get_u16(&inp[KEY_OOB_PROTOCOL])) {
- 		case ETH_P_IPV6:
--			convfamily = AF_INET6;
-+			addr_family = AF_INET6;
- 			break;
- 		case ETH_P_IP:
--			convfamily = AF_INET;
--			break;
- 		case ETH_P_ARP:
--			convfamily = AF_INET;
-+			addr_family = AF_INET;
+@@ -155,13 +158,13 @@ static int interp_ip2hbin(struct ulogd_pluginstance *pi)
  			break;
  		default:
  			ulogd_log(ULOGD_NOTICE,
-@@ -147,26 +160,15 @@ static int interp_ip2hbin(struct ulogd_pluginstance *pi)
+-				  "Unknown protocol inside AF_BRIDGE packet\n");
++				  "Unexpected protocol inside NFPROTO_BRIDGE packet\n");
+ 			return ULOGD_IRET_ERR;
  		}
  		break;
  	default:
--		ulogd_log(ULOGD_NOTICE,
--			  "Unknown protocol inside packet\n");
-+		/* TODO handle error */
-+		ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
+ 		/* TODO handle error */
+-		ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
++		ulogd_log(ULOGD_NOTICE, "Unexpected protocol family\n");
  		return ULOGD_IRET_ERR;
- 	}
- 
- 	/* Iter on all addr fields */
--	for(i = START_KEY; i <= MAX_KEY; i++) {
-+	for (i = START_KEY, o = 0; i <= MAX_KEY; i++, o++) {
- 		if (pp_is_valid(inp, i)) {
--			switch (convfamily) {
--			case AF_INET:
--				okey_set_u32(&ret[i - START_KEY],
--					     ntohl(ikey_get_u32(&inp[i])));
--				break;
--			case AF_INET6:
--				okey_set_u128(&ret[i - START_KEY],
--					      ikey_get_u128(&inp[i]));
--				break;
--			default:
--				break;
--			}
-+			ip2hbin(inp, i, outp, o, addr_family);
- 		}
  	}
  
 diff --git a/filter/ulogd_filter_IP2STR.c b/filter/ulogd_filter_IP2STR.c
-index fec892a62dac..194a8b103272 100644
+index 194a8b103272..3d4d6e9dc897 100644
 --- a/filter/ulogd_filter_IP2STR.c
 +++ b/filter/ulogd_filter_IP2STR.c
-@@ -137,12 +137,44 @@ static struct ulogd_key ip2str_keys[] = {
+@@ -25,6 +25,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <arpa/inet.h>
++#include <linux/netfilter.h>
+ #include <ulogd/ulogd.h>
+ #include <netinet/if_ether.h>
  
- static char ipstr_array[MAX_KEY - START_KEY + 1][INET6_ADDRSTRLEN];
+@@ -170,14 +171,16 @@ static int interp_ip2str(struct ulogd_pluginstance *pi)
+ 	proto_family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
  
--static int ip2str(struct ulogd_key *inp, int index, int oindex)
-+static void ip2str(struct ulogd_key *inp, int i, struct ulogd_key *outp, int o,
-+		   uint8_t addr_family)
- {
--	char family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
--	char convfamily = family;
-+	union {
-+		struct in6_addr in6;
-+		struct in_addr  in;
-+	} addr;
- 
--	if (family == AF_BRIDGE) {
-+	switch (addr_family) {
-+	case AF_INET6:
-+		memcpy(addr.in6.s6_addr, ikey_get_u128(&inp[i]),
-+		       sizeof(addr.in6.s6_addr));
+ 	switch (proto_family) {
+-	case AF_INET6:
+-	case AF_INET:
+-		addr_family = proto_family;
++	case NFPROTO_IPV6:
++		addr_family = AF_INET6;
 +		break;
-+	case AF_INET:
-+		addr.in.s_addr = ikey_get_u32(&inp[i]);
-+		break;
-+	}
-+
-+	inet_ntop(addr_family, &addr, ipstr_array[o], sizeof(ipstr_array[o]));
-+
-+	okey_set_ptr(&outp[o], ipstr_array[o]);
-+}
-+
-+static int interp_ip2str(struct ulogd_pluginstance *pi)
-+{
-+	struct ulogd_key *outp = pi->output.keys;
-+	struct ulogd_key *inp = pi->input.keys;
-+	uint8_t proto_family, addr_family;
-+	int i, o;
-+
-+	proto_family = ikey_get_u8(&inp[KEY_OOB_FAMILY]);
-+
-+	switch (proto_family) {
-+	case AF_INET6:
-+	case AF_INET:
-+		addr_family = proto_family;
-+		break;
-+	case AF_BRIDGE:
++	case NFPROTO_IPV4:
++		addr_family = AF_INET;
+ 		break;
+-	case AF_BRIDGE:
++	case NFPROTO_BRIDGE:
  		if (!pp_is_valid(inp, KEY_OOB_PROTOCOL)) {
  			ulogd_log(ULOGD_NOTICE,
- 				  "No protocol inside AF_BRIDGE packet\n");
-@@ -150,56 +182,28 @@ static int ip2str(struct ulogd_key *inp, int index, int oindex)
+-				  "No protocol inside AF_BRIDGE packet\n");
++				  "No protocol inside NFPROTO_BRIDGE packet\n");
+ 			return ULOGD_IRET_ERR;
  		}
  		switch (ikey_get_u16(&inp[KEY_OOB_PROTOCOL])) {
- 		case ETH_P_IPV6:
--			convfamily = AF_INET6;
-+			addr_family = AF_INET6;
- 			break;
- 		case ETH_P_IP:
--			convfamily = AF_INET;
--			break;
- 		case ETH_P_ARP:
--			convfamily = AF_INET;
-+			addr_family = AF_INET;
+@@ -190,13 +193,13 @@ static int interp_ip2str(struct ulogd_pluginstance *pi)
  			break;
  		default:
  			ulogd_log(ULOGD_NOTICE,
- 				  "Unknown protocol inside AF_BRIDGE packet\n");
+-				  "Unknown protocol inside AF_BRIDGE packet\n");
++				  "Unexpected protocol inside NFPROTO_BRIDGE packet\n");
  			return ULOGD_IRET_ERR;
  		}
--	}
--
--	switch (convfamily) {
--		uint32_t ip;
--	case AF_INET6:
--		inet_ntop(AF_INET6,
--			  ikey_get_u128(&inp[index]),
--			  ipstr_array[oindex], sizeof(ipstr_array[oindex]));
--		break;
--	case AF_INET:
--		ip = ikey_get_u32(&inp[index]);
--		inet_ntop(AF_INET, &ip,
--			  ipstr_array[oindex], sizeof(ipstr_array[oindex]));
  		break;
  	default:
  		/* TODO error handling */
- 		ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
+-		ulogd_log(ULOGD_NOTICE, "Unknown protocol family\n");
++		ulogd_log(ULOGD_NOTICE, "Unexpected protocol family\n");
  		return ULOGD_IRET_ERR;
  	}
--	return ULOGD_IRET_OK;
--}
--
--static int interp_ip2str(struct ulogd_pluginstance *pi)
--{
--	struct ulogd_key *ret = pi->output.keys;
--	struct ulogd_key *inp = pi->input.keys;
--	int i;
--	int fret;
  
- 	/* Iter on all addr fields */
--	for (i = START_KEY; i <= MAX_KEY; i++) {
-+	for (i = START_KEY, o = 0; i <= MAX_KEY; i++, o++) {
- 		if (pp_is_valid(inp, i)) {
--			fret = ip2str(inp, i, i - START_KEY);
--			if (fret != ULOGD_IRET_OK)
--				return fret;
--			okey_set_ptr(&ret[i - START_KEY],
--				     ipstr_array[i-START_KEY]);
-+			ip2str(inp, i, outp, o, addr_family);
- 		}
+diff --git a/input/flow/ulogd_inpflow_NFCT.c b/input/flow/ulogd_inpflow_NFCT.c
+index 8746b881a3ab..82dc83a8a440 100644
+--- a/input/flow/ulogd_inpflow_NFCT.c
++++ b/input/flow/ulogd_inpflow_NFCT.c
+@@ -48,6 +48,7 @@
+ #include <ulogd/namespace.h>
+ 
+ #include <libnetfilter_conntrack/libnetfilter_conntrack.h>
++#include <linux/netfilter.h>
+ 
+ #ifndef NSEC_PER_SEC
+ #define NSEC_PER_SEC    1000000000L
+@@ -491,14 +492,14 @@ static uint32_t hash(const void *data, const struct hashtable *table)
+ 	const struct nf_conntrack *ct = data;
+ 
+ 	switch(nfct_get_attr_u8(ct, ATTR_L3PROTO)) {
+-		case AF_INET:
+-			ret = __hash4(ct, table);
+-			break;
+-		case AF_INET6:
+-			ret = __hash6(ct, table);
+-			break;
+-		default:
+-			break;
++	case NFPROTO_IPV4:
++		ret = __hash4(ct, table);
++		break;
++	case NFPROTO_IPV6:
++		ret = __hash6(ct, table);
++		break;
++	default:
++		break;
  	}
  
+ 	return ret;
+@@ -528,7 +529,7 @@ static int propagate_ct(struct ulogd_pluginstance *main_upi,
+ 	okey_set_u8(&ret[NFCT_OOB_PROTOCOL], 0); /* FIXME */
+ 
+ 	switch (nfct_get_attr_u8(ct, ATTR_L3PROTO)) {
+-	case AF_INET:
++	case NFPROTO_IPV4:
+ 		okey_set_u32(&ret[NFCT_ORIG_IP_SADDR],
+ 			     nfct_get_attr_u32(ct, ATTR_ORIG_IPV4_SRC));
+ 		okey_set_u32(&ret[NFCT_ORIG_IP_DADDR],
+@@ -538,7 +539,7 @@ static int propagate_ct(struct ulogd_pluginstance *main_upi,
+ 		okey_set_u32(&ret[NFCT_REPLY_IP_DADDR],
+ 			     nfct_get_attr_u32(ct, ATTR_REPL_IPV4_DST));
+ 		break;
+-	case AF_INET6:
++	case NFPROTO_IPV6:
+ 		okey_set_u128(&ret[NFCT_ORIG_IP_SADDR],
+ 			      nfct_get_attr(ct, ATTR_ORIG_IPV6_SRC));
+ 		okey_set_u128(&ret[NFCT_ORIG_IP_DADDR],
+@@ -549,7 +550,7 @@ static int propagate_ct(struct ulogd_pluginstance *main_upi,
+ 			      nfct_get_attr(ct, ATTR_REPL_IPV6_DST));
+ 		break;
+ 	default:
+-		ulogd_log(ULOGD_NOTICE, "Unknown protocol family (%d)\n",
++		ulogd_log(ULOGD_NOTICE, "Unexpected protocol family (%d)\n",
+ 			  nfct_get_attr_u8(ct, ATTR_L3PROTO));
+ 	}
+ 	okey_set_u8(&ret[NFCT_ORIG_IP_PROTOCOL],
+diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
+index 0d9ba60768cc..bed5ccc6940f 100644
+--- a/input/packet/ulogd_inppkt_UNIXSOCK.c
++++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
+@@ -32,6 +32,7 @@
+ #include <pwd.h>
+ #include <grp.h>
+ #include <errno.h>
++#include <linux/netfilter.h>
+ 
+ #include <ulogd/ulogd.h>
+ 
+@@ -388,11 +389,11 @@ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_p
+ 	payload_len = ntohs(pkt->payload_length);
+ 
+ 	if (ip_version == 4)
+-		oob_family = AF_INET;
++		oob_family = NFPROTO_IPV4;
+ 	else if (ip_version == 6)
+-		oob_family = AF_INET6;
++		oob_family = NFPROTO_IPV6;
+ 	else
+-		oob_family = 0;
++		oob_family = NFPROTO_UNSPEC;
+ 
+ 	okey_set_u8(&ret[UNIXSOCK_KEY_OOB_FAMILY], oob_family);
+ 	okey_set_ptr(&ret[UNIXSOCK_KEY_RAW_PCKT], &pkt->payload);
+diff --git a/util/printpkt.c b/util/printpkt.c
+index 09a219417f91..2fecd50e233c 100644
+--- a/util/printpkt.c
++++ b/util/printpkt.c
+@@ -35,6 +35,7 @@
+ #include <ulogd/conffile.h>
+ #include <ulogd/printpkt.h>
+ #include <netinet/if_ether.h>
++#include <linux/netfilter.h>
+ 
+ struct ulogd_key printpkt_keys[] = {
+ 	[KEY_OOB_FAMILY]	= { .name = "oob.family", },
+@@ -457,13 +458,13 @@ int printpkt_print(struct ulogd_key *res, char *buf)
+ 		buf_cur += sprintf(buf_cur, "MAC= ");
+ 
+ 	switch (ikey_get_u8(&res[KEY_OOB_FAMILY])) {
+-	case AF_INET:
++	case NFPROTO_IPV4:
+ 		buf_cur += printpkt_ipv4(res, buf_cur);
+ 		break;
+-	case AF_INET6:
++	case NFPROTO_IPV6:
+ 		buf_cur += printpkt_ipv6(res, buf_cur);
+ 		break;
+-	case AF_BRIDGE:
++	case NFPROTO_BRIDGE:
+ 		buf_cur += printpkt_bridge(res, buf_cur);
+ 		break;
+ 	}
 -- 
 2.47.2
 
