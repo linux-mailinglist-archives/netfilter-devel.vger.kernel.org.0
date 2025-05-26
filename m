@@ -1,60 +1,63 @@
-Return-Path: <netfilter-devel+bounces-7335-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7337-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96F3EAC4364
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 19:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 24448AC4366
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 19:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5AA61895083
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 17:20:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABCBC1899660
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 May 2025 17:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3F523D29B;
-	Mon, 26 May 2025 17:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17FEB23E32B;
+	Mon, 26 May 2025 17:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="PUS5xfah"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="W6trcO/r"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F76C1D54FA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7053D994
 	for <netfilter-devel@vger.kernel.org>; Mon, 26 May 2025 17:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748279993; cv=none; b=iHR+R49OlZvWUhBK3BQc/mzRoR3x3AeJNDkYUtJWkqJeU8LrQMYuQrOH2X70Z++bcnZjoboL/706pwskPkjwjDTA9g2+ycp/Xft6xvi1po472LdkHVQOPgz6Im2wJu0LRoLPYJyDrIvd7dB16LH4sk+G+muupzHETpFLyqQfZfw=
+	t=1748279994; cv=none; b=WOPOfRCR+09Y+g8alXdOWD+bFqIbyF1CiDHH8ZffsGtJYo8V8XXZCCDUT7fI+n0AV2MAgDeakd8trThp6sOBT9FIOzxzXQrHUct8jjIJHv4Z96hD8+yBUHZUphLefj2nh9J34xmXFX5k24jufdQsJj8CAim5APqqQWot9POQ8Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748279993; c=relaxed/simple;
-	bh=R0aDnk5DjRrkG5lIG7dVr1NTMbvg+kVWgLCHv3yfZGU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aE61zDdUo/vUSUkRKobnPH/ZZMh6BQx/cbKEBA9m5p82xsex4N83W/rL3A5bvq3d5XJz09z5x2xQdYOz10M2LU8bAlsoe0Q027opQpRHyO/RhTPg/Gvdr9fmObbmIRjvTQsOhZ52mN3KXN+6RcrmMDRl5LSTJje0eeVCfTtdFz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=PUS5xfah; arc=none smtp.client-ip=35.176.194.208
+	s=arc-20240116; t=1748279994; c=relaxed/simple;
+	bh=0M0ILUK2inMbaMYFGjietxMQr/DBe4eefWzhWgLAtXI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jJudCHNFGXm46aJoFCzcO+LGSZejQRmGRThY+rxtRRLW/shjWRSx+DtS5k5wimoaouWD9BGNMqmqHOBmIT8+e53N0LOL/7HWn4Q/9NZpBbc8EVc4Kk5oChTLH5C6WGnwygx+X6HGc+anSaG8aPXjwZk5cLWqEiNlMOP/K/+R9Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=W6trcO/r; arc=none smtp.client-ip=35.176.194.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=yx+OcpaxiiRQRQQ+64oDEJC3gIfFFPNNG7/f2DoNT4o=; b=PUS5xfah5by6OG2te1WdMtACXO
-	MzpvwT+0jKaYGzn2aHfoZDa4xyFF9JOP/JqDw+NWzNHIy9YmMHc70VVr8RsYRUkopRCWfB+fg6yvL
-	jpl4wR5QaL3b0RLjXiPCl23RSuanzjzmQ/93sGh1KjX6uub1fYulgC/1+2qgw1pxGGbammA0anS9H
-	DQSscE+8TZCPAjTGwcZJg9h+/4fMgSYErXEcf2cytnMTUjKPkZWlYqQiFe7oe79+7S6Bg8W8+z8jO
-	4mdlB8H71ckq7epP4YpeejNtrqId99NKI5Bee+fO1u+TmgWRXE1v33zjH8+eg4x8933yU+l2QVbu9
-	+IqrWyRA==;
+	bh=g3D4PalZngzU4nHP42RijKSm26g4BqrOQvrDgL5eHEE=; b=W6trcO/rhDe0ExI0Fe+Er1vPzk
+	QJykEvOq9AyvyfGnLSupo8YYMNx0FF6WpqubYzBxEh8fjjZyVQMIuDgsgr8R+JMHarn0OMfBNq1ZS
+	d9kt9aWq+H0IU3YPLPAOs/dgDgbOqiyCfeTi2sra4VWOOWWxBOn/mHJ/H+plX5J1w6dzjbBoa4r8f
+	t2dFTQUf5rxoj/B8ayAc+ufwh3d8Yv1HItRtljvAlsC9KitZFEH3BFJXYSJY0qonOs4/5IyL/3gMf
+	+57y68O9MfmkSga8UkpzDBQXBPPTwI4vrwdI4wwJD1joJ8CqaM1N0alObvakozJJMJVbwlnKK8F7v
+	JEuvkIkw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
 	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1uJbUK-000rKJ-1H;
+	id 1uJbUK-000rKJ-1P;
 	Mon, 26 May 2025 18:19:48 +0100
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc: Slavko <linux@slavino.sk>
-Subject: [PATCH ulogd2 v2 0/4] Add support for logging ARP packets
-Date: Mon, 26 May 2025 18:19:00 +0100
-Message-ID: <20250526171904.1733009-1-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v2 1/4] db, IP2BIN: correct `format_ipv6()` output buffer sizes
+Date: Mon, 26 May 2025 18:19:01 +0100
+Message-ID: <20250526171904.1733009-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250526171904.1733009-1-jeremy@azazel.net>
+References: <20250526171904.1733009-1-jeremy@azazel.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,39 +69,95 @@ X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-Hithero, ulogd has only fully supported handling ARP headers that are present
-in `AF_BRIDGE` packets.  This patch-set adds support for handling ARP packets
-in their own right.
+`format_ipv6()` formats IPv6 addresses as hex-strings.  However, sizing for the
+output buffer is not done quite right.
 
-* Patch 1 contains a fixes for some minor problems that I spotted while
-  working on this.
-* Patch 2 refactors the IP2* filters to be a bit more efficient.
-* Patches 3 & 4 add support for logging ARP packets.
+The elements of the `ipbin_array` array in ulogd_filter_IP2BIN.c are sized using
+a local macro, `IPADDR_LENGTH`, which is defined as 128, the number of bits in
+an IPv6 address; this is much larger than necessary.
 
-Changes since v1
+Define an appropriate macro and use that instead.
 
-* Patches 1 & 3 from v1 have been merged.
-* Patch 2 from v1 (now patch 1) has been reworked in light of Florian's
-  feed-back to use the size of `struct in6_addr`, rather than `((struct
-  in6_addr){}).s6_addr`.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ filter/ulogd_filter_IP2BIN.c |  6 ++----
+ include/ulogd/ulogd.h        | 11 ++++++++++-
+ util/db.c                    |  2 +-
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
-Jeremy Sowden (4):
-  db, IP2BIN: correct `format_ipv6()` output buffer sizes
-  IP2BIN, IP2HBIN, IP2STR: refactor `interp` call-backs
-  Use `NFPROTO_*` constants for protocol families
-  Add support for logging ARP packets
-
- filter/raw2packet/ulogd_raw2packet_BASE.c |  11 +-
- filter/ulogd_filter_IP2BIN.c              | 121 +++++++++++++---------
- filter/ulogd_filter_IP2HBIN.c             |  86 +++++++++------
- filter/ulogd_filter_IP2STR.c              |  86 ++++++++-------
- include/ulogd/ulogd.h                     |  11 +-
- input/flow/ulogd_inpflow_NFCT.c           |  23 ++--
- input/packet/ulogd_inppkt_UNIXSOCK.c      |   7 +-
- util/db.c                                 |   2 +-
- util/printpkt.c                           |  10 +-
- 9 files changed, 215 insertions(+), 142 deletions(-)
-
+diff --git a/filter/ulogd_filter_IP2BIN.c b/filter/ulogd_filter_IP2BIN.c
+index 7f7bea5071a7..f1ca4eee7d76 100644
+--- a/filter/ulogd_filter_IP2BIN.c
++++ b/filter/ulogd_filter_IP2BIN.c
+@@ -28,8 +28,6 @@
+ #include <ulogd/ulogd.h>
+ #include <netinet/if_ether.h>
+ 
+-#define IPADDR_LENGTH 128
+-
+ enum input_keys {
+ 	KEY_OOB_FAMILY,
+ 	KEY_OOB_PROTOCOL,
+@@ -114,7 +112,7 @@ static struct ulogd_key ip2bin_keys[] = {
+ 
+ };
+ 
+-static char ipbin_array[MAX_KEY - START_KEY + 1][IPADDR_LENGTH];
++static char ipbin_array[MAX_KEY - START_KEY + 1][FORMAT_IPV6_BUFSZ];
+ 
+ static int ip2bin(struct ulogd_key *inp, int index, int oindex)
+ {
+@@ -161,7 +159,7 @@ static int ip2bin(struct ulogd_key *inp, int index, int oindex)
+ 			return ULOGD_IRET_ERR;
+ 	}
+ 
+-	format_ipv6(ipbin_array[oindex], IPADDR_LENGTH, addr);
++	format_ipv6(ipbin_array[oindex], sizeof(ipbin_array[oindex]), addr);
+ 
+ 	return ULOGD_IRET_OK;
+ }
+diff --git a/include/ulogd/ulogd.h b/include/ulogd/ulogd.h
+index 5eafb21f9cfe..29082dfbe1b2 100644
+--- a/include/ulogd/ulogd.h
++++ b/include/ulogd/ulogd.h
+@@ -23,6 +23,15 @@
+ 
+ #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+ 
++/*
++ * Minimum size of buffer required to hold an ipv6 address encoded as a
++ * hex-string, e.g.:
++ *
++ *                          ::1 -> "0x00000000000000000000000000000001"
++ * 2600:1408:ec00:36::1736:7f28 -> "0x26001408ec0000360000000017367f28"
++ */
++#define FORMAT_IPV6_BUFSZ (2 + sizeof(struct in6_addr) * 2 + 1)
++
+ /* All types with MSB = 1 make use of value.ptr
+  * other types use one of the union's member */
+ 
+@@ -233,7 +242,7 @@ format_ipv6(char *buf, size_t size, const struct in6_addr *ipv6)
+ {
+ 	unsigned i = 0;
+ 
+-	if (size > 2 + sizeof (*ipv6) * 2) {
++	if (size >= FORMAT_IPV6_BUFSZ) {
+ 		buf[i++] = '0';
+ 		buf[i++] = 'x';
+ 
+diff --git a/util/db.c b/util/db.c
+index 11c3e6ad8454..69f4290f5c87 100644
+--- a/util/db.c
++++ b/util/db.c
+@@ -370,7 +370,7 @@ static void __format_query_db(struct ulogd_pluginstance *upi, char *start)
+ 				sprintf(stmt_ins, "%u,", res->u.value.ui32);
+ 			else {
+ 				struct in6_addr ipv6;
+-				char addrbuf[2 + sizeof(ipv6) * 2  + 1];
++				char addrbuf[FORMAT_IPV6_BUFSZ];
+ 
+ 				memcpy(ipv6.s6_addr, res->u.value.ui128,
+ 				       sizeof(ipv6.s6_addr));
 -- 
 2.47.2
 
