@@ -1,60 +1,63 @@
-Return-Path: <netfilter-devel+bounces-7404-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7406-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56B12AC8345
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00D20AC8347
 	for <lists+netfilter-devel@lfdr.de>; Thu, 29 May 2025 22:32:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD781BC583A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 May 2025 20:32:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B43B74E19AD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 May 2025 20:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55612233D9C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6784529208E;
 	Thu, 29 May 2025 20:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="nX6/Tfke"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="YfkkMSq2"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA1222DFAA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9A9219A8E
 	for <netfilter-devel@vger.kernel.org>; Thu, 29 May 2025 20:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748550744; cv=none; b=IHX+V9FR377MDMj/LRK4aA1zj8Rh0QoRY1i/nPvMvrDva7ABS20OE8EEONwz4WNa2Ik72Xd6dNiYdVyJGeihvjNVanfDdxhEpb1BbPnXKP8JhOGHFdUIeZgq9+btqFkny8DCA/ynwmDdTbQYh4iJf5/WaExJZM2u7SZdImDRCFU=
+	t=1748550744; cv=none; b=txMHN05WkIKw0miOMl/UKe1vDsfcifKGB1CNDKdAR4JwVI2VaHCStbrUwARgRk5HD5CaozNo8AIrxNhLCGYGxpDmNhMigc7yrRIq+tJpE9q3BNdlqNDm4aA64TFChcvDph76EAQ+7laaxy7wIgHnCJFMs3/+3pQth9OwYaeQsG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1748550744; c=relaxed/simple;
-	bh=mC8MS7W22ADeV3QlXz0MYTQfKYGC55hRmUGc3UYT3os=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JzcQzGdg/G20yP9ogDadVO+nJVK5xpoUllcM1BYsfEoRGfTgvxjWOd/QHNf3teHD9MsNM9bflGto/pfpMRKchZHVUqXaT/wQUNMJxUFmkYwKgKsxXRKNJcM8GIHbibanFLuWq7ZvZr9m6FHts8yZqzg6FG8pzS+qxPXiuDtthck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=nX6/Tfke; arc=none smtp.client-ip=35.176.194.208
+	bh=SoLgYvEZyQUpw3BVaoiXVxPU7avBJg9p+rAEC45Bi3Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=EoEyYTFAWI5f9F41LX1XxT6EM0vwl5atx69yTr3mEmrtLsERybuwAEC6fjflyfStwpmbr/FOPCJmIzFP1nmdAPWtyQsukywkORm5AIlZB1I4CDTzMj2Zg6l6pR8ZA5Y17h86fetBtmTQipILkf0tWfWC8o7s02TYeqw1wOHibC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=YfkkMSq2; arc=none smtp.client-ip=35.176.194.208
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=uGesod/RWb0y7pn8h0t+8s9tx1mrmKwq43ll1WgMByk=; b=nX6/Tfker2HYVD3u2FZsgDKqVt
-	CZE3x9C07PgWCQT0Pj7MCh+i4YLV7SEu/9cmOCQmDfep0ze2XB7hrks2633RqN5EE1GLHiXTzd5hl
-	8u7BKVu1Sew+yvrX6SIPaapToYcDadVaj/oGLUO5jfEeR7NcUnffPZO5IduQtDa5wZcqiqODFud74
-	BKgrJSt6x2Wep74aUsP4KsxepDbaxZF6uIMz6ZlZWh2KE7KLIqd1xK87urXhL4EopwHWV/30XEiQU
-	6UAtOAiyKaaJp0kbxbudDHi2W/R7RnZknqq3iJHHRiZ/Od5kmUENLhg/AMYz8yTxuX/NDtw5DKqk4
-	sEW3jEfg==;
+	bh=dMbYQQd+iFO89L9UgTcUc4hA5Fioz/4IHxUEf6QnOJ4=; b=YfkkMSq2ZxQGrRYjGI/XJTjUKa
+	dOU42hNImgOWpQKa6+tueigxCAYGxMCYnhdAhE8yrrBRzUpMJ2l14SpDn34eaAinpiujG/c4NP+pV
+	uAPadgbFVueAftN4kZfUM5V58ZzGeIep1q+XJNnZRCugJyNy1RdCRbL1sqLRQy90m3oFFNKR6vjb8
+	oSVmZRaOCAcn2kgaua3iW/XClNJlQ/sNEyk0QJNzHGYcoTExCri5X5y5u2vEM11f/6zq7SojVkPD1
+	sZhogt5fboiRyihElzViiQ24ZUHMI/aYutl/CPCRDAcw/NHUqoV8A+SqUV99VUTIxz9Q4zNI9aiya
+	PmHEIgcg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
 	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <jeremy@azazel.net>)
-	id 1uKjvA-003Dw5-0v;
+	id 1uKjvA-003Dw5-13;
 	Thu, 29 May 2025 21:32:12 +0100
 From: Jeremy Sowden <jeremy@azazel.net>
 To: Jan Engelhardt <jengelh@inai.de>
 Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 0/3] Some fixes for v6.15
-Date: Thu, 29 May 2025 21:31:43 +0100
-Message-ID: <20250529203146.2415429-1-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 1/3] build: replace obsolete `EXTRA_CFLAGS`
+Date: Thu, 29 May 2025 21:31:44 +0100
+Message-ID: <20250529203146.2415429-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20250529203146.2415429-1-jeremy@azazel.net>
+References: <20250529203146.2415429-1-jeremy@azazel.net>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,20 +69,37 @@ X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-Replace a couple of deprecated things that were removed in v6.15 and bump the
-maximum supported version.
+`EXTRA_CFLAGS` was superseded by `ccflags-y`, introduced in 2007, and it has
+been removed in v6.15.  Replace it.
 
-Jeremy Sowden (3):
-  build: replace obsolete `EXTRA_CFLAGS`
-  xt_pknock: replace obsolete `del_timer`
-  build: bump max. supported version to 6.15
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ extensions/ACCOUNT/Kbuild | 2 +-
+ extensions/pknock/Kbuild  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- configure.ac                  | 2 +-
- extensions/ACCOUNT/Kbuild     | 2 +-
- extensions/pknock/Kbuild      | 2 +-
- extensions/pknock/xt_pknock.c | 8 ++++++--
- 4 files changed, 9 insertions(+), 5 deletions(-)
-
+diff --git a/extensions/ACCOUNT/Kbuild b/extensions/ACCOUNT/Kbuild
+index e71e80bb649f..fa3349ab3e54 100644
+--- a/extensions/ACCOUNT/Kbuild
++++ b/extensions/ACCOUNT/Kbuild
+@@ -1,5 +1,5 @@
+ # -*- Makefile -*-
+ 
+-EXTRA_CFLAGS = -I${src}/..
++ccflags-y += -I${src}/..
+ 
+ obj-m += xt_ACCOUNT.o
+diff --git a/extensions/pknock/Kbuild b/extensions/pknock/Kbuild
+index 6318ca52a78e..d39eaca4a73a 100644
+--- a/extensions/pknock/Kbuild
++++ b/extensions/pknock/Kbuild
+@@ -1,5 +1,5 @@
+ # -*- Makefile -*-
+ 
+-EXTRA_CFLAGS = -I${src}/..
++ccflags-y += -I${src}/..
+ 
+ obj-m += xt_pknock.o
 -- 
 2.47.2
 
