@@ -1,56 +1,61 @@
-Return-Path: <netfilter-devel+bounces-7438-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7440-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64098ACC1FF
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 10:14:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14164ACCD1E
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 20:35:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AABF3A48B1
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 08:14:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BB9B7A636D
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 18:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286D7280A37;
-	Tue,  3 Jun 2025 08:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE221DDC1A;
+	Tue,  3 Jun 2025 18:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EJDWo8Ws"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="MeZ7+T1f"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3288280338;
-	Tue,  3 Jun 2025 08:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D148BA34
+	for <netfilter-devel@vger.kernel.org>; Tue,  3 Jun 2025 18:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748938479; cv=none; b=gybp2XLZrRMXteFXZO/bS8yhceYdkdDRJrPBNWbIq3nPxmxGEPZGAWIiKflBuQu0+RS2UCbrskLFASnqggfTIPKHsSN+Q/PViPjYe9DhRDM4oFc2Wa00cF8buphQRDo4CR2yUCtf3O3DM7Lnxt8jIhNILYn0PV8KyaA2kO0iV/U=
+	t=1748975728; cv=none; b=UKIbo/5UMfPlaHupvYxbaGbRR0GOZeki/JXdblP3w5sL6vdAp8DVBjUJCTrmWFOI4xl6BgriCzCcI8eqn/ot/Q2NamzS9rum8zerIBN78F0TZtE5ccrn7zbazT3TEwJv+htxRFKwweucxy9ORT1TR7AG7dzfeExOIvAbbFS9VSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748938479; c=relaxed/simple;
-	bh=edrs3H0m30rnRHzLmujwAe+hkL/oUXIBfxEUcstqNNc=;
+	s=arc-20240116; t=1748975728; c=relaxed/simple;
+	bh=575FLBj013ZOFD/dy/njGQ2iX8l/cdLGuOkbCtPkiFY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bOZnZJRg9iZcNqD/iCj68QORuxvptpLJfLteFl63jmZp/tKd3zQh94EqIUDitg1U6R9Wkla0n0qXlvFqTfWrXd7R8tHjF7VHINPsBRBFcLSdVD9LbhgvuHH80rkTp3Qchcj/prhIXTEqySVZRiRruR1Vz+01QByR65D8HEZ+Ihw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EJDWo8Ws; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FA83C4CEEE;
-	Tue,  3 Jun 2025 08:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748938478;
-	bh=edrs3H0m30rnRHzLmujwAe+hkL/oUXIBfxEUcstqNNc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EJDWo8WsLy21GQiSOhsfQ832+Vv8nyNPKUJnGnwqxBs3QCcRn9fC3JTcsNakrbQpt
-	 BnyNPUYsix0mmO9FXFAW3i2gqSI0dDOfA70yedVJWsYKb5u+6vzI0OVUC0p/h3p/rM
-	 xvlwIhUy0hlFPrIMFHiIjNwOleb30QIgdr89xDaA3KvryN1pOJvfSoNN3v3UKP5Eu5
-	 evh04U1MmMQgH/dswd5ASrFr1CwvjzZX/u80rf9k68XoP43qnMIyZoBa340zd+HkrE
-	 rsdQjBlfGBd2Xc7owvVCKJXbCDHrGDK4smmTZDYdi6NmjPzBVNBdTBTlO9CvJ363Ft
-	 Q7mWWEXuXgScw==
-Date: Tue, 3 Jun 2025 09:14:34 +0100
-From: Simon Horman <horms@kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	edumazet@google.com, fw@strlen.de, kuniyu@amazon.com
-Subject: Re: [PATCH nf-next,v2] netfilter: conntrack: remove DCCP protocol
- support
-Message-ID: <20250603081434.GY1484967@horms.kernel.org>
-References: <20250522145223.198902-1-pablo@netfilter.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TFvYW0nzkRz/rF0E6ffJJQdsCN2qVL6fD03SM0BPj9fYqairxVOX3Z3sgiQrvLiZjcKiSnWfyEfRBhob9ZybKO1S+zgUWzXsSltLoJFzXxPh9s4eyMf7Q2g9yv1GUgOZDh2lQ8V6ZW5r56aErCxdmrpxNds1aghPPWqb42AUKZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=MeZ7+T1f; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=wMsGUUUk6qlg+4JTR9DQCqd38Z7WRQd5pjcSN3GKYtw=; b=MeZ7+T1fBMAmwym6HHKup1Ah2h
+	jbub2gMz6q2pe7IwxrxrtN2DVuW3rCo6Lr/rvW9Ms0GCQe+CyW68cRmTdthSJ48VXmdKdXoATO0oD
+	4C4cd+eI8witXryuEbZPBAc15RJXv5PBqJliyFqZ4XC5SlDYlvy6V+4wEzSWlX7B5skPPxYgBEYM4
+	v7Xs8EBbMJpFYY1nNNWm2Rv1RAACFDvjT14/x/IcjxCl97srboTOoU0JYtPSkWGPXbrAjpqDvpL62
+	YZkY96KEW1oKwjGohMoI3Jyg9CXMiJEFabQ8FhlEvw8EpooLX2zuojXeyy3NG3s6cU+LkedbxdqdI
+	lSRzbO3Q==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1uMW9a-000000007PA-3FLl;
+	Tue, 03 Jun 2025 20:14:26 +0200
+Date: Tue, 3 Jun 2025 20:14:26 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] json: work around fuzzer-induced assert crashes
+Message-ID: <aD87gslgK0kk5qzT@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20250602121254.3469-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -59,50 +64,31 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250522145223.198902-1-pablo@netfilter.org>
+In-Reply-To: <20250602121254.3469-1-fw@strlen.de>
 
-On Thu, May 22, 2025 at 04:52:23PM +0200, Pablo Neira Ayuso wrote:
-> The DCCP socket family has now been removed from this tree, see:
+On Mon, Jun 02, 2025 at 02:12:49PM +0200, Florian Westphal wrote:
+> fuzzer can cause assert failures due to json_pack() returning a NULL
+> value and therefore triggering the assert(out) in __json_pack macro.
 > 
->   8bb3212be4b4 ("Merge branch 'net-retire-dccp-socket'")
-> 
-> Remove connection tracking and NAT support for this protocol, this
-> should not pose a problem because no DCCP traffic is expected to be seen
-> on the wire.
-> 
-> As for the code for matching on dccp header for iptables and nftables,
-> mark it as deprecated and keep it in place. Ruleset restoration is an
-> atomic operation. Without dccp matching support, an astray match on dccp
-> could break this operation leaving your computer with no policy in
-> place, so let's follow a more conservative approach for matches.
-> 
-> Add CONFIG_NFT_EXTHDR_DCCP which is set to 'n' by default to deprecate
-> dccp extension support. Similarly, label CONFIG_NETFILTER_XT_MATCH_DCCP
-> as deprecated too and also set it to 'n' by default.
-> 
-> Code to match on DCCP protocol from ebtables also remains in place, this
-> is just a few checks on IPPROTO_DCCP from _check() path which is
-> exercised when ruleset is loaded. There is another use of IPPROTO_DCCP
-> from the _check() path in the iptables multiport match. Another check
-> for IPPROTO_DCCP from the packet in the reject target is also removed.
-> 
-> So let's schedule removal of the dccp matching for a second stage, this
-> should not interfer with the dccp retirement since this is only matching
+> All instances I saw are due to invalid UTF-8 strings, i.e., table/chain
+> names with non-text characters in them.
 
-nit: interfere
+So these odd strings are supported everywhere else and we only fail to
+format them into JSON? According to the spec[1] this should even support
+"\uXXXX"-style escapes. Not sure if it helps us, but to me this sounds
+like a bug in libjansson. Or are these really binary sequences somehow
+entered into nftables wich jansson's utf8_check_string() identifies as
+invalid?
 
-> on the dccp header.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: Simon Horman <horms@kernel.org>
-> Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
-> v2: remove superfluous exception with ct expectation objects.
+> Work around this for now, replace the assert with a plaintext error
+> message and return NULL instead of abort().
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+The old code was active with DEBUG builds, only. If undefined, it would
+just call json_pack() itself. Did you test a non-DEBUG build, too? I
+wonder if json.c swallows the NULL return or we see at least an error
+message.
 
+Thanks, Phil
+
+[1] https://www.json.org/json-en.html
 
