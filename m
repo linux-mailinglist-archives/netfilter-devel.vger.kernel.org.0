@@ -1,98 +1,81 @@
-Return-Path: <netfilter-devel+bounces-7439-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7441-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64BC3ACCCDD
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 20:25:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2963DACCD3C
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 20:42:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D3BF3A3DDF
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 18:25:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D74183A4329
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Jun 2025 18:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D0A288C25;
-	Tue,  3 Jun 2025 18:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60367288C0C;
+	Tue,  3 Jun 2025 18:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0upti.me header.i=@0upti.me header.b="lfjC88AQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="bE829Wem"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from forward502d.mail.yandex.net (forward502d.mail.yandex.net [178.154.239.210])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312D65FB95;
-	Tue,  3 Jun 2025 18:25:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC331DDC1A
+	for <netfilter-devel@vger.kernel.org>; Tue,  3 Jun 2025 18:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748975124; cv=none; b=mKB/BxUpa6iwco3WenfygI0JJHqMQ2upFfUJuuy3oHr09hCBVtat2VwLMvDvbYgu3e59iuAqLt0dHXJ3sVf50xa4fhH8EyJL9ZNcRxSKl6n9f4FEPBLv7gm3Ym7LYt5xFSJLdZbrKd0UKoZAIIaREJG67RYlAeDb0xtcSCz+RVc=
+	t=1748976151; cv=none; b=YZuGPHI19yR08JqTHlsQeAwJZXaAiC1LgsiCXubhyzyqMC7N1rks98wihaw7aF9oJzXMMnBpGfPsJozJnPTfzCye7GUDjNf6HODHE7DL4VznqQjFlrKwLJNwLXormT9fTpiYy+Nd3oKD/CMJ40iM45JCjVLOdoz4FtcAnZlYNak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748975124; c=relaxed/simple;
-	bh=tBzj3CA4+7TehMQW8dgTuM4sRw0JZHsMeayjCn7V8XI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RDXibchTcUWvkN0bvvGGis7yvu2kt1UeniZzkETqITdejQHoUmKFgrdb49UUkQ+IYFwAGILJKntdyah+VP9E0HXPtc8F2HqLoYKIYBoKkEO4h47rIxJCeqBprP503zl6gf+5iQAkvfQjYmoSXe5vD2YF3keVfLqw6Hus2+UNYX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=0upti.me; spf=pass smtp.mailfrom=0upti.me; dkim=pass (1024-bit key) header.d=0upti.me header.i=@0upti.me header.b=lfjC88AQ; arc=none smtp.client-ip=178.154.239.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=0upti.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0upti.me
-Received: from mail-nwsmtp-smtp-production-main-63.klg.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-63.klg.yp-c.yandex.net [IPv6:2a02:6b8:c42:842f:0:640:b96f:0])
-	by forward502d.mail.yandex.net (Yandex) with ESMTPS id EBB8760C59;
-	Tue,  3 Jun 2025 21:17:25 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-63.klg.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id LHgCkEULiKo0-pLzcZTYY;
-	Tue, 03 Jun 2025 21:17:24 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0upti.me; s=mail;
-	t=1748974644; bh=pOpYljZuYO3T7PKQuPSq6hSLphxMmYBM9c7hIldkB8Q=;
-	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
-	b=lfjC88AQLYLUsUJy3b7nRVzevTZKollL8zItXcXC4rgjno4MWLGx6K+HDJLEJW5Rh
-	 YYsmCJsPg7cOuXLi+Dm6HNyLtLYQKa+LofdjRX7bQxnh6dlTW3AwOjaGjOb6PbLec6
-	 iyRtRNFb5eGkXo7L0wJ2J1pBv0BJdWAL954cjgbw=
-Authentication-Results: mail-nwsmtp-smtp-production-main-63.klg.yp-c.yandex.net; dkim=pass header.i=@0upti.me
-Message-ID: <40ac27ab-00f7-4fc4-97ca-f3b519167f5c@0upti.me>
-Date: Tue, 3 Jun 2025 21:17:21 +0300
+	s=arc-20240116; t=1748976151; c=relaxed/simple;
+	bh=1NyU5nYflaMMh3hSzNChQx6NLvct2ke0oXzBgWeXpls=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PiB7tnEhyDuYxYUrQu/Ooqo1WMeBr9Usro6YUd4ejGBNo9rWrgJ+VxUErkJ/Ag3jHkgUHgUxrFRGNKaNxS5DTDDn0/KeiIDQrEANZRWLKHwM2ypk1KQtuBVmt96CwAXTArZpfdrxYCov3o+A7LvM4tltLhQVjIYLuqbNzwbsCMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=bE829Wem; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=sw2PG3Y+aTeo7r00p2aTwZ1ay9Tzn4vqcRgPEsh3w0g=; b=bE829WemFrBK6uZfcOJ2IeokTb
+	tHxQSxADdMDa0fSc9J8w9FyQn68AiHQhuiP1rM/P0mrQqjpu69ntDgrXEvtSJNo61Ls4JnofZ1jHy
+	hu33CILIO2IGrVbH0BrpWT3v32ASNp0pvSrGY4MZBKQld2yN0Vn2dZ5mT3g6m3uwsCyElTid9fzIT
+	upWgrvgvuOJmblaHOG8NzruHtgQ9cJtguc3Coj8xDNLrB7HTR1RKJ44pIs1Y5Nl4HBhBDBGFGdrj2
+	QyQe0Je5piO0q3eT6lfP2nVMzop0ddLm3jG0f7hKbTZeNOGvqvt7fecyf95JhBWAS61tKtvr8VBUj
+	HwwFoSyg==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1uMWah-000000007jj-2O4g;
+	Tue, 03 Jun 2025 20:42:27 +0200
+Date: Tue, 3 Jun 2025 20:42:27 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] tests: py: fix json single-flag output for fib &
+ synproxy
+Message-ID: <aD9CEwQCNWNfXTTM@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20250602121219.3392-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next] net: phylink: always config mac for
- (delayed) phy
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Eric Woudstra <ericwouds@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Frank Wunderlich <frank-w@public-files.de>,
- Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, bridge@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20250107123615.161095-1-ericwouds@gmail.com>
- <Z30iUj6DE9-fRp0n@shell.armlinux.org.uk>
- <4b9b2a9a-061b-43ad-b402-a49aee317f41@gmail.com>
- <Z31CJS1YUvPGiEXs@shell.armlinux.org.uk>
- <98234080-946e-4b36-832f-113b185e7bca@gmail.com>
- <Z3-Tz5WdLCat91vm@shell.armlinux.org.uk>
- <9cc913d7-7e5b-4b6c-886c-ca9778c3f970@0upti.me>
- <aD1lRha-enQ9Pw0g@shell.armlinux.org.uk>
- <2894a781-4d4b-4e3c-9f4e-7c1f04122f8a@0upti.me>
- <aD3Cc7gmB2Tev_ul@shell.armlinux.org.uk>
-Content-Language: en-US
-From: Ilya K <me@0upti.me>
-In-Reply-To: <aD3Cc7gmB2Tev_ul@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250602121219.3392-1-fw@strlen.de>
 
-On 2025-06-02 18:25, Russell King (Oracle) wrote:
-> On Mon, Jun 02, 2025 at 04:00:14PM +0300, Ilya K wrote:
->> That's weird, because I do have all the patches applied. I think this may have been broken by the pcs_inband_caps changes, because without the patch I'm just getting "autoneg setting not compatible with PCS", after which it bails, when it should really reconfigure the MAC instead.
+On Mon, Jun 02, 2025 at 02:12:16PM +0200, Florian Westphal wrote:
+> Blamed commits change output format but did not adjust existing tests:
+>   inet/fib.t: WARNING: line 16: '{"nftables": ..
 > 
-> Please enable phylink and sfp debug (adding #define DEBUG to the top of
-> phylink.c and sfp.c, and then send the kernel messages after reproducing
-> the issue.
-> 
-> Thanks.
-> 
+> Fixes: 38f99ee84fe6 ("json: Print single synproxy flags as non-array")
+> Fixes: dbe5c44f2b89 ("json: Print single fib flag as non-array")
+> Signed-off-by: Florian Westphal <fw@strlen.de>
 
-OK, somehow it just works normally now, even with the patch reverted. I think I grew a few gray hairs over the last few days. Sorry for the trouble, everyone, I'm off to not touch this thing ever again.
+Acked-by: Phil Sutter <phil@nwl.cc>
+
+Thanks, Phil
 
