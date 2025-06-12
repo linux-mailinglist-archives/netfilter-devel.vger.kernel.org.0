@@ -1,140 +1,91 @@
-Return-Path: <netfilter-devel+bounces-7508-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7504-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2676EAD7233
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 15:36:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7731DAD7229
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 15:35:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 656803A3109
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:35:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CD517AC207
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86B6232368;
-	Thu, 12 Jun 2025 13:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74031252900;
+	Thu, 12 Jun 2025 13:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cLmt3uPU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FTzJwac8"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CA11F1313;
-	Thu, 12 Jun 2025 13:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F962512DD
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 13:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749735287; cv=none; b=V5P6fK48MflfxbdwUdZfpzVIgfe5TuclYe58pAOznnORqgwy+n/fikjO6tM8ATPOtCty0NZwhosVxYcgooWb3pX1NEIYLjyzNCmX1H3pEG1K+ljfl0bJtLDHtgFgltcmXWzbn9iuA65ag22O3Eqc8ZoSBvUiZu2DmdXlaBU14mE=
+	t=1749735266; cv=none; b=q2flsmCRuBffyE8W+Ha6Z7n+YUton7G8lou1zEvbY8cMwqAqbPUwAwD+Vvf16EwlP9eoRuH1RXeUVbZ3hqpxts13vj+yWMPCU/R12veFgZsl9hO0tZH69H0pRVl6XU/uEtYyEX9l4OwRIpQrRlTB/rpTcjnGsnoD795jLbuh8Jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749735287; c=relaxed/simple;
-	bh=j0Jh4tYrTYIYXkFr3dAsdn3bipBKHmzXFsKxvBxyMKs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=MuK7BKGE47xX0qqYvy5+5UifbX1JYDG0X0ZUzuydQfBjy0NiQwe7prXsyeK3qri7txcZ1TpxeIl0CT30wPMc4+rggnyiOT9UaYnkqzq8Kfpm069XQmKM4a9ow3/yhU9mFQ7wmIJEGpMPvJtJFv/OORdPqx1SJ2VJT+BNbi5l79g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cLmt3uPU; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3ddcf0edef6so3834585ab.0;
-        Thu, 12 Jun 2025 06:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749735285; x=1750340085; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j0Jh4tYrTYIYXkFr3dAsdn3bipBKHmzXFsKxvBxyMKs=;
-        b=cLmt3uPUBs9b7uFEZOsqNFUVEKX+XrAiyOu3yjh6HG4DAtols0Le20xaXuPp4i9t29
-         CE1WpJRZwR0XN2E65bNVzmifc4oaXzVGE1CRtvXtmqvU5vardWzlu3kJ4osgbxLBHite
-         xSgjxjBBaEGnLJpoYY4DPraDDF4JAuoyvalQusZ7IRmsDux25yViQkB5/M7D+klfhTEx
-         Nn5N1NXDkvNQKio/L0QC1AJ4I6/egsyeqMy6rDkWBQe0QFOGrSZnvQ0nmd5EEGb4FCQ1
-         1TaukpEqGj2oatpUc+/v7UgAqEYmVPs5FbSkylm+EtgMltxKXG/nTYkGYfiM/BmtOH5G
-         Ey8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749735285; x=1750340085;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j0Jh4tYrTYIYXkFr3dAsdn3bipBKHmzXFsKxvBxyMKs=;
-        b=s+Q+EApLUX4Zx6c/KqpUQ6ignRjjRK0tf6CI8uTs9qp2N6Oc2IhxdNnkpfpbj1FV0k
-         rzD7QrYQFNN6H7Fm/gJYXVPhbVSpdTufTRVVOA/7+lpGp/xuMMDHOaNIS8GsjHJ9HfxX
-         vRt3Y+aavWiRs+YVVl1EzT/mh/srKd1Ndeg16Mbrb2xOmF8sRwxKDxnY/XTp6/G3FbzL
-         YLXB0v2sD1eUoV7n2SzTTw+PhlJU/D20qP/sFu5x7AIDeuA8PFLAI/o/l0k3+f6FQWBB
-         lmD7Mi8drONW4P03xH9/42ZfLwJkiCyhQTRymB7MXWW6rT/29CF0Xy+OIcucTp52PEpR
-         2Q3w==
-X-Forwarded-Encrypted: i=1; AJvYcCU++7QwcJrldYv4pI0Y4qmje/cLo4VgCO1z5s6tqACVHjIjHoiHpSOnka75Ytp7p6ZWQyfObwleJRN5@vger.kernel.org, AJvYcCVk3ayVtXp0HiX7lVVPh1mDoTmmLtefRtYBgP/klXSgzVjYVWcvjc8q8L66bkvSr1tePgVEHgA=@vger.kernel.org, AJvYcCVzbKJN7iBRTDGKHh/aQ27OSLRcBdsrOU0RgUZMxdCPMA71C1HedgGqJDY6R+tJNcInjA6Z2uNRvNcNl7n1IJ2s@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9Tve8IPYrMrXX4un0QmBAjqRC6tqdpE1w7ArM6SGN88KXHrAl
-	ZeCluX41x9L2Gw657SfWzBNwzlh4kH6ReDfuX0zgtc33czBesmMAi+llUF2TNOr2f2Se7Uww8M9
-	h3TYOOCYRr8g4nGm9Pu5i69Ddri++fp0=
-X-Gm-Gg: ASbGncu21H89AehqgSQBT7Uie6jq6IYwe/d4Od+yS4mCOaZXOQ1iX9HCFV42DCJJqcM
-	6Hzes+n1+nl5BtJ9935eZfxSkdtPjpLoY6lFXsY1XtOoaGguYyDQYaJrCSIHb/8J7Ze9Du60z39
-	CZ/HBj2n6lHGciGsuPDm0K5gleNRqGLDfK1fDl1XrEuLS8tcXXCsU=
-X-Google-Smtp-Source: AGHT+IG3xjEqPKsGvqvhSvCDbuxWOcwvX+S4KLU09uPWFj/eXBmn5EowZoRSZETGG4EYp87iIsCJrp9dNoRTEAEI9pk=
-X-Received: by 2002:a05:6e02:339c:b0:3dd:bba3:5348 with SMTP id
- e9e14a558f8ab-3ddfa874d0fmr41737125ab.13.1749735284985; Thu, 12 Jun 2025
- 06:34:44 -0700 (PDT)
+	s=arc-20240116; t=1749735266; c=relaxed/simple;
+	bh=7QX2Tv8UfqWuyz/F5500TefisF0YesiGJIr5YRXT9UI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rtTDZiWsbXtoUnAJCMNxOGZTpyI3fF5NN/MG/Rv4GW+x405Sx+1eKXYBJ4a0qR+Onp40EFKm8UXL59/ANk2Jkaq8tWzTyJjjB62hc91nAqhSutDBuoKB8GgkWhurv5EdKIrdEJSKwktEIpT9Npge6Mh8JkjE4xSBP+P5DHP/99U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FTzJwac8; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=+OLECkmAF0n64s0dpfChnbxrWAB5Ue2g2WDQ5boe0mI=; b=FTzJwac8W1/eqbO+A5iNRS2xJM
+	Z/VZnZnH0FaclDc8xZeLgY0m8NhZklPOyAaQcmn19Pv7DkmUyD4N0qciXHC3NuCW72dXUbDQMa/oR
+	AwYzEx6SXRVXhw2+ZuQfD9ahKkRRFG+scQMIlC1/7IwnvGmWbFSc1Y2foXJowtcrcKC7psbWIcBVm
+	ggjRMQk16oZ7pOFBsYtKkTf0ZWwtk/TiMzOq/MJYSGTCxSx18/PHe8IHFrZZMWohHBpDJH5mg1Qyn
+	P1gszAQrOf8I4yPpOsBVAEyVydbmpYTVFdEmK9tc7/q+xTi8rO2iiwXEIPHz60Pp4fcU53NgZiw8h
+	h0Lhb9qA==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1uPi4T-000000000rr-3sJ9;
+	Thu, 12 Jun 2025 15:34:21 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [nf-next PATCH 0/3] netfilter: nf_tables: Report found devices when creating a netdev hook
+Date: Thu, 12 Jun 2025 15:34:13 +0200
+Message-ID: <20250612133416.18133-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <w7bwjqyae36c6pqhqjmvjcrwtpny6jxjyvxzb2qzt7atjncxd2@gi4xhlyrz27b> <aEqka3uX7tuFced5@orbyte.nwl.cc>
-In-Reply-To: <aEqka3uX7tuFced5@orbyte.nwl.cc>
-From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Thu, 12 Jun 2025 15:34:08 +0200
-X-Gm-Features: AX0GCFuqtgDl0YkvNLDm1K0GuiB9OzYvWJVL4r5Dukxv45-V2hxmltj3IlmNZgY
-Message-ID: <CABhP=tZRP42Dgw9+_vyAx80uPg4V2YFLfbGhpA10WzM46JYTNg@mail.gmail.com>
-Subject: Re: Status of native NAT64/NAT46 in Netfilter?
-To: Phil Sutter <phil@nwl.cc>, Klaus Frank <vger.kernel.org@frank.fyi>, 
-	netfilter-devel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, 
-	Florian Westphal <fw@strlen.de>, Lukas Wunner <lukas@wunner.de>, netfilter@vger.kernel.org, 
-	=?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 12 Jun 2025 at 11:57, Phil Sutter <phil@nwl.cc> wrote:
->
-> Hi,
->
-> On Sun, Jun 08, 2025 at 08:37:10PM +0000, Klaus Frank wrote:
-> > I've been looking through the mailling list archives and couldn't find a clear anser.
-> > So I wanted to ask here what the status of native NAT64/NAT46 support in netfilter is?
-> >
-> > All I was able to find so far:
-> > * scanner patches related to "IPv4-Mapped IPv6" and "IPv4-compat IPv6"
-> > * multiple people asking about this without replies
-> > * "this is useful with DNS64/NAT64 networks for example" from 2023 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b308feb4fd2d1c06919445c65c8fbf8e9fd1781
-> > * "in the future: in-kernel NAT64/NAT46 (Pablo)" from 2021 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=42df6e1d221dddc0f2acf2be37e68d553ad65f96
-> > * "This hook is also useful for NAT46/NAT64, tunneling and filtering of
-> > locally generated af_packet traffic such as dhclient." from 2020 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8537f78647c072bdb1a5dbe32e1c7e5b13ff1258
-> >
-> > It kinda looks like native NAT64/NAT46 was planned at some point in time but it just become quite silent afterwards.
-> >
-> > Was there some technical limitation/blocker or some consensus to not move forward with it?
->
-> Not to my knowledge. I had an implementation once in iptables, but it
-> never made it past the PoC stage. Nowadays this would need to be
-> implemented in nf_tables at least.
->
-> I'm not sure about some of the arguments you linked to above, my
-> implementation happily lived in forward hook for instance. It serves
-> well though in discovering the limitations of l3/l4 encapsulation, so
-> might turn into a can of worms. Implementing the icmp/icmpv6 translation
-> was fun, though!
->
-> > I'm kinda looking forward to such a feature and therefore would really like to know more about the current state of things.
->
-> AFAIK, this is currently not even planned to be implemented.
->
-> Cheers, Phil
->
+Previously, NEWDEV/DELDEV notifications were emitted for new/renamed
+devices added to a chain or flowtable only. For user space to fully
+comprehend which interfaces a hook binds to, these notifications have to
+be sent for matching devices at hook creation time, too.
 
-we ended doing some "smart hack" , well, really a combination of them
-to provide a nat64 alternative for kubernetes
-https://github.com/kubernetes-sigs/nat64:
-- a virtual dummy interface to "attract" the nat64 traffic with the
-well known prefix
-- ebpf tc filters to do the family conversion using static nat for
-simplicity on the dummy interface
-- and reusing nftables masquerading to avoid to reimplement conntrack
+This series extends the notify list to support messages for varying
+groups so it may be reused by the NFNLGRP_NFT_DEV messages (patch 1),
+adjusts the device_notify routines to support enqueueing the message
+instead of sending it right away (patch 2) and finally adds extra notify
+calls to nf_tables_commit() (patch 3).
 
-you can play with it using namespaces (without kubernetes), see
-https://github.com/kubernetes-sigs/nat64/blob/main/tests/integration/e2e.bats
-for kind of selftest environment
+Phil Sutter (3):
+  netfilter: nf_tables: commit_notify: Support varying groups
+  netfilter: nf_tables: Support enqueueing device notifications
+  netfilter: nf_tables: Extend chain/flowtable notifications
 
-phil point about icmp is really accurate :)
+ include/net/netfilter/nf_tables.h |   3 +-
+ net/netfilter/nf_tables_api.c     | 160 ++++++++++++++++++++++++++----
+ net/netfilter/nft_chain_filter.c  |   2 +-
+ 3 files changed, 144 insertions(+), 21 deletions(-)
+
+-- 
+2.49.0
+
 
