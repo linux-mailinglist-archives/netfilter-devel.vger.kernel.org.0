@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7498-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7495-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C3A9AD6F8C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:53:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8216BAD6F83
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:52:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4998A3A5609
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 11:52:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36FF6176BAD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 11:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEA123026B;
-	Thu, 12 Jun 2025 11:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5ED0227EA7;
+	Thu, 12 Jun 2025 11:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="cdGlAfBf"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="m997qs2q"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11988220F2A
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 11:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0E922333B
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 11:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749729153; cv=none; b=kz0I6lTbGollnQ9nG5ZN4XgJ4AJiW+WihtFZv0DPg+noAcdjWfhnL5BY9T/nbVufPJCJWBlbwTpZEgQy9fPVkbddXSx1oAs2lwbVvAjujrI02OxTVK1iMXoDCOi/ulQbpNLC58HAslEZLwIzyJ3dUjkCT3A/kEOIlQzVmj1RrOg=
+	t=1749729152; cv=none; b=hqexNPEiu9txgXNIsR1ijk+0UFlMdp6FZddZqkeTmbt4DmwwanPMhO9K1nfcb5T3r/HxH2XtiYId49rcvBKy3BBojTYFWo2Wx680Kwa+TyTrm4jxcX+k+NTf6tZExKKGPGLIFwU7gp1zz0rIbUYy85QFqnI3uALjVA2XIC2oN1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749729153; c=relaxed/simple;
-	bh=cGPeQMd6KAwq+mtElxi3aFvGY3mqsWR4bn1BwC6VLM0=;
+	s=arc-20240116; t=1749729152; c=relaxed/simple;
+	bh=cBEEf616c2IGjJ78lhC5dCsFrswc5Qq2HgiAh3BpzIo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BAkFAwFb6yuZBbqBpL0nLBO+skGbV4mF5A6W6TfERtgEsq4Ih129fuAJxf28Vjty3W6PnBtmWa0h4YvPVnyBZHtqbKMDVPqkyE+Y4DlZKOf0KJIWsC8nwFSZ006yzbFD+7q285OLBNPIPvtdvmP8WtMAD7zE4mpU4639wXBTMgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=cdGlAfBf; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=d0C31fxwrk8pGBJRXbvW8zH5gUAuPxytgOWuBshP9ujWrgxHEr4Sgv0qN4ecoWHIOdehBkbIaUemBaZ7oeCef3yBoXQzHkoIphUSSgh5/r0D8lDH5eYKyKGFBdDOZES3VBoMPgOPNaaZe5Mlp9deHDTIQNE8JRXhOgb3Kgmf8po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=m997qs2q; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=z56wLFDIO5QJcvtA6W5RZU1LcpYtVJqYe6DXcJ2/yJY=; b=cdGlAfBfeI9rSCJ5QEIynLutw/
-	PUjzUvjQQA7JaPc7rmgX0HQElt5bCjThXq9wvf7kx6SqAYqe4xdgluq93ijhempIJ/DD7HCyu6kT9
-	++d161MsuSb9xEY8JBuIcPZJDTY1nQulUXzMdQPWIoQZVReQwbfE8yewbKur/SdUzVCRZ16Q4K2qe
-	4m9s/5ZBJnyt34S4t+VJKQDhQCOA7UDsaJwTQNkCDqOVzf+v9+goVIqF4/vPOd9mI9C93mZh2klUY
-	vFMHf1A3B8yELq0CuW4rfsiEl//JlYN2iuuWTSbQBVH5Pk7r9mPZXM1FnjngOz/QSraIYuUq3Uf5U
-	cMw0hQxA==;
+	bh=+7TnF4ehYvXurcSvQNQdxO8fEOw2k4H5k6OEDg5kXQY=; b=m997qs2q6cHHAl/5UiDZE9Xhpj
+	3k+TtRSYvS12VReq0HrfAbIYCV4+MzVh8elPoL+/E7zrcazKKhK22fxGQ62rDMyjQYSuwP03D8sYP
+	MRBY9b4W4xfreJ7BYstXTiITKHWYwyJNWD83sdpDxutSkLEtDYNYf99kJTXijBMM8rxuDTmMIDSej
+	xqubvkUXhay6lqHss4s23EJpWPtwBqnrajv0xVyEVLs1fm5uQM8TBN0W0Q1BCyk58WeYEKbovSlbm
+	NXwmffOVygMNW12fEUlphlS9k7i7MP1vGdGhZ5XNu/MV39t2QEtbZrSmFrdK1QRhVwpQI6UKyOd9l
+	1SKcEJ8g==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uPgTu-000000006G6-0wXx;
-	Thu, 12 Jun 2025 13:52:30 +0200
+	id 1uPgTs-000000006Fk-0wp5;
+	Thu, 12 Jun 2025 13:52:28 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 2/7] netlink: Do not allocate a bogus flowtable priority expr
-Date: Thu, 12 Jun 2025 13:52:13 +0200
-Message-ID: <20250612115218.4066-3-phil@nwl.cc>
+Subject: [nft PATCH 3/7] monitor: Correctly print flowtable updates
+Date: Thu, 12 Jun 2025 13:52:14 +0200
+Message-ID: <20250612115218.4066-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250612115218.4066-1-phil@nwl.cc>
 References: <20250612115218.4066-1-phil@nwl.cc>
@@ -67,38 +67,43 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Code accidentally treats missing NFTNL_FLOWTABLE_PRIO attribute as zero
-prio value which may not be correct.
+An update deleting a hook from a flowtable was indistinguishable from a
+flowtable deletion.
 
-Fixes: db0697ce7f602 ("src: support for flowtable listing")
+Fixes: 73a8adfc2432e ("monitor: Recognize flowtable add/del events")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/netlink.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ src/monitor.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/src/netlink.c b/src/netlink.c
-index 0e0d32b846d6a..be1fefc068bfd 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -1862,14 +1862,16 @@ netlink_delinearize_flowtable(struct netlink_ctx *ctx,
- 		      sizeof(char *), qsort_device_cmp);
- 	}
+diff --git a/src/monitor.c b/src/monitor.c
+index 4ceff94824432..e3e38c2a12b78 100644
+--- a/src/monitor.c
++++ b/src/monitor.c
+@@ -577,14 +577,18 @@ static int netlink_events_flowtable_cb(const struct nlmsghdr *nlh, int type,
+ 		nft_mon_print(monh, "%s ", cmd);
  
--	priority = nftnl_flowtable_get_u32(nlo, NFTNL_FLOWTABLE_PRIO);
--	flowtable->priority.expr =
-+	if (nftnl_flowtable_is_set(nlo, NFTNL_FLOWTABLE_PRIO)) {
-+		priority = nftnl_flowtable_get_u32(nlo, NFTNL_FLOWTABLE_PRIO);
-+		flowtable->priority.expr =
- 				constant_expr_alloc(&netlink_location,
- 						    &integer_type,
- 						    BYTEORDER_HOST_ENDIAN,
- 						    sizeof(int) *
- 						    BITS_PER_BYTE,
- 						    &priority);
-+	}
- 	flowtable->hook.num =
- 		nftnl_flowtable_get_u32(nlo, NFTNL_FLOWTABLE_HOOKNUM);
- 	flowtable->flags =
+ 		switch (type) {
++		case NFT_MSG_DELFLOWTABLE:
++			if (!ft->dev_array_len) {
++				nft_mon_print(monh, "flowtable %s %s %s",
++					      family,
++					      ft->handle.table.name,
++					      ft->handle.flowtable.name);
++				break;
++			}
++			/* fall through */
+ 		case NFT_MSG_NEWFLOWTABLE:
+ 			flowtable_print_plain(ft, &monh->ctx->nft->output);
+ 			break;
+-		case NFT_MSG_DELFLOWTABLE:
+-			nft_mon_print(monh, "flowtable %s %s %s", family,
+-				      ft->handle.table.name,
+-				      ft->handle.flowtable.name);
+-			break;
+ 		}
+ 		nft_mon_print(monh, "\n");
+ 		break;
 -- 
 2.49.0
 
