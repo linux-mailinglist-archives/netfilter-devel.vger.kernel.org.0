@@ -1,61 +1,64 @@
-Return-Path: <netfilter-devel+bounces-7504-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7507-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7731DAD7229
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 15:35:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDF20AD7266
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 15:45:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CD517AC207
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:34:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB66F1886290
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74031252900;
-	Thu, 12 Jun 2025 13:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0F7253923;
+	Thu, 12 Jun 2025 13:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FTzJwac8"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ZCRMm5pw"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F962512DD
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 13:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBBB23D280
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 13:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749735266; cv=none; b=q2flsmCRuBffyE8W+Ha6Z7n+YUton7G8lou1zEvbY8cMwqAqbPUwAwD+Vvf16EwlP9eoRuH1RXeUVbZ3hqpxts13vj+yWMPCU/R12veFgZsl9hO0tZH69H0pRVl6XU/uEtYyEX9l4OwRIpQrRlTB/rpTcjnGsnoD795jLbuh8Jw=
+	t=1749735266; cv=none; b=EsYJ6bF4RBowxzbaq6pJsgYYcb9w99+XrQRTe46aFSpR8eufjdWXNXD+055X/ZWK4YmOLd7jRjRMhDq7y1qr5BhjFcD9R01DoZTqhfkRSahx3jKeKQCySgUPaIcTAtQ8LgEQ2oNsso5DwxkL8gYtrsf4zQ4UHJu9B/RVpfrgGRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1749735266; c=relaxed/simple;
-	bh=7QX2Tv8UfqWuyz/F5500TefisF0YesiGJIr5YRXT9UI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rtTDZiWsbXtoUnAJCMNxOGZTpyI3fF5NN/MG/Rv4GW+x405Sx+1eKXYBJ4a0qR+Onp40EFKm8UXL59/ANk2Jkaq8tWzTyJjjB62hc91nAqhSutDBuoKB8GgkWhurv5EdKIrdEJSKwktEIpT9Npge6Mh8JkjE4xSBP+P5DHP/99U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FTzJwac8; arc=none smtp.client-ip=151.80.46.58
+	bh=FTM+AmkuaWSkncGpM7Qp2pzQWdD9gB1SIoLemY655qE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NfHHGWvNujViCNgmz2iKwAMkcLeIhpLhJ/Btyd5Cag773/KP15k+5t0o1DZeZr+niA+E9ggx6SpbW7vLcbxdbuzo82yeRPXDp5UwAuyY0iHCrG0VhAeZRf5QdIISc5ZWFpaUZVw0cX69p9BuY4JGefoOmnif+gXeQOts78XegGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=ZCRMm5pw; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=+OLECkmAF0n64s0dpfChnbxrWAB5Ue2g2WDQ5boe0mI=; b=FTzJwac8W1/eqbO+A5iNRS2xJM
-	Z/VZnZnH0FaclDc8xZeLgY0m8NhZklPOyAaQcmn19Pv7DkmUyD4N0qciXHC3NuCW72dXUbDQMa/oR
-	AwYzEx6SXRVXhw2+ZuQfD9ahKkRRFG+scQMIlC1/7IwnvGmWbFSc1Y2foXJowtcrcKC7psbWIcBVm
-	ggjRMQk16oZ7pOFBsYtKkTf0ZWwtk/TiMzOq/MJYSGTCxSx18/PHe8IHFrZZMWohHBpDJH5mg1Qyn
-	P1gszAQrOf8I4yPpOsBVAEyVydbmpYTVFdEmK9tc7/q+xTi8rO2iiwXEIPHz60Pp4fcU53NgZiw8h
-	h0Lhb9qA==;
+	bh=ldW506LE5Y/L18MpsHGW07PtB5ZAyTrUVwdYhq7S72w=; b=ZCRMm5pwiFVm2EJtMZCAmG44/s
+	1K5Br4/O0Guz77B3fC+jwKN//akzmGmHrL1prkl0PDGDHhklT3jtxvf+kZxnGYDhLVE0WWgyybh4I
+	YeG29TGbe6MZHJxcMgA5JE8eqlDKNtcZT0uGJn74ItFKfOWT76yKIS0O9hA0yLMeggp8Y7MhfcTGb
+	fJ81NZ7VGGLGDdML8A39kg8K0M+JDKJlvDURZwe4jvpCC7RpWZELz0aKasTGTTmzMC/trRa5GKIII
+	5cCiDuOb1UUyhdGyDpEfMRn5wUOLr5ZBMcwcfjB/TSnt4oJj/mVINRgYhOnCwnYEPuRKQAtzCisT2
+	gZP2mRcQ==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uPi4T-000000000rr-3sJ9;
-	Thu, 12 Jun 2025 15:34:21 +0200
+	id 1uPi4V-000000000sI-1i4K;
+	Thu, 12 Jun 2025 15:34:23 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nf-next PATCH 0/3] netfilter: nf_tables: Report found devices when creating a netdev hook
-Date: Thu, 12 Jun 2025 15:34:13 +0200
-Message-ID: <20250612133416.18133-1-phil@nwl.cc>
+Subject: [nf-next PATCH 1/3] netfilter: nf_tables: commit_notify: Support varying groups
+Date: Thu, 12 Jun 2025 15:34:14 +0200
+Message-ID: <20250612133416.18133-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250612133416.18133-1-phil@nwl.cc>
+References: <20250612133416.18133-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,27 +67,133 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Previously, NEWDEV/DELDEV notifications were emitted for new/renamed
-devices added to a chain or flowtable only. For user space to fully
-comprehend which interfaces a hook binds to, these notifications have to
-be sent for matching devices at hook creation time, too.
+Expect users to enqueue notifications for various groups. The first
+message for a new group will flush the existing batch and start a new
+one.
 
-This series extends the notify list to support messages for varying
-groups so it may be reused by the NFNLGRP_NFT_DEV messages (patch 1),
-adjusts the device_notify routines to support enqueueing the message
-instead of sending it right away (patch 2) and finally adds extra notify
-calls to nf_tables_commit() (patch 3).
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ net/netfilter/nf_tables_api.c | 34 +++++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 11 deletions(-)
 
-Phil Sutter (3):
-  netfilter: nf_tables: commit_notify: Support varying groups
-  netfilter: nf_tables: Support enqueueing device notifications
-  netfilter: nf_tables: Extend chain/flowtable notifications
-
- include/net/netfilter/nf_tables.h |   3 +-
- net/netfilter/nf_tables_api.c     | 160 ++++++++++++++++++++++++++----
- net/netfilter/nft_chain_filter.c  |   2 +-
- 3 files changed, 144 insertions(+), 21 deletions(-)
-
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 24c71ecb2179..da12a5424e6d 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -1193,13 +1193,16 @@ static int nf_tables_fill_table_info(struct sk_buff *skb, struct net *net,
+ 
+ struct nftnl_skb_parms {
+ 	bool report;
++	unsigned int group;
+ };
+ #define NFT_CB(skb)	(*(struct nftnl_skb_parms*)&((skb)->cb))
+ 
+-static void nft_notify_enqueue(struct sk_buff *skb, bool report,
++static void nft_notify_enqueue(struct sk_buff *skb,
++			       bool report, unsigned int group,
+ 			       struct list_head *notify_list)
+ {
+ 	NFT_CB(skb).report = report;
++	NFT_CB(skb).group = group;
+ 	list_add_tail(&skb->list, notify_list);
+ }
+ 
+@@ -1229,7 +1232,8 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
+ 	}
+ 
+ 	nft_net = nft_pernet(ctx->net);
+-	nft_notify_enqueue(skb, ctx->report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, ctx->report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(ctx->net, ctx->portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -2100,7 +2104,8 @@ static void nf_tables_chain_notify(const struct nft_ctx *ctx, int event,
+ 	}
+ 
+ 	nft_net = nft_pernet(ctx->net);
+-	nft_notify_enqueue(skb, ctx->report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, ctx->report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(ctx->net, ctx->portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -3714,7 +3719,8 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	nft_notify_enqueue(skb, ctx->report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, ctx->report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(ctx->net, ctx->portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -4971,7 +4977,8 @@ static void nf_tables_set_notify(const struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	nft_notify_enqueue(skb, ctx->report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, ctx->report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(ctx->net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -6630,7 +6637,8 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
+ 	}
+ 
+ 	nft_net = nft_pernet(net);
+-	nft_notify_enqueue(skb, ctx->report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, ctx->report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -8702,7 +8710,8 @@ __nft_obj_notify(struct net *net, const struct nft_table *table,
+ 		goto err;
+ 	}
+ 
+-	nft_notify_enqueue(skb, report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -9614,7 +9623,8 @@ static void nf_tables_flowtable_notify(struct nft_ctx *ctx,
+ 		goto err;
+ 	}
+ 
+-	nft_notify_enqueue(skb, ctx->report, &nft_net->notify_list);
++	nft_notify_enqueue(skb, ctx->report, NFNLGRP_NFTABLES,
++			   &nft_net->notify_list);
+ 	return;
+ err:
+ 	nfnetlink_set_err(ctx->net, ctx->portid, NFNLGRP_NFTABLES, -ENOBUFS);
+@@ -10750,20 +10760,22 @@ static void nft_commit_notify(struct net *net, u32 portid)
+ 			continue;
+ 		}
+ 		len -= skb->len;
+-		if (len > 0 && NFT_CB(skb).report == NFT_CB(batch_skb).report) {
++		if (len > 0 &&
++		    NFT_CB(skb).report == NFT_CB(batch_skb).report &&
++		    NFT_CB(skb).group == NFT_CB(batch_skb).group) {
+ 			data = skb_put(batch_skb, skb->len);
+ 			memcpy(data, skb->data, skb->len);
+ 			list_del(&skb->list);
+ 			kfree_skb(skb);
+ 			continue;
+ 		}
+-		nfnetlink_send(batch_skb, net, portid, NFNLGRP_NFTABLES,
++		nfnetlink_send(batch_skb, net, portid, NFT_CB(batch_skb).group,
+ 			       NFT_CB(batch_skb).report, GFP_KERNEL);
+ 		goto new_batch;
+ 	}
+ 
+ 	if (batch_skb) {
+-		nfnetlink_send(batch_skb, net, portid, NFNLGRP_NFTABLES,
++		nfnetlink_send(batch_skb, net, portid, NFT_CB(batch_skb).group,
+ 			       NFT_CB(batch_skb).report, GFP_KERNEL);
+ 	}
+ 
 -- 
 2.49.0
 
