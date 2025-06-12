@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7499-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7501-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 365C6AD6F85
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:52:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C7DDAD6F90
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 13:53:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E50D1BC300C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 11:52:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFD1E3AECE9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jun 2025 11:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49504231A41;
-	Thu, 12 Jun 2025 11:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39406231A23;
+	Thu, 12 Jun 2025 11:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Tc9hgsWk"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="WAsxIMRH"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EEF0221F34
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 11:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E114223DF6
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Jun 2025 11:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749729154; cv=none; b=ASOB+u9YQ+TVog/ufXEAH2OHrV+FHju0O3x9nkWueQIdJGEJnuLpBz6Ep2toPSWRn9WLEN8lmHZcqedkKqBoEq8s4/tfaTHGj1ApITbVEohPmul4s+9q8cpoVfSP3d5CilGS+Z0fXLGhtPwc8Piqi+Z+dWBUlubLlEdRXGbbKOs=
+	t=1749729155; cv=none; b=ms95/5+f0Kw0q6nFIUeh3p5IKh2La75wvhAQUhaFAftOQUyUuzb/Y0TYuxQwQbQuUGod3Jfunhq7Nuj7Pen756h2q2JZx2ONWGXXeu6CvuDdopoUxgrbOAT3iFrVFBp9qd72QI3z+wuurt+Be4uWyjtXbrN+lQZy3tN9nh0W+Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749729154; c=relaxed/simple;
-	bh=rblAFFMtzv3ju70Heznr29c3qLSzGF/mnKiU+D3tDwA=;
+	s=arc-20240116; t=1749729155; c=relaxed/simple;
+	bh=QNwE+CTyXyQAxfhYB/MX6i+dmcgNxuH+vv70zPeeW9o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=esyf1mm7gR/8noQJtVrd4FKLi5Lew6TbkYmwSpePuUJejkA7GonwTF/5smR4I62mb58F8vGr4meibHzhjQfw9PDFypEnEDnQIBsC3i417U2fkbMaJCRduoBlcRosMthOtVRT5wAzAPaOPjcacu5PnmkJEMTyQnc2cnWLK0AC0i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Tc9hgsWk; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=oe+jfh/7tMLoD46D11fgns0i1O1b9KfdTiAOglbHEBV0anI230uQmmsyRWuYBg6JM6ekycHLv70cOG02LlYv4iOiuG9ZyjINjDjzS2cLXDfwcRJyyB0w2kwLOfal8iVvd31YCN14vvfnrgKXEd21SUDQbJiV4YJeVK0GR+/6e6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=WAsxIMRH; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=ItTgJ+jRiQWjbWAih6bdgecuRLuRYTKYPyMu+bJQMKs=; b=Tc9hgsWkgQq0bol3Iiq0hg3h4n
-	cKqdlJuJ97ySVIG8IQGU5vzMcrzShlm87d+mwlZ4MkT5jSwcOVFOQNRmuPeeZ/mDW/9ooXVM3Gl/X
-	2fPveA2xJUZ1hQ/Hyng2SmQg/mE2pqiBXd0HvgDIMZmbZB+R3mSVC6hDnA0iEHVPXFgwxqFlF3f5P
-	7cw4dZc0jJMvgMLTtx873jBJXY56DcRqmFL/xvSoDuG7THWJTuRzFnrGHyBoF7jWaHnKxtmZ1q/7l
-	uYCVMhVd0s0XWfuBK0XbCon1Y40fbR6N4qxZiYkb+G2brakQMPzonKmUL2U3Ctemh06vwKt+sHxKI
-	QuR6hSdw==;
+	bh=mI6+xxfK1gcXKZaZ7doQsVwTOn4r7FVFvD7U6OdXGEY=; b=WAsxIMRHFttYmIac4EcoeZWy+0
+	0D5z8vtBKzotTPtXy0IktozItx+NzhUD4FbsVBsFMmS72Qm/0xJOVv5n+ycWazlGY5wSN5Dxvso8S
+	N30hE7eDVhtZpN5pULjH6O1q8TzkGOBIDeX/ElGS2R2pmdhps3zOcQcV8or1RNQL5gYTauYB6gxGY
+	cOrSYOMSVNmc2NMAgGHA6xl519ORr5SR41rGU9dlsKaInqVBXJGfuzYgvVNgyj8vLJktAXj4ZHHQR
+	qDpB6TUlbtdpeBdpzMvi0y+4tHoXIvXmeAJ1HwJeInaTJZRPIBdpoZOf6VTwY5yRNelLm55D2mFaT
+	LDcND6Xg==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uPgTu-000000006GB-2zSC;
-	Thu, 12 Jun 2025 13:52:30 +0200
+	id 1uPgTt-000000006Fv-0ozt;
+	Thu, 12 Jun 2025 13:52:29 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 4/7] json: Dump flowtable hook spec only if present
-Date: Thu, 12 Jun 2025 13:52:15 +0200
-Message-ID: <20250612115218.4066-5-phil@nwl.cc>
+Subject: [nft PATCH 5/7] tests: monitor: Fix for single flag array avoidance
+Date: Thu, 12 Jun 2025 13:52:16 +0200
+Message-ID: <20250612115218.4066-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250612115218.4066-1-phil@nwl.cc>
 References: <20250612115218.4066-1-phil@nwl.cc>
@@ -67,67 +67,109 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If there is no priority.expr set, assume hook.num is bogus, too.
+Missed to update the JSON monitor expected output.
 
-While this is fixing JSON output, it's hard to tell what commit this is
-actually fixing: Before commit 627c451b23513 ("src: allow variables in
-the chain priority specification"), there was no way to detect
-flowtables missing hook specs (e.g. when printing flowtable delete
-monitor event).
-
+Fixes: 6bedb12af1658 ("json: Print single set flag as non-array")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/json.c                                 | 22 ++++++++++++++--------
- tests/monitor/testcases/flowtable-simple.t |  2 +-
- 2 files changed, 15 insertions(+), 9 deletions(-)
+ tests/monitor/testcases/map-expr.t            | 2 +-
+ tests/monitor/testcases/set-concat-interval.t | 2 +-
+ tests/monitor/testcases/set-interval.t        | 2 +-
+ tests/monitor/testcases/set-maps.t            | 2 +-
+ tests/monitor/testcases/set-mixed.t           | 2 +-
+ tests/monitor/testcases/set-multiple.t        | 4 ++--
+ tests/monitor/testcases/set-simple.t          | 2 +-
+ 7 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/src/json.c b/src/json.c
-index a46aed279167b..5bd5daf3f7fa6 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -493,18 +493,24 @@ static json_t *flowtable_print_json(const struct flowtable *ftable)
- 	json_t *root, *devs = NULL;
- 	int i, priority = 0;
- 
-+	root = nft_json_pack("{s:s, s:s, s:s, s:I}",
-+			"family", family2str(ftable->handle.family),
-+			"name", ftable->handle.flowtable.name,
-+			"table", ftable->handle.table.name,
-+			"handle", ftable->handle.handle.id);
-+
- 	if (ftable->priority.expr) {
-+		json_t *tmp;
-+
- 		mpz_export_data(&priority, ftable->priority.expr->value,
- 				BYTEORDER_HOST_ENDIAN, sizeof(int));
--	}
- 
--	root = nft_json_pack("{s:s, s:s, s:s, s:I, s:s, s:i}",
--			"family", family2str(ftable->handle.family),
--			"name", ftable->handle.flowtable.name,
--			"table", ftable->handle.table.name,
--			"handle", ftable->handle.handle.id,
--			"hook", hooknum2str(NFPROTO_NETDEV, ftable->hook.num),
--			"prio", priority);
-+		tmp = nft_json_pack("{s:s, s:i}",
-+				    "hook", hooknum2str(NFPROTO_NETDEV,
-+							ftable->hook.num),
-+				    "prio", priority);
-+		json_object_update_new(root, tmp);
-+	}
- 
- 	for (i = 0; i < ftable->dev_array_len; i++) {
- 		const char *dev = ftable->dev_array[i];
-diff --git a/tests/monitor/testcases/flowtable-simple.t b/tests/monitor/testcases/flowtable-simple.t
-index df8eccbd91e0a..b373cca2e0d61 100644
---- a/tests/monitor/testcases/flowtable-simple.t
-+++ b/tests/monitor/testcases/flowtable-simple.t
-@@ -7,4 +7,4 @@ J {"add": {"flowtable": {"family": "ip", "name": "ft", "table": "t", "handle": 0
- 
- I delete flowtable ip t ft
+diff --git a/tests/monitor/testcases/map-expr.t b/tests/monitor/testcases/map-expr.t
+index d11ad0ebc0d57..904200418745e 100644
+--- a/tests/monitor/testcases/map-expr.t
++++ b/tests/monitor/testcases/map-expr.t
+@@ -3,4 +3,4 @@ I add table ip t
+ I add map ip t m { typeof meta day . meta hour : verdict; flags interval; counter; }
  O -
--J {"delete": {"flowtable": {"family": "ip", "name": "ft", "table": "t", "handle": 0, "hook": "ingress", "prio": 0, "dev": "lo"}}}
-+J {"delete": {"flowtable": {"family": "ip", "name": "ft", "table": "t", "handle": 0}}}
+ J {"add": {"table": {"family": "ip", "name": "t", "handle": 0}}}
+-J {"add": {"map": {"family": "ip", "name": "m", "table": "t", "type": {"typeof": {"concat": [{"meta": {"key": "day"}}, {"meta": {"key": "hour"}}]}}, "handle": 0, "map": "verdict", "flags": ["interval"], "stmt": [{"counter": null}]}}}
++J {"add": {"map": {"family": "ip", "name": "m", "table": "t", "type": {"typeof": {"concat": [{"meta": {"key": "day"}}, {"meta": {"key": "hour"}}]}}, "handle": 0, "map": "verdict", "flags": "interval", "stmt": [{"counter": null}]}}}
+diff --git a/tests/monitor/testcases/set-concat-interval.t b/tests/monitor/testcases/set-concat-interval.t
+index 3542b8225ebd1..a42682f503246 100644
+--- a/tests/monitor/testcases/set-concat-interval.t
++++ b/tests/monitor/testcases/set-concat-interval.t
+@@ -10,6 +10,6 @@ I add map ip t s { typeof udp length . @ih,32,32 : verdict; flags interval; elem
+ O add map ip t s { typeof udp length . @ih,32,32 : verdict; flags interval; }
+ O add element ip t s { 20-80 . 0x14 : accept }
+ O add element ip t s { 1-10 . 0xa : drop }
+-J {"add": {"map": {"family": "ip", "name": "s", "table": "t", "type": {"typeof": {"concat": [{"payload": {"protocol": "udp", "field": "length"}}, {"payload": {"base": "ih", "offset": 32, "len": 32}}]}}, "handle": 0, "map": "verdict", "flags": ["interval"]}}}
++J {"add": {"map": {"family": "ip", "name": "s", "table": "t", "type": {"typeof": {"concat": [{"payload": {"protocol": "udp", "field": "length"}}, {"payload": {"base": "ih", "offset": 32, "len": 32}}]}}, "handle": 0, "map": "verdict", "flags": "interval"}}}
+ J {"add": {"element": {"family": "ip", "table": "t", "name": "s", "elem": {"set": [[{"concat": [{"range": [20, 80]}, 20]}, {"accept": null}]]}}}}
+ J {"add": {"element": {"family": "ip", "table": "t", "name": "s", "elem": {"set": [[{"concat": [{"range": [1, 10]}, 10]}, {"drop": null}]]}}}}
+diff --git a/tests/monitor/testcases/set-interval.t b/tests/monitor/testcases/set-interval.t
+index 5053c596b3b1b..84cf98c214671 100644
+--- a/tests/monitor/testcases/set-interval.t
++++ b/tests/monitor/testcases/set-interval.t
+@@ -10,7 +10,7 @@ I add set ip t s { type inet_service; flags interval; elements = { 20, 30-40 };
+ O add set ip t s { type inet_service; flags interval; }
+ O add element ip t s { 20 }
+ O add element ip t s { 30-40 }
+-J {"add": {"set": {"family": "ip", "name": "s", "table": "t", "type": "inet_service", "handle": 0, "flags": ["interval"]}}}
++J {"add": {"set": {"family": "ip", "name": "s", "table": "t", "type": "inet_service", "handle": 0, "flags": "interval"}}}
+ J {"add": {"element": {"family": "ip", "table": "t", "name": "s", "elem": {"set": [20]}}}}
+ J {"add": {"element": {"family": "ip", "table": "t", "name": "s", "elem": {"set": [{"range": [30, 40]}]}}}}
+ 
+diff --git a/tests/monitor/testcases/set-maps.t b/tests/monitor/testcases/set-maps.t
+index acda480d86dbb..aaf332f3caf98 100644
+--- a/tests/monitor/testcases/set-maps.t
++++ b/tests/monitor/testcases/set-maps.t
+@@ -3,7 +3,7 @@ I add table ip t
+ I add map ip t portip { type inet_service: ipv4_addr; flags interval; }
+ O -
+ J {"add": {"table": {"family": "ip", "name": "t", "handle": 0}}}
+-J {"add": {"map": {"family": "ip", "name": "portip", "table": "t", "type": "inet_service", "handle": 0, "map": "ipv4_addr", "flags": ["interval"]}}}
++J {"add": {"map": {"family": "ip", "name": "portip", "table": "t", "type": "inet_service", "handle": 0, "map": "ipv4_addr", "flags": "interval"}}}
+ 
+ I add element ip t portip { 80-100: 10.0.0.1 }
+ O -
+diff --git a/tests/monitor/testcases/set-mixed.t b/tests/monitor/testcases/set-mixed.t
+index 08c20116de92f..1cf3d38e34a7b 100644
+--- a/tests/monitor/testcases/set-mixed.t
++++ b/tests/monitor/testcases/set-mixed.t
+@@ -4,7 +4,7 @@ I add set ip t portrange { type inet_service; flags interval; }
+ I add set ip t ports { type inet_service; }
+ O -
+ J {"add": {"table": {"family": "ip", "name": "t", "handle": 0}}}
+-J {"add": {"set": {"family": "ip", "name": "portrange", "table": "t", "type": "inet_service", "handle": 0, "flags": ["interval"]}}}
++J {"add": {"set": {"family": "ip", "name": "portrange", "table": "t", "type": "inet_service", "handle": 0, "flags": "interval"}}}
+ J {"add": {"set": {"family": "ip", "name": "ports", "table": "t", "type": "inet_service", "handle": 0}}}
+ 
+ # make sure concurrent adds work
+diff --git a/tests/monitor/testcases/set-multiple.t b/tests/monitor/testcases/set-multiple.t
+index bd7a6246a46b4..84de98e94d139 100644
+--- a/tests/monitor/testcases/set-multiple.t
++++ b/tests/monitor/testcases/set-multiple.t
+@@ -4,8 +4,8 @@ I add set ip t portrange { type inet_service; flags interval; }
+ I add set ip t portrange2 { type inet_service; flags interval; }
+ O -
+ J {"add": {"table": {"family": "ip", "name": "t", "handle": 0}}}
+-J {"add": {"set": {"family": "ip", "name": "portrange", "table": "t", "type": "inet_service", "handle": 0, "flags": ["interval"]}}}
+-J {"add": {"set": {"family": "ip", "name": "portrange2", "table": "t", "type": "inet_service", "handle": 0, "flags": ["interval"]}}}
++J {"add": {"set": {"family": "ip", "name": "portrange", "table": "t", "type": "inet_service", "handle": 0, "flags": "interval"}}}
++J {"add": {"set": {"family": "ip", "name": "portrange2", "table": "t", "type": "inet_service", "handle": 0, "flags": "interval"}}}
+ 
+ # make sure concurrent adds work
+ I add element ip t portrange { 1024-65535 }
+diff --git a/tests/monitor/testcases/set-simple.t b/tests/monitor/testcases/set-simple.t
+index 6853a0ebbb0cb..4bef144875876 100644
+--- a/tests/monitor/testcases/set-simple.t
++++ b/tests/monitor/testcases/set-simple.t
+@@ -3,7 +3,7 @@ I add table ip t
+ I add set ip t portrange { type inet_service; flags interval; }
+ O -
+ J {"add": {"table": {"family": "ip", "name": "t", "handle": 0}}}
+-J {"add": {"set": {"family": "ip", "name": "portrange", "table": "t", "type": "inet_service", "handle": 0, "flags": ["interval"]}}}
++J {"add": {"set": {"family": "ip", "name": "portrange", "table": "t", "type": "inet_service", "handle": 0, "flags": "interval"}}}
+ 
+ # adding some ranges
+ I add element ip t portrange { 1-10 }
 -- 
 2.49.0
 
