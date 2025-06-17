@@ -1,42 +1,42 @@
-Return-Path: <netfilter-devel+bounces-7570-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7569-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1453BADC8A3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Jun 2025 12:49:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D912EADC8A1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Jun 2025 12:49:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7018C18905E3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Jun 2025 10:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B41A163B2B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Jun 2025 10:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACAA2C08D3;
-	Tue, 17 Jun 2025 10:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791562C15AD;
+	Tue, 17 Jun 2025 10:49:23 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9389A28FFE6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9399D2BEC3B
 	for <netfilter-devel@vger.kernel.org>; Tue, 17 Jun 2025 10:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.136.29.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750157363; cv=none; b=SMzQAN5Cm8gQU9fjMgiHCfhDPJPHJYquobhcoorJZrbYI5tRx1yTVZOCCuzilRPatkEEvCKMPVRm0QEIdkLk74r38y9VAZ4p8hBjIUUrck0UpxODERSgDsNAloUuB0eMz8TZrP7jcndXXBOH6l5pvzwbWo7RV1u1l/P4NcIfweo=
+	t=1750157363; cv=none; b=kvrb6s9mIA0HBbS1lmwlZVqx3zx5zdNPtYoYaeO2jxujsmKZYItOlms1DZvMOFrZW1ej7EprU9UpYSibfFKVUDVi++oTGfBu7m9tuTITz9r8SP/NdhfXve2n0vKXiLV5WCtdDFt1kNFq3Msb1IUpu07YfORv6kTf0qTpHwHLzs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1750157363; c=relaxed/simple;
-	bh=PoBO5uXxt5r866iKV/X8Xvw8ObcFs+4E4q9IOf/Fa8g=;
+	bh=RZi65dYh7XcyZQTSNjtfpGRxbLaeIeRNYhu5cQaAOg0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y2Ua+Ntn6TmEJXzcdIWhY2u4SRZOqB4Q7DGXangyhxMfbvrla56jdKpIF7YfpQYCqyFr1pJWHg17inAfkLdFfAAIo7SgJ+Uac0hU+mpcoygWty0K3j3q1bFRir3TwnF6kmrcFK+9v/kwsrPewnpVgVlnu8ThhsNjpnk7L7+NMJ4=
+	 MIME-Version; b=Ba7SZc7gHTBB5fl6tnkWun4/Bzf19L1y1G+t7x7DMLEyKj/shRMF14Psfg0sK2TpNZ+KtK3wBxD7kSlgBcbjlnIhkTctRWo1RK2o6ILgKcfDFjF38GORocAOn7ENEnGTe2CercpO0BwCGQPoMIIvKnS8WjNEvhICocsXmVIv9sg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com; spf=pass smtp.mailfrom=proxmox.com; arc=none smtp.client-ip=94.136.29.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
 Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 0E13D4605A
+	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 9B57146073
 	for <netfilter-devel@vger.kernel.org>; Tue, 17 Jun 2025 12:49:13 +0200 (CEST)
 From: Christoph Heiss <c.heiss@proxmox.com>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH conntrack-tools v2 1/2] conntrack: move label parsing after argument parsing
-Date: Tue, 17 Jun 2025 12:48:33 +0200
-Message-ID: <20250617104837.939280-2-c.heiss@proxmox.com>
+Subject: [PATCH conntrack-tools v2 2/2] conntrack: introduce --labelmap option to specify connlabel.conf path
+Date: Tue, 17 Jun 2025 12:48:34 +0200
+Message-ID: <20250617104837.939280-3-c.heiss@proxmox.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250617104837.939280-1-c.heiss@proxmox.com>
 References: <20250617104837.939280-1-c.heiss@proxmox.com>
@@ -48,132 +48,193 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of parsing directly inline while parsing, put them into a list
-and do it afterwards.
+Enables specifying a path to a connlabel.conf to load instead of the
+default one at /etc/xtables/connlabel.conf.
 
-Preparation for introduction a new `--labelmap` option to specify the
-path to the label mapping file.
+nfct_labelmap_new() already allows supplying a custom path to load
+labels from, so it just needs to be passed in there.
 
 Signed-off-by: Christoph Heiss <c.heiss@proxmox.com>
 ---
- src/conntrack.c | 60 ++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 42 insertions(+), 18 deletions(-)
+ conntrack.8         |  5 ++++
+ include/conntrack.h |  2 +-
+ src/conntrack.c     | 64 ++++++++++++++++++++++++++++-----------------
+ 3 files changed, 46 insertions(+), 25 deletions(-)
 
-diff --git a/src/conntrack.c b/src/conntrack.c
-index 2d4e864..b9afd2f 100644
---- a/src/conntrack.c
-+++ b/src/conntrack.c
-@@ -122,6 +122,12 @@ struct ct_cmd {
- 	struct ct_tmpl	tmpl;
+diff --git a/conntrack.8 b/conntrack.8
+index 3b6a15b..2bfd80e 100644
+--- a/conntrack.8
++++ b/conntrack.8
+@@ -189,6 +189,11 @@ This option is only available in conjunction with "\-L, \-\-dump",
+ Match entries whose labels include those specified as arguments.
+ Use multiple \-l options to specify multiple labels that need to be set.
+ .TP
++.BI "--labelmap " "PATH"
++Specify the path to a connlabel.conf file to load instead of the default one.
++This option is only available in conjunction with "\-L, \-\-dump", "\-E,
++\-\-event", "\-U \-\-update" or "\-D \-\-delete".
++.TP
+ .BI "--label-add " "LABEL"
+ Specify the conntrack label to add to the selected conntracks.
+ This option is only available in conjunction with "\-I, \-\-create",
+diff --git a/include/conntrack.h b/include/conntrack.h
+index 6dad4a1..317cab6 100644
+--- a/include/conntrack.h
++++ b/include/conntrack.h
+@@ -78,7 +78,7 @@ enum ct_command {
  };
  
-+struct ct_label {
-+	struct list_head list;
-+	char *name;
-+	bool is_modify;
-+};
+ #define NUMBER_OF_CMD   _CT_BIT_MAX
+-#define NUMBER_OF_OPT   29
++#define NUMBER_OF_OPT   30
+ 
+ struct nf_conntrack;
+ 
+diff --git a/src/conntrack.c b/src/conntrack.c
+index b9afd2f..0622b9e 100644
+--- a/src/conntrack.c
++++ b/src/conntrack.c
+@@ -255,6 +255,9 @@ enum ct_options {
+ 
+ 	CT_OPT_REPL_ZONE_BIT	= 28,
+ 	CT_OPT_REPL_ZONE	= (1 << CT_OPT_REPL_ZONE_BIT),
 +
- static int alloc_tmpl_objects(struct ct_tmpl *tmpl)
++	CT_OPT_LABELMAP_BIT	= 29,
++	CT_OPT_LABELMAP		= (1 << CT_OPT_LABELMAP_BIT),
+ };
+ /* If you add a new option, you have to update NUMBER_OF_OPT in conntrack.h */
+ 
+@@ -294,6 +297,7 @@ static const char *optflags[NUMBER_OF_OPT] = {
+ 	[CT_OPT_DEL_LABEL_BIT]	= "label-del",
+ 	[CT_OPT_ORIG_ZONE_BIT]	= "orig-zone",
+ 	[CT_OPT_REPL_ZONE_BIT]	= "reply-zone",
++	[CT_OPT_LABELMAP_BIT]	= "labelmap",
+ };
+ 
+ static struct option original_opts[] = {
+@@ -336,6 +340,7 @@ static struct option original_opts[] = {
+ 	{"any-nat", 2, 0, 'j'},
+ 	{"zone", 1, 0, 'w'},
+ 	{"label", 1, 0, 'l'},
++	{"labelmap", 1, 0, 'M'},
+ 	{"label-add", 1, 0, '<'},
+ 	{"label-del", 2, 0, '>'},
+ 	{"orig-zone", 1, 0, '('},
+@@ -345,7 +350,7 @@ static struct option original_opts[] = {
+ 
+ static const char *getopt_str = ":LIUDGEFAhVs:d:r:q:"
+ 				"p:t:u:e:a:z[:]:{:}:m:i:f:o:n::"
+-				"g::c:b:C::Sj::w:l:<:>::(:):";
++				"g::c:b:C::Sj::w:l:<:>::(:):M:";
+ 
+ /* Table of legal combinations of commands and options.  If any of the
+  * given commands make an option legal, that option is legal (applies to
+@@ -360,27 +365,27 @@ static const char *getopt_str = ":LIUDGEFAhVs:d:r:q:"
+ static char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
+ /* Well, it's better than "Re: Linux vs FreeBSD" */
  {
- 	tmpl->ct = nfct_new();
-@@ -2963,6 +2969,30 @@ static int print_stats(const struct ct_cmd *cmd)
- 	return 0;
+-			/* s d r q p t u z e [ ] { } a m i f n g o c b j w l < > ( ) */
+-	[CT_LIST_BIT]	= {2,2,2,2,2,0,2,2,0,0,0,2,2,0,2,0,2,2,2,2,2,0,2,2,2,0,0,2,2},
+-	[CT_CREATE_BIT]	= {3,3,3,3,1,1,2,0,0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,2,0,2,0,2,2},
+-	[CT_UPDATE_BIT]	= {2,2,2,2,2,2,2,0,0,0,0,2,2,0,2,2,2,2,2,2,0,0,0,0,2,2,2,0,0},
+-	[CT_DELETE_BIT]	= {2,2,2,2,2,2,2,0,0,0,0,2,2,0,2,2,2,2,2,2,0,0,0,2,2,0,0,2,2},
+-	[CT_GET_BIT]	= {3,3,3,3,1,0,0,0,0,0,0,0,0,0,0,2,0,0,0,2,0,0,0,0,2,0,0,0,0},
+-	[CT_FLUSH_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[CT_EVENT_BIT]	= {2,2,2,2,2,0,0,0,2,0,0,2,2,0,2,0,2,2,2,2,2,2,2,2,2,0,0,2,2},
+-	[CT_VERSION_BIT]= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[CT_HELP_BIT]	= {0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_LIST_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,0},
+-	[EXP_CREATE_BIT]= {1,1,2,2,1,1,2,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_DELETE_BIT]= {1,1,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_GET_BIT]	= {1,1,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_FLUSH_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_EVENT_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0},
+-	[CT_COUNT_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_COUNT_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[CT_STATS_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[EXP_STATS_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+-	[CT_ADD_BIT]	= {3,3,3,3,1,1,2,0,0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,2,0,2,0,2,2},
++			/* s d r q p t u z e [ ] { } a m i f n g o c b j w l < > ( ) M */
++	[CT_LIST_BIT]	= {2,2,2,2,2,0,2,2,0,0,0,2,2,0,2,0,2,2,2,2,2,0,2,2,2,0,0,2,2,2},
++	[CT_CREATE_BIT]	= {3,3,3,3,1,1,2,0,0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,2,0,2,0,2,2,0},
++	[CT_UPDATE_BIT]	= {2,2,2,2,2,2,2,0,0,0,0,2,2,0,2,2,2,2,2,2,0,0,0,0,2,2,2,0,0,2},
++	[CT_DELETE_BIT]	= {2,2,2,2,2,2,2,0,0,0,0,2,2,0,2,2,2,2,2,2,0,0,0,2,2,0,0,2,2,2},
++	[CT_GET_BIT]	= {3,3,3,3,1,0,0,0,0,0,0,0,0,0,0,2,0,0,0,2,0,0,0,0,2,0,0,0,0,0},
++	[CT_FLUSH_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[CT_EVENT_BIT]	= {2,2,2,2,2,0,0,0,2,0,0,2,2,0,2,0,2,2,2,2,2,2,2,2,2,0,0,2,2,2},
++	[CT_VERSION_BIT]= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[CT_HELP_BIT]	= {0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_LIST_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,0,0},
++	[EXP_CREATE_BIT]= {1,1,2,2,1,1,2,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_DELETE_BIT]= {1,1,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_GET_BIT]	= {1,1,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_FLUSH_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_EVENT_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
++	[CT_COUNT_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_COUNT_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[CT_STATS_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[EXP_STATS_BIT]	= {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++	[CT_ADD_BIT]	= {3,3,3,3,1,1,2,0,0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,2,0,2,0,2,2,0},
+ };
+ 
+ static const int cmd2type[][2] = {
+@@ -419,6 +424,7 @@ static const int opt2type[] = {
+ 	['>']	= CT_OPT_DEL_LABEL,
+ 	['(']	= CT_OPT_ORIG_ZONE,
+ 	[')']	= CT_OPT_REPL_ZONE,
++	['M']	= CT_OPT_LABELMAP,
+ };
+ 
+ static const int opt2maskopt[] = {
+@@ -527,7 +533,8 @@ static const char usage_conntrack_parameters[] =
+ 	"  -e, --event-mask eventmask\t\tEvent mask, eg. NEW,DESTROY\n"
+ 	"  -z, --zero \t\t\t\tZero counters while listing\n"
+ 	"  -o, --output type[,...]\t\tOutput format, eg. xml\n"
+-	"  -l, --label label[,...]\t\tconntrack labels\n";
++	"  -l, --label label[,...]\t\tconntrack labels\n"
++	"  --labelmap path\t\t\tconnlabel file to use instead of default\n";
+ 
+ static const char usage_expectation_parameters[] =
+ 	"Expectation parameters and options:\n"
+@@ -572,6 +579,7 @@ static unsigned int addr_valid_flags[ADDR_VALID_FLAGS_MAX] = {
+ 
+ static LIST_HEAD(proto_list);
+ 
++static char *labelmap_path;
+ static struct nfct_labelmap *labelmap;
+ static int filter_family;
+ 
+@@ -2762,7 +2770,7 @@ static void labelmap_init(void)
+ {
+ 	if (labelmap)
+ 		return;
+-	labelmap = nfct_labelmap_new(NULL);
++	labelmap = nfct_labelmap_new(labelmap_path);
+ 	if (!labelmap)
+ 		perror("nfct_labelmap_new");
  }
- 
-+static void parse_and_merge_labels(struct list_head *labels, struct ct_tmpl *tmpl)
-+{
-+	struct ct_label *l, *next;
-+	list_for_each_entry_safe(l, next, labels, list) {
-+		unsigned int max = parse_label_get_max(l->name);
-+		struct nfct_bitmask *b = nfct_bitmask_new(max);
-+		if (!b)
-+			exit_error(OTHER_PROBLEM, "out of memory");
-+
-+		parse_label(b, l->name);
-+
-+		/* join "-l foo -l bar" into single bitmask object */
-+		if (l->is_modify) {
-+			merge_bitmasks(&tmpl->label_modify, b);
-+		} else {
-+			merge_bitmasks(&tmpl->label, b);
-+		}
-+
-+		list_del(&l->list);
-+		free(l->name);
-+		free(l);
-+	}
-+}
-+
- static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- {
- 	unsigned int type = 0, event_mask = 0, l4flags = 0, status = 0;
-@@ -2973,6 +3003,7 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- 	struct ct_tmpl *tmpl;
- 	int res = 0, partial;
- 	union ct_address ad;
-+	LIST_HEAD(labels);
- 	uint32_t value;
- 	int c, cmd;
- 
-@@ -3088,8 +3119,6 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- 		case 'o':
- 			options |= CT_OPT_OUTPUT;
- 			parse_parameter(optarg, &output_mask, PARSE_OUTPUT);
--			if (output_mask & _O_CL)
--				labelmap_init();
- 			if ((output_mask & _O_SAVE) &&
- 			    (output_mask & (_O_EXT |_O_TMS |_O_ID | _O_KTMS | _O_CL | _O_XML)))
- 				exit_error(OTHER_PROBLEM,
-@@ -3162,8 +3191,6 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- 		case '>':
- 			options |= opt2type[c];
- 
--			labelmap_init();
--
- 			if ((options & (CT_OPT_DEL_LABEL|CT_OPT_ADD_LABEL)) ==
- 			    (CT_OPT_DEL_LABEL|CT_OPT_ADD_LABEL))
- 				exit_error(OTHER_PROBLEM, "cannot use --label-add and "
-@@ -3176,22 +3203,13 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- 				optarg = tmp;
- 			}
- 
--			char *optarg2 = strdup(optarg);
--			unsigned int max = parse_label_get_max(optarg);
--			struct nfct_bitmask * b = nfct_bitmask_new(max);
--			if (!b)
-+			struct ct_label *l = calloc(1, sizeof(*l));
-+			if (!l)
- 				exit_error(OTHER_PROBLEM, "out of memory");
- 
--			parse_label(b, optarg2);
--
--			/* join "-l foo -l bar" into single bitmask object */
--			if (c == 'l') {
--				merge_bitmasks(&tmpl->label, b);
--			} else {
--				merge_bitmasks(&tmpl->label_modify, b);
--			}
--
--			free(optarg2);
-+			l->name = strdup(optarg);
-+			l->is_modify = c == '<' || c == '>';
-+			list_add_tail(&l->list, &labels);
+@@ -3230,6 +3238,13 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
+ 			socketbuffersize = atol(optarg);
+ 			options |= CT_OPT_BUFFERSIZE;
  			break;
- 		case 'a':
- 			fprintf(stderr, "WARNING: ignoring -%c, "
-@@ -3246,6 +3264,12 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- 		}
- 	}
++		case 'M':
++			if (labelmap_path)
++			    exit_error(PARAMETER_PROBLEM, "option `--labelmap' can only be specified once");
++
++			labelmap_path = strdup(optarg);
++			options |= CT_OPT_LABELMAP;
++			break;
+ 		case ':':
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "option `%s' requires an "
+@@ -3700,6 +3715,7 @@ try_proc:
+ 	free_tmpl_objects(&cmd->tmpl);
+ 	if (labelmap)
+ 		nfct_labelmap_destroy(labelmap);
++	free(labelmap_path);
  
-+	/* any of these options (might) use labels */
-+	if ((options & (CT_OPT_LABEL | CT_OPT_ADD_LABEL | CT_OPT_DEL_LABEL)) ||
-+	    ((options & CT_OPT_OUTPUT) && (output_mask & _O_CL))) {
-+		labelmap_init();
-+		parse_and_merge_labels(&labels, tmpl);
-+	}
- 
- 	/* we cannot check this combination with generic_opt_check. */
- 	if (options & CT_OPT_ANY_NAT &&
+ 	return EXIT_SUCCESS;
+ }
 -- 
 2.49.0
 
