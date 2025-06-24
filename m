@@ -1,70 +1,70 @@
-Return-Path: <netfilter-devel+bounces-7619-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7618-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9297AE6C90
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Jun 2025 18:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16410AE6C8F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Jun 2025 18:38:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66BEA1C22149
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Jun 2025 16:38:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B16A41C22051
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Jun 2025 16:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3463026CE2C;
-	Tue, 24 Jun 2025 16:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894E02E2EFA;
+	Tue, 24 Jun 2025 16:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="DHGL783I";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="RdUgSdOC"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="F6sJMKW1";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="HbALKVhs"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836A026CE0D
-	for <netfilter-devel@vger.kernel.org>; Tue, 24 Jun 2025 16:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC0026CE2C
+	for <netfilter-devel@vger.kernel.org>; Tue, 24 Jun 2025 16:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750783100; cv=none; b=KDT2YJ3Yc/7L1vkHI4gUu4ailgT7bw07ERBuSPgBGwig0fNRwJxfgCqht98DfyXBfj6on6+v8UPjlmqjpHtdPHY9Xl83dSBX77igcjX6/Eo1/J7zr/1YnRfD1VtTIaqM8yAE6idJ+01eJoWcsQ/0acVl7suO12XkVtyuamZf1sg=
+	t=1750783099; cv=none; b=V4mgwyxTc0h8JHQkfxMC/Vfs1fea3spERaK/QQHHdLsh1Jffc/ycBhXoYD0jnDAzSEMso9STIR7hTh732JHMnQetDmNwToYhffxjCUltHOI12tlMHuI1MIkSVg0rJVGBaGj/fItQOrRw86iOPUdcr6zsvywEFzR2lld66maKRwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750783100; c=relaxed/simple;
-	bh=9cbu+rYBcAvw191H5FTSI8juCoAUDy0JjpuvVQklt74=;
+	s=arc-20240116; t=1750783099; c=relaxed/simple;
+	bh=kAAIPgO38isADE91zJJi8kuDeejliKd7p5RaUQo/iC0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i0+CE4fi9GjYCmIBNiaEiGNVp6RDnTpGkJUYMV1lOfMSHM4bxa0HNlkEVO7uuvKDEwhXUvSf8+Q5mIjJqrQMNv7iMnzeGUFLw5NUkzd28d6B+35BVImJlDbgvQet9epgfBxtnMh7DBwefP/o6ZqMguBf1Goe1G50Cudwadm7e88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=DHGL783I; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=RdUgSdOC; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=k/ApcdjlcDmQ1Z8GOlxY5u+SbbTNlC3v4+yAPW4y/xH+ZijpwCdpPTWt6J7gZG7EPWWC26U6iK3v4qoAmFLEigp2G1eh6lELYh3UROyqAL6kVSFyH8+r8sRZokBppZIUO0VUNz9axsFU++pOj4wzHhL3Hq9cwixvJPlLk8gv5AQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=F6sJMKW1; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=HbALKVhs; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 50B0C60265; Tue, 24 Jun 2025 18:38:08 +0200 (CEST)
+	id 76A2D6026E; Tue, 24 Jun 2025 18:38:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1750783088;
-	bh=GSUQEMb0egKqqg9PGmU/HpNDFNO+suKYrM2k4VrKQww=;
+	s=2025; t=1750783089;
+	bh=Hq3F2trAMtOxgXbDxO8lAwkZ4RzKkMPrY7dx/2Vsets=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DHGL783Ip7xICqmQHYQPKr6LBmkEy+SWk0/Nk4bTysmDfBRq6ZHjN6CWBMLYKM3Qy
-	 0QD2r6o7nvmlZEHF1wNSQSL2Ag9pR8bH+YnMwupNjMfrWMYpSKzT0iDBS6/cbGVGHX
-	 vU+PLBzVDPILw11yHLGQKQ39dXmXnYLD9Mux44B1Qv1lF46kxow05tahn32qT+DheM
-	 nf0mRJgwGu/DTBPreubkKU394zSKXt4qerlIprGL1cJQuBWtEcrAbYThIKXxAwl+RZ
-	 vfaLdaHaIDgB3FFQ+hfqDmNv2FBFqLVp2ZBU73nO1rBxeLkOfnfeWzH5djlbKIliD1
-	 LPVLGsnfEM0TQ==
+	b=F6sJMKW1LPKzSTjTht12mfVfh2kO/FsHEGVKk22Um3qRvUvBC6REGiLemmlKFlWtP
+	 UblakD1VuOj+z8l3INpxsp9vii21ABBpKEGem689xALnF5xHHHBz2ZVf1OESdIRk1j
+	 XzykX1MI4emEiaU4jJQnk2gza4SLHwggVxAUZw1vHjmxFwvcBZKXvwduN+22R1+0Hw
+	 kRILvSVxjHa3xZvqZ58VSYAhnggVagM0ugdB9zmhSWvArHCMoYv+ek9lIw/BYFj4bs
+	 hePK9Ej4pnMuEdZcU/qTmt7mI/jnfpuw3UFMqeJ6fvYJF2asZHFIohwL0y3cmz5T+D
+	 uAXymqEIUIktw==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 32DC260264;
-	Tue, 24 Jun 2025 18:38:07 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 9522960269;
+	Tue, 24 Jun 2025 18:38:08 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1750783087;
-	bh=GSUQEMb0egKqqg9PGmU/HpNDFNO+suKYrM2k4VrKQww=;
+	s=2025; t=1750783088;
+	bh=Hq3F2trAMtOxgXbDxO8lAwkZ4RzKkMPrY7dx/2Vsets=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RdUgSdOChvpPkCvCjwTneSD0IPssboxNV5HelxnPYSaS0SDBhTsGQlbDdl5Ut9dne
-	 MYskOTaG3IipD02B/kR7RcYveCVFkQSFkGOyJyiEBhhHCgThix4oOWJ35H9OBA3Quw
-	 F3pjTjvQD2LJii+dFcIcR1Gzug6hRe6C4tqzzrlbYs9yHKDwVG/oFrj1QtlVkwQYzf
-	 lhf0/HCXGLYobobIzNGgTAQWd8oaM/pHgKSMoP3lxAzgg/AuzPs+WW4PvuN6hdDnDV
-	 DdzdZAZ9lu/pAwrPweiSCnU7D7mnOXcw3OIvVkcsVMSDNyHRwTf+3bC0Hpwabu2dsh
-	 iePR4FWlc72zg==
+	b=HbALKVhsPK8x9db8A6Ny4IMH94lrz83U2GUdRogdvQYFPTSZe6HewtG0gesktr8CN
+	 zlgsBXKvh6o2Gp8VkxC0b1qdafJij5wVqRGdx7uuGT+lBP4AR4CqCR8U4LH9cJEVkz
+	 VNV326FUrhpmOshCkRAZUztAD8pvajE9ixFEylFZDVurNTn80BC4XqtZhvL6Iyadd4
+	 +QHEHgpcj3TvX2cKT04rZ2OlgiWSvKtPHKcFZ+UetkMrZiUelLJFEB7bC6k2jf0x6/
+	 2UTZJ88B4B/59MBSflwbgOVWn14P1jMdvghftnDJOQJ3ZbRwAsbUeNViZSXP/vS/zI
+	 AD+ilenMCZ0gg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de,
 	phil@nwl.cc
-Subject: [PATCH nft 1/2] fib: allow to check if route exists in maps
-Date: Tue, 24 Jun 2025 18:38:00 +0200
-Message-Id: <20250624163801.215307-2-pablo@netfilter.org>
+Subject: [PATCH nft 2/2] fib: allow to use it in set statements
+Date: Tue, 24 Jun 2025 18:38:01 +0200
+Message-Id: <20250624163801.215307-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250624163801.215307-1-pablo@netfilter.org>
 References: <20250624163801.215307-1-pablo@netfilter.org>
@@ -76,233 +76,56 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-f686a17eafa0 ("fib: Support existence check") adds EXPR_F_BOOLEAN as a
-workaround to infer from the rhs of the relational expression if the fib
-lookup wants to check for a specific output interface or, instead,
-simply check for existence. This, however, does not work with maps.
+Allow to use fib expression in set statements, eg.
 
-The NFT_FIB_F_PRESENT flag can be used both with NFT_FIB_RESULT_OIF and
-NFT_FIB_RESULT_OFINAME, my understanding is that they serve the same
-purpose which is to check if a route exists, so they are redundant.
+ meta mark set ip saddr . fib daddr check map { 1.2.3.4 . exists : 0x00000001 }
 
-Add a 'check' fib result to check for routes while still keeping the
-inference workaround for backward compatibility, but prefer the new
-syntax in the listing.
-
-Update man nft(8) and tests/py.
-
-Fixes: f686a17eafa0 ("fib: Support existence check")
+Fixes: 4a75ed32132d ("src: add fib expression")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- doc/data-types.txt          |  2 +-
- doc/primary-expression.txt  |  5 ++++-
- include/fib.h               |  2 +-
- src/fib.c                   | 12 ++++++++++--
- src/json.c                  |  2 +-
- src/parser_bison.y          | 21 +++++++++++++++------
- src/scanner.l               |  4 ++++
- tests/py/inet/fib.t         |  6 ++++--
- tests/py/inet/fib.t.payload |  8 +++++++-
- 9 files changed, 47 insertions(+), 15 deletions(-)
+ src/parser_bison.y          | 1 +
+ tests/py/inet/fib.t         | 2 ++
+ tests/py/inet/fib.t.payload | 8 ++++++++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/doc/data-types.txt b/doc/data-types.txt
-index 6c0e2f9420fe..46b0867cb5a4 100644
---- a/doc/data-types.txt
-+++ b/doc/data-types.txt
-@@ -166,7 +166,7 @@ Check TCP option header existence.
- .Boolean specification
- ----------------------
- # match if route exists
--filter input fib daddr . iif oif exists
-+filter input fib daddr . iif check exists
- 
- # match only non-fragmented packets in IPv6 traffic
- filter input exthdr frag missing
-diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
-index 40aca3d3fcf6..ea231fe57f7b 100644
---- a/doc/primary-expression.txt
-+++ b/doc/primary-expression.txt
-@@ -312,7 +312,7 @@ FIB EXPRESSIONS
- [verse]
- *fib* 'FIB_TUPLE' 'FIB_RESULT'
- 'FIB_TUPLE' := { *saddr* | *daddr*} [ *.* { *iif* | *oif* } *.* *mark* ]
--'FIB_RESULT'  := { *oif* | *oifname* | *type* }
-+'FIB_RESULT'  := { *oif* | *oifname* | *check* | *type* }
- 
- 
- A fib expression queries the fib (forwarding information base) to obtain information
-@@ -355,6 +355,9 @@ address types can be shown with *nft* *describe* *fib_addrtype*.
- |oif|
- Output interface index|
- iface_index
-+|check|
-+Output interface check|
-+boolean
- |oifname|
- Output interface name|
- ifname
-diff --git a/include/fib.h b/include/fib.h
-index 67edccfea0d5..07bb2210d223 100644
---- a/include/fib.h
-+++ b/include/fib.h
-@@ -3,7 +3,7 @@
- 
- #include <linux/netfilter/nf_tables.h>
- 
--extern const char *fib_result_str(enum nft_fib_result result);
-+extern const char *fib_result_str(const struct expr *expr);
- extern struct expr *fib_expr_alloc(const struct location *loc,
- 				   unsigned int flags,
- 				   unsigned int result);
-diff --git a/src/fib.c b/src/fib.c
-index 5a7c1170b240..e28c52243f42 100644
---- a/src/fib.c
-+++ b/src/fib.c
-@@ -53,8 +53,16 @@ const struct datatype fib_addr_type = {
- 	.sym_tbl	= &addrtype_tbl,
- };
- 
--const char *fib_result_str(enum nft_fib_result result)
-+const char *fib_result_str(const struct expr *expr)
- {
-+	enum nft_fib_result result = expr->fib.result;
-+	uint32_t flags = expr->fib.flags;
-+
-+	/* Exception: check if route exists. */
-+	if (result == NFT_FIB_RESULT_OIF &&
-+	    flags & NFTA_FIB_F_PRESENT)
-+		return "check";
-+
- 	if (result <= NFT_FIB_RESULT_MAX)
- 		return fib_result[result];
- 
-@@ -87,7 +95,7 @@ static void fib_expr_print(const struct expr *expr, struct output_ctx *octx)
- 	if (flags)
- 		nft_print(octx, "0x%x", flags);
- 
--	nft_print(octx, " %s", fib_result_str(expr->fib.result));
-+	nft_print(octx, " %s", fib_result_str(expr));
- }
- 
- static bool fib_expr_cmp(const struct expr *e1, const struct expr *e2)
-diff --git a/src/json.c b/src/json.c
-index 5bd5daf3f7fa..f0430776851c 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -938,7 +938,7 @@ json_t *fib_expr_json(const struct expr *expr, struct output_ctx *octx)
- 	unsigned int flags = expr->fib.flags & ~NFTA_FIB_F_PRESENT;
- 	json_t *root;
- 
--	root = nft_json_pack("{s:s}", "result", fib_result_str(expr->fib.result));
-+	root = nft_json_pack("{s:s}", "result", fib_result_str(expr));
- 
- 	if (flags) {
- 		json_t *tmp = json_array();
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 9278b67a2931..e1afbbb6e56e 100644
+index e1afbbb6e56e..f9cc909836bc 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -284,6 +284,7 @@ int nft_lex(void *, void *, void *);
- %token UNDEFINE			"undefine"
- 
- %token FIB			"fib"
-+%token CHECK			"check"
- 
- %token SOCKET			"socket"
- %token TRANSPARENT		"transparent"
-@@ -4360,30 +4361,38 @@ primary_expr		:	symbol_expr			{ $$ = $1; }
- 
- fib_expr		:	FIB	fib_tuple	fib_result	close_scope_fib
- 			{
--				if (($2 & (NFTA_FIB_F_SADDR|NFTA_FIB_F_DADDR)) == 0) {
-+				uint32_t flags = $2, result = $3;
-+
-+				if (result == __NFT_FIB_RESULT_MAX) {
-+					result = NFT_FIB_RESULT_OIF;
-+					flags |= NFTA_FIB_F_PRESENT;
-+				}
-+
-+				if ((flags & (NFTA_FIB_F_SADDR|NFTA_FIB_F_DADDR)) == 0) {
- 					erec_queue(error(&@2, "fib: need either saddr or daddr"), state->msgs);
- 					YYERROR;
- 				}
- 
--				if (($2 & (NFTA_FIB_F_SADDR|NFTA_FIB_F_DADDR)) ==
--					  (NFTA_FIB_F_SADDR|NFTA_FIB_F_DADDR)) {
-+				if ((flags & (NFTA_FIB_F_SADDR|NFTA_FIB_F_DADDR)) ==
-+					     (NFTA_FIB_F_SADDR|NFTA_FIB_F_DADDR)) {
- 					erec_queue(error(&@2, "fib: saddr and daddr are mutually exclusive"), state->msgs);
- 					YYERROR;
- 				}
- 
--				if (($2 & (NFTA_FIB_F_IIF|NFTA_FIB_F_OIF)) ==
--					  (NFTA_FIB_F_IIF|NFTA_FIB_F_OIF)) {
-+				if ((flags & (NFTA_FIB_F_IIF|NFTA_FIB_F_OIF)) ==
-+					     (NFTA_FIB_F_IIF|NFTA_FIB_F_OIF)) {
- 					erec_queue(error(&@2, "fib: iif and oif are mutually exclusive"), state->msgs);
- 					YYERROR;
- 				}
- 
--				$$ = fib_expr_alloc(&@$, $2, $3);
-+				$$ = fib_expr_alloc(&@$, flags, result);
- 			}
+@@ -3873,6 +3873,7 @@ primary_stmt_expr	:	symbol_expr			{ $$ = $1; }
+ 			|	payload_expr			{ $$ = $1; }
+ 			|	keyword_expr			{ $$ = $1; }
+ 			|	socket_expr			{ $$ = $1; }
++			|	fib_expr			{ $$ = $1; }
+ 			|	osf_expr			{ $$ = $1; }
+ 			|	'('	basic_stmt_expr	')'	{ $$ = $2; }
  			;
- 
- fib_result		:	OIF	{ $$ =NFT_FIB_RESULT_OIF; }
- 			|	OIFNAME { $$ =NFT_FIB_RESULT_OIFNAME; }
- 			|	TYPE	close_scope_type	{ $$ =NFT_FIB_RESULT_ADDRTYPE; }
-+			|	CHECK	{ $$ = __NFT_FIB_RESULT_MAX; }	/* actually, NFT_FIB_F_PRESENT. */
- 			;
- 
- fib_flag		:       SADDR	{ $$ = NFTA_FIB_F_SADDR; }
-diff --git a/src/scanner.l b/src/scanner.l
-index 4787cc12f993..b69d8e81fd8c 100644
---- a/src/scanner.l
-+++ b/src/scanner.l
-@@ -795,6 +795,10 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- 
- "fib"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_FIB); return FIB; }
- 
-+<SCANSTATE_EXPR_FIB>{
-+	"check"		{ return CHECK; }
-+}
-+
- "osf"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_OSF); return OSF; }
- 
- "synproxy"		{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_SYNPROXY); return SYNPROXY; }
 diff --git a/tests/py/inet/fib.t b/tests/py/inet/fib.t
-index dbe45d95b4cf..f9c03b3ad2be 100644
+index f9c03b3ad2be..60b77a4ac00a 100644
 --- a/tests/py/inet/fib.t
 +++ b/tests/py/inet/fib.t
-@@ -13,5 +13,7 @@ fib daddr . iif type local;ok
- fib daddr . iif type vmap { blackhole : drop, prohibit : drop, unicast : accept };ok
- fib daddr . oif type local;fail
+@@ -17,3 +17,5 @@ fib daddr check missing;ok
+ fib daddr oif exists;ok;fib daddr check exists
  
--fib daddr oif exists;ok
--fib daddr oif missing;ok
-+fib daddr check missing;ok
-+fib daddr oif exists;ok;fib daddr check exists
+ fib daddr check vmap { missing : drop, exists : accept };ok
 +
-+fib daddr check vmap { missing : drop, exists : accept };ok
++meta mark set fib daddr check . ct mark map { exists . 0x00000000 : 0x00000001 };ok
 diff --git a/tests/py/inet/fib.t.payload b/tests/py/inet/fib.t.payload
-index 050857d96994..e09a260cc41e 100644
+index e09a260cc41e..02d92b57a477 100644
 --- a/tests/py/inet/fib.t.payload
 +++ b/tests/py/inet/fib.t.payload
-@@ -26,7 +26,13 @@ ip test-ip prerouting
-   [ fib daddr oif present => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
--# fib daddr oif missing
-+# fib daddr check missing
+@@ -36,3 +36,11 @@ ip test-ip prerouting
  ip test-ip prerouting
    [ fib daddr oif present => reg 1 ]
-   [ cmp eq reg 1 0x00000000 ]
+   [ lookup reg 1 set __map%d dreg 0 ]
 +
-+# fib daddr check vmap { missing : drop, exists : accept }
-+        element 00000000  : drop 0 [end]        element 00000001  : accept 0 [end]
++# meta mark set fib daddr check . ct mark map { exists . 0x00000000 : 0x00000001 }
++        element 00000001 00000000  : 00000001 0 [end]
 +ip test-ip prerouting
 +  [ fib daddr oif present => reg 1 ]
-+  [ lookup reg 1 set __map%d dreg 0 ]
++  [ ct load mark => reg 9 ]
++  [ lookup reg 1 set __map%d dreg 1 ]
++  [ meta set mark with reg 1 ]
 -- 
 2.30.2
 
