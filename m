@@ -1,43 +1,46 @@
-Return-Path: <netfilter-devel+bounces-7671-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7673-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 780E8AF0330
-	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Jul 2025 20:53:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C196AF0333
+	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Jul 2025 20:53:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B8D01C03E19
-	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Jul 2025 18:53:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 189F97B06D0
+	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Jul 2025 18:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE29241689;
-	Tue,  1 Jul 2025 18:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D3B2797B2;
+	Tue,  1 Jul 2025 18:53:07 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA130223707
-	for <netfilter-devel@vger.kernel.org>; Tue,  1 Jul 2025 18:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459A7244694
+	for <netfilter-devel@vger.kernel.org>; Tue,  1 Jul 2025 18:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751395983; cv=none; b=Hpi9Li8RMQZ2o9kR4lMICR4/UprGVDdnJoFEtGzRalaYjStVhs+BGNLjjzVNCdRK8gqHTHDyARXC74gtASHMrUIQ4TKPSfDnTY2/GrmKvu4czpDUuDD7dcpaqLSEdF7WI7PYh311sVoxm/uCma4jr/Bw5grII1J4tAPrriJ6N1o=
+	t=1751395986; cv=none; b=qRLTZnNu+mMrE/cqEvGEBIEm5uoFCmGhjHipn1STY9okgnDs8fLmpl1FfjaJapAHN0Y0G360Ibs46Wob7ElZo+lNllQX0oLnNG3baYdVuo1VjaUjisPaB0SLdf3LU3BYdIOFNJ/1LMiYSYPSEF8aneOYEtjQQq1C13AOIZfAMMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751395983; c=relaxed/simple;
-	bh=zkabNZ+mbodDsVmlbdcUq0VBhgo3NfNAJyqGRDo+yeE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZIf2B7gG7xGBVtmjvVMBjxHDuJ+pKM/tFLV0EYn5qT6gichZhWXU04LmnOaiISbn/2qHr7BJKQce3s1amRwNMBJTIU7p6/MAlOB4i8VADgkmvdd6WGdO2gHJnG7Fmp+yoUNjxc0T1S7GOpLfJl+XC2cCClD/F/EwkxJPMUFClMY=
+	s=arc-20240116; t=1751395986; c=relaxed/simple;
+	bh=tkiCPy/d9i8DNJXAGf0N53GkPL3x+16wsEq9d+TrIDY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rwlafk/xSYz4tT/hbJDG00xmOm7HQRSzaS/7WHh/ONKQ1Ns5jaPKG0Hykt+LpHcO2tsvDCm+A15sHJAFZ6hF4UcyVhFH6OSvhjkZsKYWVHnxmmy8caK0tG4pVqdWX3Fr2OiOiU9GQVnlB6rkaxd45OAsZOq4SDkPEowV4XS220c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 43B8E6061F; Tue,  1 Jul 2025 20:52:53 +0200 (CEST)
+	id 9A91A60B39; Tue,  1 Jul 2025 20:52:57 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: sbrivio@redhat.com,
 	Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next 0/5] netfilter: nft_set updates
-Date: Tue,  1 Jul 2025 20:52:37 +0200
-Message-ID: <20250701185245.31370-1-fw@strlen.de>
+Subject: [PATCH nf-next 1/5] netfilter: nft_set_pipapo: remove unused arguments
+Date: Tue,  1 Jul 2025 20:52:38 +0200
+Message-ID: <20250701185245.31370-2-fw@strlen.de>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250701185245.31370-1-fw@strlen.de>
+References: <20250701185245.31370-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -46,37 +49,73 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series serves as preperation to make pipapos avx2 functions
-available from the control plane.
+They are not used anymore, so remove them.
 
-First patch removes a few unused arguments.
-Second and third patch simplify some of the set api functions.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nft_set_pipapo.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-The fourth patch is the main change, it removes the control-plane
-only C implementation of the pipapo lookup algorithm.
-
-The last patch allows the scratch maps to be backed by vmalloc.
-
-Florian Westphal (5):
-  netfilter: nft_set_pipapo: remove unused arguments
-  netfilter: nft_set: remove one argument from lookup and update
-    functions
-  netfilter: nft_set: remove indirection from update API call
-  netfilter: nft_set_pipapo: merge pipapo_get/lookup
-  netfilter: nft_set_pipapo: prefer kvmalloc for scratch maps
-
- include/net/netfilter/nf_tables.h      |  14 +-
- include/net/netfilter/nf_tables_core.h |  50 +++---
- net/netfilter/nft_dynset.c             |  10 +-
- net/netfilter/nft_lookup.c             |  27 ++--
- net/netfilter/nft_objref.c             |   5 +-
- net/netfilter/nft_set_bitmap.c         |  11 +-
- net/netfilter/nft_set_hash.c           |  54 +++----
- net/netfilter/nft_set_pipapo.c         | 205 ++++++++-----------------
- net/netfilter/nft_set_pipapo_avx2.c    |  25 +--
- net/netfilter/nft_set_rbtree.c         |  40 +++--
- 10 files changed, 185 insertions(+), 256 deletions(-)
-
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index c5855069bdab..08fb6720673f 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -502,8 +502,6 @@ bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+ 
+ /**
+  * pipapo_get() - Get matching element reference given key data
+- * @net:	Network namespace
+- * @set:	nftables API set representation
+  * @m:		storage containing active/existing elements
+  * @data:	Key data to be matched against existing elements
+  * @genmask:	If set, check that element is active in given genmask
+@@ -516,9 +514,7 @@ bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+  *
+  * Return: pointer to &struct nft_pipapo_elem on match, error pointer otherwise.
+  */
+-static struct nft_pipapo_elem *pipapo_get(const struct net *net,
+-					  const struct nft_set *set,
+-					  const struct nft_pipapo_match *m,
++static struct nft_pipapo_elem *pipapo_get(const struct nft_pipapo_match *m,
+ 					  const u8 *data, u8 genmask,
+ 					  u64 tstamp, gfp_t gfp)
+ {
+@@ -615,7 +611,7 @@ nft_pipapo_get(const struct net *net, const struct nft_set *set,
+ 	struct nft_pipapo_match *m = rcu_dereference(priv->match);
+ 	struct nft_pipapo_elem *e;
+ 
+-	e = pipapo_get(net, set, m, (const u8 *)elem->key.val.data,
++	e = pipapo_get(m, (const u8 *)elem->key.val.data,
+ 		       nft_genmask_cur(net), get_jiffies_64(),
+ 		       GFP_ATOMIC);
+ 	if (IS_ERR(e))
+@@ -1345,7 +1341,7 @@ static int nft_pipapo_insert(const struct net *net, const struct nft_set *set,
+ 	else
+ 		end = start;
+ 
+-	dup = pipapo_get(net, set, m, start, genmask, tstamp, GFP_KERNEL);
++	dup = pipapo_get(m, start, genmask, tstamp, GFP_KERNEL);
+ 	if (!IS_ERR(dup)) {
+ 		/* Check if we already have the same exact entry */
+ 		const struct nft_data *dup_key, *dup_end;
+@@ -1367,7 +1363,7 @@ static int nft_pipapo_insert(const struct net *net, const struct nft_set *set,
+ 
+ 	if (PTR_ERR(dup) == -ENOENT) {
+ 		/* Look for partially overlapping entries */
+-		dup = pipapo_get(net, set, m, end, nft_genmask_next(net), tstamp,
++		dup = pipapo_get(m, end, nft_genmask_next(net), tstamp,
+ 				 GFP_KERNEL);
+ 	}
+ 
+@@ -1914,7 +1910,7 @@ nft_pipapo_deactivate(const struct net *net, const struct nft_set *set,
+ 	if (!m)
+ 		return NULL;
+ 
+-	e = pipapo_get(net, set, m, (const u8 *)elem->key.val.data,
++	e = pipapo_get(m, (const u8 *)elem->key.val.data,
+ 		       nft_genmask_next(net), nft_net_tstamp(net), GFP_KERNEL);
+ 	if (IS_ERR(e))
+ 		return NULL;
 -- 
 2.49.0
 
