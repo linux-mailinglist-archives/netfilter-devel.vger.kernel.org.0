@@ -1,306 +1,171 @@
-Return-Path: <netfilter-devel+bounces-7750-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7752-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B295AFB01E
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Jul 2025 11:48:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46C04AFB370
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Jul 2025 14:41:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B383D18971AD
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Jul 2025 09:48:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9354A170A09
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Jul 2025 12:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591BC292B3C;
-	Mon,  7 Jul 2025 09:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C0729B200;
+	Mon,  7 Jul 2025 12:41:26 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7087B3E1
-	for <netfilter-devel@vger.kernel.org>; Mon,  7 Jul 2025 09:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED942980AC
+	for <netfilter-devel@vger.kernel.org>; Mon,  7 Jul 2025 12:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751881661; cv=none; b=PLImgFD3pC4tFPZZOBq/enjcbEwl6f6fzEnYUe/d85tfgUbeYsRiuwQH65zCP6uObI5jT4mAJM4e0Yxv1yPNSk1sAeBQhQupQBjUoWRQy1DTql1L/khBwhvA9mbCe0OlXVbS4cn34iekUYATsVjDRMMeOHnbo21fpH7R6LK/6zE=
+	t=1751892086; cv=none; b=NdCxO1ENN4+QZgtuhlflzdCAJahiE+UZBysPG6kLKNHOm5M/y+dokNeZz8hEOv3RDQE1XPQJIN+lBAFs6a7CENRIl/zlOzOd29Szhi2B9WbrbmZj1CM/2VbWUd2GGB8U6QmNKcUczcGlVNNjLUqrf0dIKNrTya9Cghu+5v8riHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751881661; c=relaxed/simple;
-	bh=bXfbqkNqjRID7aE+uxZKjpISq4Y5sy9DmhEDRulArJY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l2iqRxk43SxDw+fbJX8uee7ZBUG7MWrvqoyaIs5R11nO8PnPpQGlit86vsH0GNFJikS90kmdg9oPLcZQcqOOX4Dn/aP+AmKSyxNrrGyYiaOkYhlSInJ1v0E4QxFm/ZeKsIzinDkNsmXJHy92y15VKXr+4Zo78cbcmy/5fuS20c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 41158618B5; Mon,  7 Jul 2025 11:47:37 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 2/2] src: add conntrack information to trace monitor mode
-Date: Mon,  7 Jul 2025 11:47:14 +0200
-Message-ID: <20250707094722.2162-3-fw@strlen.de>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250707094722.2162-1-fw@strlen.de>
-References: <20250707094722.2162-1-fw@strlen.de>
+	s=arc-20240116; t=1751892086; c=relaxed/simple;
+	bh=bj+Odb3qgJDQs2022pS0mtdf26UysnvMaJvSZm3GnYw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aIAHZbFTFqWdVNsAiAndmEw8hG2nPYqwVGRdVr2QB++00SqTzqlZLyITAqwNkozgxcNnvhCVTT0bINXtp6CEQJV4yw5Nt5mOk/IXn2mF0/S2jxOvDT4zr8r5Cj5ZcbHerTPF0bjRlkxJEjES7U/gSaJIzZBHfhFqohLJrKRFUCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ddbec809acso33757505ab.2
+        for <netfilter-devel@vger.kernel.org>; Mon, 07 Jul 2025 05:41:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751892083; x=1752496883;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5UL8DGv3u86BZ2iy7UUrWxmj4dXg/MEAtl5jj3qd+64=;
+        b=JnDYKkKwia6jhdXa+M1dEZebRJPeXk/FL7mQ8atDgU4PrgDZqw7m9lcWvRqRaLjRQ/
+         V0CJRT9qMgFyOFfBB2Jk0jLcX2PfiLbbQETTLIrDDOuj9vRHopioid9TFC1c9v8IqRrI
+         ilLs9S8G8AVzVz7bN7AxgmTJBK5t9gXedp01TKxLVGk6KnV5vy8siNhORl8k+eBB8plU
+         YGOf9thpKSnHQZceAil+yrsp9bOigTseId5OEXv9HtNlS9GZqPaN6uQH4C2kt7B5VosW
+         GPCZNhWaeBQB56Y4uANpKwCr7VMsairxbK9jj2hU2w9Au41dKVa3WV6FKEaxDtBRi7rH
+         e3mw==
+X-Forwarded-Encrypted: i=1; AJvYcCVdi/EHeuKdkyzxZBQI0BsDm1khFFBjSw7zup5B9x+5sTsURbBvIWhKVOkhxhGWhVi6OLa0UM9yzYA5BUdhYSI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YynGcEjbLbzD0wUezykoh+TIp3EeM5OGuZPxnshWsuyJHOTWOCV
+	f6YAR5DV3nVYnZtbiiVYMEnzRmGMmwBCOpermpML6lsM/XKjJMot843AD1lEG+RQD0TzscHHt22
+	X+peXc40hl3y7miDu+w/uwmTBTIRBI1iTOD99WrHm/TcHsMSZMTuplTeAFY0=
+X-Google-Smtp-Source: AGHT+IGX2iLZw64s3HkH71g7lS7g1rKZCKC+sOzM+LLesgWuBX51pg8fZP00pc0h6TNx86q4HBrlUs14QO2DU5fWYU5k8Qinys+P
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:3f10:b0:3df:3bc5:bac1 with SMTP id
+ e9e14a558f8ab-3e13ee8c225mr73500965ab.5.1751892083675; Mon, 07 Jul 2025
+ 05:41:23 -0700 (PDT)
+Date: Mon, 07 Jul 2025 05:41:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <686bc073.a00a0220.c7b3.0086.GAE@google.com>
+Subject: [syzbot] [netfilter?] KMSAN: uninit-value in nf_flow_offload_inet_hook
+ (2)
+From: syzbot <syzbot+bf6ed459397e307c3ad2@syzkaller.appspotmail.com>
+To: coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com, 
+	horms@kernel.org, kadlec@netfilter.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Upcoming kernel change provides the packets conntrack state in the
-trace message data.
+Hello,
 
-This allows to see if packet is seen as original or reply, the conntrack
-state (new, establieshed, related) and the status bits which show if e.g.
-NAT was applied.  Alsoi include conntrack ID so users can use conntrack
-tool to query the kernel for more information via ctnetlink.
+syzbot found the following issue on:
 
-This improves debugging when e.g. packets do not pick up the expected
-NAT mapping, which could e.g. also happen because of expectations
-following the NAT binding of the owning conntrack entry.
+HEAD commit:    1f988d0788f5 Merge tag 'hid-for-linus-2025070502' of git:/..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=162bef70580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa9af7332485152e
+dashboard link: https://syzkaller.appspot.com/bug?extid=bf6ed459397e307c3ad2
+compiler:       Debian clang version 20.1.7 (++20250616065708+6146a88f6049-1~exp1~20250616065826.132), Debian LLD 20.1.7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1433e582580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a6828c580000
 
-Example output ("conntrack: " lines are new):
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/84da6415798d/disk-1f988d07.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/62abf67637e4/vmlinux-1f988d07.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0bb719d426ed/bzImage-1f988d07.xz
 
-trace id 32 t PRE_RAW packet: iif "enp0s3" ether saddr [..]
-trace id 32 t PRE_RAW rule tcp flags syn meta nftrace set 1 (verdict continue)
-trace id 32 t PRE_RAW policy accept
-trace id 32 t PRE_MANGLE conntrack: ct direction original ct state new ct id 2641368242
-trace id 32 t PRE_MANGLE packet: iif "enp0s3" ether saddr [..]
-trace id 32 t ct_new_pre rule jump rpfilter (verdict jump rpfilter)
-trace id 32 t PRE_MANGLE policy accept
-trace id 32 t INPUT conntrack: ct direction original ct state new ct status dnat-done ct id 2641368242
-trace id 32 t INPUT packet: iif "enp0s3" [..]
-trace id 32 t public_in rule tcp dport 443 accept (verdict accept)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bf6ed459397e307c3ad2@syzkaller.appspotmail.com
 
-v2: add more status bits: helper, clash, offload, hw-offload.
-    add flag explanation to documentation.
+=====================================================
+BUG: KMSAN: uninit-value in nf_flow_offload_inet_hook+0x7e4/0x940 net/netfilter/nf_flow_table_inet.c:27
+ nf_flow_offload_inet_hook+0x7e4/0x940 net/netfilter/nf_flow_table_inet.c:27
+ nf_hook_entry_hookfn include/linux/netfilter.h:157 [inline]
+ nf_hook_slow+0xe1/0x3d0 net/netfilter/core.c:623
+ nf_hook_ingress include/linux/netfilter_netdev.h:34 [inline]
+ nf_ingress net/core/dev.c:5742 [inline]
+ __netif_receive_skb_core+0x4aff/0x70c0 net/core/dev.c:5837
+ __netif_receive_skb_one_core net/core/dev.c:5975 [inline]
+ __netif_receive_skb+0xcc/0xac0 net/core/dev.c:6090
+ netif_receive_skb_internal net/core/dev.c:6176 [inline]
+ netif_receive_skb+0x57/0x630 net/core/dev.c:6235
+ tun_rx_batched+0x1df/0x980 drivers/net/tun.c:1485
+ tun_get_user+0x4ee0/0x6b40 drivers/net/tun.c:1938
+ tun_chr_write_iter+0x3e9/0x5c0 drivers/net/tun.c:1984
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0xb4b/0x1580 fs/read_write.c:686
+ ksys_write fs/read_write.c:738 [inline]
+ __do_sys_write fs/read_write.c:749 [inline]
+ __se_sys_write fs/read_write.c:746 [inline]
+ __x64_sys_write+0x1fb/0x4d0 fs/read_write.c:746
+ x64_sys_call+0x38c3/0x3db0 arch/x86/include/generated/asm/syscalls_64.h:2
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xd9/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:4154 [inline]
+ slab_alloc_node mm/slub.c:4197 [inline]
+ kmem_cache_alloc_node_noprof+0x818/0xf00 mm/slub.c:4249
+ kmalloc_reserve+0x13c/0x4b0 net/core/skbuff.c:579
+ __alloc_skb+0x347/0x7d0 net/core/skbuff.c:670
+ alloc_skb include/linux/skbuff.h:1336 [inline]
+ alloc_skb_with_frags+0xc5/0xa60 net/core/skbuff.c:6665
+ sock_alloc_send_pskb+0xad8/0xc70 net/core/sock.c:2999
+ tun_alloc_skb drivers/net/tun.c:1461 [inline]
+ tun_get_user+0x1019/0x6b40 drivers/net/tun.c:1782
+ tun_chr_write_iter+0x3e9/0x5c0 drivers/net/tun.c:1984
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0xb4b/0x1580 fs/read_write.c:686
+ ksys_write fs/read_write.c:738 [inline]
+ __do_sys_write fs/read_write.c:749 [inline]
+ __se_sys_write fs/read_write.c:746 [inline]
+ __x64_sys_write+0x1fb/0x4d0 fs/read_write.c:746
+ x64_sys_call+0x38c3/0x3db0 arch/x86/include/generated/asm/syscalls_64.h:2
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xd9/0x210 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 UID: 0 PID: 5890 Comm: syz-executor738 Not tainted 6.16.0-rc4-syzkaller-00324-g1f988d0788f5 #0 PREEMPT(undef) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
+=====================================================
+
+
 ---
- doc/data-types.txt                            |  31 ++---
- include/linux/netfilter/nf_conntrack_common.h |  16 +++
- src/ct.c                                      |   8 ++
- src/trace.c                                   | 109 ++++++++++++++++++
- 4 files changed, 149 insertions(+), 15 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/doc/data-types.txt b/doc/data-types.txt
-index 46b0867cb5a4..d688350c4afd 100644
---- a/doc/data-types.txt
-+++ b/doc/data-types.txt
-@@ -378,21 +378,22 @@ For each of the types above, keywords are available for convenience:
- .conntrack status (ct_status)
- [options="header"]
- |==================
--|Keyword| Value
--|expected|
--1
--|seen-reply|
--2
--|assured|
--4
--|confirmed|
--8
--|snat|
--16
--|dnat|
--32
--|dying|
--512
-+|Keyword| Value	| Description
-+|expected|1| Expected connection; conntrack helper set it up
-+|seen-reply|2| Conntrack has seen packets in both directions
-+|assured| 4 |Conntrack entry will not be removed if hash table is full
-+|confirmed | 8 | Initial packet processed
-+|snat| 16 | Original source address differs from reply destination
-+|dnat| 32 | Original destination differs from reply source
-+|seq-adjust| 64 | tcp sequence number rewrite due to conntrack helper or synproxy
-+|snat-done| 128 | tried to find matching snat/masquerade rule
-+|dnat-done| 256 | tried to find matching dnat/redirect rule
-+|dying| 512 | Connection about to be deleted
-+|fixed-timeout | 1024 | entry expires even if traffic is active
-+|clash  | 4096 | packet drop avoidance scheme
-+|helper | 8192 | connection is monitored by conntrack helper
-+|offload | 16384 | connection is offloaded to a flow table
-+|hw-offload | 32768 | connection is offloaded to hardware
- |================
- 
- .conntrack event bits (ct_event)
-diff --git a/include/linux/netfilter/nf_conntrack_common.h b/include/linux/netfilter/nf_conntrack_common.h
-index 768ff251308b..22bbb6c92fb1 100644
---- a/include/linux/netfilter/nf_conntrack_common.h
-+++ b/include/linux/netfilter/nf_conntrack_common.h
-@@ -77,6 +77,22 @@ enum ip_conntrack_status {
- 	/* Connection has fixed timeout. */
- 	IPS_FIXED_TIMEOUT_BIT = 10,
- 	IPS_FIXED_TIMEOUT = (1 << IPS_FIXED_TIMEOUT_BIT),
-+
-+	/* Conntrack is a fake untracked entry.  Obsolete and not used anymore */
-+	IPS_UNTRACKED_BIT = 12,
-+	IPS_UNTRACKED = (1 << IPS_UNTRACKED_BIT),
-+
-+	/* Conntrack got a helper explicitly attached (ruleset, ctnetlink). */
-+	IPS_HELPER_BIT = 13,
-+	IPS_HELPER = (1 << IPS_HELPER_BIT),
-+
-+	/* Conntrack has been offloaded to flow table. */
-+	IPS_OFFLOAD_BIT = 14,
-+	IPS_OFFLOAD = (1 << IPS_OFFLOAD_BIT),
-+
-+	/* Conntrack has been offloaded to hardware. */
-+	IPS_HW_OFFLOAD_BIT = 15,
-+	IPS_HW_OFFLOAD = (1 << IPS_HW_OFFLOAD_BIT),
- };
- 
- /* Connection tracking event types */
-diff --git a/src/ct.c b/src/ct.c
-index 71ebb9483893..7fa808800fcf 100644
---- a/src/ct.c
-+++ b/src/ct.c
-@@ -98,7 +98,15 @@ static const struct symbol_table ct_status_tbl = {
- 		SYMBOL("confirmed",	IPS_CONFIRMED),
- 		SYMBOL("snat",		IPS_SRC_NAT),
- 		SYMBOL("dnat",		IPS_DST_NAT),
-+		SYMBOL("seq-adjust",	IPS_SEQ_ADJUST),
-+		SYMBOL("snat-done",	IPS_SRC_NAT_DONE),
-+		SYMBOL("dnat-done",	IPS_DST_NAT_DONE),
- 		SYMBOL("dying",		IPS_DYING),
-+		SYMBOL("fixed-timeout",	IPS_FIXED_TIMEOUT),
-+		SYMBOL("clash",		IPS_UNTRACKED_BIT),
-+		SYMBOL("helper",	IPS_HELPER_BIT),
-+		SYMBOL("offload",	IPS_OFFLOAD_BIT),
-+		SYMBOL("hw-offload",	IPS_HW_OFFLOAD_BIT),
- 		SYMBOL_LIST_END
- 	},
- };
-diff --git a/src/trace.c b/src/trace.c
-index a7cc8ff08251..b270951025b8 100644
---- a/src/trace.c
-+++ b/src/trace.c
-@@ -237,6 +237,114 @@ next:
- 	}
- }
- 
-+static struct expr *trace_alloc_list(const struct datatype *dtype,
-+				     enum byteorder byteorder,
-+				     unsigned int len, const void *data)
-+{
-+	struct expr *list_expr;
-+	unsigned int i;
-+	mpz_t value;
-+	uint32_t v;
-+
-+	if (len != sizeof(v))
-+		return constant_expr_alloc(&netlink_location,
-+					   dtype, byteorder,
-+					   len * BITS_PER_BYTE, data);
-+
-+	list_expr = list_expr_alloc(&netlink_location);
-+
-+	mpz_init2(value, 32);
-+	mpz_import_data(value, data, byteorder, len);
-+	v = mpz_get_uint32(value);
-+	if (v == 0) {
-+		mpz_clear(value);
-+		return NULL;
-+	}
-+
-+	for (i = 0; i < 32; i++) {
-+		uint32_t bitv = v & (1 << i);
-+
-+		if (bitv == 0)
-+			continue;
-+
-+		compound_expr_add(list_expr,
-+				  constant_expr_alloc(&netlink_location,
-+						      dtype, byteorder,
-+						      len * BITS_PER_BYTE,
-+						      &bitv));
-+	}
-+
-+	mpz_clear(value);
-+	return list_expr;
-+}
-+
-+static void trace_print_ct_expr(const struct nftnl_trace *nlt, unsigned int attr,
-+				enum nft_ct_keys key, struct output_ctx *octx)
-+{
-+	struct expr *lhs, *rhs, *rel;
-+	const void *data;
-+	uint32_t len;
-+
-+	data = nftnl_trace_get_data(nlt, attr, &len);
-+	lhs = ct_expr_alloc(&netlink_location, key, -1);
-+
-+	switch (key) {
-+	case NFT_CT_STATUS:
-+		rhs = trace_alloc_list(lhs->dtype, lhs->byteorder, len, data);
-+		if (!rhs) {
-+			expr_free(lhs);
-+			return;
-+		}
-+		rel  = binop_expr_alloc(&netlink_location, OP_IMPLICIT, lhs, rhs);
-+		break;
-+	case NFT_CT_DIRECTION:
-+	case NFT_CT_STATE:
-+	case NFT_CT_ID:
-+		/* fallthrough */
-+	default:
-+		rhs  = constant_expr_alloc(&netlink_location,
-+					   lhs->dtype, lhs->byteorder,
-+					   len * BITS_PER_BYTE, data);
-+		rel  = relational_expr_alloc(&netlink_location, OP_IMPLICIT, lhs, rhs);
-+		break;
-+	}
-+
-+	expr_print(rel, octx);
-+	nft_print(octx, " ");
-+	expr_free(rel);
-+}
-+
-+static void trace_print_ct(const struct nftnl_trace *nlt,
-+			   struct output_ctx *octx)
-+{
-+	bool ct = nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_STATE);
-+
-+	if (!ct)
-+		return;
-+
-+	trace_print_hdr(nlt, octx);
-+
-+	nft_print(octx, "conntrack: ");
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_DIRECTION))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_DIRECTION,
-+				    NFT_CT_DIRECTION, octx);
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_STATE))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_STATE,
-+				    NFT_CT_STATE, octx);
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_STATUS))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_STATUS,
-+				    NFT_CT_STATUS, octx);
-+
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_CT_ID))
-+		trace_print_ct_expr(nlt, NFTNL_TRACE_CT_ID,
-+				    NFT_CT_ID, octx);
-+
-+	nft_print(octx, "\n");
-+}
-+
- static void trace_print_packet(const struct nftnl_trace *nlt,
- 			        struct output_ctx *octx)
- {
-@@ -248,6 +356,7 @@ static void trace_print_packet(const struct nftnl_trace *nlt,
- 	uint32_t nfproto;
- 	struct stmt *stmt, *next;
- 
-+	trace_print_ct(nlt, octx);
- 	trace_print_hdr(nlt, octx);
- 
- 	nft_print(octx, "packet: ");
--- 
-2.49.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
