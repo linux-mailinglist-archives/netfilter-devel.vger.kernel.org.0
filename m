@@ -1,68 +1,68 @@
-Return-Path: <netfilter-devel+bounces-7803-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7802-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E828FAFDBD4
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Jul 2025 01:24:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E764AFDBD2
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Jul 2025 01:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A934A7A3EF3
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Jul 2025 23:22:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6562516C312
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Jul 2025 23:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C26B2367D7;
-	Tue,  8 Jul 2025 23:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106622367AA;
+	Tue,  8 Jul 2025 23:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="NFlsoUuq";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="H8qOySXT"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="qriXKJAo";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="qriXKJAo"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165EF2356BC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166592356CB
 	for <netfilter-devel@vger.kernel.org>; Tue,  8 Jul 2025 23:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752017045; cv=none; b=Enbv2t7Fc4oDO0bpc0VIgnQBmK0NLvgFPBqQM9SzKdtI0ZtczgjfFXD722WlH6xRE6+R2pQNGPrzJClTAz07Vec4XU3f1Q95tNlStvt8sdaC8lben4hCLTkhZQK34yyeC9OeYs5kUro9PaAoSyeU2nnCxgjoURbykAjTHFc0NZU=
+	t=1752017044; cv=none; b=A6iSuM8fa/gGQkXmX1BrTovSuz9hYxGF9VVZaO1Ov9Pse7ObIzvp9iDxKzFFtyj+ZKMcgj2h81reJTXA+b6fBamrpYFig4MxEn+XMi6bQwhE44xVzF1AwBmus4fzX/A5+GxANs85Dj9GxuSb4V99Fwnv/kfvu1soJlWYqos35iA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752017045; c=relaxed/simple;
-	bh=ep375/xnklv6rk404c6ylFQ7lOSGFiM63ohOdfdhOAQ=;
+	s=arc-20240116; t=1752017044; c=relaxed/simple;
+	bh=4VLDgOyqAREcEmL6Qn3Kb2Z8gqe4+UlIPdil64QXV4Q=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YBygXL1NN72T7uTqyvxMILX99nfv+vcQkg6cVsghYZ3NcJjeGrcT947C7SlzKjEDw2eesVgn/a3vd0jKAuRnUFDmlxDLPw4Az8dT4C5d3jGGd3ZzFCZJPSpMyBHyg0Y5luIr2V/JMqrnluQt0c5UuJ6ulnptMA/wifbOTQyF0yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=NFlsoUuq; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=H8qOySXT; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=BWNWBJqwjG0rQGpvXVq7tbopwKZ+ezruJzBvh3qlOFeKqwtlnfwEDxn/H0dPml1hZkQa8I1ucv+qQmiidrx0MQrfEmmfCvsy1J0YSIfuPTaGp1IX1Vg++1BAwgCmz3S9dvalP064J76Br7B5lQWlQj+4m+amtZ9SfPG7vQwUYFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=qriXKJAo; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=qriXKJAo; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 0BD0860278; Wed,  9 Jul 2025 01:23:59 +0200 (CEST)
+	id 93C8960279; Wed,  9 Jul 2025 01:24:00 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
 	s=2025; t=1752017040;
-	bh=hKNdVT0Ac6gYwExVW3bvIQ0wywFjGwLBbAbCJbaDXnI=;
+	bh=RB+M6WFk5h1QvLLtYzK9s4cFQ8sE4Ahr1MvW+AS5CPw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=NFlsoUuqGzjj1kHykGPUjwDKZmtAQ1gOCEND4sUhIu4tBAtna5m3mjUdoYlRdkstz
-	 SMUI6S8Vel3VmKCPJStUi7UV/5Sfv+NOwna2SrBX3tybShnaBNF+zPHS2XsL1Xd9vk
-	 LZqwMbvgjII4XIjrUMSQsImiS4JRrpTsunPCWPgbdBlzMGJHOSQtX3U31wWwM0ziKI
-	 MI/pWHPAtJcowNkxZ1ZXnGJolEL7ldmG3vs/C5a19PsX8Lze2QQezd+rhtdHgHLUGS
-	 cBolg2YqzW4oggk0XYhi62r6PKufBQB+afz1yzOf+BrKJ4n3r0jbLuZZYrK/zqE7lw
-	 Qv5YrWBN3ySmQ==
+	b=qriXKJAokYntLj/YEBbir6yDrWAiaPRmme9tleDAd3BC86ciOPvDdXLjE3C1GfjuE
+	 uCvBA+WlSuWeiW3kxPcBXf1UI/44YXms0bRMSeOrQBIG0XpagUd9czXWYeXcf+Qg55
+	 5xtkD2HrhrxCrj05e256iZUmj0BQWX72m83LgtYgozb8KO1xrtNlBwX+zqLgii6grT
+	 8uQYGaLjc/Xsn7/54M7VIvViR0pRGdUyw0cEIsR4UhiM5Km79lLNxUG1Kjee4Iq/Kz
+	 DmUYZX3AZvNsGV4iUf09NJ3z1VIyiyUinkRYNHKHwAQduv3NUUIRvKJLIEVRndGkrq
+	 RDj4qOeqLmigA==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id A6DEB60273
-	for <netfilter-devel@vger.kernel.org>; Wed,  9 Jul 2025 01:23:59 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 41CA060273
+	for <netfilter-devel@vger.kernel.org>; Wed,  9 Jul 2025 01:24:00 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1752017039;
-	bh=hKNdVT0Ac6gYwExVW3bvIQ0wywFjGwLBbAbCJbaDXnI=;
+	s=2025; t=1752017040;
+	bh=RB+M6WFk5h1QvLLtYzK9s4cFQ8sE4Ahr1MvW+AS5CPw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=H8qOySXTKQXrDI4brlIPEolA0DZs1rhVVIDD49G4/CzIpv4W1XTN3tqqL0vaN+YMg
-	 DTlxL35HJLyhFkhSJtA4avO4L59uzF7xIlYl09Ds1k+0MS7VP5q9hNY2siwDhWw8SJ
-	 +zFxQ5eZ1EkrqgZ669QsY5meh1bNOPoSC8CLo75pNQh/aeXxDchWCIPeRWzwNM997e
-	 zHXdMD68xJDN3YiD0RHFeHRm2pZBt2Pp4NtLtBlVnBUHwVfBJu6aMWXfBKpgDy6y+z
-	 92ojr3iD5PEV/KINPUGmHX3lZQagFhxA3GpkYtRa21sNzXL9Fk+J50DeBEgk0ppJjV
-	 mBQie8HV4nABQ==
+	b=qriXKJAokYntLj/YEBbir6yDrWAiaPRmme9tleDAd3BC86ciOPvDdXLjE3C1GfjuE
+	 uCvBA+WlSuWeiW3kxPcBXf1UI/44YXms0bRMSeOrQBIG0XpagUd9czXWYeXcf+Qg55
+	 5xtkD2HrhrxCrj05e256iZUmj0BQWX72m83LgtYgozb8KO1xrtNlBwX+zqLgii6grT
+	 8uQYGaLjc/Xsn7/54M7VIvViR0pRGdUyw0cEIsR4UhiM5Km79lLNxUG1Kjee4Iq/Kz
+	 DmUYZX3AZvNsGV4iUf09NJ3z1VIyiyUinkRYNHKHwAQduv3NUUIRvKJLIEVRndGkrq
+	 RDj4qOeqLmigA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 1/4] evaluate: mappings require set expression
-Date: Wed,  9 Jul 2025 01:23:51 +0200
-Message-Id: <20250708232354.2189045-2-pablo@netfilter.org>
+Subject: [PATCH nft 2/4] evaluate: validate set expression type before accessing flags
+Date: Wed,  9 Jul 2025 01:23:52 +0200
+Message-Id: <20250708232354.2189045-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250708232354.2189045-1-pablo@netfilter.org>
 References: <20250708232354.2189045-1-pablo@netfilter.org>
@@ -74,30 +74,28 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While EXPR_CONCAT and EXPR_LIST share the same layout in struct expr,
-these expressions are not possible at this stage.
+Validate set->init is of EXPR_SET before accessing set_flags.
 
-Fall back to error out with "invalid mapping expression".
-
-Fixes: 02d44b4f9917 ("evaluate: fix expression data corruption")
+Fixes: 81e36530fcac ("src: replace interval segment tree overlap and automerge")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/evaluate.c | 2 --
- 1 file changed, 2 deletions(-)
+ src/evaluate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/evaluate.c b/src/evaluate.c
-index a2d5d7c29514..83381b4ef3d0 100644
+index 83381b4ef3d0..f4f72ee4a4f7 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -2211,8 +2211,6 @@ static int expr_evaluate_map(struct eval_ctx *ctx, struct expr **expr)
- 	mappings = map->mappings;
+@@ -5290,7 +5290,8 @@ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
+ 		set->flags |= NFT_SET_EXPR;
  
- 	switch (map->mappings->etype) {
--	case EXPR_CONCAT:
--	case EXPR_LIST:
- 	case EXPR_SET:
- 		set_flags |= mappings->set_flags;
- 		/* fallthrough */
+ 	if (set_is_anonymous(set->flags)) {
+-		if (set_is_interval(set->init->set_flags) &&
++		if (set->init->etype == EXPR_SET &&
++		    set_is_interval(set->init->set_flags) &&
+ 		    !(set->init->set_flags & NFT_SET_CONCAT) &&
+ 		    interval_set_eval(ctx, set, set->init) < 0)
+ 			return -1;
 -- 
 2.30.2
 
