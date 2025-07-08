@@ -1,68 +1,71 @@
-Return-Path: <netfilter-devel+bounces-7801-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7803-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C81AFDBD1
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Jul 2025 01:24:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E828FAFDBD4
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Jul 2025 01:24:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 785E3482BED
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Jul 2025 23:23:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A934A7A3EF3
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Jul 2025 23:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A268522C339;
-	Tue,  8 Jul 2025 23:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C26B2367D7;
+	Tue,  8 Jul 2025 23:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="iJ4VCsQJ";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="iJ4VCsQJ"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="NFlsoUuq";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="H8qOySXT"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B19323182B
-	for <netfilter-devel@vger.kernel.org>; Tue,  8 Jul 2025 23:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165EF2356BC
+	for <netfilter-devel@vger.kernel.org>; Tue,  8 Jul 2025 23:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752017043; cv=none; b=ryMYwhHXKML7yzyOtjf6c/RRLm33P/B5AgvPDEJUmX1FrQrYT60p5QVTTJpJty1/p+Qlxi5JycIM9fiSGwdlUY010bjC84rtsH/ZJ05GONS9ocAkyIMAgAugqXuOSTJM9wp28olFrPlUM1Z2gIye3tpQX3tiK3/L9iELPZQPXXk=
+	t=1752017045; cv=none; b=Enbv2t7Fc4oDO0bpc0VIgnQBmK0NLvgFPBqQM9SzKdtI0ZtczgjfFXD722WlH6xRE6+R2pQNGPrzJClTAz07Vec4XU3f1Q95tNlStvt8sdaC8lben4hCLTkhZQK34yyeC9OeYs5kUro9PaAoSyeU2nnCxgjoURbykAjTHFc0NZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752017043; c=relaxed/simple;
-	bh=WGauY56LCdLOUz1HaHbF3NANB7Vc7sk7gIFQ2Xknv/8=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=sy7X9fKw6/ZAk+3Vkwd62DRyCit4ueDaLa8l63bjyW7izWj3rRbkLJAs2xohdAmfVvyyhEJC/vcS6j97xtEbybWU7BqD5eRJQs6ADR0vOtYazIz9NJN71j44TIOkJ2IeHLvd+zfrc6hPxBIxktrErFT/VUrGitSvv2sZNrNSIzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=iJ4VCsQJ; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=iJ4VCsQJ; arc=none smtp.client-ip=217.70.190.124
+	s=arc-20240116; t=1752017045; c=relaxed/simple;
+	bh=ep375/xnklv6rk404c6ylFQ7lOSGFiM63ohOdfdhOAQ=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YBygXL1NN72T7uTqyvxMILX99nfv+vcQkg6cVsghYZ3NcJjeGrcT947C7SlzKjEDw2eesVgn/a3vd0jKAuRnUFDmlxDLPw4Az8dT4C5d3jGGd3ZzFCZJPSpMyBHyg0Y5luIr2V/JMqrnluQt0c5UuJ6ulnptMA/wifbOTQyF0yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=NFlsoUuq; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=H8qOySXT; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id E2EEB60276; Wed,  9 Jul 2025 01:23:58 +0200 (CEST)
+	id 0BD0860278; Wed,  9 Jul 2025 01:23:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1752017038;
-	bh=pxapU7VUoJfqX9DkJ69LspqskWoFBRk3HE9+6bktXwI=;
-	h=From:To:Subject:Date:From;
-	b=iJ4VCsQJx9BpIeMoL9tZn4FstqiNSCDNEa1lJVi4iVvjumBzc5p602X1TfdMHM+PY
-	 toRQdjVr3G/8jJbTHgSGFm3vMThBHMCBE5v/uHsXenQDbV2ux1RQkKUZRyKicnkZtF
-	 vLl3LuBki6BbPefi6xriI9rYh1VsyYYDjeVnvCCXYxpy9ulBvNi+9OOLrNicRYDX+C
-	 w7lnyXqpxINCG9BlegRMsERjUpG99x6I3AhkGZkp0j5VC386/xSdqzgVMoh6s2DX/t
-	 fbHdchWGfFe5mR3Toub+YEnYyFQdOugrz/RNZ1ribERiDRFkd5vHBf3xp2kZizCuON
-	 YzeLS6qP/ApjQ==
+	s=2025; t=1752017040;
+	bh=hKNdVT0Ac6gYwExVW3bvIQ0wywFjGwLBbAbCJbaDXnI=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=NFlsoUuqGzjj1kHykGPUjwDKZmtAQ1gOCEND4sUhIu4tBAtna5m3mjUdoYlRdkstz
+	 SMUI6S8Vel3VmKCPJStUi7UV/5Sfv+NOwna2SrBX3tybShnaBNF+zPHS2XsL1Xd9vk
+	 LZqwMbvgjII4XIjrUMSQsImiS4JRrpTsunPCWPgbdBlzMGJHOSQtX3U31wWwM0ziKI
+	 MI/pWHPAtJcowNkxZ1ZXnGJolEL7ldmG3vs/C5a19PsX8Lze2QQezd+rhtdHgHLUGS
+	 cBolg2YqzW4oggk0XYhi62r6PKufBQB+afz1yzOf+BrKJ4n3r0jbLuZZYrK/zqE7lw
+	 Qv5YrWBN3ySmQ==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 86A1260273
-	for <netfilter-devel@vger.kernel.org>; Wed,  9 Jul 2025 01:23:58 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id A6DEB60273
+	for <netfilter-devel@vger.kernel.org>; Wed,  9 Jul 2025 01:23:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1752017038;
-	bh=pxapU7VUoJfqX9DkJ69LspqskWoFBRk3HE9+6bktXwI=;
-	h=From:To:Subject:Date:From;
-	b=iJ4VCsQJx9BpIeMoL9tZn4FstqiNSCDNEa1lJVi4iVvjumBzc5p602X1TfdMHM+PY
-	 toRQdjVr3G/8jJbTHgSGFm3vMThBHMCBE5v/uHsXenQDbV2ux1RQkKUZRyKicnkZtF
-	 vLl3LuBki6BbPefi6xriI9rYh1VsyYYDjeVnvCCXYxpy9ulBvNi+9OOLrNicRYDX+C
-	 w7lnyXqpxINCG9BlegRMsERjUpG99x6I3AhkGZkp0j5VC386/xSdqzgVMoh6s2DX/t
-	 fbHdchWGfFe5mR3Toub+YEnYyFQdOugrz/RNZ1ribERiDRFkd5vHBf3xp2kZizCuON
-	 YzeLS6qP/ApjQ==
+	s=2025; t=1752017039;
+	bh=hKNdVT0Ac6gYwExVW3bvIQ0wywFjGwLBbAbCJbaDXnI=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=H8qOySXTKQXrDI4brlIPEolA0DZs1rhVVIDD49G4/CzIpv4W1XTN3tqqL0vaN+YMg
+	 DTlxL35HJLyhFkhSJtA4avO4L59uzF7xIlYl09Ds1k+0MS7VP5q9hNY2siwDhWw8SJ
+	 +zFxQ5eZ1EkrqgZ669QsY5meh1bNOPoSC8CLo75pNQh/aeXxDchWCIPeRWzwNM997e
+	 zHXdMD68xJDN3YiD0RHFeHRm2pZBt2Pp4NtLtBlVnBUHwVfBJu6aMWXfBKpgDy6y+z
+	 92ojr3iD5PEV/KINPUGmHX3lZQagFhxA3GpkYtRa21sNzXL9Fk+J50DeBEgk0ppJjV
+	 mBQie8HV4nABQ==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 0/4] detach concat, list and set expression layouts
-Date: Wed,  9 Jul 2025 01:23:50 +0200
-Message-Id: <20250708232354.2189045-1-pablo@netfilter.org>
+Subject: [PATCH nft 1/4] evaluate: mappings require set expression
+Date: Wed,  9 Jul 2025 01:23:51 +0200
+Message-Id: <20250708232354.2189045-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20250708232354.2189045-1-pablo@netfilter.org>
+References: <20250708232354.2189045-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -71,47 +74,30 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+While EXPR_CONCAT and EXPR_LIST share the same layout in struct expr,
+these expressions are not possible at this stage.
 
-These three expressions use the same layout but they have a different
-purpose, it is better to split them in independent layouts.
+Fall back to error out with "invalid mapping expression".
 
-The compound expression still remains in place, there, the initial
-layout to store the list of expressions and size is still in the same
-in these expressions.
+Fixes: 02d44b4f9917 ("evaluate: fix expression data corruption")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/evaluate.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-The initial three patch address type confusions uncovered by patch
-4/4 in this series.
-
-This is implicitly reducing the size of one of the largest structs
-in the union area of struct expr, still EXPR_SET_ELEM remains the
-largest so no gain is achieved in this iteration.
-
-Pablo Neira Ayuso (4):
-  evaluate: mappings require set expression
-  evaluate: validate set expression type before accessing flags
-  src: convert set to list expression
-  src: detach set, list and concatenation expression layout
-
- include/expression.h      |  22 ++++-
- src/cmd.c                 |   5 +-
- src/evaluate.c            | 185 ++++++++++++++++++++++++--------------
- src/expression.c          |  41 ++++-----
- src/intervals.c           |  80 ++++++++---------
- src/json.c                |  10 +--
- src/mergesort.c           |   2 +-
- src/mnl.c                 |  13 ++-
- src/monitor.c             |   2 +-
- src/netlink.c             |  26 +++---
- src/netlink_delinearize.c |  14 +--
- src/netlink_linearize.c   |   2 +-
- src/optimize.c            |  22 ++---
- src/parser_bison.y        |   2 +-
- src/parser_json.c         |   5 +-
- src/rule.c                |   4 +-
- src/segtree.c             |  22 ++---
- 17 files changed, 261 insertions(+), 196 deletions(-)
-
+diff --git a/src/evaluate.c b/src/evaluate.c
+index a2d5d7c29514..83381b4ef3d0 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2211,8 +2211,6 @@ static int expr_evaluate_map(struct eval_ctx *ctx, struct expr **expr)
+ 	mappings = map->mappings;
+ 
+ 	switch (map->mappings->etype) {
+-	case EXPR_CONCAT:
+-	case EXPR_LIST:
+ 	case EXPR_SET:
+ 		set_flags |= mappings->set_flags;
+ 		/* fallthrough */
 -- 
 2.30.2
 
