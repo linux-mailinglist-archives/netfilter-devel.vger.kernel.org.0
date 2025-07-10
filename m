@@ -1,63 +1,62 @@
-Return-Path: <netfilter-devel+bounces-7840-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7842-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF47AAFF624
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Jul 2025 02:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C7EAFF64F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Jul 2025 03:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2351C44712
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Jul 2025 00:47:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C4531BC6F44
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Jul 2025 01:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F851482F2;
-	Thu, 10 Jul 2025 00:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59E225B687;
+	Thu, 10 Jul 2025 01:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="sJXhxQJS";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="sEzgshgE"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="IN+L8tua";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="qGbcuAKr"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7222F86328;
-	Thu, 10 Jul 2025 00:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CAADF49;
+	Thu, 10 Jul 2025 01:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752108424; cv=none; b=gF/dRMWBgQAkZ6m1cMUBNojwNU+gP2QTtiQPBmi7y+SLNmmx+/pxm5oXbOwmn0Oo1v2BBdDb1JS5zLlvnCYVSQQRLQO2TZC3esGEMn1NDZQImqGpZCnWwLf671bz4fzXxHDce/zDvdk100NcF5CqG4ly+UnueGrgZhwi2UTgFRU=
+	t=1752109636; cv=none; b=go1vu/sXo1nPbBiw/H/QZG0M6K4finCjfCdK9waEsxIY/ncThHSoxjlIN/0Ax1tzdM9RKD3pq1Q4rLnpVBIraueRDSB9+Ss/16a+mwle+OmM8IUtzXp9B9eIN/vGJL4ONGYNy+MuZDeF6mBh4Bfr7ED+g/KWdQLTTOzTTuA948M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752108424; c=relaxed/simple;
-	bh=RDC3j8wGaOOVJWPCP/Po/uZHOXWzsP5h47eggFQ38d8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=flu5mW/KP5pDqEpUro+l7nNXc/rkeur6YctrXyy9t7F2yKaqDNp1ukOINudCkoBz2EApxnvGdlynIEuGGGsiEq3ppAVDZmiTRnErNORulKyME7amj171VlUmebZTtNoqtq7U7Xw6mt8t4duLXdbXd1g1uU3KDP7LRej1Hz0kTdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=sJXhxQJS; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=sEzgshgE; arc=none smtp.client-ip=217.70.190.124
+	s=arc-20240116; t=1752109636; c=relaxed/simple;
+	bh=JcagzBhV/WkYL7Dv0uY29arNV/8AlBCp3O+wN8ZJ058=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sqU0qjBmAekzLdJAsBJta0nZ/ciChmh+1w7mE7T3aEHV+f9ciNSTiV1utpnnULqtrWqK7FeSTN1AOx5ez5h/4axsmoxHDGSfVDi+rszFLFrXLX/2AOtuaBuqGso+14R/o6P12F0SfNUE55AB3uctIfotrIMcPDed/HQkBRnn8ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=IN+L8tua; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=qGbcuAKr; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 0190060272; Thu, 10 Jul 2025 02:47:00 +0200 (CEST)
+	id 7CFA5600B9; Thu, 10 Jul 2025 03:07:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1752108421;
-	bh=VBHd4INkEeZodi67wtmxuJtMNEHdOSY0kUfPkxfgEcs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sJXhxQJSTo9vF1ErU6CMb8O+8lnC+mCwXFgizLuiwaE8mPgL0HiMeXFQD9NamZH4q
-	 eWaHRUMefIoMKJFihVJ+2IUVnagTJ3zP/+AJmOlVtX/BWH3pSktjqeWqVTHQyJwzjp
-	 SFVw3wD/8AHyXNxH9XIzXG5q6K1TnPkiuxVTxUgp7eJEsEUYy6AXPaYmKWcSf87MTs
-	 9HFC78USrGp0HJ7INVqs8nNknbF063xwmviVL2z+p20ExCePrgf+BxD5iUGa0c1UKA
-	 efNK+jVFY4MVKy1FAC/6KoFBWY6SEl+dba1OyPQZ8wWkMb7sfqaXQ7p9yMwzJ/IfwP
-	 iL2+50yQBBa1g==
+	s=2025; t=1752109633;
+	bh=w6XmEuhpTv7HHvzzZ3iieUA2kapE0MkevhP5AFdNIWM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IN+L8tuaem1UlyAR78kkgGH5IMVKlmV9FU/xs2vg2iENdgU24oj7VEu63d6Hpdg8p
+	 FcAjOQOqaFdmKOuk6wVzXm2WHHscCRpRwvDW6VMcrKpJeiRTwIFEorN/HrORX8EB/s
+	 bQ4QoHeW3i0iqcWRJd6ggNqpK0qUqhE3NZIpdwbPL0X/uSaDJmYJqbticorcHgq01S
+	 SE+yS/HsmaqR8LLQRbMB48XwPK1muLuEOgui7tf0+1Kx1Wa6SoFrsJBXkvofnNmGEc
+	 zBSHEKmWASWJRmdYkUDT/bBMLIyfRjAm23PTKFwJfxDFd8y9SxY1ZOM4G2u7bBcaT/
+	 QwsetckO8iRsw==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 817C86026F;
-	Thu, 10 Jul 2025 02:46:47 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id D855E600B9;
+	Thu, 10 Jul 2025 03:07:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1752108407;
-	bh=VBHd4INkEeZodi67wtmxuJtMNEHdOSY0kUfPkxfgEcs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sEzgshgEJkMEKlu7ALE5QJgs7sSqDgu3S1T70ITgLinbkw3aNVBdVRVPj67gr/n21
-	 jd+b0ZDvoRAQiXUyjxpa6OWog1Yt2Y5P6ub3PqCz3ixbsYekuuuIHV5VcwgGH11q0G
-	 3REyjbZb78nVrrmV8tyja6OSQc7nBgL1usjJ3DnLu+gvX3OGnqmboEpvciBN6cKarZ
-	 IziyYvbpv7FwQFHDyytO/M+Pja2A6xXCwwU2pD9uYXd3LEEujQT4RDe/dW5khEZFMm
-	 FXlPo9lij2QzSoFOlSmfzXgxcNyucp11naxvCN3wEO+dHCIKLzVcI1pxMjIaRm5sHA
-	 BIaNN5EMOsYYA==
+	s=2025; t=1752109630;
+	bh=w6XmEuhpTv7HHvzzZ3iieUA2kapE0MkevhP5AFdNIWM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qGbcuAKrh2+hTvU/67POaq9D44IJ+T2lo5e26l0BC9sUtPhUVOBGbSyu8tpoH/dXm
+	 AkgrhXqc4X/t8BFvocx3ZFOSoqfi5b6OFznvLRdcx8pHK6BgxjqFj/ABh6Zx4+PrUu
+	 WwEiu1iRABhWuC2H+pAIlOVsj2jLppOZIEhZ8yFn9dQwNA0jw2a3cIucETwTQ3DtdT
+	 kWDah3tkSzloFhiDNTr8xLOghWILwUBNy/ZNWzuoR4EkK32NoYOeTAb0Nfkeby1+5z
+	 vuPy1h5ARmNqWCFcRc8fE2jbBa7HH/zuIQL6gY4V1QYBXbg1bRddrpAR2Mg98WY09T
+	 C7Lu/UvCPLOgA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -67,12 +66,10 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 4/4] netfilter: nf_tables: adjust lockdep assertions handling
-Date: Thu, 10 Jul 2025 02:46:39 +0200
-Message-Id: <20250710004639.2849930-5-pablo@netfilter.org>
+Subject: Netfilter updates for net-next (v2)
+Date: Thu, 10 Jul 2025 03:07:02 +0200
+Message-Id: <20250710010706.2861281-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20250710004639.2849930-1-pablo@netfilter.org>
-References: <20250710004639.2849930-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -81,47 +78,113 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Fedor Pchelkin <pchelkin@ispras.ru>
+v2: missing Signed-off-by: tags in patch 2/4 and 3/4.
 
-It's needed to check the return value of lockdep_commit_lock_is_held(),
-otherwise there's no point in this assertion as it doesn't print any
-debug information on itself.
+-o-
 
-Found by Linux Verification Center (linuxtesting.org) with Svace static
-analysis tool.
+Hi,
 
-Fixes: b04df3da1b5c ("netfilter: nf_tables: do not defer rule destruction via call_rcu")
-Reported-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The following series contains an initial small batch of Netfilter
+updates for net-next:
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4ec117b31611..620824a56a55 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -4042,7 +4042,7 @@ void nf_tables_rule_destroy(const struct nft_ctx *ctx, struct nft_rule *rule)
- /* can only be used if rule is no longer visible to dumps */
- static void nf_tables_rule_release(const struct nft_ctx *ctx, struct nft_rule *rule)
- {
--	lockdep_commit_lock_is_held(ctx->net);
-+	WARN_ON_ONCE(!lockdep_commit_lock_is_held(ctx->net));
- 
- 	nft_rule_expr_deactivate(ctx, rule, NFT_TRANS_RELEASE);
- 	nf_tables_rule_destroy(ctx, rule);
-@@ -5864,7 +5864,7 @@ void nf_tables_deactivate_set(const struct nft_ctx *ctx, struct nft_set *set,
- 			      struct nft_set_binding *binding,
- 			      enum nft_trans_phase phase)
- {
--	lockdep_commit_lock_is_held(ctx->net);
-+	WARN_ON_ONCE(!lockdep_commit_lock_is_held(ctx->net));
- 
- 	switch (phase) {
- 	case NFT_TRANS_PREPARE_ERROR:
--- 
-2.30.2
+1) Remove DCCP conntrack support, keep DCCP matches around in order to
+   avoid breakage when loading ruleset, add Kconfig to wrap the code
+   so it can be disabled by distributors.
 
+2) Remove buggy code aiming at shrinking netlink deletion event, then
+   re-add it correctly in another patch. This is to prevent -stable to
+   pick up on a fix that breaks old userspace. From Phil Sutter.
+
+3) Missing WARN_ON_ONCE() to check for lockdep_commit_lock_is_held()
+   to uncover bugs. From Fedor Pchelkin.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-25-07-10
+
+Thanks
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-25-07-10
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 8b98f34ce1d8c520403362cb785231f9898eb3ff:
+
+  net: ipv6: Fix spelling mistake (2025-07-02 15:42:29 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git tags/nf-next-25-07-10
+
+for you to fetch changes up to 8df1b40de76979bb8e975201d07b71103d5de820:
+
+  netfilter: nf_tables: adjust lockdep assertions handling (2025-07-10 03:01:22 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 25-07-10
+
+----------------------------------------------------------------
+Fedor Pchelkin (1):
+      netfilter: nf_tables: adjust lockdep assertions handling
+
+Pablo Neira Ayuso (1):
+      netfilter: conntrack: remove DCCP protocol support
+
+Phil Sutter (2):
+      netfilter: nf_tables: Drop dead code from fill_*_info routines
+      netfilter: nf_tables: Reintroduce shortened deletion notifications
+
+ Documentation/networking/nf_conntrack-sysctl.rst |   1 -
+ arch/arm/configs/omap2plus_defconfig             |   1 -
+ arch/loongarch/configs/loongson3_defconfig       |   1 -
+ arch/m68k/configs/amiga_defconfig                |   1 -
+ arch/m68k/configs/apollo_defconfig               |   1 -
+ arch/m68k/configs/atari_defconfig                |   1 -
+ arch/m68k/configs/bvme6000_defconfig             |   1 -
+ arch/m68k/configs/hp300_defconfig                |   1 -
+ arch/m68k/configs/mac_defconfig                  |   1 -
+ arch/m68k/configs/multi_defconfig                |   1 -
+ arch/m68k/configs/mvme147_defconfig              |   1 -
+ arch/m68k/configs/mvme16x_defconfig              |   1 -
+ arch/m68k/configs/q40_defconfig                  |   1 -
+ arch/m68k/configs/sun3_defconfig                 |   1 -
+ arch/m68k/configs/sun3x_defconfig                |   1 -
+ arch/mips/configs/fuloong2e_defconfig            |   1 -
+ arch/mips/configs/ip22_defconfig                 |   1 -
+ arch/mips/configs/loongson2k_defconfig           |   1 -
+ arch/mips/configs/loongson3_defconfig            |   1 -
+ arch/mips/configs/malta_defconfig                |   1 -
+ arch/mips/configs/malta_kvm_defconfig            |   1 -
+ arch/mips/configs/maltaup_xpa_defconfig          |   1 -
+ arch/mips/configs/rb532_defconfig                |   1 -
+ arch/mips/configs/rm200_defconfig                |   1 -
+ arch/powerpc/configs/cell_defconfig              |   1 -
+ arch/s390/configs/debug_defconfig                |   1 -
+ arch/s390/configs/defconfig                      |   1 -
+ arch/sh/configs/titan_defconfig                  |   1 -
+ include/linux/netfilter/nf_conntrack_dccp.h      |  38 --
+ include/net/netfilter/ipv4/nf_conntrack_ipv4.h   |   3 -
+ include/net/netfilter/nf_conntrack.h             |   2 -
+ include/net/netfilter/nf_conntrack_l4proto.h     |  13 -
+ include/net/netfilter/nf_reject.h                |   1 -
+ include/net/netns/conntrack.h                    |  13 -
+ net/netfilter/Kconfig                            |  20 +-
+ net/netfilter/Makefile                           |   1 -
+ net/netfilter/nf_conntrack_core.c                |   8 -
+ net/netfilter/nf_conntrack_netlink.c             |   1 -
+ net/netfilter/nf_conntrack_proto.c               |   6 -
+ net/netfilter/nf_conntrack_proto_dccp.c          | 826 -----------------------
+ net/netfilter/nf_conntrack_standalone.c          |  92 ---
+ net/netfilter/nf_nat_core.c                      |   6 -
+ net/netfilter/nf_nat_proto.c                     |  43 --
+ net/netfilter/nf_tables_api.c                    |  56 +-
+ net/netfilter/nfnetlink_cttimeout.c              |   5 -
+ net/netfilter/nft_exthdr.c                       |   8 +
+ 46 files changed, 48 insertions(+), 1122 deletions(-)
+ delete mode 100644 include/linux/netfilter/nf_conntrack_dccp.h
+ delete mode 100644 net/netfilter/nf_conntrack_proto_dccp.c
 
