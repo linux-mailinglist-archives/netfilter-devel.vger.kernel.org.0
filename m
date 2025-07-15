@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-7895-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7897-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D07B062AB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Jul 2025 17:18:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA9D4B062A2
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Jul 2025 17:17:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EB717437B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Jul 2025 15:15:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58ED63B9AA9
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Jul 2025 15:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C742248B5;
-	Tue, 15 Jul 2025 15:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FFC22AE5D;
+	Tue, 15 Jul 2025 15:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="PFCHgpVs"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="mf+NzKqY"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E43221F38
-	for <netfilter-devel@vger.kernel.org>; Tue, 15 Jul 2025 15:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63FAA21B9E2
+	for <netfilter-devel@vger.kernel.org>; Tue, 15 Jul 2025 15:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752592547; cv=none; b=GsPPRAtsmj+7bpeustDAFQS5Byex8VRVqPeRJnhe/br53e7aWRqxUqiI+6RxdFJZBWGpwyXhbm1ouLY8Ty4ZHN96Y2/8Y51T4UCPnZG2dMqCDFCPprR51H3z/2vwH4kcCmKxKtXv/5PQcSo5+4gaSpX3KQDVEGa5lCyUaTVDUOQ=
+	t=1752592548; cv=none; b=tXKcbjc5y5jRzUjZUdjmQp3LGsc4Itso1jfRnT0ZenfOsgxl/3gmiw+Oc2otSMq+DZMVA1ITUnayTOTtVHZorUraj7TtIpK6QtWyg66v62yZdCOsLBcij3RzNr5AfDKx37xQoZGkG6jX8JJDbTMDuQJ2rzQQ+C3y0HtRMkqSpGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752592547; c=relaxed/simple;
-	bh=76ZKN3zey4EhZHiXOWXXjZEj00uyfKBB9LgiHP3Zl/Y=;
+	s=arc-20240116; t=1752592548; c=relaxed/simple;
+	bh=/POxvzE7ekkcmKwFzXLyu6swkD/pFuO5Xw18XJERNzY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s/cpH83Dufmki0JDXRL5iQmpkfjJwH27fY6Ay0BexLwG/PyiK9JixzvqaaMkftFEr1sX3958cJEudtl8KNu/Dc+I1E9O5vEJb1QwdqvjcP4WjJEWg435fs0xAvoI3LP7srtazWrBHBN+RnR02URPlaXMtn/l1KymkVa69KxcVbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=PFCHgpVs; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=AsGKHjfCyx0GIjNuV5jNc88+pfvRDnyqFPvVIM/8SDnFjYTpe98VeWVp+hCx7BviyNZRyWpuA/dA18+V8ruVXK89Nr09SCj73h69khln/CBfesE/KbngvoRmV0dM+xN/mDnTvEnK4gu1htzoA6JokQYmVkK+SZgT27ZHZibhTyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=mf+NzKqY; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=lAeEl9QCLWoWmhBHUc1zmsddRjswvtfDbBPPCetD6OM=; b=PFCHgpVsJ+IF9z4s8xpf5T+5A2
-	0I9vu0JHi09cFXZcB4ksrwWiFcq2Ix0fNOdJaV8jjPWk7M6sTXCOY7uETC7GQiAVFhNpDKRFslR13
-	eRS1HtYOX5SncHWeFDwlycrwDVJ0yz71UVBrq72ufSytDZ4V1fwTeYGaFQDr0hev7eFgIQvXO0Tgl
-	1ORDDRKvwU/0nWK15Tb0tqD8x+QxY8u2gg6wAnRHSvDyW5eCZAMfCDbtpSus4Y6u0o0Uc330wu0U0
-	JXuXWTwAJNgraVHHG79ClNmbal+RQiU1iDBZ0fHNAtFampC8sNgG/mpe2gkiXivZzLwIfMqn/8kb5
-	MB0Qaghg==;
+	bh=Ar38TXeXFP3/Kd65anADIPvlA8btPJXyQSQiGki5TFg=; b=mf+NzKqY/A63GOYLP9pXSiaboi
+	iXRm6QCheN5BmUFdVSQj8HbQypNLxRQ+3w58xSnqkROQy7T9zRVNARzVZ/05UVHobyH6Izdr4/5mK
+	IABANFsRUynvjZc5ybx+ilnTI87pq852xK5aGecLBRKPp6Qc3ghbiwOuGXLSuOnkqCojyOU0aebN4
+	/UflgMLpVkA9Q2NBkOipbqOOgJ0DNbsitp2XONQ3oTT4bkDaEGZo4vGIluXrjqGteJ84HcbyQX1ha
+	oLLQqme96U/vea4Wj7EPXxIwFjSvIkCcQtTWJGaXzoRjEUoJZVb/ghn5cFQIf1daAu2tlATLaBoja
+	BIb2x9Eg==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1ubhNf-000000003BB-1Fu1;
-	Tue, 15 Jul 2025 17:15:43 +0200
+	id 1ubhNg-000000003BV-3J0L;
+	Tue, 15 Jul 2025 17:15:44 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v2 2/3] parser_bison: Accept ASTERISK_STRING in flowtable_expr_member
-Date: Tue, 15 Jul 2025 17:15:37 +0200
-Message-ID: <20250715151538.14882-3-phil@nwl.cc>
+Subject: [nft PATCH v2 3/3] tests: shell: Test ifname-based hooks
+Date: Tue, 15 Jul 2025 17:15:38 +0200
+Message-ID: <20250715151538.14882-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250715151538.14882-1-phil@nwl.cc>
 References: <20250715151538.14882-1-phil@nwl.cc>
@@ -67,37 +67,246 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-All clauses are identical, so instead of adding a third one for
-ASTERISK_STRING, use a single one for 'string' (which combines all three
-variants).
+Assert that:
+- Non-matching interface specs are accepted
+- Existing interfaces are hooked into upon flowtable/chain creation
+- A new device matching the spec is hooked into immediately
+- No stale hooks remain in 'nft list hooks' output
+- Wildcard hooks basically work
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/parser_bison.y | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ .../features/list_hooks_flowtable_info.sh     |  7 +++
+ .../netdev_chain_name_based_hook_0.json-nft   | 34 ++++++++++++++
+ .../dumps/netdev_chain_name_based_hook_0.nft  |  5 +++
+ .../chains/netdev_chain_name_based_hook_0     | 44 ++++++++++++++++++
+ .../testcases/flowtable/0016name_based_hook_0 | 45 +++++++++++++++++++
+ .../dumps/0016name_based_hook_0.json-nft      | 32 +++++++++++++
+ .../flowtable/dumps/0016name_based_hook_0.nft |  6 +++
+ 7 files changed, 173 insertions(+)
+ create mode 100755 tests/shell/features/list_hooks_flowtable_info.sh
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
+ create mode 100755 tests/shell/testcases/chains/netdev_chain_name_based_hook_0
+ create mode 100755 tests/shell/testcases/flowtable/0016name_based_hook_0
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
 
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 5b84331f220d3..c31fd05ec09cd 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -2472,16 +2472,7 @@ flowtable_list_expr	:	flowtable_expr_member
- 			|	flowtable_list_expr	COMMA	opt_newline
- 			;
- 
--flowtable_expr_member	:	QUOTED_STRING
--			{
--				struct expr *expr = ifname_expr_alloc(&@$, state->msgs, $1);
--
--				if (!expr)
--					YYERROR;
--
--				$$ = expr;
--			}
--			|	STRING
-+flowtable_expr_member	:	string
- 			{
- 				struct expr *expr = ifname_expr_alloc(&@$, state->msgs, $1);
- 
+diff --git a/tests/shell/features/list_hooks_flowtable_info.sh b/tests/shell/features/list_hooks_flowtable_info.sh
+new file mode 100755
+index 0000000000000..58bc57e040959
+--- /dev/null
++++ b/tests/shell/features/list_hooks_flowtable_info.sh
+@@ -0,0 +1,7 @@
++#!/bin/sh
++
++# check for flowtable info in 'list hooks' output
++
++unshare -n bash -c " \
++$NFT \"table inet t { flowtable ft { hook ingress priority 0; devices = { lo }; }; }\"; \
++$NFT list hooks netdev device lo | grep -q flowtable\ inet\ t\ ft"
+diff --git a/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
+new file mode 100644
+index 0000000000000..00706271e96a4
+--- /dev/null
++++ b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
+@@ -0,0 +1,34 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "netdev",
++        "name": "t",
++        "handle": 0
++      }
++    },
++    {
++      "chain": {
++        "family": "netdev",
++        "table": "t",
++        "name": "c",
++        "handle": 0,
++        "dev": [
++          "foo*",
++          "lo"
++        ],
++        "type": "filter",
++        "hook": "ingress",
++        "prio": 0,
++        "policy": "accept"
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
+new file mode 100644
+index 0000000000000..ac5acacd12e6d
+--- /dev/null
++++ b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
+@@ -0,0 +1,5 @@
++table netdev t {
++	chain c {
++		type filter hook ingress devices = { "foo*", "lo" } priority filter; policy accept;
++	}
++}
+diff --git a/tests/shell/testcases/chains/netdev_chain_name_based_hook_0 b/tests/shell/testcases/chains/netdev_chain_name_based_hook_0
+new file mode 100755
+index 0000000000000..8a8a601784084
+--- /dev/null
++++ b/tests/shell/testcases/chains/netdev_chain_name_based_hook_0
+@@ -0,0 +1,44 @@
++#!/bin/bash
++
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_ifname_based_hooks)
++
++cspec=' chain netdev t c '
++$NFT add table netdev t
++$NFT add $cspec '{ type filter hook ingress priority 0; devices = { lo, foo* }; }'
++$NFT list hooks netdev device lo | grep -q "$cspec" || {
++	echo "Existing device lo not hooked into chain as expected"
++	exit 1
++}
++
++[[ $($NFT list hooks | grep -c "$cspec") -eq 1 ]] || {
++	echo "Chain hooks into more than just lo"
++	exit 2
++}
++
++ip link add foo1 type dummy
++$NFT list hooks netdev device foo1 | grep -q "$cspec" || {
++	echo "Chain did not hook into new device foo1"
++	exit 3
++}
++[[ $($NFT list hooks | grep -c "$cspec") -eq 2 ]] || {
++	echo "Chain expected to hook into exactly two devices"
++	exit 4
++}
++
++ip link del foo1
++$NFT list hooks netdev device foo1 | grep -q "$cspec" && {
++	echo "Chain still hooks into removed device foo1"
++	exit 5
++}
++[[ $($NFT list hooks | grep -c "$cspec") -eq 1 ]] || {
++	echo "Chain expected to hook into just lo"
++	exit 6
++}
++
++for ((i = 0; i < 100; i++)); do
++	ip link add foo$i type dummy
++done
++[[ $($NFT list hooks | grep -c "$cspec") -eq 101 ]] || {
++	echo "Chain did not hook into all 100 new devices"
++	exit 7
++}
+diff --git a/tests/shell/testcases/flowtable/0016name_based_hook_0 b/tests/shell/testcases/flowtable/0016name_based_hook_0
+new file mode 100755
+index 0000000000000..9a55596027158
+--- /dev/null
++++ b/tests/shell/testcases/flowtable/0016name_based_hook_0
+@@ -0,0 +1,45 @@
++#!/bin/bash
++
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_ifname_based_hooks)
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_list_hooks_flowtable_info)
++
++ftspec=' flowtable ip t ft '
++$NFT add table t
++$NFT add $ftspec '{ hook ingress priority 0; devices = { lo, foo* }; }'
++$NFT list hooks netdev device lo | grep -q "$ftspec" || {
++	echo "Existing device lo not hooked into flowtable as expected"
++	exit 1
++}
++
++[[ $($NFT list hooks | grep -c "$ftspec") -eq 1 ]] || {
++	echo "Flowtable hooks into more than just lo"
++	exit 2
++}
++
++ip link add foo1 type dummy
++$NFT list hooks netdev device foo1 | grep -q "$ftspec" || {
++	echo "Flowtable did not hook into new device foo1"
++	exit 3
++}
++[[ $($NFT list hooks | grep -c "$ftspec") -eq 2 ]] || {
++	echo "Flowtable expected to hook into exactly two devices"
++	exit 4
++}
++
++ip link del foo1
++$NFT list hooks netdev device foo1 | grep -q "$ftspec" && {
++	echo "Flowtable still hooks into removed device foo1"
++	exit 5
++}
++[[ $($NFT list hooks | grep -c "$ftspec") -eq 1 ]] || {
++	echo "Flowtable expected to hook into just lo"
++	exit 6
++}
++
++for ((i = 0; i < 100; i++)); do
++	ip link add foo$i type dummy
++done
++[[ $($NFT list hooks | grep -c "$ftspec") -eq 101 ]] || {
++	echo "Flowtable did not hook into all 100 new devices"
++	exit 7
++}
+diff --git a/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
+new file mode 100644
+index 0000000000000..93e263323ff95
+--- /dev/null
++++ b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
+@@ -0,0 +1,32 @@
++{
++  "nftables": [
++    {
++      "metainfo": {
++        "version": "VERSION",
++        "release_name": "RELEASE_NAME",
++        "json_schema_version": 1
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "t",
++        "handle": 0
++      }
++    },
++    {
++      "flowtable": {
++        "family": "ip",
++        "name": "ft",
++        "table": "t",
++        "handle": 0,
++        "hook": "ingress",
++        "prio": 0,
++        "dev": [
++          "foo*",
++          "lo"
++        ]
++      }
++    }
++  ]
++}
+diff --git a/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
+new file mode 100644
+index 0000000000000..b4810664a956f
+--- /dev/null
++++ b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
+@@ -0,0 +1,6 @@
++table ip t {
++	flowtable ft {
++		hook ingress priority filter
++		devices = { "foo*", "lo" }
++	}
++}
 -- 
 2.49.0
 
