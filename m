@@ -1,33 +1,33 @@
-Return-Path: <netfilter-devel+bounces-7906-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7909-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9628BB075BA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Jul 2025 14:34:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8733AB075E8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Jul 2025 14:41:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8EE87B0B90
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Jul 2025 12:32:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D8885830C0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Jul 2025 12:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542982F5319;
-	Wed, 16 Jul 2025 12:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88FDC2F5323;
+	Wed, 16 Jul 2025 12:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FYa1Waxm"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Ed6BYiPg"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55432F5086
-	for <netfilter-devel@vger.kernel.org>; Wed, 16 Jul 2025 12:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0147B2F530F
+	for <netfilter-devel@vger.kernel.org>; Wed, 16 Jul 2025 12:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752669217; cv=none; b=QcqAUNaZXKu3p58aWqxCGCOSJUgZgqyrtK3v1GhtgZgcqQq15fOj6D/NTGcSbX7l2vbLDJWhVVT1AS7PfPxwIuMnu1iiYRa1tAfLHqlRHCbUIN/wy518q/9amH+82+HUWFxk/7tfmrJQn9PxgKzdMbJUWM9htLQsDps0FnShULA=
+	t=1752669630; cv=none; b=pBRed/zBMWDkaC89fXABVfCWKEeNRfJ3fyZ+qXeTHRYV0PxhxTeJ5qwm+dPxVeC1I13YLymtiJ7ycj4xHeJLE2lldfcfLQ+esd9c/mlSZI643iihUcETY4oPdOl+++SbIQq7E9U/HazRjQWb2TR0ADJltN+x/mV7hn9Zen1CUI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752669217; c=relaxed/simple;
-	bh=ZxK3BROLVHixt0pv7lgca1aa/unClCDC/1EEF5TLmCg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qfCaa7O1wMbdC7ZtAFIjuCZn+3a4Ru++/y96WerfAvo/Pxfv5WkeFVFLRPoqlcYg45MP93i7q8LDde5+x1Y/hjkp9CncQLXZ/PwuzaLrwOVIxqNSXPPDJMU+H68XCYnCEcd31ha0nyurZtR+OtyFgS0v5F2JNtI7AjTNZUwWkYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FYa1Waxm; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1752669630; c=relaxed/simple;
+	bh=D5YG85f+qsPyV8mCeNP9lHp9xQG5dW7SoV6xiF9hz3s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XJgDWeu5YJhVVzCA+XtuYVXM4tssFa0HzpJbChCf26ziZIeZIxXSjhYhxXKCXfGKKwcsoj6Xl5iQZb7Gr+XH+BxFCkZEcKfDTNNCzZUNTjE8jR20CpSsHi1+LAl2ZJnKiiNUTfjLykbkXg+P+sGEMxHBWuvqs4E9vOO+xBZXBYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Ed6BYiPg; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -36,25 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=OD4/pxk0DXB9AiqpB1VPDzwwXrQmOrSD/krCnsU5LCc=; b=FYa1Waxm0UOBFzNN+Nsa+sKuOo
-	Ulys9ePsjjlGvJhQeMys7Baz7az7A2jGJ/PJU+bqpU5+LvMT3TUcRNqFR0thUhBjqGSzehjJ1kQwY
-	TpiVK8pnJOQbFYMlAU4tmf8SK7DS1mugNtXeytAcjHswYHloBWfzBDUt8sMplnd+UZ96979Tgs665
-	E8ESXkoQRAKFEsDy0D3MbHSq2TWJMts9Ra+/qZrjYPcZj4d6v7WNhiYUQqmK27zP0TJxrKSrGADgz
-	N1wbGJ1UwA+aFseNRPDyDW4QFYmh/b6js4i5vx1HiSH6Ta8dvamSGIvN9ZoVVccbQKPGbNzJRkRe6
-	jnvwTQ2w==;
+	bh=4FDwGDn9YxHX1gm6w2y9L2D+FutD1v5DYeyYsih0KxE=; b=Ed6BYiPgGdAdlQDTAX5UOENQ/y
+	XN3oTqrbNPU/Wz/yIqCTzNG5xlJGXMFnLiVHncw07+a1i1pDfbRhtJ84GYVnujQHnK4i384lgbYxo
+	L9/cP1jhDLX0oHe+ywXhSzNfIAdjyQN+71Prr3FsHz+RTLu8XWW2ofJE2wbWTX9rPnCcXLT/FVk0s
+	sVQSedNPuenexejO05n0PBR4J2OygjR4alfhEQofjy9fjPg/lROfSLVdmXv+l+3ZF3p0lXPPGhJXg
+	VfgoCRD7jdkB+MCDmzmCDtHQsN9s5jqrzIYcsuKFC36A15ADed6vJ/tXIcw2R4iiQrLarNwjcFbmh
+	aHWTN0Eg==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uc1KF-000000003vY-0LvL;
-	Wed, 16 Jul 2025 14:33:31 +0200
+	id 1uc1Qw-00000000447-1DCj;
+	Wed, 16 Jul 2025 14:40:26 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH v3] utils: Add helpers for interface name wildcards
-Date: Wed, 16 Jul 2025 14:32:49 +0200
-Message-ID: <20250716123325.3230-1-phil@nwl.cc>
+Cc: Florian Westphal <fw@strlen.de>,
+	netfilter-devel@vger.kernel.org
+Subject: [nft PATCH v3 0/4] Support wildcard netdev hooks
+Date: Wed, 16 Jul 2025 14:40:16 +0200
+Message-ID: <20250716124020.5447-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -64,144 +65,44 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support simple (suffix) wildcards in NFTNL_CHAIN_DEV(ICES) and
-NFTA_FLOWTABLE_HOOK_DEVS identified by non-NUL-terminated strings. Add
-helpers converting to and from the human-readable asterisk-suffix
-notation.
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
 Changes since v2:
-- Use 'nftnl' prefix for introduced helpers
-- Forward-declare struct nlattr to avoid extra include in utils.h
-- Sanity-check array indexes to avoid out-of-bounds access
----
- include/utils.h |  5 +++++
- src/chain.c     |  8 +++++---
- src/flowtable.c |  2 +-
- src/str_array.c |  2 +-
- src/utils.c     | 30 ++++++++++++++++++++++++++++++
- 5 files changed, 42 insertions(+), 5 deletions(-)
+- New patch 1 fixing for excessive mnl_attr_nest_end() calls
+- Introduce a helper function in patch 2 which also sanity-checks an
+  array index - this is a copy of libnftnl's function for the same
+  purpose, but we rather get rid of the dupicated calling code instead
+  of exposing (and thus maintaining in future) the function from
+  libnftnl
 
-diff --git a/include/utils.h b/include/utils.h
-index 247d99d19dd7f..16468a31cb166 100644
---- a/include/utils.h
-+++ b/include/utils.h
-@@ -83,4 +83,9 @@ int nftnl_fprintf(FILE *fpconst, const void *obj, uint32_t cmd, uint32_t type,
- int nftnl_set_str_attr(const char **dptr, uint32_t *flags,
- 		       uint16_t attr, const void *data, uint32_t data_len);
- 
-+struct nlattr;
-+
-+void nftnl_attr_put_ifname(struct nlmsghdr *nlh, int attr, const char *ifname);
-+const char *nftnl_attr_get_ifname(struct nlattr *attr);
-+
- #endif
-diff --git a/src/chain.c b/src/chain.c
-index 895108cddad51..9dcdfb9c95337 100644
---- a/src/chain.c
-+++ b/src/chain.c
-@@ -457,14 +457,14 @@ void nftnl_chain_nlmsg_build_payload(struct nlmsghdr *nlh, const struct nftnl_ch
- 		mnl_attr_put_u32(nlh, NFTA_HOOK_PRIORITY, htonl(c->prio));
- 
- 	if (c->flags & (1 << NFTNL_CHAIN_DEV))
--		mnl_attr_put_strz(nlh, NFTA_HOOK_DEV, c->dev);
-+		nftnl_attr_put_ifname(nlh, NFTA_HOOK_DEV, c->dev);
- 	else if (c->flags & (1 << NFTNL_CHAIN_DEVICES)) {
- 		struct nlattr *nest_dev;
- 		const char *dev;
- 
- 		nest_dev = mnl_attr_nest_start(nlh, NFTA_HOOK_DEVS);
- 		nftnl_str_array_foreach(dev, &c->dev_array, i)
--			mnl_attr_put_strz(nlh, NFTA_DEVICE_NAME, dev);
-+			nftnl_attr_put_ifname(nlh, NFTA_DEVICE_NAME, dev);
- 		mnl_attr_nest_end(nlh, nest_dev);
- 	}
- 
-@@ -648,7 +648,9 @@ static int nftnl_chain_parse_hook(struct nlattr *attr, struct nftnl_chain *c)
- 		c->flags |= (1 << NFTNL_CHAIN_PRIO);
- 	}
- 	if (tb[NFTA_HOOK_DEV]) {
--		c->dev = strdup(mnl_attr_get_str(tb[NFTA_HOOK_DEV]));
-+		if (c->flags & (1 << NFTNL_CHAIN_DEV))
-+			xfree(c->dev);
-+		c->dev = strdup(nftnl_attr_get_ifname(tb[NFTA_HOOK_DEV]));
- 		if (!c->dev)
- 			return -1;
- 		c->flags |= (1 << NFTNL_CHAIN_DEV);
-diff --git a/src/flowtable.c b/src/flowtable.c
-index fbbe0a866368d..006d50743e78a 100644
---- a/src/flowtable.c
-+++ b/src/flowtable.c
-@@ -299,7 +299,7 @@ void nftnl_flowtable_nlmsg_build_payload(struct nlmsghdr *nlh,
- 
- 		nest_dev = mnl_attr_nest_start(nlh, NFTA_FLOWTABLE_HOOK_DEVS);
- 		nftnl_str_array_foreach(dev, &c->dev_array, i)
--			mnl_attr_put_strz(nlh, NFTA_DEVICE_NAME, dev);
-+			nftnl_attr_put_ifname(nlh, NFTA_DEVICE_NAME, dev);
- 		mnl_attr_nest_end(nlh, nest_dev);
- 	}
- 
-diff --git a/src/str_array.c b/src/str_array.c
-index 5669c6154d394..c9d0472d28212 100644
---- a/src/str_array.c
-+++ b/src/str_array.c
-@@ -56,7 +56,7 @@ int nftnl_parse_devs(struct nftnl_str_array *sa, const struct nlattr *nest)
- 		return -1;
- 
- 	mnl_attr_for_each_nested(attr, nest) {
--		sa->array[sa->len] = strdup(mnl_attr_get_str(attr));
-+		sa->array[sa->len] = strdup(nftnl_attr_get_ifname(attr));
- 		if (!sa->array[sa->len]) {
- 			nftnl_str_array_clear(sa);
- 			return -1;
-diff --git a/src/utils.c b/src/utils.c
-index 5f2c5bff7c650..ccea60b58e797 100644
---- a/src/utils.c
-+++ b/src/utils.c
-@@ -13,8 +13,11 @@
- #include <errno.h>
- #include <inttypes.h>
- 
-+#include <libmnl/libmnl.h>
-+
- #include <libnftnl/common.h>
- 
-+#include <linux/if.h>
- #include <linux/netfilter.h>
- #include <linux/netfilter/nf_tables.h>
- 
-@@ -146,3 +149,30 @@ int nftnl_set_str_attr(const char **dptr, uint32_t *flags,
- 	*flags |= (1 << attr);
- 	return 0;
- }
-+
-+void nftnl_attr_put_ifname(struct nlmsghdr *nlh, int attr, const char *ifname)
-+{
-+	int len = strlen(ifname) + 1;
-+
-+	if (len >= 2 && ifname[len - 2] == '*')
-+		len -= 2;
-+
-+	mnl_attr_put(nlh, attr, len, ifname);
-+}
-+
-+const char *nftnl_attr_get_ifname(struct nlattr *attr)
-+{
-+	size_t slen = mnl_attr_get_payload_len(attr);
-+	const char *dev = mnl_attr_get_str(attr);
-+	static char buf[IFNAMSIZ];
-+
-+	if (slen > 0 && dev[slen - 1] == '\0')
-+		return dev;
-+
-+	if (slen > IFNAMSIZ - 2)
-+		slen = IFNAMSIZ - 2;
-+
-+	memcpy(buf, dev, slen);
-+	memcpy(buf + slen, "*\0", 2);
-+	return buf;
-+}
+This is the remaining needed code change to support wildcard hook specs.
+Patch 4 also adds shell test cases to cover the functionality. The
+flowtable variant is skipped if 'nft list hooks' does not provide
+flowtable information as this requires NFNL_HOOK_TYPE_NFT_FLOWTABLE in
+kernel.
+
+Phil Sutter (4):
+  mnl: Call mnl_attr_nest_end() just once
+  mnl: Support simple wildcards in netdev hooks
+  parser_bison: Accept ASTERISK_STRING in flowtable_expr_member
+  tests: shell: Test ifname-based hooks
+
+ src/mnl.c                                     | 22 ++++++---
+ src/parser_bison.y                            | 11 +----
+ .../features/list_hooks_flowtable_info.sh     |  7 +++
+ .../netdev_chain_name_based_hook_0.json-nft   | 34 ++++++++++++++
+ .../dumps/netdev_chain_name_based_hook_0.nft  |  5 +++
+ .../chains/netdev_chain_name_based_hook_0     | 44 ++++++++++++++++++
+ .../testcases/flowtable/0016name_based_hook_0 | 45 +++++++++++++++++++
+ .../dumps/0016name_based_hook_0.json-nft      | 32 +++++++++++++
+ .../flowtable/dumps/0016name_based_hook_0.nft |  6 +++
+ 9 files changed, 191 insertions(+), 15 deletions(-)
+ create mode 100755 tests/shell/features/list_hooks_flowtable_info.sh
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
+ create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
+ create mode 100755 tests/shell/testcases/chains/netdev_chain_name_based_hook_0
+ create mode 100755 tests/shell/testcases/flowtable/0016name_based_hook_0
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
+ create mode 100644 tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
+
 -- 
 2.49.0
 
