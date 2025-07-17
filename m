@@ -1,314 +1,170 @@
-Return-Path: <netfilter-devel+bounces-7931-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7934-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD89EB07D32
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Jul 2025 20:54:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6362AB087E0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Jul 2025 10:27:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 357665850BD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Jul 2025 18:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5360A3B0FD3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Jul 2025 08:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF70C29A9E6;
-	Wed, 16 Jul 2025 18:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63911386C9;
+	Thu, 17 Jul 2025 08:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GAgnJ4TB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tdhkHhRb"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17BC288C1B
-	for <netfilter-devel@vger.kernel.org>; Wed, 16 Jul 2025 18:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FFF53BE
+	for <netfilter-devel@vger.kernel.org>; Thu, 17 Jul 2025 08:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752692052; cv=none; b=RVhgoTIglyKsrhjcVHnvlY8IuVibiCrutAvYzy8pJ+yNyvGq3cqrRhwLMi3pwQIavqXp6blzE2ItF7YOtcdxTx8/IY0002ZhQ7C48iNgQIFHtEj777wHmJS6K3L3vGeDq+2gyRNkLCJ1F254QxsnTTP2oEJGvDnjIPEY+oNMdUI=
+	t=1752740862; cv=none; b=ItWN6HGapTozhzKFO0NfLG1uleTrNyzhnv11NXx1tkbK5k4TFhjkWdxCWKi+Mn1howLApKieOw7TvPKyGWNrDsDM5FEz0OWo4Z/tW4GUrPdeeGKrlqU/hYNoFtfT5D+xr2UnYgaqsg9p/YQtGwHFFGKpHBfbGA1dyNsZ5hFjvVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752692052; c=relaxed/simple;
-	bh=/POxvzE7ekkcmKwFzXLyu6swkD/pFuO5Xw18XJERNzY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s1gYnEgp7fJwGydBlVd6XS8xeyECXfw9KdOk96dNLp/ayWSGW9Zi/2opZjlfn5Wuv02naOo4PfUIc/TwYqLWitxjT/QPbS27fayR2B6ZQuHPIUjLHvxPqSG+byZWUlHz9OWVY6sThYoBmEYWydzPC7ryrzsl66lOkja19p8iJgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GAgnJ4TB; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Ar38TXeXFP3/Kd65anADIPvlA8btPJXyQSQiGki5TFg=; b=GAgnJ4TBheGtLADlPBN/7yglcw
-	8wK2tMPGIzV9Epar1OcaRoaL6uNS2AfgMWvoBJ8YP6LYK2sZa3IgjRDcw8+gGWripYesT/5eEhAPz
-	9asGOmpia6Fy7ziNjvTvLe7qwy9wCfaGgjuMYnUfuSuGQ5ozhYHHybPLdQxG7qWs7eNTP+3vQSwt3
-	G+WDBvIE6z7wprvJ/34sIfWji1mYNHNdpx2HncVVGw7PgteDICzjXYYQxcgREHVde1k8/Zdj7R3Xr
-	I7q8ExAq/9/P/mg2PwlyjB2Kd81c/AQOZmntrY1kiLuyUY7GYis7jTVZaQE29y4/eiF6dg8gYq+tz
-	wFBLoQPA==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1uc7Gb-0000000082l-0F0q;
-	Wed, 16 Jul 2025 20:54:09 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>,
-	netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v4 3/3] tests: shell: Test ifname-based hooks
-Date: Wed, 16 Jul 2025 20:54:02 +0200
-Message-ID: <20250716185402.32532-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250716185402.32532-1-phil@nwl.cc>
-References: <20250716185402.32532-1-phil@nwl.cc>
+	s=arc-20240116; t=1752740862; c=relaxed/simple;
+	bh=gdmcXAQv5yfTlQ9ss5PiUXft2ylAtjjvfmzMkoWIbaU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eHXWJvjQAJv8leXflDW9Hym0VI+D+ddOUgUSvSS8Ccejh48P8W30ks3oHHqYvxdBu1Ljs289CHzaXutBzgtEgFO+ZrFgQ0105puk5oYHY8jv5YP7EHClmsGTr+G0m/bXI/Y3yATTNLlY4OyVlTsfArDiaiGFDtIPsorEB+LR1BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tdhkHhRb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2D9ECC4CEE3;
+	Thu, 17 Jul 2025 08:27:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752740862;
+	bh=gdmcXAQv5yfTlQ9ss5PiUXft2ylAtjjvfmzMkoWIbaU=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=tdhkHhRbIwq5KKx9LtgyR7bwoVvA5QfMHCDWINFQJeOW8QYpxSJzt+lIEThrTqGPV
+	 /1JCAWYJBs/7rGYrizmTMc12Kh9LIqPGFjGUFa6NObPUJUDr8cb2haHj83+C/fLAJh
+	 +EdQcXY1VuLNpr7uRckyMUxLyGnIVpvQKeuwXGyVCI3pSjOdv6FtpFEv3UoxAO6Whk
+	 f+g3aHPTKyXVC5FZrZL9pQ60+q6H6L8WW1CZ0WaEaRAoDFK43wL6SW1V9FmNKAoZe9
+	 Yh+kAaZrOXoFevFJecpi+kV/G5WRPJZlCpX1AYFEsqbyKEK07wQNlbira6vfbh2a9i
+	 Gt9ZO2bqFTZcA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BA2FC83F22;
+	Thu, 17 Jul 2025 08:27:42 +0000 (UTC)
+From: Miao Wang via B4 Relay <devnull+shankerwangmiao.gmail.com@kernel.org>
+Date: Thu, 17 Jul 2025 16:27:37 +0800
+Subject: [PATCH iptables v2] extensions: libebt_redirect: prevent
+ translation
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250717-xlat-ebt-redir-v2-1-74fe39757369@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPizeGgC/3WNywqDMBBFf0Vm3SkmNVK76n8UF6OOOuCLJASL5
+ N8bsu/ycLjnXuDYCjt4FRdYDuJk3xLoWwH9TNvEKENi0KU2ZaUNngt55M6j5UEsElVlo59jPRJ
+ DGh2WRzlz8ANyeOqWBG0yszi/229+Cir7f9GgUOGDlSLTaGPq5j2tJMu931doY4w/pv0ntLYAA
+ AA=
+X-Change-ID: 20250425-xlat-ebt-redir-aa40928f6fae
+To: netfilter-devel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, phil@nwl.cc, 
+ Miao Wang <shankerwangmiao@gmail.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3134;
+ i=shankerwangmiao@gmail.com; s=20250715; h=from:subject:message-id;
+ bh=TSPPr1F5AtRVaecHZO/IgT4eoPQHgBuUtWAoAvnRlGs=;
+ b=owEBbQKS/ZANAwAKAbAx48p7/tluAcsmYgBoeLP8wEE0c/18izVGT+LDndfeDnTPbTkhJXLOY
+ 6r9mgt9qWCJAjMEAAEKAB0WIQREqPWPgPJBxluezBOwMePKe/7ZbgUCaHiz/AAKCRCwMePKe/7Z
+ blzVEADaTNNkrjjlmoLHx4ANUo2XnIuZlp0ddWP2gHkRNcus1wfvt5CnxMTggSIVP8nX7gjOzCb
+ yEeImIdTZ4loVn+onfBA+s6WjzeBEu36bN+nV4iV6r/GACmqO3FU+8TS6fQQZu5pRWg5O0S8VA2
+ AsPrCvfbvB/DQMZr6/lGVrbubFfU1W5IM7V6AWfGj9Gn4Ebwz3zCNd6j3UoRXCb4UcncgCfPKtP
+ c5NTqWWaK3r1PqnKbUNEOTtjEHKJK06SdPzdro45sl3D/f3T/DKBc/ORDJ/b0155eW8pmFrAly5
+ gaXbrBNmiB/DpJWnrtc4U72lVYhF5pa9GDWGCGes8QipEK5Lm+67I7HvHDs0Z+deSCA/lkYV6cC
+ shi3wWyaXcaiTaMRqcht37EqPQJxhXh+jyuOBy6G9YF1rRYyB8pq9+Djq/YpJK80Wzcn9Axw96V
+ i+KPHQjTOp6kGwtSJlmVPUwDORXDN+EDXXFKtk3ookbkq4HxHoiDfkoBEwBhkCQi0H9M748dlOm
+ OTVxNOgcu9tfqTANuOwRIli3Dwn/13FKR5u14HjBXV8Dq2i17i8ZsuLuvocFkKbbFV0Nq8riKDK
+ yAnpmwsP+GqxJQGo27MS0Y9SZQUjkunDglPadssMfCGgQa+qV5IdBCzv0Mivy1zDUN4f1pGsFHb
+ eJDRC3gxOZBPl4g==
+X-Developer-Key: i=shankerwangmiao@gmail.com; a=openpgp;
+ fpr=6FAEFF06B7D212A774C60BFDFA0D166D6632EF4A
+X-Endpoint-Received: by B4 Relay for shankerwangmiao@gmail.com/20250715
+ with auth_id=462
+X-Original-From: Miao Wang <shankerwangmiao@gmail.com>
+Reply-To: shankerwangmiao@gmail.com
 
-Assert that:
-- Non-matching interface specs are accepted
-- Existing interfaces are hooked into upon flowtable/chain creation
-- A new device matching the spec is hooked into immediately
-- No stale hooks remain in 'nft list hooks' output
-- Wildcard hooks basically work
+From: Miao Wang <shankerwangmiao@gmail.com>
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+The redirect target in ebtables do two things: 1. set skb->pkt_type to
+PACKET_HOST, and 2. set the destination mac address to the address of
+the receiving bridge device (when not used in BROUTING chain), or the
+receiving physical device (otherwise). However, the later cannot be
+implemented in nftables not given the translated mac address. So it is
+not appropriate to give a specious translation.
+
+This patch disables the translation to prevent possible misunderstanding.
+
+Fixes: 24ce7465056ae ("ebtables-compat: add redirect match extension")
+Signed-off-by: Miao Wang <shankerwangmiao@gmail.com>
 ---
- .../features/list_hooks_flowtable_info.sh     |  7 +++
- .../netdev_chain_name_based_hook_0.json-nft   | 34 ++++++++++++++
- .../dumps/netdev_chain_name_based_hook_0.nft  |  5 +++
- .../chains/netdev_chain_name_based_hook_0     | 44 ++++++++++++++++++
- .../testcases/flowtable/0016name_based_hook_0 | 45 +++++++++++++++++++
- .../dumps/0016name_based_hook_0.json-nft      | 32 +++++++++++++
- .../flowtable/dumps/0016name_based_hook_0.nft |  6 +++
- 7 files changed, 173 insertions(+)
- create mode 100755 tests/shell/features/list_hooks_flowtable_info.sh
- create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
- create mode 100644 tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
- create mode 100755 tests/shell/testcases/chains/netdev_chain_name_based_hook_0
- create mode 100755 tests/shell/testcases/flowtable/0016name_based_hook_0
- create mode 100644 tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
- create mode 100644 tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
+Changes in v2:
+- Completely remove the translation from the ebtables redirect target to
+  nft rule according to Pablo's suggestion.
+- Link to v1: https://lore.kernel.org/r/20250425-xlat-ebt-redir-v1-1-3e11a5925569@gmail.com
+---
+ extensions/libebt_redirect.c      | 19 +------------------
+ extensions/libebt_redirect.txlate |  8 --------
+ 2 files changed, 1 insertion(+), 26 deletions(-)
 
-diff --git a/tests/shell/features/list_hooks_flowtable_info.sh b/tests/shell/features/list_hooks_flowtable_info.sh
-new file mode 100755
-index 0000000000000..58bc57e040959
---- /dev/null
-+++ b/tests/shell/features/list_hooks_flowtable_info.sh
-@@ -0,0 +1,7 @@
-+#!/bin/sh
-+
-+# check for flowtable info in 'list hooks' output
-+
-+unshare -n bash -c " \
-+$NFT \"table inet t { flowtable ft { hook ingress priority 0; devices = { lo }; }; }\"; \
-+$NFT list hooks netdev device lo | grep -q flowtable\ inet\ t\ ft"
-diff --git a/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
-new file mode 100644
-index 0000000000000..00706271e96a4
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.json-nft
-@@ -0,0 +1,34 @@
-+{
-+  "nftables": [
-+    {
-+      "metainfo": {
-+        "version": "VERSION",
-+        "release_name": "RELEASE_NAME",
-+        "json_schema_version": 1
-+      }
-+    },
-+    {
-+      "table": {
-+        "family": "netdev",
-+        "name": "t",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "chain": {
-+        "family": "netdev",
-+        "table": "t",
-+        "name": "c",
-+        "handle": 0,
-+        "dev": [
-+          "foo*",
-+          "lo"
-+        ],
-+        "type": "filter",
-+        "hook": "ingress",
-+        "prio": 0,
-+        "policy": "accept"
-+      }
-+    }
-+  ]
-+}
-diff --git a/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
-new file mode 100644
-index 0000000000000..ac5acacd12e6d
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/netdev_chain_name_based_hook_0.nft
-@@ -0,0 +1,5 @@
-+table netdev t {
-+	chain c {
-+		type filter hook ingress devices = { "foo*", "lo" } priority filter; policy accept;
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/netdev_chain_name_based_hook_0 b/tests/shell/testcases/chains/netdev_chain_name_based_hook_0
-new file mode 100755
-index 0000000000000..8a8a601784084
---- /dev/null
-+++ b/tests/shell/testcases/chains/netdev_chain_name_based_hook_0
-@@ -0,0 +1,44 @@
-+#!/bin/bash
-+
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_ifname_based_hooks)
-+
-+cspec=' chain netdev t c '
-+$NFT add table netdev t
-+$NFT add $cspec '{ type filter hook ingress priority 0; devices = { lo, foo* }; }'
-+$NFT list hooks netdev device lo | grep -q "$cspec" || {
-+	echo "Existing device lo not hooked into chain as expected"
-+	exit 1
-+}
-+
-+[[ $($NFT list hooks | grep -c "$cspec") -eq 1 ]] || {
-+	echo "Chain hooks into more than just lo"
-+	exit 2
-+}
-+
-+ip link add foo1 type dummy
-+$NFT list hooks netdev device foo1 | grep -q "$cspec" || {
-+	echo "Chain did not hook into new device foo1"
-+	exit 3
-+}
-+[[ $($NFT list hooks | grep -c "$cspec") -eq 2 ]] || {
-+	echo "Chain expected to hook into exactly two devices"
-+	exit 4
-+}
-+
-+ip link del foo1
-+$NFT list hooks netdev device foo1 | grep -q "$cspec" && {
-+	echo "Chain still hooks into removed device foo1"
-+	exit 5
-+}
-+[[ $($NFT list hooks | grep -c "$cspec") -eq 1 ]] || {
-+	echo "Chain expected to hook into just lo"
-+	exit 6
-+}
-+
-+for ((i = 0; i < 100; i++)); do
-+	ip link add foo$i type dummy
-+done
-+[[ $($NFT list hooks | grep -c "$cspec") -eq 101 ]] || {
-+	echo "Chain did not hook into all 100 new devices"
-+	exit 7
-+}
-diff --git a/tests/shell/testcases/flowtable/0016name_based_hook_0 b/tests/shell/testcases/flowtable/0016name_based_hook_0
-new file mode 100755
-index 0000000000000..9a55596027158
---- /dev/null
-+++ b/tests/shell/testcases/flowtable/0016name_based_hook_0
-@@ -0,0 +1,45 @@
-+#!/bin/bash
-+
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_ifname_based_hooks)
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_list_hooks_flowtable_info)
-+
-+ftspec=' flowtable ip t ft '
-+$NFT add table t
-+$NFT add $ftspec '{ hook ingress priority 0; devices = { lo, foo* }; }'
-+$NFT list hooks netdev device lo | grep -q "$ftspec" || {
-+	echo "Existing device lo not hooked into flowtable as expected"
-+	exit 1
-+}
-+
-+[[ $($NFT list hooks | grep -c "$ftspec") -eq 1 ]] || {
-+	echo "Flowtable hooks into more than just lo"
-+	exit 2
-+}
-+
-+ip link add foo1 type dummy
-+$NFT list hooks netdev device foo1 | grep -q "$ftspec" || {
-+	echo "Flowtable did not hook into new device foo1"
-+	exit 3
-+}
-+[[ $($NFT list hooks | grep -c "$ftspec") -eq 2 ]] || {
-+	echo "Flowtable expected to hook into exactly two devices"
-+	exit 4
-+}
-+
-+ip link del foo1
-+$NFT list hooks netdev device foo1 | grep -q "$ftspec" && {
-+	echo "Flowtable still hooks into removed device foo1"
-+	exit 5
-+}
-+[[ $($NFT list hooks | grep -c "$ftspec") -eq 1 ]] || {
-+	echo "Flowtable expected to hook into just lo"
-+	exit 6
-+}
-+
-+for ((i = 0; i < 100; i++)); do
-+	ip link add foo$i type dummy
-+done
-+[[ $($NFT list hooks | grep -c "$ftspec") -eq 101 ]] || {
-+	echo "Flowtable did not hook into all 100 new devices"
-+	exit 7
-+}
-diff --git a/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
-new file mode 100644
-index 0000000000000..93e263323ff95
---- /dev/null
-+++ b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.json-nft
-@@ -0,0 +1,32 @@
-+{
-+  "nftables": [
-+    {
-+      "metainfo": {
-+        "version": "VERSION",
-+        "release_name": "RELEASE_NAME",
-+        "json_schema_version": 1
-+      }
-+    },
-+    {
-+      "table": {
-+        "family": "ip",
-+        "name": "t",
-+        "handle": 0
-+      }
-+    },
-+    {
-+      "flowtable": {
-+        "family": "ip",
-+        "name": "ft",
-+        "table": "t",
-+        "handle": 0,
-+        "hook": "ingress",
-+        "prio": 0,
-+        "dev": [
-+          "foo*",
-+          "lo"
-+        ]
-+      }
-+    }
-+  ]
-+}
-diff --git a/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
-new file mode 100644
-index 0000000000000..b4810664a956f
---- /dev/null
-+++ b/tests/shell/testcases/flowtable/dumps/0016name_based_hook_0.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	flowtable ft {
-+		hook ingress priority filter
-+		devices = { "foo*", "lo" }
-+	}
-+}
+diff --git a/extensions/libebt_redirect.c b/extensions/libebt_redirect.c
+index a44dbaec6cc8b12f20acd31dcb1360ac7245e349..12d87f93df6386cacf4fe257070933cc552b41f4 100644
+--- a/extensions/libebt_redirect.c
++++ b/extensions/libebt_redirect.c
+@@ -60,27 +60,10 @@ static void brredir_print(const void *ip, const struct xt_entry_target *target,
+ 	printf("--redirect-target %s", ebt_target_name(redirectinfo->target));
+ }
+ 
+-static const char* brredir_verdict(int verdict)
+-{
+-	switch (verdict) {
+-	case EBT_ACCEPT: return "accept";
+-	case EBT_DROP: return "drop";
+-	case EBT_CONTINUE: return "continue";
+-	case EBT_RETURN: return "return";
+-	}
+-
+-	return "";
+-}
+-
+ static int brredir_xlate(struct xt_xlate *xl,
+ 			 const struct xt_xlate_tg_params *params)
+ {
+-	const struct ebt_redirect_info *red = (const void*)params->target->data;
+-
+-	xt_xlate_add(xl, "meta pkttype set host");
+-	if (red->target != EBT_CONTINUE)
+-		xt_xlate_add(xl, " %s ", brredir_verdict(red->target));
+-	return 1;
++	return 0;
+ }
+ 
+ static struct xtables_target brredirect_target = {
+diff --git a/extensions/libebt_redirect.txlate b/extensions/libebt_redirect.txlate
+deleted file mode 100644
+index d073ec774c4fa817e48422fb99aaf095dd9eab65..0000000000000000000000000000000000000000
+--- a/extensions/libebt_redirect.txlate
++++ /dev/null
+@@ -1,8 +0,0 @@
+-ebtables-translate -t nat -A PREROUTING -d de:ad:00:00:be:ef -j redirect
+-nft 'add rule bridge nat PREROUTING ether daddr de:ad:00:00:be:ef counter meta pkttype set host accept'
+-
+-ebtables-translate -t nat -A PREROUTING -d de:ad:00:00:be:ef -j redirect --redirect-target RETURN
+-nft 'add rule bridge nat PREROUTING ether daddr de:ad:00:00:be:ef counter meta pkttype set host return'
+-
+-ebtables-translate -t nat -A PREROUTING -d de:ad:00:00:be:ef -j redirect --redirect-target CONTINUE
+-nft 'add rule bridge nat PREROUTING ether daddr de:ad:00:00:be:ef counter meta pkttype set host'
+
+---
+base-commit: 192c3a6bc18f206895ec5e38812d648ccfe7e281
+change-id: 20250425-xlat-ebt-redir-aa40928f6fae
+
+Best regards,
 -- 
-2.49.0
+Miao Wang <shankerwangmiao@gmail.com>
+
 
 
