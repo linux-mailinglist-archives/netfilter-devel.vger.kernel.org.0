@@ -1,64 +1,61 @@
-Return-Path: <netfilter-devel+bounces-7996-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-7998-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864C6B0DF8E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Jul 2025 16:53:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7FBB0E087
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Jul 2025 17:32:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D755E5657BF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Jul 2025 14:49:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB4501C24532
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Jul 2025 15:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D5B28C5DE;
-	Tue, 22 Jul 2025 14:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751D127701C;
+	Tue, 22 Jul 2025 15:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="JBj9Rx6S"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FMk4UGh1"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74B02E3B1C
-	for <netfilter-devel@vger.kernel.org>; Tue, 22 Jul 2025 14:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E18A267AF6
+	for <netfilter-devel@vger.kernel.org>; Tue, 22 Jul 2025 15:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753195742; cv=none; b=AGX+17bN9UyqHJa/HDtSiCMfXWDWIwsdVrXdqqe4WAfRxXlRx+YaC75xeFsLjZ3C2IPpNdSuDGQXX3gxVifHbsC3GEyXroM5lEPMt4rkmb213Qb9ce0wNV3buMlcvx5o1i8jikeVT6fb+DGIslcJ8jG8fk3WG3/V3o0ziHw+0h8=
+	t=1753198334; cv=none; b=PwHHsOLWFh51yN7AiX9K19/k8tatK7O1uebBIL475yXKqaYHD//6jiwdfra+BFiN8EEIaipj3C/M6u38eEtRTEABgulUUEAO30CUG0BMOiWvbxx6g/aoAEpAL6szHzZtT8Op5tJ/6taQ7yEqDhnbaAyLPnULpTMDyLFsHnKGNoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753195742; c=relaxed/simple;
-	bh=btd7O9gR3DRYqYAJoMfI+Tj7Ey9WrZ4062oGvZ1mo/Y=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DOhoE39MIGUN0/w+13PGWrsS8L+vDlIpdaFsbIyf8Yd6MQlHm04NR7N/xDNGox1qI/DYy+KXub68tQ1AmhapiGHEdi5UmQZxw86bkiqzwCjWK/vDd8RXu6LjYjLJFar2LrPb+eXu3qCs5e002XYjm3LoAwOfBfa44deFxuZVrLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=JBj9Rx6S; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1753198334; c=relaxed/simple;
+	bh=oE4yJkIxxNyLPCn095dKNFVUbU/yZgSXZ4ONcY5cP7s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V031P7bDGVfxnYFeF9ItP1+8SCEpEDQdlzqMmHB02NfQiCJwDeCE9k6Os+O0klzzvj5OMirria6KoeJh3gyiJi/gW1axsbKDD0Gbtbg1xCMNvxLa6B+DDnjCqlhq9re10nkCWwN93vlDlD1dh0QXc7QhPnyd1KBxxfvSIluDXCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FMk4UGh1; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Iavx5wYdeh0ZKibtQC8lk7I9895ZcL1Du2+6pukeQkI=; b=JBj9Rx6S/NJ/8h6idYS1z904ni
-	0K1uwOMFNHVONvQbzuhArSLSxIRowByRqFWnM7+lbvf9vfRByxpPjCSDr7skOz3dxFwn2rUKx9IJl
-	BWSSIPY2ORO4Ie6wLorLITjDwftbVuT2rXF2C9BBXHDlHFf6U+NqWJ3VqqxcSNh+uQ9wj0HDOd3M/
-	L2ewXsd6oSzVuqwRkMO9SdN0IviWVrWtZeQUUsp8dvC2CVMrTqvAdzjfKku4ZKJC3cwTwPwQfj/UH
-	4IPtIxQOgYJVEdWTuuKfB260/pdnF640gK9rZsGrx9P87GDh+7iNN/FW+xw3JPo5t2n3gy7qrlw3U
-	4yckoYUQ==;
+	bh=zBY/fWBXOqFsE+0ISvuKdOv+rlWbAdmphKJjSjfcEg0=; b=FMk4UGh1rBnOy776EJGlK1a7K2
+	1JxUtcwR1zdyAMevFzAXjSwW9dJ5TQoYsMNpwOoqbWlRubcuxZMqicmOFEyrjJL+ndGZ8aWCabCsz
+	1RzTt5zDGyzhgNzHaYxaYlGQ7IeGgGElDk8yjDiB/cu35bsRQbr2bQARSgDO4P1MkYAprdx4Sqp4A
+	1+qvo0+GC3F/gbUuYQSxvLDBeArFpZwHBkHs/UQHyZKODf18zPXm/Pf256U+tQAAsMjzZFFyrnQaQ
+	8NzSnQy+HM6tz1S9sLKbCa/GRFwMQf+hSOVKII5IUNSSupSJZqR3wsLa5e7VZeLAYqCcUBJb69MtW
+	j9v1L2Nw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1ueEIc-0000000044X-46gU
-	for netfilter-devel@vger.kernel.org;
-	Tue, 22 Jul 2025 16:48:59 +0200
+	id 1ueEyQ-000000004di-0uqZ;
+	Tue, 22 Jul 2025 17:32:10 +0200
 From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] xtables-monitor: Print -X command for base chains, too
-Date: Tue, 22 Jul 2025 16:48:53 +0200
-Message-ID: <20250722144853.21022-2-phil@nwl.cc>
+To: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [ipset PATCH] tests: Fix for standalone calls to setlist_resize.sh
+Date: Tue, 22 Jul 2025 17:32:05 +0200
+Message-ID: <20250722153205.4626-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250722144853.21022-1-phil@nwl.cc>
-References: <20250722144853.21022-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -67,62 +64,28 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit 61e85e3192dea ("iptables-nft: allow removal of empty
-builtin chains"), the command may be applied to "builtin" chains as
-well, so the output is basically valid.
+If called without ip_set.ko loaded, the unconditional 'rmmod ip_set' at
+startup will fail and the previous 'set -e' makes that fatal.
 
-Apart from that, since kernel commit a1050dd07168 ("netfilter:
-nf_tables: Reintroduce shortened deletion notifications") the base chain
-deletion notification does not contain NFTNL_CHAIN_PRIO (actually:
-NFTA_HOOK_PRIORITY) attribute anymore so this implicitly fixes for
-changed kernel behaviour.
-
+Fixes: ed47b815a0d2c ("tests: add namespace test and take into account delayed set removal at module remove")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- .../tests/shell/testcases/nft-only/0012-xtables-monitor_0 | 8 ++++----
- iptables/xtables-monitor.c                                | 4 +++-
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ tests/setlist_resize.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0 b/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-index c49b7ccddeb35..10d9547ae8f44 100755
---- a/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-+++ b/iptables/tests/shell/testcases/nft-only/0012-xtables-monitor_0
-@@ -124,16 +124,16 @@ monitorcheck ebtables -F FORWARD
- EXP=" EVENT: arptables -t filter -D INPUT -j ACCEPT"
- monitorcheck arptables -F INPUT
+diff --git a/tests/setlist_resize.sh b/tests/setlist_resize.sh
+index acb33e3ba0f08..db347ca065171 100755
+--- a/tests/setlist_resize.sh
++++ b/tests/setlist_resize.sh
+@@ -20,7 +20,7 @@ while [ $n -le 9 ]; do
+     	n=10
+     fi
+ done
+-rmmod ip_set >/dev/null 2>&1
++rmmod ip_set >/dev/null 2>&1 || :
  
--EXP=" EVENT: nft: DEL chain: ip filter FORWARD use 0 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1"
-+EXP=" EVENT: iptables -t filter -X FORWARD"
- monitorcheck iptables -X FORWARD
- 
--EXP=" EVENT: nft: DEL chain: ip6 filter FORWARD use 0 type filter hook forward prio 0 policy accept packets 0 bytes 0 flags 1"
-+EXP=" EVENT: ip6tables -t filter -X FORWARD"
- monitorcheck ip6tables -X FORWARD
- 
--EXP=" EVENT: nft: DEL chain: bridge filter FORWARD use 0 type filter hook forward prio -200 policy accept packets 0 bytes 0 flags 1"
-+EXP=" EVENT: ebtables -t filter -X FORWARD"
- monitorcheck ebtables -X FORWARD
- 
--EXP=" EVENT: nft: DEL chain: arp filter INPUT use 0 type filter hook input prio 0 policy accept packets 0 bytes 0 flags 1"
-+EXP=" EVENT: arptables -t filter -X INPUT"
- monitorcheck arptables -X INPUT
- 
- exit $rc
-diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
-index 9561bd177dee4..950aac17a2411 100644
---- a/iptables/xtables-monitor.c
-+++ b/iptables/xtables-monitor.c
-@@ -157,7 +157,9 @@ static int chain_cb(const struct nlmsghdr *nlh, void *data)
- 
- 	printf(" EVENT: ");
- 
--	if (nftnl_chain_is_set(c, NFTNL_CHAIN_PRIO) || !family_cmd(family)) {
-+	if (!family_cmd(family) ||
-+	    (type == NFT_MSG_NEWCHAIN &&
-+	     nftnl_chain_is_set(c, NFTNL_CHAIN_PRIO))) {
- 		nftnl_chain_snprintf(buf, sizeof(buf),
- 				     c, NFTNL_OUTPUT_DEFAULT, 0);
- 		printf("nft: %s chain: %s\n",
+ create() {
+     n=$1
 -- 
 2.49.0
 
