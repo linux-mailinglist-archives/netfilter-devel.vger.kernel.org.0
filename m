@@ -1,63 +1,63 @@
-Return-Path: <netfilter-devel+bounces-8040-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8042-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D424DB12279
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 19:04:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9B0B1227E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 19:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEBF8AA3E66
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 17:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F9B4AA5578
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 17:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9393C2EE5F1;
-	Fri, 25 Jul 2025 17:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32452EF9C7;
+	Fri, 25 Jul 2025 17:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="sGW3MN8P";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="cdlLzUE+"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="CwrVNQOD";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="OT5wgzGu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6F07080D;
-	Fri, 25 Jul 2025 17:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E942EF9A2;
+	Fri, 25 Jul 2025 17:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753463034; cv=none; b=a8Qs8OZDEjvFJ3+TOacqDistuzahbBdzBb8ehLGQh1A/3D5swgjPlU/kC64jUeQon7rbXyAM6847Uo2GR1oq5phZ7ccW27sl4qctYIjoqEDr4MmRuOoN7lMmf+lYs2346DI+9rdSY09g4c/pk85yMVGTqPNdNpVfqSJ7EbxDzVs=
+	t=1753463036; cv=none; b=dN8sQOUF93P1Z1iC5LV1PBeMY3Y8W9XCrIXW+QGPivwUnnRbYgevK+KDMYjmRgK56RTFyR22VRYSg22KrMEGhmsGR/6br5uRRN91hXTOVh4ALY8ktYt6HuTUcAAc6yhyv9GLldZWquSzrV7ezKgq1+Y0lygVqaBwGy3k6cWCXNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753463034; c=relaxed/simple;
-	bh=yos74KlocB92KBhlCyy03oB79c7lZtaAoprSB84y0Jk=;
+	s=arc-20240116; t=1753463036; c=relaxed/simple;
+	bh=Ms1RC8rHM1QXjTyFECBwd9yL+I6Y/lkZjPtzkPVjj6k=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pteNulDfzoor30fPMHrjf1DL2KfJLxS5l0cvN5mEZo0pUUREBVxoFCHovF9jB4pDFyKcrID4Y4pnESdfTdHvQ5MnzZQAtOLzsaRyFjk7JScO2oJuhPGh8vnAVTNh05IHsfypjCDz7o5+TwX8vkCN1XhfMEATCJwei0dxSU2MEuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=sGW3MN8P; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=cdlLzUE+; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=i08l9oX9HZ/ptYHJmflCBXRAA4X62txtufxUeac7VU/3ODqc9D2UOPwPQDhOYvxUS/sOxk8wpa0A8yUJsI+DpKZKRV++CrAsv9bt4nQXidgNUuY5LIOODeEjr+MbmyzuieX1Uq8Uzw3X924WhTgMXHi/yKCm+5JieKkys8zQKHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=CwrVNQOD; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=OT5wgzGu; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 94B5F6027B; Fri, 25 Jul 2025 19:03:50 +0200 (CEST)
+	id 9E3E96027E; Fri, 25 Jul 2025 19:03:53 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1753463030;
-	bh=sXHNZ0zIdanGJ08glHzciIcTqLULlIZAA2HCHWm+mwo=;
+	s=2025; t=1753463033;
+	bh=5zJ892qt1l0+0uxWQTmVO8QzsG5iP93tYVgZ528UBZg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sGW3MN8P/QidertFQEYgC3yuH0ySCFuNIj6NAm8dY8gaVzuloIOaF0h4OcPoRKNga
-	 cXyqqXuyHfG8etsxsNZjFfvaebxD5m0iUNi/jMfXv4ZtxsN7Ag2bhF+lbdfjgcoiQS
-	 SmqZEVK9pHVIYUDXcucpZj40l/RUFnuewxUTxXrqeohbQfEstAME9d9FFng9lENQZ6
-	 Ctya0IjK7zD1jn8b8l/stx5vwsYTsmZsCsLrF22ZSFqz4LLhZTH4kLLPKBjD1DbGXt
-	 QyKM3P6uwaMRA/PsBwUJd8mp8vVPpfhaw3cFZBBDRZWA8zQVckSQzvARNyWNz6oUE2
-	 lvT45N7EglnZw==
+	b=CwrVNQODNStqJ5xCkMkBKmS0/sXt6uyYQuahNHUjPu1yO7HhZgb62leGx88XolpWq
+	 m5laPN3jwdB64oeAkG2vZKj1Mc48BVFHV7EYfXLQBEoD0YQh6qeyG6T30scCUmbUz5
+	 yBAutwW5noohm1h0CERpwSSOez2+Y2hdQ8M76iDEp+8AiiYmh+N7PZUralJ8sFbAmf
+	 pYB2XYkWZdr43lOnBgAW1m1kf/GquwU9+Qkxu+tSHDmvY1AiistwhGaR07Mo7aO7zj
+	 exjwbcoSpnZuHwNrS8K9j11hIYFS2Xvol+YPqq77lK7XG6ZT87fM6ROBgwpI6ySc91
+	 Oz9i01sqUfwEQ==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 41C656026F;
-	Fri, 25 Jul 2025 19:03:48 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 5201560279;
+	Fri, 25 Jul 2025 19:03:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1753463029;
-	bh=sXHNZ0zIdanGJ08glHzciIcTqLULlIZAA2HCHWm+mwo=;
+	s=2025; t=1753463031;
+	bh=5zJ892qt1l0+0uxWQTmVO8QzsG5iP93tYVgZ528UBZg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cdlLzUE+tk9G5cbY6YHtlElCWkTaQtTNj/MsaiPxhX5xu76n9IoVWoVUbEkfTjDrc
-	 3RvbAeCOj1VeFsc4p9s+/yifgHtEUo5M0mfduqHEGC8p2cRRptjd8NgOecyyjHEIlO
-	 XGgFu5YizQNv3xr1HyEWjYix9i+iVOb8sFQb0GAKM2MnVzlid9u+VrouQZwUO4/cbj
-	 GI6v8YnLdzo/Mcd50Tz0cbCFdAhHO/aH+0TDzq7/CVFcyehNEjbRfLPsbqiXig0Whc
-	 0GwY8S661N+AaL0GOIAeJRVoE9eahCAIB+xNY5bOZcWU/LZPmFwGcPFH8HkflqfI5j
-	 xPN/D8cTlrixg==
+	b=OT5wgzGuOoJd0lQ4kuQuK9fu38iascjDfOMfrFzTW9PV9wuhRFhwJ1RnH9jb/m7uC
+	 +SSSkUGKLKvbGbKIQYa/RjrY2cjxEsaHfTMIqdWoq3KgAh2JZ1uTJ0zdZLMTv6xU0P
+	 Lf6JOCf4UjpsOgmJXJVu0c90tv1aFNRd6ngUWDCjnyyea4F/I19UjrHc4yjfvELzks
+	 sLJWXxKRlS6tqR0d1996biNOG34XKvq/0AiOIgAC841/Izhk2vmyHeVXfl7xVN/LiN
+	 +M+y8XKyR0mgB9bobYDpSlciC1cCafU+1MMoelAHv7LdCpAnKXR9/4XVsWouTursQg
+	 EnYAJQ5H5SSzg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -67,9 +67,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 01/19] netfilter: conntrack: table full detailed log
-Date: Fri, 25 Jul 2025 19:03:22 +0200
-Message-Id: <20250725170340.21327-2-pablo@netfilter.org>
+Subject: [PATCH net-next 02/19] netfilter: load nf_log_syslog on enabling nf_conntrack_log_invalid
+Date: Fri, 25 Jul 2025 19:03:23 +0200
+Message-Id: <20250725170340.21327-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250725170340.21327-1-pablo@netfilter.org>
 References: <20250725170340.21327-1-pablo@netfilter.org>
@@ -81,34 +81,126 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: lvxiafei <lvxiafei@sensetime.com>
+From: Lance Yang <lance.yang@linux.dev>
 
-Add the netns field in the "nf_conntrack: table full, dropping packet"
-log to help locate the specific netns when the table is full.
+When no logger is registered, nf_conntrack_log_invalid fails to log invalid
+packets, leaving users unaware of actual invalid traffic. Improve this by
+loading nf_log_syslog, similar to how 'iptables -I FORWARD 1 -m conntrack
+--ctstate INVALID -j LOG' triggers it.
 
-Signed-off-by: lvxiafei <lvxiafei@sensetime.com>
+Suggested-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Zi Li <zi.li@linux.dev>
+Signed-off-by: Lance Yang <lance.yang@linux.dev>
+Acked-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/net/netfilter/nf_log.h          |  3 +++
+ net/netfilter/nf_conntrack_standalone.c | 26 ++++++++++++++++++++++++-
+ net/netfilter/nf_log.c                  | 26 +++++++++++++++++++++++++
+ 3 files changed, 54 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 2a90945aef89..fbd901b3b7ce 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1673,7 +1673,11 @@ __nf_conntrack_alloc(struct net *net,
- 			if (!conntrack_gc_work.early_drop)
- 				conntrack_gc_work.early_drop = true;
- 			atomic_dec(&cnet->count);
--			net_warn_ratelimited("nf_conntrack: table full, dropping packet\n");
-+			if (net == &init_net)
-+				net_warn_ratelimited("nf_conntrack: table full, dropping packet\n");
-+			else
-+				net_warn_ratelimited("nf_conntrack: table full in netns %u, dropping packet\n",
-+						     net->ns.inum);
- 			return ERR_PTR(-ENOMEM);
- 		}
- 	}
+diff --git a/include/net/netfilter/nf_log.h b/include/net/netfilter/nf_log.h
+index e55eedc84ed7..00506792a06d 100644
+--- a/include/net/netfilter/nf_log.h
++++ b/include/net/netfilter/nf_log.h
+@@ -59,6 +59,9 @@ extern int sysctl_nf_log_all_netns;
+ int nf_log_register(u_int8_t pf, struct nf_logger *logger);
+ void nf_log_unregister(struct nf_logger *logger);
+ 
++/* Check if any logger is registered for a given protocol family. */
++bool nf_log_is_registered(u_int8_t pf);
++
+ int nf_log_set(struct net *net, u_int8_t pf, const struct nf_logger *logger);
+ void nf_log_unset(struct net *net, const struct nf_logger *logger);
+ 
+diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+index 829f60496008..9b8b10a85233 100644
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -14,6 +14,7 @@
+ #include <linux/sysctl.h>
+ #endif
+ 
++#include <net/netfilter/nf_log.h>
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
+ #include <net/netfilter/nf_conntrack_l4proto.h>
+@@ -555,6 +556,29 @@ nf_conntrack_hash_sysctl(const struct ctl_table *table, int write,
+ 	return ret;
+ }
+ 
++static int
++nf_conntrack_log_invalid_sysctl(const struct ctl_table *table, int write,
++				void *buffer, size_t *lenp, loff_t *ppos)
++{
++	int ret, i;
++
++	ret = proc_dou8vec_minmax(table, write, buffer, lenp, ppos);
++	if (ret < 0 || !write)
++		return ret;
++
++	if (*(u8 *)table->data == 0)
++		return ret;
++
++	/* Load nf_log_syslog only if no logger is currently registered */
++	for (i = 0; i < NFPROTO_NUMPROTO; i++) {
++		if (nf_log_is_registered(i))
++			return ret;
++	}
++	request_module("%s", "nf_log_syslog");
++
++	return ret;
++}
++
+ static struct ctl_table_header *nf_ct_netfilter_header;
+ 
+ enum nf_ct_sysctl_index {
+@@ -651,7 +675,7 @@ static struct ctl_table nf_ct_sysctl_table[] = {
+ 		.data		= &init_net.ct.sysctl_log_invalid,
+ 		.maxlen		= sizeof(u8),
+ 		.mode		= 0644,
+-		.proc_handler	= proc_dou8vec_minmax,
++		.proc_handler	= nf_conntrack_log_invalid_sysctl,
+ 	},
+ 	[NF_SYSCTL_CT_EXPECT_MAX] = {
+ 		.procname	= "nf_conntrack_expect_max",
+diff --git a/net/netfilter/nf_log.c b/net/netfilter/nf_log.c
+index 6dd0de33eebd..74cef8bf554c 100644
+--- a/net/netfilter/nf_log.c
++++ b/net/netfilter/nf_log.c
+@@ -125,6 +125,32 @@ void nf_log_unregister(struct nf_logger *logger)
+ }
+ EXPORT_SYMBOL(nf_log_unregister);
+ 
++/**
++ * nf_log_is_registered - Check if any logger is registered for a given
++ * protocol family.
++ *
++ * @pf: Protocol family
++ *
++ * Returns: true if at least one logger is active for @pf, false otherwise.
++ */
++bool nf_log_is_registered(u_int8_t pf)
++{
++	int i;
++
++	if (pf >= NFPROTO_NUMPROTO) {
++		WARN_ON_ONCE(1);
++		return false;
++	}
++
++	for (i = 0; i < NF_LOG_TYPE_MAX; i++) {
++		if (rcu_access_pointer(loggers[pf][i]))
++			return true;
++	}
++
++	return false;
++}
++EXPORT_SYMBOL(nf_log_is_registered);
++
+ int nf_log_bind_pf(struct net *net, u_int8_t pf,
+ 		   const struct nf_logger *logger)
+ {
 -- 
 2.30.2
 
