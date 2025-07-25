@@ -1,63 +1,63 @@
-Return-Path: <netfilter-devel+bounces-8043-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8045-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35645B12281
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 19:04:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2560B12289
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 19:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB2CB1884FDE
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 17:04:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0886AAC541E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Jul 2025 17:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B712EF646;
-	Fri, 25 Jul 2025 17:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F309C2EFDB0;
+	Fri, 25 Jul 2025 17:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="R9e2Ap9/";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="W5J8t+fB"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="V2DzIfos";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="jFR18wSY"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411772EF9C2;
-	Fri, 25 Jul 2025 17:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2D32EFD85;
+	Fri, 25 Jul 2025 17:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753463038; cv=none; b=Pvhwsk94F0XEqxj5Oqgt8ivIssbC7AaUWvC0bYgeZ2mCKIcCLyubaV4o9jCg/HfRkUolJGSHPOmZGkwygYSsbMCP4XQv85U2IylCRizaL4v0z9AE0EIxiE73fjnVJNE7zisPNuzx60Wu36ml/zVpgfCJNILp9HY5Mj1Bo+e2oGo=
+	t=1753463040; cv=none; b=qeaDG/xzpW8Sbk+fjNgr9RKcPR0trrMo2mTPC2eXQP3PH89G6e27sPaPcSr+mV6F8y3WcMplt4jE4IuBjxzR96d2jGr7PLgPN5ReyMRHvhIEoCoSZWg6fkniJcb0QPuFBnC/tNKJ2C+nZPkvqjowNbjWT1oJq2XY0FlCksiOHmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753463038; c=relaxed/simple;
-	bh=ZUtfGbXNT3Z/Jl+Doqb5fLd3GRcC3PlUEBhMRbHbBqo=;
+	s=arc-20240116; t=1753463040; c=relaxed/simple;
+	bh=5OHuMhNswoKCtye/NbqGUSYTfTk+LVATZHTa0K55btU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sd9oXSAG6eNBEN6arSGp/sUSaS3a1xKlb5a+7UQwr3oG64YEj8GZKUWjTCLNxxbi/QnxvGWTyeYXJxkkxFnMNQpiw7QGwvbwM0VpItzEW0ljG2rgL6lduD8T9qLAkiSpC3pbJDJ9GJBMZRaSQ0udGUOAKnRgkoyh0oqUAOG26KA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=R9e2Ap9/; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=W5J8t+fB; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=c67GWHASAWmip3e9HP1QWFyxFuvumXLfwyb3XOVr8s9s2Bl7Yia3pV3AdV99Hj0fODx2jw8G1FVFVpzwEK7ARu8k1IJmfTaHNDWQLIRN2lpSWlitHlMP496ZFilFMxBucAz71BiY0R2CpKU/1MleESxdZo1Szj8TZ6EQHwmQiPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=V2DzIfos; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=jFR18wSY; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id B5F436027B; Fri, 25 Jul 2025 19:03:54 +0200 (CEST)
+	id 5B6406026E; Fri, 25 Jul 2025 19:03:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1753463034;
-	bh=HsMCTgfneNwflWl1j0F7tqAw5vJdRrvG8x25QGJXqHI=;
+	s=2025; t=1753463036;
+	bh=cRYEVElLy/ry9oicID7W1+YXjtuM45ZIhRedTE1oMQg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R9e2Ap9/krz6jMAkRMVzPLG8guqvVZhaaayQFs96HXmvv7Ps2MC5i4Xj1AbBaDmqz
-	 CEeUR97jsNbmEN3VtHcR2iYhsKwLJzIbTSLqannJRKyCHlSOHyRXA42x72n5jq3PSs
-	 V6knv+YmC09Q+wG71V8tzFaRJGCz/9PV3Jj0QOHJ/iGAqnrK+IME8RjPs5/TkH15VF
-	 Jt/dcpJFZqjRW/nOx8+1UpS194vL1/gCg5STO4+EpmFTiFqfV9hgoXpJJOJmzwE5Z+
-	 PSuhuGxwYMFE4DQjGuNUlHwueDltdUZCrIK/Mpan7EsfNOiwO0oWrEttCtXY8Pf7Uv
-	 Hqcvzy9brDSxA==
+	b=V2DzIfosLESGt/6I1aqjdbOgJHGoASBSprTGGCkD7tUb/GY28+sPfdeAMW4jgcLGX
+	 UqzXQVRsUg5aNQoe0uD4XiUpNgfjRI0xbj6okCSFRild/Dhyz/BjdGsAL5KIC7g7B6
+	 i6hhJOop6M/BzqaZI5zBpXrPES4EwbdEOHLWFCOskJ58m6zqs0mGdiLoftv50xUS2h
+	 6ddk9B39P7XsI3++MyyY9iHaGTMSVfi+r7km/YmXPAVBeDxrk1xg+/3adUdMhxpODI
+	 JLO07iJkCQq8wgwEwDdjd8xw5AfafkMG7BDzW1dFv8vt0nZx4P+IQcU/JwIG65a0nT
+	 hE4JTkfyFajGQ==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 2B2596027C;
-	Fri, 25 Jul 2025 19:03:52 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id DFA1160279;
+	Fri, 25 Jul 2025 19:03:53 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1753463033;
-	bh=HsMCTgfneNwflWl1j0F7tqAw5vJdRrvG8x25QGJXqHI=;
+	s=2025; t=1753463035;
+	bh=cRYEVElLy/ry9oicID7W1+YXjtuM45ZIhRedTE1oMQg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W5J8t+fBHqLqMonL+U7HTbsKSq6wQy6drP7kamS0ffEZoL2ywnRPcMswxyyLxNu96
-	 c/vXnfdotyiL0qRlCCuYPjGOw3XhGhnMGFZMquzCxaf5KYKrBXeggZ2vsHWLnzyVXq
-	 1OlVv2NGTjHnhRAtyUlPIsajN95jsxXNVbIyHf7iblfO32i70FZoWiowVMpuXW+xEk
-	 D/1CTjBJZOC2FoFBYQyu9fQ9HuBMI9y5FIMY3bJRBJImifMqTAZfk28t/aCLl+pHCK
-	 uPectrpsWyjrdJzwD8RrrnPuG+YeWL4nM9vQteteWXFYaps1OaFhuy/O3EE7lyh207
-	 2d+6lfCcfQhHg==
+	b=jFR18wSYQ7Blrf1vQ/UQau9vuCq//etsdaKPS/mA/81nBQlcAeXZf3PlGnxQUmMf4
+	 hIwGHX00xKZXyqOBkKrqMKE9XiyxNDRXZPdEHTxKvvT+ZKgk4ofOWoXoC96NRnRzo5
+	 1F0v8XWVfiCbM+UIbjsMLcBYU6GwY3m2H8vs5NGjODaNIObc4WlWgZpfH0zqGv5h1F
+	 KepwS5hmZg0zht7NHwqfF+s8MMJ6NquQQeMT6u3YUn56nxf3BbRnboVyi7sdp1XWOH
+	 0EUKijcTKzCGwh9s/uvaPfgaCSMGly2mQOgJN+OnIpB8p/b0NwHuOAFoTeesFg4QF0
+	 sSfmwVj60kw0w==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -67,9 +67,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 03/19] netfilter: x_tables: Remove unused functions xt_{in|out}name()
-Date: Fri, 25 Jul 2025 19:03:24 +0200
-Message-Id: <20250725170340.21327-4-pablo@netfilter.org>
+Subject: [PATCH net-next 04/19] netfilter: nf_tables: Remove unused nft_reduce_is_readonly()
+Date: Fri, 25 Jul 2025 19:03:25 +0200
+Message-Id: <20250725170340.21327-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250725170340.21327-1-pablo@netfilter.org>
 References: <20250725170340.21327-1-pablo@netfilter.org>
@@ -83,41 +83,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Yue Haibing <yuehaibing@huawei.com>
 
-Since commit 2173c519d5e9 ("audit: normalize NETFILTER_PKT")
-these are unused, so can be removed.
+Since commit 9e539c5b6d9c ("netfilter: nf_tables: disable expression
+reduction infra") this is unused.
 
 Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/linux/netfilter/x_tables.h | 10 ----------
- 1 file changed, 10 deletions(-)
+ include/net/netfilter/nf_tables.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter/x_tables.h
-index f39f688d7285..77c778d84d4c 100644
---- a/include/linux/netfilter/x_tables.h
-+++ b/include/linux/netfilter/x_tables.h
-@@ -51,21 +51,11 @@ static inline struct net_device *xt_in(const struct xt_action_param *par)
- 	return par->state->in;
- }
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 5e49619ae49c..b092e57d3c75 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1939,11 +1939,6 @@ static inline u64 nft_net_tstamp(const struct net *net)
+ #define __NFT_REDUCE_READONLY	1UL
+ #define NFT_REDUCE_READONLY	(void *)__NFT_REDUCE_READONLY
  
--static inline const char *xt_inname(const struct xt_action_param *par)
+-static inline bool nft_reduce_is_readonly(const struct nft_expr *expr)
 -{
--	return par->state->in->name;
+-	return expr->ops->reduce == NFT_REDUCE_READONLY;
 -}
 -
- static inline struct net_device *xt_out(const struct xt_action_param *par)
- {
- 	return par->state->out;
- }
- 
--static inline const char *xt_outname(const struct xt_action_param *par)
--{
--	return par->state->out->name;
--}
--
- static inline unsigned int xt_hooknum(const struct xt_action_param *par)
- {
- 	return par->state->hook;
+ void nft_reg_track_update(struct nft_regs_track *track,
+ 			  const struct nft_expr *expr, u8 dreg, u8 len);
+ void nft_reg_track_cancel(struct nft_regs_track *track, u8 dreg, u8 len);
 -- 
 2.30.2
 
