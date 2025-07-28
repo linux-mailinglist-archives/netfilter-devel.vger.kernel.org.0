@@ -1,353 +1,119 @@
-Return-Path: <netfilter-devel+bounces-8073-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8075-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 959E4B13387
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Jul 2025 06:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 456C4B13398
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Jul 2025 06:14:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03CF23B64BD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Jul 2025 04:02:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CA413B83DE
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Jul 2025 04:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7F17346F;
-	Mon, 28 Jul 2025 04:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7B6217719;
+	Mon, 28 Jul 2025 04:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cobyx+gC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R244QhZT"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C901FC3
-	for <netfilter-devel@vger.kernel.org>; Mon, 28 Jul 2025 04:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E9E1DFE26
+	for <netfilter-devel@vger.kernel.org>; Mon, 28 Jul 2025 04:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753675401; cv=none; b=fbwUumuJb1SmCSnaj5PFazysNT+21YMFiKGLKc9YN6y7WmhUBHVxAL2q2bBES8bBOTvkKCzRlbLaoEcCSx9b9/Cj9i/VR6Or/ZdW9n/kE8/HIvqXDhwtzGfNIeg07xXbS62eBDWF20oqlyv+vi02IbKOnDVu/cSGUOuHohN+xss=
+	t=1753676017; cv=none; b=dSGiAH4McXE301bOuR7k0tdEcO1bNnbasmWSBbqN9FWAKZY1mmmWx/sONAx/xR9aO1oTiJtanuAVuowgcjCtSGTBYcnnlOngPgnQmXy0erCu5dVX063xTGGaZzYJhDYUsL2k7SlgWsF056bVrbZQLZI8zOd8n/L8zs6a6ZvGMBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753675401; c=relaxed/simple;
-	bh=xl/SMmEGa418BYOau1Tr9MSwEcddUY/WPrXMLdW5z70=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ICpWK9Vh8egQr1gIDKQJptTbvQckX/1mnMsQPyapAwzkom3hO5D+sqYt4iCt5AfuX/xtHrDZ9wrZRLB3gEEfFN3gpcRAsfMWI+v2ks6fHAkJUEOV6s5IZ6ktn2LCu8amg/gfLTiaDx5ppQYWBjt6PLPaSgqv71f6R6J26z7ATB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cobyx+gC; arc=none smtp.client-ip=209.85.219.50
+	s=arc-20240116; t=1753676017; c=relaxed/simple;
+	bh=fNfU/keZ1onWD+VqeVOo7T2p/U2G+cVeyiWbFF4A9fI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=okAMF27NSZe75SEEE9U0wO7XhdN1qb6JvBqYR2+84v/rA5a/6MKaHuER3V+mDDMC3nMBYWM84rXaH6y8V1lfsiPu4aGsINAtE6k5n6P1/GRGDdVprTnjNME90/Idq6eZKrJtAFu6dbmgZMERltIGT6EkGTeIg7srMO9y2uzwIAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R244QhZT; arc=none smtp.client-ip=209.85.160.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-70739d1f07bso18818606d6.2
-        for <netfilter-devel@vger.kernel.org>; Sun, 27 Jul 2025 21:03:18 -0700 (PDT)
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ab6b3e8386so42508681cf.3
+        for <netfilter-devel@vger.kernel.org>; Sun, 27 Jul 2025 21:13:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753675398; x=1754280198; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1nqlazoG5veS25rjVG1ZtsSkyaxRru2Xwpri+y9THoU=;
-        b=Cobyx+gCmP+/490ngZpyO6jOzGHIl/ihqKvdMqfMZ2PXHAU3yN0pQW/3/ND4fMLa5V
-         RuJpSu7L0QMe6ngKK1ERNDC/vxh/t6puTo32S9wMkBgLypu9xqveM+1g5OosZNjxrDGz
-         pO8E941UZjNiDoJ/15UaTfzb/IeYfW0Sl5jNU38NMiMPXTRjaxtU/4ruCm8VHAryI/Ln
-         0P9ABG8UnG9wXC4pAA2YkMlVS+bpWuGhr8RwlYH9SRLsanaNmFftK8Npgn32yFE/zkpN
-         5qBif+3xgt6r0GiLCgDh6iWXGFRvMswas7GJCJ6aLlZ8VPB/Jw4QstrwtUx+yHBHZwNq
-         Z/uw==
+        d=gmail.com; s=20230601; t=1753676014; x=1754280814; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jTAJQkchRGvmmjR4kkge95z0weV8RYa+PjNBS+woa5k=;
+        b=R244QhZT/fIuntYm1ixPTtHGWnACfu0jdMTzbpVcgBye9xfxACXJ9GMn3m4iEJ05nF
+         cZVWl9vgTTfzKnUZl7XoBK9EtGE0xWiM5NjhdqqPKxDuFYzQ/lTIr/Qi01F63meWL8B/
+         0OVI451LWZ6cqSfRbZOYH6QtQ5KHqGa3qH4jOYJWq+xK0lqXh2zbqbLAydNVqc/Cehfr
+         bPFgdWvI6Fi7BcBu5jm3TCpkecTYCcdqnkzOt+8KoN6ViXlQQCV9TVJ0XwHgwzaDbswp
+         2cnvhFiVWY8iiplA15DulSKCNXcs3LjnBWQ3FDeN8R5/dOCXCdBZau02qKls/LQ4qTs7
+         H1LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753675398; x=1754280198;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1nqlazoG5veS25rjVG1ZtsSkyaxRru2Xwpri+y9THoU=;
-        b=RDg6fXRGnCCa3XfHAM+0Fl95Yq39gVDN89GfdYXdfZQTmQPfCuud7rpcDcI6ABryaO
-         96fFFQVFjsR+Uro1iQh8OYwi+L6pBvCc9DWLV44UJgmhH9PA9IvAtNs1eTuv+k2SZI7E
-         /ztm+MwrpbaQRvO1KaYjliezVo7heL+pTb3wOeahh/Hxc5posNcK3O/2uduFW6QugDLG
-         kBRzZfLtm7oMhEpM5g+BRXeH1xFsWu5BGGc7I3XYs6spoQUCaqkwTdoXOmY5rhXVRU5B
-         0pdGqUc2hOGmm0bNtSb7WQOG3FjuWRrogHxO7vezWd2xmzA5EfYKNegvZYHx+t69/Rfk
-         PoiA==
-X-Gm-Message-State: AOJu0YwrvkVsZAZXl9hReGSDt0LqzmPgCz2DecNEfTRsy2h4tSsN6/Kk
-	Cg4XbL4VIWkH1q1Bbxmrys3zlgZEfoYIEz+cAPkoN2hZq8lJ6EnZ5P8WpFxV4A==
-X-Gm-Gg: ASbGncuyYDgMA61gv5sejNWh//smLEwLSvZmvPdirhCTw4BuRfuiQEtSm02lTtPuBMS
-	nvRvkym6cDbDz7fDoC5Lna41SGMvU5xLoPWPTCHimMT48NpiImvNvnLeXno4dqB4W2Ksb36ORez
-	PeFLucluzveT8zEsNyBQeDWqytkFUndnb50CyP2VbnjttiTPFM8H0XnYpvMfn020G/knYDVRJO+
-	q29iT75Kq7BKG5vs7hWR0wcCFWm0GHbmSaFnnRw67AT0KdTkv8DnC+93SVHapMnR8KV838p9c0u
-	xUJQ5KA1+h8B/zJOdjlHmK5oMRgpmW0XtjfpxIw/BzU5iI4ykpd21Uutc/19eNOA2bXtas2Iocl
-	Jwzxsrc7YFwhJQojO+5XciNE5evFQU58gJ4gJxOfkXFITvoQR+wZhsGvbKfQAoWoH+HC5wj3r3T
-	fE7bk=
-X-Google-Smtp-Source: AGHT+IFmretLevjwoejNL5geART73wFiMuRPawqx+HRiRu26MifjQPvNjCikmwv7lSnr5Rydgdxdbg==
-X-Received: by 2002:ad4:5be9:0:b0:705:456:c4a0 with SMTP id 6a1803df08f44-707205be62cmr122246026d6.33.1753675397508;
-        Sun, 27 Jul 2025 21:03:17 -0700 (PDT)
-Received: from fedora.. (syn-075-188-033-214.res.spectrum.com. [75.188.33.214])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7074b52ddc7sm4928576d6.77.2025.07.27.21.03.16
+        d=1e100.net; s=20230601; t=1753676014; x=1754280814;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jTAJQkchRGvmmjR4kkge95z0weV8RYa+PjNBS+woa5k=;
+        b=sQ3fErAhbyX4PBIoZAPoUTULuwNgeWs0Krl23T0aHXT+oO34nOHXTh4/p27tTQ77QP
+         2THIpzSFnafKxJwqgomBx/zVsTT8wAf/0+OXn/Z61dnsiJD1glAnw9WA+Q6lPGVpBqZ+
+         zxT7eaU4GINLUXActUEMSGlO7PETawCoGv4Jz7vrn3DXXqBdvNJaf6P8j8BwAfAv3e5x
+         dDUF7/MMr7j30UpNnLvybkWa26JAkdn+yYShGSINcIwwV9TPJRU0YtR3A+sSyoEMLGQb
+         fw9sFm2CelJC+B1JzRM4hDDge/8JeCusJHsCgVKrJfOKI/JRi/b2Sa07QVGvufP742or
+         xkVw==
+X-Gm-Message-State: AOJu0YwucO7mA0dZ/DNJ6QfkONgowrQNR5N4ZL7INpShTPcN167I8GMy
+	DkDhgLGHOk0drIOEV1/e1myt/V54OFw/opEzWZcFdwnpxMGYmq3tyAEECpAl7A==
+X-Gm-Gg: ASbGnctVw9bpJ3hCapa7p4ugmfco5mjK9lx6eoLvBFe+BgyFGrPI2CLVTB6zzB8rCAd
+	OHrNxSI213vrEmjdj5sRzU042EZm4XtFhHw8XvFbSIeR4qzXUcm/15HrqnjC+NlG3ea9atdNeRN
+	xx7sSu6vqlKjBk+ZFq6RGPH8v/BjAKLt3SyFrUTFS5vp9wOrLbl5UlLGjEDFLiuRKbA0K0tiRV5
+	3m7pzBwviAOEM9BHvqwg5Y1LsMIIYyOFtYGdhQgTMWvvScWKH1Wiugs2zJvFSXIjKlFQY5HwF+Z
+	KKdMh1d7nFddmWI88H8Wzpm311XESfSMyg34FSQG4WvlMPVr2nxJ5xsLN5TZ9Kvk4EWb/5FLbe3
+	xPq+LBnwa6juXyRllEXQgSVn+G7aIRuv07fwYSw2ZolC+X2zRyPE2evS2vgmGbCcyqg==
+X-Google-Smtp-Source: AGHT+IGX7ZmgcvkY4jghbgNimJj9MR0ho1zEWajaW+DsEF4Pnctbrsv7eu5sLcokZrSOQ80GAvsv6g==
+X-Received: by 2002:ac8:58d2:0:b0:4ab:608f:6d0e with SMTP id d75a77b69052e-4ae8ef7569dmr118391951cf.22.1753676014319;
+        Sun, 27 Jul 2025 21:13:34 -0700 (PDT)
+Received: from fedora (syn-075-188-033-214.res.spectrum.com. [75.188.33.214])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ae98dcd600sm30875411cf.0.2025.07.27.21.13.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jul 2025 21:03:17 -0700 (PDT)
+        Sun, 27 Jul 2025 21:13:33 -0700 (PDT)
+Date: Mon, 28 Jul 2025 00:13:32 -0400
 From: Shaun Brady <brady.1345@gmail.com>
-To: netfilter-devel@vger.kernel.org
-Cc: ppwaskie@kernel.org,
-	fw@strlen.de,
-	pablo@netfilter.org
-Subject: [PATCH v6 2/2] Add test for nft_max_table_jumps_netns sysctl
-Date: Mon, 28 Jul 2025 00:03:15 -0400
-Message-ID: <20250728040315.1014454-2-brady.1345@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250728040315.1014454-1-brady.1345@gmail.com>
-References: <20250728040315.1014454-1-brady.1345@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, ppwaskie@kernel.org, fw@strlen.de
+Subject: Re: [PATCH v5 1/2] netfilter: nf_tables: Implement jump limit for
+ nft_table_validate
+Message-ID: <aIb47BFO38UZGGWI@fedora>
+References: <20250520030842.3072235-1-brady.1345@gmail.com>
+ <aH7zWPAVRV8_1ehk@calendula>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aH7zWPAVRV8_1ehk@calendula>
 
-Introduce test for recently added jump limit functionality.  Tests
-sysctl behavior with regard to netns, as well as calling user_ns.
+On Tue, Jul 22, 2025 at 04:11:36AM +0200, Pablo Neira Ayuso wrote:
+> 
+> This function is called from abort path too. I suspect total_jump_count
+> for this table will not be OK in such case. And this selftest does cover
+> many cases.
+> 
 
-Signed-off-by: Shaun Brady <brady.1345@gmail.com>
----
- .../testing/selftests/net/netfilter/Makefile  |   1 +
- .../netfilter/nft_max_table_jumps_netns.sh    | 227 ++++++++++++++++++
- 2 files changed, 228 insertions(+)
- create mode 100755 tools/testing/selftests/net/netfilter/nft_max_table_jumps_netns.sh
+Your suspicion was correct.  It took a bit to run over the abort path
+that used validation (I think it would just be userland sending abort),
+but it looked like it updated the total before the roll back.
 
-diff --git a/tools/testing/selftests/net/netfilter/Makefile b/tools/testing/selftests/net/netfilter/Makefile
-index a98ed892f55f..62193e0cd8ec 100644
---- a/tools/testing/selftests/net/netfilter/Makefile
-+++ b/tools/testing/selftests/net/netfilter/Makefile
-@@ -26,6 +26,7 @@ TEST_PROGS += nft_conntrack_helper.sh
- TEST_PROGS += nft_fib.sh
- TEST_PROGS += nft_flowtable.sh
- TEST_PROGS += nft_interface_stress.sh
-+TEST_PROGS += nft_max_table_jumps_netns.sh
- TEST_PROGS += nft_meta.sh
- TEST_PROGS += nft_nat.sh
- TEST_PROGS += nft_nat_zones.sh
-diff --git a/tools/testing/selftests/net/netfilter/nft_max_table_jumps_netns.sh b/tools/testing/selftests/net/netfilter/nft_max_table_jumps_netns.sh
-new file mode 100755
-index 000000000000..9dedd45f4fd2
---- /dev/null
-+++ b/tools/testing/selftests/net/netfilter/nft_max_table_jumps_netns.sh
-@@ -0,0 +1,227 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# A test script for nf_max_table_jumps_netns limit sysctl
-+#
-+source lib.sh
-+
-+DEFAULT_SYSCTL=65536
-+
-+user_owned_netns="a_user_owned_netns"
-+
-+cleanup() {
-+        ip netns del $user_owned_netns 2>/dev/null || true
-+}
-+
-+trap cleanup EXIT
-+
-+init_net_value=$(sysctl -n net.netfilter.nf_max_table_jumps_netns)
-+
-+# Check that init ns inits to default value
-+if [ "$init_net_value" -ne "$DEFAULT_SYSCTL" ];then
-+	echo "Fail: Does not init default value"
-+	exit 1
-+fi
-+
-+# Set to extremely small, demonstrate CAN exceed value
-+sysctl -w net.netfilter.nf_max_table_jumps_netns=32 2>&1 >/dev/null
-+new_value=$(sysctl -n net.netfilter.nf_max_table_jumps_netns)
-+if [ "$new_value" -ne "32" ];then
-+	echo "Fail: Set value not respected"
-+	exit 1
-+fi
-+
-+nft -f - <<EOF
-+table inet loop-test {
-+	chain test0 {
-+		type filter hook input priority filter; policy accept;
-+		jump test1
-+		jump test1
-+	}
-+
-+	chain test1 {
-+		jump test2
-+		jump test2
-+	}
-+
-+	chain test2 {
-+		jump test3
-+		tcp dport 8080 drop
-+		tcp dport 8080 drop
-+	}
-+
-+	chain test3 {
-+		jump test4
-+	}
-+
-+	chain test4 {
-+		jump test5
-+	}
-+
-+	chain test5 {
-+		jump test6
-+	}
-+
-+	chain test6 {
-+		jump test7
-+	}
-+
-+	chain test7 {
-+		jump test8
-+	}
-+
-+	chain test8 {
-+		jump test9
-+	}
-+
-+	chain test9 {
-+		jump test10
-+	}
-+
-+	chain test10 {
-+		jump test11
-+	}
-+
-+	chain test11 {
-+		jump test12
-+	}
-+
-+	chain test12 {
-+		jump test13
-+	}
-+
-+	chain test13 {
-+		jump test14
-+	}
-+
-+	chain test14 {
-+		jump test15
-+		jump test15
-+	}
-+
-+	chain test15 {
-+	}
-+}
-+EOF
-+
-+if [ $? -ne 0 ];then
-+	echo "Fail: limit not exceeded when expected"
-+	exit 1
-+fi
-+
-+nft flush ruleset
-+
-+# reset to default
-+sysctl -w net.netfilter.nf_max_table_jumps_netns=$DEFAULT_SYSCTL 2>&1 >/dev/null
-+
-+# Make init_user_ns owned netns, can change value, limit is applied
-+ip netns add $user_owned_netns
-+ip netns exec $user_owned_netns sysctl -qw net.netfilter.nf_max_table_jumps_netns=32 2>&1
-+if [ $? -ne 0 ];then
-+	echo "Fail: Can't change value in init_user_ns owned namespace"
-+	exit 1
-+fi
-+
-+ip netns exec $user_owned_netns \
-+nft -f - 2>&1 <<EOF
-+table inet loop-test {
-+	chain test0 {
-+		type filter hook input priority filter; policy accept;
-+		jump test1
-+		jump test1
-+	}
-+
-+	chain test1 {
-+		jump test2
-+		jump test2
-+	}
-+
-+	chain test2 {
-+		jump test3
-+		tcp dport 8080 drop
-+		tcp dport 8080 drop
-+	}
-+
-+	chain test3 {
-+		jump test4
-+	}
-+
-+	chain test4 {
-+		jump test5
-+	}
-+
-+	chain test5 {
-+		jump test6
-+	}
-+
-+	chain test6 {
-+		jump test7
-+	}
-+
-+	chain test7 {
-+		jump test8
-+	}
-+
-+	chain test8 {
-+		jump test9
-+	}
-+
-+	chain test9 {
-+		jump test10
-+	}
-+
-+	chain test10 {
-+		jump test11
-+	}
-+
-+	chain test11 {
-+		jump test12
-+	}
-+
-+	chain test12 {
-+		jump test13
-+	}
-+
-+	chain test13 {
-+		jump test14
-+	}
-+
-+	chain test14 {
-+		jump test15
-+		jump test15
-+	}
-+
-+	chain test15 {
-+	}
-+}
-+EOF
-+
-+if [ $? -eq 0 ];then
-+	echo "Fail: Limited incorrectly applied"
-+	exit 1
-+fi
-+ip netns del $user_owned_netns
-+
-+# Previously set value does not impact root namespace; check value from before
-+new_value=$(sysctl -n net.netfilter.nf_max_table_jumps_netns)
-+if [ "$new_value" -ne "$DEFAULT_SYSCTL" ];then
-+	echo "Fail: Non-init namespace altered init namespace"
-+	exit 1
-+fi
-+
-+# Make non-init_user_ns owned netns, can not change value
-+unshare -Un sysctl -w net.netfilter.nf_max_table_jumps_netns=1234 2>&1
-+if [ $? -ne 0 ];then
-+	echo "Fail: Error message incorrect when non-user-init"
-+	exit 1
-+fi
-+
-+# Double check user namespace can still see limit
-+new_value=(unshare -Un sysctl -n net.netfilter.nf_max_table_jumps_netns)
-+if [ "$new_value" -ne "$DEFAULT_SYSCTL" ];then
-+	echo "Fail: Unexpected failure when non-user-init"
-+	exit 1
-+fi
-+
-+
-+exit 0
--- 
-2.49.0
+My solution was to send in the abort state, and when
+action != NFNL_ABORT_VALIDATE, we don't update the totals.
 
+Another alternative would be to just run validate again at the end of
+the abort (after the rollback), but that seemed wrong to do the costly
+validate twice.
+
+See v6 patch (just sent) that also addresses your other feedback.
+
+
+
+Thanks!
+
+
+SB
 
