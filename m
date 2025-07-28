@@ -1,168 +1,513 @@
-Return-Path: <netfilter-devel+bounces-8072-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8074-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30787B12D65
-	for <lists+netfilter-devel@lfdr.de>; Sun, 27 Jul 2025 03:50:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661E4B13388
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Jul 2025 06:03:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D2B27A5A52
-	for <lists+netfilter-devel@lfdr.de>; Sun, 27 Jul 2025 01:48:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613B81896436
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Jul 2025 04:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9004E78F2F;
-	Sun, 27 Jul 2025 01:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6BF2066DE;
+	Mon, 28 Jul 2025 04:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ai6Hwucq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d3fjU+3T"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BCC1C6BE;
-	Sun, 27 Jul 2025 01:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7D61FC3
+	for <netfilter-devel@vger.kernel.org>; Mon, 28 Jul 2025 04:03:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753580993; cv=none; b=Pet2kOyL6wRCwOr5CQILPyrv5mhh+rxipE+5Rkte5kpSz6cEsedmSO+963BlfCxJ7kbcSfoa4g+q5gauXrHVzGvmObN1dayS7vApaxfWavYxp6O5sAzW2S11GUANhW+QgSlaOhSzkocD4ZmLuMT8GM73qDQW3aX2YXOwVlbDYkA=
+	t=1753675404; cv=none; b=IaPn2GiDytU6z+Egk1KkwOobA96f5wyIu+NHhekwuzhQq5vGFWCmnJfNsxb6/uyaqJxzyF6bIT20Iaq5/jVM1UEPeMZw2DSupaoGXE5G889j3VrtqmOKt4SIyAo0VCkYyCV+F+qxsYg/qQzIXpx20d3MaAIOKotwl1Zhe1ML+R8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753580993; c=relaxed/simple;
-	bh=48HdYVTlvbAhAr9UW9P0s9pgRZ85PBMkdsOGtT/jmfA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HMQAzEQ4J0t7UhPhnE7IChr/OBmONCWj2+gbM2aVWnYMnODUIGGxh1zvNJW+91oFnbXYKqMUStscegj8OzSKiqyeAG283adZGfBw+gHx5oFoUCA7VIrze9L8yqC1zHw3q7lkPgTxMvE494In+buHrqTTC4w1M5HfgJSpm8NY3sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ai6Hwucq; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753580991; x=1785116991;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=48HdYVTlvbAhAr9UW9P0s9pgRZ85PBMkdsOGtT/jmfA=;
-  b=Ai6HwucqwzPRbVwx/UnjJKxoeXXicef3zltVPdly0LRQH2GGhZ1coU+I
-   rBsMywAlFOp+XMM9bgvDboMTIUjtXgFgJM/eXkVUo8o4D1MmHn+eXhlyk
-   ifgalCAFkfLHXwrgYPcfoCwdX0sli9HOFWtlStYa4UcpD1kGHLbBHBrwR
-   qIwpF+HK7GuXPdUu+LZpW8/0HG3x+Nr3xJ3FJBpYoCFQQ7bAEMhoqoc1I
-   qI/+Goanyv5lNJ+1//drL5s7hqj/N6RZ2/PWfIhd8FKRG3hlZtP7xpOSt
-   dsEGwKJeAQ5agmDEriqWz83HY47wo+0yGB8DPXLTSAYoU2rA9gti8yus5
-   w==;
-X-CSE-ConnectionGUID: TU4jbamDSmOMw63N26XWLQ==
-X-CSE-MsgGUID: +HmzWrVaQDmOVB6NfnaGBg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11504"; a="55568465"
-X-IronPort-AV: E=Sophos;i="6.16,339,1744095600"; 
-   d="scan'208";a="55568465"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2025 18:49:50 -0700
-X-CSE-ConnectionGUID: qnxRWMUuTrKEzUDpyD74eA==
-X-CSE-MsgGUID: mRHTiYVsTpq65n1Qu/1AmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,339,1744095600"; 
-   d="scan'208";a="162385034"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 26 Jul 2025 18:49:46 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ufqWG-000MOB-0U;
-	Sun, 27 Jul 2025 01:49:44 +0000
-Date: Sun, 27 Jul 2025 09:49:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mahe Tardy <mahe.tardy@gmail.com>, alexei.starovoitov@gmail.com
-Cc: oe-kbuild-all@lists.linux.dev, andrii@kernel.org, ast@kernel.org,
-	bpf@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	mahe.tardy@gmail.com, martin.lau@linux.dev, fw@strlen.de,
-	netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: add bpf_icmp_send_unreach
- cgroup_skb kfunc
-Message-ID: <202507270940.kXGmRbg5-lkp@intel.com>
-References: <20250725185342.262067-4-mahe.tardy@gmail.com>
+	s=arc-20240116; t=1753675404; c=relaxed/simple;
+	bh=PUIcNDB1qX3aGUsbwZqybxjG3Nc0iVeTjgZfoZYgKD4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h2NFypcUJ4rG/KNUFOXI3z3L4j7tJsbnPDAK2OxOCn/UCcyzoy5k55IFKrBMoAwFJRDSDeW8m01rHWkBFa7YWIK7wtNJKfRtmNfw8e1MliDxb5PSlEID2jRDeGoBXYvllXymaPY25lVquRVLSA+YVnrI8SD3emEsr8FnUvUch5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d3fjU+3T; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-707365f4d47so13198016d6.1
+        for <netfilter-devel@vger.kernel.org>; Sun, 27 Jul 2025 21:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753675397; x=1754280197; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IpE879cxSJjpHX2CizwKYFHKYXy4MxYf15gl4bGHp+k=;
+        b=d3fjU+3TqAlG7WQdlMi93WybMsH04Lpf7GNtl6DG291bmb+45Cn6HUaEEDZz8P0/3E
+         gIl3qNcKicN99nIFAVz1rZairnmfDyrvF2BKxTR1bKU8AZ6U8HRcXACR5UO4Ips7661r
+         EBJrF+LBrTWboJAUgVq76r7GkiAH+ZgdqnbXyCbcjZ5JUrlwDaOlZ4z+rjBr8wwzc8DD
+         NqoRCrg9F5rzchD4gSe+5E5DW+G3AQSY3hyl48dPWaYrVe2r+zdFhZvOknCVxlEy3KL+
+         QDu8058CqPowGdn1SbaRfOrdq4y9vcZq1aYsP7sEFL2yW6LaF/Bi2foey83t+/o1Gn/E
+         BdKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753675397; x=1754280197;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IpE879cxSJjpHX2CizwKYFHKYXy4MxYf15gl4bGHp+k=;
+        b=GbNmO1TL3Dqu6PH55IW5fKwBsCWYrrqq/IC/E2tTdkpMcA4KwQo86f6lAWlaW6QOoV
+         lMaMakjdlGBi76tmsOh8Pm0/bdaK8W/suGnWy/a4HZV2SOZXQdrne0gjTl+R3tGK9IK7
+         o1KsvNJD/pvz6uPlMm8mlZ1j57CoKJjXwBIl8UapJILP/ydRvDDXoqjkX5QbUIvfxjx4
+         ZgjFPgInICr0ipUOqkGjPZMpMUMpqkgPFNKJHA9v9Rk3e2uafOuup92wnR+ZJyCAS579
+         TQFbOkskDe95rgYtubP9qOhBd1oIy1dyg+85Q43qZC52/ZkOZSZLjxqZQMNQqdEXVSdb
+         /1VQ==
+X-Gm-Message-State: AOJu0Yyl4QjnypvWhi48SVhPZr7iWJSFo7R1p1KqKVRxjXxEr3eTqj9H
+	hbw0U6DcAu90s1eYAaRUi6ZM+OsiBZoM4ffESL72myp6mRU4X10ra94LSIMqZw==
+X-Gm-Gg: ASbGnct1onCUTs/i7TxtHgW2ydSmHvuqAPOrCL2ok06z5J9ZQ0F44aY1V+7QFF7c8Ue
+	ll2dh/ObsaRNEC1SJnJeP1ofWg8PE9DTkYlmb6RSPm4FQKbBh7AYPuH/k3baoWP5bNHYSCrIYHG
+	1seAEzh8nJWBYCKWj9IaxQx4V4/d6LdRnggLZZDBbBPlHxxFOHZz9Z6EyUC2uWqglpdIXnJCNBQ
+	Ll0ZBNlA6pwMq+IB1eZXJ8bsn3qaa3F+DzqlFojVX+YPuXhMVVDFMFab2Iy4MnQ3stEiuQ4Ga8y
+	KkchOET0YC5h5mtRrMkr/Be3nKVVEZkF2hSz7LwI4zcNYmtR9r2CRHpD7v5uC2QWeJ42F3MoqrX
+	7Xx1oAn1BV6+OGef6i7qgGE523HWIPIZgJN4ZZUvgQfw5UqUJj3CHza1Z+1Y1fPO5jm0e
+X-Google-Smtp-Source: AGHT+IFPpNg8Nm4UlydS93LUAQOKgaL5RINyPZl47WqrTAuZbtLcccrSlVDk4neWqNscsTTJji5pHw==
+X-Received: by 2002:a05:6214:2624:b0:702:c038:af78 with SMTP id 6a1803df08f44-7071fdbbdbemr140779706d6.5.1753675396755;
+        Sun, 27 Jul 2025 21:03:16 -0700 (PDT)
+Received: from fedora.. (syn-075-188-033-214.res.spectrum.com. [75.188.33.214])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7074b52ddc7sm4928576d6.77.2025.07.27.21.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jul 2025 21:03:16 -0700 (PDT)
+From: Shaun Brady <brady.1345@gmail.com>
+To: netfilter-devel@vger.kernel.org
+Cc: ppwaskie@kernel.org,
+	fw@strlen.de,
+	pablo@netfilter.org
+Subject: [PATCH v6 1/2] netfilter: nf_tables: Implement jump limit for nft_table_validate
+Date: Mon, 28 Jul 2025 00:03:14 -0400
+Message-ID: <20250728040315.1014454-1-brady.1345@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250725185342.262067-4-mahe.tardy@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Mahe,
+Observing https://bugzilla.netfilter.org/show_bug.cgi?id=1665, I was
+able to reproduce the bug using linux-stable.  Summarized, when adding
+large/repeated jump chains, while still staying under the
+NFT_JUMP_STACK_SIZE (currently 16), the kernel soons locks up.
 
-kernel test robot noticed the following build errors:
+From the bug report:
+  table='loop-test'
+  nft add table inet $table
+  nft add chain inet $table test0 '{type filter hook input priority 0; policy accept;}'
+  for((i=1;i<16;i++));do nft add chain inet $table test$i;done
+  nft add rule inet $table test0 jump test1
+  for((i=1;i<15;i++));do nft add rule inet $table test$i jump test$((i+1));done
+  nft add rule inet $table test15 tcp dport 8080 drop
 
-[auto build test ERROR on bpf-next/master]
+  After the jump rule is added for 3 to 5 times, the system freezes and even softlockup occurs.
+  for((i=1;i<15;i++));do nft add rule inet $table test$i jump test$((i+1));done
+  for((i=1;i<15;i++));do nft add rule inet $table test$i jump test$((i+1));done
+  for((i=1;i<15;i++));do nft add rule inet $table test$i jump test$((i+1));done
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mahe-Tardy/net-move-netfilter-nf_reject_fill_skb_dst-to-core-ipv4/20250726-030109
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250725185342.262067-4-mahe.tardy%40gmail.com
-patch subject: [PATCH bpf-next v2 3/4] bpf: add bpf_icmp_send_unreach cgroup_skb kfunc
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20250727/202507270940.kXGmRbg5-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250727/202507270940.kXGmRbg5-lkp@intel.com/reproduce)
+This patch is a different approach than the original proposed approach
+found in the bug report.  Additionally, the limit, namespace specific,
+is only applied to non-init-net namespaces, with the common use case
+being to protect against rogue containers.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507270940.kXGmRbg5-lkp@intel.com/
+Add a new counter, total_jump_counter, to nft_ctx.  On every call to
+nft_table_validate() (rule addition time, versus packet inspection time)
+start the counter at the current sum of all jump counts in all other
+tables, sans 4 vs 6 differences.
 
-All errors (new ones prefixed by >>):
+Increment said counter for every jump encountered during table
+validation.  If the counter ever exceeds the namespaces jump limit
+*during validation*, gracefully reject the rule with -EMLINK (the same
+behavior as exceeding NFT_JUMP_STACK_SIZE).
 
-   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
-   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
-   aarch64-linux-ld: net/core/filter.o: in function `bpf_icmp_send_unreach':
->> net/core/filter.c:12184:(.text+0x14574): undefined reference to `ip6_route_reply_fetch_dst'
+This allows immediate feedback to the user about a bad chain, versus the
+original idea (from the bug report) of allowing the addition to the
+table.  It keeps the in memory ruleset consistent, versus catching the
+failure during packet inspection at some unknown point in the future and
+arbitrarily denying the packet.  Most importantly, it removes the
+original problem of a kernel crash.
 
+The compile time limit NFT_DEFAULT_MAX_TABLE_JUMPS of 65536 was chosen
+to account for any normal use case, and when this value (and associated
+stressing loop table) was tested against a 1CPU/256MB machine, the
+system remained functional.
 
-vim +12184 net/core/filter.c
+A sysctl entry net/netfilter/nf_max_table_jumps_netns for the limit was
+also added for any use cases that may exceed this limit.  It is network
+namespace specific.  As it is a control limit, for namespaces with an
+owner that is non-init_user_ns, this sysctl is read only.
 
- 12152	
- 12153	__bpf_kfunc int bpf_icmp_send_unreach(struct __sk_buff *__skb, int code)
- 12154	{
- 12155		struct sk_buff *skb = (struct sk_buff *)__skb;
- 12156		struct sk_buff *nskb;
- 12157	
- 12158		switch (skb->protocol) {
- 12159		case htons(ETH_P_IP):
- 12160			if (code < 0 || code > NR_ICMP_UNREACH)
- 12161				return -EINVAL;
- 12162	
- 12163			nskb = skb_clone(skb, GFP_ATOMIC);
- 12164			if (!nskb)
- 12165				return -ENOMEM;
- 12166	
- 12167			if (ip_route_reply_fetch_dst(nskb) < 0) {
- 12168				kfree_skb(nskb);
- 12169				return -EHOSTUNREACH;
- 12170			}
- 12171	
- 12172			icmp_send(nskb, ICMP_DEST_UNREACH, code, 0);
- 12173			kfree_skb(nskb);
- 12174			break;
- 12175	#if IS_ENABLED(CONFIG_IPV6)
- 12176		case htons(ETH_P_IPV6):
- 12177			if (code < 0 || code > ICMPV6_REJECT_ROUTE)
- 12178				return -EINVAL;
- 12179	
- 12180			nskb = skb_clone(skb, GFP_ATOMIC);
- 12181			if (!nskb)
- 12182				return -ENOMEM;
- 12183	
- 12184			if (ip6_route_reply_fetch_dst(nskb) < 0) {
- 12185				kfree_skb(nskb);
- 12186				return -EHOSTUNREACH;
- 12187			}
- 12188	
- 12189			icmpv6_send(nskb, ICMPV6_DEST_UNREACH, code, 0);
- 12190			kfree_skb(nskb);
- 12191			break;
- 12192	#endif
- 12193		default:
- 12194			return -EPROTONOSUPPORT;
- 12195		}
- 12196	
- 12197		return SK_DROP;
- 12198	}
- 12199	
+Example output of nft when patch is applied (and count is reached):
 
+Error: Could not process rule: Too many links
+add rule inet loop-test test14 jump test15
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+v2: nf_max_table_jumps renamed to nf_max_table_jumps_netns;
+    Limit namespace specific, only applies to non-init netns;
+    Limit raised to 16k
+v3: Fix improper conditional compile; removed unneeded pernet subsys;
+    Include NFPROTO_IPV4|6 for _INET matches; add selftest script
+v4: Simplify table jump count logic in for netns
+v5: Move jump family test to helper function; move test to second commit
+v6: Catch null pointer, syntax, thumb down total update in abort state
+
+Signed-off-by: Shaun Brady <brady.1345@gmail.com>
+---
+ Documentation/networking/netfilter-sysctl.rst |   9 ++
+ include/net/netfilter/nf_tables.h             |   4 +
+ include/net/netns/netfilter.h                 |   2 +
+ net/netfilter/nf_tables_api.c                 | 144 +++++++++++++++++-
+ net/netfilter/nft_immediate.c                 |   1 +
+ 5 files changed, 152 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/networking/netfilter-sysctl.rst b/Documentation/networking/netfilter-sysctl.rst
+index beb6d7b275d4..8a87c72f0672 100644
+--- a/Documentation/networking/netfilter-sysctl.rst
++++ b/Documentation/networking/netfilter-sysctl.rst
+@@ -15,3 +15,12 @@ nf_log_all_netns - BOOLEAN
+ 	with LOG target; this aims to prevent containers from flooding host
+ 	kernel log. If enabled, this target also works in other network
+ 	namespaces. This variable is only accessible from init_net.
++
++nf_max_table_jumps_netns - INTEGER (count)
++	default 65536
++
++	The maximum numbers of jumps a netns can have across its tables.
++	This only applies to non-init_net namespaces, and is read only for
++	non-init_user_ns namespaces.  Meeting or exceeding this value will
++	cause additional rules to not be added, with EMLINK being return to
++	the user.
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 891e43a01bdc..8f809c2d0942 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -205,6 +205,7 @@ static inline void nft_data_copy(u32 *dst, const struct nft_data *src,
+  *	@nla: netlink attributes
+  *	@portid: netlink portID of the original message
+  *	@seq: netlink sequence number
++ *	@total_jump_count: Found jumps for netns
+  *	@flags: modifiers to new request
+  *	@family: protocol family
+  *	@level: depth of the chains
+@@ -218,6 +219,7 @@ struct nft_ctx {
+ 	const struct nlattr * const 	*nla;
+ 	u32				portid;
+ 	u32				seq;
++	u32				total_jump_count;
+ 	u16				flags;
+ 	u8				family;
+ 	u8				level;
+@@ -1274,6 +1276,7 @@ static inline void nft_use_inc_restore(u32 *use)
+  *	@hgenerator: handle generator state
+  *	@handle: table handle
+  *	@use: number of chain references to this table
++ *	@total_jump_count: jumps as per last validate
+  *	@family:address family
+  *	@flags: table flag (see enum nft_table_flags)
+  *	@genmask: generation mask
+@@ -1293,6 +1296,7 @@ struct nft_table {
+ 	u64				hgenerator;
+ 	u64				handle;
+ 	u32				use;
++	u32				total_jump_count;
+ 	u16				family:6,
+ 					flags:8,
+ 					genmask:2;
+diff --git a/include/net/netns/netfilter.h b/include/net/netns/netfilter.h
+index a6a0bf4a247e..c0dcd85d108c 100644
+--- a/include/net/netns/netfilter.h
++++ b/include/net/netns/netfilter.h
+@@ -15,6 +15,7 @@ struct netns_nf {
+ 	const struct nf_logger __rcu *nf_loggers[NFPROTO_NUMPROTO];
+ #ifdef CONFIG_SYSCTL
+ 	struct ctl_table_header *nf_log_dir_header;
++	struct ctl_table_header *nf_limit_control_dir_header;
+ #ifdef CONFIG_LWTUNNEL
+ 	struct ctl_table_header *nf_lwtnl_dir_header;
+ #endif
+@@ -33,5 +34,6 @@ struct netns_nf {
+ #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+ 	unsigned int defrag_ipv6_users;
+ #endif
++	u32 nf_max_table_jumps_netns __maybe_unused;
+ };
+ #endif
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 13d0ed9d1895..4789122ebca3 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -16,6 +16,7 @@
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/nfnetlink.h>
+ #include <linux/netfilter/nf_tables.h>
++#include <linux/sysctl.h>
+ #include <net/netfilter/nf_flow_table.h>
+ #include <net/netfilter/nf_tables_core.h>
+ #include <net/netfilter/nf_tables.h>
+@@ -25,6 +26,7 @@
+ 
+ #define NFT_MODULE_AUTOLOAD_LIMIT (MODULE_NAME_LEN - sizeof("nft-expr-255-"))
+ #define NFT_SET_MAX_ANONLEN 16
++#define NFT_DEFAULT_MAX_TABLE_JUMPS 65536
+ 
+ /* limit compaction to avoid huge kmalloc/krealloc sizes. */
+ #define NFT_MAX_SET_NELEMS ((2048 - sizeof(struct nft_trans_elem)) / sizeof(struct nft_trans_one_elem))
+@@ -4062,8 +4064,16 @@ int nft_chain_validate(const struct nft_ctx *ctx, const struct nft_chain *chain)
+ 	struct nft_expr *expr, *last;
+ 	struct nft_rule *rule;
+ 	int err;
++	u32 jump_check = NFT_DEFAULT_MAX_TABLE_JUMPS;
+ 
+-	if (ctx->level == NFT_JUMP_STACK_SIZE)
++	if (IS_ENABLED(CONFIG_SYSCTL)) {
++		if (!net_eq(ctx->net, &init_net))
++			jump_check = ctx->net->nf.nf_max_table_jumps_netns;
++	}
++
++	if (ctx->level == NFT_JUMP_STACK_SIZE ||
++	    (!net_eq(ctx->net, &init_net) &&
++	    ctx->total_jump_count >= jump_check))
+ 		return -EMLINK;
+ 
+ 	list_for_each_entry(rule, &chain->rules, list) {
+@@ -4090,14 +4100,63 @@ int nft_chain_validate(const struct nft_ctx *ctx, const struct nft_chain *chain)
+ }
+ EXPORT_SYMBOL_GPL(nft_chain_validate);
+ 
+-static int nft_table_validate(struct net *net, const struct nft_table *table)
++/** nft_families_inc_jump - Determine if tables should add to the total jump
++ * count for a netns.
++ *
++ * @table: table of interest
++ * @sibling_table: a 'sibling' table to compare against
++ *
++ * Compare attributes of the tables to determine if the sibling tables
++ * total_jump_count should be added to the working context (done by caller).
++ * Mostly concerned with family compatibilities, but also identifying equality
++ * (a tables own addition will be recalculated soon).
++ *
++ * Ex: v4 tables do not apply to v6 packets
++ */
++static bool nft_families_inc_jump(struct nft_table *table, struct nft_table *sibling_table)
++{
++	/* Invert parameters to on require one test for two cases (the reverse) */
++	if (sibling_table->family > table->family) /* include/uapi/linux/netfilter.h */
++		return nft_families_inc_jump(sibling_table, table);
++
++	/* We found ourselves; don't add current jump count (will be counted dynamically) */
++	if (sibling_table == table)
++		return false;
++
++	switch (table->family) {
++	case NFPROTO_IPV4:
++		if (sibling_table->family == NFPROTO_IPV6)
++			return false;
++		break;
++	}
++
++	return true;
++}
++
++static int nft_table_validate(struct net *net, struct nft_table *table,
++			      enum nfnl_abort_action action)
+ {
+ 	struct nft_chain *chain;
++	struct nftables_pernet *nft_net;
+ 	struct nft_ctx ctx = {
+ 		.net	= net,
+ 		.family	= table->family,
++		.total_jump_count = 0,
+ 	};
+ 	int err;
++	u32 total_jumps_before_validate;
++	struct nft_table *sibling_table;
++
++	nft_net = nft_pernet(net);
++
++	if (!net_eq(net, &init_net)) {
++		list_for_each_entry(sibling_table, &nft_net->tables, list) {
++			if (nft_families_inc_jump(table, sibling_table))
++				ctx.total_jump_count += sibling_table->total_jump_count;
++		}
++	}
++
++	total_jumps_before_validate = ctx.total_jump_count;
+ 
+ 	list_for_each_entry(chain, &table->chains, list) {
+ 		if (!nft_is_base_chain(chain))
+@@ -4111,6 +4170,12 @@ static int nft_table_validate(struct net *net, const struct nft_table *table)
+ 		cond_resched();
+ 	}
+ 
++	/* nft_table_validate() must be called in abort, but values will be
++	 * incorrect at call time (rollback has yet to happen)
++	 */
++	if (action != NFNL_ABORT_VALIDATE)
++		table->total_jump_count = ctx.total_jump_count - total_jumps_before_validate;
++
+ 	return 0;
+ }
+ 
+@@ -4135,6 +4200,7 @@ int nft_setelem_validate(const struct nft_ctx *ctx, struct nft_set *set,
+ 	case NFT_JUMP:
+ 	case NFT_GOTO:
+ 		pctx->level++;
++		pctx->total_jump_count++;
+ 		err = nft_chain_validate(ctx, data->verdict.chain);
+ 		if (err < 0)
+ 			return err;
+@@ -4391,7 +4457,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 		nft_trans_flow_rule(trans) = flow;
+ 
+ 	if (table->validate_state == NFT_VALIDATE_DO)
+-		return nft_table_validate(net, table);
++		return nft_table_validate(net, table, NFNL_ABORT_NONE);
+ 
+ 	return 0;
+ 
+@@ -7630,7 +7696,7 @@ static int nf_tables_newsetelem(struct sk_buff *skb,
+ 	}
+ 
+ 	if (table->validate_state == NFT_VALIDATE_DO)
+-		return nft_table_validate(net, table);
++		return nft_table_validate(net, table, NFNL_ABORT_NONE);
+ 
+ 	return 0;
+ }
+@@ -10046,7 +10112,7 @@ static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
+ 	},
+ };
+ 
+-static int nf_tables_validate(struct net *net)
++static int nf_tables_validate(struct net *net, enum nfnl_abort_action action)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+ 	struct nft_table *table;
+@@ -10059,7 +10125,7 @@ static int nf_tables_validate(struct net *net)
+ 			nft_validate_state_update(table, NFT_VALIDATE_DO);
+ 			fallthrough;
+ 		case NFT_VALIDATE_DO:
+-			if (nft_table_validate(net, table) < 0)
++			if (nft_table_validate(net, table, action) < 0)
+ 				return -EAGAIN;
+ 
+ 			nft_validate_state_update(table, NFT_VALIDATE_SKIP);
+@@ -10875,7 +10941,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 	}
+ 
+ 	/* 0. Validate ruleset, otherwise roll back for error reporting. */
+-	if (nf_tables_validate(net) < 0) {
++	if (nf_tables_validate(net, NFNL_ABORT_NONE) < 0) {
+ 		nft_net->validate_state = NFT_VALIDATE_DO;
+ 		return -EAGAIN;
+ 	}
+@@ -11220,7 +11286,7 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 	int err = 0;
+ 
+ 	if (action == NFNL_ABORT_VALIDATE &&
+-	    nf_tables_validate(net) < 0)
++	    nf_tables_validate(net, action) < 0)
+ 		err = -EAGAIN;
+ 
+ 	list_for_each_entry_safe_reverse(trans, next, &nft_net->commit_list,
+@@ -12081,6 +12147,61 @@ static struct notifier_block nft_nl_notifier = {
+ 	.notifier_call  = nft_rcv_nl_event,
+ };
+ 
++#ifdef CONFIG_SYSCTL
++static struct ctl_table nf_limit_control_sysctl_table[] = {
++	{
++		.procname	= "nf_max_table_jumps_netns",
++		.data		= &init_net.nf.nf_max_table_jumps_netns,
++		.maxlen		= sizeof(init_net.nf.nf_max_table_jumps_netns),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++	},
++};
++
++static int netfilter_limit_control_sysctl_init(struct net *net)
++{
++	struct ctl_table *tbl;
++
++	net->nf.nf_max_table_jumps_netns = NFT_DEFAULT_MAX_TABLE_JUMPS;
++	tbl = nf_limit_control_sysctl_table;
++	if (!net_eq(net, &init_net)) {
++		tbl = kmemdup(tbl, sizeof(nf_limit_control_sysctl_table), GFP_KERNEL);
++		if (!tbl)
++			goto err_alloc;
++		tbl->data = &net->nf.nf_max_table_jumps_netns;
++		if (net->user_ns != &init_user_ns)
++			tbl->mode &= ~0222;
++	}
++
++	net->nf.nf_limit_control_dir_header = register_net_sysctl_sz(
++		net, "net/netfilter", tbl, ARRAY_SIZE(nf_limit_control_sysctl_table));
++
++	if (!net->nf.nf_limit_control_dir_header)
++		goto err_alloc;
++
++	return 0;
++
++err_alloc:
++	if (tbl != nf_limit_control_sysctl_table)
++		kfree(tbl);
++	return -ENOMEM;
++}
++
++static void netfilter_limit_control_sysctl_exit(struct net *net)
++{
++	unregister_net_sysctl_table(net->nf.nf_limit_control_dir_header);
++}
++#else
++static int netfilter_limit_control_sysctl_init(struct net *net)
++{
++	return 0;
++}
++
++static void netfilter_limit_control_sysctl_exit(struct net *net)
++{
++}
++#endif /* CONFIG_SYSCTL */
++
+ static int __net_init nf_tables_init_net(struct net *net)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+@@ -12098,6 +12219,11 @@ static int __net_init nf_tables_init_net(struct net *net)
+ 	nft_net->validate_state = NFT_VALIDATE_SKIP;
+ 	INIT_WORK(&nft_net->destroy_work, nf_tables_trans_destroy_work);
+ 
++	int ret = netfilter_limit_control_sysctl_init(net);
++
++	if (ret < 0)
++		return ret;
++
+ 	return 0;
+ }
+ 
+@@ -12136,6 +12262,8 @@ static void __net_exit nf_tables_exit_net(struct net *net)
+ 	WARN_ON_ONCE(!list_empty(&nft_net->module_list));
+ 	WARN_ON_ONCE(!list_empty(&nft_net->notify_list));
+ 	WARN_ON_ONCE(!list_empty(&nft_net->destroy_list));
++
++	netfilter_limit_control_sysctl_exit(net);
+ }
+ 
+ static void nf_tables_exit_batch(struct list_head *net_exit_list)
+diff --git a/net/netfilter/nft_immediate.c b/net/netfilter/nft_immediate.c
+index 02ee5fb69871..b21736e389a4 100644
+--- a/net/netfilter/nft_immediate.c
++++ b/net/netfilter/nft_immediate.c
+@@ -260,6 +260,7 @@ static int nft_immediate_validate(const struct nft_ctx *ctx,
+ 	case NFT_JUMP:
+ 	case NFT_GOTO:
+ 		pctx->level++;
++		pctx->total_jump_count++;
+ 		err = nft_chain_validate(ctx, data->verdict.chain);
+ 		if (err < 0)
+ 			return err;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.49.0
+
 
