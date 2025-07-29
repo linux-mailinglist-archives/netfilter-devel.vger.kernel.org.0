@@ -1,64 +1,56 @@
-Return-Path: <netfilter-devel+bounces-8114-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8116-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58BEB15121
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Jul 2025 18:18:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC77B151CC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Jul 2025 19:02:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E1C54E7E17
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Jul 2025 16:18:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D75618A4760
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Jul 2025 17:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC15F1D5154;
-	Tue, 29 Jul 2025 16:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C1D28ECD8;
+	Tue, 29 Jul 2025 17:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="ECEJm0U6"
+	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="RHeeoU9G"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from outbound.mr.icloud.com (p-west2-cluster4-host9-snip4-1.eps.apple.com [57.103.69.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2366F2236F0
-	for <netfilter-devel@vger.kernel.org>; Tue, 29 Jul 2025 16:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65FA149C4D
+	for <netfilter-devel@vger.kernel.org>; Tue, 29 Jul 2025 17:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.69.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753805923; cv=none; b=pnnIsgXOckqeeWr1b0yEbkUYpfnE7sCxT/3+cHAxh5ZHlLFjNlaXJm83M6pMbyBUYYd4kz60Rp4Sl2X9xyEhl8ILqnwbPluJLDxkjsn2NY6L1Bn+xDpKNYJQAVR2zOAtZdy2tNyeRACQps5tEGQ6WyKv/PHJT0u7H4nAOoogLlA=
+	t=1753808569; cv=none; b=HT2RaIMu21wl2gPTDNyv9li1C1qip0yPiafrIhT8sShxOOE4gYb3dg+eDbdOuUf+g7faR2B6UFaVngZbZ1vZcKPxMBZla0axcFcEod9cT6oFkZHAarYTeMsOfpKsocYht0MyRffpNFsBbwF8iljjuS/3P632RqoJ2d/FGBbBBj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753805923; c=relaxed/simple;
-	bh=BGwHxsK56PcVrWbwdTbRHhGTJFSPzN38B2CfMOxNrBI=;
+	s=arc-20240116; t=1753808569; c=relaxed/simple;
+	bh=z5lVWEyhRjpAIMMMSlYkaE6Gs7dQt9oOELh6Z5S2jhI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NGWkhCA5Gcn+jw81rF7Fcf+BXtwYn7t56XbsKLro9eu9PIrZ79r2fk4A/CykTxcoVcCZ+1tpbnLSQBpOL2hleDP7nFg1HF1uBXAhlqJbbuJoEYAlnU+GWE+t1sh3g652RbVAo4uZXohbDXRhj1Z4vwpSpjD+6p7M6bf0y4uGjug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=ECEJm0U6; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=gpNPthFTuy0f1kWT5XbzW8g+IEQoHeO+2zGciP9G6Ac=; b=ECEJm0U6/DmZ5MDKW0hXjopQdH
-	VYIWBy/CgwsH+tJE2sY9px6hz8nbmgzsNkke/WbEXoMPyevybJ/8Zbquja4gHw/ap8IhmYNmrNfm9
-	2132zNK5DO44g15TroKSWCFq7FIZ7f4+4dZ3pYH1SA00vx85qNL7EMnXFleoaF49rp7TnAKleNruT
-	IvIWh9fWPc2cbq6ttT9DXQ+pljO6/f+N2QX/jIhp2n+dRucNje9vqZ+Scj4B3M3b4McEzMml4lgPN
-	lWuz/RpnPNuRItH9ahsSPZGp0rUrnWh2GuGebYvqLyNFWoaFr8dGGFg3AHFdsM2c82ge51khPv4QD
-	wL/83vFw==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1ugn2D-000000005BR-3PpK;
-	Tue, 29 Jul 2025 18:18:37 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v2 3/3] evaluate: Fix for 'meta hour' ranges spanning date boundaries
-Date: Tue, 29 Jul 2025 18:18:32 +0200
-Message-ID: <20250729161832.6450-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250729161832.6450-1-phil@nwl.cc>
-References: <20250729161832.6450-1-phil@nwl.cc>
+	 MIME-Version; b=WmAXNC0tsiqa3m5gQHu8ui32V9f7/LcLdb7LDE0eXuPcEVNhqWX1feIB5it2k6xLJubt3mFecc5+Pt4w621SJzh97XSsEH/7NhnmpcQR0J9vXYjothDuEyh5qKpjDABZQRVUdlUFxOd9HSo0ThpSGk8+1nehBU+htvRJ34ET2oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net; spf=pass smtp.mailfrom=danm.net; dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b=RHeeoU9G; arc=none smtp.client-ip=57.103.69.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
+Received: from outbound.mr.icloud.com (unknown [127.0.0.2])
+	by p00-icloudmta-asmtp-us-west-2a-100-percent-6 (Postfix) with ESMTPS id E4F831801B78;
+	Tue, 29 Jul 2025 17:02:45 +0000 (UTC)
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1; bh=9xLNaOyeP5gUs6xyN/Zn+G//i9ctghSvXpkVgxQaTjQ=; h=From:To:Subject:Date:Message-ID:MIME-Version:x-icloud-hme; b=RHeeoU9G2/McAZUQZk2CHgHa190nnilljIERncoP9YyFEaMyEDUdqH8M/kh+xQtTQd+xbMbB8NhAGd6r1KSJ8yIap7NGLEwMNaCEfe9waMc7zj4GBRPZK4jugtvGkli32NFN6EaCJYH+aG0g5ShZmaOyCdbOrJ1wYLNdqP+hhvpEWRV2fjpLGynYppo+yDMm5e6MYyooI7lJS29tAjpOOEF/bI41nKS6k21CVJ9xnt1hUWzMXZgNStXtzhqXNUKGmd5f9dovWEP7ohno6YrKLcrHXKOrzjGdK9dJMk3HLV4Y1tWHbvfQ8UddkRuYDAcKwQsO6JQIvwrY8j1kP4BQ8A==
+X-Client-IP: 67.163.93.242
+Received: from hitch.danm.net (mr-asmtp-me-k8s.p00.prod.me.com [17.57.152.38])
+	by p00-icloudmta-asmtp-us-west-2a-100-percent-6 (Postfix) with ESMTPSA id 08C2A1801B76;
+	Tue, 29 Jul 2025 17:02:44 +0000 (UTC)
+From: Dan Moulding <dan@danm.net>
+To: fw@strlen.de
+Cc: dan@danm.net,
+	netfilter-devel@vger.kernel.org,
+	pablo@netfilter.org,
+	regressions@lists.linux.dev
+Subject: Re: [REGRESSION] v6.16 system hangs (bisected to nf_conntrack fix)
+Date: Tue, 29 Jul 2025 11:02:28 -0600
+Message-ID: <20250729170228.7286-1-dan@danm.net>
+X-Mailer: git-send-email 2.49.1
+In-Reply-To: <aIgMKCuhag2snagZ@strlen.de>
+References: <aIgMKCuhag2snagZ@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,430 +58,33 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: YyhzyWoXskfZvr52KvJWbZmowKUVTEib
+X-Proofpoint-GUID: YyhzyWoXskfZvr52KvJWbZmowKUVTEib
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNzI5MDEzMSBTYWx0ZWRfXwexiZibsaQfL
+ e1deKMjO8yrO5dfRwhQEOAiIqasFdB6A89C2o7aICekwG4iMQdYKQrQD0Z8SgUCtNMr+VKxjPER
+ EtUfTwD4Tz6ISy7xetC9hMlvc3Uf+blhQExTC/jyecnwEzbyFjtD4IcFJosoOqNcm+c8KNV2XwH
+ DA67/dPaY/tLfT5rvAHgphkm03uaVO5wVGjI81Gta5we3u4EOv9UilkqSdrJUQuHdJJFrjAA5Ud
+ sEGLEz1dODCTbDBLKDlNOXU86sx+2oT/I+vnO6QQ+lbiFl0P/MV8/Nu8FLesIF6VKoJCnWP4Y=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-07-29_03,2025-07-28_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 mlxscore=0 bulkscore=0 clxscore=1030
+ malwarescore=0 mlxlogscore=914 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.22.0-2506270000 definitions=main-2507290131
 
-Introduction of EXPR_RANGE_SYMBOL type inadvertently disabled sanitizing
-of meta hour ranges where the lower boundary has a higher value than the
-upper boundary. This may happen outside of user control due to the fact
-that given ranges are converted to UTC which is the kernel's native
-timezone.
+Florian Westphal <fw@strlen.de> wrote:
+> Bah.  Can't see the problem.  Can you partial-revert and see what
+> happens?
+> 
+> E.g. only revert the changes to net/netfilter/nf_conntrack_core.c
 
-Restore the conditional match and op inversion by matching on the new
-RHS expression type and also expand it so values are comparable. Since
-this replaces the whole range expression, make it replace the
-relational's RHS entirely.
+Ok. I just tried reverting only the changes to nf_conntrack_core.c and
+the hang no longer occurs. This is on top of 6.16.
 
-While at it extend testsuites to cover these corner-cases.
+> Is this x86?
 
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1805
-Fixes: 347039f64509e ("src: add symbol range expression to further compact intervals")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Add BZ link
-- Describe expected values in nft.8
-- Add test cases for "24:00", "23:59:60" and a range where upper
-  boundary becomes 0:00 after conversion
-- Fix JSON equivalents in py testsuite and shell testsuite expected
-  results - these were leftovers from an earlier attempt at a fix
----
- doc/primary-expression.txt              |   3 +-
- src/evaluate.c                          |  25 +++-
- tests/py/any/meta.t                     |   9 ++
- tests/py/any/meta.t.json                | 182 ++++++++++++++++++++++++
- tests/py/any/meta.t.json.output         |  18 +++
- tests/py/any/meta.t.payload             |  51 +++++++
- tests/shell/testcases/listing/meta_time |  11 ++
- 7 files changed, 291 insertions(+), 8 deletions(-)
-
-diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
-index 2266724e72598..d5495e2c86291 100644
---- a/doc/primary-expression.txt
-+++ b/doc/primary-expression.txt
-@@ -137,7 +137,8 @@ Day of week|
- Integer (8 bit) or string
- |hour|
- Hour of day|
--String
-+String value in the form HH:MM or HH:MM:SS. Values are expected to be less than
-+24:00, although for technical reasons, 23:59:60 is accepted, too.
- |====================
- 
- .Meta expression specific types
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 9c90590860585..b67c81f01c0e2 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -2421,10 +2421,9 @@ static int expr_evaluate_mapping(struct eval_ctx *ctx, struct expr **expr)
- 	return 0;
- }
- 
--static int expr_evaluate_symbol_range(struct eval_ctx *ctx, struct expr **exprp)
-+static struct expr *symbol_range_expand(struct expr *expr)
- {
--	struct expr *left, *right, *range, *constant_range;
--	struct expr *expr = *exprp;
-+	struct expr *left, *right;
- 
- 	/* expand to symbol and range expressions to consolidate evaluation. */
- 	left = symbol_expr_alloc(&expr->location, expr->symtype,
-@@ -2433,7 +2432,16 @@ static int expr_evaluate_symbol_range(struct eval_ctx *ctx, struct expr **exprp)
- 	right = symbol_expr_alloc(&expr->location, expr->symtype,
- 				  (struct scope *)expr->scope,
- 				  expr->identifier_range[1]);
--	range = range_expr_alloc(&expr->location, left, right);
-+	return range_expr_alloc(&expr->location, left, right);
-+}
-+
-+static int expr_evaluate_symbol_range(struct eval_ctx *ctx, struct expr **exprp)
-+{
-+	struct expr *left, *right, *range, *constant_range;
-+	struct expr *expr = *exprp;
-+
-+	/* expand to symbol and range expressions to consolidate evaluation. */
-+	range = symbol_range_expand(expr);
- 
- 	if (expr_evaluate(ctx, &range) < 0) {
- 		expr_free(range);
-@@ -2772,12 +2780,15 @@ static int expr_evaluate_relational(struct eval_ctx *ctx, struct expr **expr)
- 
- 	pctx = eval_proto_ctx(ctx);
- 
--	if (rel->right->etype == EXPR_RANGE && lhs_is_meta_hour(rel->left)) {
--		ret = __expr_evaluate_range(ctx, &rel->right);
-+	if (lhs_is_meta_hour(rel->left) &&
-+	    rel->right->etype == EXPR_RANGE_SYMBOL) {
-+		range = symbol_range_expand(rel->right);
-+		ret = __expr_evaluate_range(ctx, &range);
- 		if (ret)
- 			return ret;
- 
--		range = rel->right;
-+		expr_free(rel->right);
-+		rel->right = range;
- 
- 		/*
- 		 * We may need to do this for proper cross-day ranges,
-diff --git a/tests/py/any/meta.t b/tests/py/any/meta.t
-index 3f0ef121a8c03..74e4ba28343d9 100644
---- a/tests/py/any/meta.t
-+++ b/tests/py/any/meta.t
-@@ -218,6 +218,15 @@ meta hour "17:00:00" drop;ok;meta hour "17:00" drop
- meta hour "17:00:01" drop;ok
- meta hour "00:00" drop;ok
- meta hour "00:01" drop;ok
-+meta hour "01:01" drop;ok
-+meta hour "02:02" drop;ok
-+meta hour "03:03" drop;ok
-+meta hour "24:00" drop;fail
-+meta hour "23:59:60" drop;ok;meta hour "00:00" drop
-+meta hour "00:00"-"02:02" drop;ok
-+meta hour "01:01"-"03:03" drop;ok
-+meta hour "02:02"-"04:04" drop;ok
-+meta hour "21:00"-"02:00" drop;ok
- time < "2022-07-01 11:00:00" accept;ok;meta time < "2022-07-01 11:00:00" accept
- time > "2022-07-01 11:00:00" accept;ok;meta time > "2022-07-01 11:00:00" accept
- 
-diff --git a/tests/py/any/meta.t.json b/tests/py/any/meta.t.json
-index 65590388bb80d..8dcd1e13243de 100644
---- a/tests/py/any/meta.t.json
-+++ b/tests/py/any/meta.t.json
-@@ -2723,6 +2723,188 @@
-     }
- ]
- 
-+# meta hour "01:01" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": "01:01"
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "02:02" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": "02:02"
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "03:03" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": "03:03"
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "24:00" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": "24:00"
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "23:59:60" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": "23:59:60"
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "00:00"-"02:02" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "in",
-+            "right": {
-+		"range": [
-+		    "00:00",
-+		    "02:02"
-+		]
-+	    }
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "01:01"-"03:03" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "in",
-+            "right": {
-+		"range": [
-+		    "01:01",
-+		    "03:03"
-+		]
-+            }
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "02:02"-"04:04" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": {
-+                "range": [
-+                    "02:02",
-+                    "04:04"
-+                ]
-+            }
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-+# meta hour "21:00"-"02:00" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "in",
-+            "right": {
-+                "range": [
-+                    "21:00",
-+                    "02:00"
-+                ]
-+            }
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
- # time < "2022-07-01 11:00:00" accept
- [
-     {
-diff --git a/tests/py/any/meta.t.json.output b/tests/py/any/meta.t.json.output
-index d46935dee513d..8f4d597a5034e 100644
---- a/tests/py/any/meta.t.json.output
-+++ b/tests/py/any/meta.t.json.output
-@@ -646,3 +646,21 @@
-     }
- ]
- 
-+# meta hour "23:59:60" drop
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "hour"
-+                }
-+            },
-+            "op": "==",
-+            "right": "00:00"
-+        }
-+    },
-+    {
-+        "drop": null
-+    }
-+]
-+
-diff --git a/tests/py/any/meta.t.payload b/tests/py/any/meta.t.payload
-index 52c3efa84eb5d..3f9f3f22aecf9 100644
---- a/tests/py/any/meta.t.payload
-+++ b/tests/py/any/meta.t.payload
-@@ -1052,6 +1052,57 @@ ip meta-test input
-   [ cmp eq reg 1 0x0001359c ]
-   [ immediate reg 0 drop ]
- 
-+# meta hour "01:01" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ cmp eq reg 1 0x000143ac ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "02:02" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ cmp eq reg 1 0x00000078 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "03:03" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ cmp eq reg 1 0x00000ec4 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "23:59:60" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ cmp eq reg 1 0x00013560 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "00:00"-"02:02" drop
-+  [ meta load hour => reg 1 ]
-+  [ byteorder reg 1 = hton(reg 1, 4, 4) ]
-+  [ range neq reg 1 0x78000000 0x60350100 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "01:01"-"03:03" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ byteorder reg 1 = hton(reg 1, 4, 4) ]
-+  [ range neq reg 1 0xc40e0000 0xac430100 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "02:02"-"04:04" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ byteorder reg 1 = hton(reg 1, 4, 4) ]
-+  [ range eq reg 1 0x78000000 0x101d0000 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "21:00"-"02:00" drop
-+ip test-ip4 input
-+  [ meta load hour => reg 1 ]
-+  [ byteorder reg 1 = hton(reg 1, 4, 4) ]
-+  [ range neq reg 1 0x00000000 0x300b0100 ]
-+  [ immediate reg 0 drop ]
-+
- # time < "2022-07-01 11:00:00" accept
- ip test-ip4 input
-   [ meta load time => reg 1 ]
-diff --git a/tests/shell/testcases/listing/meta_time b/tests/shell/testcases/listing/meta_time
-index 96a9d5570fd14..0f5bdec942f0a 100755
---- a/tests/shell/testcases/listing/meta_time
-+++ b/tests/shell/testcases/listing/meta_time
-@@ -65,3 +65,14 @@ printf "\t\tmeta hour \"%02d:%02d\"-\"%02d:%02d\"\n" 5 0 16 0 >> "$TMP1"
- printf "\t\tmeta hour \"%02d:%02d\"-\"%02d:%02d\"\n" 6 0 17 0 >> "$TMP1"
- 
- check_decode EADT
-+
-+$NFT flush chain t c
-+TZ=UTC-2 $NFT add rule t c meta hour "00:00"-"01:00"
-+TZ=UTC-2 $NFT add rule t c meta hour "00:00"-"03:00"
-+TZ=UTC-2 $NFT add rule t c meta hour "01:00"-"04:00"
-+
-+printf "\t\tmeta hour \"%02d:%02d\"-\"%02d:%02d\"\n" 0 0 1 0 > "$TMP1"
-+printf "\t\tmeta hour \"%02d:%02d\"-\"%02d:%02d\"\n" 0 0 3 0 >> "$TMP1"
-+printf "\t\tmeta hour \"%02d:%02d\"-\"%02d:%02d\"\n" 1 0 4 0 >> "$TMP1"
-+
-+check_decode UTC-2
--- 
-2.49.0
-
+Yes, it's an Intel x86_64 Gentoo desktop and virtualization host. But
+kernel sources directly from git.kernel.org (I don't run the
+distribution's kernel sources -- I'm skeptical of the "value add").
 
