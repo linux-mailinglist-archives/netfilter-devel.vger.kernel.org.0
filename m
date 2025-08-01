@@ -1,204 +1,90 @@
-Return-Path: <netfilter-devel+bounces-8157-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8159-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03C3B184E6
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 17:25:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C678B18548
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 17:53:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91263A82C85
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 15:25:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C939016B604
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 15:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E23227280E;
-	Fri,  1 Aug 2025 15:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B6227AC31;
+	Fri,  1 Aug 2025 15:53:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GSFZ+xlk"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848AE272E51
-	for <netfilter-devel@vger.kernel.org>; Fri,  1 Aug 2025 15:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B7D26C39B
+	for <netfilter-devel@vger.kernel.org>; Fri,  1 Aug 2025 15:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754061936; cv=none; b=QQeAm2q1Zw1H6+y346dgjDFpyVroG+jOvJ49C9nAXKNjhayyR4inoooV6U5Edi8XDj1lya974gdc68ZN3aBRssyidYZkn4dXW/sVJEvRJv8mbjhp2fCumPMKBGpImhV9kABXQVne8g6GvLNfQ5DfdOMhDRJphLN+Cqn2WWW+ggI=
+	t=1754063581; cv=none; b=YNECFCKgBPxCfEkJNmHytN0nhY7zOgiMYy/Bg1ImSYYDDAdjl2JojsPRM7e9PnlbKOFROU+36qQTG4fpPWhhKelN+8fgizwolxtXT8KJzxzcI6uMyoKVxbPxLHbncfYkSDIHcmIuTgoLO6Aq8u49vYIQ81fv8e/xYw7jJei10Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754061936; c=relaxed/simple;
-	bh=UWAX124Vd531CQ5ml2nv5r6hCzzf0z0I2THnO/LtseY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cr+/lohBawCwJSM5EKMFoWEodVhzG/XXJxw5wAdOf8OUM23H/swHMwo/OsnwVNqsGKKqqRlniT0w+AnLvVPSe2YNwMqACFqYzLi9F3Qv7DkPdmYFiR6Zuuds0ygeZ8BzNN/1J8KgRwfTHNAR4kdQvNeZClx4nl0F8TppduWz51Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 8996C602B2; Fri,  1 Aug 2025 17:25:32 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf 2/2] netfilter: ctnetlink: remove refcounting in expectation dumpers
-Date: Fri,  1 Aug 2025 17:25:09 +0200
-Message-ID: <20250801152515.20172-3-fw@strlen.de>
-X-Mailer: git-send-email 2.49.1
-In-Reply-To: <20250801152515.20172-1-fw@strlen.de>
-References: <20250801152515.20172-1-fw@strlen.de>
+	s=arc-20240116; t=1754063581; c=relaxed/simple;
+	bh=IKhSviFqFxKNZXODGWt6Q8u8jf/2SZ7NuDp4KJ6OSIo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EmAvskeIoFjru5c4dAPSBm53rS2RRwTjiIkipQ+16DwrV30prByg0jbE5/gcQ/zIZbf/MDVMtjepkjw0DHQWJqVNI1dv/JeDJnFxjahtvQpa7rRoTWuoUSRBjGnaR5HpbOGpc8hFOCLxdsKCBedUieH4WbT+skUcKAkAMGOXdP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GSFZ+xlk; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a8e756ca-e9f7-4c56-bd39-3f71e4be9528@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1754063577;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IKhSviFqFxKNZXODGWt6Q8u8jf/2SZ7NuDp4KJ6OSIo=;
+	b=GSFZ+xlk/ppOyrzb+KtX2+Rh5mlxxkSu162KzpeMYyG1bk7qI5SgH/k7kgS4oGKMhNA8jC
+	7DkE58bC3fOtkVwTxtok27M8y/FcoaKSYH1jv3a5uLXQcv7Po5n4liL0mq0v5GaOt/sf+2
+	+EJMZKbwdytdYo0BEuT/iJyg7cFvg04=
+Date: Fri, 1 Aug 2025 08:52:48 -0700
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf 1/4] bpf: Check flow_dissector ctx accesses are
+ aligned
+Content-Language: en-GB
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, netfilter-devel@vger.kernel.org,
+ Pablo Neira Ayuso <pablo@netfilter.org>,
+ Jozsef Kadlecsik <kadlec@netfilter.org>, Petar Penkov <ppenkov@google.com>,
+ Florian Westphal <fw@strlen.de>
+References: <cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Same pattern as previous patch: do not keep the expectation object
-alive via refcount, only store a cookie value and then use that
-as the skip hint for dump resumption.
 
-AFAICS this has the same issue as the one resolved in the conntrack
-dumper, when we do
-  if (!refcount_inc_not_zero(&exp->use))
 
-to increment the refcount, there is a chance that exp == last, which
-causes a double-increment of the refcount and subsequent memory leak.
+On 8/1/25 2:47 AM, Paul Chaignon wrote:
+> flow_dissector_is_valid_access doesn't check that the context access is
+> aligned. As a consequence, an unaligned access within one of the exposed
+> field is considered valid and later rejected by
+> flow_dissector_convert_ctx_access when we try to convert it.
+>
+> The later rejection is problematic because it's reported as a verifier
+> bug with a kernel warning and doesn't point to the right instruction in
+> verifier logs.
+>
+> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+> Reported-by: syzbot+ccac90e482b2a81d74aa@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=ccac90e482b2a81d74aa
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 
-Fixes: cf6994c2b981 ("[NETFILTER]: nf_conntrack_netlink: sync expectation dumping with conntrack table dumping")
-Fixes: e844a928431f ("netfilter: ctnetlink: allow to dump expectation per master conntrack")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_conntrack_netlink.c | 41 ++++++++++++----------------
- 1 file changed, 17 insertions(+), 24 deletions(-)
-
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 5fdcae45e0bc..cbe42c987136 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3171,23 +3171,27 @@ ctnetlink_expect_event(unsigned int events, const struct nf_exp_event *item)
- 	return 0;
- }
- #endif
--static int ctnetlink_exp_done(struct netlink_callback *cb)
-+
-+static unsigned long ctnetlink_exp_id(const struct nf_conntrack_expect *exp)
- {
--	if (cb->args[1])
--		nf_ct_expect_put((struct nf_conntrack_expect *)cb->args[1]);
--	return 0;
-+	unsigned long id = (unsigned long)exp;
-+
-+	id += nf_ct_get_id(exp->master);
-+	id += exp->class;
-+
-+	return id ? id : 1;
- }
- 
- static int
- ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- {
-+	unsigned long last_id = cb->args[1];
- 	struct net *net = sock_net(skb->sk);
--	struct nf_conntrack_expect *exp, *last;
- 	struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
- 	u_int8_t l3proto = nfmsg->nfgen_family;
-+	struct nf_conntrack_expect *exp;
- 
- 	rcu_read_lock();
--	last = (struct nf_conntrack_expect *)cb->args[1];
- 	for (; cb->args[0] < nf_ct_expect_hsize; cb->args[0]++) {
- restart:
- 		hlist_for_each_entry_rcu(exp, &nf_ct_expect_hash[cb->args[0]],
-@@ -3199,7 +3203,7 @@ ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 				continue;
- 
- 			if (cb->args[1]) {
--				if (exp != last)
-+				if (ctnetlink_exp_id(exp) != last_id)
- 					continue;
- 				cb->args[1] = 0;
- 			}
-@@ -3208,9 +3212,7 @@ ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 						    cb->nlh->nlmsg_seq,
- 						    IPCTNL_MSG_EXP_NEW,
- 						    exp) < 0) {
--				if (!refcount_inc_not_zero(&exp->use))
--					continue;
--				cb->args[1] = (unsigned long)exp;
-+				cb->args[1] = ctnetlink_exp_id(exp);
- 				goto out;
- 			}
- 		}
-@@ -3221,32 +3223,30 @@ ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	}
- out:
- 	rcu_read_unlock();
--	if (last)
--		nf_ct_expect_put(last);
--
- 	return skb->len;
- }
- 
- static int
- ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- {
--	struct nf_conntrack_expect *exp, *last;
- 	struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
- 	struct nf_conn *ct = cb->data;
- 	struct nf_conn_help *help = nfct_help(ct);
- 	u_int8_t l3proto = nfmsg->nfgen_family;
-+	unsigned long last_id = cb->args[1];
-+	struct nf_conntrack_expect *exp;
- 
- 	if (cb->args[0])
- 		return 0;
- 
- 	rcu_read_lock();
--	last = (struct nf_conntrack_expect *)cb->args[1];
-+
- restart:
- 	hlist_for_each_entry_rcu(exp, &help->expectations, lnode) {
- 		if (l3proto && exp->tuple.src.l3num != l3proto)
- 			continue;
- 		if (cb->args[1]) {
--			if (exp != last)
-+			if (ctnetlink_exp_id(exp) != last_id)
- 				continue;
- 			cb->args[1] = 0;
- 		}
-@@ -3254,9 +3254,7 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 					    cb->nlh->nlmsg_seq,
- 					    IPCTNL_MSG_EXP_NEW,
- 					    exp) < 0) {
--			if (!refcount_inc_not_zero(&exp->use))
--				continue;
--			cb->args[1] = (unsigned long)exp;
-+			cb->args[1] = ctnetlink_exp_id(exp);
- 			goto out;
- 		}
- 	}
-@@ -3267,9 +3265,6 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	cb->args[0] = 1;
- out:
- 	rcu_read_unlock();
--	if (last)
--		nf_ct_expect_put(last);
--
- 	return skb->len;
- }
- 
-@@ -3288,7 +3283,6 @@ static int ctnetlink_dump_exp_ct(struct net *net, struct sock *ctnl,
- 	struct nf_conntrack_zone zone;
- 	struct netlink_dump_control c = {
- 		.dump = ctnetlink_exp_ct_dump_table,
--		.done = ctnetlink_exp_done,
- 	};
- 
- 	err = ctnetlink_parse_tuple(cda, &tuple, CTA_EXPECT_MASTER,
-@@ -3338,7 +3332,6 @@ static int ctnetlink_get_expect(struct sk_buff *skb,
- 		else {
- 			struct netlink_dump_control c = {
- 				.dump = ctnetlink_exp_dump_table,
--				.done = ctnetlink_exp_done,
- 			};
- 			return netlink_dump_start(info->sk, skb, info->nlh, &c);
- 		}
--- 
-2.49.1
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
 
