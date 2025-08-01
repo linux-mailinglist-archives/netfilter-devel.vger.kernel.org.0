@@ -1,97 +1,119 @@
-Return-Path: <netfilter-devel+bounces-8167-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8171-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AD7B18583
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 18:11:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 041B9B18592
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 18:18:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E37DC563E76
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 16:11:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2116A876FC
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Aug 2025 16:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C97628C851;
-	Fri,  1 Aug 2025 16:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B66279333;
+	Fri,  1 Aug 2025 16:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="gt9vfIpT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="euvx6rhs"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1D128C5C0
-	for <netfilter-devel@vger.kernel.org>; Fri,  1 Aug 2025 16:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E5B1A0BF3;
+	Fri,  1 Aug 2025 16:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754064676; cv=none; b=BBZsVZJnNHFt9GWfmZx0THoUTGXLC/p3DohFkxCqHZ1Pj0LR3jRajtEuL7ceBdP1ELoFawj80iArZSF3vDk4VEPDrAYbLk1QsOw54xaTI06EENn+tXp0zABzDFFHexaD368Pl5XNSPMA+JKx2yjPsa63EnF9ADLUgPGUYBZ8phc=
+	t=1754065083; cv=none; b=gaIumqd+UG8u/85+wfXOTyhu8yoyRiZUwV5Hz26mnhnHnUAbUMKbOTaiBP95pdK4tyMBPGh72CNdabvMQ618hqlhaFUwgYiD0XzupUJqWlfM8SNPj3kw+Ip1i2ZOJCAWaAVJghVma7GTvddIYYLqupjlkYAqj9VlD3brb4zUl5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754064676; c=relaxed/simple;
-	bh=h4RLZ3fWIUe7vGIyRNDySRRv1lfqTQjqU7iLHIRKU30=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A4krRsoOeXUxFHnY+CfMrrXq9r21oysA5bweftB/vMdKbDYiFJfArv74tkoZg6xy6xfvBckutZYoZsCxDAx8AQRQTBYWPO30vyD3T7zeHDp1SUtsaVKkXi/slvXER52pyoRbio0W/Yvi3EBY2jFWlf0DuB5e6r1UeI+0EIcfiUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=gt9vfIpT; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=8n0PD4A7fuIyMORX1SSTfgjamFI8/xbmtb6AwLmH2+g=; b=gt9vfIpTq0GlH0lD3DhAb4IvDM
-	nnBWRFVDa3j8YJxSyQpivDLs9pzr+IVi7WqiIOgiAyUj0T674PdE0/CxGv5h+rikHxPlVQ3ZZ5QeU
-	xugag4vdugp5pjpAMBKnmQ+H53V7SzWnCi6qBzMO//vCmO78NTbAnn5QRM19IZUgV919SJfubA9OM
-	TvPon7mbNwzyUWvMJsZJwZaVZTnNQXT/piLSiPySsI8+50b1RK6ULeml3alN8NNqYm1Ar9yRexju3
-	4mkB2x2aWkO314WE2R9hXFfH7ILTd/5xrAFWDcJj/40JTOvFNTi4Hq+sH1+yDTDcl+irrkpW8Y/Vx
-	0UPx1RDw==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1uhsLg-000000005IR-1i4s;
-	Fri, 01 Aug 2025 18:11:12 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 6/6] Makefile: Enable support for 'make check'
-Date: Fri,  1 Aug 2025 18:11:05 +0200
-Message-ID: <20250801161105.24823-7-phil@nwl.cc>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250801161105.24823-1-phil@nwl.cc>
-References: <20250801161105.24823-1-phil@nwl.cc>
+	s=arc-20240116; t=1754065083; c=relaxed/simple;
+	bh=IWtqxFVicIREieMW4896VRoD6F24Ir30+XrdQU1a+l8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gtfLYtbPPE9fSbxDinzx9alvA1UsYLwV673u9wjX/20No3FcilLolcFnjXL9Zg3I6QSDo27PYZWcuM9wgILNyZQR6oHVi6IUEJDu4fgvzFzuKkiZ0QwU5UFSm9MJ+pBDIhtbucUkg/tNWWbSBLBj4A5AjeNoY/6J//pdwWRFGpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=euvx6rhs; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-31efefd2655so1780452a91.0;
+        Fri, 01 Aug 2025 09:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754065081; x=1754669881; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IWtqxFVicIREieMW4896VRoD6F24Ir30+XrdQU1a+l8=;
+        b=euvx6rhsWONm4j7R4orbnfpU26jp/kbg2qZ7VMMoIDfqA1Js4wPIe0QW+0Koa/2TyM
+         hZ9TRYRd9e3F1jpnYG/Sfd0HccsCWtQZrj8iQucU3CQPJcy36ewJB7kl50kbRDWId6uy
+         s39jQ98SVJTnmzypkvOkN8yEKCb3PFlwGHiXTEvoP6e8Dib+RuZVefkQvuju73wtffVg
+         g6CPMld8oZPe+MsFhqvn2lwcme8fRT7ePrpC0lC47auKi9RPqkzrkLZqYClVBTMLMHSH
+         34biqtPH5HOXM8EWHgWdE2YGKF/G/D240MFtTb/s8+RwHqdZ+t9Th0b0KaBcQ35iHDTa
+         z65w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754065081; x=1754669881;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IWtqxFVicIREieMW4896VRoD6F24Ir30+XrdQU1a+l8=;
+        b=g0i3iIaTolrGr3NjR5Ub25feIGxx9ze5swbGbxytEI4CoD4FeZ4y+Zo3huTmSb2dQH
+         Xah0dJmD1JDUJtwDSc29LDILBml2MW5JYzMFeTaYiRPyVUJkpfQwAiyhRmR4YDSpU06a
+         dz7qBTg9rd9go+GBlgSjTQKJaUOU6W1utcnXY9qqtenpu5nSnIZAyybpA+Zja4ZRh+Dz
+         BPffjYQQVR8nBel9HuREQW3+zfmErBH5zTn6ntdg73gZq0bud6/vJwgRsQ/s6oI8MSZn
+         +J6uzXeOOEiuhOvHhzY7XCsw4aZrtfU0he/xDWTzeNsAzU7vapwbuEuQeQBzR9G+gZGn
+         oDug==
+X-Forwarded-Encrypted: i=1; AJvYcCU895TwpyLA3QxsWr2ND4wdBRbEBkGbXMsSyi/RO3hqjiu4UsyHvd28GwwJ94SFsKyypwrohUSHjg5yDD+IUsNX@vger.kernel.org, AJvYcCXkWq28WrU6+8aA5oTBEgZARW7oQiLFmPgRfLvXjugid93Y7U1Usa+KwDIs4gqQ2p0oJPU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdplE/+Ct6HJX1+1s4+BPW96+XBWdYHgju/oN5ImO7WoagGXHX
+	wU7z8mOL5/ZxSPRtb5ubqs7v6Tr6OpQhzLVEHevDvjPo0VPxqkwDw7+x
+X-Gm-Gg: ASbGncuzrIVIQzFlhx9QZxUump3ia/OXt4vSOmLOnLk+0BM8P13WDXJ1aWIzvEorfZw
+	6khI66yWFhbZDPcYMA34It8Qd+RdMLzDPKh4EtAsQHLHMBNVMW8mv8PyzPNJMQM662p9QeC6+sh
+	E7ri+V8Abnd53wb3raZWEz8b+oOYB7lqH4rBo6zeVOvyjhaG+2VD+ugXmLi9WpUUT5KJ5Cln562
+	U5gp1GO2wOH1tIc5BLbvOJ9OsczRROMS9ebZkXJ+c/dctHwG/PWS+rYrRgKUgRpgZTJ2mw3xasR
+	csQmz/pWBVTJ2Q52td0OcRC65AUVfpNgrZYKgMPmQONuBDXQbAgtvanhv9Yqju81KwtstWqGn/k
+	LK9KyCE9kbRWZJvLWMLk=
+X-Google-Smtp-Source: AGHT+IEqL0BBeYGacOCFzX0QMTZjLPBF9hcdvdcm86TgJiT332M1ZGEMFwp6jzkh6Hnf90JazAWNhg==
+X-Received: by 2002:a17:90b:388c:b0:31e:f36a:3532 with SMTP id 98e67ed59e1d1-320da613e78mr9586640a91.13.1754065080753;
+        Fri, 01 Aug 2025 09:18:00 -0700 (PDT)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-31f63dc167dsm7826538a91.11.2025.08.01.09.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Aug 2025 09:18:00 -0700 (PDT)
+Message-ID: <6028814f139d568865aa504b9ae0b2c6126453c9.camel@gmail.com>
+Subject: Re: [PATCH bpf 4/4] selftests/bpf: Test for unaligned
+ flow_dissector ctx access
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, netfilter-devel@vger.kernel.org,  Pablo Neira
+ Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Petar
+ Penkov <ppenkov@google.com>,  Florian Westphal	 <fw@strlen.de>
+Date: Fri, 01 Aug 2025 09:17:57 -0700
+In-Reply-To: <bf014046ddcf41677fb8b98d150c14027e9fddba.1754039605.git.paul.chaignon@gmail.com>
+References: 
+	<cc1b036be484c99be45eddf48bd78cc6f72839b1.1754039605.git.paul.chaignon@gmail.com>
+	 <bf014046ddcf41677fb8b98d150c14027e9fddba.1754039605.git.paul.chaignon@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Add the various testsuite runners to TESTS variable and have make call
-them with RUN_FULL_TESTSUITE=1 env var.
+On Fri, 2025-08-01 at 11:49 +0200, Paul Chaignon wrote:
+> This patch adds tests for two context fields where unaligned accesses
+> were not properly rejected.
+>=20
+> Note the new macro is similar to the existing narrow_load macro, but we
+> need a different description and access offset. Combining the two
+> macros into one is probably doable but I don't think it would help
+> readability.
+>=20
+> vmlinux.h is included in place of bpf.h so we have the definition of
+> struct bpf_nf_ctx.
+>=20
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> ---
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- Makefile.am | 6 ++++++
- 1 file changed, 6 insertions(+)
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 
-diff --git a/Makefile.am b/Makefile.am
-index ba09e7f0953d5..4fb75b85a5d59 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -409,5 +409,11 @@ EXTRA_DIST += \
- 	tests \
- 	$(NULL)
- 
-+AM_TESTS_ENVIRONMENT = RUN_FULL_TESTSUITE=1; export RUN_FULL_TESTSUITE;
-+TESTS = tests/json_echo/run-test.py \
-+	tests/monitor/run-tests.sh \
-+	tests/py/nft-test.py \
-+	tests/shell/run-tests.sh
-+
- pkgconfigdir = $(libdir)/pkgconfig
- pkgconfig_DATA = libnftables.pc
--- 
-2.49.0
-
+[...]
 
