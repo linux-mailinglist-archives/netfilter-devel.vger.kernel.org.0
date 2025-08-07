@@ -1,111 +1,104 @@
-Return-Path: <netfilter-devel+bounces-8212-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8221-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C35B1D6A2
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Aug 2025 13:29:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C292B1D6CC
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Aug 2025 13:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9395416BA9E
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Aug 2025 11:29:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E156189A5AB
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Aug 2025 11:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7055277CA1;
-	Thu,  7 Aug 2025 11:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8FA277CA1;
+	Thu,  7 Aug 2025 11:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BuQNwabu"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422CA266EFC
-	for <netfilter-devel@vger.kernel.org>; Thu,  7 Aug 2025 11:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AE0233707
+	for <netfilter-devel@vger.kernel.org>; Thu,  7 Aug 2025 11:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754566196; cv=none; b=b2qVfZiFedAWvxqPH1sY8DKw2siT7GaD3KwZY3XR4574B23zNcD5GQDZFTOs31vfMlIIyH6UgiqKuorG1vPZhJemYHbKYHS1t9ZsH5FBGNoEtNDnhfN6ZjeWi2pKglNk+Dz+HAt7k3elBDf45IvvX4D5CncG/nnqVJNbhpgpxGA=
+	t=1754566567; cv=none; b=tRgPG6VPyZQt0uQKo1KgIiXSyOHE5saG/9qPnDrxwNcYzunmhFtr6mz3b9Z3Exw31u9zsTPxnqDNFKScFfn5dbODlR4CB+9od/XKkqOsyZi4t8ureCiQ1PpYTBIRhn4XnXDA9xQrDs/OQ4DUInzr+2+702wkbrImEyJfYPox1IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754566196; c=relaxed/simple;
-	bh=ZMWBe7ewN1kggr+FKq2gDPa1aAUts3ZlEjYkekHSgfM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=siZsMLX9fzsgxoDEToW83byhVp6HQ8eM1w59Y6p8hxddWRkc6OV9LYWE03++IEYogJwe7YnMqiBa9hAOa5dsjYnhmLVKARI2ZDU9ryNTQu6+hppoNg1moge8hYojLzRw4x9DAeOxSpvCKVOQn5m2AA+vSdHOld0QRqxOTQlDzL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 6EC4060532; Thu,  7 Aug 2025 13:29:51 +0200 (CEST)
-Date: Thu, 7 Aug 2025 13:29:51 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf 1/2] netfilter: ctnetlink: fix refcount leak on table
- dump
-Message-ID: <aJSOLzS5WJU1U8ys@strlen.de>
-References: <20250801152515.20172-1-fw@strlen.de>
- <20250801152515.20172-2-fw@strlen.de>
- <aJSGlBD36tgRNWpT@calendula>
+	s=arc-20240116; t=1754566567; c=relaxed/simple;
+	bh=rINS/1oBgFK82gTJZ3TSjDbuZA0dUTDcTbyacL5IJ30=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VFkIrmEtr9Nv54YmqXKM2kQUBSY0kOFJMKh2KwADLjQKyThIYTQvZMknOM89/UnTa+GiRj/musNd5RUG643467W/UwnLQ7UF260vVU4fBav5t3DQUadgUECLhIEN0C9Bed/MKm5YJuacOPZ29UcxcFQl5RaSwzyILw7MpYhedME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BuQNwabu; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4b06d162789so9693371cf.2
+        for <netfilter-devel@vger.kernel.org>; Thu, 07 Aug 2025 04:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1754566565; x=1755171365; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rINS/1oBgFK82gTJZ3TSjDbuZA0dUTDcTbyacL5IJ30=;
+        b=BuQNwabuuyQBn3d7E38XB+/Emgwen3zGwf4gvwkunelyO2tLKK1LSabhzzR/Q6+QxS
+         Wvr+q1bVGR1c5bbUUlWcQdS95mG/PYNCBH/rF05HKWeJtLkocNocsJZtIHl0+Z39sPBN
+         t2t5PtxI06+PRVJ6BtXFKIjN7aqNEgx1rvz7vOj1JHhQlD28KM/1p1BIteHZn8hMoHok
+         6pQklnninczalZi45SzeGa6ncTTkJB9tmky3G8y+Pel58eSIEKLmXv000g+DabTECeMd
+         JWNPy5NW82ps8llDbrhvd5F5uSzJZL3UqWxYRCyNlqO/FfVCXpN2dsZJkm3mmk9e3mV9
+         3qYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754566565; x=1755171365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rINS/1oBgFK82gTJZ3TSjDbuZA0dUTDcTbyacL5IJ30=;
+        b=nR4YMAzcWAfh0j28HX60IXaSzmu1oa1a8dpwKnTDFHBQkEtd4anHq2WlHGPBARImOA
+         CsI6nU6MONeoMzoPMb4M7CpsMokk2J52X22x9Js7DN2epfSZqAyjcHUPTtCZX4qBh2AJ
+         UvDetQtdcCAqH3oh/Peg2en6nICsx5a3CWZYA4tGDE/GJiMAxWrjrV8Y9PYWPzEhXC3P
+         K9J4h2w1sFSmDlmAjm0Xp1chC09KbP6eQpJ/RpKbc4/nk9tsE+BnG7JEJpQJw57+YJ3d
+         +t/hq4ud/pzoBgyFH8jq2yGReDxS2ov5q88qxKtMjCCzkq0e0WW5LuCiO1/Ef+aShBzr
+         0LMQ==
+X-Gm-Message-State: AOJu0YybskypSyOLb8k5yWO4yCdx/CiHeScarVfYLSVoIfbpvPGX8+2Z
+	wb2j0FNZjYw6Lo8hvFXCMciNxn300yR4ePjBBQ13Q1mfZQDySyxQps9ZwbUM1h0jZmgaFVOqRTg
+	TAQIBERChX9Q8bsHacnfGSPH7UwQP+w3FaFHsOrOl
+X-Gm-Gg: ASbGncsVTp5uwIayVf9jbJ2E4yRd+NhCQSvzMZKSOIX51toI5oQ0huCe5uzzQnuT+/X
+	aln0FwnrHwQg7NKqDZstmqRxcaUX+Bcw1E2NC29ZVIKo3LFQJptABnMuKxD3Pc/uwO0d/OYi79p
+	I5lxi9ABFPWVXSoVUYWMJUmFV0WTGOqudviSL+wkG7ofi/qvFCMuXXMFXmd5odVVSnM3EsCuWe0
+	WWyIF+u
+X-Google-Smtp-Source: AGHT+IHVg9rMkoh0qVm3TF7LjNVDVApq6CFUBuY/LSvBIkOM08ZaIhb4ZF9e0y76nOETS7IpnStuVoxiWRcO6yBVp/E=
+X-Received: by 2002:a05:622a:20c:b0:4ab:cf30:1892 with SMTP id
+ d75a77b69052e-4b09254bd74mr101451741cf.22.1754566564482; Thu, 07 Aug 2025
+ 04:36:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aJSGlBD36tgRNWpT@calendula>
+References: <20250807112948.1400523-1-pablo@netfilter.org> <20250807112948.1400523-2-pablo@netfilter.org>
+In-Reply-To: <20250807112948.1400523-2-pablo@netfilter.org>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 7 Aug 2025 04:35:52 -0700
+X-Gm-Features: Ac12FXxvf8GDtHZlGhsGTiJkMDxY38vb5E-S7wVaKk5vvJbhIidQjY_eSM4kwm0
+Message-ID: <CANn89iL1=5ykpHXZtp0_J-oUbd7pJQTDL__JDaJR-JbiQDkCPQ@mail.gmail.com>
+Subject: Re: [PATCH net 1/7] MAINTAINERS: resurrect my netfilter maintainer entry
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net, 
+	netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com, fw@strlen.de, 
+	horms@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Fri, Aug 01, 2025 at 05:25:08PM +0200, Florian Westphal wrote:
-> > There is a reference count leak in ctnetlink_dump_table():
-> >       if (res < 0) {
-> >                 nf_conntrack_get(&ct->ct_general); // HERE
-> >                 cb->args[1] = (unsigned long)ct;
-> >                 ...
->                   goto out;
-> 
-> >
-> > While its very unlikely, its possible that ct == last.
-> 
-> out:
->         ...
->         if (last) {
->                 /* nf ct hash resize happened, now clear the leftover. */
->                 if ((struct nf_conn *)cb->args[1] == last) {
->                         cb->args[1] = 0;
->                 }
-> 
->                 nf_ct_put(last);
->         }
-> 
-> I think problem was introduced here:
-> 
->   fefa92679dbe ("netfilter: ctnetlink: fix incorrect nf_ct_put during hash resize")
+On Thu, Aug 7, 2025 at 4:29=E2=80=AFAM Pablo Neira Ayuso <pablo@netfilter.o=
+rg> wrote:
+>
+> From: Florian Westphal <fw@strlen.de>
+>
+> This reverts commit b5048d27872a9734d142540ea23c3e897e47e05c.
+> Its been more than a year, hope my motivation lasts a bit longer than
+> last time :-)
+>
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-I think you'r right, the 'clear the leftover' is only correct if
-we hit cb->args[0] >= htable_size condition.
-OTOH reverting it gives the problem that commit fixed.
-
-So I think that this code is just way too complicated,
-i have no idea why this ever used reference counts, they do not buy
-anything but headaches.
-
-> cookie is indeed safer approach.
-> 
-> IIRC, the concern is that cookie could result in providing a bogus
-> conntrack listing due to object recycling, which is more likely to
-> happen with SLAB_TYPESAFE_BY_RCU.
-
-Maybe, but even if this code would just store the address, the probability
-of a recycle happening in such a way that a conntrack oject happens to be
-stored, and then on next dump got re-added at exactly this slot is
-almost 0.
-
-And even if it would have been, the worst that can happen is that we
-dump another entry a second time.  /proc code uses to walk the entire
-table from start, counting dumped-entries and I'm not aware of 'dup'
-complaints.
-
-> Then, it should be very unlikely that such recycling that leads to
-> picking up from the wrong conntrack object because two conntrack
-> objects in the same memory spot will have different id.
-
-Yes, it considers the tuples for the hash too, so its exteremly
-unlikely for a recycle to result in same u32 hash value.
+Oh very nice, welcome back Florian !
 
