@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8285-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8297-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CE6AB251F4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:19:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37A8FB251BE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D13A5C6A44
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:09:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 779EC9A371E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9F1291864;
-	Wed, 13 Aug 2025 17:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7528B2BDC39;
+	Wed, 13 Aug 2025 17:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="CwPgZHpV"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="lWGArp9c"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2AD17578
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4E92BD5B7
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755104760; cv=none; b=h1x9TlPnnanPE9Egxwx5RH6xgchk150MPxv5kO5CRbaAKndI4IRPKzNGkxHYrocpp+/wswwYSJbh/ioqQ7nakfQ08RhJVt2H+TW/L/TA4g3/+46u/VU2l66oJrE7ne3Pf7NYqBu0tRahFjQ4eETKocuILFpnlCmglBLl8/kjjQY=
+	t=1755104765; cv=none; b=f4Ltp1e9VyPgvsF4ogY5g8dwwNWO1vCFGtJ0XlkiCI6fDVjV8dDog5dUi0ddGiFFlCMgGa8nEXdsj6Vp6hW3IQWmcT4E8ILpnpfZa/8WzmTjnQm5TsW42nuiXO7BMs9TZJiv+Aj9NXMgevmWOxtqejPy8eA7lIDU5WdDeo2LNVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755104760; c=relaxed/simple;
-	bh=MF3Bpeder4imiE0/Zx17uvgLmqnayu0+Jhu3/aNIhpo=;
+	s=arc-20240116; t=1755104765; c=relaxed/simple;
+	bh=HUx1L1Rw8ISlysl4Ggsw+Y+yV3oSgbVQQOnkkiCUD6M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=une1PcyUw+9JDmX+AjlVfkhpJlaIf8IXcMWdUT8p15eYjjYKf5EEiy6Xh19ADbVSkQNtmqzqQspMgYakk8aoQGdYq5pciI1gzVDH4dRf3ZtY1UWK0PZy3itiwcEZzBfZlX5DG089M08zZCoWB3lzoVf17wnjwEwKlR02Pz/pgrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=CwPgZHpV; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=BJjQLBH2rmny2sRuArLa2Q7dDi/zTaB/ieKwruPf1aQGlolRCRq7qtTQJpWs2u9o2bj9qrT+fazDo0L0Xo45Us/hbiA9T33ct7osORUlRAhS8qZpCqwqJEgu9+d0tj2FSSQLwk6f26MBIsfnKqpGqOfxhUKrFczpNNeiQKqqy3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=lWGArp9c; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=619wgiTbrTR+O4qNqws/ml/yghQAmHh+fGw4UMF4JIQ=; b=CwPgZHpVGBcXZ2RvmKwNyNIH5F
-	5oCoN1kjZPhEcyn1xnrLQLsgRwYX6vr9bTk2409XIP6RhXJmCIy1DfU1/znhxoqfZAWpXPVZ7UgYI
-	7qhpQywPueADJrX484OBG6OxWgG1SO13rLdITtJZ07qM2kj53YxtKtMBH53P3vsfEZqfK0NGFHnYm
-	yjuY/25OCrZGCSfZ6yKVee9pJXw4PV83YRNbfCY9jESgU0PUjHazMrsoqVpIpV1EMMip5mFd3jrxH
-	Vq/iN6utaTGWcU4yHNARnvZTJ7I3gfVUSfpIxjbwoaTI1MJ7Csuy8E1NPZRx6XucKq/UoFXNlH0rb
-	sKf+RRog==;
+	bh=l5e9rPRWYYQB5M0nvSc9sgmyNiAJPlK691YB7hHIq9s=; b=lWGArp9c2CSUsn7WgNDd9H/LAe
+	+tyHHOyKdF2o0w4zxNyAdXzLpI3tpdCGTh9QF3Jo7MyDnelR8jpaTODbpAVGQUyQjJ0lJCIfLWKgo
+	U7T/ZpZiTO3a4/JVNwIeIjXVfrXe8sYREdMd4h+Rk4pI4NZbNJdlzBRUczi2iN67yZiP41UTD6Hz2
+	/6iPaEXbWfiZ18pChDBOvnUEfskJQ04I4CMP9CV5InwdZsVfjBPat0DI6tE6dRM7uEj54dxbp8NrN
+	e0710UIvu9rZFL9in4irZVzcvhYfNwTpPINxlhODh0EGQFHuNg54rsQwFm/8ayV7vRP2VEeyDwuFm
+	aQtsaxRQ==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1umEvD-000000003nU-4Aob;
-	Wed, 13 Aug 2025 19:05:56 +0200
+	id 1umEvK-000000003oZ-2B1v;
+	Wed, 13 Aug 2025 19:06:02 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 05/14] tests: py: Drop duplicate test from inet/gre.t
-Date: Wed, 13 Aug 2025 19:05:40 +0200
-Message-ID: <20250813170549.27880-6-phil@nwl.cc>
+Subject: [nft PATCH 06/14] tests: py: Drop duplicate test from inet/gretap.t
+Date: Wed, 13 Aug 2025 19:05:41 +0200
+Message-ID: <20250813170549.27880-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250813170549.27880-1-phil@nwl.cc>
 References: <20250813170549.27880-1-phil@nwl.cc>
@@ -70,34 +70,34 @@ Content-Transfer-Encoding: 8bit
 The test was duplicate since day 1. The duplicate JSON equivalent was
 added later (semi-automated), remove it as well.
 
-Fixes: c04ef8d104ec6 ("tests: py: add gre tests")
+Fixes: 39a68d9ffd25c ("tests: py: add gretap tests")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/inet/gre.t      |  1 -
- tests/py/inet/gre.t.json | 17 -----------------
+ tests/py/inet/gretap.t      |  1 -
+ tests/py/inet/gretap.t.json | 17 -----------------
  2 files changed, 18 deletions(-)
 
-diff --git a/tests/py/inet/gre.t b/tests/py/inet/gre.t
-index a3e046a1aea5c..a21e67eab2fd1 100644
---- a/tests/py/inet/gre.t
-+++ b/tests/py/inet/gre.t
-@@ -16,7 +16,6 @@ gre icmp type echo-reply;ok
- gre ether saddr 62:87:4d:d6:19:05;fail
- gre vlan id 10;fail
- gre ip dscp 0x02;ok
--gre ip dscp 0x02;ok
- gre ip saddr . gre ip daddr { 1.2.3.4 . 4.3.2.1 };ok
+diff --git a/tests/py/inet/gretap.t b/tests/py/inet/gretap.t
+index cd7ee2158edef..f88896fdede7f 100644
+--- a/tests/py/inet/gretap.t
++++ b/tests/py/inet/gretap.t
+@@ -15,7 +15,6 @@ gretap icmp type echo-reply;ok
+ gretap ether saddr 62:87:4d:d6:19:05;ok
+ gretap vlan id 10;ok
+ gretap ip dscp 0x02;ok
+-gretap ip dscp 0x02;ok
+ gretap ip saddr . gretap ip daddr { 1.2.3.4 . 4.3.2.1 };ok
  
- gre ip saddr set 1.2.3.4;fail
-diff --git a/tests/py/inet/gre.t.json b/tests/py/inet/gre.t.json
-index c4431764849f7..a354e6bd4d17c 100644
---- a/tests/py/inet/gre.t.json
-+++ b/tests/py/inet/gre.t.json
-@@ -121,23 +121,6 @@
+ gretap ip saddr set 1.2.3.4;fail
+diff --git a/tests/py/inet/gretap.t.json b/tests/py/inet/gretap.t.json
+index 36fa97825f9a2..6c16a083b8496 100644
+--- a/tests/py/inet/gretap.t.json
++++ b/tests/py/inet/gretap.t.json
+@@ -139,23 +139,6 @@
      }
  ]
  
--# gre ip dscp 0x02
+-# gretap ip dscp 0x02
 -[
 -    {
 -        "match": {
@@ -105,7 +105,7 @@ index c4431764849f7..a354e6bd4d17c 100644
 -                "payload": {
 -                    "field": "dscp",
 -                    "protocol": "ip",
--                    "tunnel": "gre"
+-                    "tunnel": "gretap"
 -                }
 -            },
 -            "op": "==",
@@ -114,7 +114,7 @@ index c4431764849f7..a354e6bd4d17c 100644
 -    }
 -]
 -
- # gre ip saddr . gre ip daddr { 1.2.3.4 . 4.3.2.1 }
+ # gretap ip saddr . gretap ip daddr { 1.2.3.4 . 4.3.2.1 }
  [
      {
 -- 
