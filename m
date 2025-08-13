@@ -1,36 +1,36 @@
-Return-Path: <netfilter-devel+bounces-8265-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8267-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83208B2488F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 13:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 609ACB24890
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 13:38:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 52E2B4E2183
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 11:38:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 556D34E2B6D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 11:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95A92F746E;
-	Wed, 13 Aug 2025 11:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3CFE2F657B;
+	Wed, 13 Aug 2025 11:38:20 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C5D2F745B;
-	Wed, 13 Aug 2025 11:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD8428F4;
+	Wed, 13 Aug 2025 11:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755085096; cv=none; b=prCTU7igu2XKjR2v88gmaOL765JtdRBU6fRDtm0B8Hkgrgmfr3sQg+hDvTq0PS00Ez3lYoLNKuOiVNi14arB7xg7tyiymOTr0lZIWLIW+lnfccWXbY1jJXl8tnasNVaId3t7/+IKSi+p+dJ+LJRatr1YI7Yihe651eHI/ZQuGfU=
+	t=1755085100; cv=none; b=jD98g1PFaZdYhuLO/QYSAzIQ4PPpqi5cGBVDV5Pph8wUg9ak37lPGxO0jpDOll9sdDL3U189sJ9iEl8We3DRARNd4uN+sVDwy0Jj3W/XRXDMU2BrJz/zKhppsPu2tLFYtnHcXWkrC7TdQgCWt9+htg+twlCiF4UX5ZCiFDDHH3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755085096; c=relaxed/simple;
-	bh=f7Fmm8iRQl8ST44gaTUWNWlRHQac1e3x4cYflciZfRM=;
+	s=arc-20240116; t=1755085100; c=relaxed/simple;
+	bh=twbEC2WDOua5XUTE8jPyd+Hn1+kSacYmE5jIoa1dxSQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KuIM0vG6+6C2YG+wJuwyJG+xjc03bijiOUwEAJqWPadjpFVdZQrJevDwC4Be0C/68utLQCorCApEajKJQykGsqVoRksEgcOKYMTN3YAAODrlLyQLMZClZAAMVz2Z4tBgNUeyAKopxMunyPrqUvtsXOowUdUXiv1WAUFbX9YLsXs=
+	 MIME-Version; b=Q8HiNWWi8SGSWVYjlK/eHaTGor2RWIcKDgxYZHCkFG++xn73/T/UX5NpMibSDX4nlYPFnlNWzcl7pF6ThDAA4zdne9TQSsYPNspUrfpLGVl/IBl1nTCQenjpMeZtuEWVO6ntURPw5NxmJCjdibrlIQoDcX9A5Tl9wht/c39bv84=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 3096F6061F; Wed, 13 Aug 2025 13:38:13 +0200 (CEST)
+	id 8BAA3605CE; Wed, 13 Aug 2025 13:38:17 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -38,12 +38,10 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
-	pablo@netfilter.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Julian Anastasov <ja@ssi.bg>
-Subject: [PATCH net 2/3] ipvs: Fix estimator kthreads preferred affinity
-Date: Wed, 13 Aug 2025 13:36:37 +0200
-Message-ID: <20250813113800.20775-3-fw@strlen.de>
+	pablo@netfilter.org
+Subject: [PATCH net 3/3] netfilter: nf_tables: reject duplicate device on updates
+Date: Wed, 13 Aug 2025 13:36:38 +0200
+Message-ID: <20250813113800.20775-4-fw@strlen.de>
 X-Mailer: git-send-email 2.49.1
 In-Reply-To: <20250813113800.20775-1-fw@strlen.de>
 References: <20250813113800.20775-1-fw@strlen.de>
@@ -55,85 +53,93 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-The estimator kthreads' affinity are defined by sysctl overwritten
-preferences and applied through a plain call to the scheduler's affinity
-API.
+A chain/flowtable update with duplicated devices in the same batch is
+possible. Unfortunately, netdev event path only removes the first
+device that is found, leaving unregistered the hook of the duplicated
+device.
 
-However since the introduction of managed kthreads preferred affinity,
-such a practice shortcuts the kthreads core code which eventually
-overwrites the target to the default unbound affinity.
+Check if a duplicated device exists in the transaction batch, bail out
+with EEXIST in such case.
 
-Fix this with using the appropriate kthread's API.
+WARNING is hit when unregistering the hook:
 
-Fixes: d1a89197589c ("kthread: Default affine kthread to its preferred NUMA node")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Acked-by: Julian Anastasov <ja@ssi.bg>
+ [49042.221275] WARNING: CPU: 4 PID: 8425 at net/netfilter/core.c:340 nf_hook_entry_head+0xaa/0x150
+ [49042.221375] CPU: 4 UID: 0 PID: 8425 Comm: nft Tainted: G S                  6.16.0+ #170 PREEMPT(full)
+ [...]
+ [49042.221382] RIP: 0010:nf_hook_entry_head+0xaa/0x150
+
+Fixes: 78d9f48f7f44 ("netfilter: nf_tables: add devices to existing flowtable")
+Fixes: b9703ed44ffb ("netfilter: nf_tables: support for adding new devices to an existing netdev chain")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/ip_vs.h            | 13 +++++++++++++
- kernel/kthread.c               |  1 +
- net/netfilter/ipvs/ip_vs_est.c |  3 ++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index ff406ef4fd4a..29a36709e7f3 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1163,6 +1163,14 @@ static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
- 		return housekeeping_cpumask(HK_TYPE_KTHREAD);
- }
- 
-+static inline const struct cpumask *sysctl_est_preferred_cpulist(struct netns_ipvs *ipvs)
-+{
-+	if (ipvs->est_cpulist_valid)
-+		return ipvs->sysctl_est_cpulist;
-+	else
-+		return NULL;
-+}
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 13d0ed9d1895..58c5425d61c2 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2803,6 +2803,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 	struct nft_chain *chain = ctx->chain;
+ 	struct nft_chain_hook hook = {};
+ 	struct nft_stats __percpu *stats = NULL;
++	struct nftables_pernet *nft_net;
+ 	struct nft_hook *h, *next;
+ 	struct nf_hook_ops *ops;
+ 	struct nft_trans *trans;
+@@ -2845,6 +2846,20 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 				if (nft_hook_list_find(&basechain->hook_list, h)) {
+ 					list_del(&h->list);
+ 					nft_netdev_hook_free(h);
++					continue;
++				}
 +
- static inline int sysctl_est_nice(struct netns_ipvs *ipvs)
- {
- 	return ipvs->sysctl_est_nice;
-@@ -1270,6 +1278,11 @@ static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
- 	return housekeeping_cpumask(HK_TYPE_KTHREAD);
- }
- 
-+static inline const struct cpumask *sysctl_est_preferred_cpulist(struct netns_ipvs *ipvs)
-+{
-+	return NULL;
-+}
++				nft_net = nft_pernet(ctx->net);
++				list_for_each_entry(trans, &nft_net->commit_list, list) {
++					if (trans->msg_type != NFT_MSG_NEWCHAIN ||
++					    trans->table != ctx->table ||
++					    !nft_trans_chain_update(trans))
++						continue;
 +
- static inline int sysctl_est_nice(struct netns_ipvs *ipvs)
++					if (nft_hook_list_find(&nft_trans_chain_hooks(trans), h)) {
++						nft_chain_release_hook(&hook);
++						return -EEXIST;
++					}
+ 				}
+ 			}
+ 		} else {
+@@ -9060,6 +9075,7 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
  {
- 	return IPVS_EST_NICE;
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 0e98b228a8ef..31b072e8d427 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -893,6 +893,7 @@ int kthread_affine_preferred(struct task_struct *p, const struct cpumask *mask)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(kthread_affine_preferred);
- 
- /*
-  * Re-affine kthreads according to their preferences
-diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-index f821ad2e19b3..15049b826732 100644
---- a/net/netfilter/ipvs/ip_vs_est.c
-+++ b/net/netfilter/ipvs/ip_vs_est.c
-@@ -265,7 +265,8 @@ int ip_vs_est_kthread_start(struct netns_ipvs *ipvs,
+ 	const struct nlattr * const *nla = ctx->nla;
+ 	struct nft_flowtable_hook flowtable_hook;
++	struct nftables_pernet *nft_net;
+ 	struct nft_hook *hook, *next;
+ 	struct nf_hook_ops *ops;
+ 	struct nft_trans *trans;
+@@ -9076,6 +9092,20 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
+ 		if (nft_hook_list_find(&flowtable->hook_list, hook)) {
+ 			list_del(&hook->list);
+ 			nft_netdev_hook_free(hook);
++			continue;
++		}
++
++		nft_net = nft_pernet(ctx->net);
++		list_for_each_entry(trans, &nft_net->commit_list, list) {
++			if (trans->msg_type != NFT_MSG_NEWFLOWTABLE ||
++			    trans->table != ctx->table ||
++			    !nft_trans_flowtable_update(trans))
++				continue;
++
++			if (nft_hook_list_find(&nft_trans_flowtable_hooks(trans), hook)) {
++				err = -EEXIST;
++				goto err_flowtable_update_hook;
++			}
+ 		}
  	}
  
- 	set_user_nice(kd->task, sysctl_est_nice(ipvs));
--	set_cpus_allowed_ptr(kd->task, sysctl_est_cpulist(ipvs));
-+	if (sysctl_est_preferred_cpulist(ipvs))
-+		kthread_affine_preferred(kd->task, sysctl_est_preferred_cpulist(ipvs));
- 
- 	pr_info("starting estimator thread %d...\n", kd->id);
- 	wake_up_process(kd->task);
 -- 
 2.49.1
 
