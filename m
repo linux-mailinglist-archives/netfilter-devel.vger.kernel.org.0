@@ -1,35 +1,36 @@
-Return-Path: <netfilter-devel+bounces-8264-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8266-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7348B2488D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 13:38:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693B8B24891
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 13:38:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2961175CF9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 11:38:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FA9A565AC1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 11:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F582ECE9B;
-	Wed, 13 Aug 2025 11:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99BA2F83A9;
+	Wed, 13 Aug 2025 11:38:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B416928F4;
-	Wed, 13 Aug 2025 11:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C35E28F4;
+	Wed, 13 Aug 2025 11:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755085094; cv=none; b=MSsC1o4be+zlfc0x5bdtxhU9vSYULg4EOnt9+3fUYb68IZ/2eKgqVo0RWQNxWcslTC0isDZ3CgWbfzBdujrHj3YxSyQKRhG61VFqxVkGFC7ZE5+mx9LbM6fpWMmQEeBOH3GbSNVnEqnVpLrDMYVBb9u51HNp1xGeee4TKOCUV4c=
+	t=1755085097; cv=none; b=TMjLiFisWIhi+0jGCMKGecAMhyIIcS/WH1IX2w5MdboyJdoPCsYojk1x+wvV3uCv73boFZj3CIbOrAk7WmY/kRtqbc3KfQ5lruhZCgR0FvPuXOTkTgjESQLGzyyz0EZtK6z6bPuz+FkzN5iITvO1I95/sxigy0r4u/ewt02opZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755085094; c=relaxed/simple;
-	bh=HGX5wJeApRFwDAtPQEALo5mbyoq1QvJX/Kkip4cfAfM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G2RQeIbjoH4AH3mCDRaShu+Fu7jV/q/apzEGg0E8F3DPoSSFhoU3z1LhdDA8uVnFRhD2BJu/wvYi8Condr/7zTfTzafjaWqxgbqL0xPO8YyvdMh/XjUjXZTdHwueia76PSXTc6Po1P97iW56/8EpQYBe5MMAZ7hC7CSA1mVhQM8=
+	s=arc-20240116; t=1755085097; c=relaxed/simple;
+	bh=3/DkUOj8vBSY9ogz02GE5cDb+Sh+RGgdP4Dq03SelnA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dWSlRG5fzpAxbGSIToa/fNP5FbYusEVxxkaRNFqQc7hqrRlL5fky3XKKi41z0TgJON82oaYD+tQ8fXg32DbUziLDFl1jgLysaj3dBL7YoOYnxTwy0Rjjn72Uw9DgTkkSMt70WLS+d0e2AWtirWHQ+RLu0CrQ9+uGwu/XnAy7aLM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 77767605CE; Wed, 13 Aug 2025 13:38:04 +0200 (CEST)
+	id CC14E605F7; Wed, 13 Aug 2025 13:38:08 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -38,10 +39,12 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 0/3] Netfilter fixes for net
-Date: Wed, 13 Aug 2025 13:36:35 +0200
-Message-ID: <20250813113800.20775-1-fw@strlen.de>
+Subject: [PATCH net 1/3] netfilter: nft_set_pipapo: fix null deref for empty set
+Date: Wed, 13 Aug 2025 13:36:36 +0200
+Message-ID: <20250813113800.20775-2-fw@strlen.de>
 X-Mailer: git-send-email 2.49.1
+In-Reply-To: <20250813113800.20775-1-fw@strlen.de>
+References: <20250813113800.20775-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -50,53 +53,38 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The following patchset contains Netfilter fixes for *net*:
+Blamed commit broke the check for a null scratch map:
+  -  if (unlikely(!m || !*raw_cpu_ptr(m->scratch)))
+  +  if (unlikely(!raw_cpu_ptr(m->scratch)))
 
-1) I managed to add a null dereference crash in nft_set_pipapo
-   in the current development cycle, was not caught by CI
-   because the avx2 implementation is fine, but selftest
-   splats when run on non-avx2 host.
+This should have been "if (!*raw_ ...)".
+Use the pattern of the avx2 version which is more readable.
 
-2) Fix the ipvs estimater kthread affinity, was incorrect
-   since 6.14. From Frederic Weisbecker.
+This can only be reproduced if avx2 support isn't available.
 
-3) nf_tables should not allow to add a device to a flowtable
-   or netdev chain more than once -- reject this.
-   From Pablo Neira Ayuso.  This has been broken for long time,
-   blamed commit dates from v5.8.
+Fixes: d8d871a35ca9 ("netfilter: nft_set_pipapo: merge pipapo_get/lookup")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nft_set_pipapo.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Please, pull these changes from:
-The following changes since commit d7e82594a45c5cb270940ac469846e8026c7db0f:
-
-  selftests: tls: test TCP stealing data from under the TLS socket (2025-08-12 18:59:06 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-25-08-13
-
-for you to fetch changes up to cf5fb87fcdaaaafec55dcc0dc5a9e15ead343973:
-
-  netfilter: nf_tables: reject duplicate device on updates (2025-08-13 08:34:55 +0200)
-
-----------------------------------------------------------------
-netfilter pull request nf-25-08-13
-
-----------------------------------------------------------------
-Florian Westphal (1):
-      netfilter: nft_set_pipapo: fix null deref for empty set
-
-Frederic Weisbecker (1):
-      ipvs: Fix estimator kthreads preferred affinity
-
-Pablo Neira Ayuso (1):
-      netfilter: nf_tables: reject duplicate device on updates
-
- include/net/ip_vs.h            | 13 +++++++++++++
- kernel/kthread.c               |  1 +
- net/netfilter/ipvs/ip_vs_est.c |  3 ++-
- net/netfilter/nf_tables_api.c  | 30 ++++++++++++++++++++++++++++++
- net/netfilter/nft_set_pipapo.c |  5 ++---
- 5 files changed, 48 insertions(+), 4 deletions(-)
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 1a19649c2851..9a10251228fd 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -426,10 +426,9 @@ static struct nft_pipapo_elem *pipapo_get(const struct nft_pipapo_match *m,
+ 
+ 	local_bh_disable();
+ 
+-	if (unlikely(!raw_cpu_ptr(m->scratch)))
+-		goto out;
+-
+ 	scratch = *raw_cpu_ptr(m->scratch);
++	if (unlikely(!scratch))
++		goto out;
+ 
+ 	map_index = scratch->map_index;
+ 
 -- 
 2.49.1
 
