@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8290-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8285-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68203B251D3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE6AB251F4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:19:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABD9E5C6DA7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:09:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D13A5C6A44
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F2D29AB03;
-	Wed, 13 Aug 2025 17:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9F1291864;
+	Wed, 13 Aug 2025 17:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="keUBcy6K"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="CwPgZHpV"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264CA287504
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2AD17578
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755104761; cv=none; b=B9uEBltdgtcmvt60JTSRvCEF0ASog9hAX5GOneMxuQu0uB1vRZEPTd9ANFo70In3YjGByLl7GPQOvKC9ptHSu/SmUwBm/Z5GxupyHOxwhYRIP40mswW3MvaiP8RNpBjjoK2GYtcAnUn58cKzFBR0jOLA6AkIaq0okxmLmnO8mUk=
+	t=1755104760; cv=none; b=h1x9TlPnnanPE9Egxwx5RH6xgchk150MPxv5kO5CRbaAKndI4IRPKzNGkxHYrocpp+/wswwYSJbh/ioqQ7nakfQ08RhJVt2H+TW/L/TA4g3/+46u/VU2l66oJrE7ne3Pf7NYqBu0tRahFjQ4eETKocuILFpnlCmglBLl8/kjjQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755104761; c=relaxed/simple;
-	bh=JezUmEibfeIS1cIyP5v9FK3vZ0+xo9Rd8uTlu/ROLKk=;
+	s=arc-20240116; t=1755104760; c=relaxed/simple;
+	bh=MF3Bpeder4imiE0/Zx17uvgLmqnayu0+Jhu3/aNIhpo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RnB20GoYSf4fzxj3gzT5ilJ8uY5Al6HDa6traUnpC10uVD/pFblwyZnHTFzleFOYJZLZUspNSHVLUzBLeBuZhCgmO+gsej5vahdxjj7e3PJ6LGOCTNqbrvvArm30vbxDNea3xeZ0MTy9y5xMcZzSy7QGv1n+DJhDlcpGtTWZlBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=keUBcy6K; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=une1PcyUw+9JDmX+AjlVfkhpJlaIf8IXcMWdUT8p15eYjjYKf5EEiy6Xh19ADbVSkQNtmqzqQspMgYakk8aoQGdYq5pciI1gzVDH4dRf3ZtY1UWK0PZy3itiwcEZzBfZlX5DG089M08zZCoWB3lzoVf17wnjwEwKlR02Pz/pgrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=CwPgZHpV; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=sRCWwWGZa2a4ZcruYurSMXX0kJgxV3bSGwc695qAP0w=; b=keUBcy6KCNyUFNhWsiFaIf2cwj
-	W9uUDD65eV0m8Zk0mlRpzvKTU++vNF7bPJ7VNg8fNydyVq5fyVREGm4LFqcWeOxksBX0ix1Pl9h3x
-	4+T5ebyC7O7ZYn7QoBgsCUZH/slC0nh0o93TBqMXOUg+O/0W4wD6HmDL4NL/jT38/A8FNYtW+bxn8
-	TXtqhyWGBYn9KQ38CAh1pYETgEXUTkXOilxQeDq/pAcvbyCG8PPovpGXdczws9IooHjEsgUmSK1Pp
-	EXVv+Vsc+hU2L0GXee9uaSw49PrBRuYHtxR9ljjueWBugRgit4byOynHBtuKFD1M4Zz6S9XdO98UH
-	4r02JbRQ==;
+	bh=619wgiTbrTR+O4qNqws/ml/yghQAmHh+fGw4UMF4JIQ=; b=CwPgZHpVGBcXZ2RvmKwNyNIH5F
+	5oCoN1kjZPhEcyn1xnrLQLsgRwYX6vr9bTk2409XIP6RhXJmCIy1DfU1/znhxoqfZAWpXPVZ7UgYI
+	7qhpQywPueADJrX484OBG6OxWgG1SO13rLdITtJZ07qM2kj53YxtKtMBH53P3vsfEZqfK0NGFHnYm
+	yjuY/25OCrZGCSfZ6yKVee9pJXw4PV83YRNbfCY9jESgU0PUjHazMrsoqVpIpV1EMMip5mFd3jrxH
+	Vq/iN6utaTGWcU4yHNARnvZTJ7I3gfVUSfpIxjbwoaTI1MJ7Csuy8E1NPZRx6XucKq/UoFXNlH0rb
+	sKf+RRog==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1umEvG-000000003nu-21kn;
-	Wed, 13 Aug 2025 19:05:58 +0200
+	id 1umEvD-000000003nU-4Aob;
+	Wed, 13 Aug 2025 19:05:56 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 04/14] tests: py: Drop duplicate test from inet/geneve.t
-Date: Wed, 13 Aug 2025 19:05:39 +0200
-Message-ID: <20250813170549.27880-5-phil@nwl.cc>
+Subject: [nft PATCH 05/14] tests: py: Drop duplicate test from inet/gre.t
+Date: Wed, 13 Aug 2025 19:05:40 +0200
+Message-ID: <20250813170549.27880-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250813170549.27880-1-phil@nwl.cc>
 References: <20250813170549.27880-1-phil@nwl.cc>
@@ -70,54 +70,42 @@ Content-Transfer-Encoding: 8bit
 The test was duplicate since day 1. The duplicate JSON equivalent was
 added later (semi-automated), remove it as well.
 
-Fixes: 2b9143bc7ab81 ("tests: py: add geneve tests")
+Fixes: c04ef8d104ec6 ("tests: py: add gre tests")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/inet/geneve.t      |  1 -
- tests/py/inet/geneve.t.json | 29 -----------------------------
- 2 files changed, 30 deletions(-)
+ tests/py/inet/gre.t      |  1 -
+ tests/py/inet/gre.t.json | 17 -----------------
+ 2 files changed, 18 deletions(-)
 
-diff --git a/tests/py/inet/geneve.t b/tests/py/inet/geneve.t
-index 101f6dfcdb7e8..ad46272091ad2 100644
---- a/tests/py/inet/geneve.t
-+++ b/tests/py/inet/geneve.t
-@@ -17,7 +17,6 @@ udp dport 6081 geneve icmp type echo-reply;ok
- udp dport 6081 geneve ether saddr 62:87:4d:d6:19:05;ok
- udp dport 6081 geneve vlan id 10;ok
- udp dport 6081 geneve ip dscp 0x02;ok
--udp dport 6081 geneve ip dscp 0x02;ok
- udp dport 6081 geneve ip saddr . geneve ip daddr { 1.2.3.4 . 4.3.2.1 };ok
+diff --git a/tests/py/inet/gre.t b/tests/py/inet/gre.t
+index a3e046a1aea5c..a21e67eab2fd1 100644
+--- a/tests/py/inet/gre.t
++++ b/tests/py/inet/gre.t
+@@ -16,7 +16,6 @@ gre icmp type echo-reply;ok
+ gre ether saddr 62:87:4d:d6:19:05;fail
+ gre vlan id 10;fail
+ gre ip dscp 0x02;ok
+-gre ip dscp 0x02;ok
+ gre ip saddr . gre ip daddr { 1.2.3.4 . 4.3.2.1 };ok
  
- udp dport 6081 geneve ip saddr set 1.2.3.4;fail
-diff --git a/tests/py/inet/geneve.t.json b/tests/py/inet/geneve.t.json
-index a299fcd2d0545..15899180dea36 100644
---- a/tests/py/inet/geneve.t.json
-+++ b/tests/py/inet/geneve.t.json
-@@ -264,35 +264,6 @@
+ gre ip saddr set 1.2.3.4;fail
+diff --git a/tests/py/inet/gre.t.json b/tests/py/inet/gre.t.json
+index c4431764849f7..a354e6bd4d17c 100644
+--- a/tests/py/inet/gre.t.json
++++ b/tests/py/inet/gre.t.json
+@@ -121,23 +121,6 @@
      }
  ]
  
--# udp dport 6081 geneve ip dscp 0x02
+-# gre ip dscp 0x02
 -[
--    {
--        "match": {
--            "left": {
--                "payload": {
--                    "field": "dport",
--                    "protocol": "udp"
--                }
--            },
--            "op": "==",
--            "right": 6081
--        }
--    },
 -    {
 -        "match": {
 -            "left": {
 -                "payload": {
 -                    "field": "dscp",
 -                    "protocol": "ip",
--                    "tunnel": "geneve"
+-                    "tunnel": "gre"
 -                }
 -            },
 -            "op": "==",
@@ -126,7 +114,7 @@ index a299fcd2d0545..15899180dea36 100644
 -    }
 -]
 -
- # udp dport 6081 geneve ip saddr . geneve ip daddr { 1.2.3.4 . 4.3.2.1 }
+ # gre ip saddr . gre ip daddr { 1.2.3.4 . 4.3.2.1 }
  [
      {
 -- 
