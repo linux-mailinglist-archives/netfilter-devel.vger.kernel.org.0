@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8291-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8293-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1E3B251D7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:16:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6983DB251BC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:15:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5836D2A04CC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:10:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9697A9A340A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61CD2BCF65;
-	Wed, 13 Aug 2025 17:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9ED2BD58A;
+	Wed, 13 Aug 2025 17:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="j7Nj0ZbY"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="L5/JCjfq"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389E92868B2
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BBA2BD02A
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755104761; cv=none; b=Hy2yjaxq9J2B3mHyDxrPntzOpd7cgSNpesY0Ap01cGB3/alokhj9HIPX/eu8vQcg5/DlQzRBSjyHsJ7vsCXvBAhBppmRRWc6SOannRlR7SNjcvJIbo8OwaKsnWxik0biRJRSTAF+G9odrhNar2gbaBpMgNtzRYSP4BHJU3Iaid8=
+	t=1755104763; cv=none; b=QyxsPgV9xMrvQ8DT627R5Are21/zxnlaOFv+zBEnt/5qVqXALwDLVWJiMYh+6cY0cwIdoQG5HgArcSaglI+V2ZgyvvMfq7bC7t18pwVzRaPyiYEEC/FCIfVe2QnXcjQUTStzLYu0IFSfqVH9JOgJxVmzBrqne0z9JelnD1s6OAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755104761; c=relaxed/simple;
-	bh=HFjEP2twctQsMt7mMgda/9DXS8I6JtUjhiFE+5Ab/W0=;
+	s=arc-20240116; t=1755104763; c=relaxed/simple;
+	bh=J+v426oHQgDH6P4su54QP/+U2M5dXRsZbCQB+DBTPmg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Us0cuPC6O/3KyloLrDx5TEp5JA2ByB9Fdig7Muen+CF4bbQqFMv0yv9+EuMYGDMes78jf4gx2Mj+2bo4Eiw4S+Ms3SbrMDxV3uHw3o4ur7m43n8rqES7US2K56BJAggxyCs9xH9EzxGuLzLTkhWCP6gc06d/F6jq+eSkSS3jkPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=j7Nj0ZbY; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=RiCruP7+uFm1ZflDR8FlKH6tPA3sQFYMWXADEAT4GjAj3ATVEkrkZbLmSIzOrFwZlPr4tTb8troC0rcRj3ii8MYYVO3H93IhUqtsheflJb5zaS97B0ptdE6HinUeNY7DluKtm/lyrLQNkTXlRGuSBosrcc8emX2T7aLc61yaqq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=L5/JCjfq; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Vfy+WH7aNmnOcUDUg+MNJtghSB4l2eJP30ZLSB5kl9Q=; b=j7Nj0ZbYrNcR62q+pj428Tttaj
-	Gp3t92mgbeaSLHO/0o6EdGo25+X1v18+BeO/eQAF5ABQJsWVSQeAj6BMmJCM+nrTFdm1Oztq01tZZ
-	O+pnAQ/eGgQaGj+/y/wUCRzAfMCV2prZtA1Dx8cYkta6J59aV+Z7zGIkwEdOKUspjUC/wDfq13Dq7
-	C5zs9yHQSkaaQ8Z8cD6RBGPxdjvUKLlYXX9ZWfGRae7om9GV/7l+pSL2+c8fquXSMgeQ4EYmev366
-	s9lP6vxx1HoPhhb6eFLys8SvLXYgo5TaRlS9mUo8oUcElTVGbPGJ9zWcqg1z4X4Aj5kJIu7+4x+tP
-	m5jA3FjA==;
+	bh=eCoAaxfa2AxR3+8LjQCVhl0LTQkGiOLq1o4rxqoZIZg=; b=L5/JCjfq6nzmQs+luh5lh1Kh+U
+	vyqgniXA8lHUg+2kaz/52pXN5TXtHGIsWwOroy6nEO4HRJkBb6on5MSbdGUQk0NDSSpGycThdVmgv
+	ew5hDJILcUuPXMAw0OJI9YuLMsLhMl/0AbuwBSpnRzGOCHNIxcDrlzazlG+CcbexSzkAvWvDwm99M
+	D6w69SkalnLKdIFMI3FmY58GRTRFg9JXm9vPD142bfdb0eglopUrfkyGnsRc15RHi/bslAuiUK2R4
+	viY0MvzRVJB5WSWQAKc9fMjaLCqpQ9HIaaaNKulNQ5O6k3Zp0R1uPwBgF8gBgWsuc6aQ27vy7T7k3
+	kkLw2TzA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1umEvF-000000003nk-22IQ;
-	Wed, 13 Aug 2025 19:05:57 +0200
+	id 1umEvH-000000003o6-3z5r;
+	Wed, 13 Aug 2025 19:06:00 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 09/14] tests: py: Drop redundant payloads for ip/ip.t
-Date: Wed, 13 Aug 2025 19:05:44 +0200
-Message-ID: <20250813170549.27880-10-phil@nwl.cc>
+Subject: [nft PATCH 10/14] tests: py: Drop stale entry from ip/snat.t.json
+Date: Wed, 13 Aug 2025 19:05:45 +0200
+Message-ID: <20250813170549.27880-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250813170549.27880-1-phil@nwl.cc>
 References: <20250813170549.27880-1-phil@nwl.cc>
@@ -67,469 +67,59 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Each was present multiple times, introduced probably by copying from a
-respective .got file.
+The test syntax was changed, but the respective JSON equivalent remained
+in place.
 
-Fixes: 77def2d43466e ("netlink_delinearize: support for bitfield payload statement with binary operation")
+Fixes: 9b169bfc650eb ("src: remove STMT_NAT_F_INTERVAL flags and interval keyword")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/ip/ip.t.payload.bridge | 261 --------------------------------
- tests/py/ip/ip.t.payload.inet   | 176 ---------------------
- 2 files changed, 437 deletions(-)
+ tests/py/ip/snat.t.json | 33 ---------------------------------
+ 1 file changed, 33 deletions(-)
 
-diff --git a/tests/py/ip/ip.t.payload.bridge b/tests/py/ip/ip.t.payload.bridge
-index 94da3e9092d35..663f87d7b4acf 100644
---- a/tests/py/ip/ip.t.payload.bridge
-+++ b/tests/py/ip/ip.t.payload.bridge
-@@ -829,264 +829,3 @@ bridge test-bridge input
-   [ payload load 2b @ network header + 0 => reg 1 ]
-   [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
-   [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
+diff --git a/tests/py/ip/snat.t.json b/tests/py/ip/snat.t.json
+index 967560e636a97..60bd0932f3c09 100644
+--- a/tests/py/ip/snat.t.json
++++ b/tests/py/ip/snat.t.json
+@@ -283,39 +283,6 @@
+     }
+ ]
+ 
+-# snat ip interval to ip saddr map { 10.141.11.4 : 192.168.2.2-192.168.2.4 }
+-[
+-    {
+-        "snat": {
+-            "addr": {
+-                "map": {
+-                    "data": {
+-                        "set": [
+-                            [
+-                                "10.141.11.4",
+-                                {
+-                                    "range": [
+-                                        "192.168.2.2",
+-                                        "192.168.2.4"
+-                                    ]
+-                                }
+-                            ]
+-                        ]
+-                    },
+-                    "key": {
+-                        "payload": {
+-                            "field": "saddr",
+-                            "protocol": "ip"
+-                        }
+-                    }
+-                }
+-            },
+-            "family": "ip",
+-            "type_flags": "interval"
+-        }
+-    }
+-]
 -
--# ip ecn set ip ecn | ect0
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000200 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000100 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect0
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp | lephb
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fbff ) ^ 0x00000400 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--# ip dscp set ip dscp & lephb
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x000007ff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & 0x1f
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x00007fff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version | 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ffef ) ^ 0x00000010 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version & 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength | 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fffe ) ^ 0x00000001 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength & 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect0
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000200 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000100 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect0
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp | lephb
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fbff ) ^ 0x00000400 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--# ip dscp set ip dscp & lephb
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x000007ff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & 0x1f
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x00007fff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version | 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ffef ) ^ 0x00000010 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version & 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength | 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fffe ) ^ 0x00000001 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength & 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect0
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000200 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000100 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect0
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp | lephb
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fbff ) ^ 0x00000400 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--# ip dscp set ip dscp & lephb
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x000007ff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & 0x1f
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x00007fff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version | 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ffef ) ^ 0x00000010 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version & 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength | 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fffe ) ^ 0x00000001 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength & 1
--bridge test-bridge input
--  [ meta load protocol => reg 1 ]
--  [ cmp eq reg 1 0x00000008 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-diff --git a/tests/py/ip/ip.t.payload.inet b/tests/py/ip/ip.t.payload.inet
-index 2004a3ebd1c06..b8ab49c871430 100644
---- a/tests/py/ip/ip.t.payload.inet
-+++ b/tests/py/ip/ip.t.payload.inet
-@@ -829,179 +829,3 @@ inet test-inet input
-   [ payload load 2b @ network header + 0 => reg 1 ]
-   [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
-   [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect0
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000200 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000100 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect0
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp | lephb
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fbff ) ^ 0x00000400 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & lephb
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x000007ff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & 0x1f
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x00007fff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version | 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ffef ) ^ 0x00000010 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version & 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength | 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fffe ) ^ 0x00000001 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength & 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect0
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000200 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn | ect1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000100 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect0
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000feff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip ecn set ip ecn & ect1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fdff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp | lephb
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fbff ) ^ 0x00000400 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & lephb
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x000007ff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip dscp set ip dscp & 0x1f
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x00007fff ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version | 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ffef ) ^ 0x00000010 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip version set ip version & 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength | 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fffe ) ^ 0x00000001 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--
--# ip hdrlength set ip hdrlength & 1
--inet test-inet input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
--  [ payload load 2b @ network header + 0 => reg 1 ]
--  [ bitwise reg 1 = ( reg 1 & 0x0000fff1 ) ^ 0x00000000 ]
--  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
+ # snat ip prefix to ip saddr map { 10.141.11.0/24 : 192.168.2.0/24 }
+ [
+     {
 -- 
 2.49.0
 
