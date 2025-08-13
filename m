@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8287-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8289-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D63B251B7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:15:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E38B251EC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 19:18:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AC5C9A6C57
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:09:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BAFB5C0878
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 17:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A0729A310;
-	Wed, 13 Aug 2025 17:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5408929AAE7;
+	Wed, 13 Aug 2025 17:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="KyFnA13M"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="DvUPhDrW"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DBE23D7E4
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABEB92874ED
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 17:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755104760; cv=none; b=BY6GzMs8MVmyMuShk/If/5RX5sx1O0IMm3/LcCWcT6toR8Sb6v9OL4EDOu6SNMdEHj6RpOGrKhrMblCYvhnHsQxjyejoQPUIaah2GuLIzQaBS8no5nvdQ45/mybUgmwOAdMG7Uxe8GH3S0sqcH4jy1h4SzYgZ6uIMqDk8pEoMuo=
+	t=1755104761; cv=none; b=SP6E8BqIahYaNpDhtFaS4wqcDBttweomEPZGIh5V+TdPiW3Lssh9FN+i2uVrMstLbKqU6GEiHwG/WgVwLgcc4rbneJWh8mkbnxQmeg4336yssJ8FBIdWGpusgWEr07KglnFklk0L9U1RhCEmDSZSIIqFHVp4CDd5NRrkGtIRevg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755104760; c=relaxed/simple;
-	bh=4jDACsZoANmdsCZ0pVEVGfWuPyxMooE0fBVA+65pjYk=;
+	s=arc-20240116; t=1755104761; c=relaxed/simple;
+	bh=ie2GTJiubcueSxUU9yd8fXR8I/DPuGojJ3mMh90/rME=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZPezJSQ9ycQmGuEW16O0R0pme5uRf+XBJ0KbCIrK9BluXEHM0GdjdDydn9FWCdBAZpNHykNQ1imsVeISOKveCB1HjpNwrQTh5nDH/R3k94HBSQViqdp3+BtMQ5qrSJiE79ptDnVkXX9kNYSymjNVTQCt8KCH9N7UghVvKDzVbBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=KyFnA13M; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=dywGQofgb5VjCWGUatsqiXYpJqQltLdD6o1MSS9XaeNn7sT3k7aYy8Gc0R3pFA+xiMmnwBw9oiVTqXT9fYfU/rIlldm+PYXL3W9I6x7zhKZ45gwzcrrlU/mzsOgI8NdtpxDt5+gF4wLqVDmcGZekOpEhGEPDJN3+ptGEqtLGVTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=DvUPhDrW; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=6Atx6889DpZjavOpGjB7CfP5Zq06JHePyuIEdub5OXY=; b=KyFnA13Mu9Fkkfr5BtMknSbUeZ
-	g0fOXXZqqydXs/IjxRWcVUJCLIDAzJQL4leDHOHicqzjis7HEU2VkygHHMS2lBihR8zEu6pc5trMP
-	BTer7ZdOztv58gd24N4uk8NPDa/xOrXhaoQhq7n30Law0Z2Zw+w8aB2aEOuX1Ysyb+z/Er6BkZyM7
-	2MB0V9kD02ezFiazgXOTQgwBYmTaYKlNDXXU9Uz6iruAXSvW8XHyTz1Blzxw5dAbsFVa0p96HTObG
-	hSYsiyHqjnVmFFxtwdnYRz8if4hEhSPXI+gIvxIO6W3g8PERMt6zTLiCiQrQlCgzuZH0b4jwhWqq5
-	8Mmrb1iQ==;
+	bh=VJkT+HEG6PZWh42N/zPhkMiA1iyDJrLwemaEOA1gTYk=; b=DvUPhDrWRgTAopohDbtZcReZ+f
+	z9L4eA5PW3D2bE9zRnrMq/OQcjVXzf0JfevzITRMb+yUGUwBS0AQnuMEaA2NaM2R040G4QGfl2/rh
+	/KZFH3/gyjHCvx4zaeF4pwf/0X8dwRqhI9c2vnmOGj2BOGvMBdWaW/jcJhIDOIw9GqIog2YaApq0G
+	ySGHfsok3KNxX4xPDlFS+XUvDg93W/pzCZycvJzdhQtLQd2yp2/E4GBZcHWHkOZtCIn3HCcesBjzC
+	+9M0y3QwZbxwc0E6aI+vdt02HaJbNRGSDQFF9H/C5ptaRqsozAe+AZPRxtM33hnOAeaUou7XFkvmZ
+	PCTXXuBw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1umEvE-000000003na-200x;
-	Wed, 13 Aug 2025 19:05:56 +0200
+	id 1umEvF-000000003np-4ARd;
+	Wed, 13 Aug 2025 19:05:58 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 02/14] tests: py: Drop stale entries since redundant test case removal
-Date: Wed, 13 Aug 2025 19:05:37 +0200
-Message-ID: <20250813170549.27880-3-phil@nwl.cc>
+Subject: [nft PATCH 03/14] tests: py: Drop stale payload from any/rawpayload.t.payload
+Date: Wed, 13 Aug 2025 19:05:38 +0200
+Message-ID: <20250813170549.27880-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250813170549.27880-1-phil@nwl.cc>
 References: <20250813170549.27880-1-phil@nwl.cc>
@@ -67,328 +67,31 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fixed commit left stale JSON equivalents and payload records in place,
-drop them.
+There never was a test corresponding to this payload.
 
-Fixes: ec1ea13314fa5 ("tests: remove redundant test cases")
+Fixes: 857904bdfaf7a ("tests: py: extend raw payload match tests")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/any/meta.t.json        |  38 ----------
- tests/py/ip6/dst.t.json         |  23 ------
- tests/py/ip6/dst.t.payload.inet |  10 ---
- tests/py/ip6/dst.t.payload.ip6  |   8 ---
- tests/py/ip6/frag.t.json        | 121 --------------------------------
- tests/py/ip6/ip6.t.json         |  40 -----------
- 6 files changed, 240 deletions(-)
+ tests/py/any/rawpayload.t.payload | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/tests/py/any/meta.t.json b/tests/py/any/meta.t.json
-index 8dcd1e13243de..85406efc4d773 100644
---- a/tests/py/any/meta.t.json
-+++ b/tests/py/any/meta.t.json
-@@ -2294,44 +2294,6 @@
-     }
- ]
+diff --git a/tests/py/any/rawpayload.t.payload b/tests/py/any/rawpayload.t.payload
+index c093d5d8932f1..dfc651e2886a9 100644
+--- a/tests/py/any/rawpayload.t.payload
++++ b/tests/py/any/rawpayload.t.payload
+@@ -111,12 +111,6 @@ inet test-inet input
+   [ bitwise reg 1 = ( reg 1 & 0x00000060 ) ^ 0x00000000 ]
+   [ cmp eq reg 1 0x00000040 ]
  
--# meta cgroup {1048577-1048578}
--[
--    {
--        "match": {
--            "left": {
--                "meta": { "key": "cgroup" }
--            },
--            "op": "==",
--            "right": {
--                "set": [
--                    {
--                        "range": [ 1048577, 1048578 ]
--                    }
--                ]
--            }
--        }
--    }
--]
+-# @ih,2,1 0x1
+-inet test-inet input
+-  [ payload load 1b @ inner header + 0 => reg 1 ]
+-  [ bitwise reg 1 = ( reg 1 & 0x00000020 ) ^ 0x00000000 ]
+-  [ cmp eq reg 1 0x00000020 ]
 -
--# meta cgroup != { 1048577-1048578}
--[
--    {
--        "match": {
--            "left": {
--                "meta": { "key": "cgroup" }
--            },
--            "op": "!=",
--            "right": {
--                "set": [
--                    {
--                        "range": [ 1048577, 1048578 ]
--                    }
--                ]
--            }
--        }
--    }
--]
--
- # meta iif . meta oif { "lo" . "lo" }
- [
-     {
-diff --git a/tests/py/ip6/dst.t.json b/tests/py/ip6/dst.t.json
-index e947a76f4f4a9..7ba4572c50bbe 100644
---- a/tests/py/ip6/dst.t.json
-+++ b/tests/py/ip6/dst.t.json
-@@ -290,26 +290,3 @@
-         }
-     }
- ]
--
--# dst hdrlength != { 33, 55, 67, 88}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "hdrlength",
--                    "name": "dst"
--                }
--            },
--            "op": "!=",
--            "right": {
--                "set": [
--                    33,
--                    55,
--                    67,
--                    88
--                ]
--            }
--        }
--    }
--]
-diff --git a/tests/py/ip6/dst.t.payload.inet b/tests/py/ip6/dst.t.payload.inet
-index 476fdbcd73630..eb7a87d577a31 100644
---- a/tests/py/ip6/dst.t.payload.inet
-+++ b/tests/py/ip6/dst.t.payload.inet
-@@ -117,13 +117,3 @@ ip6 test-ip6 input
-   [ cmp eq reg 1 0x0000000a ]
-   [ exthdr load ipv6 1b @ 60 + 1 => reg 1 ]
-   [ lookup reg 1 set __set%d ]
--
--# dst hdrlength != { 33, 55, 67, 88}
--__set%d test-ip6 3
--__set%d test-ip6 0
--	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
--ip6 test-ip6 input
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x0000000a ]
--  [ exthdr load ipv6 1b @ 60 + 1 => reg 1 ]
--  [ lookup reg 1 set __set%d 0x1 ]
-diff --git a/tests/py/ip6/dst.t.payload.ip6 b/tests/py/ip6/dst.t.payload.ip6
-index af3bab9b1f75f..ac1fc8b39a2b7 100644
---- a/tests/py/ip6/dst.t.payload.ip6
-+++ b/tests/py/ip6/dst.t.payload.ip6
-@@ -87,11 +87,3 @@ __set%d test-ip6 0
- ip6 test-ip6 input
-   [ exthdr load ipv6 1b @ 60 + 1 => reg 1 ]
-   [ lookup reg 1 set __set%d ]
--
--# dst hdrlength != { 33, 55, 67, 88}
--__set%d test-ip6 3
--__set%d test-ip6 0
--	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
--ip6 test-ip6 input
--  [ exthdr load ipv6 1b @ 60 + 1 => reg 1 ]
--  [ lookup reg 1 set __set%d 0x1 ]
-diff --git a/tests/py/ip6/frag.t.json b/tests/py/ip6/frag.t.json
-index b8c06dfb3429c..6953e872a8f97 100644
---- a/tests/py/ip6/frag.t.json
-+++ b/tests/py/ip6/frag.t.json
-@@ -230,46 +230,6 @@
-     }
- ]
- 
--# frag reserved { 33-55}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "reserved",
--                    "name": "frag"
--                }
--            },
--	    "op": "==",
--            "right": {
--                "set": [
--                    { "range": [ 33, 55 ] }
--                ]
--            }
--        }
--    }
--]
--
--# frag reserved != { 33-55}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "reserved",
--                    "name": "frag"
--                }
--            },
--            "op": "!=",
--            "right": {
--                "set": [
--                    { "range": [ 33, 55 ] }
--                ]
--            }
--        }
--    }
--]
--
- # frag frag-off 22
- [
-     {
-@@ -384,46 +344,6 @@
-     }
- ]
- 
--# frag frag-off { 33-55}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "frag-off",
--                    "name": "frag"
--                }
--            },
--	    "op": "==",
--            "right": {
--                "set": [
--                    { "range": [ 33, 55 ] }
--                ]
--            }
--        }
--    }
--]
--
--# frag frag-off != { 33-55}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "frag-off",
--                    "name": "frag"
--                }
--            },
--            "op": "!=",
--            "right": {
--                "set": [
--                    { "range": [ 33, 55 ] }
--                ]
--            }
--        }
--    }
--]
--
- # frag reserved2 1
- [
-     {
-@@ -601,44 +521,3 @@
-         }
-     }
- ]
--
--# frag id { 33-55}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "id",
--                    "name": "frag"
--                }
--            },
--	    "op": "==",
--            "right": {
--                "set": [
--                    { "range": [ 33, 55 ] }
--                ]
--            }
--        }
--    }
--]
--
--# frag id != { 33-55}
--[
--    {
--        "match": {
--            "left": {
--                "exthdr": {
--                    "field": "id",
--                    "name": "frag"
--                }
--            },
--            "op": "!=",
--            "right": {
--                "set": [
--                    { "range": [ 33, 55 ] }
--                ]
--            }
--        }
--    }
--]
--
-diff --git a/tests/py/ip6/ip6.t.json b/tests/py/ip6/ip6.t.json
-index 49e5a2dd6355a..72d91cc74688d 100644
---- a/tests/py/ip6/ip6.t.json
-+++ b/tests/py/ip6/ip6.t.json
-@@ -571,46 +571,6 @@
-     }
- ]
- 
--# ip6 nexthdr { 33-44}
--[
--    {
--        "match": {
--            "left": {
--                "payload": {
--                    "field": "nexthdr",
--                    "protocol": "ip6"
--                }
--            },
--	    "op": "==",
--            "right": {
--                "set": [
--                    { "range": [ 33, 44 ] }
--                ]
--            }
--        }
--    }
--]
--
--# ip6 nexthdr != { 33-44}
--[
--    {
--        "match": {
--            "left": {
--                "payload": {
--                    "field": "nexthdr",
--                    "protocol": "ip6"
--                }
--            },
--            "op": "!=",
--            "right": {
--                "set": [
--                    { "range": [ 33, 44 ] }
--                ]
--            }
--        }
--    }
--]
--
- # ip6 nexthdr 33-44
- [
-     {
+ # @ih,35,3 0x2
+ inet test-inet input
+   [ payload load 1b @ inner header + 4 => reg 1 ]
 -- 
 2.49.0
 
