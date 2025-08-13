@@ -1,68 +1,68 @@
-Return-Path: <netfilter-devel+bounces-8274-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8277-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 014AAB24BAA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 16:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3BC7B24BAF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 16:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C072616A8A7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 14:12:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E07316B4E7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Aug 2025 14:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D772ECEAC;
-	Wed, 13 Aug 2025 14:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4792ED172;
+	Wed, 13 Aug 2025 14:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="AeJy8UR2";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="i+CAjmkM"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="opUf4kOj";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="opUf4kOj"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF332ECD3A
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 14:11:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFFBB2ECE91
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 14:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755094318; cv=none; b=R9Vu4rvgv79YeZbz7hkrgCnkfhaEoyEnygfmuU6fIKOmnuNxAQusVleUFElU686J6QFszh0I0espIB6EGPxqSN94AdEZw76VD/xeUtEnDYQA/zee23gv0CV2Cvxfc5peweatoBaWAV8hyCZ4wDNm78oGsUEPkpqkds0/njBaKi4=
+	t=1755094319; cv=none; b=Pz3p//3jGMNOEpr9St5MLpafuP9xeC8wn25z8UyniI24bAivCLdGCR2P2GJGhI8XKQbePyUcJesVV2T0kXwUV79Xv6BzN8kuNp5bfk3PDcBYEdPIJ575HBi9IcwgnyAb24yg7SPE26bC1xuqbk7WZyqYIdknDPLUBmY118oapnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755094318; c=relaxed/simple;
-	bh=KLTWHFojTNLrWIEQkDaj8LJZMaXEm+zb2d/kbV7kOjg=;
+	s=arc-20240116; t=1755094319; c=relaxed/simple;
+	bh=OGDyOgWvPBPCS+JpdsGq/DprvVJ0K6s7VHuriCaZq/c=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WmnaYd9u4tog6wMIgwg+HpiSxf+v1hdXcHZzhS7Hn1dZUGLjwkY5gFUQZJ7g+J6BIQcrMvlll9jYt8hDdN9ZtckpHOh4wIUOJJXqJHPVwMdh10cshe8kb/CzzG94qkWgDy03ut5JDLKllhJNHXHik9L+KL1rVlImKsDMK0Cvan4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=AeJy8UR2; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=i+CAjmkM; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=Hv6zn6UJefBeiSx8KzTHfqFcWoG8N0szHW3AEdkoL9SVsWGpEOAQsERCejGnllJ/8IN+2xENLtPrKdhypv6zWumjiA2o/smJrXJSgNLdNDDZx9vJcRIzPRbZbAZDahQj+Jt4/ItONuCxXh+YawHmZcXQn8wt9jD+8ZNwGQQXCrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=opUf4kOj; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=opUf4kOj; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 2DDBE60708; Wed, 13 Aug 2025 16:11:54 +0200 (CEST)
+	id 9A7BA6070A; Wed, 13 Aug 2025 16:11:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
 	s=2025; t=1755094314;
-	bh=/v8fMizFSnXxSyn80/D3HSWUYqCSZlDMA9rXBbZiq80=;
+	bh=n+O2SDNXYlFJn3S6BeGlNqnF0VefOVC6qnciSYtBC9A=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=AeJy8UR2T6QdYfY5sH9uBr5h07O5OeK7L/K09gBs7UTascRhFEWhsuj8vOQTxTPiB
-	 PqvJL5MdV64GdyjDpqM+JggeuRn+OmpBS6kQQghUSGAniYdrkkOXeUssipm5C7Y/ha
-	 jHzdqjjU43W/fXbrOclC7fytsmGUUk9yDbV2mB91GK+3FaCZm3HSL5f0rMHxWDawqZ
-	 ZsbYdLDZ0XtKrcIh5OeltIpqUCjF5t7VlJ3MkYNY43/qrocMs0OB8eC7GkHBMGwO+C
-	 eQlVoq2Q1qU2xaJIEoAlyO/uaAX/7I5carwxocOQMnx1dREgVOOBQiFrXAQOd/MQwS
-	 1uV4AJdIZHySg==
+	b=opUf4kOjQu06VjeNmhtr0w2puiPSVVK2RJ+WtEJ/qFjL8PVwe9zqpZLCnCPGOWVk/
+	 ygAQrnN4q/gdvXNlevgDwSbAd5PXqzXj7XAve1zkn9+x6h1bBCXP6zbMa78HeHDg0w
+	 OzewpyfOYrkkCJIme0slxLXkZdBoDau8Xi0JiMGvH7kTPlRa2M/RUjax1DeLdbnXQI
+	 Asq7MXtV4Ju61vm7/gFSL+SwheZskoR2GJtkTfQeWcCWKiaOuI49kEjytTqsfMDRPi
+	 fqJ1ONPScS2RBR9Tgveys0oyKe4mfEjxOLUlc4Nl+M5kPsTB0OlSHE8deDAtQ8lpe1
+	 uU+3lpGZd2gOw==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id B7511606F1
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 16:11:53 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 2CFA560701
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 Aug 2025 16:11:54 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1755094313;
-	bh=/v8fMizFSnXxSyn80/D3HSWUYqCSZlDMA9rXBbZiq80=;
+	s=2025; t=1755094314;
+	bh=n+O2SDNXYlFJn3S6BeGlNqnF0VefOVC6qnciSYtBC9A=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=i+CAjmkMkmPCYR2cmWXeS0ZJQWhcbs2JqZm+I48pYX22ZjqDLRxsGJ4e3azEGTgZm
-	 l0o6AbazdxxD/eQUyC9afOXKusduZ1aXOuBV91t8tV2LgBiJWk78ZJmiF/8zyFDyoB
-	 ir6f8wOEEsp5k7VzY9hz0UVRBNHx0TQvbX0mFasXQHihQWxn7ocTRxgrx+5BMueKcq
-	 rboxw8fIctvisC3rTRDf38j2m2kbcQBgZtqQTJ2YputXXXfrxTkkMVAG95ly3ky38q
-	 /XlGO4uHPx5OkHkZRoC8W5zVN1h7PARwPC0Y6mUqUuYTSxcqTSx56WuIq/XXspjQG0
-	 k34+NJpzr4yWw==
+	b=opUf4kOjQu06VjeNmhtr0w2puiPSVVK2RJ+WtEJ/qFjL8PVwe9zqpZLCnCPGOWVk/
+	 ygAQrnN4q/gdvXNlevgDwSbAd5PXqzXj7XAve1zkn9+x6h1bBCXP6zbMa78HeHDg0w
+	 OzewpyfOYrkkCJIme0slxLXkZdBoDau8Xi0JiMGvH7kTPlRa2M/RUjax1DeLdbnXQI
+	 Asq7MXtV4Ju61vm7/gFSL+SwheZskoR2GJtkTfQeWcCWKiaOuI49kEjytTqsfMDRPi
+	 fqJ1ONPScS2RBR9Tgveys0oyKe4mfEjxOLUlc4Nl+M5kPsTB0OlSHE8deDAtQ8lpe1
+	 uU+3lpGZd2gOw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 06/12] segtree: rename set_compound_expr_add() to set_expr_add_splice()
-Date: Wed, 13 Aug 2025 16:11:38 +0200
-Message-Id: <20250813141144.333784-7-pablo@netfilter.org>
+Subject: [PATCH nft 07/12] expression: replace compound_expr_clone() by type safe function
+Date: Wed, 13 Aug 2025 16:11:39 +0200
+Message-Id: <20250813141144.333784-8-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250813141144.333784-1-pablo@netfilter.org>
 References: <20250813141144.333784-1-pablo@netfilter.org>
@@ -74,59 +74,112 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To avoid confusion when perfoming git grep to search for compound_expr_add()
+Replace compound_expr_clone() by:
+
+- concat_expr_clone()
+- list_expr_clone()
+- set_expr_clone()
+
+to validate type.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/segtree.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ src/expression.c | 42 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 12 deletions(-)
 
-diff --git a/src/segtree.c b/src/segtree.c
-index 9395b5388507..e6b14f5dd120 100644
---- a/src/segtree.c
-+++ b/src/segtree.c
-@@ -207,7 +207,7 @@ static struct expr *expr_to_set_elem(struct expr *e)
- 	return __expr_to_set_elem(e, expr);
+diff --git a/src/expression.c b/src/expression.c
+index 22234567d2b1..6c5140b749f9 100644
+--- a/src/expression.c
++++ b/src/expression.c
+@@ -1027,15 +1027,6 @@ struct expr *compound_expr_alloc(const struct location *loc,
+ 	return expr;
  }
  
--static void set_compound_expr_add(struct expr *compound, struct expr *expr, struct expr *orig)
-+static void set_expr_add_splice(struct expr *compound, struct expr *expr, struct expr *orig)
+-static void compound_expr_clone(struct expr *new, const struct expr *expr)
+-{
+-	struct expr *i;
+-
+-	init_list_head(&new->expr_set.expressions);
+-	list_for_each_entry(i, &expr->expr_set.expressions, list)
+-		compound_expr_add(new, expr_clone(i));
+-}
+-
+ static void compound_expr_destroy(struct expr *expr)
  {
- 	struct expr *elem;
+ 	struct expr *i, *next;
+@@ -1079,6 +1070,15 @@ static void concat_expr_print(const struct expr *expr, struct output_ctx *octx)
+ 	compound_expr_print(expr, " . ", octx);
+ }
  
-@@ -250,7 +250,7 @@ int get_set_decompose(struct set *cache_set, struct set *set)
- 				return -1;
- 			}
++static void concat_expr_clone(struct expr *new, const struct expr *expr)
++{
++	struct expr *i;
++
++	init_list_head(&expr_concat(new)->expressions);
++	list_for_each_entry(i, &expr_concat(expr)->expressions, list)
++		concat_expr_add(new, expr_clone(i));
++}
++
+ #define NFTNL_UDATA_SET_KEY_CONCAT_NEST 0
+ #define NFTNL_UDATA_SET_KEY_CONCAT_NEST_MAX  NFT_REG32_SIZE
  
--			set_compound_expr_add(new_init, range, left);
-+			set_expr_add_splice(new_init, range, left);
+@@ -1234,7 +1234,7 @@ static const struct expr_ops concat_expr_ops = {
+ 	.name		= "concat",
+ 	.print		= concat_expr_print,
+ 	.json		= concat_expr_json,
+-	.clone		= compound_expr_clone,
++	.clone		= concat_expr_clone,
+ 	.destroy	= concat_expr_destroy,
+ 	.build_udata	= concat_expr_build_udata,
+ 	.parse_udata	= concat_expr_parse_udata,
+@@ -1258,12 +1258,21 @@ static void list_expr_print(const struct expr *expr, struct output_ctx *octx)
+ 	compound_expr_print(expr, ",", octx);
+ }
  
- 			expr_free(left);
- 			expr_free(i);
-@@ -262,9 +262,9 @@ int get_set_decompose(struct set *cache_set, struct set *set)
- 							      left, NULL);
++static void list_expr_clone(struct expr *new, const struct expr *expr)
++{
++	struct expr *i;
++
++	init_list_head(&expr_list(new)->expressions);
++	list_for_each_entry(i, &expr_list(expr)->expressions, list)
++		list_expr_add(new, expr_clone(i));
++}
++
+ static const struct expr_ops list_expr_ops = {
+ 	.type		= EXPR_LIST,
+ 	.name		= "list",
+ 	.print		= list_expr_print,
+ 	.json		= list_expr_json,
+-	.clone		= compound_expr_clone,
++	.clone		= list_expr_clone,
+ 	.destroy	= compound_expr_destroy,
+ };
  
- 				if (range)
--					set_compound_expr_add(new_init, range, left);
-+					set_expr_add_splice(new_init, range, left);
- 				else
--					set_compound_expr_add(new_init,
-+					set_expr_add_splice(new_init,
- 							      expr_to_set_elem(left), left);
- 			}
- 			left = i;
-@@ -273,9 +273,9 @@ int get_set_decompose(struct set *cache_set, struct set *set)
- 	if (left) {
- 		range = get_set_interval_find(cache_set, left, NULL);
- 		if (range)
--			set_compound_expr_add(new_init, range, left);
-+			set_expr_add_splice(new_init, range, left);
- 		else
--			set_compound_expr_add(new_init, expr_to_set_elem(left), left);
-+			set_expr_add_splice(new_init, expr_to_set_elem(left), left);
- 	}
+@@ -1375,6 +1384,15 @@ static void set_expr_print(const struct expr *expr, struct output_ctx *octx)
+ 	nft_print(octx, " }");
+ }
  
- 	expr_free(set->init);
++static void set_expr_clone(struct expr *new, const struct expr *expr)
++{
++	struct expr *i;
++
++	init_list_head(&expr_set(new)->expressions);
++	list_for_each_entry(i, &expr_set(expr)->expressions, list)
++		set_expr_add(new, expr_clone(i));
++}
++
+ static void set_expr_set_type(const struct expr *expr,
+ 			      const struct datatype *dtype,
+ 			      enum byteorder byteorder)
+@@ -1391,7 +1409,7 @@ static const struct expr_ops set_expr_ops = {
+ 	.print		= set_expr_print,
+ 	.json		= set_expr_json,
+ 	.set_type	= set_expr_set_type,
+-	.clone		= compound_expr_clone,
++	.clone		= set_expr_clone,
+ 	.destroy	= compound_expr_destroy,
+ };
+ 
 -- 
 2.30.2
 
