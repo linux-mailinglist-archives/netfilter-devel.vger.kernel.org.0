@@ -1,139 +1,835 @@
-Return-Path: <netfilter-devel+bounces-8305-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8307-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5608FB25BC4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Aug 2025 08:27:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 324E8B263D4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Aug 2025 13:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDBF85C00A3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Aug 2025 06:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA743B3757
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Aug 2025 11:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 995E1242D66;
-	Thu, 14 Aug 2025 06:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nG0ijTwW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DD128C009;
+	Thu, 14 Aug 2025 11:04:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0539F241679;
-	Thu, 14 Aug 2025 06:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+Received: from localhost.localdomain (203.red-83-63-38.staticip.rima-tde.net [83.63.38.203])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA3C23ED6A
+	for <netfilter-devel@vger.kernel.org>; Thu, 14 Aug 2025 11:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.63.38.203
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755152840; cv=none; b=rdlpG3f2NiujerHEheK3fH9g2JaO6SdTPSlbngwz4/+saX02JcxN6bD+jTjb2gdwfms/EFDEkw7P1ot8rN94YbsSTzeFl8Yyqv9vkPUH79LLlbul76agiixUqdbJcVnl3WNfkLCHsvG+dy/ZAQX4XOgoBot6rBdUqq+6JxgdrEU=
+	t=1755169457; cv=none; b=DeAL55DDQoLPqOhBcX7Fs/3tbNchz9PBkw2pI/ug5Wxfnhplb03/oPaTcaM9G9S45za6hM+yI/j532Ji5WuuEFk2++UkbmzB6bFoX6LuVjFa1jw4acezrzbT7kp9oIDk1LgQLkM61pjDy+OAqxEcE9hyjtrLtmiNlQlC1TBX6Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755152840; c=relaxed/simple;
-	bh=7C2qXLNIBZ6eia/1W6IjTf5fHo1xJNSXNElLkOznFdA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LdGlSJ8qS6XvDMc0kCcM3SoxKSWWT6TCuoettU8jL0KjS5OdiRyt56/5WbgDg/rPZfiZz2gjEp1xDW3nFSj46k+bDGyomMRZ667rdZiMgbXqNAPgHWsUUVJ3dQf6hDs94RdcpAWQXOJ+SfXYgfJXvfI06PMw4rUt+oR+hMetQ3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nG0ijTwW; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755152838; x=1786688838;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7C2qXLNIBZ6eia/1W6IjTf5fHo1xJNSXNElLkOznFdA=;
-  b=nG0ijTwWIozueZP9L1dLEdEj6bSsUmpJeKZFXe5pnhzdx3Y5LffuETXP
-   o+MNrQjodDPSurM3Yh02el26tQ2Ia6wyqh/pdJW4q0S9mvwvR5N5Ifz+v
-   onTd+EJ1TdMkXt7NS57S0zk/g5eSINU7Syn8B5gf0nyajPeJWgYoz2AH0
-   tEyYIQ2sCSBjDsQuQg/f2IMkuF+QBYV7JXyT7yZJuD0HUV7j9/tWZi5RF
-   QjZUI4TyCjAZIbGfLHWarbXECJOaqAWp3MB7vUwhbIcVtddcjkSbWo6mn
-   Y+/2TP16LfISZhZg6JpWoB2H2Bv9xXQ1x6TYDMbFAkZ2+quzpMs88lG5x
-   A==;
-X-CSE-ConnectionGUID: E4/ikvMLSnGU8JBc3+sdjw==
-X-CSE-MsgGUID: E11o1Kc+TuerEgkGhSKd+g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11520"; a="57327894"
-X-IronPort-AV: E=Sophos;i="6.17,287,1747724400"; 
-   d="scan'208";a="57327894"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2025 23:27:11 -0700
-X-CSE-ConnectionGUID: Zk7z/qHCTD2YF91fhOt6KQ==
-X-CSE-MsgGUID: 17rxyqDiSZSzZwKelRmI3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,287,1747724400"; 
-   d="scan'208";a="197536124"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 13 Aug 2025 23:27:08 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1umRQY-000AeS-0E;
-	Thu, 14 Aug 2025 06:27:06 +0000
-Date: Thu, 14 Aug 2025 14:26:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] netfilter: nft_payload: Use csum_replace4()
- instead of opencoding
-Message-ID: <202508141336.K6vIBjy1-lkp@intel.com>
-References: <e98467a942d65d2dc45dcf8ff809b43d4a3769eb.1754992552.git.christophe.leroy@csgroup.eu>
+	s=arc-20240116; t=1755169457; c=relaxed/simple;
+	bh=+pj9fuQkbrSF9EAoxZhcJyNO5x/nYbAfn/fjn9Upgf4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MUDSBaKVTJWxqWz+Cuo6S7/EdXGPg8VsQzMjWq5EsWxyV69DCXVOLFr9vJ+jgP5g7ZyQUoF5sLGtH8tnZhFv1c9JzNh3etnibHTzcIXJJDPcVwk3OziemziaKgOM086DzWchSgGTHM23ZaHJkyGC2rhh2RYKWrMpu7MUlvBzSok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=83.63.38.203
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1000)
+	id 17834202A1AD; Thu, 14 Aug 2025 12:58:36 +0200 (CEST)
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+To: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org,
+	pablo@netfilter.org,
+	fw@strlen.de
+Subject: [PATCH 1/2 libnftnl v3] tunnel: rework options
+Date: Thu, 14 Aug 2025 12:58:31 +0200
+Message-ID: <20250814105832.5286-1-fmancera@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e98467a942d65d2dc45dcf8ff809b43d4a3769eb.1754992552.git.christophe.leroy@csgroup.eu>
+Content-Transfer-Encoding: 8bit
 
-Hi Christophe,
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-kernel test robot noticed the following build warnings:
+Only vxlan gbp can work before this patch because
+NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR is off by one in the internal object
+flags.
 
-[auto build test WARNING on net-next/main]
+Replace them by NFTNL_OBJ_TUNNEL_OPTS and add two new opaque
+nftnl_tunnel_opts and nftnl_tunnel_opt structs to represent tunnel
+options.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-Leroy/netfilter-nft_payload-Use-csum_replace4-instead-of-opencoding/20250812-183440
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/e98467a942d65d2dc45dcf8ff809b43d4a3769eb.1754992552.git.christophe.leroy%40csgroup.eu
-patch subject: [PATCH net-next] netfilter: nft_payload: Use csum_replace4() instead of opencoding
-config: x86_64-randconfig-122-20250814 (https://download.01.org/0day-ci/archive/20250814/202508141336.K6vIBjy1-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250814/202508141336.K6vIBjy1-lkp@intel.com/reproduce)
+- nftnl_tunnel_opt_alloc() allocates one tunnel option.
+- nftnl_tunnel_opt_set() to sets it up.
+- nftnl_tunnel_opt_get() to get the option attribute.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508141336.K6vIBjy1-lkp@intel.com/
+Then, to manage the list of options:
 
-sparse warnings: (new ones prefixed by >>)
->> net/netfilter/nft_payload.c:687:28: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected restricted __be32 [usertype] from @@     got restricted __wsum [usertype] fsum @@
-   net/netfilter/nft_payload.c:687:28: sparse:     expected restricted __be32 [usertype] from
-   net/netfilter/nft_payload.c:687:28: sparse:     got restricted __wsum [usertype] fsum
->> net/netfilter/nft_payload.c:687:34: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected restricted __be32 [usertype] to @@     got restricted __wsum [usertype] tsum @@
-   net/netfilter/nft_payload.c:687:34: sparse:     expected restricted __be32 [usertype] to
-   net/netfilter/nft_payload.c:687:34: sparse:     got restricted __wsum [usertype] tsum
->> net/netfilter/nft_payload.c:687:28: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected restricted __be32 [usertype] from @@     got restricted __wsum [usertype] fsum @@
-   net/netfilter/nft_payload.c:687:28: sparse:     expected restricted __be32 [usertype] from
-   net/netfilter/nft_payload.c:687:28: sparse:     got restricted __wsum [usertype] fsum
->> net/netfilter/nft_payload.c:687:34: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected restricted __be32 [usertype] to @@     got restricted __wsum [usertype] tsum @@
-   net/netfilter/nft_payload.c:687:34: sparse:     expected restricted __be32 [usertype] to
-   net/netfilter/nft_payload.c:687:34: sparse:     got restricted __wsum [usertype] tsum
+- nftnl_tunnel_opts_alloc() allocates a list of tunnel options.
+- nftnl_tunnel_opts_add() adds a option to the list.
 
-vim +687 net/netfilter/nft_payload.c
+Although vxlan and erspan support for a single tunnel option at this
+stage, this API prepares for supporting gevene which allows for more
+tunnel options.
 
-   684	
-   685	static inline void nft_csum_replace(__sum16 *sum, __wsum fsum, __wsum tsum)
-   686	{
- > 687		csum_replace4(sum, fsum, tsum);
-   688		if (*sum == 0)
-   689			*sum = CSUM_MANGLED_0;
-   690	}
-   691	
+Joint work with Fernando.
 
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/libnftnl/object.h |  51 +++-
+ include/obj.h             |  16 +-
+ src/libnftnl.map          |  16 ++
+ src/obj/tunnel.c          | 492 +++++++++++++++++++++++++++++++-------
+ src/object.c              |   4 +
+ 5 files changed, 478 insertions(+), 101 deletions(-)
+
+diff --git a/include/libnftnl/object.h b/include/libnftnl/object.h
+index 9930355..6d0aab0 100644
+--- a/include/libnftnl/object.h
++++ b/include/libnftnl/object.h
+@@ -112,14 +112,52 @@ enum {
+ 	NFTNL_OBJ_TUNNEL_FLAGS,
+ 	NFTNL_OBJ_TUNNEL_TOS,
+ 	NFTNL_OBJ_TUNNEL_TTL,
+-	NFTNL_OBJ_TUNNEL_VXLAN_GBP,
+-	NFTNL_OBJ_TUNNEL_ERSPAN_VERSION,
+-	NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX,
+-	NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID,
+-	NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR,
++	NFTNL_OBJ_TUNNEL_OPTS,
+ 	__NFTNL_OBJ_TUNNEL_MAX,
+ };
+ 
++#define NFTNL_TUNNEL_TYPE	0
++#define NFTNL_TUNNEL_BASE	4
++
++enum nftnl_tunnel_type {
++	NFTNL_TUNNEL_TYPE_VXLAN,
++	NFTNL_TUNNEL_TYPE_ERSPAN,
++};
++
++enum {
++	NFTNL_TUNNEL_VXLAN_GBP		= NFTNL_TUNNEL_BASE,
++	__NFTNL_TUNNEL_VXLAN_MAX,
++};
++
++enum {
++	NFTNL_TUNNEL_ERSPAN_VERSION	= NFTNL_TUNNEL_BASE,
++	NFTNL_TUNNEL_ERSPAN_V1_INDEX,
++	NFTNL_TUNNEL_ERSPAN_V2_HWID,
++	NFTNL_TUNNEL_ERSPAN_V2_DIR,
++	__NFTNL_TUNNEL_ERSPAN_MAX,
++};
++
++struct nftnl_tunnel_opt;
++struct nftnl_tunnel_opts;
++
++struct nftnl_tunnel_opts *nftnl_tunnel_opts_alloc(enum nftnl_tunnel_type type);
++int nftnl_tunnel_opts_add(struct nftnl_tunnel_opts *opts,
++			  struct nftnl_tunnel_opt *opt);
++void nftnl_tunnel_opts_free(struct nftnl_tunnel_opts *opts);
++
++struct nftnl_tunnel_opt *nftnl_tunnel_opt_alloc(enum nftnl_tunnel_type type);
++int nftnl_tunnel_opt_set(struct nftnl_tunnel_opt *opt, uint16_t type,
++			 const void *data, uint32_t data_len);
++const void *nftnl_tunnel_opt_get(const struct nftnl_tunnel_opt *ne, uint16_t attr);
++const void *nftnl_tunnel_opt_get_data(const struct nftnl_tunnel_opt *ne,
++				      uint16_t attr,
++				      uint32_t *data_len);
++uint8_t nftnl_tunnel_opt_get_u8(const struct nftnl_tunnel_opt *ne, uint16_t attr);
++uint16_t nftnl_tunnel_opt_get_u16(const struct nftnl_tunnel_opt *ne, uint16_t attr);
++uint32_t nftnl_tunnel_opt_get_u32(const struct nftnl_tunnel_opt *ne, uint16_t attr);
++enum nftnl_tunnel_type nftnl_tunnel_opt_get_type(const struct nftnl_tunnel_opt *ne);
++uint32_t nftnl_tunnel_opt_get_flags(const struct nftnl_tunnel_opt *ne);
++
+ enum {
+ 	NFTNL_OBJ_SECMARK_CTX	= NFTNL_OBJ_BASE,
+ 	__NFTNL_OBJ_SECMARK_MAX,
+@@ -148,6 +186,9 @@ uint16_t nftnl_obj_get_u16(const struct nftnl_obj *obj, uint16_t attr);
+ uint32_t nftnl_obj_get_u32(const struct nftnl_obj *ne, uint16_t attr);
+ uint64_t nftnl_obj_get_u64(const struct nftnl_obj *obj, uint16_t attr);
+ const char *nftnl_obj_get_str(const struct nftnl_obj *ne, uint16_t attr);
++int nftnl_obj_tunnel_opts_foreach(const struct nftnl_obj *ne,
++				  int (*cb)(struct nftnl_tunnel_opt *ne, void *data),
++				  void *data);
+ 
+ void nftnl_obj_nlmsg_build_payload(struct nlmsghdr *nlh,
+ 				   const struct nftnl_obj *ne);
+diff --git a/include/obj.h b/include/obj.h
+index d217737..5d3c4ec 100644
+--- a/include/obj.h
++++ b/include/obj.h
+@@ -78,21 +78,7 @@ struct nftnl_obj {
+ 			uint32_t	tun_flags;
+ 			uint8_t		tun_tos;
+ 			uint8_t		tun_ttl;
+-			union {
+-				struct {
+-					uint32_t	gbp;
+-				} tun_vxlan;
+-				struct {
+-					uint32_t	version;
+-					union {
+-						uint32_t	v1_index;
+-						struct {
+-							uint8_t	hwid;
+-							uint8_t	dir;
+-						} v2;
+-					} u;
+-				} tun_erspan;
+-			} u;
++			struct nftnl_tunnel_opts *tun_opts;
+ 		} tunnel;
+ 		struct nftnl_obj_secmark {
+ 			char		ctx[NFT_SECMARK_CTX_MAXLEN];
+diff --git a/src/libnftnl.map b/src/libnftnl.map
+index 8fffff1..10c0e7f 100644
+--- a/src/libnftnl.map
++++ b/src/libnftnl.map
+@@ -383,3 +383,19 @@ LIBNFTNL_16 {
+ LIBNFTNL_17 {
+   nftnl_set_elem_nlmsg_build;
+ } LIBNFTNL_16;
++
++LIBNFTNL_18 {
++nftnl_tunnel_opt_get;
++nftnl_tunnel_opt_get_data;
++nftnl_tunnel_opt_get_u8;
++nftnl_tunnel_opt_get_u16;
++nftnl_tunnel_opt_get_u32;
++nftnl_tunnel_opt_set;
++nftnl_tunnel_opt_alloc;
++nftnl_tunnel_opt_get_type;
++nftnl_tunnel_opt_get_flags;
++nftnl_tunnel_opts_alloc;
++nftnl_obj_tunnel_opts_foreach;
++nftnl_tunnel_opts_add;
++nftnl_tunnel_opts_free;
++} LIBNFTNL_17;
+diff --git a/src/obj/tunnel.c b/src/obj/tunnel.c
+index 8941e39..4e3c16b 100644
+--- a/src/obj/tunnel.c
++++ b/src/obj/tunnel.c
+@@ -57,20 +57,8 @@ nftnl_obj_tunnel_set(struct nftnl_obj *e, uint16_t type,
+ 	case NFTNL_OBJ_TUNNEL_TTL:
+ 		memcpy(&tun->tun_ttl, data, data_len);
+ 		break;
+-	case NFTNL_OBJ_TUNNEL_VXLAN_GBP:
+-		memcpy(&tun->u.tun_vxlan.gbp, data, data_len);
+-		break;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_VERSION:
+-		memcpy(&tun->u.tun_erspan.version, data, data_len);
+-		break;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX:
+-		memcpy(&tun->u.tun_erspan.u.v1_index, data, data_len);
+-		break;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID:
+-		memcpy(&tun->u.tun_erspan.u.v2.hwid, data, data_len);
+-		break;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR:
+-		memcpy(&tun->u.tun_erspan.u.v2.dir, data, data_len);
++	case NFTNL_OBJ_TUNNEL_OPTS:
++		memcpy(&tun->tun_opts, data, data_len);
+ 		break;
+ 	}
+ 	return 0;
+@@ -116,21 +104,9 @@ nftnl_obj_tunnel_get(const struct nftnl_obj *e, uint16_t type,
+ 	case NFTNL_OBJ_TUNNEL_TTL:
+ 		*data_len = sizeof(tun->tun_ttl);
+ 		return &tun->tun_ttl;
+-	case NFTNL_OBJ_TUNNEL_VXLAN_GBP:
+-		*data_len = sizeof(tun->u.tun_vxlan.gbp);
+-		return &tun->u.tun_vxlan.gbp;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_VERSION:
+-		*data_len = sizeof(tun->u.tun_erspan.version);
+-		return &tun->u.tun_erspan.version;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX:
+-		*data_len = sizeof(tun->u.tun_erspan.u.v1_index);
+-		return &tun->u.tun_erspan.u.v1_index;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID:
+-		*data_len = sizeof(tun->u.tun_erspan.u.v2.hwid);
+-		return &tun->u.tun_erspan.u.v2.hwid;
+-	case NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR:
+-		*data_len = sizeof(tun->u.tun_erspan.u.v2.dir);
+-		return &tun->u.tun_erspan.u.v2.dir;
++	case NFTNL_OBJ_TUNNEL_OPTS:
++		*data_len = sizeof(tun->tun_opts);
++		return &tun->tun_opts;
+ 	}
+ 	return NULL;
+ }
+@@ -171,11 +147,14 @@ static int nftnl_obj_tunnel_cb(const struct nlattr *attr, void *data)
+ 	return MNL_CB_OK;
+ }
+ 
++static void nftnl_tunnel_opts_build(struct nlmsghdr *nlh,
++				    struct nftnl_tunnel_opts *opts);
++
+ static void
+ nftnl_obj_tunnel_build(struct nlmsghdr *nlh, const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_tunnel *tun = nftnl_obj_data(e);
+-	struct nlattr *nest, *nest_inner;
++	struct nlattr *nest;
+ 
+ 	if (e->flags & (1 << NFTNL_OBJ_TUNNEL_ID))
+ 		mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_ID, htonl(tun->id));
+@@ -212,34 +191,8 @@ nftnl_obj_tunnel_build(struct nlmsghdr *nlh, const struct nftnl_obj *e)
+ 		mnl_attr_put_u8(nlh, NFTA_TUNNEL_KEY_TTL, tun->tun_ttl);
+ 	if (e->flags & (1 << NFTNL_OBJ_TUNNEL_FLAGS))
+ 		mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_FLAGS, htonl(tun->tun_flags));
+-	if (e->flags & (1 << NFTNL_OBJ_TUNNEL_VXLAN_GBP)) {
+-		nest = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS);
+-		nest_inner = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS_VXLAN);
+-		mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_VXLAN_GBP,
+-				 htonl(tun->u.tun_vxlan.gbp));
+-		mnl_attr_nest_end(nlh, nest_inner);
+-		mnl_attr_nest_end(nlh, nest);
+-	}
+-	if (e->flags & (1 << NFTNL_OBJ_TUNNEL_ERSPAN_VERSION) &&
+-	    (e->flags & (1 << NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX) ||
+-	     (e->flags & (1 << NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID) &&
+-	      e->flags & (1u << NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR)))) {
+-		nest = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS);
+-		nest_inner = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS_ERSPAN);
+-		mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_ERSPAN_VERSION,
+-				 htonl(tun->u.tun_erspan.version));
+-		if (e->flags & (1 << NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX))
+-			mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_ERSPAN_V1_INDEX,
+-					 htonl(tun->u.tun_erspan.u.v1_index));
+-		if (e->flags & (1 << NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID))
+-			mnl_attr_put_u8(nlh, NFTA_TUNNEL_KEY_ERSPAN_V2_HWID,
+-					tun->u.tun_erspan.u.v2.hwid);
+-		if (e->flags & (1u << NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR))
+-			mnl_attr_put_u8(nlh, NFTA_TUNNEL_KEY_ERSPAN_V2_DIR,
+-					tun->u.tun_erspan.u.v2.dir);
+-		mnl_attr_nest_end(nlh, nest_inner);
+-		mnl_attr_nest_end(nlh, nest);
+-	}
++	if (e->flags & (1 << NFTNL_OBJ_TUNNEL_OPTS))
++		nftnl_tunnel_opts_build(nlh, tun->tun_opts);
+ }
+ 
+ static int nftnl_obj_tunnel_ip_cb(const struct nlattr *attr, void *data)
+@@ -335,6 +288,150 @@ static int nftnl_obj_tunnel_parse_ip6(struct nftnl_obj *e, struct nlattr *attr,
+ 	return 0;
+ }
+ 
++struct nftnl_tunnel_opt {
++	struct list_head			list;
++
++	enum nftnl_tunnel_type			type;
++	uint32_t				flags;
++
++	union {
++		struct {
++			uint32_t		gbp;
++		} vxlan;
++		struct {
++			uint32_t		version;
++			struct {
++				uint32_t	index;
++			} v1;
++			struct {
++				uint8_t		hwid;
++				uint8_t		dir;
++			} v2;
++		} erspan;
++	};
++};
++
++struct nftnl_tunnel_opts {
++	enum nftnl_tunnel_type			type;
++	uint32_t				num;
++	struct list_head			opts_list;
++};
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get_data);
++const void *
++nftnl_tunnel_opt_get_data(const struct nftnl_tunnel_opt *ne,
++			  uint16_t attr,
++			  uint32_t *data_len)
++{
++	if (!(ne->flags & (1 << attr)))
++		return NULL;
++
++	switch (ne->type) {
++	case NFTNL_TUNNEL_TYPE_ERSPAN:
++		switch (attr) {
++		case NFTNL_TUNNEL_ERSPAN_VERSION:
++			*data_len = sizeof(uint32_t);
++			return &ne->erspan.version;
++		break;
++		case NFTNL_TUNNEL_ERSPAN_V1_INDEX:
++			*data_len = sizeof(uint32_t);
++			return &ne->erspan.v1.index;
++		break;
++		case NFTNL_TUNNEL_ERSPAN_V2_HWID:
++			*data_len = sizeof(uint8_t);
++			return &ne->erspan.v2.hwid;
++		break;
++		case NFTNL_TUNNEL_ERSPAN_V2_DIR:
++			*data_len = sizeof(uint8_t);
++			return &ne->erspan.v2.dir;
++		break;
++		}
++	break;
++	case NFTNL_TUNNEL_TYPE_VXLAN:
++		switch (attr) {
++			case NFTNL_TUNNEL_VXLAN_GBP:
++				*data_len = sizeof(uint32_t);
++				return &ne->vxlan.gbp;
++			break;
++		}
++	break;
++	case NFTNL_TUNNEL_TYPE_GENEVE:
++		switch (attr) {
++			case NFTNL_TUNNEL_GENEVE_CLASS:
++				return &ne->geneve.geneve_class;
++			break;
++			case NFTNL_TUNNEL_GENEVE_TYPE:
++				return &ne->geneve.type;
++			break;
++			case NFTNL_TUNNEL_GENEVE_DATA:
++				return &ne->geneve.data;
++			break;
++		}
++	break;
++	}
++
++	return NULL;
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get);
++const void *
++nftnl_tunnel_opt_get(const struct nftnl_tunnel_opt *ne, uint16_t attr)
++{
++	uint32_t data_len;
++	return nftnl_tunnel_opt_get_data(ne, attr, &data_len);
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get_u8);
++uint8_t nftnl_tunnel_opt_get_u8(const struct nftnl_tunnel_opt *ne, uint16_t attr)
++{
++	const void *ret = nftnl_tunnel_opt_get(ne, attr);
++	return ret == NULL ? 0 : *((uint8_t *)ret);
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get_u16);
++uint16_t nftnl_tunnel_opt_get_u16(const struct nftnl_tunnel_opt *ne, uint16_t attr)
++{
++	const void *ret = nftnl_tunnel_opt_get(ne, attr);
++	return ret == NULL ? 0 : *((uint16_t *)ret);
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get_u32);
++uint32_t nftnl_tunnel_opt_get_u32(const struct nftnl_tunnel_opt *ne, uint16_t attr)
++{
++	const void *ret = nftnl_tunnel_opt_get(ne, attr);
++	return ret == NULL ? 0 : *((uint32_t *)ret);
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get_type);
++enum nftnl_tunnel_type nftnl_tunnel_opt_get_type(const struct nftnl_tunnel_opt *ne)
++{
++	return ne->type;
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_get_flags);
++uint32_t nftnl_tunnel_opt_get_flags(const struct nftnl_tunnel_opt *ne)
++{
++	return ne->flags;
++}
++
++EXPORT_SYMBOL(nftnl_obj_tunnel_opts_foreach);
++int nftnl_obj_tunnel_opts_foreach(const struct nftnl_obj *ne,
++                              int (*cb)(struct nftnl_tunnel_opt *opt, void *data),
++                              void *data)
++{
++	struct nftnl_obj_tunnel *tun = nftnl_obj_data(ne);
++        struct nftnl_tunnel_opt *cur, *tmp;
++        int ret;
++
++        list_for_each_entry_safe(cur, tmp, &tun->tun_opts->opts_list, list) {
++                ret = cb(cur, data);
++                if (ret < 0)
++                        return ret;
++        }
++
++        return 0;
++}
++
+ static int nftnl_obj_tunnel_vxlan_cb(const struct nlattr *attr, void *data)
+ {
+ 	const struct nlattr **tb = data;
+@@ -354,21 +451,29 @@ static int nftnl_obj_tunnel_vxlan_cb(const struct nlattr *attr, void *data)
+ 	return MNL_CB_OK;
+ }
+ 
++struct nftnl_tunnel_opt *nftnl_tunnel_opt_alloc(enum nftnl_tunnel_type type);
++
+ static int
+-nftnl_obj_tunnel_parse_vxlan(struct nftnl_obj *e, struct nlattr *attr,
+-			     struct nftnl_obj_tunnel *tun)
++nftnl_obj_tunnel_parse_vxlan(struct nftnl_tunnel_opts *opts, struct nlattr *attr)
+ {
+ 	struct nlattr *tb[NFTA_TUNNEL_KEY_VXLAN_MAX + 1] = {};
++	struct nftnl_tunnel_opt *opt;
+ 
+ 	if (mnl_attr_parse_nested(attr, nftnl_obj_tunnel_vxlan_cb, tb) < 0)
+ 		return -1;
+ 
++	opt = nftnl_tunnel_opt_alloc(NFTNL_TUNNEL_TYPE_VXLAN);
++	if (!opt)
++		return -1;
++
+ 	if (tb[NFTA_TUNNEL_KEY_VXLAN_GBP]) {
+-		tun->u.tun_vxlan.gbp =
++		opt->vxlan.gbp =
+ 			ntohl(mnl_attr_get_u32(tb[NFTA_TUNNEL_KEY_VXLAN_GBP]));
+-		e->flags |= (1 << NFTNL_OBJ_TUNNEL_VXLAN_GBP);
++		opt->flags |= (1 << NFTNL_TUNNEL_VXLAN_GBP);
+ 	}
+ 
++	list_add_tail(&opt->list, &opts->opts_list);
++
+ 	return 0;
+ }
+ 
+@@ -398,35 +503,41 @@ static int nftnl_obj_tunnel_erspan_cb(const struct nlattr *attr, void *data)
+ }
+ 
+ static int
+-nftnl_obj_tunnel_parse_erspan(struct nftnl_obj *e, struct nlattr *attr,
+-			      struct nftnl_obj_tunnel *tun)
++nftnl_obj_tunnel_parse_erspan(struct nftnl_tunnel_opts *opts, struct nlattr *attr)
+ {
+ 	struct nlattr *tb[NFTA_TUNNEL_KEY_ERSPAN_MAX + 1] = {};
++	struct nftnl_tunnel_opt *opt;
+ 
+ 	if (mnl_attr_parse_nested(attr, nftnl_obj_tunnel_erspan_cb, tb) < 0)
+ 		return -1;
+ 
++	opt = nftnl_tunnel_opt_alloc(NFTNL_TUNNEL_TYPE_ERSPAN);
++	if (!opt)
++		return -1;
++
+ 	if (tb[NFTA_TUNNEL_KEY_ERSPAN_VERSION]) {
+-		tun->u.tun_erspan.version =
++		opt->erspan.version =
+ 			ntohl(mnl_attr_get_u32(tb[NFTA_TUNNEL_KEY_ERSPAN_VERSION]));
+-		e->flags |= (1 << NFTNL_OBJ_TUNNEL_ERSPAN_VERSION);
++		opt->flags |= (1 << NFTNL_TUNNEL_ERSPAN_VERSION);
+ 	}
+ 	if (tb[NFTA_TUNNEL_KEY_ERSPAN_V1_INDEX]) {
+-		tun->u.tun_erspan.u.v1_index =
++		opt->erspan.v1.index =
+ 			ntohl(mnl_attr_get_u32(tb[NFTA_TUNNEL_KEY_ERSPAN_V1_INDEX]));
+-		e->flags |= (1 << NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX);
++		opt->flags |= (1 << NFTNL_TUNNEL_ERSPAN_V1_INDEX);
+ 	}
+ 	if (tb[NFTA_TUNNEL_KEY_ERSPAN_V2_HWID]) {
+-		tun->u.tun_erspan.u.v2.hwid =
++		opt->erspan.v2.hwid =
+ 			mnl_attr_get_u8(tb[NFTA_TUNNEL_KEY_ERSPAN_V2_HWID]);
+-		e->flags |= (1 << NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID);
++		opt->flags |= (1 << NFTNL_TUNNEL_ERSPAN_V2_HWID);
+ 	}
+ 	if (tb[NFTA_TUNNEL_KEY_ERSPAN_V2_DIR]) {
+-		tun->u.tun_erspan.u.v2.dir =
++		opt->erspan.v2.dir =
+ 			mnl_attr_get_u8(tb[NFTA_TUNNEL_KEY_ERSPAN_V2_DIR]);
+-		e->flags |= (1u << NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR);
++		opt->flags |= (1 << NFTNL_TUNNEL_ERSPAN_V2_DIR);
+ 	}
+ 
++	list_add_tail(&opt->list, &opts->opts_list);
++
+ 	return 0;
+ }
+ 
+@@ -450,22 +561,36 @@ static int nftnl_obj_tunnel_opts_cb(const struct nlattr *attr, void *data)
+ 	return MNL_CB_OK;
+ }
+ 
++struct nftnl_tunnel_opts *nftnl_tunnel_opts_alloc(enum nftnl_tunnel_type type);
++
+ static int
+ nftnl_obj_tunnel_parse_opts(struct nftnl_obj *e, struct nlattr *attr,
+ 			    struct nftnl_obj_tunnel *tun)
+ {
+ 	struct nlattr *tb[NFTA_TUNNEL_KEY_OPTS_MAX + 1] = {};
++	struct nftnl_tunnel_opts *opts = NULL;
+ 	int err = 0;
+ 
+ 	if (mnl_attr_parse_nested(attr, nftnl_obj_tunnel_opts_cb, tb) < 0)
+ 		return -1;
+ 
+ 	if (tb[NFTA_TUNNEL_KEY_OPTS_VXLAN]) {
+-		err = nftnl_obj_tunnel_parse_vxlan(e, tb[NFTA_TUNNEL_KEY_OPTS_VXLAN],
+-						   tun);
++		opts = nftnl_tunnel_opts_alloc(NFTNL_TUNNEL_TYPE_VXLAN);
++		if (!opts)
++			return -1;
++
++		err = nftnl_obj_tunnel_parse_vxlan(opts, tb[NFTA_TUNNEL_KEY_OPTS_VXLAN]);
+ 	} else if (tb[NFTA_TUNNEL_KEY_OPTS_ERSPAN]) {
+-		err = nftnl_obj_tunnel_parse_erspan(e, tb[NFTA_TUNNEL_KEY_OPTS_ERSPAN],
+-						    tun);
++		opts = nftnl_tunnel_opts_alloc(NFTNL_TUNNEL_TYPE_ERSPAN);
++		if (!opts)
++			return -1;
++
++		err = nftnl_obj_tunnel_parse_erspan(opts, tb[NFTA_TUNNEL_KEY_OPTS_ERSPAN]);
++	}
++
++	if (opts) {
++		tun->tun_opts = opts;
++		e->flags |= (1 << NFTNL_OBJ_TUNNEL_OPTS);
+ 	}
+ 
+ 	return err;
+@@ -532,6 +657,215 @@ static int nftnl_obj_tunnel_snprintf(char *buf, size_t len,
+ 	return snprintf(buf, len, "id %u ", tun->id);
+ }
+ 
++EXPORT_SYMBOL(nftnl_tunnel_opts_alloc);
++struct nftnl_tunnel_opts *nftnl_tunnel_opts_alloc(enum nftnl_tunnel_type type)
++{
++	struct nftnl_tunnel_opts *opts;
++
++	switch (type) {
++	case NFTNL_TUNNEL_TYPE_VXLAN:
++	case NFTNL_TUNNEL_TYPE_ERSPAN:
++		break;
++	default:
++		errno = EOPNOTSUPP;
++		return NULL;
++	}
++
++	opts = calloc(1, sizeof(struct nftnl_tunnel_opts));
++	if (!opts)
++		return NULL;
++
++	opts->type = type;
++	INIT_LIST_HEAD(&opts->opts_list);
++
++	return opts;
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opts_add);
++int nftnl_tunnel_opts_add(struct nftnl_tunnel_opts *opts,
++			  struct nftnl_tunnel_opt *opt)
++{
++	if (opt->type != opts->type) {
++		errno = EOPNOTSUPP;
++		return -1;
++	}
++
++	switch (opts->type) {
++	case NFTNL_TUNNEL_TYPE_VXLAN:
++	case NFTNL_TUNNEL_TYPE_ERSPAN:
++		if (opts->num > 0) {
++			errno = EEXIST;
++			return -1;
++		}
++		break;
++	default:
++		errno = EOPNOTSUPP;
++		return -1;
++	}
++
++	list_add_tail(&opt->list, &opts->opts_list);
++
++	return 0;
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opts_free);
++void nftnl_tunnel_opts_free(struct nftnl_tunnel_opts *opts)
++{
++	struct nftnl_tunnel_opt *opt, *next;
++
++	list_for_each_entry_safe(opt, next, &opts->opts_list, list) {
++		switch(opts->type) {
++		case NFTNL_TUNNEL_TYPE_VXLAN:
++		case NFTNL_TUNNEL_TYPE_ERSPAN:
++			list_del(&opt->list);
++			xfree(opt);
++			break;
++		}
++	}
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_alloc);
++struct nftnl_tunnel_opt *nftnl_tunnel_opt_alloc(enum nftnl_tunnel_type type)
++{
++	struct nftnl_tunnel_opt *opt;
++
++	switch (type) {
++	case NFTNL_TUNNEL_TYPE_VXLAN:
++	case NFTNL_TUNNEL_TYPE_ERSPAN:
++		break;
++	default:
++		errno = EOPNOTSUPP;
++		return NULL;
++	}
++
++	opt = calloc(1, sizeof(struct nftnl_tunnel_opt));
++	if (!opt)
++		return NULL;
++
++	opt->type = type;
++
++	return opt;
++}
++
++static int nftnl_tunnel_opt_vxlan_set(struct nftnl_tunnel_opt *opt, uint16_t type,
++				      const void *data, uint32_t data_len)
++{
++	switch (type) {
++	case NFTNL_TUNNEL_VXLAN_GBP:
++		memcpy(&opt->vxlan.gbp, data, data_len);
++		break;
++	default:
++		errno = EOPNOTSUPP;
++		return -1;
++	}
++
++	opt->flags |= (1 << type);
++
++	return 0;
++}
++
++static int nftnl_tunnel_opt_erspan_set(struct nftnl_tunnel_opt *opt, uint16_t type,
++				       const void *data, uint32_t data_len)
++{
++	switch (type) {
++	case NFTNL_TUNNEL_ERSPAN_VERSION:
++		memcpy(&opt->erspan.version, data, data_len);
++		break;
++	case NFTNL_TUNNEL_ERSPAN_V1_INDEX:
++		memcpy(&opt->erspan.v1.index, data, data_len);
++		break;
++	case NFTNL_TUNNEL_ERSPAN_V2_HWID:
++		memcpy(&opt->erspan.v2.hwid, data, data_len);
++		break;
++	case NFTNL_TUNNEL_ERSPAN_V2_DIR:
++		memcpy(&opt->erspan.v2.dir, data, data_len);
++		break;
++	default:
++		errno = EOPNOTSUPP;
++		return -1;
++	}
++
++	opt->flags |= (1 << type);
++
++	return 0;
++}
++
++EXPORT_SYMBOL(nftnl_tunnel_opt_set);
++int nftnl_tunnel_opt_set(struct nftnl_tunnel_opt *opt, uint16_t type,
++			 const void *data, uint32_t data_len)
++{
++	switch (opt->type) {
++	case NFTNL_TUNNEL_TYPE_VXLAN:
++		return nftnl_tunnel_opt_vxlan_set(opt, type, data, data_len);
++	case NFTNL_TUNNEL_TYPE_ERSPAN:
++		return nftnl_tunnel_opt_erspan_set(opt, type, data, data_len);
++	default:
++		errno = EOPNOTSUPP;
++		return -1;
++	}
++
++	return 0;
++}
++
++static void nftnl_tunnel_opt_build_vxlan(struct nlmsghdr *nlh,
++					 const struct nftnl_tunnel_opt *opt)
++{
++	struct nlattr *nest_inner;
++
++	if (opt->flags & (1 << NFTNL_TUNNEL_VXLAN_GBP)) {
++		nest_inner = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS_VXLAN);
++		mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_VXLAN_GBP,
++				 htonl(opt->vxlan.gbp));
++		mnl_attr_nest_end(nlh, nest_inner);
++	}
++}
++
++static void nftnl_tunnel_opt_build_erspan(struct nlmsghdr *nlh,
++					  const struct nftnl_tunnel_opt *opt)
++{
++	struct nlattr *nest_inner;
++
++	if (opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_VERSION) &&
++	    (opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_V1_INDEX) ||
++	     (opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_V2_HWID) &&
++	      opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_V2_DIR)))) {
++		nest_inner = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS_ERSPAN);
++		mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_ERSPAN_VERSION,
++				 htonl(opt->erspan.version));
++		if (opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_V1_INDEX))
++			mnl_attr_put_u32(nlh, NFTA_TUNNEL_KEY_ERSPAN_V1_INDEX,
++					 htonl(opt->erspan.v1.index));
++		if (opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_V2_HWID))
++			mnl_attr_put_u8(nlh, NFTA_TUNNEL_KEY_ERSPAN_V2_HWID,
++					opt->erspan.v2.hwid);
++		if (opt->flags & (1 << NFTNL_TUNNEL_ERSPAN_V2_DIR))
++			mnl_attr_put_u8(nlh, NFTA_TUNNEL_KEY_ERSPAN_V2_DIR,
++					opt->erspan.v2.dir);
++		mnl_attr_nest_end(nlh, nest_inner);
++	}
++}
++
++void nftnl_tunnel_opts_build(struct nlmsghdr *nlh,
++			     struct nftnl_tunnel_opts *opts)
++{
++	const struct nftnl_tunnel_opt *opt;
++	struct nlattr *nest;
++
++	nest = mnl_attr_nest_start(nlh, NFTA_TUNNEL_KEY_OPTS);
++
++	list_for_each_entry(opt, &opts->opts_list, list) {
++		switch (opts->type) {
++		case NFTNL_TUNNEL_TYPE_VXLAN:
++			nftnl_tunnel_opt_build_vxlan(nlh, opt);
++			break;
++		case NFTNL_TUNNEL_TYPE_ERSPAN:
++			nftnl_tunnel_opt_build_erspan(nlh, opt);
++			break;
++		}
++	}
++	mnl_attr_nest_end(nlh, nest);
++}
++
+ static struct attr_policy obj_tunnel_attr_policy[__NFTNL_OBJ_TUNNEL_MAX] = {
+ 	[NFTNL_OBJ_TUNNEL_ID]		= { .maxlen = sizeof(uint32_t) },
+ 	[NFTNL_OBJ_TUNNEL_IPV4_SRC]	= { .maxlen = sizeof(uint32_t) },
+@@ -544,11 +878,7 @@ static struct attr_policy obj_tunnel_attr_policy[__NFTNL_OBJ_TUNNEL_MAX] = {
+ 	[NFTNL_OBJ_TUNNEL_FLAGS]	= { .maxlen = sizeof(uint32_t) },
+ 	[NFTNL_OBJ_TUNNEL_TOS]		= { .maxlen = sizeof(uint8_t) },
+ 	[NFTNL_OBJ_TUNNEL_TTL]		= { .maxlen = sizeof(uint8_t) },
+-	[NFTNL_OBJ_TUNNEL_VXLAN_GBP]	= { .maxlen = sizeof(uint32_t) },
+-	[NFTNL_OBJ_TUNNEL_ERSPAN_VERSION] = { .maxlen = sizeof(uint32_t) },
+-	[NFTNL_OBJ_TUNNEL_ERSPAN_V1_INDEX] = { .maxlen = sizeof(uint32_t) },
+-	[NFTNL_OBJ_TUNNEL_ERSPAN_V2_HWID] = { .maxlen = sizeof(uint8_t) },
+-	[NFTNL_OBJ_TUNNEL_ERSPAN_V2_DIR] = { .maxlen = sizeof(uint8_t) },
++	[NFTNL_OBJ_TUNNEL_OPTS]		= { .maxlen = sizeof(struct nftnl_tunnel_opts *) },
+ };
+ 
+ struct obj_ops obj_ops_tunnel = {
+diff --git a/src/object.c b/src/object.c
+index bfcceb9..275a202 100644
+--- a/src/object.c
++++ b/src/object.c
+@@ -55,6 +55,10 @@ void nftnl_obj_free(const struct nftnl_obj *obj)
+ 		xfree(obj->name);
+ 	if (obj->flags & (1 << NFTNL_OBJ_USERDATA))
+ 		xfree(obj->user.data);
++	if (obj->flags & (1 << NFTNL_OBJ_TUNNEL_OPTS)) {
++		nftnl_tunnel_opts_free(obj->data.tunnel.tun_opts);
++		xfree(obj->data.tunnel.tun_opts);
++	}
+ 
+ 	xfree(obj);
+ }
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.50.1
+
 
