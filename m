@@ -1,130 +1,124 @@
-Return-Path: <netfilter-devel+bounces-8347-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8349-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 500C8B29E97
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 11:58:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE301B29EFF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 12:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8960218A07EF
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 09:57:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56B4616457A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 10:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C6C30FF38;
-	Mon, 18 Aug 2025 09:56:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CfWHMbUt";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AX7/FuEu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A999315793;
+	Mon, 18 Aug 2025 10:20:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91DC30FF29
-	for <netfilter-devel@vger.kernel.org>; Mon, 18 Aug 2025 09:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6500315770;
+	Mon, 18 Aug 2025 10:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755511001; cv=none; b=marDKv6vRy5Hyg/YkDcOeTy+sEtTBg3gp0xs9Yh1rmVDt40LET/0gyX/EACQQQrF/OoO9UQFmJItrfQpJTtMzpXgnnSk8K0JhtfQ/EImY55suEtNAELFvoO8BUyOV4fKL42YTn9ujZ/a2PfV+XEqZSMoxUL0Mptbq102rp/iEzY=
+	t=1755512446; cv=none; b=bo6zwtWhETLxzkuydDrPtx+xAEPl0N5W8XSACGt8nkaRACt1dDOjRQplxIYnhC/Jfo+jrEY+sstp7ZjEV/wDmh6Y7g1ga2IY/kWl1WaxHp4yu8Je2mWPuQKfwUy50uMrHKKMiCH5MN3zKKI5Jdf3vJoAoI5z6Bh99vZ6i617bCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755511001; c=relaxed/simple;
-	bh=ZVu1qw2pV2wps2RhxIY/YdPeCI9STKQa2mfFtIuez78=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W8Q7Ey6D4Tzw/dklqUHjvxa8MPxy3J50iwPJyB1ocNNUX0cado40g6jkFh3bd3+fkHDKFeqOme6R8ivKKKVt30NG2KTTf0OaLfDV1uPeVsHip6cpbdaBcxSsn/bamMXzzRa+hqOZj2i5GHPzjOt18RgdfK/af7nZJStoeFm2viA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CfWHMbUt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AX7/FuEu; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 18 Aug 2025 11:56:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1755510997;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/JzTu5/LuzCXb9lqpgwNirvubykzb98WyaNwunKK+Wg=;
-	b=CfWHMbUtZNQQ6+QNdwgDRjDdJJMQHlYhdvOLKSB1UJKou2JvgYaiEiL901z/WFRkt7Wgxo
-	zdMjNepeSvvWTthiSTXvIEExVqKK1Evb7O+GFRKi7IStjgSjbVIpgiwofVyBb+hLXebfT/
-	Q+nmStMwgfVL+et3bnHEGrvZr8xXav+MLy7HrYrEsJgb02MgKFu4+4LOueaBd8gPkdpfwM
-	drYv7RDqRnGc67WB6pvqRxZu7+kpPzhIhMe5lXMphhytNgJ+CmiIm7TzEk54LkOshcbTia
-	DcXPlT087n26Na3YtkxSly9vLogq6/U7TWBonM62QAPr9y1vVMXAsatZoBPdsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1755510997;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/JzTu5/LuzCXb9lqpgwNirvubykzb98WyaNwunKK+Wg=;
-	b=AX7/FuEuZivRJ4nBLVYPAMo7fgjKxQjhc+1HshYpWzpTmE/igG+I/gMzlwA8yqK8BgS2Zs
-	kVbsOrwQNPvM3QAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	linux-rt-devel@lists.linux.dev,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH nf-next v2 3/3] netfilter: nft_set_pipapo: Use nested-BH
- locking for nft_pipapo_scratch
-Message-ID: <20250818095636.ImJ2E3_f@linutronix.de>
-References: <20250815160937.1192748-1-bigeasy@linutronix.de>
- <20250815160937.1192748-4-bigeasy@linutronix.de>
- <aKCU6GGY05WO3p_7@strlen.de>
- <20250818091133.YJHx2Qmu@linutronix.de>
- <aKLxN7j8BTTxja8B@strlen.de>
+	s=arc-20240116; t=1755512446; c=relaxed/simple;
+	bh=vVfzZiL3SHLn9VOiHd94n8EbMb/amrFrBX1QpYNDS0Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LII+/4STT3YZP2O3Wvze4WoVcxRWxW8Q0mX1lKYOhhN5LERjGpVmVNXkEMqZ9nF6+6nk0DdxVsPNAyqZq9akYsGXFx64Rcx9asA5DOTPbVJC4pPFhaDqAG8kRqeAXHuUAGhnkuyf9UFOa3aYDHFKzTih6Z3kwJSeofddwcTdEaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4c57gB3XdZz9sSh;
+	Mon, 18 Aug 2025 12:07:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id UW5otXcsL1ne; Mon, 18 Aug 2025 12:07:18 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4c57gB2nMFz9sSf;
+	Mon, 18 Aug 2025 12:07:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 4B9058B764;
+	Mon, 18 Aug 2025 12:07:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id ZTl45ucC9PUM; Mon, 18 Aug 2025 12:07:18 +0200 (CEST)
+Received: from [10.25.207.160] (unknown [10.25.207.160])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 269648B763;
+	Mon, 18 Aug 2025 12:07:18 +0200 (CEST)
+Message-ID: <edfed2af-8b4d-4afb-b999-5c46b7d46fba@csgroup.eu>
+Date: Mon, 18 Aug 2025 12:07:18 +0200
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aKLxN7j8BTTxja8B@strlen.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: modprobe returns 0 upon -EEXIST from insmod
+To: Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org
+Cc: linux-modules@vger.kernel.org, Yi Chen <yiche@redhat.com>,
+ netdev@vger.kernel.org
+References: <aKEVQhJpRdiZSliu@orbyte.nwl.cc>
+ <8a87656d-577a-4d0a-85b1-5fd17d0346fe@csgroup.eu>
+ <aKLzsAX14ybEjHfJ@orbyte.nwl.cc>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Language: fr-FR
+In-Reply-To: <aKLzsAX14ybEjHfJ@orbyte.nwl.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2025-08-18 11:24:07 [+0200], Florian Westphal wrote:
-> Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
-> > > Not sure this is correct.  If RT allows to migrate in BH before
-> > > the local lock is taken, then the if (unlikely(!irq_fpu_usable()))
-> > > check needs to be done after the local lock was taken, no?
-> > 
-> > Looking at this again, that irq_fpu_usable() itself looks slightly
-> > placed at the wrong spot. It should be
-> > |	if (!irq_fpu_usable())
-> > |		return fallback_variant(); 
-> > |	local_bh_disable();
-> > 
-> > The reason is that if you expect calls from hardirq context then you
-> > shouldn't disable BH. Lockdep enabled kernels should complain in this
-> > case. But then this is networking and I would expect everything here
-> > should be injected via NAPI/ softirq (either via driver's NAPI or
-> > backlog's).
+[+ Netfilter lists]
+
+Hi Phil
+
+Le 18/08/2025 à 11:34, Phil Sutter a écrit :
+> [Vous ne recevez pas souvent de courriers de phil@nwl.cc. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
 > 
-> This is never called from hardirq context, its always process context
-> or softirq.  Are you saying that the irq_fpu_usable() is bogus
-> and can be axed?
-
-Process context could use the FPU (say btrfs for crc32 checking) and
-then in softirq you would have to check if you are allowed to used them.
-This was the original requirement for softirq usage.
-
-x86 does disable BH in kernel_fpu_begin() before the FPU can be used.
-This "new" development required while the check was added. The
-fpu-begin() change has been added around v5.2-rc1 while the FPU
-registers are restored on return to user land (in order to make kernel
-fpu begin/ end cheaper). 
-
-Since this is x86 only you could drop it without breaking anything as of
-today. I don't think this will change but I also don't feel like I
-should advice dropping it. This does not look performance critical and
-all users call it first.
-
-> > I've just started rebasing this patch on top of the testing branch. I
-> > see that you moved that code a bit around. I can't acquire the
-> > local_lock_t within kernel_fpu_begin(). I would need to move this back
-> > to pipapo_get_avx2().
+> Hi Christophe,
 > 
-> Sure, I don't see why it can't be moved back to pipapo_get_avx2().
+> On Sun, Aug 17, 2025 at 05:54:27PM +0200, Christophe Leroy wrote:
+>> Le 17/08/2025 à 01:33, Phil Sutter a écrit :
+>>> [Vous ne recevez pas souvent de courriers de phil@nwl.cc. D?couvrez pourquoi ceci est important ? https://aka.ms/LearnAboutSenderIdentification ]
+>>>
+>>> Hi,
+>>>
+>>> I admittedly didn't fully analyze the cause, but on my system a call to:
+>>>
+>>> # insmod /lib/module/$(uname -r)/kernel/net/netfilter/nf_conntrack_ftp.ko
+>>>
+>>> fails with -EEXIST (due to a previous call to 'nfct add helper ftp inet
+>>> tcp'). A call to:
+>>>
+>>> # modprobe nf_conntrack_ftp
+>>>
+>>> though returns 0 even though module loading fails. Is there a bug in
+>>> modprobe error status handling?
+>>>
+>>
+>> Read the man page : https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flinux.die.net%2Fman%2F8%2Fmodprobe&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C34b49eb3d0544fc683e608ddde3a75b2%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638911064858807750%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=%2F70LV37Zb%2FNeiBV59y9rvkLGh0xsqga08Nl3c5%2BVU5I%3D&reserved=0
+>>
+>> In the man page I see:
+>>
+>>              Normally, modprobe will succeed (and do nothing) if told to
+>> insert a module which is already present or to remove a module which
+>> isn't present.
 > 
-> You can also just resubmit vs. nf-next main and I can rebase my
-> patches on top of the local_lock changes, up to you.
+> This is not a case of already inserted module, it is not loaded before
+> the call to modprobe. It is the module_init callback
+> nf_conntrack_ftp_init() which returns -EEXIST it received from
+> nf_conntrack_helpers_register().
+> 
+> Can't user space distinguish the two causes of -EEXIST? Or in other
+> words, is use of -EEXIST in module_init callbacks problematic?
 
-I'm half way done ;)
+So if I understand correctly the load fails because it is in conflict 
+with another module ?
 
-Sebastian
+Then I think the error returned by nf_conntrack_helpers_register() 
+shouldn't be EEXIST but probably EBUSY.
+
+Christophe
 
