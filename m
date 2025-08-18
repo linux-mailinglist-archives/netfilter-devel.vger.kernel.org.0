@@ -1,102 +1,217 @@
-Return-Path: <netfilter-devel+bounces-8348-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8346-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A991B29EF4
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 12:22:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E2A7B29E87
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 11:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32891960FD2
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 10:21:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844AD18932B5
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Aug 2025 09:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3373318133;
-	Mon, 18 Aug 2025 10:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640FF30F81B;
+	Mon, 18 Aug 2025 09:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="cgdd1Dst";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="c+spNmxF"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B052701C3;
-	Mon, 18 Aug 2025 10:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E80C31771B
+	for <netfilter-devel@vger.kernel.org>; Mon, 18 Aug 2025 09:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755512440; cv=none; b=RcXRRR+yBEOOxaZcAdqMhrpr/obsFLCk45S3du74pKp6ze78YX7LNbS2R0wIbLZ2SKoTi7d1L8+x4I4sKKjKCecvOXx03F7Ua7gNwHVvkKNiT5gL1LdSsMAqDnZhJWoUEo+mVPj6KWJrtKIVyoY3xAv4MmfIO+1eUMPQV5S6/9Y=
+	t=1755510882; cv=none; b=f2ColudePncbI2Ahx4AuBpOx4idj7q++ZSsfy0dAqy7Zb3T3QJqqf+cJsiXkfx2/GVScKYB/uJS14KftMdI6A+8QIphJKpXAwxtf8tHChWMmubBEWNAGo3TlRf4L/CvdrcYEse9F2r3/EccY4lP2y0+89Taacr2Dc7wlIMuB0CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755512440; c=relaxed/simple;
-	bh=gi1XBiPa+Y9s7F0E7yYhrqUCfP7ER/mlAOwnS69M9ng=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=te2G9oBt92Whq5Kzzh9E2CLyW4VrVfwg8uQ/gOqGDwZ+hzL1YlYr7raGlHsE0IZhqpT60oUOhVJpdhs+9QdTqbm++mtGBKVjpTahgkgKZMkw5FK6CXSgMxtlo5fRFjdy3cfV2gti6rC1Kj5DGC0kl9unCnALe21a+bh+BRva55k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4c57Fj32R9z9sSY;
-	Mon, 18 Aug 2025 11:48:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id v4Dqw6h7vKWf; Mon, 18 Aug 2025 11:48:41 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4c57Fj2DGkz9sSC;
-	Mon, 18 Aug 2025 11:48:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 363608B764;
-	Mon, 18 Aug 2025 11:48:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id nZLLT_AYuvrt; Mon, 18 Aug 2025 11:48:41 +0200 (CEST)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [10.25.207.160])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 0F32C8B763;
-	Mon, 18 Aug 2025 11:48:41 +0200 (CEST)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2] netfilter: nft_payload: Use csum_replace4() instead of opencoding
-Date: Mon, 18 Aug 2025 11:48:30 +0200
-Message-ID: <e35d9dca6ce3a67b5a0fb067e02b35f3f53ce561.1755510324.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1755510882; c=relaxed/simple;
+	bh=PymNCbTLJ1uZF9Zm58lY+YkDN5whFWbozJGQi/ADiXI=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Z4bEr27OJxgrL+J1Rxc9F/huQDbAfAwKCh4pJTlWyWZ+C9U8s4ex4YwmIlgblCD9Vicc5jY5sUYS6Nczy2dd4fQ/yNxWpvZcz7+KsJ5c8UxzSKErf2i564pq34I2c9zFVbYvx9IuC5MpywkyMywQEZbXgG5jaE3qgcTwmi7+oLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=cgdd1Dst; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=c+spNmxF; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 0D1CD60263; Mon, 18 Aug 2025 11:54:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1755510875;
+	bh=ZhB2CVHeTTA6vHhGwLioLYqPCkcZHtIMifwfKkiz8/8=;
+	h=From:To:Subject:Date:From;
+	b=cgdd1Dst9HMvNTsqLvTZDMWb/jTlV+D1va2RMDe25jChzrt74Rutr2EWgrDa7c4Md
+	 lDE0/7jJpfuXmjAZGOchMiN0BHyo9L8Qem/bKmfTX6potC/hSLfwJgrUXwtU/VlkK7
+	 HpPbDH4B/M5BeElaoiLemFt+pa9VNpd5q+YLqWt+QIv7HeH6WJCmMxvsWKJh4CFRu/
+	 qRoB0h6v3eWbizrK4G66aRwon4J1YO+65AVBQ5vPz8iFA5fCPQDH9o6dOaZBCi/JgN
+	 DnpHJ4gn1JaTwHNLfUNNsOx7wlwxUMO2dOzPD0l6ORBIaQiAXhzVNVeUwlcM7AEJXv
+	 PvEKgLJJNamGg==
+X-Spam-Level: 
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 7A21F60255
+	for <netfilter-devel@vger.kernel.org>; Mon, 18 Aug 2025 11:54:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1755510874;
+	bh=ZhB2CVHeTTA6vHhGwLioLYqPCkcZHtIMifwfKkiz8/8=;
+	h=From:To:Subject:Date:From;
+	b=c+spNmxFAiiL7UZ6sMinN2LMMy0PuoPPprwMFztUsKXzEMsXNh4XTdlcOx9r4PMdw
+	 lM/VRvtE/qS0eXLFVv1RvmDRA5/l7KSymqtl/e6WzNSFyYyNhYW/rCQs89ut99NbV6
+	 7juYPL9hdpssTk2TjFT9t2kNvDlQC0Yflr2X+jJeJ0F8pWBM9KazW+sc7wCu2iriSU
+	 jdTr5uuUwWEuqUzHukv3NP0saX3qfb19tykedRKyqZgffPbso4fAvfWOOFOG4BW3P1
+	 D9eX7K+ZrWwOmq51/EFjmvakFgIO7RsW40e6tDLEszgUV9SqEogbHXepWkBoyznbJI
+	 lDf7RDA5pTDIw==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH nft,v2] src: ensure chain policy evaluation when specified
+Date: Mon, 18 Aug 2025 11:54:31 +0200
+Message-Id: <20250818095431.3189-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1755510516; l=892; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=gi1XBiPa+Y9s7F0E7yYhrqUCfP7ER/mlAOwnS69M9ng=; b=P1rymAuoU44cHcNRzxv+AAep0JyXqqQEoidtcFyR4aEiH+vmLVBt88Caboz7pYShYjwOIi/bI KQCkRxUQD+2CEd+6njYAuwJQ/QbJYAo/3RyMcVMREZYYauv99G/INzb
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 
-Open coded calculation can be avoided and replaced by the
-equivalent csum_replace4() in nft_csum_replace().
+Set on CHAIN_F_BASECHAIN when policy is specified in chain, otherwise
+chain priority is not evaluated.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Add cast to __be32 to match csum_replace4() expected param types
----
- net/netfilter/nft_payload.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Toggling this flag requires needs three adjustments to work though:
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 7dfc5343dae4..059b28ffad0e 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -684,7 +684,7 @@ static const struct nft_expr_ops nft_payload_inner_ops = {
+1) chain_evaluate() needs skip evaluation of hook name and priority if
+   not specified to allow for updating the default chain policy, e.g.
+
+	chain ip x y { policy accept; }
+
+2) update netlink bytecode generation for chain to skip NFTA_CHAIN_HOOK
+   so update path is exercised in the kernel.
+
+3) error reporting needs to check if basechain priority and type is
+   set on, otherwise skip further hints.
+
+Fixes: acdfae9c3126 ("src: allow to specify the default policy for base chains")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: adjust error reporting path too.
+
+ src/cmd.c                                     |  3 +++
+ src/evaluate.c                                | 27 ++++++++++---------
+ src/mnl.c                                     |  8 ++++--
+ src/parser_bison.y                            |  1 +
+ .../bogons/nft-f/basechain_bad_policy         |  2 ++
+ .../bogons/nft-f/unexisting_chain_set_policy  |  5 ++++
+ 6 files changed, 32 insertions(+), 14 deletions(-)
+ create mode 100644 tests/shell/testcases/bogons/nft-f/basechain_bad_policy
+ create mode 100644 tests/shell/testcases/bogons/nft-f/unexisting_chain_set_policy
+
+diff --git a/src/cmd.c b/src/cmd.c
+index ff634af2ac24..9d5544f03c32 100644
+--- a/src/cmd.c
++++ b/src/cmd.c
+@@ -282,6 +282,9 @@ static int nft_cmd_chain_error(struct netlink_ctx *ctx, struct cmd *cmd,
+ 		if (!(chain->flags & CHAIN_F_BASECHAIN))
+ 			break;
  
- static inline void nft_csum_replace(__sum16 *sum, __wsum fsum, __wsum tsum)
- {
--	*sum = csum_fold(csum_add(csum_sub(~csum_unfold(*sum), fsum), tsum));
-+	csum_replace4(sum, (__force __be32)fsum, (__force __be32)tsum);
- 	if (*sum == 0)
- 		*sum = CSUM_MANGLED_0;
- }
++		if (!chain->priority.expr || !chain->type.str)
++			break;
++
+ 		mpz_export_data(&priority, chain->priority.expr->value,
+ 				BYTEORDER_HOST_ENDIAN, sizeof(int));
+ 		if (priority <= -200 && !strcmp(chain->type.str, "nat"))
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 8f037601c45f..7b524b418eb7 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -5772,18 +5772,21 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
+ 	}
+ 
+ 	if (chain->flags & CHAIN_F_BASECHAIN) {
+-		chain->hook.num = str2hooknum(chain->handle.family,
+-					      chain->hook.name);
+-		if (chain->hook.num == NF_INET_NUMHOOKS)
+-			return __stmt_binary_error(ctx, &chain->hook.loc, NULL,
+-						   "The %s family does not support this hook",
+-						   family2str(chain->handle.family));
+-
+-		if (!evaluate_priority(ctx, &chain->priority,
+-				       chain->handle.family, chain->hook.num))
+-			return __stmt_binary_error(ctx, &chain->priority.loc, NULL,
+-						   "invalid priority expression %s in this context.",
+-						   expr_name(chain->priority.expr));
++		if (chain->hook.name) {
++			chain->hook.num = str2hooknum(chain->handle.family,
++						      chain->hook.name);
++			if (chain->hook.num == NF_INET_NUMHOOKS)
++				return __stmt_binary_error(ctx, &chain->hook.loc, NULL,
++							   "The %s family does not support this hook",
++							   family2str(chain->handle.family));
++		}
++		if (chain->priority.expr) {
++			if (!evaluate_priority(ctx, &chain->priority,
++					       chain->handle.family, chain->hook.num))
++				return __stmt_binary_error(ctx, &chain->priority.loc, NULL,
++							   "invalid priority expression %s in this context.",
++							   expr_name(chain->priority.expr));
++		}
+ 		if (chain->policy) {
+ 			expr_set_context(&ctx->ectx, &policy_type,
+ 					 NFT_NAME_MAXLEN * BITS_PER_BYTE);
+diff --git a/src/mnl.c b/src/mnl.c
+index 43229f2498e5..ceb43b06690c 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -897,7 +897,9 @@ int mnl_nft_chain_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 			mnl_attr_put_strz(nlh, NFTA_CHAIN_TYPE, cmd->chain->type.str);
+ 		}
+ 
+-		nest = mnl_attr_nest_start(nlh, NFTA_CHAIN_HOOK);
++		if (cmd->chain->type.str ||
++		    (cmd->chain && cmd->chain->dev_expr))
++			nest = mnl_attr_nest_start(nlh, NFTA_CHAIN_HOOK);
+ 
+ 		if (cmd->chain->type.str) {
+ 			mnl_attr_put_u32(nlh, NFTA_HOOK_HOOKNUM, htonl(cmd->chain->hook.num));
+@@ -909,7 +911,9 @@ int mnl_nft_chain_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 		if (cmd->chain && cmd->chain->dev_expr)
+ 			mnl_nft_chain_devs_build(nlh, cmd);
+ 
+-		mnl_attr_nest_end(nlh, nest);
++		if (cmd->chain->type.str ||
++		    (cmd->chain && cmd->chain->dev_expr))
++			mnl_attr_nest_end(nlh, nest);
+ 	}
+ 
+ 	nftnl_chain_free(nlc);
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 0b1ea699c610..1e4b3f8a50c5 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -2834,6 +2834,7 @@ policy_spec		:	POLICY		policy_expr	close_scope_policy
+ 				}
+ 				$<chain>0->policy		= $2;
+ 				$<chain>0->policy->location	= @$;
++				$<chain>0->flags		|= CHAIN_F_BASECHAIN;
+ 			}
+ 			;
+ 
+diff --git a/tests/shell/testcases/bogons/nft-f/basechain_bad_policy b/tests/shell/testcases/bogons/nft-f/basechain_bad_policy
+new file mode 100644
+index 000000000000..998e423cb7b4
+--- /dev/null
++++ b/tests/shell/testcases/bogons/nft-f/basechain_bad_policy
+@@ -0,0 +1,2 @@
++define MY_POLICY = deny
++table T { chain C { policy $MY_POLICY; };};
+diff --git a/tests/shell/testcases/bogons/nft-f/unexisting_chain_set_policy b/tests/shell/testcases/bogons/nft-f/unexisting_chain_set_policy
+new file mode 100644
+index 000000000000..088955996490
+--- /dev/null
++++ b/tests/shell/testcases/bogons/nft-f/unexisting_chain_set_policy
+@@ -0,0 +1,5 @@
++table ip x {
++        chain y {
++                policy drop;
++        }
++}
 -- 
-2.49.0
+2.30.2
 
 
