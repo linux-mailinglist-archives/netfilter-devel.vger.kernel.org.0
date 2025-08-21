@@ -1,68 +1,68 @@
-Return-Path: <netfilter-devel+bounces-8440-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8444-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05235B2F3D4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Aug 2025 11:27:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027FBB2F3C4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Aug 2025 11:24:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 191D96807D5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Aug 2025 09:24:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 919E11CC5810
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Aug 2025 09:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C262EFD97;
-	Thu, 21 Aug 2025 09:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBF02F0663;
+	Thu, 21 Aug 2025 09:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="lkHA/7JC";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="lkHA/7JC"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="lgPPaAiz";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="lgPPaAiz"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B18D2F3C3A
-	for <netfilter-devel@vger.kernel.org>; Thu, 21 Aug 2025 09:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB35E2EFD9E
+	for <netfilter-devel@vger.kernel.org>; Thu, 21 Aug 2025 09:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755768221; cv=none; b=g8I9BjuShVT2ILLpesdIb4cRtGqHg0vI1SoYJniIfM0i511NJHvWkcWW2Z5oD18u4l1TeBjgn6HQaG5AGdciTbB4g/lC8cHe0/7VVQntlsve+O7YxstU7hWD8WGK+xSxP+yHe1n0SX+LHuO2s1VpuxtP6BbLStRHfKWg3tIaPX4=
+	t=1755768226; cv=none; b=Zs0lSpVS5N30zBWsJpGy/TLvAt9sgh5dw4hkXQPpwNsbXy0dox96sylc+lPINhXR9qNAueGTmAbDaB5WzbgxcgXTckghy0tJp+TFKUw0nJYow+i4wTwg2k0KIBKyVOABXAAUpLT3uLg2Cec8R733beY1S2r56WvuZMamoW+hwfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755768221; c=relaxed/simple;
-	bh=03fRgcayuHiKPo9zvpfu1U48scjEKNyWXUlqjnlsNCU=;
+	s=arc-20240116; t=1755768226; c=relaxed/simple;
+	bh=ijItVq1kEP0SMOzfOFPiPziRZyeqsaygnTy1Bs/2Jsc=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mxKisucZAnmW+cbC4irgJvfEHJZfyk1F67OPiq0MiiAbf3kiQDk+qQ+msIZbyLiWnUO58BnsnRYtObocSAx1r8rZ5dSyO7EBU/vsKyWINHSV2uDTIEZ/Uu8FYG+51VzbOtK7Ux2ONaMgIq43DS4dtHoVZ3bOEZfpodK4CQzn1nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=lkHA/7JC; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=lkHA/7JC; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=usTHsKsfixasrM4fFyO1i8oLDI/hqV1/xhb583/lVHxkTVwy/ZxtAt9nTnwV0P8mvL1cWMHvwXBzbE07IHG0FcuKSFXzv5+dwDx5NYhGjxpij+q6pynz1fPgU2BaMzwj0FvQ1J7DNfglMs41nQCgwcZnoCEjZmd9SEfYuUXXods=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=lgPPaAiz; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=lgPPaAiz; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id D64F9602AF; Thu, 21 Aug 2025 11:23:37 +0200 (CEST)
+	id A7E71602AD; Thu, 21 Aug 2025 11:23:40 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1755768217;
-	bh=iLXfpIFupeNsVWsdzjwI51+rbCk8DD1vaR6RksOgfzs=;
+	s=2025; t=1755768220;
+	bh=D58Q6E77OqSXVBwFNUtqBrcLGyGFgFsziUeI9Eo0mbg=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=lkHA/7JCxPTKwiIK4JXcQJE5hsVYEOn3KzL1s8/eSM0jVZH2htgN6Epq6uzITCl4c
-	 L3vom8+pxSK33xAA0rTHqBXmup2JQKYT522pjMEXFlklPXG/ed5YGP5VfH76fX9DOf
-	 7SiqNs0HnoQ0/0LyUr8GIRW7YYd57w5UoGxal51iSApzG+SinlohfqX1XIeYwFqDDw
-	 0ZvGLlYoFCZ14EKJXA8Y5slHz9kqXy4ScET1vzFKtcEnCEIgitHOQhjpofaF4J0ff+
-	 PUPIBZo9wKqewW7iiOrxAVqv+H7TBPb1VibNBPx2RPgEVbRFfOV8wF/8YEPPpOpTLu
-	 cTyDg3+4bHraA==
+	b=lgPPaAizqbWvf5MAa9Lrpj098J65Zy8V3UG5iGa8YHZPdZKgO35hyBUh6itmgqiTu
+	 ZXyRvbtFj+HSRNVEd/lL0GyaKZfpHi7DfGFq4hZL7QyrAcETh9bigEQmUqhXP9h3/z
+	 XQuluglX72UmOUAryTIuUNvemUzR9z+Esx4zShlZJyz/yaoB/Vldo8UzoUrKkzy0xK
+	 glmuig2ywf/ugcIs/9G8kOJnwJN3o4NUDsYHiUfHnlDxa1XgbvjGHAGJGQCYFqjQ3h
+	 VufFUKUS/cMvBWd5wfeZg53pQgs5MoHYAnY0gKtsrCRdbbnQBL92rZy8LTCt/KGg6y
+	 gds5bUdprEGpA==
 X-Spam-Level: 
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 1E38D602AB
-	for <netfilter-devel@vger.kernel.org>; Thu, 21 Aug 2025 11:23:37 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 01980602AB
+	for <netfilter-devel@vger.kernel.org>; Thu, 21 Aug 2025 11:23:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1755768217;
-	bh=iLXfpIFupeNsVWsdzjwI51+rbCk8DD1vaR6RksOgfzs=;
+	s=2025; t=1755768220;
+	bh=D58Q6E77OqSXVBwFNUtqBrcLGyGFgFsziUeI9Eo0mbg=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=lkHA/7JCxPTKwiIK4JXcQJE5hsVYEOn3KzL1s8/eSM0jVZH2htgN6Epq6uzITCl4c
-	 L3vom8+pxSK33xAA0rTHqBXmup2JQKYT522pjMEXFlklPXG/ed5YGP5VfH76fX9DOf
-	 7SiqNs0HnoQ0/0LyUr8GIRW7YYd57w5UoGxal51iSApzG+SinlohfqX1XIeYwFqDDw
-	 0ZvGLlYoFCZ14EKJXA8Y5slHz9kqXy4ScET1vzFKtcEnCEIgitHOQhjpofaF4J0ff+
-	 PUPIBZo9wKqewW7iiOrxAVqv+H7TBPb1VibNBPx2RPgEVbRFfOV8wF/8YEPPpOpTLu
-	 cTyDg3+4bHraA==
+	b=lgPPaAizqbWvf5MAa9Lrpj098J65Zy8V3UG5iGa8YHZPdZKgO35hyBUh6itmgqiTu
+	 ZXyRvbtFj+HSRNVEd/lL0GyaKZfpHi7DfGFq4hZL7QyrAcETh9bigEQmUqhXP9h3/z
+	 XQuluglX72UmOUAryTIuUNvemUzR9z+Esx4zShlZJyz/yaoB/Vldo8UzoUrKkzy0xK
+	 glmuig2ywf/ugcIs/9G8kOJnwJN3o4NUDsYHiUfHnlDxa1XgbvjGHAGJGQCYFqjQ3h
+	 VufFUKUS/cMvBWd5wfeZg53pQgs5MoHYAnY0gKtsrCRdbbnQBL92rZy8LTCt/KGg6y
+	 gds5bUdprEGpA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2 02/11] src: replace compound_expr_add() by type safe set_expr_add()
-Date: Thu, 21 Aug 2025 11:23:21 +0200
-Message-Id: <20250821092330.2739989-3-pablo@netfilter.org>
+Subject: [PATCH nft,v2 03/11] src: replace compound_expr_add() by type safe concat_expr_add()
+Date: Thu, 21 Aug 2025 11:23:22 +0200
+Message-Id: <20250821092330.2739989-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250821092330.2739989-1-pablo@netfilter.org>
 References: <20250821092330.2739989-1-pablo@netfilter.org>
@@ -74,379 +74,236 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace compound_expr_add() by set_expr_add() to validate type.
-
-Add __set_expr_add() to skip size updates in src/intervals.c
+Replace compound_expr_add by concat_expr_add() to validate type.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/expression.h |  3 +++
- src/expression.c     | 13 +++++++++++++
- src/intervals.c      |  8 ++++----
- src/monitor.c        |  2 +-
- src/netlink.c        |  2 +-
- src/optimize.c       | 20 ++++++++++----------
- src/parser_bison.y   |  8 ++++----
- src/parser_json.c    |  4 ++--
- src/payload.c        |  6 +++---
- src/segtree.c        | 20 ++++++++++----------
- 10 files changed, 51 insertions(+), 35 deletions(-)
+ include/expression.h      |  1 +
+ src/expression.c          | 10 +++++++++-
+ src/netlink.c             |  4 ++--
+ src/netlink_delinearize.c |  6 +++---
+ src/optimize.c            | 18 +++++++++---------
+ src/parser_bison.y        |  4 ++--
+ src/parser_json.c         |  6 +++---
+ 7 files changed, 29 insertions(+), 20 deletions(-)
 
 diff --git a/include/expression.h b/include/expression.h
-index 2e0754edaaae..21be74068468 100644
+index 21be74068468..71a7298891cc 100644
 --- a/include/expression.h
 +++ b/include/expression.h
-@@ -531,6 +531,9 @@ struct expr *list_expr_to_binop(struct expr *expr);
+@@ -525,6 +525,7 @@ extern void list_expr_sort(struct list_head *head);
+ extern void list_splice_sorted(struct list_head *list, struct list_head *head);
  
- extern struct expr *set_expr_alloc(const struct location *loc,
- 				   const struct set *set);
-+void __set_expr_add(struct expr *set, struct expr *elem);
-+void set_expr_add(struct expr *set, struct expr *elem);
-+
- extern void concat_range_aggregate(struct expr *set);
- extern void interval_map_decompose(struct expr *set);
+ extern struct expr *concat_expr_alloc(const struct location *loc);
++void concat_expr_add(struct expr *concat, struct expr *item);
  
+ extern struct expr *list_expr_alloc(const struct location *loc);
+ struct expr *list_expr_to_binop(struct expr *expr);
 diff --git a/src/expression.c b/src/expression.c
-index 8cb639797284..32e101ea9070 100644
+index 32e101ea9070..106208f2b19c 100644
 --- a/src/expression.c
 +++ b/src/expression.c
-@@ -1392,6 +1392,19 @@ struct expr *set_expr_alloc(const struct location *loc, const struct set *set)
- 	return set_expr;
+@@ -1211,7 +1211,7 @@ static struct expr *concat_expr_parse_udata(const struct nftnl_udata *attr)
+ 			goto err_free;
+ 
+ 		dt = concat_subtype_add(dt, expr->dtype->type);
+-		compound_expr_add(concat_expr, expr);
++		concat_expr_add(concat_expr, expr);
+ 		len += netlink_padded_len(expr->len);
+ 	}
+ 
+@@ -1245,6 +1245,14 @@ struct expr *concat_expr_alloc(const struct location *loc)
+ 	return compound_expr_alloc(loc, EXPR_CONCAT);
  }
  
-+void __set_expr_add(struct expr *set, struct expr *elem)
++void concat_expr_add(struct expr *concat, struct expr *item)
 +{
-+	list_add_tail(&elem->list, &expr_set(set)->expressions);
++	struct expr_concat *expr_concat = expr_concat(concat);
++
++	list_add_tail(&item->list, &expr_concat->expressions);
++	expr_concat->size++;
 +}
 +
-+void set_expr_add(struct expr *set, struct expr *elem)
-+{
-+	struct expr_set *expr_set = expr_set(set);
-+
-+	list_add_tail(&elem->list, &expr_set->expressions);
-+	expr_set->size++;
-+}
-+
- static void mapping_expr_print(const struct expr *expr, struct output_ctx *octx)
+ static void list_expr_print(const struct expr *expr, struct output_ctx *octx)
  {
- 	expr_print(expr->left, octx);
-diff --git a/src/intervals.c b/src/intervals.c
-index d5afffd2120a..a63c58ac9606 100644
---- a/src/intervals.c
-+++ b/src/intervals.c
-@@ -278,7 +278,7 @@ int set_automerge(struct list_head *msgs, struct cmd *cmd, struct set *set,
- 			}
- 			clone = expr_clone(i);
- 			clone->flags |= EXPR_F_KERNEL;
--			list_add_tail(&clone->list, &expr_set(existing_set->init)->expressions);
-+			__set_expr_add(existing_set->init, clone);
- 		}
- 	}
- 
-@@ -359,7 +359,7 @@ static void split_range(struct set *set, struct expr *prev, struct expr *i,
- 	clone = expr_clone(prev);
- 	mpz_set(clone->key->range.low, i->key->range.high);
- 	mpz_add_ui(clone->key->range.low, i->key->range.high, 1);
--	list_add_tail(&clone->list, &expr_set(set->existing_set->init)->expressions);
-+	__set_expr_add(set->existing_set->init, clone);
- 
- 	mpz_set(prev->key->range.high, i->key->range.low);
- 	mpz_sub_ui(prev->key->range.high, i->key->range.low, 1);
-@@ -527,7 +527,7 @@ int set_delete(struct list_head *msgs, struct cmd *cmd, struct set *set,
- 	list_for_each_entry(i, &expr_set(existing_set->init)->expressions, list) {
- 		if (!(i->flags & EXPR_F_KERNEL)) {
- 			clone = expr_clone(i);
--			list_add_tail(&clone->list, &expr_set(add)->expressions);
-+			__set_expr_add(add, clone);
- 			i->flags |= EXPR_F_KERNEL;
- 		}
- 	}
-@@ -646,7 +646,7 @@ int set_overlap(struct list_head *msgs, struct set *set, struct expr *init)
- 		else if (existing_set) {
- 			clone = expr_clone(i);
- 			clone->flags |= EXPR_F_KERNEL;
--			list_add_tail(&clone->list, &expr_set(existing_set->init)->expressions);
-+			__set_expr_add(existing_set->init, clone);
- 		}
- 	}
- 
-diff --git a/src/monitor.c b/src/monitor.c
-index da1ad880f0c8..e58f62252ca2 100644
---- a/src/monitor.c
-+++ b/src/monitor.c
-@@ -400,7 +400,7 @@ static bool netlink_event_range_cache(struct set *cached_set,
- 
- 	/* if cache exists, dummyset must contain the other end of the range */
- 	if (cached_set->rg_cache) {
--		compound_expr_add(dummyset->init, cached_set->rg_cache);
-+		set_expr_add(dummyset->init, cached_set->rg_cache);
- 		cached_set->rg_cache = NULL;
- 		goto out_decompose;
- 	}
+ 	compound_expr_print(expr, ",", octx);
 diff --git a/src/netlink.c b/src/netlink.c
-index 94cbcbfc6c09..30dd6c9b4f0d 100644
+index 30dd6c9b4f0d..edf8c5197e65 100644
 --- a/src/netlink.c
 +++ b/src/netlink.c
-@@ -1591,7 +1591,7 @@ key_end:
- 		expr = mapping_expr_alloc(&netlink_location, expr, data);
+@@ -1366,7 +1366,7 @@ static struct expr *netlink_parse_concat_elem_key(const struct set *set,
+ 	concat = concat_expr_alloc(&data->location);
+ 	while (off > 0) {
+ 		expr = concat_elem_expr(set, n, dtype, data, &off);
+-		compound_expr_add(concat, expr);
++		concat_expr_add(concat, expr);
+ 		if (set->key->etype == EXPR_CONCAT)
+ 			n = list_next_entry(n, list);
  	}
- out:
--	compound_expr_add(set->init, expr);
-+	set_expr_add(set->init, expr);
+@@ -1405,7 +1405,7 @@ static struct expr *netlink_parse_concat_elem(const struct set *set,
  
- 	if (!(flags & NFT_SET_ELEM_INTERVAL_END) &&
- 	    nftnl_set_elem_is_set(nlse, NFTNL_SET_ELEM_KEY_END)) {
+ 			range = range_expr_alloc(&data->location, left, expr);
+ 			range = range_expr_reduce(range);
+-			compound_expr_add(concat, range);
++			concat_expr_add(concat, range);
+ 		}
+ 		assert(list_empty(&expressions));
+ 	} else {
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index b97962a30ca2..aa43ca85c5eb 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -128,7 +128,7 @@ static struct expr *netlink_parse_concat_expr(struct netlink_parse_ctx *ctx,
+ 				      "Relational expression size mismatch");
+ 			goto err;
+ 		}
+-		compound_expr_add(concat, expr);
++		concat_expr_add(concat, expr);
+ 
+ 		consumed = netlink_padded_len(expr->len);
+ 		assert(consumed > 0);
+@@ -171,7 +171,7 @@ static struct expr *netlink_parse_concat_key(struct netlink_parse_ctx *ctx,
+ 			expr_set_type(expr, i, i->byteorder);
+ 		}
+ 
+-		compound_expr_add(concat, expr);
++		concat_expr_add(concat, expr);
+ 
+ 		consumed = netlink_padded_len(expr->len);
+ 		assert(consumed > 0);
+@@ -204,7 +204,7 @@ static struct expr *netlink_parse_concat_data(struct netlink_parse_ctx *ctx,
+ 		}
+ 		i = constant_expr_splice(data, expr->len);
+ 		data->len -= netlink_padding_len(expr->len);
+-		compound_expr_add(concat, i);
++		concat_expr_add(concat, i);
+ 
+ 		len -= netlink_padded_len(expr->len);
+ 		reg += netlink_register_space(expr->len);
 diff --git a/src/optimize.c b/src/optimize.c
-index 40756cecbbc3..b2fd9e829f00 100644
+index b2fd9e829f00..cdd6913a306d 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -569,13 +569,13 @@ static void merge_expr_stmts(const struct optimize_ctx *ctx,
+@@ -657,7 +657,7 @@ static void __merge_concat(const struct optimize_ctx *ctx, uint32_t i,
+ 				list_for_each_entry(expr, &expr_set(stmt_a->expr->right)->expressions, list) {
+ 					concat_clone = expr_clone(concat);
+ 					clone = expr_clone(expr->key);
+-					compound_expr_add(concat_clone, clone);
++					concat_expr_add(concat_clone, clone);
+ 					list_add_tail(&concat_clone->list, &pending_list);
+ 				}
+ 				list_del(&concat->list);
+@@ -670,13 +670,13 @@ static void __merge_concat(const struct optimize_ctx *ctx, uint32_t i,
+ 			case EXPR_RANGE:
+ 			case EXPR_RANGE_VALUE:
+ 				clone = expr_clone(stmt_a->expr->right);
+-				compound_expr_add(concat, clone);
++				concat_expr_add(concat, clone);
+ 				break;
+ 			case EXPR_LIST:
+ 				list_for_each_entry(expr, &expr_list(stmt_a->expr->right)->expressions, list) {
+ 					concat_clone = expr_clone(concat);
+ 					clone = expr_clone(expr);
+-					compound_expr_add(concat_clone, clone);
++					concat_expr_add(concat_clone, clone);
+ 					list_add_tail(&concat_clone->list, &pending_list);
+ 				}
+ 				list_del(&concat->list);
+@@ -720,7 +720,7 @@ static void merge_concat_stmts(const struct optimize_ctx *ctx,
  
- 	expr_a = stmt_a->expr->right;
- 	elem = set_elem_expr_alloc(&internal_location, expr_get(expr_a));
--	compound_expr_add(set, elem);
-+	set_expr_add(set, elem);
- 
- 	for (i = from + 1; i <= to; i++) {
- 		stmt_b = ctx->stmt_matrix[i][merge->stmt[0]];
- 		expr_b = stmt_b->expr->right;
- 		elem = set_elem_expr_alloc(&internal_location, expr_get(expr_b));
--		compound_expr_add(set, elem);
-+		set_expr_add(set, elem);
+ 	for (k = 0; k < merge->num_stmts; k++) {
+ 		stmt_a = ctx->stmt_matrix[from][merge->stmt[k]];
+-		compound_expr_add(concat, expr_get(stmt_a->expr->left));
++		concat_expr_add(concat, expr_get(stmt_a->expr->left));
+ 	}
+ 	expr_free(stmt->expr->left);
+ 	stmt->expr->left = concat;
+@@ -920,7 +920,7 @@ static void merge_concat_stmts_vmap(const struct optimize_ctx *ctx,
+ 	concat_a = concat_expr_alloc(&internal_location);
+ 	for (i = 0; i < merge->num_stmts; i++) {
+ 		stmt_a = ctx->stmt_matrix[from][merge->stmt[i]];
+-		compound_expr_add(concat_a, expr_get(stmt_a->expr->left));
++		concat_expr_add(concat_a, expr_get(stmt_a->expr->left));
  	}
  
- 	expr_free(stmt_a->expr->right);
-@@ -590,7 +590,7 @@ static void merge_vmap(const struct optimize_ctx *ctx,
- 	mappings = stmt_b->expr->mappings;
- 	list_for_each_entry(expr, &expr_set(mappings)->expressions, list) {
- 		mapping = expr_clone(expr);
--		compound_expr_add(stmt_a->expr->mappings, mapping);
-+		set_expr_add(stmt_a->expr->mappings, mapping);
- 	}
- }
- 
-@@ -702,7 +702,7 @@ static void __merge_concat_stmts(const struct optimize_ctx *ctx, uint32_t i,
- 	list_for_each_entry_safe(concat, next, &concat_list, list) {
- 		list_del(&concat->list);
- 		elem = set_elem_expr_alloc(&internal_location, concat);
--		compound_expr_add(set, elem);
-+		set_expr_add(set, elem);
- 	}
- }
- 
-@@ -759,7 +759,7 @@ static void build_verdict_map(struct expr *expr, struct stmt *verdict,
- 
- 			mapping = mapping_expr_alloc(&internal_location, elem,
- 						     expr_get(verdict->expr));
--			compound_expr_add(set, mapping);
-+			set_expr_add(set, mapping);
+ 	/* build set data contenation, eg. { eth0 . 1.1.1.1 . 22 : accept } */
+@@ -1021,8 +1021,8 @@ static struct expr *stmt_nat_expr(struct stmt *nat_stmt)
+ 	if (nat_stmt->nat.proto) {
+ 		if (nat_stmt->nat.addr) {
+ 			nat_expr = concat_expr_alloc(&internal_location);
+-			compound_expr_add(nat_expr, expr_get(nat_stmt->nat.addr));
+-			compound_expr_add(nat_expr, expr_get(nat_stmt->nat.proto));
++			concat_expr_add(nat_expr, expr_get(nat_stmt->nat.addr));
++			concat_expr_add(nat_expr, expr_get(nat_stmt->nat.proto));
+ 		} else {
+ 			nat_expr = expr_get(nat_stmt->nat.proto);
  		}
- 		stmt_free(counter);
- 		break;
-@@ -773,7 +773,7 @@ static void build_verdict_map(struct expr *expr, struct stmt *verdict,
- 
- 			mapping = mapping_expr_alloc(&internal_location, elem,
- 						     expr_get(verdict->expr));
--			compound_expr_add(set, mapping);
-+			set_expr_add(set, mapping);
+@@ -1110,7 +1110,7 @@ static void merge_concat_nat(const struct optimize_ctx *ctx,
+ 		for (j = 0; j < merge->num_stmts; j++) {
+ 			stmt = ctx->stmt_matrix[i][merge->stmt[j]];
+ 			expr = stmt->expr->right;
+-			compound_expr_add(concat, expr_get(expr));
++			concat_expr_add(concat, expr_get(expr));
  		}
- 		stmt_free(counter);
- 		break;
-@@ -790,7 +790,7 @@ static void build_verdict_map(struct expr *expr, struct stmt *verdict,
  
- 		mapping = mapping_expr_alloc(&internal_location, elem,
- 					     expr_get(verdict->expr));
--		compound_expr_add(set, mapping);
-+		set_expr_add(set, mapping);
- 		break;
- 	default:
- 		assert(0);
-@@ -898,7 +898,7 @@ static void __merge_concat_stmts_vmap(const struct optimize_ctx *ctx,
- 
- 		mapping = mapping_expr_alloc(&internal_location, elem,
- 					     expr_get(verdict->expr));
--		compound_expr_add(set, mapping);
-+		set_expr_add(set, mapping);
+ 		nat_stmt = ctx->stmt_matrix[i][k];
+@@ -1131,7 +1131,7 @@ static void merge_concat_nat(const struct optimize_ctx *ctx,
+ 			else if (left->payload.desc == &proto_ip6)
+ 				family = NFPROTO_IPV6;
+ 		}
+-		compound_expr_add(concat, expr_get(left));
++		concat_expr_add(concat, expr_get(left));
  	}
- 	stmt_free(counter);
- }
-@@ -1061,7 +1061,7 @@ static void merge_nat(const struct optimize_ctx *ctx,
+ 	expr = map_expr_alloc(&internal_location, concat, set);
  
- 		elem = set_elem_expr_alloc(&internal_location, expr_get(expr));
- 		mapping = mapping_expr_alloc(&internal_location, elem, nat_expr);
--		compound_expr_add(set, mapping);
-+		set_expr_add(set, mapping);
- 	}
- 
- 	stmt = ctx->stmt_matrix[from][merge->stmt[0]];
-@@ -1118,7 +1118,7 @@ static void merge_concat_nat(const struct optimize_ctx *ctx,
- 
- 		elem = set_elem_expr_alloc(&internal_location, concat);
- 		mapping = mapping_expr_alloc(&internal_location, elem, nat_expr);
--		compound_expr_add(set, mapping);
-+		set_expr_add(set, mapping);
- 	}
- 
- 	concat = concat_expr_alloc(&internal_location);
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 1e4b3f8a50c5..aab1cc675234 100644
+index aab1cc675234..401c17b0d3c6 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -3276,11 +3276,11 @@ verdict_map_expr	:	'{'	verdict_map_list_expr	'}'
- verdict_map_list_expr	:	verdict_map_list_member_expr
- 			{
- 				$$ = set_expr_alloc(&@$, NULL);
--				compound_expr_add($$, $1);
-+				set_expr_add($$, $1);
- 			}
- 			|	verdict_map_list_expr	COMMA	verdict_map_list_member_expr
- 			{
--				compound_expr_add($1, $3);
-+				set_expr_add($1, $3);
- 				$$ = $1;
- 			}
- 			|	verdict_map_list_expr	COMMA	opt_newline
-@@ -4533,11 +4533,11 @@ set_expr		:	'{'	set_list_expr		'}'
- set_list_expr		:	set_list_member_expr
- 			{
- 				$$ = set_expr_alloc(&@$, NULL);
--				compound_expr_add($$, $1);
-+				set_expr_add($$, $1);
- 			}
- 			|	set_list_expr		COMMA	set_list_member_expr
- 			{
--				compound_expr_add($1, $3);
-+				set_expr_add($1, $3);
- 				$$ = $1;
- 			}
- 			|	set_list_expr		COMMA	opt_newline
+@@ -121,7 +121,7 @@ static struct expr *handle_concat_expr(const struct location *loc,
+ {
+ 	if (expr->etype != EXPR_CONCAT) {
+ 		expr = concat_expr_alloc(loc);
+-		compound_expr_add(expr, expr_l);
++		concat_expr_add(expr, expr_l);
+ 	} else {
+ 		location_update(&expr_r->location, loc_rhs, 2);
+ 
+@@ -129,7 +129,7 @@ static struct expr *handle_concat_expr(const struct location *loc,
+ 		expr->location = *loc;
+ 	}
+ 
+-	compound_expr_add(expr, expr_r);
++	concat_expr_add(expr, expr_r);
+ 	return expr;
+ }
+ 
 diff --git a/src/parser_json.c b/src/parser_json.c
-index 71e44f19c9f1..1a37246ef7f6 100644
+index 1a37246ef7f6..2216d41563b0 100644
 --- a/src/parser_json.c
 +++ b/src/parser_json.c
-@@ -1454,7 +1454,7 @@ static struct expr *json_parse_set_expr(struct json_ctx *ctx,
+@@ -1330,10 +1330,10 @@ static struct expr *json_parse_concat_expr(struct json_ctx *ctx,
+ 			struct expr *concat;
  
- 		expr = set_elem_expr_alloc(int_loc, expr);
- 		set_expr = set_expr_alloc(int_loc, NULL);
--		compound_expr_add(set_expr, expr);
-+		set_expr_add(set_expr, expr);
- 		return set_expr;
+ 			concat = concat_expr_alloc(int_loc);
+-			compound_expr_add(concat, expr);
++			concat_expr_add(concat, expr);
+ 			expr = concat;
+ 		}
+-		compound_expr_add(expr, tmp);
++		concat_expr_add(expr, tmp);
  	}
- 
-@@ -1498,7 +1498,7 @@ static struct expr *json_parse_set_expr(struct json_ctx *ctx,
- 
- 		if (!set_expr)
- 			set_expr = set_expr_alloc(int_loc, NULL);
--		compound_expr_add(set_expr, expr);
-+		set_expr_add(set_expr, expr);
- 	}
- 	return set_expr;
+ 	return expr ? json_check_concat_expr(ctx, expr) : NULL;
  }
-diff --git a/src/payload.c b/src/payload.c
-index a38f5bf730d1..162367eb7fd0 100644
---- a/src/payload.c
-+++ b/src/payload.c
-@@ -1534,13 +1534,13 @@ __payload_gen_icmp_echo_dependency(struct eval_ctx *ctx, const struct expr *expr
- 				    BYTEORDER_BIG_ENDIAN, BITS_PER_BYTE,
- 				    constant_data_ptr(echo, BITS_PER_BYTE));
- 	right = set_elem_expr_alloc(&expr->location, right);
--	compound_expr_add(set, right);
-+	set_expr_add(set, right);
+@@ -1806,7 +1806,7 @@ static struct expr *json_parse_dtype_expr(struct json_ctx *ctx, json_t *root)
+ 				expr_free(expr);
+ 				return NULL;
+ 			}
+-			compound_expr_add(expr, i);
++			concat_expr_add(expr, i);
+ 		}
  
- 	right = constant_expr_alloc(&expr->location, icmp_type,
- 				    BYTEORDER_BIG_ENDIAN, BITS_PER_BYTE,
- 				    constant_data_ptr(reply, BITS_PER_BYTE));
- 	right = set_elem_expr_alloc(&expr->location, right);
--	compound_expr_add(set, right);
-+	set_expr_add(set, right);
- 
- 	dep = relational_expr_alloc(&expr->location, OP_IMPLICIT, left, set);
- 	return expr_stmt_alloc(&dep->location, dep);
-@@ -1571,7 +1571,7 @@ __payload_gen_icmp6_addr_dependency(struct eval_ctx *ctx, const struct expr *exp
- 					    constant_data_ptr(icmp_addr_types[i],
- 							      BITS_PER_BYTE));
- 		right = set_elem_expr_alloc(&expr->location, right);
--		compound_expr_add(set, right);
-+		set_expr_add(set, right);
- 	}
- 
- 	dep = relational_expr_alloc(&expr->location, OP_IMPLICIT, left, set);
-diff --git a/src/segtree.c b/src/segtree.c
-index 607f002f181e..9395b5388507 100644
---- a/src/segtree.c
-+++ b/src/segtree.c
-@@ -64,7 +64,7 @@ static void set_elem_add(const struct set *set, struct expr *init, mpz_t value,
- 	expr = set_elem_expr_alloc(&internal_location, expr);
- 	expr->flags = flags;
- 
--	compound_expr_add(init, expr);
-+	set_expr_add(init, expr);
- }
- 
- struct expr *get_set_intervals(const struct set *set, const struct expr *init)
-@@ -86,12 +86,12 @@ struct expr *get_set_intervals(const struct set *set, const struct expr *init)
- 				     i->flags, byteorder);
- 			break;
- 		case EXPR_CONCAT:
--			compound_expr_add(new_init, expr_clone(i));
-+			set_expr_add(new_init, expr_clone(i));
- 			i->flags |= EXPR_F_INTERVAL_END;
--			compound_expr_add(new_init, expr_clone(i));
-+			set_expr_add(new_init, expr_clone(i));
- 			break;
- 		case EXPR_SET_ELEM_CATCHALL:
--			compound_expr_add(new_init, expr_clone(i));
-+			set_expr_add(new_init, expr_clone(i));
- 			break;
- 		default:
- 			range_expr_value_low(low, i);
-@@ -214,16 +214,16 @@ static void set_compound_expr_add(struct expr *compound, struct expr *expr, stru
- 	switch (expr->etype) {
- 	case EXPR_SET_ELEM:
- 		list_splice_init(&orig->stmt_list, &expr->stmt_list);
--		compound_expr_add(compound, expr);
-+		set_expr_add(compound, expr);
- 		break;
- 	case EXPR_MAPPING:
- 		list_splice_init(&orig->left->stmt_list, &expr->left->stmt_list);
--		compound_expr_add(compound, expr);
-+		set_expr_add(compound, expr);
- 		break;
- 	default:
- 		elem = set_elem_expr_alloc(&orig->location, expr);
- 		list_splice_init(&orig->stmt_list, &elem->stmt_list);
--		compound_expr_add(compound, elem);
-+		set_expr_add(compound, elem);
- 		break;
- 	}
- }
-@@ -551,7 +551,7 @@ add_interval(struct expr *set, struct expr *low, struct expr *i)
- 	} else
- 		expr = interval_to_range(low, i, range);
- 
--	compound_expr_add(set, expr);
-+	set_expr_add(set, expr);
- 
- 	mpz_clear(range);
- 	mpz_clear(p);
-@@ -645,7 +645,7 @@ void interval_map_decompose(struct expr *set)
- 	mpz_bitmask(i->value, i->len);
- 
- 	if (!mpz_cmp(i->value, expr_value(low)->value)) {
--		compound_expr_add(set, low);
-+		set_expr_add(set, low);
- 	} else {
- 		add_interval(set, low, i);
- 		expr_free(low);
-@@ -656,7 +656,7 @@ void interval_map_decompose(struct expr *set)
- out:
- 	if (catchall) {
- 		catchall->flags |= EXPR_F_KERNEL;
--		compound_expr_add(set, catchall);
-+		set_expr_add(set, catchall);
- 	}
- 
- 	free(ranges);
+ 		return json_check_concat_expr(ctx, expr);
 -- 
 2.30.2
 
