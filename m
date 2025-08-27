@@ -1,177 +1,166 @@
-Return-Path: <netfilter-devel+bounces-8502-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8504-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B354AB38554
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Aug 2025 16:46:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC52CB38857
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Aug 2025 19:12:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2126B980E2A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Aug 2025 14:46:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCAE51B6263B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Aug 2025 17:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689502066DE;
-	Wed, 27 Aug 2025 14:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F6C30C367;
+	Wed, 27 Aug 2025 17:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="SZ1yFRVI";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="aJpD0agX"
+	dkim=pass (2048-bit key) header.d=blaese.de header.i=@blaese.de header.b="NpZ8pKvV"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from mail.sgstbr.de (mail.sgstbr.de [94.130.16.203])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760291F55FA
-	for <netfilter-devel@vger.kernel.org>; Wed, 27 Aug 2025 14:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FE52F0671;
+	Wed, 27 Aug 2025 17:12:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.130.16.203
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756305983; cv=none; b=UmSp1jbnlW4vGoGCR6XJsyI5n3Opccsn3L+x+5wr1OxDC7jDHXJ0kZoxm3wbYHY5TVrlm1iO+JiWLvzzftIO5pjwr13frQ+6AEcX1kV/edka/EAu4NqCvjtk76x09AMFaC19PMqYRbDdQI1phgYeILrQZvZc2Bf9BS8iRroZ1wQ=
+	t=1756314756; cv=none; b=vFk5rGb3vxcKyJP7rIdk3kAebcQNc86YuYv16Y66N4/3jVXMxbY+hLgI8fQ5oJKICwZYfb/J8scok5ZTxexksiMyDB9gbF0Zm/eHa58x62adUa3/vX/gnT1UjwhqFLIls865Ydwi3JodIafb5WeEgfK0W06xzxMrITj1eMFunZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756305983; c=relaxed/simple;
-	bh=YhHyFFKDGJXI+gUrsdtN2WWkI2fWCBmiybY7rGwfwx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YvWk19DV2l60Jn0mj7Drq2v1PL5hXNuiYKSIb2TniYa3vR4GtjmonIRYeoSiDnhdZxu8nGBPe59rsac7lvkxRzOIW7J9gSNVOhx5V0MnTsMJ1p62Cg8jWbfvD4QC02aEP/0NrU+kM2pDH6o3OEaP3WTe/L2ez/78ukiOv/ax7yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=SZ1yFRVI; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=aJpD0agX; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 9A77A6027B; Wed, 27 Aug 2025 16:46:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1756305978;
-	bh=92uMguDluDsWD0B/K5org8m4fSehu8qtviYaJEfwZ4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SZ1yFRVIRjogcuYPdz1Vzs9WFLwpHHkn4racXCSmhFdYOoyghugyiTKOSCrXT0lee
-	 xBma9FehJDLjK6fev0J/enVa4bYhfbzczYcSmll36B31HRwzuX9crXONrywTWZirGX
-	 j9BYdLVs+0wXm34Sk7wo2oMD2nYXqSjJL4EChkM8kDFg8U36XkijHTOKDTFzd1ze2H
-	 UJbM0rX0oAf74CRESWW5+vW7QUIrP33l1ZA6OpYPc4uqcc76ngfRcLeGn441Y/GleA
-	 CLp9NXkLobpcseYhaVDoUC8plcfZNyWcQYeJ7mPqM7AQUfXdanQC3fzgyUvWNksilb
-	 uo6XbygLCGR0w==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 716B060264;
-	Wed, 27 Aug 2025 16:46:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1756305977;
-	bh=92uMguDluDsWD0B/K5org8m4fSehu8qtviYaJEfwZ4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aJpD0agXKysLIwJoben5XSBz15WYDD9bY+SyZCafIURe5mpWVVzZ/piscKI8vci/v
-	 gcM9iZlaNq8h8QzBROdbWypoiJ8RTc2jOQabaUXDjpDQuPfwkYFMDDrced6dEugX0v
-	 rC9JvNiZmZV0ibm8/Z06zYRYPBuSE3mp62v5P0MhuPJ3hGZrJLzVVFc+hIA6i8kjLE
-	 2WqknBX9wMXFnF8F9DTL2UJWGPi1qHc7yC1IIBgyR9pwx6JjcML+IvGE2U70aPialb
-	 fR+6AEgPMcw/PCe72byMJ3+VTl//2dMWt9BlHOZsgE9HlHOVy+cnle8DTbdX8Wddai
-	 LBeP5OFDLGEmQ==
-Date: Wed, 27 Aug 2025 16:46:15 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: jengelh@inai.de, phil@nwl.cc
-Subject: Re: [PATCH nft] build: disable --with-unitdir by default
-Message-ID: <aK8aN4h2XsLnTdT6@calendula>
-References: <20250827140214.645245-1-pablo@netfilter.org>
+	s=arc-20240116; t=1756314756; c=relaxed/simple;
+	bh=txdx1s8qFjy7bZfp6A8JGTnYvXtIPXGL5WG4K4rhisU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=NDYpxQcrK5ypyijzpuIiaT/S9TceRuAOKlMEWBu6GVZjuS7DK8JRcOQNFsPCzMZf2A+ObioupdbpPenh4Pl82+ZiE9LZb3tj5tmsoykgPudMf/6FJlNDsP//zxJ2xwWipVewykLwRqEbF7YCFQVR+pZ+fieXA/bnwWW/Fxhj01o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=blaese.de; spf=pass smtp.mailfrom=blaese.de; dkim=pass (2048-bit key) header.d=blaese.de header.i=@blaese.de header.b=NpZ8pKvV; arc=none smtp.client-ip=94.130.16.203
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=blaese.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blaese.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blaese.de; s=201803;
+	t=1756314743; bh=w3BdMIdi4mu9DyHfL8aSx5oylHchPpBewyakd30mWLQ=;
+	h=Date:From:Subject:To:References:In-Reply-To:From;
+	b=NpZ8pKvVCFxkJMlRixFVcLXUzjnRGo8w0dVLdGIJBMjrgSQIOzY3FQB//q91IToh/
+	 SyYc4jvc7vkC2e+foi0G/zzwAOIfnGynoKsZNFvlqSU5OlBDanmbPnWsBYAKg/eMC0
+	 AzPrebvWm8ePzreYUA2Kc8kfACRryB8j6XjZenPLE5sZeszEPb0ShXAnxxa3SwIq7N
+	 cPSF1bS9EDioqr9caUID6FV3Sn3Fa0dZarrrMg+QI11mb2MIM7NXdnlUEu1sBiRalp
+	 6qWhFGsa9/paWfjMzM/pxlj78uRGVC3lhRIXufwpbh7mshK1nimN+qiZRiSUa9MOdw
+	 YraZHV3/Pe6Fg==
+Received: from [IPV6:2a0b:f4c0:c8:6d:77a2:ec00:2663:dfdb] (2a0b.f4c0.00c8.006d.77a2.ec00.2663.dfdb.rdns.f3netze.de [IPv6:2a0b:f4c0:c8:6d:77a2:ec00:2663:dfdb])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: fabian@blaese.de)
+	by mail.sgstbr.de (Postfix) with ESMTPSA id 5E16F24B485;
+	Wed, 27 Aug 2025 19:12:22 +0200 (CEST)
+Message-ID: <e1bf6193-d075-4593-81ef-99e8b93a4f74@blaese.de>
+Date: Wed, 27 Aug 2025 19:12:19 +0200
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250827140214.645245-1-pablo@netfilter.org>
+User-Agent: Mozilla Thunderbird
+From: =?UTF-8?Q?Fabian_Bl=C3=A4se?= <fabian@blaese.de>
+Subject: Re: [PATCH v2] icmp: fix icmp_ndo_send address translation for reply
+ direction
+To: Florian Westphal <fw@strlen.de>
+Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>
+References: <20250825201717.3217045-1-fabian@blaese.de>
+ <20250825203826.3231093-1-fabian@blaese.de> <aK7KYr5D7bD3OcHb@strlen.de>
+Content-Language: de-DE, en-US
+Autocrypt: addr=fabian@blaese.de; keydata=
+ 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
+In-Reply-To: <aK7KYr5D7bD3OcHb@strlen.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 27.08.25 11:05, Florian Westphal wrote:
+> If the connection isn't subject to snat, why to we need to mangle the
+> source address in the first place?
+It is not limited to SNAT/MASQUERADE.
+DNAT also affects which source address should be used, depending on the packet
+direction.
 
-Cc'ing Phil, Jan.
+With DNAT, the *destination* of the original direction is changed.
+In the reply direction, this becomes the *source* address.
 
-Excuse me my terse proposal description.
+So reply packets of a DNAT connection are effectively subject to source address
+translation. If icmp_ndo_send doesn’t account for this, rate limiting breaks,
+which is exactly the problem this function was meant to solve.
 
-Extension: This is an alternative patch to disable --with-unitdir by
-default, to address distcheck issue.
+> Don't understand this either.  Why these checks?
+> AFAICS you can keep the original check in place, and then:
+> 
+> replace this
+>>  	orig_ip = ip_hdr(skb_in)->saddr;
+>> -	ip_hdr(skb_in)->saddr = ct->tuplehash[0].tuple.src.u3.ip;
+> 
+> ... with ...
+You are right: the code can be simplified. I'm not sure show this slipped through.
+I will send an updated patch with this change — thanks for the suggestion.
+However, the old check (IPS_SRC_NAT only) cannot be kept, because:
+- Reply packets of a DNAT connection also need handling.
+- Reply packets of a pure SNAT connection don’t need it, but replacing the
+   address is a no-op in that case (tuple == skb address).
 
-I wonder also if this is a more conservative approach, this should
-integrate more seamlessly into existing pipelines while allowing
-distributors to opt-in to use this.
+To avoid unnecessary translations, I suggested the direction-specific checks.
+Another option is to simplify them to:
 
-But maybe I'm worrying too much and it is just fine to change defaults
-for downstream packagers.
+     if (!(ct->status & IPS_NAT_MASK)) { … }
 
-On Wed, Aug 27, 2025 at 04:02:14PM +0200, Pablo Neira Ayuso wrote:
-> Same behaviour as in the original patch:
+This ensures we only ever touch connections with NAT, while keeping the code
+straightforward.
+
+> Without dnat, the reply tuple saddr == original tuple daddr.
 > 
->   --with-unitdir	auto-detects the systemd unit path.
->   --with-unitdir=PATH	uses the PATH
-> 
-> no --with-unitdir does not install the systemd unit path.
-> 
-> INSTALL description looks fine for what this does.
-> 
-> While at this, extend tests/build/ to cover for this new option.
-> 
-> Fixes: c4b17cf830510 ("tools: add a systemd unit for static rulesets")
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
->  configure.ac             | 29 +++++++++++++++++++++--------
->  tests/build/run-tests.sh |  2 +-
->  2 files changed, 22 insertions(+), 9 deletions(-)
-> 
-> diff --git a/configure.ac b/configure.ac
-> index 42708c9f2470..3a751cb054b9 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -115,15 +115,22 @@ AC_CHECK_DECLS([getprotobyname_r, getprotobynumber_r, getservbyport_r], [], [],
->  ]])
->  
->  AC_ARG_WITH([unitdir],
-> -	[AS_HELP_STRING([--with-unitdir=PATH], [Path to systemd service unit directory])],
-> -	[unitdir="$withval"],
-> +	[AS_HELP_STRING([--with-unitdir[=PATH]],
-> +	[Path to systemd service unit directory, or omit PATH to auto-detect])],
->  	[
-> -		unitdir=$("$PKG_CONFIG" systemd --variable systemdsystemunitdir 2>/dev/null)
-> -		AS_IF([test -z "$unitdir"], [unitdir='${prefix}/lib/systemd/system'])
-> -	])
-> +		if test "x$withval" = "xyes"; then
-> +			unitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd 2>/dev/null)
-> +			AS_IF([test -z "$unitdir"], [unitdir='${prefix}/lib/systemd/system'])
-> +		elif test "x$withval" = "xno"; then
-> +			unitdir=""
-> +		else
-> +			unitdir="$withval"
-> +		fi
-> +	],
-> +	[unitdir=""]
-> +)
->  AC_SUBST([unitdir])
->  
-> -
->  AC_CONFIG_FILES([					\
->  		Makefile				\
->  		libnftables.pc				\
-> @@ -137,5 +144,11 @@ nft configuration:
->    use mini-gmp:			${with_mini_gmp}
->    enable man page:              ${enable_man_doc}
->    libxtables support:		${with_xtables}
-> -  json output support:          ${with_json}
-> -  systemd unit:			${unitdir}"
-> +  json output support:          ${with_json}"
-> +
-> +if test "x$unitdir" != "x"; then
-> +AC_SUBST([unitdir])
-> +echo "  systemd unit:                 ${unitdir}"
-> +else
-> +echo "  systemd unit:                 no"
-> +fi
-> diff --git a/tests/build/run-tests.sh b/tests/build/run-tests.sh
-> index 916df2e2fa8e..1d32d5d8afcb 100755
-> --- a/tests/build/run-tests.sh
-> +++ b/tests/build/run-tests.sh
-> @@ -3,7 +3,7 @@
->  log_file="$(pwd)/tests.log"
->  dir=../..
->  argument=( --without-cli --with-cli=linenoise --with-cli=editline --enable-debug --with-mini-gmp
-> -	   --enable-man-doc --with-xtables --with-json)
-> +	   --enable-man-doc --with-xtables --with-json --with-unitdir --with-unidir=/lib/systemd/system)
->  ok=0
->  failed=0
->  
-> -- 
-> 2.30.2
-> 
-> 
+> With dnat, its the dnat targets' address (i.e., the real destination
+> the client is talking to).
+Yes, exactly.
+
+> If you are worried about "dnat to", then please update the commit
+> message, which only mentions masquerade/snat.
+Correct — the change not only fixes SNAT-in-reply handling, but also adds
+proper handling for DNAT in the reply direction, which was missing entirely.
+I will update the commit message to reflect this.
+
+Best regards,
+Fabian
 
