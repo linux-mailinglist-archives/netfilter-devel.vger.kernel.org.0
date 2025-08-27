@@ -1,73 +1,71 @@
-Return-Path: <netfilter-devel+bounces-8521-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8523-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02B12B38E7C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 Aug 2025 00:34:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 444C3B38EAB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 Aug 2025 00:47:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABCE5684B9C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Aug 2025 22:34:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 467BD366F25
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Aug 2025 22:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0792F60A2;
-	Wed, 27 Aug 2025 22:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49CC63115AD;
+	Wed, 27 Aug 2025 22:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="pYhKwC9w";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="G8IMROwv"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="JoxjJvfw";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="JoxjJvfw"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9577E4438B
-	for <netfilter-devel@vger.kernel.org>; Wed, 27 Aug 2025 22:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616293112DC
+	for <netfilter-devel@vger.kernel.org>; Wed, 27 Aug 2025 22:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756334062; cv=none; b=r9lHV0R07btVJi/QFINpdxS7hg7WDlsxMZmnDoH73wxUqMdsMEjoeTiHzuJAm9XOE2bpPZJ8cMGZqgBFrPTpPRQ5oyMQOj3PVll9qWhPNIXRukewcYwuqUgZDh5lCdAJ2ic5z0F1llx3r7VmwDUQy28eAk8GVHX7EptRYyB0dw8=
+	t=1756334821; cv=none; b=IzB+afKwyxk7mGA+Vy6QG4M5ADkFxanqFGsOa1ht1Tm6ykP+GF/mDTwXUU+3XgaLcvteY/j++jdjZRGaN/r9TdAr5VHPGD5V1u7dAvdQK39LRxSbmt798xqAcQVjxh8QMl9KLiKWUUGTjoQMhceIPS8UWcMVhSDDNknsM77w0CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756334062; c=relaxed/simple;
-	bh=tQSlb7O6f2mPIaCXhP6G+aYk7pHQ7HNfbutUWSpS780=;
+	s=arc-20240116; t=1756334821; c=relaxed/simple;
+	bh=MLvG8AMH1i03UuDITBH4BwazKhE9Es2SfG2MZwviVM4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QZFCniITAhKdXik1T9KuuNiessh9lIcdjX9Cf5MzvliBam25my1CTxeGnyP9ToM4pkgVXgrqEkt1qlqZYrMdGMw8qOXaTCUMI+K2X3CAL7TrkJP/CKDyWvBpPflzmu+TPvV42VyKYPFCv4dIw8nCxTTlbSRcQHyqex+QA4BJRnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=pYhKwC9w; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=G8IMROwv; arc=none smtp.client-ip=217.70.190.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=jiPwZLq42T4t2I7HbtC5cr38ESR5xe4MPsz+GyYhODiCnxt6mPePzTTkJTxiCyNMcanUBikFTp8ob6CAI2IWrA7el5pO+F5gxk98feVfhS1TZPZclUHiA2Qb2Do/yWsjwNu7p/XPlALDP/C5CnOjKMaJ65XQ/XDtXlGRbnBGvqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=JoxjJvfw; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=JoxjJvfw; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: by mail.netfilter.org (Postfix, from userid 109)
-	id BDE5D607B4; Thu, 28 Aug 2025 00:34:18 +0200 (CEST)
+	id D908860602; Thu, 28 Aug 2025 00:46:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1756334058;
-	bh=YQTdlFPkumEjHBosU9sUmPwkPNReiRH3Xawc1ZcWHX4=;
+	s=2025; t=1756334817;
+	bh=Up035gXgOS6I3qdEJuNiV3TiJLRi4DhTwUkEuRXFJsU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pYhKwC9wDWO1LqX0uhX81CdWHV8ljHuSqswMqiWpZtpbdSEb70dHNrjNeQ7IJ3DVg
-	 IMnd58PbhoZiIU0MyHhUJdkoDb+xb6NQsDzMwynIMNaYDJIGJZbFGjyLhDfO9x8WbZ
-	 AJqb85mHoSS57WtR7PnuXJ3f+QlhIXlOqkBvNMOlfo2I3hjSuN3BqKPNjxrVpd6m1w
-	 bjPG1XF2v4Y6p8TUfL6yuEnyl4J+uFiXWrYec66licsrlJybeFQwb7MTKjAbc0RPdI
-	 Tu0hVgpDeJqWKFn72PT05ZM+pc2O8JZLepAifEPCEksSWgFTn5iQwBucFjtIOLUWXD
-	 pZ92LXt5nx4YQ==
+	b=JoxjJvfweocgNAgeYu+Or+5/I12dnO8mImQAo0yBpRvBeHGXXjDEdIH/DLM8+aqZr
+	 cDLz+8BPTXz851zRJie3YjIDDlewwZSyiwIqjDyCtCTxf4l+dyz5Lt4YVm6lxxSiqE
+	 TZ51wtEyFAlQxPVHaXRyYgIi/yDoNbHUkkhJ7vZJjYoZH+ypD/McPWbxAw6yLhUGrT
+	 IUkx2v/qr8j6qg5WqJAcdbItWBaMHOQyeM9Tn5Y78vX5xsycBJDnehRCcmrBmJkkW5
+	 6KKeElkIk37kgmTO7M4LVye/kCJ9xNntjIv5eGlHfF4a/N60MuIVOjMMobDpg6C9lr
+	 +4bVfmDk+dhug==
 X-Spam-Level: 
 Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 6C449607B0;
-	Thu, 28 Aug 2025 00:34:17 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id ECBF360602;
+	Thu, 28 Aug 2025 00:46:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1756334057;
-	bh=YQTdlFPkumEjHBosU9sUmPwkPNReiRH3Xawc1ZcWHX4=;
+	s=2025; t=1756334817;
+	bh=Up035gXgOS6I3qdEJuNiV3TiJLRi4DhTwUkEuRXFJsU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G8IMROwvNCb79Ig2SzIU7E0WqY9OfYErm/kbMSlMxwWK3FJytwsCl61NyCa1BGBtw
-	 v6uOTQaYmY91yy08wEZsKU4H9fUwZcw0r7VAvFjgTerPPYoLLrs6XG0k82O2RM+DRG
-	 WVB66UPgsyJLliw1BP8yBcXb+1FAVVDJctMIJOCYuCWixes0G+nuVysIU+UmZHAU0a
-	 lv1pO2VmlTb/gr/xgp7c1mdMZvhp0Zv17n+j1Ggl4C04oOE1Vhzn5LTYoAB/TfHqzp
-	 LHl3g4DpFRP7Th/So78JEL9DZhxsp7IJxxnmd545hgnUhfuYYumhHTNMnixfMfKUMv
-	 N4v+WF1dSYj6Q==
-Date: Thu, 28 Aug 2025 00:34:15 +0200
+	b=JoxjJvfweocgNAgeYu+Or+5/I12dnO8mImQAo0yBpRvBeHGXXjDEdIH/DLM8+aqZr
+	 cDLz+8BPTXz851zRJie3YjIDDlewwZSyiwIqjDyCtCTxf4l+dyz5Lt4YVm6lxxSiqE
+	 TZ51wtEyFAlQxPVHaXRyYgIi/yDoNbHUkkhJ7vZJjYoZH+ypD/McPWbxAw6yLhUGrT
+	 IUkx2v/qr8j6qg5WqJAcdbItWBaMHOQyeM9Tn5Y78vX5xsycBJDnehRCcmrBmJkkW5
+	 6KKeElkIk37kgmTO7M4LVye/kCJ9xNntjIv5eGlHfF4a/N60MuIVOjMMobDpg6C9lr
+	 +4bVfmDk+dhug==
+Date: Thu, 28 Aug 2025 00:46:54 +0200
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Yi Chen <yiche@redhat.com>
-Cc: Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org,
-	fw@strlen.de
-Subject: Re: [conntrack-tools PATCH] nfct: helper: Extend error message for
- EEXIST
-Message-ID: <aK-H5xydGbsYIvBU@calendula>
-References: <20250815155750.21583-1-phil@nwl.cc>
- <CAJsUoE2zCJYSvm9_=784BtH26GsRDJGBTn8930wW4ZSU8nTjYA@mail.gmail.com>
+To: Phil Sutter <phil@nwl.cc>
+Cc: netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+	Dan Winship <danwinship@redhat.com>
+Subject: Re: [nft PATCH] table: Embed creating nft version into userdata
+Message-ID: <aK-K3qn6spM6O5eV@calendula>
+References: <20250813170833.28585-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -76,29 +74,21 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJsUoE2zCJYSvm9_=784BtH26GsRDJGBTn8930wW4ZSU8nTjYA@mail.gmail.com>
+In-Reply-To: <20250813170833.28585-1-phil@nwl.cc>
 
-On Mon, Aug 18, 2025 at 11:47:08AM +0800, Yi Chen wrote:
-> This patch adds a hint when:
+Hi Phil,
+
+On Wed, Aug 13, 2025 at 07:07:19PM +0200, Phil Sutter wrote:
+> Upon listing a table which was created by a newer version of nftables,
+> warn about the potentially incomplete content.
 > 
-> # modprobe nf_conntrack_ftp
-> # nfct helper del ftp inet tcp
-> # nfct helper add ftp inet tcp
-> *nfct v1.4.8: netlink error: File exists*
-> 
-> or other type of helper.
+> Suggested-by: Florian Westphal <fw@strlen.de>
+> Cc: Dan Winship <danwinship@redhat.com>
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
-This patch changes EEXIST by EBUSY:
+Just rebase this and apply, it clashes with my update for --unitdir.
 
-  https://patchwork.ozlabs.org/project/netfilter-devel/patch/20250818112220.26641-1-phil@nwl.cc/
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-This userspace patch is not very useful after this.
-
-So maybe a follow up fix to retain EEXIST for nfnetlink_cthelper in
-the kernel is needed?
-
-I mean, return EEXIST in nfnetlink_cthelper but EBUSY in case of
-insmod, ie. add a bool insmod flag to the helper register/unregister
-functions to return EBUSY for insmod and EEXIST for
-nfnetlink_cthelper.
+Thanks.
 
