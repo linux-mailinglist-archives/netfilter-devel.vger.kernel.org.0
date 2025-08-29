@@ -1,61 +1,64 @@
-Return-Path: <netfilter-devel+bounces-8567-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8564-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331ADB3BD88
-	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Aug 2025 16:26:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A27AB3BD84
+	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Aug 2025 16:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E3CFA269AB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Aug 2025 14:26:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35F1C1CC1BA5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Aug 2025 14:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57323218A4;
-	Fri, 29 Aug 2025 14:25:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D0B3218C2;
+	Fri, 29 Aug 2025 14:25:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fVmvXCH2"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="QTmmIj4p"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D88332143F
-	for <netfilter-devel@vger.kernel.org>; Fri, 29 Aug 2025 14:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48136321453
+	for <netfilter-devel@vger.kernel.org>; Fri, 29 Aug 2025 14:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756477526; cv=none; b=ltUSEWBH2qWkH6CcvZgMVoEoRoSJWJ/KWKB3fqOBqngSiEVOF0a6B/s3CebHnZQY4V0toIzoMT0tB7tPFXbxTZHnzPQYz1pA6OBcuWzWt9Ea9ioPymoNU3vnlsD6qgiE+/i0A6yeftoqORODMj6IP3kDugalW/uCttYo0S2Qzr4=
+	t=1756477525; cv=none; b=X7h0hfvKL1d6QnwoeFKK27x15yyfvOP2VhrkClv9+uGh++XD5JHfVxZBGSeaX7ZyRa0LyIKZiazYYsC3phwltT+qVTxqbweq2O3PPCCnOv9iK7QV1+VGxEh7EJbCtxWSU4NxIOD/R8v68AMqOUKfwCxnxK4b7BIWcVrE22slG4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756477526; c=relaxed/simple;
-	bh=6zcE1ScvCNqHXnXsuaVDcWmhQS+ZCiJA20Uqo3Rnk38=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZvhWImkzXRybzQxr9GAT/gLu1veWdVD2RxBOxYlSoso6iG3ld6cQ5udpbQhCfuCuAg82zCOEwolhYVIHJ5sjskxIgd/TsmG2FkUy8uDJp+hSzdlhr/Nc+lZeGH11GA4JUiXrcClnHP7EuI1sEfYe39E5nnEa33bHMXmmiZTd04k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fVmvXCH2; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1756477525; c=relaxed/simple;
+	bh=u7FYoKzN+VgCxgRLZG8cbFc4tNupVOSStFlMRblx6Nc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RoJ/PYoc33jqpOlzJVX6zFjU3OqX064y9kZgv0ni9Uwdt6Lok6Gwm6XmZrlqv/JCUxcY0HrSM2oH9DaxbhXC4Ly7YbftREAL0zRzaGxOMb9UujuXosedWc5tGOhE9jWul0MUfIUfPRM0jZdjC9z2ShJWFkoa+oG0JKvwnjcl81U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=QTmmIj4p; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=afnVvZZIdXLSLKG9RR2wLDezwSgYtjBah6vX9PNdCNk=; b=fVmvXCH2PbNXt1P4z4vetxvwfM
-	ta1pEo5OPyidn+tCP3x10j5TMDg3EHQCXhA0VXDOI+JJKpx7+e/Xa9fPLPMZVeZeGLeJ3hym0LL5G
-	E4WPbqN3MVBN/BDRggpJKiCw06d3XR+KO/kjn1skc/F2B7Qmnv9MED6kbh+1s80ihoFlZaeI0UnqK
-	RFpt0A+4BzpifKv+6+L6G1E/34AQofUNSNo6bzmLFa1dUDJAyKj5NNveYP5PlWqETl9D6+5tPDF0J
-	PBWQJl9IG5hqcI76blczRiOucC7uz4EL1fIwiT78vHG9rrldxcoKmMNcSiTS9ofhqQS2qnGucuG0D
-	WXIDbfQQ==;
+	bh=HODFcxTBKvTd60HhlkjrbQq+J1oX8Ho6l7LiWW0SAoQ=; b=QTmmIj4paT0baWugzekj6twlP6
+	fRg4mUnehoi8b9HPgt1iytS9XGaLdqbCrZ6Q3aeFsLMFG9SOPUoH0t5zwYuXKEiPucTXZNSsVhr63
+	2wh25d+++Ha33ePLOREboUoLdE2yR1flS8eHlLOSGF3lkdPo3nbzvAQ8bmDbIww+caxVOqhjcPn3L
+	uMBLDWVcLCQqr15LnOI+cEhyYIx3MjAHtp2jzO6GyH+bYiHkbL8AEHunSFXHfvP58Vmluap15+YFD
+	JwsgG80k+U34kUr7JCsYKb2rEhhrhCt3tXeQT49ip/3wAmlG58iAZFuEk02AMHjTqpZhD8CQYX46I
+	Jl28EC4Q==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1us02d-0000000073O-08kv;
-	Fri, 29 Aug 2025 16:25:23 +0200
+	id 1us02b-00000000736-0xjl;
+	Fri, 29 Aug 2025 16:25:21 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 0/5] Fixes (and fallout) from running tests/monitor in JSON mode
-Date: Fri, 29 Aug 2025 16:25:08 +0200
-Message-ID: <20250829142513.4608-1-phil@nwl.cc>
+Subject: [nft PATCH 1/5] tools: gitignore nftables.service file
+Date: Fri, 29 Aug 2025 16:25:09 +0200
+Message-ID: <20250829142513.4608-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250829142513.4608-1-phil@nwl.cc>
+References: <20250829142513.4608-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,37 +67,20 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The reported problem of object deletion notifications with bogus data is
-resolved in patch four. It seems only object notifications were
-affected. Patch 6 extends test suite coverage for tables and chains a
-bit.
-
-Patch one is an unrelated trivial fix, patches two and three cover for
-oddities noticed while working on the actual problem.
-
-Phil Sutter (5):
-  tools: gitignore nftables.service file
-  monitor: Quote device names in chain declarations, too
-  mnl: Allow for updating devices on existing inet ingress hook chains
-  monitor: Inform JSON printer when reporting an object delete event
-  tests: monitor: Extend testcases a bit
-
- include/json.h                             |  5 +--
- src/evaluate.c                             |  6 ++--
- src/json.c                                 | 18 ++++++----
- src/mnl.c                                  |  2 ++
- src/monitor.c                              |  2 +-
- src/rule.c                                 |  2 +-
- tests/monitor/testcases/chain.t            | 41 ++++++++++++++++++++++
- tests/monitor/testcases/flowtable-simple.t | 12 +++++++
- tests/monitor/testcases/object.t           | 10 +++---
- tests/monitor/testcases/table.t            | 15 ++++++++
- tools/.gitignore                           |  1 +
- 11 files changed, 97 insertions(+), 17 deletions(-)
- create mode 100644 tests/monitor/testcases/chain.t
- create mode 100644 tests/monitor/testcases/table.t
+Fixes: c4b17cf830510 ("tools: add a systemd unit for static rulesets")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ tools/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
  create mode 100644 tools/.gitignore
 
+diff --git a/tools/.gitignore b/tools/.gitignore
+new file mode 100644
+index 0000000000000..2d06c49835b15
+--- /dev/null
++++ b/tools/.gitignore
+@@ -0,0 +1 @@
++nftables.service
 -- 
 2.51.0
 
