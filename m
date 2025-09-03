@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8653-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8659-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83E9B427E2
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 19:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59CC5B427E7
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 19:23:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AF351A82070
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 17:23:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E3AE1A81824
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 17:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDE33148D4;
-	Wed,  3 Sep 2025 17:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E591A320CCB;
+	Wed,  3 Sep 2025 17:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="CK7Zoe8e"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="JWWdYeWy"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981683043DB
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Sep 2025 17:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D10D320A27
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Sep 2025 17:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756920189; cv=none; b=p7XtJbqSvYkuppw+O6N94XCi2+qcyBKYGJVaHD7vtxAV9y+QNfZ6FGNF7CfISKF71zGM1o2tmOd2i1/gM+CGEZWfzwHILOqqK0in0mEK2gX9KADp6U5K1YJLHMsmhQNMPtZ2tbyt4Bvdmg97RvA9obGNGnBAK6eGbPkBZOGh1yM=
+	t=1756920191; cv=none; b=I/mQJ9JVfCnHsbiOLsD5WNqbPdwizi2C1Lbg2pPLwG0UORDVnhfH5x9Hxhv8nS9URqEOg+r06l4nf8ssXQO9V0yZ1oRaW4xYrhjlJbgP6DzUhT9xFTvlYR2ga9+aidEOk62+pRBbr4zmo3avSiM8Qr+MCxCDIHpblg0zjZYQL68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756920189; c=relaxed/simple;
-	bh=l3/ZZJJ9iwDcyleAVmH7CnUsa50ufB59fNpJ6EznleU=;
+	s=arc-20240116; t=1756920191; c=relaxed/simple;
+	bh=GwpG4H5ur4h8WpqWo8b1CoU+Q5QuZFZUd8fdN5d2sg4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n4jEonFHHf2rH9KEK5qupmwJDK17WQCheWP8wjBjiGRwiAW4eM+FBtCRMzRn8XvmGSGLLazRIDXHFSZ/qXGAlRiybnqB2eeBCl9eyVDwcki3nO4jkqzV9UxsEsiNGfqeEMMTlCVF7BjdYt5Ij5B3e9L2dUQaNof/y/nLErg4tNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=CK7Zoe8e; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=o+gb8BvkvNUfECMitVRODZnjvOqhnO3YWkK3nqz/Mvzfya1KSb18R2DnfASZLHzH+oIykDCWYzZunQ3OhMBOTegX+nYRyX2eIKNn9T/FMlLAkbu/aEGJ+qLeI0CbmT75cxNCSpRuuGqxw9B/cgSZJKLwx/BKluJioleEbCW+DwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=JWWdYeWy; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=b0kYMjaQNygENWdhn4EJp9R29qfFqDRY7b7vfk4lPvY=; b=CK7Zoe8eh0OmZpm72PJwWD6uxf
-	JOXYNK9w0ssCqS8YZjt78QaePq1rxy5Iu7vj0EDk6z4QwFd7ypP9jpT1d//FEhPJWWK3Y2YqfcLGT
-	rclEHYcp4kxSFtpUXwsPNsBJgoX6qYVGt+ReJI5WteiJFUyQnaXZFNmoK8K6LxzP8MtyvZwdp4/+h
-	5fuKb1udwUEKllfXTkOPdX6PpN9JkURSjUMsky7Tq6bxwEsm8D/TVrvk3fNr6PKp212O9RzL1HX6L
-	1v9d7e+ZXVsoh66zYVqs6/aIH7SUroHh93G03yGbgTsUoEaFTIi3iK8nGdSdOi6h2DR0NieUE5/jv
-	RNyoK7oQ==;
+	bh=inw2XWOjOrIiplRsyzR5cEK0ls33Ophqcvd44/gcrJc=; b=JWWdYeWygz0HSqlR9op0K5gl1m
+	4BhQCIF4PDH7dJ/PPjatM3gSSH80c3B6dwUBZNVE+deIh+JPTfS0RtylDDYcQzJaOUJk96q+zy2K3
+	1uhWnochS8HoLogDeRgCjMQXOLgaQ/w7isUVaGfUdn8PkhitrCAPNr2piMgW7bdmpLiKAPQd5Q+FH
+	6ziOJ0QlU/7xyLXnUV2bxttRaQq3tevg5Etxz0LT00q/Luy3Oslwu/Mr79miKWKeoF5svv4GQw0eX
+	SXj7dxX2bvQjhlCGoHS6uDfyafSWeUSHjuTekQorb8kbgJ27vUirpgKp8VU/MyWcgiRZ0bSBtkIU1
+	sKeay7Kw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1utrCL-0000000080B-2Kk5;
-	Wed, 03 Sep 2025 19:23:05 +0200
+	id 1utrCO-0000000080f-2YtS;
+	Wed, 03 Sep 2025 19:23:08 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v3 01/11] tests: monitor: Label diffs to help users
-Date: Wed,  3 Sep 2025 19:22:49 +0200
-Message-ID: <20250903172259.26266-2-phil@nwl.cc>
+Subject: [nft PATCH v3 02/11] tests: monitor: Fix regex collecting expected echo output
+Date: Wed,  3 Sep 2025 19:22:50 +0200
+Message-ID: <20250903172259.26266-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250903172259.26266-1-phil@nwl.cc>
 References: <20250903172259.26266-1-phil@nwl.cc>
@@ -67,26 +67,29 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Clarify what was expected and what was actually received.
+No input triggered this bug, but the match would accept "insert" and
+"replace" keywords anywhere in the line not just at the beginning as was
+intended.
 
+Fixes: b2506e5504fed ("tests: Merge monitor and echo test suites")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
  tests/monitor/run-tests.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tests/monitor/run-tests.sh b/tests/monitor/run-tests.sh
-index 67d3e618cee07..03091d1745212 100755
+index 03091d1745212..4cbdee587f47c 100755
 --- a/tests/monitor/run-tests.sh
 +++ b/tests/monitor/run-tests.sh
-@@ -5,7 +5,7 @@ debug=false
- test_json=false
- 
- mydiff() {
--	diff -w -I '^# ' "$@"
-+	diff -w -I '^# ' --label "expected" --label "got" "$@"
+@@ -52,7 +52,7 @@ echo_output_append() {
+ 		grep '^\(add\|replace\|insert\)' $command_file >>$output_file
+ 		return
+ 	}
+-	[[ "$*" =~ ^add|replace|insert ]] && echo "$*" >>$output_file
++	[[ "$*" =~ ^(add|replace|insert) ]] && echo "$*" >>$output_file
  }
- 
- err() {
+ json_output_filter() { # (filename)
+ 	# unify handle values
 -- 
 2.51.0
 
