@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8651-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8656-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB65B427E0
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 19:23:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C549B427E5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 19:23:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A77E3163D87
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 17:23:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9CE6188B090
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Sep 2025 17:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC8F302756;
-	Wed,  3 Sep 2025 17:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B66530C353;
+	Wed,  3 Sep 2025 17:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="loFp7g/R"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="i5JTHiAg"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D202D46C3
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Sep 2025 17:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD87530DD12
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Sep 2025 17:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756920189; cv=none; b=dmZPe7SJCkO+bulCUQJwZ5rJDFfyP75+aNFiRAh0Ze6r4bfpo92iazvSL/1ZI6V/6kCvSxXpf1YIldnq8AFKaFDEAixmQeztOXt9YXEWDiHNhqNUpe4xgEGtI83MWGtszsv8V/a6R+sr0NX9u+rxgGPvhI7QUj/f414fvns/Guo=
+	t=1756920190; cv=none; b=CJHI3v5mccmKpLBv1vsvZ3y2bFxldYTaAjjuDDfT+svPAPfe+aQFbw2UsKJdyKmLxG72Z4f2x4bkbQqB9HTQj9gC8ts8O+UDYHBIpar0NrAZRktiEfoYpaUjh7Rdon7Vj2rTWgQe4Plpjqsj+7TjwVbDSZCNe4aZqBB36ibEdnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756920189; c=relaxed/simple;
-	bh=G7s7HleeoLFpJYkBxee9PIu3+hvHkdr72pizOKlLljA=;
+	s=arc-20240116; t=1756920190; c=relaxed/simple;
+	bh=Tbex/k+mp1Qbgl0vB4E8DriRVXwII5y6b7ycccddM5U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EgVp+rnqe7b6TSAUe3S7u6/ruffSs0am6Q2ssuzEwGLX8SsbbPhgMJLuxxG+g5JSOs54hQQOQFwlHvPmmyEKfd1j6STV9egCD8Lt9nXjpFVXGz2O5DJR7Hhr2kLtBm33iHYOewFMLrGF7NR3qFiCHk7S9y7eD0kqGW9CO8XqTUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=loFp7g/R; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=RsTC+vUDcMzmn6apijWQ60aKdXfNi+S/chXVM0qrMagM/iDTSc2adwMW+4JLSCyAjZnX+CNnoTc2+yyar0avhoyJf4KQI8qrwv9EuAWsPQH8E35ab5zkqAzmhuEBYv3dBTjZBhml2qluPHvmNz2yaYkMf2Lt6AYwYi6V6/nVKEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=i5JTHiAg; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=pQ8MOvnOCIvc1Y6L0Rhn3F3v384UoEPqG1klNUP/KQM=; b=loFp7g/RWE0jGBxNRNTBEFVIrx
-	nNINO3AdOh84bfedyippuVNNxzwWv1oii4rTeYwgUvNruLpv1xNYyHxsxvM8DfL9f5QgES9+vfOdd
-	RUyyaPgWgNp/BCUOLpjm+KvbvrNjMLune4z6V0egtbFBYj4CZwwNTNFwcZ1NIAdjohP7WISXPAZhz
-	tUxKJM8c0FS4RCL15kj23fkXdb1rliaHLsct2zmP5pOpIuYNXrSbfkLv3Y0rvOJjsndX+DAQUGh9y
-	Mh84lO7Pv+5/3eL+cEu9NCam7bytsmI3jxroVbr38y/qHEmFIhqNyvHqHlVsgHZtdTPqQjnHoAOyA
-	m305nfiQ==;
+	bh=irQQf23mIVV53wmHNxHPvKd6ucUcYhQvWC0uuYwGzQk=; b=i5JTHiAgtfHVDIBxp2EOHPpM6J
+	Qk+1p6QKpdOr0cjRSUDUQDbHyNKQA0QW1aDcaQiKGffKOuJ/W7d+6Pfcw1MxRTXKVo0yIlqNovx/v
+	cUbr8xqUWiEfibVKvun8v9X23JLGvtKTisvFZ/caAnGOi+s0/2zPGa47nESHd+d7SrnQC4i7HQJQd
+	QqRM1kuhBAJjJLU5Am0ELQeQcEYHkRaJSTOH+iqoQt6DIit7kpC4e2dtYeZls4rHHIaU8iMrTp14n
+	2UcpHPwaOQpUGjvvXvZniDhPCiuO6hUYsX8gxTxtqufXuI3u9T9usDZA2zlAoTBUtLutlXCiyfjQN
+	4tFS06xw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1utrCL-00000000806-0EZl;
-	Wed, 03 Sep 2025 19:23:05 +0200
+	id 1utrCM-0000000080L-2Fzd;
+	Wed, 03 Sep 2025 19:23:06 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v3 04/11] tests: monitor: Extend debug output a bit
-Date: Wed,  3 Sep 2025 19:22:52 +0200
-Message-ID: <20250903172259.26266-5-phil@nwl.cc>
+Subject: [nft PATCH v3 05/11] tests: monitor: Excercise all syntaxes and variants by default
+Date: Wed,  3 Sep 2025 19:22:53 +0200
+Message-ID: <20250903172259.26266-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250903172259.26266-1-phil@nwl.cc>
 References: <20250903172259.26266-1-phil@nwl.cc>
@@ -67,45 +67,181 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Dump echo output and output file, surrounded by markers to highlight
-empty files and extra newlines.
+Introduce -s/--standard flag to restrict execution to standard syntax
+and let users select a specific variant by means of -e/--echo and
+-m/--monitor flags. Run all four possible combinations by default.
+
+To keep indenting sane, introduce run_testcase() executing tests in a
+single test case for a given syntax and variant.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/monitor/run-tests.sh | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tests/monitor/run-tests.sh | 134 ++++++++++++++++++++++---------------
+ 1 file changed, 79 insertions(+), 55 deletions(-)
 
 diff --git a/tests/monitor/run-tests.sh b/tests/monitor/run-tests.sh
-index 38c20adb1dc61..b09b72ae034cb 100755
+index b09b72ae034cb..32b1b86e0cc6e 100755
 --- a/tests/monitor/run-tests.sh
 +++ b/tests/monitor/run-tests.sh
-@@ -101,8 +101,9 @@ echo_run_test() {
- 	local rc=0
+@@ -154,14 +154,28 @@ if $netns; then
+ fi
  
- 	$debug && {
--		echo "command file:"
-+		echo ">>> command file"
- 		cat $command_file
-+		echo "<<< command file"
- 	}
- 	$nft $echo_args -f - <$command_file >$echo_output || {
- 		err "nft command failed!"
-@@ -122,6 +123,15 @@ echo_run_test() {
- 		done >$output_file
- 		[ $i -gt 0 ] && echo "" >>$output_file
- 	fi
-+	$debug && {
-+		echo ">>> output file"
-+		cat $output_file
-+		echo "<<< output file"
-+		echo ">>> echo output"
-+		cat $echo_output
-+		echo "<<< echo output"
+ testcases=""
++variants=""
++syntaxes=""
+ while [ -n "$1" ]; do
+ 	case "$1" in
+ 	-d|--debug)
+ 		debug=true
+ 		shift
+ 		;;
++	-s|--standard)
++		syntaxes+=" standard"
++		shift
++		;;
+ 	-j|--json)
+-		test_json=true
++		syntaxes+=" json"
++		shift
++		;;
++	-e|--echo)
++		variants+=" echo"
++		shift
++		;;
++	-m|--monitor)
++		variants+=" monitor"
+ 		shift
+ 		;;
+ 	--no-netns)
+@@ -179,64 +193,74 @@ while [ -n "$1" ]; do
+ 		echo "unknown option '$1'"
+ 		;&
+ 	-h|--help)
+-		echo "Usage: $(basename $0) [-j|--json] [-d|--debug] [testcase ...]"
++		echo "Usage: $(basename $0) [(-e|--echo)|(-m|--monitor)] [(-j|--json)|(-s|--standard)] [-d|--debug] [testcase ...]"
+ 		exit 1
+ 		;;
+ 	esac
+ done
+ 
+-variants="monitor echo"
+-rc=0
+-for variant in $variants; do
+-	run_test=${variant}_run_test
+-	output_append=${variant}_output_append
+-
+-	for testcase in ${testcases:-testcases/*.t}; do
+-		filename=$(basename $testcase)
+-		echo "$variant: running tests from file $filename"
+-		rc_start=$rc
+-
+-		# files are like this:
+-		#
+-		# I add table ip t
+-		# O add table ip t
+-		# I add chain ip t c
+-		# O add chain ip t c
+-
+-		$nft flush ruleset
+-
+-		input_complete=false
+-		while read dir line; do
+-			case $dir in
+-			I)
+-				$input_complete && {
+-					$run_test
+-					let "rc += $?"
+-				}
+-				input_complete=false
+-				cmd_append "$line"
+-				;;
+-			O)
+-				input_complete=true
+-				$test_json || $output_append "$line"
+-				;;
+-			J)
+-				input_complete=true
+-				$test_json && $output_append "$line"
+-				;;
+-			'#'|'')
+-				# ignore comments and empty lines
+-				;;
+-			esac
+-		done <$testcase
+-		$input_complete && {
+-			$run_test
+-			let "rc += $?"
+-		}
+-
+-		let "rc_diff = rc - rc_start"
+-		[[ $rc_diff -ne 0 ]] && \
+-			echo "$variant: $rc_diff tests from file $filename failed"
++# run the single test in $1
++# expect $variant and $test_json to be set appropriately
++run_testcase() {
++	testcase="$1"
++	filename=$(basename $testcase)
++	rc=0
++	$test_json && printf "json-"
++	echo "$variant: running tests from file $filename"
++
++	# files are like this:
++	#
++	# I add table ip t
++	# O add table ip t
++	# I add chain ip t c
++	# O add chain ip t c
++
++	$nft flush ruleset
++
++	input_complete=false
++	while read dir line; do
++		case $dir in
++		I)
++			$input_complete && {
++				${variant}_run_test
++				$run_test
++				let "rc += $?"
++			}
++			input_complete=false
++			cmd_append "$line"
++			;;
++		O)
++			input_complete=true
++			$test_json || ${variant}_output_append "$line"
++			;;
++		J)
++			input_complete=true
++			$test_json && ${variant}_output_append "$line"
++			;;
++		'#'|'')
++			# ignore comments and empty lines
++			;;
++		esac
++	done <$testcase
++	$input_complete && {
++		${variant}_run_test
++		let "rc += $?"
 +	}
 +
- 	mydiff -q $echo_output $output_file >/dev/null 2>&1
- 	if [[ $rc == 0 && $? != 0 ]]; then
- 		err "echo output differs!"
++	[[ $rc -ne 0 ]] && \
++		echo "$variant: $rc tests from file $filename failed"
++	return $rc
++}
++
++total_rc=0
++for syntax in ${syntaxes:-standard json}; do
++	[ $syntax == json ] && test_json=true || test_json=false
++	for variant in ${variants:-echo monitor}; do
++		for testcase in ${testcases:-testcases/*.t}; do
++			run_testcase "$testcase"
++			let "total_rc += $?"
++		done
+ 	done
+ done
+-exit $rc
++
++exit $total_rc
 -- 
 2.51.0
 
