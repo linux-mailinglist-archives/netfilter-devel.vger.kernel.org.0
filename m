@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8686-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8679-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D85B4408B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 17:26:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D4EAB44083
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 17:25:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CAFF480E90
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 15:25:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 028C93B41C8
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 15:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72902C027D;
-	Thu,  4 Sep 2025 15:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD21258ECD;
+	Thu,  4 Sep 2025 15:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="VWQhR65Z"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fWDavNqd"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4FA299A8C
-	for <netfilter-devel@vger.kernel.org>; Thu,  4 Sep 2025 15:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D1F22F74F
+	for <netfilter-devel@vger.kernel.org>; Thu,  4 Sep 2025 15:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756999509; cv=none; b=pQ7IyviKlJoHYmzE4k9zfromrmyGjL6h+vSbYwsSiLKuxx/QSvybKZdZRIBj64Fh4YCqLUWGQPsTzvtMLBsjt5kP/ijrCFcw9turUjeivG5KbtrVyWEA7kYaYognvmKuLJaA/xEJoe0O51RAuAgR6VqsM+0nQlCv4tcB5ZlvRjE=
+	t=1756999504; cv=none; b=Gf7Izegl8u/VzFa5jUnIl84/hODXMzxO5YqXpYj2rK6lQS7jfnTHn0oCZqIg6XMCh+DmHGya0UBe6irK4GxoQZWlGnXBl2NYUtTzGt3yrt1krtkubCBp2Y9rHa4jXopmraKqbDb8IwIT91+euUOvoagE0XIckx4yOq18IdMt8js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756999509; c=relaxed/simple;
-	bh=nsHR86D7A3R+7rRyhLJAQ0tnKeNEZ6FXVMsYNw3uk+o=;
+	s=arc-20240116; t=1756999504; c=relaxed/simple;
+	bh=Hg+LOHZ74gLkMoqUfRdaWFDXPSvdy97RHEi1xs+DybQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Iomt1xQDeEuvLlDFfWMoN7sYTk7Sf4K0eQQ82w380mbKJ2HjNlCnY7r79JizAso0jodsZ54BOdjZetu+AUEV/QtnczVAkOUOnSlAgJDgPYCXp7UxCr/rfzrcgvhzYUN6be0z8mMDmqNKK8of+8Pt9wnqnq+IkdZ6SZ4giXYDDAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=VWQhR65Z; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=q0GA01RuFiEGygEki88VciwZO0fFxstyhBh0yvHRcdP17Ew+6rsGOVxPbY5/d3DzQUhmjOG8Bfz+6CEnS8Kg+mEXItKecS/53gQbTut9Ravvim48NIcwPURwDKGJe/mtY7qeE3ljeFDezNi3B9SPLpxB2XyPbYU8z2+3LiNMnYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fWDavNqd; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=X2pUTsneo0UZBXY/jI3KIpG3ZVNUEnYx+MdxVhSW+SY=; b=VWQhR65ZjhBiMfLbt8ANCa9RRy
-	Kv3D3ltSsDtBVG9xw2nIBfomxvwBTX1r+42MXoFwu5xR0sKVlhuw44/Dp9RtcqqcdaExXORCjp3B2
-	oJjTSvSaI1vJFuDqaG9LuF9F4+cg/EMmuXVrYOvGn4s83vQZeDf/Ug/X0LRzzF0hew+jrlx2e5lnc
-	U5aKKVnyJ5Jj1L7R4GqEWpXMROH/GYejh+VQ5KLvOwbbjoLTLpZ3zfOqSGzd+3//jRy//lUyXGs2g
-	U0SU0UvF30sdxEFe/FsP01t7+BlfoM4AjMQ/TGtMkcLh6aukCe2XSQiU+kaLwNPCfDyjEMTRO3knv
-	FHwt9pYQ==;
+	bh=bVVPlpvVG7I142Zvsz8I7IUybPDx3K/ra2rKwSFjETM=; b=fWDavNqd7wr0a3zN/aDfmrnvKL
+	Wb+bGjt6TKLAVT1pjoYoaI+GGHCCLdxMrDZi4UYzYBinHG8sE+OxOCdPGMW33ChIecBPtoptYbRwP
+	CmzWzis4bi8QBFe6I49Y+PwdS3lUEO448up0cLuprGj1FYV82Kpa7wnpFQpa38MvNjW1NQxf73OIR
+	VXn4DTbK1IN7K6o/Uu4QLbwyecYPRvIiI00heSOj+0Z/xZE8nScidaDE+w1Xduu1+tog7+zL9cUFb
+	FYrRTDePzyl9/C5XsFqfo5I+fldCYyYq6Sk78MUMRascX2DacSxCTodO2gNJfhjOMSKE12d8PYMk6
+	ZLWyEGhQ==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uuBpi-000000001ps-2ZdX;
-	Thu, 04 Sep 2025 17:25:06 +0200
+	id 1uuBpd-000000001om-02sn;
+	Thu, 04 Sep 2025 17:25:01 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v4 4/8] tests: json_echo: Skip if run as non-root
-Date: Thu,  4 Sep 2025 17:24:50 +0200
-Message-ID: <20250904152454.13054-5-phil@nwl.cc>
+Subject: [nft PATCH v4 5/8] tests: shell: Skip packetpath/nat_ftp in fake root env
+Date: Thu,  4 Sep 2025 17:24:51 +0200
+Message-ID: <20250904152454.13054-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250904152454.13054-1-phil@nwl.cc>
 References: <20250904152454.13054-1-phil@nwl.cc>
@@ -67,29 +67,28 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The test suite manipulates the kernel ruleset. Use the well-known return
-code 77 to indicate test execution being skipped.
+The script relies upon a call to modprobe which does not work in
+fake root environments.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/json_echo/run-test.py | 4 ++++
- 1 file changed, 4 insertions(+)
+ tests/shell/testcases/packetpath/nat_ftp | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
-index a6bdfc61afd7b..a3085b35ade6b 100755
---- a/tests/json_echo/run-test.py
-+++ b/tests/json_echo/run-test.py
-@@ -6,6 +6,10 @@ import os
- import json
- import argparse
+diff --git a/tests/shell/testcases/packetpath/nat_ftp b/tests/shell/testcases/packetpath/nat_ftp
+index c2fb3a1c8ebcd..d0faf2ef59c57 100755
+--- a/tests/shell/testcases/packetpath/nat_ftp
++++ b/tests/shell/testcases/packetpath/nat_ftp
+@@ -4,6 +4,9 @@
+ # NFT_TEST_REQUIRES(NFT_TEST_HAVE_curl)
+ # NFT_TEST_REQUIRES(NFT_TEST_HAVE_vsftpd)
  
-+if os.getuid() != 0:
-+    print("You need to be root to run this, sorry")
-+    sys.exit(77)
++# modprobe does not work in fake root env
++[ "$NFT_TEST_HAS_REALROOT" != y ] && exit 77
 +
- TESTS_PATH = os.path.dirname(os.path.abspath(__file__))
- sys.path.insert(0, os.path.join(TESTS_PATH, '../../py/'))
+ . $NFT_TEST_LIBRARY_FILE
  
+ cleanup()
 -- 
 2.51.0
 
