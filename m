@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-8678-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8682-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81EDB44076
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 17:25:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD229B44086
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 17:26:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DD227BB55B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 15:23:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93FC23AB874
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Sep 2025 15:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF162561D4;
-	Thu,  4 Sep 2025 15:25:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3AA326C399;
+	Thu,  4 Sep 2025 15:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fEne45aS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="a8gygNKx"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F01224AE6
-	for <netfilter-devel@vger.kernel.org>; Thu,  4 Sep 2025 15:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0DD22F74F
+	for <netfilter-devel@vger.kernel.org>; Thu,  4 Sep 2025 15:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756999504; cv=none; b=cIKMlKG/IEVKw2oYJgiWmXRPMM2zmM9MqiHVtNA1Xjv50gbSWJ2ZYBpLBrJPRgMTaTzV6a1oaUr4uqakiw33hEzQ0QqghSWOYhVb3kJn/In82GHIMyQLFWk6Bhv7xD/guuTPCRYzu+FddGHugs/YWnyzaRFeV16Rs/obdWG8f8E=
+	t=1756999506; cv=none; b=MXaHxO4Io/qsOGN2xnCEU22lcZjHSAfXAyGuft+QeR5gurPViEnEYDZSIwSEC9N1TD4vC1Dm6pM5rQkV0/RBHuRhRpgZucad5f0BN5EDDwz2V3Gbxx7DO99dl8eWiVT/B/VTWpRGyQ+x8DqCx9z0efDM3qj9STfj/3Wpw4+xlpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756999504; c=relaxed/simple;
-	bh=yLSLpjf4h7z9wrM7wU2lfdXlosiHVtohcj79/VweKiU=;
+	s=arc-20240116; t=1756999506; c=relaxed/simple;
+	bh=/BlupDn577YOplpdvnQsPqHtcr+P+6bWvvWNh2wFAAk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TpaoaIXUrkPbBP76xwkYTQnwaJMnvOwfHrLJ+vhRPo8VZUt5S9I2/x7VTewH6N2bxd1ht2PiOIyc/eVHEbIl0G55bmFnYWJNzFuxjBfrj0fOA0F5/V4w8SjCaPzIm/mzjV7uwVqbHEyOQh29OvYDMGf+e/xlFuvrA9RYEcim8ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fEne45aS; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=avaOFVleXsRjmp10XKDasbWsDhbkG3dM96DtWXlPzPXfdrv9TLfnqMI9uMNXS6XyDbEC/ENXuswHKVNY4lmXZPhx91g4ELbuLRK3ocvl37dkX39vOJN/1oTSxz6wwrvdZWfFDVE8fDSYuxSFLIudK6wIpldX8nxrvRdls5HgXU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=a8gygNKx; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=lG1Hr9PBHa4u0XjOWQdtt9pkT21jAc7fwelFCPOu3Y4=; b=fEne45aSZ7he/EyarpCTlswSIO
-	H7mXJvmZCMiHxr+TbfOrwtCmw3D2YzdKCc6mKiaMiJXHs31fOJAq32O/1UJn4kbiujCrxubBMN+9N
-	Zk3k+bRLPSqlQzOAGU96/tP0IeQZVNOHMZ5kYD6N0/7AzA+u6KVAvNAJA2Zr6Ebu1Q6ComI+E45EV
-	IrJfbrJgfK+21uR/xlysiDP3/Rig7y2FH7uTOn1Cid7a0K7fCLP9HAN8fFobe8a6LGkNKA8rmRTal
-	br0H8h3+XR7s8UxKA8uNV0SViQ5PSU3ZoQ+DOQgo0Hj++1vyVReq/xBlnAQTtyIN0zkFyhwNmGNix
-	HZ06La5w==;
+	bh=yOxpeyc2ljMUbd5pt3BRY5Rxkw+5IFxp/QonasRFywg=; b=a8gygNKxfnW7LRUPY0RYq0LJnM
+	sMGc+JxoHgLn2hJYUcf4UfmKIeXPHxT4rH+up4YUqcXNs9FLMALTbrFyWFnXYgNWuMhaoVsz7HXMx
+	uQIK+ZSFVVQfsM7IgLuGLPqMEqf0neyhreOs3DSM4Pjsf+1Lw1g8/QdLksX4dHflL+E9Zy3AmdwYk
+	yRdl+bTvGMlRvjYyPp3eJeZw/aiF8tQ8pZwE4w8e4smPVTIYndwRlDnImHNPFx7VmrovDaTosFRnO
+	X+oZdYQfztkwNhM1PD1h0thpuGAcq+0Mbw1B9z/rcexsR0nodyd+h8bHzkYfKyiodKn66TVe0b+p1
+	HzNGGwzw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1uuBpc-000000001oC-1ANH;
-	Thu, 04 Sep 2025 17:25:00 +0200
+	id 1uuBpf-000000001pO-2ECX;
+	Thu, 04 Sep 2025 17:25:03 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v4 6/8] tests: build: Do not assume caller's CWD
-Date: Thu,  4 Sep 2025 17:24:52 +0200
-Message-ID: <20250904152454.13054-7-phil@nwl.cc>
+Subject: [nft PATCH v4 7/8] tests: build: Avoid a recursive 'make check' run
+Date: Thu,  4 Sep 2025 17:24:53 +0200
+Message-ID: <20250904152454.13054-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250904152454.13054-1-phil@nwl.cc>
 References: <20250904152454.13054-1-phil@nwl.cc>
@@ -67,26 +67,31 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Cover for being called from a different directory by changing into the
-test suite's directory first.
+When called by 'make check', the test suite runs with a MAKEFLAGS
+variable in environment which defines TEST_LOGS variable with the test
+suites' corresponding logs as value. This in turn causes the called
+'make distcheck' to run test suites although it is not supposed to.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/build/run-tests.sh | 2 ++
- 1 file changed, 2 insertions(+)
+ tests/build/run-tests.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/tests/build/run-tests.sh b/tests/build/run-tests.sh
-index 674383cb6cc74..a5e026a97dd5b 100755
+index a5e026a97dd5b..80fa10168d003 100755
 --- a/tests/build/run-tests.sh
 +++ b/tests/build/run-tests.sh
-@@ -1,5 +1,7 @@
- #!/bin/bash
+@@ -20,6 +20,10 @@ fi
+ git clone "$dir" "$tmpdir" &>>"$log_file"
+ cd "$tmpdir" || exit
  
-+cd $(dirname $0)
++# do not leak data from a calling 'make check' run into the new build otherwise
++# this will defeat the test suite invocation prevention for 'make distcheck'
++unset MAKEFLAGS
 +
- log_file="$(pwd)/tests.log"
- dir=../..
- argument=( --without-cli --with-cli=linenoise --with-cli=editline --enable-debug --with-mini-gmp
+ if ! autoreconf -fi &>>"$log_file" ; then
+ 	echo "Something went wrong. Check the log '${log_file}' for details."
+ 	exit 1
 -- 
 2.51.0
 
