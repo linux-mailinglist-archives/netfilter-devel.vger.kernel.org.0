@@ -1,73 +1,74 @@
-Return-Path: <netfilter-devel+bounces-8855-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8857-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF00CB93240
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Sep 2025 21:50:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24705B93304
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Sep 2025 22:10:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2A132E10FA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Sep 2025 19:50:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBCD23AD397
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Sep 2025 20:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F407030AD10;
-	Mon, 22 Sep 2025 19:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC4731A56C;
+	Mon, 22 Sep 2025 20:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="WCMIMWJL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SSZMeOT2"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net [178.154.239.136])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02CD32F3613;
-	Mon, 22 Sep 2025 19:50:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31C23176F2
+	for <netfilter-devel@vger.kernel.org>; Mon, 22 Sep 2025 20:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758570654; cv=none; b=Swe9YzyF9Cbrg38irtk+c6u8mMddjCfytgIn1IwAM71gHq94042/VMQcuVj2NvKSAGI8uxJOPOo9MN+mGcSzGcTbCfxQJlTagg6kHvMYwugkCBzjGbeEC8aHBHMO227JDEUnhQzuRRCVcviNOn65SLT1elGs7xgJphJ6Z5o4C9k=
+	t=1758571799; cv=none; b=IG04PxeimfmD7SK8u4Fdrc0t3Mpa8yPpCKz562yrN0cpdTJJm5U0KR9MtIdc6UpUMdlOVlgpSqT4ec6PhDQlVba69WZiaceZq5fw11kFUCOYJBJuuRJUBDN94657BOFaDlMJsHf0YUek5lpa2MY2RemITetaiMpm/GkPrK53LRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758570654; c=relaxed/simple;
-	bh=IIuaOrz0FC8chHu7ILOxwOJmM63B00UIluxC+65xLfE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hBSLZ8JW3CFbZKON2lv4mC1JhyQGf4aXyo6ncq9VVgBQl9OxKLAvcK1QtzpeBbB7WRy8LSNw7ty4+ZRpF4cwezSg5dMEh5vY5/BFu6raQxhMqY6i3SNgV+iCS3MCqGGpSIIZy3cSjwZlxCkjhB5rWC25dMsOGJ5jIClfjJPOTTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru; spf=pass smtp.mailfrom=yandex-team.ru; dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b=WCMIMWJL; arc=none smtp.client-ip=178.154.239.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
-Received: from mail-nwsmtp-smtp-corp-main-80.iva.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-80.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:1621:0:640:12d9:0])
-	by forwardcorp1b.mail.yandex.net (Yandex) with ESMTPS id 3AEF38857E;
-	Mon, 22 Sep 2025 22:48:50 +0300 (MSK)
-Received: from d-tatianin-lin.yandex-team.ru (unknown [2a02:6bf:8080:c27::1:3a])
-	by mail-nwsmtp-smtp-corp-main-80.iva.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id TmcMU33Goa60-srwXviqN;
-	Mon, 22 Sep 2025 22:48:49 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
-	s=default; t=1758570529;
-	bh=ERVn3lgtdd/+G0FxLqF0rVkFcod05w/PTMcT604L6DQ=;
-	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=WCMIMWJLK29lv+34fERZqiPcN8jMoaVD5duMuwNGl67OsGtHqshss3ZBAX6zH/05o
-	 nRe81/EuqTq7c+j8DEpkwW72OoodgboTm5Q79VMTViL2V6JsDOIo+Wghy99L2Uz6AQ
-	 /oOlDd+uouw26fNMQcOI1i6imguTvqZWRKzrSD0o=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-80.iva.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-From: Daniil Tatianin <d-tatianin@yandex-team.ru>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Daniil Tatianin <d-tatianin@yandex-team.ru>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
+	s=arc-20240116; t=1758571799; c=relaxed/simple;
+	bh=96yc8lr8zpTTnNLo+57UwK0ZN6gWSNcoPPMe554q/80=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R6vb9kzNmI9d4E8uYFZ4hRZgcCjWMCoHdfY8qBCxJZofOyFGMaSpHwjK6875Q9G0oyLxGtqPtVbk5KfWu3due7g97ZqalNMpppVYMoZlbAJlhBBpoqzOUpAX8Tjkg0tVMzJub4tnXSDs9IREYOFLqURaFUy+53xq81c7wXjAzN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SSZMeOT2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1758571796;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xMy9+5cJFf4QAOot9A0fSaZyvFYitQlYRC/JRAHzUU8=;
+	b=SSZMeOT2y+hRg1l/qA9L0kFm4uIVDI2gcNYKx7BCH0wZmiZlZXbLjlqHBE4wi2jX5DjLS9
+	MhLYW500IBA+PcG/HBIuV3t9+GRDlM33xpUxyzbrZQH7MTCBD4Y+GKC9VfzAoh/KLx0Jiy
+	FkvxdqK5pXQib6RedJq3AB6GAjqiRhY=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-673-RCZSE8ExNDun-yru0aRLLA-1; Mon,
+ 22 Sep 2025 16:09:53 -0400
+X-MC-Unique: RCZSE8ExNDun-yru0aRLLA-1
+X-Mimecast-MFC-AGG-ID: RCZSE8ExNDun-yru0aRLLA_1758571791
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 131E119560AE;
+	Mon, 22 Sep 2025 20:09:51 +0000 (UTC)
+Received: from wsxc.redhat.com (unknown [10.96.134.33])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9F8A41956045;
+	Mon, 22 Sep 2025 20:09:46 +0000 (UTC)
+From: Ricardo Robaina <rrobaina@redhat.com>
+To: audit@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 3/3] netfilter/x_tables: allocate entry_offsets with vcalloc
-Date: Mon, 22 Sep 2025 22:48:19 +0300
-Message-Id: <20250922194819.182809-4-d-tatianin@yandex-team.ru>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250922194819.182809-1-d-tatianin@yandex-team.ru>
-References: <20250922194819.182809-1-d-tatianin@yandex-team.ru>
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org
+Cc: paul@paul-moore.com,
+	eparis@redhat.com,
+	pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de,
+	Ricardo Robaina <rrobaina@redhat.com>
+Subject: [PATCH v1] audit: include source and destination ports to NETFILTER_PKT
+Date: Mon, 22 Sep 2025 17:09:42 -0300
+Message-ID: <20250922200942.1534414-1-rrobaina@redhat.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -75,40 +76,99 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-This allocation does not benefit from contiguous physical memory, and
-its size depends on userspace input.
+NETFILTER_PKT records show both source and destination
+addresses, in addition to the associated networking protocol.
+However, it lacks the ports information, which is often
+valuable for troubleshooting.
 
-No reason to stress the buddy allocator and thus the entire system for
-allocations that can exist in vmalloc'ed memory just fine.
+This patch adds both source and destination port numbers,
+'sport' and 'dport' respectively, only to tcp/udp-related
+NETFILTER_PKT records.
 
-Signed-off-by: Daniil Tatianin <d-tatianin@yandex-team.ru>
+ # ./audit-testsuite/tests/netfilter_pkt/test &> /dev/null
+ # ausearch -i -m netfilter_pkt |tail -n12
+ type=NETFILTER_PKT ... saddr=127.0.0.1 daddr=127.0.0.1 proto=icmp
+ ----
+ type=NETFILTER_PKT ... saddr=::1 daddr=::1 proto=ipv6-icmp
+ ----
+ type=NETFILTER_PKT ... daddr=127.0.0.1 proto=udp sport=38173 dport=42424
+ ----
+ type=NETFILTER_PKT ... daddr=::1 proto=udp sport=56852 dport=42424
+ ----
+ type=NETFILTER_PKT ... daddr=127.0.0.1 proto=tcp sport=57022 dport=42424
+ ----
+ type=NETFILTER_PKT ... daddr=::1 proto=tcp sport=50810 dport=42424
+
+Link: https://github.com/linux-audit/audit-kernel/issues/162
+Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
 ---
- net/netfilter/x_tables.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/xt_AUDIT.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 5ea95c56f3a0..06a86648b931 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -965,14 +965,14 @@ unsigned int *xt_alloc_entry_offsets(unsigned int size)
- 	if (size > XT_MAX_TABLE_SIZE / sizeof(unsigned int))
- 		return NULL;
- 
--	return kvcalloc(size, sizeof(unsigned int), GFP_KERNEL);
-+	return __vcalloc(size, sizeof(unsigned int), GFP_KERNEL);
- 
- }
- EXPORT_SYMBOL(xt_alloc_entry_offsets);
- 
- void xt_free_entry_offsets(unsigned int *offsets)
+diff --git a/net/netfilter/xt_AUDIT.c b/net/netfilter/xt_AUDIT.c
+index b6a015aee0ce..96a18675d468 100644
+--- a/net/netfilter/xt_AUDIT.c
++++ b/net/netfilter/xt_AUDIT.c
+@@ -32,6 +32,7 @@ static bool audit_ip4(struct audit_buffer *ab, struct sk_buff *skb)
  {
--	kvfree(offsets);
-+	vfree(offsets);
+ 	struct iphdr _iph;
+ 	const struct iphdr *ih;
++	__be16 dport, sport;
+ 
+ 	ih = skb_header_pointer(skb, skb_network_offset(skb), sizeof(_iph), &_iph);
+ 	if (!ih)
+@@ -40,6 +41,19 @@ static bool audit_ip4(struct audit_buffer *ab, struct sk_buff *skb)
+ 	audit_log_format(ab, " saddr=%pI4 daddr=%pI4 proto=%hhu",
+ 			 &ih->saddr, &ih->daddr, ih->protocol);
+ 
++	switch (ih->protocol) {
++	case IPPROTO_TCP:
++		sport = tcp_hdr(skb)->source;
++		dport = tcp_hdr(skb)->dest;
++		break;
++	case IPPROTO_UDP:
++		sport = udp_hdr(skb)->source;
++		dport = udp_hdr(skb)->dest;
++	}
++
++	if (ih->protocol == IPPROTO_TCP || ih->protocol == IPPROTO_UDP)
++		audit_log_format(ab, " sport=%hu dport=%hu", ntohs(sport), ntohs(dport));
++
+ 	return true;
  }
- EXPORT_SYMBOL(xt_free_entry_offsets);
+ 
+@@ -48,7 +62,7 @@ static bool audit_ip6(struct audit_buffer *ab, struct sk_buff *skb)
+ 	struct ipv6hdr _ip6h;
+ 	const struct ipv6hdr *ih;
+ 	u8 nexthdr;
+-	__be16 frag_off;
++	__be16 frag_off, dport, sport;
+ 
+ 	ih = skb_header_pointer(skb, skb_network_offset(skb), sizeof(_ip6h), &_ip6h);
+ 	if (!ih)
+@@ -60,6 +74,19 @@ static bool audit_ip6(struct audit_buffer *ab, struct sk_buff *skb)
+ 	audit_log_format(ab, " saddr=%pI6c daddr=%pI6c proto=%hhu",
+ 			 &ih->saddr, &ih->daddr, nexthdr);
+ 
++	switch (ih->nexthdr) {
++	case IPPROTO_TCP:
++		sport = tcp_hdr(skb)->source;
++		dport = tcp_hdr(skb)->dest;
++		break;
++	case IPPROTO_UDP:
++		sport = udp_hdr(skb)->source;
++		dport = udp_hdr(skb)->dest;
++	}
++
++	if (ih->nexthdr == IPPROTO_TCP || ih->nexthdr == IPPROTO_UDP)
++		audit_log_format(ab, " sport=%hu dport=%hu", ntohs(sport), ntohs(dport));
++
+ 	return true;
+ }
  
 -- 
-2.34.1
+2.51.0
 
 
