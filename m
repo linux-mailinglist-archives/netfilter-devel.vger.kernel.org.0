@@ -1,233 +1,154 @@
-Return-Path: <netfilter-devel+bounces-8892-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8902-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE146B9C02C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Sep 2025 22:32:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16498B9C2B9
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Sep 2025 22:41:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AD4B16513E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Sep 2025 20:31:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F112162DF1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Sep 2025 20:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F520329F06;
-	Wed, 24 Sep 2025 20:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="BlfJ6Y1o"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4847322764;
+	Wed, 24 Sep 2025 20:41:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com [35.158.23.94])
+Received: from iguana.tulip.relay.mailchannels.net (iguana.tulip.relay.mailchannels.net [23.83.218.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A566327A1A;
-	Wed, 24 Sep 2025 20:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.158.23.94
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758745840; cv=none; b=t7uL4jOCH6VagqmFMmMM3LJ/iHe47Nce87LjT8MDyLgfQxLg8ihvVA5ym/Vt9+gmbPokWM1mgJhaG4Cn8y7IeckdxXe/+nT55CPdebZ5SETaPsgdF8Li+cJI9i2h5KmI6F5GpfJaBDzi2HGLFxx8m4Erm+7LmYY+oUW3cjPZzkE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758745840; c=relaxed/simple;
-	bh=rLPdK3QYz4ChOGs+ON1xQt6wMcx4aqoMZbI8kvoOgvA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CbFhOPvHca1XYblRBIhs5eojiymlOePn9pR6puE5nY+MP6tQDD24H1+E0b1VIrIkNJAZSLbgZoDQa0LiWlQW+84GSV3A3+PjohCPwHfAYqGsZMNU8Zx7gGYk1YJ+uuh1Wf3uX+6wRMehjB09nVBpAadD7RsqNc5M7TJphVgxPA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=BlfJ6Y1o; arc=none smtp.client-ip=35.158.23.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758745839; x=1790281839;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ToVPFfAmijgFkPXuC9UXKvHeG3XAoNk6zHMcSv2Lxjo=;
-  b=BlfJ6Y1o/LKzCF6/oH3EGrz5AUttYTXNOwfKISt3OxpuKCRsoFJuQi59
-   DOJ1Hf8Relv1NnJT6/pKorvsCbYSVznPTJm1yu+nP3hb02Dau0gvENoMT
-   j99TawEkC8wrvP+gJ747IKVWlLvalxwR4ugxAjnMJzJWhYI4MLttIRF2o
-   ySsGw51icMzaGSEMDrRvMtfZkKpHAg12uQZW6O6j0Sg5mHC4pDwQ1k1za
-   IRk7AkK09oTDhxGmX6eP9CqK9S8JVIW2cbAQnlgsCYPzGopTSaAHpMTvo
-   ei7hVxJ8oZiCTGNtCWP9b0ST9qmlvb/ooa8/RxlP+Es0fu//Ey2nEwCke
-   w==;
-X-CSE-ConnectionGUID: whQs5I+6RPuEkQo+yiylwg==
-X-CSE-MsgGUID: zAkb8LYyRg601Cbp7tJfdw==
-X-IronPort-AV: E=Sophos;i="6.18,291,1751241600"; 
-   d="scan'208";a="2631986"
-Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
-  by internal-fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2025 20:30:25 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.232:8635]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.9.61:2525] with esmtp (Farcaster)
- id c1f88da4-53d2-47a7-88a6-131beb406856; Wed, 24 Sep 2025 20:30:25 +0000 (UTC)
-X-Farcaster-Flow-ID: c1f88da4-53d2-47a7-88a6-131beb406856
-Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 24 Sep 2025 20:30:22 +0000
-Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
- (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Wed, 24 Sep 2025
- 20:29:47 +0000
-From: Eliav Farber <farbere@amazon.com>
-To: <linux@armlinux.org.uk>, <richard@nod.at>,
-	<anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
-	<dave.hansen@linux.intel.com>, <luto@kernel.org>, <peterz@infradead.org>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-	<hpa@zytor.com>, <tony.luck@intel.com>, <qiuxu.zhuo@intel.com>,
-	<mchehab@kernel.org>, <james.morse@arm.com>, <rric@kernel.org>,
-	<harry.wentland@amd.com>, <sunpeng.li@amd.com>, <Rodrigo.Siqueira@amd.com>,
-	<alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-	<Xinhui.Pan@amd.com>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<evan.quan@amd.com>, <james.qian.wang@arm.com>, <liviu.dudau@arm.com>,
-	<mihail.atanassov@arm.com>, <brian.starkey@arm.com>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <robdclark@gmail.com>, <quic_abhinavk@quicinc.com>,
-	<dmitry.baryshkov@linaro.org>, <sean@poorly.run>, <jdelvare@suse.com>,
-	<linux@roeck-us.net>, <linus.walleij@linaro.org>,
-	<dmitry.torokhov@gmail.com>, <maz@kernel.org>, <wens@csie.org>,
-	<jernej.skrabec@gmail.com>, <samuel@sholland.org>, <agk@redhat.com>,
-	<snitzer@kernel.org>, <dm-devel@redhat.com>, <rajur@chelsio.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <peppe.cavallaro@st.com>,
-	<alexandre.torgue@foss.st.com>, <joabreu@synopsys.com>,
-	<mcoquelin.stm32@gmail.com>, <krzysztof.kozlowski@linaro.org>,
-	<malattia@linux.it>, <hdegoede@redhat.com>, <markgross@kernel.org>,
-	<artur.paszkiewicz@intel.com>, <jejb@linux.ibm.com>,
-	<martin.petersen@oracle.com>, <sakari.ailus@linux.intel.com>,
-	<gregkh@linuxfoundation.org>, <fei1.li@intel.com>, <clm@fb.com>,
-	<josef@toxicpanda.com>, <dsterba@suse.com>, <jack@suse.com>, <tytso@mit.edu>,
-	<adilger.kernel@dilger.ca>, <dushistov@mail.ru>,
-	<luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-	<pmladek@suse.com>, <senozhatsky@chromium.org>,
-	<andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
-	<minchan@kernel.org>, <ngupta@vflare.org>, <akpm@linux-foundation.org>,
-	<yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <pablo@netfilter.org>,
-	<kadlec@netfilter.org>, <fw@strlen.de>, <jmaloy@redhat.com>,
-	<ying.xue@windriver.com>, <andrii@kernel.org>, <mykolal@fb.com>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <martin.lau@linux.dev>,
-	<song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>,
-	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-	<jolsa@kernel.org>, <shuah@kernel.org>, <keescook@chromium.org>,
-	<wad@chromium.org>, <willy@infradead.org>, <farbere@amazon.com>,
-	<sashal@kernel.org>, <ruanjinjie@huawei.com>, <quic_akhilpo@quicinc.com>,
-	<David.Laight@ACULAB.COM>, <herve.codina@bootlin.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-um@lists.infradead.org>, <linux-edac@vger.kernel.org>,
-	<amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
-	<linux-hwmon@vger.kernel.org>, <linux-input@vger.kernel.org>,
-	<linux-sunxi@lists.linux.dev>, <linux-media@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
-	<platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-	<linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>,
-	<linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>,
-	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
-	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
-	<bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<stable@vger.kernel.org>
-CC: Linus Torvalds <torvalds@linux-foundation.org>, David Laight
-	<David.Laight@aculab.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Subject: [PATCH 10/19 v6.1.y] minmax: don't use max() in situations that want a C constant expression
-Date: Wed, 24 Sep 2025 20:23:11 +0000
-Message-ID: <20250924202320.32333-11-farbere@amazon.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20250924202320.32333-1-farbere@amazon.com>
-References: <20250924202320.32333-1-farbere@amazon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 403B528F4
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Sep 2025 20:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.253
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758746477; cv=pass; b=bmfab7tzZzePUuymvB7IXvxuG79YvAVDCmiQRSbN3/6DlYJHvdM8YFAgXaLP9EeB2+ThaSSH6MrnK+8q9CoN6iV8mJl1ClAIxVxWEORbxwUymtSduraPqqJG8U+WNlIFeiwQEkYUEXQjF3RH+QIBCfTfTjDnxQ+JhIAn0shYY78=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758746477; c=relaxed/simple;
+	bh=wStOjWciL/Kun2luTkB5vWpZcw/Fu4pWOmYDnDLAtU4=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=EnJ4v39DiqGNzESyoeP8cwIl0k6PL0S+wYDmktkkVcaee60TbdUiWvMTfgnF3rcSWlhc5ezlw32aHJ27H0q59ZkQ8yplRFEbecviEIyLkAjjL9nlvspGnXRt/y7GeQ1z7/FHhbd4jEcOcsrYL8BdmVaV6dBTjOZIQQlcUTExpVk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 88A853A27DC
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Sep 2025 20:23:15 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (100-108-153-55.trex-nlb.outbound.svc.cluster.local [100.108.153.55])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 9A1173A274F
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Sep 2025 20:23:14 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1758745394; a=rsa-sha256;
+	cv=none;
+	b=LmhMh0uVPkjvzLOwPGzSZyG01QGwhTklbX3beZJDwUJQp7J0PC6OCQ4tuMlko/PGFLn+i1
+	8krceR0CpJkw6wi8LNax0OYziaRuJ880Oqj5lOZil+T3jxT09z0fEdv2zbervBaBsTcRzf
+	jBdLQ2FkfuGEljUiKZ7juzdHjSzJqdj7lPWkI+uv9Im+N399Icxk/JYtkCU8ux2Io5HdTe
+	BZHygH8QwI9Ns3Av/SqyOlkGCkaNJv2LmBR14Kdhh89zJYjZ/Sferdbl4ggBckooDfqtrb
+	b1RngpTwcksYneopKfrVmOEHQ5QlKR+HjiqKcb33bUI8eGqwS4O0+/92cWyYkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1758745394;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Gv+c3RjDn6ceUGr43VoSOg0dGZtNQ48HhxeTb7u6HUE=;
+	b=xr4iZTW1RpeyFoZ0twhgnCHuJgkHyiJmTjLuQaDlcssJqzQh4RLZZpP46lzsEM/Ti2aKSW
+	SWdyoAyf90yOEx/G2ulcsYwsJw1JD5HDt3+hswJ+ObVqxweWSXVh6t+a8dPfeSJdy5D2hB
+	7J9iNQB4qFIaCJp7Cnho1Z/6iGjmAFDPIT0aun6m3sHUgiqEjfyrwXn5clyBF0JwHETZ3X
+	QuwVFBFmvZ9j0m69OGCnTmzev2hXII78Mghxhnw5zBggR3zUFv1KMUH+CvqbNgruZi0/8E
+	otzCiHg7l8xn2zIP+/LZ78es978qBTbCviccVCnXhtLSClfz2GiU+DeUku2VLw==
+ARC-Authentication-Results: i=1;
+	rspamd-55b8bfbc7f-6jb8l;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Shrill-Lyrical: 49055d7b7cd7dbee_1758745395148_1417285753
+X-MC-Loop-Signature: 1758745395147:1088057639
+X-MC-Ingress-Time: 1758745395147
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.108.153.55 (trex/7.1.3);
+	Wed, 24 Sep 2025 20:23:15 +0000
+Received: from [79.127.207.171] (port=1664 helo=[10.2.0.2])
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <calestyo@scientia.org>)
+	id 1v1W1C-00000003RbU-3oVz
+	for netfilter-devel@vger.kernel.org;
+	Wed, 24 Sep 2025 20:23:12 +0000
+Message-ID: <500beefd7481a43c4068469300e07ca3769a064e.camel@scientia.org>
+Subject: bug: nft include with includedir path with globs loads files twice
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: netfilter-devel@vger.kernel.org
+Date: Wed, 24 Sep 2025 22:23:11 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-3 
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D033UWA004.ant.amazon.com (10.13.139.85) To
- EX19D018EUA004.ant.amazon.com (10.252.50.85)
+X-AuthUser: calestyo@scientia.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+Hey.
 
-[ Upstream commit cb04e8b1d2f24c4c2c92f7b7529031fc35a16fed ]
+With:
+   # nft -v
+   nftables v1.1.5 (Commodore Bullmoose #6)
+from Debian sid which uses a default include dir of:
+   # nft -h | grep includepath
+     -I, --includepath <directory>   Add <directory> to the paths searched =
+for include files. Default is: /etc
 
-We only had a couple of array[] declarations, and changing them to just
-use 'MAX()' instead of 'max()' fixes the issue.
 
-This will allow us to simplify our min/max macros enormously, since they
-can now unconditionally use temporary variables to avoid using the
-argument values multiple times.
+And e.g.:
+/etc/nftables.conf
+   #!/usr/sbin/nft -f
+  =20
+   flush ruleset
+  =20
+   table inet filter {
+   	chain input {
+   		type filter hook input priority filter
+   		ct state {established,related} accept
+   	}
+   }
+  =20
+   include "nftables/rules.d/*.nft"
 
-Cc: David Laight <David.Laight@aculab.com>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Eliav Farber <farbere@amazon.com>
----
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c   | 2 +-
- drivers/input/touchscreen/cyttsp4_core.c | 2 +-
- drivers/irqchip/irq-sun6i-r.c            | 2 +-
- fs/btrfs/tree-checker.c                  | 2 +-
- lib/vsprintf.c                           | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+and:
+/etc/nftables/rules.d/x.nft:
+   table inet filter {
+           chain bla {
+                   type filter hook input priority filter
+                   ip daddr 1.1.1.1 drop
+           }
+   }
+and no other files in rules.d... nft seem to somehow include x.nft
+twice:
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-index 768b6e7dbd77..fd1faa840ec0 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-@@ -700,7 +700,7 @@ static const char *smu_get_feature_name(struct smu_context *smu,
- size_t smu_cmn_get_pp_feature_mask(struct smu_context *smu,
- 				   char *buf)
- {
--	int8_t sort_feature[max(SMU_FEATURE_COUNT, SMU_FEATURE_MAX)];
-+	int8_t sort_feature[MAX(SMU_FEATURE_COUNT, SMU_FEATURE_MAX)];
- 	uint64_t feature_mask;
- 	int i, feature_index;
- 	uint32_t count = 0;
-diff --git a/drivers/input/touchscreen/cyttsp4_core.c b/drivers/input/touchscreen/cyttsp4_core.c
-index dccbcb942fe5..936d69da3bda 100644
---- a/drivers/input/touchscreen/cyttsp4_core.c
-+++ b/drivers/input/touchscreen/cyttsp4_core.c
-@@ -871,7 +871,7 @@ static void cyttsp4_get_mt_touches(struct cyttsp4_mt_data *md, int num_cur_tch)
- 	struct cyttsp4_touch tch;
- 	int sig;
- 	int i, j, t = 0;
--	int ids[max(CY_TMA1036_MAX_TCH, CY_TMA4XX_MAX_TCH)];
-+	int ids[MAX(CY_TMA1036_MAX_TCH, CY_TMA4XX_MAX_TCH)];
- 
- 	memset(ids, 0, si->si_ofs.tch_abs[CY_TCH_T].max * sizeof(int));
- 	for (i = 0; i < num_cur_tch; i++) {
-diff --git a/drivers/irqchip/irq-sun6i-r.c b/drivers/irqchip/irq-sun6i-r.c
-index a01e44049415..99958d470d62 100644
---- a/drivers/irqchip/irq-sun6i-r.c
-+++ b/drivers/irqchip/irq-sun6i-r.c
-@@ -270,7 +270,7 @@ static const struct irq_domain_ops sun6i_r_intc_domain_ops = {
- 
- static int sun6i_r_intc_suspend(void)
- {
--	u32 buf[BITS_TO_U32(max(SUN6I_NR_TOP_LEVEL_IRQS, SUN6I_NR_MUX_BITS))];
-+	u32 buf[BITS_TO_U32(MAX(SUN6I_NR_TOP_LEVEL_IRQS, SUN6I_NR_MUX_BITS))];
- 	int i;
- 
- 	/* Wake IRQs are enabled during system sleep and shutdown. */
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index bf3822b25c58..cb76feac94a4 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -608,7 +608,7 @@ static int check_dir_item(struct extent_buffer *leaf,
- 		 */
- 		if (key->type == BTRFS_DIR_ITEM_KEY ||
- 		    key->type == BTRFS_XATTR_ITEM_KEY) {
--			char namebuf[max(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
-+			char namebuf[MAX(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
- 
- 			read_extent_buffer(leaf, namebuf,
- 					(unsigned long)(di + 1), name_len);
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index fa1c19701855..2b0b5f08b8fc 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1082,7 +1082,7 @@ char *resource_string(char *buf, char *end, struct resource *res,
- #define FLAG_BUF_SIZE		(2 * sizeof(res->flags))
- #define DECODED_BUF_SIZE	sizeof("[mem - 64bit pref window disabled]")
- #define RAW_BUF_SIZE		sizeof("[mem - flags 0x]")
--	char sym[max(2*RSRC_BUF_SIZE + DECODED_BUF_SIZE,
-+	char sym[MAX(2*RSRC_BUF_SIZE + DECODED_BUF_SIZE,
- 		     2*RSRC_BUF_SIZE + FLAG_BUF_SIZE + RAW_BUF_SIZE)];
- 
- 	char *p = sym, *pend = sym + sizeof(sym);
--- 
-2.47.3
+# nft -f /etc/nftables.conf; nft list ruleset
+table inet filter {
+	chain input {
+		type filter hook input priority filter; policy accept;
+		ct state { established, related } accept
+	}
 
+	chain bla {
+		type filter hook input priority filter; policy accept;
+		ip daddr 1.1.1.1 drop
+		ip daddr 1.1.1.1 drop
+	}
+}
+
+If I change the include to "nftables/rules.d/x.nft" or to
+"/etc/nftables/rules.d/*.nft"... it works (i.e. only one ip daddr
+1.1.1.1 drop).
+
+
+Thanks,
+Chris.
 
