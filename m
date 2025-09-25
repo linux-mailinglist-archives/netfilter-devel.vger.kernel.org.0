@@ -1,134 +1,134 @@
-Return-Path: <netfilter-devel+bounces-8925-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8917-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D52ABA1228
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Sep 2025 21:16:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE1E0BA1021
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Sep 2025 20:27:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08BA93B1713
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Sep 2025 19:16:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10D4F1C20029
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Sep 2025 18:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F141D31B831;
-	Thu, 25 Sep 2025 19:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92848315789;
+	Thu, 25 Sep 2025 18:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FxgN/ttP"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from rusty.tulip.relay.mailchannels.net (rusty.tulip.relay.mailchannels.net [23.83.218.252])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73D01DA23
-	for <netfilter-devel@vger.kernel.org>; Thu, 25 Sep 2025 19:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.252
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758827773; cv=pass; b=hdRpxxxd2dgb3+Nq5FaCRFs8umCJAvDRsMw6yRzLvSK6FZKJVYj9z397m+7DKdY9OSPPDLJxYL6JqjpUiq56YoKozOnR1BFLcJx3AGaOTZBHqvDZv66SVS3EkONfGv7i0Tcf1iNpUp6NaL7g3QV2dkyaG3cCSGtwCt+4OdYx+6E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758827773; c=relaxed/simple;
-	bh=g+CSkkafYpO2aa32WnXg8s9+8Zt474mEK2f2DPGCIx8=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TcB8EpZd1NKksXTdRyntLsro1YTmHg6UfszHs8NWOZaC/e8ABC+OcK8ebweXlE0GHcLNbqLLWUXuzppYkKw8bKt2ZOISJiaqrA85HKDBAUI7+e0nnl65TSpt7SRsb2VGl7WoB1CILNMO71CtarGrNQh4d9ORRipSwy8a2mcCJGM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 0CB3D6A19D3;
-	Thu, 25 Sep 2025 15:48:35 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (100-110-226-144.trex-nlb.outbound.svc.cluster.local [100.110.226.144])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 04B826A2269;
-	Thu, 25 Sep 2025 15:48:33 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1758815314; a=rsa-sha256;
-	cv=none;
-	b=grP9k/kW4DOWpQ/sioPc5WkReYjsHaplB54F2GuUYbr6n/yQZzs8bcs5dmLYyIzp74sk2T
-	glMFvLHKHHtTYTBcfvhqh+W2zgj3xvaSBXXk+UQ5CqqpnS6qPdFkda+uoWsQ/JXe0MS7/l
-	oyknSShl2BshT6PKHGB6XbStasD6QzpqdKgSkFVta7oRNGpRAP0kB+Z4TvA6FZR4HQmysF
-	coO3WVp8qoKD38J00kx6gPZ+RlzulZ6Jh0XEnnG5bf4XveTnLnzSqVre79QbufTG4PeqvC
-	VGTiVIziAK5XB64lVMqh8aDqrt9AD11+uLIqU5kNpG0wclPt34djeEYhWnGUeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1758815314;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uETEg77LJfMyqHfqTeZ6vvDS3fjtqbpRrcCGP6pBaRs=;
-	b=ZuV3H4MjpgL3AYetOIne+PIiv6IFQb8TdQU8iNEAnQpcspm8+2wJVFw+Cad+/xJpVQSfRb
-	i3iUg6sPs3wuWrz6qqXhb/3n+AWItX2tYAcH2JwgXZHrgJQnTX+MKZzAsVYQai4SLppmLd
-	mTganToG3EbVy5DmInkbNxWYAfX5ANezRv5oxNSrL2Vah7uiF3vTR6ZI8+Zf1fay5yyY8M
-	pXZ/DgAlcOP5KsXVvIJqcXXmVeu0vcU7qSF2Pp2GLL79azn74eXmkE38CuI9TabEBH25UH
-	S0tfWJV7PFj9Tj7J8xetHzYAxqGJguejstD/6AhDub0cp06yJL3HMGCh8IFgYA==
-ARC-Authentication-Results: i=1;
-	rspamd-55b8bfbc7f-z882k;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Inform-Arithmetic: 744437b16d911218_1758815314700_1978673800
-X-MC-Loop-Signature: 1758815314700:1090377521
-X-MC-Ingress-Time: 1758815314700
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.110.226.144 (trex/7.1.3);
-	Thu, 25 Sep 2025 15:48:34 +0000
-Received: from [79.127.207.171] (port=2337 helo=[10.2.0.2])
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <calestyo@scientia.org>)
-	id 1v1oCw-00000009SCb-0pzU;
-	Thu, 25 Sep 2025 15:48:32 +0000
-Message-ID: <c825ad4a7e7318d211fcbb419b1003d063dc702c.camel@scientia.org>
-Subject: Re: bug: nft -n still shows "resolved" values for iif and oif
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: Fernando Fernandez Mancera <fmancera@suse.de>, 
-	netfilter-devel@vger.kernel.org
-Date: Thu, 25 Sep 2025 17:48:30 +0200
-In-Reply-To: <e19bafc0-61c9-47af-afb6-15f886cc4d37@suse.de>
-References: <f2c46dc450b3223834cd837882877f892b234491.camel@scientia.org>
-	 <e19bafc0-61c9-47af-afb6-15f886cc4d37@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-3 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6F3314A7B
+	for <netfilter-devel@vger.kernel.org>; Thu, 25 Sep 2025 18:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758824851; cv=none; b=uBFHK2qnoLmveFz8L1Hn4mxV84avLbBR8bYXT7v0t3XcdsP+QX9ON3kN0wzycVgE5lYAIHOQPf/kSJvADefOyPAsa/BlJIrc0cho51iuy12dpvQp+gYf5qOJ6C7VwIeUBWq8whBg0sl6TaJLmKt4HdSXceYir/IwtgYBjD7ERHI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758824851; c=relaxed/simple;
+	bh=DUTkLmi0EzVTJ+AWe0OBq6K1RWiww/CFFXpG8VhXD98=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AcJymv84ViuqlEF7k7aFsSodmbPOzwG+D6jm6m2i+4fHNnQjmmQXFHF31roWzxZNAO0kVQY/9nkZk8wCjKrvQ7fbwyKKIr146Pe7rC8UE+xbyVOLlTD3v73CEr2nQ0mbc5/Xj+GOxJtEJEaQV0gGFHZXogFlbToQjXB43DBmE74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FxgN/ttP; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b30ead58e0cso224920566b.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 Sep 2025 11:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758824848; x=1759429648; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JUT3SSvYenMhly8OZvczbE2TebLsubXvIlDVrfxllSg=;
+        b=FxgN/ttPspWAZrp8ToX5a0XEFE6SsAsIsul994FKHjuLgXbghDJ8NHVC9LTAIAIMdU
+         JRJk63KBujPDz1w0aT6COB6PuZP67pdMKVoy95QeD8vw+0sngRJXtvUks9MDPDhx8MZ0
+         D79/pJoHnlTVADVpTW4hOnbc0OFcBN0Id9wt0ucli3kd7LTjD4SD8rZiUmEzOM+YFJXk
+         lUc6HUfgtRyd5jZratOH3z2u+8jWFtoHsA7rYWi6APzUV5zL50AOk4jAKO1bPPc1M+7x
+         RvAHdG7rzX12+zmCjEfFIjb042oEHjDhYlv4Ie8MWstM99PHdcTRrl/6DXK5n3R72Kki
+         h/Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758824848; x=1759429648;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JUT3SSvYenMhly8OZvczbE2TebLsubXvIlDVrfxllSg=;
+        b=B7gtCiQAHCpd08sUqpn4/QpTuOfXd6uw5J/bvzvEh4RlYIc6dl0LC9uwa0dKiZyNqS
+         0mwUetmlOboBT6mlttlVsxk2qAAIPCxIIajqqpAHvBSGEpdwEdhEuGHiycIoLmPYobU8
+         ymMyXTSatB1AIL2GbuW9MLAUxhs/n1/7zpQZ3aFbWEgRKjJ0RNTgBTUEOPi6TA/BU2Gk
+         EbPgo+/wPswn0T38FQ3XURoRyfA/lF5YPvizY5kBqWGHt/UbJf0j/C27eE9v/xRW5mLU
+         v/SJRwcvf9iqZo8FqUTapHy8QwE1p6IyMR6WhE0nFZUWDHBCdhCflGbRaFqlcbA/hvC2
+         xZoA==
+X-Gm-Message-State: AOJu0Yw9RRJIdpmr4n3T0Q1K0HYUATjjJeG4BXdEZGi1N5mANBf73+Jx
+	uYkiDj/dc8hJ3wy4rnjl1USczOFqgMkQaVehyKXYuOA2dgcDrnR/i6O4
+X-Gm-Gg: ASbGncuyTsYWeC1ppnsbD+myvVjbgqC+k7La6JcD+s+MyGOPLqgSHO4tRUYB2KEjL2Y
+	VCzBymdjsQb64NYA/KVoSxVwmLAA5gJj7Q0DsTDnRxiJScymPQ06wCX6NxkIoLPzDDBTjTVDzL8
+	Y1Z2DRlFj7yor5sZflv3hp6YrtKKINDT2XWD8GiTxJNOl9QV7ZKgwAhkRL1nM7hS6CTjQTXdQJ2
+	v8qPcbprbZGIqrZ24dUrmTu0PQyXfuGTicUG0Gey6a7bVjsiUh+28+YTqZ5cDA8KvnGSGmTkeoJ
+	D/vB9fFiu56dUjMopJVIpz2jJnba3Gg3WD8JKYxGCSf2ezBhQcwU8Qt8Mkt7Nj0hBvobEA0qiJt
+	NNqyPLpcD98p/0JN326hkM+D4ZbLHa/tA0u6uCyNe7QLIR7BDCxydrYLTtLL9Czf1a6+nrGf26o
+	VyGyllrC2W+SgYh03SGw==
+X-Google-Smtp-Source: AGHT+IHGcH8Urk+2NZXPjBGTGYafzBqvtygm/aKjINig6LQec5XVExiMK3tDXWVjaGovy9FXplx0/A==
+X-Received: by 2002:a17:907:25c1:b0:b2d:b5d3:962f with SMTP id a640c23a62f3a-b34bb418b41mr435432766b.44.1758824847493;
+        Thu, 25 Sep 2025 11:27:27 -0700 (PDT)
+Received: from eric (2001-1c00-020d-1300-1b1c-4449-176a-89ea.cable.dynamic.v6.ziggo.nl. [2001:1c00:20d:1300:1b1c:4449:176a:89ea])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-634a3650969sm1572902a12.19.2025.09.25.11.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Sep 2025 11:27:26 -0700 (PDT)
+From: Eric Woudstra <ericwouds@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Nikolay Aleksandrov <razor@blackwall.org>
+Cc: netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Eric Woudstra <ericwouds@gmail.com>
+Subject: [PATCH v4 nf-next 0/2] flow offload teardown when layer 2 roaming
+Date: Thu, 25 Sep 2025 20:26:21 +0200
+Message-ID: <20250925182623.114045-1-ericwouds@gmail.com>
+X-Mailer: git-send-email 2.50.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2025-09-25 at 14:36 +0200, Fernando Fernandez Mancera wrote:
-> 2. Introduce a new "--numeric-interface" which prevents resolving iif
-> or=20
-> oif.
+This patch-set can be reviewed separately from my submissions concerning
+the bridge-fastpath.
 
-What IMO would be most helpful for users is an option, which for all
-values simply causes the "real" value to be printed.
+In case of a bridge in the forward-fastpath or bridge-fastpath the fdb is
+used to create the tuple. In case of roaming at layer 2 level, for example
+802.11r, the destination device is changed in the fdb. The destination
+device of a direct transmitting tuple is no longer valid and traffic is
+send to the wrong destination. Also the hardware offloaded fastpath is not
+valid anymore.
 
-With "real" I mean:
-- if e.g. an ip daddr matches on 1.1.1.1, then print 1.1.1.1
-- if there were an ip domainname where netfilter would resolve, the
-  that option should print the hostname
-- if using iifname, the actual matched value is the string, so print
-  that
-- if using iif or oif, the actual matched value is the ID, so print
-  that, in particular as (perhaps with the exception of lo), e.g. eth0
-  isn't per definition ID 2 or whatever
+This flowentry needs to be torn down asap.
 
+Changes in v4:
+- Removed patch "don't follow fastpath when marked teardown".
+- Use a work queue to process the event.
 
-For things like ICMP Type codes, IP protocol numbers, port numbers...
-things are different to e.g. the iface ID.
-For them, e.g. type 0 is always guaranteed to be icmp echo request and
-22 is always port SSH.
+Changes in v3:
+- static nf_flow_table_switchdev_nb.
 
+Changes in v2:
+- Unchanged, only tags RFC net-next to PATCH nf-next.
 
-So it could IMO be handy to have an option which gives the above
-("real") but still uses non-numeric values for things where the
-number<->string is fixed, and if one uses the option e.g. twice, then
-even those are printed with their numeric values.
+Eric Woudstra (2):
+  netfilter: flow: Add bridge_vid member
+  netfilter: nf_flow_table_core: teardown direct xmit when destination
+    changed
 
+ include/net/netfilter/nf_flow_table.h |  2 +
+ net/netfilter/nf_flow_table_core.c    | 89 +++++++++++++++++++++++++++
+ net/netfilter/nft_flow_offload.c      |  3 +
+ 3 files changed, 94 insertions(+)
 
-Cheers,
-Chris.
+-- 
+2.50.0
+
 
