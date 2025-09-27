@@ -1,58 +1,78 @@
-Return-Path: <netfilter-devel+bounces-8949-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-8951-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEFB4BA5DF6
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Sep 2025 12:47:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C541CBA5F93
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Sep 2025 15:21:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF5F27B256E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Sep 2025 10:46:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8353317DE41
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Sep 2025 13:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FC62D94AA;
-	Sat, 27 Sep 2025 10:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A687527874F;
+	Sat, 27 Sep 2025 13:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=truschnigg.info header.i=@truschnigg.info header.b="RP75R9/d"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from truschnigg.info (truschnigg.info [78.41.115.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F136D1A7
-	for <netfilter-devel@vger.kernel.org>; Sat, 27 Sep 2025 10:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D8B1A3166
+	for <netfilter-devel@vger.kernel.org>; Sat, 27 Sep 2025 13:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.41.115.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758970067; cv=none; b=ImmtI2XqzWpN49qlqKTuwu82H4zNnaHVonfMzDm42N5oQSZ1NZbIsPRWLuIqMTOiXkyYCM7c3ubxueteGn65w0c6XztYyRs/UAOEQJJJbrrBZHXRsQ9YqI3CmulqUCQ3OxHh07CWcsUtjchOIuYaBo8Xid0WcnEsxDW58ZQh+mg=
+	t=1758979282; cv=none; b=RzLWh+fFpV7Gw5pqUvcQP2fAzfaGEfJxBjdYXlIaPOzRsEB7Ip97C8YNm9ltu5pm7FbEh1X2KS+c6oiUQCFCI9DTurshr0Gd1IVFBGR8eBt1woxR379M9CZnAGGnwscnplAcX58PtYY1VznRuJvVTGCOIFvuCSOJonGak0YTgsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758970067; c=relaxed/simple;
-	bh=P1RVv0+kqVqYPsf64XH+bNoV11gPGUz+iLtAHC9Dn14=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zl4ryVGfDW0BZsgHa2E4DxvHA8vKT2yfs+JpzjxFxRPwkKm78qlKG62Xcnw4lpevenGLqj/h7I4mfT23VSSbNHHNSvU3GGbgfaxeThMwUfw89ddqJvpFDi2EofOp5dfG9YR81qLGht8fIrFOlRK1ZFOkPk7cHe9IQFgpstimtIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id F25CA605E6; Sat, 27 Sep 2025 12:47:42 +0200 (CEST)
-Date: Sat, 27 Sep 2025 12:47:27 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [TEST] nf_nat_edemux.sh flakes
-Message-ID: <aNfAv4Nkq_j9FlJS@strlen.de>
-References: <20250926163318.40d1a502@kernel.org>
+	s=arc-20240116; t=1758979282; c=relaxed/simple;
+	bh=IPH0SUop20bPv118CFwiInwZv5t69ES1+g0bIAwXAko=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VnDUsqlN15K4mE84nkgQdusLn/4ojEL5tAWK/aCq6fk6HCk5WYtw/m7WfaAwN2L4eDvvXnRGVARF+GcaoKQ1xRnNu0iWWHirNf3TkFQkHYoKNaHn6666mNriUdBluNFbhZ+dp+NDgRi4VXEmUS6XWTVBMkbGbCWQRNcixMpy6bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=truschnigg.info; spf=pass smtp.mailfrom=truschnigg.info; dkim=pass (2048-bit key) header.d=truschnigg.info header.i=@truschnigg.info header.b=RP75R9/d; arc=none smtp.client-ip=78.41.115.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=truschnigg.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=truschnigg.info
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=truschnigg.info;
+	s=m22; t=1758978912;
+	bh=IPH0SUop20bPv118CFwiInwZv5t69ES1+g0bIAwXAko=;
+	h=From:To:Subject:Date:Reply-To:From;
+	b=RP75R9/dKrYGHu4QkIosQxMx7yCEEK6AO4QCa175eDKiZzXRW6MPz4/6CipKHSCEb
+	 qi27fr1eszFtqvAXIj8/tpK2KjSOII28gt4Q02+NYngUs9YWSqNTxx8PI3ldXLMd0v
+	 wjqvfsWkxKMXAOw5w3+urH2PFrVJ+E9+/qj2YD5G2XH5uZjf5kLZ3rdBZpWrgxkoR7
+	 sAXbKBczIIoV9azxEzEvF9YY+zKZg8sfOnK+od+5ODZSCJSCqmtX86avGW9vPTP0x6
+	 ktve01ptqQI9E+8qfBpnrGkIhnvzx2/ou/4nGl4WoHhpyETLAGgZ/fUaoBE6RwATdC
+	 xGTzdBF8NUL5A==
+Received: from ryzealot.forensik.justiz.gv.at (unknown [IPv6:2a02:1748:fafe:cf3f:aea0:d9c0:c637:21a1])
+	by truschnigg.info (Postfix) with ESMTPSA id 56E313F2B6
+	for <netfilter-devel@vger.kernel.org>; Sat, 27 Sep 2025 13:15:12 +0000 (UTC)
+From: Johannes Truschnigg <johannes@truschnigg.info>
+To: netfilter-devel@vger.kernel.org
+Subject: ebtables-save: Do string processing in perl instead of shell
+Date: Sat, 27 Sep 2025 15:00:38 +0200
+Message-ID: <20250927131421.24756-2-johannes@truschnigg.info>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250926163318.40d1a502@kernel.org>
+Reply-To: Johannes Truschnigg <johannes@truschnigg.info>
+Content-Transfer-Encoding: 8bit
 
-Jakub Kicinski <kuba@kernel.org> wrote:
-> nf_nat_edemux.sh started flaking in NIPA quite a bit more around a week ago.
-> 
-> https://netdev.bots.linux.dev/contest.html?pass=0&test=nf-nat-edemux-sh&ld_cnt=400
 
-Weird, I don't recall changes in nat engine.
-I'll have a look sometime next week.
+I realize ebtables is kind of in a deep slumber, but maybe you still
+want to consider merging this small improvement.
+
+The other day I spent some time debugging a system that relies on
+ebtables and will probably keep doing so for the forseeable future
+(Proxmox PVE).
+
+Its cluster config sync mechanism spawns ebtables-save in a loop each
+few seconds, and the existing code (that superfluously forks to execute
+sh, grep, cut, and sed...) annoyingly garbled execsnoop output for me,
+so I decided to scratch that particular itch.
+
+Thanks for your your consideration, and for all the good stuff in the
+netfilter ecosystem! :)
+
+- Johannes
 
