@@ -1,120 +1,144 @@
-Return-Path: <netfilter-devel+bounces-9151-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9153-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00203BCED06
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Oct 2025 02:29:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE92BCED21
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Oct 2025 02:36:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2213A19E0741
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Oct 2025 00:30:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E44189F16D
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Oct 2025 00:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C93317BA1;
-	Sat, 11 Oct 2025 00:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF8F1CAB3;
+	Sat, 11 Oct 2025 00:36:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from poodle.tulip.relay.mailchannels.net (poodle.tulip.relay.mailchannels.net [23.83.218.249])
+Received: from dog.elm.relay.mailchannels.net (dog.elm.relay.mailchannels.net [23.83.212.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A261548C
-	for <netfilter-devel@vger.kernel.org>; Sat, 11 Oct 2025 00:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25737225D6
+	for <netfilter-devel@vger.kernel.org>; Sat, 11 Oct 2025 00:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.212.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760142588; cv=pass; b=d2JbM3bVtCLya359Bv2qllzgwBe33jyxOtAvjunMk5JxOk+FXciQqSX6DKKqy9Vwni1ehtNJaPoyaqhnZUzyie0IEE7T5z1az6f3DpCQeEcowQXHivrJxa1Rjuxd5gqWjxR+z70Nb2UCL3YYS62VHlipdcPDa9NyCG6l8k7HH/4=
+	t=1760142987; cv=pass; b=aBr6049Lo2gtTsk5cMjQYJpJlwjvS0cZkFF58RjTFh2SPZr4AqiMOzRSE6q6u7z7ftjXWANYDqWvpumzJDA/uvUDXxtI7nPIk1MEjSap6dgZ+xv0tDEUUt79L3KsBWpglIXOD6246ju2Upg7vLLuwixp6DCxDoO2oGDN5y2qwnc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760142588; c=relaxed/simple;
-	bh=7wxu3r5kXuECr89uDnWEu4p3joL4rayi3WB3QKD/YTs=;
+	s=arc-20240116; t=1760142987; c=relaxed/simple;
+	bh=luYsLgUtNyb9TJ+Vu/GZ9RMrLIf3641EJzNWR9g4kkI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KqOXT0wAR08Nxb4DqmNd3qdoB9o2+MewvERd5EwnrSEs1SHafyVFh6KdutwPmCBLlqNwjE/9/jZPbeDnqxRqohaRlUDCgbOiYWU3Bfbe6UXgTXWW01ZG6Yrb1BGgoId/Ogp+5Ae+CAD5Dm3OI+hvfKVo4i5TewtvM+Xoy9yh6/I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.249
+	 MIME-Version:Content-Type; b=gFG4Iu0SCq1QW5stXUkaY4f2dH+Ki3gmIuWBtcN2HDlANgv9OQ9QO4HhGQ3AOAChsH70xevO/O9yL2QzdRXF38ZBtK7QJtY1Q9omvQSFgAzD+1L4syFVD40z4v6DStjCiogaaoGdX1jbpkPPWpZr4rqySr4rF5chPpzZiYiS3Yw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.212.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 88EDA8E2257;
-	Sat, 11 Oct 2025 00:29:40 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (trex-green-7.trex.outbound.svc.cluster.local [100.113.157.12])
+	by relay.mailchannels.net (Postfix) with ESMTP id 2E061100D2C;
+	Sat, 11 Oct 2025 00:29:38 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-4.trex.outbound.svc.cluster.local [100.117.6.49])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id A2F5C8E22AB;
-	Sat, 11 Oct 2025 00:29:35 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1760142576; a=rsa-sha256;
+	by relay.mailchannels.net (Postfix) with ESMTPA id 6837D100EC0;
+	Sat, 11 Oct 2025 00:29:37 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1760142578; a=rsa-sha256;
 	cv=none;
-	b=GPlU7JP774ugI5ISRibCr0ROlgxG4NWaESb8KiiNpI8kgci/bZjcpcwqxW7wfp02ODiwWG
-	dMouv6gm9N0exv0bGv6UF6bMQ0i78OsXbo2wmMoFznU7AfqpTq9cNz9QBvuQuLTEBJ2uIN
-	+XEo3UmMSTzSGx/oBCjtQxmCaVKNzuYK5SKuK4lHz/zRJuJpg+3P1ZA8LApFfouHhmoS4b
-	raNEekrt9VuWXWfIy/OYcBY1e3kmXQY8ERb5n6nvM5/PQOmx4/7erljVcWwl1ad8lhG47W
-	ZiHf8EaLgdEiWPvkq2TKOB8E7+giPmuda/AraEN009Z93/Z332bJdJQ6DPHhKA==
+	b=nOO42x6Tl9C+O0uPSc9w7K8tRQbVCI9w+/qFHhv40ggfayo2A1/dCRkDdyis3KpXSSyVCk
+	00nSkZqKoeaIJjXNYpwe07k5yVef2Din2yScKYDRBnQYlKOt7tR1mMRigK9mZGB63Vt3m7
+	AfJAfH0iz5EqAkNTQ3alnWMaIG2wts03Soz/H2B106/qtEINHZyQN8KKyLzikekxdMpgZZ
+	RUvSOxbp48zr8ckZv/GX/B1lUTqur7FenxAuHsd4rfDQyoUgMTZaWsHPLGqXcwrw8gKSWq
+	hVcc78MDyJsnnIW5Z8yZL3gTfAFkmryOHKtgawbKvOiNbnUbeEpadcoq0jTOuQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-	s=arc-2022; t=1760142576;
+	s=arc-2022; t=1760142578;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7wxu3r5kXuECr89uDnWEu4p3joL4rayi3WB3QKD/YTs=;
-	b=pBJZkS/iXSlP0pXDAMpgm1CSaeeCD+M11M95vOytAmqKXLoGCD7vIbXW70vZwpXZNt2sdk
-	oZGhqiQWzlJAWHa/j0Imov+nN3kZzoN7buci0yzaZoo67Z/Cir2rCirLSyi3j2cYhD9vyn
-	KkPoKR1RMbmwQ24keRC0JDC/K8d4LMUy7G07Hs3WRBw7w7kDJ2lSh4u2Ll2dOAY+2bu324
-	sX5nMfZA0hwBB4ZB3EBdyV/GmplNjw6hbUkAnrdAgro/WUwLdSabEW2q6w5Z/oyfDf1QdJ
-	/iEr4xgjhKIPlPZqC92bmxyEtohnct79yXh7Bn+3VmOiSBr7i1cBraP+cZzMCA==
+	bh=cZ6MyydypRwNZ45iQ7uKuCZOM4lvL7j2HuU4FJEC6+s=;
+	b=MOt2aEVcNE6KPE9RY+jESe8osk+teNlo9NjQfKvH5QZWGuKwsbvz687lIedhkfbi0MpwCw
+	3y2UwETUr+8A9hp+zkMpFq0RIXqZnGc+iyOus1+xuOhwxwHp0sPZhpHVVQJHIiI+hpM08A
+	uWvZmCWFc26frmZZNIBDbrHC9nLAIeOelDRNYpdwKDLVHGs7GCLORxph4cAz02TXjwvmG9
+	cvprjaj2Yo5jhB3H4PBP0eN+KUv6aIQINffbQ6fI8B2DwixTDXnJprarh80DuaGUpDId6h
+	RYoeQMZap2nbK1PbKjQsxwkmQgVymZmRBO88nFmBFmDrd2agcwU7rSSoJ51jNA==
 ARC-Authentication-Results: i=1;
-	rspamd-668c7f7ff9-7gqf2;
+	rspamd-668c7f7ff9-dj9kz;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
+X-MC-Copy: stored-urls
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Tank-Tart: 3685d25b74fc4f0d_1760142580461_250122091
-X-MC-Loop-Signature: 1760142580461:4220186127
-X-MC-Ingress-Time: 1760142580461
+X-Supply-Print: 6752d462000b6291_1760142578098_3275075740
+X-MC-Loop-Signature: 1760142578098:3510100299
+X-MC-Ingress-Time: 1760142578098
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.113.157.12 (trex/7.1.3);
-	Sat, 11 Oct 2025 00:29:40 +0000
-Received: from [212.104.214.84] (port=15067 helo=heisenberg.scientia.org)
+	by 100.117.6.49 (trex/7.1.3);
+	Sat, 11 Oct 2025 00:29:38 +0000
+Received: from [212.104.214.84] (port=3908 helo=heisenberg.scientia.org)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <calestyo@scientia.org>)
-	id 1v7NUO-00000009bur-0dy3;
-	Sat, 11 Oct 2025 00:29:33 +0000
+	id 1v7NUO-00000009bus-0ccJ;
+	Sat, 11 Oct 2025 00:29:35 +0000
 Received: by heisenberg.scientia.org (Postfix, from userid 1000)
-	id 84B6858D12C4; Sat, 11 Oct 2025 02:29:32 +0200 (CEST)
+	id 8861B58D12C6; Sat, 11 Oct 2025 02:29:32 +0200 (CEST)
 From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de,
 	pablo@netfilter.org
-Subject: [PATCH v2 0/7] doc: miscellaneous improvements
-Date: Sat, 11 Oct 2025 02:23:56 +0200
-Message-ID: <20251011002928.262644-1-mail@christoph.anton.mitterer.name>
+Subject: [PATCH v2 1/7] doc: clarify evaluation of chains
+Date: Sat, 11 Oct 2025 02:23:57 +0200
+Message-ID: <20251011002928.262644-2-mail@christoph.anton.mitterer.name>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <6bb455009ebd3a2fe17581dfa74addc9186f33ea.camel@scientia.org>
+In-Reply-To: <20251011002928.262644-1-mail@christoph.anton.mitterer.name>
 References: <6bb455009ebd3a2fe17581dfa74addc9186f33ea.camel@scientia.org>
+ <20251011002928.262644-1-mail@christoph.anton.mitterer.name>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AuthUser: calestyo@scientia.org
 
-Hey.
+In particular:
+- Mention that grouping of chains in tables is irrelevant to the evaluation
+  order.
+- Clarify that priorities only define the ordering of chains per hook.
+- Improved potentially ambiguous wording “lower priority values have precedence
+  over higher ones”, which could be mistaken as that rules from lower priority
+  chains might “win” over such from higher ones (which is however only the case
+  if they drop/reject packets).
+  The new wording merely describes which chains are evaluated first, implicitly
+  referring the question which verdict “wins” to the section where verdicts are
+  described, and also should work when lower priority chains mangle packets (in
+  which case they might actually be considered as having “precedence”).
 
-This is v2 of the series.
+Link: https://lore.kernel.org/netfilter-devel/3c7ddca7029fa04baa2402d895f3a594a6480a3a.camel@scientia.org/T/#t
+Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
+---
+ doc/nft.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks to Florian for his review and helpful comments on v1. Given you've made
-significant contributions I'd be happy to add your Signed-off-by to the commits,
-if desired so.
-
-I have taken most of your comments into account, for those where I didn't (yet)
-I've explained so in the mails I've sent a bit earlier.
-Of course if you still think that something should be changed, just tell. :-)
-
-Also in these mails were a few further questions, which someone can hopefully
-answer, so most likely there'll be a v3 of this series (to the least).
-
-Thanks and best wishes,
-Chris.
+diff --git a/doc/nft.txt b/doc/nft.txt
+index 87129819..88c08618 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -453,8 +453,10 @@ interface specified in the *device* parameter.
+ 
+ The *priority* parameter accepts a signed integer value or a standard priority
+ name which specifies the order in which chains with the same *hook* value are
+-traversed. The ordering is ascending, i.e. lower priority values have precedence
+-over higher ones.
++traversed (regardless of the table to which they belong). The ordering is
++ascending, i.e. per hook, chains with lower priority values are evaluated before
++such with higher ones. The ordering of any with the same priority value is
++undefined.
+ 
+ With *nat* type chains, there's a lower excluding limit of -200 for *priority*
+ values, because conntrack hooks at this priority and NAT requires it.
+-- 
+2.51.0
 
 
