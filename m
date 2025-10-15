@@ -1,47 +1,66 @@
-Return-Path: <netfilter-devel+bounces-9206-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9208-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D6BBDEC56
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Oct 2025 15:32:48 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6FDBE0A32
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Oct 2025 22:32:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A3D63C0E3E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Oct 2025 13:32:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4E00E4E376E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Oct 2025 20:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FE42236E9;
-	Wed, 15 Oct 2025 13:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1DA30103C;
+	Wed, 15 Oct 2025 20:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Yl9oyvQE"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909E118FDBD;
-	Wed, 15 Oct 2025 13:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1253741C71
+	for <netfilter-devel@vger.kernel.org>; Wed, 15 Oct 2025 20:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760535165; cv=none; b=aqyJC4iLgSDtY0Y3lEijC6/8lhMipdLnH1dDqhnVYPYqiY8jkDPrvAq9YOiv0JTh3wd+UtjpMZLaggDg9jxIDiQ1mVbjD2xIsF6qweKbVzg+6Bft+Pl/t14WYUqRVJEZ/pqx2vZ59pJWRDiRFBUdyTvkY8D5T/2FVJN+2lq7dng=
+	t=1760560352; cv=none; b=p/OHPhFhB+mNTHT+mebk26KAMM76AnqH5B4HRH5xsHkqvj9TNyNnq62mGtUt7X3Wblpf+0wl7PIICoMg/RQKL8S8yKiY8x/6RgXS5UrfWpXT39dXuzQ1sINjpPKaKsuoLN+dz3za4aTKydAANdwJ8G6SQJ+S3RnAUlclFJU7M/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760535165; c=relaxed/simple;
-	bh=1BsLPLiMHPjgSqzewUxFT8Vz1eESX/i1E7QgjO2YW6Q=;
+	s=arc-20240116; t=1760560352; c=relaxed/simple;
+	bh=6uPde6Sx9N+mTLVMpOwRa4gdrP6pLnYvxBu8HbuG9MU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uBPmp/J7Nis+jPDvT4Rnr6GXH5bTRlSioDRE4ZwPg9thKRZTe/14PKf+i9carAW/T5lnXckGFjelvlPICHRg2bTEBYUjH42Y78ZHscLDvfKKeg3wkVl7CSY3vCkflpYCwdJGVVIxWUnJDwe0A6OqxyWMA68T3t5psxh4vl/OyfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 2ECBD60186; Wed, 15 Oct 2025 15:32:40 +0200 (CEST)
-Date: Wed, 15 Oct 2025 15:32:39 +0200
-From: Florian Westphal <fw@strlen.de>
-To: avimalin@gmail.com
-Cc: vimal.agrawal@sophos.com, linux-kernel@vger.kernel.org,
-	pablo@netfilter.org, netfilter-devel@vger.kernel.org,
-	anirudh.gupta@sophos.com
-Subject: Re: [PATCH v3] nf_conntrack: sysctl: expose gc worker scan interval
- via sysctl
-Message-ID: <aO-id5W6Tr7frdHN@strlen.de>
-References: <20250430071140.GA29525@breakpoint.cc>
- <20250430072810.63169-1-vimal.agrawal@sophos.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NBhQfZZE78t1NegzhnIW1uTh4l2P4C+flE1EmhFUU6+Si8pO14Y0lU4+JlfXVAYouUjIbKrQ/C8ZJeEalt2Nm6jVatJb+q6cCb2QqhtpKtgK9N1m39bf3F7INQrpZcdJrvot/rpHlX/4ZHJzMXyDyurODKSAOkeVcQ9xkmz98ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Yl9oyvQE; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=LLKbCXQNgHrmpAerMBrxBSuScl6zDl1iGmhqgeXKL0o=; b=Yl9oyvQEr9554hLSr0i7UBrrFE
+	z7kqprUvih2xP46nBStkcf33Cqy/tIuZWbms37z0OOgVliUvHh1z7lRMknFggnp9eShZR7YAPr+Aw
+	9OS3cKs9gVDX95gPMb4oXh6mq37u/F5QtzB5RXoizGjjVoonuPf5JO5ZDTRuQiUtm62gH6UXIlfHw
+	T5Y69mpfGM+QDj6Zm/R8sQ41sHJBNJutc2AWH0Eo4kAj3IORehrw2t0pynSNSNofPun8OLMq2DoEW
+	XftlRu1ZiySVVYxkUsKuGvWD5T6x1DIMZPGZElvk3dh6u6ELqi7cyug4uDB3mE3rqiSz+0DxmPWRE
+	/nStUaRg==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1v97nj-000000000AF-3pUk;
+	Wed, 15 Oct 2025 22:08:48 +0200
+Date: Wed, 15 Oct 2025 22:08:47 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: Re: [libnftnl PATCH] utils: Drop asterisk from end of
+ NFTA_DEVICE_PREFIX strings
+Message-ID: <aO__T5yX3xkD0djO@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20251007155935.1324-1-phil@nwl.cc>
+ <aOWJLfLGdbT5eDST@calendula>
+ <aOWOwaCWV1SXpdg6@orbyte.nwl.cc>
+ <aO7PyNgUnGxg7qHt@calendula>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -50,174 +69,41 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250430072810.63169-1-vimal.agrawal@sophos.com>
+In-Reply-To: <aO7PyNgUnGxg7qHt@calendula>
 
-avimalin@gmail.com <avimalin@gmail.com> wrote:
-> Default initial gc scan interval of 60 secs is too long for system
-> with low number of conntracks causing delay in conntrack deletion.
-> It is affecting userspace which are replying on timely arrival of
-> conntrack destroy event. So it is better that this is controlled
-> through sysctl
+On Wed, Oct 15, 2025 at 12:33:44AM +0200, Pablo Neira Ayuso wrote:
+> On Wed, Oct 08, 2025 at 12:05:53AM +0200, Phil Sutter wrote:
+> > Hi Pablo,
+> > 
+> > On Tue, Oct 07, 2025 at 11:42:05PM +0200, Pablo Neira Ayuso wrote:
+> > > On Tue, Oct 07, 2025 at 05:58:26PM +0200, Phil Sutter wrote:
+> > > > The asterisk left in place becomes part of the prefix by accident and is thus
+> > > > both included when matching interface names as well as dumped back to user
+> > > > space.
+> > > > 
+> > > > Fixes: f30eae26d813e ("utils: Add helpers for interface name wildcards")
+> > > > Signed-off-by: Phil Sutter <phil@nwl.cc>
+> > > > ---
+> > > > This code is currently unused by nftables at least since it builds the
+> > > > netlink message itself.
+> > > 
+> > > This was moved to nftables, and no release was made to include it?
+> > > Would it possible to remove it from libnftnl?
+> > 
+> > The code layout is a bit inconsistent in this regard: While nftables
+> > does the serialization itself (to record offsets for extack), it relies
+> > upon libnftnl to perform the deserialization. Therefore parts of the
+> > wildcard interface feature will have to be spread over the two projects.
+> > And since this is the case, I decided to keep libnftnl's serialization
+> > code "maintained" in this regard, i.e. enable it to perform the netlink
+> > message building for wildcard interface names as well even though there
+> > is no known user for it.
+> > 
+> > I'd prefer to keep it, also because I see us eventually returning to
+> > libnftnl's serialization code once there is a mechanism to extract the
+> > offsets for extack. You have the last word though (as always)! :)
+> 
+> LGTM, thanks for explaining.
 
-Patch is fine.  I do wonder however if there are alternatives.
-Rather than expose the gc interval (gc worker is internal implementation
-detail, e.g. we could move back to per-ct timers theoretically).
-
-What about something like this (untested):
-
-[RFC] netfilter: conntrack: expedite evictions when userspace is subscribed to destroy events
-
-Track number of soon-to-expire conntracks.
-If enough entries are likely to expire within 1/2/4/8/16/32 second buckets,
-then reschedule earlier than what the normal next value would be.
-
-Do this only when userspace is listening to destroy event notifcations
-via ctnetlink, otherwise its not relevant when a conntrack entry is
-released.
-
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 210792a2275d..22274193b093 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -52,6 +52,8 @@
- #include <net/netns/hash.h>
- #include <net/ip.h>
- 
-+#include <uapi/linux/netfilter/nfnetlink.h>
-+
- #include "nf_internals.h"
- 
- __cacheline_aligned_in_smp spinlock_t nf_conntrack_locks[CONNTRACK_LOCKS];
-@@ -63,12 +65,15 @@ EXPORT_SYMBOL_GPL(nf_conntrack_expect_lock);
- struct hlist_nulls_head *nf_conntrack_hash __read_mostly;
- EXPORT_SYMBOL_GPL(nf_conntrack_hash);
- 
-+#define GC_HORIZON_BUCKETS	6
-+
- struct conntrack_gc_work {
- 	struct delayed_work	dwork;
- 	u32			next_bucket;
- 	u32			avg_timeout;
- 	u32			count;
- 	u32			start_time;
-+	u8			horizon_count[GC_HORIZON_BUCKETS];
- 	bool			exiting;
- 	bool			early_drop;
- };
-@@ -96,6 +101,10 @@ static DEFINE_MUTEX(nf_conntrack_mutex);
- #define GC_SCAN_MAX_DURATION	msecs_to_jiffies(10)
- #define GC_SCAN_EXPIRED_MAX	(64000u / HZ)
- 
-+/* schedule worker earlier if this many entries are about to expire
-+ * in the near future */
-+#define GC_SCAN_EXPEDITED	min(255, (GC_HORIZON_BUCKETS * GC_SCAN_EXPIRED_MAX))
-+
- #define MIN_CHAINLEN	50u
- #define MAX_CHAINLEN	(80u - MIN_CHAINLEN)
- 
-@@ -1508,6 +1517,71 @@ static bool gc_worker_can_early_drop(const struct nf_conn *ct)
- 	return false;
- }
- 
-+static unsigned int gc_horizon_max(unsigned int i)
-+{
-+	return (1 << i) * HZ;
-+}
-+
-+static void gc_horizon_account(struct conntrack_gc_work *gc, unsigned long expires)
-+{
-+	int i = ARRAY_SIZE(gc->horizon_count);
-+
-+	BUILD_BUG_ON(GC_SCAN_EXPEDITED > 255);
-+
-+	for (i = 0; i < ARRAY_SIZE(gc->horizon_count); i++) {
-+		unsigned int max = gc_horizon_max(i);
-+
-+		if (gc->horizon_count[i] >= GC_SCAN_EXPEDITED)
-+			return;
-+
-+		if (expires <= max) {
-+			gc->horizon_count[i]++;
-+			return;
-+		}
-+	}
-+}
-+
-+static bool nf_ctnetlink_has_listeners(void)
-+{
-+	u8 v = READ_ONCE(nf_ctnetlink_has_listener);
-+
-+	return v & (1 << NFNLGRP_CONNTRACK_DESTROY);
-+}
-+
-+/* schedule worker early if we have ctnetlink listeners that subscribed
-+ * to CONNTRACK_DESTROY events so they receive more timely notifications.
-+ *
-+ * ->horizon_count[] contains the number of conntrack entries that are
-+ *  about the expire in 1, 2, 4, 8, 16 and 32 seconds.
-+ */
-+static noinline unsigned long
-+gc_horizon_next_run(const struct conntrack_gc_work *gc_work,
-+		    unsigned long next_run, unsigned long delta_time)
-+{
-+	unsigned int count = 0;
-+	unsigned int i;
-+
-+	if (next_run <= (unsigned long)delta_time)
-+		return 1;
-+
-+	next_run -= delta_time;
-+
-+	if (!nf_ctnetlink_has_listeners())
-+		return next_run;
-+
-+	for (i = 0; i < ARRAY_SIZE(gc_work->horizon_count); i++) {
-+		count += gc_work->horizon_count[i];
-+
-+		if (count >= GC_SCAN_EXPEDITED) {
-+			unsigned long new_next_run = gc_horizon_max(i);
-+
-+			return min(new_next_run, next_run);
-+		}
-+	}
-+
-+	return next_run;
-+}
-+
- static void gc_worker(struct work_struct *work)
- {
- 	unsigned int i, hashsz;
-@@ -1526,6 +1600,7 @@ static void gc_worker(struct work_struct *work)
- 		gc_work->avg_timeout = GC_SCAN_INTERVAL_INIT;
- 		gc_work->count = GC_SCAN_INITIAL_COUNT;
- 		gc_work->start_time = start_time;
-+		memset(gc_work->horizon_count, 0, sizeof(gc_work->horizon_count));
- 	}
- 
- 	next_run = gc_work->avg_timeout;
-@@ -1575,7 +1650,11 @@ static void gc_worker(struct work_struct *work)
- 				continue;
- 			}
- 
--			expires = clamp(nf_ct_expires(tmp), GC_SCAN_INTERVAL_MIN, GC_SCAN_INTERVAL_CLAMP);
-+			expires = nf_ct_expires(tmp);
-+
-+			gc_horizon_account(gc_work, expires);
-+
-+			expires = clamp(expires, GC_SCAN_INTERVAL_MIN, GC_SCAN_INTERVAL_CLAMP);
- 			expires = (expires - (long)next_run) / ++count;
- 			next_run += expires;
- 			net = nf_ct_net(tmp);
-@@ -1633,10 +1712,7 @@ static void gc_worker(struct work_struct *work)
- 	next_run = clamp(next_run, GC_SCAN_INTERVAL_MIN, GC_SCAN_INTERVAL_MAX);
- 
- 	delta_time = max_t(s32, nfct_time_stamp - gc_work->start_time, 1);
--	if (next_run > (unsigned long)delta_time)
--		next_run -= delta_time;
--	else
--		next_run = 1;
-+	next_run = gc_horizon_next_run(gc_work, next_run, delta_time);
- 
- early_exit:
- 	if (gc_work->exiting)
+Patch applied, thanks!
 
