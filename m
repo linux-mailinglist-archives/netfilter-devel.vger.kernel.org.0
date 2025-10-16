@@ -1,559 +1,473 @@
-Return-Path: <netfilter-devel+bounces-9207-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9209-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372B5BE09FB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Oct 2025 22:24:51 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41472BE2F25
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Oct 2025 12:53:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E3F719C5386
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Oct 2025 20:25:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B3C59507A47
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Oct 2025 10:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775F82C158F;
-	Wed, 15 Oct 2025 20:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413C6343216;
+	Thu, 16 Oct 2025 10:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Pp+/+mP8"
+	dkim=pass (2048-bit key) header.d=vyos.io header.i=@vyos.io header.b="uQ91b1ik"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002311624D5
-	for <netfilter-devel@vger.kernel.org>; Wed, 15 Oct 2025 20:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94250328636
+	for <netfilter-devel@vger.kernel.org>; Thu, 16 Oct 2025 10:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760559887; cv=none; b=nROYNgOEcQCRJ0uRG4ZLD8riE9zE/Td2pYTLobj1Ae9rdBO2TUUfEDpuzszlamc141wFhQAmJViZnfYvLFMK0PLskxQUQ7nVluBqqT11Xt4NU0quyz7nAa+QWpzbUJ/tS37zDFGAlWhFxOi0PtWMswv9oj+6k6iAtvoumFwi+HM=
+	t=1760611690; cv=none; b=naz91ItdEyR+3SNUQxyogiHgX8pwRXGC16479khtvteHoTqr5j3+d04pc3OSMfcxanGhUJWxDg1FaVu0EETImpBZeHm01km90+cslELpyN5h0XaqHViyWv5PiTDH60Iwu14sjNf58NtCv0SR8Vt+DLoEWQV+foxdkqVaQBnFWJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760559887; c=relaxed/simple;
-	bh=8DpwtWiXbIn3e5TApudJBNyc6/OTfHMekAFlV0Y5vT8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EK0H35H6eyR3EBI4bc+VxDXHCTpxSNZN6dBZFEBpqWtZX8S6Wp9sdtrCKEGFk1ZyyXS+Pn3Kk/R5/fmyCSYyQcAYoVd3fAoLVgiXT9jDEX2+y45LkwInnO5iA3YYQmBhjc/o5p6MDg2VoqCkLi01BUg+KHYVYuMn/wPFLEE5GBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Pp+/+mP8; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Gm6dxBfAMxprdIZoF+6y/Y4mDmZdK3X33368QybQGdM=; b=Pp+/+mP8i3dHwd9UuFAnNrBG8o
-	YlQxY9qN4G9hK9u7z7i1ptSZwlpjcVE/N2Buw8+qVvxVQfd1/CisQNXNl10lVkoSh/uUEADEMFQCa
-	FMRrLJOgVyw+NcsdAxQJ3vahcjqeW47lfTSK/xx6R489rPUyna0tuFuWlfx6JxHBiCBDkV2KRs1xS
-	jkcqhmILeRFBBVK/qYF1OGLZyYXxX7qP7GrwZfjcYFye41hef8Zx6MyrpD8TRlgqgcn9tu55kjJzO
-	6GOHJFRmw8AA03cmn2DFJrePMAnCwgzf9q2G/J5W4c9tfKsc8aexqcSCXG1kV4cslIbSLRx5+RR5h
-	7VqAuzVw==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
-	(envelope-from <phil@nwl.cc>)
-	id 1v9837-0000000014y-3RSq;
-	Wed, 15 Oct 2025 22:24:41 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH] utils: Introduce nftnl_parse_str_attr()
-Date: Wed, 15 Oct 2025 22:24:36 +0200
-Message-ID: <20251015202436.17486-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1760611690; c=relaxed/simple;
+	bh=yFEsYiCogN+aow2kZWzorI6R4zVGJwnbnGGcQnCPf6E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iGsDY0hljQAv/FkpOwmVBqu2HJWCZ/nakmkbazNNACqa2DJZSj/jMB4NIts9Ngbb7hGh0BaOK6HIydgVI296Jjon0Obwg8y1cXBPq/xwyOziVBXQ0MDp468dBW2ms9Os5XcCfyE9jPgncR47D02lJeEoOjCZES1SifM6mycknf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vyos.io; spf=pass smtp.mailfrom=vyos.io; dkim=pass (2048-bit key) header.d=vyos.io header.i=@vyos.io header.b=uQ91b1ik; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vyos.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vyos.io
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3ee64bc6b90so398430f8f.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Oct 2025 03:48:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vyos.io; s=google; t=1760611686; x=1761216486; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vj2yUb8R3eX7RD7UoPcqhNO1Z4bWlgfrzVLfpWFTIbM=;
+        b=uQ91b1ikE4WTd2xbGpJQzsJWHaqMQx/MPJyNmslQytKypjAaG2BB7yVofq2WSZn2pu
+         +BF3UzskR5vefXIST+NOZo+V8tfVet3kmKUmPA5L8CLcOoqOlDBg/DzrNh/+paq7MFAA
+         mZUki3SCJMDVYMGbc0PShz2TXTi1mkmqOzMJyKbsBnvfEj92tIPqYqqVl2IUiVtvczWs
+         beA+z+AXorg9FLGz1Fawu6/zOLlpENI+zhrxmvmQjFbP69e0EWZgq5xU0Ma65pJK70go
+         pxRnDWk7EuBbLbmuxFKCSlMlgm4smN7lAq3fQW9SGwJC477K/a/+OKYYEZl8Lw0l5GkD
+         YHrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760611686; x=1761216486;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vj2yUb8R3eX7RD7UoPcqhNO1Z4bWlgfrzVLfpWFTIbM=;
+        b=P7vziKcL3q1WvwFFdMq8n1k/lMJnNGJWvuZVo8Oy0BP3S/8Kwuw42gK0Qa2GrG/xKj
+         x9SwxM+Rv2SgglyPeHNeHSxwZyMbnvsIiLYXGDk/bnjnmmz8ZPt8v8UhKh+sf91ITdMV
+         iVv21dtTF8mSCkGFdb96bBM2uQpC0Ekanf0Jz529w52UgV3P22FPViQ1XX7VBeScsh2Q
+         pzk9rntizlZB+C6oDVjZ5JVjFrTbamJ9+mAn2mgRir2qYdCbN1HNkJ0K/6xnPls81Z4F
+         2+If2rXwgY+zDKuHCQAC2ujFPY2a4iI73oITwOKTUWBM9soKBeipMmqsppRWgk7hAORL
+         0l/g==
+X-Forwarded-Encrypted: i=1; AJvYcCXAMsPcdJ1C8nb5Nyo5kgpoikP+0U2iUJv6h4Zlk7ZlDwkfHKcAWDFLPKRJXANBFhEVGSbmAXjfE880IoNn+oE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywlv3L7MymRT1wsbq518ksf0pqwnpRHBMesLu7TNogpIdJ278Lc
+	yDeDBofDuBunsRDXN3KVgameiJ2DrpoUkFf8yxae4FjtIMw0Pilrrcqh8UTl2UwB5FQ=
+X-Gm-Gg: ASbGnctFaP0c9VDCp9XD7F4Oyt8Kt8vks5bciiqfxpiCzeF83EuAYu7E8zG1EuvKm94
+	gj8DJQTxTcJQoowwzb9/UQSjLmxe9mk8Nu9sUr3l2O3UOjHlhYun4EamjPduITxtH+G453/2t+e
+	3hkEpGrUWKTGP5Nkshqpud6oRELTAuzoog1tVdio8M3UT79/x2LfC4cdryJaL6g50gM/GCcz01D
+	0ZQ1Mk1jDEQLpidz9WBOGBwJbsDEwCwN/+GrJbmEF8w8TXelI7mGZ+B6ki6u6fi0bUJZTPTaA6h
+	NXr4AheSitLKIUnqAJMy4PZa81Yucmg9NZ5ILPA0jPjEP810225YWX+q+NV6Ve5ETnbXN1+OP5T
+	umy1b6jhFAieEKlHJv2qphKLuyA5qk3XmR4OfANKmaKsN8iDxmzzFODDByLgsbv3Bvdcc0nRZET
+	Uh4d+znJ4hjwC5PSXfbwgG0YqXhgY/BqpqUBtAmwB9xHwQ/yfQ
+X-Google-Smtp-Source: AGHT+IGgaLPcwdWJH9Gy8ifJz8LWBEVC3gErvq1D1L4gZqOK9ngjbpyI1DEFb6w04ucdJmWpEr+g5w==
+X-Received: by 2002:a5d:5d11:0:b0:425:8502:f8c3 with SMTP id ffacd0b85a97d-42666ab95a3mr18043363f8f.1.1760611685676;
+        Thu, 16 Oct 2025 03:48:05 -0700 (PDT)
+Received: from VyOS.. (089144196114.atnat0005.highway.a1.net. [89.144.196.114])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ff84cbb7sm2729374f8f.23.2025.10.16.03.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Oct 2025 03:48:05 -0700 (PDT)
+From: Andrii Melnychenko <a.melnychenko@vyos.io>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de,
+	phil@nwl.cc
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/1] nf_conntrack_ftp: Added nfct_seqadj_ext_add().
+Date: Thu, 16 Oct 2025 12:48:00 +0200
+Message-ID: <20251016104802.567812-1-a.melnychenko@vyos.io>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-Wrap the common parsing of string attributes into a function. Apart from
-slightly reducing code size, this unifies callers in conditional freeing
-of the field in case it was set before (missing in twelve spots) and
-error checking for failing strdup()-calls (missing in four spots).
+There is an issue with FTP SNAT/DNAT. When the PASV/EPSV message is altered
+The sequence adjustment is required, and there is an issue that seqadj is
+not set up at that moment.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- include/utils.h         |  3 +++
- src/chain.c             | 33 +++++++++------------------------
- src/expr/dynset.c       | 12 +++++-------
- src/expr/flow_offload.c | 12 +++++-------
- src/expr/log.c          | 13 ++++---------
- src/expr/lookup.c       | 12 +++++-------
- src/expr/objref.c       | 18 ++++++++----------
- src/flowtable.c         | 24 ++++++++----------------
- src/object.c            | 14 ++++++--------
- src/rule.c              | 22 ++++++----------------
- src/set.c               | 22 ++++++----------------
- src/set_elem.c          | 38 +++++++++++++-------------------------
- src/table.c             | 11 +++--------
- src/trace.c             | 28 ++++++++++------------------
- src/utils.c             | 15 +++++++++++++++
- 15 files changed, 106 insertions(+), 171 deletions(-)
+The easiest way to reproduce this issue is with PASV mode.
+Topoloy:=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+```=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20
+ +-------------------+     +----------------------------------+=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+ | FTP: 192.168.13.2 | <-> | NAT: 192.168.13.3, 192.168.100.1 |=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+ +-------------------+     +----------------------------------+=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      |=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20
+                         +-----------------------+
+                         | Client: 192.168.100.2 |
+                         +-----------------------+
+```
 
-diff --git a/include/utils.h b/include/utils.h
-index 5a3379fb501e1..10492893e3a16 100644
---- a/include/utils.h
-+++ b/include/utils.h
-@@ -88,4 +88,7 @@ struct nlattr;
- void nftnl_attr_put_ifname(struct nlmsghdr *nlh, const char *ifname);
- char *nftnl_attr_get_ifname(const struct nlattr *attr);
- 
-+int nftnl_parse_str_attr(const struct nlattr *tb, int attr,
-+			 const char **field, uint32_t *flags);
-+
- #endif
-diff --git a/src/chain.c b/src/chain.c
-index 8396114439ff7..8433f7db41263 100644
---- a/src/chain.c
-+++ b/src/chain.c
-@@ -675,22 +675,12 @@ int nftnl_chain_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_chain *c)
- 	if (mnl_attr_parse(nlh, sizeof(*nfg), nftnl_chain_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_CHAIN_NAME]) {
--		if (c->flags & (1 << NFTNL_CHAIN_NAME))
--			xfree(c->name);
--		c->name = strdup(mnl_attr_get_str(tb[NFTA_CHAIN_NAME]));
--		if (!c->name)
--			return -1;
--		c->flags |= (1 << NFTNL_CHAIN_NAME);
--	}
--	if (tb[NFTA_CHAIN_TABLE]) {
--		if (c->flags & (1 << NFTNL_CHAIN_TABLE))
--			xfree(c->table);
--		c->table = strdup(mnl_attr_get_str(tb[NFTA_CHAIN_TABLE]));
--		if (!c->table)
--			return -1;
--		c->flags |= (1 << NFTNL_CHAIN_TABLE);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_CHAIN_NAME], NFTNL_CHAIN_NAME,
-+				 &c->name, &c->flags) < 0)
-+		return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_CHAIN_TABLE], NFTNL_CHAIN_TABLE,
-+				 &c->table, &c->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_CHAIN_HOOK]) {
- 		ret = nftnl_chain_parse_hook(tb[NFTA_CHAIN_HOOK], c);
- 		if (ret < 0)
-@@ -713,14 +703,9 @@ int nftnl_chain_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_chain *c)
- 		c->handle = be64toh(mnl_attr_get_u64(tb[NFTA_CHAIN_HANDLE]));
- 		c->flags |= (1 << NFTNL_CHAIN_HANDLE);
- 	}
--	if (tb[NFTA_CHAIN_TYPE]) {
--		if (c->flags & (1 << NFTNL_CHAIN_TYPE))
--			xfree(c->type);
--		c->type = strdup(mnl_attr_get_str(tb[NFTA_CHAIN_TYPE]));
--		if (!c->type)
--			return -1;
--		c->flags |= (1 << NFTNL_CHAIN_TYPE);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_CHAIN_TYPE], NFTNL_CHAIN_TYPE,
-+				 &c->type, &c->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_CHAIN_FLAGS]) {
- 		c->chain_flags = ntohl(mnl_attr_get_u32(tb[NFTA_CHAIN_FLAGS]));
- 		c->flags |= (1 << NFTNL_CHAIN_FLAGS);
-diff --git a/src/expr/dynset.c b/src/expr/dynset.c
-index 40f9136ab73a2..dc74fbbe75b3c 100644
---- a/src/expr/dynset.c
-+++ b/src/expr/dynset.c
-@@ -245,13 +245,11 @@ nftnl_expr_dynset_parse(struct nftnl_expr *e, struct nlattr *attr)
- 		dynset->timeout = be64toh(mnl_attr_get_u64(tb[NFTA_DYNSET_TIMEOUT]));
- 		e->flags |= (1 << NFTNL_EXPR_DYNSET_TIMEOUT);
- 	}
--	if (tb[NFTA_DYNSET_SET_NAME]) {
--		dynset->set_name =
--			strdup(mnl_attr_get_str(tb[NFTA_DYNSET_SET_NAME]));
--		if (!dynset->set_name)
--			return -1;
--		e->flags |= (1 << NFTNL_EXPR_DYNSET_SET_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_DYNSET_SET_NAME],
-+				 NFTNL_EXPR_DYNSET_SET_NAME,
-+				 (const char **)&dynset->set_name,
-+				 &e->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_DYNSET_SET_ID]) {
- 		dynset->set_id = ntohl(mnl_attr_get_u32(tb[NFTA_DYNSET_SET_ID]));
- 		e->flags |= (1 << NFTNL_EXPR_DYNSET_SET_ID);
-diff --git a/src/expr/flow_offload.c b/src/expr/flow_offload.c
-index 5f209a63fa960..ce22ec419a944 100644
---- a/src/expr/flow_offload.c
-+++ b/src/expr/flow_offload.c
-@@ -79,13 +79,11 @@ static int nftnl_expr_flow_parse(struct nftnl_expr *e, struct nlattr *attr)
- 	if (mnl_attr_parse_nested(attr, nftnl_expr_flow_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_FLOW_TABLE_NAME]) {
--		flow->table_name =
--			strdup(mnl_attr_get_str(tb[NFTA_FLOW_TABLE_NAME]));
--		if (!flow->table_name)
--			return -1;
--		e->flags |= (1 << NFTNL_EXPR_FLOW_TABLE_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_FLOW_TABLE_NAME],
-+				 NFTNL_EXPR_FLOW_TABLE_NAME,
-+				 (const char **)&flow->table_name,
-+				 &e->flags) < 0)
-+		return -1;
- 
- 	return ret;
- }
-diff --git a/src/expr/log.c b/src/expr/log.c
-index d4b53e6c744de..ead243799863c 100644
---- a/src/expr/log.c
-+++ b/src/expr/log.c
-@@ -147,15 +147,10 @@ nftnl_expr_log_parse(struct nftnl_expr *e, struct nlattr *attr)
- 	if (mnl_attr_parse_nested(attr, nftnl_expr_log_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_LOG_PREFIX]) {
--		if (log->prefix)
--			xfree(log->prefix);
--
--		log->prefix = strdup(mnl_attr_get_str(tb[NFTA_LOG_PREFIX]));
--		if (!log->prefix)
--			return -1;
--		e->flags |= (1 << NFTNL_EXPR_LOG_PREFIX);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_LOG_PREFIX],
-+				 NFTNL_EXPR_LOG_PREFIX,
-+				 &log->prefix, &e->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_LOG_GROUP]) {
- 		log->group = ntohs(mnl_attr_get_u16(tb[NFTA_LOG_GROUP]));
- 		e->flags |= (1 << NFTNL_EXPR_LOG_GROUP);
-diff --git a/src/expr/lookup.c b/src/expr/lookup.c
-index 7f85ecca008f5..4f76c5b71bb2b 100644
---- a/src/expr/lookup.c
-+++ b/src/expr/lookup.c
-@@ -141,13 +141,11 @@ nftnl_expr_lookup_parse(struct nftnl_expr *e, struct nlattr *attr)
- 		lookup->dreg = ntohl(mnl_attr_get_u32(tb[NFTA_LOOKUP_DREG]));
- 		e->flags |= (1 << NFTNL_EXPR_LOOKUP_DREG);
- 	}
--	if (tb[NFTA_LOOKUP_SET]) {
--		lookup->set_name =
--			strdup(mnl_attr_get_str(tb[NFTA_LOOKUP_SET]));
--		if (!lookup->set_name)
--			return -1;
--		e->flags |= (1 << NFTNL_EXPR_LOOKUP_SET);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_LOOKUP_SET],
-+				 NFTNL_EXPR_LOOKUP_SET,
-+				 (const char **)&lookup->set_name,
-+				 &e->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_LOOKUP_SET_ID]) {
- 		lookup->set_id =
- 			ntohl(mnl_attr_get_u32(tb[NFTA_LOOKUP_SET_ID]));
-diff --git a/src/expr/objref.c b/src/expr/objref.c
-index 5fe09c242ef48..1b27e94a6fa2c 100644
---- a/src/expr/objref.c
-+++ b/src/expr/objref.c
-@@ -144,21 +144,19 @@ static int nftnl_expr_objref_parse(struct nftnl_expr *e, struct nlattr *attr)
- 			ntohl(mnl_attr_get_u32(tb[NFTA_OBJREF_IMM_TYPE]));
- 		e->flags |= (1 << NFTNL_EXPR_OBJREF_IMM_TYPE);
- 	}
--	if (tb[NFTA_OBJREF_IMM_NAME]) {
--		objref->imm.name =
--			strdup(mnl_attr_get_str(tb[NFTA_OBJREF_IMM_NAME]));
--		e->flags |= (1 << NFTNL_EXPR_OBJREF_IMM_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_OBJREF_IMM_NAME],
-+				 NFTNL_EXPR_OBJREF_IMM_NAME,
-+				 &objref->imm.name, &e->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_OBJREF_SET_SREG]) {
- 		objref->set.sreg =
- 			ntohl(mnl_attr_get_u32(tb[NFTA_OBJREF_SET_SREG]));
- 		e->flags |= (1 << NFTNL_EXPR_OBJREF_SET_SREG);
- 	}
--	if (tb[NFTA_OBJREF_SET_NAME]) {
--		objref->set.name =
--			strdup(mnl_attr_get_str(tb[NFTA_OBJREF_SET_NAME]));
--		e->flags |= (1 << NFTNL_EXPR_OBJREF_SET_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_OBJREF_SET_NAME],
-+				 NFTNL_EXPR_OBJREF_SET_NAME,
-+				 &objref->set.name, &e->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_OBJREF_SET_ID]) {
- 		objref->set.id =
- 			ntohl(mnl_attr_get_u32(tb[NFTA_OBJREF_SET_ID]));
-diff --git a/src/flowtable.c b/src/flowtable.c
-index 59991d694f602..27af51c688745 100644
---- a/src/flowtable.c
-+++ b/src/flowtable.c
-@@ -408,22 +408,14 @@ int nftnl_flowtable_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_flowtab
- 	if (mnl_attr_parse(nlh, sizeof(*nfg), nftnl_flowtable_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_FLOWTABLE_NAME]) {
--		if (c->flags & (1 << NFTNL_FLOWTABLE_NAME))
--			xfree(c->name);
--		c->name = strdup(mnl_attr_get_str(tb[NFTA_FLOWTABLE_NAME]));
--		if (!c->name)
--			return -1;
--		c->flags |= (1 << NFTNL_FLOWTABLE_NAME);
--	}
--	if (tb[NFTA_FLOWTABLE_TABLE]) {
--		if (c->flags & (1 << NFTNL_FLOWTABLE_TABLE))
--			xfree(c->table);
--		c->table = strdup(mnl_attr_get_str(tb[NFTA_FLOWTABLE_TABLE]));
--		if (!c->table)
--			return -1;
--		c->flags |= (1 << NFTNL_FLOWTABLE_TABLE);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_FLOWTABLE_NAME],
-+				 NFTNL_FLOWTABLE_NAME,
-+				 &c->name, &c->flags) < 0)
-+		return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_FLOWTABLE_TABLE],
-+				 NFTNL_FLOWTABLE_TABLE,
-+				 &c->table, &c->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_FLOWTABLE_HOOK]) {
- 		ret = nftnl_flowtable_parse_hook(tb[NFTA_FLOWTABLE_HOOK], c);
- 		if (ret < 0)
-diff --git a/src/object.c b/src/object.c
-index 275a202e63081..3d358ccf051cb 100644
---- a/src/object.c
-+++ b/src/object.c
-@@ -344,14 +344,12 @@ int nftnl_obj_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_obj *obj)
- 	if (mnl_attr_parse(nlh, sizeof(*nfg), nftnl_obj_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_OBJ_TABLE]) {
--		obj->table = strdup(mnl_attr_get_str(tb[NFTA_OBJ_TABLE]));
--		obj->flags |= (1 << NFTNL_OBJ_TABLE);
--	}
--	if (tb[NFTA_OBJ_NAME]) {
--		obj->name = strdup(mnl_attr_get_str(tb[NFTA_OBJ_NAME]));
--		obj->flags |= (1 << NFTNL_OBJ_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_OBJ_TABLE], NFTNL_OBJ_TABLE,
-+				 &obj->table, &obj->flags) < 0)
-+		return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_OBJ_NAME], NFTNL_OBJ_NAME,
-+				 &obj->name, &obj->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_OBJ_TYPE]) {
- 		uint32_t type = ntohl(mnl_attr_get_u32(tb[NFTA_OBJ_TYPE]));
- 
-diff --git a/src/rule.c b/src/rule.c
-index 3948a74098fe7..cd3041e5a399a 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -431,22 +431,12 @@ int nftnl_rule_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_rule *r)
- 	if (mnl_attr_parse(nlh, sizeof(*nfg), nftnl_rule_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_RULE_TABLE]) {
--		if (r->flags & (1 << NFTNL_RULE_TABLE))
--			xfree(r->table);
--		r->table = strdup(mnl_attr_get_str(tb[NFTA_RULE_TABLE]));
--		if (!r->table)
--			return -1;
--		r->flags |= (1 << NFTNL_RULE_TABLE);
--	}
--	if (tb[NFTA_RULE_CHAIN]) {
--		if (r->flags & (1 << NFTNL_RULE_CHAIN))
--			xfree(r->chain);
--		r->chain = strdup(mnl_attr_get_str(tb[NFTA_RULE_CHAIN]));
--		if (!r->chain)
--			return -1;
--		r->flags |= (1 << NFTNL_RULE_CHAIN);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_RULE_TABLE], NFTNL_RULE_TABLE,
-+				 &r->table, &r->flags) < 0)
-+		return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_RULE_CHAIN], NFTNL_RULE_CHAIN,
-+				 &r->chain, &r->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_RULE_HANDLE]) {
- 		r->handle = be64toh(mnl_attr_get_u64(tb[NFTA_RULE_HANDLE]));
- 		r->flags |= (1 << NFTNL_RULE_HANDLE);
-diff --git a/src/set.c b/src/set.c
-index 412bdac627d31..54674bca709fd 100644
---- a/src/set.c
-+++ b/src/set.c
-@@ -657,22 +657,12 @@ int nftnl_set_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_set *s)
- 	if (mnl_attr_parse(nlh, sizeof(*nfg), nftnl_set_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_SET_TABLE]) {
--		if (s->flags & (1 << NFTNL_SET_TABLE))
--			xfree(s->table);
--		s->table = strdup(mnl_attr_get_str(tb[NFTA_SET_TABLE]));
--		if (!s->table)
--			return -1;
--		s->flags |= (1 << NFTNL_SET_TABLE);
--	}
--	if (tb[NFTA_SET_NAME]) {
--		if (s->flags & (1 << NFTNL_SET_NAME))
--			xfree(s->name);
--		s->name = strdup(mnl_attr_get_str(tb[NFTA_SET_NAME]));
--		if (!s->name)
--			return -1;
--		s->flags |= (1 << NFTNL_SET_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_SET_TABLE], NFTNL_SET_TABLE,
-+				 &s->table, &s->flags) < 0)
-+		return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_SET_NAME], NFTNL_SET_NAME,
-+				 &s->name, &s->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_SET_HANDLE]) {
- 		s->handle = be64toh(mnl_attr_get_u64(tb[NFTA_SET_HANDLE]));
- 		s->flags |= (1 << NFTNL_SET_HANDLE);
-diff --git a/src/set_elem.c b/src/set_elem.c
-index 848adf1d179bf..05220e7933242 100644
---- a/src/set_elem.c
-+++ b/src/set_elem.c
-@@ -576,13 +576,11 @@ static int nftnl_set_elems_parse2(struct nftnl_set *s, const struct nlattr *nest
- 		memcpy(e->user.data, udata, e->user.len);
- 		e->flags |= (1 << NFTNL_RULE_USERDATA);
- 	}
--	if (tb[NFTA_SET_ELEM_OBJREF]) {
--		e->objref = strdup(mnl_attr_get_str(tb[NFTA_SET_ELEM_OBJREF]));
--		if (e->objref == NULL) {
--			ret = -1;
--			goto out_set_elem;
--		}
--		e->flags |= (1 << NFTNL_SET_ELEM_OBJREF);
-+	if (nftnl_parse_str_attr(tb[NFTA_SET_ELEM_OBJREF],
-+				 NFTNL_SET_ELEM_OBJREF,
-+				 &e->objref, &e->flags) < 0) {
-+		ret = -1;
-+		goto out_set_elem;
- 	}
- 
- 	/* Add this new element to this set */
-@@ -646,24 +644,14 @@ int nftnl_set_elems_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_set *s)
- 			   nftnl_set_elem_list_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_SET_ELEM_LIST_TABLE]) {
--		if (s->flags & (1 << NFTNL_SET_TABLE))
--			xfree(s->table);
--		s->table =
--			strdup(mnl_attr_get_str(tb[NFTA_SET_ELEM_LIST_TABLE]));
--		if (!s->table)
--			return -1;
--		s->flags |= (1 << NFTNL_SET_TABLE);
--	}
--	if (tb[NFTA_SET_ELEM_LIST_SET]) {
--		if (s->flags & (1 << NFTNL_SET_NAME))
--			xfree(s->name);
--		s->name =
--			strdup(mnl_attr_get_str(tb[NFTA_SET_ELEM_LIST_SET]));
--		if (!s->name)
--			return -1;
--		s->flags |= (1 << NFTNL_SET_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_SET_ELEM_LIST_TABLE],
-+				 NFTNL_SET_TABLE,
-+				 &s->table, &s->flags) < 0)
-+		return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_SET_ELEM_LIST_SET],
-+				 NFTNL_SET_NAME,
-+				 &s->name, &s->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_SET_ELEM_LIST_SET_ID]) {
- 		s->id = ntohl(mnl_attr_get_u32(tb[NFTA_SET_ELEM_LIST_SET_ID]));
- 		s->flags |= (1 << NFTNL_SET_ID);
-diff --git a/src/table.c b/src/table.c
-index 9870dcafb4ef6..61382838ae1c5 100644
---- a/src/table.c
-+++ b/src/table.c
-@@ -285,14 +285,9 @@ int nftnl_table_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_table *t)
- 	if (mnl_attr_parse(nlh, sizeof(*nfg), nftnl_table_parse_attr_cb, tb) < 0)
- 		return -1;
- 
--	if (tb[NFTA_TABLE_NAME]) {
--		if (t->flags & (1 << NFTNL_TABLE_NAME))
--			xfree(t->name);
--		t->name = strdup(mnl_attr_get_str(tb[NFTA_TABLE_NAME]));
--		if (!t->name)
--			return -1;
--		t->flags |= (1 << NFTNL_TABLE_NAME);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_TABLE_NAME], NFTNL_TABLE_NAME,
-+				 &t->name, &t->flags) < 0)
-+		return -1;
- 	if (tb[NFTA_TABLE_FLAGS]) {
- 		t->table_flags = ntohl(mnl_attr_get_u32(tb[NFTA_TABLE_FLAGS]));
- 		t->flags |= (1 << NFTNL_TABLE_FLAGS);
-diff --git a/src/trace.c b/src/trace.c
-index d67e114082665..5dc4cfabc4a82 100644
---- a/src/trace.c
-+++ b/src/trace.c
-@@ -336,11 +336,11 @@ static int nftnl_trace_parse_verdict(const struct nlattr *attr,
- 	case NFT_JUMP:
- 		if (!tb[NFTA_VERDICT_CHAIN])
- 			abi_breakage();
--		t->jump_target = strdup(mnl_attr_get_str(tb[NFTA_VERDICT_CHAIN]));
--		if (!t->jump_target)
-+		if (nftnl_parse_str_attr(tb[NFTA_VERDICT_CHAIN],
-+					 NFTNL_TRACE_JUMP_TARGET,
-+					 (const char **)&t->jump_target,
-+					 &t->flags) < 0)
- 			return -1;
--
--		t->flags |= (1 << NFTNL_TRACE_JUMP_TARGET);
- 		break;
- 	}
- 	return 0;
-@@ -370,21 +370,13 @@ int nftnl_trace_nlmsg_parse(const struct nlmsghdr *nlh, struct nftnl_trace *t)
- 	t->id = ntohl(mnl_attr_get_u32(tb[NFTA_TRACE_ID]));
- 	t->flags |= (1 << NFTNL_TRACE_ID);
- 
--	if (tb[NFTA_TRACE_TABLE]) {
--		t->table = strdup(mnl_attr_get_str(tb[NFTA_TRACE_TABLE]));
--		if (!t->table)
--			return -1;
--
--		t->flags |= (1 << NFTNL_TRACE_TABLE);
--	}
--
--	if (tb[NFTA_TRACE_CHAIN]) {
--		t->chain = strdup(mnl_attr_get_str(tb[NFTA_TRACE_CHAIN]));
--		if (!t->chain)
--			return -1;
-+	if (nftnl_parse_str_attr(tb[NFTA_TRACE_TABLE], NFTNL_TRACE_TABLE,
-+				 (const char **)&t->table, &t->flags) < 0)
-+		return -1;
- 
--		t->flags |= (1 << NFTNL_TRACE_CHAIN);
--	}
-+	if (nftnl_parse_str_attr(tb[NFTA_TRACE_CHAIN], NFTNL_TRACE_CHAIN,
-+				 (const char **)&t->chain, &t->flags) < 0)
-+		return -1;
- 
- 	if (tb[NFTA_TRACE_IIFTYPE]) {
- 		t->iiftype = ntohs(mnl_attr_get_u16(tb[NFTA_TRACE_IIFTYPE]));
-diff --git a/src/utils.c b/src/utils.c
-index d73c5f6175802..bbe44b4d532dc 100644
---- a/src/utils.c
-+++ b/src/utils.c
-@@ -192,3 +192,18 @@ char *nftnl_attr_get_ifname(const struct nlattr *attr)
- 		return NULL;
- 	}
- }
-+
-+int nftnl_parse_str_attr(const struct nlattr *tb, int attr,
-+			 const char **field, uint32_t *flags)
-+{
-+	if (!tb)
-+		return 0;
-+
-+	if (*flags & (1 << attr))
-+		xfree(*field);
-+	*field = strdup(mnl_attr_get_str(tb));
-+	if (!*field)
-+		return -1;
-+	*flags |= (1 << attr);
-+	return 0;
-+}
--- 
-2.51.0
+nft ruleset:
+```
+nft flush ruleset
+sudo nft add table inet ftp_nat
+sudo nft add ct helper inet ftp_nat ftp_helper { type \"ftp\" protocol tcp\=
+; }
+sudo nft add chain inet ftp_nat prerouting { type filter hook prerouting pr=
+iority 0 \; policy accept \; }
+sudo nft add rule inet ftp_nat prerouting tcp dport 21 ct state new ct help=
+er set "ftp_helper"
+nft add table ip nat
+nft add chain ip nat prerouting { type nat hook prerouting priority dstnat =
+\; policy accept \; }
+nft add chain ip nat postrouting { type nat hook postrouting priority srcna=
+t \; policy accept \; }
+nft add rule ip nat prerouting tcp dport 21 dnat ip prefix to ip daddr map =
+{ 192.168.100.1 : 192.168.13.2/32 }
+nft add rule ip nat postrouting tcp sport 21 snat ip prefix to ip saddr map=
+ { 192.168.13.2 : 192.168.100.1/32 }
+
+# nft -s list ruleset
+table inet ftp_nat {
+        ct helper ftp_helper {
+                type "ftp" protocol tcp
+                l3proto inet
+        }
+
+        chain prerouting {
+                type filter hook prerouting priority filter; policy accept;
+                tcp dport 21 ct state new ct helper set "ftp_helper"
+        }
+}
+table ip nat {
+        chain prerouting {
+                type nat hook prerouting priority dstnat; policy accept;
+                tcp dport 21 dnat ip prefix to ip daddr map { 192.168.100.1=
+ : 192.168.13.2/32 }
+        }
+
+        chain postrouting {
+                type nat hook postrouting priority srcnat; policy accept;
+                tcp sport 21 snat ip prefix to ip saddr map { 192.168.13.2 =
+: 192.168.100.1/32 }
+        }
+}
+
+```
+
+Connecting the client:
+```
+# ftp 192.168.100.1
+Connected to 192.168.100.1.
+220 Welcome to my FTP server.
+Name (192.168.100.1:dev): user
+331 Username ok, send password.
+Password:=20
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> epsv
+EPSV/EPRT on IPv4 off.
+EPSV/EPRT on IPv6 off.
+ftp> ls
+227 Entering passive mode (192,168,100,1,209,129).
+421 Service not available, remote server has closed connection.
+```
+
+Kernel logs:
+```
+Oct 16 10:24:37 vyos kernel: nf_conntrack_ftp: ftp: Conntrackinfo =3D 2
+Oct 16 10:24:37 vyos kernel: nf_conntrack_ftp: ftp: dataoff(60) >=3D skblen=
+(60)
+Oct 16 10:24:37 vyos kernel: nf_conntrack_ftp: ftp: dataoff(52) >=3D skblen=
+(52)
+Oct 16 10:24:37 vyos kernel: nf_conntrack_ftp: nf_conntrack_ftp: wrong seq =
+pos (UNSET)(0) or (UNSET)(0)
+Oct 16 10:24:37 vyos kernel: nf_conntrack_ftp: ftp: dataoff(52) >=3D skblen=
+(52)
+Oct 16 10:24:38 vyos kernel: nf_conntrack_ftp: nf_conntrack_ftp: wrong seq =
+pos (UNSET)(0) or (UNSET)(0)
+Oct 16 10:24:38 vyos kernel: nf_conntrack_ftp: ftp: dataoff(52) >=3D skblen=
+(52)
+Oct 16 10:24:38 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 33
+Oct 16 10:24:38 vyos kernel: nf_conntrack_ftp: find_pattern `229 ': dlen =
+=3D 33
+Oct 16 10:24:38 vyos kernel: nf_conntrack_ftp: ftp: dataoff(52) >=3D skblen=
+(52)
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `PORT': dlen =
+=3D 8
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen =
+=3D 8
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 23
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `229 ': dlen =
+=3D 23
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: ftp: dataoff(52) >=3D skblen=
+(52)
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `PORT': dlen =
+=3D 6
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen =
+=3D 6
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 19
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `229 ': dlen =
+=3D 19
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `PORT': dlen =
+=3D 6
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen =
+=3D 6
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 25
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `229 ': dlen =
+=3D 25
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 133
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `229 ': dlen =
+=3D 133
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 15
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: find_pattern `229 ': dlen =
+=3D 15
+Oct 16 10:24:40 vyos kernel: nf_conntrack_ftp: ftp: dataoff(52) >=3D skblen=
+(52)
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: find_pattern `PORT': dlen =
+=3D 6
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen =
+=3D 6
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 51
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: Pattern matches!
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: Skipped up to 0x0 delimiter!
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: Match succeeded!
+Oct 16 10:24:44 vyos kernel: nf_conntrack_ftp: conntrack_ftp: match `192,16=
+8,13,2,209,129' (20 bytes at 2149072380)=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel: ------------[ cut here ]------------
+Oct 16 10:24:44 vyos kernel: Missing nfct_seqadj_ext_add() setup call
+Oct 16 10:24:44 vyos kernel: WARNING: CPU: 1 PID: 0 at net/netfilter/nf_con=
+ntrack_seqadj.c:41 nf_ct_seqadj_set+0xbf/0xe0 [nf_conntrack]=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel: Modules linked in: nf_nat_ftp(E) nft_nat(E) nf=
+_conntrack_ftp(E) af_packet(E) nft_ct(E) nft_chain_nat(E) nf_nat(E) nf_tabl=
+es(E) nfnetlink_cthelper(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv=
+4(E) nfnetlink(E) binfmt_misc(E) intel_rapl_common(E) crct10dif_pclmul(E) c=
+rc32_pclmul(E) ghash_clmulni_intel(E) sha512_ssse3(E) sha256_ssse3(E) sha1_=
+ssse3(E) aesni_intel(E) crypto_simd(E) cryptd(E) rapl(E) iTCO_wdt(E) iTCO_v=
+endor_support(E) button(E) virtio_console(E) virtio_balloon(E) pcspkr(E) ev=
+dev(E) tcp_bbr(E) sch_fq_codel(E) mpls_iptunnel(E) mpls_router(E) ip_tunnel=
+(E) br_netfilter(E) bridge(E) stp(E) llc(E) fuse(E) efi_pstore(E) configfs(=
+E) virtio_rng(E) rng_core(E) ip_tables(E) x_tables(E) autofs4(E) usb_storag=
+e(E) ohci_hcd(E) uhci_hcd(E) ehci_hcd(E) sd_mod(E) squashfs(E) lz4_decompre=
+ss(E) loop(E) overlay(E) ext4(E) crc16(E) mbcache(E) jbd2(E) nls_cp437(E) v=
+fat(E) fat(E) efivarfs(E) nls_ascii(E) hid_generic(E) usbhid(E) hid(E) virt=
+io_net(E) net_failover(E) virtio_blk(E) failover(E) ahci(E) libahci(E)=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel:  crc32c_intel(E) i2c_i801(E) i2c_smbus(E) liba=
+ta(E) lpc_ich(E) scsi_mod(E) scsi_common(E) xhci_pci(E) xhci_hcd(E) virtio_=
+pci(E) virtio_pci_legacy_dev(E) virtio_pci_modern_dev(E) virtio(E) virtio_r=
+ing(E)=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel: CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      =
+      E      6.6.108-vyos #1
+Oct 16 10:24:44 vyos kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2=
+009), BIOS Arch Linux 1.17.0-2-2 04/01/2014=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20
+Oct 16 10:24:44 vyos kernel: RIP: 0010:nf_ct_seqadj_set+0xbf/0xe0 [nf_connt=
+rack]
+Oct 16 10:24:44 vyos kernel: Code: ea 44 89 20 89 50 08 eb db 45 85 ed 74 d=
+e 80 3d 51 6d 00 00 00 75 d5 48 c7 c7 68 57 ad c0 c6 05 41 6d 00 00 01 e8 7=
+1 28 dd dc <0f> 0b eb be be 02 00 00 00 e8 63 fc ff ff 48 89 c3 e9 66 ff ff=
+ ff=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel: RSP: 0018:ffff9a66c00e8910 EFLAGS: 00010286
+Oct 16 10:24:44 vyos kernel: RAX: 0000000000000000 RBX: 0000000000000014 RC=
+X: 000000000000083f
+Oct 16 10:24:44 vyos kernel: RDX: 0000000000000000 RSI: 00000000000000f6 RD=
+I: 000000000000083f
+Oct 16 10:24:44 vyos kernel: RBP: ffff89387978fb00 R08: 0000000000000000 R0=
+9: ffff9a66c00e87a8
+Oct 16 10:24:44 vyos kernel: R10: 0000000000000003 R11: ffffffff9ecbab08 R1=
+2: ffff89387978fb00
+Oct 16 10:24:44 vyos kernel: R13: 0000000000000001 R14: ffff893872e18862 R1=
+5: ffff893842f8c700
+Oct 16 10:24:44 vyos kernel: FS:  0000000000000000(0000) GS:ffff893bafc8000=
+0(0000) knlGS:0000000000000000=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050=
+033
+Oct 16 10:24:44 vyos kernel: CR2: 000055fbc64ec690 CR3: 000000011de22001 CR=
+4: 0000000000370ee0
+Oct 16 10:24:44 vyos kernel: Call Trace:
+Oct 16 10:24:44 vyos kernel:  <IRQ>
+Oct 16 10:24:44 vyos kernel:  __nf_nat_mangle_tcp_packet+0x100/0x160 [nf_na=
+t]
+Oct 16 10:24:44 vyos kernel:  nf_nat_ftp+0x142/0x280 [nf_nat_ftp]
+Oct 16 10:24:44 vyos kernel:  ? kmem_cache_alloc+0x157/0x290
+Oct 16 10:24:44 vyos kernel:  ? help+0x4d1/0x880 [nf_conntrack_ftp]
+Oct 16 10:24:44 vyos kernel:  help+0x4d1/0x880 [nf_conntrack_ftp]
+Oct 16 10:24:44 vyos kernel:  ? nf_confirm+0x122/0x2e0 [nf_conntrack]
+Oct 16 10:24:44 vyos kernel:  nf_confirm+0x122/0x2e0 [nf_conntrack]
+Oct 16 10:24:44 vyos kernel:  nf_hook_slow+0x3c/0xb0
+Oct 16 10:24:44 vyos kernel:  ip_output+0xb6/0xf0
+Oct 16 10:24:44 vyos kernel:  ? __pfx_ip_finish_output+0x10/0x10
+Oct 16 10:24:44 vyos kernel:  ip_sublist_rcv_finish+0x90/0xa0
+Oct 16 10:24:44 vyos kernel:  ip_sublist_rcv+0x190/0x220
+Oct 16 10:24:44 vyos kernel:  ? __pfx_ip_rcv_finish+0x10/0x10
+Oct 16 10:24:44 vyos kernel:  ip_list_rcv+0x134/0x160
+Oct 16 10:24:44 vyos kernel:  __netif_receive_skb_list_core+0x299/0x2c0
+Oct 16 10:24:44 vyos kernel:  netif_receive_skb_list_internal+0x1a7/0x2d0
+Oct 16 10:24:44 vyos kernel:  napi_complete_done+0x69/0x1a0
+Oct 16 10:24:44 vyos kernel:  virtnet_poll+0x3c0/0x540 [virtio_net]
+Oct 16 10:24:44 vyos kernel:  __napi_poll+0x26/0x1a0
+Oct 16 10:24:44 vyos kernel:  net_rx_action+0x141/0x2c0
+Oct 16 10:24:44 vyos kernel:  ? lock_timer_base+0x5c/0x80
+Oct 16 10:24:44 vyos kernel:  handle_softirqs+0xd5/0x280
+Oct 16 10:24:44 vyos kernel:  __irq_exit_rcu+0x95/0xb0
+Oct 16 10:24:44 vyos kernel:  common_interrupt+0x7a/0xa0
+Oct 16 10:24:44 vyos kernel:  </IRQ>
+Oct 16 10:24:44 vyos kernel:  <TASK>
+Oct 16 10:24:44 vyos kernel:  asm_common_interrupt+0x22/0x40
+Oct 16 10:24:44 vyos kernel: RIP: 0010:pv_native_safe_halt+0xb/0x10
+Oct 16 10:24:44 vyos kernel: Code: 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1=
+f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 90 0f 00 2d 29 9a 3=
+e 00 fb f4 <c3> cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90=
+ 8b=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+Oct 16 10:24:44 vyos kernel: RSP: 0018:ffff9a66c009bed8 EFLAGS: 00000252
+Oct 16 10:24:44 vyos kernel: RAX: ffff893bafcaaca8 RBX: 0000000000000001 RC=
+X: 0000000000000001
+Oct 16 10:24:44 vyos kernel: RDX: 0000000000000000 RSI: 0000000000000083 RD=
+I: 0000000000064cec
+Oct 16 10:24:44 vyos kernel: RBP: ffff8938401f2200 R08: 0000000000000001 R0=
+9: 0000000000000000
+Oct 16 10:24:44 vyos kernel: R10: 000000000001ffc0 R11: 0000000000000000 R1=
+2: 0000000000000000
+Oct 16 10:24:44 vyos kernel: R13: 0000000000000000 R14: ffff8938401f2200 R1=
+5: 0000000000000000
+Oct 16 10:24:44 vyos kernel:  default_idle+0x5/0x20
+Oct 16 10:24:44 vyos kernel:  default_idle_call+0x28/0xb0
+Oct 16 10:24:44 vyos kernel:  do_idle+0x1ec/0x230
+Oct 16 10:24:44 vyos kernel:  cpu_startup_entry+0x21/0x30
+Oct 16 10:24:44 vyos kernel:  start_secondary+0x11a/0x140
+Oct 16 10:24:44 vyos kernel:  secondary_startup_64_no_verify+0x178/0x17b
+Oct 16 10:24:44 vyos kernel:  </TASK>
+Oct 16 10:24:44 vyos kernel: ---[ end trace 0000000000000000 ]---
+Oct 16 10:24:45 vyos kernel: nf_conntrack_ftp: find_pattern `227 ': dlen =
+=3D 51
+Oct 16 10:24:45 vyos kernel: nf_conntrack_ftp: Pattern matches!
+Oct 16 10:24:45 vyos kernel: nf_conntrack_ftp: Skipped up to 0x0 delimiter!
+Oct 16 10:24:45 vyos kernel: nf_conntrack_ftp: Match succeeded!
+Oct 16 10:24:45 vyos kernel: nf_conntrack_ftp: conntrack_ftp: match `192,16=
+8,13,2,209,129' (20 bytes at 2149072380)=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+Oct 16 10:24:45 vyos kernel: nf_conntrack_ftp: ftp: dataoff(40) >=3D skblen=
+(40)
+```
+
+According to callstack, despite installing nf_nat_follow_master() helper,
+the nfct_seqadj() call comes almost immediately after, before any
+potential setups on already confirmed conntrack.
+
+```
+net/netfilter/nf_conntrack_proto.c: nf_confirm()
+
+net/netfilter/nf_conntrack_ftp.c: help()
+        nf_ct_expect_init()
+        nf_nat_ftp()
+
+net/netfilter/nf_nat_ftp.c: nf_nat_ftp()
+        exp->expectfn =3D nf_nat_follow_master;
+        nf_nat_mangle_tcp_packet()
+
+net/netfilter/nf_nat_helper.c: __nf_nat_mangle_tcp_packet()
+    nf_ct_seqadj_set()
+
+net/netfilter/nf_conntrack_seqadj.c: nf_ct_seqadj_set()
+        if (unlikely(!seqadj)) {
+                WARN_ONCE(1, "Missing nfct_seqadj_ext_add() setup call\n");
+                return 0;
+        }
+```
+
+Andrii Melnychenko (1):
+  nf_conntrack_ftp: Added nfct_seqadj_ext_add() for ftp's conntrack.
+
+ net/netfilter/nf_conntrack_ftp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--=20
+2.43.0
 
 
