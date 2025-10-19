@@ -1,74 +1,74 @@
-Return-Path: <netfilter-devel+bounces-9288-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9294-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54143BEE934
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 18:01:20 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B0EBEE962
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 18:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EDB81881DCB
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 16:01:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9B1BC4E678A
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 16:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571C34964F;
-	Sun, 19 Oct 2025 16:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34992EC098;
+	Sun, 19 Oct 2025 16:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="CoSPHXri"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="FuvbWbNC"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB24354ACB;
-	Sun, 19 Oct 2025 16:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBF11E6DC5;
+	Sun, 19 Oct 2025 16:01:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760889675; cv=none; b=CANWwbBd01Hd5ynCFVaH9waEwDMYftXC3ENIk+rPABdaQLiGqPWtmapYuAA3houM/D/tKNt03IHaZ3cXnyk86ZcHScmcevfEI1i65UHgwUTsSb56WxWB04xOCMY3FrlXGETNFJ0jyD1XOv3fR1q92CL5FhRuta73Ou6467Z7ntQ=
+	t=1760889717; cv=none; b=jjlYt+Q61e7q6O6OFtfxJvecvsDkGfXnG+Q8/CtZcn2JVFyS0rrACuioNdaOwTIAnMNutCH+g+WcXhvBpgjOWQoAgR9vNErTZH34K/DB3WU966G7jUzyzYZlLzz1gZoFb27Ct6QskwWAhv2LPwQbOYJAobCTe7HrJidcx5HOkzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760889675; c=relaxed/simple;
-	bh=JSx9Iv0GIraFWcPaw9qvUQK9IckpGLYSmUMUKJ5kXjQ=;
+	s=arc-20240116; t=1760889717; c=relaxed/simple;
+	bh=dHROn+Oy2UU4e64PPhWVqdmRRvbOKBJU6h9Lw8z07yE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RHi0nKaggCzl2TJiaOuHB4ncKfVJmcqbnd3Z2PyJfithkKZaEuXCDMnNrdmEd4eK2hwAwEa966w5LqPZzBsiRgzsNCiZmOfGgglqrX/BGPayiOZltxrS9JhNeR2Skrecp7z4ugNJCtq6fLXe7JXAErN9KbgPbhePKac+nLBacC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=CoSPHXri; arc=none smtp.client-ip=193.238.174.39
+	 MIME-Version; b=C/Sp9X1VDxU46JEGc3KsaVrq1xj1wEkKOdY/P+i/Ln/asmwYK5v+b4csO4cRrEfa3LVPgDsXZNGolSXcfDl6whQJVpr9R/qd2Vw+ZOpeFwYfBwNntD5uMcE8dl0nNTQBA3D3YokhXq3Ic9Q8pNLVEYeW+AVOAdc24PqjU6wlz5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=FuvbWbNC; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id B917C21EEC;
-	Sun, 19 Oct 2025 19:01:08 +0300 (EEST)
+	by mx.ssi.bg (Potsfix) with ESMTP id A286D21EF3;
+	Sun, 19 Oct 2025 19:01:12 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
 	:content-transfer-encoding:date:from:from:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=PsMew39h8llX7Nl3IiKjca+Nzp6QLOcuH6sKOZ20ys8=; b=CoSPHXriVqrU
-	HQT5AjPT6erOSY/rkGpsQUPtmBHv5u+PnuUwh8KsgQprvE08V3mg5D7RndgJqskk
-	4eupII2A+QpZ7lcQJLtEzyyindnWDVxq1EAHGHNl3t5NjVAqhOcL/XvtU6sfNsuZ
-	B1+beRbdnlcHZp/NZ5nVDqqxcY7t/LBTXgmY3DG2XRMBXfMDoWsAT3F1FxNh0QQR
-	SYjENDdFEV+2esxGX3mgqO6FS9tKazNFiabKu7vS/Ry/4CVC2lN6mP3G+wnNjLF6
-	xq3LAdHiz54IUCGEifFManGjbZUYwOdAU5NjABaw2NkMEUbtX+Du8c7eHcFFKxnk
-	bpnQYzcFQGKQGkEnAEajOanB9Jb0WJa1oku7TtZGRuQYBRvRO+Vt5Rl9y1hObV8i
-	/ySNEZ/8T5LDcgPX7lXk6EK+aNjoWEh9r7mfECWwLaRZjNRKsdddVvm96OohY1Nx
-	GhfFtMvPF6pASXJp3jZg94QDFE8vl5m9T4QQOr+v+R3ddTc25m0nNYoMX1J8aeld
-	jQZr712Co1u9hg2jJthZemKGv6otyo9FOMGW5708Tfrrj71LyrXF0vAmTkNiVpzB
-	UjAbv24sAezuBq0A64wr4l4g5vxrNXTBYgEWqPlQIWQgCh+AhkCMFsZDHINu02JX
-	3KUew9POH5ZVBrRe+C1E5Gx3MW37/+4=
+	 bh=b943Hf4u0I5+JTS8DFh8ljx/SnewDqIFehC/sP+IiNw=; b=FuvbWbNCDme6
+	GUSCGdIqQxCCNevD1QGAslt9V1wekiJdAE3h5jUbIbk3Y3piNv9HYhCpP4V4DDN9
+	xFcH9t+JGH51oDfz6RV9n3NTH1/Za2A5Rjlh9Dvf4YkBnjqL9lxXPBq8tiVQWLNo
+	rNdXP3p/LIP+17BMBACOWlaU7e1j1Hdk1NqLfH2Mbwm5PJHGXgMm7rk6QfAHQ343
+	eg3tpCnmpwyfpV61q4nF1ysrMAaoBBMdxHjEMT5rBku+V4bx2sezKV6YU01xhxdv
+	pHx04Z5TxK7axwTxx6OTQ7aU/sRvYOs4gPQ5aOnNdtnDMI5/9Bv527x6pSo5jlJO
+	6DMp8Y/79ZBZcqra3U5zQ4hke1hVSskE2WtGesl3KQqs4Nr4HJhgwKVCeFedA7aW
+	NISxIflUyebflIKBmxzVdORZ4vP8ej08wFC54zP17x3ndQJQWmMaKwt5DAerXQxc
+	64op4wnOQDUZ4UxbNE9PjnIJYWUAIkMGE6UXkqCD0VqAqfiGtZPFsf2YEcweGDFa
+	tv0AFGPMjoSa9mZuTUAqIdxEghPd51HAndXaKHQt3N/7xu1on8jLLcX/SJ1vib9N
+	Wcy+iN8Hka8AxFPtoAbsCW95WLKKZXDjqD0Rw4rKiCWroEMlj2pFBx8KXZR62kGr
+	eBMXJKLghvDh/4v84SCXCdkHInwmivI=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Sun, 19 Oct 2025 19:01:07 +0300 (EEST)
+	Sun, 19 Oct 2025 19:01:11 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id EE33A64EA9;
-	Sun, 19 Oct 2025 19:01:06 +0300 (EEST)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 11E56659EC;
+	Sun, 19 Oct 2025 19:01:11 +0300 (EEST)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 59JFvflg067692;
-	Sun, 19 Oct 2025 18:57:41 +0300
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 59JFvgjE067696;
+	Sun, 19 Oct 2025 18:57:42 +0300
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 59JFvfJ6067691;
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 59JFvfSQ067695;
 	Sun, 19 Oct 2025 18:57:41 +0300
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
         Dust Li <dust.li@linux.alibaba.com>,
         Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
-Subject: [PATCHv6 net-next 10/14] ipvs: show the current conn_tab size to users
-Date: Sun, 19 Oct 2025 18:57:07 +0300
-Message-ID: <20251019155711.67609-11-ja@ssi.bg>
+Subject: [PATCHv6 net-next 11/14] ipvs: no_cport and dropentry counters can be per-net
+Date: Sun, 19 Oct 2025 18:57:08 +0300
+Message-ID: <20251019155711.67609-12-ja@ssi.bg>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251019155711.67609-1-ja@ssi.bg>
 References: <20251019155711.67609-1-ja@ssi.bg>
@@ -80,98 +80,182 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As conn_tab is per-net, better to show the current hash table size
-to users instead of the ip_vs_conn_tab_size (max).
+With using per-net conn_tab these counters do not need to be
+global anymore.
 
 Signed-off-by: Julian Anastasov <ja@ssi.bg>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 36 +++++++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 5 deletions(-)
+ include/net/ip_vs.h             |  2 ++
+ net/netfilter/ipvs/ip_vs_conn.c | 62 ++++++++++++++++++++-------------
+ 2 files changed, 39 insertions(+), 25 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index c7683a9241e5..3dfc01ef1890 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2743,10 +2743,16 @@ static void ip_vs_info_seq_stop(struct seq_file *seq, void *v)
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index ce77800853ab..1b64c5ee2ac2 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -1158,6 +1158,7 @@ struct netns_ipvs {
+ #endif
+ 	/* ip_vs_conn */
+ 	atomic_t		conn_count;      /* connection counter */
++	atomic_t		no_cport_conns[IP_VS_AF_MAX];
+ 	struct delayed_work	conn_resize_work;/* resize conn_tab */
  
- static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
+ 	/* ip_vs_ctl */
+@@ -1188,6 +1189,7 @@ struct netns_ipvs {
+ 	int			drop_counter;
+ 	int			old_secure_tcp;
+ 	atomic_t		dropentry;
++	s8			dropentry_counters[8];
+ 	/* locks in ctl.c */
+ 	spinlock_t		dropentry_lock;  /* drop entry handling */
+ 	spinlock_t		droppacket_lock; /* drop packet handling */
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index bbce5b45b622..55000252c72c 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -54,9 +54,6 @@ int ip_vs_conn_tab_size __read_mostly;
+ /*  SLAB cache for IPVS connections */
+ static struct kmem_cache *ip_vs_conn_cachep __read_mostly;
+ 
+-/*  counter for no client port connections */
+-static atomic_t ip_vs_conn_no_cport_cnt = ATOMIC_INIT(0);
+-
+ /* We need an addrstrlen that works with or without v6 */
+ #ifdef CONFIG_IP_VS_IPV6
+ #define IP_VS_ADDRSTRLEN INET6_ADDRSTRLEN
+@@ -319,10 +316,16 @@ struct ip_vs_conn *ip_vs_conn_in_get(const struct ip_vs_conn_param *p)
+ 	struct ip_vs_conn *cp;
+ 
+ 	cp = __ip_vs_conn_in_get(p);
+-	if (!cp && atomic_read(&ip_vs_conn_no_cport_cnt)) {
+-		struct ip_vs_conn_param cport_zero_p = *p;
+-		cport_zero_p.cport = 0;
+-		cp = __ip_vs_conn_in_get(&cport_zero_p);
++	if (!cp) {
++		struct netns_ipvs *ipvs = p->ipvs;
++		int af_id = ip_vs_af_index(p->af);
++
++		if (atomic_read(&ipvs->no_cport_conns[af_id])) {
++			struct ip_vs_conn_param cport_zero_p = *p;
++
++			cport_zero_p.cport = 0;
++			cp = __ip_vs_conn_in_get(&cport_zero_p);
++		}
+ 	}
+ 
+ 	IP_VS_DBG_BUF(9, "lookup/in %s %s:%d->%s:%d %s\n",
+@@ -535,6 +538,7 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
  {
-+	struct net *net = seq_file_net(seq);
-+	struct netns_ipvs *ipvs = net_ipvs(net);
-+
- 	if (v == SEQ_START_TOKEN) {
-+		struct ip_vs_rht *tc = rcu_dereference(ipvs->conn_tab);
-+		int csize = tc ? tc->size : 0;
-+
- 		seq_printf(seq,
- 			"IP Virtual Server version %d.%d.%d (size=%d)\n",
--			NVERSION(IP_VS_VERSION_CODE), ip_vs_conn_tab_size);
-+			NVERSION(IP_VS_VERSION_CODE), csize);
- 		seq_puts(seq,
- 			 "Prot LocalAddress:Port Scheduler Flags\n");
- 		seq_puts(seq,
-@@ -3424,10 +3430,17 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 	switch (cmd) {
- 	case IP_VS_SO_GET_VERSION:
- 	{
-+		struct ip_vs_rht *t;
-+		int csize = 0;
- 		char buf[64];
- 
-+		rcu_read_lock();
-+		t = rcu_dereference(ipvs->conn_tab);
-+		if (t)
-+			csize = t->size;
-+		rcu_read_unlock();
- 		sprintf(buf, "IP Virtual Server version %d.%d.%d (size=%d)",
--			NVERSION(IP_VS_VERSION_CODE), ip_vs_conn_tab_size);
-+			NVERSION(IP_VS_VERSION_CODE), csize);
- 		if (copy_to_user(user, buf, strlen(buf)+1) != 0) {
- 			ret = -EFAULT;
- 			goto out;
-@@ -3439,8 +3452,16 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 	case IP_VS_SO_GET_INFO:
- 	{
- 		struct ip_vs_getinfo info;
-+		struct ip_vs_rht *t;
-+		int csize = 0;
-+
-+		rcu_read_lock();
-+		t = rcu_dereference(ipvs->conn_tab);
-+		if (t)
-+			csize = t->size;
-+		rcu_read_unlock();
- 		info.version = IP_VS_VERSION_CODE;
--		info.size = ip_vs_conn_tab_size;
-+		info.size = csize;
- 		info.num_services =
- 			atomic_read(&ipvs->num_services[IP_VS_AF_INET]);
- 		if (copy_to_user(user, &info, sizeof(info)) != 0)
-@@ -4379,6 +4400,8 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
- 	int ret, cmd, reply_cmd;
- 	struct net *net = sock_net(skb->sk);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
-+	struct ip_vs_rht *t;
-+	int csize;
- 
- 	cmd = info->genlhdr->cmd;
- 
-@@ -4446,10 +4469,13 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
+ 	struct hlist_bl_head *head, *head2, *head_new;
+ 	struct netns_ipvs *ipvs = cp->ipvs;
++	int af_id = ip_vs_af_index(cp->af);
+ 	u32 hash_r = 0, hash_key_r = 0;
+ 	struct ip_vs_rht *t, *tp, *t2;
+ 	u32 hash_key, hash_key_new;
+@@ -613,7 +617,7 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
+ 			hlist_bl_del_rcu(&cp->c_list);
+ 			hlist_bl_add_head_rcu(&cp->c_list, head_new);
+ 		}
+-		atomic_dec(&ip_vs_conn_no_cport_cnt);
++		atomic_dec(&ipvs->no_cport_conns[af_id]);
+ 		cp->flags &= ~IP_VS_CONN_F_NO_CPORT;
+ 		cp->cport = cport;
  	}
+@@ -1169,8 +1173,11 @@ static void ip_vs_conn_expire(struct timer_list *t)
+ 		if (unlikely(cp->app != NULL))
+ 			ip_vs_unbind_app(cp);
+ 		ip_vs_unbind_dest(cp);
+-		if (cp->flags & IP_VS_CONN_F_NO_CPORT)
+-			atomic_dec(&ip_vs_conn_no_cport_cnt);
++		if (unlikely(cp->flags & IP_VS_CONN_F_NO_CPORT)) {
++			int af_id = ip_vs_af_index(cp->af);
++
++			atomic_dec(&ipvs->no_cport_conns[af_id]);
++		}
+ 		if (cp->flags & IP_VS_CONN_F_ONE_PACKET)
+ 			ip_vs_conn_rcu_free(&cp->rcu_head);
+ 		else
+@@ -1277,8 +1284,11 @@ ip_vs_conn_new(const struct ip_vs_conn_param *p, int dest_af,
+ 	cp->out_seq.delta = 0;
  
- 	case IPVS_CMD_GET_INFO:
-+		csize = 0;
-+		t = rcu_dereference(ipvs->conn_tab);
-+		if (t)
-+			csize = t->size;
- 		if (nla_put_u32(msg, IPVS_INFO_ATTR_VERSION,
- 				IP_VS_VERSION_CODE) ||
--		    nla_put_u32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE,
--				ip_vs_conn_tab_size))
-+		    nla_put_u32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE, csize))
- 			goto nla_put_failure;
- 		break;
- 	}
+ 	atomic_inc(&ipvs->conn_count);
+-	if (flags & IP_VS_CONN_F_NO_CPORT)
+-		atomic_inc(&ip_vs_conn_no_cport_cnt);
++	if (unlikely(flags & IP_VS_CONN_F_NO_CPORT)) {
++		int af_id = ip_vs_af_index(cp->af);
++
++		atomic_inc(&ipvs->no_cport_conns[af_id]);
++	}
+ 
+ 	/* Bind the connection with a destination server */
+ 	cp->dest = NULL;
+@@ -1556,6 +1566,7 @@ static const struct seq_operations ip_vs_conn_sync_seq_ops = {
+ };
+ #endif
+ 
++#ifdef CONFIG_SYSCTL
+ 
+ /* Randomly drop connection entries before running out of memory
+  * Can be used for DATA and CTL conns. For TPL conns there are exceptions:
+@@ -1565,12 +1576,7 @@ static const struct seq_operations ip_vs_conn_sync_seq_ops = {
+  */
+ static inline int todrop_entry(struct ip_vs_conn *cp)
+ {
+-	/*
+-	 * The drop rate array needs tuning for real environments.
+-	 * Called from timer bh only => no locking
+-	 */
+-	static const signed char todrop_rate[9] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+-	static signed char todrop_counter[9] = {0};
++	struct netns_ipvs *ipvs = cp->ipvs;
+ 	int i;
+ 
+ 	/* if the conn entry hasn't lasted for 60 seconds, don't drop it.
+@@ -1579,15 +1585,17 @@ static inline int todrop_entry(struct ip_vs_conn *cp)
+ 	if (time_before(cp->timeout + jiffies, cp->timer.expires + 60*HZ))
+ 		return 0;
+ 
+-	/* Don't drop the entry if its number of incoming packets is not
+-	   located in [0, 8] */
++	/* Drop only conns with number of incoming packets in [1..8] range */
+ 	i = atomic_read(&cp->in_pkts);
+-	if (i > 8 || i < 0) return 0;
++	if (i > 8 || i < 1)
++		return 0;
+ 
+-	if (!todrop_rate[i]) return 0;
+-	if (--todrop_counter[i] > 0) return 0;
++	i--;
++	if (--ipvs->dropentry_counters[i] > 0)
++		return 0;
+ 
+-	todrop_counter[i] = todrop_rate[i];
++	/* Prefer to drop conns with less number of incoming packets */
++	ipvs->dropentry_counters[i] = i + 1;
+ 	return 1;
+ }
+ 
+@@ -1681,7 +1689,7 @@ void ip_vs_random_dropentry(struct netns_ipvs *ipvs)
+ out:
+ 	rcu_read_unlock();
+ }
+-
++#endif
+ 
+ /* Flush all the connection entries in the conn_tab */
+ static void ip_vs_conn_flush(struct netns_ipvs *ipvs)
+@@ -1806,7 +1814,11 @@ void ip_vs_expire_nodest_conn_flush(struct netns_ipvs *ipvs)
+  */
+ int __net_init ip_vs_conn_net_init(struct netns_ipvs *ipvs)
+ {
++	int idx;
++
+ 	atomic_set(&ipvs->conn_count, 0);
++	for (idx = 0; idx < IP_VS_AF_MAX; idx++)
++		atomic_set(&ipvs->no_cport_conns[idx], 0);
+ 	INIT_DELAYED_WORK(&ipvs->conn_resize_work, conn_resize_work_handler);
+ 	RCU_INIT_POINTER(ipvs->conn_tab, NULL);
+ 	atomic_set(&ipvs->conn_tab_changes, 0);
 -- 
 2.51.0
 
