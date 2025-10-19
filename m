@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-9280-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9282-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B607BEDDB8
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 04:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF379BEDDBF
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 04:19:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2444418A1E52
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 02:05:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 335E1189FFDE
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Oct 2025 02:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C56F1DF97C;
-	Sun, 19 Oct 2025 02:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229B123B0;
+	Sun, 19 Oct 2025 02:19:41 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from iguana.tulip.relay.mailchannels.net (iguana.tulip.relay.mailchannels.net [23.83.218.253])
+Received: from dog.birch.relay.mailchannels.net (dog.birch.relay.mailchannels.net [23.83.209.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5CA1A9B58
-	for <netfilter-devel@vger.kernel.org>; Sun, 19 Oct 2025 02:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD836FC5
+	for <netfilter-devel@vger.kernel.org>; Sun, 19 Oct 2025 02:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760839526; cv=pass; b=UqSW1/BjrkSnBRk0pj7br/vqe8YU2TLrGnXt4B7jQZGbpEKneGqUgMIFRKbEtmV/C0UTYyBEdeba/eFp5KicP/e2LeOLzDYIWPJp9R8B+LtCYqdLo5PIgafIdXr6Xvqxgl3kPcOah+t3AhMFxtYsUFTcetjotcFXuwHGUssNgbY=
+	t=1760840381; cv=pass; b=OBfj0sQZOTwbzRtm6Xuxk37Fg2w86mFzfrJLYq1jS+31HD2wwHb1G1O7H7SkFxfpVKUxXfqeaay7q+/fFFi/wyJPrfB10mUyDif+VrTUdWOMy9YIj2Q+KbZxurX7u0dVAHprc1G5KeiArg9c+82qwn53I+6pRDFE4N/4e9gQCXc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760839526; c=relaxed/simple;
-	bh=/PD41vmHIbQE0NA3X+tA0CkLiTgXLn+Ta7rTm0tTd0A=;
+	s=arc-20240116; t=1760840381; c=relaxed/simple;
+	bh=pdkGXJ6WCO5C6meyLVK9qKI85jMTIrestyBUEL0U3uE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JZqdhU5e1HZlUdOr9EsBaFaCyewbLSlxhO2X/m/7XK9YLKRNwpVFRQe5ManKuCosZEAFE4/Adpo875SQmEIinkvgLYSjucMhNy4WGxZPgrxVw9Rhtf+L5vn1QL3whtALLOoPGYt4vqzZTGteqfP0Ci8JWBU3Ygg5KWfIomHLIcU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.253
+	 MIME-Version:Content-Type; b=HVprzEptEJAkWl43oC2rzqpaGzP7r1KH4DL6F1wv8pMpWgs3cax2p8OS7ezTu6HuJ5xkfMUN5n0EsJ5+N/lM/eCabQYT7kwMC0g9zS1IpHF2JF9cWELAsKUC97qXtHJ9NzGn6MNUF1OWptNC4qsruDQovs5w3e4LfNJRSKXY4C0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.209.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 19C5A7425EB;
-	Sun, 19 Oct 2025 01:40:08 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (trex-green-9.trex.outbound.svc.cluster.local [100.119.71.185])
+	by relay.mailchannels.net (Postfix) with ESMTP id 078F78A0B2E;
+	Sun, 19 Oct 2025 01:40:12 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-0.trex.outbound.svc.cluster.local [100.121.87.184])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 21E04742556;
+	by relay.mailchannels.net (Postfix) with ESMTPA id 209A38A0823;
 	Sun, 19 Oct 2025 01:40:06 +0000 (UTC)
 ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1760838007; a=rsa-sha256;
 	cv=none;
-	b=MCHOYoqSeYmqv2fRC/OixmkcihU6Yni0jwHc2vyrKWavhWgvlkIR/JrDOSheuMtVizlvRU
-	ZE43taHRZcVn6t5qX6yaFnbgqZqll9a3W/VqSyBjBLB6n+9mqnkVSOJUkp8c8hdTCTNRDf
-	kE2hADaBDPSD4MaZ83pxcBZKuhD898tEY0X46yyyk9T3t7x2WO+0WJga/QnW6hmhg8Y7ke
-	ANN+Mfg/dspkB4BVDE0bX3pIk9nQX27o3w1hwO3tX8Bf2c3QRBz80+TuoiM30/mTLtfISh
-	bQEwLT1/jhlc41xX/TWZ7+bzHa7q8xAAZ6f/XmSpacImtFzicfoYh9DhYV9kHA==
+	b=zg9pdc1KIaklorCxIOI6Yd6TaxjeN69e0SChMpYZfMx1qng8z6eBvjZfo8keH5D4+vX3Tb
+	VtzJgl3LMJF6l2+9tScKoiW8/gmA+F4r54zJSwFtOeHXIBgsjnTTXqBUCLzm2oHILHNXvd
+	JoviUZVjAV4VqsXvqeDvl7KYSnY2SbKHU3LtegrIsFu4JiPeJEd1AAB4/jgevBQxFIvwom
+	lthD9NqlN9USf1ihG+P6aW0wTPHfbHDXAWLr+TFHK7VLWfR/nsvfaaErksk+h3lAuSo3s7
+	wBSYHt7kEtDbAPPjiSiNt+ASpOt99S5ymSzM9rHPaBvnT6coizeltqJgWfl9fw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
 	s=arc-2022; t=1760838007;
@@ -51,43 +51,43 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VIqqzKKekSpEIt7VEhSbN/e2t8N5k6Sg5gJmWwbMKQA=;
-	b=XQNU0aTTLbnc7rtNgeOV0gcoL78/I1ryHIfcYCFvkHAWHWA70DF1SQUPddg2488dyP8Akk
-	GjyOoAAihsUngdtRePKioXkcsTkhV2wlaYb4GEDsU3oYF/LRGE3ryd2A7jrJT09a1ESZOz
-	MkZnp4xKyFZhg532pwEx7uW1XxSRJ08+F4XQayPEiGMRdcfvJlIKiczy+nRV31RLwa7sZu
-	dFX6Uon2ACfYy4oylyLRTLExevu3ws2JIlKVlFIVZAbd1Ancwe/2/IPqGOdpBbxFf49cyw
-	1Ud05g73nJZsnn1QAFyxByyVA4Mp4bW2V9rjIcxBSFl4RXBRFctT/X5FgRHsBQ==
+	bh=hwysecX2A59Xh9NMIgmKGJfASnwQfcLSqxsegNKjGRo=;
+	b=MqEMXxNatTJA5fwQm7yVMyRd7NyXSKeDk85Myd6NilapCteYE8RoE2VDXqoKFf+0nI8Ajc
+	lqeCvHUrvvh+nhL/Sox73l6dYga085zEM/pR6Sw8RgIw+HxWGntM7ZGgkoA7dilEd5+pdo
+	ULhdn9XiWjD60E/6QBK0WUCLBvkfD7ZUh5hyMDK3d/18fsjgGmzkHhLferDL9Ls2Sfuc4n
+	7qZ1YjHHTQ+Gf/XLWZq3gijUBH7/SyuZgd8lNGduBvVijDuz+JmzSFQMA/YToBbsY5eQdg
+	U6CxUKZAxBy3hpWrJqu/6EEZZhhql7Y0VFWC3aVMPj/M7+smX6JSo4hEuISJ0w==
 ARC-Authentication-Results: i=1;
-	rspamd-6c854d7645-7ffz2;
+	rspamd-6c854d7645-dmgkf;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MC-Copy: stored-urls
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Desert-Lyrical: 0ad83cd76afd168a_1760838008015_266726504
-X-MC-Loop-Signature: 1760838008014:2965849017
-X-MC-Ingress-Time: 1760838008014
+X-Trail-Suffer: 3ed8033676bcd153_1760838011937_1634669761
+X-MC-Loop-Signature: 1760838011937:2180636965
+X-MC-Ingress-Time: 1760838011937
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.119.71.185 (trex/7.1.3);
-	Sun, 19 Oct 2025 01:40:08 +0000
-Received: from [212.104.214.84] (port=13319 helo=heisenberg.scientia.org)
+	by 100.121.87.184 (trex/7.1.3);
+	Sun, 19 Oct 2025 01:40:11 +0000
+Received: from [212.104.214.84] (port=56065 helo=heisenberg.scientia.org)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <calestyo@scientia.org>)
-	id 1vAIP1-0000000DT6d-3rkZ;
+	id 1vAIP1-0000000DT6e-40EB;
 	Sun, 19 Oct 2025 01:40:05 +0000
 Received: by heisenberg.scientia.org (Postfix, from userid 1000)
-	id 959F459EEDEF; Sun, 19 Oct 2025 03:40:02 +0200 (CEST)
+	id 9A2ED59EEDF1; Sun, 19 Oct 2025 03:40:02 +0200 (CEST)
 From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>,
 	pablo@netfilter.org
-Subject: [PATCH v3 5/6] =?UTF-8?q?doc:=20describe=20include=E2=80=99s=20co?= =?UTF-8?q?llation=20order=20to=20be=20that=20of=20the=20C=20locale?=
-Date: Sun, 19 Oct 2025 03:38:12 +0200
-Message-ID: <20251019014000.49891-6-mail@christoph.anton.mitterer.name>
+Subject: [PATCH v3 6/6] doc: minor improvements the `reject` statement
+Date: Sun, 19 Oct 2025 03:38:13 +0200
+Message-ID: <20251019014000.49891-7-mail@christoph.anton.mitterer.name>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251019014000.49891-1-mail@christoph.anton.mitterer.name>
 References: <6bb455009ebd3a2fe17581dfa74addc9186f33ea.camel@scientia.org>
@@ -102,34 +102,31 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AuthUser: calestyo@scientia.org
 
-Currently, `nft` doesn’t call `setlocale(3)` and thus `glob(3)` uses the `C`
-locale.
-
-Document this as it’s possibly relevant to the ordering of included rules.
-
-This also makes the collation order “official” so any future localisation would
-need to adhere to that.
-
 Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 ---
- doc/nft.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ doc/statements.txt | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/doc/nft.txt b/doc/nft.txt
-index 09da6f28..15a54f23 100644
---- a/doc/nft.txt
-+++ b/doc/nft.txt
-@@ -165,8 +165,8 @@ Include statements support the usual shell wildcard symbols (*,?,[]). Having no
- matches for an include statement is not an error, if wildcard symbols are used
- in the include statement. This allows having potentially empty include
- directories for statements like **include "/etc/firewall/rules/*"**. The wildcard
--matches are loaded in alphabetical order. Files beginning with dot (.) are not
--matched by include statements.
-+matches are loaded in the collation order of the C locale. Files beginning with
-+dot (.) are not matched by include statements.
+diff --git a/doc/statements.txt b/doc/statements.txt
+index 61a4614d..5d34d03a 100644
+--- a/doc/statements.txt
++++ b/doc/statements.txt
+@@ -233,10 +233,11 @@ ____
+                  *tcp reset*
+ ____
  
- SYMBOLIC VARIABLES
- ~~~~~~~~~~~~~~~~~~
+-A reject statement is used to send back an error packet in response to the
+-matched packet otherwise it is equivalent to drop so it is a terminating
+-statement, ending rule traversal. This statement is only valid in base chains
+-using the *prerouting*, *input*,
++A reject statement tries to send back an error packet in response to the matched
++packet and then interally issues a *drop* verdict.
++It’s thus a terminating statement with all consequences of the latter (see
++<<OVERALL EVALUATION OF THE RULESET>> respectively <<VERDICT STATEMENTS>>).
++This statement is only valid in base chains using the *prerouting*, *input*,
+ *forward* or *output* hooks, and user-defined chains which are only called from
+ those chains.
+ 
 -- 
 2.51.0
 
