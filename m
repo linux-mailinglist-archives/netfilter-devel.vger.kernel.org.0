@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-9330-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9334-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B7FBF411D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Oct 2025 01:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38F2CBF4129
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Oct 2025 01:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6CDBD4EC6B1
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Oct 2025 23:51:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2166E4F7346
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Oct 2025 23:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CA72F7AC5;
-	Mon, 20 Oct 2025 23:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B242EF67F;
+	Mon, 20 Oct 2025 23:51:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from silver.cherry.relay.mailchannels.net (silver.cherry.relay.mailchannels.net [23.83.223.166])
+Received: from cow.ash.relay.mailchannels.net (cow.ash.relay.mailchannels.net [23.83.222.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22ED922259B
-	for <netfilter-devel@vger.kernel.org>; Mon, 20 Oct 2025 23:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B77B246762
+	for <netfilter-devel@vger.kernel.org>; Mon, 20 Oct 2025 23:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.222.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761004304; cv=pass; b=X4HfB1/UZ47MqFK/7XetqTrESoX+7jflrHAg9IuKKKwX65WGIl0HDGUx0koGy3BWM25o4/xkqssYLhPcSL0iaZTk5bkOPNDzTIvqJonyJpVLMSm7UHDhblJVd9gop5btSj4I2bQ/yGQ0oB2pKgepP433bnLWgw3dhUlKIlB5tIo=
+	t=1761004311; cv=pass; b=jp3YdGf1JVXVO03wlM5CuY3zDe5RSJ+GhO0UILIbD/sGjbtY2WrNsDX2xuZUIbjKSBIeBOfZDeBFoaEQtL0ky8Ga9NO4VEh40mcihDQTDRVVTg8BQDB+eGF0D011ysnHT8Rsgl6MuqrQVSpiGZ9+KbULENE08hb5qCfLrlC/ncw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761004304; c=relaxed/simple;
-	bh=80/D75yy+ksTRDK1fbe+EfYeFX1Gggo0uS3zXsRJhr4=;
+	s=arc-20240116; t=1761004311; c=relaxed/simple;
+	bh=xPRUHv0Cnk/XNuV806VufV6gRYqZg9B+UR+dZERLZ9I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mm4NJn9FvzZ+lXulNAFQCJBxC/+alZ8YKFFtDVB6eivrfAjq+jEouwWqa34Auhz5rlae4hzKSPYGKWRwXeJ8BQHLh47URFSHs8cUyven93FC35BWCFkj9YXh2UllJkCEtfBx4SD4kq6wgqq9Dv3aJjkHIatZ6pbkEK/WYTbhD4o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.223.166
+	 MIME-Version:Content-Type; b=sf+WuKIllIBWx1uF8PHfN2rYPowH5mbau0fn0fmb3OEVTffN6V02/1/jiqaB3SLjB2v/5CSivqhjI0uxYeND7yL5i8bAsnt5phcO29XSJZXTi77aOo337xL9r1MVKVIWzlWGTXTxVaMuVByRRVSq8NQMtlHVW5ovE+rTjCN2mnY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.222.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id B4A78901DFB;
-	Mon, 20 Oct 2025 23:51:36 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (100-116-230-204.trex-nlb.outbound.svc.cluster.local [100.116.230.204])
+	by relay.mailchannels.net (Postfix) with ESMTP id 5A6F2942FD0;
+	Mon, 20 Oct 2025 23:51:40 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (100-118-36-55.trex-nlb.outbound.svc.cluster.local [100.118.36.55])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id B645C901966;
+	by relay.mailchannels.net (Postfix) with ESMTPA id 6386994300A;
 	Mon, 20 Oct 2025 23:51:35 +0000 (UTC)
 ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1761004296; a=rsa-sha256;
 	cv=none;
-	b=pMU8DIld8j8ag2eOx/VK1kR+YVcyVbSW4TAj+sNWe5iwkdaUg14qAwaYZsoMnOcuVYPHow
-	8Nxo/9vJ4rz2VpigSe5ZBFcMYGsSQ5XqyarCK12+reBbPC9Qe0Vgjg8/QUEaLAQsh5x7tF
-	pxiDdtunFuYg8RajpDTKMP2KZb5r6AuK7Q1va3G584o0Eh5H/ltUTd+fU2BS935cOMzVzB
-	KXhk5FyRNczgBnZdfmzh/LOuYUSnAemQbMZyE5BuFs9NrnO3DfNQE4m9fxN84sT/eU1nOY
-	1po2q20kf1sI91mXn0Q1998thyBvZWR5KmKbeqnC+OhOmTxHqAUIL04nk98/gA==
+	b=yG3oY2dPxz9S8xDjKc9XKBAIYYwfrNNiqwp76RbqWuMIIFpsPPDtB77OiQ6uIUiVGI0+4p
+	vP+zr0ZZwhxrilOychPTnr6FDeSE/jXOCQOdO/9++sKSa1HIkanKtxx/djc8zpJMt8n5Cm
+	raGvcv1ogqU6Cc7S//ZOvSx4dsiSVsmV1XnJ1Gi9bTXDmC3hQkWxhSp2ANsvplvGniQaXR
+	OlO5ap3rTWI+yzn1Rz/jsTa4pAQ/hViY5OehLJGl8ot1a+Mhsiw9a0SJjXReJIywEFlW6w
+	p7QoIWaPz3EHNjltJfMT7nSFawMKBqUeyVlAjCscthLaq+wT0gwQCWsk2J1KGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
 	s=arc-2022; t=1761004296;
@@ -51,12 +51,12 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tC86XUxtTL1exRBgslf8k1ItRvmN8AChwsLLb5b3V6A=;
-	b=GH/1qdUruMIk7orkydGxCsOvGrqR5GdlXqzu22n3d85xC1mcE5TLFbde4jW0hrKBlByPqv
-	Ekd77wQlmjVdfDodqY9UHQlHkVH8vPD6czM4ChbNReUt/GS8/bYnQp0azY7KfMuZYV+RSA
-	4+SbFLJkdfsnwE3rAX4EKm9DEa2SzQeeMgW7XuUGr1IDSvmnc5p6jdH13b9ga4uv+r7rKA
-	UAMBgeC6GLOJ2Ia4sLnJp1zMFIbCfcC3YM+FNKY899DCDqEaOkKVYcq4iAZXFdkidG5Wj6
-	t/QPOeLqJpbpGY9XsE8JCGKW8YUC63gstnzUnZ52qDawB4z9eUdJgSFzwGv+cw==
+	bh=IXd3CMWeDrl+nSWkVLvkA1W3/iMPGq9YgZ7uFssnT3Y=;
+	b=t4XrYI3L9l/nUZEy3tuvB2Rv/sjNVg9S7HjumcqjK8PPIEG2rSZxcDQQkudzz5SPEtVtIA
+	IIkZW2Iorr+FdkJx3LN1I2L3zqdyBPV0C0oNm/K24fGXaubyYKLhb5S+4nvrPQswWe4llG
+	IQiuD9rjJYbcDgucFAK8Y92kkDVkGrozfHswyHLWCeVdZQwtQJqK5Nfb+dQF1qu6WpYCHH
+	G5PrZloKHwE4KiO42v73gQmcSY45+wozAvi4OWd8dqywoe8RNmU3Yf71uJfL+VtbemqMJh
+	iGf72Gukn5HSsXK3ErLTf1oImGrSdFZYq8lmRIDCD840RNPDUVM/KTM1zUsiPQ==
 ARC-Authentication-Results: i=1;
 	rspamd-869c579f6-rdvn2;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
@@ -65,29 +65,29 @@ X-MC-Relay: Neutral
 X-MC-Copy: stored-urls
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Squirrel-Snatch: 5da63269636eac68_1761004296592_3333574818
-X-MC-Loop-Signature: 1761004296592:3276807394
-X-MC-Ingress-Time: 1761004296591
+X-Hook-Inform: 5a1ddf2d193076ff_1761004300256_2198978805
+X-MC-Loop-Signature: 1761004300256:1016724204
+X-MC-Ingress-Time: 1761004300256
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.116.230.204 (trex/7.1.3);
-	Mon, 20 Oct 2025 23:51:36 +0000
-Received: from [79.127.207.162] (port=14925 helo=heisenberg.scientia.org)
+	by 100.118.36.55 (trex/7.1.3);
+	Mon, 20 Oct 2025 23:51:40 +0000
+Received: from [79.127.207.162] (port=40155 helo=heisenberg.scientia.org)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <calestyo@scientia.org>)
-	id 1vAzf4-00000009cok-1hRN;
-	Mon, 20 Oct 2025 23:51:34 +0000
+	id 1vAzf4-00000009col-1ZDS;
+	Mon, 20 Oct 2025 23:51:33 +0000
 Received: by heisenberg.scientia.org (Postfix, from userid 1000)
-	id 6544C5A29C27; Tue, 21 Oct 2025 01:51:32 +0200 (CEST)
+	id 6A1705A29C29; Tue, 21 Oct 2025 01:51:32 +0200 (CEST)
 From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de,
 	pablo@netfilter.org
-Subject: [PATCH v4 3/5] doc: add more documentation on bitmasks and sets
-Date: Tue, 21 Oct 2025 01:49:03 +0200
-Message-ID: <20251020235130.361377-4-mail@christoph.anton.mitterer.name>
+Subject: [PATCH v4 4/5] =?UTF-8?q?doc:=20describe=20include=E2=80=99s=20co?= =?UTF-8?q?llation=20order=20to=20be=20that=20of=20the=20C=20locale?=
+Date: Tue, 21 Oct 2025 01:49:04 +0200
+Message-ID: <20251020235130.361377-5-mail@christoph.anton.mitterer.name>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251020235130.361377-1-mail@christoph.anton.mitterer.name>
 References: <6bb455009ebd3a2fe17581dfa74addc9186f33ea.camel@scientia.org>
@@ -102,70 +102,34 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AuthUser: calestyo@scientia.org
 
+Currently, `nft` doesn’t call `setlocale(3)` and thus `glob(3)` uses the `C`
+locale.
+
+Document this as it’s possibly relevant to the ordering of included rules.
+
+This also makes the collation order “official” so any future localisation would
+need to adhere to that.
+
 Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 ---
- doc/data-types.txt | 31 +++++++++++++++++++++++++++++++
- doc/nft.txt        |  5 +++++
- 2 files changed, 36 insertions(+)
+ doc/nft.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/doc/data-types.txt b/doc/data-types.txt
-index 18af266a..b36ca768 100644
---- a/doc/data-types.txt
-+++ b/doc/data-types.txt
-@@ -26,6 +26,37 @@ integer
- 
- The bitmask type (*bitmask*) is used for bitmasks.
- 
-+In expressions the bits of a bitmask may be specified as *'bit'[,'bit']...* with
-+'bit' being the value of the bit or a pre-defined symbolic constant, if any (for
-+example *ct state*’s bit 0x1 has the symbolic constant `new`).
-+
-+Equality of a value with such bitmask is given, if the value has any of the
-+bitmask’s bits set (and optionally others).
-+
-+The syntax *'expression' 'value' / 'mask'* is identical to
-+*'expression' and 'mask' == 'value'*.
-+For example `tcp flags syn,ack / syn,ack,fin,rst` is the same as
-+`tcp flags and (syn|ack|fin|rst) == syn|ack`.
-+
-+Note that *'expression' 'bit'[,'bit']...* is not generally the same as
-+*'expression' {'bit'[,'bit']...}* and analogously with a named set.
-+The latter forms are lookups in a set and will match only if the set contains
-+exactly one value that matches.
-+They are however effectively the same (with matching bitmasks typically being
-+faster) when all bits are semantically mutually exclusive.
-+
-+Examples:
-+* *tcp flags syn,ack* matches packets that have the SYN, the ACK or both SYN and
-+  ACK flags set. Other flags are ignored.
-+  *tcp flags { syn, ack }* matches packets that have either only the SYN or only
-+  the ACK flag set. All other flags must be unset.
-+* *ct state established,related* and *ct state { established, related } * match
-+  exactly the same packets, because the bits of *ct state* are all mutually
-+  exclusive.
-+
-+As usual, the the *nft describe* command may be used to get details on a data
-+type, which for bitmasks shows the symbolic names and values of the bits.
-+
- STRING TYPE
- ~~~~~~~~~~~~
- [options="header"]
 diff --git a/doc/nft.txt b/doc/nft.txt
-index 4cd3fa8e..4ae998ed 100644
+index 4ae998ed..3fd19c8d 100644
 --- a/doc/nft.txt
 +++ b/doc/nft.txt
-@@ -775,6 +775,11 @@ Example: When the set contains range *1.2.3.1-1.2.3.4*, then adding element *1.2
- effect.  Adding *1.2.3.5* changes the existing range to cover *1.2.3.1-1.2.3.5*.
- Without this flag, *1.2.3.2* can not be added and *1.2.3.5* is inserted as a new entry.
+@@ -165,8 +165,8 @@ Include statements support the usual shell wildcard symbols (*,?,[]). Having no
+ matches for an include statement is not an error, if wildcard symbols are used
+ in the include statement. This allows having potentially empty include
+ directories for statements like **include "/etc/firewall/rules/*"**. The wildcard
+-matches are loaded in alphabetical order. Files beginning with dot (.) are not
+-matched by include statements.
++matches are loaded in the collation order of the C locale. Files beginning with
++dot (.) are not matched by include statements.
  
-+Equality of a value with a set is given if the value matches exactly one value
-+in the set (which for intervals means that it’s contained in any of them).
-+See <<BITMASK TYPE>> for the subtle differences between syntactically similarly
-+looking equiality checks of sets and bitmasks.
-+
- MAPS
- -----
- [verse]
+ SYMBOLIC VARIABLES
+ ~~~~~~~~~~~~~~~~~~
 -- 
 2.51.0
 
