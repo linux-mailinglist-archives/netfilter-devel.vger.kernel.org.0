@@ -1,147 +1,180 @@
-Return-Path: <netfilter-devel+bounces-9321-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9323-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 301DDBF3D30
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Oct 2025 00:08:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4987BF3DFD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Oct 2025 00:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9357E351E46
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Oct 2025 22:08:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5342C18A6C7D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Oct 2025 22:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAE72F0C67;
-	Mon, 20 Oct 2025 22:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCF82EFD9E;
+	Mon, 20 Oct 2025 22:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=christoph.anton.mitterer.name header.i=@christoph.anton.mitterer.name header.b="P8MM0ymX"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from toucan.tulip.relay.mailchannels.net (toucan.tulip.relay.mailchannels.net [23.83.218.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2915A2EFDA0
-	for <netfilter-devel@vger.kernel.org>; Mon, 20 Oct 2025 22:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760998106; cv=none; b=kU+u9wzcqgFS0KVbwjrKoBfYy2OQTnLWbo9GO0KwXEZ0qX+wYCUcSwE+X/hdcR0jYBbXuGUUxVqYopZeM+ORV8E3ZJ8yPSXZbPwyzn9kcmax3hvnXLTIIdtkEKStK90E45Q+7oBMhRXWgQtWkvj7fVdZYUOl9HsiKNJFrpqM/xQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760998106; c=relaxed/simple;
-	bh=xNwz35VeXmweKFOtwmBNgSVHa1NRQoto/1OwK8pDD4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QYSmSLIo+JwfNMwZe5U6+a/YqOyHbX7sBFpN/Lb1wSTbV3gL+uekAEfYJ2bljI4IlbjQoOO+838ShiQFqOcRfKQWQ7t7iycs/s5M6ObHZHOk5Bw0xWpUXJiTqhE90o4Bsy8EkZApknbHiUGgwisRu4jDYM/1CFqo6GLypcZsgPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id C795D6109E; Tue, 21 Oct 2025 00:08:21 +0200 (CEST)
-Date: Tue, 21 Oct 2025 00:08:21 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Antonio Ojea <aojea@google.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Eric Dumazet <edumazet@google.com>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] selftests: nft_queue: conntrack expiration requeue
-Message-ID: <aPay1RM9jdkEnPbM@strlen.de>
-References: <20251020200805.298670-1-aojea@google.com>
- <aPah2y2pdhIjwHBU@strlen.de>
- <CAAdXToT14bjkvCrP=tG4V4XJhhyGMfuJz+FdfTO+xJ10Z-RezA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF66226D16
+	for <netfilter-devel@vger.kernel.org>; Mon, 20 Oct 2025 22:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.254
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760998786; cv=pass; b=KFifAac3IjC6ZKUB1Io03Dio29q7ZNuHpxGXG9+ar+nXm/Oaeb8wVN2JH7/UmjgnO7W21cVLF8F6QTXaiJPSPgW73UuQLvdmKX7dIIm/Zw013/aTfbzucGMwCB5OhcZZfRbjitM8P8cCdmJm/xsmwE8NffG5FcHtGEOJ3cppgNw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760998786; c=relaxed/simple;
+	bh=JgOx4zqjUM4SQMyXmirfGb1O6RI4yQ/i1V7R3cxBkpU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JBQR+iZlPYuCT+AP/qUMdQnQvpx/NvRlCc/NOLzfxL1mK/pZtensm4S2UOR//w8LcW+KnPatBPQIZjcjW0vbKMcpIaCkXzfipCrFIXlGMPyHu8OT3Vp0wXFcDFQaVddeuiWHMEWHcqqaLgoJGtxoo/qNg5CVrYBQuKyalBkwFQQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=christoph.anton.mitterer.name; dkim=fail (0-bit key) header.d=christoph.anton.mitterer.name header.i=@christoph.anton.mitterer.name header.b=P8MM0ymX reason="key not found in DNS"; arc=pass smtp.client-ip=23.83.218.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=christoph.anton.mitterer.name
+X-Sender-Id: instrampxe0y3a|x-authuser|mail@christoph.anton.mitterer.name
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 4DE668A360E;
+	Mon, 20 Oct 2025 22:14:00 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-4.trex.outbound.svc.cluster.local [100.119.74.21])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 7DC068A34A1;
+	Mon, 20 Oct 2025 22:13:59 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1760998440; a=rsa-sha256;
+	cv=none;
+	b=FR9PW74qbeSk987Aj6Z12PVsWl87zsDLJ8Sf2FCnryhz6Pwfrend/auW+ALDateS7OsKwn
+	qgVgAOEnUKjg+i8bYgjlM5sx7ISQkHOXI5s/Bc7pchYvrn1Itsjg6g4r1tbKT0yOoihcOl
+	fJdQO35W6nHyluFbOQ2mLhKWaVN94/8Ghs05IMj7AhI+xeQctpjQhXs8tnRpuNZPD17His
+	BP3DvMFG/HmVzYhK2iZILN6WTd9zgpAzD4so16TahQrSNUqxNt+mZL1nRjqlMiSYjsKoVR
+	L0P2P92OSATLeWHZ0qJ7gI/W6vCaLedc/XfKzWPNZED0xaBocyWOtAJ/s11Efg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1760998440;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=JgOx4zqjUM4SQMyXmirfGb1O6RI4yQ/i1V7R3cxBkpU=;
+	b=WBcl/013OlBLRNHIAqsWE3FpwJeGhy5YFtDdJG28q/9fPovCrcHnNyb+2n+bW4QMiTlFLS
+	1la2mZdtmQjTw0wO0u5YHCHLUTKjHtTo8Tla46oaCnDCBu+GxgpPXVxp2MN57mfl+xxW8g
+	maq4MY07zvuZFb96RaMEh4zUTqHYqD/P131A8Wrn83dBEhI6Aaj7a+58dSl9Tj1M2ZWuyP
+	eYwO9bgGu2UrSRCmg23fR6kzWVEoqD2TS3y8/ObEVLCSqXOkJe20xmMMHPqAgTKhZ+JLeE
+	A60nyKlNdb5SifWUJ+2bFDK+IoMAgsvGXW8tN+KjjF8e7o9C4m/TQezeM5F+HA==
+ARC-Authentication-Results: i=1;
+	rspamd-6c854d7645-7tn78;
+	auth=pass smtp.auth=instrampxe0y3a
+ smtp.mailfrom=mail@christoph.anton.mitterer.name
+X-Sender-Id: instrampxe0y3a|x-authuser|mail@christoph.anton.mitterer.name
+X-MC-Relay: Neutral
+X-MailChannels-SenderId:
+ instrampxe0y3a|x-authuser|mail@christoph.anton.mitterer.name
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Squirrel-Whimsical: 1815fe6513d1fd6b_1760998440208_2313134713
+X-MC-Loop-Signature: 1760998440208:1568662331
+X-MC-Ingress-Time: 1760998440208
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.119.74.21 (trex/7.1.3);
+	Mon, 20 Oct 2025 22:14:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=christoph.anton.mitterer.name; s=default; h=MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+	List-Archive; bh=JgOx4zqjUM4SQMyXmirfGb1O6RI4yQ/i1V7R3cxBkpU=; b=P8MM0ymXWdDa
+	XMZDnimndrpgLyd5/jy6reU8yKFROCtX3DXM2g7pgPNdThWaDgtgI4OT9feajJB2Xw2wXqeyPRjBa
+	cqWmfqDsBIU0erItSA6EhjSe7UAOIsaNRCnmQBR0PLPB1hLX/lTI4VbtXl3ZyQ/jZ4hqgnPf+uroO
+	y4Blus00hdsuzLDY+D/jL50kwuAjUpXpYMXRWsHEzzyM1n3ykPz6/8knjXJ2BpK5ffbHOYtfu/fAc
+	vt8ZDejto86Ok809lCwWppx662qJRy/wx4h4VsKAyA3m5ve2a8UCrPBazP4X4ApsjJHdWj8D+Eu+q
+	IpKVwTbgCS6qniVmLYwM9w==;
+Received: from [79.127.207.162] (port=54972 helo=[10.2.0.2])
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <mail@christoph.anton.mitterer.name>)
+	id 1vAy8b-00000009APD-3bMy;
+	Mon, 20 Oct 2025 22:13:57 +0000
+Message-ID: <d071e75f1b9981ba8d5f650c5805d79a0f77d683.camel@christoph.anton.mitterer.name>
+Subject: Re: [PATCH v3 1/6] doc: fix/improve documentation of verdicts
+From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org
+Date: Tue, 21 Oct 2025 00:13:55 +0200
+In-Reply-To: <aPYAuQ89M7Z7doVJ@strlen.de>
+References: <6bb455009ebd3a2fe17581dfa74addc9186f33ea.camel@scientia.org>
+	 <20251019014000.49891-1-mail@christoph.anton.mitterer.name>
+	 <20251019014000.49891-2-mail@christoph.anton.mitterer.name>
+	 <aPYAuQ89M7Z7doVJ@strlen.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-5 
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAdXToT14bjkvCrP=tG4V4XJhhyGMfuJz+FdfTO+xJ10Z-RezA@mail.gmail.com>
+X-AuthUser: mail@christoph.anton.mitterer.name
 
-Antonio Ojea <aojea@google.com> wrote:
-> yeah, sorry, as you say, I meant disabled
-> 
-> > > state. Setting the conntrack entry timeout to 0 allows to remove the state
-> > > and the packet is sent to the queue.
-> >
-> > But its the same as --delete, entry gets tossed (its timed out) and is
-> > re-created from scratch.
-> >
-> 
-> The behavior is not the same as deleting the entry, I tried both and
-> only works by setting the timeout, I tried to follow the codepath but
-> I'm very unfamiliar with the codebase to understand why delete is
-> different from updating with timeout 0.
+On Mon, 2025-10-20 at 11:28 +0200, Florian Westphal wrote:
+> Christoph Anton Mitterer <mail@christoph.anton.mitterer.name> wrote:
+> > +*drop*:: Immediately drop the packet and terminate ruleset
+> > evaluation.
+> > + This means no further evaluation of any chains and it=E2=80=99s thus =
+=E2=80=93
+> > unlike with
+> > + *accept* =E2=80=93 not possible to again change the ultimate fate of =
+the
+> > packet in any
+> > + later chain.
+> > +
+> > +
+> > +Terminate ruleset evaluation and drop the packet. This occurs
+>=20
+>=20
+> Hmm, looks like something went wrong during a rebase?
+> Why are there 2 blank lines followed by a rephrase of the first
+> sentence?
 
-It should be the same.
+Nah,... my fault, not rebase=E2=80=99s. O:-)
+Forgot to remove the old version. Sorry.
 
-Only difference:
 
-ctnetlink delete zaps entry right away, timeout-0 zaps it on the next
-(matching) packet or when gc finds the entry (or on next conntrack -L),
-whatever comes first.
+> > +For example, a *reject* also immediately terminates the evaluation
+> > of the
+> > +current rule as well as of all chains, overrules any *accept* from
+> > any other chains and can itself not be
+> > +overruled, while the various NAT statements may be overruled by
+> > other *drop*
+> > +verdict respectively statements that imply this.
+>=20
+> I totally dislike this sorry :-(
 
-> > That zaps the entry and re-creates it, all state is lost.
-> > Wouldn't it make more sense to bypass based on connmark or ctlabels?
-> 
-> This simplifies the datapath considerably and avoids the risk of
-> having to coordinate marks with other components, but there is also
-> some ignorance on my side on how to use all netfilter features
-> efficiently.
-> 
-> The use case I have is to only process the first packet of each
-> connection in user space BUT also be able to scan the conntrack table
-> to match some connections that despite being established I want to
-> reevaluate only once, so I have something like:
+=F0=9F=98=85=EF=B8=8F
 
-> ct state established,related accept
-> queue flags bypass to 98
 
-Understood.
+> There is no overruling, there is no 'verdict state tracking'.
+>=20
+> Or would you say that a qdisc that dropped a packet overruled a nft
+> accept
+> verdict...?
+>=20
+> Sorry for spinning on this again and again.
 
-> And then I scan the conntrack table, and for each flow I need to
-> reevaluate once , I just reset the timeout and it ignores the rule "ct
-> state established,related accept" , then if the verdict is accepted it
-> keeps skipping the queue.
+No worries. All fine. :-)
 
-Yes, but thats because the packet that hits the timed-out flow zaps it
-and is 'new' (for tcp_loose=1).
 
-> However, if there is a more elegant way that does not depend on this
-> "hack" please let me know
-> Can I apply a connmark or ctlabel via netlink in an existing flow?
+> All this talk about *overrule* makes it sound much more complicated
+> than it is.
+> Can you re-send this patch standalone, without this pragraph?
+>=20
+> Or perhaps just the 'For example, a *reject* also immediately *drops*
+> the packet'.
 
-Yes, bypassing nfqueue was the original use-case that prompted the
-connlabel feature.
+I removed these examples altogether. The sentence:
+> These statements thus behave like their implied verdicts, but with
+> side effects.
 
-> If so, how to make it so it only is enqueued once, do I need to mark
-> and unmark the flow?
-
-There are several ways to do what you want.
-
-You can add a 'requeue' named set:
-   ct id @myset queue ...
-
-and then add/remove from that set to (re)enable via userspace.
-
-Or you can use opt-in (or out, its simpler) via mark or label:
-  ct state new ct label set shouldqueue ...
-  ct label shouldqueue queue ...
-
-or, without need to set initial state:
-  ct label ! "wasqueued" queue ...
-
-... and then use ctnetlink to set the label (or clear it).
-
-Or, set/clear the label from the nfqueue program itself when setting accept
-verdict (via nested NFQA_CT + CTA_MARK/LABELS).
-
-Same with connmark, but I know that this might be impossible
-due to those being used for policy routing etc.
-
-> > I'm not sure what the test is supposed to assert.
-> >
-> > That setting timeout via ctnetlink to 0 kicks the entry out of the ct hash?
-> 
-> The behavior I'd like to assert is if this behavior is just some side
-> effect I found or something it will be "stable" , since I'm trying to
-> build the firewall on this behavior and if changes it will be very
-> disruptive
-
-Setting the timeout to 0 zaps the entry at earliest opportunity,
-it will not be "reactivated" on next packet, its just
-conntrack --delete with minor random delay.
+should actually already be enough... maybe I overdid the "holding-the-
+reader's-hand-and-guiding-him-through" a bit here O:-)
 
