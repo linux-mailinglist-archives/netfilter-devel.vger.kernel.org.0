@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9405-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9387-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 944D8C025E8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:15:47 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4593C025FA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:16:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 918EB3AA535
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4CC9B501AEB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA79296BD7;
-	Thu, 23 Oct 2025 16:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401A8286881;
+	Thu, 23 Oct 2025 16:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="LhjIwQgg"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="pHVcPjxa"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3C82882D3
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3C82877E5
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761236100; cv=none; b=FBtKW8o6rssWYExMVaZmkAVEK97Jy1HKcfcarqyrMDqMWJuJno0GkDtegSaGDmfKJ250wrqyNSWGUBiD7M5J7I832XMSMu3EtwT3/rw3invVTiYUXM5iEfkZG5+V2hRSr5X/LfUtlPkvIf/M1sDjsjpotq4uLaeiw3+MWZo30yQ=
+	t=1761236069; cv=none; b=o2s32rU1Z0eB5PP51VBq5bAcjQLtyE+KeuVwVqKdlZk6zwuu6KkO7l2CcX8RKQ+rJc5GO6Lm8of35OEVKYBK3jDQ/1DIZIAbPgoB/BE0HziFIWhkc2ZUNugf/sK8XDH/xEPfs0rguOCBNYdoZvmt2qdBW+GHoIe+5xvFWzT/6zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761236100; c=relaxed/simple;
-	bh=kEUkJhbXuFBR1sAmy2rAcOzvGEOz7go/SSNpso9RdQY=;
+	s=arc-20240116; t=1761236069; c=relaxed/simple;
+	bh=vx9BHurlCV0sahbis40c1sKOqBD88H2eQF5n3BWOlfY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DNCmm7gAZJm7vqltxFu6ITW4bwyaNW3QZS+NCRFh9cQhs22S+8ZgJyp01YMjXCvLub2boqkI7w3LYPUSt4T8UMvIKq5K5XawNeH9nVu6XKbQu5lkmzoQoPG84l0sr8tIbeRz74/z8RH1jwRXxx7zqE7Q57n5kFGw+Xtj4G8jmVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=LhjIwQgg; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=prUH4xujBz81DSNk5PxtBxKpXEAeevarhYhwLyd0axKf8ghaJ7WGUXa8T4EX4eSSVMlkggErcQU1wwelfEJa3dQntQoOPWyjDgajGoRA9ot6PzTw/omd1UyGP0wLoLbJaHN4Q2CkH6RTsGoK43ZfzO4gA5RqS8yJH5A7uUdbc2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=pHVcPjxa; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=GmAiqFTV+6pqQu+ZATnxjomdjUB2c8M9+WreyJQueRI=; b=LhjIwQggKFLIfygv0wpXMhmhDL
-	QKpKlwbdV7mCwWL/nuwNDQnYPEA2xTX31MMYvxiMLLUhhhuczdp7mdH7L2wjp/7y4KGYeHTvUNMSN
-	QAz7F0HhMro7ZINz7RXpCDM8Ul54XuMHE/xLI8Hnsjhw5bfSfYhcQT2zMHUv1xPvdFJhkIsjRsQpw
-	buOBq0mWvOwJwlw+qMZPo3M2a9Dw18a/VMmIfLsPKI+JrwX9ciZ4EcklUHi8TIj/ov99oduUFORW1
-	qASb9nCHqc3gBaVOcrz9utTqTo9uOZmLXr0f0HY2ZSjCnvoLnYPPZXRlFBqh3ZSX93YT/c8WuWyle
-	DcWLFBPQ==;
+	bh=PDrmOG2YXIn1QS7fg3d2xs43IGUKdehSECtHNFeFCGc=; b=pHVcPjxaCgG1kJ6exiFFS9Dpza
+	RCr0oSKw9hadtFv4eJIObGbd/+CPNE7UADxMGsLIAGsUBDHA+M2vAT3+qhWTcqHFE5YO2T42Ls3Ek
+	cYLeyikqJ2B2opYb/qkl0t3MnjryTC8THr2uUQ/p+6eLn/ylbbIbkjFSK+LlNXTD1rPs1RPn8qwl/
+	vc0NzrkI+cpHvVUjy06BcUtXbcPQpRrD0SMlbMC8dCYRIDw55IzCzlF08ScVip4GJZZcCaHnwdg2l
+	+/yR6Br9xVVPqyuMs9YRvdvbm8Qm/xd3qjGiBdVWJFkyf/nsDKkiZnjZ3XM6v3iWchyjfmGcb0oFn
+	X2U/e31A==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxxp-0000000008L-2dMg;
-	Thu, 23 Oct 2025 18:14:57 +0200
+	id 1vBxxJ-00000000054-3yVv;
+	Thu, 23 Oct 2025 18:14:26 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 15/28] Fix byteorder conversion of concatenated value expressions and ranges
-Date: Thu, 23 Oct 2025 18:14:04 +0200
-Message-ID: <20251023161417.13228-16-phil@nwl.cc>
+Subject: [nft PATCH 16/28] expression: Set range expression 'len' field
+Date: Thu, 23 Oct 2025 18:14:05 +0200
+Message-ID: <20251023161417.13228-17-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023161417.13228-1-phil@nwl.cc>
 References: <20251023161417.13228-1-phil@nwl.cc>
@@ -67,66 +67,46 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A problem with the existing code was that struct expr::byteorder was not
-updated despite the call to mpz_switch_byteorder(). Doing so leads to an
-extra byteorder swap during data linearization though, so in order to
-have byteorder swapped *and* the field value set correctly, simply
-update the latter and rely upon the implicitly happening conversion.
+The length value is needed for netlink debug output of concatenated
+ranges. Set it to one of the inner elements' lengths (which should be
+identical).
+
+Since the inner element length may not be set initially, set it in
+eval phase again. This covers at least all cases in tests/py.
+
+Without this, netlink_gen_concat_key() et al. would have to inspect
+element types and extract lengths accordingly, this is much easier.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/intervals.c | 10 +++-------
- src/netlink.c   |  5 ++---
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ src/evaluate.c   | 1 +
+ src/expression.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/src/intervals.c b/src/intervals.c
-index 438957c52d391..6a917b7b79c3f 100644
---- a/src/intervals.c
-+++ b/src/intervals.c
-@@ -793,11 +793,8 @@ int setelem_to_interval(const struct set *set, struct expr *elem,
- 	}
+diff --git a/src/evaluate.c b/src/evaluate.c
+index be366140c12f2..cee500312bc6d 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -1337,6 +1337,7 @@ static int expr_evaluate_range(struct eval_ctx *ctx, struct expr **exprp)
  
- 	low = constant_expr_alloc(&key->location, set->key->dtype,
--				  set->key->byteorder, set->key->len, NULL);
--
-+				  BYTEORDER_BIG_ENDIAN, set->key->len, NULL);
- 	mpz_set(low->value, key->range.low);
--	if (set->key->byteorder == BYTEORDER_HOST_ENDIAN)
--		mpz_switch_byteorder(low->value, set->key->len / BITS_PER_BYTE);
+ 	datatype_set(range, left->dtype);
+ 	range->flags |= EXPR_F_CONSTANT;
++	range->len = left->len;
+ 	return 0;
+ }
  
- 	low = set_elem_expr_alloc(&key->location, low);
- 	set_elem_expr_copy(low, interval_expr_key(elem));
-@@ -819,12 +816,11 @@ int setelem_to_interval(const struct set *set, struct expr *elem,
- 	}
+diff --git a/src/expression.c b/src/expression.c
+index 019c263f187b8..de63196b60a6a 100644
+--- a/src/expression.c
++++ b/src/expression.c
+@@ -1013,6 +1013,7 @@ struct expr *range_expr_alloc(const struct location *loc,
+ 			  BYTEORDER_INVALID, 0);
+ 	expr->left  = left;
+ 	expr->right = right;
++	expr->len = left->len;
+ 	return expr;
+ }
  
- 	high = constant_expr_alloc(&key->location, set->key->dtype,
--				   set->key->byteorder, set->key->len,
-+				   BYTEORDER_BIG_ENDIAN, set->key->len,
- 				   NULL);
- 	mpz_set(high->value, key->range.high);
- 	mpz_add_ui(high->value, high->value, 1);
--	if (set->key->byteorder == BYTEORDER_HOST_ENDIAN)
--		mpz_switch_byteorder(high->value, set->key->len / BITS_PER_BYTE);
-+	high->byteorder = BYTEORDER_BIG_ENDIAN;
- 
- 	high = set_elem_expr_alloc(&key->location, high);
- 
-diff --git a/src/netlink.c b/src/netlink.c
-index 2a6caa9c76565..3228747a74af8 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -323,9 +323,8 @@ static int __netlink_gen_concat_key(uint32_t flags, const struct expr *i,
- 			break;
- 
- 		expr = (struct expr *)i;
--		if (expr_basetype(expr)->type == TYPE_INTEGER &&
--		    expr->byteorder == BYTEORDER_HOST_ENDIAN)
--			byteorder_switch_expr_value(value, expr);
-+		if (expr_basetype(expr)->type == TYPE_INTEGER)
-+			expr->byteorder = BYTEORDER_BIG_ENDIAN;
- 		break;
- 	default:
- 		BUG("invalid expression type '%s' in set", expr_ops(i)->name);
 -- 
 2.51.0
 
