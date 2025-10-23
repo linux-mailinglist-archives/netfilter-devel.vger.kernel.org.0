@@ -1,76 +1,167 @@
-Return-Path: <netfilter-devel+bounces-9372-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9378-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E6CC0189A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 15:51:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4E4C024FE
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CAD1735A94B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 13:51:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644701881D0A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87B8315778;
-	Thu, 23 Oct 2025 13:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C31272E51;
+	Thu, 23 Oct 2025 16:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nccGDqu/"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0FA30E82E
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 13:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3972749E0
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761227472; cv=none; b=pfwyMZuWUJL2DuZgA0Blowa2NSpiYNqP51AZTezNP9tFH9pMCLYm7CJPf0top37utXSWet+lT7Mgo9DlAwynFOYknawDdGZ8iwlgChy4ln1H5ksBXv563TEA9oSymQQx9d0gyX75j4evNokc2KHUlHSFsbPkQMdKdULE6/76YCc=
+	t=1761235572; cv=none; b=LiIDz4etg2syFZY1oxnCt2/1k8bkIPpWc92zHmhLoPLe+d5Do/0qhNH7rZNPuRvDDbejD/rIfa/1Ahgczn12kwP4voU82puU37jrHY6cNFwsOotQD85Oh2IPtCU7YnbX7xQ1HuvhnUdsZ6IF5upFvVWzkpDQkKPvzeFQY/JGjCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761227472; c=relaxed/simple;
-	bh=Khv+TxIPkmpnrg5zOYIEwq+R5T6cJNNqssPxlT4UfmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iGC+Ibn7+FDZ+7u+Llla2S7zy70m97RDyNfj5bHXXdPB3MdxlhrTrk3IDbFEdaDti5SBitcpwwTu/2DGW+5z6iKuOz43he8R6OscLXcQNhC3uWip/KEr17rXwOBZ6ZkEic/KriRGgtM0Ikdm4Ht5LFvnoKDN7nS//vk5gMJamFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 945396046B; Thu, 23 Oct 2025 15:51:08 +0200 (CEST)
-Date: Thu, 23 Oct 2025 15:51:08 +0200
-From: Florian Westphal <fw@strlen.de>
+	s=arc-20240116; t=1761235572; c=relaxed/simple;
+	bh=CprIgU7Hv71CHlUCanl66PR8Zs0+SJDBQtTQTiPIGdI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=py1W/v/ZtJKT+EPihED3BNm1x8s5vLmm9Cwdu5/kZQzIUKoa/x6NRm1veEuvTYmzsn3k6Z8xV3A43nRMMo+zBiV2OIvEpZYi7n8w+l5dmwckhmFbqT77PgGcrqDM4o56ZrPamS/sLS8gIqinKM7KKxHgCtSwBXqwIop6AVXNulA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nccGDqu/; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=qtX3LImxrFtdrQhc9rea1XhlQ38C4r3nMLYM9AScMQs=; b=nccGDqu/lvKo4LXTlfTMdVIHTY
+	GGNFYCAQJIVr6Si864eXVEpGdeexfbmhfE6hadrsTlnFnWJuXDyGcp4XvKOYKyhZQ3xNuM0U/HFPv
+	tQnzG7bTih3f4auGL7LTT3+695SyVCZg61mFndc8Glq9yzuIWaqJxKYIEeO7vX7lmB6jKoYwLqYpR
+	SyYku18DCPAelWhSfTylxxy3ztSVASODo4b9pHdcNv6qkosYExa9DgXrflBaccm+gRkwupz1zv+Yy
+	Pb8QxHGc5DTbHVj8JgooyDutj06Si8MHmEhwVoZnmc1gROsMkEtxgeenqnTf7SkXZ4Mk6hcycCLTi
+	83vty3Gw==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1vBxpC-000000007fK-2ggj;
+	Thu, 23 Oct 2025 18:06:02 +0200
+From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, fmancera@suse.de
-Subject: Re: [PATCH nf] netfilter: nf_tables: limit maximum number of
- jumps/gotos per netns
-Message-ID: <aPoyzCLGA6XFJ1wU@strlen.de>
-References: <20251021234039.2505-1-pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [libnftnl PATCH 0/9] Fix for debug output on Big Endian
+Date: Thu, 23 Oct 2025 18:05:38 +0200
+Message-ID: <20251023160547.10928-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251021234039.2505-1-pablo@netfilter.org>
+Content-Transfer-Encoding: 8bit
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> +		tbl = kmemdup(tbl, sizeof(nf_tables_sysctl_table), GFP_KERNEL);
-> +		if (!tbl)
-> +			return -ENOMEM;
+This series aims at providing identical netlink debug output in nftables
+on Big and Little Endian systems. Particularly problematic are all data
+regs in host byte order, worsened by the potential for byte order swaps
+within a single data reg (concatenated set elements).
 
-[..]
+A bonus task is cropping data reg values to their actual size.
+Previously, every four-byte register containing data was printed which
+further reduces data expressiveness.
 
-> +static void nf_tables_sysctl_exit(struct net *net)
-> +{
-> +	struct nftables_pernet *nft_net = nft_pernet(net);
-> +
-> +	unregister_net_sysctl_table(nft_net->nf_tables_dir_header);
+This series introduces data attribute setters for expressions and set
+elements which accept a byteorder value (plus an array of component
+sizes in the latter case) and changes the data reg printer to:
 
-I think this is missing something like:
+- Print only nftnl_data_reg::len bytes at max
+- Print data byte-by-byte, not four byte chunks as u32 values
+  interpreted in host byte order
+- Print data in reverse if in host byte order on Little Endian
 
-	const struct ctl_table *table = ft_net->nf_tables_dir_header->ctl_table_arg;
+If nftnl_data_reg::sizes array has non-zero fields, data is assumed to
+be concatenated and bits in nftnl_data_reg::byteorder signal host byte
+order in components. Each component is then printed as per the above
+rules and separated by a dot (".").
 
-	unregister_net_sysctl_table(nft_net->nf_tables_dir_header);
-	if (!net_eq(net, &init_net))
-		kfree(table);
-}
+Patches 3-8 implement the above. Since debug output changes
+significantly, use the occasion to:
+- Print a colon (":") and flags value only if relevant (patch 1)
+- Fix for missing object name in objmap elements (patch 1)
+- Avoid ambiguity between data and flags value by prefixing with 'flags'
+  (patch 1)
+- Avoid trailing whitespace or space before tab (patch 2)
 
-netfilter_log_sysctl_exit() et. al do this, so I don't think
-unregister_net_sysctl_table() takes care of the arg.
+Finally, patch 8 tries to avoid userdata values in host byte order by
+storing u32 values in Big Endian. Since nftnl_udata_put_u32() is the
+only typed attribute setter (apart from the unproblematic strz one),
+this may be good enough for the purpose.
+
+Phil Sutter (9):
+  set_elem: Review debug output
+  expr: data_reg: Avoid extra whitespace
+  expr: Pass byteorder to struct expr_ops::set callback
+  data_reg: Introduce struct nftnl_data_reg::byteorder field
+  data_reg: Introduce struct nftnl_data_reg::sizes array
+  Introduce nftnl_{expr,set_elem}_set_imm()
+  data_reg: Respect data byteorder when printing
+  data_reg: Support concatenated data
+  udata: Store u32 udata values in Big Endian
+
+ include/data_reg.h      |  5 +++-
+ include/expr_ops.h      |  2 +-
+ include/libnftnl/expr.h |  1 +
+ include/libnftnl/set.h  |  1 +
+ src/expr.c              | 22 +++++++++++---
+ src/expr/bitwise.c      | 18 ++++++++----
+ src/expr/byteorder.c    |  2 +-
+ src/expr/cmp.c          |  8 ++++--
+ src/expr/connlimit.c    |  2 +-
+ src/expr/counter.c      |  2 +-
+ src/expr/ct.c           |  2 +-
+ src/expr/data_reg.c     | 64 ++++++++++++++++++++++++++++++++++++-----
+ src/expr/dup.c          |  5 ++--
+ src/expr/dynset.c       |  2 +-
+ src/expr/exthdr.c       |  2 +-
+ src/expr/fib.c          |  2 +-
+ src/expr/flow_offload.c |  5 ++--
+ src/expr/fwd.c          |  5 ++--
+ src/expr/hash.c         |  2 +-
+ src/expr/immediate.c    |  8 ++++--
+ src/expr/inner.c        |  2 +-
+ src/expr/last.c         |  5 ++--
+ src/expr/limit.c        |  2 +-
+ src/expr/log.c          |  5 ++--
+ src/expr/lookup.c       |  2 +-
+ src/expr/masq.c         |  2 +-
+ src/expr/match.c        |  2 +-
+ src/expr/meta.c         |  2 +-
+ src/expr/nat.c          |  2 +-
+ src/expr/numgen.c       |  2 +-
+ src/expr/objref.c       |  5 ++--
+ src/expr/osf.c          |  5 ++--
+ src/expr/payload.c      |  2 +-
+ src/expr/queue.c        |  5 ++--
+ src/expr/quota.c        |  5 ++--
+ src/expr/range.c        | 17 ++++++++---
+ src/expr/redir.c        |  2 +-
+ src/expr/reject.c       |  5 ++--
+ src/expr/rt.c           |  2 +-
+ src/expr/socket.c       |  2 +-
+ src/expr/synproxy.c     |  5 ++--
+ src/expr/target.c       |  2 +-
+ src/expr/tproxy.c       |  2 +-
+ src/expr/tunnel.c       |  5 ++--
+ src/expr/xfrm.c         |  2 +-
+ src/libnftnl.map        |  5 ++++
+ src/set_elem.c          | 61 ++++++++++++++++++++++++++++-----------
+ src/udata.c             |  7 +++--
+ 48 files changed, 233 insertions(+), 92 deletions(-)
+
+-- 
+2.51.0
+
 
