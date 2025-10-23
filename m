@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9399-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9393-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784AAC025DF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:15:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E641C025D3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:15:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4169D3A6904
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BEAD3A70CD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07335298CDE;
-	Thu, 23 Oct 2025 16:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA01629B20D;
+	Thu, 23 Oct 2025 16:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="bMpVvqQ/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="i0aAwnHC"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E9E28507E
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0837428D8ED
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761236090; cv=none; b=Tjgk4jQfNAmUTGSTTG5MjQfoCQxWGxYh6I3xQD66awYKWSsR1716ZnJoFT6ojJed0WKOmLb2eXW6O7T9FsF3X9XjK7xaVQWGP8Cg9Ax84pZeYmBMrd5Em+wwT04YJ5eM1tkHBCgsJ2Ehv/A/HXJI12l4Ry2NPxESWi6UoNNDgmw=
+	t=1761236081; cv=none; b=fjVMDvpnoim5ekjBvslamNB6YlxnowsYx+X/V/D2VWUqq51gzU40tInTnSMSxv0i/7ng/G1f9zebeiAnB/f8MgcWjJtgrnl/w6P+ZvY+ontZwxFTuFDB2dAZxID/WIx6ubWCpiTt2E6gMqqL3JlP8xA9PP3V2HuIJN0Ta6TmMcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761236090; c=relaxed/simple;
-	bh=2XM8pkCRvsDLehfPfeL5A9Evi4iHTBuy491qCWQoFHc=;
+	s=arc-20240116; t=1761236081; c=relaxed/simple;
+	bh=+FNFtp+Wa6AaCoxQSZguGjxlckP6Q8OLVRug7bepIFA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sSMOnmrhDRL4sxratj1yM6v9OwprNSC5VtQsgOLQuyDa48QTaOsgjnw/43brnIou/51eBh3kBHTnFY5YdX7ZD7wxiAGgDfTKz2I6Nr3HlBGL1T1hUQ5rmtSC4SgvJXSUBOPXd9QmYM+HvtKmCOdCjRQrg0ng1/yjoWwopDf5nFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=bMpVvqQ/; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=IxhLrkdC1e4TSb7qylkw5WALK4f0iOeLIB890w1K/Jsn6NxcVuqBXL8UXAaMdBYu4mrnF7aAYGeDqG3zdPbJjJJe1b0YnjPZOSag/R4eoAg+guldRfZt4BxpK1NhVVo/Wecp7zAaZLpPhJy7XfxZgOsN37iLnyzy20omKzdajA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=i0aAwnHC; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=hlfHy6uiaN6hv0aAUOFo0EalQjvdDQtjDyIERhiUglo=; b=bMpVvqQ/HYbWN7BSrKQDw9BZ6c
-	0yBoYegkitOndQ+yQ6Qk0GgLOJQC1/QMYMQaGSuJm9iGOxf0vuN218XRCDgelMkeROAHsCihjISAY
-	4+Hkem4LpsedAZPyvIutvtv5NCret4m3p1cHIq5qUPX4eI4uduJCDxKpi68I/HpHhAOl5kpZBO8dL
-	EUgtjGgraYDJ1yNDsS4lKwMU0GjqKngnCb2h1t7Y+QCqhcJXDdf6HjyADqTo/UVtWcgUJP4FtVbkn
-	hLk9CgA4c5ywBZWVWkKpkRrTfUnmaprOXjACtJZ542F66J8UGN/pETaLU1sUHXCJ1X1zZj0Qhv4Z5
-	ozOiRD2w==;
+	bh=VJk2orBueLyYCTJXgD8OUZEy2KK58TQ4qlTXScTSbeA=; b=i0aAwnHCoBt0NfStsBcpEcKzM6
+	VuW0D7a/CQigx9WV8ndjMm098foTXsP68LjHQ6yFyK6Aoydfp1HPqxUcZQVEnhihU0t8tjyv8UMFJ
+	zZiWs4Pvz/OxAnVNPwrDx/vHPsY/3ojYHUloJF8gDrHedfyEuUQ9wJP7RFprf87Nmt9oWjB/6qsWz
+	++S8KBy8fEJXqVSPOQA9uiJ661P1ameb8MLchkig26l3uCHPEdp48+eL0kTf7PiKZV4uwEp5I6dS1
+	GKOPILPLGetiEyKO9QmnGOIgYylTUs4+/DMVpVjDxhNDPqEGI7CM8grLu/k+SvoUC7gtbqYOwZVg2
+	5QzcNI1w==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxxd-0000000006q-2oiC;
-	Thu, 23 Oct 2025 18:14:45 +0200
+	id 1vBxxV-0000000005p-45zY;
+	Thu, 23 Oct 2025 18:14:38 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 26/28] utils: Introduce expr_print_debug()
-Date: Thu, 23 Oct 2025 18:14:15 +0200
-Message-ID: <20251023161417.13228-27-phil@nwl.cc>
+Subject: [nft PATCH 27/28] utils: Cover for missing newline after BUG() messages
+Date: Thu, 23 Oct 2025 18:14:16 +0200
+Message-ID: <20251023161417.13228-28-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023161417.13228-1-phil@nwl.cc>
 References: <20251023161417.13228-1-phil@nwl.cc>
@@ -67,34 +67,31 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A simple function to call in random places when debugging
-expression-related code.
+Relieve callers from having to suffix their messages with a newline
+escape sequence, have the macro append it to the format string instead.
+
+This is mostly a fix for (the many) calls to BUG() without a newline
+suffix but causes an extra new line in (equally many) others. Fixing
+them is subject to followup patch.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/utils.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/utils.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/utils.h b/include/utils.h
-index e18fabec56ba3..0db0cf20e493c 100644
+index 0db0cf20e493c..f47e7eb8d8093 100644
 --- a/include/utils.h
 +++ b/include/utils.h
-@@ -26,6 +26,15 @@
- #define pr_gmp_debug(fmt, arg...) ({ if (false) {}; 0; })
- #endif
+@@ -45,7 +45,7 @@
+ #define __must_check		__attribute__((warn_unused_result))
+ #define __noreturn		__attribute__((__noreturn__))
  
-+#define expr_print_debug(expr)					\
-+{								\
-+	struct output_ctx octx = { .output_fp = stdout };	\
-+	printf("%s:%d: ", __FILE__, __LINE__);			\
-+	printf("'" #expr "' type %s: ", expr_name(expr));	\
-+	expr_print((expr), &octx);				\
-+	printf("\n");						\
-+}
-+
- #define __fmtstring(x, y)	__attribute__((format(printf, x, y)))
- #if 0
- #define __gmp_fmtstring(x, y)	__fmtstring(x, y)
+-#define BUG(fmt, arg...)	({ fprintf(stderr, "BUG: " fmt, ##arg); assert(0); abort(); })
++#define BUG(fmt, arg...)	({ fprintf(stderr, "BUG: " fmt "\n", ##arg); assert(0); abort(); })
+ 
+ #define BUILD_BUG_ON(condition)	((void)sizeof(char[1 - 2*!!(condition)]))
+ #define BUILD_BUG_ON_ZERO(e)	(sizeof(char[1 - 2 * !!(e)]) - 1)
 -- 
 2.51.0
 
