@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9400-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9394-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D387BC02634
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:17:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67400C025D6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6CF375669A3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91EAD3A9504
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FB6299A8A;
-	Thu, 23 Oct 2025 16:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0829A29B793;
+	Thu, 23 Oct 2025 16:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="iU8L/U4a"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="o9vSrDw2"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6880E2356D9
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1208D28D8CC
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761236091; cv=none; b=eJwyV6MafrvcjBC55pqdAmyOccEqrNGlXlR9KeYEritckw2u6i/6uZsOwp3CDT2Zyd4KuqAX8NlJ5JmLxGXT4UbaNG+iJHY4NORJLQebTcZtp/0G4ywzo8Bo/XtIx/xeH1RNg2UwCONNQanQ/uaomE2yV+WIfFG5K0/vtbi1YOI=
+	t=1761236081; cv=none; b=glUHm4ISsJzDTXj/vwMxFwoKYQc2s6Amw788FWutOlc+NQe1UEMwMiWriZMbE+uLTtC8paPk7lIR5ECu40lgKzw7WDLLYIDw5Rv6iOM+iFmbo1HY9UMkq+pvlFnI+6zGzFyZ5IQpqDyHkk6WylJD7IQBC6fafwIXXzqiYiDp7JQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761236091; c=relaxed/simple;
-	bh=m7NYhs9C9qAvm7dV5ZO/YUuYW36e8Y2zDcr9d3N7eoo=;
+	s=arc-20240116; t=1761236081; c=relaxed/simple;
+	bh=HCVcnQVjtGqlyKxq2gGB/aEeunUWQ13Z5LacQb3C+5g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JKyJeW1W1/uSoR6trbCKgJApgIT/eeivsgwzxiRontUSr58D4mMMi1CVDhQtPrFEJ+K3ZxjRngW2FcMER4UbP2VOGykZQZIjWOeyf1zC2GanQOzRb3CzVixoyC4Nguc8a9B08DheWEJjFJ4ie/jQtTk1VRM21RkWiEk8T78Mtlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=iU8L/U4a; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=K2NClt/5U5EHCX95moMu6XAc/e/GOY8jPrRYZhONfyxRzwGJ3AgEgOygRcikJtjqMK3actdXe77xmLEHJG7gQaSqGZzCVayd2ydK/NBTksLZuj+niLtzUnCgXnpdLRPRetXHS16rWIEMNBTd8F7cdvLkjtid2l/XvgOeQTKLhgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=o9vSrDw2; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=fY7CRsHqNvOXPn8OAMmU1FwjqEwEZzK57+/WWDNVmSc=; b=iU8L/U4agDN7hGjRpNpkuXO46Z
-	YnhewgKqptD++dyyLcZ5fYWTL8r7Y02f76rRXQ2lV2qA8Wweyp/6CjJKd4/F/37HwetSAxZjUQ2U8
-	GfJaqyOZk9MtAmVWu15EsXu3kRtrIe8Mnnpy7nVjJSVMwurO6LJq04kHoA21e5bodJX9X4jBSLjiH
-	HGTIIiLMrYBgQKLgAucv7Cz7Biv2AwqPCAYFybjNOyJtjogXOvTchFf55xti/kixXrSnaDHoZFJ6F
-	0qehkZigNPWZQJGJTT40vCtWkFhNmml/B7fdcs8Y4pmB7BA32bwf0jeUoLDeMOvchSAVl6zH5D4DX
-	mt8EqTEw==;
+	bh=arsiGaQnB/QH4eGGC9kgXggBmlTiM27chAO8xLb4nZI=; b=o9vSrDw24ZWKemw1Q3a7ERityZ
+	uEm5jx0Wz31BeR/f8/eUp6tBWSbvjzLjyi4/E7V3D3UJaiQ/E6F0TEGm+Ykuo4mhse6R35EbtUyuA
+	rB+vBb4HEGVSaI7xaIuOKobITpBUpcG1+dJhTsamsOl7XFuEusSo58FdlpinrvPJOA/g6zDs7Z120
+	Phdq1TBnoXk+zAP2+Mewp3e4al9svcqCL5q8lL+SYSEIAFqT2/qQarM4yLoT7oABrTURe4S31umG7
+	KKSnNUVFV/WgI9pvNZ9fUfcalV37js2kS0vrw0v9lJYYZZCTcN9dlU16ociVELB/WgH4jj+JQ9vQF
+	YHiTPhpA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxxg-00000000070-27va;
-	Thu, 23 Oct 2025 18:14:48 +0200
+	id 1vBxxS-0000000005i-2IMk;
+	Thu, 23 Oct 2025 18:14:37 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 05/28] tests: py: inet/osf.t: Fix element ordering in JSON equivalents
-Date: Thu, 23 Oct 2025 18:13:54 +0200
-Message-ID: <20251023161417.13228-6-phil@nwl.cc>
+Subject: [nft PATCH 06/28] tests: py: Fix for using wrong payload path
+Date: Thu, 23 Oct 2025 18:13:55 +0200
+Message-ID: <20251023161417.13228-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023161417.13228-1-phil@nwl.cc>
 References: <20251023161417.13228-1-phil@nwl.cc>
@@ -67,110 +67,48 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The original rules order set elements differently. Stick to that and add
-entries to inet/osf.t.json.output to cover for nftables reordering
-entries.
+If one family has a per-family payload record, following families used
+it by accident for a .got file when they actually should use the generic
+name.
 
-Fixes: 92029c1282958 ("src: osf: add json support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/inet/osf.t.json        | 12 ++++----
- tests/py/inet/osf.t.json.output | 53 +++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 6 deletions(-)
- create mode 100644 tests/py/inet/osf.t.json.output
+ tests/py/nft-test.py | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tests/py/inet/osf.t.json b/tests/py/inet/osf.t.json
-index cedb7f67bd52f..b1bf747265f81 100644
---- a/tests/py/inet/osf.t.json
-+++ b/tests/py/inet/osf.t.json
-@@ -73,8 +73,8 @@
-             "op": "==",
-             "right": {
-                 "set": [
--                    "MacOs",
--                    "Windows"
-+                    "Windows",
-+                    "MacOs"
-                 ]
-             }
-         }
-@@ -114,13 +114,13 @@
-                 "map": {
-                     "data": {
-                         "set": [
--                            [
--                                "MacOs",
--                                2
--                            ],
-                             [
-                                 "Windows",
-                                 1
-+                            ],
-+                            [
-+                                "MacOs",
-+                                2
-                             ]
-                         ]
-                     },
-diff --git a/tests/py/inet/osf.t.json.output b/tests/py/inet/osf.t.json.output
-new file mode 100644
-index 0000000000000..922e395f202c7
---- /dev/null
-+++ b/tests/py/inet/osf.t.json.output
-@@ -0,0 +1,53 @@
-+# osf name { "Windows", "MacOs" }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "osf": {
-+                    "key": "name"
-+                }
-+            },
-+            "op": "==",
-+            "right": {
-+                "set": [
-+                    "MacOs",
-+                    "Windows"
-+                ]
-+            }
-+        }
-+    }
-+]
-+
-+# ct mark set osf name map { "Windows" : 0x00000001, "MacOs" : 0x00000002 }
-+[
-+    {
-+        "mangle": {
-+            "key": {
-+                "ct": {
-+                    "key": "mark"
-+                }
-+            },
-+            "value": {
-+                "map": {
-+                    "data": {
-+                        "set": [
-+                            [
-+                                "MacOs",
-+                                2
-+                            ],
-+                            [
-+                                "Windows",
-+                                1
-+                            ]
-+                        ]
-+                    },
-+                    "key": {
-+                        "osf": {
-+                            "key": "name"
-+                        }
-+                    }
-+                }
-+            }
-+        }
-+    }
-+]
+diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
+index 35b29fc90870b..019c828f957a5 100755
+--- a/tests/py/nft-test.py
++++ b/tests/py/nft-test.py
+@@ -817,9 +817,10 @@ def set_delete_elements(set_element, set_name, table, filename=None,
+     for table in table_list:
+         if rule[1].strip() == "ok":
+             table_payload_expected = None
++            table_payload_path = payload_path
+             try:
+                 payload_log = open("%s.payload.%s" % (filename_path, table.family))
+-                payload_path = payload_log.name
++                table_payload_path = payload_log.name
+                 table_payload_expected = payload_find_expected(payload_log, rule[0])
+             except:
+                 if not payload_log:
+@@ -868,14 +869,14 @@ def set_delete_elements(set_element, set_name, table, filename=None,
+                 error += 1
+ 
+                 try:
+-                    gotf = open("%s.got" % payload_path)
++                    gotf = open("%s.got" % table_payload_path)
+                     gotf_payload_expected = payload_find_expected(gotf, rule[0])
+                     gotf.close()
+                 except:
+                     gotf_payload_expected = None
+                 payload_log.seek(0, 0)
+                 if not payload_check(gotf_payload_expected, payload_log, cmd):
+-                    gotf = open("%s.got" % payload_path, 'a')
++                    gotf = open("%s.got" % table_payload_path, 'a')
+                     payload_log.seek(0, 0)
+                     gotf.write("# %s\n" % rule[0])
+                     while True:
 -- 
 2.51.0
 
