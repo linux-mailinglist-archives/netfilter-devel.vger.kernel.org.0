@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9406-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9389-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 050F2C02628
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:17:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6325EC025F4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:16:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07C1D1AA6EA0
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B759A1AA623F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932DD28D8DB;
-	Thu, 23 Oct 2025 16:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E332957B6;
+	Thu, 23 Oct 2025 16:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="XBSaFpxi"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="l1UBRB0S"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA432356D9
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9DC286430
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761236101; cv=none; b=GlOm6twkxepn/dnDsjYjVshoG+NzpKJ41RrP9BH0Jk18Zh+dx6q13RF7p2//tqT8EyTtCDWRzKymUKG8HVRbgjmQhaKe1YT0ku0ZLfJkcQaQl2aPnmHNi2V+NxqnU4x7ZTAqXXZO5IbpArtmROAtmSv7Z2GIQSAGgR7lpEzMNVE=
+	t=1761236071; cv=none; b=KsLpWllaEAqSVYNd45B2+1w+Q9fyIc1EHWcDJIXhfpIVA3hjVVNrFD2cVJCO/1TMvQUUANP3+avOz1Uq6nJx2zvTH6k93EO2b4VRji7OgeKbl9jiyaxDBmyPOWU0O59Rce9+aig0H9b5Y9Mi/zdlNCWnjAEDlvR11UlOTi2iIgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761236101; c=relaxed/simple;
-	bh=uRUtb1quTs9cmF0LOtvwbPB8g+ICss0JC4yXGCP6zdw=;
+	s=arc-20240116; t=1761236071; c=relaxed/simple;
+	bh=sBbdU3X2Wx+xT9o70S8s5xR9MCOVJz8m78G9eaC3DW0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H65VSks66w5S55DTBBZ6Y2uKA1ebamNHu2unzEzuobaj1nTWx/FV9ES/j4J2Ctr6Gv799+oR7KgDzfC3sAHoesrcpHrU/1z539ZGUc6EdnJxH+U7Q4AM3dqoq7V5pGsgAqyTMiVlj5epcxWxP8R1aY9sZxZ8CztficP/aXBmm60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=XBSaFpxi; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=rN2klW1REcOsWov9pbjL6yUzZWvWn+5G8vloKPCumeMPC3f6Hs23nDaL8hXzlXTKiR5to2Q+iFS4Rr6zbZdlgPip7ZxPPa1guGG3XmxK/CdZ7WthBaDwLbllnFk2QuO+VrHeulXYbm6A6a9yiUqIjxRFYy950/FOhWIOe79O38s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=l1UBRB0S; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=NO2i6P4FkJnrbi1V65+CT8bY/CFq0EfeRofPxnmWr6o=; b=XBSaFpxiJXwkhEItcobn34KGIg
-	09c4KZ9SRd2kJxDhs+3hEG/2CXDTowSvk8xm1Uj7CO2+SYzbzpwdmtreKkOKZcHujAgOeeXD0Auop
-	F6SfGPt3B5FavAHx1MfLHkEQWhuwE5TokDhDq/XggwqxW2Df9Qjso3RLDEYsPWO3Nt5xoZhyv0fhy
-	Om9UUUb4zMB0iHDZNpJJBY7zEFQq7e+zEVvmPGsN3SHxxV14uGGMwAR6/IZAUfDnIayjZzm8fIhX0
-	+0bR5TCE2MbDJxGM2H84oJidj5QpRnvQQWseChO/SPAH5Sc/KogIndhlGzWvMOe2ALDyTjh/0FBUB
-	CpRNLMuA==;
+	bh=lWF1czO5YgSVJcwgVgX4ooAklmcFel/JMdMc7kvvVEM=; b=l1UBRB0SxhQm8Dcob3RhJ7DCqH
+	oZpduUd0e3jvwHQ1+LFLllE60GJj+MrqLqTFu2mjG6I9JAcT2gVbmw4f9vUE8Xy0JPAGt5B9zcUEF
+	bLpXLEpbaMZXMNkerk+mwGI9GU3PvJrp3qvGEH3j39cmxNuehsWI4gXG7R/qxnqhNiaV0XllRV06v
+	hSI2EvmEzb6+xCxw9kHTM4MCyd4IRmWmfhYiQZ62LKKWe4nkXMGnVPbHG0pf33SgLBVq8h5gWUovm
+	pv4hyPMj4l/dP4hB0ZJJX9VW9xKO3AMKiapeISVe/V7swm3hNkq+k0oXuxA+L+WXcvfsk2IWMe4su
+	STp8nRMA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxxq-0000000008Q-1m6Y;
-	Thu, 23 Oct 2025 18:14:58 +0200
+	id 1vBxxL-0000000005G-2pc6;
+	Thu, 23 Oct 2025 18:14:27 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 11/28] tests: py: ip6/vmap.t: Drop double whitespace in rule
-Date: Thu, 23 Oct 2025 18:14:00 +0200
-Message-ID: <20251023161417.13228-12-phil@nwl.cc>
+Subject: [nft PATCH 12/28] netlink: Zero nft_data_linearize objects when populating
+Date: Thu, 23 Oct 2025 18:14:01 +0200
+Message-ID: <20251023161417.13228-13-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023161417.13228-1-phil@nwl.cc>
 References: <20251023161417.13228-1-phil@nwl.cc>
@@ -67,82 +67,36 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Just a harmless typo.
+Callers of netlink_gen_{key,data}() pass an uninitialized auto-variable,
+avoid misinterpreting garbage in fields "left blank".
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/ip6/vmap.t                | 2 +-
- tests/py/ip6/vmap.t.json           | 2 +-
- tests/py/ip6/vmap.t.payload.inet   | 2 +-
- tests/py/ip6/vmap.t.payload.ip6    | 2 +-
- tests/py/ip6/vmap.t.payload.netdev | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ src/netlink.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tests/py/ip6/vmap.t b/tests/py/ip6/vmap.t
-index 2d54b8226e426..bfaa0c3bfca80 100644
---- a/tests/py/ip6/vmap.t
-+++ b/tests/py/ip6/vmap.t
-@@ -32,7 +32,7 @@ ip6 saddr vmap { 1234::1234:1234:1234:1234 : accept};ok
- ip6 saddr vmap { 1234:1234::1234:1234:1234 : accept};ok
- ip6 saddr vmap { 1234:1234:1234::1234:1234 : accept};ok
- ip6 saddr vmap { 1234:1234:1234:1234::1234 : accept};ok
--ip6 saddr vmap { 1234:1234:1234:1234:1234::  : accept};ok
-+ip6 saddr vmap { 1234:1234:1234:1234:1234:: : accept};ok
- ip6 saddr vmap { ::1234:1234:1234:1234 : accept};ok
- ip6 saddr vmap { 1234::1234:1234:1234 : accept};ok
- ip6 saddr vmap { 1234:1234::1234:1234 : accept};ok
-diff --git a/tests/py/ip6/vmap.t.json b/tests/py/ip6/vmap.t.json
-index 1b867ff076928..2ba071cf1140f 100644
---- a/tests/py/ip6/vmap.t.json
-+++ b/tests/py/ip6/vmap.t.json
-@@ -526,7 +526,7 @@
-     }
- ]
- 
--# ip6 saddr vmap { 1234:1234:1234:1234:1234::  : accept}
-+# ip6 saddr vmap { 1234:1234:1234:1234:1234:: : accept}
- [
-     {
-         "vmap": {
-diff --git a/tests/py/ip6/vmap.t.payload.inet b/tests/py/ip6/vmap.t.payload.inet
-index 931cc6bd75a77..26bca5e26f279 100644
---- a/tests/py/ip6/vmap.t.payload.inet
-+++ b/tests/py/ip6/vmap.t.payload.inet
-@@ -218,7 +218,7 @@ inet test-inet input
-   [ payload load 16b @ network header + 8 => reg 1 ]
-   [ lookup reg 1 set __map%d dreg 0 ]
- 
--# ip6 saddr vmap { 1234:1234:1234:1234:1234::  : accept}
-+# ip6 saddr vmap { 1234:1234:1234:1234:1234:: : accept}
- __map%d test-inet b
- __map%d test-inet 0
- 	element 34123412 34123412 00003412 00000000  : accept 0 [end]
-diff --git a/tests/py/ip6/vmap.t.payload.ip6 b/tests/py/ip6/vmap.t.payload.ip6
-index 6e077b27a5f09..2aaa0e48f4b10 100644
---- a/tests/py/ip6/vmap.t.payload.ip6
-+++ b/tests/py/ip6/vmap.t.payload.ip6
-@@ -174,7 +174,7 @@ ip6 test-ip6 input
-   [ payload load 16b @ network header + 8 => reg 1 ]
-   [ lookup reg 1 set __map%d dreg 0 ]
- 
--# ip6 saddr vmap { 1234:1234:1234:1234:1234::  : accept}
-+# ip6 saddr vmap { 1234:1234:1234:1234:1234:: : accept}
- __map%d test-ip6 b
- __map%d test-ip6 0
- 	element 34123412 34123412 00003412 00000000  : accept 0 [end]
-diff --git a/tests/py/ip6/vmap.t.payload.netdev b/tests/py/ip6/vmap.t.payload.netdev
-index 45f2c0b01e9c8..4d81309b9e6eb 100644
---- a/tests/py/ip6/vmap.t.payload.netdev
-+++ b/tests/py/ip6/vmap.t.payload.netdev
-@@ -218,7 +218,7 @@ netdev test-netdev ingress
-   [ payload load 16b @ network header + 8 => reg 1 ]
-   [ lookup reg 1 set __map%d dreg 0 ]
- 
--# ip6 saddr vmap { 1234:1234:1234:1234:1234::  : accept}
-+# ip6 saddr vmap { 1234:1234:1234:1234:1234:: : accept}
- __map%d test-netdev b
- __map%d test-netdev 0
- 	element 34123412 34123412 00003412 00000000  : accept 0 [end]
+diff --git a/src/netlink.c b/src/netlink.c
+index 7882381ebd389..3258f9ab9056e 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -563,6 +563,8 @@ static void netlink_gen_prefix(const struct expr *expr,
+ static void netlink_gen_key(const struct expr *expr,
+ 			    struct nft_data_linearize *data)
+ {
++	memset(data, 0, sizeof(*data));
++
+ 	switch (expr->etype) {
+ 	case EXPR_VALUE:
+ 		return netlink_gen_constant_data(expr, data);
+@@ -580,6 +582,8 @@ static void netlink_gen_key(const struct expr *expr,
+ static void __netlink_gen_data(const struct expr *expr,
+ 			       struct nft_data_linearize *data, bool expand)
+ {
++	memset(data, 0, sizeof(*data));
++
+ 	switch (expr->etype) {
+ 	case EXPR_VALUE:
+ 		return netlink_gen_constant_data(expr, data);
 -- 
 2.51.0
 
