@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9386-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9405-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C771C025CD
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 944D8C025E8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2B313A1E0F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:14:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 918EB3AA535
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909CB2882CD;
-	Thu, 23 Oct 2025 16:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA79296BD7;
+	Thu, 23 Oct 2025 16:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="l9u26Nzb"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="LhjIwQgg"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF35E286881
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3C82882D3
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761236068; cv=none; b=sDR2sWQkVyvKyLt0AFCE6IMCFJwcpvs1GOyb3GXLA+hP4OwHNhL43INBkl7vwMHQOMI7yF2Hiz89z1LNTQKr5LiUZd+DxekIZ7JXsQi6iWFmiz5Dt3SoZoEXJ1HEiGEXnIHRS3yq9A3HMngYtg2t3kpjzzgKlwprZx9v4nHn5rg=
+	t=1761236100; cv=none; b=FBtKW8o6rssWYExMVaZmkAVEK97Jy1HKcfcarqyrMDqMWJuJno0GkDtegSaGDmfKJ250wrqyNSWGUBiD7M5J7I832XMSMu3EtwT3/rw3invVTiYUXM5iEfkZG5+V2hRSr5X/LfUtlPkvIf/M1sDjsjpotq4uLaeiw3+MWZo30yQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761236068; c=relaxed/simple;
-	bh=6O+NNyiWxZ5KdouexBSOVSmtXPL3leZjSGkH7MtAlI8=;
+	s=arc-20240116; t=1761236100; c=relaxed/simple;
+	bh=kEUkJhbXuFBR1sAmy2rAcOzvGEOz7go/SSNpso9RdQY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bKpWF48ndspYhc42YyMtlpe5i8IUE8Qrw3qagAXz7e/ApccMyzgw/UiI71ge76WAcz1iy8A+gh4huRu9DygqN7pnInzyYdxkezSar4lUD65Wcw8i2eNnmcSqc/VwzkMtg3mMJ98TibqbwJdqlSLp9rmPx1PqSiXb5GDclYpcohE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=l9u26Nzb; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=DNCmm7gAZJm7vqltxFu6ITW4bwyaNW3QZS+NCRFh9cQhs22S+8ZgJyp01YMjXCvLub2boqkI7w3LYPUSt4T8UMvIKq5K5XawNeH9nVu6XKbQu5lkmzoQoPG84l0sr8tIbeRz74/z8RH1jwRXxx7zqE7Q57n5kFGw+Xtj4G8jmVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=LhjIwQgg; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=J2hjyC89bVvhSlr9qKgvH9aLrxFxTQTAxnQLVYWvKPk=; b=l9u26NzbhICOPkRogQEyNGBpOm
-	54ZAU44s9YDKeskGnSvywigbpoh8MAxa4F6o6OVlLT3Yh+2T4eO1FFU9W6gVB/1iSEJ7afUzrewRN
-	Ugz0M3nQTn9K76meI3ZWhOxywtu8d1x/fAqCepKtbqFDoA9ok2VKHkjbx0eX5ONtgv65lj4L5cQnU
-	kp9Zd/hKvR6atdU1rosDpWFAIrN8VoyHgVJ5eY7YYGLzdbb4AxNbpkmKQ6Dv3K5Ce38PeZV5V+5Z+
-	NQCLHugAIXi3cjbv69iNF7a5Vn6ig41SMVh3Yz/lYGGW4YHX4PHMDkOALUZmabwJWE1+ZQMEc5b/k
-	/WaWPpaw==;
+	bh=GmAiqFTV+6pqQu+ZATnxjomdjUB2c8M9+WreyJQueRI=; b=LhjIwQggKFLIfygv0wpXMhmhDL
+	QKpKlwbdV7mCwWL/nuwNDQnYPEA2xTX31MMYvxiMLLUhhhuczdp7mdH7L2wjp/7y4KGYeHTvUNMSN
+	QAz7F0HhMro7ZINz7RXpCDM8Ul54XuMHE/xLI8Hnsjhw5bfSfYhcQT2zMHUv1xPvdFJhkIsjRsQpw
+	buOBq0mWvOwJwlw+qMZPo3M2a9Dw18a/VMmIfLsPKI+JrwX9ciZ4EcklUHi8TIj/ov99oduUFORW1
+	qASb9nCHqc3gBaVOcrz9utTqTo9uOZmLXr0f0HY2ZSjCnvoLnYPPZXRlFBqh3ZSX93YT/c8WuWyle
+	DcWLFBPQ==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxxJ-0000000004z-0YnN;
-	Thu, 23 Oct 2025 18:14:25 +0200
+	id 1vBxxp-0000000008L-2dMg;
+	Thu, 23 Oct 2025 18:14:57 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 14/28] segtree: No byteorder conversion for string prefix len calculation
-Date: Thu, 23 Oct 2025 18:14:03 +0200
-Message-ID: <20251023161417.13228-15-phil@nwl.cc>
+Subject: [nft PATCH 15/28] Fix byteorder conversion of concatenated value expressions and ranges
+Date: Thu, 23 Oct 2025 18:14:04 +0200
+Message-ID: <20251023161417.13228-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023161417.13228-1-phil@nwl.cc>
 References: <20251023161417.13228-1-phil@nwl.cc>
@@ -67,47 +67,66 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Not needed anymore since strings are defined as Big Endian.
+A problem with the existing code was that struct expr::byteorder was not
+updated despite the call to mpz_switch_byteorder(). Doing so leads to an
+extra byteorder swap during data linearization though, so in order to
+have byteorder swapped *and* the field value set correctly, simply
+update the latter and rely upon the implicitly happening conversion.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/segtree.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ src/intervals.c | 10 +++-------
+ src/netlink.c   |  5 ++---
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/src/segtree.c b/src/segtree.c
-index b9c35dcb297ce..5a334efc8bebb 100644
---- a/src/segtree.c
-+++ b/src/segtree.c
-@@ -387,8 +387,6 @@ void concat_range_aggregate(struct expr *set)
- 			if (expr_basetype(r1)->type == TYPE_STRING &&
- 			    expr_basetype(r2)->type == TYPE_STRING) {
- 				string_type = true;
--				mpz_switch_byteorder(r1->value, r1->len / BITS_PER_BYTE);
--				mpz_switch_byteorder(r2->value, r2->len / BITS_PER_BYTE);
- 			}
+diff --git a/src/intervals.c b/src/intervals.c
+index 438957c52d391..6a917b7b79c3f 100644
+--- a/src/intervals.c
++++ b/src/intervals.c
+@@ -793,11 +793,8 @@ int setelem_to_interval(const struct set *set, struct expr *elem,
+ 	}
  
- 			mpz_sub(range, r2->value, r1->value);
-@@ -401,10 +399,6 @@ void concat_range_aggregate(struct expr *set)
- 			 */
- 			prefix_len = range_mask_len(r1->value, r2->value,
- 						    r1->len);
--			if (string_type) {
--				mpz_switch_byteorder(r1->value, r1->len / BITS_PER_BYTE);
--				mpz_switch_byteorder(r2->value, r2->len / BITS_PER_BYTE);
--			}
+ 	low = constant_expr_alloc(&key->location, set->key->dtype,
+-				  set->key->byteorder, set->key->len, NULL);
+-
++				  BYTEORDER_BIG_ENDIAN, set->key->len, NULL);
+ 	mpz_set(low->value, key->range.low);
+-	if (set->key->byteorder == BYTEORDER_HOST_ENDIAN)
+-		mpz_switch_byteorder(low->value, set->key->len / BITS_PER_BYTE);
  
- 			if (prefix_len >= 0 &&
- 			    (prefix_len % BITS_PER_BYTE) == 0 &&
-@@ -535,9 +529,6 @@ add_interval(struct expr *set, struct expr *low, struct expr *i)
- 	mpz_and(p, expr_value(low)->value, range);
+ 	low = set_elem_expr_alloc(&key->location, low);
+ 	set_elem_expr_copy(low, interval_expr_key(elem));
+@@ -819,12 +816,11 @@ int setelem_to_interval(const struct set *set, struct expr *elem,
+ 	}
  
- 	if (!mpz_cmp_ui(range, 0)) {
--		if (expr_basetype(low)->type == TYPE_STRING)
--			mpz_switch_byteorder(expr_value(low)->value,
--					     expr_value(low)->len / BITS_PER_BYTE);
- 		low->flags |= EXPR_F_KERNEL;
- 		expr = expr_get(low);
- 	} else if (range_is_prefix(range) && !mpz_cmp_ui(p, 0)) {
+ 	high = constant_expr_alloc(&key->location, set->key->dtype,
+-				   set->key->byteorder, set->key->len,
++				   BYTEORDER_BIG_ENDIAN, set->key->len,
+ 				   NULL);
+ 	mpz_set(high->value, key->range.high);
+ 	mpz_add_ui(high->value, high->value, 1);
+-	if (set->key->byteorder == BYTEORDER_HOST_ENDIAN)
+-		mpz_switch_byteorder(high->value, set->key->len / BITS_PER_BYTE);
++	high->byteorder = BYTEORDER_BIG_ENDIAN;
+ 
+ 	high = set_elem_expr_alloc(&key->location, high);
+ 
+diff --git a/src/netlink.c b/src/netlink.c
+index 2a6caa9c76565..3228747a74af8 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -323,9 +323,8 @@ static int __netlink_gen_concat_key(uint32_t flags, const struct expr *i,
+ 			break;
+ 
+ 		expr = (struct expr *)i;
+-		if (expr_basetype(expr)->type == TYPE_INTEGER &&
+-		    expr->byteorder == BYTEORDER_HOST_ENDIAN)
+-			byteorder_switch_expr_value(value, expr);
++		if (expr_basetype(expr)->type == TYPE_INTEGER)
++			expr->byteorder = BYTEORDER_BIG_ENDIAN;
+ 		break;
+ 	default:
+ 		BUG("invalid expression type '%s' in set", expr_ops(i)->name);
 -- 
 2.51.0
 
