@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9382-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9375-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01D44C0250A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:07:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AAB3C024EC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:06:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C7503A3E73
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:06:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3F121890618
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6951127BF6C;
-	Thu, 23 Oct 2025 16:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2032274643;
+	Thu, 23 Oct 2025 16:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Tny4f0QJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="H0m6V261"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A058327978C
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D9B246BDE
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761235578; cv=none; b=C5hJdySNc6GQ+z9F9AvD3Co7WzQG2u0I21b4GzgpxHx4UeVH6/8TuCNI7ppHK8kkFfwctuL2CYLz9ewCQu75R/F3s1vMBAIpvKp/DbrJXsPOtxm6BuGlmA+J0O70QDUMnGTdGfm+FDXRU9R14eOSO3OC2u6OUVM7pObd+d0aHG0=
+	t=1761235569; cv=none; b=fJhr2wUUy59c1Xc1vWqSyZpBFjbhy5jOOe7CT4P+tm5FSB/m+fQKeJdlBtLsCuvMN/tY8hWwCijsEuVKabd9df5RPb1yv6mDERuE3gdUhPOxWUEK/NXgp1xZKcXrlbT8Hzie3Eq65Il8VJ7XdX/HadmYQj5FbfUekFl+kDn+ARs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761235578; c=relaxed/simple;
-	bh=SLQw6y5bD0Md0jIu4baVTSmKCvwpCar4noNOutfreVw=;
+	s=arc-20240116; t=1761235569; c=relaxed/simple;
+	bh=+pjaZNzWGsVAOEvfSZKVq5X8TomCylPMGLpbZsCbPX8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Az2vESWZ/NGjcsmHHV2oRXBUIkdnJVaNgdSDpSlvbSQCuET9V+LgkEUaQt7kfwucH4aX7sekP4+dzR3Mox7JnnEvyGoynlo0LjUdQBw3MxtlTrpeJfu3kt1e6s/16AEaALGeVuVD7t6JWdJWsZLoKmVUBqssazUCf4UWqOWVHyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Tny4f0QJ; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=JE7VsOsimJAydUTIDPjoXh24h4HE9u9UZAfbGH2PjCPH6/dHoVdfxi7JFEA1x9DX8tpTCbIqZ5cOPdzxM4edUHGhGU7Ob+fms/5ZyTrmLKJOnyjJqNGmR+amAfmULzNVNzFqso2MGC2J42gYSrg5DZ/cC0ppBToKPRJH71dAqIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=H0m6V261; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=5eYNBj41dAU24avyTL3HyxgRW6Yx+oPkft2ia841TUY=; b=Tny4f0QJNpddvU5gD8y8aDEsvP
-	o8iyerg9uLsxGS1R213cbsf8A5s6ihzyFozEAg9OIriyoR4TCQ3Ac4Z/LWL4/vXgdkISvNY62o091
-	dOPDClk5QcOBsiabhUKbllpx96UGm5ufLsEpfE8ARltYvwAaD09EkG8AXSKgoqbgDI4BQTTqG5RNm
-	UY2+LuHz2TLzWwO1TiljnwkyOuSc8MStnIDVffk33vtXQK6inykQ/BlrPhlQOgmV6gYuu8DygJA5A
-	lClgjpSKfRv9R1TjrzuIcogUqfiA8MBurZ8RLUuIcSXeSxFc7EBFp3YRU63YcnJWE38MWvDmz/Ech
-	G/jklpLw==;
+	bh=rKECV11uN5Um8uf9nSATHhN/xMkecRiY+Ozc9Al2KIY=; b=H0m6V261TWqVKN67DqEDhDDYWM
+	eydNrIcVsFiqvjHLttzOZ+/zBrGZLKJNFkg40Lx8Wy3zcocV+AH4IsBycnV+K0awgm7ARyeDTOM5o
+	fvlessunehPDV88Oqy0fnTilKs85qPKL2I4TG95kPpLegDNo3hu/6TXomV5TqNXj/eCnN2i4eOmgB
+	0PD3H3KQYcEe2CZIYV0LxB8Pr+uP+YUgQFAWILsubceNrTwQXsz7wOMteJxTBdxGMu21u8eATpZS4
+	o0gPS9P9EoLxgQN2ORJTyXThs0wPrM9pqMxrpw30S5kruffkq7UzYVRnUYXJYJ3WFakh1+cSkXF17
+	ZiQ3snOg==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxpO-000000007fx-2dUi;
-	Thu, 23 Oct 2025 18:06:15 +0200
+	id 1vBxp7-000000007cU-2qqx;
+	Thu, 23 Oct 2025 18:05:58 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 1/9] set_elem: Review debug output
-Date: Thu, 23 Oct 2025 18:05:39 +0200
-Message-ID: <20251023160547.10928-2-phil@nwl.cc>
+Subject: [libnftnl PATCH 2/9] expr: data_reg: Avoid extra whitespace
+Date: Thu, 23 Oct 2025 18:05:40 +0200
+Message-ID: <20251023160547.10928-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023160547.10928-1-phil@nwl.cc>
 References: <20251023160547.10928-1-phil@nwl.cc>
@@ -67,68 +67,155 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-* Do not print a colon if no data part is present
-* Include the object's name for objmap elements
-* Print flags only if non-zero, but prefixed by 'flags' keyword to avoid
-  confusion with data values
+Do not append a space to data regs, they may appear at end of line or
+followed by a tab. Have callers print the space if needed.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/set_elem.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ src/expr/bitwise.c   |  7 +++++--
+ src/expr/cmp.c       |  3 +++
+ src/expr/data_reg.c  | 11 +++++------
+ src/expr/immediate.c |  3 +++
+ src/expr/range.c     |  6 ++++++
+ src/set_elem.c       |  4 ++--
+ 6 files changed, 24 insertions(+), 10 deletions(-)
 
-diff --git a/src/set_elem.c b/src/set_elem.c
-index 05220e7933242..6c1be44ce5073 100644
---- a/src/set_elem.c
-+++ b/src/set_elem.c
-@@ -687,7 +687,7 @@ int nftnl_set_elem_parse_file(struct nftnl_set_elem *e, enum nftnl_parse_type ty
- int nftnl_set_elem_snprintf_default(char *buf, size_t remain,
- 				    const struct nftnl_set_elem *e)
- {
--	int ret, dregtype = DATA_VALUE, offset = 0, i;
-+	int ret, dregtype = DATA_NONE, offset = 0, i;
- 
- 	ret = snprintf(buf, remain, "element ");
+diff --git a/src/expr/bitwise.c b/src/expr/bitwise.c
+index cac47a5500993..2da83b7ba0441 100644
+--- a/src/expr/bitwise.c
++++ b/src/expr/bitwise.c
+@@ -225,13 +225,16 @@ nftnl_expr_bitwise_snprintf_mask_xor(char *buf, size_t remain,
+ 				      0, DATA_VALUE);
  	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-@@ -705,18 +705,29 @@ int nftnl_set_elem_snprintf_default(char *buf, size_t remain,
+ 
+-	ret = snprintf(buf + offset, remain, ") ^ ");
++	ret = snprintf(buf + offset, remain, " ) ^ ");
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
+ 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &bitwise->xor,
+ 				      0, DATA_VALUE);
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
++	ret = snprintf(buf + offset, remain, " ");
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
+ 	return offset;
+ }
+ 
+@@ -248,7 +251,7 @@ nftnl_expr_bitwise_snprintf_shift(char *buf, size_t remain, const char *op,
+ 				      0, DATA_VALUE);
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
+-	ret = snprintf(buf + offset, remain, ") ");
++	ret = snprintf(buf + offset, remain, " ) ");
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
+ 	return offset;
+diff --git a/src/expr/cmp.c b/src/expr/cmp.c
+index 2908f56325b45..ec1dc31894771 100644
+--- a/src/expr/cmp.c
++++ b/src/expr/cmp.c
+@@ -163,6 +163,9 @@ nftnl_expr_cmp_snprintf(char *buf, size_t remain,
+ 				      0, DATA_VALUE);
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
++	ret = snprintf(buf + offset, remain, " ");
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
+ 	return offset;
+ }
+ 
+diff --git a/src/expr/data_reg.c b/src/expr/data_reg.c
+index fd5e0d6e749e1..bf4153c072fd0 100644
+--- a/src/expr/data_reg.c
++++ b/src/expr/data_reg.c
+@@ -25,15 +25,14 @@ nftnl_data_reg_value_snprintf_default(char *buf, size_t remain,
+ 				      const union nftnl_data_reg *reg,
+ 				      uint32_t flags)
+ {
+-	const char *pfx = flags & DATA_F_NOPFX ? "" : "0x";
++	const char *pfx = flags & DATA_F_NOPFX ? "" : "0x", *sep = "";
+ 	int offset = 0, ret, i;
+ 
+-
+-
+ 	for (i = 0; i < div_round_up(reg->len, sizeof(uint32_t)); i++) {
+ 		ret = snprintf(buf + offset, remain,
+-			       "%s%.8x ", pfx, reg->val[i]);
++			       "%s%s%.8x", sep, pfx, reg->val[i]);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	return offset;
+@@ -46,11 +45,11 @@ nftnl_data_reg_verdict_snprintf_def(char *buf, size_t size,
+ {
+ 	int remain = size, offset = 0, ret = 0;
+ 
+-	ret = snprintf(buf, size, "%s ", nftnl_verdict2str(reg->verdict));
++	ret = snprintf(buf, size, "%s", nftnl_verdict2str(reg->verdict));
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
+ 	if (reg->chain != NULL) {
+-		ret = snprintf(buf + offset, remain, "-> %s ", reg->chain);
++		ret = snprintf(buf + offset, remain, " -> %s", reg->chain);
  		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
  	}
  
--	ret = snprintf(buf + offset, remain, " : ");
--	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
--
--	if (e->flags & (1 << NFTNL_SET_ELEM_VERDICT))
-+	if (e->flags & (1 << NFTNL_SET_ELEM_DATA))
-+		dregtype = DATA_VALUE;
-+	else if (e->flags & (1 << NFTNL_SET_ELEM_CHAIN))
-+		dregtype = DATA_CHAIN;
-+	else if (e->flags & (1 << NFTNL_SET_ELEM_VERDICT))
- 		dregtype = DATA_VERDICT;
+diff --git a/src/expr/immediate.c b/src/expr/immediate.c
+index f0e0a78d6b794..6dffaf9ce4ad9 100644
+--- a/src/expr/immediate.c
++++ b/src/expr/immediate.c
+@@ -201,6 +201,9 @@ nftnl_expr_immediate_snprintf(char *buf, size_t remain,
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 	}
  
--	ret = nftnl_data_reg_snprintf(buf + offset, remain, &e->data,
--				      DATA_F_NOPFX, dregtype);
--	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+	if (dregtype != DATA_NONE) {
-+		ret = snprintf(buf + offset, remain, " : ");
-+		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
--	ret = snprintf(buf + offset, remain, "%u [end]", e->set_elem_flags);
--	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		ret = nftnl_data_reg_snprintf(buf + offset, remain, &e->data,
-+					      DATA_F_NOPFX, dregtype);
-+		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+	} else if (e->flags & (1 << NFTNL_SET_ELEM_OBJREF)) {
-+		ret = snprintf(buf + offset, remain, " : %s ", e->objref);
-+		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+	}
++	ret = snprintf(buf + offset, remain, " ");
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
 +
-+	if (e->set_elem_flags) {
-+		ret = snprintf(buf + offset, remain, "flags %u ", e->set_elem_flags);
-+		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+	}
+ 	return offset;
+ }
  
- 	if (e->user.len) {
- 		ret = snprintf(buf + offset, remain, "  userdata = { ");
+diff --git a/src/expr/range.c b/src/expr/range.c
+index 50a8ed092e38f..564d14f0edbbb 100644
+--- a/src/expr/range.c
++++ b/src/expr/range.c
+@@ -176,10 +176,16 @@ static int nftnl_expr_range_snprintf(char *buf, size_t remain,
+ 				      0, DATA_VALUE);
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
++	ret = snprintf(buf + offset, remain, " ");
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
+ 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &range->data_to,
+ 				      0, DATA_VALUE);
+ 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 
++	ret = snprintf(buf + offset, remain, " ");
++	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++
+ 	return offset;
+ }
+ 
+diff --git a/src/set_elem.c b/src/set_elem.c
+index 6c1be44ce5073..f567a28719d11 100644
+--- a/src/set_elem.c
++++ b/src/set_elem.c
+@@ -720,12 +720,12 @@ int nftnl_set_elem_snprintf_default(char *buf, size_t remain,
+ 					      DATA_F_NOPFX, dregtype);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 	} else if (e->flags & (1 << NFTNL_SET_ELEM_OBJREF)) {
+-		ret = snprintf(buf + offset, remain, " : %s ", e->objref);
++		ret = snprintf(buf + offset, remain, " : %s", e->objref);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 	}
+ 
+ 	if (e->set_elem_flags) {
+-		ret = snprintf(buf + offset, remain, "flags %u ", e->set_elem_flags);
++		ret = snprintf(buf + offset, remain, " flags %u", e->set_elem_flags);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ 	}
+ 
 -- 
 2.51.0
 
