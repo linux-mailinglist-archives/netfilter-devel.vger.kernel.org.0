@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9401-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9384-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B9AAC02637
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:17:59 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83455C025F7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:16:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3409E4F67DD
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:15:23 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 84A1150131A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CA92BD5AF;
-	Thu, 23 Oct 2025 16:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B42B286887;
+	Thu, 23 Oct 2025 16:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Iv2c5/ma"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="STZrcFF1"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662C52BD590
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD71026ED5A
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761236092; cv=none; b=hgiM/yO6JA6om+tD4wFzBKQrtANoBPLPxFoQ6ONqse/wpkMcxeU96nkoNjn/pHrEuORBT31gxHkagCCOJ0M4gumgArMHxPPy1aVslIbuBk+Mw5brxXFa+OJEXBw/LTH3EUBaeJaRziiX2UMwNQ1BG7Euj6z/fUU8yhkBNMktCuo=
+	t=1761236067; cv=none; b=ccjitI9zmhprrNRuz6iULbolIjGN8loSR9sZApML6LRoyzZ9RYKSO1yJnG2fcpGri8EzTMhKxg+I680YFTkpLUplrVQHHyEKzVPzdEN6BcZA7aXUPAQB0wDWkyz6bzAj9xHHYWIFdG9ckB4+UfaDIuQuXNUrhAjL1w/knEXtt5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761236092; c=relaxed/simple;
-	bh=9G0uI0b/wiPl9fivcR6OlQ+rbY9t0tNQuHcWuT3MCwQ=;
+	s=arc-20240116; t=1761236067; c=relaxed/simple;
+	bh=EHatGNXkiutgmDt6yC4bBFQMSecVo+pmQP1s8Dvj2H8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iPwC+ahzTa7MMum8hI7ewZROPgHZEE1Tpwz34NArVBhf2nYaAjKmaUA8ELcO2zcND81F+Om2me480L8CgW7Rm06kOCKSBistbHpX2tQMv77fvsR5t29sLd71W28gvUbEzSFNDWbRCv7gvetm8YZiA8ldDvCLxDH9fPjEHX/4i5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Iv2c5/ma; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=eAKfvx8E7A3w/IEEsQXM67blhMOqUjO8vURvY2jxbQaKJ42TxPlPfSkVKQWshTDOHF7VZoShIZnemqxOf7azq5XzGGRdz/LjwtpKK/laYpi1Qk9VEKjnyDniG7gY+J+IouASvLKlrcA2SAtxmzwGEkUGDM9mGolHwsHKazYofMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=STZrcFF1; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=/v5JpIf26A0Ko39ZHzmFn3XvEm5fq4TFvzjd4iyvnNQ=; b=Iv2c5/mavhFwx5g/yI/zDIty4L
-	HG7c4RU+/od/irxe5sK6hDP760LE3o5h4tQHzQkmJRjdbkpsfMKyJfZvyQq0cAb/cX7sV5/rTtkBm
-	E1iIw2fwx3Wchz8uCV6xTAqcQ7DWl4mX3KIU2d6zVUR23Euq23vUGrHT0qkyQgHMjSqBoCQA0W/b6
-	XYv4KgBzhgQTzrlRvfBDOHWbmdx0rJC6DB1Ffom/dseFxFTTuppLbY4E8VBaZURq9AoYvBb+z8r8Z
-	O+8esOs8mBRGZR/eaSP8LICsObb4eGacAVtlvE6I0ppWRoqv9ZvpFWre6jBhI0jhLnGy0TLV8pAKD
-	kX2G1iOw==;
+	bh=kfxmGVYpwoHAUU2FiitIYsjKOg1A6fGOTiyzitnGgiI=; b=STZrcFF124DwwbWiOTsTV5QwJe
+	BaNWE14zLg4PjI+ZXybXTcyS7Qwjg0cIbW98tb/EWaslgYNvAdqUmsysRAExUU6FIqLUXUAnaewSI
+	d2D0rIXvPPsnDYxZkOPaMNmb416evtnsO5aiPerh/vp223taplZlIfn2faExCunzgWGpGz3s/9oZu
+	l6TQ3RrNL43CUzpHVSxLTJZn3rKbEqjMIPDz4KGCUnBMNpGi4eZGYn9qKY7zp/jqs1KTF3Q8BxlAq
+	CPU3Z5co4CBDwU7OLTreJHyXnnfHTlB/2YSHlz4R5Px/+VQ/h1ibb46QOIFipTxig4Lg0dI7rUpaf
+	MRYrYDLw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxxh-00000000079-1xn2;
-	Thu, 23 Oct 2025 18:14:49 +0200
+	id 1vBxxH-000000008WV-2cIB;
+	Thu, 23 Oct 2025 18:14:23 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 19/28] netlink: Introduce struct nft_data_linearize::byteorder
-Date: Thu, 23 Oct 2025 18:14:08 +0200
-Message-ID: <20251023161417.13228-20-phil@nwl.cc>
+Subject: [nft PATCH 20/28] netlink: Introduce struct nft_data_linearize::sizes
+Date: Thu, 23 Oct 2025 18:14:09 +0200
+Message-ID: <20251023161417.13228-21-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023161417.13228-1-phil@nwl.cc>
 References: <20251023161417.13228-1-phil@nwl.cc>
@@ -67,116 +67,97 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Bits in this field indicate data is in host byte order and thus may need
-conversion when being printed "byte by byte" in libnftnl.
-
-With regular immediate values, this field's value may be treated as
-boolean (zero or not). Concatenations may contain components in
-different byteorder, so with them each bit (at pos N) indicates whether
-a component (at index N) is in host byte order. A follow-up patch
-collecting components' lengths will complete this.
+This array holds each concat component's actual length in bytes. It is
+crucial because component data is padded to match register lengths and
+if libnftnl has to print data "in reverse" (to print Little Endian
+values byte-by-byte), it will print extra leading zeroes with odd data
+lengths and thus indicate number of printed bytes does no longer
+correctly reflect actual data length.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
  include/netlink.h |  1 +
- src/netlink.c     | 28 ++++++++++++++++++++++++----
- 2 files changed, 25 insertions(+), 4 deletions(-)
+ src/netlink.c     | 14 ++++++++++----
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/include/netlink.h b/include/netlink.h
-index 2737d5708b295..a762cb485784f 100644
+index a762cb485784f..aa25094dc7c1d 100644
 --- a/include/netlink.h
 +++ b/include/netlink.h
-@@ -106,6 +106,7 @@ struct nft_data_linearize {
- 	char		chain[NFT_CHAIN_MAXNAMELEN];
+@@ -107,6 +107,7 @@ struct nft_data_linearize {
  	uint32_t	chain_id;
  	int		verdict;
-+	uint32_t	byteorder;
+ 	uint32_t	byteorder;
++	uint8_t		sizes[NFT_REG32_COUNT];
  };
  
  struct nft_data_delinearize {
 diff --git a/src/netlink.c b/src/netlink.c
-index 3228747a74af8..2a4315c691059 100644
+index 2a4315c691059..9d6cc31e40fb5 100644
 --- a/src/netlink.c
 +++ b/src/netlink.c
-@@ -248,6 +248,7 @@ void netlink_gen_raw_data(const mpz_t value, enum byteorder byteorder,
- 	assert(len > 0);
- 	mpz_export_data(data->value, value, byteorder, len);
- 	data->len = len;
-+	data->byteorder = byteorder == BYTEORDER_HOST_ENDIAN ? UINT32_MAX : 0;
- }
- 
- static int netlink_export_pad(unsigned char *data, const mpz_t v,
-@@ -353,14 +354,19 @@ static void netlink_gen_concat_key(const struct expr *expr,
- 	unsigned char data[NFT_MAX_EXPR_LEN_BYTES];
- 	unsigned int offset = 0;
- 	const struct expr *i;
-+	int n = 0;
- 
- 	if (len > sizeof(data))
- 		BUG("Value export of %u bytes would overflow", len);
- 
- 	memset(data, 0, sizeof(data));
- 
--	list_for_each_entry(i, &expr_concat(expr)->expressions, list)
-+	list_for_each_entry(i, &expr_concat(expr)->expressions, list) {
+@@ -365,7 +365,7 @@ static void netlink_gen_concat_key(const struct expr *expr,
  		offset += __netlink_gen_concat_key(expr->flags, i, data + offset);
-+		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
-+			nld->byteorder |= 1 << n;
-+		n++;
-+	}
+ 		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
+ 			nld->byteorder |= 1 << n;
+-		n++;
++		nld->sizes[n++] = div_round_up(i->len, BITS_PER_BYTE);
+ 	}
  
  	nft_data_memcpy(nld, data, len);
- }
-@@ -417,17 +423,26 @@ static void __netlink_gen_concat_expand(const struct expr *expr,
- 	unsigned char data[NFT_MAX_EXPR_LEN_BYTES];
- 	unsigned int offset = 0;
- 	const struct expr *i;
-+	int n = 0;
- 
- 	if (len > sizeof(data))
- 		BUG("Value export of %u bytes would overflow", len);
- 
- 	memset(data, 0, sizeof(data));
- 
--	list_for_each_entry(i, &expr_concat(expr)->expressions, list)
-+	list_for_each_entry(i, &expr_concat(expr)->expressions, list) {
+@@ -434,14 +434,14 @@ static void __netlink_gen_concat_expand(const struct expr *expr,
  		offset += __netlink_gen_concat_data(false, i, data + offset);
-+		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
-+			nld->byteorder |= 1 << n;
-+		n++;
-+	}
+ 		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
+ 			nld->byteorder |= 1 << n;
+-		n++;
++		nld->sizes[n++] = div_round_up(i->len, BITS_PER_BYTE);
+ 	}
  
--	list_for_each_entry(i, &expr_concat(expr)->expressions, list)
-+	list_for_each_entry(i, &expr_concat(expr)->expressions, list) {
+ 	list_for_each_entry(i, &expr_concat(expr)->expressions, list) {
  		offset += __netlink_gen_concat_data(true, i, data + offset);
-+		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
-+			nld->byteorder |= 1 << n;
-+		n++;
-+	}
+ 		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
+ 			nld->byteorder |= 1 << n;
+-		n++;
++		nld->sizes[n++] = div_round_up(i->len, BITS_PER_BYTE);
+ 	}
  
  	nft_data_memcpy(nld, data, len);
- }
-@@ -439,14 +454,19 @@ static void __netlink_gen_concat(const struct expr *expr,
- 	unsigned char data[NFT_MAX_EXPR_LEN_BYTES];
- 	unsigned int offset = 0;
- 	const struct expr *i;
-+	int n = 0;
- 
- 	if (len > sizeof(data))
- 		BUG("Value export of %u bytes would overflow", len);
- 
- 	memset(data, 0, sizeof(data));
- 
--	list_for_each_entry(i, &expr_concat(expr)->expressions, list)
-+	list_for_each_entry(i, &expr_concat(expr)->expressions, list) {
+@@ -465,7 +465,7 @@ static void __netlink_gen_concat(const struct expr *expr,
  		offset += __netlink_gen_concat_data(expr->flags, i, data + offset);
-+		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
-+			nld->byteorder |= 1 << n;
-+		n++;
-+	}
+ 		if (i->byteorder == BYTEORDER_HOST_ENDIAN)
+ 			nld->byteorder |= 1 << n;
+-		n++;
++		nld->sizes[n++] = div_round_up(i->len, BITS_PER_BYTE);
+ 	}
  
  	nft_data_memcpy(nld, data, len);
+@@ -541,6 +541,8 @@ static void netlink_gen_range(const struct expr *expr,
+ 	offset = netlink_export_pad(data, expr->left->value, expr->left);
+ 	netlink_export_pad(data + offset, expr->right->value, expr->right);
+ 	nft_data_memcpy(nld, data, len);
++	nld->sizes[0] = div_round_up(expr->left->len, BITS_PER_BYTE);
++	nld->sizes[1] = div_round_up(expr->right->len, BITS_PER_BYTE);
  }
+ 
+ static void netlink_gen_range_value(const struct expr *expr,
+@@ -557,6 +559,8 @@ static void netlink_gen_range_value(const struct expr *expr,
+ 	offset = netlink_export_pad(data, expr->range.low, expr);
+ 	netlink_export_pad(data + offset, expr->range.high, expr);
+ 	nft_data_memcpy(nld, data, len);
++	nld->sizes[0] = div_round_up(expr->len, BITS_PER_BYTE);
++	nld->sizes[1] = nld->sizes[0];
+ }
+ 
+ static void netlink_gen_prefix(const struct expr *expr,
+@@ -577,6 +581,8 @@ static void netlink_gen_prefix(const struct expr *expr,
+ 	mpz_clear(v);
+ 
+ 	nft_data_memcpy(nld, data, len);
++	nld->sizes[0] = div_round_up(expr->prefix->len, BITS_PER_BYTE);
++	nld->sizes[1] = nld->sizes[0];
+ }
+ 
+ static void netlink_gen_key(const struct expr *expr,
 -- 
 2.51.0
 
