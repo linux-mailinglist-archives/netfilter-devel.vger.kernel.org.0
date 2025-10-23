@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9374-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9376-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38879C024FF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:06:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31473C024F8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 18:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AA4B04E5E0E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F28E3A3931
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Oct 2025 16:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FC02741B3;
-	Thu, 23 Oct 2025 16:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763CC27587E;
+	Thu, 23 Oct 2025 16:06:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="EsV3nkH2"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GCw/ZZx7"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0C526F2BC
-	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FC5261B9C
+	for <netfilter-devel@vger.kernel.org>; Thu, 23 Oct 2025 16:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761235569; cv=none; b=jH6B7sPpF7MfNYf0vjgJ9pInbrKko/BK6Ew+gQUe0HCMiSH3O1FXP42MJf+wvebz7cIjM2dJKZ0/4iyuEKocXVkaZPYvPQvxeompbnicqV6RDudSZYtKWPy46I/IL2llQLRzDEtDKI3L4TGZsdVwUBGl2KaZwrSs0GopNWGFwbE=
+	t=1761235570; cv=none; b=pymk/1xzfxNAodiFFhsGZ/d1Rvbx114y3zoki35XWkEFcz+Xby7dO+Y8NutFZ45QpSjW1EEOtJ5EoAjMVKolz8wuFfo5jSMc8eaQD8JpVhT6ODFfrO+IsuSYRQNoq2y5ya2olhI9ah3TYk8kNC/LFqvLKeSpYbi57DvGesl4XR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761235569; c=relaxed/simple;
-	bh=Lu8sOaNrOIKrc0gENcUdpHPc1JlWkEVtfNpTPsckRwM=;
+	s=arc-20240116; t=1761235570; c=relaxed/simple;
+	bh=e2ZcW/yryWqP0UbEBMT6KC4mF4wMP2mIHH8RBOJrJnU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YufS99ww+w554NiW5mD5pYffNf+cEqV1S4uOxM0rd9mni1p4wx5t6lS1KEkuPKZ7ffYyG+P3XwyAhSyXS7JFOOR6/ZNb3nTQjWawevTpK77re3GUQkFWM7RDIIo01jw3oZYMjkvntLJWqjOlWpCLY9iZCi8JHyhSBOueHJCxjK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=EsV3nkH2; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=iyj/6fOeYyMGuhvo3Jvp0nmcTeZT53XniREAa+7fu5/IpgBL6cGlErapMRTn+uQyRWr50UtWSgRvO5VT8x+ZtUWeU50Tv46uRCsPWX+NOqVfIX1fOah3rQOMFFd9O+I1DYHT4FyYWONOkMQDrV10SKKeKKmyGhPn16voTPUlW20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GCw/ZZx7; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,25 +37,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=quwr7oTmpOPg2hkA+Mcr704hT+wcF9NWzyoTswXVHBQ=; b=EsV3nkH2e9zYLum1kfuj/zB+A3
-	DnbuJyBrZJTJ1muJYzl4jNxo4UPlafD2bhQ0eSTFpkc903BvS7WylT0zOMN06TjcrLD/QteIo2R9w
-	dyeFbF6dYtlvN4nKf52s2Pob1Jnu/XEbgeMNUiyF+Ho+Dy+74dIQCi5sTdkiRgWMoPplqkKl/ccx/
-	lIZLj/05ZVxajoNhbm1AoOxeQB1+Rfv32Ecf/M3jkZNZUq0CAHyqTIJDS0CNOnGVYVNnFQVm4NFwI
-	C/vrikDn/beM8R978FjI5E36EQJ1ZkngKLo0cxhQvYL/BZQq2g4BC2NXEO1ResIvQSUzV5JHecIFf
-	KNg/fM/A==;
+	bh=pkszUg1RO52uGV9H2oPhYXCAlNJEV2DGs88AHGcaDTs=; b=GCw/ZZx7VzItOFEDOAlB9OK1Tp
+	2AaLQly0oaAKqxGdHaazgGOCOniQ7TAlD5FZNw1B+ERRGS6T6sRhvJnMUnS37oxr+b5bZNhCu5k3W
+	0L87oi0uFsRXWk/inZueviNDglqrLhZ8y3dkRSthQugAteS6mwS7loivSh9ruPOFN2gUTEx6qe8E/
+	hZHYvawZxMkcgPGNChPDAfuASXqRcm7Udpdzj2OnMfHts2w9gLEbfmCWrYdbDXincU0j4lcCOuVWJ
+	J3ubPlo/fIA96xstxroAPYvmmZ7b9Eg7T4H920vDDV5dSwX8ffRR9lRqm7aJJOHUByZv0RKk8k4AW
+	1H0uroNw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vBxp9-000000007ca-1pUA;
-	Thu, 23 Oct 2025 18:06:00 +0200
+	id 1vBxpA-000000007dL-3eaa;
+	Thu, 23 Oct 2025 18:06:01 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 8/9] data_reg: Support concatenated data
-Date: Thu, 23 Oct 2025 18:05:46 +0200
-Message-ID: <20251023160547.10928-9-phil@nwl.cc>
+Subject: [libnftnl PATCH 9/9] udata: Store u32 udata values in Big Endian
+Date: Thu, 23 Oct 2025 18:05:47 +0200
+Message-ID: <20251023160547.10928-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251023160547.10928-1-phil@nwl.cc>
 References: <20251023160547.10928-1-phil@nwl.cc>
@@ -67,92 +67,46 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If sizes array has non-zero field values, interpret byteorder field as
-bitfield indicating each compontent's byteorder and print the components
-separated by a dot.
+Avoid deviation of this data in between different byte orders. Assume
+that direct callers of nftnl_udata_put() know what they do.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/expr/data_reg.c | 48 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 38 insertions(+), 10 deletions(-)
+ src/udata.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/src/expr/data_reg.c b/src/expr/data_reg.c
-index de5d23501c92d..d01e0f7d9969e 100644
---- a/src/expr/data_reg.c
-+++ b/src/expr/data_reg.c
-@@ -27,34 +27,62 @@ static bool big_endian_host(void)
- 	return v == htons(v);
- }
+diff --git a/src/udata.c b/src/udata.c
+index a1956571ef5fd..8cf4e7ca61e2f 100644
+--- a/src/udata.c
++++ b/src/udata.c
+@@ -8,6 +8,7 @@
+ #include <udata.h>
+ #include <utils.h>
  
--static int
--nftnl_data_reg_value_snprintf_default(char *buf, size_t remain,
--				      const union nftnl_data_reg *reg,
--				      uint32_t flags)
-+static int __reg_value_snprintf(char *buf, size_t remain,
-+				uint8_t *data, size_t datalen,
-+				bool reverse, const char *pfx)
++#include <arpa/inet.h>
+ #include <stdlib.h>
+ #include <stdint.h>
+ #include <string.h>
+@@ -100,7 +101,9 @@ EXPORT_SYMBOL(nftnl_udata_put_u32);
+ bool nftnl_udata_put_u32(struct nftnl_udata_buf *buf, uint8_t type,
+ 			 uint32_t data)
  {
--	const char *pfx = flags & DATA_F_NOPFX ? "" : "0x", *sep = "";
--	bool reverse = reg->byteorder && !big_endian_host();
- 	int offset = 0, ret, i, idx;
-+	const char *sep = "";
- 
--	for (i = 0; i < reg->len; i++) {
-+	for (i = 0; i < datalen; i++) {
- 		if ((i % 4) == 0) {
- 			ret = snprintf(buf + offset, remain, "%s%s", sep, pfx);
- 			SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 			sep = " ";
- 		}
- 		if (reverse)
--			idx = reg->len - i - 1;
-+			idx = datalen - i - 1;
- 		else
- 			idx = i;
- 
--		ret = snprintf(buf + offset, remain, "%.2x",
--			       ((uint8_t *)reg->val)[idx]);
-+		ret = snprintf(buf + offset, remain, "%.2x", data[idx]);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 	}
- 
- 	return offset;
+-	return nftnl_udata_put(buf, type, sizeof(data), &data);
++	uint32_t data_be = htonl(data);
++
++	return nftnl_udata_put(buf, type, sizeof(data_be), &data_be);
  }
  
-+static int
-+nftnl_data_reg_value_snprintf_default(char *buf, size_t remain,
-+				      const union nftnl_data_reg *reg,
-+				      uint32_t flags)
-+{
-+	uint32_t byteorder = big_endian_host() ? 0 : reg->byteorder;
-+	const char *pfx = flags & DATA_F_NOPFX ? "" : "0x";
-+	int offset = 0, ret, i, pos = 0;
-+
-+	for (i = 0; i < array_size(reg->sizes); i++) {
-+		int curlen = reg->sizes[i] ?: reg->len;
-+		bool reverse = byteorder & (1 << i);
-+
-+		if (i > 0) {
-+			ret = snprintf(buf + offset, remain, " . ");
-+			SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		}
-+
-+		ret = __reg_value_snprintf(buf + offset, remain,
-+					   (void *)&reg->val[pos],
-+					   curlen, reverse, pfx);
-+		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+
-+		pos += div_round_up(curlen, sizeof(uint32_t));
-+		if (pos >= reg->len / sizeof(uint32_t))
-+			break;
-+	}
-+
-+	return offset;
-+}
-+
- static int
- nftnl_data_reg_verdict_snprintf_def(char *buf, size_t size,
- 				    const union nftnl_data_reg *reg,
+ EXPORT_SYMBOL(nftnl_udata_type);
+@@ -128,7 +131,7 @@ uint32_t nftnl_udata_get_u32(const struct nftnl_udata *attr)
+ 
+ 	memcpy(&data, attr->value, sizeof(data));
+ 
+-	return data;
++	return ntohl(data);
+ }
+ 
+ EXPORT_SYMBOL(nftnl_udata_next);
 -- 
 2.51.0
 
