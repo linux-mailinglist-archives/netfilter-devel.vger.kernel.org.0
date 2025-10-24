@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-9425-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9423-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D45C0422C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 04:35:34 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0EEEC04226
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 04:35:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81A9019A846F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 02:35:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4466D4F1779
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 02:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3B325D1E9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34EDD258CD9;
 	Fri, 24 Oct 2025 02:35:29 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+Received: from rusty.tulip.relay.mailchannels.net (rusty.tulip.relay.mailchannels.net [23.83.218.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D82259CA5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58414221DB6
 	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.14
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.252
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761273329; cv=pass; b=X/bRgRkRFUTVx41bt78nLFHxNmAHgBbv7esW+p6hmbEQX8a0+nhzT84TQmLp23KtKJPaDtVm8219jaSmLlwYtV7v0VKbp9jRobDUQVz+GWXXCp6/SStr4NEhyKzeRIlL/xjgJda5b909KlrmaNYdfzrdAkxhp0vjXcB5Ur5fcvo=
+	t=1761273329; cv=pass; b=oZCUKw/Bq6eY34fh37wa+zFoGfl625geR+0bB8WLhOOLSno+0oKuwP9FstsfgYACyc/ko4jSV3ElBMdGYQD+1S69kl2tQmzgWVgnTClqwCmDVjgsOJAR+F1hLBDjiniQJbYBWyNIg5gXknatxg4GcLKQoqHIJzTxygm/Vy5iY8c=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1761273329; c=relaxed/simple;
-	bh=F0hsnXk55LQZwjUx8jNrVSOdPvwTM9MyMl2GrV63uEM=;
+	bh=bgM+AD+J6GXwPPFFwIfkp7S0yWnmhhQAlrqdZPGxxgQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P7Zj+5W/WiPPBfnHq4XVE/p2LfRyS0gpMGcFqaH3+xI+OHFkCF4dlH7BwnEL44B2kEAzrGYRX4AuSezHKqzPFWvycHreQGgWKdryh3GDdWW/Rxtva+SoUsjmzMKyHgjwrVlyxjTcxDz+izw3SZaklSg+7MROh6IUdLGNcAJ+lCg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.209.14
+	 MIME-Version:Content-Type; b=kVAF+DlcdGBENxkl2Sd03/ELyce3DDDNcJhMXMe+OyZzxEIPHezF8jyZfGjmHWdu/NDyqcc0B5piGD4nYZA/QPB7c/dfKTtYoeSCcuLDJtvOLrfeal5cv2nsKaTXygsXZH97k8BaEKkNXd0fnBlAi777n7XlWE8+zQ9eEe6Ou+0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.252
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 506CF861581;
+	by relay.mailchannels.net (Postfix) with ESMTP id 36077404CE;
 	Fri, 24 Oct 2025 02:35:21 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (trex-green-4.trex.outbound.svc.cluster.local [100.119.74.21])
+Received: from cpanel-007-fra.hostingww.com (trex-green-2.trex.outbound.svc.cluster.local [100.121.87.189])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id CE23C86117B
+	by relay.mailchannels.net (Postfix) with ESMTPA id B07D8416F2
 	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:20 +0000 (UTC)
 ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1761273321; a=rsa-sha256;
 	cv=none;
-	b=MSzz3KotadYYOXkoUxv80SPiiS6kXb4ykH9mjnX3dLzfQhMnf1FI7RhyNgo6gdmLESWoLO
-	UOH5IUe4wxtkVrJS5gM8Gvt79QkF1ohFcOs7EFsnyQBJbb6uuumtf9Uq23xpyMARAfJqA2
-	Ws4V2v7CM9sPcpFGQ0UrgGu3Q3B6+E71UjVnncgSrk6oV7O/2iwBU0yL5zVBlx7OHpZHId
-	MaydTZmC+RknVLL/FSkxieQ7m2GbqteEVh9VBZ50svmRcq63p6Sik2z7E5jAaI3VTCR8LX
-	b8CXJaOVZoujcXN5uwooV3tuYjjaq4y26cJ6l3SJQKPSdWdcXv8nCXxM7+NjOA==
+	b=VuHefrbCV/EIKFKqH6YgGs/eauA4/t+izp+d00FSkRiOb6kIlbvXBFeYQrO9asxD2DwILH
+	FSWpNVb2WFGqKDpCui68LZlB8bCpOKwq1COJ7YZvnJWL0bdLbLk9FogSUh5+DuR1CUilLO
+	Vu39KWdJie+0XVlx7xzYMX34MhPN7bpfnTDCTLB1EVdZtfypkPl7N/sXRFBbfyNKB5YJue
+	wim89GtXYYwTtpdyuE2ghTSODJvUZQOOwabxjp8b7fR1ZXwwi3MGmgtGuXr2AJBGwHcH+e
+	5U7L37ehThX+uBv8N2ZSBc2DNEwsJAl9MYpkvvcD7pK9IQMaiL3T1/Wi0oeUMQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
 	s=arc-2022; t=1761273321;
@@ -51,42 +51,42 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
 	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3Tz1RpS4nZn/6Nm3uSsbUxUUbNDidrQAxWpabrQRCwo=;
-	b=kS+V05wk3O29/WNt4gcOfY9n7/Pi/66/BzU8Fe2WYo9TNiGaWy3YYob9PFTCK0oRp0TTke
-	GORTLQYHlaEQniAE4vv6/iD8//Z3Disl5cjbGccFN9MspzdbQFqnpnz57LqCVli16TVp1t
-	cIRCLjGsRi/jgWR168DrClZaaZdJcR3XKal/HZudokQ5W63qbF0RK6oZnj5cwBZyK8B5It
-	u+6HK6NW2heH5V1EUd9f2f44tz929/E0sD2IZYIg1znxFvK8hTCsl+JqPbFeLX+CWEwjG7
-	uCKZLc6dCu+wAMqlJXPtxRSmen4w5QUMqlTDF1pQlr44WTF63BP75bMCfAOnVw==
+	bh=q/V0h5G6R3pGnt/riwGtnTWhiPKI2Wy3ttpCxq9UGzE=;
+	b=X5Et0hggI0Bw0P7jTkQbXZCefSk0ExHErP3LG7trpZo5X6iVYV3xA+x+4PX2B3OhrLGWFp
+	Hp6xuFBzyfl1nBHRVzR+WvxYvPaHlT/GlW76K9F5U4vvGJ1TTZ2QMOPq/TET/r2FZMI4He
+	C87j/txHQzHfMOwvl81GffZ+UaA21+AjFlnLCMH8fz9MT/dSydPvEIaFqWpb0a6ET+51UQ
+	yyYuSSd2nLUmU587u5HaUN6GFodo9EgSvjaLC3TIwzouIRhogcyufw1gGDDD9YMCQk5SN3
+	2zvIlcXvkaqgrWhnrMgCivn8m0R4I0G8DKYA3bxGm62zaxIl1jn2MbLTh5kPEA==
 ARC-Authentication-Results: i=1;
-	rspamd-674f557ffc-b6rbj;
+	rspamd-674f557ffc-d5fx4;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MC-Copy: stored-urls
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Chief-Well-Made: 3cd8aa7767599230_1761273321221_373771213
-X-MC-Loop-Signature: 1761273321221:1839118636
-X-MC-Ingress-Time: 1761273321221
+X-Language-Chief: 73798ce8478adff0_1761273321095_3547932889
+X-MC-Loop-Signature: 1761273321095:2155020449
+X-MC-Ingress-Time: 1761273321095
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.119.74.21 (trex/7.1.3);
+	by 100.121.87.189 (trex/7.1.3);
 	Fri, 24 Oct 2025 02:35:21 +0000
-Received: from [212.104.214.84] (port=15594 helo=heisenberg.scientia.org)
+Received: from [212.104.214.84] (port=61611 helo=heisenberg.scientia.org)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <calestyo@scientia.org>)
-	id 1vC7eD-0000000FtWK-0yFM
+	id 1vC7eD-0000000FtWU-1k4F
 	for netfilter-devel@vger.kernel.org;
 	Fri, 24 Oct 2025 02:35:19 +0000
 Received: by heisenberg.scientia.org (Postfix, from userid 1000)
-	id 075105AA5C02; Fri, 24 Oct 2025 04:35:17 +0200 (CEST)
+	id 0B6015AA5C04; Fri, 24 Oct 2025 04:35:17 +0200 (CEST)
 From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH 6/9] =?UTF-8?q?tools:=20don=E2=80=99t=20stop=20`nftables.s?= =?UTF-8?q?ervice`=20(and=20flush=20the=20ruleset)=20on=20shutdown?=
-Date: Fri, 24 Oct 2025 04:08:21 +0200
-Message-ID: <20251024023513.1000918-7-mail@christoph.anton.mitterer.name>
+Subject: [PATCH 7/9] =?UTF-8?q?tools:=20don=E2=80=99t=20stop=20`nftables.s?= =?UTF-8?q?ervice`=20(and=20flush=20the=20ruleset)=20when=20isolating=20an?= =?UTF-8?q?other=20unit?=
+Date: Fri, 24 Oct 2025 04:08:22 +0200
+Message-ID: <20251024023513.1000918-8-mail@christoph.anton.mitterer.name>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251024023513.1000918-1-mail@christoph.anton.mitterer.name>
 References: <20251024023513.1000918-1-mail@christoph.anton.mitterer.name>
@@ -100,36 +100,28 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AuthUser: calestyo@scientia.org
 
-There doesn’t seem any compelling reason to stop the service on shutdown.
-`nftables.service` is anyway a `Type=oneshot` service, so unless for some
-extreme cases (like when the shutdown happens while service commands still
-haven’t finished (and exited)), no processes from it should be left anyway.
-
-At best, flushing the ruleset on shutdown, merely and needlessly executes yet
-another `nft` process.
-At worst it could flush the ruleset when networking is still running for
-whatever reason.
+The nftables ruleset shouldn’t be unexpectedly flushed, which might however
+happen when `nftables.service` is stopped as a consequence of isolating another
+unit.
 
 Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 ---
- tools/nftables.service.in | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/nftables.service.in | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/tools/nftables.service.in b/tools/nftables.service.in
-index 8388ae68..ea428ee7 100644
+index ea428ee7..5f367a24 100644
 --- a/tools/nftables.service.in
 +++ b/tools/nftables.service.in
-@@ -4,9 +4,8 @@ Documentation=man:nftables.service(8) man:nft(8) https://wiki.nftables.org
- 
- Wants=network-pre.target
- Requires=sysinit.target
--Before=network-pre.target shutdown.target
-+Before=network-pre.target
+@@ -8,6 +8,8 @@ Before=network-pre.target
  After=sysinit.target
--Conflicts=shutdown.target
  DefaultDependencies=no
  
++IgnoreOnIsolate=yes
++
  ConditionPathExists=@pkgsysconfdir@/rules/main.nft
+ 
+ 
 -- 
 2.51.0
 
