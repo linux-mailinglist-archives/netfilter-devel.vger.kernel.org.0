@@ -1,98 +1,91 @@
-Return-Path: <netfilter-devel+bounces-9416-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9421-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE4DC04071
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 03:40:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA7BC04220
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 04:35:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B9B41A60E80
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 01:40:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76C033A7776
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 02:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCDB1A23A5;
-	Fri, 24 Oct 2025 01:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFFA24E4C6;
+	Fri, 24 Oct 2025 02:35:23 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
+Received: from purple.birch.relay.mailchannels.net (purple.birch.relay.mailchannels.net [23.83.209.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195042628D
-	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 01:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.212.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2A1014B06C
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.150
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761270026; cv=pass; b=HKPu99eEkzW+Ib1Dmxeko0hiNXlvnwq9YDluK8qk+SvkctcLQbW+/PUSQpENXkpm/ueMXzgcwRTA/Oz8yKb11x6fszktqzLwALpoaZiNWV7MaJeCynmEdGZI24vxYaO8n6q87H9cLdNK4S57lwMXl6h/Lu+Z98MI7MzZP+JU71g=
+	t=1761273323; cv=pass; b=anvB+t8ETSFNwoPzrUeOydySjCMWXO6f2uliK7+sEV+nVaFkRCe8XjRcgZcRXUHXkO9efIwDy8XEs6wtFNfiiOMEx+w1mlkBH1yfrlGCEq5ktX7o8rITA+BKNGE0rHhn1ceNGDlES0VeFqBObblNl1gftRPxxZbp/UbMudKxcnw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761270026; c=relaxed/simple;
-	bh=wT2C0wrYcYNRbXk3j9i72Pjh2kueBn7bpZk66m+WShs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Veagu5wzXtmlip4d1dpW8r8fc/ughT4L4eBt4WsCwAbQxzyyKJfgy+mFLebjw2LJpggaLNqwmk2W8gzhGuxEGVXzVeaOWGXAqDA9UE8NcV/KRo/W7n5wWZMb959kcHxdrH7ZGgpfFQ9DdqD+L5xiaa2Z+YsQHTUK4oYaUm+b+0g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.212.16
+	s=arc-20240116; t=1761273323; c=relaxed/simple;
+	bh=JFjUvc2C8rH/MoKlohl/RnwttrAJmPO6N+GI1NJBTLc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SOTrt5pbT1qvau1LqTEY8itlOov9XCwKI+eLtwdxFwA4cnYZ28iL+sJ/cgldeSmpIvI7SIbuBqgo3OtIWEUV6qP4WqWUe6iqxBDAe6pOPbgt89NVIAjnl95cNJs4EPH+cxOXaKqX9oguAHg0yixlXoh7WjpWol4+o1AiD7+En5Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.209.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 41362942015;
-	Fri, 24 Oct 2025 01:40:17 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (100-117-181-104.trex-nlb.outbound.svc.cluster.local [100.117.181.104])
+	by relay.mailchannels.net (Postfix) with ESMTP id B568A41701;
+	Fri, 24 Oct 2025 02:35:20 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-8.trex.outbound.svc.cluster.local [100.119.46.77])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 66EFB941BA5;
-	Fri, 24 Oct 2025 01:40:16 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1761270017; a=rsa-sha256;
+	by relay.mailchannels.net (Postfix) with ESMTPA id 3AA8A416C7
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:20 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1761273320; a=rsa-sha256;
 	cv=none;
-	b=7h04eWWtor6uvsVbnl8YFZGCWwtEuKi2VuUea7+qth5nPEwyj5dfvhcTiFDVju4awg+/ey
-	6AieOok4qR1XCnuqxZQn/cD+oBFck5eL8OpTBbLECyGF+wZ74gSZVHznPcw0sHtE5ukQeD
-	hU/HlrV+JLrVZNDiHibvLUQb8AP0DxmEIQzQ/37yNq61E6rHdTW9vL1huJpdKB5C8yKPxX
-	EugQMGdldDaIh9Ie1vXY6BZ8aINAlgOO3U/i5raGlxiYvfiyZQ0cNqR2GCKFiDE5S78PHU
-	HLHSPEyBWNgzp6RxNNkRW69UG9ArlWdwxYDjTtSWeB7J1C+a+g3ziePLIbwv0A==
+	b=NLDNd5CSPJuEDBacBWeGQWKM9Jgle55evwAjvhQkp8Vys+ezjzh1YLX4C4BD6mEKfdNhMo
+	yOhJNvEn5sy1iK1DKYqLxejT1hbWtDoS/b5hn+DytSPWHLgKVOpExv38mMG1yoDjzgMJbJ
+	P7lLiUtCI2VFZCoAmVIxffKP5r0eWFa48rx0XZ+muqQG5qK+VCls5NaP1VndtqwEHVd5ew
+	4bG9d4nEJspWMPBntvd33VRgNztRDNoCy+fOHi7cyl3ub4bUoi6mfLc02Jszeqa73HA9/r
+	0YcEaYeZJ8pVJ6ps2/gq8ol7XyuolpwwuWezqlZ/XBbZMVXTE+/ofqBJdZEGwQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-	s=arc-2022; t=1761270017;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=w0E9lHD9VPt5jqHi4clPmUd7V1QPaPOSJniqD+TK4aI=;
-	b=QYnqoLscOCMw5QTdiptnxWksou7lgG0z4GFYe5pEiagsaAVTiRHuheu6KWeCzTxX1VA/z5
-	u8yGszjjha5yqKrPwWBXqRpzqEDQuG9uW8+QF1+6qTG6QbbN4ljHFCoBIzc8OE6kvLT6MR
-	0BBhAMCsNtper8X/1T07ZXoBqWe6pPQmxtDorgBnuf4fFp8VAVbHl/00AVG2je6iSjMxQR
-	WGwe3kS6HQenuSaI0AtPaxQoDsIqfmzpjwlacW3OxOEtdwNa+jSL4XQYPj5B0jOsjfoPGK
-	q++ULv9VjE08rQYvFovnooyiejqMwd2unyXUZJ5aChawsnB/xKhJmc/cO4rY0w==
+	s=arc-2022; t=1761273320;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=GPH7OR815p/Emz69ZjLURcYKJQ7baF+nEHmmn020WfM=;
+	b=OHMWHFmF/yu1ruSi3jEGxwXFPdf2suitd2utigEWgSUg8R3xZAHvhequYvaHvCe/jED1yP
+	Om1Dogkl+qybrQo7FQueNn0QaY/2Dp5nNUDTqGS3HM74ltdBqjg4B5FoQ71EykJjnz+B1G
+	CUcmyW2mCMJRRJjCH54Bix4cEZweu8AD/06dHToXKiP6XsFEx6tRWz62EK1Rn1k9T3/6eX
+	i56yGu18whsuwfFqWpPUmXG/oFKz7NRrwHVtbwScnQuuAz4Xs6ydeOQTgJqC2KYWC6C/DV
+	aX536DgMnZjNF6XuYsmMiCwM1Bi1ol5F8yvqxf/QL/O30FDdotYemKHmQcb/lQ==
 ARC-Authentication-Results: i=1;
-	rspamd-9799b5d46-2tpxf;
+	rspamd-674f557ffc-d5fx4;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MC-Copy: stored-urls
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Callous-Bitter: 73ac2021143595cb_1761270017109_217793444
-X-MC-Loop-Signature: 1761270017109:4078719102
-X-MC-Ingress-Time: 1761270017109
+X-Belong-Left: 3771bf6a648695b0_1761273320623_4157330713
+X-MC-Loop-Signature: 1761273320623:2709487248
+X-MC-Ingress-Time: 1761273320623
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.117.181.104 (trex/7.1.3);
-	Fri, 24 Oct 2025 01:40:17 +0000
-Received: from [212.104.214.84] (port=45816 helo=heisenberg.scientia.org)
+	by 100.119.46.77 (trex/7.1.3);
+	Fri, 24 Oct 2025 02:35:20 +0000
+Received: from [212.104.214.84] (port=2029 helo=heisenberg.scientia.org)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <calestyo@scientia.org>)
-	id 1vC6mu-0000000FiJ8-3Lmo;
-	Fri, 24 Oct 2025 01:40:14 +0000
+	id 1vC7eC-0000000FtVs-0tQH
+	for netfilter-devel@vger.kernel.org;
+	Fri, 24 Oct 2025 02:35:18 +0000
 Received: by heisenberg.scientia.org (Postfix, from userid 1000)
-	id 382D15AA52F8; Fri, 24 Oct 2025 03:40:13 +0200 (CEST)
+	id DFB305AA5BF6; Fri, 24 Oct 2025 04:35:16 +0200 (CEST)
 From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 To: netfilter-devel@vger.kernel.org
-Cc: pablo@netfilter.org,
-	fw@strlen.de
-Subject: [PATCH v5 4/4] doc: minor improvements the `reject` statement
-Date: Fri, 24 Oct 2025 03:36:48 +0200
-Message-ID: <20251024014010.994513-5-mail@christoph.anton.mitterer.name>
+Subject: [PATCH 0/8] improve systemd service
+Date: Fri, 24 Oct 2025 04:08:15 +0200
+Message-ID: <20251024023513.1000918-1-mail@christoph.anton.mitterer.name>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251024014010.994513-1-mail@christoph.anton.mitterer.name>
-References: <20251024014010.994513-1-mail@christoph.anton.mitterer.name>
-Reply-To: <6bb455009ebd3a2fe17581dfa74addc9186f33ea.camel@scientia.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -103,50 +96,87 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AuthUser: calestyo@scientia.org
 
-Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
----
- doc/nft.txt        |  1 +
- doc/statements.txt | 10 ++++++----
- 2 files changed, 7 insertions(+), 4 deletions(-)
+Hey.
 
-diff --git a/doc/nft.txt b/doc/nft.txt
-index 4a90f020..006086e6 100644
---- a/doc/nft.txt
-+++ b/doc/nft.txt
-@@ -572,6 +572,7 @@ table inet filter {
- nft delete rule inet filter input handle 5
- -------------------------
- 
-+[[OVERALL_EVALUATION_OF_THE_RULESET]]
- OVERALL EVALUATION OF THE RULESET
- ---------------------------------
- This is a summary of how the ruleset is evaluated.
-diff --git a/doc/statements.txt b/doc/statements.txt
-index e1d8552c..1b05b4b6 100644
---- a/doc/statements.txt
-+++ b/doc/statements.txt
-@@ -1,3 +1,4 @@
-+[[VERDICT_STATEMENTS]]
- VERDICT STATEMENTS
- ~~~~~~~~~~~~~~~~~~
- The verdict statements alter control flow in the ruleset and issue policy
-@@ -222,10 +223,11 @@ ____
-                  *tcp reset*
- ____
- 
--A reject statement is used to send back an error packet in response to the
--matched packet otherwise it is equivalent to drop so it is a terminating
--statement, ending rule traversal. This statement is only valid in base chains
--using the *prerouting*, *input*,
-+A reject statement tries to send back an error packet in response to the matched
-+packet and then interally issues a *drop* verdict.
-+It’s thus a terminating statement with all consequences of the latter (see
-+<<OVERALL_EVALUATION_OF_THE_RULESET>> respectively <<VERDICT_STATEMENTS>>).
-+This statement is only valid in base chains using the *prerouting*, *input*,
- *forward* or *output* hooks, and user-defined chains which are only called from
- those chains.
- 
--- 
-2.51.0
+This is a first series of patches that tries to improve the included
+`nftables.service`.
+
+It contains the (hopefully) less controversial stuff I’d like to do. O:-)
+
+The main idea is to make things more hardened as it should be for loading
+firewall rules.
+
+
+[PATCH 8/9] tools: flush the ruleset only on an actual dedicated unit
+might need some more discussion:
+
+1. Instead of the whole logic I’ve addeed we could also choose to simply never
+   do anything on stop, i.e. not seeting `ExecStop=` at all, which would mean
+   that even on `systemctl stop nftables.service`, the ruleset isn’t flushed.
+
+   Might even better prevent accidentally stopping the firewall; and writing
+   `nft flush ruleset` instead would be even shorter.
+
+
+2. If we keep the basic idea as proposed in the patch, there's still:
+   a) Do you want my slightly awkward multi-line syntax with `\n\` line
+      terminators or would you rather have anything in one line or something
+      else?
+
+      A problematic thing about the multi-line syntax is that it seems
+      impossible to write e.g. the shell’s `;;` on a single line with only
+      leading whitespace, as systemd then ignores that as a comment. See [0].
+      Might be error prone with future changes.
+
+   b) systemd sets some default PATH (which is even an compile option, IIRC)
+      that usually contains /usr/loca/[s]bin.
+      Because of that it’s IMO safer to use absolute pathnames for sh and
+      systemctl (just in case a user made some local overrides).
+
+      Maybe it would be even better to set a fixde `ExecSearchPath=` (wihout
+      /u/local), IIRC that also exports PATH, which would then be inherited by
+      `nft`, should that ever exec some binary via PATH resoluiton.
+
+      I have chose to *not* use @sbindir@ (respectively add a @bindir@) for sh
+      and systemctl because these aren’t shipped by nftables, and I think if any
+      distro would really use something different, patching the file would be
+      completely upon them.
+
+      While I’ve been in favour of usr-merge, I still can’t write `/usr/bin/sh`.
+      ;-)
+
+      The perfectionist in me would want to add a `unset -v job_type`, to
+      prevent that from being exported to `nft`, just in case anyone would have
+      configured/override his systemd to export a env var of the same name.
+
+
+A planned 2nd series would focus on hardening with things like the already
+present `ProtectSystem=`.
+Quite some more sandboxing seetings seem to be usable with this and IMO units
+should generally try to set as many as (reasonably) possible.
+
+I’ll probably send a mail first with proposals on what could be hardened and
+what people would think about the various points.
+
+
+Last but not least, one idea would have been to set:
+  WorkingDirectory=/etc
+
+If no further `--includepath` is configured, this would cause relative pathnames
+starting with `./` in nft’s `include` statement to use the same path as relative
+pathnames without `./` – at least when the default `--includepath` is kept at
+`/etc`.
+No strong opinion myself, whther that would be better or not. Anyone?
+
+It wouldn’t be backwards compatible, if someone used the service with it’s
+current (current) working dir (which is /), and specified absolute pathnames as
+relative ones.
+
+
+Cheers,
+Chris.
+
+[0] https://github.com/systemd/systemd/issues/39332
+
 
 
