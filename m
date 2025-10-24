@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-9427-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9430-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF043C04232
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 04:35:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D20AC042C5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 04:53:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75EC619A8416
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 02:36:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF33E1A0129C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Oct 2025 02:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F24258CF0;
-	Fri, 24 Oct 2025 02:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B243223DDA;
+	Fri, 24 Oct 2025 02:53:26 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from cow.ash.relay.mailchannels.net (cow.ash.relay.mailchannels.net [23.83.222.41])
+Received: from dog.birch.relay.mailchannels.net (dog.birch.relay.mailchannels.net [23.83.209.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3778E259CA5
-	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D994728DC4
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761273335; cv=pass; b=dPOW/RPnldDJU1YWgSO1VKcqtWTyLvi6kXvTkB5ohAIqRvtxL/f/jIJHtxWiudx4fwEGYw3QMrz5UzENc/x1zMqeRiP+1KnrzBDWRvlbxuzCma/3H9KqPyAHpXYiJEcysUpXFv+0+VzJbRTv6NyqyyXg7en30UAJolgsPx4BRQY=
+	t=1761274405; cv=pass; b=oACUFh4CNch2v/pK4zipxkLFoesIiLBTvSQKOzQ6rl2EHuYhXYJM2tYuo5dddS97PCCJ/ygbwNuDtYu9Tl6WDAPLxUPEqiyOloqymzGp9RY5X84bus/5kBT9cD6DPgkNXIawfBWOVKjiWE5tCyzxu9Z8rX4JS/8DB/1IAOapT6U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761273335; c=relaxed/simple;
-	bh=PhA2VeGhaqOZY76QuW7xc+QgWMeBtqAwTbF7d6r5Lrs=;
+	s=arc-20240116; t=1761274405; c=relaxed/simple;
+	bh=MFTC1My9HLm1NA3WqkM92G2icscxCIf86SyxlPTWV84=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ak8I6Ge/3J0M7AKOS6eSWkRt5PTxdLLPqQwrx7yGwpHbQZD4eB0x74nuZS8tpEN6Z3AxPR55t8g1YU/JbojgYA9PK381rxE1aM8hs/vywicCJkYxoBJ8qYT8kSCGXDTBTHFzkUUAlYgc7+luElDt0gPtBY57EBbtgG2OcuE+BCw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.222.41
+	 MIME-Version:Content-Type; b=Sjh3xL5n1v1vVAuhpd5VvmejbAO5x6PLK9k+cYr4QVMPfeQHUujqSPTeEudmbsy5ecmzBqho9xvxoTcG3DNhaAKiIIVesluVwW7pvjAA/lKrx9zo+mlBBtDUnGb7/FKnsZO/Ske9KddaWzWZuxS9kYcSwUPCdCorzsw3/t3Spm4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.209.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=christoph.anton.mitterer.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id EFFF8361366;
-	Fri, 24 Oct 2025 02:35:25 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (trex-green-4.trex.outbound.svc.cluster.local [100.119.74.21])
+	by relay.mailchannels.net (Postfix) with ESMTP id 83F4C741CB0;
+	Fri, 24 Oct 2025 02:35:21 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-8.trex.outbound.svc.cluster.local [100.119.46.77])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 564B5360A32
-	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:21 +0000 (UTC)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 0C40B741A51
+	for <netfilter-devel@vger.kernel.org>; Fri, 24 Oct 2025 02:35:20 +0000 (UTC)
 ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1761273321; a=rsa-sha256;
 	cv=none;
-	b=vx/TAw2osbOrthj5x6RIB8u8NTBPOny6/8ulUgnhyTI00jAAVzPtVd03D/DMyQ8yJ0GmOv
-	uzQecZmHf1ajzPxYDxdSVCIiekswL/D9Jw/xCboTvthnxnqOFi1OxGJw0ueB5oAwZ/m57Y
-	CK+PUjBK5lTwN65xDrDhzVODUovXRMkApiuuKecfrXoedsk7FZ4eQxz0Z6Bqr8TmTnMZHs
-	SR5XYwLqG+tYNcmC0ietPfQHYaCgCDQrCNW49VwuhcyMUqhz5YnTV72Wz/nEZ6bp/+rl/R
-	O/Dx2t0+CabL74QimJZgFq1Kuw2/hf1iVF41ENJBPVua52DXjw68B5aw3tHTIw==
+	b=Pvcwbxr2cNV65k0ZPH7qlMCzQX9KnIrEKEk2Iz4oR0V2FyIW9GpzZ2MjNnL5KlE3LdaH27
+	AzfoVFnrjip7ZJj71Ho7bjMaKnVnhbu44rwN4GuuKD+Ob4EpF2Xhv5y0ejEoycMc/F4oQc
+	m7CouKZlKD9Ara+gwi0Xg0+Oa9tVtOBPhyHjD5yK2tLMq3o6FUARn18g2a+F6i0hr7c2I1
+	27v00ZQvgNiAE2cmYdlu2AvnZKHUZH0LiLGJv9NK0vm6vJzzuQxm0V3N010ydZXNRN9xH4
+	5w4L+U9VnmekuJIZXQO5AJ9zTjRAWObKNrM+wb39/42ltyPUzpCP1dSs8iw8YQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
 	s=arc-2022; t=1761273321;
@@ -51,42 +51,42 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
 	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nDLmJVEmDDa+mY10rf7BXrx/9nJ0kULxWlyAn2T1p/A=;
-	b=PI4QNT0xAmhrvISGrYF4QoYCO+mGw/9iprGwWujgKOu1sD2bRG2A9xPGjETtLugJ4gX0QB
-	8Q42kgKFMiRTyec33zalOkwbSbTT2I63eymBACW2gX+RDxyywl6OWd2opaZJSrCgsWmlEv
-	er03oaKvRjxXQXWA5uxTFxutt4Qwja1302iAw7SxzdbxxCFSf34hZK8u0zcRptwshB9qc8
-	pz7QWJMVTYFwOwQ9rCmleTP5v5oKNFRAxNsO+A2si332Uew11SxcEE+BduahDnOLWboD9a
-	uszmWWv/37oMvE05D9Z4q+p+Y2944cc2IXYl6p05k++6qWk9Kamzc/bWEinsdg==
+	bh=olvYycJ/TIclrChjRMyklsMe5qkR39WaBzl+id+427k=;
+	b=tJYgHo0Jd19EYltjGbuQha6sEy6ldcVEDiWMXLasoBJwtPc13tpD+TdHWqrAIRrwU27yNL
+	6EVPAa7ePCrY/+9fCykh7x2CZTPxeW27azM0B/ymUrxhjEfvm6uIALlEiju2IOd8l+47MS
+	azchd0+dVdK2rcuqeTpnlE/eGIRqSxsTu6BDWIr5FqpOMoDhH+j7RiC5FFhL5V0Lr88VIQ
+	S2pMjR864DLJKVzrYJdLDKg/CtsmNfoApF9g8uaALXhaWfiPx5/S/4THosDfB1X9eIrGNT
+	OGQnnvb2nKye54I6MDkD03LBHaGspTqrRwznmjtswYgCkWH+MHi1TvND+prirA==
 ARC-Authentication-Results: i=1;
-	rspamd-674f557ffc-b6rbj;
+	rspamd-674f557ffc-d5fx4;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MC-Copy: stored-urls
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Harbor-Hysterical: 34cb9c755f2ca172_1761273325871_2943943558
-X-MC-Loop-Signature: 1761273325871:3705826662
-X-MC-Ingress-Time: 1761273325871
+X-Battle-Versed: 46b33bb74ddb024f_1761273321429_4065605571
+X-MC-Loop-Signature: 1761273321429:769175294
+X-MC-Ingress-Time: 1761273321429
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.119.74.21 (trex/7.1.3);
-	Fri, 24 Oct 2025 02:35:25 +0000
-Received: from [212.104.214.84] (port=52501 helo=heisenberg.scientia.org)
+	by 100.119.46.77 (trex/7.1.3);
+	Fri, 24 Oct 2025 02:35:21 +0000
+Received: from [212.104.214.84] (port=3820 helo=heisenberg.scientia.org)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.98.2)
 	(envelope-from <calestyo@scientia.org>)
-	id 1vC7eD-0000000FtWV-1rP0
+	id 1vC7eD-0000000FtWW-21is
 	for netfilter-devel@vger.kernel.org;
 	Fri, 24 Oct 2025 02:35:19 +0000
 Received: by heisenberg.scientia.org (Postfix, from userid 1000)
-	id 10A125AA5C06; Fri, 24 Oct 2025 04:35:17 +0200 (CEST)
+	id 159905AA5C08; Fri, 24 Oct 2025 04:35:17 +0200 (CEST)
 From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH 8/9] tools: flush the ruleset only on an actual dedicated unit stop
-Date: Fri, 24 Oct 2025 04:08:23 +0200
-Message-ID: <20251024023513.1000918-9-mail@christoph.anton.mitterer.name>
+Subject: [PATCH 9/9] tools: let the unit fail if the rules file is missing
+Date: Fri, 24 Oct 2025 04:08:24 +0200
+Message-ID: <20251024023513.1000918-10-mail@christoph.anton.mitterer.name>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251024023513.1000918-1-mail@christoph.anton.mitterer.name>
 References: <20251024023513.1000918-1-mail@christoph.anton.mitterer.name>
@@ -100,65 +100,34 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AuthUser: calestyo@scientia.org
 
-In systemd, the `ExecStop=` command isn’t only executed on an actual dedicated
-unit stop, but also, for example, on restart (which is a stop followed by a
-start).
+The idea is that if `nftables.service` is enabled it’s likely meant to load
+firewall rules and shall thus rather fail loudly if that can’t be done because
+the rules file is (perhaps accidentally) missing.
+The default should be hardened/secure behaviour, so if someone actually wants
+the conditional a systemd drop-in configuration should be used in that case.
 
-There’s a chance users either don’t know this or (accidentally) confuse restart
-(and similar) with reload.
-In this case, there would be a short but non-zero time window in which the
-ruleset is flushed (and any firewall rules gone), which for security reasons
-shouldn’t happen.
-
-Even with the pure semantics of restart (and similar), there’s no good reason to
-actually flush the ruleset (on stop) before reloading it again (on start),
-because the start will already do the flushing.
-
-This commit adds detection of the job type to the `ExecStop=` command and,
-depending on that, either actually flushes the ruleset (for example if a
-dedicated `systemctl stop nftables.service` was executed) or doesn’t do so.
-The latter is the case, on restart respectively try-restart, which prints
-however a message that actually no stop was performed (mostly intended for the
-journal), as well as on any other job type (which currently shouldn’t happen).
-
-In order to determine the job type, first the systemd job ID is determined from
-the service’s `Job=`-property.
-See also https://github.com/systemd/systemd/issues/39316.
-
-The service is referenced via `%n`, which needs not to be (shell) quoted, as –
-as of systemd 258.1 and as per systemd.unit(5) – “the "unit name prefix" must
-consist of one or more valid characters (ASCII letters, digits, ":", "-", "_",
-".", and "\")”.
-
-Programs are invoked by absolute pathname to prevent any of their names being
-used from `/usr/local/bin`, which systemd includes in its default PATH.
+If no rules shall be loaded by `nftables.service` it can simply be disabled (for
+example, when shipped as part of a downstream package that also contains the
+`nft` program).
 
 Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
 ---
- tools/nftables.service.in | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ tools/nftables.service.in | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/tools/nftables.service.in b/tools/nftables.service.in
-index 5f367a24..0ad66b8c 100644
+index 0ad66b8c..81082882 100644
 --- a/tools/nftables.service.in
 +++ b/tools/nftables.service.in
-@@ -19,7 +19,15 @@ RemainAfterExit=yes
+@@ -10,8 +10,6 @@ DefaultDependencies=no
  
- ExecStart=@sbindir@/nft 'flush ruleset; include "@pkgsysconfdir@/rules/main.nft"'
- ExecReload=@sbindir@/nft 'flush ruleset; include "@pkgsysconfdir@/rules/main.nft"'
--ExecStop=@sbindir@/nft flush ruleset
-+ExecStop=:/bin/sh -c 'job_type="$$( /usr/bin/systemctl show --property JobType --value "$$(/usr/bin/systemctl show --property Job --value %n)" )"\n\
-+                      case "$${job_type}" in\n\
-+                      (stop)\n\
-+                       @sbindir@/nft flush ruleset;;\n\
-+                      (restart|try-restart)\n\
-+                       printf \'%%s: JobType is `%%s`, thus the stop is ignored.\' %n "$${job_type}" >&2;;\n\
-+                      (*)\n\
-+                       printf \'%%s: Unexpected JobType `%%s`.\' %n "$${job_type}" >&2; exit 1\n\
-+                      esac'
+ IgnoreOnIsolate=yes
  
- ProtectSystem=full
- ProtectHome=yes
+-ConditionPathExists=@pkgsysconfdir@/rules/main.nft
+-
+ 
+ [Service]
+ Type=oneshot
 -- 
 2.51.0
 
