@@ -1,89 +1,95 @@
-Return-Path: <netfilter-devel+bounces-9478-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9480-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC793C154B7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 16:00:38 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CE6C15C9B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 17:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37D823BC186
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 14:55:01 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D4556353AB5
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 16:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CF9253B5C;
-	Tue, 28 Oct 2025 14:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561AA2853EE;
+	Tue, 28 Oct 2025 16:26:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CA91531C8
-	for <netfilter-devel@vger.kernel.org>; Tue, 28 Oct 2025 14:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C55285058
+	for <netfilter-devel@vger.kernel.org>; Tue, 28 Oct 2025 16:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761663299; cv=none; b=bmsVXXT3FgMH7esT7yHGwn8cU4s4+du2pHCrwFk5AlR9J4Z4LTAiTuVnx2YZeucnH/GSdV6tEMGHSMg3PeDqyCjx+ihPEfyiJmgUYqVs8d1DHdzIaIIJVAnvD5GGNLTERaz/bBmaahfks4BCDZWcSk84qkF8eSXYIQ89+gz0XDQ=
+	t=1761668806; cv=none; b=kpwPQvtfbG1o+xaYHHTSwZNfeVErdlY4lbzs4L8BsGcvtddaQy4HyWTUt7B5mdwCEtDCOdUbojfHGLnZF9JbbmcjOD+Qn3UFpVU0BLAvLRe1ZTGLziYdXKatBIbwVFOrjjN3SkIQ/D9QFokikucMgduhCnfZ37gx2R3s/7pjaSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761663299; c=relaxed/simple;
-	bh=iiaSoWrmJA5JT5R48t807Fwrbx+N4mbB54jFeCZwRXY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=loDWyfkZEseE2F0cTKnP0rIrb9QKNtskZUCRk+vCKj+ZUy37MoYFfSlRQGp9wVcVcblrxdEL0c/CwgJOY5TW4G/ZUh6GwibUpdsnLj2IpZlIoimQZJVLI0n11qSQdfz2KMxCQ4btgaWtp0+I03jZs0suwtNpE+OCCL7m/IgIHh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+	s=arc-20240116; t=1761668806; c=relaxed/simple;
+	bh=NBcOSaBykf2Y7JpidrcTq9ZKXM1eeD204FvxYzQa3ag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V/sD24iQwVNUf46x1aS9wjFnMohJf29HGRK7mdldsRet9s72ej4LJLZNaW3EXYjVmNARa5iqr5aQMvOfSnR+zp/8TjP37AQG+KeI3v83lMx0eZk1sdAvaYi0vhu1eVY3HmgDW0lVk8paA3G9N7b/3p8a7NQSnhq23QzT2VNbL2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id EB23E61B22; Tue, 28 Oct 2025 15:54:55 +0100 (CET)
+	id 367F361A31; Tue, 28 Oct 2025 17:26:41 +0100 (CET)
+Date: Tue, 28 Oct 2025 17:26:36 +0100
 From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: mail@christoph.anton.mitterer.name,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft v6 3/3] doc: minor improvements the `reject` statement
-Date: Tue, 28 Oct 2025 15:54:29 +0100
-Message-ID: <20251028145436.29415-4-fw@strlen.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251028145436.29415-1-fw@strlen.de>
-References: <20251028145436.29415-1-fw@strlen.de>
+To: Christoph Anton Mitterer <calestyo@scientia.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: nftables.service hardening ideas
+Message-ID: <aQDuvGsDwlaiK94D@strlen.de>
+References: <71e8f96ac2cd1ee0ab8676facb04b40870a095a1.camel@scientia.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71e8f96ac2cd1ee0ab8676facb04b40870a095a1.camel@scientia.org>
 
-From: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
+Christoph Anton Mitterer <calestyo@scientia.org> wrote:
+> This would be ideas about further hardening nftables.service, primarily
+> using the options from systemd.exec(5).
 
-Signed-off-by: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- doc/statements.txt | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Whats the point?  nft will exit anyway.
 
-diff --git a/doc/statements.txt b/doc/statements.txt
-index 5d197aeb0cee..f380a60aaa71 100644
---- a/doc/statements.txt
-+++ b/doc/statements.txt
-@@ -1,3 +1,4 @@
-+[[VERDICT_STATEMENTS]]
- VERDICT STATEMENTS
- ~~~~~~~~~~~~~~~~~~
- The verdict statements alter control flow in the ruleset and issue policy decisions for packets.
-@@ -201,10 +202,11 @@ ____
-                  *tcp reset*
- ____
- 
--A reject statement is used to send back an error packet in response to the
--matched packet otherwise it is equivalent to drop so it is a terminating
--statement, ending rule traversal. This statement is only valid in base chains
--using the *prerouting*, *input*,
-+A reject statement tries to send back an error packet in response to the matched
-+packet and then interally issues a *drop* verdict.
-+It’s thus a terminating statement with all consequences of the latter (see
-+<<OVERALL_EVALUATION_OF_THE_RULESET>> respectively <<VERDICT_STATEMENTS>>).
-+This statement is only valid in base chains using the *prerouting*, *input*,
- *forward* or *output* hooks, and user-defined chains which are only called from
- those chains.
- 
--- 
-2.51.0
+> which not only mounts some but the entire fs hierarchy read-only for
+> the service's commands.
+> I guess nft -f should never write anywhere, or does it? At least it
+> seems to work.
 
+nft -f should not write anything.
+
+> 4. I guess nft needs no capabilities/privileges other than
+> CAP_NET_ADMIN:
+> > CapabilityBoundingSet=CAP_NET_ADMIN
+> > AmbientCapabilities=""
+> > NoNewPrivileges=yes
+> 
+> CapabilityBoundingSet=CAP_NET_ADMIN would supersede the =~CAP_SYS_ADMIN
+> from (2) above.
+
+CAP_NET_ADMIN is mandatory and should work as only capability.
+
+> AmbientCapabilities="" disables all ambient capabilities, I'd blindly
+> guess that nftables doesn't execve(),... but it shouldn't harm either.
+
+It doesn't execve.
+
+> 5. There should be no reason why nft -f needs to access stuff in /tmp
+> or /var/tmp of anything else, so:
+> > PrivateTmp=yes
+
+Makes no sense to me.  nft -f won't write anything.
+
+> 7. AFAICS, nft -f may cause modules to be loaded, but that's done
+> indirectly (i.e. I guess by the kernel itself?)
+
+nft relies on kernel module autoloading.
+
+> So leats get a bit more exotic ;-)
+
+Exotic? More like estoteric, this is bad.  Service file should be small and not rely
+on obscure and maybe not well-tested systemd code paths.
 
