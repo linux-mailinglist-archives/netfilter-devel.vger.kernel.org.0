@@ -1,104 +1,62 @@
-Return-Path: <netfilter-devel+bounces-9489-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9491-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE408C16114
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 18:11:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E60C16208
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 18:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 285D64E3F6B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 17:11:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D4001C22893
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Oct 2025 17:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F973339B28;
-	Tue, 28 Oct 2025 17:11:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="kH7I4UtX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38BC34B1A7;
+	Tue, 28 Oct 2025 17:24:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DCD348882
-	for <netfilter-devel@vger.kernel.org>; Tue, 28 Oct 2025 17:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+Received: from a3.inai.de (a3.inai.de [144.76.212.145])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59BA61F4161
+	for <netfilter-devel@vger.kernel.org>; Tue, 28 Oct 2025 17:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.212.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761671494; cv=none; b=BXEJCzEueYdiL/mDbh8b0Q2MqHgW8TsbUsFIgBX9nLA/YKwqFWv9YKo/RTcQd/zAEQNeZj+chKv70XoRj0h4YqBuOnoORjvC4pXDhPgbD+Sv8pNtBl/Z9XNffwlNRIFSZa1ibUMOH8jNDjZ5ZiwBEwCq70exSh/VRkODppJdX8w=
+	t=1761672264; cv=none; b=uRgQr+Z+wsTi1BT3k6V24CmzUJNAUiYDhsxVMULYtjyHdhR3BK8hQ6+ivNs5R1/JoZ7q+K4iLsJ3A7y81v3fGpy9V4lekNJMp3BeaF3ifqP7y2LgV1UdFOi5ejFgLqOZKrHCmkAbLW0pJNOU1rjt7VAd3zECqJaJMvWF4l4tX/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761671494; c=relaxed/simple;
-	bh=n21Aw+TnlrJm4+ohlxL6kA0tA+uSiKz9S5fD7+j37Cs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XBoBX7emHpsJhJLw3rXy8irsU2LHRoL2Rf6cLA+tq5JoYNSCfUtyTosn/62AAVSI3ViioxWEph8Hb/XVvUNqiA87jm6O0pLz+gxhFfsLkP4kgd34jLV1hzSMD+c4nRlLLlRZW5XPENKDQuGwM0ET1/dfgOtQiSZLyCslqQFAZGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=kH7I4UtX; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 52EB160278;
-	Tue, 28 Oct 2025 18:11:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1761671488;
-	bh=DOZlPPoZM8ux5hTde6V0Nh0GIs7OMKoVDedSp+JikNE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kH7I4UtXKcYvsdEbd6gdniuqsk191RtQB4tnwO7z54VN2kg6Var32GNlAgfsgjFM/
-	 j78AHjTfyYdsjjU/h9LqZ6rAnUg3CueWUdbPd0bC/170Fd4vxSPzEvbpxyHE1AyWlY
-	 ONgI2F0zisYFjk4yfPVSGPm7qp82nDZx2Q0H8KeYwfEgOHkEvNfHpxN4/hcf5b7fbO
-	 /8dQQbQPtYoDQ64jpqgJKsNsdNfihUsjtyKTqNh5e4qEFXgGos32+CpSMykkQlZLfX
-	 Xaom3/t2iKVh92v4cbzZMWxaAfBKY5dPdKhryrl5B42Oj9I8LAQ8RtZ44LPdT35Ax6
-	 TzrWFQikm5Vmg==
-Date: Tue, 28 Oct 2025 18:11:25 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: Fernando Fernandez Mancera <fmancera@suse.de>,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	louis.t42@caramail.com
-Subject: Re: [PATCH nf] netfilter: nft_connlimit: fix duplicated tracking of
- a connection
-Message-ID: <aQD5PUkG7M_sqUAv@calendula>
-References: <20251027125730.3864-1-fmancera@suse.de>
- <aQD2R1fQSJtMmTJc@calendula>
- <aQD4J7pI-Fz1V3eC@strlen.de>
+	s=arc-20240116; t=1761672264; c=relaxed/simple;
+	bh=EkuAA5Z9cF8TWElEis+xAgeAwOk9ocodRpr/P5UxIag=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=WbK6O3e2OlMfH27g5TJD1DH7ulStFT5yB4lhbjZKr0n/dF+5WTBOmsMCmDTFgV3btG/qsKx+GAH7F+8ZKD7g7+BPQpGS030ofyy5bWD8pP1WSc3LWmEGrm7b7Vuj2XWS79/vvgEpr/whTVjXtBZi2HS8YYOxmgkElgW/f0b76ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=pass smtp.mailfrom=inai.de; arc=none smtp.client-ip=144.76.212.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inai.de
+Received: by a3.inai.de (Postfix, from userid 25121)
+	id B5BC91015FA992; Tue, 28 Oct 2025 18:15:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by a3.inai.de (Postfix) with ESMTP id B3B6311020CBFD;
+	Tue, 28 Oct 2025 18:15:33 +0100 (CET)
+Date: Tue, 28 Oct 2025 18:15:33 +0100 (CET)
+From: Jan Engelhardt <ej@inai.de>
+To: Christoph Anton Mitterer <mail@christoph.anton.mitterer.name>
+cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, 
+    fw@strlen.de
+Subject: Re: [PATCH 4/9] tools: reorder options
+In-Reply-To: <20251024023513.1000918-5-mail@christoph.anton.mitterer.name>
+Message-ID: <n15q6p6p-1qsq-2pr3-r2pn-339n568nr9r2@vanv.qr>
+References: <20251024023513.1000918-1-mail@christoph.anton.mitterer.name> <20251024023513.1000918-5-mail@christoph.anton.mitterer.name>
+User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aQD4J7pI-Fz1V3eC@strlen.de>
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, Oct 28, 2025 at 06:06:47PM +0100, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > > -	if (nf_conncount_add(nft_net(pkt), priv->list, tuple_ptr, zone)) {
-> > > -		regs->verdict.code = NF_DROP;
-> > > -		return;
-> > > +	if (ctinfo == IP_CT_NEW) {
-> > 
-> > Quick question: Is this good enough to deal with retransmitted packets
-> > while in NEW state?
-> 
-> Good point, I did not consider retransmit case.
-> What about if (!nf_ct_is_confirmed(ct)) { ..?
-> 
-> Would need a small comment that this is there instead of NEW
-> check due to rexmit.
-> 
-> > > +		if (nf_conncount_add(nft_net(pkt), priv->list, tuple_ptr, zone)) {
-> > > +			regs->verdict.code = NF_DROP;
-> > > +			return;
-> > > +		}
-> > > +	} else {
-> > > +		local_bh_disable();
-> > > +		nf_conncount_gc_list(nft_net(pkt), priv->list);
-> > > +		local_bh_enable();
-> > >  	}
-> 
-> As this needs a respin anyway, what about removing the else
-> clause altogether?  Resp. what was the rationale for doing a gc call
-> here?
+On Friday 2025-10-24 04:08, Christoph Anton Mitterer wrote:
 
-You mean, call gc for both cases, correct?
+>This groups related options, orders options/groups by importance and
+>separates sections/groups with empty lines.
 
-> And, do we want same check in xt_connlimit?
-
-Are you referring to the !nf_ct_is_confirmed() check?
+This one feels unnecessary, and I do not think there is an officially
+supported order of directives.
+In addition, the file should try to stay simple enough that order
+does not matter.
 
