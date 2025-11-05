@@ -1,42 +1,42 @@
-Return-Path: <netfilter-devel+bounces-9624-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9629-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C74FC36D4C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 05 Nov 2025 17:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90197C36D52
+	for <lists+netfilter-devel@lfdr.de>; Wed, 05 Nov 2025 17:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4EB2B4FFA86
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Nov 2025 16:48:46 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AA6AC4FFCD2
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Nov 2025 16:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DBD337115;
-	Wed,  5 Nov 2025 16:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEF933372C;
+	Wed,  5 Nov 2025 16:49:01 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B94248F73
-	for <netfilter-devel@vger.kernel.org>; Wed,  5 Nov 2025 16:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3BB17A305
+	for <netfilter-devel@vger.kernel.org>; Wed,  5 Nov 2025 16:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762361319; cv=none; b=hXI8WNzyy8UTkgwNY+0B/bpczw4quhaJ2iDMIR7kehym06M6dSHpPoQODqvwdhQKKINVYxSzxFADpidC+261fHCkCnMH/fa6liseJ5JvdXi+SZ87PDJVIgZgS2wf+oJF1wJWXtcEXw95hmO4AMVjhubXqL8yIftrXr4b4JSON/4=
+	t=1762361341; cv=none; b=cYeieSBEOrHNm1nCJkRRdgAeJmX9U40hNmcpLUsazvpUDgf78K70rjH2HB8Dd2GYfrvSFtu0w3RpYaHAe5tCe25STb2X+xgIt9lY/RLoyW1W06uWriYhfpTGe3PLSHGyqFDpH5IXLKW1zXIWeTSykbwFDrA8f8SZ6nH1Ex4sQmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762361319; c=relaxed/simple;
-	bh=fPUN4V2FHwPfDkYvH+53zvNCywJtIst7jd5TkXPINSY=;
+	s=arc-20240116; t=1762361341; c=relaxed/simple;
+	bh=KhJQQvmVlR6d9UJdW/2EfqxKM8Y+veCgxLPFopNmtEk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H1iNes1CBNUUuRFpo69ug6hb50UT3DHHY3sXJmmc/UgRe12NoMkjVaXWraBLO+YzXkf69V96iZqi5ocqyAX6HbYsoXJ+rM+KqXfHK/7zLm7i7LnMpSVoRTGSkItEtIUaYgcxaMo7tO99z0M2nLCR9HHwHmMvrq4UbLzdFHmQQKY=
+	 MIME-Version; b=n3eOXrrbqOWj8XYP1gGR1E2VyQdFQzuPHMRI7bTFX/e04cZ9rPjvnARSr9MkO4sRDSulQoMQPymsvLlAYWxhlyt0/3JPBBok4Bbr6RLONuzgWQMm1CO5UdkblvDyEcsrGWVh4PzbyHqdb/p+GcowAj0wexLN8YbiunRhNhiJrdc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id BF0386020C; Wed,  5 Nov 2025 17:48:36 +0100 (CET)
+	id 95C94603CA; Wed,  5 Nov 2025 17:48:58 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: pablo@netfilter.org
-Subject: [RFC nf-next 05/11] netfilter: conntrack: split hashtable auto-size to helper function
-Date: Wed,  5 Nov 2025 17:47:59 +0100
-Message-ID: <20251105164805.3992-6-fw@strlen.de>
+Subject: [RFC nf-next 10/11] netfilter: conntrack: allow non-init-net to change table size
+Date: Wed,  5 Nov 2025 17:48:04 +0100
+Message-ID: <20251105164805.3992-11-fw@strlen.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251105164805.3992-1-fw@strlen.de>
 References: <20251105164805.3992-1-fw@strlen.de>
@@ -48,68 +48,47 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Split the 'figure out a good default hash table size' into a
-new function.  We will later no longer do the allocation right away,
-but will still do the initial size computation.
+This removes the init_net restriction on the bucket sysctl, i.e.
+table size can be altered in a netns.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conntrack_core.c | 33 ++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+ Documentation/networking/nf_conntrack-sysctl.rst | 1 -
+ net/netfilter/nf_conntrack_standalone.c          | 2 --
+ 2 files changed, 3 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index fc9312bfa616..1f938ef8e59a 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -2636,9 +2636,27 @@ int nf_conntrack_set_hashsize(const char *val, const struct kernel_param *kp)
- 	return nf_conntrack_hash_resize(hashsize);
- }
+diff --git a/Documentation/networking/nf_conntrack-sysctl.rst b/Documentation/networking/nf_conntrack-sysctl.rst
+index eaf11ec1f4dc..a684d7664501 100644
+--- a/Documentation/networking/nf_conntrack-sysctl.rst
++++ b/Documentation/networking/nf_conntrack-sysctl.rst
+@@ -19,7 +19,6 @@ nf_conntrack_buckets - INTEGER
+ 	loading, the default size is calculated by dividing total memory
+ 	by 16384 to determine the number of buckets. The hash table will
+ 	never have fewer than 1024 and never more than 262144 buckets.
+-	This sysctl is only writeable in the initial net namespace.
  
--int nf_conntrack_init_start(void)
-+static unsigned int nf_conntrack_htable_autosize(void)
- {
- 	unsigned long nr_pages = totalram_pages();
-+	unsigned int ht_size;
-+
-+	ht_size = (((nr_pages << PAGE_SHIFT) / 16384)
-+			   / sizeof(struct hlist_head));
-+	if (BITS_PER_LONG >= 64 &&
-+	    nr_pages > (4 * (1024 * 1024 * 1024 / PAGE_SIZE)))
-+		ht_size = 262144;
-+	else if (nr_pages > (1024 * 1024 * 1024 / PAGE_SIZE))
-+		ht_size = 65536;
-+
-+	if (nf_conntrack_htable_size < 1024)
-+		ht_size = 1024;
-+
-+	return ht_size;
-+}
-+
-+int nf_conntrack_init_start(void)
-+{
- 	int max_factor = 8;
- 	int ret = -ENOMEM;
- 	int i;
-@@ -2650,17 +2668,8 @@ int nf_conntrack_init_start(void)
- 		spin_lock_init(&nf_conntrack_locks[i]);
+ nf_conntrack_checksum - BOOLEAN
+ 	- 0 - disabled
+diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+index f31c95b77041..9170761caf96 100644
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -660,7 +660,6 @@ static struct ctl_table nf_ct_sysctl_table[] = {
+ 	},
+ 	[NF_SYSCTL_CT_BUCKETS] = {
+ 		.procname       = "nf_conntrack_buckets",
+-		.data           = &init_net.ct.nf_conntrack_htable_size,
+ 		.maxlen         = sizeof(unsigned int),
+ 		.mode           = 0644,
+ 		.proc_handler   = nf_conntrack_hash_sysctl,
+@@ -1047,7 +1046,6 @@ static int nf_conntrack_standalone_init_sysctl(struct net *net)
+ 	/* Don't allow non-init_net ns to alter global sysctls */
+ 	if (!net_eq(&init_net, net)) {
+ 		table[NF_SYSCTL_CT_EXPECT_MAX].mode = 0444;
+-		table[NF_SYSCTL_CT_BUCKETS].mode = 0444;
+ 	}
  
- 	if (!nf_conntrack_htable_size) {
--		nf_conntrack_htable_size
--			= (((nr_pages << PAGE_SHIFT) / 16384)
--			   / sizeof(struct hlist_head));
--		if (BITS_PER_LONG >= 64 &&
--		    nr_pages > (4 * (1024 * 1024 * 1024 / PAGE_SIZE)))
--			nf_conntrack_htable_size = 262144;
--		else if (nr_pages > (1024 * 1024 * 1024 / PAGE_SIZE))
--			nf_conntrack_htable_size = 65536;
--
--		if (nf_conntrack_htable_size < 1024)
--			nf_conntrack_htable_size = 1024;
-+		nf_conntrack_htable_size = nf_conntrack_htable_autosize();
-+
- 		/* Use a max. factor of one by default to keep the average
- 		 * hash chain length at 2 entries.  Each entry has to be added
- 		 * twice (once for original direction, once for reply).
+ 	cnet->sysctl_header = register_net_sysctl_sz(net, "net/netfilter",
 -- 
 2.51.0
 
