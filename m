@@ -1,42 +1,42 @@
-Return-Path: <netfilter-devel+bounces-9620-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9624-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75197C36D49
-	for <lists+netfilter-devel@lfdr.de>; Wed, 05 Nov 2025 17:55:11 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C74FC36D4C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 05 Nov 2025 17:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E64B74FF583
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Nov 2025 16:48:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4EB2B4FFA86
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Nov 2025 16:48:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAFA23385A6;
-	Wed,  5 Nov 2025 16:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DBD337115;
+	Wed,  5 Nov 2025 16:48:39 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9465A337BB2
-	for <netfilter-devel@vger.kernel.org>; Wed,  5 Nov 2025 16:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B94248F73
+	for <netfilter-devel@vger.kernel.org>; Wed,  5 Nov 2025 16:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762361307; cv=none; b=n22irLT0y+xXpTZBcXPjOySBzBIzinN8l4fUWjDPYazKwHjwDhmzjTxjQ7WT6y+kqVTaVCcs+zhDboo9MSqA0yfWeJeCgi0gmrCo/w54v5jKCdQ69zunlrVc6PSkL2bFXgx9FyTXSqE4D4MvZYrLzO583NdTiqZXlvxVnn5IiIM=
+	t=1762361319; cv=none; b=hXI8WNzyy8UTkgwNY+0B/bpczw4quhaJ2iDMIR7kehym06M6dSHpPoQODqvwdhQKKINVYxSzxFADpidC+261fHCkCnMH/fa6liseJ5JvdXi+SZ87PDJVIgZgS2wf+oJF1wJWXtcEXw95hmO4AMVjhubXqL8yIftrXr4b4JSON/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762361307; c=relaxed/simple;
-	bh=XIWgS3ovNUwLyxOVJ6ba5HZUex1kyVyNutEM2y7WlYk=;
+	s=arc-20240116; t=1762361319; c=relaxed/simple;
+	bh=fPUN4V2FHwPfDkYvH+53zvNCywJtIst7jd5TkXPINSY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FVlxS7GgikM3RZRtN6bUQiIsAbunENmO3uSDuLNSTU2G2B/EayPgL2uuhpRUqOlQddjLscCp6UXL0PvZKUp+hgEjxOWdeCHUKs86isgg1rfCws7V1jPW6mHioPeuzjPeliZ5zC1RxqNipwYxxa6uJvYGs70f3SKItgWdQx2xD10=
+	 MIME-Version; b=H1iNes1CBNUUuRFpo69ug6hb50UT3DHHY3sXJmmc/UgRe12NoMkjVaXWraBLO+YzXkf69V96iZqi5ocqyAX6HbYsoXJ+rM+KqXfHK/7zLm7i7LnMpSVoRTGSkItEtIUaYgcxaMo7tO99z0M2nLCR9HHwHmMvrq4UbLzdFHmQQKY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 85564603CA; Wed,  5 Nov 2025 17:48:23 +0100 (CET)
+	id BF0386020C; Wed,  5 Nov 2025 17:48:36 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: pablo@netfilter.org
-Subject: [RFC nf-next 02/11] netfilter: conntrack: don't schedule gc worker when table is empty
-Date: Wed,  5 Nov 2025 17:47:56 +0100
-Message-ID: <20251105164805.3992-3-fw@strlen.de>
+Subject: [RFC nf-next 05/11] netfilter: conntrack: split hashtable auto-size to helper function
+Date: Wed,  5 Nov 2025 17:47:59 +0100
+Message-ID: <20251105164805.3992-6-fw@strlen.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251105164805.3992-1-fw@strlen.de>
 References: <20251105164805.3992-1-fw@strlen.de>
@@ -48,108 +48,68 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-No need to wakeup every minute when there are no entries.
-
-Instead of doing a scan at least once a minute, check of the worker
-is pending (its expected to be except on idle system) and queue it
-if its not.
-
-In case the gc worker was executing at time of check (means, it wasn't
-pending), then the gc worker should re-run at the newly computed next_run
-interval.  Switch it to mod_delayed_work() to allow this.
-
-While at it, get rid of 'exiting' toggle:
-use disable_delayed_work_sync instead of the 'cancel_' version at exit
-time to prevent rearming.
+Split the 'figure out a good default hash table size' into a
+new function.  We will later no longer do the allocation right away,
+but will still do the initial size computation.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conntrack_core.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ net/netfilter/nf_conntrack_core.c | 33 ++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
 diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 210792a2275d..fa6e5047d15b 100644
+index fc9312bfa616..1f938ef8e59a 100644
 --- a/net/netfilter/nf_conntrack_core.c
 +++ b/net/netfilter/nf_conntrack_core.c
-@@ -69,7 +69,6 @@ struct conntrack_gc_work {
- 	u32			avg_timeout;
- 	u32			count;
- 	u32			start_time;
--	bool			exiting;
- 	bool			early_drop;
- };
+@@ -2636,9 +2636,27 @@ int nf_conntrack_set_hashsize(const char *val, const struct kernel_param *kp)
+ 	return nf_conntrack_hash_resize(hashsize);
+ }
  
-@@ -91,7 +90,7 @@ static DEFINE_MUTEX(nf_conntrack_mutex);
-  * allowing non-idle machines to wakeup more often when needed.
-  */
- #define GC_SCAN_INITIAL_COUNT	100
--#define GC_SCAN_INTERVAL_INIT	GC_SCAN_INTERVAL_MAX
-+#define GC_SCAN_INTERVAL_INIT	(GC_SCAN_INTERVAL_MAX / 2)
+-int nf_conntrack_init_start(void)
++static unsigned int nf_conntrack_htable_autosize(void)
+ {
+ 	unsigned long nr_pages = totalram_pages();
++	unsigned int ht_size;
++
++	ht_size = (((nr_pages << PAGE_SHIFT) / 16384)
++			   / sizeof(struct hlist_head));
++	if (BITS_PER_LONG >= 64 &&
++	    nr_pages > (4 * (1024 * 1024 * 1024 / PAGE_SIZE)))
++		ht_size = 262144;
++	else if (nr_pages > (1024 * 1024 * 1024 / PAGE_SIZE))
++		ht_size = 65536;
++
++	if (nf_conntrack_htable_size < 1024)
++		ht_size = 1024;
++
++	return ht_size;
++}
++
++int nf_conntrack_init_start(void)
++{
+ 	int max_factor = 8;
+ 	int ret = -ENOMEM;
+ 	int i;
+@@ -2650,17 +2668,8 @@ int nf_conntrack_init_start(void)
+ 		spin_lock_init(&nf_conntrack_locks[i]);
  
- #define GC_SCAN_MAX_DURATION	msecs_to_jiffies(10)
- #define GC_SCAN_EXPIRED_MAX	(64000u / HZ)
-@@ -1639,19 +1638,17 @@ static void gc_worker(struct work_struct *work)
- 		next_run = 1;
- 
- early_exit:
--	if (gc_work->exiting)
--		return;
+ 	if (!nf_conntrack_htable_size) {
+-		nf_conntrack_htable_size
+-			= (((nr_pages << PAGE_SHIFT) / 16384)
+-			   / sizeof(struct hlist_head));
+-		if (BITS_PER_LONG >= 64 &&
+-		    nr_pages > (4 * (1024 * 1024 * 1024 / PAGE_SIZE)))
+-			nf_conntrack_htable_size = 262144;
+-		else if (nr_pages > (1024 * 1024 * 1024 / PAGE_SIZE))
+-			nf_conntrack_htable_size = 65536;
 -
- 	if (next_run)
- 		gc_work->early_drop = false;
- 
--	queue_delayed_work(system_power_efficient_wq, &gc_work->dwork, next_run);
-+	if (gc_work->count > GC_SCAN_INITIAL_COUNT || gc_work->next_bucket > 0)
-+		mod_delayed_work(system_power_efficient_wq, &gc_work->dwork, next_run);
- }
- 
- static void conntrack_gc_work_init(struct conntrack_gc_work *gc_work)
- {
-+	/* work is started on first conntrack allocation. */
- 	INIT_DELAYED_WORK(&gc_work->dwork, gc_worker);
--	gc_work->exiting = false;
- }
- 
- static struct nf_conn *
-@@ -1709,6 +1706,15 @@ __nf_conntrack_alloc(struct net *net,
- 	 * this is inserted in any list.
- 	 */
- 	refcount_set(&ct->ct_general.use, 0);
+-		if (nf_conntrack_htable_size < 1024)
+-			nf_conntrack_htable_size = 1024;
++		nf_conntrack_htable_size = nf_conntrack_htable_autosize();
 +
-+	/* Re-arm gc_work if needed, but do not modify
-+	 * in case it was already pending.
-+	 */
-+	if (unlikely(!delayed_work_pending(&conntrack_gc_work.dwork)))
-+		queue_delayed_work(system_power_efficient_wq,
-+				   &conntrack_gc_work.dwork,
-+				   GC_SCAN_INTERVAL_INIT);
-+
- 	return ct;
- out:
- 	atomic_dec(&cnet->count);
-@@ -2458,13 +2464,12 @@ static int kill_all(struct nf_conn *i, void *data)
- void nf_conntrack_cleanup_start(void)
- {
- 	cleanup_nf_conntrack_bpf();
--	conntrack_gc_work.exiting = true;
- }
- 
- void nf_conntrack_cleanup_end(void)
- {
- 	RCU_INIT_POINTER(nf_ct_hook, NULL);
--	cancel_delayed_work_sync(&conntrack_gc_work.dwork);
-+	disable_delayed_work_sync(&conntrack_gc_work.dwork);
- 	kvfree(nf_conntrack_hash);
- 
- 	nf_conntrack_proto_fini();
-@@ -2687,7 +2692,6 @@ int nf_conntrack_init_start(void)
- 		goto err_proto;
- 
- 	conntrack_gc_work_init(&conntrack_gc_work);
--	queue_delayed_work(system_power_efficient_wq, &conntrack_gc_work.dwork, HZ);
- 
- 	ret = register_nf_conntrack_bpf();
- 	if (ret < 0)
+ 		/* Use a max. factor of one by default to keep the average
+ 		 * hash chain length at 2 entries.  Each entry has to be added
+ 		 * twice (once for original direction, once for reply).
 -- 
 2.51.0
 
