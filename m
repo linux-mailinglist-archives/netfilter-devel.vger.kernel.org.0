@@ -1,42 +1,42 @@
-Return-Path: <netfilter-devel+bounces-9628-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9630-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2E57C370C3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 05 Nov 2025 18:23:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C90A5C36F39
+	for <lists+netfilter-devel@lfdr.de>; Wed, 05 Nov 2025 18:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2797682B61
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Nov 2025 16:49:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8309663A0D
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Nov 2025 16:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3B6336ECD;
-	Wed,  5 Nov 2025 16:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6609A248F73;
+	Wed,  5 Nov 2025 16:49:06 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAB133372C
-	for <netfilter-devel@vger.kernel.org>; Wed,  5 Nov 2025 16:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE86337B8D
+	for <netfilter-devel@vger.kernel.org>; Wed,  5 Nov 2025 16:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762361337; cv=none; b=dpkiRESOynv2P1/D4JqRP1aLN6GjDBze32+HUsU7/Rcte13CaH12B16DQJqYEz3g+pVu4hAuEd7nkSMiKidUuPBth+TsF/EBAb7pseJm6tCw/QOeV9kL+mVfp0ur3lW8szAzfQs8fHlaTiR7KikDdPpZTuJfyIyd+qwcKZgo6tw=
+	t=1762361346; cv=none; b=cxztyR7v1UeTJQH6sJ+hIXs6Vlqmn3+y+Wwj6WYDT6jg619X80udvpxdiSUTfF9dVh9VZD/D+tlrB8SsGmsOvHb7M2Injx8DpANv1WZn+bW+iEZ4K9iapNZPCI2rkyqO2m1P+lYK0uNu6+SbtfsCalGvIKJMjr7FFw9lAsZ7+O4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762361337; c=relaxed/simple;
-	bh=8hW75Y7rVbc8VEviOcbhA8sMVCcUV6rsGWbnONVa92w=;
+	s=arc-20240116; t=1762361346; c=relaxed/simple;
+	bh=L3tdXJ9N6eWjVe0HWRmKi0S/af5Feo+VH5fBpVLz3e4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Jn8SmjqpZK0O6gMU02XoxjIeAaxq/4/BvaIbesjVsMUo/H0QXWrWbdhTCkbLIec1xJiCzyjDj4sIhudUCwGvdqnwaK+avYxUpWMXZ7BvJKRPhXkTStD2cOMOZ3DNOIDW2MAsHqJCXiSC8WN9Che0rmOI5t4Y9x6NDTdRttz09B8=
+	 MIME-Version; b=NrNgHER5i+quO+3zxUsuCBxLFndAItxxy/Iu5SaAMX+LI5mCBEhOnk9O0ApvMjY6JugT11r0TYoqFcDkOnfqJlBuoPyrUBqg99VqAgHYF2cGFhV0/igHxCUG1BJUtRyjVG9QmtjaM+05T54z2UovQWwts07AFFOdTELWaLTqvwA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 3DF5D603B8; Wed,  5 Nov 2025 17:48:54 +0100 (CET)
+	id EE4CD604A8; Wed,  5 Nov 2025 17:49:02 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: pablo@netfilter.org
-Subject: [RFC nf-next 09/11] netfilter: conntrack: delay conntrack hashtable allocation until needed
-Date: Wed,  5 Nov 2025 17:48:03 +0100
-Message-ID: <20251105164805.3992-10-fw@strlen.de>
+Subject: [RFC nf-next 11/11] netfilter: nf_nat: make bysource hash table pernet
+Date: Wed,  5 Nov 2025 17:48:05 +0100
+Message-ID: <20251105164805.3992-12-fw@strlen.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251105164805.3992-1-fw@strlen.de>
 References: <20251105164805.3992-1-fw@strlen.de>
@@ -48,279 +48,236 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Don't allocate the hashtable at netns init time.
-Delay this until userspace requests it.
+Improve netns isolation by providing each net namespace
+with its own table.
 
-For netfilter users (iptables, nftables), do it before we register the
-first conntrack hooks.
-
-The table is allocated in any of these cases:
-
-1. ctnetlink tries to insert an entry
-2. sysctl is used to reallocate the table (reallocation == allocation)
-3. conntrack base hooks get registered for the first time
-
-TC and OVS need special handling, call the new init helper where needed.
-
-Hashtable release happens at netns exit time.
+Table is allocated when the namespace requests nat
+functionality.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_conntrack.h |  1 +
- net/netfilter/nf_conntrack_bpf.c     |  5 +++
- net/netfilter/nf_conntrack_core.c    | 57 ++++++++++++++++++++++++++--
- net/netfilter/nf_conntrack_netlink.c | 19 +++++++---
- net/netfilter/nf_conntrack_proto.c   |  4 ++
- net/openvswitch/conntrack.c          |  6 +++
- net/sched/act_connmark.c             |  6 +++
- net/sched/act_ct.c                   |  7 ++++
- net/sched/act_ctinfo.c               |  7 ++++
- 9 files changed, 102 insertions(+), 10 deletions(-)
+ net/netfilter/nf_nat_core.c | 100 ++++++++++++++++++++++++++----------
+ 1 file changed, 74 insertions(+), 26 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-index e6c3a7dba8dd..7212bcaab02f 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -347,6 +347,7 @@ struct kernel_param;
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 2e660f4d4ac1..2add90e3d636 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -35,10 +35,6 @@ static spinlock_t nf_nat_locks[CONNTRACK_LOCKS];
+ static DEFINE_MUTEX(nf_nat_proto_mutex);
+ static unsigned int nat_net_id __read_mostly;
  
- int nf_conntrack_set_hashsize(const char *val, const struct kernel_param *kp);
- int nf_conntrack_hash_resize(struct net *net, unsigned int hashsize);
-+int nf_conntrack_hash_init(struct net *net);
+-static struct hlist_head *nf_nat_bysource __read_mostly;
+-static unsigned int nf_nat_htable_size __read_mostly;
+-static siphash_aligned_key_t nf_nat_hash_rnd;
+-
+ struct nf_nat_lookup_hook_priv {
+ 	struct nf_hook_entries __rcu *entries;
  
- extern seqcount_spinlock_t nf_conntrack_generation;
+@@ -51,9 +47,18 @@ struct nf_nat_hooks_net {
+ };
  
-diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
-index 4a136fc3a9c0..545ba9b70286 100644
---- a/net/netfilter/nf_conntrack_bpf.c
-+++ b/net/netfilter/nf_conntrack_bpf.c
-@@ -421,6 +421,11 @@ __bpf_kfunc struct nf_conn *bpf_ct_insert_entry(struct nf_conn___init *nfct_i)
- 	struct nf_conn *nfct = (struct nf_conn *)nfct_i;
- 	int err;
- 
-+	if (!READ_ONCE(net->ct.nf_conntrack_hash)) {
-+		nf_conntrack_free(nfct);
-+		return NULL;
-+	}
+ struct nat_net {
++	struct hlist_head *nf_nat_bysource;
++	unsigned int nf_nat_htable_size;
++	siphash_key_t hash_rnd;
 +
- 	if (!nf_ct_is_confirmed(nfct))
- 		nfct->timeout += nfct_time_stamp;
- 	nfct->status |= IPS_CONFIRMED;
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index bbe195f34904..6e69b52572b5 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -728,6 +728,9 @@ ____nf_conntrack_find(struct net *net, const struct nf_conntrack_zone *zone,
- 	nf_conntrack_get_ht(net, &ct_hash, &hsize);
- 	bucket = reciprocal_scale(hash, hsize);
+ 	struct nf_nat_hooks_net nat_proto_net[NFPROTO_NUMPROTO];
+ };
  
-+	if (unlikely(!ct_hash))
-+		return NULL;
++static struct nat_net *nf_nat_get_pernet(const struct net *net)
++{
++	return net_generic(net, nat_net_id);
++}
 +
- 	hlist_nulls_for_each_entry_rcu(h, n, &ct_hash[bucket], hnnode) {
- 		struct nf_conn *ct;
+ #ifdef CONFIG_XFRM
+ static void nf_nat_ipv4_decode_session(struct sk_buff *skb,
+ 				       const struct nf_conn *ct,
+@@ -153,30 +158,27 @@ hash_by_src(const struct net *net,
+ 	    const struct nf_conntrack_zone *zone,
+ 	    const struct nf_conntrack_tuple *tuple)
+ {
++	struct nat_net *nat_pernet = nf_nat_get_pernet(net);
+ 	unsigned int hash;
+ 	struct {
+ 		struct nf_conntrack_man src;
+-		u32 net_mix;
+ 		u32 protonum;
+ 		u32 zone;
+ 	} __aligned(SIPHASH_ALIGNMENT) combined;
  
-@@ -2579,6 +2582,14 @@ int nf_conntrack_hash_resize(struct net *net, unsigned int hashsize)
- 		return -ENOMEM;
+-	get_random_once(&nf_nat_hash_rnd, sizeof(nf_nat_hash_rnd));
+-
+ 	memset(&combined, 0, sizeof(combined));
  
- 	mutex_lock(&nf_conntrack_mutex);
-+
-+	if (!net->ct.nf_conntrack_hash) {
-+		net->ct.nf_conntrack_hash = hash;
-+		net->ct.nf_conntrack_htable_size = hashsize;
-+		mutex_unlock(&nf_conntrack_mutex);
-+		return 0;
-+	}
-+
- 	old_size = net->ct.nf_conntrack_htable_size;
- 	if (old_size == hashsize) {
- 		mutex_unlock(&nf_conntrack_mutex);
-@@ -2630,6 +2641,48 @@ int nf_conntrack_hash_resize(struct net *net, unsigned int hashsize)
- 	return 0;
+ 	/* Original src, to ensure we map it consistently if poss. */
+ 	combined.src = tuple->src;
+-	combined.net_mix = net_hash_mix(net);
+ 	combined.protonum = tuple->dst.protonum;
+ 
+ 	/* Zone ID can be used provided its valid for both directions */
+ 	if (zone->dir == NF_CT_DEFAULT_ZONE_DIR)
+ 		combined.zone = zone->id;
+ 
+-	hash = siphash(&combined, sizeof(combined), &nf_nat_hash_rnd);
++	hash = siphash(&combined, sizeof(combined), &nat_pernet->hash_rnd);
+ 
+-	return reciprocal_scale(hash, nf_nat_htable_size);
++	return reciprocal_scale(hash, nat_pernet->nf_nat_htable_size);
  }
  
-+/**
-+ * nf_conntrack_hash_init - allocate initial conntrack table
-+ *
-+ * @net: network namespace to operate in
-+ *
-+ * In order to not waste memory, the hash table is not allocated
-+ * on network namespace initialisation, but when userspace requests
-+ * the functionality.
-+ *
-+ * Memory is released from the pernet_ops exit handler.
-+ *
-+ * Return: 0 on success, -errno on failure.
-+ */
-+int nf_conntrack_hash_init(struct net *net)
+ /**
+@@ -481,10 +483,12 @@ find_appropriate_src(struct net *net,
+ 		     struct nf_conntrack_tuple *result,
+ 		     const struct nf_nat_range2 *range)
+ {
++	struct nat_net *nat_pernet = nf_nat_get_pernet(net);
+ 	unsigned int h = hash_by_src(net, zone, tuple);
+ 	const struct nf_conn *ct;
+ 
+-	hlist_for_each_entry_rcu(ct, &nf_nat_bysource[h], nat_bysource) {
++	hlist_for_each_entry_rcu(ct, &nat_pernet->nf_nat_bysource[h],
++				 nat_bysource) {
+ 		if (same_src(ct, tuple) &&
+ 		    net_eq(net, nf_ct_net(ct)) &&
+ 		    nf_ct_zone_equal(ct, zone, IP_CT_DIR_ORIGINAL)) {
+@@ -826,6 +830,7 @@ nf_nat_setup_info(struct nf_conn *ct,
+ 	}
+ 
+ 	if (maniptype == NF_NAT_MANIP_SRC) {
++		struct nat_net *nat_net = nf_nat_get_pernet(net);
+ 		unsigned int srchash;
+ 		spinlock_t *lock;
+ 
+@@ -834,7 +839,7 @@ nf_nat_setup_info(struct nf_conn *ct,
+ 		lock = &nf_nat_locks[srchash % CONNTRACK_LOCKS];
+ 		spin_lock_bh(lock);
+ 		hlist_add_head_rcu(&ct->nat_bysource,
+-				   &nf_nat_bysource[srchash]);
++				   &nat_net->nf_nat_bysource[srchash]);
+ 		spin_unlock_bh(lock);
+ 	}
+ 
+@@ -1189,6 +1194,22 @@ static struct nf_ct_helper_expectfn follow_master_nat = {
+ 	.expectfn	= nf_nat_follow_master,
+ };
+ 
++static bool nf_nat_alloc_bysource(struct nat_net *nat_net, unsigned int size)
 +{
-+	int err = 0;
++	struct hlist_head *nf_nat_bysource;
 +
-+	if (net->ct.nf_conntrack_hash)
-+		return 0;
++	nf_nat_bysource = nf_ct_alloc_hashtable(&size, 0);
++	if (!nf_nat_bysource)
++		return false;
 +
-+	mutex_lock(&nf_conntrack_mutex);
-+	if (!net->ct.nf_conntrack_hash) {
-+		unsigned int size = READ_ONCE(net->ct.nf_conntrack_htable_size);
-+		struct hlist_nulls_head *hash;
++	get_random_bytes_wait(&nat_net->hash_rnd,
++			      sizeof(nat_net->hash_rnd));
 +
-+		hash = nf_ct_alloc_hashtable(&size, 1);
-+		if (hash) {
-+			struct nf_conntrack_net *cnet = nf_ct_pernet(net);
-+
-+			net->ct.nf_conntrack_hash = hash;
-+			net->ct.nf_conntrack_htable_size = size;
-+			cnet->htable_size_user = size;
-+		} else {
-+			err = -ENOMEM;
-+		}
-+	}
-+
-+	mutex_unlock(&nf_conntrack_mutex);
-+	return err;
++	nat_net->nf_nat_bysource = nf_nat_bysource;
++	nat_net->nf_nat_htable_size = size;
++	return true;
 +}
-+EXPORT_SYMBOL_GPL(nf_conntrack_hash_init);
 +
- int nf_conntrack_set_hashsize(const char *val, const struct kernel_param *kp)
+ int nf_nat_register_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
+ 		       const struct nf_hook_ops *orig_nat_ops, unsigned int ops_count)
  {
- 	unsigned int hashsize;
-@@ -2770,10 +2823,6 @@ int nf_conntrack_init_net(struct net *net)
- 		max_factor = 8;
- 	}
+@@ -1215,6 +1236,13 @@ int nf_nat_register_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
+ 		return -EINVAL;
  
--	net->ct.nf_conntrack_hash = nf_ct_alloc_hashtable(&ht_size, 1);
--	if (!net->ct.nf_conntrack_hash)
--		return ret;
--
- 	net->ct.nf_conntrack_htable_size = ht_size;
- 	cnet->htable_size_user = ht_size;
- 	net->ct.nf_conntrack_max = ht_size * max_factor;
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index d707ef7e2d75..47a966a15f07 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -1227,6 +1227,9 @@ ctnetlink_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	int res, i;
- 	spinlock_t *lockp;
- 
-+	if (!net->ct.nf_conntrack_hash)
-+		return skb->len;
+ 	mutex_lock(&nf_nat_proto_mutex);
 +
- 	i = 0;
- 
- 	local_bh_disable();
-@@ -2379,17 +2382,21 @@ ctnetlink_create_conntrack(struct net *net,
- 	if (tstamp)
- 		tstamp->start = ktime_get_real_ns();
- 
--	err = nf_conntrack_hash_check_insert(ct);
-+	rcu_read_unlock();
-+
-+	err = nf_conntrack_hash_init(net);
- 	if (err < 0)
- 		goto err3;
- 
--	rcu_read_unlock();
-+	err = nf_conntrack_hash_check_insert(ct);
-+	if (err < 0) {
-+err3:
-+		if (ct->master)
-+			nf_ct_put(ct->master);
-+		goto err1;
++	if (!nat_net->nf_nat_bysource &&
++	    !nf_nat_alloc_bysource(nat_net, net->ct.nf_conntrack_htable_size)) {
++		mutex_unlock(&nf_nat_proto_mutex);
++		return -ENOMEM;
 +	}
++
+ 	if (!nat_proto_net->nat_hook_ops) {
+ 		WARN_ON(nat_proto_net->users != 0);
  
- 	return ct;
--
--err3:
--	if (ct->master)
--		nf_ct_put(ct->master);
- err2:
- 	rcu_read_unlock();
- err1:
-diff --git a/net/netfilter/nf_conntrack_proto.c b/net/netfilter/nf_conntrack_proto.c
-index 01eec82f4cba..be78cbe5b50b 100644
---- a/net/netfilter/nf_conntrack_proto.c
-+++ b/net/netfilter/nf_conntrack_proto.c
-@@ -580,6 +580,10 @@ int nf_ct_netns_get(struct net *net, u8 nfproto)
+@@ -1312,8 +1340,41 @@ void nf_nat_unregister_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
+ 	mutex_unlock(&nf_nat_proto_mutex);
+ }
+ 
++static int __net_init nf_nat_net_init(struct net *net)
++{
++	unsigned int nf_nat_htable_size;
++
++	/* Leave them the same for the moment. */
++	nf_nat_htable_size = net->ct.nf_conntrack_htable_size;
++	if (nf_nat_htable_size < CONNTRACK_LOCKS)
++		nf_nat_htable_size = CONNTRACK_LOCKS;
++
++	return 0;
++}
++
++static void __net_exit nf_nat_net_exit_batch(struct list_head *net_exit_list)
++{
++	struct nf_nat_proto_clean clean = {};
++	struct net *net;
++
++	/* all nat hooks must have been removed at this point */
++	list_for_each_entry(net, net_exit_list, exit_list) {
++		struct nat_net *nat_net = nf_nat_get_pernet(net);
++		struct nf_ct_iter_data iter_data = {
++			.data = &clean,
++			.net = net,
++		};
++
++		nf_ct_iterate_cleanup_net(nf_nat_proto_clean, &iter_data);
++
++		kvfree(nat_net->nf_nat_bysource);
++	}
++}
++
+ static struct pernet_operations nat_net_ops = {
+ 	.id = &nat_net_id,
++	.init = nf_nat_net_init,
++	.exit_batch = nf_nat_net_exit_batch,
+ 	.size = sizeof(struct nat_net),
+ };
+ 
+@@ -1329,23 +1390,12 @@ static int __init nf_nat_init(void)
  {
- 	int err;
+ 	int ret, i;
  
-+	err = nf_conntrack_hash_init(net);
-+	if (err)
-+		return err;
-+
- 	switch (nfproto) {
- 	case NFPROTO_INET:
- 		err = nf_ct_netns_inet_get(net);
-diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
-index e573e9221302..a5c1f575bbc1 100644
---- a/net/openvswitch/conntrack.c
-+++ b/net/openvswitch/conntrack.c
-@@ -1402,6 +1402,12 @@ int ovs_ct_copy_action(struct net *net, const struct nlattr *attr,
- 	if (err)
- 		return err;
+-	/* Leave them the same for the moment. */
+-	nf_nat_htable_size = init_net.ct.nf_conntrack_htable_size;
+-	if (nf_nat_htable_size < CONNTRACK_LOCKS)
+-		nf_nat_htable_size = CONNTRACK_LOCKS;
+-
+-	nf_nat_bysource = nf_ct_alloc_hashtable(&nf_nat_htable_size, 0);
+-	if (!nf_nat_bysource)
+-		return -ENOMEM;
+-
+ 	for (i = 0; i < CONNTRACK_LOCKS; i++)
+ 		spin_lock_init(&nf_nat_locks[i]);
  
-+	err = nf_conntrack_hash_init(net);
-+	if (err) {
-+		OVS_NLERR(log, "Failed to allocate conntrack table");
-+		return err;
-+	}
-+
- 	/* Set up template for tracking connections in specific zones. */
- 	ct_info.ct = nf_ct_tmpl_alloc(net, &ct_info.zone, GFP_KERNEL);
- 	if (!ct_info.ct) {
-diff --git a/net/sched/act_connmark.c b/net/sched/act_connmark.c
-index 3e89927d7116..fbb296d19d87 100644
---- a/net/sched/act_connmark.c
-+++ b/net/sched/act_connmark.c
-@@ -121,6 +121,12 @@ static int tcf_connmark_init(struct net *net, struct nlattr *nla,
- 	if (!tb[TCA_CONNMARK_PARMS])
- 		return -EINVAL;
+ 	ret = register_pernet_subsys(&nat_net_ops);
+-	if (ret < 0) {
+-		kvfree(nf_nat_bysource);
++	if (ret < 0)
+ 		return ret;
+-	}
  
-+	err = nf_conntrack_hash_init(net);
-+	if (err) {
-+		NL_SET_ERR_MSG_MOD(extack, "Cannot allocate conntrack table");
-+		return err;
-+	}
-+
- 	nparms = kzalloc(sizeof(*nparms), GFP_KERNEL);
- 	if (!nparms)
- 		return -ENOMEM;
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index 6749a4a9a9cd..12799e5ac056 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -1366,6 +1366,13 @@ static int tcf_ct_init(struct net *net, struct nlattr *nla,
- 		NL_SET_ERR_MSG_MOD(extack, "Missing required ct parameters");
- 		return -EINVAL;
+ 	nf_ct_helper_expectfn_register(&follow_master_nat);
+ 
+@@ -1358,7 +1408,6 @@ static int __init nf_nat_init(void)
+ 		nf_ct_helper_expectfn_unregister(&follow_master_nat);
+ 		synchronize_net();
+ 		unregister_pernet_subsys(&nat_net_ops);
+-		kvfree(nf_nat_bysource);
  	}
-+
-+	err = nf_conntrack_hash_init(net);
-+	if (err) {
-+		NL_SET_ERR_MSG_MOD(extack, "Cannot allocate conntrack table");
-+		return err;
-+	}
-+
- 	parm = nla_data(tb[TCA_CT_PARMS]);
- 	index = parm->index;
- 	err = tcf_idr_check_alloc(tn, &index, a, bind);
-diff --git a/net/sched/act_ctinfo.c b/net/sched/act_ctinfo.c
-index 71efe04d00b5..cc959bfe9abd 100644
---- a/net/sched/act_ctinfo.c
-+++ b/net/sched/act_ctinfo.c
-@@ -181,6 +181,13 @@ static int tcf_ctinfo_init(struct net *net, struct nlattr *nla,
- 				   "Missing required TCA_CTINFO_ACT attribute");
- 		return -EINVAL;
- 	}
-+
-+	err = nf_conntrack_hash_init(net);
-+	if (err) {
-+		NL_SET_ERR_MSG_MOD(extack, "Cannot allocate conntrack table");
-+		return err;
-+	}
-+
- 	actparm = nla_data(tb[TCA_CTINFO_ACT]);
  
- 	/* do some basic validation here before dynamically allocating things */
+ 	return ret;
+@@ -1374,7 +1423,6 @@ static void __exit nf_nat_cleanup(void)
+ 	RCU_INIT_POINTER(nf_nat_hook, NULL);
+ 
+ 	synchronize_net();
+-	kvfree(nf_nat_bysource);
+ 	unregister_pernet_subsys(&nat_net_ops);
+ }
+ 
 -- 
 2.51.0
 
