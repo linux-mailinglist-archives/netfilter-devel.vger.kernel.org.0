@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-9799-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9796-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404B3C69B0D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 14:49:36 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD06C69B2E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 14:50:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C90484EF07F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 13:49:16 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B8FE1352C90
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 13:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4806E3590D6;
-	Tue, 18 Nov 2025 13:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD36313525;
+	Tue, 18 Nov 2025 13:47:15 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6299B3587DE;
-	Tue, 18 Nov 2025 13:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3B7357A45;
+	Tue, 18 Nov 2025 13:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763473636; cv=none; b=SAe+dj/UM4rvA3bZDVpPyYHzXeoc0nPTL09i4YIvg3F0ySyHB1oJ/wj02rnIUPlvW7de9C7QThCJCAsX+qyxcBJ46Fk/HRzy6kKmqU0wbCh7UnwLM/88nIKmilcQJgOeyY3yBkUh7gdsH0QBdNX+g+NckDmj5MkvD2djx+VskTc=
+	t=1763473635; cv=none; b=Z4cxTqiAcjZqpsKlXy/+X9PF6iGxZnILu8mjZBgSdeiWQiJLZbGYKHR7O7EwS8cEu03SBpZdk4KGvRetmwyn3SHXNddQljEUQ+yrQjZoElAnK+L3UhDEyHleVHX1wEOkVt5cc69mOEMep2k6AqgzDxscNcmj78ZfD5fLTNDXb68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763473636; c=relaxed/simple;
-	bh=6hSJTmIfXFgrzFxCaZoUbCubdXI30Msf3ViDl+lGj1A=;
+	s=arc-20240116; t=1763473635; c=relaxed/simple;
+	bh=w4hyAIL+6jmpB9z3CpLYiz5UDPbudmcFfZpMhGpeoOI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FPap5sqwI45E8OzwSAilV599KZoZ/pKZ+0T5FLYJOdtfvZehMRFyqmkvhC1V3rsEFukpE9jLk96zUYEjebXmQeWBZRQ9MYV7haJ30vnwPJYMx0/SVBuAMqrgii85veCevZbtJbZKwEHVJ8QVGb9U7LURg9GQZNnKB+Pf0BTn9DE=
+	 MIME-Version:Content-Type; b=Yx7HaII9GOY/k1Q53EI4HQmI5fEDB5wEh2JUWs071qDd746qsAQ6bKhkCDKelGWYkTxmM7xEM45n/ZeCAoAXUjExFbn6nE+crc8fZb9N/8PmxpO2waGSvEsHVNEB2wp/KFEu/9drk9Ees01AmJvhCwmTGczdX3/K5ROZRtX1XJw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
 Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4d9m9l6PmMzHnH7Y;
-	Tue, 18 Nov 2025 21:46:35 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4d9m9X4G4CzJ46dN;
+	Tue, 18 Nov 2025 21:46:24 +0800 (CST)
 Received: from mscpeml500004.china.huawei.com (unknown [7.188.26.250])
-	by mail.maildlp.com (Postfix) with ESMTPS id C775214033F;
+	by mail.maildlp.com (Postfix) with ESMTPS id E08581402F3;
 	Tue, 18 Nov 2025 21:47:06 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  mscpeml500004.china.huawei.com (7.188.26.250) with Microsoft SMTP Server
@@ -45,9 +45,9 @@ CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v4 15/19] lsm: Support logging socket common data
-Date: Tue, 18 Nov 2025 21:46:35 +0800
-Message-ID: <20251118134639.3314803-16-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v4 16/19] landlock: Log socket creation denials
+Date: Tue, 18 Nov 2025 21:46:36 +0800
+Message-ID: <20251118134639.3314803-17-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251118134639.3314803-1-ivanov.mikhail1@huawei-partners.com>
 References: <20251118134639.3314803-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,62 +62,97 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500004.china.huawei.com (7.188.26.250) To
  mscpeml500004.china.huawei.com (7.188.26.250)
 
-Add LSM_AUDIT_DATA_SOCKET type to log socket-related data in
-audit_log_lsm_data(). This may be useful (for example) to log socket
-creation denials.
+Add new type in landlock_requet_type related to socket access checks
+auditing. Print blocker related to socket access in get_blocker() and
+log socket creation denials in hook_socket_create().
 
 Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 ---
- include/linux/lsm_audit.h | 8 ++++++++
- security/lsm_audit.c      | 4 ++++
- 2 files changed, 12 insertions(+)
+ security/landlock/audit.c  | 12 ++++++++++++
+ security/landlock/audit.h  |  1 +
+ security/landlock/socket.c | 15 +++++++++++++++
+ 3 files changed, 28 insertions(+)
 
-diff --git a/include/linux/lsm_audit.h b/include/linux/lsm_audit.h
-index 382c56a97bba..7c7617df41b5 100644
---- a/include/linux/lsm_audit.h
-+++ b/include/linux/lsm_audit.h
-@@ -57,6 +57,12 @@ struct lsm_ibendport_audit {
- 	u8 port;
- };
+diff --git a/security/landlock/audit.c b/security/landlock/audit.c
+index c52d079cdb77..c2c0e8fd38cb 100644
+--- a/security/landlock/audit.c
++++ b/security/landlock/audit.c
+@@ -48,6 +48,12 @@ static const char *const net_access_strings[] = {
  
-+struct lsm_socket_audit {
-+	s32 family;
-+	s32 type;
-+	s32 protocol;
+ static_assert(ARRAY_SIZE(net_access_strings) == LANDLOCK_NUM_ACCESS_NET);
+ 
++static const char *const socket_access_strings[] = {
++	[BIT_INDEX(LANDLOCK_ACCESS_SOCKET_CREATE)] = "socket.create",
 +};
 +
- /* Auxiliary data to use in generating the audit record. */
- struct common_audit_data {
- 	char type;
-@@ -78,6 +84,7 @@ struct common_audit_data {
- #define LSM_AUDIT_DATA_NOTIFICATION 16
- #define LSM_AUDIT_DATA_ANONINODE	17
- #define LSM_AUDIT_DATA_NLMSGTYPE	18
-+#define LSM_AUDIT_DATA_SOCKET	19
- 	union 	{
- 		struct path path;
- 		struct dentry *dentry;
-@@ -97,6 +104,7 @@ struct common_audit_data {
- 		struct file *file;
- 		struct lsm_ibpkey_audit *ibpkey;
- 		struct lsm_ibendport_audit *ibendport;
-+		struct lsm_socket_audit *socket;
- 		int reason;
- 		const char *anonclass;
- 		u16 nlmsg_type;
-diff --git a/security/lsm_audit.c b/security/lsm_audit.c
-index 7d623b00495c..7e18241290ce 100644
---- a/security/lsm_audit.c
-+++ b/security/lsm_audit.c
-@@ -403,6 +403,10 @@ void audit_log_lsm_data(struct audit_buffer *ab,
- 	case LSM_AUDIT_DATA_NLMSGTYPE:
- 		audit_log_format(ab, " nl-msgtype=%hu", a->u.nlmsg_type);
- 		break;
-+	case LSM_AUDIT_DATA_SOCKET:
-+		audit_log_format(ab, " family=%d sock_type=%d protocol=%d",
-+			a->u.socket->family, a->u.socket->type, a->u.socket->protocol);
-+		break;
- 	} /* switch (a->type) */
++static_assert(ARRAY_SIZE(socket_access_strings) == LANDLOCK_NUM_ACCESS_SOCKET);
++
+ static __attribute_const__ const char *
+ get_blocker(const enum landlock_request_type type,
+ 	    const unsigned long access_bit)
+@@ -71,6 +77,12 @@ get_blocker(const enum landlock_request_type type,
+ 			return "unknown";
+ 		return net_access_strings[access_bit];
+ 
++	case LANDLOCK_REQUEST_SOCKET_ACCESS:
++		if (WARN_ON_ONCE(access_bit >=
++				 ARRAY_SIZE(socket_access_strings)))
++			return "unknown";
++		return socket_access_strings[access_bit];
++
+ 	case LANDLOCK_REQUEST_SCOPE_ABSTRACT_UNIX_SOCKET:
+ 		WARN_ON_ONCE(access_bit != -1);
+ 		return "scope.abstract_unix_socket";
+diff --git a/security/landlock/audit.h b/security/landlock/audit.h
+index 92428b7fc4d8..b78d4503b0a5 100644
+--- a/security/landlock/audit.h
++++ b/security/landlock/audit.h
+@@ -19,6 +19,7 @@ enum landlock_request_type {
+ 	LANDLOCK_REQUEST_FS_CHANGE_TOPOLOGY,
+ 	LANDLOCK_REQUEST_FS_ACCESS,
+ 	LANDLOCK_REQUEST_NET_ACCESS,
++	LANDLOCK_REQUEST_SOCKET_ACCESS,
+ 	LANDLOCK_REQUEST_SCOPE_ABSTRACT_UNIX_SOCKET,
+ 	LANDLOCK_REQUEST_SCOPE_SIGNAL,
+ };
+diff --git a/security/landlock/socket.c b/security/landlock/socket.c
+index d7e6e7b92b7a..6afd5a0ac6d7 100644
+--- a/security/landlock/socket.c
++++ b/security/landlock/socket.c
+@@ -10,6 +10,7 @@
+ #include <linux/stddef.h>
+ #include <net/ipv6.h>
+ 
++#include "audit.h"
+ #include "limits.h"
+ #include "ruleset.h"
+ #include "socket.h"
+@@ -132,6 +133,11 @@ static int hook_socket_create(int family, int type, int protocol, int kern)
+ 	const struct landlock_cred_security *const subject =
+ 		landlock_get_applicable_subject(current_cred(), masks, NULL);
+ 	uintptr_t key;
++	struct lsm_socket_audit audit_socket = {
++		.family = family,
++		.type = type,
++		.protocol = protocol,
++	};
+ 
+ 	if (!subject)
+ 		return 0;
+@@ -169,6 +175,15 @@ static int hook_socket_create(int family, int type, int protocol, int kern)
+ 				handled_access) == 0)
+ 		return 0;
+ 
++	landlock_log_denial(subject,
++			    &(struct landlock_request){
++				    .type = LANDLOCK_REQUEST_SOCKET_ACCESS,
++				    .audit.type = LSM_AUDIT_DATA_SOCKET,
++				    .audit.u.socket = &audit_socket,
++				    .access = LANDLOCK_ACCESS_SOCKET_CREATE,
++				    .layer_masks = &layer_masks,
++				    .layer_masks_size = ARRAY_SIZE(layer_masks),
++			    });
+ 	return -EACCES;
  }
  
 -- 
