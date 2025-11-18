@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-9790-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9797-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D055C69ACE
-	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 14:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C38EC69B3D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 14:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3EBA238381E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 13:47:49 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3C3A9383752
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Nov 2025 13:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A18C3570A1;
-	Tue, 18 Nov 2025 13:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFC1314B71;
+	Tue, 18 Nov 2025 13:47:15 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2DE2F6197;
-	Tue, 18 Nov 2025 13:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6063587A7;
+	Tue, 18 Nov 2025 13:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763473632; cv=none; b=f8efp2Akk1qiiVI3XaUv4DaSMkbc0vz5CKXVFa/XNZSv8oZUHkpuaagjqhB4QjEkbu3mA67tQc3EFzkI5oLAAzEx6k3vvu8T92GGlRRRmj1WGblfVbL+ZyxofAY4hqOG8mIVzYVftdBiu51VMrAXlXQPI3qVvr/745JioSLoTuQ=
+	t=1763473635; cv=none; b=jldAvRSUaPaO+X01YjwERrCWKFqLm1g3ZEY9bO5gUKyM+qn88Cn3L1gVMIY3SNubxypvrNPe1+MouppuF7Uo87UnJPrNc9cTcG5by/fVDAVm0Fx6klGSX7FiiRQ3zDCtJUnmlS0ZUmHq93RSNZLTPPuQCa0gd3Z5k44av0v2goc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763473632; c=relaxed/simple;
-	bh=Bfv2N7IJjt65NfbcWNYWNe3b/i+a8fU6NsVSYWm10Ns=;
+	s=arc-20240116; t=1763473635; c=relaxed/simple;
+	bh=8vhB7t6ZImu0vEenaXgZH0BbBgdFX1eOpzorYrl15EM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r5pFlPREAzns+NS7hb6qoQqF1P6EwXlV2ogCf/Gh6H0S6YeFNdQUde1L45cbbIP1BVCacoIOX2/T+VAJKwkXR3TfI81oKjAVTUmu0+Q6GfA81B1mGm5MYXWVNGIG89Ttx7GdbauCeEVU7UzakYfulyKeZjKdT0gsCQKuhbkB7YA=
+	 MIME-Version:Content-Type; b=US+c+6zbk4lJ6EEaHTSBVfsp88WANtUTF9+KCB/Y8vJXeMq2Uvc6zYMOVKkMRAZT+RjaZozlUFzUX6RSSZXDXS5nsrteYk9sDEOHYPIMBVpWj9q2HN5tjyRmRAex9XwxhKD1AcLeJQTUGfVm02OjEunBsxghbltxbh1EwSt2BE8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
 Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4d9m9V6QJFzJ46XL;
-	Tue, 18 Nov 2025 21:46:22 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4d9m9k2tplzHnGkN;
+	Tue, 18 Nov 2025 21:46:34 +0800 (CST)
 Received: from mscpeml500004.china.huawei.com (unknown [7.188.26.250])
-	by mail.maildlp.com (Postfix) with ESMTPS id 36AE014033F;
+	by mail.maildlp.com (Postfix) with ESMTPS id 4F2E3140446;
 	Tue, 18 Nov 2025 21:47:05 +0800 (CST)
 Received: from mscphis02103.huawei.com (10.123.65.215) by
  mscpeml500004.china.huawei.com (7.188.26.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 18 Nov 2025 16:47:04 +0300
+ 15.2.1544.11; Tue, 18 Nov 2025 16:47:05 +0300
 From: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 To: <mic@digikod.net>, <gnoack@google.com>
 CC: <willemdebruijn.kernel@gmail.com>, <matthieu@buffet.re>,
 	<linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
 	<artem.kuzin@huawei.com>, <konstantin.meskhidze@huawei.com>
-Subject: [RFC PATCH v4 05/19] selftests/landlock: Test acceptable ranges of socket rule key
-Date: Tue, 18 Nov 2025 21:46:25 +0800
-Message-ID: <20251118134639.3314803-6-ivanov.mikhail1@huawei-partners.com>
+Subject: [RFC PATCH v4 06/19] landlock: Add hook on socket creation
+Date: Tue, 18 Nov 2025 21:46:26 +0800
+Message-ID: <20251118134639.3314803-7-ivanov.mikhail1@huawei-partners.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251118134639.3314803-1-ivanov.mikhail1@huawei-partners.com>
 References: <20251118134639.3314803-1-ivanov.mikhail1@huawei-partners.com>
@@ -62,217 +62,157 @@ Content-Type: text/plain
 X-ClientProxiedBy: mscpeml500004.china.huawei.com (7.188.26.250) To
  mscpeml500004.china.huawei.com (7.188.26.250)
 
-Create fixture "protocol_inside_range" and "protocol_outside_range"
-examining acceptable limits of family, type and protocol values
-supported by Landlock ruleset.
+Add hook on security_socket_create(), which checks whether the socket
+of requested protocol is allowed by domain.
 
-Add test validating Landlock behaviour of adding rule with values
-corresponding to the limits of the acceptable range and with values
-beyond the acceptable ranges.
+Due to support of masked protocols Landlock tries to find one of the
+4 rules that can allow creation of requested protocol.
 
 Signed-off-by: Mikhail Ivanov <ivanov.mikhail1@huawei-partners.com>
 ---
- .../testing/selftests/landlock/socket_test.c  | 189 ++++++++++++++++++
- 1 file changed, 189 insertions(+)
+Changes since v3:
+* Changes LSM hook from socket_post_create to socket_create so
+  creation would be blocked before socket allocation and initialization.
+* Uses credential instead of domain in hook_socket create.
+* Removes get_raw_handled_socket_accesses.
+* Adds checks for rules with wildcard type and protocol values.
+* Minor refactoring, fixes.
 
-diff --git a/tools/testing/selftests/landlock/socket_test.c b/tools/testing/selftests/landlock/socket_test.c
-index abcef11aaf39..16477614dfed 100644
---- a/tools/testing/selftests/landlock/socket_test.c
-+++ b/tools/testing/selftests/landlock/socket_test.c
-@@ -190,4 +190,193 @@ TEST_F(mini, rule_with_wildcard)
- 	ASSERT_EQ(0, close(ruleset_fd));
- }
+Changes since v2:
+* Adds check in `hook_socket_create()` to not restrict kernel space
+  sockets.
+* Inlines `current_check_access_socket()` in the `hook_socket_create()`.
+* Fixes commit message.
+
+Changes since v1:
+* Uses lsm hook arguments instead of struct socket fields as family-type
+  values.
+* Packs socket family and type using helper.
+* Fixes commit message.
+* Formats with clang-format.
+---
+ security/landlock/setup.c  |  2 +
+ security/landlock/socket.c | 78 ++++++++++++++++++++++++++++++++++++++
+ security/landlock/socket.h |  2 +
+ 3 files changed, 82 insertions(+)
+
+diff --git a/security/landlock/setup.c b/security/landlock/setup.c
+index bd53c7a56ab9..140a53b022f7 100644
+--- a/security/landlock/setup.c
++++ b/security/landlock/setup.c
+@@ -17,6 +17,7 @@
+ #include "fs.h"
+ #include "id.h"
+ #include "net.h"
++#include "socket.h"
+ #include "setup.h"
+ #include "task.h"
  
-+/* clang-format off */
-+FIXTURE(prot_inside_range) {};
-+/* clang-format on */
+@@ -68,6 +69,7 @@ static int __init landlock_init(void)
+ 	landlock_add_task_hooks();
+ 	landlock_add_fs_hooks();
+ 	landlock_add_net_hooks();
++	landlock_add_socket_hooks();
+ 	landlock_init_id();
+ 	landlock_initialized = true;
+ 	pr_info("Up and running.\n");
+diff --git a/security/landlock/socket.c b/security/landlock/socket.c
+index 28a80dcad629..d7e6e7b92b7a 100644
+--- a/security/landlock/socket.c
++++ b/security/landlock/socket.c
+@@ -103,3 +103,81 @@ int landlock_append_socket_rule(struct landlock_ruleset *const ruleset,
+ 
+ 	return err;
+ }
 +
-+FIXTURE_VARIANT(prot_inside_range)
++static int check_socket_access(const struct landlock_ruleset *dom,
++			       uintptr_t key,
++			       layer_mask_t (*const layer_masks)[],
++			       access_mask_t handled_access)
 +{
-+	int family, type, protocol;
-+};
++	const struct landlock_rule *rule;
++	struct landlock_id id = {
++		.type = LANDLOCK_KEY_SOCKET,
++	};
 +
-+FIXTURE_SETUP(prot_inside_range)
-+{
-+	disable_caps(_metadata);
-+};
-+
-+FIXTURE_TEARDOWN(prot_inside_range)
-+{
++	id.key.data = key;
++	rule = landlock_find_rule(dom, id);
++	if (landlock_unmask_layers(rule, handled_access, layer_masks,
++				   LANDLOCK_NUM_ACCESS_SOCKET))
++		return 0;
++	return -EACCES;
 +}
 +
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_inside_range, family_upper) {
-+	/* clang-format on */
-+	.family = UINT8_MAX - 1,
-+	.type = SOCK_STREAM,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_inside_range, type_upper) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = UINT8_MAX - 1,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_inside_range, protocol_upper) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = SOCK_STREAM,
-+	.protocol = UINT16_MAX - 1,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_inside_range, family_lower) {
-+	/* clang-format on */
-+	.family = 0,
-+	.type = SOCK_STREAM,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_inside_range, type_lower) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = 0,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_inside_range, protocol_lower) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = SOCK_STREAM,
-+	.protocol = 0,
-+};
-+
-+/*
-+ * Verifies acceptable range of family, type and protocol values. Specific
-+ * case of adding rule with masked fields checked in "rule_with_wildcard"
-+ * test.
-+ *
-+ * Acceptable ranges are [0, UINT8_MAX) for family and type,
-+ * [0, UINT16_MAX) for protocol field.
-+ */
-+TEST_F(prot_inside_range, add_rule)
++static int hook_socket_create(int family, int type, int protocol, int kern)
 +{
-+	const struct landlock_ruleset_attr ruleset_attr = {
-+		.handled_access_socket = LANDLOCK_ACCESS_SOCKET_CREATE,
++	layer_mask_t layer_masks[LANDLOCK_NUM_ACCESS_SOCKET] = {};
++	access_mask_t handled_access;
++	const struct access_masks masks = {
++		.socket = LANDLOCK_ACCESS_SOCKET_CREATE,
 +	};
-+	const struct landlock_socket_attr create_socket_attr = {
-+		.allowed_access = LANDLOCK_ACCESS_SOCKET_CREATE,
-+		.family = variant->family,
-+		.type = variant->type,
-+		.protocol = variant->protocol,
-+	};
-+	int ruleset_fd;
++	const struct landlock_cred_security *const subject =
++		landlock_get_applicable_subject(current_cred(), masks, NULL);
++	uintptr_t key;
 +
-+	ruleset_fd =
-+		landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
-+	ASSERT_LE(0, ruleset_fd);
++	if (!subject)
++		return 0;
++	/* Checks only user space sockets. */
++	if (kern)
++		return 0;
 +
-+	EXPECT_EQ(0, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
-+				       &create_socket_attr, 0));
-+	ASSERT_EQ(0, close(ruleset_fd));
++	handled_access = landlock_init_layer_masks(
++		subject->domain, LANDLOCK_ACCESS_SOCKET_CREATE, &layer_masks,
++		LANDLOCK_KEY_SOCKET);
++	/*
++	 * Error could happen due to parameters are outside of the allowed range,
++	 * so this combination couldn't be added in ruleset previously.
++	 * Therefore, it's not permitted.
++	 */
++	if (pack_socket_key(family, type, protocol, &key) == -EACCES)
++		return -EACCES;
++	if (check_socket_access(subject->domain, key, &layer_masks,
++				handled_access) == 0)
++		return 0;
++
++	/* Ranges were already checked. */
++	(void)pack_socket_key(family, TYPE_ALL, protocol, &key);
++	if (check_socket_access(subject->domain, key, &layer_masks,
++				handled_access) == 0)
++		return 0;
++
++	(void)pack_socket_key(family, type, PROTOCOL_ALL, &key);
++	if (check_socket_access(subject->domain, key, &layer_masks,
++				handled_access) == 0)
++		return 0;
++
++	(void)pack_socket_key(family, TYPE_ALL, PROTOCOL_ALL, &key);
++	if (check_socket_access(subject->domain, key, &layer_masks,
++				handled_access) == 0)
++		return 0;
++
++	return -EACCES;
 +}
 +
-+/* clang-format off */
-+FIXTURE(prot_outside_range) {};
-+/* clang-format on */
-+
-+FIXTURE_VARIANT(prot_outside_range)
-+{
-+	int family, type, protocol;
++static struct security_hook_list landlock_hooks[] __ro_after_init = {
++	LSM_HOOK_INIT(socket_create, hook_socket_create),
 +};
 +
-+FIXTURE_SETUP(prot_outside_range)
++__init void landlock_add_socket_hooks(void)
 +{
-+	disable_caps(_metadata);
-+};
-+
-+FIXTURE_TEARDOWN(prot_outside_range)
-+{
++	security_add_hooks(landlock_hooks, ARRAY_SIZE(landlock_hooks),
++			   &landlock_lsmid);
 +}
+diff --git a/security/landlock/socket.h b/security/landlock/socket.h
+index bd0ac74c39e2..3980a3d46534 100644
+--- a/security/landlock/socket.h
++++ b/security/landlock/socket.h
+@@ -15,4 +15,6 @@ int landlock_append_socket_rule(struct landlock_ruleset *const ruleset,
+ 				const s32 protocol,
+ 				access_mask_t access_rights);
+ 
++__init void landlock_add_socket_hooks(void);
 +
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_outside_range, family_upper) {
-+	/* clang-format on */
-+	.family = UINT8_MAX,
-+	.type = SOCK_STREAM,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_outside_range, type_upper) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = UINT8_MAX,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_outside_range, protocol_upper) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = SOCK_STREAM,
-+	.protocol = UINT16_MAX,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_outside_range, family_lower) {
-+	/* clang-format on */
-+	.family = -1,
-+	.type = SOCK_STREAM,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_outside_range, type_lower) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = -2,
-+	.protocol = 0,
-+};
-+
-+/* clang-format off */
-+FIXTURE_VARIANT_ADD(prot_outside_range, protocol_lower) {
-+	/* clang-format on */
-+	.family = AF_INET,
-+	.type = SOCK_STREAM,
-+	.protocol = -2,
-+};
-+
-+/*
-+ * Acceptable ranges are [0, UINT8_MAX) for family and type,
-+ * [0, UINT16_MAX) for protocol field. Also type and protocol
-+ * can be set with specific -1 wildcard value.
-+ */
-+TEST_F(prot_outside_range, add_rule)
-+{
-+	const struct landlock_ruleset_attr ruleset_attr = {
-+		.handled_access_socket = LANDLOCK_ACCESS_SOCKET_CREATE,
-+	};
-+	const struct landlock_socket_attr create_socket_attr = {
-+		.allowed_access = LANDLOCK_ACCESS_SOCKET_CREATE,
-+		.family = variant->family,
-+		.type = variant->type,
-+		.protocol = variant->protocol,
-+	};
-+	int ruleset_fd;
-+
-+	ruleset_fd =
-+		landlock_create_ruleset(&ruleset_attr, sizeof(ruleset_attr), 0);
-+	ASSERT_LE(0, ruleset_fd);
-+
-+	EXPECT_EQ(-1, landlock_add_rule(ruleset_fd, LANDLOCK_RULE_SOCKET,
-+					&create_socket_attr, 0));
-+	ASSERT_EQ(0, close(ruleset_fd));
-+}
-+
- TEST_HARNESS_MAIN
+ #endif /* _SECURITY_LANDLOCK_SOCKET_H */
 -- 
 2.34.1
 
