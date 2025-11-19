@@ -1,75 +1,69 @@
-Return-Path: <netfilter-devel+bounces-9818-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9820-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC71BC6D6EF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Nov 2025 09:33:21 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB2BC6E21A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Nov 2025 12:06:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3F80F34478C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Nov 2025 08:30:27 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9A41835D00A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Nov 2025 11:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF032EA15B;
-	Wed, 19 Nov 2025 08:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68046318124;
+	Wed, 19 Nov 2025 11:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lz+Wnqr0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="G20E3eYc"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE63D27A93C
-	for <netfilter-devel@vger.kernel.org>; Wed, 19 Nov 2025 08:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421F54C98
+	for <netfilter-devel@vger.kernel.org>; Wed, 19 Nov 2025 11:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763541022; cv=none; b=CpaBwPTjP74fApEmzN7BXFMvSXsn0zbHzXwbqg/d3Yn2tyK/2Pt369PGo3v3v8riEKpVxGla3y9x4i/vpdU9SkgVl2AD0gnWRL095GP/H/WzAOK40ORYIFsG8A7mYLqoghmcOtKIAPo5tehZeVa/uH3YPST2iPOZWEBWrayO3Wg=
+	t=1763550152; cv=none; b=qlHRn1RaqlOaot174L/BSB4TSdDEIUYawuRkN40S4u59hr+AhMVlI60lmgNieRF8gcYD4/qNZGbIRDGKw132Jz+fovgdO3Z1GxBlSofpWJAH7BZafU6xcwtcl9SjpqwifY4AlD0ezrrM5KBmUs8NeYYkFAzOQiZHOZ0HRXbZkUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763541022; c=relaxed/simple;
-	bh=xkxTCh+QyFSsSgomEE2MI5vN9j4Deo0E9syIENkaSgM=;
+	s=arc-20240116; t=1763550152; c=relaxed/simple;
+	bh=WXNkgnzLH5RTioRFo83kR553wlCNXy/8HjolfHRkbHY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NxIAuG/d9/kbxUgtsbK2473/4aqMahXtezRAUyp2AjTyOR40RMjyQlaiyzXytKM89WA4KX1VDAxFa92mI+QNiQesgPOBlWFACGBX1bec4AGesp00HBg5xUEXlk9SxSt2PAYBLryqgu3pEWIXnWAOQqg7gU3zB1a6KJbFi8iGTyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lz+Wnqr0; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763541021; x=1795077021;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xkxTCh+QyFSsSgomEE2MI5vN9j4Deo0E9syIENkaSgM=;
-  b=lz+Wnqr0rJABxm9TralzeT6T3r+aWzKdTqz1+/iFYus3aQa19EDytZpX
-   1A75H1go9gzsoYynFJUTWVVvJjzzM92oPstgXuwWqdXgiq6VlWWfaGgfH
-   0Z6Da6N8wcKhjqXNUvQO4Fg//jBsaxgQK0CtVWNXfDgBXQR1ck6xVwgcY
-   VNXh4c6CiWej4unioVO85Owh4SsMxc1d4A4G8InB0PaYYPOT/H2krKyrL
-   KROpPrKNGQRjwiYemOhg3QGjAMN9QbZkEYcCuruIliHcRKZYAztRJcg6P
-   z61LXBrD6JmQ5hf0qLqMJ2Lfr+whBE8UYttbFYia2/dYBoVFKgLFbOBeD
-   w==;
-X-CSE-ConnectionGUID: Ngz2ILdCTECzFCJX9aSoPQ==
-X-CSE-MsgGUID: iI3YVGysRzy0mkfqzr4sLg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11617"; a="69193089"
-X-IronPort-AV: E=Sophos;i="6.19,315,1754982000"; 
-   d="scan'208";a="69193089"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2025 00:30:21 -0800
-X-CSE-ConnectionGUID: VtBljWXXTI+d+MXY37/CTw==
-X-CSE-MsgGUID: DkIll2I9Rsu5/8KBV+yfbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,315,1754982000"; 
-   d="scan'208";a="190786697"
-Received: from lkp-server01.sh.intel.com (HELO adf6d29aa8d9) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 19 Nov 2025 00:30:19 -0800
-Received: from kbuild by adf6d29aa8d9 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vLdZx-0002cF-0Y;
-	Wed, 19 Nov 2025 08:30:17 +0000
-Date: Wed, 19 Nov 2025 16:29:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH nf-next 3/3] netfilter: nft_set_rbtree: do not modifiy
- live tree
-Message-ID: <202511191544.ss8W56uH-lkp@intel.com>
-References: <20251118111657.12003-4-fw@strlen.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kySyGc5cFg2tBeQ6dLQirqEBxn1kYk0ZzS9z8EkJd4yGyBu0mYz4Lz0yzyJRXXp7phKIfTkgKcEPgV3D8voSlKvMC0EvftBh3lAtY9jqr5hb30t4NPhxtEr1WN3pVCZZ2KzgdSE7XBZ/pTvUy1gxRyVhujMWEm10jMiznB8QZCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=G20E3eYc; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=v9CPM97iKxEvS2CDsRutHbIsnPNsTFEZTms/BaQlmtA=; b=G20E3eYcDbnrdzA2fx3HnxSnhx
+	jU+MSZzam/FX4tXhb/F6yxaGO8RWMvn/DusLlXcZjwP6UWcVFVE/1LYrilBtM2EUnI/p3aa9xVS1F
+	puJyHQA5XWPrCYkNWgsjdbh1sB9ShXaAIfwm3r6NKu73MrOezqVbJhHEfts+HpAIPZfD9dYle2YYj
+	nIbZsmxnHMkm9tXujhaCwOhKgw62DHu3zziv0HhlKrPp8J3p0viyl38AesrgMjGuaZzxzNUCBiZPJ
+	mVnOAHT0Gss4QWLCnk9wRra6ed8JQpx5ok4HQ93BouehNEOBgT6uL4NLx4RiglhumHZS0UcWkuWc5
+	MxjG1Irg==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1vLfeS-000000005bI-22Oe;
+	Wed, 19 Nov 2025 11:43:04 +0100
+Date: Wed, 19 Nov 2025 11:43:04 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Jeremy Sowden <jeremy@azazel.net>
+Cc: Florian Westphal <fw@strlen.de>,
+	Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH iptables] xshared: restore legal options for combined `-L
+ -Z` commands
+Message-ID: <aR2fON8ju2S7Ww7q@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Jeremy Sowden <jeremy@azazel.net>, Florian Westphal <fw@strlen.de>,
+	Netfilter Devel <netfilter-devel@vger.kernel.org>
+References: <20251114210109.1825562-1-jeremy@azazel.net>
+ <20251114213718.GB269079@celephais.dreamlands>
+ <aRhotOKf6VjOWX2f@strlen.de>
+ <20251115125435.GC269079@celephais.dreamlands>
+ <aRh7oi9SGQKCfhWP@strlen.de>
+ <20251115131551.GD269079@celephais.dreamlands>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -78,86 +72,75 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251118111657.12003-4-fw@strlen.de>
+In-Reply-To: <20251115131551.GD269079@celephais.dreamlands>
 
-Hi Florian,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On Sat, Nov 15, 2025 at 01:15:51PM +0000, Jeremy Sowden wrote:
+> On 2025-11-15, at 14:09:54 +0100, Florian Westphal wrote:
+> > Jeremy Sowden <jeremy@azazel.net> wrote:
+> > > On 2025-11-15, at 12:49:24 +0100, Florian Westphal wrote:
+> > > > Jeremy Sowden <jeremy@azazel.net> wrote:
+> > > > > On 2025-11-14, at 21:01:09 +0000, Jeremy Sowden wrote:
+> > > > > > Prior to commit 9c09d28102bb ("xshared: Simplify generic_opt_check()"), if
+> > > > > > multiple commands were given, options which were legal for any of the commands
+> > > > > > were considered legal for all of them.  This allowed one to do things like:
+> > > > >
+> > > > >	# iptables -n -L -Z chain
+> > > >
+> > > > Whats wrong with it?
+> > > >
+> > > > This failed before
+> > > > 192c3a6bc18f ("xshared: Accept an option if any given command allows it"), yes.
+> > > >
+> > > > Is it still broken?  If yes, what isn't working?
+> > >
+> > > The iptables man-page description of the `-L` command includes the
+> > > following:
+> > >
+> > > 	Please note that it is often used with the -n option, in order
+> > > 	to avoid long reverse DNS lookups.  It is legal to specify the
+> > > 	-Z (zero) option as well, in which case the chain(s) will be
+> > > 	atomically listed and zeroed.
+> > >
+> > > This works as expected in 1.8.10:
+> > >
+> > > 	$ schroot -r -c iptables-sid -u root -- /usr/local/sbin/iptables-nft --version
+> > > 	iptables v1.8.10 (nf_tables)
+> > > 	$ schroot -r -c iptables-sid -u root -- /usr/local/sbin/iptables-nft -n -L -Z INPUT
+> > > 	# Warning: iptables-legacy tables present, use iptables-legacy to see them
+> > > 	Chain INPUT (policy ACCEPT)
+> > > 	target     prot opt source               destination
+> > > 	LIBVIRT_INP  0    --  0.0.0.0/0            0.0.0.0/0
+> > >
+> > > However, it does not work in 1.8.11:
+> > >
+> > > 	$ schroot -r -c iptables-sid -u root -- /usr/local/sbin/iptables-nft -n -L -Z INPUT
+> > > 	iptables v1.8.11 (nf_tables): Illegal option `--numeric' with this command
+> > > 	Try `iptables -h' or 'iptables --help' for more information.
+> > 
+> > But this works in git :-/
+> > 
+> > So again, what exactly is broken? AFAICS everything works as expected:
+> > 
+> > iptables/xtables-nft-multi iptables -n -L -v -Z foo
+> > Chain foo (1 references)
+> >  pkts bytes target     prot opt in     out     source               destination
+> >     1    36            all  --  *      *       0.0.0.0/0            0.0.0.0/0
+> > Zeroing chain `foo'
+> > iptables/xtables-nft-multi iptables -n -L -v -Z foo
+> > Chain foo (1 references)
+> >  pkts bytes target     prot opt in     out     source               destination
+> >     0     0            all  --  *      *       0.0.0.0/0            0.0.0.0/0
+> > Zeroing chain `foo'
+> 
+> Damn it.  You're right.  Obviously, it's already been fixed.  Apologies.
+> Been rather unwell this week and clearly I'm still somewhat dim-witted.
 
-[auto build test WARNING on netfilter-nf/main]
-[also build test WARNING on linus/master v6.18-rc6 next-20251119]
-[cannot apply to nf-next/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Yes, it is fixed by commit 192c3a6bc18f2 ("xshared: Accept an option if
+any given command allows it"). Reminds me that we should release
+v1.8.12, v1.8.11 is already a year old. There are only 21 commits on top
+in HEAD, but I see six Fixes: tags in there.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Westphal/netfilter-nft_set_rbtree-prepare-for-two-rbtrees/20251118-191851
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git main
-patch link:    https://lore.kernel.org/r/20251118111657.12003-4-fw%40strlen.de
-patch subject: [PATCH nf-next 3/3] netfilter: nft_set_rbtree: do not modifiy live tree
-config: arm64-randconfig-r122-20251119 (https://download.01.org/0day-ci/archive/20251119/202511191544.ss8W56uH-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 0bba1e76581bad04e7d7f09f5115ae5e2989e0d9)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251119/202511191544.ss8W56uH-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511191544.ss8W56uH-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> net/netfilter/nft_set_rbtree.c:893:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   net/netfilter/nft_set_rbtree.c:893:9: sparse:    struct rb_node [noderef] __rcu *
-   net/netfilter/nft_set_rbtree.c:893:9: sparse:    struct rb_node *
-   net/netfilter/nft_set_rbtree.c: note: in included file (through include/linux/mm_types.h, include/linux/page-flags.h, arch/arm64/include/asm/mte.h, ...):
-   include/linux/rbtree.h:74:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   include/linux/rbtree.h:74:9: sparse:    struct rb_node [noderef] __rcu *
-   include/linux/rbtree.h:74:9: sparse:    struct rb_node *
-
-vim +893 net/netfilter/nft_set_rbtree.c
-
-   858	
-   859	static void nft_rbtree_commit(struct nft_set *set)
-   860	{
-   861		struct nft_rbtree *priv = nft_set_priv(set);
-   862		u8 genbit;
-   863	
-   864		if (time_after_eq(jiffies, priv->last_gc + nft_set_gc_interval(set)))
-   865			nft_rbtree_gc(set);
-   866	
-   867		priv->cloned = false;
-   868	
-   869		write_lock_bh(&priv->lock);
-   870		write_seqcount_begin(&priv->count);
-   871	
-   872		genbit = nft_rbtree_genbit_live(priv);
-   873		priv->genbit = !genbit;
-   874	
-   875		/* genbit is now the old generation. priv->cloned as been set to
-   876		 * false.  Future call to nft_rbtree_maybe_clone() will create a
-   877		 * new on-demand copy of the live version.
-   878		 *
-   879		 * Elements new in the committed transaction and all unchanged
-   880		 * elements are now visible to other CPUs.
-   881		 *
-   882		 * Removed elements are now only reachable via their
-   883		 * DELSETELEM transaction entry, they will be free'd after
-   884		 * rcu grace period.
-   885		 *
-   886		 * A cpu still doing a lookup in the old (genbit) tree will
-   887		 * either find a match, or, if it did not find a result, will
-   888		 * obseve the altered sequence count.
-   889		 *
-   890		 * In the latter case, it will spin on priv->lock and then performs
-   891		 * a new lookup in the current tree.
-   892		 */
- > 893		rcu_assign_pointer(priv->root[genbit].rb_node, NULL);
-   894	
-   895		write_seqcount_end(&priv->count);
-   896		write_unlock_bh(&priv->lock);
-   897	}
-   898	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers, Phil
 
