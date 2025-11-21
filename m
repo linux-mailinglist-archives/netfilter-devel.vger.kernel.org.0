@@ -1,172 +1,139 @@
-Return-Path: <netfilter-devel+bounces-9862-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9864-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A89C7800E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Nov 2025 09:54:10 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CBFAC78DF2
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Nov 2025 12:42:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 2223F289AF
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Nov 2025 08:54:09 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D2BD935CC80
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Nov 2025 11:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B99133CE89;
-	Fri, 21 Nov 2025 08:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0DE2F7460;
+	Fri, 21 Nov 2025 11:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zbx1jdKw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k4JAN0gh"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADD02FFF9D
-	for <netfilter-devel@vger.kernel.org>; Fri, 21 Nov 2025 08:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D75C2C21C0
+	for <netfilter-devel@vger.kernel.org>; Fri, 21 Nov 2025 11:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763715245; cv=none; b=jFWtmTc9nwmLhlLuc6cvG+1rUItzGTiyJkC+2VjMk/dhjHdfsxxMH1++eQ9CCf5aQYbxSc5k+QjLu8u8jcRtk4cngLGbSylMKvFK8JXfTjikQbbhwRXV1gE/TGFlcpAkkHL/u+Szaa/vlOvtjPGjigjKPeQyp1UqtkhIIwQwuKc=
+	t=1763725017; cv=none; b=XwwIn85NRyCKSC31IAnoa0caW5N7jHuZ6XMVpY8yx7G5FBmkTU8VMFAp1kovYA097vuWLZ+Ya6rVHGnCxeO/Aoa1jkaZ49lKXa7dslJ35DtlmGEDLuc5nvW/tmln4E+J3xRbi6D2J/Lh8XJ+9L1mqysbTqZKEaeQfVm7dd1QKr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763715245; c=relaxed/simple;
-	bh=5ONFbsYgwaxvG2oaqCIQcvL9nC4rsYPLT1nLoZ6TTT4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KG7bNjQk++PlIU1nuFmqomjjrfma83AfnQdKj/13Z7QDQjU09GSJc6aBvYAmBmRs1ERFX+2paip1UAq7LdstCeuji1Jj587XigRyM/5ZrfscglkM4IqmFbNqVIx8rJnXYqqr0GzuJ6YDVC4ZQEau7cUq1qlKS2GgpYDzqz0bCnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zbx1jdKw; arc=none smtp.client-ip=209.85.214.196
+	s=arc-20240116; t=1763725017; c=relaxed/simple;
+	bh=2YhHun6h5TPZJPb5erjEIpsM643I39VH2RfBhKTc8MM=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
+	 MIME-Version:Content-Type; b=hg8IhjXyAy+cDhPuCLP7wcmRTwTG6cNHfGzPa7qcmeVgL5EFXWAfanqS3JUmfOStXvD2plPWKZx8k4nFwi11of8Nijay/7WnUtabfFAS9bKm/53/PCZ2iq6MC9m4HYLsb8FBZmDi95FyaBf0BIyI7rm80WTqy2b8/BYUXglqGmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k4JAN0gh; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-2955623e6faso21813995ad.1
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Nov 2025 00:54:02 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so16776615e9.1
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Nov 2025 03:36:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763715242; x=1764320042; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/YTlngMcqbvauGZMeP16vkAvJ48G9EBdsHd/OECzaso=;
-        b=Zbx1jdKwIcRoCdE0lCiPAlzIxMwtVnqGA1uuPrjedx2+/x7ndIQu86pRiosD9kOvxE
-         +dq6VGNfahgvlJy9im/oeQnO04JQaJQA22nSfqlBW3EM8N4MBqlhtqv4LueaqR4aeazO
-         MtxUqbUqNY6bVsWHBeDK1k6uVC4ptlvxt6kn7PDGKfOYpoonec7kvN3+6SRaJ8t9uJFQ
-         S+vm3y5DnqoJHijA1osQrl0/KI5oVY/o2XR6rDiIZ1E3eRWyyhy0PIlderEbD4JuEuod
-         uoBV9i30RJDhmxc7+5hu/Dj6kXQqHO9G3Fpni6G1Bv3V0Vr2v5KvYUETlC9bG22LRBD5
-         ghfw==
+        d=gmail.com; s=20230601; t=1763725011; x=1764329811; darn=vger.kernel.org;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEL/unmTGTd7Hwoq2i5Bt8Vk37qtmt2aavwNGtQcKk0=;
+        b=k4JAN0ghN2HrJsm0n6OWj+TlyMhsOFDfy4duBR/1590P99RDYuI90jKderNxb07X+S
+         NNpfFhmyWebzua69RfKluGPM2d62pNRBMYWGRk+OUlGVjNX34HIvNULWLlF4YiVQQP13
+         0G7KnZfAW6AzANET9uZupmG3f9MePAJVUjrjprjyjmlx8hGQZ2D6ce14KjleSbbyOOjR
+         al5I/2oQNbgaP8Oj5wz5aBqVbr0F8WKlQ91FSZxSlcwD6S+Bla+89kuwMQF2PuMDfljX
+         mVSvk46GFCGUPY2sYID/kuCMmCiNwykILFY0ZvOO9RY9evgG3i5khmT9cpcI9d7liW09
+         hwMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763715242; x=1764320042;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/YTlngMcqbvauGZMeP16vkAvJ48G9EBdsHd/OECzaso=;
-        b=ilmRDQDFwSsS/MWcr4Kz6eUFZPTIzZm6ou5flt3GIKiDB2MTpDN2Myy416s62aDM+5
-         NDc4TesBRfz6ETnMLMJunFDQe+HwV88YjNKBHUFp1F8U43zh+jtix8X5a2bUpaQLkFWn
-         F6I81IYC2RoC1bM2YGuuHusYiDKz0ITNvTspW/IoTBP4aLpetBYhViiGlG8zZqQAOFPl
-         0Gk8MBXYQCXqtm1ZDI0lgLvAFZdee0HFR2lFteW6QQ7cYnhREOpzV1DV/opy02DR287W
-         P9+AD4UsxvqUnU3J1gyQRAe+4/xUMAg+DglDF73IBp9T4xfkaw3BFWqcVKPTtW+F1HZD
-         y+HA==
-X-Forwarded-Encrypted: i=1; AJvYcCX4o002h39IZUsHKRycGWoMwoJoqw1q+o2Dj9ZqJ7J5yb0RwPvBKkD65P0at14MCZJiTR6qt9YIVbafTYpRezc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTnnpvImppgnsSR82Xdb7/5b7nuCNIm6BPiivwGY9cq0hqmPVA
-	/N9KsZksuegvxZaT3O3qSZECApENNAFBew+Cq/bZlQsDiD8AdrAKznwL
-X-Gm-Gg: ASbGncujOR7pGUsFlV9MkpC/6hkvGfiwMnMBGwH85oJgx/fLmRL80wQjPV4KQaKG6mU
-	Sjc8zEZobTmZkU3obDMZbWxB1tch6IXu0YkD0a5VzPgbmzyG7XEoGmV1/JrIysUK9qrXVC1tfUk
-	gEkBNHdgbbXY3Uzzxo+KbdRzwgRJhitfSdOCgtkO349QvZCT7DUpHyAn5bQZ70psOfg9J04ZzcW
-	iq3GnDTN3r6MANqrzIsNAMU9OqvYDxPW24vkc6BkXPbHMTaOuJkLs4vyT6CtiPXdUzN5qI5d9zd
-	kBoQMaoT+tpat/39rdb/3dr4DkGKCvPOCKOB3Q5J5RfghxYVapr4D0KG+jhNdfkohEA5AYq+dZY
-	D+PlbX1rP0HVzAIM92LzfW6Ccstj8E80IEAG/MJL3CQXNrEK3VqbMjG5diwt9jlbe2h6VfR0XNQ
-	slxDwi44Rp3KqvSGaVX+Pr6pKzWC9wAMxzvKdL90K82g==
-X-Google-Smtp-Source: AGHT+IHuu7fePZOfFm1BwV5Mds9oUo/keOxc859jpBRxZdakp53XXkD9VJ9ewpv9IfRTXvYaNE2Pnw==
-X-Received: by 2002:a17:903:98f:b0:298:b4f1:37eb with SMTP id d9443c01a7336-29b6be9364fmr21213895ad.10.1763715242052;
-        Fri, 21 Nov 2025 00:54:02 -0800 (PST)
-Received: from LAPTOP-PN4ROLEJ.localdomain ([221.228.238.82])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29b5b274d39sm49938125ad.77.2025.11.21.00.53.53
+        d=1e100.net; s=20230601; t=1763725011; x=1764329811;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fEL/unmTGTd7Hwoq2i5Bt8Vk37qtmt2aavwNGtQcKk0=;
+        b=dRs10X6YOtXbDt0672205ia+c0pxU3vL1DOz+617tmZn5SbApQGHJfKLpbM9k3hqT8
+         I4WDw6GaECZjnT0rZyD6hHBM7oKu/ugEZaA6JFp1JBxINKVDFR5GwP+dIN9gVeqWxk8B
+         StmoVUIdtDSVNAVcLNvLd1UMeLAc1w92Z6lV39LsNmwTD+w4apyfzNn7GyhJHWiSw+s8
+         CfiAqbixgDw4KS6KlAemf7omw+UNF05i0nx2nRAts2rJzREftxY0Dj09h5b9KnnhRFVr
+         a4qp72jODYWzxv2xci4uUjmsgx4kdZ8e6CtU63itrzbdG/Ubx5k1lAp+/m42tgk6RnUf
+         5vwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWbx3993KppxsdrEDBVzUBv1b9lqp59dyZ48yna92E9kLe4VI17bg15BYt0vfm+dEJ0VeuQxqXryUlh86m6KxA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywy5BMqxtjdGGgTuBD07mItoEmoQ/JzcnzLk0PZAeyE//Y4O+7N
+	bphDvedlUvYuN6JZ/bZMzlsKxPQ3Irxx5afcwU/J/YlwrpmCV8y6b5WO
+X-Gm-Gg: ASbGncv7RTTPSqJtxNwXPMM79WV4jX7JagFhyCqvmfgCgbFPsI0CDM7SBsL2X1AABMU
+	nhhHF1+qQD2a/EMBa1Nt3jFDo0rE/SwKKm7zyA7cK4SbkQeKRH/91GjYKDME78or2ohgdQkzkAV
+	ORsHbpFiY+hGgi/xheiZCGedp/lb6XppO96Yej4GbIrr/1e3e0dfGMucxJbp86acV/OzF9sMFae
+	nvMlwn6/VNCm+tvLRgvNmoOyIgCB0WMMXjvitw3fjOXrTjXCges5nrbtaUwdlOJ1riLSXvkfLml
+	mZc+7VJRZTen6MZKc/GJ6gMBt/mn08SNrL/T+/K8E+fLCpwlMMT728ZjeOEMC/SZ0/cZ8aHvvCq
+	yUZTg9FvXgcstWy91mhX+NoK1xl0P8d0h57mEEZZvrxIMfbGejOHqLFhvDVFfqlwoz6udWa8VLR
+	KbSRq/Q0pmiRHupeDgtv6E+3s=
+X-Google-Smtp-Source: AGHT+IHiWl/LbQdLCaHamlI44jxsdkR7SpMvvFRZBQA37tgZFbQIG2lm/npPeeMv7MO4497KZLWILA==
+X-Received: by 2002:a05:600c:1c0d:b0:471:14b1:da13 with SMTP id 5b1f17b1804b1-477c018a12cmr23820885e9.14.1763725011008;
+        Fri, 21 Nov 2025 03:36:51 -0800 (PST)
+Received: from imac ([2a02:8010:60a0:0:f819:b939:9ed6:5114])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477bf1f3e63sm39654205e9.7.2025.11.21.03.36.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 00:54:01 -0800 (PST)
-From: Slavin Liu <slavin452@gmail.com>
-To: horms@verge.net.au,
-	ja@ssi.bg
-Cc: pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de,
-	phil@nwl.cc,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	lvs-devel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org
-Subject: [PATCH net v2] ipvs: fix ipv4 null-ptr-deref in route error path
-Date: Fri, 21 Nov 2025 16:52:13 +0800
-Message-Id: <20251121085213.1660-1-slavin452@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251120190313.1051-1-slavin452@gmail.com>
-References: <20251120190313.1051-1-slavin452@gmail.com>
+        Fri, 21 Nov 2025 03:36:50 -0800 (PST)
+From: Donald Hunter <donald.hunter@gmail.com>
+To: "Remy D. Farley" <one-d-wide@protonmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,  netdev@vger.kernel.org,  Pablo Neira
+ Ayuso <pablo@netfilter.org>,  Jozsef Kadlecsik <kadlec@netfilter.org>,
+  Florian Westphal <fw@strlen.de>,  Phil Sutter <phil@nwl.cc>,
+  netfilter-devel@vger.kernel.org,  coreteam@netfilter.org
+Subject: Re: [PATCH v5 1/6] doc/netlink: netlink-raw: Add max check
+In-Reply-To: <20251120151754.1111675-2-one-d-wide@protonmail.com>
+Date: Fri, 21 Nov 2025 10:03:37 +0000
+Message-ID: <m2wm3j4s92.fsf@gmail.com>
+References: <20251120151754.1111675-1-one-d-wide@protonmail.com>
+	<20251120151754.1111675-2-one-d-wide@protonmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-The IPv4 code path in __ip_vs_get_out_rt() calls dst_link_failure()
-without ensuring skb->dev is set, leading to a NULL pointer dereference
-in fib_compute_spec_dst() when ipv4_link_failure() attempts to send
-ICMP destination unreachable messages.
+"Remy D. Farley" <one-d-wide@protonmail.com> writes:
 
-The issue emerged after commit ed0de45a1008 ("ipv4: recompile ip options
-in ipv4_link_failure") started calling __ip_options_compile() from
-ipv4_link_failure(). This code path eventually calls fib_compute_spec_dst()
-which dereferences skb->dev. An attempt was made to fix the NULL skb->dev
-dereference in commit 0113d9c9d1cc ("ipv4: fix null-deref in
-ipv4_link_failure"), but it only addressed the immediate dev_net(skb->dev)
-dereference by using a fallback device. The fix was incomplete because
-fib_compute_spec_dst() later in the call chain still accesses skb->dev
-directly, which remains NULL when IPVS calls dst_link_failure().
+> Suggested-by: Donald Hunter <donald.hunter@gmail.com>
+> Signed-off-by: Remy D. Farley <one-d-wide@protonmail.com>
 
-The crash occurs when:
-1. IPVS processes a packet in NAT mode with a misconfigured destination
-2. Route lookup fails in __ip_vs_get_out_rt() before establishing a route
-3. The error path calls dst_link_failure(skb) with skb->dev == NULL
-4. ipv4_link_failure() → ipv4_send_dest_unreach() →
-   __ip_options_compile() → fib_compute_spec_dst()
-5. fib_compute_spec_dst() dereferences NULL skb->dev
+Missing description, therwise, LGTM.
 
-Apply the same fix used for IPv6 in commit 326bf17ea5d4 ("ipvs: fix
-ipv6 route unreach panic"): set skb->dev from skb_dst(skb)->dev before
-calling dst_link_failure().
+Reviewed-by: Donald Hunter <donald.hunter@gmail.com>
 
-KASAN: null-ptr-deref in range [0x0000000000000328-0x000000000000032f]
-CPU: 1 PID: 12732 Comm: syz.1.3469 Not tainted 6.6.114 #2
-RIP: 0010:__in_dev_get_rcu include/linux/inetdevice.h:233
-RIP: 0010:fib_compute_spec_dst+0x17a/0x9f0 net/ipv4/fib_frontend.c:285
-Call Trace:
-  <TASK>
-  spec_dst_fill net/ipv4/ip_options.c:232
-  spec_dst_fill net/ipv4/ip_options.c:229
-  __ip_options_compile+0x13a1/0x17d0 net/ipv4/ip_options.c:330
-  ipv4_send_dest_unreach net/ipv4/route.c:1252
-  ipv4_link_failure+0x702/0xb80 net/ipv4/route.c:1265
-  dst_link_failure include/net/dst.h:437
-  __ip_vs_get_out_rt+0x15fd/0x19e0 net/netfilter/ipvs/ip_vs_xmit.c:412
-  ip_vs_nat_xmit+0x1d8/0xc80 net/netfilter/ipvs/ip_vs_xmit.c:764
-
-Fixes: ed0de45a1008 ("ipv4: recompile ip options in ipv4_link_failure")
-Signed-off-by: Slavin Liu <slavin452@gmail.com>
----
- net/netfilter/ipvs/ip_vs_xmit.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/netfilter/ipvs/ip_vs_xmit.c b/net/netfilter/ipvs/ip_vs_xmit.c
-index 95af252b2939..618fbe1240b5 100644
---- a/net/netfilter/ipvs/ip_vs_xmit.c
-+++ b/net/netfilter/ipvs/ip_vs_xmit.c
-@@ -409,6 +409,9 @@ __ip_vs_get_out_rt(struct netns_ipvs *ipvs, int skb_af, struct sk_buff *skb,
- 	return -1;
- 
- err_unreach:
-+	if (!skb->dev)
-+		skb->dev = skb_dst(skb)->dev;
-+
- 	dst_link_failure(skb);
- 	return -1;
- }
--- 
-2.43.0
-
+> ---
+>  Documentation/netlink/netlink-raw.yaml | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/netlink/netlink-raw.yaml b/Documentation/netlink/netlink-raw.yaml
+> index 0166a7e4a..dd98dda55 100644
+> --- a/Documentation/netlink/netlink-raw.yaml
+> +++ b/Documentation/netlink/netlink-raw.yaml
+> @@ -19,6 +19,12 @@ $defs:
+>      type: [ string, integer ]
+>      pattern: ^[0-9A-Za-z_-]+( - 1)?$
+>      minimum: 0
+> +  len-or-limit:
+> +    # literal int, const name, or limit based on fixed-width type
+> +    # e.g. u8-min, u16-max, etc.
+> +    type: [ string, integer ]
+> +    pattern: ^[0-9A-Za-z_-]+$
+> +    minimum: 0
+>  
+>  # Schema for specs
+>  title: Protocol
+> @@ -270,7 +276,10 @@ properties:
+>                      type: string
+>                    min:
+>                      description: Min value for an integer attribute.
+> -                    type: integer
+> +                    $ref: '#/$defs/len-or-limit'
+> +                  max:
+> +                    description: Max value for an integer attribute.
+> +                    $ref: '#/$defs/len-or-limit'
+>                    min-len:
+>                      description: Min length for a binary attribute.
+>                      $ref: '#/$defs/len-or-define'
 
