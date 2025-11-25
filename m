@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-9903-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9905-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33C14C87578
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Nov 2025 23:35:56 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B782C8757B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Nov 2025 23:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4BB0F4EBC62
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Nov 2025 22:34:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A49B14EBD15
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Nov 2025 22:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71EDA33EB0B;
-	Tue, 25 Nov 2025 22:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B47533F387;
+	Tue, 25 Nov 2025 22:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="tejFw/Rr"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="BZWPKgCf"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE5233E375;
-	Tue, 25 Nov 2025 22:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B96133AD8B;
+	Tue, 25 Nov 2025 22:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764110015; cv=none; b=J775W+lkyykdUF9M5koEhoHzFbVt2zfoqQVQ9eO2hD/ZRM/x1VjXPrfvTu93i2MQrsZnOE/tdgZcq0Uep5iqidQ+PetHbqQZEmJaoTDDIG1MkbxYEW/qv1eD1yczS5P3M6CD06+tF1fq76aZTtA3GtL90j39GQ18iL21UxQostk=
+	t=1764110016; cv=none; b=X64QNzm2TV6tW50TDIHbIOUYTaZSzR80I9PVgl31mLHHir3paYEzUImqr2n30EosfdM10FrxJCNZYxqICy5PvaJ3UpNqYSCf7FrqHdwrPwrJHw+U0be4vqI5Wxjjk7Bj/JKX5CUhA3O0g6JC9fN7J17CiP4DXcJINp+njRGRLm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764110015; c=relaxed/simple;
-	bh=f/nMSGVhSBcLymDcXcjvi1f462+7vd41OW093xRtZHQ=;
+	s=arc-20240116; t=1764110016; c=relaxed/simple;
+	bh=KPOQ2bYFxIG9+WByVpISt0rOpPa2CfcFOUAPdpYjvW0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TS7gMnV1yYWbvwBJMJI/aPbj79IidGQY7IUUPzv03BGrbtXLZtcI1uoFRXN55/U9JfJ7RjUeo0ycH75zQuFZFbI5mISqugKyExf7OoQng6tjF/87IHyiGT/ErfcQjzdoJ8OIhlAU4PEAt5yIo69RENYARoYFK9kBqMwqx63s5fA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=tejFw/Rr; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=D9liWuwOyd8k8lE8rDkF5NJfM5EdvgwLiUGogBN2xfYsfR3SiODN/WSmNQqacryuY0U3VbHlAd8JJnH3qYfnqCbpzDEYBA7Kjvvc2o9frnMZhHWChihtD9h8qXbv/feWsaJecM77joBMgFjDefj7fpSwDR3HQBvHuwFqKR+cIMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=BZWPKgCf; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id D5A71602B7;
-	Tue, 25 Nov 2025 23:33:31 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 9D13E602B8;
+	Tue, 25 Nov 2025 23:33:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1764110012;
-	bh=6Jw105fFdZGS8KrL0oHbpuY31pVaj/wCwqCP6OkZadU=;
+	s=2025; t=1764110013;
+	bh=xE/17Ed/y4QX1/OVT+xBsj7wnIaJPgm1Pdomy8d+388=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tejFw/Rr79wbgiwJbJJXpuDxcc9CCuMQV9bMH7Pulwiv6ymXa36AANG49Ra9Z23z1
-	 iBZLrCI8mEfrHT5s/KQfD/02rrBsCu/whAnYkHoDWIFOLQY4eLicAhf911eAcMBcI4
-	 lZACihhjrP3QzxQy6jufu/tdopypbuHqIO8uTE+uFqpUwtMXJR6gnm8rxtIDUktwbl
-	 osZPAnVEBJ7sCQr1gOzbtS/Vlc8aZqInuYA10+pm4gyC3wiyeH9QvKZMX9XGoWqXE+
-	 I2UpC2umMCskLviAkIC5wbLu29nBVwasIoBrnF5w28LUme6bqR6FQgLXHOSniPO9Uj
-	 YMISnPEccwbmQ==
+	b=BZWPKgCfZCdqB0kD21ltrcnzrN8iBSfSSW9eUwpXqvMTpvyti/stYQyUrNjzykBLj
+	 1h8xmhcxK6fp5Yym0s0xdduOQcKPL3vT0IYy4U3koiLDj/PrjoXfWjbHHgdLGcs8ki
+	 e1ZNKpKzg+8mZb71zebcwN1x0QHn9i0D+qve/q3334B+sH6VHkQmM0jtbc86Jj0Qqc
+	 noJKKYcwxlVhMLxaYD/x6ZHp546W89xJmjV2phs2vP217M0gdLbxhooHlbjLZwtuBL
+	 MAq/wazd98BaW61iETjLdwpDbb+TWvrCrYqm+KuK42FgXdulnfaOzL5LzxT1guRL2K
+	 5DtBf8+tJh/JQ==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -53,9 +53,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 11/16] netfilter: nf_conncount: make nf_conncount_gc_list() to disable BH
-Date: Tue, 25 Nov 2025 22:33:07 +0000
-Message-ID: <20251125223312.1246891-12-pablo@netfilter.org>
+Subject: [PATCH net-next 12/16] netfilter: nft_connlimit: update the count if add was skipped
+Date: Tue, 25 Nov 2025 22:33:08 +0000
+Message-ID: <20251125223312.1246891-13-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251125223312.1246891-1-pablo@netfilter.org>
 References: <20251125223312.1246891-1-pablo@netfilter.org>
@@ -69,85 +69,98 @@ Content-Transfer-Encoding: 8bit
 
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 
-For convenience when performing GC over the connection list, make
-nf_conncount_gc_list() to disable BH. This unifies the behavior with
-nf_conncount_add() and nf_conncount_count().
+Connlimit expression can be used for all kind of packets and not only
+for packets with connection state new. See this ruleset as example:
 
+table ip filter {
+        chain input {
+                type filter hook input priority filter; policy accept;
+                tcp dport 22 ct count over 4 counter
+        }
+}
+
+Currently, if the connection count goes over the limit the counter will
+count the packets. When a connection is closed, the connection count
+won't decrement as it should because it is only updated for new
+connections due to an optimization on __nf_conncount_add() that prevents
+updating the list if the connection is duplicated.
+
+To solve this problem, check whether the connection was skipped and if
+so, update the list. Adjust count_tree() too so the same fix is applied
+for xt_connlimit.
+
+Fixes: 976afca1ceba ("netfilter: nf_conncount: Early exit in nf_conncount_lookup() and cleanup")
+Closes: https://lore.kernel.org/netfilter/trinity-85c72a88-d762-46c3-be97-36f10e5d9796-1761173693813@3c-app-mailcom-bs12/
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conncount.c  | 24 +++++++++++++++++-------
- net/netfilter/nft_connlimit.c |  7 +------
- 2 files changed, 18 insertions(+), 13 deletions(-)
+ net/netfilter/nf_conncount.c  | 12 ++++++++----
+ net/netfilter/nft_connlimit.c | 13 +++++++++++--
+ 2 files changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
-index dbaa3051577c..eabce7e141f8 100644
+index eabce7e141f8..81915ef99a83 100644
 --- a/net/netfilter/nf_conncount.c
 +++ b/net/netfilter/nf_conncount.c
-@@ -278,8 +278,8 @@ void nf_conncount_list_init(struct nf_conncount_list *list)
- EXPORT_SYMBOL_GPL(nf_conncount_list_init);
+@@ -179,7 +179,7 @@ static int __nf_conncount_add(struct net *net,
+ 	if (ct && nf_ct_is_confirmed(ct)) {
+ 		if (refcounted)
+ 			nf_ct_put(ct);
+-		return 0;
++		return -EEXIST;
+ 	}
  
- /* Return true if the list is empty. Must be called with BH disabled. */
--bool nf_conncount_gc_list(struct net *net,
--			  struct nf_conncount_list *list)
-+static bool __nf_conncount_gc_list(struct net *net,
-+				   struct nf_conncount_list *list)
- {
- 	const struct nf_conntrack_tuple_hash *found;
- 	struct nf_conncount_tuple *conn, *conn_n;
-@@ -291,10 +291,6 @@ bool nf_conncount_gc_list(struct net *net,
- 	if ((u32)jiffies == READ_ONCE(list->last_gc))
- 		return false;
+ 	if ((u32)jiffies == list->last_gc)
+@@ -408,7 +408,7 @@ insert_tree(struct net *net,
+ 			int ret;
  
--	/* don't bother if other cpu is already doing GC */
--	if (!spin_trylock(&list->list_lock))
--		return false;
--
- 	list_for_each_entry_safe(conn, conn_n, &list->head, node) {
- 		found = find_or_evict(net, list, conn);
- 		if (IS_ERR(found)) {
-@@ -323,7 +319,21 @@ bool nf_conncount_gc_list(struct net *net,
- 	if (!list->count)
- 		ret = true;
- 	list->last_gc = (u32)jiffies;
--	spin_unlock(&list->list_lock);
-+
-+	return ret;
-+}
-+
-+bool nf_conncount_gc_list(struct net *net,
-+			  struct nf_conncount_list *list)
-+{
-+	bool ret;
-+
-+	/* don't bother if other cpu is already doing GC */
-+	if (!spin_trylock_bh(&list->list_lock))
-+		return false;
-+
-+	ret = __nf_conncount_gc_list(net, list);
-+	spin_unlock_bh(&list->list_lock);
+ 			ret = nf_conncount_add_skb(net, skb, l3num, &rbconn->list);
+-			if (ret)
++			if (ret && ret != -EEXIST)
+ 				count = 0; /* hotdrop */
+ 			else
+ 				count = rbconn->list.count;
+@@ -511,10 +511,14 @@ count_tree(struct net *net,
+ 			/* same source network -> be counted! */
+ 			ret = __nf_conncount_add(net, skb, l3num, &rbconn->list);
+ 			spin_unlock_bh(&rbconn->list.list_lock);
+-			if (ret)
++			if (ret && ret != -EEXIST) {
+ 				return 0; /* hotdrop */
+-			else
++			} else {
++				/* -EEXIST means add was skipped, update the list */
++				if (ret == -EEXIST)
++					nf_conncount_gc_list(net, &rbconn->list);
+ 				return rbconn->list.count;
++			}
+ 		}
+ 	}
  
- 	return ret;
- }
 diff --git a/net/netfilter/nft_connlimit.c b/net/netfilter/nft_connlimit.c
-index 5df7134131d2..41770bde39d3 100644
+index 41770bde39d3..714a59485935 100644
 --- a/net/netfilter/nft_connlimit.c
 +++ b/net/netfilter/nft_connlimit.c
-@@ -223,13 +223,8 @@ static void nft_connlimit_destroy_clone(const struct nft_ctx *ctx,
- static bool nft_connlimit_gc(struct net *net, const struct nft_expr *expr)
- {
- 	struct nft_connlimit *priv = nft_expr_priv(expr);
--	bool ret;
+@@ -29,8 +29,17 @@ static inline void nft_connlimit_do_eval(struct nft_connlimit *priv,
  
--	local_bh_disable();
--	ret = nf_conncount_gc_list(net, priv->list);
--	local_bh_enable();
--
--	return ret;
-+	return nf_conncount_gc_list(net, priv->list);
- }
+ 	err = nf_conncount_add_skb(nft_net(pkt), pkt->skb, nft_pf(pkt), priv->list);
+ 	if (err) {
+-		regs->verdict.code = NF_DROP;
+-		return;
++		if (err == -EEXIST) {
++			/* Call gc to update the list count if any connection has
++			 * been closed already. This is useful for softlimit
++			 * connections like limiting bandwidth based on a number
++			 * of open connections.
++			 */
++			nf_conncount_gc_list(nft_net(pkt), priv->list);
++		} else {
++			regs->verdict.code = NF_DROP;
++			return;
++		}
+ 	}
  
- static struct nft_expr_type nft_connlimit_type;
+ 	count = READ_ONCE(priv->list->count);
 -- 
 2.47.3
 
