@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-9918-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9915-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D01DC8A929
-	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Nov 2025 16:15:14 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC8FC8A90E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Nov 2025 16:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D071E353247
-	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Nov 2025 15:14:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 053524E0EE6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Nov 2025 15:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBED130B52C;
-	Wed, 26 Nov 2025 15:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70FC30FC16;
+	Wed, 26 Nov 2025 15:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="pD8kBiiU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="JPdQ9F6D"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821B830F55B
-	for <netfilter-devel@vger.kernel.org>; Wed, 26 Nov 2025 15:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7C530F942
+	for <netfilter-devel@vger.kernel.org>; Wed, 26 Nov 2025 15:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764170047; cv=none; b=D5Rlw5FJHeObgnl/TrSQbmc4iY1JdQJDmOcfVCD1Pm92PFAiqkY8pBIvtW3tJDbrCj062My8p+VdBxDdiLC1hffXfysZoJVxcRlCEvyGyRSdHrWV3e9tvDORKWa047MRog7DNecSehT2CXPTlia+GZug8ljreioKeZzb1aBiYnQ=
+	t=1764170045; cv=none; b=BSBKQ41cmHQ6g+PB2WyzPsJZKlvKCN1bWoNNq9qHEjZpJs4sPafV7XU2nm6fLu4OcabXDSGj9LXsQAlReB1evQYFuO39dtqs3RQz6xJlTVSt/OHubk1mi4b8jXc8FjUmmPr2qd1IPdlcltq84TubkDZXu+d4GM64bPXTFed1OgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764170047; c=relaxed/simple;
-	bh=Iv9cBfSpg4sU8vmsKuC3WfxemlBfgcmD1HTZHPUgzGk=;
+	s=arc-20240116; t=1764170045; c=relaxed/simple;
+	bh=dfrsr+45zbyRt+BCF3fwNuM22S4dZZQnn2SgIT887vc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UNegS5MonSxeixcqHKjqMd3n/pcLZJb7riNS6Ajx2lvWKm+fD5CXauMja60/9vl7TMuISkUlqpPTxjJElozee8aH6C/Pfpg+WAiD7e7ZshugbMaUJCfNPJNPGkRob8OSfcCYNXVPSIDc+DfezU2IE2QOVuoj33tJmF9MLEfHxok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=pD8kBiiU; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=mnVUGLm2li999CfB6GXCDFas4d25Cx8/8+it2szMfgCifvUEfWYMh2oA9qmYfB5HYljoguk1YJnChSjK+SMdYvAJRAYM17LCUQ82cqCwC0JZTSR5J7S69gEXYjYFTyZ6HBfOqQx7EYmBqPGPXV5ZToqf18K2U1DwnW975mBU6RA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=JPdQ9F6D; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -37,26 +37,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=TYiUk9OeUqMfYbjvySdfkOes5or80AWF3f6246/l10s=; b=pD8kBiiUUSza2Lw0sssNPMiUf0
-	Y8lyq/kniAGvn1TzB715FbLc//7jOIEvMZ5268Y5PCs1Ill0UU+RUeEG7lGp4zcLWlyd7ticUtWIT
-	u2e0CPfmB5X51ZXyvB44vip8ituDlyT/WNip8G7yihSYX3mn6p32u4qjY6/5BIJU5+Jum16qnuDaB
-	LPBcbq3Yz3VbK2jEITcihv8dxTq6dm/vFa3RjFviT3kCyxNOgMzjQwOyM1qpdGhPACruNYZplfBrZ
-	+3Qdp2141i1AP4MIVROd6ZwRzSsEALymrB84jY1bMSBI36iVoVfiDOPe4Ik8zs1b5bltDqO61j+aC
-	YI2Rk6Dg==;
+	bh=MsKBwnCnMhm1Px3rqmMDTQTsHuxBGHCyk1q/arYe0cw=; b=JPdQ9F6D60qubeOfGfU0r7i9mN
+	Vq1xdNoRGgR6nwKEZa3wbHAsS3sSnb6CniWGxleVfyuQjiJaFThyn/MqlZk8jfSppEbRPM6Epwinu
+	NszHilVq5a5QOxSKP+ivpNaeUr6/xqKHefwWXdPmfiUaKfG5xQOh9mEQe43E5MUN0DsozNSaxqKlO
+	Vcq5WWM3s8ByTEXagWNko7iQ3CMuvWgKZGDfhwHuz7t/CNwiWXYh0U9c3Ze1cNitnyFTJHCBIjOo6
+	+J1vViCKhVa+oLBBJWjMsw/UA4jJHskfrXOnNdbm/ndXf8uoPRTx+XRXtsmB2wCmWW1i1FkPqDMA/
+	AXJr1fVA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vOHDN-000000001AT-3rkA;
-	Wed, 26 Nov 2025 16:13:54 +0100
+	id 1vOHDN-000000001AN-0vPz;
+	Wed, 26 Nov 2025 16:13:53 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Florian Westphal <fw@strlen.de>,
 	netfilter-devel@vger.kernel.org
-Subject: [nft PATCH RFC 5/6] parser_bison: Introduce bytes_unit
-Date: Wed, 26 Nov 2025 16:13:45 +0100
-Message-ID: <20251126151346.1132-6-phil@nwl.cc>
+Subject: [nft PATCH RFC 6/6] scanner: Introduce SCANSTATE_RATE
+Date: Wed, 26 Nov 2025 16:13:46 +0100
+Message-ID: <20251126151346.1132-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251126151346.1132-1-phil@nwl.cc>
 References: <20251126151346.1132-1-phil@nwl.cc>
@@ -68,214 +68,470 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce scoped tokens for "kbytes" and "mbytes", completing already
-existing "bytes" one. Then generalize the unit for byte values and
-replace both quota_unit and limit_bytes by a combination of NUM and
-bytes_unit.
+This is a first exclusive start condition, i.e. one which rejects
+unscoped tokens. When tokenizing, flex all too easily falls back into
+treating something as STRING when it could be split into tokens instead.
+Via an exclusive start condition, the string-fallback can be disabled as
+needed.
 
-With this in place, data_unit_parse() is not called outside of
-datatype.c, so make it static.
+With rates in typical formatting <NUM><bytes-unit>/<time-unit>,
+tokenizer result depended on whitespace placement. SCANSTATE_RATE forces
+flex to split the string into tokens and fall back to JUNK upon failure.
+For this to work, tokens which shall still be recognized must be enabled
+in SCANSTATE_RATE (or all scopes denoted by '*'). This includes any
+tokens possibly following SCANSTATE_RATE to please the parser's
+lookahead behaviour.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/datatype.h |  3 --
- src/datatype.c     |  4 +--
- src/parser_bison.y | 75 +++++++++++-----------------------------------
- src/scanner.l      |  2 ++
- 4 files changed, 22 insertions(+), 62 deletions(-)
+ include/datatype.h           |  4 ---
+ include/parser.h             |  1 +
+ src/datatype.c               | 61 -------------------------------
+ src/parser_bison.y           | 23 +++---------
+ src/scanner.l                | 55 ++++++++++++++--------------
+ tests/py/any/limit.t         |  6 ++++
+ tests/py/any/limit.t.json    | 70 ++++++++++++++++++++++++++++++++++++
+ tests/py/any/limit.t.payload | 20 +++++++++++
+ 8 files changed, 130 insertions(+), 110 deletions(-)
 
 diff --git a/include/datatype.h b/include/datatype.h
-index 4fb47f158fc2f..63dba330137a0 100644
+index 63dba330137a0..4c5d6ff8d9002 100644
 --- a/include/datatype.h
 +++ b/include/datatype.h
-@@ -313,9 +313,6 @@ extern struct error_record *rate_parse(const struct location *loc,
- 				       const char *str, uint64_t *rate,
- 				       uint64_t *unit);
+@@ -309,10 +309,6 @@ extern void time_print(uint64_t msec, struct output_ctx *octx);
+ extern struct error_record *time_parse(const struct location *loc,
+ 				       const char *c, uint64_t *res);
  
--extern struct error_record *data_unit_parse(const struct location *loc,
--					    const char *str, uint64_t *rate);
+-extern struct error_record *rate_parse(const struct location *loc,
+-				       const char *str, uint64_t *rate,
+-				       uint64_t *unit);
 -
  struct limit_rate {
  	uint64_t rate, unit;
  };
+diff --git a/include/parser.h b/include/parser.h
+index 8cfd22e9e6c42..889302baf5950 100644
+--- a/include/parser.h
++++ b/include/parser.h
+@@ -47,6 +47,7 @@ enum startcond_type {
+ 	PARSER_SC_META,
+ 	PARSER_SC_POLICY,
+ 	PARSER_SC_QUOTA,
++	PARSER_SC_RATE,
+ 	PARSER_SC_SCTP,
+ 	PARSER_SC_SECMARK,
+ 	PARSER_SC_TCP,
 diff --git a/src/datatype.c b/src/datatype.c
-index fac4eb9cdcecd..1950a2f3757b8 100644
+index 1950a2f3757b8..189738513bf8c 100644
 --- a/src/datatype.c
 +++ b/src/datatype.c
-@@ -1507,8 +1507,8 @@ static struct error_record *time_unit_parse(const struct location *loc,
- 	return NULL;
+@@ -1488,67 +1488,6 @@ const struct datatype *set_datatype_alloc(const struct datatype *orig_dtype,
+ 	return dtype;
  }
  
--struct error_record *data_unit_parse(const struct location *loc,
--				     const char *str, uint64_t *rate)
-+static struct error_record *data_unit_parse(const struct location *loc,
-+					    const char *str, uint64_t *rate)
- {
- 	if (strcmp(str, "bytes") == 0)
- 		*rate = 1ULL;
+-static struct error_record *time_unit_parse(const struct location *loc,
+-					    const char *str, uint64_t *unit)
+-{
+-	if (strcmp(str, "second") == 0)
+-		*unit = 1ULL;
+-	else if (strcmp(str, "minute") == 0)
+-		*unit = 1ULL * 60;
+-	else if (strcmp(str, "hour") == 0)
+-		*unit = 1ULL * 60 * 60;
+-	else if (strcmp(str, "day") == 0)
+-		*unit = 1ULL * 60 * 60 * 24;
+-	else if (strcmp(str, "week") == 0)
+-		*unit = 1ULL * 60 * 60 * 24 * 7;
+-	else
+-		return error(loc, "Wrong time format, expecting second, minute, hour, day or week");
+-
+-	return NULL;
+-}
+-
+-static struct error_record *data_unit_parse(const struct location *loc,
+-					    const char *str, uint64_t *rate)
+-{
+-	if (strcmp(str, "bytes") == 0)
+-		*rate = 1ULL;
+-	else if (strcmp(str, "kbytes") == 0)
+-		*rate = 1024;
+-	else if (strcmp(str, "mbytes") == 0)
+-		*rate = 1024 * 1024;
+-	else
+-		return error(loc, "Wrong unit format, expecting bytes, kbytes or mbytes");
+-
+-	return NULL;
+-}
+-
+-struct error_record *rate_parse(const struct location *loc, const char *str,
+-				uint64_t *rate, uint64_t *unit)
+-{
+-	const char *slash, *rate_str;
+-	struct error_record *erec;
+-
+-	slash = strchr(str, '/');
+-	if (!slash)
+-		return error(loc, "wrong rate format, expecting {bytes,kbytes,mbytes}/{second,minute,hour,day,week}");
+-
+-	rate_str = strndup(str, slash - str);
+-	if (!rate_str)
+-		memory_allocation_error();
+-
+-	erec = data_unit_parse(loc, rate_str, rate);
+-	free_const(rate_str);
+-
+-	if (erec != NULL)
+-		return erec;
+-
+-	erec = time_unit_parse(loc, slash + 1, unit);
+-	if (erec != NULL)
+-		return erec;
+-
+-	return NULL;
+-}
+-
+ static const struct symbol_table boolean_tbl = {
+ 	.base		= BASE_DECIMAL,
+ 	.symbols	= {
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 91a03f78c611a..a7e5ace067bf5 100644
+index a7e5ace067bf5..c2964799f7e97 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -617,6 +617,8 @@ int nft_lex(void *, void *, void *);
- %token NAME			"name"
- %token PACKETS			"packets"
- %token BYTES			"bytes"
-+%token KBYTES			"kbytes"
-+%token MBYTES			"mbytes"
- %token AVGPKT			"avgpkt"
- 
- %token LAST			"last"
-@@ -774,8 +776,8 @@ int nft_lex(void *, void *, void *);
- %type <prio_spec>		extended_prio_spec prio_spec
- %destructor { expr_free($$.expr); } extended_prio_spec prio_spec
- 
--%type <string>			extended_prio_name quota_unit	basehook_device_name
--%destructor { free_const($$); }	extended_prio_name quota_unit	basehook_device_name
-+%type <string>			extended_prio_name basehook_device_name
-+%destructor { free_const($$); }	extended_prio_name basehook_device_name
- 
- %type <expr>			dev_spec
- %destructor { free($$); }	dev_spec
-@@ -828,7 +830,7 @@ int nft_lex(void *, void *, void *);
- %type <val>			level_type log_flags log_flags_tcp log_flag_tcp
- %type <stmt>			limit_stmt quota_stmt connlimit_stmt
- %destructor { stmt_free($$); }	limit_stmt quota_stmt connlimit_stmt
--%type <val>			limit_burst_pkts limit_burst_bytes limit_mode limit_bytes time_unit quota_mode
-+%type <val>			limit_burst_pkts limit_burst_bytes limit_mode bytes_unit time_unit quota_mode
- %type <stmt>			reject_stmt reject_stmt_alloc
- %destructor { stmt_free($$); }	reject_stmt reject_stmt_alloc
- %type <stmt>			nat_stmt nat_stmt_alloc masq_stmt masq_stmt_alloc redir_stmt redir_stmt_alloc
-@@ -3596,23 +3598,15 @@ quota_mode		:	OVER		{ $$ = NFT_QUOTA_F_INV; }
- 			|	/* empty */	{ $$ = 0; }
- 			;
- 
--quota_unit		:	BYTES		{ $$ = xstrdup("bytes"); }
--			|	STRING		{ $$ = $1; }
-+bytes_unit		:	BYTES		{ $$ = 1; }
-+			|	KBYTES		{ $$ = 1024; }
-+			|	MBYTES		{ $$ = 1024 * 1024; }
- 			;
- 
- quota_used		:	/* empty */	{ $$ = 0; }
--			|	USED NUM quota_unit
-+			|	USED NUM bytes_unit
- 			{
--				struct error_record *erec;
--				uint64_t rate;
--
--				erec = data_unit_parse(&@$, $3, &rate);
--				free_const($3);
--				if (erec != NULL) {
--					erec_queue(erec, state->msgs);
--					YYERROR;
--				}
--				$$ = $2 * rate;
-+				$$ = $2 * $3;
+@@ -1113,6 +1113,7 @@ close_scope_osf		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_OSF); }
+ close_scope_policy	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_POLICY); };
+ close_scope_quota	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_QUOTA); };
+ close_scope_queue	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_QUEUE); };
++close_scope_rate	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_RATE); };
+ close_scope_reject	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_STMT_REJECT); };
+ close_scope_reset	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_CMD_RESET); };
+ close_scope_rt		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_RT); };
+@@ -3557,7 +3558,7 @@ limit_stmt_alloc	:	LIMIT	RATE
  			}
  			;
  
-@@ -3625,22 +3619,14 @@ quota_stmt_alloc	:	QUOTA
- quota_stmt		:	quota_stmt_alloc quota_args
+-limit_stmt		:	limit_stmt_alloc limit_args
++limit_stmt		:	limit_stmt_alloc limit_args close_scope_rate
  			;
  
--quota_args		:	quota_mode NUM quota_unit quota_used
-+quota_args		:	quota_mode NUM bytes_unit quota_used
- 			{
--				struct error_record *erec;
- 				struct quota_stmt *quota;
--				uint64_t rate;
- 
- 				assert($<stmt>0->type == STMT_QUOTA);
- 
--				erec = data_unit_parse(&@$, $3, &rate);
--				free_const($3);
--				if (erec != NULL) {
--					erec_queue(erec, state->msgs);
--					YYERROR;
--				}
- 				quota = &$<stmt>0->quota;
--				quota->bytes = $2 * rate;
-+				quota->bytes = $2 * $3;
- 				quota->used = $4;
- 				quota->flags = $1;
- 			}
-@@ -3663,7 +3649,7 @@ limit_rate_pkts		:	NUM     SLASH	time_unit
+ limit_args		:	limit_mode	limit_rate_pkts	limit_burst_pkts
+@@ -3652,21 +3653,7 @@ limit_burst_bytes	:	/* empty */			{ $$ = 0; }
+ 			|	BURST	NUM	bytes_unit	{ $$ = $2 * $3; }
  			;
  
- limit_burst_bytes	:	/* empty */			{ $$ = 0; }
--			|	BURST	limit_bytes		{ $$ = $2; }
-+			|	BURST	NUM	bytes_unit	{ $$ = $2 * $3; }
- 			;
- 
- limit_rate_bytes	:	NUM     STRING
-@@ -3680,26 +3666,10 @@ limit_rate_bytes	:	NUM     STRING
- 				$$.rate = rate * $1;
- 				$$.unit = unit;
- 			}
--			|	limit_bytes SLASH time_unit
-+			|	NUM bytes_unit SLASH time_unit
- 			{
--				$$.rate = $1;
--				$$.unit = $3;
--			}
--			;
--
--limit_bytes		:	NUM	BYTES		{ $$ = $1; }
--			|	NUM	STRING
+-limit_rate_bytes	:	NUM     STRING
 -			{
 -				struct error_record *erec;
--				uint64_t rate;
+-				uint64_t rate, unit;
 -
--				erec = data_unit_parse(&@$, $2, &rate);
+-				erec = rate_parse(&@$, $2, &rate, &unit);
 -				free_const($2);
 -				if (erec != NULL) {
 -					erec_queue(erec, state->msgs);
 -					YYERROR;
 -				}
--				$$ = $1 * rate;
-+				$$.rate = $1 * $2;
-+				$$.unit = $4;
- 			}
- 			;
- 
-@@ -4767,21 +4737,12 @@ counter_obj		:	/* empty */
- 			}
- 			;
- 
--quota_config		:	quota_mode NUM quota_unit quota_used
-+quota_config		:	quota_mode NUM bytes_unit quota_used
+-				$$.rate = rate * $1;
+-				$$.unit = unit;
+-			}
+-			|	NUM bytes_unit SLASH time_unit
++limit_rate_bytes	:	NUM bytes_unit SLASH time_unit
  			{
--				struct error_record *erec;
- 				struct quota *quota;
--				uint64_t rate;
--
--				erec = data_unit_parse(&@$, $3, &rate);
--				free_const($3);
--				if (erec != NULL) {
--					erec_queue(erec, state->msgs);
--					YYERROR;
--				}
- 
- 				quota = &$<obj>0->quota;
--				quota->bytes	= $2 * rate;
-+				quota->bytes	= $2 * $3;
- 				quota->used	= $4;
- 				quota->flags	= $1;
+ 				$$.rate = $1 * $2;
+ 				$$.unit = $4;
+@@ -4897,7 +4884,7 @@ ct_obj_alloc		:	/* empty */
  			}
+ 			;
+ 
+-limit_config		:	RATE	limit_mode	limit_rate_pkts	limit_burst_pkts
++limit_config		:	RATE	limit_mode	limit_rate_pkts	limit_burst_pkts	close_scope_rate
+ 			{
+ 				struct limit *limit;
+ 
+@@ -4908,7 +4895,7 @@ limit_config		:	RATE	limit_mode	limit_rate_pkts	limit_burst_pkts
+ 				limit->type	= NFT_LIMIT_PKTS;
+ 				limit->flags	= $2;
+ 			}
+-			|	RATE	limit_mode	limit_rate_bytes	limit_burst_bytes
++			|	RATE	limit_mode	limit_rate_bytes	limit_burst_bytes close_scope_rate
+ 			{
+ 				struct limit *limit;
+ 
 diff --git a/src/scanner.l b/src/scanner.l
-index ca570e2bfe066..4cbc8a44c89c8 100644
+index 4cbc8a44c89c8..9d8fade8308d3 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -414,6 +414,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+@@ -219,6 +219,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %s SCANSTATE_META
+ %s SCANSTATE_POLICY
+ %s SCANSTATE_QUOTA
++%x SCANSTATE_RATE
+ %s SCANSTATE_SCTP
+ %s SCANSTATE_SECMARK
+ %s SCANSTATE_TCP
+@@ -275,12 +276,12 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "ge"			{ return GTE; }
+ ">"			{ return GT; }
+ "gt"			{ return GT; }
+-","			{ return COMMA; }
++<*>","			{ return COMMA; }
+ "."			{ return DOT; }
+ ":"			{ return COLON; }
+-";"			{ return SEMICOLON; }
++<*>";"			{ return SEMICOLON; }
+ "{"			{ return '{'; }
+-"}"			{ return '}'; }
++<*>"}"			{ return '}'; }
+ "["			{ return '['; }
+ "]"			{ return ']'; }
+ "("			{ return '('; }
+@@ -297,7 +298,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "or"			{ return '|'; }
+ "!"			{ return NOT; }
+ "not"			{ return NOT; }
+-"/"			{ return SLASH; }
++<*>"/"			{ return SLASH; }
+ "-"			{ return DASH; }
+ "*"			{ return ASTERISK; }
+ "@"			{ scanner_push_start_cond(yyscanner, SCANSTATE_AT); return AT; }
+@@ -410,12 +411,12 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 	"hooks"			{ return HOOKS; }
+ }
+ 
+-"counter"		{ scanner_push_start_cond(yyscanner, SCANSTATE_COUNTER); return COUNTER; }
++<*>"counter"		{ scanner_push_start_cond(yyscanner, SCANSTATE_COUNTER); return COUNTER; }
  <SCANSTATE_COUNTER,SCANSTATE_LIMIT,SCANSTATE_QUOTA,SCANSTATE_STMT_SYNPROXY,SCANSTATE_EXPR_OSF,SCANSTATE_TUNNEL>"name"			{ return NAME; }
- <SCANSTATE_COUNTER,SCANSTATE_CT,SCANSTATE_LIMIT>"packets"		{ return PACKETS; }
- <SCANSTATE_COUNTER,SCANSTATE_CT,SCANSTATE_LIMIT,SCANSTATE_QUOTA>"bytes"	{ return BYTES; }
-+<SCANSTATE_LIMIT,SCANSTATE_QUOTA>"kbytes"	{ return KBYTES; }
-+<SCANSTATE_LIMIT,SCANSTATE_QUOTA>"mbytes"	{ return MBYTES; }
+-<SCANSTATE_COUNTER,SCANSTATE_CT,SCANSTATE_LIMIT>"packets"		{ return PACKETS; }
+-<SCANSTATE_COUNTER,SCANSTATE_CT,SCANSTATE_LIMIT,SCANSTATE_QUOTA>"bytes"	{ return BYTES; }
+-<SCANSTATE_LIMIT,SCANSTATE_QUOTA>"kbytes"	{ return KBYTES; }
+-<SCANSTATE_LIMIT,SCANSTATE_QUOTA>"mbytes"	{ return MBYTES; }
++<SCANSTATE_COUNTER,SCANSTATE_CT,SCANSTATE_LIMIT,SCANSTATE_RATE>"packets"		{ return PACKETS; }
++<SCANSTATE_COUNTER,SCANSTATE_CT,SCANSTATE_LIMIT,SCANSTATE_QUOTA,SCANSTATE_RATE>"bytes"	{ return BYTES; }
++<SCANSTATE_LIMIT,SCANSTATE_QUOTA,SCANSTATE_RATE>"kbytes"	{ return KBYTES; }
++<SCANSTATE_LIMIT,SCANSTATE_QUOTA,SCANSTATE_RATE>"mbytes"	{ return MBYTES; }
  
  "last"				{ scanner_push_start_cond(yyscanner, SCANSTATE_LAST); return LAST; }
  <SCANSTATE_LAST>{
+@@ -428,7 +429,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 	"rules"			{ return RULES; }
+ }
+ 
+-"log"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_LOG); return LOG; }
++<*>"log"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_LOG); return LOG; }
+ <SCANSTATE_STMT_LOG,SCANSTATE_STMT_NAT,SCANSTATE_IP,SCANSTATE_IP6>"prefix"		{ return PREFIX; }
+ <SCANSTATE_STMT_LOG>{
+ 	"snaplen"		{ return SNAPLEN; }
+@@ -453,8 +454,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 	"fanout"	{ return FANOUT;}
+ }
+ "limit"			{ scanner_push_start_cond(yyscanner, SCANSTATE_LIMIT); return LIMIT; }
+-<SCANSTATE_LIMIT>{
+-	"rate"			{ return RATE; }
++<SCANSTATE_LIMIT,SCANSTATE_RATE>{
++	"rate"			{ scanner_push_start_cond(yyscanner, SCANSTATE_RATE); return RATE; }
+ 	"burst"			{ return BURST; }
+ 
+ 	/* time_unit */
+@@ -462,17 +463,17 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 	"minute"		{ return MINUTE; }
+ 	"week"			{ return WEEK; }
+ }
+-<SCANSTATE_CT,SCANSTATE_LIMIT,SCANSTATE_QUOTA>"over"		{ return OVER; }
++<SCANSTATE_CT,SCANSTATE_LIMIT,SCANSTATE_QUOTA,SCANSTATE_RATE>"over"		{ return OVER; }
+ 
+ "quota"			{ scanner_push_start_cond(yyscanner, SCANSTATE_QUOTA); return QUOTA; }
+-<SCANSTATE_QUOTA>{
++<SCANSTATE_QUOTA,SCANSTATE_RATE>{
+ 	"until"		{ return UNTIL; }
+ }
+ 
+ <SCANSTATE_QUOTA,SCANSTATE_LAST>"used"		{ return USED; }
+ 
+-"hour"			{ return HOUR; }
+-"day"			{ return DAY; }
++<*>"hour"		{ return HOUR; }
++<*>"day"		{ return DAY; }
+ 
+ "reject"		{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_REJECT); return _REJECT; }
+ <SCANSTATE_STMT_REJECT>{
+@@ -901,7 +902,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 				return STRING;
+ 			}
+ 
+-{hexstring}		{
++<*>{hexstring}		{
+ 				errno = 0;
+ 				yylval->val = strtoull(yytext, NULL, 16);
+ 				if (errno != 0) {
+@@ -911,7 +912,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 				return NUM;
+ 			}
+ 
+-{decstring}		{
++<*>{decstring}		{
+ 				int base = yytext[0] == '0' ? 8 : 10;
+ 				char *end;
+ 
+@@ -945,32 +946,32 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 				return STRING;
+ 			}
+ 
+-{newline_crlf}		{	return CRLF; }
++<*>{newline_crlf}	{	return CRLF; }
+ 
+-\\{newline}		{
++<*>\\{newline}		{
+ 				reset_pos(yyget_extra(yyscanner), yylloc);
+ 			}
+ 
+-{newline}		{
++<*>{newline}		{
+ 				reset_pos(yyget_extra(yyscanner), yylloc);
+ 				return NEWLINE;
+ 			}
+ 
+-{tab}+
+-{space}+
+-{comment_line}		{
++<*>{tab}+
++<*>{space}+
++<*>{comment_line}	{
+ 				reset_pos(yyget_extra(yyscanner), yylloc);
+ 			}
+-{comment}
++<*>{comment}
+ 
+-<<EOF>> 		{
++<*><<EOF>> 		{
+ 				update_pos(yyget_extra(yyscanner), yylloc, 1);
+ 				scanner_pop_buffer(yyscanner);
+ 				if (YY_CURRENT_BUFFER == NULL)
+ 					return TOKEN_EOF;
+ 			}
+ 
+-.			{ return JUNK; }
++<*>.			{ return JUNK; }
+ 
+ %%
+ 
+diff --git a/tests/py/any/limit.t b/tests/py/any/limit.t
+index 2a84e3f56e4ef..5c95ffa52ee8a 100644
+--- a/tests/py/any/limit.t
++++ b/tests/py/any/limit.t
+@@ -49,3 +49,9 @@ limit rate over 10230 mbytes/second;ok
+ limit rate over 1025 bytes/second burst 512 bytes;ok
+ limit rate over 1025 kbytes/second burst 1023 kbytes;ok
+ limit rate over 1025 mbytes/second burst 1025 kbytes;ok
++
++limit rate over 1025bytes/second burst 512bytes;ok;limit rate over 1025 bytes/second burst 512 bytes
++limit rate over 1025bytes /second burst 512bytes;ok;limit rate over 1025 bytes/second burst 512 bytes
++limit rate over 1025bytes/ second burst 512bytes;ok;limit rate over 1025 bytes/second burst 512 bytes
++limit rate over 1025bytes / second burst 512bytes;ok;limit rate over 1025 bytes/second burst 512 bytes
++limit rate over 1025 bytes / second burst 512bytes;ok;limit rate over 1025 bytes/second burst 512 bytes
+diff --git a/tests/py/any/limit.t.json b/tests/py/any/limit.t.json
+index 73160b27fad81..49a48960ecf86 100644
+--- a/tests/py/any/limit.t.json
++++ b/tests/py/any/limit.t.json
+@@ -360,3 +360,73 @@
+         }
+     }
+ ]
++
++# limit rate over 1025bytes/second burst 512bytes
++[
++    {
++        "limit": {
++            "burst": 512,
++            "burst_unit": "bytes",
++            "inv": true,
++            "per": "second",
++            "rate": 1025,
++            "rate_unit": "bytes"
++        }
++    }
++]
++
++# limit rate over 1025bytes /second burst 512bytes
++[
++    {
++        "limit": {
++            "burst": 512,
++            "burst_unit": "bytes",
++            "inv": true,
++            "per": "second",
++            "rate": 1025,
++            "rate_unit": "bytes"
++        }
++    }
++]
++
++# limit rate over 1025bytes/ second burst 512bytes
++[
++    {
++        "limit": {
++            "burst": 512,
++            "burst_unit": "bytes",
++            "inv": true,
++            "per": "second",
++            "rate": 1025,
++            "rate_unit": "bytes"
++        }
++    }
++]
++
++# limit rate over 1025bytes / second burst 512bytes
++[
++    {
++        "limit": {
++            "burst": 512,
++            "burst_unit": "bytes",
++            "inv": true,
++            "per": "second",
++            "rate": 1025,
++            "rate_unit": "bytes"
++        }
++    }
++]
++
++# limit rate over 1025 bytes / second burst 512bytes
++[
++    {
++        "limit": {
++            "burst": 512,
++            "burst_unit": "bytes",
++            "inv": true,
++            "per": "second",
++            "rate": 1025,
++            "rate_unit": "bytes"
++        }
++    }
++]
+diff --git a/tests/py/any/limit.t.payload b/tests/py/any/limit.t.payload
+index dc6701b3521c9..901275dafcaa0 100644
+--- a/tests/py/any/limit.t.payload
++++ b/tests/py/any/limit.t.payload
+@@ -122,3 +122,23 @@ ip test-ip4 output
+ # limit rate over 1025 mbytes/second burst 1025 kbytes
+ ip test-ip4 output
+   [ limit rate 1074790400/second burst 1049600 type bytes flags 0x1 ]
++
++# limit rate over 1025bytes/second burst 512bytes
++ip test-ip4 output
++  [ limit rate 1025/second burst 512 type bytes flags 0x1 ]
++
++# limit rate over 1025bytes /second burst 512bytes
++ip test-ip4 output
++  [ limit rate 1025/second burst 512 type bytes flags 0x1 ]
++
++# limit rate over 1025bytes/ second burst 512bytes
++ip test-ip4 output
++  [ limit rate 1025/second burst 512 type bytes flags 0x1 ]
++
++# limit rate over 1025bytes / second burst 512bytes
++ip test-ip4 output
++  [ limit rate 1025/second burst 512 type bytes flags 0x1 ]
++
++# limit rate over 1025 bytes / second burst 512bytes
++ip test-ip4 output
++  [ limit rate 1025/second burst 512 type bytes flags 0x1 ]
 -- 
 2.51.0
 
