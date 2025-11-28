@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-9964-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-9962-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BCAC90670
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Nov 2025 01:24:49 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9D81C90669
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Nov 2025 01:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6503AB79E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Nov 2025 00:24:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A3AA34E11F7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Nov 2025 00:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E858225403;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389BE221D96;
 	Fri, 28 Nov 2025 00:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="O/AJwj/m"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="svcCUiBP"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A972821CC5C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829D02192F5;
 	Fri, 28 Nov 2025 00:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764289443; cv=none; b=J74++LZkBHkLjK1OahyD95jH01t6KTtKN0y4VDIq2zdn81jUgQWBqEk53ObRd9+CJknHxO7l+5+DGRUDdZmAku6G4WX41nd/5BW5tOEKlHLWHqKOEqg99SO15HBr4Yv3K5Hg4UvJTGVaBrPMUOeJNBS3kJaAwJTX8NIjwVCOaxU=
+	t=1764289443; cv=none; b=N5gplsc5iYCSK/HJR82xGodDHaoVruiWlGfoOY7jU1ouIWR7UUBsStkuQYR3LCuTe34fXRnvHn/T/lcIwSsLe120zYRTNnCaLZuDPd8wGhuPZOtwxi7SGimv/wbURFnpQOjSa4Wxn9CBej6oBnTJvZ/JExp7vQGse38Ce0bBnPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764289443; c=relaxed/simple;
-	bh=eIxUXbFZYi7HFJ46Etisg+wN4Uc3ukRtWwaUORL83SQ=;
+	bh=AdDtYsDfqwUdJVBJ4oGO+Zlnw1codZ8xhJ7PfasdAQA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qec6fJII0TCSzEjKmitsAh7pXB3PspSyiJnqtijDZxASYbWboTVCtg5xiBef2vclpQLiGbI22Yqh/BLLGTaQfyCgCvXAHaMtVG3eblRnPKvdcL0GJjaSZhzZl69f1ncapLIPGLnVMStkGTYaIqtyc3NwlmeRlxP1htN0wT+e4wU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=O/AJwj/m; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=iO7LRmifjCVWwgeuYAl7f3B31XSAKCN5PIhNISGqyOI0W8BqFhq2ECN27qeyfG9xzbBm3GGXE6NjPSKUTW89u0nU1KV7a16BTfZ03XtSsGX/np2PZNn7xC7h9QW4S2Df6ia9PztuxlXl9vPeFmxaqDFbOJwnx51yZD4i006vecQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=svcCUiBP; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id CB33860278;
-	Fri, 28 Nov 2025 01:23:55 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id D9E0460279;
+	Fri, 28 Nov 2025 01:23:56 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1764289436;
-	bh=z7U48L2uJMWSnsyaie5RXe20Lx+GEK650qKDmerFMtA=;
+	s=2025; t=1764289437;
+	bh=uar/1iRXnyuKDYEZLYOOhiKv3DAwT+zzp3rR/Tf2ZbA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O/AJwj/mP8rHTombapG4c1GYLaEYXFwub5UmyRg5xyx1VcyPwgcaUebVeI0DNCnCM
-	 cYVDBG//EHIvfMI9oZUyIVH2Uv35ORsTsnr+OkcESmG6/Ce3/uC9/yUHWIdUW6d9no
-	 KfBDhYk4dL2yBhgBawIJrcwG20xSceCw1NKliWcQCcHQe0OySkqBKSafovo7fe6b71
-	 MMAlkRKQjOYV/4S+LBgLqee07HBwKmhK/YYaDPzGO4wrtdG2ELRxNb82pDsBjNLu+Y
-	 mEp9Lmkl+8hq3j0E7WIN9FQlMaPamrRK2TzcgdP9XZW07RZ6rMmUW3NFk0CkqFI1yY
-	 Ge+dy7eoDtLxw==
+	b=svcCUiBPR9XKS8e4wwnrziMdDqBzGzwMXTx8ZEtRciTKLAgR+HtC3jZ/bi3dXRvaf
+	 qCv2jGbjhLMQ1ivtXNSIfGJX70c8zWzrpnwr2qjkttBsl/EE574/NVuq+6EaKAkxvT
+	 /5hCgVYKOAKczB923wX3+9hLuqbZxWC2AkPez/nnzgbi95MOSYeBMMeYQGpV1r9n9F
+	 xriOJKXVOecmVXeJI7uw+c9Dq5Mn/u6LDLkn7bkZ+AWzsEnCP1k9JFwkBhEdZVZpRn
+	 PJzmXcnvfOizni2wpXAvxz0XyyVy0JPw0Pfbugx7bfsZl5AFeXlPwHdiKGtn6l1sbR
+	 qGYWAgaAoLgeA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -53,9 +53,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 05/17] netfilter: flowtable: inline pppoe encapsulation in xmit path
-Date: Fri, 28 Nov 2025 00:23:32 +0000
-Message-ID: <20251128002345.29378-6-pablo@netfilter.org>
+Subject: [PATCH net-next 06/17] netfilter: flowtable: remove hw_ifidx
+Date: Fri, 28 Nov 2025 00:23:33 +0000
+Message-ID: <20251128002345.29378-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251128002345.29378-1-pablo@netfilter.org>
 References: <20251128002345.29378-1-pablo@netfilter.org>
@@ -67,105 +67,87 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Push the pppoe header from the flowtable xmit path, inlining is faster
-than the original xmit path because it can avoid some locking.
+hw_ifidx was originally introduced to store the real netdevice as a
+requirement for the hardware offload support in:
 
-This is based on a patch originally written by wenxu.
+ 73f97025a972 ("netfilter: nft_flow_offload: use direct xmit if hardware offload is enabled")
+
+Since ("netfilter: flowtable: consolidate xmit path"), ifidx and
+hw_ifidx points to the real device in the xmit path, remove it.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_flow_table_ip.c   | 42 ++++++++++++++++++++++++++++++
- net/netfilter/nf_flow_table_path.c |  9 ++-----
- 2 files changed, 44 insertions(+), 7 deletions(-)
+ include/net/netfilter/nf_flow_table.h | 1 -
+ net/netfilter/nf_flow_table_core.c    | 1 -
+ net/netfilter/nf_flow_table_offload.c | 2 +-
+ net/netfilter/nf_flow_table_path.c    | 3 ---
+ 4 files changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index aef799edca9f..ee6ec63257d1 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -413,6 +413,44 @@ static int nf_flow_offload_forward(struct nf_flowtable_ctx *ctx,
- 	return 1;
- }
- 
-+static int nf_flow_pppoe_push(struct sk_buff *skb, u16 id)
-+{
-+	int data_len = skb->len + sizeof(__be16);
-+	struct ppp_hdr {
-+		struct pppoe_hdr hdr;
-+		__be16 proto;
-+	} *ph;
-+	__be16 proto;
-+
-+	if (skb_cow_head(skb, PPPOE_SES_HLEN))
-+		return -1;
-+
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		proto = htons(PPP_IP);
-+		break;
-+	case htons(ETH_P_IPV6):
-+		proto = htons(PPP_IPV6);
-+		break;
-+	default:
-+		return -1;
-+	}
-+
-+	__skb_push(skb, PPPOE_SES_HLEN);
-+	skb_reset_network_header(skb);
-+
-+	ph = (struct ppp_hdr *)(skb->data);
-+	ph->hdr.ver	= 1;
-+	ph->hdr.type	= 1;
-+	ph->hdr.code	= 0;
-+	ph->hdr.sid	= htons(id);
-+	ph->hdr.length	= htons(data_len);
-+	ph->proto	= proto;
-+	skb->protocol	= htons(ETH_P_PPP_SES);
-+
-+	return 0;
-+}
-+
- static int nf_flow_encap_push(struct sk_buff *skb,
- 			      struct flow_offload_tuple *tuple)
- {
-@@ -426,6 +464,10 @@ static int nf_flow_encap_push(struct sk_buff *skb,
- 					  tuple->encap[i].id) < 0)
- 				return -1;
- 			break;
-+		case htons(ETH_P_PPP_SES):
-+			if (nf_flow_pppoe_push(skb, tuple->encap[i].id) < 0)
-+				return -1;
-+			break;
- 		}
- 	}
- 
+diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+index 7c330caae52b..f7306276ece7 100644
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -146,7 +146,6 @@ struct flow_offload_tuple {
+ 		};
+ 		struct {
+ 			u32		ifidx;
+-			u32		hw_ifidx;
+ 			u8		h_source[ETH_ALEN];
+ 			u8		h_dest[ETH_ALEN];
+ 		} out;
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index 98d7b3708602..6c6a5165f993 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -127,7 +127,6 @@ static int flow_offload_fill_route(struct flow_offload *flow,
+ 		memcpy(flow_tuple->out.h_source, route->tuple[dir].out.h_source,
+ 		       ETH_ALEN);
+ 		flow_tuple->out.ifidx = route->tuple[dir].out.ifindex;
+-		flow_tuple->out.hw_ifidx = route->tuple[dir].out.hw_ifindex;
+ 		dst_release(dst);
+ 		break;
+ 	case FLOW_OFFLOAD_XMIT_XFRM:
+diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+index e06bc36f49fe..d8f7bfd60ac6 100644
+--- a/net/netfilter/nf_flow_table_offload.c
++++ b/net/netfilter/nf_flow_table_offload.c
+@@ -555,7 +555,7 @@ static void flow_offload_redirect(struct net *net,
+ 	switch (this_tuple->xmit_type) {
+ 	case FLOW_OFFLOAD_XMIT_DIRECT:
+ 		this_tuple = &flow->tuplehash[dir].tuple;
+-		ifindex = this_tuple->out.hw_ifidx;
++		ifindex = this_tuple->out.ifidx;
+ 		break;
+ 	case FLOW_OFFLOAD_XMIT_NEIGH:
+ 		other_tuple = &flow->tuplehash[!dir].tuple;
 diff --git a/net/netfilter/nf_flow_table_path.c b/net/netfilter/nf_flow_table_path.c
-index 38ebda1afdce..c51e310bb2ab 100644
+index c51e310bb2ab..eb9b33a1873a 100644
 --- a/net/netfilter/nf_flow_table_path.c
 +++ b/net/netfilter/nf_flow_table_path.c
-@@ -122,11 +122,8 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
- 			info->encap[info->num_encaps].id = path->encap.id;
- 			info->encap[info->num_encaps].proto = path->encap.proto;
- 			info->num_encaps++;
--			if (path->type == DEV_PATH_PPPOE) {
--				if (!info->outdev)
--					info->outdev = path->dev;
-+			if (path->type == DEV_PATH_PPPOE)
- 				memcpy(info->h_dest, path->encap.h_dest, ETH_ALEN);
--			}
- 			break;
- 		case DEV_PATH_BRIDGE:
- 			if (is_zero_ether_addr(info->h_source))
-@@ -161,9 +158,7 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
- 			break;
+@@ -75,7 +75,6 @@ static int nft_dev_fill_forward_path(const struct nf_flow_route *route,
+ struct nft_forward_info {
+ 	const struct net_device *indev;
+ 	const struct net_device *outdev;
+-	const struct net_device *hw_outdev;
+ 	struct id {
+ 		__u16	id;
+ 		__be16	proto;
+@@ -159,7 +158,6 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
  		}
  	}
--	if (!info->outdev)
--		info->outdev = info->indev;
--
-+	info->outdev = info->indev;
- 	info->hw_outdev = info->indev;
+ 	info->outdev = info->indev;
+-	info->hw_outdev = info->indev;
  
  	if (nf_flowtable_hw_offload(flowtable) &&
+ 	    nft_is_valid_ether_device(info->indev))
+@@ -212,7 +210,6 @@ static void nft_dev_forward_path(struct nf_flow_route *route,
+ 	if (info.xmit_type == FLOW_OFFLOAD_XMIT_DIRECT) {
+ 		memcpy(route->tuple[dir].out.h_source, info.h_source, ETH_ALEN);
+ 		memcpy(route->tuple[dir].out.h_dest, info.h_dest, ETH_ALEN);
+-		route->tuple[dir].out.hw_ifindex = info.hw_outdev->ifindex;
+ 		route->tuple[dir].xmit_type = info.xmit_type;
+ 	}
+ }
 -- 
 2.47.3
 
