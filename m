@@ -1,93 +1,106 @@
-Return-Path: <netfilter-devel+bounces-10035-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10037-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D1DCAAEB2
-	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Dec 2025 23:03:06 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7747BCAB017
+	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Dec 2025 02:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 95910303462C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Dec 2025 22:03:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C96903009B43
+	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Dec 2025 01:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8638823EA8A;
-	Sat,  6 Dec 2025 22:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C84226CFD;
+	Sun,  7 Dec 2025 01:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="AlbZVNST"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7Yw2E8A"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azazel.net (taras.nevrast.org [35.176.194.208])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C589B3B8D6B
-	for <netfilter-devel@vger.kernel.org>; Sat,  6 Dec 2025 22:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551EE2222C4;
+	Sun,  7 Dec 2025 01:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765058582; cv=none; b=HHOL9amW9B27iGdqIgbK3T25ak2DEPM+jKzHOpnpXl6AGpNWDtVFL6I0fTj9lvxzFlWUuU6CYJHqhBMxGl4hohphF6DdIN13zoMH54QGtAeTh3jQs6+Hd1y/k/epmcGjC0drflc7PN3Z6vRXGDFwhSIiPyh2M5vEXOlRQT1BVRU=
+	t=1765069803; cv=none; b=Y4dvvafQJkdBjm17/9y3Mbfeua7TLE/hk2ixpT3jUG5Y15nGIZ5rgClwUsr4qdvflc2QxPDxmyEbmB6wgqWjF/HEfD+WldYdqnHk/W+J8+Rf2OXrQSHG/lf1i3NBsbLxbw/6iXmEyQW9JgEFcm43lukYSHOK1A95cSXtrljTreI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765058582; c=relaxed/simple;
-	bh=O0KaIroBTEqUIsq2enAscj3kaY2/G3J9pNa2PNSgLqg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nyu6TwbDp3WPJhO4z5qYiZMJGkPCgaUnOkfw5B8Q0QS2jReYFCedDJ1JcLtAGXwIhM71WfT3HMAsloifwmmd+J8AXnAoeqELXD4KRC7t9XWWrRIcuW3LmgIV1nEUqZcSyP2J87LOuGz7VwtIdsKR1XdGB1A32QhkbOV5S4O8Fs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=AlbZVNST; arc=none smtp.client-ip=35.176.194.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-	Date:Subject:To:From:Sender:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=F7c+EsD8ah0ShcxFt1ld1eBDnWh2urpPeovhEKKj0pA=; b=AlbZVNST/QqS4KVKI7JKYl9V4l
-	d7/h+vXk7AARaj7zeFkKfS1WUUogEzuYxtzAEc1oTUDZYY73dj0U6GhjP7vfM066WOqP64+0UxPLz
-	St6xko+vDolt0yDqKsQEmhgm0KcnmRAvTNgVQWwlAs+Jn4pHKgtvigXOCcDA+LDm2hC8OwCvcPmQp
-	TfjaetSLJHRHlfbXqUbDYTOvYQiadEs42GatQ4cc5VhoH3jZzhZ32GDkT/kCVFNpz+JF4QHqX1II2
-	FsKaHpFYF0bRCkM/Rhfdg3A83elRthPLAcvcHwq3N2TqQ/+zYGOCuCkOVBFFO6BHImeremyW6KquN
-	TacusNWQ==;
-Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
-	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <jeremy@azazel.net>)
-	id 1vS0Dq-0000000E8vL-4BZ6
-	for netfilter-devel@vger.kernel.org;
-	Sat, 06 Dec 2025 21:53:47 +0000
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft] doc: fix typo in man-page
-Date: Sat,  6 Dec 2025 21:53:36 +0000
-Message-ID: <20251206215338.703540-1-jeremy@azazel.net>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1765069803; c=relaxed/simple;
+	bh=dS6JEZqy6xUdkt/KNxu/ZvPmvZy/gOCCl+3NNubDG8M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VrHCXc//HJz5S6cr08Pe1C9PrDqyLzDCXEjPCNijwS4MC3eeEMkIjrhjUsqPvdbPFHcOoHHry8b/7tOa/iFuVaq9S+rMhLSmPgIFjVu8pUlgQc5EnNBNvSko05e/Vlm+p46U18ZOrDe/WmGjG607E71ci4eXD3Gcr5SUlUC2uSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7Yw2E8A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D69BC4CEF5;
+	Sun,  7 Dec 2025 01:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765069802;
+	bh=dS6JEZqy6xUdkt/KNxu/ZvPmvZy/gOCCl+3NNubDG8M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=e7Yw2E8AxE6UBc1+C3B4yvf8XcVOsQBo90OoIKwWTWvzPnYfEDsBfWKCtfJTPubte
+	 ifd8CRZpofIx3pbCYRZRYDBMDociJYlKEk+Hp8yYkUzEYqMdzUPr2gG+G2TVV1X0wb
+	 qlIDTmlPIra8LOjr5xtFDbcaj/Isz1ZwaNfBnRsIL7GCI8FIhtJZRgNXrEBVI2Rt84
+	 xNb69fHvMf7tdjbaxqIvVCyFt7HrWw014R6/NqDqrq7Ftkulgis+HNXkAY78m3rOPK
+	 0YclI5Rg10Ax+U6OMO5sSYNWrmir0oezhQ7tCAwpHoeK+D+aWZMONbna9aHCK5VSkr
+	 x4rq9cA6vUfXQ==
+From: Jakub Kicinski <kuba@kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	andrew+netdev@lunn.ch,
+	horms@kernel.org,
+	pablo@netfilter.org,
+	fw@strlen.de,
+	netfilter-devel@vger.kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	kuniyu@google.com,
+	Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net 0/4] inet: frags: flush pending skbs in fqdir_pre_exit()
+Date: Sat,  6 Dec 2025 17:09:38 -0800
+Message-ID: <20251207010942.1672972-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-"interally" -> "internally"
+Fix the issue reported by NIPA starting on Sep 18th [1], where
+pernet_ops_rwsem is constantly held by a reader, preventing writers
+from grabbing it (specifically driver modules from loading).
 
-Fixes: f34381547094 ("doc: minor improvements the `reject` statement")
+The fact that reports started around that time seems coincidental.
+The issue seems to be skbs queued for defrag preventing conntrack
+from exiting.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- doc/statements.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+First patch fixes another theoretical issue, it's mostly a leftover
+from an attempt to get rid of the inet_frag_queue refcnt, which
+I gave up on (still think it's doable but a bit of a time sink).
+Second patch is a minor refactor.
 
-diff --git a/doc/statements.txt b/doc/statements.txt
-index 0b14398117de..8f96bf6b84fa 100644
---- a/doc/statements.txt
-+++ b/doc/statements.txt
-@@ -203,7 +203,7 @@ ____
- ____
- 
- A reject statement tries to send back an error packet in response to the matched
--packet and then interally issues a *drop* verdict.
-+packet and then internally issues a *drop* verdict.
- It’s thus a terminating statement with all consequences of the latter (see
- <<OVERALL_EVALUATION_OF_THE_RULESET>> respectively <<VERDICT_STATEMENTS>>).
- This statement is only valid in base chains using the *prerouting*, *input*,
+The real fix is in the third patch. It's the simplest fix I can
+think of which is to flush the frag queues. Perhaps someone has
+a better suggestion?
+
+Last patch adds an explicit warning for conntrack getting stuck,
+as this seems like something that can easily happen if bugs sneak in.
+The warning will hopefully save us the first 20% of the investigation
+effort.
+
+Link: https://lore.kernel.org/20251001082036.0fc51440@kernel.org # [1]
+
+Jakub Kicinski (4):
+  inet: frags: avoid theoretical race in ip_frag_reinit()
+  inet: frags: add inet_frag_queue_flush()
+  inet: frags: flush pending skbs in fqdir_pre_exit()
+  netfilter: conntrack: warn when cleanup is stuck
+
+ include/net/inet_frag.h           | 18 ++--------
+ include/net/ipv6_frag.h           |  9 +++--
+ net/ipv4/inet_fragment.c          | 55 ++++++++++++++++++++++++++++---
+ net/ipv4/ip_fragment.c            | 22 +++++--------
+ net/netfilter/nf_conntrack_core.c |  3 ++
+ 5 files changed, 72 insertions(+), 35 deletions(-)
+
 -- 
-2.51.0
+2.52.0
 
 
