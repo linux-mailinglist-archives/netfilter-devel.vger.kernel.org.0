@@ -1,44 +1,44 @@
-Return-Path: <netfilter-devel+bounces-10036-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10039-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACCCDCAB00E
-	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Dec 2025 02:10:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44FA4CAB020
+	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Dec 2025 02:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 50C483051336
-	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Dec 2025 01:10:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D254E30AAD61
+	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Dec 2025 01:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1506A218EB1;
-	Sun,  7 Dec 2025 01:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0F4238C29;
+	Sun,  7 Dec 2025 01:10:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uR52G3RX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzQPAACt"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA1E2AD00;
-	Sun,  7 Dec 2025 01:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D636B238150;
+	Sun,  7 Dec 2025 01:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765069803; cv=none; b=fJYc0AoVC4FLgiHrWccoGobKh5J/l7X/oBWaGGnsC+sBic6stLakxS3oPyAbTwYHxjLSBAmtWFnxYg3i9iDFRIHKKzpIk2+C+LiKI9ZaIwkLSbqcpvhy+QcVkBSGCOiRa9i9UJEKVakZcGlRZF8gUl8mFSCVbNKLeSnkHxLXBZA=
+	t=1765069805; cv=none; b=ZkTKK4FYZQqhv67wQfqjF52soYMw2zShDujWZD/j9PETm8C7Yg4dg5Nwjf3Cs4xdDXio/zNolyiQ46d8VBAMNsBgSAJUrzr3hNKZ1RMxOz/g/MZZ1PNDUL9hnrTd9Xd9/6dQyplM85ww0HMwlCcu1fuLbPUZ0VI9iMUypW8P0Z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765069803; c=relaxed/simple;
-	bh=1nvyRIRL+2AMnI1+YsPKhv8ckkhkN5Sb2caHluZRCc4=;
+	s=arc-20240116; t=1765069805; c=relaxed/simple;
+	bh=Ds5YnaVMDyEfcUU9LvWtKN9gs7WEJBVXuvTDGyOUbeY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XhCyKOR7SP0R9lq6/viuH0URdFyjyQE0cSerJCQzyMZaPhete1y9C2qRN1Urb9eY225Vcv9fhJnm64j4DS3gd4LJOvJFlABUv1anoIQ5ee1RPYlS1hqLYbJOzNxbPs6L5nRhPVUiUE97X9/QLKaiWSQZjeAybgx72CrA8M+TnsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uR52G3RX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CCC2C16AAE;
+	 MIME-Version; b=T9vqGCqi1FyvY1v/8FAVsCieZ7KAxJlLQTChrGPkczThEYLpYVfmHbT1yULkcYLGydfHqhAjWoXDzVo1f56iOrZJZI7n1B1Ywfu/BJn/HYWWvP5aMc7Lo8XOCHm8A/ns9hKLQ5sdPPyUm77/GIQ/HNDrHE8MTsuuv8F5Cp2OZow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzQPAACt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E892EC113D0;
 	Sun,  7 Dec 2025 01:10:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765069802;
-	bh=1nvyRIRL+2AMnI1+YsPKhv8ckkhkN5Sb2caHluZRCc4=;
+	s=k20201202; t=1765069803;
+	bh=Ds5YnaVMDyEfcUU9LvWtKN9gs7WEJBVXuvTDGyOUbeY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uR52G3RXIrLhvX5YNo4D+GKTcN45KJd2j9JhXrul+/xkgzMEFsaqrNV0ONczYZwKS
-	 UwTGpIBz4cgJWM7WymOZdqGLWRhE5JRtqmmpqpoNdgIa5k5zQwLxwJrY6pZC4Y0u8l
-	 2kn/CuwkDMLYDR2QCCznnsDdDdKzyCbBAVdnAWxKyw+F477NfwKcuG4WGWY1u2F2X+
-	 3sEpM3fxkNK7B1p3KLbJjGyV3CvBYM+J2ye3zv51nMKc7IUTo1q+WUQbriVzAkAMQG
-	 oXzY5XK+Ihpc2ioLdDn6RtxExr+wiG3i19LcJzJradZcANVYEZuIO0Yt1kK5r80V03
-	 +Fo7Rgz8GdheQ==
+	b=dzQPAACtB8I9e3dDh6i4pBun6bwYikv/R7FR4y+dTo3Mudq2qdYMbD76eLghBf97v
+	 zWQJ45wuFXX/vHFAh5HvDkAs11gDyBO3j318kdJ6MOA+ufwQrcN4Ecaoj40ytlM1HH
+	 t6eiECznbYU/wi6CeTvlXunIVKBOE/32k1tq8H2oAw9uKDSmAIRALDWhUZ2OO4DeTa
+	 JogwRpKMc92RIRaJjTnmInFjRjmJFIIlZRZUw3vV7kXZyPQ3lPdnb+BuYpDS8zFX3X
+	 Q4rkLh5XUjSMc2viph0YT4K9IjMtHO9fjeJujyyHIdRDGLGp8PYcdrnfA1n1gXxa/B
+	 OPzbPxbkvzNGQ==
 From: Jakub Kicinski <kuba@kernel.org>
 To: davem@davemloft.net
 Cc: netdev@vger.kernel.org,
@@ -52,9 +52,9 @@ Cc: netdev@vger.kernel.org,
 	willemdebruijn.kernel@gmail.com,
 	kuniyu@google.com,
 	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net 1/4] inet: frags: avoid theoretical race in ip_frag_reinit()
-Date: Sat,  6 Dec 2025 17:09:39 -0800
-Message-ID: <20251207010942.1672972-2-kuba@kernel.org>
+Subject: [PATCH net 2/4] inet: frags: add inet_frag_queue_flush()
+Date: Sat,  6 Dec 2025 17:09:40 -0800
+Message-ID: <20251207010942.1672972-3-kuba@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251207010942.1672972-1-kuba@kernel.org>
 References: <20251207010942.1672972-1-kuba@kernel.org>
@@ -66,58 +66,86 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In ip_frag_reinit() we want to move the frag timeout timer into
-the future. If the timer fires in the meantime we inadvertently
-scheduled it again, and since the timer assumes a ref on frag_queue
-we need to acquire one to balance things out.
+Instead of exporting inet_frag_rbtree_purge() which requires that
+caller takes care of memory accounting, add a new helper. We will
+need to call it from a few places in the next patch.
 
-This is technically racy, we should have acquired the reference
-_before_ we touch the timer, it may fire again before we take the ref.
-Avoid this entire dance by using mod_timer_pending() which only modifies
-the timer if its pending (and which exists since Linux v2.6.30)
-
-Note that this was the only place we ever took a ref on frag_queue
-since Eric's conversion to RCU. So we could potentially replace
-the whole refcnt field with an atomic flag and a bit more RCU.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- net/ipv4/inet_fragment.c | 4 +++-
- net/ipv4/ip_fragment.c   | 4 +---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/net/inet_frag.h  |  5 ++---
+ net/ipv4/inet_fragment.c | 15 ++++++++++++---
+ net/ipv4/ip_fragment.c   |  6 +-----
+ 3 files changed, 15 insertions(+), 11 deletions(-)
 
+diff --git a/include/net/inet_frag.h b/include/net/inet_frag.h
+index 0eccd9c3a883..3ffaceee7bbc 100644
+--- a/include/net/inet_frag.h
++++ b/include/net/inet_frag.h
+@@ -141,9 +141,8 @@ void inet_frag_kill(struct inet_frag_queue *q, int *refs);
+ void inet_frag_destroy(struct inet_frag_queue *q);
+ struct inet_frag_queue *inet_frag_find(struct fqdir *fqdir, void *key);
+ 
+-/* Free all skbs in the queue; return the sum of their truesizes. */
+-unsigned int inet_frag_rbtree_purge(struct rb_root *root,
+-				    enum skb_drop_reason reason);
++void inet_frag_queue_flush(struct inet_frag_queue *q,
++			   enum skb_drop_reason reason);
+ 
+ static inline void inet_frag_putn(struct inet_frag_queue *q, int refs)
+ {
 diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
-index 025895eb6ec5..30f4fa50ee2d 100644
+index 30f4fa50ee2d..1bf969b5a1cb 100644
 --- a/net/ipv4/inet_fragment.c
 +++ b/net/ipv4/inet_fragment.c
-@@ -327,7 +327,9 @@ static struct inet_frag_queue *inet_frag_alloc(struct fqdir *fqdir,
+@@ -263,8 +263,8 @@ static void inet_frag_destroy_rcu(struct rcu_head *head)
+ 	kmem_cache_free(f->frags_cachep, q);
+ }
  
- 	timer_setup(&q->timer, f->frag_expire, 0);
- 	spin_lock_init(&q->lock);
--	/* One reference for the timer, one for the hash table. */
-+	/* One reference for the timer, one for the hash table.
-+	 * We never take any extra references, only decrement this field.
-+	 */
- 	refcount_set(&q->refcnt, 2);
+-unsigned int inet_frag_rbtree_purge(struct rb_root *root,
+-				    enum skb_drop_reason reason)
++static unsigned int
++inet_frag_rbtree_purge(struct rb_root *root, enum skb_drop_reason reason)
+ {
+ 	struct rb_node *p = rb_first(root);
+ 	unsigned int sum = 0;
+@@ -284,7 +284,16 @@ unsigned int inet_frag_rbtree_purge(struct rb_root *root,
+ 	}
+ 	return sum;
+ }
+-EXPORT_SYMBOL(inet_frag_rbtree_purge);
++
++void inet_frag_queue_flush(struct inet_frag_queue *q,
++			   enum skb_drop_reason reason)
++{
++	unsigned int sum;
++
++	sum = inet_frag_rbtree_purge(&q->rb_fragments, reason);
++	sub_frag_mem_limit(q->fqdir, sum);
++}
++EXPORT_SYMBOL(inet_frag_queue_flush);
  
- 	return q;
+ void inet_frag_destroy(struct inet_frag_queue *q)
+ {
 diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-index f7012479713b..d7bccdc9dc69 100644
+index d7bccdc9dc69..32f1c1a46ba7 100644
 --- a/net/ipv4/ip_fragment.c
 +++ b/net/ipv4/ip_fragment.c
-@@ -242,10 +242,8 @@ static int ip_frag_reinit(struct ipq *qp)
+@@ -240,14 +240,10 @@ static int ip_frag_too_far(struct ipq *qp)
+ 
+ static int ip_frag_reinit(struct ipq *qp)
  {
- 	unsigned int sum_truesize = 0;
- 
--	if (!mod_timer(&qp->q.timer, jiffies + qp->q.fqdir->timeout)) {
--		refcount_inc(&qp->q.refcnt);
-+	if (!mod_timer_pending(&qp->q.timer, jiffies + qp->q.fqdir->timeout))
+-	unsigned int sum_truesize = 0;
+-
+ 	if (!mod_timer_pending(&qp->q.timer, jiffies + qp->q.fqdir->timeout))
  		return -ETIMEDOUT;
--	}
  
- 	sum_truesize = inet_frag_rbtree_purge(&qp->q.rb_fragments,
- 					      SKB_DROP_REASON_FRAG_TOO_FAR);
+-	sum_truesize = inet_frag_rbtree_purge(&qp->q.rb_fragments,
+-					      SKB_DROP_REASON_FRAG_TOO_FAR);
+-	sub_frag_mem_limit(qp->q.fqdir, sum_truesize);
++	inet_frag_queue_flush(&qp->q, SKB_DROP_REASON_FRAG_TOO_FAR);
+ 
+ 	qp->q.flags = 0;
+ 	qp->q.len = 0;
 -- 
 2.52.0
 
