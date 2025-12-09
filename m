@@ -1,32 +1,32 @@
-Return-Path: <netfilter-devel+bounces-10075-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10072-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 133D2CB09E0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Dec 2025 17:46:01 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A626FCB09DA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Dec 2025 17:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 82AEC3009872
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Dec 2025 16:45:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0C28E30173F2
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Dec 2025 16:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B708D329E46;
-	Tue,  9 Dec 2025 16:45:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D59A329C63;
+	Tue,  9 Dec 2025 16:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nfYbSJ36"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="U65K3EeI"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131DF2E7198
-	for <netfilter-devel@vger.kernel.org>; Tue,  9 Dec 2025 16:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EBE3002A0
+	for <netfilter-devel@vger.kernel.org>; Tue,  9 Dec 2025 16:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765298752; cv=none; b=g47xayMmCiQDvCfjeWnZEOIW0HYw/21zL2Rqwumcc3PSStD9c4DEdPrj/qWvR21y3ZENW5iwrscEbzWt9deObq5zIa3lX0MNbCziAJ+U5eBAPUOQtGQ86reXBLeY/ONeyCzdSHhdpqyRGsJPhoLDTlPqLvFHr/TAY07LNqeNPn4=
+	t=1765298751; cv=none; b=gDYSSinuvLpICrwCdtyVlVAj2Z7BXoYZhpTu/k3knqY6vX1nA6gPRTvsjpmatMKFhkMjwdjQST1XHqxudsTxxKxuPISEr4TZ9tnHszorws5ipgjcY7P6yZW44qisMBZkX7TnnBrn8getDkbH7Y3P9jnhdA3So5gVZqdNum46KzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765298752; c=relaxed/simple;
-	bh=APyXPtPr6b/maeF8faqUgA/xDf/9HVG99EN4I2Rvnq0=;
+	s=arc-20240116; t=1765298751; c=relaxed/simple;
+	bh=p2DiFMn0pi2xYYDklHXmV3s7TJ7tOX0K7dWWz+Wsfhg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MrxybFyNZ5ylyFl1rxjhXFGwHKqb4db6zMCjKd7PeO34B0gSEBN1LiBShxyu5J1MklV/+E5ALqZhPgPusTp1xMj1zYAg530inu+8i8O9pRVqJSKucBapHdS1uorMU5gA3DbShLbDw1a5HJ+DBGR6WwCd9PudltsZthewNnBxuI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nfYbSJ36; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=gfOSiS9K+FKIkEltW1zLWuHv2/gwkSvpN2DGaS5eEcelimv5maqiHB6wpq50m1QwRmPr5OeQIQ7KzrcRDpBWAq9zuPSWECi7X9f5dTr1egoCc1qJZCpaI7zAw8NVjRPpNEtQY1JSF8CAUyZVz35K3I6mvmhyfAujuVL5AT6UwhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=U65K3EeI; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -35,25 +35,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Sel8fPWqg+XOeuhOwEKZTLEmH+jbPcOAShmhbmRXmWk=; b=nfYbSJ36gbK+zLwAOiDelgkTM2
-	gTs/947ZFf03TN7oTWwnQB7XPn53+wha23ng4zXj7BfyBED6nWlbWmMuXb1cdIy5PonV+j90vj6wt
-	P3ac8R+JSiHizPeMwIcPoNvdtT2Ufw0iUc2ffv7F7MWWNgq91XHaDYpvE+ZsR8dWG4K/AV8nLmJeE
-	2VTEqhasZWujdiTUo3GTnG5ZwJLvgsaz0vJnCYOjB9NqISupEy3YoiYvj6uqD1myBO2Z2E2WScQ6z
-	ka0Kk5wloM6EjUkTWtLSyObFurRCPuP1FwMZ3kqGWah5NNGjck6bqjct0ReRQCZKW/vvdvm3DxiTr
-	ssikDrgw==;
+	bh=hvL43COqY1775QbIjDN0QhhFaZTqr7F08jA3IdkiSj0=; b=U65K3EeICf6cidsi0cMyAct9j+
+	TtLZYBx3Pg11rTPjEBKIKIZcl13li3+mQ3VN5UwxcQDi6BJw4Y6CdwvRpxilZaxJBqLLmwPLA3ER2
+	3Gl/kQ5k3V+EOWCc91DvxjMeOeFHGTx1St9JqVFiR2aACP6RNBd3k77TCnCNj3NLJrAOKAeTL9Hey
+	hlimlzzozPIXdsd6vJjtXn7/MRqdpCpP9TjFCAI1px/PRkxdloP2ujNanG2yZuOI3ZYSWfEZBHDKY
+	Y70L56UJwiNx05O95UzWwi00JQfMq8wyCXswq/GAkrKivv3Zi9i8V8XD3Apu1mBQxsceYCL1unsJJ
+	pT/NHerg==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
 	(envelope-from <phil@nwl.cc>)
-	id 1vT0qR-000000007tU-1NkM;
+	id 1vT0qR-000000007tb-3YAJ;
 	Tue, 09 Dec 2025 17:45:47 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 2/6] parser_bison: Introduce tokens for chain types
-Date: Tue,  9 Dec 2025 17:45:37 +0100
-Message-ID: <20251209164541.13425-3-phil@nwl.cc>
+Cc: netfilter-devel@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>
+Subject: [nft PATCH 3/6] parser_bison: Introduce tokens for osf ttl values
+Date: Tue,  9 Dec 2025 17:45:38 +0100
+Message-ID: <20251209164541.13425-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251209164541.13425-1-phil@nwl.cc>
 References: <20251209164541.13425-1-phil@nwl.cc>
@@ -65,146 +66,74 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use the already existing SCANSTATE_TYPE for keyword scoping.
-This is a bit of back-n-forth from string to token and back to string
-but it eliminates the helper function and also takes care of error
-handling.
-
-Note that JSON parser does not validate the type string at all but
-relies upon the kernel to reject wrong ones.
----
-Changes since RFC:
-- Fix for leaking chain_type token.
+Eliminate the open-coded string parsing and error handling.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
+Reviewed-by: Florian Westphal <fw@strlen.de>
 ---
- include/rule.h     |  1 -
- src/parser_bison.y | 28 ++++++++++++++--------------
- src/rule.c         | 19 -------------------
+ src/parser_bison.y | 24 ++++++------------------
  src/scanner.l      |  6 ++++++
- 4 files changed, 20 insertions(+), 34 deletions(-)
+ 2 files changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/include/rule.h b/include/rule.h
-index e67a01522d318..7c704be846485 100644
---- a/include/rule.h
-+++ b/include/rule.h
-@@ -260,7 +260,6 @@ struct chain {
- 
- #define STD_PRIO_BUFSIZE 100
- extern int std_prio_lookup(const char *std_prio_name, int family, int hook);
--extern const char *chain_type_name_lookup(const char *name);
- extern const char *chain_hookname_lookup(const char *name);
- extern struct chain *chain_alloc(void);
- extern struct chain *chain_get(struct chain *chain);
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 96d0e151b1586..405fe8f2690ca 100644
+index 405fe8f2690ca..ba485a8c25b50 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -715,6 +715,10 @@ int nft_lex(void *, void *, void *);
+@@ -719,6 +719,9 @@ int nft_lex(void *, void *, void *);
+ %token NAT		"nat"
+ %token ROUTE		"route"
  
- %token XT		"xt"
- 
-+%token FILTER		"filter"
-+%token NAT		"nat"
-+%token ROUTE		"route"
++%token LOOSE		"loose"
++%token SKIP		"skip"
 +
  %type <limit_rate>		limit_rate_pkts
  %type <limit_rate>		limit_rate_bytes
  
-@@ -1034,6 +1038,9 @@ int nft_lex(void *, void *, void *);
- %type <expr>			set_elem_key_expr
- %destructor { expr_free($$); }	set_elem_key_expr
- 
-+%type <string>			chain_type
-+%destructor { free_const($$); }	chain_type
-+
- %%
- 
- input			:	/* empty */
-@@ -2736,22 +2743,10 @@ type_identifier		:	STRING	{ $$ = $1; }
- 			|	CLASSID { $$ = xstrdup("classid"); }
- 			;
- 
--hook_spec		:	TYPE		close_scope_type	STRING		HOOK		STRING		dev_spec	prio_spec
-+hook_spec		:	TYPE		chain_type	close_scope_type	HOOK		STRING		dev_spec	prio_spec
- 			{
--				const char *chain_type = chain_type_name_lookup($3);
--
--				if (chain_type == NULL) {
--					erec_queue(error(&@3, "unknown chain type"),
--						   state->msgs);
--					free_const($3);
--					free_const($5);
--					expr_free($6);
--					expr_free($7.expr);
--					YYERROR;
--				}
- 				$<chain>0->type.loc = @3;
--				$<chain>0->type.str = xstrdup(chain_type);
--				free_const($3);
-+				$<chain>0->type.str = $2;
- 
- 				$<chain>0->loc = @$;
- 				$<chain>0->hook.loc = @5;
-@@ -2772,6 +2767,11 @@ hook_spec		:	TYPE		close_scope_type	STRING		HOOK		STRING		dev_spec	prio_spec
+@@ -4485,24 +4488,9 @@ osf_expr		:	OSF	osf_ttl		HDRVERSION	close_scope_osf
  			}
  			;
  
-+chain_type		:	FILTER	{ $$ = xstrdup("filter"); }
-+			|	NAT	{ $$ = xstrdup("nat"); }
-+			|	ROUTE	{ $$ = xstrdup("route"); }
-+			;
-+
- prio_spec		:	PRIORITY extended_prio_spec
- 			{
- 				$$ = $2;
-diff --git a/src/rule.c b/src/rule.c
-index dabc16204f108..c32e08319d149 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -676,25 +676,6 @@ struct symbol *symbol_lookup_fuzzy(const struct scope *scope,
- 	return st.obj;
- }
+-osf_ttl			:	/* empty */
+-			{
+-				$$ = NF_OSF_TTL_TRUE;
+-			}
+-			|	TTL	STRING
+-			{
+-				if (!strcmp($2, "loose"))
+-					$$ = NF_OSF_TTL_LESS;
+-				else if (!strcmp($2, "skip"))
+-					$$ = NF_OSF_TTL_NOCHECK;
+-				else {
+-					erec_queue(error(&@2, "invalid ttl option"),
+-						   state->msgs);
+-					free_const($2);
+-					YYERROR;
+-				}
+-				free_const($2);
+-			}
++osf_ttl			:	/* empty */	{ $$ = NF_OSF_TTL_TRUE; }
++			|	TTL	LOOSE	{ $$ = NF_OSF_TTL_LESS; }
++			|	TTL	SKIP	{ $$ = NF_OSF_TTL_NOCHECK; }
+ 			;
  
--static const char * const chain_type_str_array[] = {
--	"filter",
--	"nat",
--	"route",
--	NULL,
--};
--
--const char *chain_type_name_lookup(const char *name)
--{
--	int i;
--
--	for (i = 0; chain_type_str_array[i]; i++) {
--		if (!strcmp(name, chain_type_str_array[i]))
--			return chain_type_str_array[i];
--	}
--
--	return NULL;
--}
--
- static const char * const chain_hookname_str_array[] = {
- 	"prerouting",
- 	"input",
+ shift_expr		:	primary_expr
 diff --git a/src/scanner.l b/src/scanner.l
-index 99ace05773816..b397a147ef9bd 100644
+index b397a147ef9bd..e0f0aabb683a3 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -858,6 +858,12 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- 	"out"			{ return OUT; }
+@@ -533,6 +533,12 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ <SCANSTATE_EXPR_OSF,SCANSTATE_IP>{
+ 	"ttl"			{ return TTL; }
  }
- 
-+<SCANSTATE_TYPE>{
-+	"filter"		{ return FILTER; }
-+	"nat"			{ return NAT; }
-+	"route"			{ return ROUTE; }
++
++<SCANSTATE_EXPR_OSF>{
++	"loose"			{ return LOOSE; }
++	"skip"			{ return SKIP; }
 +}
 +
- "secmark"		{ scanner_push_start_cond(yyscanner, SCANSTATE_SECMARK); return SECMARK; }
- 
- "xt"			{ scanner_push_start_cond(yyscanner, SCANSTATE_XT); return XT; }
+ <SCANSTATE_CT,SCANSTATE_IP,SCANSTATE_META,SCANSTATE_TYPE,SCANSTATE_GRE>"protocol"		{ return PROTOCOL; }
+ <SCANSTATE_EXPR_MH,SCANSTATE_EXPR_UDP,SCANSTATE_EXPR_UDPLITE,SCANSTATE_ICMP,SCANSTATE_IGMP,SCANSTATE_IP,SCANSTATE_SCTP,SCANSTATE_TCP>{
+ 	"checksum"		{ return CHECKSUM; }
 -- 
 2.51.0
 
