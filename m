@@ -1,101 +1,99 @@
-Return-Path: <netfilter-devel+bounces-10071-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10078-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24FE3CB07FC
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Dec 2025 17:06:20 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B747CB09DD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Dec 2025 17:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 64F5F3009570
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Dec 2025 16:04:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BCF3D301785A
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Dec 2025 16:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2272741BC;
-	Tue,  9 Dec 2025 16:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8863E329E52;
+	Tue,  9 Dec 2025 16:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="OYYR9lGF"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7281D219A86
-	for <netfilter-devel@vger.kernel.org>; Tue,  9 Dec 2025 16:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132662FFFB1
+	for <netfilter-devel@vger.kernel.org>; Tue,  9 Dec 2025 16:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765296267; cv=none; b=q/m8SDDlEVuxmL6qDhDPeYrYwoB2baoBeiBq91xyjDwiiJLZkTEx1MzTMw5eAfcH6lOkr61mXNIZNVrhi7eNMI2on7m4ya1o/S5ycaDXnDv8ddreFg31sHfSzotpHChvlkNmhIWRK1Lxye4xRL9dViONE8Y4En8xwE2PE9UpoGw=
+	t=1765298753; cv=none; b=OyideRPQu9EQjaII3x1/nT2WKi/I4/NuqxaR0MM1TCieCmEX13+huWlfEbrRHCwkux63O/jQGfijgnXGXw9XJfhYFyvdsvyLBw1T3z7Z6/mkR05rHx8uSITJvxE7vKdXDzWyZoDClOL5GV5C8CgjrtZK+IReewj+kLPxdV0v37U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765296267; c=relaxed/simple;
-	bh=GyCBy47qoMh5maWIDouS95BXRgOT0dWSevdRRz0577E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WmJTB/og1bkMFwW2LMARwg5HwZOS/83JemYRtd4wOqoGVev6/wi7OA2yyHeDFZdZZz+FUjPCkOTn3XTAUb7jg/VZcYn7K1Yr54s9rqYVLE6re+yTByvJLaXNallQA9eT0wim4kuw4IVXB3DAGcAObNlUI1CTJQXvQLBWHeZey00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id A326F6033B; Tue, 09 Dec 2025 17:04:15 +0100 (CET)
-Date: Tue, 9 Dec 2025 17:04:10 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Phil Sutter <phil@nwl.cc>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Eric Garver <e@erig.me>,
-	netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] src: Implement ip {s,d}addr6 expressions
-Message-ID: <aThIerDrhFoaCiJB@strlen.de>
-References: <20251209154048.26338-1-phil@nwl.cc>
+	s=arc-20240116; t=1765298753; c=relaxed/simple;
+	bh=jlaOkLIiS32AxTDiHzFEm5Sdp2j/l9fAA7qVWQd/314=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c/N3APiKropRBoS0+l+FOQNoK9MIDtYgCinZ3a+7Til6dj6ujwx/R2USCQ1U7NDEUoguWmRQliAdo3KiolxIjDFrLylNZOVAkVq80rmuWKNAc3Lf6JsbUvNfPj7/6w16A1pnoXVaXFckGXlUgwZto4P+ucisO6QIzfL9m6NVbsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=OYYR9lGF; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=T+x+YnbalXcdEfeGXK1SgL59LE0VeNj/25PnyF98Kyo=; b=OYYR9lGFosBc1/F7GVp4Oh9+A6
+	W6usCD0JS3ahXgP+QMVxJNcXjzRprL7uDereliZTxmbb5P56BPcS0wos8SKz/DYbHPcLssPMxpxXY
+	vQQ25XG84Q8a7GR+O+/Hv5y0kCP0yD96MzgTXypgzsEcxYOJcXD2Hr6PcxAlE0VnuSoLljntbYfdx
+	T6kWVhIflOcgdLKfbdyyiB0KrfzHXLRU9unoZR8vimCEsg4dsF26J2f8z7LVSw/InEL6/uckJlJqV
+	K5sKZd1Jt0ooLG0ECGLS7imdlSQv/xKSkpZVFT5rOMA+e91IeRD6AQCF9/8D4/OX03QpuvpeqjcsX
+	9W/kAYJQ==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1vT0qQ-000000007tO-3K69;
+	Tue, 09 Dec 2025 17:45:46 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/6] parser_bison: Less STRING more tokens
+Date: Tue,  9 Dec 2025 17:45:35 +0100
+Message-ID: <20251209164541.13425-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251209154048.26338-1-phil@nwl.cc>
+Content-Transfer-Encoding: 8bit
 
-Phil Sutter <phil@nwl.cc> wrote:
-> These are pseudo payload expressions which represent an IPv4 packet's
-> source or destination address as an IPv4-mapped IPv6 address as
-> described in RFC4291 section 2.5.5.2[1]. It helps sharing ruleset
-> elements like IP address-based sets/maps between rules for IPv4 and IPv6
-> traffic.
+Introducing new tokens should be harmless as long as they are scoped
+since it won't break existing rulesets using them for user-defined names.
 
-OK, but why do we need a new keyword for this?
+Leverage this to offload more input parsing to flex/bison, thereby
+reducing custom code size.
 
-> +ip saddr6 ::ffff:1.2.3.4;ok
-> +ip daddr6 ::ffff:1.2.3.4;ok
-> +ip saddr6 { ::ffff:1.2.3.4, feed::c0:ff:ee };ok
-> +ip daddr6 { ::ffff:1.2.3.4, feed::c0:ff:ee };ok
-> +ip saddr6 ::ffff:1.2.3.4 ip daddr 5.6.7.8;ok
+Changes since RFC:
+- Fix up patches 1 and 2 as per review
+- Add Reviewed-by: tags to patches 3 to 5
 
-None of these examples make sense to me.  How is this useful?
+Phil Sutter (6):
+  parser_bison: Introduce tokens for monitor events
+  parser_bison: Introduce tokens for chain types
+  parser_bison: Introduce tokens for osf ttl values
+  parser_bison: Introduce tokens for log levels
+  parser_bison: Introduce bytes_unit
+  scanner: Introduce SCANSTATE_RATE
 
-> --- a/tests/py/ip/ip.t.payload
-> +++ b/tests/py/ip/ip.t.payload
-> @@ -413,6 +413,40 @@ ip test-ip4 input
->    [ bitwise reg 1 = ( reg 1 & 0xffff0000 ) ^ 0x00000000 ]
->    [ cmp eq reg 1 0xffff0000 ]
->  
-> +# ip saddr6 ::ffff:1.2.3.4
-> +ip test-ip4 input
-> +  [ immediate reg 1 0x00000000 0x00000000 0x0000ffff ]
-> +  [ payload load 4b @ network header + 12 => reg 11 ]
-> +  [ cmp eq reg 1 0x00000000 0x00000000 0x0000ffff 0x01020304 ]
+ include/datatype.h           |   7 --
+ include/parser.h             |   1 +
+ include/rule.h               |  21 ++--
+ src/datatype.c               |  61 -----------
+ src/evaluate.c               |  22 +---
+ src/parser_bison.y           | 204 +++++++++++------------------------
+ src/rule.c                   |  23 +---
+ src/scanner.l                |  76 ++++++++-----
+ tests/py/any/limit.t         |   6 ++
+ tests/py/any/limit.t.json    |  70 ++++++++++++
+ tests/py/any/limit.t.payload |  20 ++++
+ 11 files changed, 231 insertions(+), 280 deletions(-)
 
-Its just a more expensive way to express 'ip saddr 1.2.3.4'?
-What would be useful is:
-
-set s {
-	typeof ip6 saddr
-	...
-}
-
-nft add element inet t s { 1.2.3.4 }
-
-... which makes nft autotranslate to '::ffff:1.2.3.4', combined
-with
-
-add rule inet t c ip saddr @s ...
-
-... where, instead of rejecting this for the wrong size, autopads
-the lookup, i.e.
-
-[ immediate reg 1 0x00000000 0x00000000 0x0000ffff ]
-[ payload load 4b @ network header + 12 => reg 11 ]
-[ lookup ...
+-- 
+2.51.0
 
 
