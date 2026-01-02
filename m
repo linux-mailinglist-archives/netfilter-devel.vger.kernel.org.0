@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-10190-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10192-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B412CCEE658
-	for <lists+netfilter-devel@lfdr.de>; Fri, 02 Jan 2026 12:41:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C232FCEE667
+	for <lists+netfilter-devel@lfdr.de>; Fri, 02 Jan 2026 12:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 27E9530022C3
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Jan 2026 11:41:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D0696300BA24
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Jan 2026 11:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAECB30DD25;
-	Fri,  2 Jan 2026 11:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0EC30DD14;
+	Fri,  2 Jan 2026 11:41:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63C930DD12;
-	Fri,  2 Jan 2026 11:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D01B30DD1F;
+	Fri,  2 Jan 2026 11:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767354110; cv=none; b=RcdbVMoBKDh2CteILpKqJca6+u5wBx/hAyFTjdtfjLEsaFnFKF82PAZRYsVzVHdmRMUgB8179PbCm7/KeQxIAudDyCwBKGxOfaUOCJQ94NrzEm1FgzZgTHZPYkGeJYMWz34o6F/CB27Sx2kYQjPMP1RuhSe4HPsqFV8qwN6ZPoQ=
+	t=1767354115; cv=none; b=QtH+hTZgKcthmwB0euJ4QRMIfb1LMCBhRKS/xQAxx5ocHWv22g9rN8jQynS3MSD8uOKmNmxBCJsAoCnDHsAFkpqIv2urFCkl8HhqRnBQ7Ep0kqxyROALlflCNgl6ar1cf4l0Jft2QJnzsOQlXSmJ7pjteue5wWOCRVQZUL/op2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767354110; c=relaxed/simple;
-	bh=AhKbyBU7IhnqvGIvYSDp6Fplmv8AgPqF6uygxmLQjUQ=;
+	s=arc-20240116; t=1767354115; c=relaxed/simple;
+	bh=nD7CDz5VvNs4eMNH5Jikd/2qDM/wjsgsq7JhjLbJ+IA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wouu260vyZOpY41Gud+Y+xVjQOlCVY3thIX/MmOSFwbIJye9EkvoFf4Nmr7vX9odEJuK+6P8BFTjSgWE8uDc9MU0ZkIHvI2vEfMSEqBapiHdkl1tbr0oi0XwUgLT0TNymyaXU3nxLsf7VKza6ozt3CGLyAj4VmNG11Fp1C8skcE=
+	 MIME-Version; b=FxKnCaxIIgPFBisBJHo91Jix7yQmEnY6Oc2ATeWzfokG4fhRosgQYZGCZRzDENnuQouIZP35Bl9YH5P13ENxQGIV+g/SJWBq8Y+AI5pGOj7v6PAfRDLORhcmuwDi0+mJTKmi7T4nKqi6HxD/GyKUHmQAQ4Ta6Jh02lDV9M+oV1M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 4BF50604AE; Fri, 02 Jan 2026 12:41:46 +0100 (CET)
+	id 9AF61602F8; Fri, 02 Jan 2026 12:41:50 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -37,9 +37,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 2/6] selftests: netfilter: nft_concat_range.sh: add check for overlap detection bug
-Date: Fri,  2 Jan 2026 12:41:24 +0100
-Message-ID: <20260102114128.7007-3-fw@strlen.de>
+Subject: [PATCH net 3/6] netfilter: nft_synproxy: avoid possible data-race on update operation
+Date: Fri,  2 Jan 2026 12:41:25 +0100
+Message-ID: <20260102114128.7007-4-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260102114128.7007-1-fw@strlen.de>
 References: <20260102114128.7007-1-fw@strlen.de>
@@ -51,94 +51,50 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-without 'netfilter: nft_set_pipapo: fix range overlap detection':
+From: Fernando Fernandez Mancera <fmancera@suse.de>
 
-  reject overlapping range on add       0s         [FAIL]
-Returned success for add { 1.2.3.4 . 1.2.4.1-1.2.4.2 } given set:
-table inet filter {
-	[..]
-       elements = { 1.2.3.4 . 1.2.4.1 counter packets 0 bytes 0,
-                    1.2.3.0-1.2.3.4 . 1.2.4.2 counter packets 0 bytes 0 }
-}
+During nft_synproxy eval we are reading nf_synproxy_info struct which
+can be modified on update operation concurrently. As nf_synproxy_info
+struct fits in 32 bits, use READ_ONCE/WRITE_ONCE annotations.
 
-The element collides with existing ones and was not added, but kernel
-returned success to userspace.
-
+Fixes: ee394f96ad75 ("netfilter: nft_synproxy: add synproxy stateful object support")
+Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- .../net/netfilter/nft_concat_range.sh         | 45 ++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ net/netfilter/nft_synproxy.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/nft_concat_range.sh b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-index ad97c6227f35..394166f224a4 100755
---- a/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-+++ b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-@@ -29,7 +29,7 @@ TYPES="net_port port_net net6_port port_proto net6_port_mac net6_port_mac_proto
-        net6_port_net6_port net_port_mac_proto_net"
+diff --git a/net/netfilter/nft_synproxy.c b/net/netfilter/nft_synproxy.c
+index 5d3e51825985..4d3e5a31b412 100644
+--- a/net/netfilter/nft_synproxy.c
++++ b/net/netfilter/nft_synproxy.c
+@@ -48,7 +48,7 @@ static void nft_synproxy_eval_v4(const struct nft_synproxy *priv,
+ 				 struct tcphdr *_tcph,
+ 				 struct synproxy_options *opts)
+ {
+-	struct nf_synproxy_info info = priv->info;
++	struct nf_synproxy_info info = READ_ONCE(priv->info);
+ 	struct net *net = nft_net(pkt);
+ 	struct synproxy_net *snet = synproxy_pernet(net);
+ 	struct sk_buff *skb = pkt->skb;
+@@ -79,7 +79,7 @@ static void nft_synproxy_eval_v6(const struct nft_synproxy *priv,
+ 				 struct tcphdr *_tcph,
+ 				 struct synproxy_options *opts)
+ {
+-	struct nf_synproxy_info info = priv->info;
++	struct nf_synproxy_info info = READ_ONCE(priv->info);
+ 	struct net *net = nft_net(pkt);
+ 	struct synproxy_net *snet = synproxy_pernet(net);
+ 	struct sk_buff *skb = pkt->skb;
+@@ -340,7 +340,7 @@ static void nft_synproxy_obj_update(struct nft_object *obj,
+ 	struct nft_synproxy *newpriv = nft_obj_data(newobj);
+ 	struct nft_synproxy *priv = nft_obj_data(obj);
  
- # Reported bugs, also described by TYPE_ variables below
--BUGS="flush_remove_add reload net_port_proto_match avx2_mismatch doublecreate"
-+BUGS="flush_remove_add reload net_port_proto_match avx2_mismatch doublecreate insert_overlap"
- 
- # List of possible paths to pktgen script from kernel tree for performance tests
- PKTGEN_SCRIPT_PATHS="
-@@ -420,6 +420,18 @@ race_repeat	0
- perf_duration	0
- "
- 
-+TYPE_insert_overlap="
-+display		reject overlapping range on add
-+type_spec	ipv4_addr . ipv4_addr
-+chain_spec	ip saddr . ip daddr
-+dst		addr4
-+proto		icmp
-+
-+race_repeat	0
-+
-+perf_duration	0
-+"
-+
- # Set template for all tests, types and rules are filled in depending on test
- set_template='
- flush ruleset
-@@ -1954,6 +1966,37 @@ EOF
- 	return 0
+-	priv->info = newpriv->info;
++	WRITE_ONCE(priv->info, newpriv->info);
  }
  
-+add_fail()
-+{
-+	if nft add element inet filter test "$1" 2>/dev/null ; then
-+		err "Returned success for add ${1} given set:"
-+		err "$(nft -a list set inet filter test )"
-+		return 1
-+	fi
-+
-+	return 0
-+}
-+
-+test_bug_insert_overlap()
-+{
-+	local elements="1.2.3.4 . 1.2.4.1"
-+
-+	setup veth send_"${proto}" set || return ${ksft_skip}
-+
-+	add "{ $elements }" || return 1
-+
-+	elements="1.2.3.0-1.2.3.4 . 1.2.4.1"
-+	add_fail "{ $elements }" || return 1
-+
-+	elements="1.2.3.0-1.2.3.4 . 1.2.4.2"
-+	add "{ $elements }" || return 1
-+
-+	elements="1.2.3.4 . 1.2.4.1-1.2.4.2"
-+	add_fail "{ $elements }" || return 1
-+
-+	return 0
-+}
-+
- test_reported_issues() {
- 	eval test_bug_"${subtest}"
- }
+ static struct nft_object_type nft_synproxy_obj_type;
 -- 
 2.51.2
 
