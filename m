@@ -1,33 +1,34 @@
-Return-Path: <netfilter-devel+bounces-10189-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10191-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F34F0CEE66D
-	for <lists+netfilter-devel@lfdr.de>; Fri, 02 Jan 2026 12:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6659ECEE679
+	for <lists+netfilter-devel@lfdr.de>; Fri, 02 Jan 2026 12:42:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6F760301226F
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Jan 2026 11:41:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 66AD6301DBA9
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Jan 2026 11:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C4E30CDB6;
-	Fri,  2 Jan 2026 11:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192F230DD36;
+	Fri,  2 Jan 2026 11:41:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58182F0689;
-	Fri,  2 Jan 2026 11:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E05E30DD1A;
+	Fri,  2 Jan 2026 11:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767354108; cv=none; b=fktkBusbyowWHrurnHQkxuDKIH2aoUqZcctTF5zaBo5k+3NIQB6q0ccSSXEI1GVXz6i3IDBuoFMj8H5y+HmxJ6Kq+uAirVAbF/ohpsRA36A4XJPC+gpj1NejT3yE2QQNOwqkZrSMQiC+UcmoMuI6inMy5mP6A7cRHSihmJWEdUs=
+	t=1767354111; cv=none; b=qD9wTZGx0zNvqW9nWJPwEpqj+UwipqM7fVWTfBhP07fqvrmfWlSSnQfqUjNnf6Xo5Pqj3P74S/2SyUZZFsGgZk6CBXqczWeodG51OYjzJao/gxWj7tv8qpfFLkr+4+19RgOLHiwENbtW7wFzMJWlaMCNcxoig/3NRJzhZe4atDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767354108; c=relaxed/simple;
-	bh=PkqsQtFV8Cs+jDRPKME/NldRbTQ5xo3KpAqRgHeqSvs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jkjHNboeaU/iKYXmaprWabkjaxrHlLd/uwVWULYYkWx0kl806die2RS5YB40ElgIfJT/QOa/v/1NvTjZbFb88ut/KmjglN2hhOhkoDbhvZPmU/QeT3ZjjTJ1vldFNGDusJ0VebHaaBnm2rZ2Ao9YaPRSp8axMnbNctTciSdwdFQ=
+	s=arc-20240116; t=1767354111; c=relaxed/simple;
+	bh=xJM560743YoKbqt7FVPACZ5WWcZMwDbdPk3R3VIZYmE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sQQ26NCXOMqaauHSAoor14BQZVuQol4h7Y06F0ayaLJglEHc4E81eufgGI5/zATeHyWZHK6VWERmsCjGgWnShg/UEZ4JVgDBYtiIsJ3kFV34H3v4gzRRd3IBW0CooyddU6E6A08glF4O0lSmeaoYxAdqD3FyUAqoHUwLDzlGkGg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 9D587602F8; Fri, 02 Jan 2026 12:41:37 +0100 (CET)
+	id ECAFD6035A; Fri, 02 Jan 2026 12:41:41 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -36,10 +37,12 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 0/6] netfilter: updates for net
-Date: Fri,  2 Jan 2026 12:41:22 +0100
-Message-ID: <20260102114128.7007-1-fw@strlen.de>
+Subject: [PATCH net 1/6] netfilter: nft_set_pipapo: fix range overlap detection
+Date: Fri,  2 Jan 2026 12:41:23 +0100
+Message-ID: <20260102114128.7007-2-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260102114128.7007-1-fw@strlen.de>
+References: <20260102114128.7007-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -48,72 +51,56 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+set->klen has to be used, not sizeof().  The latter only compares a
+single register but a full check of the entire key is needed.
 
-The following patchset contains Netfilter fixes for *net*:
+Example:
+table ip t {
+        map s {
+                typeof iifname . ip saddr : verdict
+                flags interval
+        }
+}
 
-1) Fix overlap detection for nf_tables with concatenated ranges.
-   There are cases where element could not be added due to a conflict
-   with existing range, while kernel reports success to userspace.
-2) update selftest to cover this bug.
-3) synproxy update path should use READ/WRITE once as we replace
-   config struct while packet path might read it in parallel.
-   This relies on said config struct to fit sizeof(long).
-   From Fernando Fernandez Mancera.
-4) Don't return -EEXIST from xtables in module load path, a pending
-   patch to module infra will spot a warning if this happens.
-   From Daniel Gomez.
-5) Fix a memory leak in nf_tables when chain hits 2**32 users
-   and rule is to be hw-offloaded, from Zilin Guan.
-6) Avoid infinite list growth when insert rate is high in nf_conncount,
-   also from Fernando.
+nft add element t s '{ "lo" . 10.0.0.0/24 : drop }' # no error, expected
+nft add element t s '{ "lo" . 10.0.0.0/24 : drop }' # no error, expected
+nft add element t s '{ "lo" . 10.0.0.0/8 : drop }' # bug: no error
 
-Please, pull these changes from:
-The following changes since commit dbf8fe85a16a33d6b6bd01f2bc606fc017771465:
+The 3rd 'add element' should be rejected via -ENOTEMPTY, not -EEXIST,
+so userspace / nft can report an error to the user.
 
-  Merge tag 'net-6.19-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2025-12-30 08:45:58 -0800)
+The latter is only correct for the 2nd case (re-add of existing element).
 
-are available in the Git repository at:
+As-is, userspace is told that the command was successful, but no elements were
+added.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-26-01-02
+After this patch, 3rd command gives:
+Error: Could not process rule: File exists
+add element t s { "lo" . 127.0.0.0/8 . "lo"  : drop }
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-for you to fetch changes up to 7811ba452402d58628e68faedf38745b3d485e3c:
+Fixes: 0eb4b5ee33f2 ("netfilter: nft_set_pipapo: Separate partial and complete overlap cases on insertion")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nft_set_pipapo.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  netfilter: nf_conncount: update last_gc only when GC has been performed (2026-01-02 10:44:28 +0100)
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 112fe46788b6..6d77a5f0088a 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -1317,8 +1317,8 @@ static int nft_pipapo_insert(const struct net *net, const struct nft_set *set,
+ 		else
+ 			dup_end = dup_key;
+ 
+-		if (!memcmp(start, dup_key->data, sizeof(*dup_key->data)) &&
+-		    !memcmp(end, dup_end->data, sizeof(*dup_end->data))) {
++		if (!memcmp(start, dup_key->data, set->klen) &&
++		    !memcmp(end, dup_end->data, set->klen)) {
+ 			*elem_priv = &dup->priv;
+ 			return -EEXIST;
+ 		}
+-- 
+2.51.2
 
-----------------------------------------------------------------
-netfilter pull request nf-26-01-02
-
-----------------------------------------------------------------
-Daniel Gomez (1):
-      netfilter: replace -EEXIST with -EBUSY
-
-Fernando Fernandez Mancera (2):
-      netfilter: nft_synproxy: avoid possible data-race on update operation
-      netfilter: nf_conncount: update last_gc only when GC has been performed
-
-Florian Westphal (2):
-      netfilter: nft_set_pipapo: fix range overlap detection
-      selftests: netfilter: nft_concat_range.sh: add check for overlap detection bug
-
-Zilin Guan (1):
-      netfilter: nf_tables: fix memory leak in nf_tables_newrule()
-
- net/bridge/netfilter/ebtables.c                    |  2 +-
- net/netfilter/nf_conncount.c                       |  2 +-
- net/netfilter/nf_log.c                             |  4 +-
- net/netfilter/nf_tables_api.c                      |  3 +-
- net/netfilter/nft_set_pipapo.c                     |  4 +-
- net/netfilter/nft_synproxy.c                       |  6 +--
- net/netfilter/x_tables.c                           |  2 +-
- .../selftests/net/netfilter/nft_concat_range.sh    | 45 +++++++++++++++++++++-
- 8 files changed, 56 insertions(+), 12 deletions(-)
-# WARNING: 0000-cover-letter.patch lacks signed-off-by tag!
-# WARNING: skip 0000-cover-letter.patch, no "Fixes" tag!
-# INFO: 0001-netfilter-nft_set_pipapo-fix-range-overlap-detection.patch fixes commit from v5.6~21^2~5^2~5
-# WARNING: skip 0002-selftests-netfilter-nft_concat_range.sh-add-check-fo.patch, no "Fixes" tag!
-# INFO: 0003-netfilter-nft_synproxy-avoid-possible-data-race-on-u.patch fixes commit from v5.4-rc1~131^2~26^2~23
-# WARNING: skip 0004-netfilter-replace-EEXIST-with-EBUSY.patch, no "Fixes" tag!
-# INFO: 0005-netfilter-nf_tables-fix-memory-leak-in-nf_tables_new.patch fixes commit from v6.5-rc2~22^2~39^2~5
-# INFO: 0006-netfilter-nf_conncount-update-last_gc-only-when-GC-h.patch fixes commit from v5.19-rc1~159^2~45^2~2
 
