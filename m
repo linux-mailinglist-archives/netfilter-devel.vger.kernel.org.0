@@ -1,196 +1,263 @@
-Return-Path: <netfilter-devel+bounces-10240-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10242-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8F36D12A6D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Jan 2026 13:58:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4998D13793
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Jan 2026 16:08:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D329F305CB0E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Jan 2026 12:55:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 352A9314E2F2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Jan 2026 14:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DCF35A956;
-	Mon, 12 Jan 2026 12:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6402E0415;
+	Mon, 12 Jan 2026 14:59:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NmCW29Oq";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="a2cu08iV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="smWTvNFc"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE789359F96
-	for <netfilter-devel@vger.kernel.org>; Mon, 12 Jan 2026 12:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBA12E0916;
+	Mon, 12 Jan 2026 14:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768222507; cv=none; b=eGNVRN7ZrPn2qulBvnJ3I5AgwXVJXoOZzZdzy8wZ8trRrC9/b7BUC2xZTH/tsggvQDpko8yRdLYeFixNVfRZ12Vzrpjz1Jep43IZ/L+ReOOj9niIpyqzuyLMli4R0e8VDNYjatzlBN/X7enIU1rQEDrE6Ahfw0mYCPQwxuCqzNk=
+	t=1768229943; cv=none; b=aI6JeiqsmiIGGoVsC4qFQwkAZfGWcs8jXXFym35NqlsTbGbhtubm9LY9tbHN2j2V152x74eCPGLXYF++1CJUrj+d3CU4iim0Wq6Gf3rBELkxO2yvL6cUTjy/2PrbOqbYctZZX+vy+/GSKuc8CviYWsUnWoyPk15ueuExGCFNGFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768222507; c=relaxed/simple;
-	bh=TCr86+g83B5jykr4uoI4MF4hOXPzr5E27AlUPYqmfnw=;
+	s=arc-20240116; t=1768229943; c=relaxed/simple;
+	bh=opg4tncLaI6otjgqlDIEK5fsztRbZKQsPuoibXoWSsM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JDAJ6iSU4RZFizOFT58vEI6Ec+vd71ptHAhrFTgEN58JRRt5udcBQYgiXMLVrazfsopk2IfIPiBLmlyb3REivdirWczFMmapTLV90buhs/zKXIm1n09L6JPUzJ2bF6wj8ESNBYWPFupDx+39JLtZsN7reuSKQUgBMfIIkq06FsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NmCW29Oq; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=a2cu08iV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768222503;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rhxkLbdZYuCDIREBJ5aMnl1Pqa4kOCAZc2N2w1wi0pg=;
-	b=NmCW29Oqu5wp1eMeA2D1VSsIh4yrm3wgrnK3QC9c6n5AvpjyeSYHrxAqUejG3JhboxuXAu
-	dFj4ZIeFUcYEHszLECyPl7jg0kYQUGvsI5ZUmkrYOqQWQr3/q57ohrO9gGkITKsDOpHr8T
-	7XlOR+zJq2byvML+ZUT+QsujUPsz434=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-eDZNS9fXMQudDJcJQTS5MA-1; Mon, 12 Jan 2026 07:54:59 -0500
-X-MC-Unique: eDZNS9fXMQudDJcJQTS5MA-1
-X-Mimecast-MFC-AGG-ID: eDZNS9fXMQudDJcJQTS5MA_1768222498
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-b872c88d115so44149466b.2
-        for <netfilter-devel@vger.kernel.org>; Mon, 12 Jan 2026 04:54:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768222498; x=1768827298; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rhxkLbdZYuCDIREBJ5aMnl1Pqa4kOCAZc2N2w1wi0pg=;
-        b=a2cu08iVMFn/z5KVTdc33ddBRhM9nauUO+V8DwpNdFsMpxt232p6ZYmRWfPT/Q0oHG
-         Qw3GHiPJBzHZ4iigWJ2KQXwzanAxlsSUj80xkJ90GIVVnsQby1B0hmjPWazr6l3+b+T8
-         ctYH1c9NTrcIfrjNClPCGuvzE30AIretagA5yiIeaWCT/pGzdEinYjAGbjRWStU2KA2h
-         P37z+/qGACCyilZ/Y1IUCewb9qSxh8mOUzkKKPxY9tO588Ks+HpFJOgv6MQ7IRrYzoCn
-         RvCD659tiovByLPspnNOJctMGD8Z41RlRezMjtXYJ6qXkT77PPjXrnE/mzCofGem9xS9
-         +/bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768222498; x=1768827298;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=rhxkLbdZYuCDIREBJ5aMnl1Pqa4kOCAZc2N2w1wi0pg=;
-        b=pcUhGZ6zrGecd4zPB2IFewklAa8y98SmWsxBrwZZp/xak0g3iSYCxj2K8A3fTV3Ut2
-         9R8ZyLYiAdyyrzVIGLJp+NEqEN1gxNpkHVRBgEP23q/40Qh7b6B3x7fep4EvXz9HAofP
-         LTxgGWOa2Z3ZNZckVmWv+w8BD3ecPwp7VoLDAaXUcvjj/4/hLmekyo/HsS6rvdH4i9wi
-         n46IAiJrEg+ZgQ/TN8KsX/6jfxVgXvM43kMW9lMux2yjqHb/mVO5upPLNt66+O25kTGc
-         BNKhNAOz3kKHk/GO2Yl4l97YVC1Wrau+500KQiFOoSlbSleGRv9+CO55ndD5xUcsTMDU
-         f4ow==
-X-Forwarded-Encrypted: i=1; AJvYcCV5CF0IgOejUws4EBYe6GAiwEE8BPTq9qRT+DNnmHahmd7vRPJQn6QG26bDMEXc6W7vqiuolYgy9DxI8G6UcK4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/9WjwxgJdfQB77pEuPXKokg2GD/lVtRY34IMKPSTa3UNmSz1B
-	V+uoN1/jOAuNlrOfQdfACfu0BWMSYCwcCv6l4zKoDK/xgazlmZlf4+7cykhBuUvQ6iGJe/CvkRF
-	dWcJdjBFED5nLMu4+ksDcTuy7K5HbtURNu1pmGWyccssbJHGULiWW12xIxDzjcVLjmzDAYQ==
-X-Gm-Gg: AY/fxX7Ey05pk/owtuIEhnTfJ90L70LIvMBJ6hkj8M3qqHmdAcaNHOVE1Um7+XtLeoA
-	577WCDwrtSQodjrd9VhGaG0RIlqhZjEvN0YSjPR66QPNaVG4mvvtXCXfwmjSuUFrB0t00SJAgBh
-	Ip3WJ3Q9IYSX09qw8+k2c1Nx7Mz8C9D+UviBVAqZvfAlHHnlatn7JFKiur6Hp884qI7pidKZmOz
-	c/88iV0Cj+7YvCZ/UTP1OlcTrkpz0f2HGV58aaDg0lAFsgecjdRSeAeMUrJqDfA/0lH9kZ0tnbr
-	A8wl+60cAPsOuRq0f5IHRWnbKe3P85tseo39zvlC9eWwj3ZYjNT4Usb1+7e266JSF/9BvCuoIT6
-	P3jTDxtGpzWNIqsdfKnhmqN287sRfI6SdLVyStbx8IC83zd5VwVBjmwTi7OE=
-X-Received: by 2002:a17:907:26c7:b0:b73:a2ce:540f with SMTP id a640c23a62f3a-b8444c80f04mr1718742966b.17.1768222498451;
-        Mon, 12 Jan 2026 04:54:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHPr3dIgVWRsuP91OEnws2gf/Ukq1HmhAKZbz1wMFay2J0zyGKodjzzWjXpSeXa764C1KXgRg==
-X-Received: by 2002:a17:907:26c7:b0:b73:a2ce:540f with SMTP id a640c23a62f3a-b8444c80f04mr1718740366b.17.1768222497991;
-        Mon, 12 Jan 2026 04:54:57 -0800 (PST)
-Received: from lbulwahn-thinkpadx1carbongen12.rmtde.csb ([2a02:810d:7e01:ef00:ff56:9b88:c93b:ed43])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8706c2604bsm497062466b.16.2026.01.12.04.54.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 04:54:57 -0800 (PST)
-From: Lukas Bulwahn <lbulwahn@redhat.com>
-X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
+	 MIME-Version:Content-Type; b=dVG+pejZwmm0JiJ7J3QvQ+Y6PNapVUWxWWfwngUkGrdFkD1KvEtZKhdrTIBcpYStmPQb0ABKrGeP/SJUAYdETGi9uE1ajYp0hjiXPtOspqXr0mK+o+B2+FS2nAK+HfHw6QbVqqz1WqNfpSmsWtYnd/jzu2ryN/AmC59RgUBbkQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=smWTvNFc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B139C2BC86;
+	Mon, 12 Jan 2026 14:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768229943;
+	bh=opg4tncLaI6otjgqlDIEK5fsztRbZKQsPuoibXoWSsM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=smWTvNFcuBYIv/R5nX8oy4ig5e0vHxiu+qhkeb2N8iD2XbBfh/lqXmNWqn6De9sBK
+	 YFj8KRiyf6XCEqZp4hj18O8b/juoqPQDmylBMoT9No2jzRngCei7BaxT1/Z/AHeQHc
+	 wQid2g25IoZt0EbD1ZbtKJPO2xPhSkbsm4fsWYiBXcdkx4lhWyFlkTI0i8QYBq0ABl
+	 r6NNhaZn56XE7rbpo4XA9FfQlApdanvk+1P/NrJMug8y79zgSAfw+YYfI+WyJabR49
+	 vKXGA3n1AXyCXP+9Rz7yPta5bYPcojF7C5Gr+rY6TrlCoBO3moUpD1ytiHjbXz86st
+	 yd763xFWNq3NA==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Daniel Gomez <da.gomez@samsung.com>,
 	Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	David Ahern <dsahern@kernel.org>,
-	netdev@vger.kernel.org,
+	Sasha Levin <sashal@kernel.org>,
+	pablo@netfilter.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Paul Walmsley <pjw@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	linux-riscv@lists.infradead.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-s390@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Subject: [RFC PATCH 5/5] s390/configs: replace deprecated NF_LOG configs by NF_LOG_SYSLOG
-Date: Mon, 12 Jan 2026 13:54:31 +0100
-Message-ID: <20260112125432.61218-6-lukas.bulwahn@redhat.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260112125432.61218-1-lukas.bulwahn@redhat.com>
-References: <20260112125432.61218-1-lukas.bulwahn@redhat.com>
+Subject: [PATCH AUTOSEL 6.18-5.15] netfilter: replace -EEXIST with -EBUSY
+Date: Mon, 12 Jan 2026 09:58:14 -0500
+Message-ID: <20260112145840.724774-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260112145840.724774-1-sashal@kernel.org>
+References: <20260112145840.724774-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.18.5
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+From: Daniel Gomez <da.gomez@samsung.com>
 
-The config options NF_LOG_{ARP,IPV4,IPV6} are deprecated and they only
-exist to ensure that older kernel configurations would enable the
-replacement config option NF_LOG_SYSLOG. To step towards eventually
-removing the definitions of these deprecated config options from the kernel
-tree, update the s390 kernel configurations to set NF_LOG_SYSLOG and drop
-the deprecated config options.
+[ Upstream commit 2bafeb8d2f380c3a81d98bd7b78b854b564f9cd4 ]
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+The -EEXIST error code is reserved by the module loading infrastructure
+to indicate that a module is already loaded. When a module's init
+function returns -EEXIST, userspace tools like kmod interpret this as
+"module already loaded" and treat the operation as successful, returning
+0 to the user even though the module initialization actually failed.
+
+Replace -EEXIST with -EBUSY to ensure correct error reporting in the module
+initialization path.
+
+Affected modules:
+  * ebtable_broute ebtable_filter ebtable_nat arptable_filter
+  * ip6table_filter ip6table_mangle ip6table_nat ip6table_raw
+  * ip6table_security iptable_filter iptable_mangle iptable_nat
+  * iptable_raw iptable_security
+
+Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/configs/debug_defconfig | 2 +-
- arch/s390/configs/defconfig       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
-index 4be3a7540909..93721ca340c1 100644
---- a/arch/s390/configs/debug_defconfig
-+++ b/arch/s390/configs/debug_defconfig
-@@ -176,6 +176,7 @@ CONFIG_NETFILTER=y
- CONFIG_BRIDGE_NETFILTER=m
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-+CONFIG_NF_LOG_SYSLOG=m
- CONFIG_NF_CONNTRACK_SECMARK=y
- CONFIG_NF_CONNTRACK_ZONES=y
- CONFIG_NF_CONNTRACK_PROCFS=y
-@@ -327,7 +328,6 @@ CONFIG_IP_VS_FTP=m
- CONFIG_IP_VS_PE_SIP=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
--CONFIG_NF_LOG_IPV4=m
- CONFIG_IP_NF_IPTABLES=m
- CONFIG_IP_NF_MATCH_AH=m
- CONFIG_IP_NF_MATCH_ECN=m
-diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
-index c064e0cacc98..7750f333a1ac 100644
---- a/arch/s390/configs/defconfig
-+++ b/arch/s390/configs/defconfig
-@@ -167,6 +167,7 @@ CONFIG_NETFILTER=y
- CONFIG_BRIDGE_NETFILTER=m
- CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
-+CONFIG_NF_LOG_SYSLOG=m
- CONFIG_NF_CONNTRACK_SECMARK=y
- CONFIG_NF_CONNTRACK_ZONES=y
- CONFIG_NF_CONNTRACK_PROCFS=y
-@@ -318,7 +319,6 @@ CONFIG_IP_VS_FTP=m
- CONFIG_IP_VS_PE_SIP=m
- CONFIG_NFT_FIB_IPV4=m
- CONFIG_NF_TABLES_ARP=y
--CONFIG_NF_LOG_IPV4=m
- CONFIG_IP_NF_IPTABLES=m
- CONFIG_IP_NF_MATCH_AH=m
- CONFIG_IP_NF_MATCH_ECN=m
+LLM Generated explanations, may be completely bogus:
+
+## Commit Analysis: netfilter: replace -EEXIST with -EBUSY
+
+### 1. COMMIT MESSAGE ANALYSIS
+
+The commit explains a subtle but important bug in error reporting:
+- When module initialization returns `-EEXIST`, the kernel module
+  loading infrastructure (kmod) interprets this as "module already
+  loaded"
+- kmod then returns **success (0)** to userspace, even though the module
+  initialization actually **failed**
+- This creates a silent failure condition where users believe operations
+  succeeded when they didn't
+
+Keywords: "error reporting", "failed" - this is a bug fix, not a
+feature.
+
+### 2. CODE CHANGE ANALYSIS
+
+The changes are trivial and identical across three files:
+
+**net/bridge/netfilter/ebtables.c** (`ebt_register_template()`):
+```c
+- return -EEXIST;
++                       return -EBUSY;
+```
+
+**net/netfilter/nf_log.c** (`nf_log_register()`):
+```c
+- ret = -EEXIST;
++                       ret = -EBUSY;
+```
+
+**net/netfilter/x_tables.c** (`xt_register_template()`):
+```c
+- int ret = -EEXIST, af = table->af;
++       int ret = -EBUSY, af = table->af;
+```
+
+All three functions are registration routines called during module
+initialization for netfilter tables. When a duplicate name/type is
+detected, they were returning `-EEXIST`, which gets misinterpreted by
+kmod.
+
+### 3. CLASSIFICATION
+
+**Bug fix**: Corrects error code semantics. No new functionality, no
+behavior change beyond proper error reporting.
+
+The `-EBUSY` error code is semantically appropriate ("resource is
+busy/in use") and is not intercepted specially by the module loading
+infrastructure.
+
+### 4. SCOPE AND RISK ASSESSMENT
+
+- **Lines changed**: ~6 actual code changes
+- **Files affected**: 3 files in netfilter subsystem
+- **Complexity**: Trivial - only changing error code constants
+- **Risk**: Extremely low - no logic changes at all
+
+The only conceivable concern would be if userspace depended on
+`-EEXIST`, but:
+1. These are internal kernel registration functions
+2. The duplicate condition should never occur in normal operation (note
+   the `WARN_ON_ONCE`)
+3. The current behavior is **wrong** - it reports success on failure
+
+### 5. USER IMPACT
+
+**High impact bug**:
+- Affects all netfilter/iptables users when module initialization fails
+- Security implications: Users may believe their firewall tables loaded
+  successfully when they didn't
+- Affected modules include: `iptable_filter`, `iptable_nat`,
+  `ip6table_filter`, `ebtable_filter`, etc. - core firewall components
+
+This is exactly the kind of silent failure that can cause security
+issues in production.
+
+### 6. STABILITY INDICATORS
+
+- Signed-off-by: Florian Westphal (netfilter maintainer) - indicates
+  proper review
+- The fix is self-evidently correct
+- Clear problem description in commit message
+
+### 7. DEPENDENCY CHECK
+
+- No dependencies on other commits
+- The affected code (netfilter table registration) exists in all stable
+  kernel trees
+- These are long-standing, mature functions
+
+### Summary
+
+| Criterion | Assessment |
+|-----------|------------|
+| Fixes real bug? | ✅ Yes - silent failure condition |
+| Obviously correct? | ✅ Yes - trivial error code change |
+| Small and contained? | ✅ Yes - 6 lines across 3 files |
+| Security relevant? | ✅ Yes - firewall may silently fail to load |
+| Risk of regression? | ✅ Minimal - no logic changes |
+| Dependencies? | ✅ None - self-contained |
+
+This commit fixes incorrect error semantics that cause userspace tools
+to report success when module initialization fails. The fix is trivial
+(changing error codes), affects widely-used firewall code, has potential
+security implications (users may not know their firewall failed), and
+carries virtually zero regression risk. It meets all stable kernel
+criteria.
+
+**YES**
+
+ net/bridge/netfilter/ebtables.c | 2 +-
+ net/netfilter/nf_log.c          | 4 ++--
+ net/netfilter/x_tables.c        | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index 5697e3949a365..a04fc17575289 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -1299,7 +1299,7 @@ int ebt_register_template(const struct ebt_table *t, int (*table_init)(struct ne
+ 	list_for_each_entry(tmpl, &template_tables, list) {
+ 		if (WARN_ON_ONCE(strcmp(t->name, tmpl->name) == 0)) {
+ 			mutex_unlock(&ebt_mutex);
+-			return -EEXIST;
++			return -EBUSY;
+ 		}
+ 	}
+ 
+diff --git a/net/netfilter/nf_log.c b/net/netfilter/nf_log.c
+index 74cef8bf554c5..62cf6a30875e3 100644
+--- a/net/netfilter/nf_log.c
++++ b/net/netfilter/nf_log.c
+@@ -89,7 +89,7 @@ int nf_log_register(u_int8_t pf, struct nf_logger *logger)
+ 	if (pf == NFPROTO_UNSPEC) {
+ 		for (i = NFPROTO_UNSPEC; i < NFPROTO_NUMPROTO; i++) {
+ 			if (rcu_access_pointer(loggers[i][logger->type])) {
+-				ret = -EEXIST;
++				ret = -EBUSY;
+ 				goto unlock;
+ 			}
+ 		}
+@@ -97,7 +97,7 @@ int nf_log_register(u_int8_t pf, struct nf_logger *logger)
+ 			rcu_assign_pointer(loggers[i][logger->type], logger);
+ 	} else {
+ 		if (rcu_access_pointer(loggers[pf][logger->type])) {
+-			ret = -EEXIST;
++			ret = -EBUSY;
+ 			goto unlock;
+ 		}
+ 		rcu_assign_pointer(loggers[pf][logger->type], logger);
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 90b7630421c44..48105ea3df152 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1764,7 +1764,7 @@ EXPORT_SYMBOL_GPL(xt_hook_ops_alloc);
+ int xt_register_template(const struct xt_table *table,
+ 			 int (*table_init)(struct net *net))
+ {
+-	int ret = -EEXIST, af = table->af;
++	int ret = -EBUSY, af = table->af;
+ 	struct xt_template *t;
+ 
+ 	mutex_lock(&xt[af].mutex);
 -- 
-2.52.0
+2.51.0
 
 
