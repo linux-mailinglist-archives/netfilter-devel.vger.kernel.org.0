@@ -1,33 +1,33 @@
-Return-Path: <netfilter-devel+bounces-10247-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10249-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD67D170FA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Jan 2026 08:45:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8841FD1710F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Jan 2026 08:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E3764304A7D1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Jan 2026 07:44:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 26B4630671F7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Jan 2026 07:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5CF36AB68;
-	Tue, 13 Jan 2026 07:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817F136B069;
+	Tue, 13 Jan 2026 07:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R6IOYhGm";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="spBIs+81"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Zj0PrUHF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qxJrYsmu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786D031ED70;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC64336923C;
 	Tue, 13 Jan 2026 07:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768290272; cv=none; b=ZPGiJCTR2cQYJeLVlsjIfV5J5NUN35o81peNOexJ3334QiXVAECSlfVGQMsR6HuNqtVZl4Qyf6aFtTJGPr0S/c5o5MIz8msulvDFHgAuOS23x7Sbj2f3BpZ8sCUBAwZ+jmaqFPPzQr3RpvN4qH1ShKBXIdnAUCquYgHzDyOvyZ4=
+	t=1768290273; cv=none; b=GdfPlxpnJnMqkM7fiTINh5/fFlPvD3TdJ7mac4/hfTgrR97mDsIJEwvDo32MAvvw0QAkga3d2sigE5RBmGH/2cQnU0JQIIiP5T+y/SbQppBC64997MXyMTcQ4tqo/COA8ldfs7rfWDt7Viz3KEo1JYrGz7q8BDb0ufyPdPY+SoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768290272; c=relaxed/simple;
-	bh=iANGX4Q6qxYVZYRU4b03ddO8t8QVAF0+rAdnajHaGbw=;
+	s=arc-20240116; t=1768290273; c=relaxed/simple;
+	bh=PiXWlRzlJeK5UccL9Dj6vkQrMeQL9oQzSnOYnGFCi+M=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=cmU8DNhJfss7c83Kpi/EYoHhZrUFgozoqGoU6ORie8ntqbv9FW+ZhrPeonlMBjPLtAY6XYm3AJ1RuIIHY3iBAEVhzgb/BNnws28jHjCBobyqSaTWqaRdO1gWop+jLVnoKUfltBWpPHfrAyx3dcJeIajOMXpbJdg+VOmhowKVaUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R6IOYhGm; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=spBIs+81; arc=none smtp.client-ip=193.142.43.55
+	 In-Reply-To:To:Cc; b=hB8gtoKQkpC4cbC45nbjT7+HjIkhZ+/ycds701AnscLBuGP0pWcyT0iGDA/4xadKQGTdz25TceDDWi6z8FFqrnWx9hLHIjbnAFrwc2Nh+7wIWeRG7MDrJhjUWwCOIsLNItZ78oYw82ocRomsJMOF9KEUtBhjm8HZcXWP3cQsLn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Zj0PrUHF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qxJrYsmu; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
@@ -37,23 +37,24 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MWlu9Xbv+hyXYq41qjpldmiCRJPs3xJjYejVCpWHTEo=;
-	b=R6IOYhGmf4ezmbVBSysqxJhT6qASkoNfCcM9S14nMcs3tg+unmIFbJ56Vzr6Ucm1glKYoM
-	ZIwNfTQFkFSs4D//vWUHb1lsHukpmzLYMJXKhCSFAsjfq3zdh01R6+21+d4A7kSKZYGz5i
-	j4AoTnFU8pJIJys7CxNzJeKA7VuoDOKK2QEzp6HWmpXL6XOAOG7JU4zZkyTd37JY4pXiLq
-	JtiKQPZ3T+XM+ZTLb6PeMnqih+x07eDUjgUr9fHAJYegxZQOtoz8i99nHWLv6qcvxkXWi1
-	8ypRM4UWmubbx89faAoh41PxFLGFG6+hXRhZAxwyE/CxF+i05yw70bXoxkQL8Q==
+	bh=CATNf43k7lDUdxCdh5W4SCAQ+bvuoNSzySPQEKtH3DY=;
+	b=Zj0PrUHFVqT/7X+glJOtyK+wgxs2/VBfBe/THvh5C91s+4tEF17mNPGxtw1If4MRU9i0V5
+	Q/sZef5Pqw4oHz1ZMnMZI7EHIhYtusI/TFaVqV9GE+ZSBmUOBnh+aslYpfJc5sWa347yh7
+	fw3zBhYN3thr8/gn/MHBANzuszS1nYmNja5WeOZ+C62hjzMlh6wvqLYXtsYUtgM/B6XlmJ
+	LMoklcpaQJj9cAShTye0HvzdLjNg7dTUlJaWcXUZicQybdYN+ORnElE/e6VLzUe1EvKhO3
+	xrYugi+FoV8jg171ALRg0L9zTDILYfGmEG+OrB3+FxwwiX5fQkjCHHUVs05DAQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1768290264;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MWlu9Xbv+hyXYq41qjpldmiCRJPs3xJjYejVCpWHTEo=;
-	b=spBIs+81E2CgSWm37WQ/fCFk39/8lchOG8YhFLDdiwXf6BHdoHDelDvpKE7EOXZ0XItjzp
-	RgAJ41nHKalHEUBA==
-Date: Tue, 13 Jan 2026 08:44:18 +0100
-Subject: [PATCH v2 2/3] ethtool: uapi: Use UAPI definition of INT_MAX
+	bh=CATNf43k7lDUdxCdh5W4SCAQ+bvuoNSzySPQEKtH3DY=;
+	b=qxJrYsmujF+GKslLxHWBgDP3rig/D8KYlYF7+2I2fFXLZSB+5KejWNPqVmS6vFsPr/wQ3F
+	GZZltNNO5Idz6uDg==
+Date: Tue, 13 Jan 2026 08:44:19 +0100
+Subject: [PATCH v2 3/3] netfilter: uapi: Use UAPI definition of INT_MAX and
+ INT_MIN
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -62,7 +63,7 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260113-uapi-limits-v2-2-93c20f4b2c1a@linutronix.de>
+Message-Id: <20260113-uapi-limits-v2-3-93c20f4b2c1a@linutronix.de>
 References: <20260113-uapi-limits-v2-0-93c20f4b2c1a@linutronix.de>
 In-Reply-To: <20260113-uapi-limits-v2-0-93c20f4b2c1a@linutronix.de>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -75,52 +76,133 @@ Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, 
  coreteam@netfilter.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768290260; l=1199;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1768290260; l=3556;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=iANGX4Q6qxYVZYRU4b03ddO8t8QVAF0+rAdnajHaGbw=;
- b=zkhqxKjVk6PtpV5RIZGdqM5hrdB4PS5fKBYmSgcbha2Ru2pXGRUwVrQJnhbVk15ZeBrmrKYbz
- DpE/h/ut1JzAAEk248OwzdJfTwv1Xb08X2x8YVYq8ZSGVsuvxUZeQc4
+ bh=PiXWlRzlJeK5UccL9Dj6vkQrMeQL9oQzSnOYnGFCi+M=;
+ b=O5/YIHmfA+tkMPardK86a3f09MW7umL83vyt0VTLhkFR4KMGrfMUP7oVHxsM0dfO5gK37RJFN
+ BFp/1To6A0jCVuIkXAJ3vLvQ0WcFesksUGYNkwfoJz2hrASy54Gpojw
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-Using <limits.h> to gain access to INT_MAX introduces a dependency on a
-libc, which UAPI headers should not do.
+Using <limits.h> to gain access to INT_MAX and INT_MIN introduces a
+dependency on a libc, which UAPI headers should not do.
 
-Use the equivalent UAPI constant.
+Use the equivalent UAPI constants.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- include/uapi/linux/ethtool.h | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ include/uapi/linux/netfilter_bridge.h | 9 +++------
+ include/uapi/linux/netfilter_ipv4.h   | 9 ++++-----
+ include/uapi/linux/netfilter_ipv6.h   | 7 +++----
+ 3 files changed, 10 insertions(+), 15 deletions(-)
 
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index eb7ff2602fbb..70a0ef08f6f5 100644
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -15,13 +15,10 @@
- #define _UAPI_LINUX_ETHTOOL_H
- 
- #include <linux/const.h>
-+#include <linux/typelimits.h>
- #include <linux/types.h>
+diff --git a/include/uapi/linux/netfilter_bridge.h b/include/uapi/linux/netfilter_bridge.h
+index 1610fdbab98d..f6e8d1e05c97 100644
+--- a/include/uapi/linux/netfilter_bridge.h
++++ b/include/uapi/linux/netfilter_bridge.h
+@@ -10,10 +10,7 @@
  #include <linux/if_ether.h>
- 
--#ifndef __KERNEL__
--#include <limits.h> /* for INT_MAX */
--#endif
+ #include <linux/if_vlan.h>
+ #include <linux/if_pppox.h>
 -
- /* All structures exposed to userland should be defined such that they
-  * have the same layout for 32-bit and 64-bit userland.
-  */
-@@ -2200,7 +2197,7 @@ enum ethtool_link_mode_bit_indices {
+-#ifndef __KERNEL__
+-#include <limits.h> /* for INT_MIN, INT_MAX */
+-#endif
++#include <linux/typelimits.h>
  
- static inline int ethtool_validate_speed(__u32 speed)
- {
--	return speed <= INT_MAX || speed == (__u32)SPEED_UNKNOWN;
-+	return speed <= __KERNEL_INT_MAX || speed == (__u32)SPEED_UNKNOWN;
- }
+ /* Bridge Hooks */
+ /* After promisc drops, checksum checks. */
+@@ -31,14 +28,14 @@
+ #define NF_BR_NUMHOOKS		6
  
- /* Duplex, half or full. */
+ enum nf_br_hook_priorities {
+-	NF_BR_PRI_FIRST = INT_MIN,
++	NF_BR_PRI_FIRST = __KERNEL_INT_MIN,
+ 	NF_BR_PRI_NAT_DST_BRIDGED = -300,
+ 	NF_BR_PRI_FILTER_BRIDGED = -200,
+ 	NF_BR_PRI_BRNF = 0,
+ 	NF_BR_PRI_NAT_DST_OTHER = 100,
+ 	NF_BR_PRI_FILTER_OTHER = 200,
+ 	NF_BR_PRI_NAT_SRC = 300,
+-	NF_BR_PRI_LAST = INT_MAX,
++	NF_BR_PRI_LAST = __KERNEL_INT_MAX,
+ };
+ 
+ #endif /* _UAPI__LINUX_BRIDGE_NETFILTER_H */
+diff --git a/include/uapi/linux/netfilter_ipv4.h b/include/uapi/linux/netfilter_ipv4.h
+index 155e77d6a42d..439d3c59862b 100644
+--- a/include/uapi/linux/netfilter_ipv4.h
++++ b/include/uapi/linux/netfilter_ipv4.h
+@@ -7,12 +7,11 @@
+ 
+ 
+ #include <linux/netfilter.h>
++#include <linux/typelimits.h>
+ 
+ /* only for userspace compatibility */
+ #ifndef __KERNEL__
+ 
+-#include <limits.h> /* for INT_MIN, INT_MAX */
+-
+ /* IP Hooks */
+ /* After promisc drops, checksum checks. */
+ #define NF_IP_PRE_ROUTING	0
+@@ -28,7 +27,7 @@
+ #endif /* ! __KERNEL__ */
+ 
+ enum nf_ip_hook_priorities {
+-	NF_IP_PRI_FIRST = INT_MIN,
++	NF_IP_PRI_FIRST = __KERNEL_INT_MIN,
+ 	NF_IP_PRI_RAW_BEFORE_DEFRAG = -450,
+ 	NF_IP_PRI_CONNTRACK_DEFRAG = -400,
+ 	NF_IP_PRI_RAW = -300,
+@@ -41,8 +40,8 @@ enum nf_ip_hook_priorities {
+ 	NF_IP_PRI_NAT_SRC = 100,
+ 	NF_IP_PRI_SELINUX_LAST = 225,
+ 	NF_IP_PRI_CONNTRACK_HELPER = 300,
+-	NF_IP_PRI_CONNTRACK_CONFIRM = INT_MAX,
+-	NF_IP_PRI_LAST = INT_MAX,
++	NF_IP_PRI_CONNTRACK_CONFIRM = __KERNEL_INT_MAX,
++	NF_IP_PRI_LAST = __KERNEL_INT_MAX,
+ };
+ 
+ /* Arguments for setsockopt SOL_IP: */
+diff --git a/include/uapi/linux/netfilter_ipv6.h b/include/uapi/linux/netfilter_ipv6.h
+index 80aa9b0799af..0e40d00b37fa 100644
+--- a/include/uapi/linux/netfilter_ipv6.h
++++ b/include/uapi/linux/netfilter_ipv6.h
+@@ -10,12 +10,11 @@
+ 
+ 
+ #include <linux/netfilter.h>
++#include <linux/typelimits.h>
+ 
+ /* only for userspace compatibility */
+ #ifndef __KERNEL__
+ 
+-#include <limits.h> /* for INT_MIN, INT_MAX */
+-
+ /* IP6 Hooks */
+ /* After promisc drops, checksum checks. */
+ #define NF_IP6_PRE_ROUTING	0
+@@ -32,7 +31,7 @@
+ 
+ 
+ enum nf_ip6_hook_priorities {
+-	NF_IP6_PRI_FIRST = INT_MIN,
++	NF_IP6_PRI_FIRST = __KERNEL_INT_MIN,
+ 	NF_IP6_PRI_RAW_BEFORE_DEFRAG = -450,
+ 	NF_IP6_PRI_CONNTRACK_DEFRAG = -400,
+ 	NF_IP6_PRI_RAW = -300,
+@@ -45,7 +44,7 @@ enum nf_ip6_hook_priorities {
+ 	NF_IP6_PRI_NAT_SRC = 100,
+ 	NF_IP6_PRI_SELINUX_LAST = 225,
+ 	NF_IP6_PRI_CONNTRACK_HELPER = 300,
+-	NF_IP6_PRI_LAST = INT_MAX,
++	NF_IP6_PRI_LAST = __KERNEL_INT_MAX,
+ };
+ 
+ 
 
 -- 
 2.52.0
