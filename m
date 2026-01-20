@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-10335-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10336-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6CMjHOfob2lhUQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10335-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 21:43:19 +0100
+	id kEvaDZTzb2m+UQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10336-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 22:28:52 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390824B808
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 21:43:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C2A4C41A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 22:28:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4B33B7E67B7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 19:18:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C7A74AA78D3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 19:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9C8477E48;
-	Tue, 20 Jan 2026 19:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A65478860;
+	Tue, 20 Jan 2026 19:18:20 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0883477E52;
-	Tue, 20 Jan 2026 19:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36938478841;
+	Tue, 20 Jan 2026 19:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768936695; cv=none; b=R8QGKCoy2TBW08OLCCLTtufSoWfVIfmUkO3ShP+xNsO8zBqnBOCDjBkH1ZJXJVVgnjKLxFG1HFBINqLqhZEtseP+Zc5p2f4USEJAU2CKfBGeuTYnxHuew43f/YuYZ0xJNvWoMxCkiF8OKdKfhDkeUAAeq/QtS1mXnD00uUx0AWs=
+	t=1768936699; cv=none; b=M1EFHcYAMBEk8P8IhbZQWcffs3el7M8w2qmc+wfeuW2mKwBnmfSroZSaDqzAno4fIqA/LM94h0bK1U/G3UG6XEAj7wcU61xtEfOawODimBQkDiW4vJuzKUbeLPOS2q+OibAF1n+2Nvb3xh6OjcKLqwdKqqcOhMfvzMX1xV6N9SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768936695; c=relaxed/simple;
-	bh=eCXB0RWsX+4MLQ7ThLb9Jwejv1CxviNUkA/L+MKp1pw=;
+	s=arc-20240116; t=1768936699; c=relaxed/simple;
+	bh=eW563qpwKCDct05uBuv+qaimQOkppWUpauty7RhA68c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nTE/KaR9zCwi1DBekJe1Pn/1Ha5m07dVqA+u/aYZFeedmDzN8YRucqRnFaX3ivqSFUOOzBnGDr+JA7qUlarqHYVr5P0olCQfvoyg4K/OmRKY3pjx1mnP1kpbGNU0aaY+rvYd2dNiKHEKaFudUg96nYfpAA2Kvj2WXBOpli6NwxQ=
+	 MIME-Version; b=Hs8FHLwLgwa71q09VavA4NJ52xj9CNbvlmekRyd0lCjF7HL08Kly2d+rlCP/ZlKVjvrAPXSYplRTr9H4sBA5HqeoE8QU+5723PVzsASM/ZVAN0+7ditfsxpFSMnBor8hxA9aowl4emZ+aBrRgrGyim+cZu3VHYOlb5qKhf9zK6A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 9F2FB602AB; Tue, 20 Jan 2026 20:18:11 +0100 (CET)
+	id ED45F602AB; Tue, 20 Jan 2026 20:18:15 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 01/10] netfilter: nf_tables: reset table validation state on abort
-Date: Tue, 20 Jan 2026 20:17:54 +0100
-Message-ID: <20260120191803.22208-2-fw@strlen.de>
+Subject: [PATCH net-next 02/10] netfilter: nf_conntrack: Add allow_clash to generic protocol handler
+Date: Tue, 20 Jan 2026 20:17:55 +0100
+Message-ID: <20260120191803.22208-3-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260120191803.22208-1-fw@strlen.de>
 References: <20260120191803.22208-1-fw@strlen.de>
@@ -66,7 +66,7 @@ X-Spamd-Result: default: False [0.24 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -79,58 +79,42 @@ X-Spamd-Result: default: False [0.24 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_FROM(0.00)[bounces-10335-lists,netfilter-devel=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,strlen.de:email,strlen.de:mid]
-X-Rspamd-Queue-Id: 390824B808
+	TAGGED_FROM(0.00)[bounces-10336-lists,netfilter-devel=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,strlen.de:email,strlen.de:mid,mitsubishielectric.co.jp:email]
+X-Rspamd-Queue-Id: 92C2A4C41A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-If a transaction fails the final validation in the commit hook, the table
-validation state is changed to NFT_VALIDATE_DO and a replay of the batch is
-performed.  Every rule insert will then do a graph validation.
+From: Yuto Hamaguchi <Hamaguchi.Yuto@da.MitsubishiElectric.co.jp>
 
-This is much slower, but provides better error reporting to the user
-because we can point at the rule that introduces the validation issue.
+The upstream commit, 71d8c47fc653711c41bc3282e5b0e605b3727956
+ ("netfilter: conntrack: introduce clash resolution on insertion race"),
+sets allow_clash=true in the UDP/UDPLITE protocol handler
+but does not set it in the generic protocol handler.
 
-Without this reset the affected table(s) remain in full validation mode,
-i.e. on next transaction we start with slow-mode.
+As a result, packets composed of connectionless protocols at each layer,
+such as UDP over IP-in-IP, still drop packets due to conflicts during conntrack insertion.
 
-This makes the next transaction after a failed incremental update very slow:
+To resolve this, this patch sets allow_clash in the nf_conntrack_l4proto_generic.
 
- # time iptables-restore < /tmp/ruleset
- real    0m0.496s [..]
- # time iptables -A CALLEE -j CALLER
- iptables v1.8.11 (nf_tables):  RULE_APPEND failed (Too many links): rule in chain CALLEE
- real    0m0.022s [..]
- # time iptables-restore < /tmp/ruleset
- real    1m22.355s [..]
-
-After this patch, 2nd iptables-restore is back to ~0.5s.
-
-Fixes: 9a32e9850686 ("netfilter: nf_tables: don't write table validation state without mutex")
+Signed-off-by: Yuto Hamaguchi <Hamaguchi.Yuto@da.MitsubishiElectric.co.jp>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_tables_api.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/netfilter/nf_conntrack_proto_generic.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 729a92781a1a..027bab30c238 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -11536,6 +11536,13 @@ static int nf_tables_abort(struct net *net, struct sk_buff *skb,
- 	ret = __nf_tables_abort(net, action);
- 	nft_gc_seq_end(nft_net, gc_seq);
- 
-+	if (action == NFNL_ABORT_NONE) {
-+		struct nft_table *table;
-+
-+		list_for_each_entry(table, &nft_net->tables, list)
-+			table->validate_state = NFT_VALIDATE_SKIP;
-+	}
-+
- 	WARN_ON_ONCE(!list_empty(&nft_net->commit_list));
- 
- 	/* module autoload needs to happen after GC sequence update because it
+diff --git a/net/netfilter/nf_conntrack_proto_generic.c b/net/netfilter/nf_conntrack_proto_generic.c
+index e831637bc8ca..cb260eb3d012 100644
+--- a/net/netfilter/nf_conntrack_proto_generic.c
++++ b/net/netfilter/nf_conntrack_proto_generic.c
+@@ -67,6 +67,7 @@ void nf_conntrack_generic_init_net(struct net *net)
+ const struct nf_conntrack_l4proto nf_conntrack_l4proto_generic =
+ {
+ 	.l4proto		= 255,
++	.allow_clash            = true,
+ #ifdef CONFIG_NF_CONNTRACK_TIMEOUT
+ 	.ctnl_timeout		= {
+ 		.nlattr_to_obj	= generic_timeout_nlattr_to_obj,
 -- 
 2.52.0
 
