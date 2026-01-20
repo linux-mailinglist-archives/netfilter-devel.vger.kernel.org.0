@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-10342-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10343-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wMaQLtHbb2n8RwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10342-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 20:47:29 +0100
+	id mACqCEHdb2n8RwAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10343-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 20:53:37 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A27D4AB1D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 20:47:29 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A04B4AD31
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 20:53:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E2B6884ABFB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 19:19:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 21801AA8DD5
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 19:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E16478878;
-	Tue, 20 Jan 2026 19:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7098347AF5E;
+	Tue, 20 Jan 2026 19:18:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E5847AF45;
-	Tue, 20 Jan 2026 19:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C5447AF5A;
+	Tue, 20 Jan 2026 19:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768936725; cv=none; b=iacAL4xKfNJuFYjqXxDt7zBZ6fH55KWkQutGljO5mOt03adM7gmjiOw9cS6c9DvaDbG5uzAgT/HJwuMF/8aaZw2V3trgjXm8RKzd5eK2QnAfXYQxI/tXxFZnRTx6VGTp24m9IWX+2m4ygr0PgXpxtL6ElMQSobVejbr4AbeIABo=
+	t=1768936731; cv=none; b=gTSjQmCw0XCOHGkbEeGZB7nf97X/m7wQ9At+Zht9Su5OFYz6wGutmLD2GqR0OcAuTyBM+p877F3g8o6n+W1ljnsfQQ6wRu+IfXlfcBD2eab+I2xzEbSLk94yId3+ZlMHkldagipv8AQwKrvGlxzo/CeL9HOuBXWZcG7YHeoH1qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768936725; c=relaxed/simple;
-	bh=fh3ylUracZE3S3+kd/fT7fdkgKwSmLFGvfxPyzGPiho=;
+	s=arc-20240116; t=1768936731; c=relaxed/simple;
+	bh=PiEaFUw1J73EEBpoA9Rv5rSIH5ZrYlIpelRW9KDySb0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JdaOCLgYrrS56I16KFhfr4jIMIY89w7/3iNRNQ1jpmh2vnJGQawnTDtbAokYmkvQFMobZnCC5zNmnzDIbKdgYtUyAD5DZ3c/hETL5dbT5hNX51eyAlLv6/I6gGmPfTtagGkZXaW4Ms0Y9vk13qufeRwy1a0MespTqHmkK2U9nao=
+	 MIME-Version; b=dFNWmGVfOYt5h/p3a1g0ziYmvk3tP7/jc910Rt0Q22sqIPx0umNaDTFfRz0BwIwxs0H8L8ZyY42Ms7f5VoQPsqFnZiBiBuy5VwI5ajIyIAa4k8IwZpL5fzNDEOz+ZvY6OeW5izAO/riHHHJG56dOykXimLLJx/htYHWx8DsoSOk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id E718A60854; Tue, 20 Jan 2026 20:18:41 +0100 (CET)
+	id 44CA260875; Tue, 20 Jan 2026 20:18:46 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 08/10] netfilter: nft_compat: add more restrictions on netlink attributes
-Date: Tue, 20 Jan 2026 20:18:01 +0100
-Message-ID: <20260120191803.22208-9-fw@strlen.de>
+Subject: [PATCH net-next 09/10] netfilter: nf_conncount: fix tracking of connections from localhost
+Date: Tue, 20 Jan 2026 20:18:02 +0100
+Message-ID: <20260120191803.22208-10-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260120191803.22208-1-fw@strlen.de>
 References: <20260120191803.22208-1-fw@strlen.de>
@@ -66,7 +66,7 @@ X-Spamd-Result: default: False [0.24 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -79,70 +79,70 @@ X-Spamd-Result: default: False [0.24 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_FROM(0.00)[bounces-10342-lists,netfilter-devel=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,suse.de:email]
-X-Rspamd-Queue-Id: 6A27D4AB1D
+	TAGGED_FROM(0.00)[bounces-10343-lists,netfilter-devel=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,strlen.de:email,strlen.de:mid,suse.de:email]
+X-Rspamd-Queue-Id: 7A04B4AD31
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-As far as I can see nothing bad can happen when NFTA_TARGET/MATCH_NAME
-are too large because this calls x_tables helpers which check for the
-length, but it seems better to already reject it during netlink parsing.
+From: Fernando Fernandez Mancera <fmancera@suse.de>
 
-Rest of the changes avoid silent u8/u16 truncations.
+Since commit be102eb6a0e7 ("netfilter: nf_conncount: rework API to use
+sk_buff directly"), we skip the adding and trigger a GC when the ct is
+confirmed. For connections originated from local to local it doesn't
+work because the connection is confirmed on POSTROUTING, therefore
+tracking on the INPUT hook is always skipped.
 
-For _TYPE, its expected to be only 1 or 0. In x_tables world, this
-variable is set by kernel, for IPT_SO_GET_REVISION_TARGET its 1, for
-all others its set to 0.
+In order to fix this, we check whether skb input ifindex is set to
+loopback ifindex. If it is then we fallback on a GC plus track operation
+skipping the optimization. This fallback is necessary to avoid
+duplicated tracking of a packet train e.g 10 UDP datagrams sent on a
+burst when initiating the connection.
 
-As older versions of nf_tables permitted any value except 1 to mean 'match',
-keep this as-is but sanitize the value for consistency.
+Tested with xt_connlimit/nft_connlimit and OVS limit and with a HTTP
+server and iperf3 on UDP mode.
 
-Fixes: 0ca743a55991 ("netfilter: nf_tables: add compatibility layer for x_tables")
-Reviewed-by: Fernando Fernandez Mancera <fmancera@suse.de>
+Fixes: be102eb6a0e7 ("netfilter: nf_conncount: rework API to use sk_buff directly")
+Reported-by: Michal Slabihoudek <michal.slabihoudek@gooddata.com>
+Closes: https://lore.kernel.org/netfilter/6989BD9F-8C24-4397-9AD7-4613B28BF0DB@gooddata.com/
+Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_compat.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ net/netfilter/nf_conncount.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
-index 72711d62fddf..08f620311b03 100644
---- a/net/netfilter/nft_compat.c
-+++ b/net/netfilter/nft_compat.c
-@@ -134,7 +134,8 @@ static void nft_target_eval_bridge(const struct nft_expr *expr,
- }
+diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
+index 288936f5c1bf..14e62b3263cd 100644
+--- a/net/netfilter/nf_conncount.c
++++ b/net/netfilter/nf_conncount.c
+@@ -179,14 +179,25 @@ static int __nf_conncount_add(struct net *net,
+ 		return -ENOENT;
  
- static const struct nla_policy nft_target_policy[NFTA_TARGET_MAX + 1] = {
--	[NFTA_TARGET_NAME]	= { .type = NLA_NUL_STRING },
-+	[NFTA_TARGET_NAME]	= { .type = NLA_NUL_STRING,
-+				    .len = XT_EXTENSION_MAXNAMELEN, },
- 	[NFTA_TARGET_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
- 	[NFTA_TARGET_INFO]	= { .type = NLA_BINARY },
- };
-@@ -434,7 +435,8 @@ static void nft_match_eval(const struct nft_expr *expr,
- }
+ 	if (ct && nf_ct_is_confirmed(ct)) {
+-		err = -EEXIST;
+-		goto out_put;
++		/* local connections are confirmed in postrouting so confirmation
++		 * might have happened before hitting connlimit
++		 */
++		if (skb->skb_iif != LOOPBACK_IFINDEX) {
++			err = -EEXIST;
++			goto out_put;
++		}
++
++		/* this is likely a local connection, skip optimization to avoid
++		 * adding duplicates from a 'packet train'
++		 */
++		goto check_connections;
+ 	}
  
- static const struct nla_policy nft_match_policy[NFTA_MATCH_MAX + 1] = {
--	[NFTA_MATCH_NAME]	= { .type = NLA_NUL_STRING },
-+	[NFTA_MATCH_NAME]	= { .type = NLA_NUL_STRING,
-+				    .len = XT_EXTENSION_MAXNAMELEN },
- 	[NFTA_MATCH_REV]	= NLA_POLICY_MAX(NLA_BE32, 255),
- 	[NFTA_MATCH_INFO]	= { .type = NLA_BINARY },
- };
-@@ -693,7 +695,12 @@ static int nfnl_compat_get_rcu(struct sk_buff *skb,
+ 	if ((u32)jiffies == list->last_gc &&
+ 	    (list->count - list->last_gc_count) < CONNCOUNT_GC_MAX_COLLECT)
+ 		goto add_new_node;
  
- 	name = nla_data(tb[NFTA_COMPAT_NAME]);
- 	rev = ntohl(nla_get_be32(tb[NFTA_COMPAT_REV]));
--	target = ntohl(nla_get_be32(tb[NFTA_COMPAT_TYPE]));
-+	/* x_tables api checks for 'target == 1' to mean target,
-+	 * everything else means 'match'.
-+	 * In x_tables world, the number is set by kernel, not
-+	 * userspace.
-+	 */
-+	target = nla_get_be32(tb[NFTA_COMPAT_TYPE]) == htonl(1);
- 
- 	switch(family) {
- 	case AF_INET:
++check_connections:
+ 	/* check the saved connections */
+ 	list_for_each_entry_safe(conn, conn_n, &list->head, node) {
+ 		if (collect > CONNCOUNT_GC_MAX_COLLECT)
 -- 
 2.52.0
 
