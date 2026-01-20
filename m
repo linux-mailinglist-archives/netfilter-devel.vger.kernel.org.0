@@ -1,164 +1,119 @@
-Return-Path: <netfilter-devel+bounces-10330-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10332-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UMdjIIm/b2kOMQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10330-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 18:46:49 +0100
+	id 8KF7GmjEb2lsMQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10332-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 19:07:36 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D881A48CEB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 18:46:48 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06AD5491B1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 19:07:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B43F19A5879
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 15:10:57 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6B24E8071F1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 17:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885ED44DB76;
-	Tue, 20 Jan 2026 14:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F01940F8FC;
+	Tue, 20 Jan 2026 17:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nh0MObYu"
+	dkim=pass (2048-bit key) header.d=cs.put.poznan.pl header.i=@cs.put.poznan.pl header.b="eWHp5Hgq"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from libra.cs.put.poznan.pl (libra.cs.put.poznan.pl [150.254.30.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B81E43E496
-	for <netfilter-devel@vger.kernel.org>; Tue, 20 Jan 2026 14:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF04F3382DC
+	for <netfilter-devel@vger.kernel.org>; Tue, 20 Jan 2026 17:43:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.254.30.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768921014; cv=none; b=hldaXtOLb2vOpULHMxSVXjC9aoQq+25gL+rlFDtHRIN8sA0mX05RlqceuxEUBvun0splLpIEy7RqD7c0rZ6E5Jj5T8EDZ5Xj0g2Fft1Yi+gdcbXaz1mmCfb69MN7+MsTkWqsCJI7qzv7uTvw4qrHzwbcrsLysz2DftIb2V2VmWM=
+	t=1768931042; cv=none; b=HNdd4wWqvqJvGAYlPuGEso85sPNABYVG9YwQY5/QO1YG/7v0Ve+MkUpyqxP+B4v+XMD7Hus7AurWEue/+0t+7B/nZOdu7V7TOxXebDZASJeslfNnr9jKfCyNqvm6cp6NHi2QGHB99AsuHxudHcTw0iVBUPhwF5SmyfHeEWV5Ynw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768921014; c=relaxed/simple;
-	bh=XVX2ipQpgEWC+e+rtcAFUrhjiIrVjQK2wNe006V/sPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SPPm2SSgJmvbbWikROgzkXVDyur91qHf6d+xgHmu3dV56AcIiK3BBWgN7Mx+kn/mMlJTOrJHbiZ0w8H14e+L2Zxd+eyyhrj5OTpBZLysuqqWjN9Gs0XAgi5i7ERH8ajs/xcYqdAlAUIi5OSwSj4R1Reh73MeNEvEVdBTm1b77bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nh0MObYu; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=V4ayC4DY8gV2odPhv3kFpPlNJ0syd61K8cB5cQ3PhWk=; b=nh0MObYuAgf69fjDRmGDFvT4eX
-	61rl7OLSJ0mlO3KiVIl/DHHMMJT/8Ou2uK6eN1CFKYMZ1BAdtcHz9kVk0NW5Dp3mEIMUFtCe7FR1O
-	pX3BkLBnKVf11wbBF022LZvLtaPJSmLx+LxeY5bsWrUS21gLwnfSjVX0jZQpdn9K0A4ta9Xq9OAXP
-	x649GbdN5IoRgkbk42J2eyDNEyT0/Lqmua1nYzEhQXuYLVuVBoIYkhkUJPPkIsdUbvzhjeg7M8d2x
-	Sw3XDYbv6zQf0od3mjvJGGAzZh9qsIHo1rNEVJ7iaug3W4yHxVyE6iNUnDRwC7i+2RROdjy/RFrL1
-	BzEJ/0iw==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1viDA1-000000008Uw-4AZb;
-	Tue, 20 Jan 2026 15:56:50 +0100
-Date: Tue, 20 Jan 2026 15:56:49 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Alexandre Knecht <knecht.alexandre@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, fw@strlen.de
-Subject: Re: [PATCH v5 1/3] parser_json: support handle for rule positioning
- in explicit JSON format
-Message-ID: <aW-XscWfRRhMJaUh@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Alexandre Knecht <knecht.alexandre@gmail.com>,
-	netfilter-devel@vger.kernel.org, fw@strlen.de
-References: <20260119140813.536515-1-knecht.alexandre@gmail.com>
- <20260119140813.536515-2-knecht.alexandre@gmail.com>
- <aW-MY7iZLC-iVuht@orbyte.nwl.cc>
- <CAHAB8WzhVzdiSQ47Pf79A-3O9F3cHek6euq=vWEP1rMcpbuixA@mail.gmail.com>
+	s=arc-20240116; t=1768931042; c=relaxed/simple;
+	bh=QH7vDJSSIhDsfj8O3naDi7GhX9f6WNTQc4VzBxXgT2E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cuQuQaL+cpz9ApX9jBZsDvEl+QvIIccGdPTs2AKmvf4hmEYcmoJBoRCq/pBMds03femWjGJGZaYfzSo3iNBAAquIqijHDL0HS8Mj0+XYzMokSfi1ak8V6mwC2Fdk4pIkr3XHEVMCjLGxaCT66TVRcMuxE/upnJq0RaHNl/cTmro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.put.poznan.pl; spf=pass smtp.mailfrom=cs.put.poznan.pl; dkim=pass (2048-bit key) header.d=cs.put.poznan.pl header.i=@cs.put.poznan.pl header.b=eWHp5Hgq; arc=none smtp.client-ip=150.254.30.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.put.poznan.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cs.put.poznan.pl
+X-Virus-Scanned: Debian amavis at cs.put.poznan.pl
+Received: from libra.cs.put.poznan.pl ([150.254.30.30])
+ by localhost (meduza.cs.put.poznan.pl [150.254.30.40]) (amavis, port 10024)
+ with ESMTP id h-KRf1uAZX9O; Tue, 20 Jan 2026 17:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cs.put.poznan.pl;
+	s=7168384; t=1768930319;
+	bh=QH7vDJSSIhDsfj8O3naDi7GhX9f6WNTQc4VzBxXgT2E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=eWHp5HgqbCcP91eASXvkQRcyRzM2CGxNTZJzCbFliwlRPtCW9+7opYG0dbforAr2K
+	 ITDDzLNTGaaGwgzNMzYVv9iaXnT0CQ2A/yATN88+EbXbVKHiePzRO2MRuIFcnr5DNk
+	 E0xCME0iS+cZ8IBvRM/345hxNJfsDlbOWEaYXgeqDSc93SHaqRXNRjn5U9owfrAmOI
+	 wzLKjHMZat1Wur2jlsGFXCa3uVOLXKacWqrteAQn2/oiPfyuUDY0AWCDLVVIojB+t1
+	 U8EUFCsUSGket7kRTp6hgX7a376bLOxBLBNzAerHvWVlCkVrJmBUpxuaM7D1HEXEMC
+	 7XvtMeYw5+GVg==
+Received: from imladris.localnet (83.8.100.122.ipv4.supernova.orange.pl [83.8.100.122])
+	(Authenticated sender: jkonczak@libra.cs.put.poznan.pl)
+	by libra.cs.put.poznan.pl (Postfix on VMS) with ESMTPSA id CBFCD64E32;
+	Tue, 20 Jan 2026 18:33:50 +0100 (CET)
+From: Jan =?UTF-8?B?S2/FhGN6YWs=?= <jan.konczak@cs.put.poznan.pl>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft v2] parser_bison: on syntax errors,
+ output expected tokens
+Date: Tue, 20 Jan 2026 18:33:38 +0100
+Message-ID: <22975780.EfDdHjke4D@imladris>
+Organization: Institute of Computing Science,
+ =?UTF-8?B?UG96bmHFhA==?= University of Technology
+In-Reply-To: <20260120122954.18909-1-fw@strlen.de>
+References: <20260120122954.18909-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHAB8WzhVzdiSQ47Pf79A-3O9F3cHek6euq=vWEP1rMcpbuixA@mail.gmail.com>
-X-Spamd-Result: default: False [-0.26 / 15.00];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-Spamd-Result: default: False [-0.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	CTE_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[cs.put.poznan.pl:s=7168384];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10330-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10332-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_TWO(0.00)[2];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	DMARC_POLICY_ALLOW(0.00)[cs.put.poznan.pl,none];
+	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	DKIM_TRACE(0.00)[cs.put.poznan.pl:+];
+	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	FROM_NEQ_ENVFROM(0.00)[jan.konczak@cs.put.poznan.pl,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,orbyte.nwl.cc:mid,position.id:url,handle.id:url]
-X-Rspamd-Queue-Id: D881A48CEB
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,cs.put.poznan.pl:dkim]
+X-Rspamd-Queue-Id: 06AD5491B1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Alexandre,
-
-On Tue, Jan 20, 2026 at 03:27:58PM +0100, Alexandre Knecht wrote:
-> Hi Phil,
+>  v2: prefer stdio (fprintf+memopen) vs. manual realloc of a cstring
+>  buffer, align more with nftables coding style.
 > 
-> Thanks for the comment, that's pretty straightforward to fix, I'm
-> afraid to do a lot of spamming if I post again a new series, so can
-> you confirm this is what you expect ?
-> 
-> Merged nested if-conditionals (cheap to expensive):
-> - if (!(ctx->flags & CTX_F_IMPLICIT) &&
-> - !json_unpack(root, "{s:I}", "handle", &h.handle.id)) {
-> - if (op == CMD_INSERT || op == CMD_ADD || op == CMD_CREATE) {
-> - h.position.id = h.handle.id;
-> - h.handle.id = 0;
-> - }
-> - }
-> + if (!(ctx->flags & CTX_F_IMPLICIT) &&
-> +   (op == CMD_INSERT || op == CMD_ADD || op == CMD_CREATE) &&
-> +   !json_unpack(root, "{s:I}", "handle", &h.handle.id)) {
-> +     h.position.id = h.handle.id;
-> +     h.handle.id = 0;
-> + }
+>  I'll apply this unless there are any objections.
 
-Yes, this looks correct!
+None on my side; I should have resubmitted the patch corrected of basis
+of your comments, but I simply did not find time yet to look into that.
 
-> Reverse Christmas Tree variable declarations:
-> - unsigned int i;
-> - json_t *tmp;
-> uint32_t old_flags;
-> struct cmd *cmd;
-> + unsigned int i;
-> + json_t *tmp;
 
-Also correct AFAICT.
 
-> Or maybe there's a solution to amend this series, not kinda used to
-> work with git send-email, so if I can resubmit without a new whole
-> series, could be good ! Otherwise, I'll just create a new one once you
-> confirm.
-
-I can apply trivial changes to patches when applying them. With some
-projects, people also just resubmit parts of the series - this causes a
-bit of a mess for maintainers (and reviewers) though so it's not usually
-done. With a small series like this, I would just resubmit the whole
-thing. After all, becoming more familiar with git-send-email and the
-whole process of amending changes and submitting a new version is very
-good practice for contributing to OSS projects! And please don't forget,
-we're here to help if you get stuck or don't know how to get started
-with something.
-
-> Maybe I'll wait for review on tests too before submitting everything again.
-
-Just finished, only one more change in second patch requested.
-
-Thanks, Phil
 
