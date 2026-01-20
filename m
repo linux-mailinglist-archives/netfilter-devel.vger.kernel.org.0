@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-10329-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10330-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4LFFHuayb2nHMAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10329-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 17:52:54 +0100
+	id UMdjIIm/b2kOMQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10330-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 18:46:49 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BD847FFE
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 17:52:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D881A48CEB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 18:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4A23C705B61
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 14:59:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B43F19A5879
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jan 2026 15:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DD638A288;
-	Tue, 20 Jan 2026 14:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885ED44DB76;
+	Tue, 20 Jan 2026 14:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nm4EjPkR"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="nh0MObYu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D261EFF9B
-	for <netfilter-devel@vger.kernel.org>; Tue, 20 Jan 2026 14:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B81E43E496
+	for <netfilter-devel@vger.kernel.org>; Tue, 20 Jan 2026 14:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768920419; cv=none; b=Vyi4ma8hrx1BEjJhdWD4+uSuQHSLyc9RhXsHFzQDRwh6tmvwhF1vFl2zpoMJi/xCftuK3Gam81jDBvnhBXM33oxCx41YTjJ9cSPHcl2A97tY79jN5Oo9Z2Ll9FgrzOQ2yL9EpWY6jzReDiPGBmk71jXfhZy+KMxoxCVZiBU3PNo=
+	t=1768921014; cv=none; b=hldaXtOLb2vOpULHMxSVXjC9aoQq+25gL+rlFDtHRIN8sA0mX05RlqceuxEUBvun0splLpIEy7RqD7c0rZ6E5Jj5T8EDZ5Xj0g2Fft1Yi+gdcbXaz1mmCfb69MN7+MsTkWqsCJI7qzv7uTvw4qrHzwbcrsLysz2DftIb2V2VmWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768920419; c=relaxed/simple;
-	bh=v1ClaqhK3GBAbxHQX9atoBF+S+IIvyOzKScAIbwHTMs=;
+	s=arc-20240116; t=1768921014; c=relaxed/simple;
+	bh=XVX2ipQpgEWC+e+rtcAFUrhjiIrVjQK2wNe006V/sPs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YI9rnwrS+1aufuWvRwD12gRNTTDsovyDlj6/Y1XFzNH5seY2WPnCdX7mqxPpnW19CYHW++hqwM2Ho9Q9WlhVEu5cTqfW5N3zKP7HDYpCO5erUeStCCF24Od6xuuAfEaJCWbPNgxArpY7kZu8rKeAsY+jkGQnEICqDM3/lP3v7vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nm4EjPkR; arc=none smtp.client-ip=151.80.46.58
+	 Content-Type:Content-Disposition:In-Reply-To; b=SPPm2SSgJmvbbWikROgzkXVDyur91qHf6d+xgHmu3dV56AcIiK3BBWgN7Mx+kn/mMlJTOrJHbiZ0w8H14e+L2Zxd+eyyhrj5OTpBZLysuqqWjN9Gs0XAgi5i7ERH8ajs/xcYqdAlAUIi5OSwSj4R1Reh73MeNEvEVdBTm1b77bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=nh0MObYu; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -42,28 +42,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=6mX8HevwjLdceZQ6Tskljqp7794BNSm4Ln1NHvQzb+U=; b=nm4EjPkRojt0ou824LmPDAf5rG
-	dkVHfRDWLJ9Dr8sg2zMQ38H9xJLw6X+Ctxju2PuwXiWImIpgOEcb+VpH9HPnCu+AB56ISYD8UqNCJ
-	SYa2DmW4zS+wJo+gfsL9m/1H9ETJlX9KnLLceYw7qVluh8xTj+V57IBcOXfxnhNAKB0q65hRGeZ7g
-	SeC2Vmr3QcJfUegWyLbKXMk/7FWHsaMfglc/wSGbv/ttQV9Fpk7NqTFhLcBMKED9cUaOUQoM+UQFA
-	EYMJagQhXhTTgvFcl+kRYkNteYmQYdkIR6DcvyaafeGCkcr4yAeF23EaQvOWnGgz4AmFndYi4DxjP
-	k2Su2cgw==;
+	bh=V4ayC4DY8gV2odPhv3kFpPlNJ0syd61K8cB5cQ3PhWk=; b=nh0MObYuAgf69fjDRmGDFvT4eX
+	61rl7OLSJ0mlO3KiVIl/DHHMMJT/8Ou2uK6eN1CFKYMZ1BAdtcHz9kVk0NW5Dp3mEIMUFtCe7FR1O
+	pX3BkLBnKVf11wbBF022LZvLtaPJSmLx+LxeY5bsWrUS21gLwnfSjVX0jZQpdn9K0A4ta9Xq9OAXP
+	x649GbdN5IoRgkbk42J2eyDNEyT0/Lqmua1nYzEhQXuYLVuVBoIYkhkUJPPkIsdUbvzhjeg7M8d2x
+	Sw3XDYbv6zQf0od3mjvJGGAzZh9qsIHo1rNEVJ7iaug3W4yHxVyE6iNUnDRwC7i+2RROdjy/RFrL1
+	BzEJ/0iw==;
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1viD0R-000000008Ij-17vZ;
-	Tue, 20 Jan 2026 15:46:55 +0100
-Date: Tue, 20 Jan 2026 15:46:55 +0100
+	id 1viDA1-000000008Uw-4AZb;
+	Tue, 20 Jan 2026 15:56:50 +0100
+Date: Tue, 20 Jan 2026 15:56:49 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Alexandre Knecht <knecht.alexandre@gmail.com>
 Cc: netfilter-devel@vger.kernel.org, fw@strlen.de
-Subject: Re: [PATCH v5 3/3] tests: shell: add JSON test for handle-based rule
- positioning
-Message-ID: <aW-VX8qZtJy2Kk8K@orbyte.nwl.cc>
+Subject: Re: [PATCH v5 1/3] parser_json: support handle for rule positioning
+ in explicit JSON format
+Message-ID: <aW-XscWfRRhMJaUh@orbyte.nwl.cc>
 Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
 	Alexandre Knecht <knecht.alexandre@gmail.com>,
 	netfilter-devel@vger.kernel.org, fw@strlen.de
 References: <20260119140813.536515-1-knecht.alexandre@gmail.com>
- <20260119140813.536515-4-knecht.alexandre@gmail.com>
+ <20260119140813.536515-2-knecht.alexandre@gmail.com>
+ <aW-MY7iZLC-iVuht@orbyte.nwl.cc>
+ <CAHAB8WzhVzdiSQ47Pf79A-3O9F3cHek6euq=vWEP1rMcpbuixA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -72,14 +74,14 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260119140813.536515-4-knecht.alexandre@gmail.com>
+In-Reply-To: <CAHAB8WzhVzdiSQ47Pf79A-3O9F3cHek6euq=vWEP1rMcpbuixA@mail.gmail.com>
 X-Spamd-Result: default: False [-0.26 / 15.00];
 	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10329-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10330-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[nwl.cc];
 	FROM_HAS_DN(0.00)[];
@@ -95,31 +97,68 @@ X-Spamd-Result: default: False [-0.26 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	DKIM_TRACE(0.00)[nwl.cc:-];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,orbyte.nwl.cc:mid,nwl.cc:email]
-X-Rspamd-Queue-Id: 14BD847FFE
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,orbyte.nwl.cc:mid,position.id:url,handle.id:url]
+X-Rspamd-Queue-Id: D881A48CEB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Jan 19, 2026 at 03:08:13PM +0100, Alexandre Knecht wrote:
-> Add comprehensive test for JSON handle-based rule positioning to verify
-> the handle field correctly positions rules with explicit add/insert
-> commands while being ignored in implicit format.
-> 
-> Test coverage:
-> 1. ADD with handle positions AFTER the specified handle
-> 2. INSERT with handle positions BEFORE the specified handle
-> 3. INSERT without handle positions at beginning
-> 4. Multiple commands in single transaction (batch behavior)
-> 5. Implicit format ignores handle field for portability
-> 
-> The test uses sed for handle extraction and nft -f format for setup
-> as suggested in code review. Final state is a table with two rules
-> from the implicit format test.
-> 
-> Signed-off-by: Alexandre Knecht <knecht.alexandre@gmail.com>
+Hi Alexandre,
 
-Acked-by: Phil Sutter <phil@nwl.cc>
+On Tue, Jan 20, 2026 at 03:27:58PM +0100, Alexandre Knecht wrote:
+> Hi Phil,
+> 
+> Thanks for the comment, that's pretty straightforward to fix, I'm
+> afraid to do a lot of spamming if I post again a new series, so can
+> you confirm this is what you expect ?
+> 
+> Merged nested if-conditionals (cheap to expensive):
+> - if (!(ctx->flags & CTX_F_IMPLICIT) &&
+> - !json_unpack(root, "{s:I}", "handle", &h.handle.id)) {
+> - if (op == CMD_INSERT || op == CMD_ADD || op == CMD_CREATE) {
+> - h.position.id = h.handle.id;
+> - h.handle.id = 0;
+> - }
+> - }
+> + if (!(ctx->flags & CTX_F_IMPLICIT) &&
+> +   (op == CMD_INSERT || op == CMD_ADD || op == CMD_CREATE) &&
+> +   !json_unpack(root, "{s:I}", "handle", &h.handle.id)) {
+> +     h.position.id = h.handle.id;
+> +     h.handle.id = 0;
+> + }
+
+Yes, this looks correct!
+
+> Reverse Christmas Tree variable declarations:
+> - unsigned int i;
+> - json_t *tmp;
+> uint32_t old_flags;
+> struct cmd *cmd;
+> + unsigned int i;
+> + json_t *tmp;
+
+Also correct AFAICT.
+
+> Or maybe there's a solution to amend this series, not kinda used to
+> work with git send-email, so if I can resubmit without a new whole
+> series, could be good ! Otherwise, I'll just create a new one once you
+> confirm.
+
+I can apply trivial changes to patches when applying them. With some
+projects, people also just resubmit parts of the series - this causes a
+bit of a mess for maintainers (and reviewers) though so it's not usually
+done. With a small series like this, I would just resubmit the whole
+thing. After all, becoming more familiar with git-send-email and the
+whole process of amending changes and submitting a new version is very
+good practice for contributing to OSS projects! And please don't forget,
+we're here to help if you get stuck or don't know how to get started
+with something.
+
+> Maybe I'll wait for review on tests too before submitting everything again.
+
+Just finished, only one more change in second patch requested.
+
+Thanks, Phil
 
