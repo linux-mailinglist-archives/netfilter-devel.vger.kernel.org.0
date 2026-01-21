@@ -1,63 +1,63 @@
-Return-Path: <netfilter-devel+bounces-10371-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10373-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kJVtK6M2cWnKfQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10371-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jan 2026 21:27:15 +0100
+	id SOxeIeApcWniewAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10373-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jan 2026 20:32:48 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9435D33A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jan 2026 21:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 043795C3BA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jan 2026 20:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B030FA90530
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jan 2026 18:51:00 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C0EC05701DA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jan 2026 18:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597573ACEF9;
-	Wed, 21 Jan 2026 18:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107213AE709;
+	Wed, 21 Jan 2026 18:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="nsJzbtDt"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="vBilFy7H"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-43167.protonmail.ch (mail-43167.protonmail.ch [185.70.43.167])
+Received: from mail-05.mail-europe.com (mail-05.mail-europe.com [85.9.206.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E13A3B8D46;
-	Wed, 21 Jan 2026 18:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9E03BC4F4;
+	Wed, 21 Jan 2026 18:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.9.206.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769021274; cv=none; b=rYilthg7aZbp7sFbF0LdfkmJx11qNU84P6Ewb548F0TcatIxW7ZJiDIIBsg3hqoeWr8MBgkukrg7ldS8zGQM1gOoteEUwtu/h8T5v/mwMkoMw7vCzDMW7D9yqnM5VPU69Dy5BUFH8PyHX8uaLbAUAQijcf/jZri3i88dr2V106Y=
+	t=1769021280; cv=none; b=OWSz+oX96R7jPqWxY08udjN7wqm8cS4p83Fqgq/cA0V2l+MXQ4Mg71PrNwswiVH6rMTUWRwI/QzOYBZXX8+QURbdALSPTfgxpbbiOfR0vYLei/Y9AWxaRlti/gJ0Uc1R62tA+pmZaptN5hmyGtMMrJQNAqbGJl1OkRLMPeu9QCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769021274; c=relaxed/simple;
-	bh=xthvRA9lTvGXFMO2+xpNxVgN4l0KupXvcRfwFj3+oOA=;
+	s=arc-20240116; t=1769021280; c=relaxed/simple;
+	bh=2k+xa2OozsViZmJtLAVxnFv77Wx7BDEhcsb9Q5fpVBo=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PS2PWNwTaf0rAJmMpDBCdWueHAeOm5POMzcy57fXELFLiFapUnl+0yBbct7ft97nPe3B3l7fWPVpnF3FKu9GY6HN9h16IVw8ZRCXMRlu0CNbKiORS6JvrIDGcO1zwxMXsiRmt7StwPDiODTDHXbXm5WHKvyeqWhdf1KOFaAcQDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=nsJzbtDt; arc=none smtp.client-ip=185.70.43.167
+	 MIME-Version:Content-Type; b=V6WS+ljELHeg2b1IBfrCXPcp1ZsXhl11pWjW+/MMQZr4ePLBSXPuVZ/+uVh6Xt5sD3gEIjQdi+u1CDJpbkv4WDUDOpWA3ffYjFPb5ayPPx0quMYzGXlNurXOtq/vPOUPraeA39kM4WcohqUwPUSmo0r4dT2ZwZiCc4LOhtsneoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=vBilFy7H; arc=none smtp.client-ip=85.9.206.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1769021264; x=1769280464;
-	bh=hupuoc5hlIpmaUxKtpE0CV/iTeFgQWIJ1YbxF3m505g=;
+	s=protonmail3; t=1769021268; x=1769280468;
+	bh=zgDBaq6W6wW7oGLEeEBePjUmm1IPAdlKRyQy5yeZuM4=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
 	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
 	 Message-ID:BIMI-Selector;
-	b=nsJzbtDtEClPKyPw6v4DLgpN3F7vRvwQ57Qp57fLvePh3V0ax0PeMj1hS4oH4hxw/
-	 dsX+vskQSre7VhmZGjfL+hPCaGyqIyrq1pFcJL6LWwZPyMo7XXLIiUQ/PEInEGi/Ep
-	 lMKRGWC5SJK3wuI9vAbVZStszsRD9rXm/zm548lpHmkACvGdAOQ+5MP2hmETi/xnh4
-	 qdGKBawVtsxEvS0FKLHpwhtIOISGGRaYM3+MhG2jt6jM9tz+0Ax4/mQvjD1pMT1wud
-	 U+I/pSpYwhY+H1vM9EeI356uk+76FE3BDpazKaAB0qeJ0RoMDXLVIbazVt/YCaC7cw
-	 XkVbkL5Xm9/Dg==
-Date: Wed, 21 Jan 2026 18:47:43 +0000
+	b=vBilFy7HtAiBN8AUOVPx803IzoyR2H6WYFp+iBGBuoIf0GGH4ks9gQ0K/hNa/jG84
+	 1+A99cfMsmXf0KHVoW1SdDrARJqWTdtFU9F5z9W9OisHBmWkoq13FqcFw3sV2hwvip
+	 vsTp5ri6WJlViDPNrZ2ftt3oo2tRqurbr48OIj8Chnexv8n4ANI/SpHi36DWiLkGIo
+	 S1QyPLx4ed1PtMD5zNJFWnmTD8xuOnNaT8/JK8WNdjuSCsXN+sO317jec6KTAy1TtO
+	 /apfiE8JW/ZvqTLSt4b15bQY1CXTcT5qBQHAORJav2d9Ud3xZqd/NwwgDrHTmGNNpU
+	 +RAH0OykYr9tA==
+Date: Wed, 21 Jan 2026 18:47:45 +0000
 To: Donald Hunter <donald.hunter@gmail.com>, Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
 From: "Remy D. Farley" <one-d-wide@protonmail.com>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, "Remy D. Farley" <one-d-wide@protonmail.com>
-Subject: [PATCH v6 3/6] doc/netlink: nftables: Update attribute sets
-Message-ID: <20260121184621.198537-4-one-d-wide@protonmail.com>
+Subject: [PATCH v6 4/6] doc/netlink: nftables: Add sub-messages
+Message-ID: <20260121184621.198537-5-one-d-wide@protonmail.com>
 In-Reply-To: <20260121184621.198537-1-one-d-wide@protonmail.com>
 References: <20260121184621.198537-1-one-d-wide@protonmail.com>
 Feedback-ID: 59017272:user:proton
-X-Pm-Message-ID: 357260e7bd1276943a885614e8378130aa4e2628
+X-Pm-Message-ID: b9c9f00de5ac46d002c1ff027efce4cd29885886
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -76,7 +76,7 @@ X-Spamd-Result: default: False [0.54 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10371-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10373-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_TO(0.00)[gmail.com,kernel.org,vger.kernel.org];
 	TO_DN_SOME(0.00)[];
@@ -95,398 +95,72 @@ X-Spamd-Result: default: False [0.54 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,protonmail.com:email,protonmail.com:dkim,protonmail.com:mid]
-X-Rspamd-Queue-Id: 1E9435D33A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 043795C3BA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-New attribute sets:
-- log-attrs
-- numgen-attrs
-- range-attrs
-- compat-target-attrs
-- compat-match-attrs
-- compat-attrs
-
-Added missing attributes:
-- table-attrs (pad, owner)
-- set-attrs (type, count)
-
-Added missing checks:
-- range-attrs
-- expr-bitwise-attrs
-- compat-target-attrs
-- compat-match-attrs
-- compat-attrs
-
-Annotated doc comment or associated enum:
-- batch-attrs
-- verdict-attrs
-- expr-payload-attrs
-
-Fixed byte order:
-- nft-counter-attrs
-- expr-counter-attrs
-- rule-compat-attrs
+New sub-messsages:
+- log
+- match
+- numgen
+- range
 
 Signed-off-by: Remy D. Farley <one-d-wide@protonmail.com>
 ---
- Documentation/netlink/specs/nftables.yaml | 206 +++++++++++++++++++++-
- 1 file changed, 202 insertions(+), 4 deletions(-)
+ Documentation/netlink/specs/nftables.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/Documentation/netlink/specs/nftables.yaml b/Documentation/netl=
 ink/specs/nftables.yaml
-index 87cd4d201..826d3441b 100644
+index 826d3441b..4b1f5b107 100644
 --- a/Documentation/netlink/specs/nftables.yaml
 +++ b/Documentation/netlink/specs/nftables.yaml
-@@ -363,16 +363,100 @@ definitions:
-=20
- attribute-sets:
+@@ -1454,15 +1454,24 @@ sub-messages:
+       -
+         value: immediate
+         attribute-set: expr-immediate-attrs
++      -
++        value: log
++        attribute-set: log-attrs
+       -
+         value: lookup
+         attribute-set: expr-lookup-attrs
++      -
++        value: match
++        attribute-set: compat-match-attrs
+       -
+         value: meta
+         attribute-set: expr-meta-attrs
+       -
+         value: nat
+         attribute-set: expr-nat-attrs
++      -
++        value: numgen
++        attribute-set: numgen-attrs
+       -
+         value: objref
+         attribute-set: expr-objref-attrs
+@@ -1472,6 +1481,9 @@ sub-messages:
+       -
+         value: quota
+         attribute-set: quota-attrs
++      -
++        value: range
++        attribute-set: range-attrs
+       -
+         value: reject
+         attribute-set: expr-reject-attrs
+@@ -1481,6 +1493,9 @@ sub-messages:
+       -
+         value: tproxy
+         attribute-set: expr-tproxy-attrs
++        # There're more sub-messages to go:
++        #   grep -A10 nft_expr_type
++        # and look for .name\s*=3D\s*"..."
    -
--    name: empty-attrs
-+    name: log-attrs
-+    doc: log expression netlink attributes
-     attributes:
-+      # Mentioned in nft_log_init()
-       -
--        name: name
-+        name: group
-+        doc: netlink group to send messages to
-+        type: u16
-+        byte-order: big-endian
-+      -
-+        name: prefix
-+        doc: prefix to prepend to log messages
-         type: string
-+      -
-+        name: snaplen
-+        doc: length of payload to include in netlink message
-+        type: u32
-+        byte-order: big-endian
-+      -
-+        name: qthreshold
-+        doc: queue threshold
-+        type: u16
-+        byte-order: big-endian
-+      -
-+        name: level
-+        doc: log level
-+        type: u32
-+        enum: log-level
-+        byte-order: big-endian
-+      -
-+        name: flags
-+        doc: logging flags
-+        type: u32
-+        enum: log-flags
-+        byte-order: big-endian
-+  -
-+    name: numgen-attrs
-+    doc: nf_tables number generator expression netlink attributes
-+    attributes:
-+      -
-+        name: dreg
-+        doc: destination register
-+        type: u32
-+        enum: registers
-+      -
-+        name: modulus
-+        doc: maximum counter value
-+        type: u32
-+        byte-order: big-endian
-+      -
-+        name: type
-+        doc: operation type
-+        type: u32
-+        byte-order: big-endian
-+        enum: numgen-types
-+      -
-+        name: offset
-+        doc: offset to be added to the counter
-+        type: u32
-+        byte-order: big-endian
-+  -
-+    name: range-attrs
-+    attributes:
-+      # Mentioned in net/netfilter/nft_range.c
-+      -
-+        name: sreg
-+        doc: source register of data to compare
-+        type: u32
-+        byte-order: big-endian
-+        enum: registers
-+      -
-+        name: op
-+        doc: cmp operation
-+        type: u32
-+        byte-order: big-endian
-+        enum: range-ops
-+        checks:
-+          max: 256
-+      -
-+        name: from-data
-+        doc: data range from
-+        type: nest
-+        nested-attributes: data-attrs
-+      -
-+        name: to-data
-+        doc: data range to
-+        type: nest
-+        nested-attributes: data-attrs
-   -
-     name: batch-attrs
-     attributes:
-       -
-         name: genid
-+        doc: generation ID for this changeset
-         type: u32
-         byte-order: big-endian
-   -
-@@ -399,10 +483,18 @@ attribute-sets:
-         type: u64
-         byte-order: big-endian
-         doc: numeric handle of the table
-+      -
-+        name: pad
-+        type: pad
-       -
-         name: userdata
-         type: binary
-         doc: user data
-+      -
-+        name: owner
-+        type: u32
-+        byte-order: big-endian
-+        doc: owner of this table through netlink portID
-   -
-     name: chain-attrs
-     attributes:
-@@ -506,9 +598,11 @@ attribute-sets:
-       -
-         name: bytes
-         type: u64
-+        byte-order: big-endian
-       -
-         name: packets
-         type: u64
-+        byte-order: big-endian
-   -
-     name: rule-attrs
-     attributes:
-@@ -578,15 +672,18 @@ attribute-sets:
-         selector: name
-         doc: type specific data
-   -
-+    # Mentioned in nft_parse_compat() in net/netfilter/nft_compat.c
-     name: rule-compat-attrs
-     attributes:
-       -
-         name: proto
--        type: binary
-+        type: u32
-+        byte-order: big-endian
-         doc: numeric value of the handled protocol
-       -
-         name: flags
--        type: binary
-+        type: u32
-+        byte-order: big-endian
-         doc: bitmask of flags
-   -
-     name: set-attrs
-@@ -675,6 +772,15 @@ attribute-sets:
-         type: nest
-         nested-attributes: set-list-attrs
-         doc: list of expressions
-+      -
-+        name: type
-+        type: string
-+        doc: set backend type
-+      -
-+        name: count
-+        type: u32
-+        byte-order: big-endian
-+        doc: number of set elements
-   -
-     name: set-desc-attrs
-     attributes:
-@@ -944,6 +1050,8 @@ attribute-sets:
-         type: u32
-         byte-order: big-endian
-         enum: bitwise-ops
-+        checks:
-+          max: 255
-       -
-         name: data
-         type: nest
-@@ -980,25 +1088,31 @@ attribute-sets:
-     attributes:
-       -
-         name: code
-+        doc: nf_tables verdict
-         type: u32
-         byte-order: big-endian
-         enum: verdict-code
-       -
-         name: chain
-+        doc: jump target chain name
-         type: string
-       -
-         name: chain-id
-+        doc: jump target chain ID
-         type: u32
-+        byte-order: big-endian
-   -
-     name: expr-counter-attrs
-     attributes:
-       -
-         name: bytes
-         type: u64
-+        byte-order: big-endian
-         doc: Number of bytes
-       -
-         name: packets
-         type: u64
-+        byte-order: big-endian
-         doc: Number of packets
-       -
-         name: pad
-@@ -1083,6 +1197,25 @@ attribute-sets:
-         type: u32
-         byte-order: big-endian
-         enum: lookup-flags
-+  -
-+    name: expr-masq-attrs
-+    attributes:
-+      -
-+        name: flags
-+        type: u32
-+        byte-order: big-endian
-+        enum: nat-range-flags
-+        enum-as-flags: true
-+      -
-+        name: reg-proto-min
-+        type: u32
-+        byte-order: big-endian
-+        enum: registers
-+      -
-+        name: reg-proto-max
-+        type: u32
-+        byte-order: big-endian
-+        enum: registers
-   -
-     name: expr-meta-attrs
-     attributes:
-@@ -1134,37 +1267,49 @@ attribute-sets:
-         enum-as-flags: true
-   -
-     name: expr-payload-attrs
-+    doc: nf_tables payload expression netlink attributes
-     attributes:
-       -
-         name: dreg
-+        doc: destination register to load data into
-         type: u32
-         byte-order: big-endian
-+        enum: registers
-       -
-         name: base
-+        doc: payload base
-         type: u32
-+        enum: payload-base
-         byte-order: big-endian
-       -
-         name: offset
-+        doc: payload offset relative to base
-         type: u32
-         byte-order: big-endian
-       -
-         name: len
-+        doc: payload length
-         type: u32
-         byte-order: big-endian
-       -
-         name: sreg
-+        doc: source register to load data from
-         type: u32
-         byte-order: big-endian
-+        enum: registers
-       -
-         name: csum-type
-+        doc: checksum type
-         type: u32
-         byte-order: big-endian
-       -
-         name: csum-offset
-+        doc: checksum offset relative to base
-         type: u32
-         byte-order: big-endian
-       -
-         name: csum-flags
-+        doc: checksum flags
-         type: u32
-         byte-order: big-endian
-   -
-@@ -1230,6 +1375,59 @@ attribute-sets:
-         type: u32
-         byte-order: big-endian
-         doc: id of object map
-+  -
-+    name: compat-target-attrs
-+    header: linux/netfilter/nf_tables_compat.h
-+    attributes:
-+      -
-+        name: name
-+        type: string
-+        checks:
-+          max-len: 32
-+      -
-+        name: rev
-+        type: u32
-+        byte-order: big-endian
-+      -
-+        name: info
-+        type: binary
-+  -
-+    name: compat-match-attrs
-+    header: linux/netfilter/nf_tables_compat.h
-+    attributes:
-+      -
-+        name: name
-+        type: string
-+        checks:
-+          max-len: 32
-+      -
-+        name: rev
-+        type: u32
-+        byte-order: big-endian
-+        checks:
-+          max: 255
-+      -
-+        name: info
-+        type: binary
-+  -
-+    name: compat-attrs
-+    header: linux/netfilter/nf_tables_compat.h
-+    attributes:
-+      -
-+        name: name
-+        type: string
-+        checks:
-+          max-len: 32
-+      -
-+        name: rev
-+        type: u32
-+        byte-order: big-endian
-+        checks:
-+          max: 255
-+      -
-+        name: type
-+        type: u32
-+        byte-order: big-endian
-=20
- sub-messages:
-   -
+     name: obj-data
+     formats:
 --=20
 2.51.2
 
