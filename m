@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-10438-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10441-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 1O2CMEo8eWlSwAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10438-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:30 +0100
+	id MCNCGls8eWlSwAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10441-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:47 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F51D9B0BF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B91DF9B0E1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8F9F530125DF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 22:29:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 50D21302EE97
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 22:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68CBA3612D4;
-	Tue, 27 Jan 2026 22:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B183644BE;
+	Tue, 27 Jan 2026 22:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="bLaUNv9M"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="BD2T17PA"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D0735E551
-	for <netfilter-devel@vger.kernel.org>; Tue, 27 Jan 2026 22:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83DD35FF67
+	for <netfilter-devel@vger.kernel.org>; Tue, 27 Jan 2026 22:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769552965; cv=none; b=E5AQxKlINxanf8hNR8nfp8afI5FSAG/pDScygODWbSJH9QFUaxPrcw6qBEvxz2rSEAjgU8vtsm0pOnZF83vL+zQUiMmo+KqfQu5WykGGkfMqRc8XX63DBk2sd/BEK8KUb7gJ7lHQM6GzFwVYuoLugahdUF7EzIJLGUAV1EJ8oM4=
+	t=1769552966; cv=none; b=MyWnH0P7Dw8UtBI1IasxLQSue6s9+EhSs5Ej3kAnWfnW2wMWMUo5+h76K7zj+KXSPzYc4+RuDdSENmZIOHkqco4Vs1bHEE4/wMdZlIplRPzi7GHYYLsE4wxsjuJy5NifAHgbX8wG/FP6TinpDXblGWdZIAe//oAjvu9yABlhpm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769552965; c=relaxed/simple;
-	bh=aEWtEOZLaaD+NXElceWZcxEE53ziPs0otNxJumx2R3A=;
+	s=arc-20240116; t=1769552966; c=relaxed/simple;
+	bh=DDN0Pw8bWC8ovyxX2X4M7irZqZXYiuwSG1bi7n+dRrc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qi0YzhEtEsicbju+iBk8s1oZzsnPKu1AGKJney/Bfx6CePYPC9aNcB+n5IEVKsXJ6ItfoKC29KJ9wPTyFgglP8x9Ubp5LhPz9NXuFA4pMiZVuNlkguFSQI0yPxevRS8sHjsuHVqWOpp7gYWKGW0iFJdCa6i8x6JX29vSzt2+v1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=bLaUNv9M; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=Q8N2Whs6N6X8x5pqYF9CxDV9mOW/XyQmFrsKjdM6h78UbyRZ3uKuCoyRHWouSeNgMiqubFEjHNvsFfYWXcOA+nbKsJ+0umga3gi49PMj6S4hawYkOeC8raGl32pij+kM5EbuXmb/00P7yS0QUOzh4x16ZjtriAEqNAB94SHUExs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=BD2T17PA; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -40,25 +40,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Nf5Uon7+xV73BSiZ3uKcrJ9L15H0uB0DDUK/njsYw5k=; b=bLaUNv9MwEo4/IdLZk3Sv2dB2Z
-	IzMTZ8KSvc54Gcr69N/GWCg3k6ZgG+EdvxvYbxcCYBspF76moOcr6lg74uX6DFJjqUWEEZ03V91J9
-	5Ko8csW5qczRgn9QUZfNNNl7YuhjGuzJ1VZvZ3AQuea5e7Kg65WAOl8SiUZJWUHdE1R9+PK0N2JG1
-	Gsr5uDiK+nulx0TPOkr5K92UzQ/WK/gXraUTp1uwVzihmfkcYdOWSuaGhYRadfVXyytL8F5X5lw+n
-	EOM4UlZ1OfmoyOj1oqeJHhnCTir4/jnIMRgdP9w+lcYpx3qHxMHxS09eJGaGuMPQkYNzECJN0omu+
-	2UTEbmYg==;
+	bh=07W+u4mnLPdMJPbYvZGvLIuE9XkUoeCohK15WL4+RKw=; b=BD2T17PAvFl70pnDMpuXQcHyOq
+	AdY5EknfFSFgzpFu7XABlkYltRUU2XlaWdStS12gCNCPhxjwNMBuN1TTBEvahhaG+WtAA8D3XjDMe
+	o98CeIArobcdgJjlipS4ghzMe42gWbjJruvyvLaDHYRLqXGyMgRBktyOHk2dMPwDuPn01ZJbt3iFN
+	5T1+YwZdDsX5J83ggWh39gfML2ABD7Im8VA/BQ9uW6RS+KXVzQJK4uiDE4mEU8W64RI8Z8Hc+VrAq
+	c1d/yhfSwnEocHVu8prMSxV1eTT3S20sPgRUNJFXyxAwk8YlQUOOVO6RDBZLe+IAHXCbKn7Lk5EXZ
+	IMmQ51JA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1vkrYn-000000002lW-3zaD;
-	Tue, 27 Jan 2026 23:29:21 +0100
+	id 1vkrYp-000000002lq-2Sae;
+	Tue, 27 Jan 2026 23:29:23 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 1/4] configure: Implement --enable-profiling option
-Date: Tue, 27 Jan 2026 23:29:13 +0100
-Message-ID: <20260127222916.31806-2-phil@nwl.cc>
+Subject: [nft PATCH 2/4] tests: shell: Add a simple test for nftrace
+Date: Tue, 27 Jan 2026 23:29:14 +0100
+Message-ID: <20260127222916.31806-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260127222916.31806-1-phil@nwl.cc>
 References: <20260127222916.31806-1-phil@nwl.cc>
@@ -75,13 +75,13 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10438-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10441-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	DMARC_NA(0.00)[nwl.cc];
@@ -95,146 +95,111 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,makefile.am:url,nwl.cc:mid,nwl.cc:email]
-X-Rspamd-Queue-Id: 0F51D9B0BF
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:mid,nwl.cc:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B91DF9B0E1
 X-Rspamd-Action: no action
 
-This will set compiler flag --coverage so code coverage may be inspected
-using gcov.
-
-In order to successfully profile processes which are killed or
-interrupted as well, add a signal handler for those cases which calls
-exit(). This is relevant for test cases invoking nft monitor.
+The test suites did not cover src/trace.c at all. This test touches over
+90% of its lines.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- .gitignore   |  5 +++++
- Makefile.am  | 16 ++++++++++++++++
- configure.ac |  7 +++++++
- src/main.c   | 30 ++++++++++++++++++++++++++++++
- 4 files changed, 58 insertions(+)
+ tests/shell/testcases/trace/0001simple | 85 ++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+ create mode 100755 tests/shell/testcases/trace/0001simple
 
-diff --git a/.gitignore b/.gitignore
-index 719829b65d212..8673393fac397 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -19,6 +19,11 @@ nftversion.h
- # cscope files
- /cscope.*
- 
-+# gcov-related
-+*.gcda
-+*.gcno
-+*.gcov
+diff --git a/tests/shell/testcases/trace/0001simple b/tests/shell/testcases/trace/0001simple
+new file mode 100755
+index 0000000000000..a1bf4dd1318b2
+--- /dev/null
++++ b/tests/shell/testcases/trace/0001simple
+@@ -0,0 +1,85 @@
++#!/bin/bash -x
 +
- # Generated by tests
- *.payload.got
- tests/build/tests.log
-diff --git a/Makefile.am b/Makefile.am
-index 18af82a927dc0..24ffa07cf0c4a 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -165,6 +165,10 @@ AM_CFLAGS = \
- 
- AM_YFLAGS = -d -Wno-yacc
- 
-+if BUILD_PROFILING
-+AM_CFLAGS += --coverage
-+endif
++set -e
 +
- ###############################################################################
- 
- BUILT_SOURCES += src/parser_bison.h
-@@ -457,3 +461,15 @@ TESTS = tests/build/run-tests.sh \
- 	tests/py/nft-test.py \
- 	tests/shell/run-tests.sh
- endif
++ns1=$(mktemp -u ns1-XXXXXX)
++ns2=$(mktemp -u ns2-XXXXXX)
++tracelog=$(mktemp)
++tracepid=0
++cleanup() {
++	ip netns del $ns1
++	ip netns del $ns2
++	[ $tracepid -eq 0 ] || {
++		kill $tracepid
++		wait
++	}
++	rm -f $tracelog
++}
++trap "cleanup" EXIT
++ip netns add $ns1
++ip netns add $ns2
++ip -net $ns1 link add eth0 type veth peer name eth0 netns $ns2
++ip -net $ns1 link set eth0 up
++ip -net $ns1 addr add 10.23.42.1/24 dev eth0
++ip -net $ns2 link set eth0 up
++ip -net $ns2 addr add 10.23.42.2/24 dev eth0
++ns1mac=$(ip -net $ns1 link show dev eth0 | awk '/link\/ether/{ print $2 }')
++ns2mac=$(ip -net $ns2 link show dev eth0 | awk '/link\/ether/{ print $2 }')
++ip netns exec $ns1 ping -c 1 10.23.42.2
++ip netns exec $ns2 ping -c 1 10.23.42.1
 +
-+all_c_sources = $(filter %.c,$(src_libnftables_la_SOURCES)) $(src_nft_SOURCES)
-+if BUILD_MINIGMP
-+all_c_sources += $(src_libminigmp_la_SOURCES)
-+endif
-+if BUILD_AFL
-+all_c_sources += $(tools_nft_afl_SOURCES)
-+endif
-+CLEANFILES += src/libparser_la-parser_bison.gcno
-+CLEANFILES += src/libparser_la-scanner.gcno
-+CLEANFILES += $(all_c_sources:.c=.gcno)
-+CLEANFILES += $(src_nft_SOURCES:.c=.gcda)
-diff --git a/configure.ac b/configure.ac
-index dd172e88ca581..506f3f78fc460 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -172,6 +172,13 @@ AC_ARG_ENABLE([distcheck],
- 	      [enable_distcheck=yes], [])
- AM_CONDITIONAL([BUILD_DISTCHECK], [test "x$enable_distcheck" = "xyes"])
- 
-+AC_ARG_ENABLE([profiling],
-+	      AS_HELP_STRING([--enable-profiling], [build for use of gcov/gprof]),
-+	      [enable_profiling="$enableval"], [enable_profiling="no"])
-+AM_CONDITIONAL([BUILD_PROFILING], [test "x$enable_profiling" = xyes])
-+AM_COND_IF([BUILD_PROFILING],
-+	   [AC_DEFINE([BUILD_PROFILING], [1], [Define for profiling])])
++ip netns exec $ns1 $NFT -f - <<EOF
++table inet t {
++	chain pre {
++		type filter hook prerouting priority 0
 +
- AC_CONFIG_FILES([					\
- 		Makefile				\
- 		libnftables.pc				\
-diff --git a/src/main.c b/src/main.c
-index 29b0533dee7c9..bdcf8ab3c304b 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -16,6 +16,7 @@
- #include <errno.h>
- #include <getopt.h>
- #include <fcntl.h>
-+#include <signal.h>
- #include <sys/types.h>
- 
- #include <nftables/libnftables.h>
-@@ -360,6 +361,33 @@ static bool nft_options_check(int argc, char * const argv[])
- 	return true;
- }
- 
-+#ifdef BUILD_PROFILING
-+static void termhandler(int signo)
-+{
-+	switch (signo) {
-+	case SIGTERM:
-+		exit(143);
-+	case SIGINT:
-+		exit(130);
++		icmp type { echo-request, echo-reply } meta mark set 0x42 ct state new,established meta nftrace set 1
++	}
++	chain foo {
++		tcp dport 456 accept
++		ct status != dying return
++		tcp dport 23 drop
++	}
++	chain input {
++		type filter hook input priority 0
++
++		meta mark 0x42 jump foo
++		meta mark 0x42 tcp dport 789 accept
++	}
++	chain output {
++		type filter hook output priority 0
++
++		icmp type echo-reply meta nftrace set 1
 +	}
 +}
++EOF
 +
-+static void setup_sighandler(void)
-+{
-+	struct sigaction act = {
-+		.sa_handler = termhandler,
-+	};
++ip netns exec $ns1 $NFT monitor trace >$tracelog &
++tracepid=$!
++sleep 0.5
++ip netns exec $ns2 ping -c 1 10.23.42.1
++sleep 0.5
++kill $tracepid
++wait
++tracepid=0
 +
-+	if (sigaction(SIGTERM, &act, NULL) == -1 ||
-+	    sigaction(SIGINT, &act, NULL) == -1) {
-+		perror("sigaction");
-+		exit(1);
-+	}
++EXPECT="trace id 0 inet t pre conntrack: ct direction original ct state new ct id 0 
++trace id 0 inet t pre packet: iif \"eth0\" ether saddr $ns2mac ether daddr $ns1mac ip saddr 10.23.42.2 ip daddr 10.23.42.1 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 0 ip protocol icmp ip length 84 icmp type echo-request icmp code 0 icmp id 0 icmp sequence 1 
++trace id 0 inet t pre rule icmp type { echo-reply, echo-request } meta mark set 0x00000042 ct state established,new meta nftrace set 1 (verdict continue)
++trace id 0 inet t pre policy accept meta mark 0x00000042 
++trace id 0 inet t input conntrack: ct direction original ct state new ct id 0 
++trace id 0 inet t input packet: iif \"eth0\" ether saddr $ns2mac ether daddr $ns1mac ip saddr 10.23.42.2 ip daddr 10.23.42.1 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 0 ip protocol icmp ip length 84 icmp type echo-request icmp code 0 icmp id 0 icmp sequence 1 
++trace id 0 inet t input rule meta mark 0x00000042 jump foo (verdict jump foo)
++trace id 0 inet t foo rule ct status != dying return (verdict return)
++trace id 0 inet t input policy accept meta mark 0x00000042 
++trace id 0 inet t output conntrack: ct direction reply ct state established ct status seen-reply,confirmed ct id 0 
++trace id 0 inet t output packet: oif \"eth0\" ip saddr 10.23.42.1 ip daddr 10.23.42.2 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 0 ip protocol icmp ip length 84 icmp type echo-reply icmp code 0 icmp id 0 icmp sequence 1 
++trace id 0 inet t output rule icmp type echo-reply meta nftrace set 1 (verdict continue)
++trace id 0 inet t output policy accept "
++
++
++tracefilter() {
++	sed -e 's/\(trace\|ip\|icmp\|ct\) id [^ ]\+/\1 id 0/g'
 +}
-+#else
-+static void setup_sighandler(void) { /* empty */ }
-+#endif
-+
- int main(int argc, char * const *argv)
- {
- 	const struct option *options = get_options();
-@@ -375,6 +403,8 @@ int main(int argc, char * const *argv)
- 	if (getuid() != geteuid())
- 		_exit(111);
- 
-+	setup_sighandler();
-+
- 	if (!nft_options_check(argc, argv))
- 		exit(EXIT_FAILURE);
- 
++diff -u <(echo "$EXPECT") <(cat $tracelog | tracefilter)
++exit 0
 -- 
 2.51.0
 
