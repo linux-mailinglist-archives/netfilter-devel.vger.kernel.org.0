@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-10441-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10437-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MCNCGls8eWlSwAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10441-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:47 +0100
+	id iNWeA0g8eWkmwAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10437-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:28 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91DF9B0E1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60F779B0B6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 50D21302EE97
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 22:29:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 13818300A8FF
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 22:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B183644BE;
-	Tue, 27 Jan 2026 22:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC1836075A;
+	Tue, 27 Jan 2026 22:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="BD2T17PA"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GBGh+T7z"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83DD35FF67
-	for <netfilter-devel@vger.kernel.org>; Tue, 27 Jan 2026 22:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786D92EA75E
+	for <netfilter-devel@vger.kernel.org>; Tue, 27 Jan 2026 22:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769552966; cv=none; b=MyWnH0P7Dw8UtBI1IasxLQSue6s9+EhSs5Ej3kAnWfnW2wMWMUo5+h76K7zj+KXSPzYc4+RuDdSENmZIOHkqco4Vs1bHEE4/wMdZlIplRPzi7GHYYLsE4wxsjuJy5NifAHgbX8wG/FP6TinpDXblGWdZIAe//oAjvu9yABlhpm8=
+	t=1769552965; cv=none; b=AFTQYO7AoKWeCnegePmX/PcJzAXfVBGAVs4uUP03eC33AavpFL0k8QN3ZYpVwH/crW3VL8b0852Tnj765dbOdhRuLf+279xGSmyczLsLZle+1f3/XzqlS4HYU8qzo7lj03f8AKufdOBExRhr7BiwGI8Z3GqOsS+QRlGmyI0ndio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769552966; c=relaxed/simple;
-	bh=DDN0Pw8bWC8ovyxX2X4M7irZqZXYiuwSG1bi7n+dRrc=;
+	s=arc-20240116; t=1769552965; c=relaxed/simple;
+	bh=G0++cGbWsfB9Ls0Zu70ILHgggS7r/VNKZJSuLukqrds=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q8N2Whs6N6X8x5pqYF9CxDV9mOW/XyQmFrsKjdM6h78UbyRZ3uKuCoyRHWouSeNgMiqubFEjHNvsFfYWXcOA+nbKsJ+0umga3gi49PMj6S4hawYkOeC8raGl32pij+kM5EbuXmb/00P7yS0QUOzh4x16ZjtriAEqNAB94SHUExs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=BD2T17PA; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=dV2yTzxIk6pHLRB8J69yCYnwubxsx3+LLvVummm3kHDAUftoqqdwVC8AXEYWJXBgHdA76NhMnTedRmaDxVk2y5bpBSucMo3LvSxFxKRSvA5XgD6gPTzstQ7qAO4VAQRYNi5cOPfaEG7dfru6oBEEHmVQR6XfFwYJpisOmbTNicw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GBGh+T7z; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -40,25 +40,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=07W+u4mnLPdMJPbYvZGvLIuE9XkUoeCohK15WL4+RKw=; b=BD2T17PAvFl70pnDMpuXQcHyOq
-	AdY5EknfFSFgzpFu7XABlkYltRUU2XlaWdStS12gCNCPhxjwNMBuN1TTBEvahhaG+WtAA8D3XjDMe
-	o98CeIArobcdgJjlipS4ghzMe42gWbjJruvyvLaDHYRLqXGyMgRBktyOHk2dMPwDuPn01ZJbt3iFN
-	5T1+YwZdDsX5J83ggWh39gfML2ABD7Im8VA/BQ9uW6RS+KXVzQJK4uiDE4mEU8W64RI8Z8Hc+VrAq
-	c1d/yhfSwnEocHVu8prMSxV1eTT3S20sPgRUNJFXyxAwk8YlQUOOVO6RDBZLe+IAHXCbKn7Lk5EXZ
-	IMmQ51JA==;
+	bh=N1yjs4FXOi+YPVQW4NSl9EJAmjG4+JjpgHHCYouzI9I=; b=GBGh+T7zrFlujeqd0CLTsIVCN0
+	9vWsFJ69QpDpOIsBcFaAKN/r1/GccdtCTY+16YRv6SN/TXjwSnVt3MpP4TvRMo4pu6Aa4/YQAyZXX
+	D47dErlVik2yDyBFIZrphdPT2bdbFyiK1fpqh0OHNQVN2QLtzfkTzApI58F+8CfKA7YXbj7/KytyC
+	SPZaRx0Q85VUnjUr8x9f3QB2F2n7yWQXMeNyxN1cjszJ18ZWdM3IucjP1niFLvmcSGF8VmDkBrmLg
+	2JbxMfEyJjbCtEgVs1zEnggepsekZdhXVS0b/qFLfg3B8V7nvIP9LWLKWjQLQ1untoZMoLGDWdOHX
+	vW7RF8gA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1vkrYp-000000002lq-2Sae;
-	Tue, 27 Jan 2026 23:29:23 +0100
+	id 1vkrYn-000000002lP-1o0t;
+	Tue, 27 Jan 2026 23:29:21 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 2/4] tests: shell: Add a simple test for nftrace
-Date: Tue, 27 Jan 2026 23:29:14 +0100
-Message-ID: <20260127222916.31806-3-phil@nwl.cc>
+Subject: [nft PATCH 3/4] xt: Print comment match data as well
+Date: Tue, 27 Jan 2026 23:29:15 +0100
+Message-ID: <20260127222916.31806-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260127222916.31806-1-phil@nwl.cc>
 References: <20260127222916.31806-1-phil@nwl.cc>
@@ -81,7 +81,7 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10441-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10437-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	DMARC_NA(0.00)[nwl.cc];
@@ -96,110 +96,47 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:mid,nwl.cc:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B91DF9B0E1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nwl.cc:mid,nwl.cc:email]
+X-Rspamd-Queue-Id: 60F779B0B6
 X-Rspamd-Action: no action
 
-The test suites did not cover src/trace.c at all. This test touches over
-90% of its lines.
+In order to translate comment matches into the single nftables rule
+comment, libxtables does not immediately (maybe mid-rule) print a
+comment match's string but instead stores it into struct
+xt_xlate::comment array for later.
+
+Since xt_stmt_xlate() is called by a statement's .print callback which
+can't communicate data back to caller, nftables has to print it right
+away.
+
+Since parser_bison accepts rule comments only at end of line though, the
+output from above can't be restored anymore. Which is a bad idea to
+begin with so accept this quirk and avoid refactoring the statement
+printing API.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/shell/testcases/trace/0001simple | 85 ++++++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
- create mode 100755 tests/shell/testcases/trace/0001simple
+ src/xt.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tests/shell/testcases/trace/0001simple b/tests/shell/testcases/trace/0001simple
-new file mode 100755
-index 0000000000000..a1bf4dd1318b2
---- /dev/null
-+++ b/tests/shell/testcases/trace/0001simple
-@@ -0,0 +1,85 @@
-+#!/bin/bash -x
-+
-+set -e
-+
-+ns1=$(mktemp -u ns1-XXXXXX)
-+ns2=$(mktemp -u ns2-XXXXXX)
-+tracelog=$(mktemp)
-+tracepid=0
-+cleanup() {
-+	ip netns del $ns1
-+	ip netns del $ns2
-+	[ $tracepid -eq 0 ] || {
-+		kill $tracepid
-+		wait
+diff --git a/src/xt.c b/src/xt.c
+index f7bee21618030..c3a8c47621cbb 100644
+--- a/src/xt.c
++++ b/src/xt.c
+@@ -112,8 +112,12 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
+ 		break;
+ 	}
+ 
+-	if (rc == 1)
++	if (rc == 1) {
+ 		nft_print(octx, "%s", xt_xlate_get(xl));
++		if (xt_xlate_get_comment(xl))
++			nft_print(octx, "comment %s",
++				  xt_xlate_get_comment(xl));
 +	}
-+	rm -f $tracelog
-+}
-+trap "cleanup" EXIT
-+ip netns add $ns1
-+ip netns add $ns2
-+ip -net $ns1 link add eth0 type veth peer name eth0 netns $ns2
-+ip -net $ns1 link set eth0 up
-+ip -net $ns1 addr add 10.23.42.1/24 dev eth0
-+ip -net $ns2 link set eth0 up
-+ip -net $ns2 addr add 10.23.42.2/24 dev eth0
-+ns1mac=$(ip -net $ns1 link show dev eth0 | awk '/link\/ether/{ print $2 }')
-+ns2mac=$(ip -net $ns2 link show dev eth0 | awk '/link\/ether/{ print $2 }')
-+ip netns exec $ns1 ping -c 1 10.23.42.2
-+ip netns exec $ns2 ping -c 1 10.23.42.1
-+
-+ip netns exec $ns1 $NFT -f - <<EOF
-+table inet t {
-+	chain pre {
-+		type filter hook prerouting priority 0
-+
-+		icmp type { echo-request, echo-reply } meta mark set 0x42 ct state new,established meta nftrace set 1
-+	}
-+	chain foo {
-+		tcp dport 456 accept
-+		ct status != dying return
-+		tcp dport 23 drop
-+	}
-+	chain input {
-+		type filter hook input priority 0
-+
-+		meta mark 0x42 jump foo
-+		meta mark 0x42 tcp dport 789 accept
-+	}
-+	chain output {
-+		type filter hook output priority 0
-+
-+		icmp type echo-reply meta nftrace set 1
-+	}
-+}
-+EOF
-+
-+ip netns exec $ns1 $NFT monitor trace >$tracelog &
-+tracepid=$!
-+sleep 0.5
-+ip netns exec $ns2 ping -c 1 10.23.42.1
-+sleep 0.5
-+kill $tracepid
-+wait
-+tracepid=0
-+
-+EXPECT="trace id 0 inet t pre conntrack: ct direction original ct state new ct id 0 
-+trace id 0 inet t pre packet: iif \"eth0\" ether saddr $ns2mac ether daddr $ns1mac ip saddr 10.23.42.2 ip daddr 10.23.42.1 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 0 ip protocol icmp ip length 84 icmp type echo-request icmp code 0 icmp id 0 icmp sequence 1 
-+trace id 0 inet t pre rule icmp type { echo-reply, echo-request } meta mark set 0x00000042 ct state established,new meta nftrace set 1 (verdict continue)
-+trace id 0 inet t pre policy accept meta mark 0x00000042 
-+trace id 0 inet t input conntrack: ct direction original ct state new ct id 0 
-+trace id 0 inet t input packet: iif \"eth0\" ether saddr $ns2mac ether daddr $ns1mac ip saddr 10.23.42.2 ip daddr 10.23.42.1 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 0 ip protocol icmp ip length 84 icmp type echo-request icmp code 0 icmp id 0 icmp sequence 1 
-+trace id 0 inet t input rule meta mark 0x00000042 jump foo (verdict jump foo)
-+trace id 0 inet t foo rule ct status != dying return (verdict return)
-+trace id 0 inet t input policy accept meta mark 0x00000042 
-+trace id 0 inet t output conntrack: ct direction reply ct state established ct status seen-reply,confirmed ct id 0 
-+trace id 0 inet t output packet: oif \"eth0\" ip saddr 10.23.42.1 ip daddr 10.23.42.2 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 0 ip protocol icmp ip length 84 icmp type echo-reply icmp code 0 icmp id 0 icmp sequence 1 
-+trace id 0 inet t output rule icmp type echo-reply meta nftrace set 1 (verdict continue)
-+trace id 0 inet t output policy accept "
-+
-+
-+tracefilter() {
-+	sed -e 's/\(trace\|ip\|icmp\|ct\) id [^ ]\+/\1 id 0/g'
-+}
-+diff -u <(echo "$EXPECT") <(cat $tracelog | tracefilter)
-+exit 0
+ 	xt_xlate_free(xl);
+ 	free(entry);
+ #endif
 -- 
 2.51.0
 
