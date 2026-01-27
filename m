@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-10437-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10440-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iNWeA0g8eWkmwAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10437-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:28 +0100
+	id yBorOFY8eWkmwAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10440-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:42 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F779B0B6
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D739B0DA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 23:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 13818300A8FF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 22:29:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E5011302C5CB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jan 2026 22:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC1836075A;
-	Tue, 27 Jan 2026 22:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330B7362134;
+	Tue, 27 Jan 2026 22:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GBGh+T7z"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="IiVvKkw1"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786D92EA75E
-	for <netfilter-devel@vger.kernel.org>; Tue, 27 Jan 2026 22:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A3F35F8AA
+	for <netfilter-devel@vger.kernel.org>; Tue, 27 Jan 2026 22:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769552965; cv=none; b=AFTQYO7AoKWeCnegePmX/PcJzAXfVBGAVs4uUP03eC33AavpFL0k8QN3ZYpVwH/crW3VL8b0852Tnj765dbOdhRuLf+279xGSmyczLsLZle+1f3/XzqlS4HYU8qzo7lj03f8AKufdOBExRhr7BiwGI8Z3GqOsS+QRlGmyI0ndio=
+	t=1769552966; cv=none; b=YSG+J5JQGjZj1UmEIRX2Jt7qpg+KCXxOw6pgrUTi06x1OvWaijbSA7dbzqcIf5G/HkgClMYLBROWxDK7Iuh28hxd7GtmM2KVk5iUzjEpNK89Qz4Gs0lbZIoVYkL7aK1fvjJd5IobIMwytD/KCns3NLc/sLfzE0KMHtdG0uxZ5Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769552965; c=relaxed/simple;
-	bh=G0++cGbWsfB9Ls0Zu70ILHgggS7r/VNKZJSuLukqrds=;
+	s=arc-20240116; t=1769552966; c=relaxed/simple;
+	bh=hEZfB0eMK62WqCECgpVGy+kUL6wFaojjRZruurneuH8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dV2yTzxIk6pHLRB8J69yCYnwubxsx3+LLvVummm3kHDAUftoqqdwVC8AXEYWJXBgHdA76NhMnTedRmaDxVk2y5bpBSucMo3LvSxFxKRSvA5XgD6gPTzstQ7qAO4VAQRYNi5cOPfaEG7dfru6oBEEHmVQR6XfFwYJpisOmbTNicw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GBGh+T7z; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=IIDslcsjKUunhBlXEJQG7sMW9eQy05+iTA5nKHSs+AzZYZyoTqWDtowk2jdKYY8b+qP7ku2Fngwf3sUQ1mK6F3OyuwO6jKMa5BgGtgJK8W6oc/eUy4K5gghv0BWS/61heMJ5t0vj0ZnuhB2kx86MMU8h22g89RzjGrfzIZcbfvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=IiVvKkw1; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -40,25 +40,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=N1yjs4FXOi+YPVQW4NSl9EJAmjG4+JjpgHHCYouzI9I=; b=GBGh+T7zrFlujeqd0CLTsIVCN0
-	9vWsFJ69QpDpOIsBcFaAKN/r1/GccdtCTY+16YRv6SN/TXjwSnVt3MpP4TvRMo4pu6Aa4/YQAyZXX
-	D47dErlVik2yDyBFIZrphdPT2bdbFyiK1fpqh0OHNQVN2QLtzfkTzApI58F+8CfKA7YXbj7/KytyC
-	SPZaRx0Q85VUnjUr8x9f3QB2F2n7yWQXMeNyxN1cjszJ18ZWdM3IucjP1niFLvmcSGF8VmDkBrmLg
-	2JbxMfEyJjbCtEgVs1zEnggepsekZdhXVS0b/qFLfg3B8V7nvIP9LWLKWjQLQ1untoZMoLGDWdOHX
-	vW7RF8gA==;
+	bh=vy9HwoabaTUxu2Jl5dog95U5Tuj808ysoz1zVG94wSI=; b=IiVvKkw1xZz/r54S8m3rniT7eS
+	K5gOme910lRy7p/7RCYPQUNyn97zk6dCaVoF9fJs47+L3NfIaoduLCfaQDInZVHsJZIVDFwG1kpEE
+	wnztaUdcGP9qP/ZewXmWnrrgvLbNRqxwtCdiOLtGPrAl+4iehddgoIMdibx5k/Lv8rW2sVN2DOMDp
+	Bkandmc3XUUTWpzADNzepYbEk/2/Z8yZDP2i9xUL4O1u7gFXlbocgLfxBzSVHZdA4QOfhqEiGKHpq
+	z7IYoeatVL+muKqvNcUr8TmD46JEQ87Wmx91AFYqh2VxFosuiThqwrt3Mh57KN79AmzfwZO7viBas
+	e8d5Pqjw==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1vkrYn-000000002lP-1o0t;
-	Tue, 27 Jan 2026 23:29:21 +0100
+	id 1vkrYo-000000002lh-49OU;
+	Tue, 27 Jan 2026 23:29:23 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 3/4] xt: Print comment match data as well
-Date: Tue, 27 Jan 2026 23:29:15 +0100
-Message-ID: <20260127222916.31806-4-phil@nwl.cc>
+Subject: [nft PATCH 4/4] tests: shell: Add a basic test for src/xt.c
+Date: Tue, 27 Jan 2026 23:29:16 +0100
+Message-ID: <20260127222916.31806-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260127222916.31806-1-phil@nwl.cc>
 References: <20260127222916.31806-1-phil@nwl.cc>
@@ -75,13 +75,13 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10437-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10440-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	DMARC_NA(0.00)[nwl.cc];
@@ -95,48 +95,194 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nwl.cc:mid,nwl.cc:email]
-X-Rspamd-Queue-Id: 60F779B0B6
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:mid,nwl.cc:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 69D739B0DA
 X-Rspamd-Action: no action
 
-In order to translate comment matches into the single nftables rule
-comment, libxtables does not immediately (maybe mid-rule) print a
-comment match's string but instead stores it into struct
-xt_xlate::comment array for later.
+The feature test introduced in this patch checks iptables-nft presence
+and usability as well as translation support presence in nft (as it may
+not be compiled in).
 
-Since xt_stmt_xlate() is called by a statement's .print callback which
-can't communicate data back to caller, nftables has to print it right
-away.
-
-Since parser_bison accepts rule comments only at end of line though, the
-output from above can't be restored anymore. Which is a bad idea to
-begin with so accept this quirk and avoid refactoring the statement
-printing API.
+The actual test case will optionally call ip6tables-nft and ebtables-nft
+as well.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/xt.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tests/shell/features/xtables_xlate.sh      |  21 ++++
+ tests/shell/testcases/parsing/compat_xlate | 135 +++++++++++++++++++++
+ 2 files changed, 156 insertions(+)
+ create mode 100755 tests/shell/features/xtables_xlate.sh
+ create mode 100755 tests/shell/testcases/parsing/compat_xlate
 
-diff --git a/src/xt.c b/src/xt.c
-index f7bee21618030..c3a8c47621cbb 100644
---- a/src/xt.c
-+++ b/src/xt.c
-@@ -112,8 +112,12 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
- 		break;
- 	}
- 
--	if (rc == 1)
-+	if (rc == 1) {
- 		nft_print(octx, "%s", xt_xlate_get(xl));
-+		if (xt_xlate_get_comment(xl))
-+			nft_print(octx, "comment %s",
-+				  xt_xlate_get_comment(xl));
+diff --git a/tests/shell/features/xtables_xlate.sh b/tests/shell/features/xtables_xlate.sh
+new file mode 100755
+index 0000000000000..9c1f7d84c7640
+--- /dev/null
++++ b/tests/shell/features/xtables_xlate.sh
+@@ -0,0 +1,21 @@
++#!/bin/bash
++
++# Does nft support translating compat extensions using libxtables?
++# Answer a related question first: Do we have a usable iptables-nft available?
++
++iptables-nft --version | grep -q nf_tables || {
++	echo "iptables-nft not available or not nft-variant"
++	exit 1
++}
++
++ns=$(mktemp -u ns-XXXXXX)
++trap "ip netns del $ns" EXIT
++ip netns add $ns || exit 1
++
++ext_arg="-m comment --comment foobar"
++ip netns exec $ns iptables-nft -vv -A FORWARD $ext_arg | \
++		grep -q "match name comment" || {
++	echo "comment match does not use compat extension?!"
++	exit 1
++}
++ip netns exec $ns $NFT list chain ip filter FORWARD 2>/dev/null | grep -q "foobar"
+diff --git a/tests/shell/testcases/parsing/compat_xlate b/tests/shell/testcases/parsing/compat_xlate
+new file mode 100755
+index 0000000000000..bc774311ffdc2
+--- /dev/null
++++ b/tests/shell/testcases/parsing/compat_xlate
+@@ -0,0 +1,135 @@
++#!/bin/bash
++
++# NFT_TEST_REQUIRES(NFT_TEST_HAVE_xtables_xlate)
++
++set -e
++
++IPTABLES_RULESET='*filter
++-A FORWARD -m comment --comment "this is a comment"
++-A FORWARD -m iprange --src-range 10.0.0.1-10.0.0.23 --dst-range 10.1.0.5-10.2.0.1
++-A FORWARD -p tcp -j TCPMSS --clamp-mss-to-pmtu
++-A FORWARD -p udp --dport 1
++-A FORWARD -p sctp --dport 3
++-A FORWARD -p dccp --dport 4
++-A FORWARD -p esp
++-A FORWARD -p ah
++COMMIT'
++IPTABLES_EXPECT='# Warning: table ip filter is managed by iptables-nft, do not touch!
++table ip filter {
++	chain FORWARD {
++		type filter hook forward priority filter; policy accept;
++		comment "this is a comment" counter packets 0 bytes 0
++		ip saddr 10.0.0.1-10.0.0.23 ip daddr 10.1.0.5-10.2.0.1 counter packets 0 bytes 0
++		ip protocol tcp counter packets 0 bytes 0 tcp option maxseg size set rt mtu
++		udp dport 1 counter packets 0 bytes 0
++		ip protocol sctp sctp dport 3 counter packets 0 bytes 0
++		ip protocol dccp dccp dport 4 counter packets 0 bytes 0
++		ip protocol esp counter packets 0 bytes 0
++		ip protocol ah counter packets 0 bytes 0
 +	}
- 	xt_xlate_free(xl);
- 	free(entry);
- #endif
++}'
++
++IP6TABLES_RULESET='*filter
++-A FORWARD -m comment --comment "this is a comment"
++-A FORWARD -m iprange --src-range fec0::1-fec0::23 --dst-range fec0:1::5-fec0:2::1
++-A FORWARD -p tcp -j TCPMSS --clamp-mss-to-pmtu
++COMMIT'
++IP6TABLES_EXPECT='
++# Warning: table ip6 filter is managed by iptables-nft, do not touch!
++table ip6 filter {
++	chain FORWARD {
++		type filter hook forward priority filter; policy accept;
++		comment "this is a comment" counter packets 0 bytes 0
++		ip6 saddr fec0::1-fec0::23 ip6 daddr fec0:1::5-fec0:2::1 counter packets 0 bytes 0
++		meta l4proto tcp counter packets 0 bytes 0 tcp option maxseg size set rt mtu
++	}
++}'
++
++ARPTABLES_RULESET='*filter
++-A INPUT -s 10.0.0.0/8 -j ACCEPT
++-A INPUT -d 192.168.123.1 -j ACCEPT
++-A INPUT --source-mac fe:ed:ba:be:00:01 -j ACCEPT
++-A INPUT --destination-mac fe:ed:ba:be:00:01 -j ACCEPT
++-N foo
++-A foo -i lo -j ACCEPT
++-A foo -l 6 -j ACCEPT
++-A foo -j MARK --set-mark 12345
++-A foo --opcode Request -j ACCEPT
++-A foo --h-type 1 --proto-type 0x800 -j ACCEPT
++-A foo -l 6 --h-type 1 --proto-type 0x800 -i lo --opcode Request -j ACCEPT
++-A INPUT -j foo
++-A INPUT
++-A OUTPUT -o lo -j ACCEPT
++-A OUTPUT -o eth134 -j mangle --mangle-ip-s 10.0.0.1
++-A OUTPUT -o eth432 -j CLASSIFY --set-class feed:babe
++-A OUTPUT -o eth432 --opcode Request -j CLASSIFY --set-class feed:babe
++-P OUTPUT DROP
++COMMIT'
++ARPTABLES_EXPECT='
++# Warning: table arp filter is managed by iptables-nft, do not touch!
++table arp filter {
++	chain INPUT {
++		type filter hook input priority filter; policy accept;
++		arp htype 1 arp hlen 6 arp plen 4 arp saddr ip 10.0.0.0/8 counter packets 0 bytes 0 accept
++		arp htype 1 arp hlen 6 arp plen 4 arp daddr ip 192.168.123.1 counter packets 0 bytes 0 accept
++		arp htype 1 arp hlen 6 arp plen 4 arp saddr ether fe:ed:ba:be:00:01 counter packets 0 bytes 0 accept
++		arp htype 1 arp hlen 6 arp plen 4 arp daddr ether fe:ed:ba:be:00:01 counter packets 0 bytes 0 accept
++		arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 jump foo
++		arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0
++	}
++
++	chain foo {
++		iifname "lo" arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 accept
++		arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 accept
++		arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 meta mark set 0x12345
++		arp htype 1 arp hlen 6 arp plen 4 arp operation request counter packets 0 bytes 0 accept
++		arp htype 1 arp ptype ip arp hlen 6 arp plen 4 counter packets 0 bytes 0 accept
++		iifname "lo" arp htype 1 arp ptype ip arp hlen 6 arp plen 4 arp operation request counter packets 0 bytes 0 accept
++	}
++
++	chain OUTPUT {
++		type filter hook output priority filter; policy drop;
++		oifname "lo" arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 accept
++		oifname "eth134" arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 arp saddr ip set 10.0.0.1 accept
++		oifname "eth432" arp htype 1 arp hlen 6 arp plen 4 counter packets 0 bytes 0 meta priority set feed:babe
++		oifname "eth432" arp htype 1 arp hlen 6 arp plen 4 arp operation request counter packets 0 bytes 0 meta priority set feed:babe
++	}
++}'
++
++EBTABLES_RULESET='*filter
++-A FORWARD -p IPv4 -j mark --mark-set 1
++-A FORWARD -p IPv6 -j mark --mark-set 2
++COMMIT'
++EBTABLES_EXPECT='
++# Warning: table bridge filter is managed by iptables-nft, do not touch!
++table bridge filter {
++	chain FORWARD {
++		type filter hook forward priority filter; policy accept;
++		ether type ip counter packets 0 bytes 0 meta mark set 0x1 accept
++		ether type ip6 counter packets 0 bytes 0 meta mark set 0x2 accept
++	}
++}'
++
++iptables-nft-restore <<< "$IPTABLES_RULESET"
++EXPECT="$IPTABLES_EXPECT"
++
++if ip6tables-nft --version | grep -q 'nf_tables'; then
++	echo "testing ip6tables, too"
++	ip6tables-nft-restore <<< "$IP6TABLES_RULESET"
++	EXPECT+="$IP6TABLES_EXPECT"
++fi
++if arptables-nft --version | grep -q 'nf_tables'; then
++	echo "testing arptables, too"
++	arptables-nft-restore <<< "$ARPTABLES_RULESET"
++	EXPECT+="$ARPTABLES_EXPECT"
++fi
++if ebtables-nft --version | grep -q 'nf_tables'; then
++	echo "testing ebtables, too"
++	ebtables-nft-restore <<< "$EBTABLES_RULESET"
++	EXPECT+="$EBTABLES_EXPECT"
++fi
++
++$DIFF -u <(echo "$EXPECT") <($NFT list ruleset 2>&1)
++
++# avoid attempts at replaying the ruleset
++$NFT flush ruleset
 -- 
 2.51.0
 
