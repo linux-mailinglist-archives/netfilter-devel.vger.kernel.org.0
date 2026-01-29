@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-10501-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10502-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wKYrHYQ8e2mNCgIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10501-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Jan 2026 11:55:00 +0100
+	id QHkIEcM9e2mNCgIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10502-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Jan 2026 12:00:19 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1083FAF34B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Jan 2026 11:55:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D689EAF4DD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Jan 2026 12:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D8F20300D733
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Jan 2026 10:54:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8D53C3048098
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Jan 2026 10:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D39352F9D;
-	Thu, 29 Jan 2026 10:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5371D37FF56;
+	Thu, 29 Jan 2026 10:54:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26458369993;
-	Thu, 29 Jan 2026 10:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02AB3793DD;
+	Thu, 29 Jan 2026 10:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769684079; cv=none; b=swyqD1dgjdz5p0qo54Dm38HfG6bsnHPe2TpqaKfBop+ON6xQ5WRn8LBPfc3iKtyl71y9YiCtZqPKQOHjRYzOOPP3rVw5Z41x0GSjRY6TH294qmCMEEwNoXzuwVJyR01pa5Q7CfZuL13TVg9JsZEaJMJK3Uwn3U/5MRt20cPcAhM=
+	t=1769684083; cv=none; b=oYNzAm/SwK5Bmn5tQ3EGiBDAHbHZ1eEclQ+aZoA7/CwJSiEBi2q6nX3f7Y6z8qkV3ifc13T4HQZg/gVamImf2wb072XawTqfbUibxkCPnH7V76OAI1hXXgsUt15hHKqFtsFj9aELwp4JFes7wpB5ONV3Ewqeaox2OWNFo7bBOjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769684079; c=relaxed/simple;
-	bh=HpH5+4DmjTcC1TVMcaAlHFnX4oLnGUrwTKXPABThgPY=;
+	s=arc-20240116; t=1769684083; c=relaxed/simple;
+	bh=wSGFSN1nQHmQTTeW7+DBe1vH+md+OrxzQ1xLStgYkzA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tDYtgGxfk8swSJNy4cH1Tnre2z5w5Wg6Li6K2+d8YybC5KIFQHMq7wEuHylUZvcHhfTgJMN1aMoffWBRT4Lg331qxo9NaWlw9zqqR96zf5vDomKEVEYZdbGEwLcan7x//0690CzMHzLbROSQTLPnTsEykdru6zrk5K/t/teVwt8=
+	 MIME-Version; b=XzW6fybV+Lrq6sR46XYZsg53or4+A2ZVYJ26GVSgnbqPraj4gjKywADfVNUGWdW24SBaXH83rcjou1U31NeVuFcjE5iedVFKr9KUrSCT3MujKncSIccY5XCcCwzg6/X9ZcDYNy15SPDj+fk5NVA5i3HUXOa/lxSDoV70cMFr8+E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 1F7F660516; Thu, 29 Jan 2026 11:54:36 +0100 (CET)
+	id 72E4160577; Thu, 29 Jan 2026 11:54:40 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH v2 net-next 1/7] netfilter: Add ctx pointer in nf_flow_skb_encap_protocol/nf_flow_ip4_tunnel_proto signature
-Date: Thu, 29 Jan 2026 11:54:21 +0100
-Message-ID: <20260129105427.12494-2-fw@strlen.de>
+Subject: [PATCH v2 net-next 2/7] netfilter: Introduce tunnel metadata info in nf_flowtable_ctx struct
+Date: Thu, 29 Jan 2026 11:54:22 +0100
+Message-ID: <20260129105427.12494-3-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260129105427.12494-1-fw@strlen.de>
 References: <20260129105427.12494-1-fw@strlen.de>
@@ -60,11 +60,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10501-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10502-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -72,119 +72,133 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.996];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1083FAF34B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:mid,strlen.de:email]
+X-Rspamd-Queue-Id: D689EAF4DD
 X-Rspamd-Action: no action
 
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Rely on nf_flowtable_ctx struct pointer in nf_flow_ip4_tunnel_proto and
-nf_flow_skb_encap_protocol routine signature. This is a preliminary patch
-to introduce IP6IP6 flowtable acceleration since nf_flowtable_ctx will
-be used to store IP6IP6 tunnel info.
+Add tunnel hdr_size and tunnel proto fields in nf_flowtable_ctx struct
+in order to store IP tunnel header size and protocol used during IPIP
+and IP6IP6 tunnel sw offloading decapsulation and avoid recomputing them
+during tunnel header pop since this is constant for IPv6.
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_flow_table_ip.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ net/netfilter/nf_flow_table_ip.c | 41 +++++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 16 deletions(-)
 
 diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 11da560f38bf..283b3fe61919 100644
+index 283b3fe61919..ddfaddfa57be 100644
 --- a/net/netfilter/nf_flow_table_ip.c
 +++ b/net/netfilter/nf_flow_table_ip.c
-@@ -295,15 +295,16 @@ static unsigned int nf_flow_xmit_xfrm(struct sk_buff *skb,
- 	return NF_STOLEN;
+@@ -144,6 +144,18 @@ static bool ip_has_options(unsigned int thoff)
+ 	return thoff != sizeof(struct iphdr);
  }
  
--static bool nf_flow_ip4_tunnel_proto(struct sk_buff *skb, u32 *psize)
-+static bool nf_flow_ip4_tunnel_proto(struct nf_flowtable_ctx *ctx,
-+				     struct sk_buff *skb)
++struct nf_flowtable_ctx {
++	const struct net_device	*in;
++	u32			offset;
++	u32			hdrsize;
++	struct {
++		/* Tunnel IP header size */
++		u32 hdr_size;
++		/* IP tunnel protocol */
++		u8 proto;
++	} tun;
++};
++
+ static void nf_flow_tuple_encap(struct sk_buff *skb,
+ 				struct flow_offload_tuple *tuple)
  {
- 	struct iphdr *iph;
- 	u16 size;
+@@ -186,12 +198,6 @@ static void nf_flow_tuple_encap(struct sk_buff *skb,
+ 	}
+ }
  
--	if (!pskb_may_pull(skb, sizeof(*iph) + *psize))
-+	if (!pskb_may_pull(skb, sizeof(*iph) + ctx->offset))
+-struct nf_flowtable_ctx {
+-	const struct net_device	*in;
+-	u32			offset;
+-	u32			hdrsize;
+-};
+-
+ static int nf_flow_tuple_ip(struct nf_flowtable_ctx *ctx, struct sk_buff *skb,
+ 			    struct flow_offload_tuple *tuple)
+ {
+@@ -313,20 +319,22 @@ static bool nf_flow_ip4_tunnel_proto(struct nf_flowtable_ctx *ctx,
+ 	if (iph->ttl <= 1)
  		return false;
  
--	iph = (struct iphdr *)(skb_network_header(skb) + *psize);
-+	iph = (struct iphdr *)(skb_network_header(skb) + ctx->offset);
- 	size = iph->ihl << 2;
- 
- 	if (ip_is_fragment(iph) || unlikely(ip_has_options(size)))
-@@ -313,7 +314,7 @@ static bool nf_flow_ip4_tunnel_proto(struct sk_buff *skb, u32 *psize)
- 		return false;
- 
- 	if (iph->protocol == IPPROTO_IPIP)
--		*psize += size;
-+		ctx->offset += size;
+-	if (iph->protocol == IPPROTO_IPIP)
++	if (iph->protocol == IPPROTO_IPIP) {
++		ctx->tun.proto = IPPROTO_IPIP;
++		ctx->tun.hdr_size = size;
+ 		ctx->offset += size;
++	}
  
  	return true;
  }
-@@ -329,8 +330,8 @@ static void nf_flow_ip4_tunnel_pop(struct sk_buff *skb)
+ 
+-static void nf_flow_ip4_tunnel_pop(struct sk_buff *skb)
++static void nf_flow_ip4_tunnel_pop(struct nf_flowtable_ctx *ctx,
++				   struct sk_buff *skb)
+ {
+-	struct iphdr *iph = (struct iphdr *)skb_network_header(skb);
+-
+-	if (iph->protocol != IPPROTO_IPIP)
++	if (ctx->tun.proto != IPPROTO_IPIP)
+ 		return;
+ 
+-	skb_pull(skb, iph->ihl << 2);
++	skb_pull(skb, ctx->tun.hdr_size);
  	skb_reset_network_header(skb);
  }
  
--static bool nf_flow_skb_encap_protocol(struct sk_buff *skb, __be16 proto,
--				       u32 *offset)
-+static bool nf_flow_skb_encap_protocol(struct nf_flowtable_ctx *ctx,
-+				       struct sk_buff *skb, __be16 proto)
- {
- 	__be16 inner_proto = skb->protocol;
- 	struct vlan_ethhdr *veth;
-@@ -343,7 +344,7 @@ static bool nf_flow_skb_encap_protocol(struct sk_buff *skb, __be16 proto,
- 
- 		veth = (struct vlan_ethhdr *)skb_mac_header(skb);
- 		if (veth->h_vlan_encapsulated_proto == proto) {
--			*offset += VLAN_HLEN;
-+			ctx->offset += VLAN_HLEN;
- 			inner_proto = proto;
- 			ret = true;
- 		}
-@@ -351,14 +352,14 @@ static bool nf_flow_skb_encap_protocol(struct sk_buff *skb, __be16 proto,
- 	case htons(ETH_P_PPP_SES):
- 		if (nf_flow_pppoe_proto(skb, &inner_proto) &&
- 		    inner_proto == proto) {
--			*offset += PPPOE_SES_HLEN;
-+			ctx->offset += PPPOE_SES_HLEN;
- 			ret = true;
- 		}
- 		break;
- 	}
- 
- 	if (inner_proto == htons(ETH_P_IP))
--		ret = nf_flow_ip4_tunnel_proto(skb, offset);
-+		ret = nf_flow_ip4_tunnel_proto(ctx, skb);
- 
+@@ -364,7 +372,8 @@ static bool nf_flow_skb_encap_protocol(struct nf_flowtable_ctx *ctx,
  	return ret;
  }
-@@ -416,7 +417,7 @@ nf_flow_offload_lookup(struct nf_flowtable_ctx *ctx,
+ 
+-static void nf_flow_encap_pop(struct sk_buff *skb,
++static void nf_flow_encap_pop(struct nf_flowtable_ctx *ctx,
++			      struct sk_buff *skb,
+ 			      struct flow_offload_tuple_rhash *tuplehash)
  {
- 	struct flow_offload_tuple tuple = {};
+ 	struct vlan_hdr *vlan_hdr;
+@@ -391,7 +400,7 @@ static void nf_flow_encap_pop(struct sk_buff *skb,
+ 	}
  
--	if (!nf_flow_skb_encap_protocol(skb, htons(ETH_P_IP), &ctx->offset))
-+	if (!nf_flow_skb_encap_protocol(ctx, skb, htons(ETH_P_IP)))
- 		return NULL;
+ 	if (skb->protocol == htons(ETH_P_IP))
+-		nf_flow_ip4_tunnel_pop(skb);
++		nf_flow_ip4_tunnel_pop(ctx, skb);
+ }
  
- 	if (nf_flow_tuple_ip(ctx, skb, &tuple) < 0)
-@@ -897,7 +898,7 @@ nf_flow_offload_ipv6_lookup(struct nf_flowtable_ctx *ctx,
- 	struct flow_offload_tuple tuple = {};
+ struct nf_flow_xmit {
+@@ -461,7 +470,7 @@ static int nf_flow_offload_forward(struct nf_flowtable_ctx *ctx,
  
- 	if (skb->protocol != htons(ETH_P_IPV6) &&
--	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IPV6), &ctx->offset))
-+	    !nf_flow_skb_encap_protocol(ctx, skb, htons(ETH_P_IPV6)))
- 		return NULL;
+ 	flow_offload_refresh(flow_table, flow, false);
  
- 	if (nf_flow_tuple_ipv6(ctx, skb, &tuple) < 0)
+-	nf_flow_encap_pop(skb, tuplehash);
++	nf_flow_encap_pop(ctx, skb, tuplehash);
+ 	thoff -= ctx->offset;
+ 
+ 	iph = ip_hdr(skb);
+@@ -876,7 +885,7 @@ static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
+ 
+ 	flow_offload_refresh(flow_table, flow, false);
+ 
+-	nf_flow_encap_pop(skb, tuplehash);
++	nf_flow_encap_pop(ctx, skb, tuplehash);
+ 
+ 	ip6h = ipv6_hdr(skb);
+ 	nf_flow_nat_ipv6(flow, skb, dir, ip6h);
 -- 
 2.52.0
 
