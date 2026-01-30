@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-10537-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10538-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QGbvLczafGlbOwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10537-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Jan 2026 17:22:36 +0100
+	id aHkzMdzafGlbOwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10538-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Jan 2026 17:22:52 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A663BC7CF
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Jan 2026 17:22:36 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D386FBC7D6
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Jan 2026 17:22:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 05D34300F1B4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Jan 2026 16:22:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3A7BC3002528
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Jan 2026 16:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476C934321B;
-	Fri, 30 Jan 2026 16:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BB2343D83;
+	Fri, 30 Jan 2026 16:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="GCiaQiea"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="OGGJCZt0"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3388202963
-	for <netfilter-devel@vger.kernel.org>; Fri, 30 Jan 2026 16:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BA3202963
+	for <netfilter-devel@vger.kernel.org>; Fri, 30 Jan 2026 16:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769790154; cv=none; b=dOk0784zjJ8fkaDk4xwhJodae14Dy+RSjBvSxTAGFtpusrB5aP+pz7lz0e6HEP/gMZcuUeshqziqD+VQa4lwYkVLp1hFl6xwQVlEXzNJpWRApTBISkwGQZHen52BzAp+rhXeKtmZM1wZvufyKm6q7fv5XOtMPbRWe6CBlJ78Y5Q=
+	t=1769790168; cv=none; b=O1qq2JfR8n9lM0sVrhoC/rqnmYoztKrENswtCUtOyrvqnA3zahkaKiz2QQEpIYODUN5mG8YoeciUJkn+LHA65h+Hh/MyZ0YfDJ5ktV2YmLjSY0haAgGyhtqvSkIaVrAvvVy0e7pKyxXq68miUl4nMYIRUQy8A7Rq4l+4ApZrglA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769790154; c=relaxed/simple;
-	bh=4+jwPV9YjcCuUB7IhFCgJO/GFvV/cxcdpAz/mRTtX/A=;
+	s=arc-20240116; t=1769790168; c=relaxed/simple;
+	bh=7i0Kk3kSHE+8DXtnhZOMa3dV+lJMR4yqFzVwd53xdyI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PFTUJaT1m9X0qzBLho19VzfnNdyUhRtS3cOwA04UgsvWJJAbNEHdT+HAs98Ty43NRWN/VVDGfD34TmPYjQppddSUG42tw50SdrRS4pMXALg0IxYM1LLF0zl+IYYu5OYBr10FwX6owIgJFYTx1oFyaEMmCvP6xo/urWsMeyLUY7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GCiaQiea; arc=none smtp.client-ip=151.80.46.58
+	 Content-Type:Content-Disposition:In-Reply-To; b=icgT2Br165aGtljVFpbBIA7DfHMmA4346MrtXpcILMMV/3MHW8YmNsdVHcpDSwWSOvLS4tem5p5VRjQfMw9e3+NNzEKD1t7G4c87/JqeWGlTY7oe9u52jJKPTrBglIwoj3eFjS3Y6S7s03hh9RvLDLGRvM2c41T7hXm7vM/u08c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=OGGJCZt0; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -40,26 +40,26 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=fZ8KP30DvTpUtmeTjZMnGufkyq2RRkSNlPg0NcTWadw=; b=GCiaQieabPUNx7+6zP/Xhwjuqe
-	1gBjpDreuSSt3szeS3vQ1GmLXPzUv0x5y2VkwhlZLcVbCiM9fKIUi7eJyjH71BNhjz7Kk2g7Qdb29
-	yqLGFJUdd3hB6cfLBT9yfFJ3mC5aHJE9btQzWSIpbbSg2nZt2ItWPJQaU6/KEdigVzD4wkn86+qZ/
-	TLHjTT2q4e89DnlO5rheemQSavdRD2mIp+h5/Svdi/0mDhjMbvyhISRNyWaESZOO023oUIAlDrGP+
-	A0Pm8XRrID7g/hE1GEHEOA7ZYDEFpfpgLHkqUrficy8Lm7dLVMQCP+sufeo83404M5DpuGUi2ztdO
-	j7h0T8GA==;
+	bh=XJ/2ww+1kp6L/lW2I8Qp1OhxR8+g9ESzqy84wH8lvUU=; b=OGGJCZt0kP+kJCVrFmRWhvEn1E
+	iTkBojUO6IzoFO0yWzkVViuSjj3HLjNGcYmOtP7AlLr1hHZVtBIRL84v2A0AchZyc1WX6AS7PnjBN
+	PHEiKPzj/ECe08xY/HgvZ49fw8y5s3q8e8+T63yCm8796gvCF4lvWEIob0I+BPZgm7xa01VT6FdQv
+	x3HBIIymAIaiKFFvookKrVeZhe8KLXhgPRo4+C4DJiaY+N2ro5mfw4sXpjQcRKd3qAUpSEdiiqFjH
+	xLEpk2FPKjlM15JnZnuWTHxNFpJfIZFHMQHmRtn8eoLcO8PFv3D9LE+1kZ8oilT/y2XlldKky92Eh
+	mvKBmx5g==;
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1vlrGQ-000000001mD-2wGu;
-	Fri, 30 Jan 2026 17:22:30 +0100
-Date: Fri, 30 Jan 2026 17:22:30 +0100
+	id 1vlrGf-000000001mu-1V9s;
+	Fri, 30 Jan 2026 17:22:45 +0100
+Date: Fri, 30 Jan 2026 17:22:45 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: netfilter-devel@vger.kernel.org
 Cc: Florian Westphal <fw@strlen.de>
-Subject: Re: [iptables PATCH v2] ruleparse: arp: Fix for all-zero mask on Big
- Endian
-Message-ID: <aXzaxpX59E4QsWYF@orbyte.nwl.cc>
+Subject: Re: [iptables PATCH] tests: shell: Review
+ nft-only/0009-needless-bitwise_0
+Message-ID: <aXza1fj5drmecIaS@orbyte.nwl.cc>
 Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
 	netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-References: <20260129195700.13553-1-phil@nwl.cc>
+References: <20260129195755.13905-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -68,17 +68,17 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260129195700.13553-1-phil@nwl.cc>
+In-Reply-To: <20260129195755.13905-1-phil@nwl.cc>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.46 / 15.00];
 	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10537-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10538-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWO(0.00)[2];
@@ -94,22 +94,18 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2A663BC7CF
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,orbyte.nwl.cc:mid]
+X-Rspamd-Queue-Id: D386FBC7D6
 X-Rspamd-Action: no action
 
-On Thu, Jan 29, 2026 at 08:56:38PM +0100, Phil Sutter wrote:
-> With 16bit mask values, the first two bytes of bitwise.mask in struct
-> nft_xt_ctx_reg are significant. Reading the first 32bit-sized field
-> works only on Little Endian, on Big Endian the mask appears in the upper
-> two bytes which are discarded when assigning to a 16bit variable.
+On Thu, Jan 29, 2026 at 08:57:55PM +0100, Phil Sutter wrote:
+> - Avoid calling host's nft binary, use double-verbose mode with *tables
+>   tools instead
+> - Update expected payloads to match new byteorder-aware libnftnl output
+> - Drop '-x' flag from shell
 > 
-> Fixes: ab2d5f8c7bbee ("nft-arp: add missing mask support")
 > Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
-> Changes since v1:
-> - Use memcpy() to avoid gcc's -Wstrict-aliasing warning
 
 Patch applied.
 
