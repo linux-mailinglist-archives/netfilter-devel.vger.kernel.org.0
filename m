@@ -1,147 +1,138 @@
-Return-Path: <netfilter-devel+bounces-10552-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10553-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mLH6FTNhf2kMpQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10552-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sun, 01 Feb 2026 15:20:35 +0100
+	id 6EJbODGvf2mIvwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10553-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sun, 01 Feb 2026 20:53:21 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F763C61FF
-	for <lists+netfilter-devel@lfdr.de>; Sun, 01 Feb 2026 15:20:34 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EEEEC71BD
+	for <lists+netfilter-devel@lfdr.de>; Sun, 01 Feb 2026 20:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 94EF93005D26
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Feb 2026 14:20:32 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DB3853000FD7
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Feb 2026 19:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B672EDD5D;
-	Sun,  1 Feb 2026 14:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CFD2253EE;
+	Sun,  1 Feb 2026 19:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mailfence.com header.i=brianwitte@mailfence.com header.b="UFjgak2J"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from wilbur.contactoffice.com (wilbur.contactoffice.com [212.3.242.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C158F186284
-	for <netfilter-devel@vger.kernel.org>; Sun,  1 Feb 2026 14:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F43126C02
+	for <netfilter-devel@vger.kernel.org>; Sun,  1 Feb 2026 19:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.3.242.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769955631; cv=none; b=tE+cajHH6pho+7aVYXiuFDTrSiSGAgQ/uimFAQ3YxnyE+YO6LstOBymlo88mCPjG8q+JQ+na0M2VSdk4r2PeNvNuOxh48aOGQ1DFQJo0q1As74ycOew1uYht74BgJyYGlwx+F5zRUgEVo1j6C4Zk7DTjN5qujHjFdsXEZg7fq0A=
+	t=1769975598; cv=none; b=mA/cj/EZ+F1YG+20jSgxfhv7sOa7AYMyzQa9POOrLL/StSGAH32C/5kmeu4jjKPuQhOllv3rw+96dc1e3QJ/ebgQ3elayLMD88VtQhk5ned3DsJIgQMoooZDhU9NFHLj1MXV83TKSx+q2S/c0c6ISDXqy8RXbCbApCqETHIcv7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769955631; c=relaxed/simple;
-	bh=FMSpQoW/7EkeagX0qssllK/HplUFhhTkt/5gES1wUFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RRVGBgvCLwes8d1O8tkPBnKI5/ohr9w909QOlh9ijgt9mlkjIGMjctal44MfsxjmDVL9InOgVamWrT8ygRUwM9B/fVZlA/vi0pAsLhrJgVsdhrK3yED2x5TGFoZTk2SPPU6XlV6+E34R/8+rA28x/+zsRfl2JFqDN4Fgd0DX8Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 63DF0605C3; Sun, 01 Feb 2026 15:20:27 +0100 (CET)
-Date: Sun, 1 Feb 2026 15:20:22 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Brian Witte <brianwitte@mailfence.com>
-Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+	s=arc-20240116; t=1769975598; c=relaxed/simple;
+	bh=qlFc2U8FISKa5N2pP1v7Cw5vxsn+qWnvX80kEnjEXGg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nv+PKv02mlBMnKYEFLWwZ0fYy/TSKrIoEec2LjvXVPjKK+yWgfNVROGPUHYk5zZCmVyXOITBpz88SGIga+qViUwNH1JIKPv5gFP/vm4Q2DOq2YQ/U6C7J8xl+lvUYotP0ZZUXgGUjJ6EVz+C9HfRwPqQu+CM7YMiA4E/ngdaaOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailfence.com; spf=pass smtp.mailfrom=mailfence.com; dkim=pass (2048-bit key) header.d=mailfence.com header.i=brianwitte@mailfence.com header.b=UFjgak2J; arc=none smtp.client-ip=212.3.242.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailfence.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailfence.com
+Received: from smtpauth2.co-bxl (smtpauth2.co-bxl [10.2.0.24])
+	by wilbur.contactoffice.com (Postfix) with ESMTP id 2388613D5;
+	Sun,  1 Feb 2026 20:53:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1769975593;
+	s=20240605-akrp; d=mailfence.com; i=brianwitte@mailfence.com;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding;
+	bh=Dt0dDgkQjig39QpXYVdMPNvks0pi294GapvttxoukH8=;
+	b=UFjgak2JJ2VGfVWd4ezVWBvBv+iYMf3wYr2ANDon8r1NNWZZDpbX02seQOlXucfj
+	r7gSO3PXZbrnhZm+qvc+Q/MLqAiIXxwxebC9PQ5TnVRTsTUFTRoZclna5EvLrvp/dL4
+	Nv3v6sJYzvgfsZ5hTX326+YND5zDvgpu20Y45oORMMzxfoZ1rrlaAbuo9xxCay01Z+n
+	FeuhoQk7vK8C+przhczzcm0EkartIeNxZnQEOX07va0Be2XA9U27o1U6+96v4euWefL
+	8IEuk6F4M+X9tebPZCovZ8vltkNkiajt/NXwBol9qxPDXqbKvW9Z0e6U0rpGktxZmli
+	t9w4RM7Q0Q==
+Received: by smtp.mailfence.com with ESMTPSA ; Sun, 1 Feb 2026 20:53:10 +0100 (CET)
+From: Brian Witte <brianwitte@mailfence.com>
+To: netfilter-devel@vger.kernel.org
+Cc: pablo@netfilter.org,
+	fw@strlen.de,
 	kadlec@blackhole.kfki.hu,
-	syzbot+ff16b505ec9152e5f448@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 nf-next] netfilter: nf_tables: use dedicated spinlock
- for reset operations
-Message-ID: <aX9hJsMroAcTng6m@strlen.de>
-References: <20260201062517.263087-1-brianwitte@mailfence.com>
- <aX9TFNlIzLU9J99z@strlen.de>
+	syzbot+ff16b505ec9152e5f448@syzkaller.appspotmail.com,
+	Brian Witte <brianwitte@mailfence.com>
+Subject: [PATCH v3 0/2] netfilter: nf_tables: fix reset request deadlock
+Date: Sun,  1 Feb 2026 13:52:53 -0600
+Message-ID: <20260201195255.532559-1-brianwitte@mailfence.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aX9TFNlIzLU9J99z@strlen.de>
+Content-Transfer-Encoding: 8bit
+X-ContactOffice-Account: com:441463380
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[mailfence.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[mailfence.com:s=20240605-akrp];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10552-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	URIBL_MULTI_FAIL(0.00)[sto.lore.kernel.org:server fail,mailfence.com:server fail];
+	TAGGED_FROM(0.00)[bounces-10553-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[brianwitte@mailfence.com,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[mailfence.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[netfilter-devel,ff16b505ec9152e5f448];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url,strlen.de:mid,strlen.de:email]
-X-Rspamd-Queue-Id: 9F763C61FF
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mailfence.com:mid,mailfence.com:dkim]
+X-Rspamd-Queue-Id: 8EEEEC71BD
 X-Rspamd-Action: no action
 
-Florian Westphal <fw@strlen.de> wrote:
-> Brian Witte <brianwitte@mailfence.com> wrote:
-> > Replace commit_mutex with a dedicated reset_lock spinlock for reset
-> > operations. This fixes a circular locking dependency between
-> > commit_mutex, nfnl_subsys_ipset, and nlk_cb_mutex-NETFILTER when nft
-> > reset, ipset list, and iptables-nft with set match run concurrently:
-> > 
-> >   CPU0 (nft reset):        nlk_cb_mutex -> commit_mutex
-> >   CPU1 (ipset list):       nfnl_subsys_ipset -> nlk_cb_mutex
-> >   CPU2 (iptables -m set):  commit_mutex -> nfnl_subsys_ipset
-> > 
-> > Using a spinlock instead of a mutex means we stay in the RCU read-side
-> > critical section throughout, eliminating the try_module_get/module_put
-> > and rcu_read_unlock/rcu_read_lock dance that was needed to handle the
-> > sleeping mutex.
-> > 
-> > Reported-by: syzbot+ff16b505ec9152e5f448@syzkaller.appspotmail.com
-> > Fixes: https://syzkaller.appspot.com/bug?extid=ff16b505ec9152e5f448
-> 
-> 'Fixes' tag should point at the commit adding the bug.
-> 
-> Fixes: bd662c4218f9 netfilter: nf_tables: Add locking for NFT_MSG_GETOBJ_RESET requests
-> Fixes: 3d483faa6663 netfilter: nf_tables: Add locking for NFT_MSG_GETSETELEM_RESET requests
-> Fixes: 3cb03edb4de3 netfilter: nf_tables: Add locking for NFT_MSG_GETRULE_RESET requests
-> 
-> No need to resend, I can mangle this locally.
-> 
-> > -	mutex_lock(&nft_net->commit_mutex);
-> > +	spin_lock(&nft_net->reset_lock);
-> >  	ret = nf_tables_dump_rules(skb, cb);
-> > -	mutex_unlock(&nft_net->commit_mutex);
-> > +	spin_unlock(&nft_net->reset_lock);
-> 
-> I *think* its fine, because concurrent resets make no sense.
-> 
-> In case we get reports wrt. long spin time the lock/unlock
-> pairs will have to be pushed down, like in the previous version.
+syzbot reported a circular lock dependency when nft reset, ipset list,
+and iptables-nft with set match run concurrently:
 
-Actually, Brian, could you please try and see if the following isn't
-yielding a saner result?
+  CPU0 (nft reset):        nlk_cb_mutex -> commit_mutex
+  CPU1 (ipset list):       nfnl_subsys_ipset -> nlk_cb_mutex
+  CPU2 (iptables -m set):  commit_mutex -> nfnl_subsys_ipset
 
-First, issue 'git revert' for bd662c4218f9, 3d483faa6663, 3cb03edb4de3
+The bug was introduced by commits that added commit_mutex locking to
+serialize reset requests.
 
-(3d483faa6663 has minor conflict, easy to resolve, keep nft_base_seq()
- but move to conditional).
+v3:
+  - Restructured as 2-patch series per Florian's suggestion:
+    1. Revert the 3 commits that added commit_mutex locking
+    2. Add spinlock-based serialization for reset requests
 
-Then, use the previous version of your patch but do use the nft_pernet
-spinlock added in this change here.
+v2:
+  - Switched to a spinlock in nft_pernet instead of mutex
+  - Spinlock doesn't sleep, so we stay in RCU read-side critical section
+  - Removes the try_module_get/module_put and rcu_read_unlock/lock dance
+  Link: https://lore.kernel.org/netfilter-devel/20260201062517.263087-1-brianwitte@mailfence.com/
 
-I think this will give us a 4-part series that is more obvious wrt.
-what is going on.
+v1:
+  - Proposed using a dedicated reset_mutex instead of commit_mutex
+  Link: https://lore.kernel.org/netfilter-devel/20260127030604.39982-1-brianwitte@mailfence.com/
 
-The spinlock fix would then be limited to adding locked sections where
-needed, rather than mixing new lock with partial reverts of a few chunks
-from the previous attempt.
+Brian Witte (2):
+  Revert nf_tables commit_mutex in reset path
+  netfilter: nf_tables: use spinlock for reset serialization
 
-The 3 reverts could optionally be squased into one commit, clearly saying
-that it reverts those 3 changes (and why).
+ include/net/netfilter/nf_tables.h |   1 +
+ net/netfilter/nf_tables_api.c     | 279 +++++++++---------------------
+ 2 files changed, 78 insertions(+), 202 deletions(-)
 
-Thanks.
+--
+2.47.3
+
 
