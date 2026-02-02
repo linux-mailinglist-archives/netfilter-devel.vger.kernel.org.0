@@ -1,221 +1,158 @@
-Return-Path: <netfilter-devel+bounces-10557-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10558-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eEW3IWBugGl38AIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10557-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 10:29:04 +0100
+	id GNRkE49xgGkw8QIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10558-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 10:42:39 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E21FCA21D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 10:29:04 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A27BBCA36B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 10:42:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B4A5530055B7
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Feb 2026 09:29:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7ABA330048DA
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Feb 2026 09:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140B22D4805;
-	Mon,  2 Feb 2026 09:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD252D5946;
+	Mon,  2 Feb 2026 09:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCbq5pg8"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="DSpSiXG3"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-10696.protonmail.ch (mail-10696.protonmail.ch [79.135.106.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43312D3A77
-	for <netfilter-devel@vger.kernel.org>; Mon,  2 Feb 2026 09:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FDF4A21
+	for <netfilter-devel@vger.kernel.org>; Mon,  2 Feb 2026 09:40:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.96
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770024542; cv=none; b=QN60nixHdjQvqecncDis6mqrSgkYvyQGY/gvNozUUbdE7QwV+lFZpK5YYKBZUxblr2GGCFsM88u+HSruLKdMEAY/QFv9B84ifdfRLNyGxPcJAjS8TQA2z9CfH5EdL5zEJXlpz3tBgKARrFD34+FrPN3MGjy2igNrWt++bSQj240=
+	t=1770025257; cv=none; b=iM4r0AbhOkkdUoTngQ8jGj+QKBabqOIW5cwX+TstZQDDc+FZlH31Bq9YqFeRwU6ndXnmtEPeVTZkH25o8QqJydCZSCD04xia9FFyHBc0KbH0kSJqjelJeFmUpRuv6bM32MWG2lhtXi+b3YKjI0EiD3Pm6uH8Nm/TUUuSiDbg/94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770024542; c=relaxed/simple;
-	bh=RSbpxgoCnRVPhrbcBazIz+iGTxVpsH6mZg1ka0wDZs8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G1+5fRYXgA42Fj2A0B9S0s8u6Fch+BcMuAzJGt1cs1XeOLVfXQ946JKB7+tZSpUVw9IAOaZI3z0et+2YC6kMxKGjQ6XwT/ZII35Yi0rcgxchXalnNAATuH5qHTfpkCGqryjUC8Ut9kY3+cG3b5ybWWm+k0zo09s07B3blCExrUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCbq5pg8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2851EC116C6;
-	Mon,  2 Feb 2026 09:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770024541;
-	bh=RSbpxgoCnRVPhrbcBazIz+iGTxVpsH6mZg1ka0wDZs8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nCbq5pg8rfu/5qItSvTaF0LoIdnSmh7ycqCQfb3Z9Yt7NkFj8OOYeo++GOLylTyq4
-	 1Bjg80XXut71DaWhQOWlQbD1fAXCb5aFAPkrH4bQX/zOIUr9cxXHjyHANDxidfBLRA
-	 MKYzI4yHw+DsxwWFBwUBBuacvML3nYWGW8d8lkqwD8n0hOfjxtsfUn6Di+/7CGe8ch
-	 uSOpMHndXBTrbPz5ABk/kv9ED6apAlE/XFxATCNDPngZfCcz/3f9ytRQGzrRzfUiTA
-	 0rXQx+6VHs4wUNweiYMq3/aH3dNr8UNhhddLERx+HFRRGdke+GbGjKxtbKhjRYc0ra
-	 +CurNdze7dl6w==
-Date: Mon, 2 Feb 2026 10:28:59 +0100
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nf-next] selftests: netfilter: add IPV6_TUNNEL to config
-Message-ID: <aYBuW3ygEmXen2X6@lore-desk>
-References: <20260130182155.93253-1-fw@strlen.de>
+	s=arc-20240116; t=1770025257; c=relaxed/simple;
+	bh=WnnZNkv4/bdK2PXwl6Fb5EzFIu1jXM4NKoHQKxkTHKE=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=mFvFu94hIcXVp+lluPNeJR81VFE52mwNLhHpg1R0e005niwzGsfh4SwpM1A8YaohEcgv75qtYQVsJN/X9lPieJYe268seAVbTET74NsSLWm3iaVo4y7EYxa1G6QYWS4GMJ+0N3avkk4RBb3SbHeg9KIAsnz/BNAs39itiENMFWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=DSpSiXG3; arc=none smtp.client-ip=79.135.106.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1770025247; x=1770284447;
+	bh=rqGqb+IxeWQlKZ6Q2axTSQaxisBiUXtIfS/L5evgJjo=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=DSpSiXG3d/eU1wiwqEUUgkJiHtZEMtxgPKZnD96akNshYllKflg00hioEk02yXPSI
+	 cYB2qh2w5ucze+QyUXFT/DiYn8SVc6jrQahhE1H96YTBkfSz1hI3CMmafz1meHiT7C
+	 awgfi8vD1FToaTYJC/dm4gWBdDDqUZy4fwYYRPb7WDRWJ0wp4q07rx+Q+7E2I5LJzB
+	 uB+nnvsjua0Wc6IhNROZR1WJhankCB9pMuHYBfjcw3jDGDdDi+JUc515QG8+LC4/tL
+	 dY5wdL7jNRlzeQ5mFlLlOV2fF3jARIyGC4sMxM5pn6Zi4K/FGIKbkzJ2YBPXl6Ixs/
+	 5VVrhlbCQWrsg==
+Date: Mon, 02 Feb 2026 09:40:42 +0000
+To: Donald Hunter <donald.hunter@gmail.com>, Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+From: "Remy D. Farley" <one-d-wide@protonmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, "Remy D. Farley" <one-d-wide@protonmail.com>
+Subject: [PATCH net-next v7 0/5] doc/netlink: Expand nftables specification
+Message-ID: <20260202093928.742879-1-one-d-wide@protonmail.com>
+Feedback-ID: 59017272:user:proton
+X-Pm-Message-ID: c8afe568ce52d80bf5f1c42a61bd96d27e0bc21f
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8ZZgk1QPC54r2p6O"
-Content-Disposition: inline
-In-Reply-To: <20260130182155.93253-1-fw@strlen.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[protonmail.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[protonmail.com:s=protonmail3];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-10558-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TAGGED_FROM(0.00)[bounces-10557-lists,netfilter-devel=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.org,vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,vger.kernel.org,protonmail.com];
+	DKIM_TRACE(0.00)[protonmail.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[one-d-wide@protonmail.com,netfilter-devel@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[protonmail.com];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,strlen.de:email]
-X-Rspamd-Queue-Id: 2E21FCA21D
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[protonmail.com:mid,protonmail.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ynl_gen_rst.py:url]
+X-Rspamd-Queue-Id: A27BBCA36B
 X-Rspamd-Action: no action
 
+Getting out some changes I've accumulated while making nftables work
+with Rust netlink-bindings. Hopefully, this will be useful upstream.
 
---8ZZgk1QPC54r2p6O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v7:
+- Drop "getcompat" operation.
+- Fix formatting of lists of attrsets.
 
-> The script now requires IPV6 tunnel support, enable this.
-> This should have caught by CI, but as the config option is missing,
-> the tunnel interface isn't added.  This results in an error cascade
-> that ends with "route change default" failure.
->=20
-> That in turn means the "ipv6 tunnel" test re-uses the previous
-> test setup so the "ip6ip6" test passes and script returns 0.
->=20
-> Make sure to catch such bugs, set ret=3D1 if device cannot be added
-> and delete the old default route before installing the new one.
->=20
-> After this change, IPV6_TUNNEL=3Dn kernel builds fail with the expected
->   FAIL: flow offload for ns1/ns2 with IP6IP6 tunnel
->=20
-> ... while builds with IPV6_TUNNEL=3Dm pass as before.
->=20
-> Fixes: 5e5180352193 ("selftests: netfilter: nft_flowtable.sh: Add IP6IP6 =
-flowtable selftest")
-> Signed-off-by: Florian Westphal <fw@strlen.de>
+v6: https://lore.kernel.org/netdev/20260121184621.198537-1-one-d-wide@proto=
+nmail.com/
+- Sort sub-messages.
+- Add description for "Add max check" commit.
+- Fix doc comment for expr-bitwise-attrs to match one in nf_tables.h (thank=
+s Donald)
 
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
+v5: https://lore.kernel.org/netdev/20251120151754.1111675-1-one-d-wide@prot=
+onmail.com/
+- Fix docgen warnings in enums (avoid interleaving strings and attrsets in =
+a list).
+- Remove "# defined in ..." comments in favor of explicit "header" tag.
+- Split into smaller commits.
 
-> ---
->  tools/testing/selftests/net/netfilter/config  |  1 +
->  .../selftests/net/netfilter/nft_flowtable.sh  | 19 +++++++++++++------
->  2 files changed, 14 insertions(+), 6 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/net/netfilter/config b/tools/testing=
-/selftests/net/netfilter/config
-> index 12ce61fa15a8..979cff56e1f5 100644
-> --- a/tools/testing/selftests/net/netfilter/config
-> +++ b/tools/testing/selftests/net/netfilter/config
-> @@ -29,6 +29,7 @@ CONFIG_IP_NF_RAW=3Dm
->  CONFIG_IP_SCTP=3Dm
->  CONFIG_IPV6=3Dy
->  CONFIG_IPV6_MULTIPLE_TABLES=3Dy
-> +CONFIG_IPV6_TUNNEL=3Dm
->  CONFIG_IP_VS=3Dm
->  CONFIG_IP_VS_PROTO_TCP=3Dy
->  CONFIG_IP_VS_RR=3Dm
-> diff --git a/tools/testing/selftests/net/netfilter/nft_flowtable.sh b/too=
-ls/testing/selftests/net/netfilter/nft_flowtable.sh
-> index 14d7f67715ed..7a34ef468975 100755
-> --- a/tools/testing/selftests/net/netfilter/nft_flowtable.sh
-> +++ b/tools/testing/selftests/net/netfilter/nft_flowtable.sh
-> @@ -601,14 +601,19 @@ ip -net "$nsr2" link set tun0 up
->  ip -net "$nsr2" addr add 192.168.100.2/24 dev tun0
->  ip netns exec "$nsr2" sysctl net.ipv4.conf.tun0.forwarding=3D1 > /dev/nu=
-ll
-> =20
-> -ip -net "$nsr2" link add name tun6 type ip6tnl local fee1:2::2 remote fe=
-e1:2::1
-> +ip -net "$nsr2" link add name tun6 type ip6tnl local fee1:2::2 remote fe=
-e1:2::1 || ret=3D1
->  ip -net "$nsr2" link set tun6 up
->  ip -net "$nsr2" addr add fee1:3::2/64 dev tun6 nodad
-> =20
->  ip -net "$nsr1" route change default via 192.168.100.2
->  ip -net "$nsr2" route change default via 192.168.100.1
-> -ip -6 -net "$nsr1" route change default via fee1:3::2
-> -ip -6 -net "$nsr2" route change default via fee1:3::1
-> +
-> +# do not use "route change" and delete old default so
-> +# socat fails to connect in case new default can't be added.
-> +ip -6 -net "$nsr1" route delete default
-> +ip -6 -net "$nsr1" route add default via fee1:3::2
-> +ip -6 -net "$nsr2" route delete default
-> +ip -6 -net "$nsr2" route add default via fee1:3::1
->  ip -net "$ns2" route add default via 10.0.2.1
->  ip -6 -net "$ns2" route add default via dead:2::1
-> =20
-> @@ -649,7 +654,8 @@ ip netns exec "$nsr1" nft -a insert rule inet filter =
-forward 'meta oif tun0.10 a
->  ip -net "$nsr1" link add name tun6.10 type ip6tnl local fee1:4::1 remote=
- fee1:4::2
->  ip -net "$nsr1" link set tun6.10 up
->  ip -net "$nsr1" addr add fee1:5::1/64 dev tun6.10 nodad
-> -ip -6 -net "$nsr1" route change default via fee1:5::2
-> +ip -6 -net "$nsr1" route delete default
-> +ip -6 -net "$nsr1" route add default via fee1:5::2
->  ip netns exec "$nsr1" nft -a insert rule inet filter forward 'meta oif t=
-un6.10 accept'
-> =20
->  ip -net "$nsr2" link add link veth0 name veth0.10 type vlan id 10
-> @@ -664,10 +670,11 @@ ip -net "$nsr2" addr add 192.168.200.2/24 dev tun0.=
-10
->  ip -net "$nsr2" route change default via 192.168.200.1
->  ip netns exec "$nsr2" sysctl net.ipv4.conf.tun0/10.forwarding=3D1 > /dev=
-/null
-> =20
-> -ip -net "$nsr2" link add name tun6.10 type ip6tnl local fee1:4::2 remote=
- fee1:4::1
-> +ip -net "$nsr2" link add name tun6.10 type ip6tnl local fee1:4::2 remote=
- fee1:4::1 || ret=3D1
->  ip -net "$nsr2" link set tun6.10 up
->  ip -net "$nsr2" addr add fee1:5::2/64 dev tun6.10 nodad
-> -ip -6 -net "$nsr2" route change default via fee1:5::1
-> +ip -6 -net "$nsr2" route delete default
-> +ip -6 -net "$nsr2" route add default via fee1:5::1
-> =20
->  if ! test_tcp_forwarding_nat "$ns1" "$ns2" 1 "IPIP tunnel over vlan"; th=
-en
->  	echo "FAIL: flow offload for ns1/ns2 with IPIP tunnel over vlan" 1>&2
-> --=20
-> 2.52.0
->=20
+v4: https://lore.kernel.org/netdev/cover.1763574466.git.one-d-wide@protonma=
+il.com/
+- Move changes to netlink-raw.yaml into a separate commit.
 
---8ZZgk1QPC54r2p6O
-Content-Type: application/pgp-signature; name=signature.asc
+v3: https://lore.kernel.org/netdev/20251009203324.1444367-1-one-d-wide@prot=
+onmail.com/
+- Fill out missing attributes in each operation (removing todo comments fro=
+m v1).
+- Add missing annotations: dump ops, byte-order, checks.
+- Add max check to netlink-raw specification (suggested by Donald Hunter).
+- Revert changes to ynl_gen_rst.py.
 
------BEGIN PGP SIGNATURE-----
+v2: https://lore.kernel.org/netdev/20251003175510.1074239-1-one-d-wide@prot=
+onmail.com/
+- Handle empty request/reply attributes in ynl_gen_rst.py script.
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaYBuWwAKCRA6cBh0uS2t
-rByzAQDvt1rkoZeH2LaNsrF950DHxfmknpisWS4t/MtXi9G16QEAmHcpku8QwhIG
-5ZJ2LeNuR6L+CEVEgy0aOWxs2w5kvAI=
-=k3Hr
------END PGP SIGNATURE-----
+v1: https://lore.kernel.org/netdev/20251002184950.1033210-1-one-d-wide@prot=
+onmail.com/
+- Add missing byte order annotations.
+- Fill out attributes in some operations.
+- Replace non-existent "name" attribute with todo comment.
+- Add some missing sub-messages (and associated attributes).
+- Add (copy over) documentation for some attributes / enum entries.
+- Add "getcompat" operation.
 
---8ZZgk1QPC54r2p6O--
+Remy D. Farley (5):
+  doc/netlink: netlink-raw: Add max check
+  doc/netlink: nftables: Add definitions
+  doc/netlink: nftables: Update attribute sets
+  doc/netlink: nftables: Add sub-messages
+  doc/netlink: nftables: Fill out operation attributes
+
+ Documentation/netlink/netlink-raw.yaml    |  11 +-
+ Documentation/netlink/specs/nftables.yaml | 694 ++++++++++++++++++++--
+ 2 files changed, 655 insertions(+), 50 deletions(-)
+
+--=20
+2.51.2
+
+
 
