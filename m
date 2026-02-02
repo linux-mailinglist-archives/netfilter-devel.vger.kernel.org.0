@@ -1,57 +1,57 @@
-Return-Path: <netfilter-devel+bounces-10568-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10570-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oEOvEtEWgWlsEAMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10568-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 22:27:45 +0100
+	id WFreN+0WgWlsEAMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10570-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 22:28:13 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA2C8D1A83
-	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 22:27:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80891D1A94
+	for <lists+netfilter-devel@lfdr.de>; Mon, 02 Feb 2026 22:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8903C3024957
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Feb 2026 21:26:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5854B303AAAE
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Feb 2026 21:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417E8313285;
-	Mon,  2 Feb 2026 21:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A04312811;
+	Mon,  2 Feb 2026 21:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="SXqMfb5O"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Wipgt7E3"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863FF312811
-	for <netfilter-devel@vger.kernel.org>; Mon,  2 Feb 2026 21:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377AC31326B
+	for <netfilter-devel@vger.kernel.org>; Mon,  2 Feb 2026 21:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770067603; cv=none; b=RSD+UXEuanC0eQxRpBSqcrUUM703jM1wLMvgL7FgOaDjDumNW6tGnLGyOaIxKP7CcBQ53/yTHU3pOt8z3mDzxoEjavJsm6a6LyOwOwY6oHFUdTcwYnE69IGVeqSrKXmEpC2gC4Ar31wgBixkmNrl4gbxCyimTNuW6Y0zqomJHCg=
+	t=1770067605; cv=none; b=Bav+hQDihbHmHBiZ4FUzZn6J4A+JTtj4WAeOFHdLow2iI//nYMwLocRAUXA8K3TnCvIb5r/87eCqJbkwMDVhq/hcyPTqxzu8SlfuzQ1HaT3aoB8tviV0kJ/h2VOFkN6WcMBDZfnMBlj4xizxmtdQ6ScQ/YU3/T7EoDW56192vSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770067603; c=relaxed/simple;
-	bh=B/HjiZUXbX45/3VX0cHpPVVvFeswY2HXQBaNsLCwfF8=;
+	s=arc-20240116; t=1770067605; c=relaxed/simple;
+	bh=awgcyRbmsGfzYh/krhtWY+Fx7U4uICouupWHB1mIpJ0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FBpqsNHyN50nIzAcPpVsa+BU3uxNnh3RySwiplsrQLp8N89zB6up4snOR3usC71UvDYttz8a+puZewapUuMJD9WvCo2rmoQD5TcYW8lkhNETNIsgRKO6wqshQGmBZwc+gs0xK7pPh09DP1lIkjexnnIO9cicwFWmC1urEYnVppc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=SXqMfb5O; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=nz2xVYul0vRyITPZW7aDdVl7jtRqHF155AsEB+Lfp6nemAROzN3kpsGS9BsGhFRUee3Hk0JvHZ0Lgvi5NGoFTXE7GWp8sTp+bi4dQt6cxxyHH8Mu24I9gCnawkZldmw3VswTucXfALmjpgSj1ItgoUeiu4DJ6XgtNhk2j8pGeAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Wipgt7E3; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 30434605C0
-	for <netfilter-devel@vger.kernel.org>; Mon,  2 Feb 2026 22:26:34 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 15E23605C1
+	for <netfilter-devel@vger.kernel.org>; Mon,  2 Feb 2026 22:26:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1770067594;
-	bh=3mPmcNsDp0U8YyOUogdsFOkqm3vNfB5In4CX88b+cuA=;
+	s=2025; t=1770067595;
+	bh=e3OAlFhGSueFMALVMrkka4dNUR+8S8IvAgtKo2Jqcvk=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=SXqMfb5OGpDaq1FQHQdbG/ERCghX0VE7ZHUCv1v/JC/R7CteLA10gwvrbzyaQ90gx
-	 fC+267F9ik/zPNzov9pp6Q7iOh5PL9JcAkosjLf5OY4npGn7hCZ1knrXONR0776sb5
-	 O5Jg0MYWJJ/N0d4voqLeI1ll5Kr5Vo7eUdgYSY0+RUmRa7O/YDDYzMBeI87cMpw0jN
-	 IAJboqG63GBe3NWKbXf0Ye3Bc4Cm/hUdB8Wx9mBxENs8p4j4D7ib5BBJPEc1c5HGWD
-	 vFtP4/FkHBLFbdsdCkk3INcos8YcjjWEE9BrLwneZq2pZIf4W5qotUCWz9M2ekiKVj
-	 mTBZT1rA7bltA==
+	b=Wipgt7E3mV53PhrI+OyS0gOF5Ax2mVLa8lUijPpmfBSnRSZi4qAQt8Yg6waFvKRAS
+	 g+SFuFLJPCq70XvJCKGMzSXPv+YFqh1iSP+r/1b6k/R+ZNtmO3o44xUr3wGQtWS19R
+	 rfUf9pnQpeB+WwzJWpxSwVCCkA4//Ol0gt6advMvcj0vPiysnkNqIxRnDyUy1TRbf2
+	 ljS2UwlUr9JVOEDaDuOP4Bye0YJ38qcnD1cQ0+qHd2kfORqxUDJMW7s3AG8gR9g4El
+	 1INRUxKj4gHymAiESMvYNNSFv2plLDQgdVXbXb2SWM1caBrnEYDjfDlBJWfMHgvYLQ
+	 Rd55DA5yT4l2w==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v2 2/4] netfilter: nft_set_rbtree: check for partial overlaps in anonymous sets
-Date: Mon,  2 Feb 2026 22:26:25 +0100
-Message-ID: <20260202212627.946625-3-pablo@netfilter.org>
+Subject: [PATCH nf-next,v2 3/4] netfilter: nft_set_rbtree: validate element belonging to interval
+Date: Mon,  2 Feb 2026 22:26:26 +0100
+Message-ID: <20260202212627.946625-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260202212627.946625-1-pablo@netfilter.org>
 References: <20260202212627.946625-1-pablo@netfilter.org>
@@ -67,7 +67,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -77,7 +77,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
 	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-10568-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10570-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -88,87 +88,292 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid]
-X-Rspamd-Queue-Id: EA2C8D1A83
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 80891D1A94
 X-Rspamd-Action: no action
 
-Userspace provides an optimized representation in case intervals are
-adjacent, where the end element is omitted.
+The existing partial overlap detection does not check if the elements
+belong to the interval, eg.
 
-The existing partial overlap detection logic skips anonymous set checks
-on start elements for this reason.
+  add element inet x y { 1.1.1.1-2.2.2.2, 4.4.4.4-5.5.5.5 }
+  add element inet x y { 1.1.1.1-5.5.5.5 } => this should fail: ENOENT
 
-However, it is possible to add intervals that overlap to this anonymous
-where two start elements with the same, eg. A-B, A-C where C < B.
+Similar situation occurs with deletions:
 
-      start     end
-	A        B
-      start  end
-        A     C
+  add element inet x y { 1.1.1.1-2.2.2.2, 4.4.4.4-5.5.5.5}
+  delete element inet x y { 1.1.1.1-5.5.5.5 } => this should fail: ENOENT
 
-Restore the check on overlapping start elements to report an overlap.
+This currently works via mitigation by nft in userspace, which is
+performing the overlap detection before sending the elements to the
+kernel. This requires a previous netlink dump of the set content which
+slows down incremental updates on interval sets, because a netlink set
+content dump is needed.
+
+This patch extends the existing overlap detection to track the most
+recent start element that already exists. The pointer to the existing
+start element is stored as a cookie (no pointer dereference is ever
+possible). If the end element is added and it already exists, then
+check that the existing end element is adjacent to the already existing
+start element. Similar logic applies to element deactivation.
+
+This patch also annotates the timestamp to identify if start cookie
+comes from an older batch, in such case reset it. Otherwise, a failing
+create element command leaves the start cookie in place, resulting in
+bogus error reporting.
+
+There is still a few more corner cases of overlap detection related to
+the open interval that are addressed in follow up patches.
+
+This is address an early design mistake where an interval is expressed
+as two elements, using the NFT_SET_ELEM_INTERVAL_END flag, instead of
+the more recent NFTA_SET_ELEM_KEY_END attribute that pipapo already
+uses.
 
 Fixes: 7c84d41416d8 ("netfilter: nft_set_rbtree: Detect partial overlaps on insertion")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: no changes
+v2: Annotate timestamp to reset start_rbe_cookie tracking between batches.
 
- net/netfilter/nft_set_rbtree.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ net/netfilter/nft_set_rbtree.c | 147 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 143 insertions(+), 4 deletions(-)
 
 diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 345d51dc4a89..0581184cacf9 100644
+index 0581184cacf9..65319a2ed898 100644
 --- a/net/netfilter/nft_set_rbtree.c
 +++ b/net/netfilter/nft_set_rbtree.c
-@@ -267,11 +267,22 @@ static bool nft_rbtree_update_first(const struct nft_set *set,
- 	return false;
+@@ -33,7 +33,9 @@ struct nft_rbtree {
+ 	rwlock_t		lock;
+ 	struct nft_array __rcu	*array;
+ 	struct nft_array	*array_next;
++	unsigned long		start_rbe_cookie;
+ 	unsigned long		last_gc;
++	u64			last_tstamp;
+ };
+ 
+ struct nft_rbtree_elem {
+@@ -278,16 +280,85 @@ static struct nft_rbtree_elem *nft_rbtree_prev_active(struct nft_rbtree_elem *rb
+ 	return rb_entry(node, struct nft_rbtree_elem, node);
  }
  
-+static struct nft_rbtree_elem *nft_rbtree_prev_active(struct nft_rbtree_elem *rbe)
++static struct nft_rbtree_elem *
++__nft_rbtree_next_active(struct rb_node *node, u8 genmask)
 +{
-+	struct rb_node *node;
++	struct nft_rbtree_elem *next_rbe;
 +
-+	node = rb_prev(&rbe->node);
-+	if (!node)
-+		return NULL;
++	while (node) {
++		next_rbe = rb_entry(node, struct nft_rbtree_elem, node);
++		if (!nft_set_elem_active(&next_rbe->ext, genmask)) {
++			node = rb_next(node);
++			continue;
++		}
 +
-+	return rb_entry(node, struct nft_rbtree_elem, node);
++		return next_rbe;
++	}
++
++	return NULL;
++}
++
++static struct nft_rbtree_elem *
++nft_rbtree_next_active(struct nft_rbtree_elem *rbe, u8 genmask)
++{
++	return __nft_rbtree_next_active(rb_next(&rbe->node), genmask);
++}
++
++static void nft_rbtree_maybe_reset_start_cookie(struct nft_rbtree *priv,
++						u64 tstamp)
++{
++	if (priv->last_tstamp != tstamp) {
++		priv->start_rbe_cookie = 0;
++		priv->last_tstamp = tstamp;
++	}
++}
++
++static void nft_rbtree_set_start_cookie(struct nft_rbtree *priv,
++					const struct nft_rbtree_elem *rbe)
++{
++	priv->start_rbe_cookie = (unsigned long)rbe;
++}
++
++static bool nft_rbtree_cmp_start_cookie(struct nft_rbtree *priv,
++					const struct nft_rbtree_elem *rbe)
++{
++	return priv->start_rbe_cookie == (unsigned long)rbe;
++}
++
++static bool nft_rbtree_insert_same_interval(const struct net *net,
++					    struct nft_rbtree *priv,
++					    struct nft_rbtree_elem *rbe)
++{
++	u8 genmask = nft_genmask_next(net);
++	struct nft_rbtree_elem *next_rbe;
++
++	if (!priv->start_rbe_cookie)
++		return true;
++
++	next_rbe = nft_rbtree_next_active(rbe, genmask);
++	if (next_rbe) {
++		/* Closest start element differs from last element added. */
++		if (nft_rbtree_interval_start(next_rbe) &&
++		    nft_rbtree_cmp_start_cookie(priv, next_rbe)) {
++			priv->start_rbe_cookie = 0;
++			return true;
++		}
++	}
++
++	priv->start_rbe_cookie = 0;
++
++	return false;
 +}
 +
  static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
  			       struct nft_rbtree_elem *new,
- 			       struct nft_elem_priv **elem_priv)
+-			       struct nft_elem_priv **elem_priv)
++			       struct nft_elem_priv **elem_priv, u64 tstamp)
  {
--	struct nft_rbtree_elem *rbe, *rbe_le = NULL, *rbe_ge = NULL;
-+	struct nft_rbtree_elem *rbe, *rbe_le = NULL, *rbe_ge = NULL, *rbe_prev;
+ 	struct nft_rbtree_elem *rbe, *rbe_le = NULL, *rbe_ge = NULL, *rbe_prev;
  	struct rb_node *node, *next, *parent, **p, *first = NULL;
  	struct nft_rbtree *priv = nft_set_priv(set);
  	u8 cur_genmask = nft_genmask_cur(net);
-@@ -409,11 +420,19 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 	/* - new start element with existing closest, less or equal key value
- 	 *   being a start element: partial overlap, reported as -ENOTEMPTY.
- 	 *   Anonymous sets allow for two consecutive start element since they
--	 *   are constant, skip them to avoid bogus overlap reports.
-+	 *   are constant, but validate that this new start element does not
-+	 *   sit in between an existing new and end elements: partial overlap,
-+	 *   reported as -ENOTEMPTY.
+ 	u8 genmask = nft_genmask_next(net);
+-	u64 tstamp = nft_net_tstamp(net);
+ 	int d;
+ 
+ 	/* Descend the tree to search for an existing element greater than the
+@@ -393,12 +464,18 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ 		}
+ 	}
+ 
++	if (nft_rbtree_interval_null(set, new))
++		priv->start_rbe_cookie = 0;
++	else if (nft_rbtree_interval_start(new) && priv->start_rbe_cookie)
++		priv->start_rbe_cookie = 0;
++
+ 	/* - new start element matching existing start element: full overlap
+ 	 *   reported as -EEXIST, cleared by caller if NLM_F_EXCL is not given.
  	 */
--	if (!nft_set_is_anonymous(set) && rbe_le &&
--	    nft_rbtree_interval_start(rbe_le) && nft_rbtree_interval_start(new))
--		return -ENOTEMPTY;
-+	if (rbe_le &&
-+	    nft_rbtree_interval_start(rbe_le) && nft_rbtree_interval_start(new)) {
-+		if (!nft_set_is_anonymous(set))
+ 	if (rbe_ge && !nft_rbtree_cmp(set, new, rbe_ge) &&
+ 	    nft_rbtree_interval_start(rbe_ge) == nft_rbtree_interval_start(new)) {
+ 		*elem_priv = &rbe_ge->priv;
++		nft_rbtree_set_start_cookie(priv, rbe_ge);
+ 		return -EEXIST;
+ 	}
+ 
+@@ -414,6 +491,11 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ 			return -ECANCELED;
+ 
+ 		*elem_priv = &rbe_le->priv;
++
++		/* - start and end element belong to the same interval. */
++		if (!nft_rbtree_insert_same_interval(net, priv, rbe_le))
 +			return -ENOTEMPTY;
 +
-+		rbe_prev = nft_rbtree_prev_active(rbe_le);
-+		if (rbe_prev && nft_rbtree_interval_end(rbe_prev))
-+			return -ENOTEMPTY;
-+	}
+ 		return -EEXIST;
+ 	}
  
- 	/* - new end element with existing closest, less or equal key value
- 	 *   being a end element: partial overlap, reported as -ENOTEMPTY.
+@@ -558,8 +640,11 @@ static int nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ {
+ 	struct nft_rbtree_elem *rbe = nft_elem_priv_cast(elem->priv);
+ 	struct nft_rbtree *priv = nft_set_priv(set);
++	u64 tstamp = nft_net_tstamp(net);
+ 	int err;
+ 
++	nft_rbtree_maybe_reset_start_cookie(priv, tstamp);
++
+ 	if (nft_array_may_resize(set) < 0)
+ 		return -ENOMEM;
+ 
+@@ -570,7 +655,7 @@ static int nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ 		cond_resched();
+ 
+ 		write_lock_bh(&priv->lock);
+-		err = __nft_rbtree_insert(net, set, rbe, elem_priv);
++		err = __nft_rbtree_insert(net, set, rbe, elem_priv, tstamp);
+ 		write_unlock_bh(&priv->lock);
+ 	} while (err == -EAGAIN);
+ 
+@@ -603,6 +688,48 @@ static void nft_rbtree_activate(const struct net *net,
+ 	nft_clear(net, &rbe->ext);
+ }
+ 
++static struct nft_rbtree_elem *
++nft_rbtree_next_inactive(struct nft_rbtree_elem *rbe, u8 genmask)
++{
++	struct nft_rbtree_elem *next_rbe;
++	struct rb_node *node;
++
++	node = rb_next(&rbe->node);
++	if (node) {
++		next_rbe = rb_entry(node, struct nft_rbtree_elem, node);
++		if (nft_rbtree_interval_start(next_rbe) &&
++		    !nft_set_elem_active(&next_rbe->ext, genmask))
++			return next_rbe;
++	}
++
++	return NULL;
++}
++
++static bool nft_rbtree_deactivate_same_interval(const struct net *net,
++						struct nft_rbtree *priv,
++						struct nft_rbtree_elem *rbe)
++{
++	u8 genmask = nft_genmask_next(net);
++	struct nft_rbtree_elem *next_rbe;
++
++	if (!priv->start_rbe_cookie)
++		return true;
++
++	next_rbe = nft_rbtree_next_inactive(rbe, genmask);
++	if (next_rbe) {
++		/* Closest start element differs from last element added. */
++		if (nft_rbtree_interval_start(next_rbe) &&
++		    nft_rbtree_cmp_start_cookie(priv, next_rbe)) {
++			priv->start_rbe_cookie = 0;
++			return true;
++		}
++	}
++
++	priv->start_rbe_cookie = 0;
++
++	return false;
++}
++
+ static void nft_rbtree_flush(const struct net *net,
+ 			     const struct nft_set *set,
+ 			     struct nft_elem_priv *elem_priv)
+@@ -617,12 +744,18 @@ nft_rbtree_deactivate(const struct net *net, const struct nft_set *set,
+ 		      const struct nft_set_elem *elem)
+ {
+ 	struct nft_rbtree_elem *rbe, *this = nft_elem_priv_cast(elem->priv);
+-	const struct nft_rbtree *priv = nft_set_priv(set);
++	struct nft_rbtree *priv = nft_set_priv(set);
+ 	const struct rb_node *parent = priv->root.rb_node;
+ 	u8 genmask = nft_genmask_next(net);
+ 	u64 tstamp = nft_net_tstamp(net);
+ 	int d;
+ 
++	nft_rbtree_maybe_reset_start_cookie(priv, tstamp);
++
++	if (nft_rbtree_interval_start(this) ||
++	    nft_rbtree_interval_null(set, this))
++		priv->start_rbe_cookie = 0;
++
+ 	if (nft_array_may_resize(set) < 0)
+ 		return NULL;
+ 
+@@ -650,6 +783,12 @@ nft_rbtree_deactivate(const struct net *net, const struct nft_set *set,
+ 				parent = parent->rb_left;
+ 				continue;
+ 			}
++
++			if (nft_rbtree_interval_start(rbe))
++				nft_rbtree_set_start_cookie(priv, rbe);
++			else if (!nft_rbtree_deactivate_same_interval(net, priv, rbe))
++				return NULL;
++
+ 			nft_rbtree_flush(net, set, &rbe->priv);
+ 			return &rbe->priv;
+ 		}
 -- 
 2.47.3
 
