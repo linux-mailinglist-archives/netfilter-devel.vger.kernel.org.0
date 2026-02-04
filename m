@@ -1,174 +1,90 @@
-Return-Path: <netfilter-devel+bounces-10615-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10616-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gBgXGd5ug2lNmwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10615-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Feb 2026 17:07:58 +0100
+	id iNqNHvpwg2mFmwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10616-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Feb 2026 17:16:58 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD2C3E9E98
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Feb 2026 17:07:57 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9787EA105
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Feb 2026 17:16:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D7B6D320D744
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Feb 2026 15:39:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9BE063018B35
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Feb 2026 15:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FA13F0746;
-	Wed,  4 Feb 2026 15:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CENDczjO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B772D6E7E;
+	Wed,  4 Feb 2026 15:40:54 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8554441B357
-	for <netfilter-devel@vger.kernel.org>; Wed,  4 Feb 2026 15:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E6B28D8D0
+	for <netfilter-devel@vger.kernel.org>; Wed,  4 Feb 2026 15:40:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770219536; cv=none; b=HGcGk8Cj6crtz9zHyOjNNUIJShISHYepwXyuym0yQDY9gELF0nv8QAx7TR3xax+Dh/fdnKtLtopt+pLBc2qkgr7JoQ0OfkyMqiaLlOGBiF1q1SQ8vaqXsBx+copx3G+lZ4D31UPwEnUpfUcuTORnUdNLOY/63SCm2kZhjEO0EAw=
+	t=1770219654; cv=none; b=V6cR8x+Nhklo/dqh7uzOdJUs4f6G95c2kaX1uQXHfahavQADxaj2+ONeXbWUmqeUCOcHtgWJ+PURpt1+8KJoSwEYOYLebpcS5OnvyNSSB/8Y/oeJsmvhrP8FY4jasrjBIKlh23lfntf9EQe0hPZlNdpHdX3cKfKrs+Fq12YaCE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770219536; c=relaxed/simple;
-	bh=b7WkUfdl7cNyd3rvs28XPRl7naD0eLIJrTKWlrRDrgg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A9mSiEUyvfq5fSXBaan+KztuW6X/qyK4BkZctYmwXgq5i4KVahGWbq/tJaBvXQq1SvzuHUExAPgPjTvfoTZCWBhWPX5PwAS/eYo6MO4L9+rcO45y1lQ9GUmk8ONqUqMNR/l/CGvdE/yoeI3UImLnqx1UpxDB+Pb8jYFf6ywxxhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CENDczjO; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-79088484065so65240257b3.1
-        for <netfilter-devel@vger.kernel.org>; Wed, 04 Feb 2026 07:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770219536; x=1770824336; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h/5SD8AXq32EOZXgCdiUpBHAXtYnBkcl9u7VsKej7wE=;
-        b=CENDczjOxUCq6yKjcR54oD4sHPsYVf7ssLMzx0Ud8wS2jfHnrRD2VRg5kluR8ICSAO
-         xDBtxx8Dr1dwYTqH0wfMBC08rjCrJ3aC5GQ4MAz98OpmTHxSD9FLsy21t0tIHgX2C8nI
-         Ufs5ozDAvG1Y5jpdUpDlBRLCkeT3jMZd80PifPxwNAIMznPVecK6Trgbfj/k9DrQvnEn
-         sjrcKUfVGm2Bt4QChEGs9UbHkTJwKqw9CfVA5P7u+utES7wy1BQw2YPQFcWLmakBCgYq
-         VTJOxqQsKQgYYqLI3ryCVPcvpB3mzujmOEt5JNuHN2HZGDScUBs1eaIJ7mvC75Pvc9Ou
-         cuuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770219536; x=1770824336;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=h/5SD8AXq32EOZXgCdiUpBHAXtYnBkcl9u7VsKej7wE=;
-        b=qmOsF76LUPMwX4TrLaD82fXHQR/4SfxhpTQ+l4I0/b2vF481KCRSipSHXWo7e52D7h
-         cR2nLXjLH76oh5lPzZteyoLueQTVkNhuguLnnw1GNrUIBCxmDAutm/yHlF3jqtlIHPIQ
-         40wKrPvsGy4vcKj9yCEo2zzysBjteMRk+W8C5EmOtdJPE6cs1Xd3yr78C8mr65RWq2fo
-         7oOmQvDpzJgs6kWsmsb6TD4fyynfDCL1XsQ8USvkY98DPVg37bJjSno/GCFXEpeDnjR1
-         LeABpzhMsupASsTqda1QZXYCDkJYl8PpH9hnOQIyZdrORlvorTKbLJOmUtK2u381TzBe
-         1yTg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3klMa7uZ0sIuHv/SjMIh5gX6sDiJ5hsHnpmWMvJOgWE06RsSxiyA64sU1daRrf3A75UuYpoyU/hvBbXH/z+o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxt0gVo55D9n4sU6cwEasEnmgyt6SS/toC0R7GXzUtlNT2cgtxA
-	Hx7XI8EtSOMzCX/RppX6kvQgWrNhssqXtDj7c/rh+jt3kERG9Ijo//wj
-X-Gm-Gg: AZuq6aK6KxIo0WOCRJ4HXVZKVN1OeF2z0CTFHEmN+eAd/jPYC8+7olQJdzf/Qz13DZV
-	EOYf7N5i8KHkz2dtjIrFRIAW2gyAXO3xSDxyjxr2NQkj8lUQ9mV9lkDiaU7xzawbKcnupd0npSY
-	O+n5Bf5euzfyRAWNhga8ElKcE4nGtcI82n85enaCQtJWJL3rHUCU4f2APktGK5eLHRNDErjNrJ4
-	FfICEl8D+HcH+IUsBc0yFWM6M6K5kr+v78G6QB/2BMoczkABjWVVMoMCL32L6XW0ZVOkLpI+Io8
-	ZrwoXNq/HTGYlG6PBAoeZjvNKeSt3mQ3xPPICjpFR0ZsGKhCCEs5OBKHQlEMfqnEbJxn4kP/4dF
-	i/ADWJqWm5fWAduJZjf1VoeZca3T9GAUS4d8GeErUfFA/5NoknxQ9YOXhKTaNmf/X89z6/19Yin
-	ShpxLEtvs1/pXf0is4JyMn8X91/Zb4E1EytPEFtE41Kq1zsK5lKV7lfeHt7cww75tmtq2Oe9i6l
-	eABMlPZr3uZMuqth3ol
-X-Received: by 2002:a05:690c:39b:b0:794:ef94:1222 with SMTP id 00721157ae682-794fe7a13f5mr68835017b3.55.1770219535570;
-        Wed, 04 Feb 2026 07:38:55 -0800 (PST)
-Received: from localhost.localdomain (108-214-96-168.lightspeed.sntcca.sbcglobal.net. [108.214.96.168])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-794fefedd4bsm23609397b3.48.2026.02.04.07.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Feb 2026 07:38:55 -0800 (PST)
-From: Sun Jian <sun.jian.kdev@gmail.com>
-To: Florian Westphal <fw@strlen.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sun Jian <sun.jian.kdev@gmail.com>
-Subject: [PATCH v4 5/5] netfilter: tftp: annotate nf_nat_tftp_hook with __rcu
-Date: Wed,  4 Feb 2026 23:38:12 +0800
-Message-ID: <20260204153812.739799-6-sun.jian.kdev@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260204153812.739799-1-sun.jian.kdev@gmail.com>
-References: <aYM6Wr7D4-7VvbX6@strlen.de>
- <20260204153812.739799-1-sun.jian.kdev@gmail.com>
+	s=arc-20240116; t=1770219654; c=relaxed/simple;
+	bh=InAW7YHG6cdwNuNe0ky7Dbw7LiAq1n8bggffosa1KKk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=A6+cSHL1oMw/e/Oyo8oCH1R11mkWPIyl4BK63mNN1jijTObU8FdMp532UVEv1G6k2RlLPf6xiJBOsJGKpkcGSS/83Eh8G0SipTAUS+jSDSjLUZSNFs/ZJDRkEB0ZrfPV09BCisY0SohJwXR1ZrBd1DSlUzY7lgo1UNwsNNSL+sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 4BC176033F; Wed, 04 Feb 2026 16:40:52 +0100 (CET)
+Date: Wed, 4 Feb 2026 16:40:52 +0100
+From: Florian Westphal <fw@strlen.de>
+To: jeremy@azazel.net
+Cc: netfilter-devel@vger.kernel.org
+Subject: Bitwise boolean operations with variable RHS operands
+Message-ID: <aYNohGL7fPQtVZfC@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[netfilter.org,vger.kernel.org,gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10615-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sunjiankdev@gmail.com,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10616-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:email]
-X-Rspamd-Queue-Id: BD2C3E9E98
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.993];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:mid]
+X-Rspamd-Queue-Id: D9787EA105
 X-Rspamd-Action: no action
 
-The nf_nat_tftp_hook is an RCU-protected pointer but lacks the
-proper __rcu annotation. Add the annotation to ensure the declaration
-correctly reflects its usage via rcu_dereference().
+Hi Jeremy
 
-Suggested-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Sun Jian <sun.jian.kdev@gmail.com>
----
- include/linux/netfilter/nf_conntrack_tftp.h | 2 +-
- net/netfilter/nf_conntrack_tftp.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+This is a note to let you know that I've marked your old patches
+that were remaining in the patchwork backlog as 'archived, deferred'
+(a few were marked as 'accepted').  AFAICS some of the features were
+applied already.
 
-diff --git a/include/linux/netfilter/nf_conntrack_tftp.h b/include/linux/netfilter/nf_conntrack_tftp.h
-index dc4c1b9beac0..1490b68dd7d1 100644
---- a/include/linux/netfilter/nf_conntrack_tftp.h
-+++ b/include/linux/netfilter/nf_conntrack_tftp.h
-@@ -19,7 +19,7 @@ struct tftphdr {
- #define TFTP_OPCODE_ACK		4
- #define TFTP_OPCODE_ERROR	5
- 
--extern unsigned int (*nf_nat_tftp_hook)(struct sk_buff *skb,
-+extern unsigned int (__rcu *nf_nat_tftp_hook)(struct sk_buff *skb,
- 				        enum ip_conntrack_info ctinfo,
- 				        struct nf_conntrack_expect *exp);
- 
-diff --git a/net/netfilter/nf_conntrack_tftp.c b/net/netfilter/nf_conntrack_tftp.c
-index 80ee53f29f68..c6d8c2e80661 100644
---- a/net/netfilter/nf_conntrack_tftp.c
-+++ b/net/netfilter/nf_conntrack_tftp.c
-@@ -32,7 +32,7 @@ static unsigned int ports_c;
- module_param_array(ports, ushort, &ports_c, 0400);
- MODULE_PARM_DESC(ports, "Port numbers of TFTP servers");
- 
--unsigned int (*nf_nat_tftp_hook)(struct sk_buff *skb,
-+unsigned int (__rcu *nf_nat_tftp_hook)(struct sk_buff *skb,
- 				 enum ip_conntrack_info ctinfo,
- 				 struct nf_conntrack_expect *exp) __read_mostly;
- EXPORT_SYMBOL_GPL(nf_nat_tftp_hook);
--- 
-2.43.0
+If there is anything missing, please feel free to rebase and resubmit.
 
+Thanks!
 
