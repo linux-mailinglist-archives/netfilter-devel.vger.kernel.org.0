@@ -1,57 +1,57 @@
-Return-Path: <netfilter-devel+bounces-10640-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10641-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MLjALoYDhGmHwwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10640-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:14 +0100
+	id IPvrFpIDhGmHwwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10641-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:26 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E21EE0C3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E1B6EE0D9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8FA3D3000B89
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 02:41:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4893E302731D
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 02:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110512C031B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9CC2C0F7A;
 	Thu,  5 Feb 2026 02:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="C/SezDi1"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="KtgP0GTa"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0882C0F75
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 02:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD302C0F68
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 02:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770259303; cv=none; b=jIUTuuxmqXG8ZTpOSSlJOABDHwswMpJfKKyWpA9U2dOyr8yRsfkmQgJ8lEIdGvzpwqsW3vBW3KpJldxucKv+MuDwc00XfZ9h1lSLSqftUebw/q8ZePLUyQ9oH9wRH8hFS/miuUymWfkUWHOWgDu9b7TTvYBFNHaYtNErYikgHUc=
+	t=1770259303; cv=none; b=p3hYJA58RnCAHaXlrqldMCds73x0pn6E8QOmmylGBJeA44tbsIdF8osD+C88NGNGFck5j+Ngh6+pkmTh7jHG0Rkt/iTmfGsoicoLhCWADvGGIIQlCQD4xzu9S9tq2YymEY5wOhedwGg8oj2ulHbC3WgDZVFNfMAAs84BiXhcH7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1770259303; c=relaxed/simple;
-	bh=lVu6EGHqSGwiT39aLM2bjD3cZYfYx/v8XN1e4Zh6cX4=;
+	bh=wIQrgb4yT7socSkzHUMM9ecb5OtBmKaeEFIBNIcen8k=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OiFTTC0nFJ9/uw/oipWC3qwXVBnz4mU0QpqaslcCteWSTmbZebDVJuV8brFBoparCndUeMCRr9LI5WLxXANGzlKw51MzhnYl7ZOQ/i3DWKxqjerN+F039MGc5UVlqoNrum7iC2xEmmmXb//ZggdUWMwMFH3L6cdxMtXUdxqB0zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=C/SezDi1; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=OKF9LV1KLIEN4UJDayM7pY5VnDozQ8oAF87KJ7C8OWivHGnYvuhyI1Q8UOv91UwvxoyPo3SPdSj5v71J4XGeuqvvF3Ofgw7wPEp3i2wEXtQZRdYf6HA47BPv6acmSiyTmMK4xRLIRu2fCtj1qgSLO1viPsQRljGQ8Eo1D6BmTEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=KtgP0GTa; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id E55656087B
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 03:41:40 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id C88E46087F
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 03:41:41 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
 	s=2025; t=1770259301;
-	bh=F3XcNw3HdzhPe+yi52tXnCxuZLKqtAhf+ToiAF5C6PM=;
+	bh=RIDITRPHRV+1cvuIXhcZZLX8tExFz0c0Ghi9NVAhSCA=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=C/SezDi192ZJzbIWdB1hoqaasfPCdyDWMO+CopCzUpuyOa11XYSfqjovBo1HgzToc
-	 qT/kLNorn0cO5BiovnfzIDLUj26ysXlz84uWxJdIB87SOrYWKAuA1Rw//MjNnivRoi
-	 prA2LF694DJMYiCKiAtXQN1IKnq5Nlay14KYNia5G6DyIPTiJmJ0TpIyl7XOj+So9x
-	 QTuUMz8Ps9T4saPTKQymhg9tZkzyxAQJ0cziQaEcGEr0rEyzlxgJNjG9FeNDGlGrue
-	 gu4EuOY0NC5nwQrdq5S82qNEW2d0yqVL57UqOBFYmja6khfN1IE/g4H3UZywHCVJ/u
-	 J1DQZxuZb/8Lw==
+	b=KtgP0GTacG/ggUsO3inQGLR4trTefeix+ZkY0iJ4HUsmJoc/e2QHa5YrfOvfdFtvu
+	 OKfz9PzGtmptO+FEupcT4Y4+2Ty/un/uhTUCycnIcXQFRM1LXajHtrebZ2xEZvu4ea
+	 WDtZNO23SIltyIVEZu5Aov/SYHH820tUJOfWXXC9wA45YpdlXvnl8iMe2bIpbZvyZ0
+	 RpS7+l1RA71NjN0EAc7ppEMGqymKM1gSKySS//rya/8Wq7HugVRi8xf1oc0AzR0FW2
+	 zTHbkbwHGvUL27znAnTF63UiaKgVjyje8u5M9NJjwyjiJjecZkkCtSHasbNea5vcHi
+	 NyXYiDcYiok5w==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 05/20] evaluate: clean up expr_evaluate_set()
-Date: Thu,  5 Feb 2026 03:41:14 +0100
-Message-ID: <20260205024130.1470284-6-pablo@netfilter.org>
+Subject: [PATCH nft 06/20] segtree: rename set_elem_add() to set_elem_expr_add()
+Date: Thu,  5 Feb 2026 03:41:15 +0100
+Message-ID: <20260205024130.1470284-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260205024130.1470284-1-pablo@netfilter.org>
 References: <20260205024130.1470284-1-pablo@netfilter.org>
@@ -67,7 +67,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -77,7 +77,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
 	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-10640-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10641-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -88,66 +88,60 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 11E21EE0C3
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1E1B6EE0D9
 X-Rspamd-Action: no action
 
-Remove redundant check for elem->etype == EXPR_SET_ELEM, assert()
-already validates this at the beginning of the loop.
+Just a clean up, to prepare for the introduction of struct set_elem
+that will provide a set_elem_add() function again.
 
-Remove redundant pointer to set element, use iterator index instead.
+Rename it now to leave room for such future change.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/evaluate.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ src/segtree.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 556664d640a3..7caa161bbe23 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -2067,7 +2067,6 @@ static void expr_evaluate_set_ref(struct eval_ctx *ctx, struct expr *expr)
- static int expr_evaluate_set(struct eval_ctx *ctx, struct expr **expr)
+diff --git a/src/segtree.c b/src/segtree.c
+index 90e4a616edf0..bf543b9b91ab 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -53,8 +53,8 @@ static void interval_expr_copy(struct expr *dst, struct expr *src)
+ 	list_splice_init(&src->stmt_list, &dst->stmt_list);
+ }
+ 
+-static void set_elem_add(const struct set *set, struct expr *init, mpz_t value,
+-			 uint32_t flags, enum byteorder byteorder)
++static void set_elem_expr_add(const struct set *set, struct expr *init,
++			      mpz_t value, uint32_t flags, enum byteorder byteorder)
  {
- 	struct expr *set = *expr, *i, *next;
--	const struct expr *elem;
+ 	struct expr *expr;
  
- 	list_for_each_entry_safe(i, next, &expr_set(set)->expressions, list) {
- 		assert(i->etype == EXPR_SET_ELEM);
-@@ -2094,10 +2093,7 @@ static int expr_evaluate_set(struct eval_ctx *ctx, struct expr **expr)
- 			continue;
- 		}
+@@ -84,8 +84,8 @@ struct expr *get_set_intervals(const struct set *set, const struct expr *init)
  
--		elem = i;
--
--		if (elem->etype == EXPR_SET_ELEM &&
--		    elem->key->etype == EXPR_SET_REF)
-+		if (i->key->etype == EXPR_SET_REF)
- 			return expr_error(ctx->msgs, i,
- 					  "Set reference cannot be part of another set");
- 
-@@ -2105,8 +2101,7 @@ static int expr_evaluate_set(struct eval_ctx *ctx, struct expr **expr)
- 			return expr_error(ctx->msgs, i,
- 					  "Set member is not constant");
- 
--		if (i->etype == EXPR_SET_ELEM &&
--		    i->key->etype == EXPR_SET) {
-+		if (i->key->etype == EXPR_SET) {
- 			/* Merge recursive set definitions */
- 			list_splice_tail_init(&expr_set(i->key)->expressions, &i->list);
- 			list_del(&i->list);
-@@ -2115,9 +2110,9 @@ static int expr_evaluate_set(struct eval_ctx *ctx, struct expr **expr)
- 			expr_free(i);
- 		} else if (!expr_is_singleton(i)) {
- 			expr_set(set)->set_flags |= NFT_SET_INTERVAL;
--			if ((elem->key->etype == EXPR_MAPPING &&
--			     elem->key->left->etype == EXPR_CONCAT) ||
--			    elem->key->etype == EXPR_CONCAT)
-+			if ((i->key->etype == EXPR_MAPPING &&
-+			     i->key->left->etype == EXPR_CONCAT) ||
-+			    i->key->etype == EXPR_CONCAT)
- 				expr_set(set)->set_flags |= NFT_SET_CONCAT;
+ 		switch (i->key->etype) {
+ 		case EXPR_VALUE:
+-			set_elem_add(set, new_init, i->key->value,
+-				     i->flags, byteorder);
++			set_elem_expr_add(set, new_init, i->key->value,
++					  i->flags, byteorder);
+ 			break;
+ 		case EXPR_CONCAT:
+ 			set_expr_add(new_init, expr_clone(i));
+@@ -97,11 +97,11 @@ struct expr *get_set_intervals(const struct set *set, const struct expr *init)
+ 			break;
+ 		default:
+ 			range_expr_value_low(low, i);
+-			set_elem_add(set, new_init, low, 0, i->byteorder);
++			set_elem_expr_add(set, new_init, low, 0, i->byteorder);
+ 			range_expr_value_high(high, i);
+ 			mpz_add_ui(high, high, 1);
+-			set_elem_add(set, new_init, high,
+-				     EXPR_F_INTERVAL_END, i->byteorder);
++			set_elem_expr_add(set, new_init, high,
++					  EXPR_F_INTERVAL_END, i->byteorder);
+ 			break;
  		}
  	}
 -- 
