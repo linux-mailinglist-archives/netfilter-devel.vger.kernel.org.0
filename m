@@ -1,60 +1,117 @@
-Return-Path: <netfilter-devel+bounces-10655-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10658-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GJ5EBbQDhGmHwwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10655-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:43:00 +0100
+	id wCAFLv1KhGm82QMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10658-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 08:47:09 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6DC6EE128
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FDAEF908
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 08:47:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CF64E301FC8A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 02:41:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0F124300FEC9
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 07:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128062C031B;
-	Thu,  5 Feb 2026 02:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C0F35E546;
+	Thu,  5 Feb 2026 07:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="WM9sSleb"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="g6VclQ92"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF98D2C0F96
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 02:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5182882A1
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 07:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770259318; cv=none; b=XAzKRh4MyU4pOP3Lw5yQcO/P4QsXE+LhMrcY1xpXCLp8+zGHvHSn7tJrcCYTYdESyw24/B/q2BtWm8eMPj+B7PcnNGRbBxiouePrrb3diG4lxZLId81Z6/8a+Nc/jzbwZiTIctn65BgZO4O7Mwyy8iOk0Wc0fkoNx+Hw2ar33So=
+	t=1770277603; cv=none; b=ErZJ1MHoT5ahzMdvXeQkTNQC29GioWG9fMq6GL5aX3ZcTjCl2e9Qn+nwB4EH0fVojH1OmONMYL6MOwkpcOdBFqMkHLLuR1qZWIM6U/es/QxRsHXwfZk4oMtZanJuJo6u48f3eZvyU+llFI4E1Xx0nXYMf0J66fBxDd6uDk+9Tgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770259318; c=relaxed/simple;
-	bh=fK7C6Lm1u7Y1vjhLT0wde//45HDEK0p1+JhrSwYS5dc=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N/h6aU04YDAO2z8Fyt4dRQM9l5S4jND6UrJhRiCE5ljmC6JxY8LVcL41XB6tKJQtcP0j4vWkXuYORveZVsKbUEB+kFiEjSLUsWQVgw2aw/iYkjlMEtEBo6ggZ2EH6J+KxE9WwHF8fqLMomm1T0gECKzXhWnjNSXYEjGCvh67jl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=WM9sSleb; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 2F1A260888
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 03:41:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1770259316;
-	bh=yqM6ftYaYjbgjZ9Hr0w0z3K8idGerrJwAGn5QLKoNho=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=WM9sSlebToA3KPtzi/zf8MlhvjY6sx59cnH7t/aJ6Hqt7ReJJIyoufynULyWa5Qyt
-	 Znp9OVox3KxkKgTrRCnSjkIGbMGLIjo+WWcyZdsi8d48+8V6FTQiO/41hjlYxjbOk/
-	 q7+HSBv4HgFdhEOwwLqEH2iXZSPRPFeTtrSXRPa/bVA5dQ5D3H/mKOa0iD/OLX0hEA
-	 gBCeTZ/zy8YpiOdSlp4DDedoenaQTN9gF4KXza9NXp4rH0g7fQ6uYt3Oq2xwWLCySV
-	 L19NcaG5b2Chb8gqXLvun5rgQ3/qun9WpJYpUGm9ICzX262uTnz8ufGA+CLf94IGWf
-	 1hBJvYOjS4K8w==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 20/20] evaluate: skip EXPR_SET_ELEM in error path of set statements
-Date: Thu,  5 Feb 2026 03:41:29 +0100
-Message-ID: <20260205024130.1470284-21-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260205024130.1470284-1-pablo@netfilter.org>
-References: <20260205024130.1470284-1-pablo@netfilter.org>
+	s=arc-20240116; t=1770277603; c=relaxed/simple;
+	bh=BZAm3zfS+K8re01D7iQcVFbiBjsf6a3DLCN+hVqBjSU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ojTC+Rvf6Q9B0WtfbmdRlfgfICvVG5y4TV1docYdvuFiO5acHGJuxjr6uE/YSWxvucqFQC7v8zU+xMoq2r4xIkVb3yqyatASxgo4rMCT+gQe/lrjsRhdj3KT3qutj0o0tmcSo+sYi4mGM/+FidbCrYqapiEqj1br0S6M9ZjXh0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=g6VclQ92; arc=none smtp.client-ip=209.85.214.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2a9487967a6so189165ad.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 04 Feb 2026 23:46:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770277602; x=1770882402;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pSevupTzEHu0sF+WJcXaAghgvNkaKInyzTJ6cRAu8bA=;
+        b=lDSXifTR1pONtPR1R5NoWaF54ZLdKXMEe6svNa9C+ZUF1bDHQbItt5KS00p50LbY+V
+         o+sUmNryJF5UQkVvuDNckKT1D1zmeqGU/d5MMrIxNrFKj3Cw+on3LXIfk6bgvaHThDz4
+         Dn7xFGcPv6nO2toArYoyssx68pkIuJt9N1fDjW141nU7GhLM/twFh2q5SH1J1xqlQKKG
+         dJeZbuFNL2Ct0D/SL7gd4urQQrhL0wTNqVMPKutK8xyilwMK967VOXCPBQbhP797inUg
+         hAGqnFSRB+aLXE9hNZi8N66jWUtFgQnUvgyb92eRRL5s33cMoRiK+BQQZ2zlbHWFOstE
+         e0GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX5Yd6ZstXA+2HK6hjV7Ld2qwrJnlpktwZN8AO4qlF4o/SxUtNsGSI36MMmQGTtcXYsaQOMyQPuOu2EZL+KScE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YztjXGNfXMpAOntAT1/INZyCQMhW/dvJ6wm5HHCZzNr2gIxLZ2v
+	6obR95LvNU3t4oWWwlqH13/174d1xr31UFMcXzUjZPPkb5uyj9FU9TMrPvV4RLvKhZyOjPYPP17
+	hwKtPnl3EvZCVZvLglHO6xb1hzxruEcQDr9ql1tb4nhamdMBfjyhj1aFNkqmS+H8PDa+L8yyY8U
+	ZZuiONYA1cZKBcBkTdm1OPlH+LHeK11AyH9Il5AqWeFUmhoNvmlRimWRZbgDU0xOTnolINQjRaI
+	cCSw4jytXJXU3voZKXPbLBzLJleYh0CTLuPDSfi
+X-Gm-Gg: AZuq6aIH7zeLV1vioDXdMQ6pBMG89QqYCLwtGoKtUcyMHIldueiNLxPJqWV0/Qbef3p
+	tEg/21nvEkakye4PDwkKrLGpGzYwwkKZLiLbjl58NvvFgJ22yF687zED0lbwTNr1yhd4YxGEBTC
+	A9ycoqRIKksFgivLC+Xd5fQSSXRk3mJbP5pHlTyKFptbDK1jatWvXQhSBjfdX9V+D9i/X6EmA+d
+	K4OPaABvaliZ0fjLtYz9FyqkAvD3fMHubXmOY7SCMsn6y3rZ+Mb/oRdKNRmEGHBUIw5e0b9y/35
+	RvIJKeJcbVkS3IkrT7FDpK0fDdLIyVRLCKyKyRoGh7ZSbN0jd4TDNEYPv+GOS9X0Rg9RIbLNhcV
+	EAAGuRGTZSzmS+IM2Mzos+knGU1p+ZBloGO10K4TWRRVKlEc/KefyV2Pd1uAbIHjufvh6bDKAak
+	7Xjb5gOUy3txCHjrFIrQZgiA9c/IQkGBiyL1TBkrSOg32wmkcqkKzpaNBonTE=
+X-Received: by 2002:a17:90b:5867:b0:343:653d:318 with SMTP id 98e67ed59e1d1-35486f73314mr4112939a91.0.1770277602533;
+        Wed, 04 Feb 2026 23:46:42 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-0.dlp.protect.broadcom.com. [144.49.247.0])
+        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-3549c0c47a4sm218882a91.6.2026.02.04.23.46.42
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 04 Feb 2026 23:46:42 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-dy1-f199.google.com with SMTP id 5a478bee46e88-2b70a6e1e28so17888eec.2
+        for <netfilter-devel@vger.kernel.org>; Wed, 04 Feb 2026 23:46:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1770277601; x=1770882401; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pSevupTzEHu0sF+WJcXaAghgvNkaKInyzTJ6cRAu8bA=;
+        b=g6VclQ920khstvNzbqEsq35iaC7EMJ3prUBNYO69sVFticXEKV3Pf2da901GF5qFjB
+         kLeb/fwjwsfc/oqpm4s2XWGXkD9mZ8aA9sGqFy02VvSMdGr9d+mLXr9oQlz8XegsGYZC
+         wm6G6tVXOjZmUGzDbnEARPOjnF4CDLO70RVQU=
+X-Forwarded-Encrypted: i=1; AJvYcCW8tt9Ubswzww7AVy7501ASMwTcVKfXYYTkm3kH8CTcC+EYJxjfkUKHXofy33SsFlZxN7cyRQCLcMkqUf8OOhU=@vger.kernel.org
+X-Received: by 2002:a05:7300:c29:b0:2b7:b88d:b75d with SMTP id 5a478bee46e88-2b832743f4dmr1306043eec.0.1770277600548;
+        Wed, 04 Feb 2026 23:46:40 -0800 (PST)
+X-Received: by 2002:a05:7300:c29:b0:2b7:b88d:b75d with SMTP id 5a478bee46e88-2b832743f4dmr1306025eec.0.1770277599982;
+        Wed, 04 Feb 2026 23:46:39 -0800 (PST)
+Received: from keerthanak-ph5-dev.. ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-126f503ecf4sm3840166c88.15.2026.02.04.23.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Feb 2026 23:46:39 -0800 (PST)
+From: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	fw@strlen.de,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vamsi-krishna.brahmajosyula@broadcom.com,
+	yin.ding@broadcom.com,
+	tapas.kundu@broadcom.com,
+	Stefano Brivio <sbrivio@redhat.com>,
+	Sasha Levin <sashal@kernel.org>,
+	Keerthana K <keerthana.kalyanasundaram@broadcom.com>
+Subject: [PATCH v5.10-v6.6 ] netfilter: nft_set_pipapo: clamp maximum map bucket size to INT_MAX
+Date: Thu,  5 Feb 2026 07:42:29 +0000
+Message-ID: <20260205074229.2091135-1-keerthana.kalyanasundaram@broadcom.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -62,102 +119,85 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
-	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-10655-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10658-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FROM_NEQ_ENVFROM(0.00)[keerthana.kalyanasundaram@broadcom.com,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[broadcom.com:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C6DC6EE128
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 34FDAEF908
 X-Rspamd-Action: no action
 
-Use the key value directly, skip EXPR_SET_ELEM indirection.
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
+[ Upstream commit b85e3367a5716ed3662a4fe266525190d2af76df ]
+
+Otherwise, it is possible to hit WARN_ON_ONCE in __kvmalloc_node_noprof()
+when resizing hashtable because __GFP_NOWARN is unset.
+
+Similar to:
+
+  b541ba7d1f5a ("netfilter: conntrack: clamp maximum hashtable size to INT_MAX")
+
+Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+[ Keerthana: Handle freeing new_lt ]
+Signed-off-by: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
 ---
- src/evaluate.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index ea6013f6a24e..482708ae6191 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -3673,28 +3673,28 @@ static int stmt_evaluate_meter(struct eval_ctx *ctx, struct stmt *stmt)
- 	expr_set_context(&ctx->ectx, NULL, 0);
- 	if (expr_evaluate(ctx, &stmt->meter.key) < 0)
- 		return -1;
--	if (expr_is_constant(stmt->meter.key))
--		return expr_error(ctx->msgs, stmt->meter.key,
-+	if (expr_is_constant(stmt->meter.key->key))
-+		return expr_error(ctx->msgs, stmt->meter.key->key,
- 				  "Meter key expression can not be constant");
- 	if (stmt->meter.key->comment)
--		return expr_error(ctx->msgs, stmt->meter.key,
-+		return expr_error(ctx->msgs, stmt->meter.key->key,
- 				  "Meter key expression can not contain comments");
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 6813ff660b72..484ca8cf2e80 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -665,6 +665,11 @@ static int pipapo_resize(struct nft_pipapo_field *f, int old_rules, int rules)
+ 	}
  
- 	/* Declare an empty set */
- 	key = stmt->meter.key;
- 	if (existing_set) {
- 		if ((existing_set->flags & NFT_SET_TIMEOUT) && !key->timeout)
--			return expr_error(ctx->msgs, stmt->meter.key,
-+			return expr_error(ctx->msgs, stmt->meter.key->key,
- 					  "existing set '%s' has timeout flag",
- 					  stmt->meter.name);
+ mt:
++	if (rules > (INT_MAX / sizeof(*new_mt))) {
++		kvfree(new_lt);
++		return -ENOMEM;
++	}
++
+ 	new_mt = kvmalloc(rules * sizeof(*new_mt), GFP_KERNEL);
+ 	if (!new_mt) {
+ 		kvfree(new_lt);
+@@ -1358,6 +1361,9 @@ static struct nft_pipapo_match *pipapo_clone(struct nft_pipapo_match *old)
+ 		       src->bsize * sizeof(*dst->lt) *
+ 		       src->groups * NFT_PIPAPO_BUCKETS(src->bb));
  
- 		if ((existing_set->flags & NFT_SET_TIMEOUT) == 0 && key->timeout)
--			return expr_error(ctx->msgs, stmt->meter.key,
-+			return expr_error(ctx->msgs, stmt->meter.key->key,
- 					  "existing set '%s' lacks timeout flag",
- 					  stmt->meter.name);
- 
- 		if (stmt->meter.size > 0 && existing_set->desc.size != stmt->meter.size)
--			return expr_error(ctx->msgs, stmt->meter.key,
-+			return expr_error(ctx->msgs, stmt->meter.key->key,
- 					  "existing set '%s' has size %u, meter has %u",
- 					  stmt->meter.name, existing_set->desc.size,
- 					  stmt->meter.size);
-@@ -4848,7 +4848,7 @@ static int stmt_evaluate_set(struct eval_ctx *ctx, struct stmt *stmt)
- 			      &stmt->set.key->key) < 0)
- 		return -1;
- 	if (stmt->set.key->comment != NULL)
--		return expr_error(ctx->msgs, stmt->set.key,
-+		return expr_error(ctx->msgs, stmt->set.key->key,
- 				  "Key expression comments are not supported");
- 	list_for_each_entry(this, &stmt->set.stmt_list, list) {
- 		if (stmt_evaluate_stateful(ctx, this, "set") < 0)
-@@ -4889,7 +4889,7 @@ static int stmt_evaluate_map(struct eval_ctx *ctx, struct stmt *stmt)
- 			      &stmt->map.key->key) < 0)
- 		return -1;
- 	if (stmt->map.key->comment != NULL)
--		return expr_error(ctx->msgs, stmt->map.key,
-+		return expr_error(ctx->msgs, stmt->map.key->key,
- 				  "Key expression comments are not supported");
- 
- 	if (stmt_evaluate_arg(ctx, stmt,
++		if (src->rules > (INT_MAX / sizeof(*src->mt)))
++			goto out_mt;
++
+ 		dst->mt = kvmalloc(src->rules * sizeof(*src->mt), GFP_KERNEL);
+ 		if (!dst->mt)
+ 			goto out_mt;
 -- 
-2.47.3
+2.43.7
 
 
