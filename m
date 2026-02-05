@@ -1,57 +1,57 @@
-Return-Path: <netfilter-devel+bounces-10644-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10645-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OKLAI5kDhGmHwwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10644-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:33 +0100
+	id eLrWI5IDhGmHwwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10645-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:26 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45BD2EE0ED
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:33 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD9B9EE0D8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 03:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B9A523029A6A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 02:41:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AEA8130008A6
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 02:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FE72C08B1;
-	Thu,  5 Feb 2026 02:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102F62BEC2A;
+	Thu,  5 Feb 2026 02:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="pqIZCd3o"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="OLUpqeHR"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A5C2BEFFE
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 02:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD89C2877C3
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 02:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770259307; cv=none; b=I8Hvq8h7e48Dgi+7BhcMV8zHGUZWEBfbJHhoYhj5/Tfg1+VavZm94JkxFiP5X+J5m6/dJI5ntUMhVPlNEwuBQjgZveYkX9sIZglpKmBi/F0D8jSw0BBQ/X2F/X2fYIXO/C/NsUNJKUX4Ya7aDiOAy+0loqjvFGuMg1+vXTU/V5U=
+	t=1770259309; cv=none; b=eMwD50cvniXmsTcG6BxIb2DjyjPCRbZ9b+6AiQzvWBg4IeGGXhwi4bZG1UgIf4G46UAIW/oQaNbADyuwJ+hBVbCVyVIhHXAU6BVsMGXqzhuZigRoK1w5KzmC8qsqBOwd9X4iXE16S+b06TA205Mv9oBPwQNvZqed5aLZ0l1vAPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770259307; c=relaxed/simple;
-	bh=PoYWdW9LGz2fco0qIXIKqpcf975hQ8vmAG/0289OVUY=;
+	s=arc-20240116; t=1770259309; c=relaxed/simple;
+	bh=RVHQUG6YtQCws2rIecCCqw1gaNx8EKuGsHtPqaoBsag=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Su6NJtuK89rInTdOOGnXzYOfoREdOJUvEZ1JI7cpvJgTG+mJ5Ga2KyHmM9SE65Wlm/M6D10+1NTAeD8toh9rXEl6T+VhRsfbkShY0FRhHzDoGlmrv2bh9cQA6fFWQsc4TYo5ibI/vFhodfTHWSLz6kJh5qJoJ9LTdDQXXtkJdzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=pqIZCd3o; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=jwYGTdUV4AQPcHtIDXCvagVd2paBNe9N4R1tr+KEuV68bTJoluvEJtbI6JGnSYdq6iAdFwGSl3gnDzK0Qur5/yjw/SAcW9Un5DrW5nFO8I+O3ep07JpLtKnJA+Sv5SfsZC74918U+ZRn/Wf8kvX8zFl08NVEjHFErUM3Jkk1Xjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=OLUpqeHR; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id A3DBB60882
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 03:41:45 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id B7EE460871
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 03:41:46 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1770259305;
-	bh=gKy/yEaOSMv1QNEwxZrxPd5MOyiaFHpaE/LYqGoh6zQ=;
+	s=2025; t=1770259306;
+	bh=mji3hEaz82SZE4lU5LsOV+xD6TCwRKkZt/OWdDi73Zw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=pqIZCd3oWvkaIDsJtTy/Y1rKAel0tMhFkxe7JFVT6kBa7VUDJ3UKS4hf1wWODx6T6
-	 8lVifN4YWB++KpbA+8lrx0hc9etdzG+4FUvmCaoFWIhDQyvFHPXr9isJXI9dH/JS46
-	 AKzaayf68Py8ibsOOhSbEoQdfjbjNeax5qKKivdGz849qBsVSsj7/An8w1wvWylgO6
-	 ykgSx+rbsvXNBPsKi9niUChy0EOEw+7PnBKWTycMpLpd5fQH4pTQAE6GnYTlrjCEsU
-	 5IXewxy08VMdhIstaTshW6alauopGP8dyHUridbR/hG0/MHO5MH/4wxMs8TsXfmIrR
-	 xs/0SzyG7kbpg==
+	b=OLUpqeHRcSSTXBTAUfFCqAmNELee9MB02gHSKWvzzODzvwblU0GUvgfZrdzWwGq3L
+	 5yN/GR3LCMiXHCGeFgZ4gFuftuVc+yJz5xnQoG4BUNi61E5mXDMCOUspSE3o+qtEB8
+	 lJGQge0ML6wm5gobsAPUGRPJkbXJfNFSoCBVuAvnw7Whpc6yyX1xqm/Q+rhmI72hNu
+	 YGdrHmEpwtgsFnKbfWlh4nlW4tLxZ4doct1GG/WjEU+Ygxsg9MWntiZSXzwRG8JVmE
+	 HpR+p+NzXVZGmrLE9WNGkTZefI/A1PlKsjmP/GXnLTrmEaElqUBxNV9OQtBmoDNwAu
+	 mO43lU+jNredw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 09/20] src: use key location to prepare removal of EXPR_SET_ELEM
-Date: Thu,  5 Feb 2026 03:41:18 +0100
-Message-ID: <20260205024130.1470284-10-pablo@netfilter.org>
+Subject: [PATCH nft 10/20] intervals: remove interval_expr_key()
+Date: Thu,  5 Feb 2026 03:41:19 +0100
+Message-ID: <20260205024130.1470284-11-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260205024130.1470284-1-pablo@netfilter.org>
 References: <20260205024130.1470284-1-pablo@netfilter.org>
@@ -67,7 +67,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -77,7 +77,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
 	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-10644-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10645-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -88,165 +88,219 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 45BD2EE0ED
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BD9B9EE0D8
 X-Rspamd-Action: no action
 
-Again, to prepare for the removal of EXPR_SET_ELEM, use the key
-location instead.
+Since ("src: normalize set element with EXPR_MAPPING"), this became an
+empty shim function, remove it.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/intervals.c | 32 ++++++++++++++++----------------
- src/mergesort.c |  8 ++++----
- 2 files changed, 20 insertions(+), 20 deletions(-)
+ src/intervals.c | 72 +++++++++++++++++--------------------------------
+ 1 file changed, 24 insertions(+), 48 deletions(-)
 
 diff --git a/src/intervals.c b/src/intervals.c
-index 4f15095c4bb4..bf0c5573ee1d 100644
+index bf0c5573ee1d..743e034519b5 100644
 --- a/src/intervals.c
 +++ b/src/intervals.c
-@@ -106,7 +106,7 @@ static void remove_overlapping_range(struct set_automerge_ctx *ctx,
- 				     struct expr *prev, struct expr *i)
+@@ -227,31 +227,14 @@ static void setelem_automerge(struct set_automerge_ctx *ctx)
+ 	mpz_clear(rop);
+ }
+ 
+-static struct expr *interval_expr_key(struct expr *i)
+-{
+-	struct expr *elem;
+-
+-	switch (i->etype) {
+-	case EXPR_SET_ELEM:
+-		elem = i;
+-		break;
+-	default:
+-		BUG("unhandled expression type %d", i->etype);
+-		return NULL;
+-	}
+-
+-	return elem;
+-}
+-
+ static void set_to_range(struct expr *init)
  {
- 	if (i->key->flags & EXPR_F_KERNEL) {
--		i->location = prev->location;
-+		i->key->location = prev->key->location;
- 		purge_elem(ctx, i);
- 		return;
+-	struct expr *i, *elem;
++	struct expr *i;
+ 
+ 	list_for_each_entry(i, &expr_set(init)->expressions, list) {
+ 		assert(i->etype == EXPR_SET_ELEM);
+ 
+-		elem = interval_expr_key(i);
+-		setelem_expr_to_range(elem);
++		setelem_expr_to_range(i);
  	}
-@@ -125,13 +125,13 @@ static bool merge_ranges(struct set_automerge_ctx *ctx,
- 			 struct range *prev_range, struct range *range)
- {
- 	if (prev->key->flags & EXPR_F_KERNEL) {
--		prev->location = i->location;
-+		prev->key->location = i->key->location;
- 		purge_elem(ctx, prev);
- 		mpz_set(i->key->range.low, prev->key->range.low);
- 		mpz_set(prev_range->high, range->high);
- 		return true;
- 	} else if (i->key->flags & EXPR_F_KERNEL) {
--		i->location = prev->location;
-+		i->key->location = prev->key->location;
- 		purge_elem(ctx, i);
- 		mpz_set(prev->key->range.high, i->key->range.high);
- 		mpz_set(prev_range->high, range->high);
-@@ -330,7 +330,7 @@ static void __adjust_elem_left(struct set *set, struct expr *prev, struct expr *
- static void adjust_elem_left(struct set *set, struct expr *prev, struct expr *i,
- 			     struct expr *purge)
- {
--	prev->location = i->location;
-+	prev->key->location = i->key->location;
- 	remove_elem(prev, set, purge);
- 	__adjust_elem_left(set, prev, i);
+ }
  
-@@ -349,7 +349,7 @@ static void __adjust_elem_right(struct set *set, struct expr *prev, struct expr
- static void adjust_elem_right(struct set *set, struct expr *prev, struct expr *i,
- 			      struct expr *purge)
+@@ -410,7 +393,7 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 			  struct expr *purge, struct expr *elems,
+ 			  unsigned int debug_mask)
  {
--	prev->location = i->location;
-+	prev->key->location = i->key->location;
- 	remove_elem(prev, set, purge);
- 	__adjust_elem_right(set, prev, i);
+-	struct expr *i, *next, *elem, *prev = NULL;
++	struct expr *i, *next, *prev = NULL;
+ 	struct range range, prev_range;
+ 	int err = 0;
+ 	mpz_t rop;
+@@ -421,10 +404,8 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 	mpz_init(range.high);
+ 	mpz_init(rop);
  
-@@ -362,7 +362,7 @@ static void split_range(struct set *set, struct expr *prev, struct expr *i,
- {
- 	struct expr *clone;
+-	list_for_each_entry_safe(elem, next, &expr_set(elems)->expressions, list) {
+-		assert(elem->etype == EXPR_SET_ELEM);
+-
+-		i = interval_expr_key(elem);
++	list_for_each_entry_safe(i, next, &expr_set(elems)->expressions, list) {
++		assert(i->etype == EXPR_SET_ELEM);
  
--	prev->location = i->location;
-+	prev->key->location = i->key->location;
- 
- 	if (prev->key->flags & EXPR_F_KERNEL) {
- 		clone = expr_clone(prev);
-@@ -444,7 +444,7 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 		if (expr_type_catchall(i->key)) {
+ 			uint32_t len;
+@@ -443,14 +424,14 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 			range_expr_value_high(range.high, i->key);
  		}
  
- 		if (!prev && elem->key->flags & EXPR_F_REMOVE) {
--			expr_error(msgs, i, "element does not exist");
-+			expr_error(msgs, i->key, "element does not exist");
+-		if (!prev && elem->key->flags & EXPR_F_REMOVE) {
++		if (!prev && i->key->flags & EXPR_F_REMOVE) {
+ 			expr_error(msgs, i->key, "element does not exist");
  			err = -1;
  			goto err;
  		}
-@@ -460,7 +460,7 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 
+-		if (!(elem->key->flags & EXPR_F_REMOVE)) {
+-			prev = elem;
++		if (!(i->key->flags & EXPR_F_REMOVE)) {
++			prev = i;
+ 			mpz_set(prev_range.low, range.low);
+ 			mpz_set(prev_range.high, range.high);
+ 			continue;
+@@ -458,14 +439,14 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+ 
+ 		if (mpz_cmp(prev_range.low, range.low) == 0 &&
  		    mpz_cmp(prev_range.high, range.high) == 0) {
- 			if (elem->key->flags & EXPR_F_REMOVE) {
+-			if (elem->key->flags & EXPR_F_REMOVE) {
++			if (i->key->flags & EXPR_F_REMOVE) {
  				if (prev->key->flags & EXPR_F_KERNEL) {
--					prev->location = elem->location;
-+					prev->key->location = elem->key->location;
+-					prev->key->location = elem->key->location;
++					prev->key->location = i->key->location;
  					list_move_tail(&prev->list, &expr_set(purge)->expressions);
  				}
  
-@@ -469,12 +469,12 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
+-				list_del(&elem->list);
+-				expr_free(elem);
++				list_del(&i->list);
++				expr_free(i);
  			}
  		} else if (set->automerge) {
  			if (setelem_adjust(set, purge, &prev_range, &range, prev, i) < 0) {
--				expr_error(msgs, i, "element does not exist");
-+				expr_error(msgs, i->key, "element does not exist");
+@@ -473,7 +454,7 @@ static int setelem_delete(struct list_head *msgs, struct set *set,
  				err = -1;
  				goto err;
  			}
- 		} else if (elem->key->flags & EXPR_F_REMOVE) {
--			expr_error(msgs, i, "element does not exist");
-+			expr_error(msgs, i->key, "element does not exist");
+-		} else if (elem->key->flags & EXPR_F_REMOVE) {
++		} else if (i->key->flags & EXPR_F_REMOVE) {
+ 			expr_error(msgs, i->key, "element does not exist");
  			err = -1;
  			goto err;
- 		}
-@@ -620,21 +620,21 @@ static int setelem_overlap(struct list_head *msgs, struct set *set,
- 		if (mpz_cmp(prev_range.low, range.low) <= 0 &&
+@@ -584,7 +565,7 @@ int set_delete(struct list_head *msgs, struct cmd *cmd, struct set *set,
+ static int setelem_overlap(struct list_head *msgs, struct set *set,
+ 			   struct expr *init)
+ {
+-	struct expr *i, *next, *elem, *prev = NULL;
++	struct expr *i, *next, *prev = NULL;
+ 	struct range range, prev_range;
+ 	int err = 0;
+ 	mpz_t rop;
+@@ -595,10 +576,8 @@ static int setelem_overlap(struct list_head *msgs, struct set *set,
+ 	mpz_init(range.high);
+ 	mpz_init(rop);
+ 
+-	list_for_each_entry_safe(elem, next, &expr_set(init)->expressions, list) {
+-		assert(elem->etype == EXPR_SET_ELEM);
+-
+-		i = interval_expr_key(elem);
++	list_for_each_entry_safe(i, next, &expr_set(init)->expressions, list) {
++		assert(i->etype == EXPR_SET_ELEM);
+ 
+ 		if (expr_type_catchall(i->key))
+ 			continue;
+@@ -607,7 +586,7 @@ static int setelem_overlap(struct list_head *msgs, struct set *set,
+ 		range_expr_value_high(range.high, i->key);
+ 
+ 		if (!prev) {
+-			prev = elem;
++			prev = i;
+ 			mpz_set(prev_range.low, range.low);
+ 			mpz_set(prev_range.high, range.high);
+ 			continue;
+@@ -621,7 +600,7 @@ static int setelem_overlap(struct list_head *msgs, struct set *set,
  		    mpz_cmp(prev_range.high, range.high) >= 0) {
  			if (prev->key->flags & EXPR_F_KERNEL)
--				expr_error(msgs, i, "interval overlaps with an existing one");
-+				expr_error(msgs, i->key, "interval overlaps with an existing one");
- 			else if (elem->key->flags & EXPR_F_KERNEL)
--				expr_error(msgs, prev, "interval overlaps with an existing one");
-+				expr_error(msgs, prev->key, "interval overlaps with an existing one");
+ 				expr_error(msgs, i->key, "interval overlaps with an existing one");
+-			else if (elem->key->flags & EXPR_F_KERNEL)
++			else if (i->key->flags & EXPR_F_KERNEL)
+ 				expr_error(msgs, prev->key, "interval overlaps with an existing one");
  			else
--				expr_binary_error(msgs, i, prev,
-+				expr_binary_error(msgs, i->key, prev->key,
- 						  "conflicting intervals specified");
- 			err = -1;
- 			goto err_out;
+ 				expr_binary_error(msgs, i->key, prev->key,
+@@ -631,7 +610,7 @@ static int setelem_overlap(struct list_head *msgs, struct set *set,
  		} else if (mpz_cmp(range.low, prev_range.high) <= 0) {
  			if (prev->key->flags & EXPR_F_KERNEL)
--				expr_error(msgs, i, "interval overlaps with an existing one");
-+				expr_error(msgs, i->key, "interval overlaps with an existing one");
- 			else if (elem->key->flags & EXPR_F_KERNEL)
--				expr_error(msgs, prev, "interval overlaps with an existing one");
-+				expr_error(msgs, prev->key, "interval overlaps with an existing one");
+ 				expr_error(msgs, i->key, "interval overlaps with an existing one");
+-			else if (elem->key->flags & EXPR_F_KERNEL)
++			else if (i->key->flags & EXPR_F_KERNEL)
+ 				expr_error(msgs, prev->key, "interval overlaps with an existing one");
  			else
--				expr_binary_error(msgs, i, prev,
-+				expr_binary_error(msgs, i->key, prev->key,
- 						  "conflicting intervals specified");
- 			err = -1;
+ 				expr_binary_error(msgs, i->key, prev->key,
+@@ -640,7 +619,7 @@ static int setelem_overlap(struct list_head *msgs, struct set *set,
  			goto err_out;
-diff --git a/src/mergesort.c b/src/mergesort.c
-index 7b318423a572..2e8ddd22f813 100644
---- a/src/mergesort.c
-+++ b/src/mergesort.c
-@@ -30,8 +30,6 @@ static void concat_expr_msort_value(const struct expr *expr, mpz_t value)
- static mpz_srcptr expr_msort_value(const struct expr *expr, mpz_t value)
- {
- 	switch (expr->etype) {
--	case EXPR_SET_ELEM:
--		return expr_msort_value(expr->key, value);
- 	case EXPR_BINOP:
- 	case EXPR_MAPPING:
- 	case EXPR_RANGE:
-@@ -68,10 +66,12 @@ static int expr_msort_cmp(const struct expr *e1, const struct expr *e2)
- 	mpz_t value2_tmp;
- 	int ret;
+ 		}
+ next:
+-		prev = elem;
++		prev = i;
+ 		mpz_set(prev_range.low, range.low);
+ 		mpz_set(prev_range.high, range.high);
+ 	}
+@@ -721,23 +700,20 @@ static bool range_low_is_non_zero(const struct expr *expr)
  
-+	assert(e1->etype == EXPR_SET_ELEM && e2->etype == EXPR_SET_ELEM);
-+
- 	mpz_init(value1_tmp);
- 	mpz_init(value2_tmp);
--	value1 = expr_msort_value(e1, value1_tmp);
--	value2 = expr_msort_value(e2, value2_tmp);
-+	value1 = expr_msort_value(e1->key, value1_tmp);
-+	value2 = expr_msort_value(e2->key, value2_tmp);
- 	ret = mpz_cmp(value1, value2);
- 	mpz_clear(value1_tmp);
- 	mpz_clear(value2_tmp);
+ int set_to_intervals(const struct set *set, struct expr *init, bool add)
+ {
+-	struct expr *i, *n, *prev = NULL, *elem, *root, *expr;
++	struct expr *i, *n, *prev = NULL, *root, *expr;
+ 	LIST_HEAD(intervals);
+ 	mpz_t p;
+ 
+ 	list_for_each_entry_safe(i, n, &expr_set(init)->expressions, list) {
+-		assert(i->etype == EXPR_SET_ELEM);
+ 
+-		elem = interval_expr_key(i);
+-
+-		if (expr_type_catchall(elem->key))
++		if (expr_type_catchall(i->key))
+ 			continue;
+ 
+ 		if (prev)
+ 			break;
+ 
+ 		if (segtree_needs_first_segment(set, init, add) &&
+-		    range_low_is_non_zero(elem->key)) {
++		    range_low_is_non_zero(i->key)) {
+ 			mpz_init2(p, set->key->len);
+ 			mpz_set_ui(p, 0);
+ 			expr = constant_range_expr_alloc(&internal_location,
+@@ -845,7 +821,7 @@ int setelem_to_interval(const struct set *set, struct expr *elem,
+ 					 low, expr_get(elem->key->right));
+ 
+ 	low = set_elem_expr_alloc(&key->location, low);
+-	set_elem_expr_copy(low, interval_expr_key(elem));
++	set_elem_expr_copy(low, elem);
+ 
+ 	list_add_tail(&low->list, intervals);
+ 
 -- 
 2.47.3
 
