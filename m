@@ -1,59 +1,60 @@
-Return-Path: <netfilter-devel+bounces-10629-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10630-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cEbEIEnzg2ndwAMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10629-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 02:32:57 +0100
+	id VutMBOrzg2n6wAMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10630-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 02:35:38 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6CDEDA9F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 02:32:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DAF0EDAE2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 02:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C975F3012CF2
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 01:32:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 15B9C300E72F
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 01:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4162147E5;
-	Thu,  5 Feb 2026 01:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8EE2874F1;
+	Thu,  5 Feb 2026 01:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="a/443nKU"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="AuQ8mxla"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDB115A85A
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 01:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434E214F9D6
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 01:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770255173; cv=none; b=TJXOK33HbT3BAVkpeNjm+uj8nIYPR05pyNuuJtC10Nx1GlGsMWzxSJ4/94mnGHDRRbCcD84+N0Cf47i9x+g/hx9tcABbelUIHVFKR2KV2Z0ZRMQUWjdVXsd4WGmJp0QXyHCOhIFgn1z3Ky193FvPi9CZ2Ym78RpurBLtH6lG2K0=
+	t=1770255334; cv=none; b=BttH8nLmkzrfUrG1CHY3ZvEFZXnOB951BtiLiJOFupn1NJyGbPMen0GmYTdU4YX4uwvM/HTZessgi4QB4rUHkt9dBIjU01d09wipXg6kig0SmavZnASOBsqxdREvwB0CV1C1T7M+PmpDyZjNTcGFQ4Xnf0akGs2zCXG6mavtSAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770255173; c=relaxed/simple;
-	bh=fvraOWx+84te3AjW4suoFS2bYCny76JOh6D8McuzdoU=;
+	s=arc-20240116; t=1770255334; c=relaxed/simple;
+	bh=+Z0s9AQfvYnFni0TcjvmmA4cxkeXvzu4rvGmyFupX/0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y5/wByqHksNojodXlgw4Zvil367o9TfK/7URVNPcyDJeKV7kH31Q+BklFM4ZK32xWMq7qfyShf22Z/bMXm+l4z7I/LD9VDSYskH6qfJVKgd3tkRRPyq5axcWbXyWnsu2GaLoGHluEkZ1xmonUNsosYvrEB12AmZSjBIYljrXehw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=a/443nKU; arc=none smtp.client-ip=217.70.190.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=sIi8RYtUtvLJBeK3qJGeBfRua3NxZHuFluEt2SC2DKtutfK2sAIirXDNQARYue+CNVlWyHQXsVJiaM0GR6z0WpixRc7tx7sazw5OyRWHchArJsMkX3ar93zV9WQ6Ib8mqbA0Rn8qoLpCSrEbyGCc7sBJsbqwtUjcp+wIUa93Te8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=AuQ8mxla; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id C230160876;
-	Thu,  5 Feb 2026 02:32:50 +0100 (CET)
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 140B66087F;
+	Thu,  5 Feb 2026 02:35:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1770255170;
-	bh=+eqyprX2babX9CP337PKUYv1ec2gTmrrI4tmw2Ky4/4=;
+	s=2025; t=1770255332;
+	bh=BY69nTAyDfp1L+BBJGlWFkpU32AN2p5LNmvdtRtFfuk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a/443nKUZ30Qp3Zn8RbRL/UANDSJokC8ZbLkW7pZZMc8+vZCSNWiNm5WU9dSz1GW/
-	 TH4bMq1VvWtLkhiOhhrqp4+Td+K4T5miwSlEZ96u/Sj84lijzmapmKo7YsSxbmM6Mc
-	 g1d5hnywnDqFLKRuL8vbRMua3NqQaoSUxEUJaY2JpFqZcIP3vVWQKF0WzGgRG8SSb1
-	 8bpDUpLi12zXpGQayNr/fh3FGHb1/2TTZfYCDikLsmau4mHu0MLO4yW19EYGe1Wht3
-	 bKPjvB0IhXm7YA7UHIdcFqbQCAi/lcioJUSbBR41MnN8EtsbJXEPZt8FEODtq7iwke
-	 B8srLaKOCwz3w==
-Date: Thu, 5 Feb 2026 02:32:48 +0100
+	b=AuQ8mxlay+ULFUNu2BdY8pJpFo1DJLRXPTub9omm8ja4lBOXNmHqEn/0ZwHyMAFys
+	 MALzG5IcGj5WxR4WrkGM4xBGGi+fXWzMlzJuOpvkJ7Id9LazWC/x4avvnfy1zZSwqg
+	 BHw838JyzgTt9qgWuknx50Cxx4JxxzEHsuY8q+agwKbxcI1FCtg6MNmyGZzLknxkE0
+	 2f6C1jg2Xs/4l37w6Jp0OsokDnACtupwI0w7ncbnLue5tT9IsiZRDPZVbRJAmpD2Eq
+	 nnSqGZBd5X7vhpKHk5l9znepNqflDStkTfaq++ybsUBzumZdOSqLHBpswY7/lSL3Ka
+	 eC1Y2MzE3qy4g==
+Date: Thu, 5 Feb 2026 02:35:29 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: Phil Sutter <phil@nwl.cc>
 Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] Makefile: Set PKG_CONFIG_PATH env for 'make check'
-Message-ID: <aYPzQOgGxpacVYMV@chamomile>
-References: <20260127221657.28148-1-phil@nwl.cc>
+Subject: Re: [nft PATCH 3/4] xt: Print comment match data as well
+Message-ID: <aYPz4TwVBQm3Fb0k@chamomile>
+References: <20260127222916.31806-1-phil@nwl.cc>
+ <20260127222916.31806-4-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -62,13 +63,13 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260127221657.28148-1-phil@nwl.cc>
+In-Reply-To: <20260127222916.31806-4-phil@nwl.cc>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -79,58 +80,60 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10629-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10630-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,nwl.cc:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: EE6CDEDA9F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,nwl.cc:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5DAF0EDAE2
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 11:15:58PM +0100, Phil Sutter wrote:
-> When building nftables git HEAD, I use a script which also builds libmnl
-> and libnftnl in their respective repositories and populates
-> PKG_CONFIG_PATH variable so nftables is linked against them instead of
-> host libraries. This is mandatory as host-installed libraries are
-> chronically outdated and linking against them would fail.
+On Tue, Jan 27, 2026 at 11:29:15PM +0100, Phil Sutter wrote:
+> In order to translate comment matches into the single nftables rule
+> comment, libxtables does not immediately (maybe mid-rule) print a
+> comment match's string but instead stores it into struct
+> xt_xlate::comment array for later.
+> 
+> Since xt_stmt_xlate() is called by a statement's .print callback which
+> can't communicate data back to caller, nftables has to print it right
+> away.
 
-How do you use this?
+This is a bugfix, correct?
 
-> Same situation exists with build test suite. Luckily the PKG_CONFIG_PATH
-> variable value used to build the project is cached in Makefiles and
-> Automake supports populating test runners' environment.
+> Since parser_bison accepts rule comments only at end of line though, the
+> output from above can't be restored anymore. Which is a bad idea to
+> begin with so accept this quirk and avoid refactoring the statement
+> printing API.
 > 
 > Signed-off-by: Phil Sutter <phil@nwl.cc>
 > ---
-> Pablo: Could you please confirm this does not break your workflow? I
-> recall you relied upon build test suite while it never passed for me due
-> to the reasons described above.
-
-Just run `make distcheck' or tests/build/ to check, I think that
-should be enough.
-
-> ---
->  Makefile.am | 1 +
->  1 file changed, 1 insertion(+)
+>  src/xt.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Makefile.am b/Makefile.am
-> index b134330d5ca22..18af82a927dc0 100644
-> --- a/Makefile.am
-> +++ b/Makefile.am
-> @@ -450,6 +450,7 @@ tools/nftables.service: tools/nftables.service.in ${top_builddir}/config.status
->  endif
+> diff --git a/src/xt.c b/src/xt.c
+> index f7bee21618030..c3a8c47621cbb 100644
+> --- a/src/xt.c
+> +++ b/src/xt.c
+> @@ -112,8 +112,12 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
+>  		break;
+>  	}
 >  
->  if !BUILD_DISTCHECK
-> +AM_TESTS_ENVIRONMENT = PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)
->  TESTS = tests/build/run-tests.sh \
->  	tests/json_echo/run-test.py \
->  	tests/monitor/run-tests.sh \
+> -	if (rc == 1)
+> +	if (rc == 1) {
+>  		nft_print(octx, "%s", xt_xlate_get(xl));
+> +		if (xt_xlate_get_comment(xl))
+> +			nft_print(octx, "comment %s",
+> +				  xt_xlate_get_comment(xl));
+> +	}
+>  	xt_xlate_free(xl);
+>  	free(entry);
+>  #endif
 > -- 
 > 2.51.0
 > 
