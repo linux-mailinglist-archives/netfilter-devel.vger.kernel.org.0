@@ -1,66 +1,49 @@
-Return-Path: <netfilter-devel+bounces-10676-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10677-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id VhSgKIybhGmI3wMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10676-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 14:30:52 +0100
+	id aBMtIH+ghGmI3wMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10677-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 14:51:59 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 387FBF345D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 14:30:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06A15F3916
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 14:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C0953301A405
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 13:30:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9786930713DE
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 13:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA631ACED5;
-	Thu,  5 Feb 2026 13:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="MONOT/al"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D946E3D3CFA;
+	Thu,  5 Feb 2026 13:46:29 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C6843147
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 13:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB41392800
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 13:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770298241; cv=none; b=O6OXAd2twAlwkU6uu5TfV5PfjTbRZ2djP42NRZ+HISI7327YYorqbAS4QTodqsfC9FKYlBhI69ak+0EVThjzDELjhvYtwnCTwuihpxFMnR8uwkBjK9zZEQY+Q09tIDDY3nMz6V4bbbzPIzHkExspXgEQ1ieTb0gBhAfDOhfVDSM=
+	t=1770299189; cv=none; b=cQFav9zuOZqhhyXImJrhnocpSm+S/hftUpve0AocEmpRuWN81TXxeoUIam/94NnIGP0joh1u1QfLczKRwujJh+wOd+n8idX2xH9puOWAJznbNNeiyBDLsBx1if0L06aLLH7X44N1NV3HO6aJd1UXL/PDK5TuHn79PkHRhIw1kGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770298241; c=relaxed/simple;
-	bh=ioZzyaExkyadNtslEoiUcDLh+1x+dDH3Av2F7f00ZrU=;
+	s=arc-20240116; t=1770299189; c=relaxed/simple;
+	bh=Dmu7/nbda68o8AWKJEVPUHUAWzFN+sSeaIfSEp/KXhE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QOizxssZN8zYekkmhjy1GM3VjghuBSPfhHGItkEe0aJabW/FJGgk1Ew5j+Oq0o7D3MXqf+JxyLmD7ABGjweXkAQwZzHDDjxaWYcV0FWdtkpZPFTRKacQo5EpKdX9DuChHb03R3cQaPAo/PhLSxgAQL9cEZOoKi5l1R7Z+3/NwsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=MONOT/al; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=7BL2ttvhgX4VrgQR9bsduIN9+Y7CEa+5qt5/48swbO0=; b=MONOT/alZcosGc8JjYR2wZErv/
-	MghHSu4cheSYcWhq/+vEqtSpZ4Cm7uoCRfztJb5f147bQ1CHOMwbAJml8kSp8xHs+GtH7vED7vpDW
-	ADedn6RuQ3AR0mW3/nJeeIrhE15e/j0r1LVZI31oFAlnbxlLq9PCSfUDk5lwsyBPrNS2fvZLNf4/p
-	5T/jacPkQKj5ys1FvZWUAwprsJw0htNwm7oOUnLPfz1qgLCHDfnZtuTcohHboyO/yWGIiObeZcyZZ
-	o266qB3HMw7Vh8bVpGW7N21YY2mlC54Y0QSXrvxeRVh3EFuonLflzpVkzbSYJ6LZ+6jHLhrfHgVv+
-	m6kHqC+Q==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1vnzRP-000000001aW-2NIZ;
-	Thu, 05 Feb 2026 14:30:39 +0100
-Date: Thu, 5 Feb 2026 14:30:39 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH 0/4] Inspect and improve test suite code coverage
-Message-ID: <aYSbfxYZ0Du6rsDP@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org
-References: <20260127222916.31806-1-phil@nwl.cc>
- <aYPz_fmbjh5qjM30@chamomile>
+	 Content-Type:Content-Disposition:In-Reply-To; b=utr5IANRBKsERY7QRVstAQNy58MWGHPMtCk1OS14EBWAYgFAsP9ZgGgcvSw1NkE8GJnGES7V3cW0AyfET7jEA/jz/LMROplOGdz7SP1f1B1Rg0XVJPZRQo/xA2NzmVSOcImQkbtDtc+7Xvt0WZhhTTT4ELAFzBrE0Ged/4hVzBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id C93B260807; Thu, 05 Feb 2026 14:46:26 +0100 (CET)
+Date: Thu, 5 Feb 2026 14:46:26 +0100
+From: Florian Westphal <fw@strlen.de>
+To: Brian Witte <brianwitte@mailfence.com>
+Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+	Phil Sutter <phil@nwl.cc>
+Subject: Re: [PATCH v5 nf-next 1/3] Revert nf_tables commit_mutex in reset
+ path
+Message-ID: <aYSfMrYl6gmRpn0_@strlen.de>
+References: <20260204202639.497235-1-brianwitte@mailfence.com>
+ <20260204202639.497235-2-brianwitte@mailfence.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -69,56 +52,67 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aYPz_fmbjh5qjM30@chamomile>
+In-Reply-To: <20260204202639.497235-2-brianwitte@mailfence.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-10677-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10676-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWO(0.00)[2];
-	DMARC_NA(0.00)[nwl.cc];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
 	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.997];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-0.987];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 387FBF345D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mailfence.com:email,strlen.de:mid]
+X-Rspamd-Queue-Id: 06A15F3916
 X-Rspamd-Action: no action
 
-On Thu, Feb 05, 2026 at 02:35:57AM +0100, Pablo Neira Ayuso wrote:
-> On Tue, Jan 27, 2026 at 11:29:12PM +0100, Phil Sutter wrote:
-> > While inspecting the test suites' code coverage using --coverage gcc
-> > option and gcov(r) for analysis, I noticed that 'nft monitor' processes
-> > did not influence the stats at all. It appears that a process receiving
-> > SIGTERM or SIGINT (via kill or ctrl-c) does not dump profiling data at
-> > exit. Installing a signal handler for those signals which calls exit()
-> > resolves this, so patch 1 of this series implements --enable-profiling
-> > into configure which also conditionally enables said signal handler.
-> > 
-> > Patches 2 and 4 fix for zero test coverage of src/nftrace.c and
-> > src/xt.c, bumping stats to ~90% for both.
-> > 
-> > Patch 3 fixes for ignored comment matches in translated iptables-nft
-> > rules. This is required for patch 4 which uses a comment match to check
-> > whether nft is built with translation support.
-> 
-> Apart from the aforementioned nitpick, series LGTM.
+Brian Witte <brianwitte@mailfence.com> wrote:
 
-Thanks for your review. I'll adjust patch 1 as per your feedback and
-resubmit.
+TL;DR: I plan to queue this series up for the nf tree next week.
+Not directly related to this patchset:
+
+[ CC Phil ]
+
+> Revert mutex-based locking for reset requests. It caused a circular
+> lock dependency between commit_mutex, nfnl_subsys_ipset, and
+> nlk_cb_mutex when nft reset, ipset list, and iptables-nft with set
+> match ran concurrently.
+> 
+> This reverts bd662c4218f9, 3d483faa6663, 3cb03edb4de3.
+
+Phil, Pablo, the reset infra is broken in the sense that it cannot
+guarantee a correct dump+reset:
+
+        nft_rule_for_each_expr(expr, next, rule) {
+                if (nft_expr_dump(skb, NFTA_LIST_ELEM, expr, reset) < 0)
+                        goto nla_put_failure;
+        }
+        nla_nest_end(skb, list);
+
+-> when a single ->dump callback fails because netlink skb is full,
+the dump is trimmed and resumed.
+
+But, the reset side effects are already visible.
+Hence, while dump may be complete, it can contain already-zeroed
+counters without userspace ever getting the pre-reset value.
+
+Maybe we should add a cushion in the relevant dump callbacks to
+bail out before calling counter/quota->dump() when we run low on
+remaining space?  What do you think?
 
