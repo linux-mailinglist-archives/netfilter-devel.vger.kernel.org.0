@@ -1,108 +1,133 @@
-Return-Path: <netfilter-devel+bounces-10683-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10684-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KPkdEZK1hGmD4wMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10683-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 16:21:54 +0100
+	id 4KAoC6HLhGk45QMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10684-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 17:56:01 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C660FF48AB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 16:21:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74D51F58C2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Feb 2026 17:56:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7FC8C302254C
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 15:21:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5151D30490D6
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Feb 2026 16:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADBDC421F0C;
-	Thu,  5 Feb 2026 15:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADCA43637F;
+	Thu,  5 Feb 2026 16:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="TDObD7CC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoAA+4iI"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E73421F05
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Feb 2026 15:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B06355030;
+	Thu,  5 Feb 2026 16:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770304908; cv=none; b=oYioN/L/ZZIdxdQqTt42LvuxXr3FazjQSVsMBhpF11XUWI62pgHbGEYtiTSNigB7WFIgr4am9AVXlusj04JgfdI9dj4ezJomHCX2tJMuLvD8HqRUs3EQVTlAWSdnB+5MuzaByOmrlOnE8qzhVIZWUOAkQszoEIea8EINJ+rNpEQ=
+	t=1770310209; cv=none; b=UKNkHjI18Ar0Dc9R6rP0oLp/VZAECcQAtuHhjNeL5DcRcW4kOpH1f3OmRGOFSVIqat+arKcOcHTedM3AEiQw7ZV0F15YaQS443tVxKLjjRA8HvEIZ4p+tzrNIweqP+Ltw/CtVT80lJHGM/jly4dC52fMJDdJKg7/+wflBsfzATQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770304908; c=relaxed/simple;
-	bh=bIBxE3gv4Ql6/9UBqhl0HD4+y4SmL6wGwH0reYUhJLk=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kvxp2XI5QLm9hYbRLBvqZewJrlFjNNNhC2fcO8eTS/lNarHe32XoLpf7qHAEgvWTIPQAFIY0db0rc9qMo9JE9hkbZ5736iaCTKby6DLLCwaEJiRfG8kJdbAnna9J8POuQYo+gO5ni7PDyJIUcGrC3UAPXSOm6JsVlDdhz/hFm+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=TDObD7CC; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=NwIiy/JI5ZOKcBBSX/nAX2a7gP0CvPUbTQM+6qWVGDo=; b=TDObD7CCCnDqYF6yMvIWHwZG5J
-	YXMrC9oA59VoUkfPvWuJWPMsxGBxXNPWOy98RBPKZX2XhsJ2t4oye+JHxLC1EFSIctInQo79Z8xtG
-	OS3q7OrOLq/c4cclIR6aoPWX7R1B1v8Cu34bjeb2pg5MIms+D9hL9zUghf9NuoWvh3qJkTBMdCEHt
-	9X/dMzw6zQOX/pv/KvO7l+r7Dclk/Rcdd3mx0X51Pl6vFGX7so7e9EWNINBDUEeh8+nDxkQj+gaAd
-	mFYQU13Gzffhq25JDSxv3Fp0bZURRKMejTVq93L3yQiDU3OogjP77npJg/fc2DX+mVe1GUunP8BZO
-	WBgXY3RQ==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1vo1Aw-000000003K6-44W4
-	for netfilter-devel@vger.kernel.org;
-	Thu, 05 Feb 2026 16:21:46 +0100
-Date: Thu, 5 Feb 2026 16:21:46 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] doc: nft.8: Describe iface_type data type
-Message-ID: <aYS1ikHAFm88-4Q7@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	netfilter-devel@vger.kernel.org
-References: <20260127221252.27440-1-phil@nwl.cc>
+	s=arc-20240116; t=1770310209; c=relaxed/simple;
+	bh=+lqJkPRlZVrNbFLDywMJUxiG2RrzMjYqH0TlN3zmDHU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=YtKh1iU4sLJxbuqB1WXcXtylYbP4ewNMVqRUVb+yIzBidXCO8Fhum+ypMZ3RASs8w4hjHdp6atVu7UgpwGm4HOiRcCHK3Eg26ddEsPxFgiVRA8mhmQGgyFeG3P1Qh/8QuuqN63clBAU/gdniRMJLJ4TiuUomcTnodLa2mu9uo28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoAA+4iI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B8EC4CEF7;
+	Thu,  5 Feb 2026 16:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770310208;
+	bh=+lqJkPRlZVrNbFLDywMJUxiG2RrzMjYqH0TlN3zmDHU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=YoAA+4iIeEDMstoKQVsLQwwdo3c5ef9EAxj1i6TL2tLEWSlwsbvMhhhfz4VYkZT4B
+	 dSS+e1EeXMOsD19zQig67MQAbvKPVluk1Ab+quU6lZJ2NlZpUI42X3tFL2JJOWddYs
+	 rPbyo3UClPJbiY69Cg7zFiZU0PwX9MtI3QoITK9or9p8nTVvKzsUN97Opz0Oo7E49j
+	 aoX8OvCadFKLA9E2g6pKVJFVleSPm15Kvg4fdzEw3ZTjiRjFkbKm58xqEXPR7WG+iB
+	 /Y1DZoZJj2wEsKCP3HEMcSFHVvh4figxpdouYxd+dHiDULbjPK/3u2TvVwdLyv5qaA
+	 qoRBdOhmUBjTQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 853253808200;
+	Thu,  5 Feb 2026 16:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260127221252.27440-1-phil@nwl.cc>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/1] netfilter: nf_tables: fix inverted genmask check
+ in
+ nft_map_catchall_activate()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177031020633.485120.17507212737106778136.git-patchwork-notify@kernel.org>
+Date: Thu, 05 Feb 2026 16:50:06 +0000
+References: <20260205074450.3187-2-fw@strlen.de>
+In-Reply-To: <20260205074450.3187-2-fw@strlen.de>
+To: Florian Westphal <fw@strlen.de>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, netfilter-devel@vger.kernel.org,
+ pablo@netfilter.org
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.46 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-10683-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10684-lists,netfilter-devel=lfdr.de,netdevbpf];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	NEURAL_HAM(-0.00)[-0.991];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCPT_COUNT_ONE(0.00)[1]
-X-Rspamd-Queue-Id: C660FF48AB
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nist.gov:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:email]
+X-Rspamd-Queue-Id: 74D51F58C2
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 11:12:52PM +0100, Phil Sutter wrote:
-> An entry in data-types.txt offers space for a name-value table. Even if
-> one would refer to ARPHRD_*, some names are not derived from the
-> respective macro name and thus not intuitive.
-> 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
+Hello:
 
-Patch applied.
+This patch was applied to netdev/net.git (main)
+by Florian Westphal <fw@strlen.de>:
+
+On Thu,  5 Feb 2026 08:44:50 +0100 you wrote:
+> From: Andrew Fasano <andrew.fasano@nist.gov>
+> 
+> nft_map_catchall_activate() has an inverted element activity check
+> compared to its non-catchall counterpart nft_mapelem_activate() and
+> compared to what is logically required.
+> 
+> nft_map_catchall_activate() is called from the abort path to re-activate
+> catchall map elements that were deactivated during a failed transaction.
+> It should skip elements that are already active (they don't need
+> re-activation) and process elements that are inactive (they need to be
+> restored). Instead, the current code does the opposite: it skips inactive
+> elements and processes active ones.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/1] netfilter: nf_tables: fix inverted genmask check in nft_map_catchall_activate()
+    https://git.kernel.org/netdev/net/c/f41c5d151078
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
