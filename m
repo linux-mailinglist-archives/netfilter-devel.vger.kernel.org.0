@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-10700-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10701-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ANh0OmIJhmkRJQQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10700-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 06 Feb 2026 16:31:46 +0100
+	id iDnxOOIJhmkRJQQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10701-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 06 Feb 2026 16:33:54 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5786BFFC47
-	for <lists+netfilter-devel@lfdr.de>; Fri, 06 Feb 2026 16:31:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60531FFCA4
+	for <lists+netfilter-devel@lfdr.de>; Fri, 06 Feb 2026 16:33:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0EA43300D9D2
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Feb 2026 15:31:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B982E306019F
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Feb 2026 15:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CB625A2A4;
-	Fri,  6 Feb 2026 15:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FD426E6E1;
+	Fri,  6 Feb 2026 15:31:29 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CA02D7BF;
-	Fri,  6 Feb 2026 15:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876D525A2A4;
+	Fri,  6 Feb 2026 15:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770391885; cv=none; b=bByDC8RRAOd7H0OpHQmHpCfhaMC91psK0R1EK11q6KbOEgkGWU50UjLCpU+MOl6p5cpfT54X/zRfkN4OElEJaYbW+wlAMFnBgRcIoZk9RwrhkjsF3nNFqCvrC5wrrKwSKyjlWYACqNSpErhiPKmBUdetvMNfDqICXmcNFnvQJFc=
+	t=1770391889; cv=none; b=cYMsO8ZNTLrRifnKZdGh8T1NVvDPpEXY8qBhhRrrxsmxpvi5LYQGDPzMESa13k2aJNBpVepzu42pFyogGSy1cg8D9f9R5w7kU5UkIm4y482dpYF8yQ1vvAMrzMMAg3ncyRIHxVeXa4w23YizuAhHZJunDVJalLM5sGBjKtoVBms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770391885; c=relaxed/simple;
-	bh=R2oVvWbGTbWXNyOjXmPILbwPyZOtQNur6SerR9/yJpU=;
+	s=arc-20240116; t=1770391889; c=relaxed/simple;
+	bh=eOwPMXuSN3Uvd0pghwDe/+QshT9FsZzUGwrs9iN0ikU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RmAqhbNES72thWnDmy/YnHi3br2eEC9huVZbQzFJImY8bFTuDJgp24w5cDANz3S7Xr3zj5Khe+esPWMx9nv9S2z/1HwTYRRUihpfYZNkvyR524tYAaPPvB0LVNL+hJ1zhE8uCumMOlwXR8mFyNfifnEti/ItmnoI/+3XWriyjQo=
+	 MIME-Version; b=Z8E9gi8MjfmEoZQzqR0B9fSqYdX37LO16z1QOeCVUVayLAZUYOhcGxY6qq9IC0BQvu3kuALtHNmVI40ciaI/D3yV0/k0AaM3mVHgnF7S80st8p/7q7qsR5AdSmGDHMAhDH8i98Bjnxb+zKiYhBBTbM4PaCeAtK8MEBEougHoLkA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id C844F6090B; Fri, 06 Feb 2026 16:31:23 +0100 (CET)
+	id 234F3607E0; Fri, 06 Feb 2026 16:31:28 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH v2 net-next 06/11] netfilter: nft_set_hash: fix get operation on big endian
-Date: Fri,  6 Feb 2026 16:30:43 +0100
-Message-ID: <20260206153048.17570-7-fw@strlen.de>
+Subject: [PATCH v2 net-next 07/11] netfilter: nft_counter: fix reset of counters on 32bit archs
+Date: Fri,  6 Feb 2026 16:30:44 +0100
+Message-ID: <20260206153048.17570-8-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260206153048.17570-1-fw@strlen.de>
 References: <20260206153048.17570-1-fw@strlen.de>
@@ -60,11 +60,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10700-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10701-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -72,62 +72,82 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.942];
+	NEURAL_HAM(-0.00)[-0.952];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5786BFFC47
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 60531FFCA4
 X-Rspamd-Action: no action
 
-tests/shell/testcases/packetpath/set_match_nomatch_hash_fast
-fails on big endian with:
+From: Anders Grahn <anders.grahn@gmail.com>
 
-Error: Could not process rule: No such file or directory
-reset element ip test s { 244.147.90.126 }
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Fatal: Cannot fetch element "244.147.90.126"
+nft_counter_reset() calls u64_stats_add() with a negative value to reset
+the counter. This will work on 64bit archs, hence the negative value
+added will wrap as a 64bit value which then can wrap the stat counter as
+well.
 
-... because the wrong bucket is searched, jhash() and jhash1_word are
-not interchangeable on big endian.
+On 32bit archs, the added negative value will wrap as a 32bit value and
+_not_ wrapping the stat counter properly. In most cases, this would just
+lead to a very large 32bit value being added to the stat counter.
 
-Fixes: 3b02b0adc242 ("netfilter: nft_set_hash: fix lookups with fixed size hash on big endian")
+Fix by introducing u64_stats_sub().
+
+Fixes: 4a1d3acd6ea8 ("netfilter: nft_counter: Use u64_stats_t for statistic.")
+Signed-off-by: Anders Grahn <anders.grahn@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_set_hash.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ include/linux/u64_stats_sync.h | 10 ++++++++++
+ net/netfilter/nft_counter.c    |  4 ++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nft_set_hash.c b/net/netfilter/nft_set_hash.c
-index ba01ce75d6de..739b992bde59 100644
---- a/net/netfilter/nft_set_hash.c
-+++ b/net/netfilter/nft_set_hash.c
-@@ -619,15 +619,20 @@ static struct nft_elem_priv *
- nft_hash_get(const struct net *net, const struct nft_set *set,
- 	     const struct nft_set_elem *elem, unsigned int flags)
- {
-+	const u32 *key = (const u32 *)&elem->key.val;
- 	struct nft_hash *priv = nft_set_priv(set);
- 	u8 genmask = nft_genmask_cur(net);
- 	struct nft_hash_elem *he;
- 	u32 hash;
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index 849ff6e159c6..f47cf4d78ad7 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -97,6 +97,11 @@ static inline void u64_stats_add(u64_stats_t *p, unsigned long val)
+ 	local64_add(val, &p->v);
+ }
  
--	hash = jhash(elem->key.val.data, set->klen, priv->seed);
-+	if (set->klen == 4)
-+		hash = jhash_1word(*key, priv->seed);
-+	else
-+		hash = jhash(key, set->klen, priv->seed);
++static inline void u64_stats_sub(u64_stats_t *p, s64 val)
++{
++	local64_sub(val, &p->v);
++}
 +
- 	hash = reciprocal_scale(hash, priv->buckets);
- 	hlist_for_each_entry_rcu(he, &priv->table[hash], node) {
--		if (!memcmp(nft_set_ext_key(&he->ext), elem->key.val.data, set->klen) &&
-+		if (!memcmp(nft_set_ext_key(&he->ext), key, set->klen) &&
- 		    nft_set_elem_active(&he->ext, genmask))
- 			return &he->priv;
- 	}
+ static inline void u64_stats_inc(u64_stats_t *p)
+ {
+ 	local64_inc(&p->v);
+@@ -145,6 +150,11 @@ static inline void u64_stats_add(u64_stats_t *p, unsigned long val)
+ 	p->v += val;
+ }
+ 
++static inline void u64_stats_sub(u64_stats_t *p, s64 val)
++{
++	p->v -= val;
++}
++
+ static inline void u64_stats_inc(u64_stats_t *p)
+ {
+ 	p->v++;
+diff --git a/net/netfilter/nft_counter.c b/net/netfilter/nft_counter.c
+index cc7325329496..0d70325280cc 100644
+--- a/net/netfilter/nft_counter.c
++++ b/net/netfilter/nft_counter.c
+@@ -117,8 +117,8 @@ static void nft_counter_reset(struct nft_counter_percpu_priv *priv,
+ 	nft_sync = this_cpu_ptr(&nft_counter_sync);
+ 
+ 	u64_stats_update_begin(nft_sync);
+-	u64_stats_add(&this_cpu->packets, -total->packets);
+-	u64_stats_add(&this_cpu->bytes, -total->bytes);
++	u64_stats_sub(&this_cpu->packets, total->packets);
++	u64_stats_sub(&this_cpu->bytes, total->bytes);
+ 	u64_stats_update_end(nft_sync);
+ 
+ 	local_bh_enable();
 -- 
 2.52.0
 
