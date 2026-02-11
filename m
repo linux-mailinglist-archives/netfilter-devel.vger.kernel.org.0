@@ -1,153 +1,108 @@
-Return-Path: <netfilter-devel+bounces-10731-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10732-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4BbSMZDUjGm+tgAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10731-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 20:12:16 +0100
+	id APIlAZ3UjGm+tgAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10732-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 20:12:29 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F3B9127145
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 20:12:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F816127153
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 20:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7605730160F8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 19:09:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2210302EE95
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 19:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF1B34B691;
-	Wed, 11 Feb 2026 19:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584E934EF06;
+	Wed, 11 Feb 2026 19:09:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB25B27707
-	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 19:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44419346ADC
+	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 19:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770836946; cv=none; b=FSHnv4G5DAdWpLCnwRno7z+MgWIGGmxhwwa/5vYg/8IErQc6Tt2hw9NE8j+aJNZxjABQLxzQZZ7Z908Bef6ICWGoWmcFEbXN7KHosOx62PLbnuV9prp+E6KwKMrTYds78wsjXBdobcXFhebaWQlOVa9Iy6CE2NQ7GX9L8Zt0Pvw=
+	t=1770836973; cv=none; b=jijydGnX/fmjtR3bDp12EWDDqW++JuA6eR75xlA/6YyqGFHka2HZVnOQ0kcP06qCtpKWFNB+eoUhqJ68Oa7KJN4LLTLJ1gdWa2t6UJL6uB2asPOFt5dxmjRA4nOqiJePfEjiihGdYkw6Pp7il/cV6nIHCphW99cQqyXLNSK+7hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770836946; c=relaxed/simple;
-	bh=RfTMwlAekjTDsQA7wKBlWekoeecMn64Ij/GfQU+HAoE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sA6N6hYqqV7tzKTlQziuq9bWdI7Yg+4tisWhue73avXLJo6y2JVMTteCrNr9ZxMoyZyjLkCRXwKrSnOYLqTyI7DY0KyoKmAKnF7aE+3ClILgEtM9DM/EqjjxjDSfvETAS3Os44s0f5zJXz38Gj0blFevPjJ6sV+2xIAgXxdodm4=
+	s=arc-20240116; t=1770836973; c=relaxed/simple;
+	bh=osi4F1yyV2uRCtTRKIXr2ZlidFiW5JYK1NeOes1yaNg=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DjvwnHAKJmZx1RNXKhqqoxjVaoyTpsFaZ1OakhnRq4ygof+RildMKsWJ/oovTr+uDkSYRFsXqgo7GQ15As08OhMW9Pup2JJqK9mLSMuLl4rDl15qkko/ZL0HEXPQkyFddGepY3tALPLbrWwtr9ZEQXwAFigI3iaPckrYkg8LZeI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id F081F60345; Wed, 11 Feb 2026 20:03:45 +0100 (CET)
-Date: Wed, 11 Feb 2026 20:03:45 +0100
+	id 998E56024F; Wed, 11 Feb 2026 20:09:30 +0100 (CET)
+Date: Wed, 11 Feb 2026 20:09:30 +0100
 From: Florian Westphal <fw@strlen.de>
-To: Alan Ross <alan@sleuthco.ai>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] security: use secure_getenv() to prevent env-var
- privilege escalation
-Message-ID: <aYzSkR0lrv8MIgg7@strlen.de>
-References: <CAKgz23Gtsg4HGV8qqk7OovcK21ZdpwNzEnzoPzqrW=5eE6jV_w@mail.gmail.com>
- <aYy3ApR8MskC805m@strlen.de>
- <CAKgz23Hendu+Y=rhSwupr30Vf0JuJS5b6D-vp8A0TAC2swA-Bw@mail.gmail.com>
+To: Phil Sutter <phil@nwl.cc>, Pablo Neira Ayuso <pablo@netfilter.org>,
+	Alyssa Ross <hi@alyssa.is>, netfilter-devel@vger.kernel.org,
+	Joshua Lant <joshualant@googlemail.com>
+Subject: Re: [PATCH nftables] include: fix for musl with iptables v1.8.11
+Message-ID: <aYzT6kHV7ntq5kfo@strlen.de>
+References: <20241219231001.1166085-2-hi@alyssa.is>
+ <Z2VaEv0u3ZPcWqye@orbyte.nwl.cc>
+ <v654rm6mbtymzhavlbg2fu7irth4mkz4motq7vb7rzjql5ccqa@u7xv7uvdfvsl>
+ <Z2VkJrkSLRmY9lAE@orbyte.nwl.cc>
+ <Z38Ladz49yJcTC8p@calendula>
+ <Z38PIVmu2jAVl1k2@orbyte.nwl.cc>
+ <Z38STV2bWSlz4uxo@calendula>
+ <Z3-emP_FzgGAYGUJ@orbyte.nwl.cc>
+ <aYyI9kN4FAgbFUA-@strlen.de>
+ <aYzRlXaSetejciwU@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKgz23Hendu+Y=rhSwupr30Vf0JuJS5b6D-vp8A0TAC2swA-Bw@mail.gmail.com>
+In-Reply-To: <aYzRlXaSetejciwU@orbyte.nwl.cc>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sleuthco.ai:email,strlen.de:mid];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DMARC_NA(0.00)[strlen.de];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10731-lists,netfilter-devel=lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 1F3B9127145
+	FREEMAIL_TO(0.00)[nwl.cc,netfilter.org,alyssa.is,vger.kernel.org,googlemail.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-10732-lists,netfilter-devel=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nwl.cc:email,strlen.de:mid]
+X-Rspamd-Queue-Id: 7F816127153
 X-Rspamd-Action: no action
 
-Alan Ross <alan@sleuthco.ai> wrote:
->   The gap is when iptables is run with file capabilities rather than via
-> sudo:
+Phil Sutter <phil@nwl.cc> wrote:
+> > Phil, would you send a formal patch to make this workaround *ONLY* in
+> > netfilter_bridge.h (06e445f740c1)?
 > 
->   setcap cap_net_admin+ep /usr/sbin/iptables
+> DONE.
+
+Thanks.
+
+> > That way the fix can be propagated to nftables.git without having to
+> > adjust cached headers on every update.
 > 
->   In that case the kernel sets AT_SECURE, the linker correctly strips
-> LD_PRELOAD, but getenv("XTABLES_LIBDIR") still
->   returns the attacker-controlled value and gets passed to dlopen().
-> secure_getenv() closes that specific gap.
-> 
-> >>  iptables requires CAP_NET_ADMIN to work and it was never designed to
-> work with setuid-to-root.
-> 
->   Understood. The capability-elevated case above is the primary scenario —
-> some container runtimes and minimal
->   distributions grant cap_net_admin via setcap rather than running through
-> sudo, and that's where the env-controlled
->   dlopen() becomes reachable.
+> I assume you prefer to keep headers untouched which are
+> iptables-specific. But why not attempt to patch if_ether.h itself?
 
-ARGH!
-
-cd ~/git/iproute2
-git grep getenv | wc -l
-36
-
->   That said, I recognize this is defense-in-depth rather than a critical
-> fix. secure_getenv() is a strict behavioral
->   superset of getenv() for unprivileged execution (returns the same value
-> when euid==uid), so the patch has no impact on
->    normal usage. The precedent is util-linux (su, mount) and sudo, which
-> made the same change for similar env-controlled
->    paths.
->
->   If the consensus is that capability-elevated iptables is not a supported
-> configuration, I understand. Happy to drop
->   the patch or adjust scope.
-
-If there are distros that are dumb enough to setuid-to-0/setcap random
-binaries then we should cope with this.
-
-Would you have the cycles to go through all of nf software to make this
-change?  nftables, ipet, conntrack, ulogd etc would all need this
-change.  And non-netfilter software too, iproute2 tool has 36 getenv
-calls.
-
-As for this patch, I think it just needs a rework of the commit message
-to explain that this is about existing distros/containers that setcap the
-binary.
-
-Any reason for the wrapper to not do
-
-static inline const char *secure_getenv(const char *name)
-{
-        unsigned long x = getauxval(AT_SECURE);
-
-	return x == 0 ? getenv(name) : NULL
-}
-
-?
-
-It probably doesn't matter too much given glibc 2.17 is ancient, but
-still, I'm curious.
-
-Another option is to alter ef7781eb1437a2d6fd37eb3567c599e3ea682b96
-("libxtables: exit if called by setuid executeable")
-to enforce non-capability binary and then followup in nftables and
-others.
+Because this is a quagmire and I prefer to only break netfiler_bridge.h
+users (which should be few) rather than everyone using if_ether.h.
 
