@@ -1,158 +1,192 @@
-Return-Path: <netfilter-devel+bounces-10724-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10725-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eJzzH/uPjGlQrAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10724-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 15:19:39 +0100
+	id MKwjChycjGmPrgAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10725-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 16:11:24 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 025FD12524B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 15:19:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA5F125759
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 16:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EA5DC3000532
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 14:19:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 948C5301875E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 15:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED75156C6A;
-	Wed, 11 Feb 2026 14:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B332BD5A2;
+	Wed, 11 Feb 2026 15:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sleuthco.ai header.i=@sleuthco.ai header.b="HEOKrH+7"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lxwyi6tY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Uws9b1i5";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lxwyi6tY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Uws9b1i5"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BE73B2A0
-	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 14:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.180
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770819575; cv=pass; b=LhEJAuCeVf8eknqMEuY1vjORenXHWqKL09JhnLc0Cnt6Lp+QdAygU9scniS2fP5AMIL2L+blZUHw4u1DjmJKSaNiC0hfYIm/Djmose4CH5uzJJTS5SLjxpFZInuFBdXfee5YMlJEW52K7zNKc5kx0OaDCm9H7B0q72tQq/ds0/g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770819575; c=relaxed/simple;
-	bh=iAGH5m6sU6T6fIw7hFQZluf4tQLYZjh2hjVw/grlV1Y=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=JPxu/cu60EcZMrmHhCYsrnd2x0V2dZR+qV6BwCEmFopkP1vFISUIMEWnmyPGC61GEuFzMwlCj4YTbYIUAl0wt07ON7LATAt59I8Bb4b4g5tylJiHG0MqXMay1ktRaLDBosfVlJXpz7FhGi6jGmq0XioKS016H/j0SFxYchZdOP4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sleuthco.ai; spf=fail smtp.mailfrom=sleuthco.ai; dkim=pass (2048-bit key) header.d=sleuthco.ai header.i=@sleuthco.ai header.b=HEOKrH+7; arc=pass smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sleuthco.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sleuthco.ai
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-7927261a3acso55434217b3.0
-        for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 06:19:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770819573; cv=none;
-        d=google.com; s=arc-20240605;
-        b=E6vzaP6kaXLxYHAb4iNxm7sMRAmPqt/O7KKo7t53VZExLPWQbr21JQno3geh4er6Xh
-         Jg7YH2vBWA5MY8aD7hPcDXkWhBoiTA325qNbim/duDqIFyVEfW968pKOf+gBJMsWUboa
-         45Ut/BpmWTkw4KjTJkWlfkA7pYWSpoX7wkqUzvbkuR3HhjPVaV7RJsJB1YjXdpGITsXa
-         EGTEeptibrXqgVPofmTlO2uR7n193bRUvcB80W/67KSm4dgm6lEWd6BUnpQ3pNE3C689
-         TXT4GEPTYjAl0Fz+77N6eYG/gEAcd2QLN0PnYWYOinmEmxFByi6vu3UoSj+I4BeJDsM1
-         /RIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=lNJedM+CDtTdgnw+LqTAQCsAg+04blfojizY1uJ/2Xc=;
-        fh=94XZ0kbhVmGEa7CVQQn7x19t/0l9HgwgaJK+mk7Jllo=;
-        b=EejW530Q/8Y9G8brm410/Wre7G8jECJwuVu/pq4fuZuk/GMVi5AODdtsYkcvNbcyS8
-         O/uSbixRkS9np8VWMpuDTRx3d6dJ4ACNVlGozuSnS8GQEVtbiPmrIpEPJzzq4yfTOIB2
-         Rd0jZPKzw6TDcXL+FZPohmbQ0TeJ5fcIH7boMg1gkXrD6bwgolG2tGUeCwwW1heGt21k
-         77qshvy0AxWzEFZ9vHzVxW06VS0KE4azjp03ruCx+cfmePRTz5ORUrXyyAXNsXLxVa3C
-         6BOk99bLBnQb4U67JmMmioCP3WXGxH2vceV9IrY4s1TXhh+Z3qZNYTyt47YGtsnR89nE
-         aw8A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sleuthco.ai; s=google; t=1770819573; x=1771424373; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lNJedM+CDtTdgnw+LqTAQCsAg+04blfojizY1uJ/2Xc=;
-        b=HEOKrH+7Ajaxx/VQEpMLXc8LRUwX+4epRKQhE4InsslnJhDkNt2/gkPbnAkOSg8bBf
-         24NyZAS1ga5Q5fm+tGHF4/8R4kCIvgBMbAVqEx1QN3xfRGnaBDX9G7m2px0HdWomYYzc
-         h4+SoPpo9vx5ync00ZPzB5SWp/yhnhFkw/nXSpUDg322tjPO3mld9ttjBYcUB5CnTE52
-         QZjWnGqNVSS/NVzsX0rg8vGW5ACP7ZhLduu93oY+dPO9P0bwloxIPHlasmLU/xQjeC4x
-         +oU94/Rd+vmCALfnXNfXUuvD7F91GxqJM8M1j9k9uP2UiGbdNW7fppMLdaRbiMpe3gaW
-         AcOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770819573; x=1771424373;
-        h=to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lNJedM+CDtTdgnw+LqTAQCsAg+04blfojizY1uJ/2Xc=;
-        b=M0UHcFdG4Jlt6iOaQ3XUZAuX9tV7FnYx9XvOaBAJUiz/QfTSvX1RlBelVhYbjmUvYw
-         IERKUUhcE9I1eU0PJ6y2sPAOWTWxkHtF7CcjcPW9l4GapjofxPLObfy4i3C8pWHVUlvz
-         IKyStLdM4dog/ZUs3yZzSGAN9B3pSR562WbAuykhz9ngg6ETzvj0Kg7fag5aa4A3uflF
-         yVOxCuYVJGjIKJtQVuveLL6UCPKiFa5hanFXiW36lvchdxKUItX703ariQMf7NhRoZGE
-         +ngfcEpFxGBHODyixxaEzN+ecOOGm3hQ61lS6NGN/4+on3aMtwIUeRDjgEUzOrRXBesj
-         paQQ==
-X-Gm-Message-State: AOJu0YwUJOY1oGqzF9fQS0puWrjUk6+azftt17WyrH1l93YvyXomCQFO
-	GUowT1eD0lusn+ZFSHFnBuHAWCVjadIbwBmSpa9cz61TNTEM3stnf6aPQgeI20w/9zssSTKR+ye
-	HCvAtjx8yaQHdoluLI3M4JQYz6sMckyX2aVIA/WSWzNQJBiEsKGJV6NLN4ONWiQ==
-X-Gm-Gg: AZuq6aLcj6JC5aHtn7yErx8QDtgDcR/LAycycPc/V7Y62ncXNn5oah+FQJgX/m1Guar
-	uLOd2HHDDROAcBs2edCC35u1eY5tkk2TM4lqwC+rUoSCnfTkgss4aSaKlvz2OWuv4k7m8pUlTh1
-	IajP7BLxsa+Z+FcfGHHAJIUI9gfm1HGIp2IliZCVWVAlqPOwW/F0ip2Ie8BXb1ahUueV42osWye
-	vtvr43oT+RKUf/tjkwUEaExN6z9I5YmKxIVI9KPI+WZrVf3z+KHpGr5pESxhzOGnsbQhEsIHWHP
-	Dxzg813Xz6Z7rhDRdUc3WXUKVmaC+BHTYgd1pivc
-X-Received: by 2002:a05:690c:7406:b0:795:254a:b431 with SMTP id
- 00721157ae682-7966aa91271mr22229497b3.40.1770819572892; Wed, 11 Feb 2026
- 06:19:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8337C1DF980
+	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 15:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770822666; cv=none; b=kqM0LOBQimFEkeeL/qH0y/nNRb06vxtrZy8oyCnuarh8bxb7L6Re5623XSXTvGwcOy53hsY0UUwC1GyMw0MuW8g7VJ9gkzM035Ed7NmXjqwo5qsC86qpwmIPtToXVDIsHeBRUPm3hhUrayd9fejhKjXxiyh5CNN9Z+I9FriczH8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770822666; c=relaxed/simple;
+	bh=E7T8iSWnqQPQvFMmnh1aLf3Mmy2m/JpVT5HtqYE+jAc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iO495HrkkzoEX3+BaomnTms9VkA0702B4toTx1Itld897sxM+nAyLWwgs49Bt4UQWLbMuO9tVEVY+FfRA3cPlc+FtSIg/+/uIbU18W5jZLzXMcNw2Qbwjognm/neGH2HP1CkeuFTN+NDOwneGw9D/iY2BVTMiLgs5ncialggTyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lxwyi6tY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Uws9b1i5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lxwyi6tY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Uws9b1i5; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AC73B5BDC6;
+	Wed, 11 Feb 2026 15:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1770822662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
+	b=lxwyi6tY8u4aJbfgHbnbFrQvo/lPFz42VPbdyhDzu0qF/uUBfeIQ0caup6FHiTCfO3IVoa
+	CtQMUu6Rlxb1RVmC4zFu03cidNwMGFKs2XMabmxB1ICUXGpS9r1ktmxch7cuqm+WuocVTu
+	Mgqp0IQIatwE9k/7Kxd7out4PqDGbZE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1770822662;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
+	b=Uws9b1i5MxI6iEjBNVBRTN+xEeNcfIte3bFCydicrXtLegRJ23/cF3HSULmb7RwAwO2Unl
+	IuT8uj73pKKU63Cg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1770822662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
+	b=lxwyi6tY8u4aJbfgHbnbFrQvo/lPFz42VPbdyhDzu0qF/uUBfeIQ0caup6FHiTCfO3IVoa
+	CtQMUu6Rlxb1RVmC4zFu03cidNwMGFKs2XMabmxB1ICUXGpS9r1ktmxch7cuqm+WuocVTu
+	Mgqp0IQIatwE9k/7Kxd7out4PqDGbZE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1770822662;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
+	b=Uws9b1i5MxI6iEjBNVBRTN+xEeNcfIte3bFCydicrXtLegRJ23/cF3HSULmb7RwAwO2Unl
+	IuT8uj73pKKU63Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF6703EA62;
+	Wed, 11 Feb 2026 15:11:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /PhTLwWcjGkLGgAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Wed, 11 Feb 2026 15:11:01 +0000
+Message-ID: <207b2879-e022-4b50-837b-d536f8fcabcd@suse.de>
+Date: Wed, 11 Feb 2026 16:10:49 +0100
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Alan Ross <alan@sleuthco.ai>
-Date: Wed, 11 Feb 2026 09:19:24 -0500
-X-Gm-Features: AZwV_QiZRBy-qRr1pfVd8jcXskHMb_GAxg85XYy51cBsBfP3zpOB8v46Vo6PwqE
-Message-ID: <CAKgz23Gtsg4HGV8qqk7OovcK21ZdpwNzEnzoPzqrW=5eE6jV_w@mail.gmail.com>
-Subject: [PATCH] security: use secure_getenv() to prevent env-var privilege escalation
-To: netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next,v3] ipv6: shorten reassembly timeout under fragment
+ memory pressure
+To: soukjin.bae@samsung.com, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "pabeni@redhat.com" <pabeni@redhat.com>,
+ "dsahern@kernel.org" <dsahern@kernel.org>, "kuba@kernel.org"
+ <kuba@kernel.org>, "horms@kernel.org" <horms@kernel.org>,
+ "phil@nwl.cc" <phil@nwl.cc>, "coreteam@netfilter.org"
+ <coreteam@netfilter.org>, "fw@strlen.de" <fw@strlen.de>,
+ "pablo@netfilter.org" <pablo@netfilter.org>
+References: <CGME20260211030048epcms1p54c6ed78458f57def8e3163032498ca00@epcms1p2>
+ <20260211103243epcms1p2dd304fd11b28df04f4e680e8c90a7fc5@epcms1p2>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <20260211103243epcms1p2dd304fd11b28df04f4e680e8c90a7fc5@epcms1p2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -4.30
+X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	R_DKIM_ALLOW(-0.20)[sleuthco.ai:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_ONE(0.00)[1];
+	TAGGED_FROM(0.00)[bounces-10725-lists,netfilter-devel=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	DMARC_NA(0.00)[sleuthco.ai];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alan@sleuthco.ai,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10724-lists,netfilter-devel=lfdr.de];
-	TO_DN_NONE(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[sleuthco.ai:+]
-X-Rspamd-Queue-Id: 025FD12524B
+	DKIM_TRACE(0.00)[suse.de:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[samsung.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9EA5F125759
 X-Rspamd-Action: no action
 
-Hi netfilter team,
+On 2/11/26 11:32 AM, 배석진 wrote:
+>   Changes in v3:
+> - Fix build bot error and warnings
+> - baseline update
+> 
+> 
+> 
+>  From c7940e3dd728fdc58c8199bc031bf3f8f1e8a20f Mon Sep 17 00:00:00 2001
+> From: Soukjin Bae <soukjin.bae@samsung.com>
+> Date: Wed, 11 Feb 2026 11:20:23 +0900
+> Subject: [PATCH] ipv6: shorten reassembly timeout under fragment memory
+>   pressure
+> 
+> Under heavy IPv6 fragmentation, incomplete fragment queues may persist
+> for the full reassembly timeout even when fragment memory is under
+> pressure.
+> 
+> This can lead to prolonged retention of fragment queues that are unlikely
+> to complete, causing newly arriving fragmented packets to be dropped due
+> to memory exhaustion.
+> 
+> Introduce an optional mechanism to shorten the IPv6 reassembly timeout
+> when fragment memory usage exceeds the low threshold. Different timeout
+> values are applied depending on the upper-layer protocol to balance
+> eviction speed and completion probability.
+> 
+> Signed-off-by: Soukjin Bae <soukjin.bae@samsung.com>
 
-  iptables uses getenv() to read XTABLES_LIBDIR, IPTABLES_LIB_DIR,
-  IP6TABLES_LIB_DIR, XTABLES_LOCKFILE, and EBTABLES_SAVE_COUNTER. Since
-  iptables runs as root, these become local privilege escalation vectors:
+Hello,
 
-   - XTABLES_LIBDIR controls where extensions are loaded via dlopen().
-     A local attacker who can inject this variable forces iptables to
-     load arbitrary shared libraries as root (CWE-426, CWE-427).
+isn't this what net.ipv6.ip6frag_time does? In addition, the situation 
+you described could be overcome by increasing the memory thresholds at 
+net.ipv6.ip6frag_low_thresh and net.ipv6.ip6frag_high_thresh.
 
-   - XTABLES_LOCKFILE controls where the lock file is created via
-     open(path, O_CREAT, 0600). An attacker can create or clobber
-     arbitrary files as root.
+Please, let me know if I am missing something.
 
-  This patch replaces getenv() with secure_getenv() for all 5 variables.
-  secure_getenv() returns NULL when AT_SECURE is set by the kernel (for
-  setuid, setgid, or capability-elevated binaries), blocking env-var
-  injection without affecting normal unprivileged usage.
-
-  A portability shim is included for glibc < 2.17. A test program is
-  included at tests/test-secure-getenv.c.
-
-  Patch and full details:
-  https://github.com/SleuthCo/iptables/compare/master...security/fix-env-var-privilege-escalation
-
-  Signed-off-by: Alan <alan@sleuthco.ai>
+Thanks,
+Fernando.
 
