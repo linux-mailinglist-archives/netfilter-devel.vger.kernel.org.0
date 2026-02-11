@@ -1,192 +1,205 @@
-Return-Path: <netfilter-devel+bounces-10725-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10726-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MKwjChycjGmPrgAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10725-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 16:11:24 +0100
+	id mhQAHQ+ijGlhrwAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10726-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 16:36:47 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA5F125759
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 16:11:23 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE64D125BAA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 16:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 948C5301875E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 15:11:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CE0B2300F142
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 15:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B332BD5A2;
-	Wed, 11 Feb 2026 15:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222442BDC35;
+	Wed, 11 Feb 2026 15:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lxwyi6tY";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Uws9b1i5";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lxwyi6tY";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Uws9b1i5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ii+AsDIw"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8337C1DF980
-	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 15:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770822666; cv=none; b=kqM0LOBQimFEkeeL/qH0y/nNRb06vxtrZy8oyCnuarh8bxb7L6Re5623XSXTvGwcOy53hsY0UUwC1GyMw0MuW8g7VJ9gkzM035Ed7NmXjqwo5qsC86qpwmIPtToXVDIsHeBRUPm3hhUrayd9fejhKjXxiyh5CNN9Z+I9FriczH8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770822666; c=relaxed/simple;
-	bh=E7T8iSWnqQPQvFMmnh1aLf3Mmy2m/JpVT5HtqYE+jAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iO495HrkkzoEX3+BaomnTms9VkA0702B4toTx1Itld897sxM+nAyLWwgs49Bt4UQWLbMuO9tVEVY+FfRA3cPlc+FtSIg/+/uIbU18W5jZLzXMcNw2Qbwjognm/neGH2HP1CkeuFTN+NDOwneGw9D/iY2BVTMiLgs5ncialggTyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lxwyi6tY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Uws9b1i5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lxwyi6tY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Uws9b1i5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AC73B5BDC6;
-	Wed, 11 Feb 2026 15:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1770822662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
-	b=lxwyi6tY8u4aJbfgHbnbFrQvo/lPFz42VPbdyhDzu0qF/uUBfeIQ0caup6FHiTCfO3IVoa
-	CtQMUu6Rlxb1RVmC4zFu03cidNwMGFKs2XMabmxB1ICUXGpS9r1ktmxch7cuqm+WuocVTu
-	Mgqp0IQIatwE9k/7Kxd7out4PqDGbZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1770822662;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
-	b=Uws9b1i5MxI6iEjBNVBRTN+xEeNcfIte3bFCydicrXtLegRJ23/cF3HSULmb7RwAwO2Unl
-	IuT8uj73pKKU63Cg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1770822662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
-	b=lxwyi6tY8u4aJbfgHbnbFrQvo/lPFz42VPbdyhDzu0qF/uUBfeIQ0caup6FHiTCfO3IVoa
-	CtQMUu6Rlxb1RVmC4zFu03cidNwMGFKs2XMabmxB1ICUXGpS9r1ktmxch7cuqm+WuocVTu
-	Mgqp0IQIatwE9k/7Kxd7out4PqDGbZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1770822662;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+SwCAU52+L35MKGdsO2bzm/4m8JLQBuZzK9SKkr8/tI=;
-	b=Uws9b1i5MxI6iEjBNVBRTN+xEeNcfIte3bFCydicrXtLegRJ23/cF3HSULmb7RwAwO2Unl
-	IuT8uj73pKKU63Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF6703EA62;
-	Wed, 11 Feb 2026 15:11:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /PhTLwWcjGkLGgAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Wed, 11 Feb 2026 15:11:01 +0000
-Message-ID: <207b2879-e022-4b50-837b-d536f8fcabcd@suse.de>
-Date: Wed, 11 Feb 2026 16:10:49 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3753019DC
+	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 15:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.181
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770824203; cv=pass; b=cfOIDgJDoQ+AP4JNPbpEVj7evwnXz2/3s0MeXa1CNfy6A16MxfaDC2/C4w6puCRHSnqo9p2NiH0zodo5rB0BwXALpjOuMQQFV9YlhbpyNhZLb8WP85DnC7HyKXsR4aCWoE4Kg0wGNrm9It4vbXAtPAgss6g+VEaDIIp9uLCwX0g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770824203; c=relaxed/simple;
+	bh=jqd7Pci6pO9FGBoMvZVYHreBQHzYczgY7hgUC5HHs0c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q121pphc5KtBbTP/Olfl8o/cK5u45NmqnTMgzkPJGgm+U2Oci79dM1iCq2EJYSpV3B8kLPBTT5jNxYlA2G5BjV7nhwE/i5W0keodN1EjCfrWDfNv+/AXu6MnDc0ixGTrYXYDGaOhwjLywVVhN97SD7ipTocnROQTfXh3fCAZ8l8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ii+AsDIw; arc=pass smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-5033a2c4b81so60644091cf.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 07:36:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770824201; cv=none;
+        d=google.com; s=arc-20240605;
+        b=ShdIHBnAzdTjsAkcXjarfhwEt5GduhsKPE89lypnCO2jy6IIuSEsCEm97fUPg2fqhb
+         RyjTByvZgkWfKNvsE9WGp7LG/yAaOySk2X4JfGemaezv80GaC0wPMZqFFS/lmSmld8Oo
+         vlE4s6sOvVHMQ+RXGq0PgqtQez/klz3kKAIS+BmgY9IHtiGHOo3pRb5GQ2c+XRMjqmhR
+         afHkOaWpf0MrFZv2Zqtlowpnv3bqyzzCKmkzfhzYwl6Gata7UgK7aunhlxng2Lhbp/mI
+         PrQb/1tDmKUO6FHDxCGU+rZhVjC6mAl160PEWlnR8zsRrn92JXSADxNra+t9y5/q3pnU
+         ASJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=JSkphXcA5Qjfyf1LyEdX5F27uHMSV1cYDt3Oc6QFKQc=;
+        fh=vJ+9BfVEh8pu4UsA7gEp+lV3hecELAL2lSMjRcsq17c=;
+        b=G7LTZJyzSO+WF7naDbTEo+c+J19QJ7Fjt5UAbJXw+HbgHzlXU7ZLhMxQuty50Yf12N
+         E51RHgvVMqtc2Aivf0eUbSDWN+dL+6nwpk2JN808vskGLdNKbpU1gv0AMVig882WnIbq
+         KHUQwnXDj8LLMyREzvRXeNBFj6wELhNIY/836E21JggUsxAe9k/k/nzthkUsyATtEb/n
+         vWNco3Ok8TuhPdVfZQz5god95aFcN5lYCcHJ26t6sw9fdkPWsxeLLaIZ4v5chYLN1fl3
+         vD4PhUtJhdIaVrhsFBOTGos5lnl5pn3XWFvGqGZhKTo6KlOXYjBCE0hrn/V+srl6Ngl1
+         XJZQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1770824201; x=1771429001; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JSkphXcA5Qjfyf1LyEdX5F27uHMSV1cYDt3Oc6QFKQc=;
+        b=Ii+AsDIwiS+MbB7Day6D/X5LGuXanZ3cnuspUDHPYWqUpkd4qvsmgs4xk77kNoVAZP
+         VvF3nCcGy0b5ePgKsh8RYNAk6fGea1qaVRvTpmwd3mrEwG9s3a0obTl2he8qvEOVFoxx
+         S5APmq1TCNWZgUykV9RaBGYIIlAs956U68NOsuzArsDojqkxjzlNVvj/P0QStEZ5nIiP
+         LwbQNyRKs63Wkno/Z5XCJYDXUkVWMHZy5CbNF4NJ5c/sufhXmIIGJnPu45pg0kOQgO6W
+         2KmKi501Lxts9RowmYEK8Ab/cOBs59NV3C9L2nwf8uZnMPEk3OUHfIT0YpOX/okNjfH6
+         OnuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770824201; x=1771429001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=JSkphXcA5Qjfyf1LyEdX5F27uHMSV1cYDt3Oc6QFKQc=;
+        b=s1uyoBs3WK1HLnl6Co3JOSXVU0hOujGuy8Aj+MB0jh4K75Jln8iCR+8S3mCrSagDHC
+         WJKozmMzuLaG9JChk2ZSeGySQutzSZ4amgq5/EURy2xXDavYbzKEp/9gyMuPFEQ14cSj
+         JHqnna25dB6IBag6+54EjDMLu7M/0M+2RWSrlX+I45dSLnth4w8P8lDzOPWWmnijA6wW
+         UsNkdAaTpUQUBabiZG8dsDAqS/8UygiToBh194FkMH/Jaai3rkSWFwWIdSonTkU27Pe+
+         8q39+XrI9dseV2k61NLBiuVIUqrKVVl1DXg/AL+/TTVOJifVshbKUSKGvp42IdeA7jY4
+         xq4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVC6tmaF8nAvmWJn8uXz2W0dSFYr8h0Oh93UKDrG2NuyK7BwL08B/NNzy0iJixZ5o02BSzDghzx47qL3rNTdbY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfRey/4KYLqKQHqb2UqwBzujLD0iXnBD7XR1w8AT1f96gG1MQp
+	PErUbNp5zTlFJmj37FHtdDaH/AV7ZtWndzNGQ5jVf+upROWksoY6Vd/LxlHxIaL1QWeb8J89if9
+	IJrJrGv/+B+FeRwO2JooYcOx4p6v76CNFBucen4mo
+X-Gm-Gg: AZuq6aIMmVad1dk+LqiqrZcdDfWkhQycyM1uPcjQ4cogam+hl2ayA+ata5G59vTo0n6
+	1Gd3euNHwPcUmWtKxbyc2vZaj1/xXvnAvw0IhfXsNC9MvqOs9O5krN1WMDVab9VS6tgJyndxwkE
+	CnJyeps8NMM6dA8+vxXtNJOA35xN+xXLJ/lBGEjSKUOC65Kpg7ggXDgfCJWeUlVUamm7JjVTwJC
+	h3VRMDy9uBjZY7SE5wcqWWFXzomr1pEKfaaGV8rAkLQHSx131VfzLCfZJSMXMNBOKkJpFu0ooeL
+	99tDF+rYAiPgWQadRjM=
+X-Received: by 2002:ac8:5755:0:b0:4ee:4a3a:bd1c with SMTP id
+ d75a77b69052e-5068124f1eemr38903341cf.63.1770824200237; Wed, 11 Feb 2026
+ 07:36:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <CGME20260211030048epcms1p54c6ed78458f57def8e3163032498ca00@epcms1p2>
+ <20260211103243epcms1p2dd304fd11b28df04f4e680e8c90a7fc5@epcms1p2> <207b2879-e022-4b50-837b-d536f8fcabcd@suse.de>
+In-Reply-To: <207b2879-e022-4b50-837b-d536f8fcabcd@suse.de>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 11 Feb 2026 16:36:28 +0100
+X-Gm-Features: AZwV_QjAGvi7BqseLa91JoZGgGvgvOjatXS8KhyY5j9-amfhurW9duRWp81Dkl0
+Message-ID: <CANn89i+mNojd9mUL_dt_=D+7nZ9xcV96CYJG_LYFmBZDOYUMFQ@mail.gmail.com>
 Subject: Re: [net-next,v3] ipv6: shorten reassembly timeout under fragment
  memory pressure
-To: soukjin.bae@samsung.com, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "edumazet@google.com" <edumazet@google.com>,
- "pabeni@redhat.com" <pabeni@redhat.com>,
- "dsahern@kernel.org" <dsahern@kernel.org>, "kuba@kernel.org"
- <kuba@kernel.org>, "horms@kernel.org" <horms@kernel.org>,
- "phil@nwl.cc" <phil@nwl.cc>, "coreteam@netfilter.org"
- <coreteam@netfilter.org>, "fw@strlen.de" <fw@strlen.de>,
- "pablo@netfilter.org" <pablo@netfilter.org>
-References: <CGME20260211030048epcms1p54c6ed78458f57def8e3163032498ca00@epcms1p2>
- <20260211103243epcms1p2dd304fd11b28df04f4e680e8c90a7fc5@epcms1p2>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <20260211103243epcms1p2dd304fd11b28df04f4e680e8c90a7fc5@epcms1p2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spam-Flag: NO
+To: Fernando Fernandez Mancera <fmancera@suse.de>
+Cc: soukjin.bae@samsung.com, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, 
+	"davem@davemloft.net" <davem@davemloft.net>, "pabeni@redhat.com" <pabeni@redhat.com>, 
+	"dsahern@kernel.org" <dsahern@kernel.org>, "kuba@kernel.org" <kuba@kernel.org>, 
+	"horms@kernel.org" <horms@kernel.org>, "phil@nwl.cc" <phil@nwl.cc>, 
+	"coreteam@netfilter.org" <coreteam@netfilter.org>, "fw@strlen.de" <fw@strlen.de>, 
+	"pablo@netfilter.org" <pablo@netfilter.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10725-lists,netfilter-devel=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10726-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[edumazet@google.com,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[samsung.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9EA5F125759
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,samsung.com:email,mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DE64D125BAA
 X-Rspamd-Action: no action
 
-On 2/11/26 11:32 AM, 배석진 wrote:
->   Changes in v3:
-> - Fix build bot error and warnings
-> - baseline update
-> 
-> 
-> 
->  From c7940e3dd728fdc58c8199bc031bf3f8f1e8a20f Mon Sep 17 00:00:00 2001
-> From: Soukjin Bae <soukjin.bae@samsung.com>
-> Date: Wed, 11 Feb 2026 11:20:23 +0900
-> Subject: [PATCH] ipv6: shorten reassembly timeout under fragment memory
->   pressure
-> 
-> Under heavy IPv6 fragmentation, incomplete fragment queues may persist
-> for the full reassembly timeout even when fragment memory is under
-> pressure.
-> 
-> This can lead to prolonged retention of fragment queues that are unlikely
-> to complete, causing newly arriving fragmented packets to be dropped due
-> to memory exhaustion.
-> 
-> Introduce an optional mechanism to shorten the IPv6 reassembly timeout
-> when fragment memory usage exceeds the low threshold. Different timeout
-> values are applied depending on the upper-layer protocol to balance
-> eviction speed and completion probability.
-> 
-> Signed-off-by: Soukjin Bae <soukjin.bae@samsung.com>
+On Wed, Feb 11, 2026 at 4:11=E2=80=AFPM Fernando Fernandez Mancera
+<fmancera@suse.de> wrote:
+>
+> On 2/11/26 11:32 AM, =EB=B0=B0=EC=84=9D=EC=A7=84 wrote:
+> >   Changes in v3:
+> > - Fix build bot error and warnings
+> > - baseline update
+> >
+> >
+> >
+> >  From c7940e3dd728fdc58c8199bc031bf3f8f1e8a20f Mon Sep 17 00:00:00 2001
+> > From: Soukjin Bae <soukjin.bae@samsung.com>
+> > Date: Wed, 11 Feb 2026 11:20:23 +0900
+> > Subject: [PATCH] ipv6: shorten reassembly timeout under fragment memory
+> >   pressure
+> >
+> > Under heavy IPv6 fragmentation, incomplete fragment queues may persist
+> > for the full reassembly timeout even when fragment memory is under
+> > pressure.
+> >
+> > This can lead to prolonged retention of fragment queues that are unlike=
+ly
+> > to complete, causing newly arriving fragmented packets to be dropped du=
+e
+> > to memory exhaustion.
+> >
+> > Introduce an optional mechanism to shorten the IPv6 reassembly timeout
+> > when fragment memory usage exceeds the low threshold. Different timeout
+> > values are applied depending on the upper-layer protocol to balance
+> > eviction speed and completion probability.
+> >
+> > Signed-off-by: Soukjin Bae <soukjin.bae@samsung.com>
+>
+> Hello,
+>
+> isn't this what net.ipv6.ip6frag_time does? In addition, the situation
+> you described could be overcome by increasing the memory thresholds at
+> net.ipv6.ip6frag_low_thresh and net.ipv6.ip6frag_high_thresh.
+>
+> Please, let me know if I am missing something.
 
-Hello,
+Also :
 
-isn't this what net.ipv6.ip6frag_time does? In addition, the situation 
-you described could be overcome by increasing the memory thresholds at 
-net.ipv6.ip6frag_low_thresh and net.ipv6.ip6frag_high_thresh.
+1) net-next is closed.
+Please read Documentation/process/maintainer-netdev.rst
 
-Please, let me know if I am missing something.
+2) We do not send 3 versions of a patch in the same day.
+Please read Documentation/process/maintainer-netdev.rst
 
-Thanks,
-Fernando.
+3) What about IPv4 ?
+
+4) Only the first fragment contains the 'protocol of the whole
+datagram', and fragments can be received in any order.
+
+5) We do not add a MAINTAINER entry for such a patch, sorry.
 
