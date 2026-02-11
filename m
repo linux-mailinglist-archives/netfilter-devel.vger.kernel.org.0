@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-10738-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10739-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8PNaOdrkjGmLuwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10738-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 21:21:46 +0100
+	id gC8zLIL2jGnvwAAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10739-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 22:37:06 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E961275FD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 21:21:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09C77127CAE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 22:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 08B063014530
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 20:21:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7B18830C5E8E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Feb 2026 21:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C12E344042;
-	Wed, 11 Feb 2026 20:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF11350D46;
+	Wed, 11 Feb 2026 21:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="XVAOCDwJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="h6QsOYlu"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3561E832A
-	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 20:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CF834F486
+	for <netfilter-devel@vger.kernel.org>; Wed, 11 Feb 2026 21:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770841304; cv=none; b=f1KCqsT/O2tkoLPCOT+XWpUaZuDn7qp/nlbdSlsKeq3jzPj0qA1raKoEDpyUorWx46EDJgCPlBPYCPX8uBfZNZBTX/x1KXMKfUy2S6hedrqLjUzcZdi3b7TpueTEuoT2TIGnhrdTvGDvegZOzS5AXbnpvpcANd5NnfM9X4F2SBk=
+	t=1770845822; cv=none; b=jWaIKR5kPFI6BsPW5lpHTIqAJkYIP9QZef12xpncXU4AuZ6OzyklOreleHaDhag4mZTkRs3YAR3hr6aSLJJPShNx0VXjkA5D+0OFL7mfWqtqvjBfXHXVLIHks0r1ZP1mfIIkStrLeTYpsMITtkyqY4itYlco6JGwjDsOEnA0znc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770841304; c=relaxed/simple;
-	bh=nWf6yr9izLiHD69u10CLiN3g33i/fryqtc3iMDbha4Y=;
+	s=arc-20240116; t=1770845822; c=relaxed/simple;
+	bh=c43Wk8Wym99w21vO0FG2sfXQcj/wfuX6ruzyN8vyYGQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XySTht9pjpRq4hCNkJApKNKnuyn4l/EbfXZjXSA94HKXuNEjifhd2yuJEAbNvRhJUjiIT9KHJ+MPxkcyeUd/if2EiHAKP4pzrUMD6C/4qHVWF/3xSOgV1gIWI6Q5fTUOT0SoJhbTVTIN7qdjW3D6AhZ0KAyawTy1mPBCyV/rsB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=XVAOCDwJ; arc=none smtp.client-ip=151.80.46.58
+	 Content-Type:Content-Disposition:In-Reply-To; b=QP4eTidkoNM/gfklknIiwoC8eSF3vWK9gVXrZ8vEY/xkaM5k7JPLMELuBeHn1G6zLvGwLg9J6HVgh3QoaCu31bmhuljdWOAfskZMRKPXt6Clf4NnbV+ss5qToZpsjDAvc6tSt3xhCYrym1Hfld4cbw3c5PcLcthY/fl2L2Yh2eI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=h6QsOYlu; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -40,29 +40,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=C7UJT42UeQnIjRpCMDmDP6/fB0j/jObXsnxUSrfcO9g=; b=XVAOCDwJmxJIPdXPB3Cknvr6N4
-	SPvrb0gzZNQ4mg2w9SksaZh+NtHfopquBUePsaeTXXj5/34cHr2fE1N4TElVkG8g7xGU1XVLn7Fkf
-	FFnfu13pGc4/wQeN9g4drapZw7s53wQHQIrPmTysx3KMp242MV9KTLoPu1bM1wUZudl8ZpqfglJX/
-	foc2BRIkP3wmBBUF22GTMv1NPodcRwy0Xd+9bkBCvGtjtV+qH5p7grprZBbCDib9zuHm1V16f4YDI
-	I3hhMeUAVcN9TI9+f3pWFR8OPgpWJ7eHuhepE3X4nGX4AGflUuJwlp1RPYOjBIc4614OrQbwwcvZ2
-	1Fzsgqrg==;
+	bh=E0JOd+Khb44Tdthy+vM4b1W2ffq64k1bU7gMvoSLEmc=; b=h6QsOYlulRO5U59plLL/zrZbAR
+	E1kPotuOZFSbxFTq0jhwpTP1dDSMg+GgRhZ7Q4XiRkGRAFIMRD1XkY7GA9ne3HrwT6OOv5Z1B1KCs
+	GuKd0aqGrtKzqDZSfNL0Qmmz+VFJw0Mr2sNixZ/yqRjpH8nDjhwqdD3vgy/uRF5VQJyl7pFL5VcGC
+	G1RswoKup2wZaB+AQuqb/6ICf79xzVlSAQMF9TJ8ykb3+JERhUrHKM3yAV6/MG5RrwHAcpJnYoy60
+	RPFOkXAfxChyQebbamqFDgl6MdjcMTrsn+UVpc9s/0x7q7tfZ54rkFTorr13sLXhcX926+qCvttlV
+	SAQ0a/fg==;
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1vqGiT-000000008TP-2wOu;
-	Wed, 11 Feb 2026 21:21:41 +0100
-Date: Wed, 11 Feb 2026 21:21:41 +0100
+	id 1vqHtJ-000000001BQ-2uqr;
+	Wed, 11 Feb 2026 22:36:57 +0100
+Date: Wed, 11 Feb 2026 22:36:57 +0100
 From: Phil Sutter <phil@nwl.cc>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org,
-	Ilia Kashintsev <ilia.kashintsev@gmail.com>
-Subject: Re: [ebtables PATCH] useful_functions: Fix for buffer overflow in
- parse_ip6_mask()
-Message-ID: <aYzk1VSy00VhLZHN@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+To: "Remy D. Farley" <one-d-wide@protonmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
 	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
-	Ilia Kashintsev <ilia.kashintsev@gmail.com>
-References: <20260211194203.6383-1-phil@nwl.cc>
- <aYzfgfEVjenfc_9v@strlen.de>
+	coreteam@netfilter.org
+Subject: Re: [PATCH] iptables: fix null dereference parsing bitwise operations
+Message-ID: <aYz2eUev4mUdN7uX@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	"Remy D. Farley" <one-d-wide@protonmail.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org
+References: <20260202101408.745532-1-one-d-wide@protonmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -71,50 +74,187 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aYzfgfEVjenfc_9v@strlen.de>
+In-Reply-To: <20260202101408.745532-1-one-d-wide@protonmail.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.46 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10738-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
-	RCPT_COUNT_THREE(0.00)[3];
+	DMARC_NA(0.00)[nwl.cc];
+	FREEMAIL_TO(0.00)[protonmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10739-lists,netfilter-devel=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[nwl.cc:-];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,orbyte.nwl.cc:mid]
-X-Rspamd-Queue-Id: 65E961275FD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,protonmail.com:email]
+X-Rspamd-Queue-Id: 09C77127CAE
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 08:58:57PM +0100, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > This patch contains a simplified version of his fix:
-> > 
-> > - The original code attempted to div_round_up() for the second memset(),
-> >   to zero the fully empty mask bytes. It used the term '(bits / 8) + 1'
-> >   which misbehaves if bits is equal to 8.
-> > 
-> > - Addressing p at offset 'bits / 8' is illegal if bits has the legal max
-> >   value of 128. Also, zeroing this byte is needed only if bits is not
-> >   divisible by 8.
-> 
-> Thanks, feel free to push this out.
+Hi Remy,
 
-Patch applied.
+On Mon, Feb 02, 2026 at 10:14:52AM +0000, Remy D. Farley wrote:
+> Iptables binary only understands NFT_BITWISE_MASK_XOR bitwise operation and
+> assumes its attributes are always present without actually checking, which
+> leads to a segfault in some cases.
+> 
+> This commit introduces this missing check.
+> 
+> | /**
+> |  * enum nft_bitwise_ops - nf_tables bitwise operations
+> |  *
+> |  * @NFT_BITWISE_MASK_XOR: mask-and-xor operation used to implement NOT, AND, OR
+> |  *                        and XOR boolean operations
+> |  * @NFT_BITWISE_LSHIFT: left-shift operation          \
+> |  * @NFT_BITWISE_RSHIFT: right-shift operation         |
+> |  * @NFT_BITWISE_AND: and operation                    | These all are affected
+> |  * @NFT_BITWISE_OR: or operation                      |
+> |  * @NFT_BITWISE_XOR: xor operation                    /
+> |  */
+> 
+> From iptables/nft-ruleparse.c:
+> 
+> | static void nft_parse_bitwise(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+> | {
+> |   [...]
+> |
+> |   data = nftnl_expr_get(e, NFTNL_EXPR_BITWISE_XOR, &len); // <-- this attribute may not be present
+> |
+> |   if (len > sizeof(dreg->bitwise.xor)) {
+> |     ctx->errmsg = "bitwise xor too large";
+> |     return;
+> |   }
+> |
+> |   memcpy(dreg->bitwise.xor, data, len); // <-- zero dereference happens here
+> |
+> |   data = nftnl_expr_get(e, NFTNL_EXPR_BITWISE_MASK, &len);
+> |
+> |   if (len > sizeof(dreg->bitwise.mask)) {
+> |   	ctx->errmsg = "bitwise mask too large";
+> |   	return;
+> |   }
+> |
+> |   memcpy(dreg->bitwise.mask, data, len);
+> |
+> |   dreg->bitwise.set = true;
+> |
+> | }
+> 
+> The bug can be reproduced by creating a rule like this:
+> 
+> | # newrule.json
+> | {"chain": "example-chain",
+> |  "expressions": {"elem": [{"data": {"base": 1,
+> |                                     "dreg": 1,
+> |                                     "len": 4,
+> |                                     "offset": 12},
+> |                            "name": "payload"},
+> |                           {"data": {"data": {"value": [255, 255, 255, 0]},
+> |                                     "dreg": 1,
+> |                                     "len": 4,
+> |                                     "op": 3,
+> |                                     "sreg": 1},
+> |                            "name": "bitwise"},
+> |                           {"data": {"data": {"value": [1, 2, 3, 0]},
+> |                                     "op": 0,
+> |                                     "sreg": 1},
+> |                            "name": "cmp"},
+> |                           {"data": {"data": {"verdict": {"code": 1}},
+> |                                     "dreg": 0},
+> |                            "name": "immediate"}]},
+> |  "nfgen-family": 2,
+> |  "table": "filter"}
+> 
+> | # newrule.sh
+> | set -euo pipefail
+> |
+> | iptables -N example-chain || true
+> |
+> | genid="$(
+> |   ./tools/net/ynl/pyynl/cli.py --spec Documentation/netlink/specs/nftables.yaml \
+> |     --do getgen --json "{}" --output-json |
+> |     jq -r ".id"
+> | )"
+> |
+> | ./tools/net/ynl/pyynl/cli.py --spec Documentation/netlink/specs/nftables.yaml \
+> |   --multi batch-begin "{\"genid\": $genid, \"res-id\": 10}" \
+> |   --creat --append --multi newrule "$(cat ./newrule.json)" \
+> |   --creat --multi batch-end '{}' \
+> |   --output-json
+> 
+> Signed-off-by: Remy D. Farley <one-d-wide@protonmail.com>
+> ---
+>  iptables/nft-ruleparse.c | 5 +++++
+>  iptables/nft.c           | 5 ++++-
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
+> index cdf1af4f..1a9084e3 100644
+> --- a/iptables/nft-ruleparse.c
+> +++ b/iptables/nft-ruleparse.c
+> @@ -232,6 +232,11 @@ static void nft_parse_bitwise(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+>  	const void *data;
+>  	uint32_t len;
+>  
+> +	if (nftnl_expr_get_u32(e, NFTNL_EXPR_BITWISE_OP) != 0 /* empty or MASK_XOR */) {
+> +		ctx->errmsg = "unsupported bitwise operation";
+> +		return;
+> +	}
+> +
+
+This is redundant wrt. the stricter compatibility check below, right? Or
+did you find a call to nft_rule_to_iptables_command_state() which is not
+guarded by nft_is_table_compatible()?
+
+Anyway, I would add two checks to that function like so:
+
+| if (!data) {
+| 	ctx->errmsg = "missing bitwise xor attribute";
+| 	return;
+| }
+
+(And the same for bitwise mask.) It will sanitize the function's code
+irrespective of expression content, readers won't have to be aware of
+(and rely upon) bitwise expression semantics with NFTNL_EXPR_BITWISE_OP
+attribute value being zero.
+
+>  	if (!sreg)
+>  		return;
+>  
+> diff --git a/iptables/nft.c b/iptables/nft.c
+> index 85080a6d..661fac29 100644
+> --- a/iptables/nft.c
+> +++ b/iptables/nft.c
+> @@ -4029,7 +4029,6 @@ static const char *supported_exprs[] = {
+>  	"payload",
+>  	"meta",
+>  	"cmp",
+> -	"bitwise",
+>  	"counter",
+>  	"immediate",
+>  	"lookup",
+> @@ -4056,6 +4055,10 @@ static int nft_is_expr_compatible(struct nftnl_expr *expr, void *data)
+>  	    nftnl_expr_is_set(expr, NFTNL_EXPR_LOG_GROUP))
+>  		return 0;
+>  
+> +	if (!strcmp(name, "bitwise") &&
+> +	    nftnl_expr_get_u32(expr, NFTNL_EXPR_BITWISE_OP) == 0 /* empty or MASK_XOR */)
+
+'== NFT_BITWISE_MASK_XOR' and drop the comment.
+
+Thanks, Phil
 
