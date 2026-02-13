@@ -1,47 +1,46 @@
-Return-Path: <netfilter-devel+bounces-10761-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10762-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IOFhC5kMj2kgHgEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10761-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 12:35:53 +0100
+	id QCIANDUNj2kgHgEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10762-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 12:38:29 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC70135C0C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 12:35:52 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6878D135CA1
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 12:38:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 629C030089B0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 11:35:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0EAE9305CA1D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 11:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D4729DB88;
-	Fri, 13 Feb 2026 11:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F3433F8DD;
+	Fri, 13 Feb 2026 11:38:14 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128821B85F8
-	for <netfilter-devel@vger.kernel.org>; Fri, 13 Feb 2026 11:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497083563FB
+	for <netfilter-devel@vger.kernel.org>; Fri, 13 Feb 2026 11:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770982550; cv=none; b=J/WX/adsiNb5agOkruh8BP71U2kogNOjH4luH1Vez60Bc5nvJCrF5CgFtX5kySjppLp8ZM00CX5cDIbV6nXct8oKQKGRmqHhy3RiuOzRVdpNkHwCErClHEeIyDdrlgodHj+YuzgpgCvcIce01HC4kpCWkNB0ZuM8/Ady9Zdj5RM=
+	t=1770982694; cv=none; b=Su882atC0PWN311t8bREKtM6hD1IbBZnebdNArY/KL0vR2IkVHylkn19UP+iMbgnSLpLgT/NeRUwVG+daUTzbFn0qisoLyskZs+8vE3HFivI/cZPacsC52rHivEPOkDnL+U8lyzI+LTFXuPcyI/rygtmBICFm71/fHBZZ/kxIAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770982550; c=relaxed/simple;
-	bh=sdX/wvw4wVNQrjHWPT9Cb7w5hysFWvPF64wS6zXPUi0=;
+	s=arc-20240116; t=1770982694; c=relaxed/simple;
+	bh=v7l9NklavGwZXcyf5xc5Y0qfiduuSdRrVnFRAq3C4ys=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FCGJL+Zih4iERP3ynEhIujcR/nvIjORy5cb6Ut+i2JrP8Efjd0/g50VVqFULP+gc3XbsGiVJkAWWxpFQOaJo9lFVA/fWCS37q2JTtbl3uWJWBlncWEbdEt9EczeMgaVi5kgbmuxIB0TMwyOu8hgRWN2VD+JF9IkFg5OoupCqDME=
+	 Content-Type:Content-Disposition:In-Reply-To; b=HKEh3FV1LOeC0zDyafiFf/UJGtyLjAAaX5JLtrCBBq2TaZCIZR7clk6UvbCYX6ypU9/DhmmSBoJEfIsraIMRoKty9k4AiTA1HqPnabLK1EWGRmyQfPVeZINB4RTEF/8SqEb6tmiF7gN7jXydewpESFJQCiX2Z29uSzL9ImQpwtE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 5CA5D608AD; Fri, 13 Feb 2026 12:35:47 +0100 (CET)
-Date: Fri, 13 Feb 2026 12:35:47 +0100
+	id 8D39B608AD; Fri, 13 Feb 2026 12:38:11 +0100 (CET)
+Date: Fri, 13 Feb 2026 12:38:11 +0100
 From: Florian Westphal <fw@strlen.de>
-To: Phil Sutter <phil@nwl.cc>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH v4] configure: Implement --enable-profiling option
-Message-ID: <aY8Mk5eCymlbN8UA@strlen.de>
-References: <20260212205023.32010-1-phil@nwl.cc>
+To: Alan Ross <alan@sleuthco.ai>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH v2] libxtables: refuse to run under file capabilities
+Message-ID: <aY8NI2agbGHqM8mA@strlen.de>
+References: <CAKgz23F8EKsc2vhVAPyuZgUNA7Zohm0zS6-So+jPJTvCiNikig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -50,42 +49,42 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260212205023.32010-1-phil@nwl.cc>
+In-Reply-To: <CAKgz23F8EKsc2vhVAPyuZgUNA7Zohm0zS6-So+jPJTvCiNikig@mail.gmail.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
-	RCVD_COUNT_THREE(0.00)[4];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
-	R_DKIM_NA(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
-	RCVD_TLS_LAST(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10761-lists,netfilter-devel=lfdr.de];
-	RCPT_COUNT_THREE(0.00)[3]
-X-Rspamd-Queue-Id: CCC70135C0C
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10762-lists,netfilter-devel=lfdr.de];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: 6878D135CA1
 X-Rspamd-Action: no action
 
-Phil Sutter <phil@nwl.cc> wrote:
-> This will set compiler flag --coverage so code coverage may be inspected
-> using gcov.
-> 
-> In order to successfully profile processes which are killed or
-> interrupted as well, add a signal handler for those cases which calls
-> exit(). This is relevant for test cases invoking nft monitor.
+Alan Ross <alan@sleuthco.ai> wrote:
+> Extend the existing setuid guard in xtables_init() to also detect
+> file capabilities via getauxval(AT_SECURE).
 
-LGTM, thanks Phil.  Feel free to push this out.
+Applied, thanks.
+
+For future submissions, please try to set up git-send-email, the patch
+was whitespace damaged and did not apply.
+
+I mangled this locally, so no need to resend this one.
 
