@@ -1,171 +1,135 @@
-Return-Path: <netfilter-devel+bounces-10768-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10771-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2KGxH3Crj2nSSQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10768-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 23:53:36 +0100
+	id 9kbyKNOPkGlebQEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10771-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:08:03 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74F3139E21
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 23:53:35 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0648A13C44C
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 79621303C4CB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Feb 2026 22:53:34 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 026CA3004DDF
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 15:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4EC31619B;
-	Fri, 13 Feb 2026 22:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA342750ED;
+	Sat, 14 Feb 2026 15:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sleuthco.ai header.i=@sleuthco.ai header.b="c6peDAMQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="RgsbmKTB"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0FD92C11E5
-	for <netfilter-devel@vger.kernel.org>; Fri, 13 Feb 2026 22:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2D71C695
+	for <netfilter-devel@vger.kernel.org>; Sat, 14 Feb 2026 15:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771023214; cv=none; b=YisbQY7ij55uWZHPELZO1+h6b8DVjtYmr57D36sHhwLct2picclZKHLpEILRQ5YTh7E8zMpDRDbzzz2BzVZscPKRUT4jx+i8OQ6ZGDwXkDMEeOehZ0BpPDfh8q2YLLWJMrMPF1esUa5oXeEk7WgFrM0nf0fTVWpCttwvooFT5I4=
+	t=1771081678; cv=none; b=Z9p9/m4eirYl3e9wFh7CxlwGcNq25zTE/PDhdSqPncXX815gNnB2pufZjCKiR0pfdIYpTsEcuNqRsy7VOKoQAdOIMjiPNnom9NL49gpKfJPNTsL/XSEgIn6CVJu2Aw6wwiw0cNc6f1oRIRA1pUYyU7yl2wNalYpazesiq+HCUHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771023214; c=relaxed/simple;
-	bh=5JMs9aIZ1bi3HLTDRgakvPbUT2rcR1gk4/WgD0hIJgI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kj8pgwtUuT40HCEQVcU2y7+4opue+EBZF6+lMOJLaHRjDqjrNwfN+nj0S89deiDX/wefnxW3CybhHsjItvS7FD3MYxXKuBCdfLyj+SFjNcJqVW6OUdNG3FsP2A/+2yn9RIJlG2+FrG3MN4YGJFWOz0hLVy5uxoXy6JH5CQzwe6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sleuthco.ai; spf=fail smtp.mailfrom=sleuthco.ai; dkim=pass (2048-bit key) header.d=sleuthco.ai header.i=@sleuthco.ai header.b=c6peDAMQ; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sleuthco.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sleuthco.ai
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8cb48234b08so83106585a.1
-        for <netfilter-devel@vger.kernel.org>; Fri, 13 Feb 2026 14:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sleuthco.ai; s=google; t=1771023211; x=1771628011; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kfqcDFPBwJDnv2FWvajh1p7LsMhJKi95glIjMj+Kkeg=;
-        b=c6peDAMQPAa5dy/+X0y3QsYM1lCUbykRPH6FkCc911hYsG+n9kc91DwlXGOivn43y8
-         ahL58RUR9MzKYf4R3N+bIN+xF1u2r2WCvaZvaLh8/5+yhgsgXYrdcmqwfvO4+ner4IIi
-         MKO7shkCogFI2v5OoRlpADna7oKr/jPCfm81fp71+CXDw7Ex/s+j6NuKQl9sOFkIX8EM
-         7JV4Z2Kv3UTAqyGZsl0plEyF8zjd+QK76rdf9QpgUuojoz/da2rfyy8VOf4UdONi+i7f
-         thbRxpg+Ib9nsywR6PkJ1XNc/KWU/Ni9UvUQYu1VP44aakXzXTTrDt8TsuqDwfoBk+VV
-         mNSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771023211; x=1771628011;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kfqcDFPBwJDnv2FWvajh1p7LsMhJKi95glIjMj+Kkeg=;
-        b=q9yhyZb0IetI/zlCxOjcxAvC+1um+EQoApdVaO7YCbfQW6fIf88MV9oGwou7g6xMg5
-         EQRSr6LkBOjq+Ex06KiOpLwl6Wh/T/OApfRUB+UltcWVVWeiAHwO4H8yzSfAUtkPrsak
-         HR+2JqrOWl6nAqQ3GcxulgdR4BXOElr+uPfYecnLkxC9LS/2OX+sXuwisVoU6agQ9wxL
-         B+1s5uDEBv/MgGPQsf+a/uz3zmoMFaa1PkvHGafnJJcbN8AeY67YKJWrEdqYs/Fi3Jqp
-         Sk8M7NXR3FScWC4dkAT2/6PO13Xf3VJYCV4layMWkvzs+aZGzi/eIf2oN/KLnR93vb1D
-         YISg==
-X-Gm-Message-State: AOJu0YyCJ3P5/GGPK8e4gpDoWk+OvyJqEz/ArxCMDPVMTCspVFoDjlOR
-	/z5NIgZj+OsHovHFXT/ETmMbpF2j1afC8f0MVSIR+kijFGAF77huy06E1ygEUgzwydKkSgh8QAm
-	1k72Ws2+r
-X-Gm-Gg: AZuq6aJf24b+w9CKUGqoRs3xcjCpgmwS+drKpj307OIzfMlcdDUX283wl0VebjxykLG
-	UYNOV303RgIrGrPLSr0mj1qc9kqbfLCMJS5/ZxrgkOtVu0ktnAsRc4zAT+OagLHDr8VPrD92hHR
-	/Vb4mGBxgXkotrNMnGC945hDx1wiNiiPYfb2tz1hplRfX4NGNfvMZDerlTgxQBaW/QASsFC1Mqt
-	uUmpswR3G2FHjQK9ciofFF2yMgmCUo+1eAX5Pd5r1nrL9ewND4H6y23B1pjtpM693tXYNLdBpx1
-	h6ePDU/Dc0E1IbhSuafbaCfovWKUAMILKx1jF+m5/5oEz/k8d4jLN046X80jsulUXUmzRXE57P5
-	edWtNh6xv0DbLZa6vxkVewop6kVclulEhM4XBJC7q2uHC3lKnDynPTHsnExXKnWXRvCVA3mcbwm
-	h40kZ/CIOWgskuARciarkB6gAk0DSbXtrXMR1Psnk=
-X-Received: by 2002:a05:620a:1917:b0:85e:b7b6:81e2 with SMTP id af79cd13be357-8cb4c00c942mr138175685a.50.1771023211087;
-        Fri, 13 Feb 2026 14:53:31 -0800 (PST)
-Received: from localhost.localdomain ([2601:195:c200:c890:bc72:9727:601e:995e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb4120f939sm277612585a.44.2026.02.13.14.53.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Feb 2026 14:53:30 -0800 (PST)
-From: Alan Ross <alan@sleuthco.ai>
-To: netfilter-devel@vger.kernel.org
-Cc: pablo@netfilter.org,
-	Alan Ross <alan@sleuthco.ai>
-Subject: [PATCH] main: refuse to run under file capabilities
-Date: Fri, 13 Feb 2026 17:53:23 -0500
-Message-ID: <20260213225323.5749-1-alan@sleuthco.ai>
-X-Mailer: git-send-email 2.52.0.windows.1
+	s=arc-20240116; t=1771081678; c=relaxed/simple;
+	bh=qjvhRLP0u2WL5eSecAtAkWDctpXK3Ur7iBUTBtcAw5I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZcRKOOQwLhPpi8VI9A011xY2s+DgVQBVQ5l8VDzMR55rMVSRXKN2Pf+9fElnq2Xbm1p163npGcCDq300OYhmZZoWf0A3NaFq4qXNbbdGwHe73mkyysy3QfhDjKshb2NTcWvBOkRpG401I9sfjveRAGoiQ5HIaY0X4WtxVcwAm/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=RgsbmKTB; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=QvBXslcm4SU2m9mrC+oc+x4byiN+H1CtaOnGnICGVtU=; b=RgsbmKTBoeQE+keYSkXMEq4SQy
+	qPQvB4K9QMYBWy7JTXl8pis+3ldV4R1XJsSSzeyGLG94IIjLsmDfn2op+vDKjK/SrEtcfynuUxHND
+	MGw8aWjmXVtz6P91QyBMq4HZHCUH7te77l0IWfvmeD81UyVEydX+Gmat/4Nh95KGJAvloLYhd5SOu
+	OJxGGwsI/1xqqXkSUlr2lxyg/Zvg5SawIlegE6rQ1ORufP3QeukDO7bXShXHkZgoLGU5b0m2LebsV
+	ZwNXClvkivbdAFtN6G19oBBv5E/z8YHuGOTOnvp4seQDBC4YcL/JNfrI4APcCcIhOItZtZF3qdZ/s
+	PfxSArIw==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1vrH2W-000000000P0-1KJC;
+	Sat, 14 Feb 2026 15:54:32 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org,
+	Alyssa Ross <hi@alyssa.is>,
+	Florian Westphal <fw@strlen.de>
+Subject: [nf PATCH v2] include: uapi: netfilter_bridge.h: Cover for musl libc
+Date: Sat, 14 Feb 2026 15:54:06 +0100
+Message-ID: <20260214145427.6341-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [1.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[sleuthco.ai:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10768-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10771-lists,netfilter-devel=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[sleuthco.ai];
+	DMARC_NA(0.00)[nwl.cc];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[sleuthco.ai:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alan@sleuthco.ai,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	DKIM_TRACE(0.00)[nwl.cc:-];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sleuthco.ai:mid,sleuthco.ai:dkim,sleuthco.ai:email]
-X-Rspamd-Queue-Id: D74F3139E21
+	PRECEDENCE_BULK(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:mid,nwl.cc:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,alyssa.is:email]
+X-Rspamd-Queue-Id: 0648A13C44C
 X-Rspamd-Action: no action
 
-Extend the existing setuid guard in main() to also detect
-file capabilities via getauxval(AT_SECURE).
+Musl defines its own struct ethhdr and thus defines __UAPI_DEF_ETHHDR to
+zero. To avoid struct redefinition errors, user space is therefore
+supposed to include netinet/if_ether.h before (or instead of)
+linux/if_ether.h. To relieve them from this burden, include the libc
+header here if not building for kernel space.
 
-Some container runtimes and minimal distributions grant cap_net_admin
-via file capabilities (setcap cap_net_admin+ep /usr/sbin/nft)
-rather than running through sudo.  In that configuration the kernel
-sets AT_SECURE and the dynamic linker strips LD_PRELOAD, but
-getuid() == geteuid() so the existing setuid check passes.
-
-CAP_NET_ADMIN is quite powerful; even without dlopen(), we should not
-sanction setcap-installations — a control flow bug could still be
-exploited as the capability-elevated user.
-
-getauxval(AT_SECURE) is nonzero whenever the kernel has set AT_SECURE
-in the auxiliary vector — this covers both classic setuid/setgid and
-file capabilities.  Exit with status 111, matching the existing
-setuid behavior.
-
-Signed-off-by: Alan Ross <alan@sleuthco.ai>
+Reported-by: Alyssa Ross <hi@alyssa.is>
+Suggested-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes since v1:
+- Adjust to previously applied 0b3877bec78b ("netfilter: uapi: Use UAPI definition of INT_MAX and INT_MIN")
+---
+ include/uapi/linux/netfilter_bridge.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/src/main.c b/src/main.c
-index 29b0533..af49bec 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -17,6 +17,7 @@
- #include <getopt.h>
- #include <fcntl.h>
- #include <sys/types.h>
-+#include <sys/auxv.h>
+diff --git a/include/uapi/linux/netfilter_bridge.h b/include/uapi/linux/netfilter_bridge.h
+index f6e8d1e05c97..758de72b2764 100644
+--- a/include/uapi/linux/netfilter_bridge.h
++++ b/include/uapi/linux/netfilter_bridge.h
+@@ -5,6 +5,10 @@
+ /* bridge-specific defines for netfilter. 
+  */
  
- #include <nftables/libnftables.h>
- #include <utils.h>
-@@ -371,8 +372,8 @@ int main(int argc, char * const *argv)
- 	char *filename = NULL;
- 	unsigned int len;
- 
--	/* nftables cannot be used with setuid in a safe way. */
--	if (getuid() != geteuid())
-+	/* nftables cannot be used with setuid/setcap in a safe way. */
-+	if (getuid() != geteuid() || getauxval(AT_SECURE))
- 		_exit(111);
- 
- 	if (!nft_options_check(argc, argv))
++#ifndef __KERNEL__
++#include <netinet/if_ether.h>	/* for __UAPI_DEF_ETHHDR if defined */
++#endif
++
+ #include <linux/in.h>
+ #include <linux/netfilter.h>
+ #include <linux/if_ether.h>
 -- 
-2.43.0
+2.51.0
 
 
