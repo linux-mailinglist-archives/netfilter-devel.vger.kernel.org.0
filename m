@@ -1,80 +1,65 @@
-Return-Path: <netfilter-devel+bounces-10769-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10773-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 96PUKKKOkGlMbQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10769-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:02:58 +0100
+	id GE3jDBKQkGlebQEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10773-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:09:06 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCAF613C41B
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:02:57 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AFD13C463
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DFC64301DE2B
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 15:02:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EFD3F3014138
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 15:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179EF1C695;
-	Sat, 14 Feb 2026 15:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53410283FD8;
+	Sat, 14 Feb 2026 15:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="bminM2jV"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fCVLBzsv"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8731DA62E;
-	Sat, 14 Feb 2026 15:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A8923C8AE
+	for <netfilter-devel@vger.kernel.org>; Sat, 14 Feb 2026 15:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771081374; cv=none; b=B/xZ3x7MGIGU/p357eIFhiXA/Yyv8R9emGLg6pYISstx/8DdeZqjlrYSbd3jNplTtM+SeqYsI9z3BUgwaM0N5kyhfqouooYfJ///gn0z1kiAQijxOjMUyowzOZJ+QFPP8xf2n524HYV16HmyTm/X+zdq+hZHrNbDsi9zF2aoTyI=
+	t=1771081741; cv=none; b=YDqUCszD3mlcHFhoHE/TKvNSv6LRDrrM4ZgdlY4gUHxD8HwUE70ygvpnHm7sGNSkCCmlpkRPAos7RTCCJbS4tOFr7FyC63K7JhS/g4nTGRdFHULKTHO2ml4gC5D8TvqoutVDaPY+CW572XaMW+PfaRyTdUV7aTe183IhdFjZ508=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771081374; c=relaxed/simple;
-	bh=bUJ2/NUoi4gA+6dl0HVCjfpN5T6IjvL4MwfSVRanpwY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p5MbSJnebMajY4m2XzrMrv1sWSFreSz9xOdo0BlJyc2OlrmLobwwfamvn8/G+zwKAMVmMxpPM1L/9R39naTx3NOTT8PWnu8fVGgcn+pXIDunYROFmUwe96mQRGcKmubV11kgQKSCJIGpElAijHTx/SlSfAO0P9OkE+rQ3LdjHOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=bminM2jV; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id E20DC21D6A;
-	Sat, 14 Feb 2026 17:02:46 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-transfer-encoding:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=m28j557dyzS+Eb3mAHQeLNi4x1G/+PYAORs4hd4EMPo=; b=bminM2jVyS3t
-	ovnJDBGI7+Uy9lnXrUqrI0KpRi4GvQ4BPnTZm0I2WoaaWe3K9sV14XJLycIzV3hF
-	zVb0IQbOZ5Dfce9NvtL27Au9WQiw4+4GocWCOmHQoCzYdMg5exdQtnXbv5xQsqpH
-	LTya6cZT8KtE+SEYKvvdazL/cTzIloQG5mUwMzM0DUNaaJy6Va9F6GyMcIhKzzUj
-	1qdsP3cZn+uchGJXW/tZ27c0ajyvkm379rwpthW+LzD0ymPbyBMkNRlkl0U8wVaT
-	mIdwmNju9RksxV+1hM3GXYsMAmzLxsHWZRmt6vGj4vMxhNdVDv8kaxUhcnZhfXcR
-	7Lt777pqhj0d0gDKA2e58xb26f1rrhUapblDsSalO7SluX2ivFEZZWkx3EZ8/Yy0
-	K527yZgPxXqQBLt3APn8TMMhTULyyT+idLmwaeeH+dEUy33kX7qq8AeSUxQCJpI1
-	0RzRxAP+aMbgwQpxNbfXvV2XmDLM8IP20ZCkndmctD5PMfkNWigxRZk7dLuk+bo/
-	ElPULgDHSmlc32E1laqjDZMjisTQE9nQWZ9n5xWoTaAHyio4WWnqy1rzmxmngJli
-	QR4pv2d1/oj70u9BgKMCQBh2VLyu/Fz/w1Llb0ArE2UFQll+0CeUXEJaANkcgJLY
-	WVpknRfFKfqfLzqfMsnJ0wE36E/KJM8=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Sat, 14 Feb 2026 17:02:45 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 6255C609BE;
-	Sat, 14 Feb 2026 17:02:45 +0200 (EET)
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 61EExQeU018159;
-	Sat, 14 Feb 2026 16:59:26 +0200
-Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 61EExQ8Q018158;
-	Sat, 14 Feb 2026 16:59:26 +0200
-From: Julian Anastasov <ja@ssi.bg>
-To: Simon Horman <horms@verge.net.au>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Dust Li <dust.li@linux.alibaba.com>,
-        Jiejian Wu <jiejian@linux.alibaba.com>
-Subject: [PATCH nf 2/2] ipvs: do not keep dest_dst if dev is going down
-Date: Sat, 14 Feb 2026 16:58:50 +0200
-Message-ID: <20260214145850.18130-3-ja@ssi.bg>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260214145850.18130-1-ja@ssi.bg>
-References: <20260214145850.18130-1-ja@ssi.bg>
+	s=arc-20240116; t=1771081741; c=relaxed/simple;
+	bh=2dMy+GDPwkMW4SVPjotfJoonoKxW0SYs+prgwC/ZmZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Klw7rg87MHKfq9hA23NDlDSp3h7SzEHSZ3DcYE/tpPTwrkxHu9B6/ECEeAjRLvGkwpnc198oJF+8M+wrIvbKH9qzUqh19QTEJrZJPCtd4sqaFD7CQ1aIrIlUAwXCQOw7GLlj2L6PGYfFAZ/W6FGY/PvRq352kJWjboXFtU/KrpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fCVLBzsv; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=67GR0fv5cQV6eu1ViDD4fx24Yh6Q984g/j3er+zjJpE=; b=fCVLBzsvc8uisQzH7lFKtW60uZ
+	iMPhT+89cwxZ5JsvVbslGf1qzKliO0meXRRUV+4cOUUOE6YIRloAj3fhMsn+w0bXATSn6ozjmDWEq
+	QTlUW74SVTFV64zA9PvLPL2FzS24qzHqBOeIhWjzPKQdQFFnjPLiE9SatwrpscLyYjT1FTw0B2/cK
+	/zzSBjORnXVh3BppOs5p5zoJgErgxW9lKC7d8LIyT6QW5LSGkC1uMoVh0UtccCAxQ47aVqpituIsf
+	HvSjdbiwsDCsBDwY+L/TwAxKJSteWH4/YCAtYs6pF/LjkX21ipKsVOD6TcBamEkvt1tc+YwfaYJ4I
+	AFma+fnw==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1vrHGT-000000000cn-0oEE;
+	Sat, 14 Feb 2026 16:08:57 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: netfilter-devel@vger.kernel.org
+Cc: Florian Westphal <fw@strlen.de>,
+	"Remy D . Farley" <one-d-wide@protonmail.com>
+Subject: [iptables PATCH 1/2] include: linux: nf_tables.h: Sync with current kernel UAPI headers
+Date: Sat, 14 Feb 2026 16:08:50 +0100
+Message-ID: <20260214150851.31936-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -83,152 +68,299 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10769-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[nwl.cc];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-10773-lists,netfilter-devel=lfdr.de];
+	DKIM_TRACE(0.00)[nwl.cc:-];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[strlen.de,protonmail.com];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:mid,ssi.bg:dkim,ssi.bg:email];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: BCAF613C41B
+	RCPT_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:mid,nwl.cc:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A5AFD13C463
 X-Rspamd-Action: no action
 
-There is race between the netdev notifier ip_vs_dst_event()
-and the code that caches dst with dev that is going down.
-As the FIB can be notified for the closed device after our
-handler finishes, it is possible valid route to be returned
-and cached resuling in a leaked dev reference until the dest
-is not removed.
+We want NFT_BITWISE_MASK_XOR, use the occasion to sync it entirely.
 
-To prevent new dest_dst to be attached to dest just after the
-handler dropped the old one, add a netif_running() check
-to make sure the notifier handler is not currently running
-for device that is closing.
-
-Fixes: 7a4f0761fce3 ("IPVS: init and cleanup restructuring")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/netfilter/ipvs/ip_vs_xmit.c | 46 ++++++++++++++++++++++++++-------
- 1 file changed, 36 insertions(+), 10 deletions(-)
+ include/linux/netfilter/nf_tables.h | 67 +++++++++++++++++++++++------
+ 1 file changed, 53 insertions(+), 14 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_xmit.c b/net/netfilter/ipvs/ip_vs_xmit.c
-index 64c697212578..124f779424b0 100644
---- a/net/netfilter/ipvs/ip_vs_xmit.c
-+++ b/net/netfilter/ipvs/ip_vs_xmit.c
-@@ -294,6 +294,12 @@ static inline bool decrement_ttl(struct netns_ipvs *ipvs,
- 	return true;
- }
+diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
+index c4d4d8e42dc8b..45c71f7d21c25 100644
+--- a/include/linux/netfilter/nf_tables.h
++++ b/include/linux/netfilter/nf_tables.h
+@@ -105,6 +105,7 @@ enum nft_verdicts {
+  * @NFT_MSG_DESTROYSETELEM: destroy a set element (enum nft_set_elem_attributes)
+  * @NFT_MSG_DESTROYOBJ: destroy a stateful object (enum nft_object_attributes)
+  * @NFT_MSG_DESTROYFLOWTABLE: destroy flow table (enum nft_flowtable_attributes)
++ * @NFT_MSG_GETSETELEM_RESET: get set elements and reset attached stateful expressions (enum nft_set_elem_attributes)
+  */
+ enum nf_tables_msg_types {
+ 	NFT_MSG_NEWTABLE,
+@@ -140,6 +141,7 @@ enum nf_tables_msg_types {
+ 	NFT_MSG_DESTROYSETELEM,
+ 	NFT_MSG_DESTROYOBJ,
+ 	NFT_MSG_DESTROYFLOWTABLE,
++	NFT_MSG_GETSETELEM_RESET,
+ 	NFT_MSG_MAX,
+ };
  
-+/* rt has device that is down */
-+static bool rt_dev_is_down(const struct net_device *dev)
-+{
-+	return dev && !netif_running(dev);
-+}
-+
- /* Get route to destination or remote server */
- static int
- __ip_vs_get_out_rt(struct netns_ipvs *ipvs, int skb_af, struct sk_buff *skb,
-@@ -309,9 +315,11 @@ __ip_vs_get_out_rt(struct netns_ipvs *ipvs, int skb_af, struct sk_buff *skb,
+@@ -177,13 +179,17 @@ enum nft_hook_attributes {
+  * enum nft_table_flags - nf_tables table flags
+  *
+  * @NFT_TABLE_F_DORMANT: this table is not active
++ * @NFT_TABLE_F_OWNER:   this table is owned by a process
++ * @NFT_TABLE_F_PERSIST: this table shall outlive its owner
+  */
+ enum nft_table_flags {
+ 	NFT_TABLE_F_DORMANT	= 0x1,
+ 	NFT_TABLE_F_OWNER	= 0x2,
++	NFT_TABLE_F_PERSIST	= 0x4,
+ };
+ #define NFT_TABLE_F_MASK	(NFT_TABLE_F_DORMANT | \
+-				 NFT_TABLE_F_OWNER)
++				 NFT_TABLE_F_OWNER | \
++				 NFT_TABLE_F_PERSIST)
  
- 	if (dest) {
- 		dest_dst = __ip_vs_dst_check(dest);
--		if (likely(dest_dst))
-+		if (likely(dest_dst)) {
- 			rt = dst_rtable(dest_dst->dst_cache);
--		else {
-+			if (ret_saddr)
-+				*ret_saddr = dest_dst->dst_saddr.ip;
-+		} else {
- 			dest_dst = ip_vs_dest_dst_alloc();
- 			spin_lock_bh(&dest->dst_lock);
- 			if (!dest_dst) {
-@@ -327,14 +335,22 @@ __ip_vs_get_out_rt(struct netns_ipvs *ipvs, int skb_af, struct sk_buff *skb,
- 				ip_vs_dest_dst_free(dest_dst);
- 				goto err_unreach;
- 			}
--			__ip_vs_dst_set(dest, dest_dst, &rt->dst, 0);
-+			/* It is forbidden to attach dest->dest_dst if
-+			 * device is going down.
-+			 */
-+			if (!rt_dev_is_down(dst_dev_rcu(&rt->dst)))
-+				__ip_vs_dst_set(dest, dest_dst, &rt->dst, 0);
-+			else
-+				noref = 0;
- 			spin_unlock_bh(&dest->dst_lock);
- 			IP_VS_DBG(10, "new dst %pI4, src %pI4, refcnt=%d\n",
- 				  &dest->addr.ip, &dest_dst->dst_saddr.ip,
- 				  rcuref_read(&rt->dst.__rcuref));
-+			if (ret_saddr)
-+				*ret_saddr = dest_dst->dst_saddr.ip;
-+			if (!noref)
-+				ip_vs_dest_dst_free(dest_dst);
- 		}
--		if (ret_saddr)
--			*ret_saddr = dest_dst->dst_saddr.ip;
- 	} else {
- 		noref = 0;
+ /**
+  * enum nft_table_attributes - nf_tables table netlink attributes
+@@ -261,6 +267,7 @@ enum nft_chain_attributes {
+  * @NFTA_RULE_USERDATA: user data (NLA_BINARY, NFT_USERDATA_MAXLEN)
+  * @NFTA_RULE_ID: uniquely identifies a rule in a transaction (NLA_U32)
+  * @NFTA_RULE_POSITION_ID: transaction unique identifier of the previous rule (NLA_U32)
++ * @NFTA_RULE_CHAIN_ID: add the rule to chain by ID, alternative to @NFTA_RULE_CHAIN (NLA_U32)
+  */
+ enum nft_rule_attributes {
+ 	NFTA_RULE_UNSPEC,
+@@ -282,9 +289,11 @@ enum nft_rule_attributes {
+ /**
+  * enum nft_rule_compat_flags - nf_tables rule compat flags
+  *
++ * @NFT_RULE_COMPAT_F_UNUSED: unused
+  * @NFT_RULE_COMPAT_F_INV: invert the check result
+  */
+ enum nft_rule_compat_flags {
++	NFT_RULE_COMPAT_F_UNUSED = (1 << 0),
+ 	NFT_RULE_COMPAT_F_INV	= (1 << 1),
+ 	NFT_RULE_COMPAT_F_MASK	= NFT_RULE_COMPAT_F_INV,
+ };
+@@ -385,6 +394,8 @@ enum nft_set_field_attributes {
+  * @NFTA_SET_HANDLE: set handle (NLA_U64)
+  * @NFTA_SET_EXPR: set expression (NLA_NESTED: nft_expr_attributes)
+  * @NFTA_SET_EXPRESSIONS: list of expressions (NLA_NESTED: nft_list_attributes)
++ * @NFTA_SET_TYPE: set backend type (NLA_STRING)
++ * @NFTA_SET_COUNT: number of set elements (NLA_U32)
+  */
+ enum nft_set_attributes {
+ 	NFTA_SET_UNSPEC,
+@@ -406,6 +417,8 @@ enum nft_set_attributes {
+ 	NFTA_SET_HANDLE,
+ 	NFTA_SET_EXPR,
+ 	NFTA_SET_EXPRESSIONS,
++	NFTA_SET_TYPE,
++	NFTA_SET_COUNT,
+ 	__NFTA_SET_MAX
+ };
+ #define NFTA_SET_MAX		(__NFTA_SET_MAX - 1)
+@@ -427,7 +440,7 @@ enum nft_set_elem_flags {
+  * @NFTA_SET_ELEM_KEY: key value (NLA_NESTED: nft_data)
+  * @NFTA_SET_ELEM_DATA: data value of mapping (NLA_NESTED: nft_data_attributes)
+  * @NFTA_SET_ELEM_FLAGS: bitmask of nft_set_elem_flags (NLA_U32)
+- * @NFTA_SET_ELEM_TIMEOUT: timeout value (NLA_U64)
++ * @NFTA_SET_ELEM_TIMEOUT: timeout value, zero means never times out (NLA_U64)
+  * @NFTA_SET_ELEM_EXPIRATION: expiration time (NLA_U64)
+  * @NFTA_SET_ELEM_USERDATA: user data (NLA_BINARY)
+  * @NFTA_SET_ELEM_EXPR: expression (NLA_NESTED: nft_expr_attributes)
+@@ -555,16 +568,26 @@ enum nft_immediate_attributes {
+ /**
+  * enum nft_bitwise_ops - nf_tables bitwise operations
+  *
+- * @NFT_BITWISE_BOOL: mask-and-xor operation used to implement NOT, AND, OR and
+- *                    XOR boolean operations
++ * @NFT_BITWISE_MASK_XOR: mask-and-xor operation used to implement NOT, AND, OR
++ *                        and XOR boolean operations
+  * @NFT_BITWISE_LSHIFT: left-shift operation
+  * @NFT_BITWISE_RSHIFT: right-shift operation
++ * @NFT_BITWISE_AND: and operation
++ * @NFT_BITWISE_OR: or operation
++ * @NFT_BITWISE_XOR: xor operation
+  */
+ enum nft_bitwise_ops {
+-	NFT_BITWISE_BOOL,
++	NFT_BITWISE_MASK_XOR,
+ 	NFT_BITWISE_LSHIFT,
+ 	NFT_BITWISE_RSHIFT,
++	NFT_BITWISE_AND,
++	NFT_BITWISE_OR,
++	NFT_BITWISE_XOR,
+ };
++/*
++ * Old name for NFT_BITWISE_MASK_XOR.  Retained for backwards-compatibility.
++ */
++#define NFT_BITWISE_BOOL NFT_BITWISE_MASK_XOR
  
-@@ -471,9 +487,11 @@ __ip_vs_get_out_rt_v6(struct netns_ipvs *ipvs, int skb_af, struct sk_buff *skb,
+ /**
+  * enum nft_bitwise_attributes - nf_tables bitwise expression netlink attributes
+@@ -577,6 +600,7 @@ enum nft_bitwise_ops {
+  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
+  * @NFTA_BITWISE_DATA: argument for non-boolean operations
+  *                     (NLA_NESTED: nft_data_attributes)
++ * @NFTA_BITWISE_SREG2: second source register (NLA_U32: nft_registers)
+  *
+  * The bitwise expression supports boolean and shift operations.  It implements
+  * the boolean operations by performing the following operation:
+@@ -600,6 +624,7 @@ enum nft_bitwise_attributes {
+ 	NFTA_BITWISE_XOR,
+ 	NFTA_BITWISE_OP,
+ 	NFTA_BITWISE_DATA,
++	NFTA_BITWISE_SREG2,
+ 	__NFTA_BITWISE_MAX
+ };
+ #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
+@@ -856,15 +881,17 @@ enum nft_exthdr_flags {
+  * enum nft_exthdr_op - nf_tables match options
+  *
+  * @NFT_EXTHDR_OP_IPV6: match against ipv6 extension headers
+- * @NFT_EXTHDR_OP_TCP: match against tcp options
++ * @NFT_EXTHDR_OP_TCPOPT: match against tcp options
+  * @NFT_EXTHDR_OP_IPV4: match against ipv4 options
+  * @NFT_EXTHDR_OP_SCTP: match against sctp chunks
++ * @NFT_EXTHDR_OP_DCCP: match against dccp otions
+  */
+ enum nft_exthdr_op {
+ 	NFT_EXTHDR_OP_IPV6,
+ 	NFT_EXTHDR_OP_TCPOPT,
+ 	NFT_EXTHDR_OP_IPV4,
+ 	NFT_EXTHDR_OP_SCTP,
++	NFT_EXTHDR_OP_DCCP,
+ 	__NFT_EXTHDR_OP_MAX
+ };
+ #define NFT_EXTHDR_OP_MAX	(__NFT_EXTHDR_OP_MAX - 1)
+@@ -932,6 +959,7 @@ enum nft_exthdr_attributes {
+  * @NFT_META_SDIF: slave device interface index
+  * @NFT_META_SDIFNAME: slave device interface name
+  * @NFT_META_BRI_BROUTE: packet br_netfilter_broute bit
++ * @NFT_META_BRI_IIFHWADDR: packet input bridge interface ethernet address
+  */
+ enum nft_meta_keys {
+ 	NFT_META_LEN,
+@@ -972,6 +1000,7 @@ enum nft_meta_keys {
+ 	NFT_META_SDIFNAME,
+ 	NFT_META_BRI_BROUTE,
+ 	__NFT_META_IIFTYPE,
++	NFT_META_BRI_IIFHWADDR,
+ };
  
- 	if (dest) {
- 		dest_dst = __ip_vs_dst_check(dest);
--		if (likely(dest_dst))
-+		if (likely(dest_dst)) {
- 			rt = dst_rt6_info(dest_dst->dst_cache);
--		else {
-+			if (ret_saddr)
-+				*ret_saddr = dest_dst->dst_saddr.in6;
-+		} else {
- 			u32 cookie;
+ /**
+@@ -1171,7 +1200,7 @@ enum nft_ct_attributes {
+ #define NFTA_CT_MAX		(__NFTA_CT_MAX - 1)
  
- 			dest_dst = ip_vs_dest_dst_alloc();
-@@ -494,14 +512,22 @@ __ip_vs_get_out_rt_v6(struct netns_ipvs *ipvs, int skb_af, struct sk_buff *skb,
- 			}
- 			rt = dst_rt6_info(dst);
- 			cookie = rt6_get_cookie(rt);
--			__ip_vs_dst_set(dest, dest_dst, &rt->dst, cookie);
-+			/* It is forbidden to attach dest->dest_dst if
-+			 * device is going down.
-+			 */
-+			if (!rt_dev_is_down(dst_dev_rcu(&rt->dst)))
-+				__ip_vs_dst_set(dest, dest_dst, &rt->dst, cookie);
-+			else
-+				noref = 0;
- 			spin_unlock_bh(&dest->dst_lock);
- 			IP_VS_DBG(10, "new dst %pI6, src %pI6, refcnt=%d\n",
- 				  &dest->addr.in6, &dest_dst->dst_saddr.in6,
- 				  rcuref_read(&rt->dst.__rcuref));
-+			if (ret_saddr)
-+				*ret_saddr = dest_dst->dst_saddr.in6;
-+			if (!noref)
-+				ip_vs_dest_dst_free(dest_dst);
- 		}
--		if (ret_saddr)
--			*ret_saddr = dest_dst->dst_saddr.in6;
- 	} else {
- 		noref = 0;
- 		dst = __ip_vs_route_output_v6(net, daddr, ret_saddr, do_xfrm,
+ /**
+- * enum nft_flow_attributes - ct offload expression attributes
++ * enum nft_offload_attributes - ct offload expression attributes
+  * @NFTA_FLOW_TABLE_NAME: flow table name (NLA_STRING)
+  */
+ enum nft_offload_attributes {
+@@ -1365,7 +1394,7 @@ enum nft_secmark_attributes {
+ #define NFTA_SECMARK_MAX	(__NFTA_SECMARK_MAX - 1)
+ 
+ /* Max security context length */
+-#define NFT_SECMARK_CTX_MAXLEN		256
++#define NFT_SECMARK_CTX_MAXLEN		4096
+ 
+ /**
+  * enum nft_reject_types - nf_tables reject expression reject types
+@@ -1381,7 +1410,7 @@ enum nft_reject_types {
+ };
+ 
+ /**
+- * enum nft_reject_code - Generic reject codes for IPv4/IPv6
++ * enum nft_reject_inet_code - Generic reject codes for IPv4/IPv6
+  *
+  * @NFT_REJECT_ICMPX_NO_ROUTE: no route to host / network unreachable
+  * @NFT_REJECT_ICMPX_PORT_UNREACH: port unreachable
+@@ -1451,9 +1480,9 @@ enum nft_nat_attributes {
+ /**
+  * enum nft_tproxy_attributes - nf_tables tproxy expression netlink attributes
+  *
+- * NFTA_TPROXY_FAMILY: Target address family (NLA_U32: nft_registers)
+- * NFTA_TPROXY_REG_ADDR: Target address register (NLA_U32: nft_registers)
+- * NFTA_TPROXY_REG_PORT: Target port register (NLA_U32: nft_registers)
++ * @NFTA_TPROXY_FAMILY: Target address family (NLA_U32: nft_registers)
++ * @NFTA_TPROXY_REG_ADDR: Target address register (NLA_U32: nft_registers)
++ * @NFTA_TPROXY_REG_PORT: Target port register (NLA_U32: nft_registers)
+  */
+ enum nft_tproxy_attributes {
+ 	NFTA_TPROXY_UNSPEC,
+@@ -1683,7 +1712,7 @@ enum nft_flowtable_flags {
+  *
+  * @NFTA_FLOWTABLE_TABLE: name of the table containing the expression (NLA_STRING)
+  * @NFTA_FLOWTABLE_NAME: name of this flow table (NLA_STRING)
+- * @NFTA_FLOWTABLE_HOOK: netfilter hook configuration(NLA_U32)
++ * @NFTA_FLOWTABLE_HOOK: netfilter hook configuration (NLA_NESTED)
+  * @NFTA_FLOWTABLE_USE: number of references to this flow table (NLA_U32)
+  * @NFTA_FLOWTABLE_HANDLE: object handle (NLA_U64)
+  * @NFTA_FLOWTABLE_FLAGS: flags (NLA_U32)
+@@ -1754,13 +1783,15 @@ enum nft_synproxy_attributes {
+ #define NFTA_SYNPROXY_MAX (__NFTA_SYNPROXY_MAX - 1)
+ 
+ /**
+- * enum nft_device_attributes - nf_tables device netlink attributes
++ * enum nft_devices_attributes - nf_tables device netlink attributes
+  *
+  * @NFTA_DEVICE_NAME: name of this device (NLA_STRING)
++ * @NFTA_DEVICE_PREFIX: device name prefix, a simple wildcard (NLA_STRING)
+  */
+ enum nft_devices_attributes {
+ 	NFTA_DEVICE_UNSPEC,
+ 	NFTA_DEVICE_NAME,
++	NFTA_DEVICE_PREFIX,
+ 	__NFTA_DEVICE_MAX
+ };
+ #define NFTA_DEVICE_MAX		(__NFTA_DEVICE_MAX - 1)
+@@ -1814,6 +1845,10 @@ enum nft_xfrm_keys {
+  * @NFTA_TRACE_MARK: nfmark (NLA_U32)
+  * @NFTA_TRACE_NFPROTO: nf protocol processed (NLA_U32)
+  * @NFTA_TRACE_POLICY: policy that decided fate of packet (NLA_U32)
++ * @NFTA_TRACE_CT_ID: conntrack id (NLA_U32)
++ * @NFTA_TRACE_CT_DIRECTION: packets direction (NLA_U8)
++ * @NFTA_TRACE_CT_STATUS: conntrack status (NLA_U32)
++ * @NFTA_TRACE_CT_STATE: packet state (new, established, ...) (NLA_U32)
+  */
+ enum nft_trace_attributes {
+ 	NFTA_TRACE_UNSPEC,
+@@ -1834,6 +1869,10 @@ enum nft_trace_attributes {
+ 	NFTA_TRACE_NFPROTO,
+ 	NFTA_TRACE_POLICY,
+ 	NFTA_TRACE_PAD,
++	NFTA_TRACE_CT_ID,
++	NFTA_TRACE_CT_DIRECTION,
++	NFTA_TRACE_CT_STATUS,
++	NFTA_TRACE_CT_STATE,
+ 	__NFTA_TRACE_MAX
+ };
+ #define NFTA_TRACE_MAX (__NFTA_TRACE_MAX - 1)
 -- 
-2.53.0
-
+2.51.0
 
 
