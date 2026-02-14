@@ -1,77 +1,77 @@
-Return-Path: <netfilter-devel+bounces-10777-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10780-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YD6SJCmSkGmFbQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10777-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:18:01 +0100
+	id mDNRCz6SkGmFbQEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10780-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:18:22 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF9313C4CE
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:18:01 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AD7113C4FC
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 16:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 182CE300E24E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 15:18:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E9630300E268
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Feb 2026 15:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8565023BCED;
-	Sat, 14 Feb 2026 15:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9ADD25F96B;
+	Sat, 14 Feb 2026 15:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="Z/nmAHzp"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="yCb54HeH"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43347189F43;
-	Sat, 14 Feb 2026 15:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087442609EE;
+	Sat, 14 Feb 2026 15:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771082278; cv=none; b=taeMfAvgQEiSbKyj3iu7F56TvVbnzH/rA2H3QMu3NYTNLOmCO8xEsAou5GlMLnjsdHy1FQaDGR7YAcg6wJBvWE8NxXJFyeUSQzze/7XdJ3MmXj1YYUjy0JdKZNwLew1QV7n+u/Lxy4Z5JSOxzyL3xBP7kBQF9K2iJrJ9kJ3WIzc=
+	t=1771082298; cv=none; b=G9cLG2tbNfDj9zZHAUkZVlOyiEFpzGqQtRoU/oHxjrHQ8ETI23BU4pF2plMlEGJNZRGHV9jpYynb8zRYPEO1k90kPZ8Liq5yJNTYsub+a5ECZaHdGAs0gw2SMokgJkK7Ou5q2/xiC51XR2RRyi0T8wEC02H8q7QBXdW45D1hZGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771082278; c=relaxed/simple;
-	bh=BxyoGBXLKGdmtN9ri17uOhBVH5ThPhTsEnqBkCisJuI=;
+	s=arc-20240116; t=1771082298; c=relaxed/simple;
+	bh=KtfjqxYxOdRwIPS3qfEW0j1Bs6rsGLuFWbxEKAdOw7c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MGWri5DcbapoBvau7GD/rLNkU+KO/FwXBR3K1bVwUvy3lUsKrpE02VNHdMwMISju4BMAzPqBgLGaGju2FahWAaS3ZYB8aZJrW6ZnQ2xt2dmVUvthGydNTEqnRXclAxHMKG5LpS1HA1Fldnmgy8Dn5riufCElY01aL7cQh58m/uM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=Z/nmAHzp; arc=none smtp.client-ip=193.238.174.39
+	 MIME-Version; b=J6toRkd2fv2xabSBK3q9ihRixtjhvKJjg47gx2a1LcDq8N4WSrfdsP0fLfj3bVyJxMByxkurNsFrg7FAd/PHu+W+cjOJj8zgZgKasJr2PZmrLgC/l2DVQYsuXxmXsdWA7bzjn7e0nbS1C4IwlgImJ2h14/q3e1gsiMkHh8P2MaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=yCb54HeH; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 689A621D6D;
-	Sat, 14 Feb 2026 17:17:48 +0200 (EET)
+	by mx.ssi.bg (Potsfix) with ESMTP id 4315921D6A;
+	Sat, 14 Feb 2026 17:17:50 +0200 (EET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
 	:content-transfer-encoding:date:from:from:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=XhIyr/dv1oRX8rqqq9SfJV+/BRMIGevUcG+ALFFgjuE=; b=Z/nmAHzprgjI
-	Yt4ivkljj21dbmXXdpbMaMmRUslWPcYU1qSPtUY9lDoWWJoOFzzrNuovOpEVU19t
-	EAfu/QiN5tCnnYN4LBXnquTflgxfoYnfZx/5gjgIi8x1h7MoFKPTMiKWvhKpJEqR
-	+gg919oHJ1/pLrGC0w+/zvnZKCtg5x1xCtg8As3W/sM5b+9E15BtrUJpbMEiQAYS
-	M7u1Yt/NucN4BIRG8TN7gvJAkBZkzZVJ9sJ8LbYGPhY9cQNdfaT5xXlDf2Rdq4J9
-	kaBJa6BlVazRaqzvKnM7LM0GdBaYtuxCV0nqpG6bJDEGuh4swXKneYo6xYAff9+C
-	wmCodoJV5Ktb98KajpDebCHYC++pkn/ncFgzQHNI0nxVPOVcWCLZUHzTv6K6vc+o
-	uK99qxuLoNNbWzgPxM1HVLFtNw136YCS8xEqg/52lQ31/gYZmvNCvn0GqRlbqdqb
-	HJ+e7tSwc7R/nb1nz6H/yh8lkU0A7PHRYFtx4NPWaPP3FbDLQCndmPIHuBcV7jCz
-	oCm9cD60WdKbP2lkt6lfvBITDrDd/Fc0w3hACBkJza8R2yqbxze6ulAiHD/KxUqk
-	8ewv4FjL8jvQJkO/qFNTDuCLpUqoj4/yujzryUuRbmE7NNIRmfwxtft7C+W3mI5H
-	1Y1HO9qJBA2qFkyKFIqOS79/GbfomHA=
+	 bh=yd+uA/R4W6APCvvfFWRBAUtqfslFN2rbhB5TtD/RzwU=; b=yCb54HeHOvFT
+	2Oe8GHvZS7tdb0dJ9vpNR37p9GyVuG9o6jXi1F97pNT4tIXQhnamjgohkFpAp69v
+	/MZLjZ8Fwwb+hhjxbhMDUCP08TkNenM/i9Grsn/O19CFjS4eM0hexluurYx6Ol4t
+	GaUOc9GopoKGs4FSIZ9BJaxs8ap88qGLpYOqZryek+rVSEJYArbxyrUJIEYAAiNV
+	++MooD3MGn0o+MOeqjpKasaDTZ9Aj39KbJVqEQ9SBENb01ZOoFxJsZkkI51T7/EN
+	eyU9xBrSpSqVeVh+j+JbieqQtNeckS5w+a7sRqcsIcej4W5DYLUekqgEVKN6VIcH
+	5zwry66K0asbyXoXgaS9+bGAiAIhT1qlprcg7yfUj9WyA/PgJUutesJseldIfiQg
+	SwKwvxORmSyKDhOgzrbz6l0xxiYLUGYaz/7MAmwZiWxK7w76q9UyBhoQsd0G86J7
+	JEt9VSkB4yR4WXamnal5O3VVzPwwDnHhF15WXks5AddzmPekLvRsc1N/6TVG1V22
+	Kbogx2+kpSN56DttZrzFQ7DWJjkT6dQEjElOb2TuY/HltsD1dPW9E9uMnTIvr0Mb
+	pVFwkeza+UnoX33AZ0XZ0N3tRslYhtAQGsSjkxNEklrnwT/nnzgCztHmPmCccUdF
+	gYo4prUgB93mY1mSyTB57UDUc9aMaAQ=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Sat, 14 Feb 2026 17:17:46 +0200 (EET)
+	Sat, 14 Feb 2026 17:17:47 +0200 (EET)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 39DAC61B7A;
-	Sat, 14 Feb 2026 17:17:46 +0200 (EET)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 6477C628B1;
+	Sat, 14 Feb 2026 17:17:47 +0200 (EET)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 61EFCvDt019350;
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 61EFCvUG019354;
 	Sat, 14 Feb 2026 17:12:57 +0200
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 61EFCvmI019349;
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 61EFCvBk019353;
 	Sat, 14 Feb 2026 17:12:57 +0200
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, lvs-devel@vger.kernel.org,
         netfilter-devel@vger.kernel.org, Dust Li <dust.li@linux.alibaba.com>,
         Jiejian Wu <jiejian@linux.alibaba.com>
-Subject: [PATCH nf-next 2/6] ipvs: some service readers can use RCU
-Date: Sat, 14 Feb 2026 17:12:26 +0200
-Message-ID: <20260214151230.18970-3-ja@ssi.bg>
+Subject: [PATCH nf-next 3/6] ipvs: use single svc table
+Date: Sat, 14 Feb 2026 17:12:27 +0200
+Message-ID: <20260214151230.18970-4-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260214151230.18970-1-ja@ssi.bg>
 References: <20260214151230.18970-1-ja@ssi.bg>
@@ -89,195 +89,368 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10777-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10780-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:mid,ssi.bg:dkim,ssi.bg:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,alibaba.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:mid,ssi.bg:dkim,ssi.bg:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: 1CF9313C4CE
+X-Rspamd-Queue-Id: 9AD7113C4FC
 X-Rspamd-Action: no action
 
-Some places walk the services under mutex but they can just use RCU:
-
-* ip_vs_dst_event() uses ip_vs_forget_dev() which uses its own lock
-  to modify dest
-* ip_vs_genl_dump_services(): ip_vs_genl_fill_service() just fills skb
-* ip_vs_genl_parse_service(): move RCU lock to callers
-  ip_vs_genl_set_cmd(), ip_vs_genl_dump_dests() and ip_vs_genl_get_cmd()
-* ip_vs_genl_dump_dests(): just fill skb
+fwmark based services and non-fwmark based services can be hashed
+in same service table. This reduces the burden of working with two
+tables.
 
 Signed-off-by: Julian Anastasov <ja@ssi.bg>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 47 +++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 24 deletions(-)
+ include/net/ip_vs.h            |   8 +-
+ net/netfilter/ipvs/ip_vs_ctl.c | 146 +++++----------------------------
+ 2 files changed, 22 insertions(+), 132 deletions(-)
 
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index 074a204ec6db..b5a5a5efe3cc 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -679,8 +679,7 @@ struct ip_vs_dest_user_kern {
+  * forwarding entries.
+  */
+ struct ip_vs_service {
+-	struct hlist_node	s_list;   /* for normal service table */
+-	struct hlist_node	f_list;   /* for fwmark-based service table */
++	struct hlist_node	s_list;   /* node in service table */
+ 	atomic_t		refcnt;   /* reference counter */
+ 
+ 	u16			af;       /* address family */
+@@ -1050,10 +1049,7 @@ struct netns_ipvs {
+ 
+ 	/* the service mutex that protect svc_table and svc_fwm_table */
+ 	struct mutex service_mutex;
+-	/* the service table hashed by <protocol, addr, port> */
+-	struct hlist_head svc_table[IP_VS_SVC_TAB_SIZE];
+-	/* the service table hashed by fwmark */
+-	struct hlist_head svc_fwm_table[IP_VS_SVC_TAB_SIZE];
++	struct hlist_head svc_table[IP_VS_SVC_TAB_SIZE];	/* Services */
+ };
+ 
+ #define DEFAULT_SYNC_THRESHOLD	3
 diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index d871273ce917..b9eaf048a29f 100644
+index b9eaf048a29f..2ef1f99dada6 100644
 --- a/net/netfilter/ipvs/ip_vs_ctl.c
 +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -1758,23 +1758,21 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
- 	if (event != NETDEV_DOWN || !ipvs)
- 		return NOTIFY_DONE;
- 	IP_VS_DBG(3, "%s() dev=%s\n", __func__, dev->name);
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
--		hlist_for_each_entry(svc, &ipvs->svc_table[idx], s_list) {
--			list_for_each_entry(dest, &svc->destinations,
--					    n_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[idx], s_list)
-+			list_for_each_entry_rcu(dest, &svc->destinations,
-+						n_list)
- 				ip_vs_forget_dev(dest, dev);
--			}
+@@ -328,7 +328,7 @@ static inline unsigned int ip_vs_svc_fwm_hashkey(struct netns_ipvs *ipvs, __u32
+ 
+ /*
+  *	Hashes a service in the svc_table by <netns,proto,addr,port>
+- *	or in the svc_fwm_table by fwmark.
++ *	or by fwmark.
+  *	Should be called with locked tables.
+  */
+ static int ip_vs_svc_hash(struct ip_vs_service *svc)
+@@ -343,18 +343,17 @@ static int ip_vs_svc_hash(struct ip_vs_service *svc)
+ 
+ 	if (svc->fwmark == 0) {
+ 		/*
+-		 *  Hash it by <netns,protocol,addr,port> in svc_table
++		 *  Hash it by <netns,protocol,addr,port>
+ 		 */
+ 		hash = ip_vs_svc_hashkey(svc->ipvs, svc->af, svc->protocol,
+ 					 &svc->addr, svc->port);
+-		hlist_add_head_rcu(&svc->s_list, &svc->ipvs->svc_table[hash]);
+ 	} else {
+ 		/*
+-		 *  Hash it by fwmark in svc_fwm_table
++		 *  Hash it by fwmark
+ 		 */
+ 		hash = ip_vs_svc_fwm_hashkey(svc->ipvs, svc->fwmark);
+-		hlist_add_head_rcu(&svc->f_list, &svc->ipvs->svc_fwm_table[hash]);
+ 	}
++	hlist_add_head_rcu(&svc->s_list, &svc->ipvs->svc_table[hash]);
+ 
+ 	svc->flags |= IP_VS_SVC_F_HASHED;
+ 	/* increase its refcnt because it is referenced by the svc table */
+@@ -364,7 +363,7 @@ static int ip_vs_svc_hash(struct ip_vs_service *svc)
+ 
+ 
+ /*
+- *	Unhashes a service from svc_table / svc_fwm_table.
++ *	Unhashes a service from svc_table.
+  *	Should be called with locked tables.
+  */
+ static int ip_vs_svc_unhash(struct ip_vs_service *svc)
+@@ -375,13 +374,8 @@ static int ip_vs_svc_unhash(struct ip_vs_service *svc)
+ 		return 0;
+ 	}
+ 
+-	if (svc->fwmark == 0) {
+-		/* Remove it from the svc_table table */
+-		hlist_del_rcu(&svc->s_list);
+-	} else {
+-		/* Remove it from the svc_fwm_table table */
+-		hlist_del_rcu(&svc->f_list);
+-	}
++	/* Remove it from svc_table */
++	hlist_del_rcu(&svc->s_list);
+ 
+ 	svc->flags &= ~IP_VS_SVC_F_HASHED;
+ 	atomic_dec(&svc->refcnt);
+@@ -404,7 +398,8 @@ __ip_vs_service_find(struct netns_ipvs *ipvs, int af, __u16 protocol,
+ 
+ 	hlist_for_each_entry_rcu(svc, &ipvs->svc_table[hash], s_list) {
+ 		if (svc->af == af && ip_vs_addr_equal(af, &svc->addr, vaddr) &&
+-		    svc->port == vport && svc->protocol == protocol) {
++		    svc->port == vport && svc->protocol == protocol &&
++		    !svc->fwmark) {
+ 			/* HIT */
+ 			return svc;
+ 		}
+@@ -426,7 +421,7 @@ __ip_vs_svc_fwm_find(struct netns_ipvs *ipvs, int af, __u32 fwmark)
+ 	/* Check for fwmark addressed entries */
+ 	hash = ip_vs_svc_fwm_hashkey(ipvs, fwmark);
+ 
+-	hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[hash], f_list) {
++	hlist_for_each_entry_rcu(svc, &ipvs->svc_table[hash], s_list) {
+ 		if (svc->fwmark == fwmark && svc->af == af) {
+ 			/* HIT */
+ 			return svc;
+@@ -1682,26 +1677,11 @@ static int ip_vs_flush(struct netns_ipvs *ipvs, bool cleanup)
+ 	struct ip_vs_service *svc;
+ 	struct hlist_node *n;
+ 
+-	/*
+-	 * Flush the service table hashed by <netns,protocol,addr,port>
+-	 */
+ 	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+ 		hlist_for_each_entry_safe(svc, n, &ipvs->svc_table[idx],
+-					  s_list) {
++					  s_list)
+ 			ip_vs_unlink_service(svc, cleanup);
 -		}
- 
--		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[idx], f_list) {
--			list_for_each_entry(dest, &svc->destinations,
--					    n_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[idx], f_list)
-+			list_for_each_entry_rcu(dest, &svc->destinations,
-+						n_list)
- 				ip_vs_forget_dev(dest, dev);
--			}
+ 	}
+-
+-	/*
+-	 * Flush the service table hashed by fwmark
+-	 */
+-	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+-		hlist_for_each_entry_safe(svc, n, &ipvs->svc_fwm_table[idx],
+-					  f_list) {
+-			ip_vs_unlink_service(svc, cleanup);
 -		}
- 	}
-+	rcu_read_unlock();
- 
-+	mutex_lock(&ipvs->service_mutex);
- 	spin_lock_bh(&ipvs->dest_trash_lock);
- 	list_for_each_entry(dest, &ipvs->dest_trash, t_list) {
- 		ip_vs_forget_dev(dest, dev);
-@@ -3317,9 +3315,9 @@ static int ip_vs_genl_fill_service(struct sk_buff *skb,
- 			goto nla_put_failure;
- 	}
- 
--	sched = rcu_dereference_protected(svc->scheduler, 1);
-+	sched = rcu_dereference(svc->scheduler);
- 	sched_name = sched ? sched->name : "none";
--	pe = rcu_dereference_protected(svc->pe, 1);
-+	pe = rcu_dereference(svc->pe);
- 	if (nla_put_string(skb, IPVS_SVC_ATTR_SCHED_NAME, sched_name) ||
- 	    (pe && nla_put_string(skb, IPVS_SVC_ATTR_PE_NAME, pe->name)) ||
- 	    nla_put(skb, IPVS_SVC_ATTR_FLAGS, sizeof(flags), &flags) ||
-@@ -3373,9 +3371,9 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
- 	struct net *net = sock_net(skb->sk);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
--		hlist_for_each_entry(svc, &ipvs->svc_table[i], s_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[i], s_list) {
- 			if (++idx <= start)
- 				continue;
- 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
-@@ -3386,7 +3384,7 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
- 	}
- 
- 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
--		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[i], f_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[i], f_list) {
- 			if (++idx <= start)
- 				continue;
- 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
-@@ -3397,7 +3395,7 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
- 	}
- 
- nla_put_failure:
--	mutex_unlock(&ipvs->service_mutex);
-+	rcu_read_unlock();
- 	cb->args[0] = idx;
- 
- 	return skb->len;
-@@ -3453,13 +3451,11 @@ static int ip_vs_genl_parse_service(struct netns_ipvs *ipvs,
- 		usvc->fwmark = 0;
- 	}
- 
--	rcu_read_lock();
- 	if (usvc->fwmark)
- 		svc = __ip_vs_svc_fwm_find(ipvs, usvc->af, usvc->fwmark);
- 	else
- 		svc = __ip_vs_service_find(ipvs, usvc->af, usvc->protocol,
- 					   &usvc->addr, usvc->port);
--	rcu_read_unlock();
- 	*ret_svc = svc;
- 
- 	/* If a full entry was requested, check for the additional fields */
-@@ -3586,7 +3582,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
- 	struct net *net = sock_net(skb->sk);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 
- 	/* Try to find the service for which to dump destinations */
- 	if (nlmsg_parse_deprecated(cb->nlh, GENL_HDRLEN, attrs, IPVS_CMD_ATTR_MAX, ip_vs_cmd_policy, cb->extack))
-@@ -3598,7 +3594,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
- 		goto out_err;
- 
- 	/* Dump the destinations */
--	list_for_each_entry(dest, &svc->destinations, n_list) {
-+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
- 		if (++idx <= start)
- 			continue;
- 		if (ip_vs_genl_dump_dest(skb, dest, cb) < 0) {
-@@ -3611,7 +3607,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
- 	cb->args[0] = idx;
- 
- out_err:
--	mutex_unlock(&ipvs->service_mutex);
-+	rcu_read_unlock();
- 
- 	return skb->len;
+-	}
+-
+ 	return 0;
  }
-@@ -3914,9 +3910,12 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
- 	if (cmd == IPVS_CMD_NEW_SERVICE || cmd == IPVS_CMD_SET_SERVICE)
- 		need_full_svc = true;
  
-+	/* We use function that requires RCU lock (hlist_bl) */
-+	rcu_read_lock();
- 	ret = ip_vs_genl_parse_service(ipvs, &usvc,
- 				       info->attrs[IPVS_CMD_ATTR_SERVICE],
- 				       need_full_svc, &svc);
-+	rcu_read_unlock();
- 	if (ret)
- 		goto out;
+@@ -1764,11 +1744,6 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
+ 			list_for_each_entry_rcu(dest, &svc->destinations,
+ 						n_list)
+ 				ip_vs_forget_dev(dest, dev);
+-
+-		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[idx], f_list)
+-			list_for_each_entry_rcu(dest, &svc->destinations,
+-						n_list)
+-				ip_vs_forget_dev(dest, dev);
+ 	}
+ 	rcu_read_unlock();
  
-@@ -4036,7 +4035,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
- 	if (!msg)
- 		return -ENOMEM;
+@@ -1802,15 +1777,8 @@ static int ip_vs_zero_all(struct netns_ipvs *ipvs)
+ 	struct ip_vs_service *svc;
  
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
+ 	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+-		hlist_for_each_entry(svc, &ipvs->svc_table[idx], s_list) {
++		hlist_for_each_entry(svc, &ipvs->svc_table[idx], s_list)
+ 			ip_vs_zero_service(svc);
+-		}
+-	}
+-
+-	for(idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+-		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[idx], f_list) {
+-			ip_vs_zero_service(svc);
+-		}
+ 	}
  
- 	reply = genlmsg_put_reply(msg, info, &ip_vs_genl_family, 0, reply_cmd);
- 	if (reply == NULL)
-@@ -4104,7 +4103,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
- out_err:
- 	nlmsg_free(msg);
+ 	ip_vs_zero_stats(&ipvs->tot_stats->s);
+@@ -2246,7 +2214,6 @@ static struct ctl_table vs_vars[] = {
+ 
+ struct ip_vs_iter {
+ 	struct seq_net_private p;  /* Do not move this, netns depends upon it*/
+-	struct hlist_head *table;
+ 	int bucket;
+ };
+ 
+@@ -2269,7 +2236,6 @@ static inline const char *ip_vs_fwd_name(unsigned int flags)
+ }
+ 
+ 
+-/* Get the Nth entry in the two lists */
+ static struct ip_vs_service *ip_vs_info_array(struct seq_file *seq, loff_t pos)
+ {
+ 	struct net *net = seq_file_net(seq);
+@@ -2278,29 +2244,14 @@ static struct ip_vs_service *ip_vs_info_array(struct seq_file *seq, loff_t pos)
+ 	int idx;
+ 	struct ip_vs_service *svc;
+ 
+-	/* look in hash by protocol */
+ 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+ 		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[idx], s_list) {
+ 			if (pos-- == 0) {
+-				iter->table = ipvs->svc_table;
+-				iter->bucket = idx;
+-				return svc;
+-			}
+-		}
+-	}
+-
+-	/* keep looking in fwmark */
+-	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+-		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[idx],
+-					 f_list) {
+-			if (pos-- == 0) {
+-				iter->table = ipvs->svc_fwm_table;
+ 				iter->bucket = idx;
+ 				return svc;
+ 			}
+ 		}
+ 	}
+-
+ 	return NULL;
+ }
+ 
+@@ -2327,38 +2278,17 @@ static void *ip_vs_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 	svc = v;
+ 	iter = seq->private;
+ 
+-	if (iter->table == ipvs->svc_table) {
+-		/* next service in table hashed by protocol */
+-		e = rcu_dereference(hlist_next_rcu(&svc->s_list));
+-		if (e)
+-			return hlist_entry(e, struct ip_vs_service, s_list);
+-
+-		while (++iter->bucket < IP_VS_SVC_TAB_SIZE) {
+-			hlist_for_each_entry_rcu(svc,
+-						 &ipvs->svc_table[iter->bucket],
+-						 s_list) {
+-				return svc;
+-			}
+-		}
+-
+-		iter->table = ipvs->svc_fwm_table;
+-		iter->bucket = -1;
+-		goto scan_fwmark;
+-	}
+-
+-	/* next service in hashed by fwmark */
+-	e = rcu_dereference(hlist_next_rcu(&svc->f_list));
++	e = rcu_dereference(hlist_next_rcu(&svc->s_list));
+ 	if (e)
+-		return hlist_entry(e, struct ip_vs_service, f_list);
++		return hlist_entry(e, struct ip_vs_service, s_list);
+ 
+- scan_fwmark:
+ 	while (++iter->bucket < IP_VS_SVC_TAB_SIZE) {
+ 		hlist_for_each_entry_rcu(svc,
+-					 &ipvs->svc_fwm_table[iter->bucket],
+-					 f_list)
++					 &ipvs->svc_table[iter->bucket],
++					 s_list) {
+ 			return svc;
++		}
+ 	}
+-
+ 	return NULL;
+ }
+ 
+@@ -2380,17 +2310,12 @@ static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
+ 		seq_puts(seq,
+ 			 "  -> RemoteAddress:Port Forward Weight ActiveConn InActConn\n");
+ 	} else {
+-		struct net *net = seq_file_net(seq);
+-		struct netns_ipvs *ipvs = net_ipvs(net);
+ 		const struct ip_vs_service *svc = v;
+-		const struct ip_vs_iter *iter = seq->private;
+ 		const struct ip_vs_dest *dest;
+ 		struct ip_vs_scheduler *sched = rcu_dereference(svc->scheduler);
+ 		char *sched_name = sched ? sched->name : "none";
+ 
+-		if (svc->ipvs != ipvs)
+-			return 0;
+-		if (iter->table == ipvs->svc_table) {
++		if (!svc->fwmark) {
+ #ifdef CONFIG_IP_VS_IPV6
+ 			if (svc->af == AF_INET6)
+ 				seq_printf(seq, "%s  [%pI6]:%04X %s ",
+@@ -2865,24 +2790,6 @@ __ip_vs_get_service_entries(struct netns_ipvs *ipvs,
+ 		}
+ 	}
+ 
+-	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
+-		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[idx], f_list) {
+-			/* Only expose IPv4 entries to old interface */
+-			if (svc->af != AF_INET)
+-				continue;
+-
+-			if (count >= get->num_services)
+-				goto out;
+-			memset(&entry, 0, sizeof(entry));
+-			ip_vs_copy_service(&entry, svc);
+-			if (copy_to_user(&uptr->entrytable[count],
+-					 &entry, sizeof(entry))) {
+-				ret = -EFAULT;
+-				goto out;
+-			}
+-			count++;
+-		}
+-	}
  out:
--	mutex_unlock(&ipvs->service_mutex);
-+	rcu_read_unlock();
- 
  	return ret;
  }
+@@ -3383,17 +3290,6 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
+ 		}
+ 	}
+ 
+-	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
+-		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[i], f_list) {
+-			if (++idx <= start)
+-				continue;
+-			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
+-				idx--;
+-				goto nla_put_failure;
+-			}
+-		}
+-	}
+-
+ nla_put_failure:
+ 	rcu_read_unlock();
+ 	cb->args[0] = idx;
+@@ -4403,12 +4299,10 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
+ 	int ret = -ENOMEM;
+ 	int idx;
+ 
+-	/* Initialize service_mutex, svc_table, svc_fwm_table per netns */
++	/* Initialize service_mutex, svc_table per netns */
+ 	__mutex_init(&ipvs->service_mutex, "ipvs->service_mutex", &__ipvs_service_key);
+-	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
++	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++)
+ 		INIT_HLIST_HEAD(&ipvs->svc_table[idx]);
+-		INIT_HLIST_HEAD(&ipvs->svc_fwm_table[idx]);
+-	}
+ 
+ 	/* Initialize rs_table */
+ 	for (idx = 0; idx < IP_VS_RTAB_SIZE; idx++)
 -- 
 2.53.0
 
