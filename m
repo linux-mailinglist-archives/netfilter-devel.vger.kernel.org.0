@@ -1,88 +1,57 @@
-Return-Path: <netfilter-devel+bounces-10786-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10787-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 92UxF8T8kWm2owEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10786-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sun, 15 Feb 2026 18:05:08 +0100
+	id aC8iKGcBk2lr0wEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10787-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Feb 2026 12:37:11 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BD8F13F302
-	for <lists+netfilter-devel@lfdr.de>; Sun, 15 Feb 2026 18:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B4681430B3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Feb 2026 12:37:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E526F300F508
-	for <lists+netfilter-devel@lfdr.de>; Sun, 15 Feb 2026 17:05:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E4746301ECDF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Feb 2026 11:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763102417E0;
-	Sun, 15 Feb 2026 17:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9BF2D739D;
+	Mon, 16 Feb 2026 11:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sleuthco.ai header.i=@sleuthco.ai header.b="ghzfrOo7"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="cu/mntiq"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C213E1E3DE5
-	for <netfilter-devel@vger.kernel.org>; Sun, 15 Feb 2026 17:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F2402C0299
+	for <netfilter-devel@vger.kernel.org>; Mon, 16 Feb 2026 11:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771175104; cv=none; b=NXydJNi7nis+3LOtJGo85NxFDr9lcqQ4piScAHz+yS6D2m7VTRfkmZGCBywL1ywb5MHig/KJqUDUbA9HTIrS01JR9B0f4LeXHWEcp/g+r4H7dBCeDiDQqsR94uQApE2KNnKNwau8GcxMSuYZtbFOpfM7+XjhsUX5iQfPYWrgp7g=
+	t=1771241775; cv=none; b=unL1VEjn9CDjq0SNIZmUA71rp1o/UskEZJgUZqxZlmHVcqkr4XpODwBhe9kY9d0/Z0IE96TXnOorPqg799ddFSUiTxwAtgLx5CNPGjFTCt8WCW/ON/oDIUS203OklFpcqJ7bVZ+Q+X78gd2QvyDimpjYsPnP2wCz9SUSqgFwVdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771175104; c=relaxed/simple;
-	bh=f+Tyh2hLJ+Cne3xUFe0xnTyFnLfXyVQunrlA9JTEsbY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JkBMz0cfdBINbTdCqK/f0E6A5AEq53JRnsm5mCcSMb3emCM0UCKGuoEncFtvw73Z1hK79HICXCNiGiG9ioHYiqBhZ6FdnrM+OzXrBNmhl76bhfhi+rgce+lsM3K9ZdEj76C4S1bmgGlGw2g/KEAE0WslP/VBPeiyqLSwlhfy22c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sleuthco.ai; spf=fail smtp.mailfrom=sleuthco.ai; dkim=pass (2048-bit key) header.d=sleuthco.ai header.i=@sleuthco.ai header.b=ghzfrOo7; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sleuthco.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sleuthco.ai
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-506aa685d62so11900941cf.0
-        for <netfilter-devel@vger.kernel.org>; Sun, 15 Feb 2026 09:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sleuthco.ai; s=google; t=1771175101; x=1771779901; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HPsdSB/iF5HKTkmUBRnibeO6Imspxqd/mhWEIPbcdnw=;
-        b=ghzfrOo7RT5MGmw54Qzjsduq/+hkCx+xmAIh17ykwEpBdk28H6ksdpgWDl3UXLIjFP
-         4lU3a0vIJGOiIumtVHOkLlhoiFOwjYOWyvHEyz7cBzAP5uaqCG4LZ0iLbB0ddRfJYWWE
-         Dw7z/NtyFaKOupgNdlqi/fWtUBVwjgzXdq8V9pF+09MmWYY5MQ9Jy/URPTkZeNLDYqIs
-         nArTq/MhEUTaNq7RTcAofMrU095R/kgMa7Y0WSxrsPI/mAfc0fKozGPRTM/qfkP96NGj
-         PSrjAI8HZQYQvmdp0YkTNj/AFuWoqAWlVt31BE4Cfm+WMdiWwWYO2bwIUpG692DHQuJa
-         06cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771175101; x=1771779901;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HPsdSB/iF5HKTkmUBRnibeO6Imspxqd/mhWEIPbcdnw=;
-        b=Lj9FRUhbguFn8S8MKsgJl5H76dWFaoqzB6zmjSnVa4dgJjfkqXtY5qlrxfM8BKLKoU
-         p2mWUJG/+zuFzDr3TVHr4DJxqUFbLXkcTAckfIbepZeiGEAfSyMi9Wjr3GgOiKsoYCkk
-         N/s6dCMomDtLZr9ttGAMDEtWLCeTl8joVjIgLQme+o+WQAP4E6JeCS5CBB390F7+l2RM
-         GW+HI+JJcH1RiM7ztd+e2Z7iBMydsU8znUMYWJTCJPgbQfQrcAVksuyDQaG4mx5mSSr2
-         nuS9hw7zJ0B6GU4YBfu5muYKGK8/1ba45LhBdBgkX3UR6KQMcD3lVf0xXqRU6hEQ2JMf
-         ZaPg==
-X-Gm-Message-State: AOJu0Yw9HWhv8WK1/PmGk3xRvAkuNJ0qb8YKPofab+uAFoRU2r6Ut+/2
-	NEniks2K7EUhs0mheA5eBomKP4eYluMyzvleLPQFImMtvFToHeDIcz9kKRlpbphC+ZK1ACENdRu
-	0hAab9n8t
-X-Gm-Gg: AZuq6aJL5JGhFrOWSx4bT6dGPhHqM25waFlMrxYLhwyzhdd57e7vu8AjoiKD+Fv7KQ+
-	5L4KzIcFuj/RafW8zlPUrhoWnZX8Bnamy3x/Z58htmkdeXR59Ho7HAYZgFPVzDp7rsCFubXAfqS
-	sBcVDCb1RCoeMAG7tSdfCBi+ls4/B/wBc4526+oFfgaTt3VE8EdPlBMV1N7y3CwADLVOCJEg/5n
-	NbYBneo2wxYx7AhyDM8ZXkzCKfnbhSI8YcSrxXeiEEEFScfIGD2ou3EPWI1nywfRhN9y4Xf33zX
-	gYgJqIpmbB718SoPvArTZFATQCFO0201cqZjQ73xImLg/ONLLekMkHBIo1ZBrzlwjAYK3/rMOYU
-	tLZ9J9HnvLUOG36EqoZbNuPx+YA5IFPDraFVAVeSiDayXPH/38F4yLerxjqeYoK6cV7PYAeRRcl
-	E0wzImWbb2U3fbsxb8eO2aYawVIVbXvnAReFy0xIE=
-X-Received: by 2002:ac8:5713:0:b0:4f1:abb3:7571 with SMTP id d75a77b69052e-506a829184cmr102136821cf.33.1771175101367;
-        Sun, 15 Feb 2026 09:05:01 -0800 (PST)
-Received: from localhost.localdomain ([2601:195:c200:c890:8d78:275e:d0a0:a365])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-506849fbb9dsm118789881cf.15.2026.02.15.09.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Feb 2026 09:05:01 -0800 (PST)
-From: Alan Ross <alan@sleuthco.ai>
+	s=arc-20240116; t=1771241775; c=relaxed/simple;
+	bh=TK2H9dUwIpeJBJi5XxsvDDdrnQPAetldgfLEabWHIyY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=bTfKv29bMRb+hidQRm75sqZloivrASLpJb1Zdxf41oaaTCy7sC0Ia6qk03zMDfM5YeaonSQMk5bw6Aggny5B+Ff/3auErbQRsh8b4oUwJBDDH3NDzRmsgcZe4swf3riEMuNbVvW8GhFXE/5lWMBdl+FoMzahoE7HZ8UlbgbCdVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=cu/mntiq; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id A094960263
+	for <netfilter-devel@vger.kernel.org>; Mon, 16 Feb 2026 12:26:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1771241209;
+	bh=L8B9nQY+X6hUMuLVrmOmbbZ09Ap1CDKA/7MKA4knino=;
+	h=From:To:Subject:Date:From;
+	b=cu/mntiqfSYM6SYBhI7lQOiP6y3YL7TswzLryG4R0JnuN8uqi+r3iEWXH1OaYur0A
+	 hRbmRfvaakwjXUwLxj3cbdheenoGZN4+XRdZYFotLlmiEUXZW51wO0Sbmxi6IV2L3D
+	 xqrq1HjxMJaep3LJUALCSnGbkvRDLqJPFB6ZAAT3dyEO9LhidW0L2JNy/75DPwXAuF
+	 hJrIbqd8KWyWX9dupFbb41uETUzlsAW8vK5iZm+qooYV2ugb01dvmJl7RUaD9nh/6l
+	 FxK6sLsQtHPPIBvN6UJn9utYpggesZ6ftNrKYuCIEDoo4gKG0Pi8oAdjxjcFvazU9x
+	 fLKGMkA9tCfBw==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Cc: kadlec@netfilter.org,
-	pablo@netfilter.org,
-	Alan Ross <alan@sleuthco.ai>
-Subject: [PATCH] ipset: refuse to run under file capabilities
-Date: Sun, 15 Feb 2026 12:04:53 -0500
-Message-ID: <20260215170453.20653-1-alan@sleuthco.ai>
-X-Mailer: git-send-email 2.52.0.windows.1
+Subject: [PATCH nft] json: complete multi-statement set element support
+Date: Mon, 16 Feb 2026 12:26:45 +0100
+Message-ID: <20260216112645.1739412-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -95,82 +64,150 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[sleuthco.ai:s=google];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10786-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10787-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[sleuthco.ai];
-	DKIM_TRACE(0.00)[sleuthco.ai:+];
+	DMARC_NA(0.00)[netfilter.org];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alan@sleuthco.ai,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sleuthco.ai:mid,sleuthco.ai:dkim,sleuthco.ai:email]
-X-Rspamd-Queue-Id: 9BD8F13F302
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:mid,netfilter.org:dkim,netfilter.org:email]
+X-Rspamd-Queue-Id: 0B4681430B3
 X-Rspamd-Action: no action
 
-Refuse to run when ipset has been given file capabilities
-(e.g. setcap cap_net_admin+ep) or is setuid/setgid.
+Remove artificial limitation on the maximum number of statements per
+element in listings.
 
-Running networking administration tools with elevated privileges via
-file capabilities exposes the same risks as setuid: any environment
-variable or file-descriptor manipulation the kernel does not scrub can
-be leveraged by an unprivileged caller.
+Moreover, update tests/shell which are currently incorrect.
 
-Add a guard at the very top of main() that calls _exit(111) when
-getuid() != geteuid(), getgid() != getegid(), or
-getauxval(AT_SECURE) is set.
-
-This follows the same pattern recently applied to iptables
-(commit a2a733e9f0da) and nftables (commit badb2474ca8b).
-
-Signed-off-by: Alan Ross <alan@sleuthco.ai>
+Fixes: e6d1d0d61195 ("src: add set element multi-statement support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/ipset.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ src/json.c                                         |  2 --
+ .../nft-f/dumps/0025empty_dynset_0.json-nft        |  4 ++++
+ .../sets/dumps/0060set_multistmt_0.json-nft        | 12 ++++++++++++
+ .../sets/dumps/0060set_multistmt_1.json-nft        | 14 ++++++++++++++
+ 4 files changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/src/ipset.c b/src/ipset.c
-index d7733bf..fff1ca6 100644
---- a/src/ipset.c
-+++ b/src/ipset.c
-@@ -11,11 +11,13 @@
- #include <stdio.h>			/* fprintf */
- #include <stdlib.h>			/* exit */
- #include <string.h>			/* strcmp */
-+#include <unistd.h>			/* getuid, getgid, _exit */
- 
- #include <config.h>
- #include <libipset/ipset.h>		/* ipset library */
- #include <libipset/xlate.h>		/* translate to nftables */
- #include <libgen.h>
-+#include <sys/auxv.h>			/* getauxval */
- 
- int
- main(int argc, char *argv[])
-@@ -23,6 +25,11 @@ main(int argc, char *argv[])
- 	struct ipset *ipset;
- 	int ret;
- 
-+	/* Refuse to run under setuid/setgid or file capabilities */
-+	if (getuid() != geteuid() || getgid() != getegid() ||
-+	    getauxval(AT_SECURE))
-+		_exit(111);
-+
- 	/* Load set types */
- 	ipset_load_types();
- 
+diff --git a/src/json.c b/src/json.c
+index 3c369fb916d0..7312215dede4 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -821,8 +821,6 @@ static json_t *__set_elem_expr_json(const struct expr *expr,
+ 			/* XXX: detect and complain about clashes? */
+ 			json_object_update_missing(root, tmp);
+ 			json_decref(tmp);
+-			/* TODO: only one statement per element. */
+-			break;
+ 		}
+ 		return nft_json_pack("{s:o}", "elem", root);
+ 	}
+diff --git a/tests/shell/testcases/nft-f/dumps/0025empty_dynset_0.json-nft b/tests/shell/testcases/nft-f/dumps/0025empty_dynset_0.json-nft
+index 0cde23b00000..5e73c644805d 100644
+--- a/tests/shell/testcases/nft-f/dumps/0025empty_dynset_0.json-nft
++++ b/tests/shell/testcases/nft-f/dumps/0025empty_dynset_0.json-nft
+@@ -101,6 +101,10 @@
+                 "rate": 1,
+                 "burst": 5,
+                 "per": "second"
++              },
++              "counter": {
++                "packets": 0,
++                "bytes": 0
+               }
+             }
+           }
+diff --git a/tests/shell/testcases/sets/dumps/0060set_multistmt_0.json-nft b/tests/shell/testcases/sets/dumps/0060set_multistmt_0.json-nft
+index 1aede147cacf..8622d50f8e96 100644
+--- a/tests/shell/testcases/sets/dumps/0060set_multistmt_0.json-nft
++++ b/tests/shell/testcases/sets/dumps/0060set_multistmt_0.json-nft
+@@ -41,6 +41,10 @@
+                 "rate": 1,
+                 "burst": 5,
+                 "per": "second"
++              },
++              "counter": {
++                "packets": 0,
++                "bytes": 0
+               }
+             }
+           },
+@@ -51,6 +55,10 @@
+                 "rate": 1,
+                 "burst": 5,
+                 "per": "second"
++              },
++              "counter": {
++                "packets": 0,
++                "bytes": 0
+               }
+             }
+           },
+@@ -61,6 +69,10 @@
+                 "rate": 1,
+                 "burst": 5,
+                 "per": "second"
++              },
++              "counter": {
++                "packets": 0,
++                "bytes": 0
+               }
+             }
+           }
+diff --git a/tests/shell/testcases/sets/dumps/0060set_multistmt_1.json-nft b/tests/shell/testcases/sets/dumps/0060set_multistmt_1.json-nft
+index 6098dc563141..aea0fe493981 100644
+--- a/tests/shell/testcases/sets/dumps/0060set_multistmt_1.json-nft
++++ b/tests/shell/testcases/sets/dumps/0060set_multistmt_1.json-nft
+@@ -44,6 +44,10 @@
+               "counter": {
+                 "packets": 0,
+                 "bytes": 0
++              },
++              "quota": {
++                "val": 500,
++                "val_unit": "bytes"
+               }
+             }
+           },
+@@ -53,6 +57,12 @@
+               "counter": {
+                 "packets": 9,
+                 "bytes": 756
++              },
++              "quota": {
++                "val": 500,
++                "val_unit": "bytes",
++                "used": 500,
++                "used_unit": "bytes"
+               }
+             }
+           },
+@@ -62,6 +72,10 @@
+               "counter": {
+                 "packets": 0,
+                 "bytes": 0
++              },
++              "quota": {
++                "val": 1000,
++                "val_unit": "bytes"
+               }
+             }
+           }
 -- 
-2.43.0
+2.47.3
 
 
