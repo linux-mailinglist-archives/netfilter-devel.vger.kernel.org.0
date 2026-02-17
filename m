@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-10793-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10795-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sAIkM0WYlGlAFwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10793-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Feb 2026 17:33:09 +0100
+	id 0Ny/OJSYlGkoFwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10795-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Feb 2026 17:34:28 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4697B14E380
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Feb 2026 17:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1BE14E3F2
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Feb 2026 17:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E95C0303D8B2
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Feb 2026 16:32:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 50C9C3059AFD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Feb 2026 16:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D403936EABB;
-	Tue, 17 Feb 2026 16:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D324371070;
+	Tue, 17 Feb 2026 16:32:59 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC7D36D50A;
-	Tue, 17 Feb 2026 16:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED19336F439;
+	Tue, 17 Feb 2026 16:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771345974; cv=none; b=AFWNADbzcsGrDsb1wlKzuw1NZB6ijR49rwTsuyz415Z70YxPI6KFqj4RLqdWC9Yum/UZUJCPxt5+iwlIiawx8yJLmeREyr/d2Aej4vWV9n29gOjOM/JXfuCjGwVUI26hiWdPHLkUQFVlTNTl2RG4B8UvIWc2MAgoI9o9EUvTygo=
+	t=1771345979; cv=none; b=hBhWQDNR2Oj7JwXteXnaoCPG02yU5Pnb08IQLM2Jqe6ljqhk/LHOnCQAF4yfA5PtjAUnSveXk3XTbW5Q92qSk1bj1RE2NP6pTas5LrdgLVmwPalYvvIkgL1E+cfPY0CSrpNyE8vGVWhUEXCKoO0aVKv142cJOo27eNOovumS3cI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771345974; c=relaxed/simple;
-	bh=7oQdk/LAztsGryhpI1lXkwmCAGmUeo4oxY/eRAY3OyM=;
+	s=arc-20240116; t=1771345979; c=relaxed/simple;
+	bh=uW2O5Th1LCTJ1AVmag2UcS2a7ifOv+akwKAP3v8/iSk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eG22upEYZ1wKvdjm7eMLSEZUyzuLBOY/yNjeyYpfUOL7mJexnbDVNfU0EosTkjl/RWxzL1PXU7eVG0/c2bL17ZN7IclYgOQiikFSa+FMYd8GzDisLQ8VATpDeKuSU1lKXsFFwGjk5bvNn0T2ktLjc5DYe3fgN7Vxwvw/GIxzY0A=
+	 MIME-Version; b=NKDflXpcFXUHiY9RjRTXkyPTmBNgfHTa9DZoQ/s416VLeTbUWh/zrqmwlJOS9YDjjdSAa13JG1WUfB/15jLu/W2kdlN+0tds41Kkx9x4BKwPcalVx2pFaqbzVMLMrc6frdK4cIKDuax8smTL6lmKGGQmRLmjoAldN/vK27oh1y4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id DAFDD60CF9; Tue, 17 Feb 2026 17:32:51 +0100 (CET)
+	id 3A78960683; Tue, 17 Feb 2026 17:32:56 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 02/10] netfilter: nft_counter: serialize reset with spinlock
-Date: Tue, 17 Feb 2026 17:32:25 +0100
-Message-ID: <20260217163233.31455-3-fw@strlen.de>
+Subject: [PATCH net 03/10] netfilter: nft_quota: use atomic64_xchg for reset
+Date: Tue, 17 Feb 2026 17:32:26 +0100
+Message-ID: <20260217163233.31455-4-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260217163233.31455-1-fw@strlen.de>
 References: <20260217163233.31455-1-fw@strlen.de>
@@ -76,85 +76,60 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10793-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-10795-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,mailfence.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4697B14E380
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,netfilter.org:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mailfence.com:email]
+X-Rspamd-Queue-Id: 9B1BE14E3F2
 X-Rspamd-Action: no action
 
 From: Brian Witte <brianwitte@mailfence.com>
 
-Add a global static spinlock to serialize counter fetch+reset
-operations, preventing concurrent dump-and-reset from underrunning
-values.
-
-The lock is taken before fetching the total so that two parallel
-resets cannot both read the same counter values and then both
-subtract them.
-
-A global lock is used for simplicity since resets are infrequent.
-If this becomes a bottleneck, it can be replaced with a per-net
-lock later.
+Use atomic64_xchg() to atomically read and zero the consumed value
+on reset, which is simpler than the previous read+sub pattern and
+doesn't require lock serialization.
 
 Fixes: bd662c4218f9 ("netfilter: nf_tables: Add locking for NFT_MSG_GETOBJ_RESET requests")
 Fixes: 3d483faa6663 ("netfilter: nf_tables: Add locking for NFT_MSG_GETSETELEM_RESET requests")
 Fixes: 3cb03edb4de3 ("netfilter: nf_tables: Add locking for NFT_MSG_GETRULE_RESET requests")
-Suggested-by: Florian Westphal <fw@strlen.de>
+Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Brian Witte <brianwitte@mailfence.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_counter.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ net/netfilter/nft_quota.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/net/netfilter/nft_counter.c b/net/netfilter/nft_counter.c
-index 0d70325280cc..169ae93688bc 100644
---- a/net/netfilter/nft_counter.c
-+++ b/net/netfilter/nft_counter.c
-@@ -32,6 +32,9 @@ struct nft_counter_percpu_priv {
+diff --git a/net/netfilter/nft_quota.c b/net/netfilter/nft_quota.c
+index df0798da2329..cb6c0e04ff67 100644
+--- a/net/netfilter/nft_quota.c
++++ b/net/netfilter/nft_quota.c
+@@ -140,11 +140,16 @@ static int nft_quota_do_dump(struct sk_buff *skb, struct nft_quota *priv,
+ 	u64 consumed, consumed_cap, quota;
+ 	u32 flags = priv->flags;
  
- static DEFINE_PER_CPU(struct u64_stats_sync, nft_counter_sync);
- 
-+/* control plane only: sync fetch+reset */
-+static DEFINE_SPINLOCK(nft_counter_lock);
-+
- static inline void nft_counter_do_eval(struct nft_counter_percpu_priv *priv,
- 				       struct nft_regs *regs,
- 				       const struct nft_pktinfo *pkt)
-@@ -148,13 +151,25 @@ static void nft_counter_fetch(struct nft_counter_percpu_priv *priv,
- 	}
- }
- 
-+static void nft_counter_fetch_and_reset(struct nft_counter_percpu_priv *priv,
-+					struct nft_counter_tot *total)
-+{
-+	spin_lock(&nft_counter_lock);
-+	nft_counter_fetch(priv, total);
-+	nft_counter_reset(priv, total);
-+	spin_unlock(&nft_counter_lock);
-+}
-+
- static int nft_counter_do_dump(struct sk_buff *skb,
- 			       struct nft_counter_percpu_priv *priv,
- 			       bool reset)
- {
- 	struct nft_counter_tot total;
- 
--	nft_counter_fetch(priv, &total);
-+	if (unlikely(reset))
-+		nft_counter_fetch_and_reset(priv, &total);
-+	else
-+		nft_counter_fetch(priv, &total);
- 
- 	if (nla_put_be64(skb, NFTA_COUNTER_BYTES, cpu_to_be64(total.bytes),
- 			 NFTA_COUNTER_PAD) ||
-@@ -162,9 +177,6 @@ static int nft_counter_do_dump(struct sk_buff *skb,
- 			 NFTA_COUNTER_PAD))
+-	/* Since we inconditionally increment consumed quota for each packet
++	/* Since we unconditionally increment consumed quota for each packet
+ 	 * that we see, don't go over the quota boundary in what we send to
+ 	 * userspace.
+ 	 */
+-	consumed = atomic64_read(priv->consumed);
++	if (reset) {
++		consumed = atomic64_xchg(priv->consumed, 0);
++		clear_bit(NFT_QUOTA_DEPLETED_BIT, &priv->flags);
++	} else {
++		consumed = atomic64_read(priv->consumed);
++	}
+ 	quota = atomic64_read(&priv->quota);
+ 	if (consumed >= quota) {
+ 		consumed_cap = quota;
+@@ -160,10 +165,6 @@ static int nft_quota_do_dump(struct sk_buff *skb, struct nft_quota *priv,
+ 	    nla_put_be32(skb, NFTA_QUOTA_FLAGS, htonl(flags)))
  		goto nla_put_failure;
  
--	if (reset)
--		nft_counter_reset(priv, &total);
--
+-	if (reset) {
+-		atomic64_sub(consumed, priv->consumed);
+-		clear_bit(NFT_QUOTA_DEPLETED_BIT, &priv->flags);
+-	}
  	return 0;
  
  nla_put_failure:
