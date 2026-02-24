@@ -1,127 +1,183 @@
-Return-Path: <netfilter-devel+bounces-10845-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10846-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ePL9FAHKnWmxSAQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10845-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Feb 2026 16:55:45 +0100
+	id YBXAGr7snWncSgQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10846-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Feb 2026 19:23:58 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB1FB189691
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Feb 2026 16:55:44 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F215418B50C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Feb 2026 19:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3ADD631CE41A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Feb 2026 15:49:46 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 21413306DA7A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Feb 2026 18:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C613A7851;
-	Tue, 24 Feb 2026 15:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1FE168BD;
+	Tue, 24 Feb 2026 18:23:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="eiOwJHzo"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C853A640B;
-	Tue, 24 Feb 2026 15:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB9D3A0B3D
+	for <netfilter-devel@vger.kernel.org>; Tue, 24 Feb 2026 18:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771948181; cv=none; b=ZtfUfrpxJnLzjkdLEAP6DG0I7Jn0frFfbE8+xdp/WbUWHqj5hnlGFdfmIkffU+Ugquz3XXgNdt5yxlm57HllkirIFie9O8jgUz2dW9Xy9EQwTRfwMQ8+FJ4HvNrRkPqsMgixU+M5YiPA5kHlzFIklcYQaTEYhDXq3I9SveJNU6k=
+	t=1771957380; cv=none; b=n+gkfWuDbGLMLYn41E6qC0s/AlBGD3Ctm45mGvbz86YH+z05QqDGbJEpUC9937YWuXqeXxbLyVkd2CblIbyR7lVkGKLKwstghtDWw2uK9bWjboTpUD54sPoZrVoKDO5psTeo3cGdm33U1ew7A0jeZr5YDFFS099TpISs9CFeWPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771948181; c=relaxed/simple;
-	bh=U2RtSpfnbX3HeINOo1ldILPGhn8ittpRr0t8kSUEClM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ATyBbnWcXzxPq1Gz17OAk7UfOMbBNjSR/MUuPEqj1rpup8DWIj1wu0Zvr1sox6J2GhkStO8sJS2WHplAIKOUjALbHYb1Hq0jaHxPEQpSNeC2St/EboRa8r/llfonr4I7yv8M4YPFuhWBFVQwDERqZatPHfuEJ96GwVYzIgAOv9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 5556D604AA; Tue, 24 Feb 2026 16:49:37 +0100 (CET)
-Date: Tue, 24 Feb 2026 16:49:33 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Eric Dumazet <edumazet@google.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>, netdev@vger.kernel.org,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	eric.dumazet@gmail.com
-Subject: Re: [PATCH net-next] netfilter: xt_owner: no longer acquire
- sk_callback_lock in mt_owner()
-Message-ID: <aZ3IjYUe7MbiPX15@strlen.de>
-References: <20260224122856.3152608-1-edumazet@google.com>
- <aZ2fA2x5nHsnQoBu@strlen.de>
- <CANn89iLP2xFerYywu=x8bnox_+vjrDVUxkEf-nUEJM0VmNfVdA@mail.gmail.com>
+	s=arc-20240116; t=1771957380; c=relaxed/simple;
+	bh=PzToTlyQTK9MSeIf4jTyBoKdvuFHUfwZ2IchhgekZlU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pjcrBaOAO3tStCZdjqcQWwoLVKXzqmpCsJSSy4V3SKpbofQrrYEqE3t78u2aOHFenV+cbDHVgqPrDLcKFlJeWnEjMQlKP43dTjD2XFrKRcL+4OwciQV1s57JsnD9c9PqCTg4tAcTG5qmHC4WEukUPfo9Y0jcO1Hm565QVdp7X/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=eiOwJHzo; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 0E1196054C;
+	Tue, 24 Feb 2026 19:22:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1771957372;
+	bh=Q0QxlpU/dttKpL7PHovYwkFrAisVSBe7KAtD0J0wPz8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eiOwJHzodqMwOT1OmU+/aLJhIvIH6AFQf/l1iaLAVVOL5/zoKYwe0px3WVaJeUkzW
+	 hHeEfbFPTumfeHCCQMTKmPkCPn3nB9Mtd9VcfP7aaAaC/Rw+nWZtqkjxOTH9JyI4D+
+	 lAMudw2ZUSYBQof6qk4AvjUmKQXXospI2uML/df73+7eOzte8DsqPp8HZlYrdyn0va
+	 +8erw/8cR0CKqK6fQ66PUs5J+OqJlfT/90jdvOkmfnm41J5gOeE7WGc2Xfw1vypT8O
+	 e489kYEixGXOMKCWsE50SdjD5cGwlX/1xozz2xfnOUmczx2v695/qOMHPQvD/hooN8
+	 oDpb3n+NVMDUg==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: fw@strlen.de
+Subject: [PATCH nf] netfilter: nf_tables: inconditionally bump set->nelems before insertion
+Date: Tue, 24 Feb 2026 19:22:47 +0100
+Message-ID: <20260224182247.2343607-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iLP2xFerYywu=x8bnox_+vjrDVUxkEf-nUEJM0VmNfVdA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10845-lists,netfilter-devel=lfdr.de];
-	FREEMAIL_CC(0.00)[davemloft.net,kernel.org,redhat.com,netfilter.org,vger.kernel.org,gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.970];
+	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	R_DKIM_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCPT_COUNT_TWO(0.00)[2];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-10846-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CB1FB189691
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,netfilter.org:mid,netfilter.org:dkim,netfilter.org:email]
+X-Rspamd-Queue-Id: F215418B50C
 X-Rspamd-Action: no action
 
-Eric Dumazet <edumazet@google.com> wrote:
-> Sure, I will remove the rcu_read_lock()/rcu_read_unlock()
-> 
-> Do you think adding lockdep_assert_in_rcu_read_lock() would be useful
-> or would it be too much, iptables/nftables willl always be run under RCU
-> and this is well understood ?
+In case that the set is full, a new element gets published then removed
+without waiting for the RCU grace period, while RCU reader can be
+walking over it already.
 
-I don't think the lockdep assertion is needed; but I don't mind if you
-add one.
+To address this issue, add the element transaction even if set is full,
+but toggle the set_full flag to report -ENFILE so the abort path safely
+unwinds the set to its previous state.
 
-All netfilter hooks run under rcu:
+As for element updates, decrement set->nelems to restore it.
 
-static inline int nf_hook(u_int8_t pf, unsigned int hook, struct net *net,
-                          struct sock *sk, struct sk_buff *skb,
-                          struct net_device *indev, struct net_device *outdev,
-                          int (*okfn)(struct net *, struct sock *, struct sk_buff *))
-{
-        struct nf_hook_entries *hook_head = NULL;
-        int ret = 1;
+Fixes: 35d0ac9070ef ("netfilter: nf_tables: fix set->nelems counting with no NLM_F_EXCL")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-	[..]
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 0c5a4855b97d..834736237b09 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -7171,6 +7171,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	struct nft_data_desc desc;
+ 	enum nft_registers dreg;
+ 	struct nft_trans *trans;
++	bool set_full = false;
+ 	u64 expiration;
+ 	u64 timeout;
+ 	int err, i;
+@@ -7462,10 +7463,18 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	if (err < 0)
+ 		goto err_elem_free;
+ 
++	if (!(flags & NFT_SET_ELEM_CATCHALL)) {
++		unsigned int max = nft_set_maxsize(set), nelems;
++
++		nelems = atomic_inc_return(&set->nelems);
++		if (nelems > max)
++			set_full = true;
++	}
++
+ 	trans = nft_trans_elem_alloc(ctx, NFT_MSG_NEWSETELEM, set);
+ 	if (trans == NULL) {
+ 		err = -ENOMEM;
+-		goto err_elem_free;
++		goto err_set_size;
+ 	}
+ 
+ 	ext->genmask = nft_genmask_cur(ctx->net);
+@@ -7517,7 +7526,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 
+ 						ue->priv = elem_priv;
+ 						nft_trans_commit_list_add_elem(ctx->net, trans);
+-						goto err_elem_free;
++						goto err_set_size;
+ 					}
+ 				}
+ 			}
+@@ -7535,23 +7544,16 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 		goto err_element_clash;
+ 	}
+ 
+-	if (!(flags & NFT_SET_ELEM_CATCHALL)) {
+-		unsigned int max = nft_set_maxsize(set);
+-
+-		if (!atomic_add_unless(&set->nelems, 1, max)) {
+-			err = -ENFILE;
+-			goto err_set_full;
+-		}
+-	}
+-
+ 	nft_trans_container_elem(trans)->elems[0].priv = elem.priv;
+ 	nft_trans_commit_list_add_elem(ctx->net, trans);
+-	return 0;
+ 
+-err_set_full:
+-	nft_setelem_remove(ctx->net, set, elem.priv);
++	return set_full ? -ENFILE : 0;
++
+ err_element_clash:
+ 	kfree(trans);
++err_set_size:
++	if (!(flags & NFT_SET_ELEM_CATCHALL) && !set_full)
++		atomic_dec(&set->nelems);
+ err_elem_free:
+ 	nf_tables_set_elem_destroy(ctx, set, elem.priv);
+ err_parse_data:
+-- 
+2.47.3
 
-        rcu_read_lock();
-        switch (pf) {
-        case NFPROTO_IPV4:
-                hook_head = rcu_dereference(net->nf.hooks_ipv4[hook]);
-	[..]
-	if (hook_head) {
-
-                ret = nf_hook_slow(skb, &state, hook_head, 0);
-        }
-        rcu_read_unlock();
-	[..]
-
-Thanks Eric!
 
