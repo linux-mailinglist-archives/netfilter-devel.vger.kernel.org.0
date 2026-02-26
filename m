@@ -1,48 +1,45 @@
-Return-Path: <netfilter-devel+bounces-10899-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10900-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qFrGNrCroGlulgQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10899-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 21:23:12 +0100
+	id GNWzLJmroGlulgQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10900-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 21:22:49 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5384A1AF0B5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 21:23:12 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B1CC1AF0A0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 21:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 00EAC3020EE9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 20:22:03 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0D5B63001327
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 20:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B850146AED4;
-	Thu, 26 Feb 2026 20:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DAC4534BB;
+	Thu, 26 Feb 2026 20:22:47 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DAA44D68A
-	for <netfilter-devel@vger.kernel.org>; Thu, 26 Feb 2026 20:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C95343CEF6
+	for <netfilter-devel@vger.kernel.org>; Thu, 26 Feb 2026 20:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772137312; cv=none; b=n5HyTCBOBXspmRPfKhzs7diYARH57po4W2viD0mCuRqed1K2yQDuLH1bDTQ2rtx+/pMZWMBbW7In411YBmSbwkkv5GgxnmAl+ydlLGoETnNWvcGai1VcHn1KeUYXN5tbt2cIDs42ToqSP6TIyVX3q4Z6wTmrWmJQM6+GQ5XHm8o=
+	t=1772137367; cv=none; b=BHSkYiEpKaZz1a4oeEWyr9OzKIT+A6HClIGSn0m0ErveIdYROSw+JJicTrZusHTYmr3giywBM8rSu60EUDLyfIsMrDAP8ZM3zDqOo6/fKctbneV5GLnxKC7bNSp4PPhfobw0sZR0AsOUnkcuyetgPqz5kvsMT6UiVmVsP9MrVX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772137312; c=relaxed/simple;
-	bh=6nMopUKlFcDgV08CKwOCf/0ha3m428OEOb4uxQcho4A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M1aTsxSnpB5vgxHYXyHs80KSciMrWWM1JESfG2M+wX3A7uXrbbXA7bdpG286VW5il5yYQLCjai+C3yxrEoms70uaeeIKdtaROLqWPV3ZbaoWSPs6LIMhYDIlB0b8RHMfgLGNTHeUNGQbVH7FoGfQpid+TAyl3ITnmo3jQUKEAw0=
+	s=arc-20240116; t=1772137367; c=relaxed/simple;
+	bh=9Z7n4QG4iBBq3zMBhKbhbmEYNk3BcZl5AQm59qzDD9Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CXSonWgJU2oGi2Hy9GJYF+UmrHsMSYqvSnvR0A3+h8vD5utBdGm/ft5YjoJQjJ5vcHPraC8jXaoW/7jwXSdJ2hfR1NpvE1EwY3IBM2afHYCg+hl1qQf502GiEgYp+G1b3X92LdLCf9ksIS6pWmd625rmbP6ygkIj/fL65mXgsHU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id D9BD560336; Thu, 26 Feb 2026 21:21:48 +0100 (CET)
+	id 3D94960336; Thu, 26 Feb 2026 21:22:44 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next v2 3/3] netfilter: nft_fib_ipv6: switch to fib6_lookup
-Date: Thu, 26 Feb 2026 21:21:26 +0100
-Message-ID: <20260226202129.15033-4-fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: nfnetlink_queue: remove locking in nfqnl_get_sk_secctx
+Date: Thu, 26 Feb 2026 21:22:36 +0100
+Message-ID: <20260226202239.15132-1-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260226202129.15033-1-fw@strlen.de>
-References: <20260226202129.15033-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,204 +49,62 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-10900-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWO(0.00)[2];
 	DMARC_NA(0.00)[strlen.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-10899-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	URIBL_MULTI_FAIL(0.00)[strlen.de:server fail,sto.lore.kernel.org:server fail];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,strlen.de:mid,strlen.de:email]
-X-Rspamd-Queue-Id: 5384A1AF0B5
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,strlen.de:mid,strlen.de:email]
+X-Rspamd-Queue-Id: 7B1CC1AF0A0
 X-Rspamd-Action: no action
 
-Existing code works but it requires a temporary dst object that is
-released again right away.
-
-Switch to fib6_lookup + RT6_LOOKUP_F_DST_NOREF: no need for temporary dst
-objects and refcount overhead anymore.
-
-Provides ~13% improvement in match performance.
+We don't need the cb lock here.  Also, if skb was NULL we'd have crashed
+already.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- v2: use new __ipv6_anycast_destination
-     return res.fib6_type for REJECT routes, not
-     hardoded PROHIBIT.
+ net/netfilter/nfnetlink_queue.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
- net/ipv6/netfilter/nft_fib_ipv6.c | 79 +++++++++++++++++++------------
- 1 file changed, 49 insertions(+), 30 deletions(-)
-
-diff --git a/net/ipv6/netfilter/nft_fib_ipv6.c b/net/ipv6/netfilter/nft_fib_ipv6.c
-index dc375b725b28..8b2dba88ee96 100644
---- a/net/ipv6/netfilter/nft_fib_ipv6.c
-+++ b/net/ipv6/netfilter/nft_fib_ipv6.c
-@@ -52,7 +52,13 @@ static int nft_fib6_flowi_init(struct flowi6 *fl6, const struct nft_fib *priv,
- 	fl6->flowlabel = (*(__be32 *)iph) & IPV6_FLOWINFO_MASK;
- 	fl6->flowi6_l3mdev = nft_fib_l3mdev_master_ifindex_rcu(pkt, dev);
- 
--	return lookup_flags;
-+	return lookup_flags | RT6_LOOKUP_F_DST_NOREF;
-+}
-+
-+static int nft_fib6_lookup(struct net *net, struct flowi6 *fl6,
-+			   struct fib6_result *res, int flags)
-+{
-+	return fib6_lookup(net, fl6->flowi6_oif, fl6, res, flags);
- }
- 
- static u32 __nft_fib6_eval_type(const struct nft_fib *priv,
-@@ -60,13 +66,14 @@ static u32 __nft_fib6_eval_type(const struct nft_fib *priv,
- 				struct ipv6hdr *iph)
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index fbe5a8d71433..5390d085329a 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -592,15 +592,8 @@ static int nfqnl_get_sk_secctx(struct sk_buff *skb, struct lsm_context *ctx)
  {
- 	const struct net_device *dev = NULL;
-+	struct fib6_result res = {};
- 	int route_err, addrtype;
--	struct rt6_info *rt;
- 	struct flowi6 fl6 = {
- 		.flowi6_iif = LOOPBACK_IFINDEX,
- 		.flowi6_proto = pkt->tprot,
- 		.flowi6_uid = sock_net_uid(nft_net(pkt), NULL),
- 	};
-+	int lookup_flags;
- 	u32 ret = 0;
- 
- 	if (priv->flags & NFTA_FIB_F_IIF)
-@@ -74,29 +81,23 @@ static u32 __nft_fib6_eval_type(const struct nft_fib *priv,
- 	else if (priv->flags & NFTA_FIB_F_OIF)
- 		dev = nft_out(pkt);
- 
--	nft_fib6_flowi_init(&fl6, priv, pkt, dev, iph);
-+	lookup_flags = nft_fib6_flowi_init(&fl6, priv, pkt, dev, iph);
- 
- 	if (dev && nf_ipv6_chk_addr(nft_net(pkt), &fl6.daddr, dev, true))
- 		ret = RTN_LOCAL;
- 
--	route_err = nf_ip6_route(nft_net(pkt), (struct dst_entry **)&rt,
--				 flowi6_to_flowi(&fl6), false);
-+	route_err = nft_fib6_lookup(nft_net(pkt), &fl6, &res, lookup_flags);
- 	if (route_err)
- 		goto err;
- 
--	if (rt->rt6i_flags & RTF_REJECT) {
--		route_err = rt->dst.error;
--		dst_release(&rt->dst);
--		goto err;
--	}
-+	if (res.fib6_flags & RTF_REJECT)
-+		return res.fib6_type;
- 
--	if (ipv6_anycast_destination((struct dst_entry *)rt, &fl6.daddr))
-+	if (__ipv6_anycast_destination(&res.f6i->fib6_dst, res.fib6_flags, &fl6.daddr))
- 		ret = RTN_ANYCAST;
--	else if (!dev && rt->rt6i_flags & RTF_LOCAL)
-+	else if (!dev && res.fib6_flags & RTF_LOCAL)
- 		ret = RTN_LOCAL;
- 
--	dst_release(&rt->dst);
+ 	int seclen = 0;
+ #if IS_ENABLED(CONFIG_NETWORK_SECMARK)
 -
- 	if (ret)
- 		return ret;
- 
-@@ -152,6 +153,33 @@ static bool nft_fib_v6_skip_icmpv6(const struct sk_buff *skb, u8 next, const str
- 	return ipv6_addr_type(&iph->daddr) & IPV6_ADDR_LINKLOCAL;
+-	if (!skb || !sk_fullsock(skb->sk))
+-		return 0;
+-
+-	read_lock_bh(&skb->sk->sk_callback_lock);
+-
+ 	if (skb->secmark)
+ 		seclen = security_secid_to_secctx(skb->secmark, ctx);
+-	read_unlock_bh(&skb->sk->sk_callback_lock);
+ #endif
+ 	return seclen;
  }
- 
-+static bool nft_fib6_info_nh_dev_match(const struct net_device *nh_dev,
-+				       const struct net_device *dev)
-+{
-+	return nh_dev == dev ||
-+	       l3mdev_master_ifindex_rcu(nh_dev) == dev->ifindex;
-+}
-+
-+static bool nft_fib6_info_nh_uses_dev(struct fib6_info *rt,
-+				      const struct net_device *dev)
-+{
-+	const struct net_device *nh_dev;
-+	struct fib6_info *iter;
-+
-+	nh_dev = fib6_info_nh_dev(rt);
-+	if (nft_fib6_info_nh_dev_match(nh_dev, dev))
-+		return true;
-+
-+	list_for_each_entry(iter, &rt->fib6_siblings, fib6_siblings) {
-+		nh_dev = fib6_info_nh_dev(iter);
-+
-+		if (nft_fib6_info_nh_dev_match(nh_dev, dev))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 		   const struct nft_pktinfo *pkt)
- {
-@@ -160,14 +188,14 @@ void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	const struct net_device *found = NULL;
- 	const struct net_device *oif = NULL;
- 	u32 *dest = &regs->data[priv->dreg];
-+	struct fib6_result res = {};
- 	struct ipv6hdr *iph, _iph;
- 	struct flowi6 fl6 = {
- 		.flowi6_iif = LOOPBACK_IFINDEX,
- 		.flowi6_proto = pkt->tprot,
- 		.flowi6_uid = sock_net_uid(nft_net(pkt), NULL),
- 	};
--	struct rt6_info *rt;
--	int lookup_flags;
-+	int lookup_flags, ret;
- 
- 	if (nft_fib_can_skip(pkt)) {
- 		nft_fib_store_result(dest, priv, nft_in(pkt));
-@@ -193,26 +221,17 @@ void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	lookup_flags = nft_fib6_flowi_init(&fl6, priv, pkt, oif, iph);
- 
- 	*dest = 0;
--	rt = (void *)ip6_route_lookup(nft_net(pkt), &fl6, pkt->skb,
--				      lookup_flags);
--	if (rt->dst.error)
--		goto put_rt_err;
--
--	/* Should not see RTF_LOCAL here */
--	if (rt->rt6i_flags & (RTF_REJECT | RTF_ANYCAST | RTF_LOCAL))
--		goto put_rt_err;
-+	ret = nft_fib6_lookup(nft_net(pkt), &fl6, &res, lookup_flags);
-+	if (ret || res.fib6_flags & (RTF_REJECT | RTF_ANYCAST | RTF_LOCAL))
-+		return;
- 
- 	if (!oif) {
--		found = rt->rt6i_idev->dev;
-+		found = fib6_info_nh_dev(res.f6i);
- 	} else {
--		if (oif == rt->rt6i_idev->dev ||
--		    l3mdev_master_ifindex_rcu(rt->rt6i_idev->dev) == oif->ifindex)
-+		if (nft_fib6_info_nh_uses_dev(res.f6i, oif))
- 			found = oif;
- 	}
--
- 	nft_fib_store_result(dest, priv, found);
-- put_rt_err:
--	ip6_rt_put(rt);
- }
- EXPORT_SYMBOL_GPL(nft_fib6_eval);
- 
 -- 
 2.52.0
 
