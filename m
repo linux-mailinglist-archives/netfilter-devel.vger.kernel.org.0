@@ -1,129 +1,200 @@
-Return-Path: <netfilter-devel+bounces-10886-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10887-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eKSSKJtooGm+jQQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10886-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 16:36:59 +0100
+	id yHRUBeuCoGkDkgQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10887-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 18:29:15 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087621A8D52
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 16:36:58 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C8F1AC6C0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 18:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2765D333B2EC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 15:24:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 88A3C3006B64
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Feb 2026 16:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6115C3E95A3;
-	Thu, 26 Feb 2026 15:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CF84611E9;
+	Thu, 26 Feb 2026 16:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="fqctQ4X7"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="d6h8Xq5Z"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC88C3ECBE4
-	for <netfilter-devel@vger.kernel.org>; Thu, 26 Feb 2026 15:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2464611E4;
+	Thu, 26 Feb 2026 16:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772119378; cv=none; b=SBJaklJYhKnPNAdLYfLDr/JoBRqtsHrLNptheWt7Gg0si60IwNxw0Hx5OhPOatc2sUBYhW74tH6PCpOrGfZwJh5ZdT2HBiEZm1ANmGtDQOp7wE+9lxTgB8NCcc25Mk/OpOyHvkC67ukeT4GD8U5EhEXVeweRnoHI4mCorcA72a8=
+	t=1772123295; cv=none; b=MFuuITmqrp9Uem1byMOMBNoTxtvgCtMPfNgXI6VBgBxBHfmvGymXrfoxUZKvpkEQfiOxcEC3cAfj1v2t43KUKq4mQhsIMjIJk/50mqVrYv8CQwZHb8W+alulmOf2UBSeYrFcTJ7/yNSos5WGlvJGv0ujo0u3R6dG7QVrBj4gEp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772119378; c=relaxed/simple;
-	bh=7yvUEX+uhHqjq6TFVbqAXeoqbeRyPMaJx9UdtOVeo/M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WdXhmKi8SApdy9k9sEZiAdw2FloAmFFFEaQaVh25Zyj7Ds4kEtN/3PLpeBM/wSc4rAOH5jaUO+UJktSzBRa/pQaUTt/N4aQs06PzgYiM6zFAAJPF1Nx/ui6v9Ahirp685mSmX/s0Lb1Cm3unykI7Vl6PcD2zs5yb0lw9wWtPlgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fqctQ4X7; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=AK1Gg/Spz4I4496sGJlY4v97XJIU+RzBJRDVJv2jER4=; b=fqctQ4X7rAde7pGc3ObFpOCE7g
-	wvAMtpouJ5Pi98FtGT+ww+3vhzFTyYCG5AzYGobFhCzenRHV1NWrWD0+EiUBtopdkGl0EIzTAjmEa
-	jHJDXZd4r+SITqvCYJvqmmdBI82y3+8+O6uLT6DjM9JQwZ7poeFtqLB8G7QuWHpPcuo3fx1xFqbht
-	8YsNvAWm4Iuj/3ZYsE0men4zvo0JHVqt84tstL3V6YfccueXWad/KQKzCOm87FrIc0T9qJ4es0rjP
-	+YlXSCMovI5+iilkuv7owROJIfJrApWKa5C0oILBKfqntwiU5pFQNzccZuLvL68O2l96ogN1oDXVt
-	66bjqDeQ==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1vvcyo-000000002Ow-0z3a
-	for netfilter-devel@vger.kernel.org;
-	Thu, 26 Feb 2026 16:08:42 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH] monitor: Call FD_ISSET with valid descriptors only
-Date: Thu, 26 Feb 2026 16:08:37 +0100
-Message-ID: <20260226150837.21210-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1772123295; c=relaxed/simple;
+	bh=t0YhMQcTRqqz7VAWaqeXrGRbRRGHThL5IzxxFl0ro+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i56mwesxqwpq2oW1//IY4R2zrgL8E6IbxoX6G986htVfdICWrd8LQmd1fMXp2Nuk/VByWmVdxPamg4OoN/g6y+7FWJzbhn0H8f0UOLmBLDNr+c2JbDVosEhNwDleyp1NH5jZkZy3rCDba8RoxsfggC2b6ILWSgoQLt8zGn+O8H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=d6h8Xq5Z; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 3E3B36017D;
+	Thu, 26 Feb 2026 17:28:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1772123284;
+	bh=jlOcR6Y3a6C/KGArtUcehSOzJcCDI6qSxwukm5/E1to=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d6h8Xq5ZwNSqK3JfAjZ9GcLpnJ05bQRSvNb0RjWhvA0szllq3b4AIhtFNwkwwCNJS
+	 4gHB5bHfB8LXheYT2edYtQPJdEWb2jMLHXFK2w74KZzKJFYh/nboUEb7ttwh4NpurG
+	 45iD4RkEx6r/zlnRHaob3BIGczzwr9PfNatyOiEH7j/CyYiYZoSU/1pM7JEEuWoiDL
+	 FKytiE2QwcuJxkPS8cYd6m4zs9DKTedFKv2NXJevkXn4hovCcvrnJfbnidrnOuuR+i
+	 +WHQSff+XhPoZ/fjsymKkHdPnHsySegHZYXpUvuTxn7s9Btyu3Hbo0V+ily2Nt4gCN
+	 4rRc1wS+/OTew==
+Date: Thu, 26 Feb 2026 17:28:01 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: Jakub Kicinski <kuba@kernel.org>, edumazet@google.com,
+	netfilter-devel@vger.kernel.org, pabeni@redhat.com,
+	davem@davemloft.net, netdev@vger.kernel.org
+Subject: Re: [net,2/2] netfilter: nf_tables: unconditionally bump set->nelems
+ before insertion
+Message-ID: <aaB0kaSgbnSgVFBE@chamomile>
+References: <20260225130619.1248-3-fw@strlen.de>
+ <20260226035628.1827287-1-kuba@kernel.org>
+ <aaACGbUnAyQiV3ut@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aaACGbUnAyQiV3ut@strlen.de>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10886-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-0.986];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-10887-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,nwl.cc:mid,nwl.cc:email]
-X-Rspamd-Queue-Id: 087621A8D52
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:url,netfilter.org:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A6C8F1AC6C0
 X-Rspamd-Action: no action
 
-This fixes for 'nft monitor' aborting with:
+On Thu, Feb 26, 2026 at 09:19:37AM +0100, Florian Westphal wrote:
+> Jakub Kicinski <kuba@kernel.org> wrote:
+> > This is an AI-generated review of your patch. The human sending this
+> > email says "Is this legit?"
+> 
+> Looks legit to me.
+> 
+> > For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+> > ---
+> > netfilter: nf_tables: unconditionally bump set->nelems before insertion
+> > 
+> > This commit addresses a race condition where a new element gets published
+> > then removed without waiting for the RCU grace period when the set is full.
+> > The fix moves the nelems increment before insertion and adds cleanup logic
+> > using the abort path to safely unwind the set.
+> > 
+> > > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> > > index 0c5a4855b97d..834736237b09 100644
+> > > --- a/net/netfilter/nf_tables_api.c
+> > > +++ b/net/netfilter/nf_tables_api.c
+> > > @@ -7171,6 +7171,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+> > >  	struct nft_data_desc desc;
+> > >  	enum nft_registers dreg;
+> > >  	struct nft_trans *trans;
+> > > +	bool set_full = false;
+> > >  	u64 expiration;
+> > >  	u64 timeout;
+> > >  	int err, i;
+> > > @@ -7462,10 +7463,18 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+> > >  	if (err < 0)
+> > >  		goto err_elem_free;
+> > >
+> > > +	if (!(flags & NFT_SET_ELEM_CATCHALL)) {
+> > > +		unsigned int max = nft_set_maxsize(set), nelems;
+> > > +
+> > > +		nelems = atomic_inc_return(&set->nelems);
+> > > +		if (nelems > max)
+> > > +			set_full = true;
+> > > +	}
+> > > +
+> > >  	trans = nft_trans_elem_alloc(ctx, NFT_MSG_NEWSETELEM, set);
+> > >  	if (trans == NULL) {
+> > >  		err = -ENOMEM;
+> > > -		goto err_elem_free;
+> > > +		goto err_set_size;
+> > >  	}
+> > >
+> > >  	ext->genmask = nft_genmask_cur(ctx->net);
+> > > @@ -7517,7 +7526,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+> > >
+> > >  					ue->priv = elem_priv;
+> > >  					nft_trans_commit_list_add_elem(ctx->net, trans);
+> > > -					goto err_elem_free;
+> > > +					goto err_set_size;
+> > >  				}
+> > >  			}
+> > >  		}
+> > > @@ -7535,23 +7544,16 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+> > >  		goto err_element_clash;
+> > >  	}
+> > >
+> > > -	if (!(flags & NFT_SET_ELEM_CATCHALL)) {
+> > > -		unsigned int max = nft_set_maxsize(set);
+> > > -
+> > > -		if (!atomic_add_unless(&set->nelems, 1, max)) {
+> > > -			err = -ENFILE;
+> > > -			goto err_set_full;
+> > > -		}
+> > > -	}
+> > > -
+> > >  	nft_trans_container_elem(trans)->elems[0].priv = elem.priv;
+> > >  	nft_trans_commit_list_add_elem(ctx->net, trans);
+> > > -	return 0;
+> > >
+> > > -err_set_full:
+> > > -	nft_setelem_remove(ctx->net, set, elem.priv);
+> > > +	return set_full ? -ENFILE : 0;
+> > > +
+> > >  err_element_clash:
+> > >  	kfree(trans);
+> > > +err_set_size:
+> > > +	if (!(flags & NFT_SET_ELEM_CATCHALL) && !set_full)
+> > > +		atomic_dec(&set->nelems);
+> > 
+> > Does this properly handle the element update path when the set is full?
+> 
+> Pablo, why does that check !set_full?  The increment is unconditional,
+> so why is the decrement asymmetric?
+> 
+> err_set_size:
+>         if (!(flags & NFT_SET_ELEM_CATCHALL))
+>                 atomic_dec(&set->nelems);
+> 
+> ?
 
-*** bit out of range 0 - FD_SETSIZE on fd_set ***: terminated
+I think so, this is a leftover from initial patches that where still
+using conditional atomic_add_unless().
 
-It appears FD_ISSET is not tolerating invalid fd values (-1 in this
-case).
-
-Fixes: 868040f892238 ("configure: Implement --enable-profiling option")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/mnl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/src/mnl.c b/src/mnl.c
-index 3f3ef82a25cb5..2e7ae74434094 100644
---- a/src/mnl.c
-+++ b/src/mnl.c
-@@ -2410,7 +2410,7 @@ int mnl_nft_event_listener(struct mnl_socket *nf_sock, unsigned int debug_mask,
- 		if (ret < 0)
- 			return -1;
- 
--		if (FD_ISSET(sigfd, &readfds))
-+		if (sigfd != -1 && FD_ISSET(sigfd, &readfds))
- 			check_signalfd(sigfd);
- 
- 		if (FD_ISSET(fd, &readfds)) {
--- 
-2.51.0
-
+I'm preparing a re-spin.
 
