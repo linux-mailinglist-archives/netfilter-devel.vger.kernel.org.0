@@ -1,957 +1,208 @@
-Return-Path: <netfilter-devel+bounces-10939-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10942-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id av2WFkNOp2kDgwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10939-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 03 Mar 2026 22:10:27 +0100
+	id AD4BDN1ap2kThAAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10942-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 03 Mar 2026 23:04:13 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC661F7363
-	for <lists+netfilter-devel@lfdr.de>; Tue, 03 Mar 2026 22:10:26 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36B371F7D66
+	for <lists+netfilter-devel@lfdr.de>; Tue, 03 Mar 2026 23:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 24F8D30A00BB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2026 21:08:26 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 57E913019E1B
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2026 22:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D14384251;
-	Tue,  3 Mar 2026 21:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A014E386C09;
+	Tue,  3 Mar 2026 22:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="cYkRWsVW"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="n40bn0hl"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD86C3750DD;
-	Tue,  3 Mar 2026 21:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A0F3822B1;
+	Tue,  3 Mar 2026 22:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772572105; cv=none; b=FnZm8i9c8+2+WUfUJO5xrrIHDLQUzvpUEwKtS5zHqgH3ToO0WWoQ8l67uO9clrce337GTE65lbctm2WeJQe2NLKpYIhifRoaHg+gvdPvsHA8fpaGOks98qdMFIJRu+ygnv2IIF9u7peQ+2rJBHf+ZtCIA0lF2xaQpzowlS9NSYY=
+	t=1772575442; cv=none; b=lqxZ5ApganlkIuo4CTvJMNqOBgKvkDMTilMtCb+VPr713k2RZ6kD5cCLsyMNl9P1jpVlitBs34vFijHAgw28DoGs6GA+k+rJ19+gDdxVEqKDdAVy7CaBl91MtK8vuvcoMPgYrN+UKBSeZD3awRbYJvU5mwwkLg84gmzJDM6uXBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772572105; c=relaxed/simple;
-	bh=MvIDNiz+Sy4Zi1hKEmfc4JxIFfhZ1xAIYj/c8TgFCp4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cZZNc79e7BWNFKzCxJpqo567Iw4yvYDVVcNwbZxQ/6r0tPIXVY9J6B6H7Gj6fT5zTbDrMF38HG6TSAZLAcvnKcl0i4UkUChL3tfUkjFNqxNaCYGdHNowfQpXF2gn+9kCq7/LB4C7VQkv0MjRccFiqZTVFSh73U845iPSu6STPrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=cYkRWsVW; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id D4BEC212E5;
-	Tue, 03 Mar 2026 23:08:12 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-transfer-encoding:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=a6lBzgz82uDzsurKmsPYIvNJhj+aUE+UvUUcYYA9lCU=; b=cYkRWsVWL+20
-	qbK7ElOdyNmXDmHYNiC93iTOrDYhZDfEvz8IExIX+72XrY+lAUDWSZfVArQyEyRW
-	KfHFctvw7CvTE9y64Ik6sb79HbmQ0gBgQa/CyKJb1y6aK6iZ2veOZlHMNje5jJG5
-	AdUlE36GPTBP8UWobetwmHfibjqBF81dBwaXfi+vqGuECKVo2JNGwhq6J5+2WYDI
-	kAAvOvtQXbB0RXIk522PBOBvan2RxEtKTC2VsR1pr5pomG6+p4E+sXZbJKxr/PYV
-	rU2zgjuiP27jqbg/kl83Jg/KrrQwcq61R716Bt62ueDEIx+il9Icc1svaDL9kdRo
-	IxI9S9kIUXC7hzGDtNRABboGtcklty2GwBj+X6BWfjG/UBpdpnzKvO5bA3VihQui
-	eX9VLvZOkOW4Ft/fuEb6zEyhKPpQQJ3O3IuZ4aY1UuuS5zhLp23uROq5fbAgyQew
-	TF2pPkpqqZEJZJxtvnYpvxtTBgrpNsJHWyohRxvuY9fbnRCD7J9V1ETAVrGSeNRp
-	vN9zIeVvp94bTKMPZh9XI7P570XZn9IZembuqxYGKgB2h/nOZghZ03cHfCAgFgsx
-	o0x+JdZ2MN9wT2Ib++S7Skel7Bn8aDjYsTBfc96dp5vsrrKpCJstAIfsOlHEQXqZ
-	OoOO+QQVLutk5DJ3lEzV7wa2hCgSIeg=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 03 Mar 2026 23:08:07 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id C756460D4B;
-	Tue,  3 Mar 2026 23:08:06 +0200 (EET)
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 623L57RE087522;
-	Tue, 3 Mar 2026 23:05:07 +0200
-Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 623L57bf087521;
-	Tue, 3 Mar 2026 23:05:07 +0200
-From: Julian Anastasov <ja@ssi.bg>
-To: Simon Horman <horms@verge.net.au>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
-Subject: [PATCHv2 nf-next 5/5] ipvs: use more keys for connection hashing
-Date: Tue,  3 Mar 2026 23:04:08 +0200
-Message-ID: <20260303210408.87468-6-ja@ssi.bg>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260303210408.87468-1-ja@ssi.bg>
-References: <20260303210408.87468-1-ja@ssi.bg>
+	s=arc-20240116; t=1772575442; c=relaxed/simple;
+	bh=xtwA6GLCcCFMKT/DdYTYwvRfr6aZzu5YaMH3qVjYWqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aenLZ+Z5Kz6VpMhVoajKiskABdR8r4I2KVnJs90YijcXuiXU9kO61/qDtDt+hKTKYVAfW4cacQy36xReiWJ3RJAhtLM2l6ybxCphndx8xTUrpbqczWFHx+9JiShNJjGDMfeFcW3yKcOzfP1bLjAaR1xfg7f5fanRo+KtQN6mPG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=n40bn0hl; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id A680060177;
+	Tue,  3 Mar 2026 23:03:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1772575437;
+	bh=9Z6ZQtFQQElTncxl47d8XvLQNvddbbesnrVIvvMUFEs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n40bn0hlcGHgx6ITquW9jKZKT6oxyxZZTYSvh/wrdslJEArc9xfuWDmJvRrQfv+eq
+	 1VS54y1o82I/+SXfctTAuIIyIynSwUct2NHjJL+gjj9Ble5jPdJg6CQ7EpFOquyAM6
+	 4v5wozN31rEyJHiOT6FRerFHQZxF3Yk4SE2RyWjexv/ZGpY5SVSw3YMOd/EIV4XzpL
+	 Zn7GVDnF3+Z1sY/KsXTvMHBBzjGEK8vOcfYK8KKG7ZFodMmrpU55SPNQ4IpgCTVzSW
+	 mLshuaw+w4aKqYdtWjsgnqsnb1FE2MUPv40HUVP69IijMxWgjAF9IWlkkHH/3jSwbx
+	 qNE7lCyNdglWQ==
+Date: Tue, 3 Mar 2026 23:03:55 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Jindrich Makovicka <makovick@gmail.com>
+Cc: Genes Lists <lists@sapience.com>, Greg KH <gregkh@linuxfoundation.org>,
+	Thorsten Leemhuis <regressions@leemhuis.info>,
+	linux-kernel@vger.kernel.org, coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org, stable@vger.kernel.org,
+	regressions@lists.linux.dev,
+	"Kris Karas (Bug Reporting)" <bugs-a21@moonlit-rail.com>
+Subject: Re: [REGRESSION] 6.19.4 stable netfilter / nftables [resolved]
+Message-ID: <aaday5NR-yfCkFVb@chamomile>
+References: <a529a6a9a2755d45765f20b58c5c11e2f790eacb.camel@sapience.com>
+ <45f03b0b-fe8f-4942-bad1-3fbde03d4be1@leemhuis.info>
+ <143e1a402ad78dd7076516a6ceb637f378310b16.camel@sapience.com>
+ <10537f2b74da2b8a5cb8dc939f723291db39ff84.camel@sapience.com>
+ <2026022755-quail-graveyard-93e8@gregkh>
+ <b231fcdb6c66a7b24dcef3ee5c35c5f612d5c1a7.camel@sapience.com>
+ <9d110d860c0c7e110d018ea53a7666eba275da20.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: BEC661F7363
+In-Reply-To: <9d110d860c0c7e110d018ea53a7666eba275da20.camel@gmail.com>
+X-Rspamd-Queue-Id: 36B371F7D66
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10939-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:dkim,ssi.bg:email,ssi.bg:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,p.pe:url,hostway.ca:email];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[netfilter.org];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10942-lists,netfilter-devel=lfdr.de];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.996];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,netfilter.org:dkim,netfilter.org:email]
 X-Rspamd-Action: no action
 
-Simon Kirby reported long time ago that IPVS connection hashing
-based only on the client address/port (caddr, cport) as hash keys
-is not suitable for setups that accept traffic on multiple virtual
-IPs and ports. It can happen for multiple VIP:VPORT services, for
-single or many fwmark service(s) that match multiple virtual IPs
-and ports or even for passive FTP with peristence in DR/TUN mode
-where we expect traffic on multiple ports for the virtual IP.
+On Tue, Mar 03, 2026 at 08:00:54AM +0100, Jindrich Makovicka wrote:
+> On Fri, 2026-02-27 at 08:39 -0500, Genes Lists wrote:
+> > On Fri, 2026-02-27 at 05:17 -0800, Greg KH wrote:
+> > > On Fri, Feb 27, 2026 at 08:12:59AM -0500, Genes Lists wrote:
+> > > > On Fri, 2026-02-27 at 07:23 -0500, Genes Lists wrote:
+> > > > > On Fri, 2026-02-27 at 09:00 +0100, Thorsten Leemhuis wrote:
+> > > > > > Lo!
+> > > > > > 
+> > > > > 
+> > > > > Repeating the nft error message here for simplicity:
+> > > > > 
+> > > > >  Linux version 7.0.0-rc1-custom-1-00124-g3f4a08e64442 ...
+> > > > >   ...
+> > > > >   In file included from /etc/nftables.conf:134:2-44:
+> > > > >   ./etc/nftables.d/set_filter.conf:1746:7-21: Error:
+> > > > >   Could not process rule: File exists
+> > > > >                  xx.xxx.xxx.x/23,
+> > > > >                  ^^^^^^^^^^^^^^^
+> > > > > 
+> > > > 
+> > > > Resolved by updating userspace.
+> > > > 
+> > > > I can reproduce this error on non-production machine and found
+> > > > this
+> > > > error is resolved by re-bulding updated nftables, libmnl and
+> > > > libnftnl:
+> > > > 
+> > > > With these versions nft rules now load without error:
+> > > > 
+> > > >  - nftables commit de904e22faa2e450d0d4802e1d9bc22013044f93
+> > > >  - libmnl   commit 54dea548d796653534645c6e3c8577eaf7d77411
+> > > >  - libnftnl commit 5c5a8385dc974ea7887119963022ae988e2a16cc
+> > > > 
+> > > > All were compiled on machine running 6.19.4.
+> > > 
+> > > Odd, that shouldn't be an issue, as why would the kernel version
+> > > you
+> > > build this on matter?
+> > > 
+> > > What about trying commit f175b46d9134 ("netfilter: nf_tables: add
+> > > .abort_skip_removal flag for set types")?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > - all were rebuilt from git head 
+> >   Have not had time to explore what specific change(s)
+> >   triggered the issue yet.
+> > 
+> > - commit f175b46d9134
+> >   I can reproduce on non-production machine - will check this and
+> > report back.
+> 
+> I had a similar problem, solved by reverting the commit below. It fails
+> only with a longer set. My wild guess is a closed interval with start
+> address at the  end of a chunk and end address at the beginning of the
+> next one gets misidentified as an open interval.
 
-Fix it by adding virtual addresses and ports to the hash function.
-This causes the traffic from NAT real servers to clients to use
-second hashing for the in->out direction.
+Yes, but such behaviour already breaks the create element, see my
+userspace fix. See:
 
-As result:
+commit e83e32c8d1cd228d751fb92b756306c6eb6c0759
+Author: Pablo Neira Ayuso <pablo@netfilter.org>
+Date:   Mon Jan 12 12:59:26 2026 +0100
+ 
+    mnl: restore create element command with large batches
+    
+    The rework to reduce memory consumption has introduced a bug that result
+    in spurious EEXIST with large batches.
+    
+    The code that tracks the start and end elements of the interval can add
+    the same element twice to the batch. This works with the add element
+    command, since it ignores EEXIST error, but it breaks the the create
+    element command.
+    
+    Update this codepath to ensure both sides of the interval fit into the
+    netlink message, otherwise, trim the netlink message to remove them.
+    So the next netlink message includes the elements that represent the
+    interval that could not fit.
 
-- the IN direction from client will use hash node hn0 where
-the source/dest addresses and ports used by client will be used
-as hash keys
+> commit 12b1681793e9b7552495290785a3570c539f409d
+> Author: Pablo Neira Ayuso <pablo@netfilter.org>
+> Date:   Fri Feb 6 13:33:46 2026 +0100
+> 
+>     netfilter: nft_set_rbtree: validate open interval overlap
 
-- the OUT direction from NAT real servers will use hash node hn1
-for the traffic from real server to client
+I guess you are testing with 7.0-rc, correct?
 
-- the persistence templates are hashed only with parameters based on
-the IN direction, so they now will also use the virtual address,
-port and fwmark from the service.
+A new userspace release with this fix is required.
 
-OLD:
-- all methods: c_list node: proto, caddr:cport
-- persistence templates: c_list node: proto, caddr_net:0
-- persistence engine templates: c_list node: per-PE, PE-SIP uses jhash
-
-NEW:
-- all methods: hn0 node (dir 0): proto, caddr:cport -> vaddr:vport
-- MASQ method: hn1 node (dir 1): proto, daddr:dport -> caddr:cport
-- persistence templates: hn0 node (dir 0):
-  proto, caddr_net:0 -> vaddr:vport_or_0
-  proto, caddr_net:0 -> fwmark:0
-- persistence engine templates: hn0 node (dir 0): as before
-
-Also reorder the ip_vs_conn fields, so that hash nodes are on same
-read-mostly cache line while write-mostly fields are on separate
-cache line.
-
-Reported-by: Simon Kirby <sim@hostway.ca>
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
----
- include/net/ip_vs.h             | 104 +++++++-----
- net/netfilter/ipvs/ip_vs_conn.c | 271 ++++++++++++++++++++++++--------
- 2 files changed, 275 insertions(+), 100 deletions(-)
-
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index 3d595bd99eb3..72d325c81313 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -786,51 +786,48 @@ struct ip_vs_conn_param {
- 	__u8				pe_data_len;
- };
- 
-+/* Hash node in conn_tab */
-+struct ip_vs_conn_hnode {
-+	struct hlist_bl_node	node;		/* node in conn_tab */
-+	u32			hash_key;	/* Key for the hash table */
-+	u8			dir;		/* 0=out->in, 1=in->out */
-+} __packed;
-+
- /* IP_VS structure allocated for each dynamically scheduled connection */
- struct ip_vs_conn {
--	struct hlist_bl_node	c_list;         /* node in conn_tab */
--	__u32			hash_key;	/* Key for the hash table */
--	/* Protocol, addresses and port numbers */
-+	/* Cacheline for hash table nodes - rarely modified */
-+
-+	struct ip_vs_conn_hnode	hn0;		/* Original direction */
-+	u8			af;		/* address family */
- 	__be16                  cport;
-+	struct ip_vs_conn_hnode	hn1;		/* Reply direction */
-+	u8			daf;		/* Address family of the dest */
- 	__be16                  dport;
--	__be16                  vport;
--	u16			af;		/* address family */
--	__u16                   protocol;       /* Which protocol (TCP/UDP) */
--	__u16			daf;		/* Address family of the dest */
--	union nf_inet_addr      caddr;          /* client address */
--	union nf_inet_addr      vaddr;          /* virtual address */
--	union nf_inet_addr      daddr;          /* destination address */
-+	struct ip_vs_dest       *dest;          /* real server */
-+	atomic_t                n_control;      /* Number of controlled ones */
- 	volatile __u32          flags;          /* status flags */
--	struct netns_ipvs	*ipvs;
--
--	/* counter and timer */
--	refcount_t		refcnt;		/* reference count */
--	struct timer_list	timer;		/* Expiration timer */
--	volatile unsigned long	timeout;	/* timeout */
-+	/* 44/64 */
- 
--	/* Flags and state transition */
--	spinlock_t              lock;           /* lock for state transition */
-+	struct ip_vs_conn       *control;       /* Master control connection */
-+	const struct ip_vs_pe	*pe;
-+	char			*pe_data;
-+	__u8			pe_data_len;
- 	volatile __u16          state;          /* state info */
- 	volatile __u16          old_state;      /* old state, to be used for
- 						 * state transition triggered
- 						 * synchronization
- 						 */
--	__u32			fwmark;		/* Fire wall mark from skb */
--	unsigned long		sync_endtime;	/* jiffies + sent_retries */
-+	/* 2-byte hole */
-+	/* 64/96 */
- 
--	/* Control members */
--	struct ip_vs_conn       *control;       /* Master control connection */
--	atomic_t                n_control;      /* Number of controlled ones */
--	struct ip_vs_dest       *dest;          /* real server */
--	atomic_t                in_pkts;        /* incoming packet counter */
-+	union nf_inet_addr      caddr;          /* client address */
-+	union nf_inet_addr      vaddr;          /* virtual address */
-+	/* 96/128 */
- 
--	/* Packet transmitter for different forwarding methods.  If it
--	 * mangles the packet, it must return NF_DROP or better NF_STOLEN,
--	 * otherwise this must be changed to a sk_buff **.
--	 * NF_ACCEPT can be returned when destination is local.
--	 */
--	int (*packet_xmit)(struct sk_buff *skb, struct ip_vs_conn *cp,
--			   struct ip_vs_protocol *pp, struct ip_vs_iphdr *iph);
-+	union nf_inet_addr      daddr;          /* destination address */
-+	__u32			fwmark;		/* Fire wall mark from skb */
-+	__be16                  vport;
-+	__u16                   protocol;       /* Which protocol (TCP/UDP) */
- 
- 	/* Note: we can group the following members into a structure,
- 	 * in order to save more space, and the following members are
-@@ -838,14 +835,31 @@ struct ip_vs_conn {
- 	 */
- 	struct ip_vs_app        *app;           /* bound ip_vs_app object */
- 	void                    *app_data;      /* Application private data */
-+	/* 128/168 */
- 	struct_group(sync_conn_opt,
- 		struct ip_vs_seq  in_seq;       /* incoming seq. struct */
- 		struct ip_vs_seq  out_seq;      /* outgoing seq. struct */
- 	);
-+	/* 152/192 */
- 
--	const struct ip_vs_pe	*pe;
--	char			*pe_data;
--	__u8			pe_data_len;
-+	struct timer_list	timer;		/* Expiration timer */
-+	volatile unsigned long	timeout;	/* timeout */
-+	spinlock_t              lock;           /* lock for state transition */
-+	refcount_t		refcnt;		/* reference count */
-+	atomic_t                in_pkts;        /* incoming packet counter */
-+	/* 64-bit: 4-byte gap */
-+
-+	/* 188/256 */
-+	unsigned long		sync_endtime;	/* jiffies + sent_retries */
-+	struct netns_ipvs	*ipvs;
-+
-+	/* Packet transmitter for different forwarding methods.  If it
-+	 * mangles the packet, it must return NF_DROP or better NF_STOLEN,
-+	 * otherwise this must be changed to a sk_buff **.
-+	 * NF_ACCEPT can be returned when destination is local.
-+	 */
-+	int (*packet_xmit)(struct sk_buff *skb, struct ip_vs_conn *cp,
-+			   struct ip_vs_protocol *pp, struct ip_vs_iphdr *iph);
- 
- 	struct rcu_head		rcu_head;
- };
-@@ -1628,6 +1642,19 @@ int ip_vs_conn_desired_size(struct netns_ipvs *ipvs, struct ip_vs_rht *t,
- struct ip_vs_rht *ip_vs_conn_tab_alloc(struct netns_ipvs *ipvs, int buckets,
- 				       int lfactor);
- 
-+static inline struct ip_vs_conn *
-+ip_vs_hn0_to_conn(struct ip_vs_conn_hnode *hn)
-+{
-+	return container_of(hn, struct ip_vs_conn, hn0);
-+}
-+
-+static inline struct ip_vs_conn *
-+ip_vs_hn_to_conn(struct ip_vs_conn_hnode *hn)
-+{
-+	return hn->dir ? container_of(hn, struct ip_vs_conn, hn1) :
-+			 container_of(hn, struct ip_vs_conn, hn0);
-+}
-+
- struct ip_vs_conn *ip_vs_conn_new(const struct ip_vs_conn_param *p, int dest_af,
- 				  const union nf_inet_addr *daddr,
- 				  __be16 dport, unsigned int flags,
-@@ -1980,6 +2007,13 @@ static inline char ip_vs_fwd_tag(struct ip_vs_conn *cp)
- 	return fwd;
- }
- 
-+/* Check if connection uses double hashing */
-+static inline bool ip_vs_conn_use_hash2(struct ip_vs_conn *cp)
-+{
-+	return IP_VS_FWD_METHOD(cp) == IP_VS_CONN_F_MASQ &&
-+	       !(cp->flags & IP_VS_CONN_F_TEMPLATE);
-+}
-+
- void ip_vs_nat_icmp(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		    struct ip_vs_conn *cp, int dir);
- 
-diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index 07a47e525f01..2082bfb2d93c 100644
---- a/net/netfilter/ipvs/ip_vs_conn.c
-+++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -76,11 +76,19 @@ static struct kmem_cache *ip_vs_conn_cachep __read_mostly;
- /* Lock conn_tab bucket for conn hash/unhash, not for rehash */
- static __always_inline void
- conn_tab_lock(struct ip_vs_rht *t, struct ip_vs_conn *cp, u32 hash_key,
--	      bool new_hash, struct hlist_bl_head **head_ret)
-+	      u32 hash_key2, bool use2, bool new_hash,
-+	      struct hlist_bl_head **head_ret, struct hlist_bl_head **head2_ret)
- {
--	struct hlist_bl_head *head;
--	u32 hash_key_new;
-+	struct hlist_bl_head *head, *head2;
-+	u32 hash_key_new, hash_key_new2;
-+	struct ip_vs_rht *t2 = t;
-+	u32 idx, idx2;
- 
-+	idx = hash_key & t->mask;
-+	if (use2)
-+		idx2 = hash_key2 & t->mask;
-+	else
-+		idx2 = idx;
- 	if (!new_hash) {
- 		/* We need to lock the bucket in the right table */
- 
-@@ -88,31 +96,64 @@ conn_tab_lock(struct ip_vs_rht *t, struct ip_vs_conn *cp, u32 hash_key,
- 		if (!ip_vs_rht_same_table(t, hash_key)) {
- 			/* It is already moved to new table */
- 			t = rcu_dereference(t->new_tbl);
-+			/* Rehashing works in two steps and we may detect
-+			 * both nodes in different tables, use idx/idx2
-+			 * for proper lock ordering for heads.
-+			 */
-+			idx = hash_key & t->mask;
-+			idx |= IP_VS_RHT_TABLE_ID_MASK;
-+		}
-+		if (use2) {
-+			if (!ip_vs_rht_same_table(t2, hash_key2)) {
-+				/* It is already moved to new table */
-+				t2 = rcu_dereference(t2->new_tbl);
-+				idx2 = hash_key2 & t2->mask;
-+				idx2 |= IP_VS_RHT_TABLE_ID_MASK;
-+			}
-+		} else {
-+			idx2 = idx;
- 		}
- 	}
- 
- 	head = t->buckets + (hash_key & t->mask);
-+	head2 = use2 ? t2->buckets + (hash_key2 & t2->mask) : head;
- 
- 	local_bh_disable();
- 	/* Do not touch seqcount, this is a safe operation */
- 
--	hlist_bl_lock(head);
-+	if (idx <= idx2) {
-+		hlist_bl_lock(head);
-+		if (head != head2)
-+			hlist_bl_lock(head2);
-+	} else {
-+		hlist_bl_lock(head2);
-+		hlist_bl_lock(head);
-+	}
- 	if (!new_hash) {
- 		/* Ensure hash_key is read under lock */
--		hash_key_new = READ_ONCE(cp->hash_key);
-+		hash_key_new = READ_ONCE(cp->hn0.hash_key);
-+		hash_key_new2 = READ_ONCE(cp->hn1.hash_key);
- 		/* Hash changed ? */
--		if (hash_key != hash_key_new) {
-+		if (hash_key != hash_key_new ||
-+		    (hash_key2 != hash_key_new2 && use2)) {
-+			if (head != head2)
-+				hlist_bl_unlock(head2);
- 			hlist_bl_unlock(head);
- 			local_bh_enable();
- 			hash_key = hash_key_new;
-+			hash_key2 = hash_key_new2;
- 			goto retry;
- 		}
- 	}
- 	*head_ret = head;
-+	*head2_ret = head2;
- }
- 
--static inline void conn_tab_unlock(struct hlist_bl_head *head)
-+static inline void conn_tab_unlock(struct hlist_bl_head *head,
-+				   struct hlist_bl_head *head2)
- {
-+	if (head != head2)
-+		hlist_bl_unlock(head2);
- 	hlist_bl_unlock(head);
- 	local_bh_enable();
- }
-@@ -123,26 +164,34 @@ static void ip_vs_conn_expire(struct timer_list *t);
-  *	Returns hash value for IPVS connection entry
-  */
- static u32 ip_vs_conn_hashkey(struct ip_vs_rht *t, int af, unsigned int proto,
--			      const union nf_inet_addr *addr, __be16 port)
-+			      const union nf_inet_addr *addr, __be16 port,
-+			      const union nf_inet_addr *laddr, __be16 lport)
- {
- 	u64 a = (u32)proto << 16 | (__force u32)port;
-+	u64 d;
- 
- #ifdef CONFIG_IP_VS_IPV6
- 	if (af == AF_INET6) {
- 		u64 b = (u64)addr->all[0] << 32 | addr->all[1];
- 		u64 c = (u64)addr->all[2] << 32 | addr->all[3];
- 
--		return (u32)siphash_3u64(a, b, c, &t->hash_key);
-+		a |= (u64)laddr->all[2] << 32 ^ (__force u32)lport;
-+		c ^= laddr->all[1];
-+		d = (u64)laddr->all[0] << 32 | laddr->all[3];
-+		return (u32)siphash_4u64(a, b, c, d, &t->hash_key);
- 	}
- #endif
- 	a |= (u64)addr->all[0] << 32;
--	return (u32)siphash_1u64(a, &t->hash_key);
-+	d = (u64)laddr->all[0] << 32 | (__force u32)lport;
-+	return (u32)siphash_2u64(a, d, &t->hash_key);
- }
- 
- static unsigned int ip_vs_conn_hashkey_param(const struct ip_vs_conn_param *p,
- 					     struct ip_vs_rht *t, bool inverse)
- {
-+	const union nf_inet_addr *laddr;
- 	const union nf_inet_addr *addr;
-+	__be16 lport;
- 	__be16 port;
- 
- 	if (p->pe_data && p->pe->hashkey_raw)
-@@ -151,21 +200,33 @@ static unsigned int ip_vs_conn_hashkey_param(const struct ip_vs_conn_param *p,
- 	if (likely(!inverse)) {
- 		addr = p->caddr;
- 		port = p->cport;
-+		laddr = p->vaddr;
-+		lport = p->vport;
- 	} else {
- 		addr = p->vaddr;
- 		port = p->vport;
-+		laddr = p->caddr;
-+		lport = p->cport;
- 	}
- 
--	return ip_vs_conn_hashkey(t, p->af, p->protocol, addr, port);
-+	return ip_vs_conn_hashkey(t, p->af, p->protocol, addr, port, laddr,
-+				  lport);
- }
- 
- static unsigned int ip_vs_conn_hashkey_conn(struct ip_vs_rht *t,
--					    const struct ip_vs_conn *cp)
-+					    const struct ip_vs_conn *cp,
-+					    bool out)
- {
- 	struct ip_vs_conn_param p;
- 
--	ip_vs_conn_fill_param(cp->ipvs, cp->af, cp->protocol,
--			      &cp->caddr, cp->cport, NULL, 0, &p);
-+	if (!out)
-+		ip_vs_conn_fill_param(cp->ipvs, cp->af, cp->protocol,
-+				      &cp->caddr, cp->cport, &cp->vaddr,
-+				      cp->vport, &p);
-+	else
-+		ip_vs_conn_fill_param(cp->ipvs, cp->af, cp->protocol,
-+				      &cp->daddr, cp->dport, &cp->caddr,
-+				      cp->cport, &p);
- 
- 	if (cp->pe) {
- 		p.pe = cp->pe;
-@@ -173,7 +234,7 @@ static unsigned int ip_vs_conn_hashkey_conn(struct ip_vs_rht *t,
- 		p.pe_data_len = cp->pe_data_len;
- 	}
- 
--	return ip_vs_conn_hashkey_param(&p, t, false);
-+	return ip_vs_conn_hashkey_param(&p, t, out);
- }
- 
- /*	Hashes ip_vs_conn in conn_tab
-@@ -182,9 +243,11 @@ static unsigned int ip_vs_conn_hashkey_conn(struct ip_vs_rht *t,
- static inline int ip_vs_conn_hash(struct ip_vs_conn *cp)
- {
- 	struct netns_ipvs *ipvs = cp->ipvs;
--	struct hlist_bl_head *head;
-+	struct hlist_bl_head *head, *head2;
-+	u32 hash_key, hash_key2;
- 	struct ip_vs_rht *t;
--	u32 hash_key;
-+	u32 hash, hash2;
-+	bool use2;
- 	int ret;
- 
- 	if (cp->flags & IP_VS_CONN_F_ONE_PACKET)
-@@ -194,15 +257,28 @@ static inline int ip_vs_conn_hash(struct ip_vs_conn *cp)
- 	t = rcu_dereference(ipvs->conn_tab);
- 	t = rcu_dereference(t->new_tbl);
- 
--	hash_key = ip_vs_rht_build_hash_key(t, ip_vs_conn_hashkey_conn(t, cp));
--	conn_tab_lock(t, cp, hash_key, true /* new_hash */, &head);
-+	hash = ip_vs_conn_hashkey_conn(t, cp, false);
-+	hash_key = ip_vs_rht_build_hash_key(t, hash);
-+	if (ip_vs_conn_use_hash2(cp)) {
-+		hash2 = ip_vs_conn_hashkey_conn(t, cp, true);
-+		hash_key2 = ip_vs_rht_build_hash_key(t, hash2);
-+		use2 = true;
-+	} else {
-+		hash_key2 = hash_key;
-+		use2 = false;
-+	}
-+	conn_tab_lock(t, cp, hash_key, hash_key2, use2, true /* new_hash */,
-+		      &head, &head2);
- 	spin_lock(&cp->lock);
- 
- 	if (!(cp->flags & IP_VS_CONN_F_HASHED)) {
- 		cp->flags |= IP_VS_CONN_F_HASHED;
--		WRITE_ONCE(cp->hash_key, hash_key);
-+		WRITE_ONCE(cp->hn0.hash_key, hash_key);
-+		WRITE_ONCE(cp->hn1.hash_key, hash_key2);
- 		refcount_inc(&cp->refcnt);
--		hlist_bl_add_head_rcu(&cp->c_list, head);
-+		hlist_bl_add_head_rcu(&cp->hn0.node, head);
-+		if (use2)
-+			hlist_bl_add_head_rcu(&cp->hn1.node, head2);
- 		ret = 1;
- 	} else {
- 		pr_err("%s(): request for already hashed, called from %pS\n",
-@@ -211,7 +287,7 @@ static inline int ip_vs_conn_hash(struct ip_vs_conn *cp)
- 	}
- 
- 	spin_unlock(&cp->lock);
--	conn_tab_unlock(head);
-+	conn_tab_unlock(head, head2);
- 
- 	/* Schedule resizing if load increases */
- 	if (atomic_read(&ipvs->conn_count) > t->u_thresh &&
-@@ -227,10 +303,11 @@ static inline int ip_vs_conn_hash(struct ip_vs_conn *cp)
- static inline bool ip_vs_conn_unlink(struct ip_vs_conn *cp)
- {
- 	struct netns_ipvs *ipvs = cp->ipvs;
--	struct hlist_bl_head *head;
-+	struct hlist_bl_head *head, *head2;
-+	u32 hash_key, hash_key2;
- 	struct ip_vs_rht *t;
- 	bool ret = false;
--	u32 hash_key;
-+	bool use2;
- 
- 	if (cp->flags & IP_VS_CONN_F_ONE_PACKET)
- 		return refcount_dec_if_one(&cp->refcnt);
-@@ -238,22 +315,27 @@ static inline bool ip_vs_conn_unlink(struct ip_vs_conn *cp)
- 	rcu_read_lock();
- 
- 	t = rcu_dereference(ipvs->conn_tab);
--	hash_key = READ_ONCE(cp->hash_key);
-+	hash_key = READ_ONCE(cp->hn0.hash_key);
-+	hash_key2 = READ_ONCE(cp->hn1.hash_key);
-+	use2 = ip_vs_conn_use_hash2(cp);
- 
--	conn_tab_lock(t, cp, hash_key, false /* new_hash */, &head);
-+	conn_tab_lock(t, cp, hash_key, hash_key2, use2, false /* new_hash */,
-+		      &head, &head2);
- 	spin_lock(&cp->lock);
- 
- 	if (cp->flags & IP_VS_CONN_F_HASHED) {
- 		/* Decrease refcnt and unlink conn only if we are last user */
- 		if (refcount_dec_if_one(&cp->refcnt)) {
--			hlist_bl_del_rcu(&cp->c_list);
-+			hlist_bl_del_rcu(&cp->hn0.node);
-+			if (use2)
-+				hlist_bl_del_rcu(&cp->hn1.node);
- 			cp->flags &= ~IP_VS_CONN_F_HASHED;
- 			ret = true;
- 		}
- 	}
- 
- 	spin_unlock(&cp->lock);
--	conn_tab_unlock(head);
-+	conn_tab_unlock(head, head2);
- 
- 	rcu_read_unlock();
- 
-@@ -272,6 +354,7 @@ __ip_vs_conn_in_get(const struct ip_vs_conn_param *p)
- {
- 	DECLARE_IP_VS_RHT_WALK_BUCKET_RCU();
- 	struct netns_ipvs *ipvs = p->ipvs;
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_head *head;
- 	struct ip_vs_rht *t, *pt;
- 	struct hlist_bl_node *e;
-@@ -284,9 +367,12 @@ __ip_vs_conn_in_get(const struct ip_vs_conn_param *p)
- 		hash = ip_vs_conn_hashkey_param(p, t, false);
- 		hash_key = ip_vs_rht_build_hash_key(t, hash);
- 		ip_vs_rht_walk_bucket_rcu(t, hash_key, head) {
--			hlist_bl_for_each_entry_rcu(cp, e, head, c_list) {
--				if (READ_ONCE(cp->hash_key) == hash_key &&
--				    p->cport == cp->cport &&
-+			hlist_bl_for_each_entry_rcu(hn, e, head, node) {
-+				if (READ_ONCE(hn->hash_key) != hash_key ||
-+				    hn->dir != 0)
-+					continue;
-+				cp = ip_vs_hn0_to_conn(hn);
-+				if (p->cport == cp->cport &&
- 				    p->vport == cp->vport && cp->af == p->af &&
- 				    ip_vs_addr_equal(p->af, p->caddr,
- 						     &cp->caddr) &&
-@@ -376,6 +462,7 @@ struct ip_vs_conn *ip_vs_ct_in_get(const struct ip_vs_conn_param *p)
- {
- 	DECLARE_IP_VS_RHT_WALK_BUCKET_RCU();
- 	struct netns_ipvs *ipvs = p->ipvs;
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_head *head;
- 	struct ip_vs_rht *t, *pt;
- 	struct hlist_bl_node *e;
-@@ -388,9 +475,11 @@ struct ip_vs_conn *ip_vs_ct_in_get(const struct ip_vs_conn_param *p)
- 		hash = ip_vs_conn_hashkey_param(p, t, false);
- 		hash_key = ip_vs_rht_build_hash_key(t, hash);
- 		ip_vs_rht_walk_bucket_rcu(t, hash_key, head) {
--			hlist_bl_for_each_entry_rcu(cp, e, head, c_list) {
--				if (READ_ONCE(cp->hash_key) != hash_key)
-+			hlist_bl_for_each_entry_rcu(hn, e, head, node) {
-+				if (READ_ONCE(hn->hash_key) != hash_key ||
-+				    hn->dir != 0)
- 					continue;
-+				cp = ip_vs_hn0_to_conn(hn);
- 				if (unlikely(p->pe_data && p->pe->ct_match)) {
- 					if (p->pe == cp->pe &&
- 					    p->pe->ct_match(p, cp) &&
-@@ -442,6 +531,7 @@ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
- 	DECLARE_IP_VS_RHT_WALK_BUCKET_RCU();
- 	struct netns_ipvs *ipvs = p->ipvs;
- 	const union nf_inet_addr *saddr;
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_head *head;
- 	struct ip_vs_rht *t, *pt;
- 	struct hlist_bl_node *e;
-@@ -455,9 +545,12 @@ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
- 		hash = ip_vs_conn_hashkey_param(p, t, true);
- 		hash_key = ip_vs_rht_build_hash_key(t, hash);
- 		ip_vs_rht_walk_bucket_rcu(t, hash_key, head) {
--			hlist_bl_for_each_entry_rcu(cp, e, head, c_list) {
--				if (READ_ONCE(cp->hash_key) != hash_key ||
--				    p->vport != cp->cport)
-+			hlist_bl_for_each_entry_rcu(hn, e, head, node) {
-+				/* dir can be 0 for DR/TUN */
-+				if (READ_ONCE(hn->hash_key) != hash_key)
-+					continue;
-+				cp = ip_vs_hn_to_conn(hn);
-+				if (p->vport != cp->cport)
- 					continue;
- 
- 				if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ) {
-@@ -536,21 +629,33 @@ void ip_vs_conn_put(struct ip_vs_conn *cp)
- void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
- {
- 	struct hlist_bl_head *head, *head2, *head_new;
-+	bool use2 = ip_vs_conn_use_hash2(cp);
- 	struct netns_ipvs *ipvs = cp->ipvs;
- 	int af_id = ip_vs_af_index(cp->af);
- 	u32 hash_r = 0, hash_key_r = 0;
- 	struct ip_vs_rht *t, *tp, *t2;
-+	struct ip_vs_conn_hnode *hn;
- 	u32 hash_key, hash_key_new;
- 	struct ip_vs_conn_param p;
- 	int ntbl;
-+	int dir;
-+
-+	/* No packets from inside, so we can do it in 2 steps. */
-+	dir = use2 ? 1 : 0;
- 
--	ip_vs_conn_fill_param(ipvs, cp->af, cp->protocol, &cp->caddr,
--			      cport, &cp->vaddr, cp->vport, &p);
-+next_dir:
-+	if (dir)
-+		ip_vs_conn_fill_param(ipvs, cp->af, cp->protocol, &cp->daddr,
-+				      cp->dport, &cp->caddr, cport, &p);
-+	else
-+		ip_vs_conn_fill_param(ipvs, cp->af, cp->protocol, &cp->caddr,
-+				      cport, &cp->vaddr, cp->vport, &p);
-+	hn = dir ? &cp->hn1 : &cp->hn0;
- 	ntbl = 0;
- 
- 	/* Attempt to rehash cp safely, by informing seqcount readers */
- 	t = rcu_dereference(ipvs->conn_tab);
--	hash_key = READ_ONCE(cp->hash_key);
-+	hash_key = READ_ONCE(hn->hash_key);
- 	tp = NULL;
- 
- retry:
-@@ -567,7 +672,7 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
- 	t2 = rcu_dereference(t->new_tbl);
- 	/* Calc new hash once per table */
- 	if (tp != t2) {
--		hash_r = ip_vs_conn_hashkey_param(&p, t2, false);
-+		hash_r = ip_vs_conn_hashkey_param(&p, t2, dir);
- 		hash_key_r = ip_vs_rht_build_hash_key(t2, hash_r);
- 		tp = t2;
- 	}
-@@ -591,7 +696,7 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
- 		hlist_bl_lock(head2);
- 
- 	/* Ensure hash_key is read under lock */
--	hash_key_new = READ_ONCE(cp->hash_key);
-+	hash_key_new = READ_ONCE(hn->hash_key);
- 	/* Racing with another rehashing ? */
- 	if (unlikely(hash_key != hash_key_new)) {
- 		if (head != head2)
-@@ -611,14 +716,21 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
- 		 * parameters in cp do not change, i.e. cport is
- 		 * the only possible change.
- 		 */
--		WRITE_ONCE(cp->hash_key, hash_key_r);
-+		WRITE_ONCE(hn->hash_key, hash_key_r);
-+		if (!use2)
-+			WRITE_ONCE(cp->hn1.hash_key, hash_key_r);
-+		/* For dir=1 we do not check in flags if hn is already
-+		 * rehashed but this check will do it.
-+		 */
- 		if (head != head2) {
--			hlist_bl_del_rcu(&cp->c_list);
--			hlist_bl_add_head_rcu(&cp->c_list, head_new);
-+			hlist_bl_del_rcu(&hn->node);
-+			hlist_bl_add_head_rcu(&hn->node, head_new);
-+		}
-+		if (!dir) {
-+			atomic_dec(&ipvs->no_cport_conns[af_id]);
-+			cp->flags &= ~IP_VS_CONN_F_NO_CPORT;
-+			cp->cport = cport;
- 		}
--		atomic_dec(&ipvs->no_cport_conns[af_id]);
--		cp->flags &= ~IP_VS_CONN_F_NO_CPORT;
--		cp->cport = cport;
- 	}
- 	spin_unlock(&cp->lock);
- 
-@@ -628,6 +740,8 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
- 	write_seqcount_end(&t->seqc[hash_key & t->seqc_mask]);
- 	preempt_enable_nested();
- 	spin_unlock_bh(&t->lock[hash_key & t->lock_mask].l);
-+	if (dir--)
-+		goto next_dir;
- }
- 
- /* Get default load factor to map conn_count/u_thresh to t->size */
-@@ -639,6 +753,8 @@ static int ip_vs_conn_default_load_factor(struct netns_ipvs *ipvs)
- 		factor = -3;
- 	else
- 		factor = -1;
-+	/* Double hashing adds twice more nodes for NAT */
-+	factor--;
- 	return factor;
- }
- 
-@@ -679,6 +795,7 @@ static void conn_resize_work_handler(struct work_struct *work)
- 	unsigned int resched_score = 0;
- 	struct hlist_bl_node *cn, *nn;
- 	struct ip_vs_rht *t, *t_new;
-+	struct ip_vs_conn_hnode *hn;
- 	struct netns_ipvs *ipvs;
- 	struct ip_vs_conn *cp;
- 	bool more_work = false;
-@@ -747,8 +864,9 @@ static void conn_resize_work_handler(struct work_struct *work)
- 		write_seqcount_begin(&t->seqc[bucket & t->seqc_mask]);
- 		hlist_bl_lock(head);
- 
--		hlist_bl_for_each_entry_safe(cp, cn, nn, head, c_list) {
--			hash = ip_vs_conn_hashkey_conn(t_new, cp);
-+		hlist_bl_for_each_entry_safe(hn, cn, nn, head, node) {
-+			cp = ip_vs_hn_to_conn(hn);
-+			hash = ip_vs_conn_hashkey_conn(t_new, cp, hn->dir);
- 			hash_key = ip_vs_rht_build_hash_key(t_new, hash);
- 
- 			head2 = t_new->buckets + (hash & t_new->mask);
-@@ -756,9 +874,12 @@ static void conn_resize_work_handler(struct work_struct *work)
- 			/* t_new->seqc are not used at this stage, we race
- 			 * only with add/del, so only lock the bucket.
- 			 */
--			hlist_bl_del_rcu(&cp->c_list);
--			WRITE_ONCE(cp->hash_key, hash_key);
--			hlist_bl_add_head_rcu(&cp->c_list, head2);
-+			hlist_bl_del_rcu(&hn->node);
-+			WRITE_ONCE(hn->hash_key, hash_key);
-+			/* Keep both hash keys in sync if no double hashing */
-+			if (!ip_vs_conn_use_hash2(cp))
-+				WRITE_ONCE(cp->hn1.hash_key, hash_key);
-+			hlist_bl_add_head_rcu(&hn->node, head2);
- 			hlist_bl_unlock(head2);
- 			/* Too long chain? Do it in steps */
- 			if (++limit >= 64)
-@@ -1236,10 +1357,13 @@ ip_vs_conn_new(const struct ip_vs_conn_param *p, int dest_af,
- 		return NULL;
- 	}
- 
--	INIT_HLIST_BL_NODE(&cp->c_list);
-+	INIT_HLIST_BL_NODE(&cp->hn0.node);
-+	INIT_HLIST_BL_NODE(&cp->hn1.node);
- 	timer_setup(&cp->timer, ip_vs_conn_expire, 0);
- 	cp->ipvs	   = ipvs;
-+	cp->hn0.dir	   = 0;
- 	cp->af		   = p->af;
-+	cp->hn1.dir	   = 1;
- 	cp->daf		   = dest_af;
- 	cp->protocol	   = p->protocol;
- 	ip_vs_addr_set(p->af, &cp->caddr, p->caddr);
-@@ -1344,8 +1468,8 @@ static void *ip_vs_conn_array(struct seq_file *seq)
- 	struct net *net = seq_file_net(seq);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 	struct ip_vs_rht *t = iter->t;
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_node *e;
--	struct ip_vs_conn *cp;
- 	int idx;
- 
- 	if (!t)
-@@ -1353,15 +1477,17 @@ static void *ip_vs_conn_array(struct seq_file *seq)
- 	for (idx = iter->bucket; idx < t->size; idx++) {
- 		unsigned int skip = 0;
- 
--		hlist_bl_for_each_entry_rcu(cp, e, &t->buckets[idx], c_list) {
-+		hlist_bl_for_each_entry_rcu(hn, e, &t->buckets[idx], node) {
- 			/* __ip_vs_conn_get() is not needed by
- 			 * ip_vs_conn_seq_show and ip_vs_conn_sync_seq_show
- 			 */
--			if (!ip_vs_rht_same_table(t, READ_ONCE(cp->hash_key)))
-+			if (!ip_vs_rht_same_table(t, READ_ONCE(hn->hash_key)))
- 				break;
-+			if (hn->dir != 0)
-+				continue;
- 			if (skip >= iter->skip_elems) {
- 				iter->bucket = idx;
--				return cp;
-+				return hn;
- 			}
- 
- 			++skip;
-@@ -1403,7 +1529,7 @@ static void *ip_vs_conn_seq_start(struct seq_file *seq, loff_t *pos)
- static void *ip_vs_conn_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- {
- 	struct ip_vs_iter_state *iter = seq->private;
--	struct ip_vs_conn *cp = v;
-+	struct ip_vs_conn_hnode *hn = v;
- 	struct hlist_bl_node *e;
- 	struct ip_vs_rht *t;
- 
-@@ -1416,12 +1542,14 @@ static void *ip_vs_conn_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 		return NULL;
- 
- 	/* more on same hash chain? */
--	hlist_bl_for_each_entry_continue_rcu(cp, e, c_list) {
-+	hlist_bl_for_each_entry_continue_rcu(hn, e, node) {
- 		/* Our cursor was moved to new table ? */
--		if (!ip_vs_rht_same_table(t, READ_ONCE(cp->hash_key)))
-+		if (!ip_vs_rht_same_table(t, READ_ONCE(hn->hash_key)))
- 			break;
-+		if (hn->dir != 0)
-+			continue;
- 		iter->skip_elems++;
--		return cp;
-+		return hn;
- 	}
- 
- 	iter->skip_elems = 0;
-@@ -1443,7 +1571,8 @@ static int ip_vs_conn_seq_show(struct seq_file *seq, void *v)
- 		seq_puts(seq,
-    "Pro FromIP   FPrt ToIP     TPrt DestIP   DPrt State       Expires PEName PEData\n");
- 	else {
--		const struct ip_vs_conn *cp = v;
-+		struct ip_vs_conn_hnode *hn = v;
-+		const struct ip_vs_conn *cp = ip_vs_hn0_to_conn(hn);
- 		char pe_data[IP_VS_PENAME_MAXLEN + IP_VS_PEDATA_MAXLEN + 3];
- 		size_t len = 0;
- 		char dbuf[IP_VS_ADDRSTRLEN];
-@@ -1610,6 +1739,7 @@ static inline bool ip_vs_conn_ops_mode(struct ip_vs_conn *cp)
- 
- void ip_vs_random_dropentry(struct netns_ipvs *ipvs)
- {
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_node *e;
- 	struct ip_vs_conn *cp;
- 	struct ip_vs_rht *t;
-@@ -1630,7 +1760,10 @@ void ip_vs_random_dropentry(struct netns_ipvs *ipvs)
- 		/* Don't care if due to moved entry we jump to another bucket
- 		 * and even to new table
- 		 */
--		hlist_bl_for_each_entry_rcu(cp, e, &t->buckets[hash], c_list) {
-+		hlist_bl_for_each_entry_rcu(hn, e, &t->buckets[hash], node) {
-+			if (hn->dir != 0)
-+				continue;
-+			cp = ip_vs_hn0_to_conn(hn);
- 			if (atomic_read(&cp->n_control))
- 				continue;
- 			if (cp->flags & IP_VS_CONN_F_TEMPLATE) {
-@@ -1695,6 +1828,7 @@ static void ip_vs_conn_flush(struct netns_ipvs *ipvs)
- {
- 	DECLARE_IP_VS_RHT_WALK_BUCKETS_SAFE_RCU();
- 	struct ip_vs_conn *cp, *cp_c;
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_head *head;
- 	struct ip_vs_rht *t, *p;
- 	struct hlist_bl_node *e;
-@@ -1709,7 +1843,10 @@ static void ip_vs_conn_flush(struct netns_ipvs *ipvs)
- 	/* Rely on RCU grace period while accessing cp after ip_vs_conn_del */
- 	rcu_read_lock();
- 	ip_vs_rht_walk_buckets_safe_rcu(ipvs->conn_tab, head) {
--		hlist_bl_for_each_entry_rcu(cp, e, head, c_list) {
-+		hlist_bl_for_each_entry_rcu(hn, e, head, node) {
-+			if (hn->dir != 0)
-+				continue;
-+			cp = ip_vs_hn0_to_conn(hn);
- 			if (atomic_read(&cp->n_control))
- 				continue;
- 			cp_c = cp->control;
-@@ -1756,6 +1893,7 @@ void ip_vs_expire_nodest_conn_flush(struct netns_ipvs *ipvs)
- 	DECLARE_IP_VS_RHT_WALK_BUCKETS_RCU();
- 	unsigned int resched_score = 0;
- 	struct ip_vs_conn *cp, *cp_c;
-+	struct ip_vs_conn_hnode *hn;
- 	struct hlist_bl_head *head;
- 	struct ip_vs_dest *dest;
- 	struct hlist_bl_node *e;
-@@ -1769,7 +1907,10 @@ void ip_vs_expire_nodest_conn_flush(struct netns_ipvs *ipvs)
- repeat:
- 	smp_rmb(); /* ipvs->conn_tab and conn_tab_changes */
- 	ip_vs_rht_walk_buckets_rcu(ipvs->conn_tab, head) {
--		hlist_bl_for_each_entry_rcu(cp, e, head, c_list) {
-+		hlist_bl_for_each_entry_rcu(hn, e, head, node) {
-+			if (hn->dir != 0)
-+				continue;
-+			cp = ip_vs_hn0_to_conn(hn);
- 			resched_score++;
- 			dest = cp->dest;
- 			if (!dest || (dest->flags & IP_VS_DEST_F_AVAILABLE))
--- 
-2.53.0
-
-
+> Example set definition is here:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=221158
+> 
+> Using nft from Debian unstable
+> 
+> $ ./nft --version
+> nftables v1.1.6 (Commodore Bullmoose #7)
 
