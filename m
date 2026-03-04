@@ -1,123 +1,109 @@
-Return-Path: <netfilter-devel+bounces-10945-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10946-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UFW+FMCQp2lKiQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10945-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 02:54:08 +0100
+	id kGwxCYORp2l7iQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10946-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 02:57:23 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDEAF1F9BA7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 02:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A29461F9BF8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 02:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4F4CA3045005
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Mar 2026 01:54:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AFAC7304E81E
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Mar 2026 01:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CBF3191D6;
-	Wed,  4 Mar 2026 01:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0288327C09;
+	Wed,  4 Mar 2026 01:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Vgmo35pK"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA1FE55A;
-	Wed,  4 Mar 2026 01:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.211.166.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617A7F513;
+	Wed,  4 Mar 2026 01:57:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772589244; cv=none; b=R+cTjG9VgGfC2ihZPG5uZQ0fnsKzqTfYsrvYoBNir/L2x4U+Qv64weh6y9D9m6D3BH6d3/LqbDE5WioOC9O7cGJCfxshg4ecYtFqfIg+9n31MqXKBl+vG3CkXIRWrqcZQcH94D928Lne8lQwVbVBdUegnzwCVmcaSDEYn3jXbbQ=
+	t=1772589438; cv=none; b=NGvHmwqmDC3rxhECO2erENMqBkjFgi7JCg0OPI8jdvMVlvMbwK1Wr9OsRt2p29Y6sQUk9JG380oCKSKZCLMmNx7WjpDrImQLZjW5U2TQfjcKFKc6A210iZyJR3ME/mwlx/6Pl5Vu21jcFut3rC8m7PswSQgEoZd8sp0/+BfDocw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772589244; c=relaxed/simple;
-	bh=wf+9WYI4wz+u51rXJN5W21h2IU7JZQleKEyPyJdCCGc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=M8flhAjUDegLPAaPXjxc1X30uEsTz9/fY/sCxwRPQsa/SyOvp9GpU4a6JFmNyzcLYRuvbjm2DTzRSkevH7aMpvwI+elSmINBFHCAVRyNVOpeodyvVUJjB8I9UXyRRyHSuf3CYNXkzLIplV2XljmtStouKvD+EvQEI7uXWhHM19k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org; spf=pass smtp.mailfrom=gentoo.org; arc=none smtp.client-ip=140.211.166.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
-Received: from mop.sam.mop (2.8.3.0.0.0.0.0.0.0.0.0.0.0.0.0.a.5.c.d.c.d.9.1.0.b.8.0.1.0.0.2.ip6.arpa [IPv6:2001:8b0:19dc:dc5a::382])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sam)
-	by smtp.gentoo.org (Postfix) with ESMTPSA id 6F7C6341620;
-	Wed, 04 Mar 2026 01:53:59 +0000 (UTC)
-From: Sam James <sam@gentoo.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org,  netfilter@vger.kernel.org,
- netdev@vger.kernel.org
+	s=arc-20240116; t=1772589438; c=relaxed/simple;
+	bh=wG/8yw2tgW69ZzgkCBpAej1VR/aauIn0W29cD7SEG/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hT+6/hldE1h3Kqkc+2M210Zg0uH2gG5DcIayZkrirQ+rJDeTOwfXH48Wl/3yRQPHpR4LX7TbSCpWv1Zkz6J9A9jOEfhIR7yJCgyJfw5KoS8gglCG7xCfvlxfQk1O0CP+8xNQKqeIuXxURwvZ3M9wjoGg7+Z/NaZTkcuVjT92wNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Vgmo35pK; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 606706034A;
+	Wed,  4 Mar 2026 02:57:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1772589435;
+	bh=tVulclVVxqqAKJbiQ1XlJd4gMy6R5scGZ56TPe1ad6s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vgmo35pKFrhGCtQIzcU1O5W0f7i7aifLML9nnQh51BzHZTL6o2Ty2O823fR8QxcTg
+	 EXWT6Ik+NsiZ0RwiXq6HF8LMARF9yO/1LdPyW1smY3qZRtKtaRAjp2Lc023z7BnESP
+	 +bnizWR597rDfT3U03oMTQboRM3I+jMxGr7m77yGBTQJkWJhN3B7jsUVPlv5UNOmCE
+	 OfWATjQmVzh4Nb1MyKi6uv8AWt97YWeCnILVHtzA/b0Jvn3v0krgdSuTWBRPHeaKtO
+	 5MVPWaeRIXF/iZHeJFTMM1KZKX0Uxj1LWGQjhSU12iVFmA82LLLXw3RJfhFcbdo4Cv
+	 J6Mn0icgyEuYw==
+Date: Wed, 4 Mar 2026 02:57:12 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Sam James <sam@gentoo.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org,
+	netdev@vger.kernel.org
 Subject: Re: [ANNOUNCE] iptables 1.8.13 release
-In-Reply-To: <aaeMFWURL-6YWIkz@chamomile>
-Organization: Gentoo
+Message-ID: <aaeReM6MC2uBbT_6@chamomile>
 References: <aaeMFWURL-6YWIkz@chamomile>
-User-Agent: mu4e 1.12.15; emacs 31.0.50
-Date: Wed, 04 Mar 2026 01:53:55 +0000
-Message-ID: <87h5qwgy18.fsf@gentoo.org>
+ <87h5qwgy18.fsf@gentoo.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Rspamd-Queue-Id: CDEAF1F9BA7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87h5qwgy18.fsf@gentoo.org>
+X-Rspamd-Queue-Id: A29461F9BF8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.96 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[gentoo.org : SPF not aligned (relaxed), No valid DKIM,none];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10945-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-10946-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sam@gentoo.org,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	NEURAL_HAM(-0.00)[-1.000];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.986];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	FROM_HAS_DN(0.00)[]
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
---=-=-=
-Content-Type: text/plain
+On Wed, Mar 04, 2026 at 01:53:55AM +0000, Sam James wrote:
+> Pablo Neira Ayuso <pablo@netfilter.org> writes:
+> 
+> > Hi!
+> >
+> > The Netfilter project proudly presents:
+> >
+> >         iptables 1.8.13
+> 
+> Thanks! BTW, tag seems to be missing?
 
-Pablo Neira Ayuso <pablo@netfilter.org> writes:
-
-> Hi!
->
-> The Netfilter project proudly presents:
->
->         iptables 1.8.13
-
-Thanks! BTW, tag seems to be missing?
-
-> [...]
-
-sam
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEBBAEWCgCpFiEEJaa7iN2bdkxrVUHCc4QJ9SDfkZAFAmmnkLMbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTIsMiwyXxSAAAAAAC4AKGlzc3Vlci1mcHJAbm90YXRpb25z
-Lm9wZW5wZ3AuZmlmdGhob3JzZW1hbi5uZXQyNUE2QkI4OEREOUI3NjRDNkI1NTQx
-QzI3Mzg0MDlGNTIwREY5MTkwDxxzYW1AZ2VudG9vLm9yZwAKCRBzhAn1IN+RkDWm
-AQDG1itKhDBKp8TtTm03507mTqkb36bB+qO7PjkNjrkyngD9EACNce97xukbTvI7
-bShwGO8BJkI+4PlNFmiCie9nXgQ=
-=cm49
------END PGP SIGNATURE-----
---=-=-=--
+Pushed out, thanks for telling me.
 
