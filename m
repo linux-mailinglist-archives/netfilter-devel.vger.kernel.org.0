@@ -1,63 +1,64 @@
-Return-Path: <netfilter-devel+bounces-10978-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10979-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EMwtKJGjqGnywAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10978-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 22:26:41 +0100
+	id WByhNWKkqGnywAAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10979-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 22:30:10 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1CB207F81
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 22:26:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842BB207FEE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 22:30:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6877830427EC
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Mar 2026 21:26:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3AD743042274
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Mar 2026 21:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941FE386432;
-	Wed,  4 Mar 2026 21:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EA938837C;
+	Wed,  4 Mar 2026 21:27:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="tl/ZN8h0"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="PBkJMvxI"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877D53845AC;
-	Wed,  4 Mar 2026 21:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F856388E4D;
+	Wed,  4 Mar 2026 21:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772659579; cv=none; b=M3FP1qzGs8ssFOmmQIsBYXpQYYORmD4Jp7Moy3nsu9MJtNbxJeKTxj98WR+lFUrbejDuBkywdxtxERXYxAY/uDzzBWfLQbUAaSOw4Q4OUNK3tply3CB+zvjkM9WZcSMbArQnkPkoJUvsPqHFUgPhszpsJLPI9cc56OrSyI2goTQ=
+	t=1772659670; cv=none; b=AxzNQFqC44mwCokFFB77HlzKtepQL1E5MOtKe5iDlYBveG40JEGn8mT736UxVipEK6NSyzc8ya+NnDotxn01pEEMFo4ZLMNyDzshj8OJ/eHt1q7RIpUvTdjJz0cVK3SvXrMcK2ksKQXcrcAcBFMHxAjZCx89j8GlvwMlbMMneaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772659579; c=relaxed/simple;
-	bh=PhMjNizqtszEaWSgFMbyxw+xTYbOwGO000UfKY+bOm0=;
+	s=arc-20240116; t=1772659670; c=relaxed/simple;
+	bh=oOM7Zk18wbpy+KVhSL25XNQql+cWoWEbIZLCb70VY9s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sF6IV1VwQblzP3nK4dnD8SAGEbQ0GfRJ1YwBNBkQP509fbp6G76soZ+Sfnz/PK3mTzjdc4/SKuJ8xmU+Ou+TB9tPcLQd4gFI45D4c85fd1QMp1vr3l1KgcHigWsieGmQfRXI9WaJVa1vNPOaTfdRK9DfLg0qlaRzRf9h4ufRmnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=tl/ZN8h0; arc=none smtp.client-ip=217.70.190.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=K2luMs8HpF+HC1zMpL5Wf1fdC+0sBxwwAP+DhR44kyRBJlY9psVFncrgEZPSxMq+iyOt088LlQzhYzoHCjsRJUZse9NvDrnpZdzYkxWo7j7l84XN6gNsD6DxGRKCS+JBTXM7WEOp+rV+YPk9vR/7CA/HOHbyhn3iDiOASuX8pGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=PBkJMvxI; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 90F27602EC;
-	Wed,  4 Mar 2026 22:26:13 +0100 (CET)
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 645366034C;
+	Wed,  4 Mar 2026 22:27:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1772659573;
-	bh=TbD57Cf8HsGwolFtN68G0Af7wmRjO6opYFFt8/q/SzI=;
+	s=2025; t=1772659667;
+	bh=g/MEdPmEoeWbHEJ9LIOvPo0bFSjkMYv54FYTIKY4j18=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tl/ZN8h0j8Xs9rFIpW2KoLzywjiMmZcPvMWhS8E6rdxuEXPpNamaClJccM4HwHMZc
-	 vEzl66kak2gqQtmO2b2X24sC37WddqXChBU7OsXh4zr+yQzfxFConft4P8nqDHwL4J
-	 9WQ0iqFJXMwK8AIprugBcXOMUhCv/2XYAihIKe21RVGek0pgAQ0zZYW6vAHyIZ8C2I
-	 uJlM4DdNX+nqykA3aCi7yvsngQIrFNLlUQeQCYkS9gBB51dmoxemT5/BdSHHQmIZRg
-	 YTUAa3FTo9inbTqw8WMudCyNOhr7D65x7pZfvzxY+mS7QRqh/dyyfAVFGfsQ+3CtsO
-	 3zL7VSMijYZvA==
-Date: Wed, 4 Mar 2026 22:26:10 +0100
+	b=PBkJMvxIQEdFp76/Q1Uzgb9reBH8jQC4B26LVVJ433p1aB0p8piWoZAlGZUfuMhlU
+	 VNOgAsIaT19XgwNTk4/LexHtHvKMcAwkCn/HXs/4/Qbl5BYh+DlsfOUg328/MnEJxC
+	 z4ypRqtH5b48RfXgWUCEmtgUjn48z55Ar2lU6X4djlsWT0GK29detVmo6FXhVk4bHy
+	 /jwwMFB5IF35wJtTPzkgRjCeFLIb9B5MTMfx4OACsHBZtME5NY/e6ZKQr5yTGUGL6o
+	 xzuK4PdjlfsRSYIP40DpOdOyeLN2YHCG9O1eIeuHT0iYTufLsBvh6Y8QHiuLbedRrl
+	 d8o4ij93kihLA==
+Date: Wed, 4 Mar 2026 22:27:45 +0100
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: 2026022652-lyricist-washtub-eeb4@gregkh.smtp.subspace.kernel.org
+To: Chris Arges <carges@cloudflare.com>
 Cc: Florian Westphal <fw@strlen.de>, stable@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, lwn@lwn.net,
 	jslaby@suse.cz, kernel-team@cloudflare.com,
 	netfilter-devel@vger.kernel.org
 Subject: Re: [REGRESSION] 6.18.14 netfilter/nftables consumes way more memory
-Message-ID: <aaijcrM5Ke5-Zabx@chamomile>
+Message-ID: <aaij0XAgYRN40QdD@chamomile>
 References: <aahw_h5DdmYZeeqw@20HS2G4>
+ <aaijcrM5Ke5-Zabx@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,36 +67,40 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aahw_h5DdmYZeeqw@20HS2G4>
-X-Rspamd-Queue-Id: 0A1CB207F81
+In-Reply-To: <aaijcrM5Ke5-Zabx@chamomile>
+X-Rspamd-Queue-Id: 842BB207FEE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.04 / 15.00];
-	R_DKIM_REJECT(1.00)[netfilter.org:s=2025];
-	ARC_REJECT(1.00)[signature check failed: fail, {[1] = sig:subspace.kernel.org:reject}];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-10978-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:-];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-10979-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_SPAM(0.00)[0.269];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
+
+Resending, your Reply-To: is botched.
+
+-o-
 
 Hi,
 
