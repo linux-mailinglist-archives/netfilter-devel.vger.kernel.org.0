@@ -1,121 +1,146 @@
-Return-Path: <netfilter-devel+bounces-10943-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10944-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4HF/JCN0p2ljhgAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10943-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 00:52:03 +0100
+	id cBZsMCWMp2kuiQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10944-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 02:34:29 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0920A1F87E2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 00:52:02 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9551F97CE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 04 Mar 2026 02:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 413F030B00D7
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2026 23:51:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1ADBC3033404
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Mar 2026 01:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7793750D2;
-	Tue,  3 Mar 2026 23:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3743230EF92;
+	Wed,  4 Mar 2026 01:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="txCzLKVJ"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266D638424D
-	for <netfilter-devel@vger.kernel.org>; Tue,  3 Mar 2026 23:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA16430CDAB;
+	Wed,  4 Mar 2026 01:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772581856; cv=none; b=WrmLG6eGYfptkXQxoumoM0BRtSwqgx7h2Hg7bBL1PYLk7aKjrqPVe90x8aM/19wOFmFFS6YKMXB7HmfTGzHE2sLcEq2CKjcTZz4BhJ7rAnZCvRjcu6ouRCGZn+QnVsX+li8OUUpJALzMMLwWzqayUBBG5+9QyZG2DbkfNxNgc+s=
+	t=1772588059; cv=none; b=YcYkezPJtfFsHQ7AGmB+hdfsFuEyClfAPXk+/Oq1bh7pWPa+vW+M+C83XAeNGxO02fFiE2O2nOD6iCk52FEFKnb2vENHhVyLwDz8ll0jYu+kexLTxBYgNXaymiO6oNtXzdGfFPcvAkqkrdW+iRfERJ2/K40M+k7Lh/vR6P7POPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772581856; c=relaxed/simple;
-	bh=iTa5trKzAyJGXAh8BvJym0h2GlhKubfq8rwWxSSAwdI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gYtU5gqJOQls/G06R6on2w0CVMAhRbO6RFaRuO0zkMKkTRWRdtMQRW1O7jZSYQVYev5Kle/BazTrw48vK07xPx0DBjgnzancxTd+WXqz50EG2v7N6z3Pv3TiLbBxYI9x8aKaHygIiQOZsd/sx6mHma1ttPrWJ+i5O/LwXmvTG34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id DC06C6047A; Wed, 04 Mar 2026 00:50:42 +0100 (CET)
-Date: Wed, 4 Mar 2026 00:50:43 +0100
-From: Florian Westphal <fw@strlen.de>
-To: netfilter-devel@vger.kernel.org
-Cc: sbrivio@redhat.com, Yiming Qian <yimingqian591@gmail.com>
-Subject: Re: [PATCH nf 1/2] netfilter: nft_set_pipapo: split gc in unlink and
- reclaim phase
-Message-ID: <aadz0xl4LE797LS6@strlen.de>
-References: <20260303190218.19781-1-fw@strlen.de>
- <20260303190218.19781-2-fw@strlen.de>
+	s=arc-20240116; t=1772588059; c=relaxed/simple;
+	bh=t9gZ16sRwNdgu704XD8+TWQ1hwtxbyjiFS75MDq6tvM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=W15SG+mQUOnVD+wiMuBChKP1Ep1tEptm5p+UKV2o9gWvr8VQraw2sxv8hnvHGVSPb2umhMcIMcTBq+px35ADN65xhCtJPOlWYmvbPdbS/r4uFxtg8PmOOxh4uM4dIMfoP92OdQjnaoGtGoynJAWQNv2RIuaUioEUzugx3NMVQio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=txCzLKVJ; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 1767E6017D;
+	Wed,  4 Mar 2026 02:34:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1772588056;
+	bh=KoOkUHlebztnj5ySuklW6b9Nj06PUyO4YBSJZL9llZc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=txCzLKVJAikh/h4JjRvsinV/8Cwl8LvBztCQ6CIPkEqfKU4/17V8hoywe0y5DctJ2
+	 TyeVQJ+uWahRyjIQ8384a4IKlolHIrsFfHdNhoL4VI4irFgHxHwJpXRv7HZUVFAFcm
+	 3Ouua5bu9p6FTc/9aVmufGexwvPMKg3iOOTDdhJWVMPg5iJGYFosy5shILlGVrUvpf
+	 pFMi0dFiz+5zTKunP9q6AnsOD3Bx3r4CqsgEXVJVlAsU+csmw9mPbYT2r+5umHcR54
+	 3QZZQMLEnrAdQYjHEWsyS4IpP5KyYNA9NnvH/AFctCfP8YIy65/dWRAdWQ2AR3r8sB
+	 K3VhTpQ2RGuhw==
+Date: Wed, 4 Mar 2026 02:34:13 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net,
+	netdev@vger.kernel.org
+Subject: [ANNOUNCE] iptables 1.8.13 release
+Message-ID: <aaeMFWURL-6YWIkz@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="+j7gPogMzyv6nJsr"
 Content-Disposition: inline
-In-Reply-To: <20260303190218.19781-2-fw@strlen.de>
-X-Rspamd-Queue-Id: 0920A1F87E2
+X-Rspamd-Queue-Id: BE9551F97CE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
+	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FREEMAIL_CC(0.00)[redhat.com,gmail.com];
-	TAGGED_FROM(0.00)[bounces-10943-lists,netfilter-devel=lfdr.de];
-	DMARC_NA(0.00)[strlen.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10944-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	HAS_ATTACHMENT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	NEURAL_HAM(-0.00)[-0.811];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[]
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5]
 X-Rspamd-Action: no action
 
-Florian Westphal <fw@strlen.de> wrote:
-> index eaab422aa56a..4a5baebabaa5 100644
-> --- a/net/netfilter/nft_set_pipapo.h
-> +++ b/net/netfilter/nft_set_pipapo.h
-> @@ -156,12 +156,14 @@ struct nft_pipapo_match {
->   * @clone:	Copy where pending insertions and deletions are kept
->   * @width:	Total bytes to be matched for one packet, including padding
->   * @last_gc:	Timestamp of last garbage collection run, jiffies
-> + * @to_free:	single-linked list of elements to queue up for memory reclaim
->   */
->  struct nft_pipapo {
->  	struct nft_pipapo_match __rcu *match;
->  	struct nft_pipapo_match *clone;
->  	int width;
->  	unsigned long last_gc;
-> +	struct nft_pipapo_elem *to_free;
->  };
->  
->  struct nft_pipapo_elem;
-> @@ -169,10 +171,12 @@ struct nft_pipapo_elem;
->  /**
->   * struct nft_pipapo_elem - API-facing representation of single set element
->   * @priv:	element placeholder
-> + * @to_free:	list of elements waiting for mem reclaim
->   * @ext:	nftables API extensions
->   */
->  struct nft_pipapo_elem {
->  	struct nft_elem_priv	priv;
-> +	struct nft_pipapo_elem  *to_free;
->  	struct nft_set_ext	ext;
 
-Pablo points out that we don't need this extra member.
+--+j7gPogMzyv6nJsr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Instead we'll chain nft_trans_gc containers via their list_head
-members and just defer posting the gc containers to the gc engine.
+Hi!
 
-So overall idea remains the same.
+The Netfilter project proudly presents:
+
+        iptables 1.8.13
+
+This release contains the following fixes:
+
+* Revert "libxtables: refuse to run under file capabilities",
+  which breaks Docker.
+* Fix compilation warning with strchr() and const.
+
+Upgrade from iptables 1.8.12 is recommended.
+
+See changelog for more details (attached to this email).
+
+You can download this new release from:
+
+  https://www.netfilter.org/projects/iptables/downloads.html
+  https://www.netfilter.org/pub/iptables/
+
+To build the code, libnftnl >= 1.2.6 is required:
+
+  http://netfilter.org/projects/libnftnl/downloads.html
+
+In case of bugs and feature requests, file them via:
+
+  https://bugzilla.netfilter.org
+
+Happy firewalling.
+
+--+j7gPogMzyv6nJsr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-iptables-1.8.13.txt"
+
+Florian Westphal (1):
+      Revert "libxtables: refuse to run under file capabilities"
+
+Pablo Neira Ayuso (1):
+      configure: Bump version for 1.8.13 release
+
+Rudi Heitbaum (1):
+      src: fix discards 'const' qualifier
+
+
+--+j7gPogMzyv6nJsr--
 
