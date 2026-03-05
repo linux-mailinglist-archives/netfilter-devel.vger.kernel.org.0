@@ -1,126 +1,155 @@
-Return-Path: <netfilter-devel+bounces-10986-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-10988-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yCigMvFmqWlN6wAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-10986-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Mar 2026 12:20:17 +0100
+	id +dpkH5xvqWk97gAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-10988-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Mar 2026 12:57:16 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F5E21082D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Mar 2026 12:20:17 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92410210FD7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Mar 2026 12:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B3D68300E149
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2026 11:15:23 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8BD2930490AE
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2026 11:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7743845AD;
-	Thu,  5 Mar 2026 11:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10E139768B;
+	Thu,  5 Mar 2026 11:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="YSv25p73"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="ZHdyNRha"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA9D37F74D
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Mar 2026 11:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F73377EB4
+	for <netfilter-devel@vger.kernel.org>; Thu,  5 Mar 2026 11:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772709321; cv=none; b=WM6DprIqH4YGn/S1AURqMBu1O2RlV1o6UNj1VFi6/ejsqpqCQ7iyb49dwNrZjSPZNmw/62dZABWDHcryxVNpZxAoGZyIIzM3sGJvCTQjuRVltf7bo4zK9hmNIHTCf/zhF0b3dCWoSD8a4VkN32Q4avp2nUS1iySVw5mzaJx8EK8=
+	t=1772711767; cv=none; b=HEykEqlga0U/L3kPKMz4SqqnZinDICZtm9+78W76hydWgZQw928cpJ1qSTwo41b1KYiQhhKYTCUFgGbKxqSh0QUAPzr2Rp4bcFmBG5iXUNSZiJEihU51LZxaGR2IuASReeEeCv0pFG/tO26UymOur3MyM3i8U/VlGVObrmhSW3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772709321; c=relaxed/simple;
-	bh=CALbPl2hUAGkU4px/JCvqLQKbZG0rk5AKXMyM1h6ffk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IbQ2d36VyXL1AhI7EKPiSzaNsIxo8fqoj19Nwqr9+gq4Q/FfXLhr7fNe39Fzc0EtZbn3RQbyhfX7Yy6s+vRNpP8hWM/ic9JNetHxk/igmXsuqDK4dwWC0DaTSUq8/UCvtzy9kK++1HQwcwznul/O+duiv698zhbTa71NTUYYqTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=YSv25p73; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+	s=arc-20240116; t=1772711767; c=relaxed/simple;
+	bh=btUAeNB2L2jiK/FxnsxtzPS/elFLqaIcYr1c44lk5iI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d6Y2g868+vVuFBxHIm9h+Re9pe4r7UiOkutoMJfZR0lHP+1WeFmnogED5Pyw1EwxhNdhJDNoUUJiarKIP/nGejNeFZrAdscMdndVpVX3u9PhpKnTjD3kaZsA2wJr9ixwaAUH+Wk0LnEXVgZpGPBaWHz0TteiwlDLlBYLMUoPncI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=ZHdyNRha; arc=none smtp.client-ip=35.176.194.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=Faxg9YXC04GUJcsawnlby1MTaUdOvP29H4zL9KbmdDI=; b=YSv25p73urfo//XinV7BPtmKfS
-	RW5R1bd6LXB8nDRjnjpBUV6ZnzCT/HTsFbBMaWdXRI0uHB1nCwNeA/YuYTIlYjdJ8GpVPjdf5cefz
-	heYsIRWK4Rj/hSqnw3dbMH8PAyrOaqseEX97ewhiZeRwi2jPZMtmnZRoRoL0C81ULgIY217F6WMVA
-	9euR+QYo8S4C/hdqhAfr3E8VRoInRvF7uZ1mXIyM3kf62ZDJYtxF2wUfZfhBtA+T5e5Hizmfi5OWd
-	ER0iqwR2voZRH4DQ1+Xuu+J75Z5dQDuwofxAz7rqEY41yOv6R2HpmuUa9agXdpnBLHRXuCCTv677k
-	8+Y9/OQQ==;
-Authentication-Results: mail.nwl.cc;
-	iprev=pass (localhost) smtp.remote-ip=::1
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1vy6fm-000000006wV-1EwX
-	for netfilter-devel@vger.kernel.org;
-	Thu, 05 Mar 2026 12:15:18 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] nft: Use the current name for the desired NFTNL_EXPR_BITWISE_OP
-Date: Thu,  5 Mar 2026 12:15:13 +0100
-Message-ID: <20260305111513.13910-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260305111513.13910-1-phil@nwl.cc>
-References: <20260305111513.13910-1-phil@nwl.cc>
+	bh=tsk8SRukygvSHIv7NfJSKQ4KHa59ehELQcCUKVmcOoY=; b=ZHdyNRhaBAUmc9YJSBmYPS5Nvy
+	lJgdwnq7Efh1gN3R5sXo7KI4WVO03cLIWkBgygJwYGqnQym+iqaRU038wr43Y140jpGaMF3WhxyvA
+	W6hNGdjZzgVz/BzpQJcZWa1O56XOjNh5IcXnyNVVlDMovgjbr7aymWqdgg0RQmds7aGHPfN+VwbI3
+	CKQGuEhNs4HCDwzqL5/n3UquWmda/0HCJwMDumsZHyDdQO01fHWzT37C7C9aPgkkDW5hG1zbUqyBH
+	6bNhQRduWGvcaqD0fwtqHywoh49xP8UMkHVukOdpBSUZX2Ujy7KSr6SCpWeCFLZ9Aywp9Paw3BSZ8
+	ZDQ0BF6Q==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=azazel.net)
+	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <jeremy@azazel.net>)
+	id 1vy7JE-0000000A9CE-0FHL;
+	Thu, 05 Mar 2026 11:56:04 +0000
+Date: Thu, 5 Mar 2026 11:55:50 +0000
+From: Jeremy Sowden <jeremy@azazel.net>
+To: Phil Sutter <phil@nwl.cc>
+Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH iptables] tests: iptables-test, xlate-test: use
+ `os.unshare` Python function
+Message-ID: <20260305115550.GA770968@azazel.net>
+References: <20260304181304.696423-1-jeremy@azazel.net>
+ <aalk_STwkHIwC4RY@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 43F5E21082D
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="RBJ38wvUmu3YlPjt"
+Content-Disposition: inline
+In-Reply-To: <aalk_STwkHIwC4RY@orbyte.nwl.cc>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+X-Rspamd-Queue-Id: 92410210FD7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.46 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	R_DKIM_REJECT(1.00)[azazel.net:s=20220717];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[azazel.net : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-10986-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_COUNT_THREE(0.00)[4];
-	NEURAL_SPAM(0.00)[0.160];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
+	TO_DN_ALL(0.00)[];
+	TAGGED_FROM(0.00)[bounces-10988-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
-	TO_DN_NONE(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,nwl.cc:mid,nwl.cc:email]
+	DKIM_TRACE(0.00)[azazel.net:-];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_SPAM(0.00)[0.682];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jeremy@azazel.net,netfilter-devel@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Since refreshing nf_tables.h, the new name is available.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--RBJ38wvUmu3YlPjt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index da008070e3016..5c9cc6b389cff 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -4035,7 +4035,7 @@ static int nft_is_expr_compatible(struct nftnl_expr *expr, void *data)
- 		return 0;
- 
- 	if (!strcmp(name, "bitwise") &&
--	    nftnl_expr_get_u32(expr, NFTNL_EXPR_BITWISE_OP) == NFT_BITWISE_BOOL)
-+	    nftnl_expr_get_u32(expr, NFTNL_EXPR_BITWISE_OP) == NFT_BITWISE_MASK_XOR)
- 		return 0;
- 
- 	return -1;
--- 
-2.51.0
+On 2026-03-05, at 12:11:57 +0100, Phil Sutter wrote:
+> On Wed, Mar 04, 2026 at 06:13:03PM +0000, Jeremy Sowden wrote:
+> > Since Python 3.12 the standard library has included an `os.unshare`
+> > function.  Use it if it is available.
+> >=20
+> > Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+>=20
+> Patch applied, thanks!
+>=20
+> We have the same pattern in nftables' tests/py/nft-test.py, could you ple=
+ase
+> send a patch for that as well?
 
+Yup.
+
+J.
+
+--RBJ38wvUmu3YlPjt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsG7BAABCgBvBYJpqW8pCRAphqwKvfEEDUcUAAAAAAAeACBzYWx0QG5vdGF0aW9u
+cy5zZXF1b2lhLXBncC5vcmc5A2/FcuNEwqfKj2xVNba1MhNgt695NX9aS7eCaLbB
+jBYhBGwdtFNj70A3vVbVFymGrAq98QQNAAAGKA//QGJDVegaIsT77L59GBdpG6fX
+4Z8drl4LZQSGt9cc4E50sEuHGaL5+XFdqQyuxscUfC9dqyrhlcB3gF2TdEEK1ZJ3
+7xBi2k0CsdrA7T6DLd5yhyvS5CsI3L9vXeodFbUzNYietJ7y7eQbeSofk6NVR1Yu
+5MdeHnUWQ8JW0yP5z1K6C67kzkO1CcGwP8uIk5YHWQR0soIbfrOEBUX8b/bONjhz
+om6Y8sickVh1ju1JQ0DJsUMAP0fIM5twWlSTS73cj1bfLeNQb5Pr3L3wYH+8bRum
++zUh8KYpdokDQ5HjfdVxjl2/vnx8oZ5+YQ7W/iIcLQrOXG6L96Uoe4GqcWjE/Kzo
+Kfhk7Wux9Q4MNC+XRMKbPqYHSvd7VaM960QPiZkVAkvf65eLChFDOEahAyKWYZ0w
+lWs3y7caKJASgFSxglJr7pYpLTc6SLlQ8JjfDxH0qGg0OS/08hA4OkX4fSTGaJYr
+Ksam6N6u1/b2YsHN6clkukWhMBNlh9rtkV6FA26UHyFvFw4nVBWmW63WQGlmDTRb
+9C4P7IZFDSGy9Vt+u8DExJVOpnoauUb1hi+DcRkL2ioJ9UobRYktyVcxNBBC05KF
+Ivdq+tqHxBGQEjxCoy3tldwSfdvQj3zvq/9M9gSLTf8uaf1VAA01utq5AHvP0xSj
+3pdTZu8HVwNvPYkwo4g=
+=4kWu
+-----END PGP SIGNATURE-----
+
+--RBJ38wvUmu3YlPjt--
 
