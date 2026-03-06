@@ -1,107 +1,136 @@
-Return-Path: <netfilter-devel+bounces-11005-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11006-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eC6NOhoBqmm9JQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11005-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Mar 2026 23:18:02 +0100
+	id QL7sMrFLqmmIOwEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11006-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 06 Mar 2026 04:36:17 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC366218D73
-	for <lists+netfilter-devel@lfdr.de>; Thu, 05 Mar 2026 23:18:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B2321B2A8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 06 Mar 2026 04:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1996E300B46D
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2026 22:17:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 61D173102E30
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Mar 2026 03:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACD23630AE;
-	Thu,  5 Mar 2026 22:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039C6364032;
+	Fri,  6 Mar 2026 03:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="FLEG36SP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/JVoGql"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D663624CF
-	for <netfilter-devel@vger.kernel.org>; Thu,  5 Mar 2026 22:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D191D23FC5A;
+	Fri,  6 Mar 2026 03:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772749077; cv=none; b=HmyZ3rB+T/ofXzPWsY4k582mSUo51tp3b5Ivt7CY+fDPJuF0k1hagiofVBhV+In4qNZW8wvHq/e59XoHZoa8Ot3Vq1AaOt7REa5rMURLgsTtzPzWQOeqHDbTXZzcSkbDzGESpKeE3rDk4d+uYo6iogAt+VYElMjdpvArCbYLuHc=
+	t=1772767975; cv=none; b=mf8ko+n/7kqNprEJDTANCXatBY8T8h8mJy4jxj0OzClBQ7bzHR3Wlk9CvTZwwBfVBpYmz0L4z6rBZGh2lybyQamVeZa8NfayOH2JZGcCcRFYEb+JI3k89yYigVrm9IugId1tszd+WIfPQ5oD5bJ1MrBIhCD+tm33m0TMHjAaofQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772749077; c=relaxed/simple;
-	bh=JqXssD5gsSejIwOqrswoyz4QrNTSpEnH6Xl72JI3QO4=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QEWaXGTIiJfPFLId9rzucQxOsGq/4I6wtLqFVk27X6dTKM7Vpa8tAGxJaU6wz+ZraNiA2KRxQtGoEsuI4wlxRfM+FcDvL6ZDk884n0ZV0DO2SivB/Gh2ZCk47AEGMfFH3kCuFBkKojfvz3so3iKeDoSaUddrecEA4BPbHXGu2IE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=FLEG36SP; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=WpcibYYw2ysKWXJruxVfrWTRYmmxpsl/N+feVSMbsWA=; b=FLEG36SPdAXarCVgJroQiBqmHd
-	WOypCDNMoOcWtybxC/CO0AEFDyCheqPH03z0m7XGWAsPRVo430ezhLXGJzU4LOzSCfgx7AAd4HlE9
-	5hs9WlnWzreXksCeDRPM91uNh6K1PaIW2rZTd8l4HpG+jwxc+9BgWy3wAiOPaYaLkSnaNMGYEErPk
-	XKWsg8mWueHRmg4IDzGGJDIXEEwuxON9cGXv4sO6rNEgxB/v1uIfe8quB97USk4IYi2bi+1Uam8cp
-	YhHQ4GPBgpXsCmAHK94ZhOdgsyI+t/fcEr2sNcOMJP2d2gXgGilHqQ/SR4VuVwgRlpwAke+y51cx5
-	Fn2jxoqg==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1vyH0z-000000000M1-1h5g
-	for netfilter-devel@vger.kernel.org;
-	Thu, 05 Mar 2026 23:17:53 +0100
-Date: Thu, 5 Mar 2026 23:17:53 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH 1/2] include: linux: nf_tables.h: Sync with
- current kernel UAPI headers
-Message-ID: <aaoBEVHSsN2VwRu-@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	netfilter-devel@vger.kernel.org
-References: <20260305111513.13910-1-phil@nwl.cc>
+	s=arc-20240116; t=1772767975; c=relaxed/simple;
+	bh=ItxcF5VTyBZrcq32AWIPmuH9Y22asDFhrdXLRz3yiAc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=H3lCLOv9Guwa5zTrwDa0906tGeGNNv/xyt+4o1eN5bQXGO0OQtYc27dA72jA3lz8vzwApty4+UqaNXdySyaDBbY9p6PnHuIqP/r44PGhSVD7Xrl2Zs+lZNU7BqPwLuGOeBZZEsSxeuXOk1oZzHsxKQkEHNzfeDIXGj0/XcsDwWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/JVoGql; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D762C116C6;
+	Fri,  6 Mar 2026 03:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772767975;
+	bh=ItxcF5VTyBZrcq32AWIPmuH9Y22asDFhrdXLRz3yiAc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=m/JVoGqlhSDDv3/5nNGgQwpC1JqgNNV8G+dawI9dDrrBuxyP/36vLbz6DlqQD6bot
+	 yNGwEBlQqKvuuzi8QkLeg4ZGtOsRmnqWHN2LSK7nMHHoGJVEsuxbdhED85b8cV1Ycp
+	 K+FXZarRCkND/F5csawkaU/LHhbfgS5jlGT4OHK2owYbkfuEVauWQacvaJPwrMgJsn
+	 I/bRMxWQupYoM1iEI1V122pjQ9Vlayv1QopjERwBvNKQs0KxEG5cZfy54jfx6N7miW
+	 v35U+z2muTkQbDMtMbl0b452tWZdxGepJWVE9SKwXDl2hqdeVB2otkW4zE89mqVujl
+	 BAR309JrEnkgw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CF1C3808200;
+	Fri,  6 Mar 2026 03:32:56 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260305111513.13910-1-phil@nwl.cc>
-X-Rspamd-Queue-Id: EC366218D73
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v8 0/5] doc/netlink: Expand nftables
+ specification
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177276797504.3348267.1807799589469287173.git-patchwork-notify@kernel.org>
+Date: Fri, 06 Mar 2026 03:32:55 +0000
+References: <20260303195638.381642-1-one-d-wide@protonmail.com>
+In-Reply-To: <20260303195638.381642-1-one-d-wide@protonmail.com>
+To: Remy D. Farley <one-d-wide@protonmail.com>
+Cc: donald.hunter@gmail.com, kuba@kernel.org, netdev@vger.kernel.org,
+ pablo@netfilter.org, fw@strlen.de, phil@nwl.cc,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+X-Rspamd-Queue-Id: 38B2321B2A8
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11005-lists,netfilter-devel=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,vger.kernel.org,netfilter.org,strlen.de,nwl.cc];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
-	DKIM_TRACE(0.00)[nwl.cc:-];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-11006-lists,netfilter-devel=lfdr.de,netdevbpf];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[protonmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NO_DN(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_SPAM(0.00)[0.986];
-	TO_DN_NONE(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-On Thu, Mar 05, 2026 at 12:15:12PM +0100, Phil Sutter wrote:
-> We want NFT_BITWISE_MASK_XOR, use the occasion to sync it entirely.
-> 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
+Hello:
 
-Series applied.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 03 Mar 2026 19:57:16 +0000 you wrote:
+> Getting out some changes I've accumulated while making nftables work
+> with Rust netlink-bindings. Hopefully, this will be useful upstream.
+> 
+> v8:
+> - De-duplicate operation attributes.
+> - Fix typo in max-check, add missing max-check.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v8,1/5] doc/netlink: netlink-raw: Add max check
+    https://git.kernel.org/netdev/net-next/c/bf5a54bc0e3d
+  - [net-next,v8,2/5] doc/netlink: nftables: Add definitions
+    https://git.kernel.org/netdev/net-next/c/a3a54ba4ef2b
+  - [net-next,v8,3/5] doc/netlink: nftables: Update attribute sets
+    https://git.kernel.org/netdev/net-next/c/482da27d5274
+  - [net-next,v8,4/5] doc/netlink: nftables: Add sub-messages
+    https://git.kernel.org/netdev/net-next/c/27c7ee6d26dd
+  - [net-next,v8,5/5] doc/netlink: nftables: Fill out operation attributes
+    https://git.kernel.org/netdev/net-next/c/568b370f128c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
