@@ -1,38 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11057-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11058-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IAmLCoE3r2kPQQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11057-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:11:29 +0100
+	id +NYqEJw3r2kPQQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11058-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:11:56 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 886F82416F3
-	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:11:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87C4C241703
+	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:11:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DF2CA310F881
-	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Mar 2026 21:08:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BD598311DCBB
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Mar 2026 21:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CEA413227;
-	Mon,  9 Mar 2026 21:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9BF40F8D5;
+	Mon,  9 Mar 2026 21:08:57 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FA841C0D6;
-	Mon,  9 Mar 2026 21:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B234D40FD92;
+	Mon,  9 Mar 2026 21:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773090534; cv=none; b=gInsFePxG3eUddmBJLFPbhX2tNw5CsXZSJqMNQiYUG/m1fbuCyqZCdlMaERlPL5uv2ZemgR2ceQ+Goirjgu8AL4JV67gxylTEEOArsrSOT536Mjj1H+4+SnH2pxs4Ugt065FRQGTONVMeiMS92OTObzlMMXVgiOKIzBFwYxWBvI=
+	t=1773090537; cv=none; b=nMXmLK4gKBlNWAYW4w9ITEwrsQlmjDJvaKxGO1sYXrscY7T9aJO3oXMx5R0XY49Oa1rLWAlV2gq7CLYdSz0OBKctTEg+v98OzF33QllUX9NNCRB5K2R/LrxO0eeExzbK+EDDuWrVLAgbk7wA8ruRB2TukEppL5qrr7nIi874TxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773090534; c=relaxed/simple;
-	bh=3mUNslYFdO+m+1W2BzjORrkvq4Fe6bwLyUt25LRjKok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eapqB0GQpkaC+I0Mn+Lz9T0Svrs8bLwZWtIc0pxPVkdE7CjbiCiVwpNKZNAyfkazCaiZJBVNjEqZmKFnZKAwlB977+W35ovea76elYWskCpFZ7rBuKzWdoIVmd1KUc3Ls2vBSKZiz8kx+6Z5j0z/qFDbOhdZDUMiRXmxHXPangA=
+	s=arc-20240116; t=1773090537; c=relaxed/simple;
+	bh=vpDW84VkZZPvlCCoOnVRCQ9HyLV3eJ3laKNPkd02lzg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Yywg5uAQQ7tIPinZGIXmr2kLNU5rpwWpYbavjHKM43McRsz+5qTVHS2PwDvOESuCfp84n71GPtFx1uYlVqMsVCS9XXmWm84vyqN6llhRCWszqqSSUaxq9Uxmq1JOiclIKtvtq8nGBRaW7FfT+zXOS3EyCibvZTgcDWPw101Q4sQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id DA0746047A; Mon, 09 Mar 2026 22:08:49 +0100 (CET)
+	id E6E8B60D2E; Mon, 09 Mar 2026 22:08:53 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -41,10 +42,12 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 00/10] netfilter: updates for net
-Date: Mon,  9 Mar 2026 22:08:35 +0100
-Message-ID: <20260309210845.15657-1-fw@strlen.de>
+Subject: [PATCH net 01/10] netfilter: nf_tables: Fix for duplicate device in netdev hooks
+Date: Mon,  9 Mar 2026 22:08:36 +0100
+Message-ID: <20260309210845.15657-2-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260309210845.15657-1-fw@strlen.de>
+References: <20260309210845.15657-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,17 +55,17 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 886F82416F3
+X-Rspamd-Queue-Id: 87C4C241703
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11057-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11058-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -70,114 +73,62 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.981];
+	NEURAL_HAM(-0.00)[-0.982];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,strlen.de:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hi,
+From: Phil Sutter <phil@nwl.cc>
 
-The following patchset contains Netfilter fixes for *net*:
+When handling NETDEV_REGISTER notification, duplicate device
+registration must be avoided since the device may have been added by
+nft_netdev_hook_alloc() already when creating the hook.
 
-Due to a large influx of bug fixes on netfilter-devel@ I am sending
-an earlier PR to have more time to go through the remaining patches
-without getting a 20+ patch PR.
+Suggested-by: Florian Westphal <fw@strlen.de>
+Reported-by: syzbot+bb9127e278fa198e110c@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=bb9127e278fa198e110c
+Fixes: a331b78a5525 ("netfilter: nf_tables: Respect NETDEV_REGISTER events")
+Tested-by: Helen Koike <koike@igalia.com>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_tables_api.c    | 2 +-
+ net/netfilter/nft_chain_filter.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-1) syzbot managed to add/remove devices to a flowtable, due to a bug in
-   the flowtable netdevice notifier this gets us a double-add and
-   eventually UaF when device is removed again (we only expect one
-   entry, duplicate remains past net_device end-of-life).
-   From Phil Sutter, bug added in 6.16.
-
-2) Yiming Qian reports another nf_tables transaction handling bug:
-   in some cases error unwind misses to undo certain set elements,
-   resulting in refcount underflow and use-after-free, bug added in 6.4.
-
-3) Jenny Guanni Qu found out-of-bounds read in pipapo set type.
-   While the value is never used, it still rightfully triggers KASAN
-   splats.  Bug exists since this set type was added in 5.6.
-
-4) a few x_tables modules contain copypastry tcp option parsing code which
-    can read 1 byte past the option area.  This bug is ancient, fix from
-    David Dull.
-
-5) nfnetlink_queue leaks kernel memory if userspace provides bad
-   NFQA_VLAN/NFQA_L2HDR attributes.  From Hyunwoo Kim, bug stems from
-   from 4.7 days.
-
-6) nfnetlink_cthelper has incorrect loop restart logic which may result
-   in reading one pointer past end of array. From 3.6 days, fix also from
-   Hyunwoo Kim.
-
-7-9) fix access bugs in the ctnetlink expectation handling.
-     Problem is that while RCU prevents the referenced nf_conn entry
-     from going way, nf_conn entries have an extension area that can
-     only be safely accessed if the cpu holds a reference to the
-     conntrack.  Else the extension area can be free'd at any time.
-     Fix is to grab references before the accesses happen.
-     These bugs are old, v3.10 resp. even pre-git days.
-     All fixes from Hyunwoo Kim.
-
-10) xt_IDLETIMER v0 extension must reject working with timers added
-    by revision v1, else we get list corruption. Bug added in v5.7.
-    From Yifan Wu, Juefei Pu and Yuan Tan via Xin Lu.
-
-Please, pull these changes from:
-The following changes since commit c113d5e32678c8de40694b738000a4a2143e2f81:
-
-  Merge branch 'net-spacemit-a-few-error-handling-fixes' (2026-03-06 18:58:36 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-26-03-09
-
-for you to fetch changes up to a29b6cda03c1a4175468953c87a6c7db8766df7e:
-
-  netfilter: xt_IDLETIMER: reject rev0 reuse of ALARM timer labels (2026-03-09 14:40:00 +0100)
-
-----------------------------------------------------------------
-netfilter pull request nf-26-03-09
-
-----------------------------------------------------------------
-David Dull (1):
-  netfilter: x_tables: guard option walkers against 1-byte tail reads
-
-Florian Westphal (1):
-  netfilter: nf_tables: always walk all pending catchall elements
-
-Hyunwoo Kim (5):
-  netfilter: nfnetlink_queue: fix entry leak in bridge verdict error path
-  netfilter: nfnetlink_cthelper: fix OOB read in nfnl_cthelper_dump_table()
-  netfilter: ctnetlink: fix use-after-free in ctnetlink_dump_exp_ct()
-  netfilter: ctnetlink: fix use-after-free of exp->master in single expectation GET
-  netfilter: ctnetlink: fix use-after-free of exp->master in expectation dump
-
-Jenny Guanni Qu (1):
-  netfilter: nft_set_pipapo: fix stack out-of-bounds read in pipapo_drop()
-
-Phil Sutter (1):
-  netfilter: nf_tables: Fix for duplicate device in netdev hooks
-
-Yuan Tan (1):
-  netfilter: xt_IDLETIMER: reject rev0 reuse of ALARM timer labels
-
- net/netfilter/nf_conntrack_netlink.c | 52 ++++++++++++++++++++++++++--
- net/netfilter/nf_tables_api.c        |  4 +--
- net/netfilter/nfnetlink_cthelper.c   |  8 ++---
- net/netfilter/nfnetlink_queue.c      |  4 ++-
- net/netfilter/nft_chain_filter.c     |  2 +-
- net/netfilter/nft_set_pipapo.c       |  3 +-
- net/netfilter/xt_IDLETIMER.c         |  6 ++++
- net/netfilter/xt_dccp.c              |  4 +--
- net/netfilter/xt_tcpudp.c            |  6 ++--
- 9 files changed, 72 insertions(+), 17 deletions(-)
-
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 1862bd7fe804..710f0ee21a34 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -9688,7 +9688,7 @@ static int nft_flowtable_event(unsigned long event, struct net_device *dev,
+ 			break;
+ 		case NETDEV_REGISTER:
+ 			/* NOP if not matching or already registered */
+-			if (!match || (changename && ops))
++			if (!match || ops)
+ 				continue;
+ 
+ 			ops = kzalloc_obj(struct nf_hook_ops,
+diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
+index b16185e9a6dd..041426e3bdbf 100644
+--- a/net/netfilter/nft_chain_filter.c
++++ b/net/netfilter/nft_chain_filter.c
+@@ -344,7 +344,7 @@ static int nft_netdev_event(unsigned long event, struct net_device *dev,
+ 			break;
+ 		case NETDEV_REGISTER:
+ 			/* NOP if not matching or already registered */
+-			if (!match || (changename && ops))
++			if (!match || ops)
+ 				continue;
+ 
+ 			ops = kmemdup(&basechain->ops,
 -- 
 2.52.0
+
 
