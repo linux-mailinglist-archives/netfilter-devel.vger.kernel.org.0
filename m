@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11064-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11065-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0N+wMAc3r2kPQQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11064-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:09:27 +0100
+	id 4COSIw43r2kPQQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11065-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:09:34 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 686CD241655
-	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:09:27 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1BE24165D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 09 Mar 2026 22:09:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E09583025255
-	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Mar 2026 21:09:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7CEA130236B3
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Mar 2026 21:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BB841B369;
-	Mon,  9 Mar 2026 21:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330C841B35D;
+	Mon,  9 Mar 2026 21:09:25 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D48A40F8DC;
-	Mon,  9 Mar 2026 21:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E288936A008;
+	Mon,  9 Mar 2026 21:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773090560; cv=none; b=irpz/+a8Fb2LhTi3jfR5K1LhConIYWAC4YJySHXRURI+E1o2BlmbWIQmW8UnT5ra/2jCZy7IupEDHew8FxJvIK1IIiGMYpOvnPufyw2wAIhvk07hhd44B0yaAhMpD2rE6i3cdl83b/Uj0PJe5R+UmhwoazrBdMFYzrxaGyR2R2Q=
+	t=1773090565; cv=none; b=sBYlg5Q+ecN3ERudAQZc8CQoItcKefJWiyEqQ4BxShLEjXTF9lucD0fWJ5rPM1k3e6HdIgRJl3H8K2VGw4owlcWi2E59XK3vbtmfVhQU6rNP9xrZF5DpIXnkWKl220YXWkfAnvscGjECyMh8Xdn+w+a8HNkf2Ria0PJcHH5Zwes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773090560; c=relaxed/simple;
-	bh=sQ5SwBo9qxg8CLjshNJ3y3Srm8F3CDSgmndoixri7HQ=;
+	s=arc-20240116; t=1773090565; c=relaxed/simple;
+	bh=dhgEAJUduxbNZZJHgsf1NItuMp0FsFosSresSzjbEnA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F50dv4X5P4qNuw2gfTatGV4X6baLG7h5O4KQiMPTZueoOtFWlkRXZKV3RzVbnDBxKsoy3NklcD/5R5h50VEfQTK8AeRbOR6tXK/iL76fJtGO1anf1tmVvftgkL+G1mJCcwwAgRuN20M8ZTfBNLb01k/1xdRwYdi56R9EgkpUv4s=
+	 MIME-Version; b=gPOoeOgM2SaSUEzUiWuUkYhR+kdI/GB0z0zJso5FxAqwiqJ5wWVEe2k6hGskUKFwSLdNSIbYQQ/1ROoy6oKZQRmnKogzBRXCAN83IgUop2FriGe604jJ6j6/KwF3pERaaWx/e7x0ffFsH9c0TYHR4CtaiujpAm24zLlEUJxhAR4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 50C3960D2F; Mon, 09 Mar 2026 22:09:18 +0100 (CET)
+	id 622AA60D2E; Mon, 09 Mar 2026 22:09:22 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 07/10] netfilter: ctnetlink: fix use-after-free in ctnetlink_dump_exp_ct()
-Date: Mon,  9 Mar 2026 22:08:42 +0100
-Message-ID: <20260309210845.15657-8-fw@strlen.de>
+Subject: [PATCH net 08/10] netfilter: ctnetlink: fix use-after-free of exp->master in single expectation GET
+Date: Mon,  9 Mar 2026 22:08:43 +0100
+Message-ID: <20260309210845.15657-9-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260309210845.15657-1-fw@strlen.de>
 References: <20260309210845.15657-1-fw@strlen.de>
@@ -55,17 +55,17 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 686CD241655
+X-Rspamd-Queue-Id: 2F1BE24165D
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11064-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11065-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -73,10 +73,10 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.971];
+	NEURAL_HAM(-0.00)[-0.977];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
@@ -86,36 +86,44 @@ X-Rspamd-Action: no action
 
 From: Hyunwoo Kim <imv4bel@gmail.com>
 
-ctnetlink_dump_exp_ct() stores a conntrack pointer in cb->data for the
-netlink dump callback ctnetlink_exp_ct_dump_table(), but drops the
-conntrack reference immediately after netlink_dump_start().  When the
-dump spans multiple rounds, the second recvmsg() triggers the dump
-callback which dereferences the now-freed conntrack via nfct_help(ct),
-leading to a use-after-free on ct->ext.
+ctnetlink_get_expect() in the non-dump path calls
+nf_ct_expect_find_get() which only takes a reference on the expectation
+itself, not on exp->master.  It then calls ctnetlink_exp_fill_info()
+which dereferences exp->master extensively (tuplehash, ct->ext via
+nfct_help()).
 
-The bug is that the netlink_dump_control has no .start or .done
-callbacks to manage the conntrack reference across dump rounds.  Other
-dump functions in the same file (e.g. ctnetlink_get_conntrack) properly
-use .start/.done callbacks for this purpose.
+A concurrent conntrack deletion through NFNL_SUBSYS_CTNETLINK (a
+different nfnetlink subsystem mutex than NFNL_SUBSYS_CTNETLINK_EXP) can
+free the master conntrack while the single GET is in progress, leading
+to use-after-free.  In particular, kfree(ct->ext) is immediate and not
+RCU-deferred.
 
-Fix this by adding .start and .done callbacks that hold and release the
-conntrack reference for the duration of the dump, and move the
-nfct_help() call after the cb->args[0] early-return check in the dump
-callback to avoid dereferencing ct->ext unnecessarily.
+Fix this by taking a reference on exp->master under rcu_read_lock
+(required for SLAB_TYPESAFE_BY_RCU) before calling
+ctnetlink_exp_fill_info() and releasing it afterwards.
 
- BUG: KASAN: slab-use-after-free in ctnetlink_exp_ct_dump_table+0x4f/0x2e0
- Read of size 8 at addr ffff88810597ebf0 by task ctnetlink_poc/133
+ BUG: KASAN: slab-use-after-free in ctnetlink_dump_tuples_ip+0xbc/0x1f0
+ Read of size 2 at addr ffff8881042a8cb2 by task poc3/134
 
- CPU: 1 UID: 0 PID: 133 Comm: ctnetlink_poc Not tainted 7.0.0-rc2+ #3 PREEMPTLAZY
+ CPU: 0 UID: 0 PID: 134 Comm: poc3 Not tainted 7.0.0-rc2+ #6 PREEMPTLAZY
+ Hardware name: QEMU Ubuntu 24.04 PC v2 (i440FX + PIIX, arch_caps fix, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
  Call Trace:
-  <TASK>
-  ctnetlink_exp_ct_dump_table+0x4f/0x2e0
-  netlink_dump+0x333/0x880
-  netlink_recvmsg+0x3e2/0x4b0
-  ? aa_sk_perm+0x184/0x450
-  sock_recvmsg+0xde/0xf0
+  ctnetlink_dump_tuples_ip+0xbc/0x1f0
+  ctnetlink_dump_tuples+0x19/0x60
+  ctnetlink_exp_dump_tuple+0x6f/0xd0
+  ctnetlink_exp_dump_expect+0x315/0x660
+  ctnetlink_exp_fill_info.constprop.0+0xf9/0x180
+  ctnetlink_get_expect+0x2f3/0x400
+  nfnetlink_rcv_msg+0x48e/0x510
+  netlink_rcv_skb+0xc9/0x1f0
+  nfnetlink_rcv+0xdb/0x220
+  netlink_unicast+0x3ec/0x590
+  netlink_sendmsg+0x397/0x690
+  ___sys_sendmsg+0xfc/0x170
+  __sys_sendmsg+0xf4/0x180
+  do_syscall_64+0xc3/0x6e0
 
- Allocated by task 133:
+ Allocated by task 131:
   kmem_cache_alloc_noprof+0x134/0x440
   __nf_conntrack_alloc+0xa8/0x2b0
   ctnetlink_create_conntrack+0xa1/0x900
@@ -126,10 +134,14 @@ callback to avoid dereferencing ct->ext unnecessarily.
   netlink_unicast+0x3ec/0x590
   netlink_sendmsg+0x397/0x690
   __sys_sendmsg+0xf4/0x180
+  do_syscall_64+0xc3/0x6e0
+  entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
  Freed by task 0:
+  __kasan_slab_free+0x43/0x70
   slab_free_after_rcu_debug+0xad/0x1e0
   rcu_core+0x5c3/0x9c0
+  handle_softirqs+0x148/0x460
 
  Last potentially related work creation:
   kmem_cache_free+0x1f5/0x440
@@ -142,71 +154,50 @@ callback to avoid dereferencing ct->ext unnecessarily.
   netlink_sendmsg+0x397/0x690
   __sys_sendmsg+0xf4/0x180
 
-Fixes: e844a928431f ("netfilter: ctnetlink: allow to dump expectation per master conntrack")
+ The buggy address belongs to the object at ffff8881042a8c80
+  which belongs to the cache nf_conntrack of size 248
+ The buggy address is located 50 bytes inside of
+  freed 248-byte region [ffff8881042a8c80, ffff8881042a8d78)
+
+Fixes: c1d10adb4a52 ("[NETFILTER]: Add ctnetlink port for nf_conntrack")
 Signed-off-by: Hyunwoo Kim <imv4bel@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conntrack_netlink.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_netlink.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index c9d725fc2d71..65aa44a12d01 100644
+index 65aa44a12d01..10a9b98368f4 100644
 --- a/net/netfilter/nf_conntrack_netlink.c
 +++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3212,7 +3212,7 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
+@@ -3324,6 +3324,7 @@ static int ctnetlink_get_expect(struct sk_buff *skb,
  {
- 	struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
- 	struct nf_conn *ct = cb->data;
--	struct nf_conn_help *help = nfct_help(ct);
-+	struct nf_conn_help *help;
- 	u_int8_t l3proto = nfmsg->nfgen_family;
- 	unsigned long last_id = cb->args[1];
+ 	u_int8_t u3 = info->nfmsg->nfgen_family;
+ 	struct nf_conntrack_tuple tuple;
++	struct nf_conn *master;
  	struct nf_conntrack_expect *exp;
-@@ -3220,6 +3220,10 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	if (cb->args[0])
- 		return 0;
- 
-+	help = nfct_help(ct);
-+	if (!help)
-+		return 0;
-+
- 	rcu_read_lock();
- 
- restart:
-@@ -3249,6 +3253,24 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	return skb->len;
- }
- 
-+static int ctnetlink_dump_exp_ct_start(struct netlink_callback *cb)
-+{
-+	struct nf_conn *ct = cb->data;
-+
-+	if (!refcount_inc_not_zero(&ct->ct_general.use))
-+		return -ENOENT;
-+	return 0;
-+}
-+
-+static int ctnetlink_dump_exp_ct_done(struct netlink_callback *cb)
-+{
-+	struct nf_conn *ct = cb->data;
-+
-+	if (ct)
-+		nf_ct_put(ct);
-+	return 0;
-+}
-+
- static int ctnetlink_dump_exp_ct(struct net *net, struct sock *ctnl,
- 				 struct sk_buff *skb,
- 				 const struct nlmsghdr *nlh,
-@@ -3264,6 +3286,8 @@ static int ctnetlink_dump_exp_ct(struct net *net, struct sock *ctnl,
  	struct nf_conntrack_zone zone;
- 	struct netlink_dump_control c = {
- 		.dump = ctnetlink_exp_ct_dump_table,
-+		.start = ctnetlink_dump_exp_ct_start,
-+		.done = ctnetlink_dump_exp_ct_done,
- 	};
+ 	struct sk_buff *skb2;
+@@ -3378,10 +3379,19 @@ static int ctnetlink_get_expect(struct sk_buff *skb,
+ 	}
  
- 	err = ctnetlink_parse_tuple(cda, &tuple, CTA_EXPECT_MASTER,
+ 	rcu_read_lock();
++	master = exp->master;
++	if (!refcount_inc_not_zero(&master->ct_general.use)) {
++		rcu_read_unlock();
++		nf_ct_expect_put(exp);
++		kfree_skb(skb2);
++		return -ENOENT;
++	}
++
+ 	err = ctnetlink_exp_fill_info(skb2, NETLINK_CB(skb).portid,
+ 				      info->nlh->nlmsg_seq, IPCTNL_MSG_EXP_NEW,
+ 				      exp);
+ 	rcu_read_unlock();
++	nf_ct_put(master);
+ 	nf_ct_expect_put(exp);
+ 	if (err <= 0) {
+ 		kfree_skb(skb2);
 -- 
 2.52.0
 
