@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11081-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11082-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gOr5LMowsGkShAIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11081-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 15:55:06 +0100
+	id UGl5GJ0esGlagAIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11082-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 14:37:33 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B218A252A0E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 15:55:05 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3731B250814
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 14:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 02E5D31DCECC
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 13:27:13 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 284F03082096
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 13:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12393A3E66;
-	Tue, 10 Mar 2026 13:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1BB3A3E89;
+	Tue, 10 Mar 2026 13:21:14 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642623A3E63;
-	Tue, 10 Mar 2026 13:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAE7399367;
+	Tue, 10 Mar 2026 13:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773148870; cv=none; b=WRhHzGuZMR76Y8RrqXMqM+uXqjtSBjxK2syDWs5SI9PeruT9421H0ZMlrFGsGsmbMBvId98PFPGQS0OwdaJ702HWG737RkcJjBNv7qyshiduVvcTRsyGagExRhtHiCmdMam6KqAgDnKNRDs1x3gE44YIdzJ8fmhOrZER5P3ILfk=
+	t=1773148874; cv=none; b=iCj331Pap6OOUBxJnZZZU7txKSNYF7AcrHQLvDL292LLayUGlslAO3Ad1pSuMMtp2Pj/GqF/cMLVvwr1YnfRLovMsTAQ4T2c9FD596vN9LR6M3hSN+ohOBwHcID1+XbrGnRqTIKwClVlj07Bm6nfRuy1DNdGshShM1dyyqZItBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773148870; c=relaxed/simple;
-	bh=YNWVfFLnqV+YQDTvfmDQZiSpb/Ras8f4F8fh+DJEhSU=;
+	s=arc-20240116; t=1773148874; c=relaxed/simple;
+	bh=Vtwzovxyz/Et9UXZu1rSfDEWApgBjGB1YBGfgnENWRQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SSnLix9KZ9vGHU8EHgD6rt7TX6bwKJaxAWxIZTp5qoQv3aQ8E/3Hspsy/c1HUMVCCv9Rvl23/IlnCF2XQglEdmdvF49Gv2EYiLB46fF0ZptxajYanA61HX7fGxiBUWaWuJEWW2M8tuswHjkzFm+WTqh3WleZ+m2K4IsfDZL2Csg=
+	 MIME-Version; b=CguxRHupJJHSUpQRylU2LCKTHwPDhv10QuJ4qIHSyXewy9nM+PtnZK4BGVemn5CWgXrPqvs9zEE+4uWyjXgQfLatT90uSJvBoLvpmSjIRGvZThcr7lDUNDqLAdT+5XIHrtOzVoC7kb8ZN0+e1jm/IqfqXWZuZl3t1kPVXBHZl2g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 723B06052A; Tue, 10 Mar 2026 14:21:07 +0100 (CET)
+	id C48366052A; Tue, 10 Mar 2026 14:21:11 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net v2 2/7] netfilter: nf_tables: always walk all pending catchall elements
-Date: Tue, 10 Mar 2026 14:20:44 +0100
-Message-ID: <20260310132050.630-3-fw@strlen.de>
+Subject: [PATCH net v2 3/7] netfilter: nft_set_pipapo: fix stack out-of-bounds read in pipapo_drop()
+Date: Tue, 10 Mar 2026 14:20:45 +0100
+Message-ID: <20260310132050.630-4-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260310132050.630-1-fw@strlen.de>
 References: <20260310132050.630-1-fw@strlen.de>
@@ -55,17 +55,17 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B218A252A0E
+X-Rspamd-Queue-Id: 3731B250814
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11081-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11082-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -73,61 +73,70 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.982];
+	NEURAL_HAM(-0.00)[-0.981];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,strlen.de:mid,strlen.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,strlen.de:mid,strlen.de:email]
 X-Rspamd-Action: no action
 
-During transaction processing we might have more than one catchall element:
-1 live catchall element and 1 pending element that is coming as part of the
-new batch.
+From: Jenny Guanni Qu <qguanni@gmail.com>
 
-If the map holding the catchall elements is also going away, its
-required to toggle all catchall elements and not just the first viable
-candidate.
+pipapo_drop() passes rulemap[i + 1].n to pipapo_unmap() as the
+to_offset argument on every iteration, including the last one where
+i == m->field_count - 1. This reads one element past the end of the
+stack-allocated rulemap array (declared as rulemap[NFT_PIPAPO_MAX_FIELDS]
+with NFT_PIPAPO_MAX_FIELDS == 16).
 
-Otherwise, we get:
- WARNING: ./include/net/netfilter/nf_tables.h:1281 at nft_data_release+0xb7/0xe0 [nf_tables], CPU#2: nft/1404
- RIP: 0010:nft_data_release+0xb7/0xe0 [nf_tables]
- [..]
- __nft_set_elem_destroy+0x106/0x380 [nf_tables]
- nf_tables_abort_release+0x348/0x8d0 [nf_tables]
- nf_tables_abort+0xcf2/0x3ac0 [nf_tables]
- nfnetlink_rcv_batch+0x9c9/0x20e0 [..]
+Although pipapo_unmap() returns early when is_last is true without
+using the to_offset value, the argument is evaluated at the call site
+before the function body executes, making this a genuine out-of-bounds
+stack read confirmed by KASAN:
 
-Fixes: 628bd3e49cba ("netfilter: nf_tables: drop map element references from preparation phase")
-Reported-by: Yiming Qian <yimingqian591@gmail.com>
+  BUG: KASAN: stack-out-of-bounds in pipapo_drop+0x50c/0x57c [nf_tables]
+  Read of size 4 at addr ffff8000810e71a4
+
+  This frame has 1 object:
+   [32, 160) 'rulemap'
+
+  The buggy address is at offset 164 -- exactly 4 bytes past the end
+  of the rulemap array.
+
+Pass 0 instead of rulemap[i + 1].n on the last iteration to avoid
+the out-of-bounds read.
+
+Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
+Signed-off-by: Jenny Guanni Qu <qguanni@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_tables_api.c | 2 --
- 1 file changed, 2 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 710f0ee21a34..dacec5f8a11c 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -829,7 +829,6 @@ static void nft_map_catchall_deactivate(const struct nft_ctx *ctx,
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index a34632ae6048..7fd24e0cc428 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -1640,6 +1640,7 @@ static void pipapo_drop(struct nft_pipapo_match *m,
+ 	int i;
  
- 		nft_set_elem_change_active(ctx->net, set, ext);
- 		nft_setelem_data_deactivate(ctx->net, set, catchall->elem);
--		break;
- 	}
- }
+ 	nft_pipapo_for_each_field(f, i, m) {
++		bool last = i == m->field_count - 1;
+ 		int g;
  
-@@ -5873,7 +5872,6 @@ static void nft_map_catchall_activate(const struct nft_ctx *ctx,
+ 		for (g = 0; g < f->groups; g++) {
+@@ -1659,7 +1660,7 @@ static void pipapo_drop(struct nft_pipapo_match *m,
+ 		}
  
- 		nft_clear(ctx->net, ext);
- 		nft_setelem_data_activate(ctx->net, set, catchall->elem);
--		break;
- 	}
- }
- 
+ 		pipapo_unmap(f->mt, f->rules, rulemap[i].to, rulemap[i].n,
+-			     rulemap[i + 1].n, i == m->field_count - 1);
++			     last ? 0 : rulemap[i + 1].n, last);
+ 		if (pipapo_resize(f, f->rules, f->rules - rulemap[i].n)) {
+ 			/* We can ignore this, a failure to shrink tables down
+ 			 * doesn't make tables invalid.
 -- 
 2.52.0
 
