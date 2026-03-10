@@ -1,111 +1,100 @@
-Return-Path: <netfilter-devel+bounces-11098-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11099-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UJSrC6pYsGkJiQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11098-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 18:45:14 +0100
+	id sGnOOoN2sGnJjQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11099-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 20:52:35 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 250FF255D09
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 18:45:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AE02257333
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 20:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B979530074D9
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 17:45:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D7E173051479
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 19:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614C13D47C3;
-	Tue, 10 Mar 2026 17:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WYH0in9l";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="kr3OUD9C"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BA735A390;
+	Tue, 10 Mar 2026 19:52:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from melduny.fyrkat.no (melduny.fyrkat.no [217.144.76.212])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D393D47C6
-	for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 17:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157633542CF;
+	Tue, 10 Mar 2026 19:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.144.76.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773164705; cv=none; b=f+Kqas4abPPZyzFvIYhEH031c5mzSTQ7TZejnMOpWbnvMP7xtjAFPKI7nIzveZb9RL8218uS/pq1zKpuff5H1XAnrVA+vJumebTJSS9vo4t+73+qCHdcsPINawznYbpXVCnfziI5gol+CjeegzZtqtwwlo2HWUBZ1OcblyxXmD0=
+	t=1773172337; cv=none; b=Ws8oXW8+FNpP06ngNgolfrMgeCrltogN5WBgdEfTxgRZjUcKhhxPgvIzJ+OFf3GYlG5LLVELld8ZD876phJSN9T92/8Mvb27nneON+owb4ylb7TVF/JuD+Ch1krkZCSmMs351VA28QmC5JEfadJo40z3zjxXWwkiWTY/MaVtJkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773164705; c=relaxed/simple;
-	bh=FjHgUnFXlfKG+mUmi7mczB3M2JkjiNySJ2ao2PuB7/Y=;
-	h=From:To:Cc:Subject:Message-ID:In-Reply-To:References:MIME-Version:
-	 Content-Type:Date; b=TDcSbz9/+2XCBqLaRWkcAo5C98VouXkXXYx3OpdvAESSbQUW3/0dodPGD3rb3vJYR93ArA2bzqPmUNdPbvUMCQImut5Eq67PuKwYv7xH6c4pvMK5wOxQ6pfflGwIZB+RokKkwMaq4tW9rYEKENNZ5PqxT64Z1oz/vgSQ14n/TEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WYH0in9l; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=kr3OUD9C; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773164702;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rZmsVJnJ6tnDYK1sHh6S9C7IYMU//kP93+xeloxRdsk=;
-	b=WYH0in9lU7QwqdnmWMvreJwve1jCdZQw4IW7T+useSlsKaVGZIrv2ovVRzDNfpKesGG7nm
-	Gl29kIyqRG9hcN08HNXIJ9qQq37/vcHPpU4kYdLxfkjli/+sdbPij9FkQN5pvyKeZgMgAb
-	eFgBiJrKU5xOUXme4T5/gpwR7UjYjT8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-605-b585GtClN9G6sbY0PvGqbg-1; Tue, 10 Mar 2026 13:45:01 -0400
-X-MC-Unique: b585GtClN9G6sbY0PvGqbg-1
-X-Mimecast-MFC-AGG-ID: b585GtClN9G6sbY0PvGqbg_1773164699
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-485345e2fdfso15901945e9.2
-        for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 10:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1773164699; x=1773769499; darn=vger.kernel.org;
-        h=date:content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rZmsVJnJ6tnDYK1sHh6S9C7IYMU//kP93+xeloxRdsk=;
-        b=kr3OUD9C9Qv9TYe+D0WVYEYT0YZSzauIRKuIHGyZ4RwR8dllkVw6xrTpn18BQE9pf/
-         IMaXB6UateRx98kLG1CQz3C5ZV4Sp6Jf5UVedKsMCNqrJX95qqh71qQaQXGrk4fgefm4
-         2VjGMoxOrtSa+o/uVvxpS/APZLssXZVC7qALW6xScax0OqKAJYvywSWUCFOSlQFmERqo
-         qFIr0qGGq/HxJXSQCMCaaCPCyMELMD8ZsdulxH+Hkuvdttf5m38N1sMHirQSOqPO5PBN
-         MoFpJrCztp2sOGP5GN0bDVwCYWVpD8yEVnG1UmO+1uof7577tQW99nsrV7PppkzXMTNH
-         HZdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773164699; x=1773769499;
-        h=date:content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rZmsVJnJ6tnDYK1sHh6S9C7IYMU//kP93+xeloxRdsk=;
-        b=TSnDpTCZA5dbdnAvWSZqR2aodjUhu6wp/UrdOdhe9WwbFCFj/XwOtDXkEci73Ra5ZD
-         VQrs0BmvWteVS3aemaHkRB6MH++5ATEAIoNpsBEyHcjej4M+m10Mi5zXvGiZo/UYW22r
-         TuAunamgipM3d1Ih7vM7VYcrIza/rppXkluuuu6ZR4a8Nqm3T7aVx3mD/bey/wG/JSKk
-         NhmgAzA0TKDdI8eM0HG1HYSQdW4NLAR6aODlirZRGBog1V5zw8FepcjPR2gzlSpnia5H
-         RjKDCoKEfBU6xLoIShGW4y7jXGPMaL+viy77W9Il9iYPaUOwBzym5T3jdat9wLooxoYp
-         B8tQ==
-X-Gm-Message-State: AOJu0YyfDlrSVBhoDrI4EhVkKb9vgzKgjw+FM+AkAp5sscxMmFee/nZd
-	VYqhx/37CsXU2rcGbxW6/DeAlCJZuRGkVDfE1/WdgfUhCdPltXTsBKwh9oTNbS/t85TWWDbCg1L
-	xD+NqvgCD+PW2AsnzJDaPk0n+ocweWtYJpp4KyD9asOk3VowHC+4lbyr6uV3+D0LEi13dkg==
-X-Gm-Gg: ATEYQzzJZK+TakZE2U7jwDUlIUW5ocBMZObxSMsrPnPVXUb7vO4EliWIzuEfcJW+B8R
-	ZC99ciLqMBFFeyACdiD51y54kGrX3/z0TKk3ObVCGHw+8sQmCV+38HodSkeWptcGzSxGz6L55xG
-	iK+PNqnOIxJ6hoR2NGEJJaEc3Sz+kq2wWMNw0gLHaoOQL1BgObxkuzvnF8LSmBC7Fxgno+Hwsmy
-	cyFsgDbzBaCWBy7y8iyjdhGXBldqoeUMrlgvBOQHBvTkQWi1xlQePj3rlFdpwOMqbgO6XyhIwn2
-	hc0OAGhrC9ysIvEOwFAzfrY5GC89JBuChcqifeAALvrDaHy7hj5c8+T838rMcl2QOpLa/kS87Wf
-	SRLSqzv7j8QBbWLgo/7pwKX7VY3t01lyiGvVfIPPZOWQdBGf9rg==
-X-Received: by 2002:a05:600c:4752:b0:483:7783:537b with SMTP id 5b1f17b1804b1-4852697a593mr276095555e9.24.1773164699260;
-        Tue, 10 Mar 2026 10:44:59 -0700 (PDT)
-X-Received: by 2002:a05:600c:4752:b0:483:7783:537b with SMTP id 5b1f17b1804b1-4852697a593mr276095055e9.24.1773164698726;
-        Tue, 10 Mar 2026 10:44:58 -0700 (PDT)
-Received: from maya.myfinge.rs (ifcgrfdd.trafficplex.cloud. [176.103.220.4])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48541aa73easm87440895e9.3.2026.03.10.10.44.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2026 10:44:58 -0700 (PDT)
-From: Stefano Brivio <sbrivio@redhat.com>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org, Yiming Qian <yimingqian591@gmail.com>
-Subject: Re: [PATCH v2 nf] netfilter: nft_set_pipapo: split gc in unlink and
- reclaim phase
-Message-ID: <20260310184455.3ab682f0@elisabeth>
-In-Reply-To: <abBXVm9Fh1ZjkKG6@strlen.de>
-References: <20260304053611.15197-1-fw@strlen.de>
-	<20260310170221.086297b2@elisabeth>
-	<abBXVm9Fh1ZjkKG6@strlen.de>
-Organization: Red Hat
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.49; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1773172337; c=relaxed/simple;
+	bh=ZC/kikINZ4TAvirVIFkqBizjiOt39ErEkuGXZ1Z0W+Y=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=spsv9j9FnU7JyeT9JkMuLJ5vAVexowszWi1mv5wnm4d1Wf9jIYq0HStyT8DGEoIvlPu4X8jJVdBqNDn8ka0pQoctIlLl68/VYiVM8B0meHe600Js4BcrLOas6s3x+PS7Hjez6hblBX1zrFMIV1FoyyPsYqA7ZrPZqU57Jyx4c8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kolla.no; spf=pass smtp.mailfrom=kolla.no; arc=none smtp.client-ip=217.144.76.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kolla.no
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kolla.no
+Received: by melduny.fyrkat.no (Postfix) with ESMTPSA id 51FE78D0F;
+	Tue, 10 Mar 2026 19:40:41 +0000 (UTC)
+Date: Tue, 10 Mar 2026 20:40:36 +0100 (CET)
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+cc: Fernando Fernandez Mancera <fmancera@suse.de>, netdev@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
+    Selvin Xavier <selvin.xavier@broadcom.com>, 
+    Andrew Lunn <andrew+netdev@lunn.ch>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Ido Schimmel <idosch@nvidia.com>, 
+    Petr Machata <petrm@nvidia.com>, Simon Horman <horms@kernel.org>, 
+    Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>, 
+    "maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <GR-QLogic-Storage-Upstream@marvell.com>, 
+    "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+    "Martin K. Petersen" <martin.petersen@oracle.com>, 
+    Nilesh Javali <njavali@marvell.com>, 
+    Manish Rangankar <mrangankar@marvell.com>, 
+    Varun Prakash <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>, 
+    David Teigland <teigland@redhat.com>, 
+    Andreas Gruenbacher <agruenba@redhat.com>, 
+    Nikolay Aleksandrov <razor@blackwall.org>, 
+    David Ahern <dsahern@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, 
+    Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, 
+    David Howells <dhowells@redhat.com>, 
+    Marc Dionne <marc.dionne@auristor.com>, 
+    Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
+    Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>, 
+    Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+    Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>, 
+    Arnd Bergmann <arnd@arndb.de>, 
+    Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
+    Eric Biggers <ebiggers@kernel.org>, Michal Simek <michal.simek@amd.com>, 
+    Luca Weiss <luca.weiss@fairphone.com>, Sven Peter <sven@kernel.org>, 
+    Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+    Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>, 
+    Herbert Xu <herbert@gondor.apana.org.au>, 
+    Ryota Sakamoto <sakamo.ryota@gmail.com>, 
+    Kuniyuki Iwashima <kuniyu@google.com>, Kir Chou <note351@hotmail.com>, 
+    Kuan-Wei Chiu <visitorckw@gmail.com>, 
+    Vikas Gupta <vikas.gupta@broadcom.com>, 
+    Bhargava Marreddy <bhargava.marreddy@broadcom.com>, 
+    Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>, 
+    =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>, 
+    "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, 
+    "open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>, 
+    "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>, 
+    "open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER" <linux-scsi@vger.kernel.org>, 
+    "open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>, 
+    "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>, 
+    "open list:NETFILTER" <netfilter-devel@vger.kernel.org>, 
+    "open list:NETFILTER" <coreteam@netfilter.org>, 
+    "open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>, 
+    "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>, 
+    "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+Subject: Re: [PATCH 01/10 net-next] ipv6: convert CONFIG_IPV6 to built-in
+ only and clean up Kconfigs
+In-Reply-To: <01a4936f-77cd-4c60-a1be-cabec872a2bb@kernel.org>
+Message-ID: <e54d887c-5a70-b8c9-aeef-433c5134dd14@kolla.no>
+References: <20260309022013.5199-1-fmancera@suse.de> <20260309022013.5199-2-fmancera@suse.de> <01a4936f-77cd-4c60-a1be-cabec872a2bb@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -113,72 +102,66 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Tue, 10 Mar 2026 18:44:57 +0100 (CET)
-X-Rspamd-Queue-Id: 250FF255D09
+X-Rspamd-Queue-Id: 4AE02257333
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [2.04 / 15.00];
+	DMARC_POLICY_REJECT(2.00)[kolla.no : SPF not aligned (relaxed), No valid DKIM,reject];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11098-lists,netfilter-devel=lfdr.de];
-	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
+	FREEMAIL_CC(0.00)[suse.de,vger.kernel.org,linux-m68k.org,ziepe.ca,kernel.org,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,gondor.apana.org.au,hotmail.com,blochl.de,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
+	TAGGED_FROM(0.00)[bounces-11099-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sbrivio@redhat.com,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,strlen.de:email]
+	TAGGED_RCPT(0.00)[netfilter-devel,netdev];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[linux-m68k@kolla.no,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[69];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.803];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.de:email,kolla.no:mid]
 X-Rspamd-Action: no action
 
-On Tue, 10 Mar 2026 18:39:34 +0100
-Florian Westphal <fw@strlen.de> wrote:
+On Mon, 9 Mar 2026, Krzysztof Kozlowski wrote:
 
-> Stefano Brivio <sbrivio@redhat.com> wrote:
-> > Sorry for the late review. Just one (perhaps dumb) question:  
-> 
-> No problem, thanks for reviewing.
-> 
-> > >  	struct nft_pipapo *priv = nft_set_priv(set);
-> > >  	struct net *net = read_pnet(&set->net);
-> > > @@ -1697,6 +1697,8 @@ static void pipapo_gc(struct nft_set *set, struct nft_pipapo_match *m)
-> > >  	if (!gc)
-> > >  		return;
-> > >  
-> > > +	list_add(&gc->list, &priv->gc_head);  
+> On 09/03/2026 03:19, Fernando Fernandez Mancera wrote:
+> > Configuring IPV6 as a module provides little or no benefit and requires
+> > time and resources to maintain. Therefore, drop the support for it.
 > > 
-> > ...is there a reason why we need to do this unconditionally, or could
-> > we do this opportunistically if (__nft_set_elem_expired(&e->ext,
-> > tstamp)) below, including the nft_trans_gc_alloc() call?  
+> > Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
+> > dependencies across the tree that explicitly checked for IPV6=m. Adjust
+> > all the default configurations from CONFIG_IPV6=m to CONFIG_IPV6=y. In
+> > addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
+> > and MODULE_LICENSE().
+> > 
+> > This is also replacing module_init() by fs_initcall().
+> > 
+> > Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+> > ---
+-->8--
+> No, I don't want IPV6. It is allowed as module if some users need, but
+> it's heavy bloat added to each person's build testing setup. Kernel
+> image is already huge and barely fits boot partitions when built with
+> KASAN and I do want a generic image with KASAN.
 > 
-> Yes, its to make sure we run the catchall gc, which is external
-> to the pipapo core datastructure.
+> It must stay module for me. Alternatively, drop it, but then some users
+> will be really affected.
 
-Ah, right, it wouldn't run otherwise, I missed that. Thanks for
-explaining.
+I agree. If anything I would prefer to see IPv4 be made optional (and
+modular) as well, and not as something IPv6 depends on, it's (AFAIK)
+impossible today to build an IPv6-only Linux kernel. 
 
-> I admit we could be more clever and try to supress this
-> gc container allocation, but I preferred to keep it simpler for now.
-
-Yeah it sounds very reasonable.
-
--- 
-Stefano
-
+-- kolla
 
