@@ -1,133 +1,107 @@
-Return-Path: <netfilter-devel+bounces-11086-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11087-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sLsUNLklsGnYgQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11086-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 15:07:53 +0100
+	id iLsNDoEksGnYgQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11087-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 15:02:41 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA632515D1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 15:07:53 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF2762513EB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 15:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E85973613864
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 13:27:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8DC6F311F0B7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 13:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1593A6B93;
-	Tue, 10 Mar 2026 13:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625A1397E86;
+	Tue, 10 Mar 2026 13:26:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89CA2517AC;
-	Tue, 10 Mar 2026 13:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF6240DFC1
+	for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 13:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773148891; cv=none; b=fE6r8RGN3gqcZI5be/WfT0hCiDVham7aSGmPhpV0ODtjkXrfUgBcDO7TOxsvIct/t6Jp3/KJ5cSffvfrg0RqhOJl9WqF8tgDNP8HlXbfuxmwoGRDTfWvV27Jk6jxz+DQOh7HRQFb0Nd7d0Y+PjgJjp6TFm9siJnW/ZESpr6++B8=
+	t=1773149193; cv=none; b=WHy/BgAP83Q+wTIFdo7pFglCdvaVE1cJ5u3XhVwyi6C3cKO+tYdAatCNCdaAW06Au7GPfS4ar2uAPgg/l41P6PWNsJluMXUGglT29VgFp+Qij4HbP4hLkS+TFg73kVkIe3YVPAf2Pb4Ua9DL09Gh1RZWQnFdYnml36JgXkQQymg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773148891; c=relaxed/simple;
-	bh=PJxrBuFRXpFnnagOfTs3mQ2O48ZN+uobPNqwtZZzBYM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l5Vny6rK/TtWntVROx1viVakfbYNRIM1RtfWFHU56IVb2ACxT/2frE6h7KhK6lIQX5FgK54w7tUxiqvRe+TVB4k/rTmIUV0RDUbC5dIv5K4nikO4sxGwSmLU634TIN65y22c5yeRC6kaSmhiM2/JaTbH2a31wV+1g4+O8L4ZMxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+	s=arc-20240116; t=1773149193; c=relaxed/simple;
+	bh=0/Ia4Whajtv70iLXdWI5dMG8Uq0JC4uVnV+xrfkhciM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ix6pf0mR6Svl622TMCKJoTvOK3OogX2wH/NDmkG9pz7MbXVpAzYqSHHwzc3d27rYY+e8gw6GRFQqXMQBcLa15e7QuOuew567IYnAuf2Opq+hufW+ZAnazns1Ei+urJgBH4L16t4BPNGF1D/Go5wmr6KLTqJ/9sUaAfa15cOj3lQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 21CE36052A; Tue, 10 Mar 2026 14:21:29 +0100 (CET)
+	id 1A974608BD; Tue, 10 Mar 2026 14:26:30 +0100 (CET)
+Date: Tue, 10 Mar 2026 14:26:30 +0100
 From: Florian Westphal <fw@strlen.de>
-To: <netdev@vger.kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	<netfilter-devel@vger.kernel.org>,
-	pablo@netfilter.org
-Subject: [PATCH net v2 7/7] netfilter: xt_IDLETIMER: reject rev0 reuse of ALARM timer labels
-Date: Tue, 10 Mar 2026 14:20:49 +0100
-Message-ID: <20260310132050.630-8-fw@strlen.de>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260310132050.630-1-fw@strlen.de>
-References: <20260310132050.630-1-fw@strlen.de>
+To: Eric Woudstra <ericwouds@gmail.com>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH v19 nf-next 5/5] netfilter: nft_chain_filter: Add bridge
+ double vlan and pppoe
+Message-ID: <abAcBtV9WbEIDgCt@strlen.de>
+References: <20260224065307.120768-1-ericwouds@gmail.com>
+ <20260224065307.120768-6-ericwouds@gmail.com>
+ <76b3546a-37c5-4dab-9074-4df0cbe48524@gmail.com>
+ <abAOwZDmHjcLIbj1@chamomile>
+ <f69a9456-5047-4044-aa8d-1bad3bd81f4b@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5EA632515D1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f69a9456-5047-4044-aa8d-1bad3bd81f4b@gmail.com>
+X-Rspamd-Queue-Id: BF2762513EB
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11086-lists,netfilter-devel=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-11087-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.983];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.982];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,outlook.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,foxmail.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,strlen.de:mid]
 X-Rspamd-Action: no action
 
-From: Yuan Tan <tanyuan98@outlook.com>
+Eric Woudstra <ericwouds@gmail.com> wrote:
+> I misunderstood, as Florian pointed out he is waiting for a response on
+> the AI generated review.
 
-IDLETIMER revision 0 rules reuse existing timers by label and always call
-mod_timer() on timer->timer.
+Yes, I also try to keep patchwork somewhat up to date.
 
-If the label was created first by revision 1 with XT_IDLETIMER_ALARM,
-the object uses alarm timer semantics and timer->timer is never initialized.
-Reusing that object from revision 0 causes mod_timer() on an uninitialized
-timer_list, triggering debugobjects warnings and possible panic when
-panic_on_warn=1.
+If its not listed anymore, its been dropped from my radar.
+If its in new or 'under review' state, then its still on my list
+and I will get to it.
 
-Fix this by rejecting revision 0 rule insertion when an existing timer with
-the same label is of ALARM type.
+> I now understand it was not forgotten at all.
 
-Fixes: 68983a354a65 ("netfilter: xtables: Add snapshot of hardidletimer target")
-Co-developed-by: Yifan Wu <yifanwucs@gmail.com>
-Signed-off-by: Yifan Wu <yifanwucs@gmail.com>
-Co-developed-by: Juefei Pu <tomapufckgml@gmail.com>
-Signed-off-by: Juefei Pu <tomapufckgml@gmail.com>
-Signed-off-by: Yuan Tan <tanyuan98@outlook.com>
-Signed-off-by: Xin Liu <dstsmallbird@foxmail.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/xt_IDLETIMER.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Well, it was forgotten, sort of.
+I depend on patchwork tracking (and on submitters checking
+back when they are unsure (so this ping isn't bad)).
 
-diff --git a/net/netfilter/xt_IDLETIMER.c b/net/netfilter/xt_IDLETIMER.c
-index 5d93e225d0f8..517106165ad2 100644
---- a/net/netfilter/xt_IDLETIMER.c
-+++ b/net/netfilter/xt_IDLETIMER.c
-@@ -318,6 +318,12 @@ static int idletimer_tg_checkentry(const struct xt_tgchk_param *par)
- 
- 	info->timer = __idletimer_tg_find_by_label(info->label);
- 	if (info->timer) {
-+		if (info->timer->timer_type & XT_IDLETIMER_ALARM) {
-+			pr_debug("Adding/Replacing rule with same label and different timer type is not allowed\n");
-+			mutex_unlock(&list_mutex);
-+			return -EINVAL;
-+		}
-+
- 		info->timer->refcnt++;
- 		mod_timer(&info->timer->timer,
- 			  secs_to_jiffies(info->timeout) + jiffies);
--- 
-2.52.0
-
+Would it help to add a netfilter process document to
+Documentation/process/ to explain the expectations and
+nf specific patch workflow?
 
