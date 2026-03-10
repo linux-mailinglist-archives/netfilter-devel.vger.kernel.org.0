@@ -1,37 +1,37 @@
-Return-Path: <netfilter-devel+bounces-11107-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11111-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OHvFBCKlsGnQlQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11107-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:11:30 +0100
+	id IDjlEimlsGnQlQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11111-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:11:37 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 154112592F1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:11:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03DE225930C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:11:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1AFB63025F04
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 23:11:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 70CEF3075AAA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 23:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F32372B3B;
-	Tue, 10 Mar 2026 23:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F9B3783C2;
+	Tue, 10 Mar 2026 23:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="jEnfwv9e"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="gT9xDYrH"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BA7366824
-	for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 23:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06E737472F
+	for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 23:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773184283; cv=none; b=MPEEOyI0PmzAO8Ssp4wCkHgr8aCkqCi7e/wZ1da8veZsZ+is7VZz8XfrL+JMXsGzAfwZcKqlUTtXi+H0wOPDMwCLpSFpBYV4Yy19edV2tLYWL+8LdXbuS6VL5wBAZ7NatEt9kyMRXyA/FE832IoFGNFIvIu6OOI7grvuwrS72sI=
+	t=1773184285; cv=none; b=V537yUvCn9K+mxdju3ze+ipj0UeNGLrthGZi4JrHhrAAcqA89+V+wDxk1c/iDy70OoODZsUvJHVXMH4teJmleypLlNqhwZTRO/u9uRsU9WYpN2XphmsF00cPRAyo+OywjQVYpYjMhz3jj9ICE02PrEutlmjwJks93edI/kpXemQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773184283; c=relaxed/simple;
-	bh=3oeWApSIfsPcJTcoSMydLzSxiHaaiu1Uoo5V1qTq3j8=;
+	s=arc-20240116; t=1773184285; c=relaxed/simple;
+	bh=NScDZBDLI+ri2S045KaeVmtusz+sRzgaqKCbXKRDrJI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f65vKkUxdig0bpGPAkyyf47bXp/PHlRo162gTrOzNuZoSP2S+3pAZ3f2RU8sP13n9idQgt2LVU7qN33HY9wQfxmcDj+j8MiAUMoLiznmMOpUQZrVY/kaP1Wn6OEC+Cbt1W8TSh3OZGSMo9oEU9kt3NY70Ubg2797ugxe3FJjA40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=jEnfwv9e; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=kKi3M9e+wD3zBfQBmJy7FfhKsHoVGOqZrOH1BzQYRWCI8b6H5fxq8Zej9tpDKwYcqq9zN5y/qHlc570Y+38hRi3lLqK/M5LozjbG+NxsaXGSbe64CFgblMydW4fkdkRdPZ2thbEzSobRBDe2cht3eqLyWt8IsmnH2fDiKuKMu5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=gT9xDYrH; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
@@ -40,25 +40,25 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=dfGwNRSm2Xxi6ZnhbUvKscFKELTQwEsc2YOwSqKEFSU=; b=jEnfwv9e6RlCu99VE1/qFbfnUq
-	L3WUsYSg1orBs55/6CVPXKdDg2GZd2spThiVRoVyo1fLt64dAPqUTJIp/SPGco8WtqjpcqZrhpoZD
-	vUKGXfAQLDhsC8Bcf2gnr9Rw1dL54vg8oP4mwDo7kOtbH/WRjdHrCM5ylAlnmIecoAlJCR9EvaFHT
-	gX9JJb1uUbrkSEE6PYWLcn+HXQAyvyk3KrlTBCDL0iGWGCqRU6IgiWjP/rUHHETB2u2Psb9ZGOaAR
-	m9JR+bhiZ/W0x5YWLFt9hXrvNsQ5ASFSlcF5x6P/U46Tx/To/8WJShNifMh73BYadpx9td9s1/lMd
-	71NnZBkg==;
+	bh=d+H3jI456eW7dgmPuQKkBQ+ZVPpr/B8flnzjgXmH+Hw=; b=gT9xDYrHTiKtvUAXRbXIBiAXxV
+	cGHcbiosAAZAGVkC4edUAJObchbCozr6dh2F8slcQIhIN/ZgH9yxOCkOBFFkXS9ULdYsOpSA+uUo2
+	YJPBE5cPCmnngmA2RNiT6/6UjgsM+nNni3zTlzTi26t2Lr/Vl45X40thV5v4hNuKC7rptBrSV1Vf0
+	kZ93CZzucMVsL3eEMYhbjVCaFEKpDDdPIrT4Wdp2tqK7DY6jo/HSVJuZYvWo+vCo0ErLG5EJG384A
+	pmCMKC+OQfIgkjeTBaSVegOva+Q0iRjQzr3qBTSnYNXb81Zvco4ntDdRFPLisOGnVcBe1OQp2QkkZ
+	vDglVQbA==;
 Authentication-Results: mail.nwl.cc;
 	iprev=pass (localhost) smtp.remote-ip=::1
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1w06ES-000000004qR-1ucr;
-	Wed, 11 Mar 2026 00:11:20 +0100
+	id 1w06EU-000000004qp-1nZ8;
+	Wed, 11 Mar 2026 00:11:22 +0100
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 4/5] cache: Filter for table when listing sets or maps
-Date: Wed, 11 Mar 2026 00:11:14 +0100
-Message-ID: <20260310231115.25638-5-phil@nwl.cc>
+Subject: [nft PATCH 5/5] cache: Filter for table when listing flowtables
+Date: Wed, 11 Mar 2026 00:11:15 +0100
+Message-ID: <20260310231115.25638-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260310231115.25638-1-phil@nwl.cc>
 References: <20260310231115.25638-1-phil@nwl.cc>
@@ -69,20 +69,20 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 154112592F1
+X-Rspamd-Queue-Id: 03DE225930C
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [1.04 / 15.00];
 	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11107-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11111-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	DMARC_NA(0.00)[nwl.cc];
@@ -96,53 +96,43 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Respect an optionally specified table name to filter listed sets or maps
+Respect an optionally specified table name to filter listed flowtables
 to by populating the filter accordingly.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
  src/cache.c                                 | 1 +
- tests/shell/testcases/listing/cache_filters | 4 ++++
- 2 files changed, 5 insertions(+)
+ tests/shell/testcases/listing/cache_filters | 3 +++
+ 2 files changed, 4 insertions(+)
 
 diff --git a/src/cache.c b/src/cache.c
-index 13d4cb19eb4f6..f86d000690929 100644
+index f86d000690929..bad8275326c76 100644
 --- a/src/cache.c
 +++ b/src/cache.c
-@@ -252,6 +252,7 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
- 	case CMD_OBJ_SETS:
- 	case CMD_OBJ_MAPS:
+@@ -266,6 +266,7 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
+ 		/* fall through */
+ 	case CMD_OBJ_FLOWTABLES:
  		filter->list.family = cmd->handle.family;
 +		filter->list.table = cmd->handle.table.name;
- 		flags |= NFT_CACHE_TABLE | NFT_CACHE_SET;
- 		if (!nft_output_terse(&nft->output))
- 			flags |= NFT_CACHE_SETELEM;
+ 		flags |= NFT_CACHE_TABLE | NFT_CACHE_FLOWTABLE;
+ 		break;
+ 	case CMD_OBJ_COUNTER:
 diff --git a/tests/shell/testcases/listing/cache_filters b/tests/shell/testcases/listing/cache_filters
-index 37c8f845dd4c7..7a89330d2b6c0 100755
+index 7a89330d2b6c0..e3d0e5e5a7217 100755
 --- a/tests/shell/testcases/listing/cache_filters
 +++ b/tests/shell/testcases/listing/cache_filters
-@@ -22,6 +22,8 @@ table ip ip_t {
- 	chain ip_t_c2 {
- 	}
- }
-+table ip ip_t2 {
-+}
- EOF
- 
- $NFT --debug=netlink list ruleset | \
-@@ -38,6 +40,8 @@ $NFT --debug=netlink list sets | \
- 	grep -q 'family 2 ip_t_s ip_t' || fail "broken list sets"
- $NFT --debug=netlink list sets ip6 | \
- 	grep -q 'family 2 ip_t_s ip_t' && fail "broken list sets family filter"
-+$NFT --debug=netlink list sets ip ip_t2 | \
-+	grep -q 'family 2 ip_t_s ip_t' && fail "broken list sets table filter"
- 
- $NFT --debug=netlink list flowtables | \
+@@ -47,4 +47,7 @@ $NFT --debug=netlink list flowtables | \
  	grep -q 'flow table ip_t ip_t_ft' || fail "broken list flowtables"
+ $NFT --debug=netlink list flowtables ip6 | \
+ 	grep -q 'flow table ip_t ip_t_ft' && fail "broken list flowtables family filter"
++$NFT --debug=netlink list flowtables ip ip_t2 | \
++	grep -q 'flow table ip_t ip_t_ft' && fail "broken list flowtables table filter"
++
+ exit 0
 -- 
 2.51.0
 
