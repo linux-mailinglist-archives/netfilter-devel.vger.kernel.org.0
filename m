@@ -1,174 +1,130 @@
-Return-Path: <netfilter-devel+bounces-11106-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11108-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oHJtNJSksGnQlQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11106-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:09:08 +0100
+	id 6E00GCGlsGnQlQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11108-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:11:29 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8FC425929A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:09:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B052592F0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2026 00:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 09D593025ED0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 23:09:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 182AE3039692
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Mar 2026 23:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E965736F439;
-	Tue, 10 Mar 2026 23:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18E7374731;
+	Tue, 10 Mar 2026 23:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="AsrC0CwN"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="OGxqXa7E"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFD82DB780
-	for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 23:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BFF36C0DD
+	for <netfilter-devel@vger.kernel.org>; Tue, 10 Mar 2026 23:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773184143; cv=none; b=HnVdT8bLEv18xgjO6Fls7K+MRBVha6PbIqToRU3MFBhtqQcsEDg/9lr8Ee4lRPjdmW4/7NzrM5ammeCdr/7bAOFZW3t9fU4ZfO07userN2RV9d39Zgo2AKC7Ed53s+E3GFaLuTWVA6TM4om4A3GNz3Xx1eC/sZ408fJONedKfZ4=
+	t=1773184283; cv=none; b=M2td+J1vjOss5Yf96VqPxKg6jdYfkG5K1CGJUDB1yX9TjH2KPG/+fwztnzjniaWqdsh1OrILwN1cUvpyY6evvbj17clSu79FvJpZjqUZ/Pz+kZGCNGuuDcI9+D9K7ytPiPocAbi7mpOymcAE7PDeCVDKlS8D79wEBOfjMI6YiQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773184143; c=relaxed/simple;
-	bh=ZKepyzWF9vZrdtPQWN0ODdLSvdYymTbVK+UsruI09X8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VKQULEPlWokNy8UGrz6HYqLPcVBzRAQr7s0E2wOQ1pFTjFaNVJySlXwTtK1ircPg8iVl3J6tIYOOFiDCHbY20eCHviA0aS2Ig6eqKV6cd7eU1wLqs/xhBJCefz0kHzeC+LD6c+y9zONCAec9LOOLutjVQFo51I/MNrToIgMxyCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=AsrC0CwN; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1773184283; c=relaxed/simple;
+	bh=E73FjQd4n7bEhZ8c8qO3taMftQwBbFzZUM6Rt67/JLo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LMYzVRnUP5jE55iyJ6Vd7xz+grFxUiPHdpYvdPFQqM8EVPfizT3BQdoJJW3HIX+TAlZTLmmCJwjzY3OE3XiWIqo3ipMyLHRWTLBzO/ugJFI75zfpL+8lo/Cs/Mb/u3u7gTAWYblAg9OgMzW1S3fHHJ/yb0XpJL6Tww4JI1hSlbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=OGxqXa7E; arc=none smtp.client-ip=151.80.46.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=eTyDEI1FRRcdKf1n4Vr7Cmc0p2zwShoYxtEbVXtnWAk=; b=AsrC0CwN2QNIrD0V5STDYTJUG8
-	9XU/ITqYfQx6hrM13asZEubtG7n1qFQ9h06dUJhG2qlSyDX3JJu9wbJ0TemFy8+tdX7HK4Gp1Z5Na
-	erv55A7vU0yJLmFb7VftsCFBj/sMXpGhh91mrfiRUuRS3+NYLj9e+c6a59OUOyt/K8KtjdXa1pllA
-	yChtu3ONgaho4HUSKMtNFvCJYBf93AupBnq+geW3qpbgbuVVBISMV3w/gfvAZHeoEYa8RHQvzcY3d
-	XSAEpnKJ4xw7tElSYPCQI7zgFmk0ZDXg3Lm1BpDhr0HYQFujkor1CIQjrwGOZytPGtjexOnbaakjN
-	4ZZXjiFA==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
+	bh=gkGUk8z0m0P4AmAxuO+d7AIWNXD8sFxrNtClQAROwf8=; b=OGxqXa7Emqx1ItpwN+KZ9vpLrH
+	vGbeSLoBzQwybYm3pbNvUIVC70z+86cZGao1S9JswPysJUisrSnrH4I4ucMlDSBzXLAmGlduMyNJz
+	HahtW5TRN1u9qAwi+dXpOybDCaWbkI8NNKKCq+y631CBX0Wa2t2KutLrYyoMHfZfRwyDfOXEMv5N1
+	BJZnnE0AB77dQorGOUDaH8TiHTIMbYXyWUYRLkojXkIOI5XLdftIIatLytOc59FMUiApxUO4XMutg
+	gw0vr0navXQ+/FrGJqCjmDFSwr7bVU54AXLX8PISHzmL9/Hsqp+8GVwiOEQcGgL7DdinoBLX7fLwo
+	EOw0wiGg==;
+Authentication-Results: mail.nwl.cc;
+	iprev=pass (localhost) smtp.remote-ip=::1
+Received: from localhost ([::1] helo=xic)
+	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1w06CB-000000004nP-0PcP;
-	Wed, 11 Mar 2026 00:08:59 +0100
-Date: Wed, 11 Mar 2026 00:08:59 +0100
+	id 1w06ES-000000004qY-42ZH;
+	Wed, 11 Mar 2026 00:11:20 +0100
 From: Phil Sutter <phil@nwl.cc>
-To: Jeremy Sowden <jeremy@azazel.net>
-Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft] tests: py: use `os.unshare` Python function
-Message-ID: <abCki9aBa8wVBvQi@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-	Jeremy Sowden <jeremy@azazel.net>,
-	Netfilter Devel <netfilter-devel@vger.kernel.org>
-References: <20260305175358.806280-1-jeremy@azazel.net>
- <aasRsr93TOUuH_Xb@orbyte.nwl.cc>
- <20260306183553.GA5468@celephais.dreamlands>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/5] Enhance cache filter for list commands
+Date: Wed, 11 Mar 2026 00:11:10 +0100
+Message-ID: <20260310231115.25638-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260306183553.GA5468@celephais.dreamlands>
-X-Rspamd-Queue-Id: D8FC425929A
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C7B052592F0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.46 / 15.00];
+X-Spamd-Result: default: False [1.04 / 15.00];
 	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_ALL(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11106-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11108-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[nwl.cc:-];
-	MISSING_XM_UA(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DMARC_NA(0.00)[nwl.cc];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.989];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[nwl.cc:-];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,nft-test.py:url,netfilter.org:email,orbyte.nwl.cc:mid]
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hi Jeremy,
+Reducing the amount of data fetched from kernel improves performance
+with large rule sets but also reduces adverse side-effects if multiple
+versions of nftables access the same kernel rule set. Being able to
+ignore parts of the rule set one is not interested in allows for (more or
+less) safe coexistence if each tool is operating on the data it created
+itself only.
 
-On Fri, Mar 06, 2026 at 06:35:53PM +0000, Jeremy Sowden wrote:
-> On 2026-03-06, at 18:41:06 +0100, Phil Sutter wrote:
-> >On Thu, Mar 05, 2026 at 05:53:58PM +0000, Jeremy Sowden wrote:
-> > > Since Python 3.12 the standard library has included an `os.unshare` function.
-> > > Use it if it is available.
-> > 
-> > This patch breaks py test suite cases involving time-related matches,
-> > e.g. 'meta time "1970-05-23 21:07:14"'. It expects:
-> > 
-> > | cmp eq reg 1 0x002bd503 0x43f05400
-> 
-> 	$ TZ=UTC-2 perl -MPOSIX=strftime -le 'my $ns = hex $ARGV[0]; print strftime "%Y-%m-%d %H:%M:%S", localtime int $ns / 1000000000' 0x002bd50343f05400
-> 	1970-05-23 21:07:14
-> 
-> > but instead the rule serializes into:
-> > 
-> > | cmp eq reg 1 0x002bd849 0x74a8f400
-> 
-> 	$ TZ=UTC-2 perl -MPOSIX=strftime -le 'my $ns = hex $ARGV[0]; print strftime "%Y-%m-%d %H:%M:%S", localtime int $ns / 1000000000' 0x002bd84974a8f400
-> 	1970-05-23 22:07:14
-> 
-> > Do you see that too?
-> 
-> Yes, e.g.:
-> 
-> 	6: WARNING: line 4: 'add rule netdev test-netdev egress meta time > "2022-07-01 11:00:00" accept': '[ cmp gt reg 1 0x16fda8f3 0x1977a000 ]' mismatches '[ cmp gt reg 1 0x16fdac39 0x4a304000 ]'
-> 
-> As with your example, the discrepancy is an hour:
-> 
-> 	$ TZ=UTC-2 perl -MPOSIX=strftime -le 'my $ns = hex $ARGV[0]; print strftime "%Y-%m-%d %H:%M:%S", localtime int $ns / 1000000000' 0x16fda8f31977a000
-> 2022-07-01 11:00:00
-> 
-> 	$ TZ=UTC-2 perl -MPOSIX=strftime -le 'my $ns = hex $ARGV[0]; print strftime "%Y-%m-%d %H:%M:%S", localtime int $ns / 1000000000' 0x16fdac394a304000
-> 2022-07-01 12:00:00
-> 
-> which suggests it's time-zone related.  Didn't see anything about that
-> in the doc's.  Will take a closer look.  Apologies.
+This series reduces caching for list commands which specify a family
+and/or table. To help testing this, patch 1 extends netlink debug output
+to include chains, flowtables and objects so a test case may check if
+they are fetched or not.
 
-Yes, it's odd. Neither unshare module nor 'unshare -n' behave like this,
-even though os.unshare is described as doing the same as unshare command
-does. It also doesn't mangle os.environ['TZ'] value, no idea why it
-messes with this.
+The remaining patches actually increase filter use.
 
-> PS UTC-2 is exotic. :)
+Phil Sutter (5):
+  cache: Include chains, flowtables and objects in netlink debug output
+  cache: Respect family in all list commands
+  cache: Relax chain_cache_dump filter application
+  cache: Filter for table when listing sets or maps
+  cache: Filter for table when listing flowtables
 
-Maybe it's Ander Juaristi's native timezone, he added the tests in
-commit 0518ea3f70d8c ("tests: add meta time test cases"). And then I
-did:
+ src/cache.c                                 | 11 ++--
+ src/mnl.c                                   | 60 ++++++++++++++++++---
+ tests/shell/testcases/listing/cache_filters | 53 ++++++++++++++++++
+ 3 files changed, 113 insertions(+), 11 deletions(-)
+ create mode 100755 tests/shell/testcases/listing/cache_filters
 
-commit 7e326d697ecf43ea029de5584e59701eb61ca87e
-Author: Phil Sutter <phil@nwl.cc>
-Date:   Sat Nov 16 22:32:18 2019 +0100
+-- 
+2.51.0
 
-    tests/py: Set a fixed timezone in nft-test.py
-    
-    Payload generated for 'meta time' matches depends on host's timezone and
-    DST setting. To produce constant output, set a fixed timezone in
-    nft-test.py. Choose UTC-2 since most payloads are correct then, adjust
-    the remaining two tests.
-    
-    Fixes: 0518ea3f70d8c ("tests: add meta time test cases")
-    Signed-off-by: Phil Sutter <phil@nwl.cc>
-    Acked-by: Ander Juaristi <a@juaristi.eus>
-    Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
-
-So that's how UTC-2 became py test suite's native timezone. :D
-
-Cheers, Phil
 
