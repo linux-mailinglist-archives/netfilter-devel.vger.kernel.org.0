@@ -1,182 +1,116 @@
-Return-Path: <netfilter-devel+bounces-11140-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11141-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qEIrEiuSsmnJNgAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11140-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 11:15:07 +0100
+	id cGuEO/2asmnENwAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11141-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 11:52:45 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C028527036D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 11:15:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9FF270827
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 11:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9569030D638A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 10:11:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 523F83019904
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 10:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7603B7761;
-	Thu, 12 Mar 2026 10:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="gKj/akjb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A328A390CB7;
+	Thu, 12 Mar 2026 10:52:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BC43B5833
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 10:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5302388E74
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 10:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773310289; cv=none; b=HgvIqhixkKr/AuWbtu0mnQGq6iLjPnCQzrQbHLNfX/7yqHdqhoZwamAKFEExBYnRghUkxpu+b5Eee5EuLmalcSTmsrJv/hNZH21g9B4t65CrAk7KCEWH2Y5xVuxcxpH6DlhId/yaS9eBeg79emvwudNScpXtQJWMGC8IwghFW1Y=
+	t=1773312751; cv=none; b=IMDRW2VJKmuTOBHUL5qCxN6dGG3yky04I5/czhiVGqT/0hYFF9MWTo+E1uW+ektKZfp0eZPkUN8I0YTNOzpgA+xFn3JxUFYDR4sdRUCTGrzjGakH6VK+DwtoUn2+5cMfybWRRlXrRiMvun3bBKkFS0CPMFKa9EgHrwGeJWb9Pko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773310289; c=relaxed/simple;
-	bh=/Tgoj9CCDUEzhbjtK0oZnOUCY9I2ylC+2fRwtKSTBOY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ny3+pEOaeAyb5S77ZKB2rVkldFZBaCzk9U3y7Mx9Rl2aREeSGY8TwWlTHp2FTWGrIrl92GyaLln7aJYX4FPsp9/JRdg31pTc1zOF5ffe/SmrSaiRXD6tiNQ/OVeAprKL0HFBSrtuGi/P593P6JpIHeQYN8irlfpEdK00q/UDPPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=gKj/akjb; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 2AAC760578;
-	Thu, 12 Mar 2026 11:11:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1773310284;
-	bh=BlzPC14n0mbtNivL+mnXELw0+LI2N1961v1X8OfyByg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=gKj/akjbiwexZPSZR5r/XMQzSnckdL/ez+RCHRJ6Pw+RpmXUZ24bCFaTq6RMSOsyi
-	 7CZzqfXJ1ITJWHTENpeKMsVVrmq2/2SsnGLSeVVFC/kOOV62Rbt0UbiAW/efadJAB8
-	 v81nwHpSNXHIyUY8fRv8POSGbUpsQLE5DUhVW+9zQ6Tbnk1SQArQH6bjvt23bPfdKH
-	 13PasSFvEwGDVCaP5FDrizccdna2xeraedrCBdWm9uXF2Nt/GRyM+1QisGffHchRJm
-	 44XL7V8Dax2hmlBlTunbfxNc188BF/Jte1uC2wQoAtk/yLj/2p/8Vl8G8nwSYScNgj
-	 YGquX2wVj5S3Q==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: fw@strlen.de
-Subject: [PATCH nf] nf_tables: nft_dynset: fix possible stateful expression memleak in error path
-Date: Thu, 12 Mar 2026 11:11:20 +0100
-Message-ID: <20260312101120.3512073-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1773312751; c=relaxed/simple;
+	bh=X1Us7bk99aFOJ6FHYu9wpgQhj46G04WurKIWm7He0FE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Op+E8LGbHrbb57EnBpYc3CqNhQCxY/ofwMLdgIXJzxpVJvKyomzmV/u7ke1yJcjayHaTAMHOE5/vaZDnYPq3hr6nNNJ0TdGaKN5qy9i2SX8Rxe4yMVGJvUziaJtQ374HRjokDr75TD4kB8i/3gwEy/qaerOB+sNfStJ9SqSQcbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 7C07460470; Thu, 12 Mar 2026 11:52:27 +0100 (CET)
+Date: Thu, 12 Mar 2026 11:52:23 +0100
+From: Florian Westphal <fw@strlen.de>
+To: =?utf-8?B?6ZKx5LiA6ZOt?= <yimingqian591@gmail.com>
+Cc: security@kernel.org, phil@nwl.cc, netfilter-devel@vger.kernel.org
+Subject: Re: [SECURITY][netfilter][nf_tables] stack out-of-bounds read in
+ nft_set_pipapo pipapo_drop()
+Message-ID: <abKa5xR6V9D9BhjM@strlen.de>
+References: <CAL_bE8LMSUQ+Ls8bP4D32kOiJH=-UqgVKgjSAk7nA0G=+XzveA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+In-Reply-To: <CAL_bE8LMSUQ+Ls8bP4D32kOiJH=-UqgVKgjSAk7nA0G=+XzveA@mail.gmail.com>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11140-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11141-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[netfilter.org];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.990];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,proton.me:email]
-X-Rspamd-Queue-Id: C028527036D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ozlabs.org:url,strlen.de:mid]
+X-Rspamd-Queue-Id: 5C9FF270827
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-If cloning the second stateful expression in the element via GFP_ATOMIC
-fails, then the first stateful expression remains in place without being
-released.
+钱一铭 <yimingqian591@gmail.com> wrote:
+> 2) Root cause explanation
+> rulemap is a fixed-size stack array:
+> union nft_pipapo_map_bucket rulemap[NFT_PIPAPO_MAX_FIELDS];
+> When m->field_count == NFT_PIPAPO_MAX_FIELDS (16), the last iteration has i
+> == 15. pipapo_drop() still evaluates:
+> rulemap[i + 1].n
+> which becomes rulemap[16].n, i.e. out-of-bounds read from stack.
+> Important detail: although is_last == true and pipapo_unmap() immediately
+> returns, the function argument rulemap[i + 1].n is already evaluated before
+> the callee runs. So the OOB read is unconditional in that final iteration.
+> ------------------------------
+> 3) Reproducer summary
+> Userspace netlink PoC sequence:
+> 
+>    1. NFT_MSG_NEWTABLE
+>    2. NFT_MSG_NEWSET with flags NFT_SET_INTERVAL | NFT_SET_CONCAT
+>    3. set key length 64
+>    4. set concat descriptor with 16 fields, each field length 4
+>    5. NFT_MSG_NEWSETELEM add one element
+>    6. NFT_MSG_DELSETELEM delete same element
+> 
+> This reaches:
+> nf_tables_delsetelem -> nft_setelem_remove -> nft_pipapo_remove ->
+> pipapo_drop
 
-   unreferenced object (percpu) 0x607b97e9cab8 (size 16):
-     comm "softirq", pid 0, jiffies 4294931867
-     hex dump (first 16 bytes on cpu 3):
-       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-     backtrace (crc 0):
-       pcpu_alloc_noprof+0x453/0xd80
-       nft_counter_clone+0x9c/0x190 [nf_tables]
-       nft_expr_clone+0x8f/0x1b0 [nf_tables]
-       nft_dynset_new+0x2cb/0x5f0 [nf_tables]
-       nft_rhash_update+0x236/0x11c0 [nf_tables]
-       nft_dynset_eval+0x11f/0x670 [nf_tables]
-       nft_do_chain+0x253/0x1700 [nf_tables]
-       nft_do_chain_ipv4+0x18d/0x270 [nf_tables]
-       nf_hook_slow+0xaa/0x1e0
-       ip_local_deliver+0x209/0x330
+Could you confirm this is fixed by this patch?
 
-Pass NULL to nft_set_elem_expr_destroy() given stateful expressions do
-not require context at this stage.
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20260306191238.937530-1-qguanni@gmail.com/
 
-Fixes: 563125a73ac3 ("netfilter: nftables: generalize set extension to support for several expressions")
-Reported-by: Gurpreet Shergill <giki.shergill@proton.me>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-Compile-tested only at this stage.
-
- include/net/netfilter/nf_tables.h | 2 ++
- net/netfilter/nf_tables_api.c     | 4 ++--
- net/netfilter/nft_dynset.c        | 7 ++++++-
- 3 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index ea6f29ad7888..3c8a60ec1cc4 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -878,6 +878,8 @@ struct nft_elem_priv *nft_set_elem_init(const struct nft_set *set,
- 					u64 timeout, u64 expiration, gfp_t gfp);
- int nft_set_elem_expr_clone(const struct nft_ctx *ctx, struct nft_set *set,
- 			    struct nft_expr *expr_array[]);
-+void nft_set_elem_expr_destroy(const struct nft_ctx *ctx,
-+			       struct nft_set_elem_expr *elem_expr);
- void nft_set_elem_destroy(const struct nft_set *set,
- 			  const struct nft_elem_priv *elem_priv,
- 			  bool destroy_expr);
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 15801a9a099e..2f19c155069e 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6747,8 +6747,8 @@ static void __nft_set_elem_expr_destroy(const struct nft_ctx *ctx,
- 	}
- }
- 
--static void nft_set_elem_expr_destroy(const struct nft_ctx *ctx,
--				      struct nft_set_elem_expr *elem_expr)
-+void nft_set_elem_expr_destroy(const struct nft_ctx *ctx,
-+			       struct nft_set_elem_expr *elem_expr)
- {
- 	struct nft_expr *expr;
- 	u32 size;
-diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
-index 7807d8129664..31c5a5b52ce1 100644
---- a/net/netfilter/nft_dynset.c
-+++ b/net/netfilter/nft_dynset.c
-@@ -36,12 +36,17 @@ static int nft_dynset_expr_setup(const struct nft_dynset *priv,
- 	for (i = 0; i < priv->num_exprs; i++) {
- 		expr = nft_setelem_expr_at(elem_expr, elem_expr->size);
- 		if (nft_expr_clone(expr, priv->expr_array[i], GFP_ATOMIC) < 0)
--			return -1;
-+			goto err_out;
- 
- 		elem_expr->size += priv->expr_array[i]->ops->size;
- 	}
- 
- 	return 0;
-+err_out:
-+	/* Stateful expression do not need context, pass NULL. */
-+	nft_set_elem_expr_destroy(NULL, elem_expr);
-+
-+	return -1;
- }
- 
- struct nft_elem_priv *nft_dynset_new(struct nft_set *set,
--- 
-2.47.3
-
+Thanks!
 
