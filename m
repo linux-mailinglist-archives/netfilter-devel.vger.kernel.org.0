@@ -1,113 +1,155 @@
-Return-Path: <netfilter-devel+bounces-11148-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11150-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iFv5E+SzsmmYOwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11148-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 13:39:00 +0100
+	id oLPeDle2smmYOwAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11150-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 13:49:27 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58D0271E9C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 13:38:59 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C19C271FF4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 13:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5CE9930DACDB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 12:37:16 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id EE97C30200FC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 12:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB693BA24B;
-	Thu, 12 Mar 2026 12:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC8F3BE658;
+	Thu, 12 Mar 2026 12:49:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="dPyJ//E6"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B7481DEFE8;
-	Thu, 12 Mar 2026 12:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026CE30DD22
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 12:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773319007; cv=none; b=LGSJn8rEeWaOYWm9fvgQxwDZUcCFZMbM3J7GxrvGOvSCZ59wLWWbwWxRfUvAjvhzc/KGjXa13lXNw3JPkeJA5aZQEUAOe6ktzLwM6SgK7y99J+sWGNtZu0cg5/JH3iYCsNA9gCuGLAO5O9X1xaAaM8qj+0Ux1aWSCWZMNAZlIcE=
+	t=1773319743; cv=none; b=UItqTdBS1laDcrnknTmghgESH2YI/YaJ3vnqo9FnJSyHWl46y7nbi3bPJwvEEKymqoYMDrdp71INwEzQ5tV7qhmvm7IehSDvaF8pAOP6qwdRP7u0DqGtIRDD0i2e2lWNiy9x33Uf5IPWsvTOWbVrFZCWg/KyXha/fK+rRm6VNUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773319007; c=relaxed/simple;
-	bh=aLrncpKox8OUUgw9Pi1Wd+JmkU+sBo7DO9cXcHpsdMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gai2mL+B05oz2SUqjddiAlsfb9lnEA/Y+gHepRAq/40XonmQXRIHLcTsNbesa8YqruUON8gLNPUZhfV1Xj1YrnPP+jBcBuKu+vVqFRfXEM6zOfEokNBZjQQGGLXWiX2/3Op2DXxsxp/feGxn8+KYLhoKWO3gmUxS/DC2+aLxZS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id D14026047A; Thu, 12 Mar 2026 13:36:38 +0100 (CET)
-Date: Thu, 12 Mar 2026 13:36:40 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Prasanna S Panchamukhi <panchamukhi@arista.com>
-Cc: netfilter-devel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>, Phil Sutter <phil@nwl.cc>,
-	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH net-next] netfilter: conntrack: expose
- gc_scan_interval_max via sysctl
-Message-ID: <abKzWIhVz_SeiSOa@strlen.de>
-References: <20260311194058.13860-1-panchamukhi@arista.com>
+	s=arc-20240116; t=1773319743; c=relaxed/simple;
+	bh=y5ncKk6F4dcoykUu/slouAw19yRyMn6VcMSMP2xy6cE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Tt9R0hKN55ydlZAJ2OrQ0UzWFpyW6ZgXkOAnsWmDrgdAaD2Lz683R3XuUwmZs8vRD6IJNSOyPfD9qQ0TPKhtd+DwoCIg/hPw5rli/xZsgBiSTTx/sGlKsiSsl/zi883mHpJrZFK+8HW87MkTjZWuzv4na7HLT+KnelUWo2Z2jd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=dPyJ//E6; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 9034660566
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 13:48:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1773319731;
+	bh=y95zGEE2l9V8iUKKBNYViTlnqyfI0u+RYJX+6Jn1rgA=;
+	h=From:To:Subject:Date:From;
+	b=dPyJ//E6la7CepMrVHZy+mIDE5++bpkWx/SWqjXVNlvLoMc0E6wvxw2M2ysTR3K09
+	 dtr3+JIH2FWsTvyATJy10xEA2tljiZnGhfH79u9UPzLbhyXw3oRzIlKbsxrh1oIX7G
+	 RTEx0OaxWfgC7k2HMnhFho+LbXSf7ESxVQeihf+bFFnMIpobH0SsbEFwsMu5KxoemG
+	 iYDzN1lZF6arxQEXZcZfWtrzndSllEIr9WLGRTlu2ynN+bQynSXRLOhnINni1a5oWT
+	 JWVFc+kqrgYXKdgnwAMOp2K08uktWQpibeRw/ABkhzPa5mWleIKjks4gQVP3Ll+wiY
+	 LHQX22AF5HbZA==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH nf 1/2] netfilter: nft_ct: drop pending enqueued packets on removal
+Date: Thu, 12 Mar 2026 13:48:47 +0100
+Message-ID: <20260312124848.3532943-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260311194058.13860-1-panchamukhi@arista.com>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11148-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.994];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	RCPT_COUNT_ONE(0.00)[1];
+	TAGGED_FROM(0.00)[bounces-11150-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,arista.com:email]
-X-Rspamd-Queue-Id: C58D0271E9C
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7C19C271FF4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Prasanna S Panchamukhi <panchamukhi@arista.com> wrote:
-> The conntrack garbage collection worker uses an adaptive algorithm that
-> adjusts the scan interval based on the average timeout of tracked
-> entries.  The upper bound of this interval is hardcoded as
-> GC_SCAN_INTERVAL_MAX (60 seconds).
-> 
-> Expose the upper bound as a new sysctl,
-> net.netfilter.nf_conntrack_gc_scan_interval_max, so it can be tuned at
-> runtime without rebuilding the kernel.  The default remains 60 seconds
-> to preserve existing behavior.  The sysctl is global and read-only in
-> non-init network namespaces, consistent with nf_conntrack_max and
-> nf_conntrack_buckets.
+Packets sitting in nfqueue might hold a reference to:
 
-This was proposed before, see:
+- templates that specify the conntrack zone, because a percpu area is
+  used and module removal is possible.
+- conntrack timeout policies and helper, where object removal leave
+  a stale reference.
 
-https://lore.kernel.org/netfilter-devel/aO-id5W6Tr7frdHN@strlen.de/
-https://lore.kernel.org/netfilter-devel/aRsuU57juCvsMBKE@strlen.de/
+Since these objects can just go away, drop enqueued packets to avoid
+stale reference to them.
 
-I did not hear back wrt. the horizon cache.
+If there is a need for finer grain removal, this logic can be revisited
+to make selective packet drop upon dependencies.
 
-I'm not 100% opposed to this, but I do wonder if we really can't do
-better than the current avg strategy.
+Fixes: 7e0b2b57f01d ("netfilter: nft_ct: add ct timeout support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+I don't remember what email reported this.
+
+Compile-tested only.
+
+ net/netfilter/nft_ct.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index 6f2ae7cad731..db1bf69f8775 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -23,6 +23,7 @@
+ #include <net/netfilter/nf_conntrack_l4proto.h>
+ #include <net/netfilter/nf_conntrack_expect.h>
+ #include <net/netfilter/nf_conntrack_seqadj.h>
++#include "nf_internals.h"
+ 
+ struct nft_ct_helper_obj  {
+ 	struct nf_conntrack_helper *helper4;
+@@ -543,6 +544,7 @@ static void __nft_ct_set_destroy(const struct nft_ctx *ctx, struct nft_ct *priv)
+ #endif
+ #ifdef CONFIG_NF_CONNTRACK_ZONES
+ 	case NFT_CT_ZONE:
++		nf_queue_nf_hook_drop(ctx->net);
+ 		mutex_lock(&nft_ct_pcpu_mutex);
+ 		if (--nft_ct_pcpu_template_refcnt == 0)
+ 			nft_ct_tmpl_put_pcpu();
+@@ -1016,6 +1018,7 @@ static void nft_ct_timeout_obj_destroy(const struct nft_ctx *ctx,
+ 	struct nft_ct_timeout_obj *priv = nft_obj_data(obj);
+ 	struct nf_ct_timeout *timeout = priv->timeout;
+ 
++	nf_queue_nf_hook_drop(ctx->net);
+ 	nf_ct_untimeout(ctx->net, timeout);
+ 	nf_ct_netns_put(ctx->net, ctx->family);
+ 	kfree(priv->timeout);
+@@ -1148,6 +1151,7 @@ static void nft_ct_helper_obj_destroy(const struct nft_ctx *ctx,
+ {
+ 	struct nft_ct_helper_obj *priv = nft_obj_data(obj);
+ 
++	nf_queue_nf_hook_drop(ctx->net);
+ 	if (priv->helper4)
+ 		nf_conntrack_helper_put(priv->helper4);
+ 	if (priv->helper6)
+-- 
+2.47.3
+
 
