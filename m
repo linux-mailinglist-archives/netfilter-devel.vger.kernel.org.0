@@ -1,142 +1,160 @@
-Return-Path: <netfilter-devel+bounces-11149-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11151-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yKlMMkO2smmYOwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11149-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 13:49:07 +0100
+	id IGtzLprRsmnrPwAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11151-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 15:45:46 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640BF271FE5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 13:49:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D27127395A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 15:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 75E683012B4D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 12:49:04 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E4A45301451B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2026 14:43:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BA83BE649;
-	Thu, 12 Mar 2026 12:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFDD3C7DE7;
+	Thu, 12 Mar 2026 14:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="XZIreaCf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F29dmL2x"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0266730C359
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 12:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993F83C73DA
+	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 14:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773319741; cv=none; b=JHJois60sBDMpiPfBsteErB6gbxeok+am8vmtL0/4QJEebSI81f/SOxDCWE7enaGmjyeklRdjV6p9gHR4HoaRkg5tSsQ8TGw8TYhgx5B6I1/5LNZ6kB0cv/2SWTo09FtGrye57AcJsIGpxMXO+JZ6X3jQLdwJVBB585watFx5EA=
+	t=1773326578; cv=none; b=HhCGdNsAZt40KEqB3q1vlz8+rRdpVU9CZcEuG2JdubvfOik147ScaHB3fvzRQ5Mj+S2E/+TwTDYO7of/0dxc/gOiuhzYzZR30mT8KP9THYk6ViMZHo7clc/u+iSf2yoCVw177HE7hDu03DQ4GofLkjc+/Rb+yEQ0CAxREXYD/Nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773319741; c=relaxed/simple;
-	bh=yMg35xkTXGqlv0tIWfCTvKH3CJraFyU0g/c44q0k66Y=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QnRbQE6Fg6b5qDbtktnTKQhuD/eoAGm71UOWSZvpf3a+SaH53/pfBHbIh+6G8+5sSteUKtmGygbViAYdO+M4mgav8eMq/Mf1MnjPvC7FqBKoakLlYXPVr4HRVpxGdPZUK7f4QIRyptXvpbutFZM2QhM/Gbn03nKOz9sqGfZ92HE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XZIreaCf; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id D09C160567
-	for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 13:48:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1773319732;
-	bh=yYQsv6eKTQajv0O+O5OZSEYUko/mMhcLLlOjC1dzauI=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=XZIreaCfpmQrgTO/eQcoX9xTqlsbI8QLbkW9uYbdMbNs6zZpmo5lVpzSM+uz6fsk+
-	 ELG2g4Ky+F32K2YGSGZhwCyb1G609q6XfHFrY9kM8bq/Lzf0qp4Cz/d+frB3Bq/tRN
-	 OCk4AKJ55fIAnpLXsa0HalufhTlrp33RBWiAx3agW0PLJLt/DFpMpjURgtCrcD+Q/M
-	 Zw2XoIkdZ/KNzllMGJm8J9vhJZMLFI6dw8Kris5qdOFjWT7RsdV3o4IrH7o3/7fUQo
-	 0nFXVMpAnW0/xiTUXq2FXsJc9QhIszny8rJCCdP1Bqfpp91ozyQ6bcsH9fyEX4K30n
-	 Ju/NyQ4ibzYgA==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf 2/2] netfilter: xt_CT: drop pending enqueued packets on template removal
-Date: Thu, 12 Mar 2026 13:48:48 +0100
-Message-ID: <20260312124848.3532943-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260312124848.3532943-1-pablo@netfilter.org>
-References: <20260312124848.3532943-1-pablo@netfilter.org>
+	s=arc-20240116; t=1773326578; c=relaxed/simple;
+	bh=fLfxvMI3HNHFGtvXLGAOsW9hcJh8usCAV/jtmwYJ+a8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=pRzGCZwhjGe2NwGrSYSRy8WXuLtJtq2hTfGwdtmat1eiGDVwJCqoMGhU+AdAxQTL9ncqLWo/GfM70/t0WBsUXjds4P0pcgU+m5AsqXGUDLIrF08MBifg9BKTT9penGrcUhOdyWjcdbubU+cTUUcZ9yZAFoflwWvN7ttVIsrCWpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F29dmL2x; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-509134ab2d2so10482291cf.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2026 07:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773326573; x=1773931373; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rc6Cq/F5yHJA/B3e49neXV/SKBu5cRLuMs+2AV0ELpw=;
+        b=F29dmL2xEaxztf6XVeLxaDEqBiEL2bwN0RY4Y2aytSxLhj1vuDPqVwDB5qZ0d6R8U8
+         K/+Bnne34xbtw0nRGeHLYamoG9oZi2hB8GuaKKurZcRlkMVV4evPF0SI0XKhtMqq4ZzH
+         XqdAXKZLLtGyC5DJ2L5jxA8hp0vj+cNNjvuYrZAULgBgGCPvRJxz+gX1uF3IHjXtzJwz
+         d2q8t0gPQ+mirmyga8qWm5+JQ48qOeenekVQR/P2dDtsA7Q5LRhmcY86XGhXL7IuDRTS
+         M+LtnCD2d3pCL5Kk8WqjdhHwDIrMTCUa/XYXsI3CkoUTSYh2ZHwUJlDuGkuVZM7+piFB
+         yLlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773326573; x=1773931373;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rc6Cq/F5yHJA/B3e49neXV/SKBu5cRLuMs+2AV0ELpw=;
+        b=n3+EpRlpOCLctp2r1GU0XClWSiVKUdIVnxbAY3BscKIaMw8ReFxYO5sxR5FWpDprmu
+         NNEuH27nQZhd1EzECRZ9AP+7QlBNzYsPRJBzyjNSqKyHkQ1cgJUTajEQO1byxLz3yCi6
+         2CsZCVMzcSaMKkl/aI74lSwjHoDQJXUgx+Z/pQLG8hSxegavmqJsIqL6ZqZvKUDZ6w92
+         Ks7XfH4PcTV/U96um/PLLgQMBc1i4Q0rWJxGPQ2h+NScWd5gPqO0YVyx7RYRwF8yQsS1
+         8rm9bHZfZJVuAEEAFdHS1LFFG1r3mycH62pdvLXHMk6OJdJ8akzmZ1JCBz7nvvUEOcxV
+         mXFQ==
+X-Gm-Message-State: AOJu0YzSNaX/itZcXBWe/n+ZaEGNbrEIM796Yx1YtMVz1Shox44n5ltC
+	ZnxXhXXQInRfKwGtfmn2255UTy1iX5PfcdTr4XQCVwElJOWBaHpfXxslmzwxnCTB
+X-Gm-Gg: ATEYQzz2wC6P+BV/xipEyAczCaCMCmLE65vioEb1lfE/Mv095mzbYe+u4UjY8SmAVu3
+	hu++ODdfleTcShIqweZnnWir1KrTKmTKqTtnzfX/o769Rge5zYYRvMEpjmCUo6RIyMTYchOmGxH
+	nJKKUlWnm+9voJQFbYEP+sQwqlVfUb7PJO7mt28OSEUZKQUr/4k4r4txXl4iEX3zfostoUDN2gC
+	hVy46RvBLcyzQ384r897kBJCumil4Cz12dq8pIIaHEvcaoE7NHfr/4lRbMaj5Yp9EHyhuXIb56V
+	YP0BtKfOlmxMYPwtZn/vZHIJUnhvStYyN5yKh6BP1/R8YJqhiI58K8nlmWGWIbcVK//iREoXy18
+	2Cj7+Iqssh5AlzsTKHoFmVGfAkP9WS9STVYTQ+9Q4guGQk12y6PSZjPp7bhO2nykqtYL5XJrTmQ
+	WPiR/AwZMAj9tiziQ5XGwuXaFQ9zNqQ1Pk3oRCrmpFEReK
+X-Received: by 2002:ac8:508:0:b0:509:456b:52e7 with SMTP id d75a77b69052e-509456b85c9mr39945261cf.16.1773326573217;
+        Thu, 12 Mar 2026 07:42:53 -0700 (PDT)
+Received: from 192-222-50-213.ll.local ([192.222.50.213])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5093a1192d7sm32840221cf.26.2026.03.12.07.42.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Mar 2026 07:42:53 -0700 (PDT)
+From: Jenny Guanni Qu <qguanni@gmail.com>
+To: pablo@netfilter.org,
+	kadlec@netfilter.org
+Cc: netfilter-devel@vger.kernel.org,
+	klaudia@vidocsecurity.com,
+	dawid@vidocsecurity.com,
+	Jenny Guanni Qu <qguanni@gmail.com>
+Subject: [PATCH] netfilter: ctnetlink: validate CTA_EXPECT_NAT_DIR value
+Date: Thu, 12 Mar 2026 14:42:52 +0000
+Message-Id: <20260312144252.2985553-1-qguanni@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-11151-lists,netfilter-devel=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,vidocsecurity.com,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
-	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-11149-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qguanni@gmail.com,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 640BF271FE5
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vidocsecurity.com:email]
+X-Rspamd-Queue-Id: 4D27127395A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Templates refer to objects that can go away while packets are sitting in
-nfqueue refer to:
+ctnetlink_parse_expect_nat() reads the CTA_EXPECT_NAT_DIR attribute
+from userspace via netlink and assigns it to exp->dir without checking
+whether it is a valid direction value. Since exp->dir is used as an
+array index into the 2-element tuplehash[] array, an out-of-range
+value causes an out-of-bounds access.
 
-- helper, this can be an issue on module removal.
-- timeout policy, nfnetlink_cttimeout might remove it.
+Add a bounds check to ensure the direction is less than IP_CT_DIR_MAX.
 
-The use of templates with zone and event cache filter are safe, since
-this just copies values.
-
-Flush these enqueued packets in case the template rule gets removed.
-
-Fixes: 24de58f46516 ("netfilter: xt_CT: allow to attach timeout policy + glue code")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 076a0ca02644 ("netfilter: ctnetlink: add NAT support for expectations")
+Reported-by: Klaudia Kloc <klaudia@vidocsecurity.com>
+Reported-by: Dawid Moczadło <dawid@vidocsecurity.com>
+Tested-by: Jenny Guanni Qu <qguanni@gmail.com>
+Signed-off-by: Jenny Guanni Qu <qguanni@gmail.com>
 ---
-I don't remember what email reported this.
+ net/netfilter/nf_conntrack_netlink.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Compile-tested only.
-
- net/netfilter/xt_CT.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/netfilter/xt_CT.c b/net/netfilter/xt_CT.c
-index 3ba94c34297c..498f5871c84a 100644
---- a/net/netfilter/xt_CT.c
-+++ b/net/netfilter/xt_CT.c
-@@ -16,6 +16,7 @@
- #include <net/netfilter/nf_conntrack_ecache.h>
- #include <net/netfilter/nf_conntrack_timeout.h>
- #include <net/netfilter/nf_conntrack_zones.h>
-+#include "nf_internals.h"
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 6a1239433830..ddf3a417f408 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -3496,6 +3496,8 @@ ctnetlink_parse_expect_nat(const struct nlattr *attr,
+ 	exp->saved_addr = nat_tuple.src.u3;
+ 	exp->saved_proto = nat_tuple.src.u;
+ 	exp->dir = ntohl(nla_get_be32(tb[CTA_EXPECT_NAT_DIR]));
++	if (exp->dir >= IP_CT_DIR_MAX)
++		return -EINVAL;
  
- static inline int xt_ct_target(struct sk_buff *skb, struct nf_conn *ct)
- {
-@@ -283,6 +284,9 @@ static void xt_ct_tg_destroy(const struct xt_tgdtor_param *par,
- 	struct nf_conn_help *help;
- 
- 	if (ct) {
-+		if (info->helper[0] || info->timeout[0])
-+			nf_queue_nf_hook_drop(par->net);
-+
- 		help = nfct_help(ct);
- 		xt_ct_put_helper(help);
- 
+ 	return 0;
+ #else
 -- 
-2.47.3
+2.34.1
 
 
