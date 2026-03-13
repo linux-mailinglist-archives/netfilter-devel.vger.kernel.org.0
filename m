@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11180-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11181-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2LOWI1wotGkQiQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11180-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Mar 2026 16:08:12 +0100
+	id AFz0Ni0ptGkQiQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11181-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Mar 2026 16:11:41 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E92285940
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Mar 2026 16:08:11 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A3FB285A93
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Mar 2026 16:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A6378310809D
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Mar 2026 15:06:32 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2E3CF304DE8D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Mar 2026 15:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59CB3A8743;
-	Fri, 13 Mar 2026 15:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FEB3AA511;
+	Fri, 13 Mar 2026 15:06:35 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344BC3A8759;
-	Fri, 13 Mar 2026 15:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272FE3AA50D;
+	Fri, 13 Mar 2026 15:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773414390; cv=none; b=nzoErRhPIFPwG41WaxMX6QMSrdD+al1eYiaiuac+BHg21W2ZrA969K3xcXq2zFph6CboD69vawYnoVDCJn/GVeEvO4Fyh7n7Bdwru6sbKy/qjbvdhcOY2tNUY7U0N6WUwFmbKtWWtUVSN1fW9bbAX9WT/gYC72GicOW/TLwrR3Y=
+	t=1773414395; cv=none; b=Xft7C4DiJuyvX1zCTfVZK70rW0ZSMrz3nFN7R8U1F+OAsbyBw1AxzzFOAfzpXHRVXqqhhj+UzBgyxoM3kkRqMTDyDdvm4IhzxvjcNxsDK5nW5PXzS44LsAPfpWp7i2m+s9OMDFa4Cz7b0qGJtvRd+jxzshSGLPBc6JQojB/L15M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773414390; c=relaxed/simple;
-	bh=+lQuGfnv9UI3cFP8NpLhqFPHWtIrlgyS84kaZyiCQmk=;
+	s=arc-20240116; t=1773414395; c=relaxed/simple;
+	bh=N3Sf7Uli8jk8oFMgDILROnPnKMI4Ig+rz2LTgVxrGEk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TddpQgwETMlqvdo9HgRoWcrv4eiHAGp5OiPd9xjGcWBzV2aMEcCDVszDpVxVL+Jh5LHXH8/sUx5CH0Qk+rAjbDACeo4L9BWVRsfkO9CF4ejjHQvdHhl6qfVL8cRJHOSGnFAARLYDk2GyA9IGEObiOPIse8AFf+iYepcfO3IijD0=
+	 MIME-Version; b=QN0REUArzOTYJgkCxJAT61s2KqFt6Ge/eBMwy0n6nnC3c8XRTyNMBTStN6peUj+VV5FD1K63eG4yrEj8BkUgJyq9VewnqzFVnHI0mEZ+sjUlG0vIUJqHuRppCgzjPO+xa9CeicHSpkzVkmkTwJDIB6KQhtLOicgaQzzDNMvs4rw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id E15C560492; Fri, 13 Mar 2026 16:06:25 +0100 (CET)
+	id 3CE0960709; Fri, 13 Mar 2026 16:06:30 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 01/11] netfilter: ctnetlink: fix use-after-free in ctnetlink_dump_exp_ct()
-Date: Fri, 13 Mar 2026 16:06:04 +0100
-Message-ID: <20260313150614.21177-2-fw@strlen.de>
+Subject: [PATCH net 02/11] netfilter: conntrack: add missing netlink policy validations
+Date: Fri, 13 Mar 2026 16:06:05 +0100
+Message-ID: <20260313150614.21177-3-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260313150614.21177-1-fw@strlen.de>
 References: <20260313150614.21177-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11180-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11181-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,131 +71,70 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.972];
+	NEURAL_HAM(-0.00)[-0.957];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
-X-Rspamd-Queue-Id: E4E92285940
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
+X-Rspamd-Queue-Id: 7A3FB285A93
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Hyunwoo Kim <imv4bel@gmail.com>
+Hyunwoo Kim reports out-of-bounds access in sctp and ctnetlink.
 
-ctnetlink_dump_exp_ct() stores a conntrack pointer in cb->data for the
-netlink dump callback ctnetlink_exp_ct_dump_table(), but drops the
-conntrack reference immediately after netlink_dump_start().  When the
-dump spans multiple rounds, the second recvmsg() triggers the dump
-callback which dereferences the now-freed conntrack via nfct_help(ct),
-leading to a use-after-free on ct->ext.
+These attributes are used by the kernel without any validation.
+Extend the netlink policies accordingly.
 
-The bug is that the netlink_dump_control has no .start or .done
-callbacks to manage the conntrack reference across dump rounds.  Other
-dump functions in the same file (e.g. ctnetlink_get_conntrack) properly
-use .start/.done callbacks for this purpose.
+Quoting the reporter:
+  nlattr_to_sctp() assigns the user-supplied CTA_PROTOINFO_SCTP_STATE
+  value directly to ct->proto.sctp.state without checking that it is
+  within the valid range. [..]
 
-Fix this by adding .start and .done callbacks that hold and release the
-conntrack reference for the duration of the dump, and move the
-nfct_help() call after the cb->args[0] early-return check in the dump
-callback to avoid dereferencing ct->ext unnecessarily.
+  and: ... with exp->dir = 100, the access at
+  ct->master->tuplehash[100] reads 5600 bytes past the start of a
+  320-byte nf_conn object, causing a slab-out-of-bounds read confirmed by
+  UBSAN.
 
- BUG: KASAN: slab-use-after-free in ctnetlink_exp_ct_dump_table+0x4f/0x2e0
- Read of size 8 at addr ffff88810597ebf0 by task ctnetlink_poc/133
-
- CPU: 1 UID: 0 PID: 133 Comm: ctnetlink_poc Not tainted 7.0.0-rc2+ #3 PREEMPTLAZY
- Call Trace:
-  <TASK>
-  ctnetlink_exp_ct_dump_table+0x4f/0x2e0
-  netlink_dump+0x333/0x880
-  netlink_recvmsg+0x3e2/0x4b0
-  ? aa_sk_perm+0x184/0x450
-  sock_recvmsg+0xde/0xf0
-
- Allocated by task 133:
-  kmem_cache_alloc_noprof+0x134/0x440
-  __nf_conntrack_alloc+0xa8/0x2b0
-  ctnetlink_create_conntrack+0xa1/0x900
-  ctnetlink_new_conntrack+0x3cf/0x7d0
-  nfnetlink_rcv_msg+0x48e/0x510
-  netlink_rcv_skb+0xc9/0x1f0
-  nfnetlink_rcv+0xdb/0x220
-  netlink_unicast+0x3ec/0x590
-  netlink_sendmsg+0x397/0x690
-  __sys_sendmsg+0xf4/0x180
-
- Freed by task 0:
-  slab_free_after_rcu_debug+0xad/0x1e0
-  rcu_core+0x5c3/0x9c0
-
-Fixes: e844a928431f ("netfilter: ctnetlink: allow to dump expectation per master conntrack")
-Signed-off-by: Hyunwoo Kim <imv4bel@gmail.com>
+Fixes: 076a0ca02644 ("netfilter: ctnetlink: add NAT support for expectations")
+Fixes: a258860e01b8 ("netfilter: ctnetlink: add full support for SCTP to ctnetlink")
+Reported-by: Hyunwoo Kim <imv4bel@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conntrack_netlink.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_netlink.c    | 2 +-
+ net/netfilter/nf_conntrack_proto_sctp.c | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index c9d725fc2d71..65aa44a12d01 100644
+index 65aa44a12d01..c156574e1273 100644
 --- a/net/netfilter/nf_conntrack_netlink.c
 +++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3212,7 +3212,7 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- {
- 	struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
- 	struct nf_conn *ct = cb->data;
--	struct nf_conn_help *help = nfct_help(ct);
-+	struct nf_conn_help *help;
- 	u_int8_t l3proto = nfmsg->nfgen_family;
- 	unsigned long last_id = cb->args[1];
- 	struct nf_conntrack_expect *exp;
-@@ -3220,6 +3220,10 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	if (cb->args[0])
- 		return 0;
+@@ -3489,7 +3489,7 @@ ctnetlink_change_expect(struct nf_conntrack_expect *x,
  
-+	help = nfct_help(ct);
-+	if (!help)
-+		return 0;
-+
- 	rcu_read_lock();
- 
- restart:
-@@ -3249,6 +3253,24 @@ ctnetlink_exp_ct_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 	return skb->len;
+ #if IS_ENABLED(CONFIG_NF_NAT)
+ static const struct nla_policy exp_nat_nla_policy[CTA_EXPECT_NAT_MAX+1] = {
+-	[CTA_EXPECT_NAT_DIR]	= { .type = NLA_U32 },
++	[CTA_EXPECT_NAT_DIR]	= NLA_POLICY_MAX(NLA_BE32, IP_CT_DIR_REPLY),
+ 	[CTA_EXPECT_NAT_TUPLE]	= { .type = NLA_NESTED },
+ };
+ #endif
+diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
+index 7c6f7c9f7332..645d2c43ebf7 100644
+--- a/net/netfilter/nf_conntrack_proto_sctp.c
++++ b/net/netfilter/nf_conntrack_proto_sctp.c
+@@ -582,7 +582,8 @@ static int sctp_to_nlattr(struct sk_buff *skb, struct nlattr *nla,
  }
  
-+static int ctnetlink_dump_exp_ct_start(struct netlink_callback *cb)
-+{
-+	struct nf_conn *ct = cb->data;
-+
-+	if (!refcount_inc_not_zero(&ct->ct_general.use))
-+		return -ENOENT;
-+	return 0;
-+}
-+
-+static int ctnetlink_dump_exp_ct_done(struct netlink_callback *cb)
-+{
-+	struct nf_conn *ct = cb->data;
-+
-+	if (ct)
-+		nf_ct_put(ct);
-+	return 0;
-+}
-+
- static int ctnetlink_dump_exp_ct(struct net *net, struct sock *ctnl,
- 				 struct sk_buff *skb,
- 				 const struct nlmsghdr *nlh,
-@@ -3264,6 +3286,8 @@ static int ctnetlink_dump_exp_ct(struct net *net, struct sock *ctnl,
- 	struct nf_conntrack_zone zone;
- 	struct netlink_dump_control c = {
- 		.dump = ctnetlink_exp_ct_dump_table,
-+		.start = ctnetlink_dump_exp_ct_start,
-+		.done = ctnetlink_dump_exp_ct_done,
- 	};
- 
- 	err = ctnetlink_parse_tuple(cda, &tuple, CTA_EXPECT_MASTER,
+ static const struct nla_policy sctp_nla_policy[CTA_PROTOINFO_SCTP_MAX+1] = {
+-	[CTA_PROTOINFO_SCTP_STATE]	    = { .type = NLA_U8 },
++	[CTA_PROTOINFO_SCTP_STATE]	    = NLA_POLICY_MAX(NLA_U8,
++							 SCTP_CONNTRACK_HEARTBEAT_SENT),
+ 	[CTA_PROTOINFO_SCTP_VTAG_ORIGINAL]  = { .type = NLA_U32 },
+ 	[CTA_PROTOINFO_SCTP_VTAG_REPLY]     = { .type = NLA_U32 },
+ };
 -- 
 2.52.0
 
