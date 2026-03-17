@@ -1,100 +1,66 @@
-Return-Path: <netfilter-devel+bounces-11233-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11235-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gMRaEOs1uWmcvAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11233-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:07:23 +0100
+	id mMuFDFk7uWmvwAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11235-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:33 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99AA22A8773
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:07:22 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC2282A8BFE
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 99DBA301D041
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 11:04:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 49E383067B03
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 11:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EA93A5442;
-	Tue, 17 Mar 2026 11:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B073ACA57;
+	Tue, 17 Mar 2026 11:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OgO5Ns7W"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="l7tLxw4B"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1E539DBDF
-	for <netfilter-devel@vger.kernel.org>; Tue, 17 Mar 2026 11:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615163AA4FB;
+	Tue, 17 Mar 2026 11:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773745443; cv=none; b=CiZVbtBM2IAAzCMfa4mz/V8rWwWUUsRpkwZgLgaqtlEgEgTO11La01Rs70h2UuErcu2y3nfJIqB+a243Os950XbUJAemqLsqCxAMSpj+DH0Ezp+ckZkSJNY71sc5jXWUFSSZVQ+pv1eIECYWH9VDaUAYD48H+202XWElnZ3aC8k=
+	t=1773746980; cv=none; b=G4ci+mXH9Khih1vu97L7WFjZrkdfXnh1GgWSEd4Ubgtp2GA6AG1je60S3Yy8etHDifQ7PBj4TWdhO0+EuFrvl29AU/Q4OZEO52zRCmv+Q/D4USROYPIGJbTbzYqJcbZka9Az8MvP6qIhqD6EMNUW49WRfB55iEG904nPYa7j8ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773745443; c=relaxed/simple;
-	bh=KNMdTz0dMtsZ0/bH1FzXk+0DNsqD2IF/dA5rxowQT18=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rx3tGjTQ8EcNcvgOr86gBhMabuB07YZiP+IlzXbHElP6sHQfOLMocLsZxHWKefpViNQeFmbrM5LYWZmBx7ccFdmYNk/xccDOeQ3uAE+KEhVhciI01IJksex45cqj5ENiyHp+MI+8PcJ8gXW+kArs0d5sYLoaihbncSEYKU0iCTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OgO5Ns7W; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b97a604e098so394860566b.3
-        for <netfilter-devel@vger.kernel.org>; Tue, 17 Mar 2026 04:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773745440; x=1774350240; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=N+sB1F9ylcq5EEMpOQgUFXx9/JMgB+sZnio0KZ13MVg=;
-        b=OgO5Ns7WLfKdW2/u+iUMNWrD3g+Gp8awfDhS9vA4/291hZClk594QsheW0UQu4HelG
-         J73i7x5kMI9vJ3w1b9ADmZltai2BmOUyvxyl6wzYtBaQAeobpMAa4+n31mhhz19Vlhiu
-         yA4OBhCVmiLtwCvkD6YpEI6odDLuHmqb4Gjje4NzCQjjdHLmaF1VHCVl5QxUKZBTF7qV
-         EZPHF9SqIeqRy1czO4nIxfK1nKYeUMAQGgsAoTi8JZHpiK7waTZ+6VQAgktogIc7MQk0
-         2xpTin/OtUPmr7stXO8Hj7iK/cMNgnLf9xlEDEDhc7lgxPPDjEgNyM6eGDfZhJhjJ0Po
-         HKXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773745440; x=1774350240;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N+sB1F9ylcq5EEMpOQgUFXx9/JMgB+sZnio0KZ13MVg=;
-        b=jgOQtfuNFE6X+2M+voate9Syu/9YIWZR1EGm3xUo91Xo0LU119mSR7PEYNugXVPJ8s
-         3P0Eq2Me9+kKbygK33TCRK+qta+rBSeUE267WcbTVmt5xD3Yo6oVuQxYP0lHCyvgLA/A
-         c0w4NG8qzSTpjK1RWkGItev9kSLZStZ5IrcRnas8sJx9HHAgoICtyNj1fbxBFOVL6jJs
-         0xEnUYokeZwMI53zKQ1LzDT4Ih6BfWCfk/1+zoxElfLYTnR0Y0zRucyXneWli0zJCfgf
-         Vy2SE34B8A+pHemrJ41245br3SzAg9+DR0cdpwCyEI/5ALPYFPmZGXfMxX9gWc5ps29H
-         uocg==
-X-Forwarded-Encrypted: i=1; AJvYcCVvOu4e6znSzCGX7uqxj9LWyjUY+S4GQEqXRoT6caY7a/ojLFwT95cQtk8GPuVvivdRZRp6wGbS2OF+PEQQH20=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4nTG6JxKZbF9JmeJM1Z0LSkX9rYcCcJ379nejM54eLN2MtbJK
-	wHxWOTcYcF4Upy8//mtxh/dRgpxRImrE9OKwlk3U5dpCpQkfnS1Vyzf7
-X-Gm-Gg: ATEYQzxRPbrmfVTMVlLylHPAZy9aveQLGICztMmHLJfci+Zbk7MYP47z5NQpw7QcFQQ
-	GgowEngXYYFM8+BPqnlyzWv4twbAIlb3FnmXvTAHxJ5+c61qK/jae7+V7NYVpsEucn/bwwruqt4
-	ugUFrYXs/wDpHBErGYXC00UVn8QWh4cqHS9o2KYO2cTZ3AdEbKvv4Win/aTaLWeynlPsOX9memz
-	veG4HpkBGvlq/DTbWxlFmTCtEj15SMvMvL5KYutuq0n6DJ/4hzKyQ9jtdhybWV9qe0sw7FbZjK3
-	KYU0XiqsWknSs9PyNOJHGpw6ZMAK4xF1Ffpoi+QKN4UibnabFFqSpasL/OA6AT+wq4aX4MHLUZQ
-	RLdujISNwDA8NkBhOlfmmL89FYjjlkvaHJXhLNer1f+ulwZurbFeOFr3wenQ6PqGhNHA3k/mBYU
-	orxV91AguPoRQ88VkdlL4jY6xk4Ez9fpOqCxOdkdpyE3gPVlq3q8Ar9FaZRSB5wpy3eO9d8ey1a
-	IN1Hrp+3JljG/6raud3FeVqHl62iiZm2KdgDZIDTEmRlqwcynRuS/4=
-X-Received: by 2002:a17:907:94d6:b0:b97:9076:f84f with SMTP id a640c23a62f3a-b979077179cmr655488666b.45.1773745439719;
-        Tue, 17 Mar 2026 04:03:59 -0700 (PDT)
-Received: from eric (2001-1c00-020d-1300-1b1c-4449-176a-89ea.cable.dynamic.v6.ziggo.nl. [2001:1c00:20d:1300:1b1c:4449:176a:89ea])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b9791c30cf3sm594116866b.2.2026.03.17.04.03.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Mar 2026 04:03:59 -0700 (PDT)
-From: Eric Woudstra <ericwouds@gmail.com>
-To: Jiri Pirko <jiri@resnulli.us>,
-	Ivan Vecera <ivecera@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>
-Cc: netdev@vger.kernel.org,
-	bridge@lists.linux.dev,
-	netfilter-devel@vger.kernel.org,
-	Eric Woudstra <ericwouds@gmail.com>
-Subject: [PATCH v12 net-next] bridge: No DEV_PATH_BR_VLAN_UNTAG_HW for dsa foreign
-Date: Tue, 17 Mar 2026 12:03:47 +0100
-Message-ID: <20260317110347.363875-1-ericwouds@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1773746980; c=relaxed/simple;
+	bh=NYuJXWxOweh/3j/LpJLQQUMCNEF177RY9t9jCkIGVqw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q2c56lpCpR5KxPWfaNvoBkM43z1TNj2IB0QvvdVLklXAL2aftEX8tN6OHkrbwA/Q7JrteL4pDVZr1G427BeMRCulGt9QwMWStP7p4RbzQUMBsL+3mfmj9KOz9kRaTgBsGAyvpseVYxpfI7bu3MhbxUVGIhXhF8eDRHcsZyxyqpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=l7tLxw4B; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 971B160180;
+	Tue, 17 Mar 2026 12:29:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1773746969;
+	bh=HxHuSB4uMbKDQgysscsOOfD5iTIFOSQn/cBKmbxYuzo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=l7tLxw4B1pYEzZD4ePS6i/YPTSlt0+MBQGCVtbH0GrLi/n0aVahS51DuU+kmPpfts
+	 xb5L9MqKy3Kr4EK9+6wq5k3sgCkBHuzVot8D2THzHONKYsHSEcmQpB5hCKUArZl/L5
+	 oRuiAQxrX/c0cg6tq5wbIVIpfVlyr9M8hi9E3ooVeT0GWUdHjt3semzvXZ1zVjlBUY
+	 bdwJerXg4sQl+nQDxnWK6mF7aHI0DZ3d+ZY2XwOJhczzP24M3E2HuSELTooIj5gpuQ
+	 IvSHZswswFkHQeWNbIybupfHVzfrEv6/dbjaJT4HczehnZibUmDmjAp6X1J9fBtv5X
+	 sr0j+0Mb1qjGQ==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org,
+	steffen.klassert@secunet.com,
+	antony.antony@secunet.com
+Subject: [PATCH net-next,RFC 0/8] netfilter: flowtable bulking 
+Date: Tue, 17 Mar 2026 12:29:09 +0100
+Message-ID: <20260317112917.4170466-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -102,225 +68,141 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	SUBJECT_ENDS_SPACES(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.linux.dev,gmail.com];
-	TAGGED_FROM(0.00)[bounces-11233-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[netfilter.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11235-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ericwouds@gmail.com,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 99AA22A8773
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DC2282A8BFE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In network setup as below:
-
-             fastpath bypass
- .----------------------------------------.
-/                                          \
-|                        IP - forwarding    |
-|                       /                \  v
-|                      /                  wan ...
-|                     /
-|                     |
-|                     |
-|                   brlan.1
-|                     |
-|    +-------------------------------+
-|    |           vlan 1              |
-|    |                               |
-|    |     brlan (vlan-filtering)    |
-|    |               +---------------+
-|    |               |  DSA-SWITCH   |
-|    |    vlan 1     |               |
-|    |      to       |               |
-|    |   untagged    1     vlan 1    |
-|    +---------------+---------------+
-.         /                   \
- ----->wlan1                 lan0
-       .                       .
-       .                       ^
-       ^                     vlan 1 tagged packets
-     untagged packets
-
-br_vlan_fill_forward_path_mode() sets DEV_PATH_BR_VLAN_UNTAG_HW when
-filling in from brlan.1 towards wlan1. But it should be set to
-DEV_PATH_BR_VLAN_UNTAG in this case. Using BR_VLFLAG_ADDED_BY_SWITCHDEV
-is not correct. The dsa switchdev adds it as a foreign port.
-
-The same problem for all foreignly added dsa vlans on the bridge.
-
-First add the vlan, trying only native devices.
-If this fails, we know this may be a vlan from a foreign device.
-
-Use BR_VLFLAG_TAGGING_BY_SWITCHDEV to make sure DEV_PATH_BR_VLAN_UNTAG_HW
-is set only when there if no foreign device involved.
-
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
-Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
-
----
-
-This patch has started in v2 of my original patch-set. It remains
-unchanged from v4, always moving along in a patch-set. The Acked-by
-from Nikolay Aleksandrov was added in v5.
-
-Changes in v12:
- - Moved to net-next.git
- - Split from [PATCH v11 nf-next] netfilter: fastpath fixes
-
-Changes in v10:
-- Moved to nf-next.git
-- Split from patch-set: bridge-fastpath and related improvements v9
-
-Changes in v9:
-- Moved from net-next.git to nf.git
-
-Changes in v4:
-- Added !CONFIG_NET_SWITCHDEV version of
-   br_switchdev_port_vlan_no_foreign_add().
-
- include/net/switchdev.h   |  1 +
- net/bridge/br_private.h   | 10 ++++++++++
- net/bridge/br_switchdev.c | 15 +++++++++++++++
- net/bridge/br_vlan.c      |  7 ++++++-
- net/switchdev/switchdev.c |  2 +-
- 5 files changed, 33 insertions(+), 2 deletions(-)
-
-diff --git a/include/net/switchdev.h b/include/net/switchdev.h
-index 8346b0d29542..ee500706496b 100644
---- a/include/net/switchdev.h
-+++ b/include/net/switchdev.h
-@@ -15,6 +15,7 @@
- #define SWITCHDEV_F_NO_RECURSE		BIT(0)
- #define SWITCHDEV_F_SKIP_EOPNOTSUPP	BIT(1)
- #define SWITCHDEV_F_DEFER		BIT(2)
-+#define SWITCHDEV_F_NO_FOREIGN		BIT(3)
+Hi,
  
- enum switchdev_attr_id {
- 	SWITCHDEV_ATTR_ID_UNDEFINED,
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index b9b2981c4841..5a6f7d8fca1f 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -182,6 +182,7 @@ enum {
- 	BR_VLFLAG_MCAST_ENABLED = BIT(2),
- 	BR_VLFLAG_GLOBAL_MCAST_ENABLED = BIT(3),
- 	BR_VLFLAG_NEIGH_SUPPRESS_ENABLED = BIT(4),
-+	BR_VLFLAG_TAGGING_BY_SWITCHDEV = BIT(5),
- };
+Back in 2018 [1], a new fast forwarding combining the flowtable and
+GRO/GSO was proposed, however, "GRO is specialized to optimize the
+non-forwarding case", so it was considered "counter-intuitive to base a
+fast forwarding path on top of it".
  
- /**
-@@ -2224,6 +2225,8 @@ void br_switchdev_mdb_notify(struct net_device *dev,
- 			     int type);
- int br_switchdev_port_vlan_add(struct net_device *dev, u16 vid, u16 flags,
- 			       bool changed, struct netlink_ext_ack *extack);
-+int br_switchdev_port_vlan_no_foreign_add(struct net_device *dev, u16 vid, u16 flags,
-+					  bool changed, struct netlink_ext_ack *extack);
- int br_switchdev_port_vlan_del(struct net_device *dev, u16 vid);
- void br_switchdev_init(struct net_bridge *br);
+Then, Steffen Klassert proposed the idea of adding a new engine for the
+flowtable that operates on the skb list that is provided after the NAPI
+cycle. The idea is to process this skb list to create bulks grouped by
+the ethertype, output device, next hop and tos/dscp. Then, add a
+specialized xmit path that can deal with these skb bulks. Note that GRO
+needs to be disabled so this new forwarding engine obtains the list of
+skbs that resulted from the NAPI cycle.
  
-@@ -2307,6 +2310,13 @@ static inline int br_switchdev_port_vlan_add(struct net_device *dev, u16 vid,
- 	return -EOPNOTSUPP;
+Before grouping skbs in bulks, there is a flowtable lookup to check if
+this flow is already in the flowtable, otherwise, the packet follows
+slow path. In case the flowtable lookup returns an entry, then this
+packet follows fast path: the ttl is decremented, the corresponding NAT
+mangling on the packet and layer 2/3 tunnel encapsulation (layer 2:
+vlan/pppoe, layer 3: ipip) are performed.
+ 
+The fast forwarding path is enabled through explicit user policy, so the
+user needs to request this behaviour from control plane, the following
+example shows how to place flows in the new fast forwarding path from
+the forward chain:
+
+ table x {
+        flowtable f {
+                hook early_ingress priority 0; devices = { eth0, eth1 }
+        }
+ 
+        chain y {
+                type filter hook forward priority 0;
+                ip protocol tcp flow offload @f counter
+        }
  }
  
-+static inline int br_switchdev_port_vlan_no_foreign_add(struct net_device *dev, u16 vid,
-+							u16 flags, bool changed,
-+							struct netlink_ext_ack *extack)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline int br_switchdev_port_vlan_del(struct net_device *dev, u16 vid)
- {
- 	return -EOPNOTSUPP;
-diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
-index fe3f7bbe86ee..556ed24700db 100644
---- a/net/bridge/br_switchdev.c
-+++ b/net/bridge/br_switchdev.c
-@@ -190,6 +190,21 @@ int br_switchdev_port_vlan_add(struct net_device *dev, u16 vid, u16 flags,
- 	return switchdev_port_obj_add(dev, &v.obj, extack);
- }
  
-+int br_switchdev_port_vlan_no_foreign_add(struct net_device *dev, u16 vid, u16 flags,
-+					  bool changed, struct netlink_ext_ack *extack)
-+{
-+	struct switchdev_obj_port_vlan v = {
-+		.obj.orig_dev = dev,
-+		.obj.id = SWITCHDEV_OBJ_ID_PORT_VLAN,
-+		.obj.flags = SWITCHDEV_F_NO_FOREIGN,
-+		.flags = flags,
-+		.vid = vid,
-+		.changed = changed,
-+	};
-+
-+	return switchdev_port_obj_add(dev, &v.obj, extack);
-+}
-+
- int br_switchdev_port_vlan_del(struct net_device *dev, u16 vid)
- {
- 	struct switchdev_obj_port_vlan v = {
-diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
-index ce72b837ff8e..636c86fa1183 100644
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -109,6 +109,11 @@ static int __vlan_vid_add(struct net_device *dev, struct net_bridge *br,
- 	/* Try switchdev op first. In case it is not supported, fallback to
- 	 * 8021q add.
- 	 */
-+	err = br_switchdev_port_vlan_no_foreign_add(dev, v->vid, flags, false, extack);
-+	if (err != -EOPNOTSUPP) {
-+		v->priv_flags |= BR_VLFLAG_ADDED_BY_SWITCHDEV | BR_VLFLAG_TAGGING_BY_SWITCHDEV;
-+		return err;
-+	}
- 	err = br_switchdev_port_vlan_add(dev, v->vid, flags, false, extack);
- 	if (err == -EOPNOTSUPP)
- 		return vlan_vid_add(dev, br->vlan_proto, v->vid);
-@@ -1491,7 +1496,7 @@ int br_vlan_fill_forward_path_mode(struct net_bridge *br,
+The example above sets up a fastpath for TCP flows that are placed in
+the flowtable 'f', this flowtable is hooked at the new early_ingress
+hook.  The initial TCP packets that match this rule from the standard
+fowarding path create an entry in the flowtable.
  
- 	if (path->bridge.vlan_mode == DEV_PATH_BR_VLAN_TAG)
- 		path->bridge.vlan_mode = DEV_PATH_BR_VLAN_KEEP;
--	else if (v->priv_flags & BR_VLFLAG_ADDED_BY_SWITCHDEV)
-+	else if (v->priv_flags & BR_VLFLAG_TAGGING_BY_SWITCHDEV)
- 		path->bridge.vlan_mode = DEV_PATH_BR_VLAN_UNTAG_HW;
- 	else
- 		path->bridge.vlan_mode = DEV_PATH_BR_VLAN_UNTAG;
-diff --git a/net/switchdev/switchdev.c b/net/switchdev/switchdev.c
-index 4d5fbacef496..bf252d116ed3 100644
---- a/net/switchdev/switchdev.c
-+++ b/net/switchdev/switchdev.c
-@@ -760,7 +760,7 @@ static int __switchdev_handle_port_obj_add(struct net_device *dev,
- 	/* Event is neither on a bridge nor a LAG. Check whether it is on an
- 	 * interface that is in a bridge with us.
- 	 */
--	if (!foreign_dev_check_cb)
-+	if (!foreign_dev_check_cb || port_obj_info->obj->flags & SWITCHDEV_F_NO_FOREIGN)
- 		return err;
+Note that tcpdump only shows the packets in the tx path, since this
+new early_ingress hook happens before the ingress tap.
+
+The patch series contains 8 patches:
+
+- #1 and #2 adds the basic RX flowtable bulking infrastructure for
+  IPv4 and IPv6.
+- #3 adds the early_ingress netfilter hook.
+- #4 adds a helper function to prepare for the netfilter chain for
+  the early_ingress hook.
+- #5 adds the early_ingress filter chain.
+- #6 and #7 add helper functions to reuse TX path codebase.
+- #8 adds the custom TX path for listified skbs and updates
+  the flowtable bulking to use it.
+
+= Benchmark numbers =
+
+Using the following testbed with 4 hosts with this topology:
  
- 	br = netdev_master_upper_dev_get(dev);
+ | sunset |-----| west |====| east |----| sunrise |
+ 
+And this hardware:
+ 
+* Supermicro H13SSW Motherboard
+* AMD EPYC 9135 16-Core Processor (a.k.a. Bergamo, or Zen 5)
+* NIC: Mellanox MT28800 ConnectX-5 Ex (100Gbps NIc)
+* NIC: Broadcom BCM57508 NetXtreme-E (only on sunrise, 100Gbps NIc)
+ 
+With 128 byte packets:
+ 
+* From ~2 Mpps (baseline) to ~4 Mpps with 1 flow.
+* From ~10.6 Mpps (baseline) to ~15.7 Mpps with 10 flows.
+ 
+Antony Antony collected performance numbers and made a report describing
+this the benchmarking[2]. This report includes numbers from the IPsec
+support which is not included in this series.
+
+Comments welcome, thanks.
+
+Pablo Neira Ayuso (8):
+  netfilter: flowtable: Add basic bulking infrastructure for early ingress hook
+  netfilter: flowtable: Add IPv6 bulking infrastructure for early ingress hook
+  netfilter: nf_tables: add flowtable early_ingress support
+  netfilter: nf_tables: add nft_set_pktinfo_ingress()
+  netfilter: nf_tables: add early ingress chain
+  net: add dev_dst_drop() helper function
+  net: add dev_noqueue_xmit_list() helper function
+  net: add dev_queue_xmit_list() and use it
+
+ include/linux/netdevice.h             |   2 +
+ include/net/netfilter/nf_flow_table.h |  13 +-
+ net/core/dev.c                        | 297 ++++++++++++++++----
+ net/netfilter/nf_flow_table_inet.c    |  81 ++++++
+ net/netfilter/nf_flow_table_ip.c      | 384 ++++++++++++++++++++++++++
+ net/netfilter/nf_tables_api.c         |  12 +-
+ net/netfilter/nft_chain_filter.c      | 164 +++++++++--
+ 7 files changed, 872 insertions(+), 81 deletions(-)
+
 -- 
-2.53.0
+2.47.3
 
 
