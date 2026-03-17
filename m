@@ -1,58 +1,58 @@
-Return-Path: <netfilter-devel+bounces-11248-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11249-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EGRoKDaKuWkjJwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11248-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 18:07:02 +0100
+	id YPnyNWWQuWk5KQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11249-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 18:33:25 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37CAC2AEF81
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 18:07:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7482AFC9C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 18:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2B47F307817B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 17:04:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4FFD7322EEB4
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 17:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532003F54C6;
-	Tue, 17 Mar 2026 17:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDFE3F23B3;
+	Tue, 17 Mar 2026 17:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="kIy419hO"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="UvyNJLWD"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F079C3F54CE
-	for <netfilter-devel@vger.kernel.org>; Tue, 17 Mar 2026 17:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97413F6600
+	for <netfilter-devel@vger.kernel.org>; Tue, 17 Mar 2026 17:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773767085; cv=none; b=H0t4J5QC2ZygVgos6DE+Zrzv+FtxCuaiDLyZYUdpvwO04BSpJg4ovQ5yPoe66ENfjt6sBYzQ/qcQvcgaaOYXyqctLzSUg23seJV/c2iT6toJ3jywqsZo7Th9m9XdrNIbU1f7b1OjkI+X/T0zjhuxPDwz+k6IqXKyq8mnVyyDIQI=
+	t=1773767251; cv=none; b=S7HAVmkOM4aF8RchLLBeq4cnszz5ZuV67BcexIc/JlMRCFKNW+EIn30Ja/FPXPskGmOjszLJzlYJ9pc+w+neXbEOgYCBaATgJXEI/vloQZJodCEWuzJclEf2IheoZGHYpVIAiQNfo7VL3nODVnbEZJrDwDyxVwpdeBiGksvY2Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773767085; c=relaxed/simple;
-	bh=EupWQMAU438nBjGmtRMmYsucW133DCxqE6xIMZ47ux4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mMat6PbaIx35XxRgq/nDrtCYd65S8EeVtM2AHGUNE0iYMCxrfmCoB4XPsFJsPPWXycVuLBeuJZ39YIVUwUOofUC4x1xixeuV2+6190MNBN/D4hqW+qDcsy8+HWMT2BTWbhMQUSKKPKNi7IYn1kTOOVHcQ6bbAdbm871SQHxRGCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=kIy419hO; arc=none smtp.client-ip=217.70.190.124
+	s=arc-20240116; t=1773767251; c=relaxed/simple;
+	bh=IRHH/oiii1VfvqemkNUz9+cXsGUe52pybSdsEJy+yPs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LaVa9L0Djagr3DP1PCjNfouxz5h9Wz6SKzxzF4bDU2mgJgE0vmmdZM29pJ/49vS7g9z1PPzQ9dRpsCmsfC58iccK7gdblgF5N+/IbrnnHe0j6rpe9CYDdEX1jw5Fxran2R9vVcrzkCFhXBLHL7GmlBWN8s1nLObKabqxjPOiQZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=UvyNJLWD; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 6467D600B5;
-	Tue, 17 Mar 2026 18:04:40 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id AB9CD60284;
+	Tue, 17 Mar 2026 18:07:25 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1773767080;
-	bh=SltrDfELMM+bnxh4me1v8Dn2w8H5ZbSITq6oK2YUVNQ=;
+	s=2025; t=1773767245;
+	bh=BRHVcIlzvgyU1Z6zE/pt1eS5LnyhU8EdOrB9xKmT7xM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=kIy419hO4LBFMJQeZQx6hOletlw7cMbSvQSvKYS0tzISxaAeWDSSaWPkKwyfQpk0p
-	 WJk1Xuf8+SOqazzYmeCgIpFSvEkw3JxrrZP+mfAtxseSNqMisqPHSt+nzvJ6jA7ZDN
-	 5d1pxjUBrxQ+KH4PxqVyVqUJUn7VEezKMD+UUjgQbDO9sYt3+UDENxOPEYhuYts5TP
-	 j7zSLi+j1XLnRzHnhqxxoMDFSlK3/ZvYCQuSueSrgHK/W/XBM4YVqjO+2xcBm7rSmA
-	 HZTNMuFCr0coVNgVSK010xkoep4Tyi/GkpvK555lSAp0KdofefIsgNXmBpLPRi9Jqt
-	 TGugCG8kT5FJA==
+	b=UvyNJLWDbDGUqjZw3hHLErwwi39TIHjC84B9renPPmx1ixBmIz8ofGWfwFCTAa1Ts
+	 4KyniljSKUxZRMwkRw0HWZh1Q9IBEfJRIaQ+X70+PVPhmslOkT6DCv/qQz2UwFXP1H
+	 teSo98oJWmowWcxZHPKngKhgZb13gZZceOxC47udEyvDt3db0idzVNQUJKqfa5Rltj
+	 UO5TjNNJPFGLVWv7OnUzOHoEsKlod+SkRByZe2KLLUerSkCkNzvQm5WTg97DwbFf1o
+	 UMG9/LQgF5DoF+PInDOUvUBbbiOc/PI6GWTBgg43l80CQXoxweluExV43fBd+NsymQ
+	 ylgBnuoGy/pjg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de,
 	carges@cloudflare.com
-Subject: [PATCH nf,v3] netfilter: nft_set_rbtree: revisit array resize logic
-Date: Tue, 17 Mar 2026 18:04:16 +0100
-Message-ID: <20260317170416.12082-1-pablo@netfilter.org>
+Subject: [PATCH nf,v4] netfilter: nft_set_rbtree: revisit array resize logic
+Date: Tue, 17 Mar 2026 18:07:21 +0100
+Message-ID: <20260317170721.12396-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -65,12 +65,12 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11248-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11249-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -86,9 +86,9 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cloudflare.com:email,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
-X-Rspamd-Queue-Id: 37CAC2AEF81
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cloudflare.com:email,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
+X-Rspamd-Queue-Id: 5A7482AFC9C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -107,6 +107,8 @@ number of the slots in the array, otherwise the array size array gets
 increased artifically. Add special case shrink logic to deal with flush
 set too.
 
+The shrink logic is skipped by anonymous sets.
+
 Use check_add_overflow() to calculate the new array size.
 
 Add a WARN_ON_ONCE check to make sure elements fit into the new array
@@ -116,13 +118,14 @@ Reported-by: Chris Arges <carges@cloudflare.com>
 Fixes: 7e43e0a1141d ("netfilter: nft_set_rbtree: translate rbtree to array for binary search")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v3: add logic for anonymous sets per Florian.
+v4: use maybe_grow: goto tag instead of grow:
+    Add note in commit description: "The shrink logic is skipped by anonymous sets."
 
  net/netfilter/nft_set_rbtree.c | 91 +++++++++++++++++++++++++++-------
  1 file changed, 72 insertions(+), 19 deletions(-)
 
 diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 4061c506be53..bb101e05e49b 100644
+index 4061c506be53..e4d2cf04efab 100644
 --- a/net/netfilter/nft_set_rbtree.c
 +++ b/net/netfilter/nft_set_rbtree.c
 @@ -616,14 +616,12 @@ static struct nft_array *nft_array_alloc(u32 max_intervals)
@@ -181,7 +184,7 @@ index 4061c506be53..bb101e05e49b 100644
 +	}
 +
 +	if (nft_set_is_anonymous(set))
-+		goto grow;
++		goto maybe_grow;
 +
 +	if (flush) {
 +		/* Set flush just started, nelems still report elements.*/
@@ -201,7 +204,7 @@ index 4061c506be53..bb101e05e49b 100644
 +		new_max_intervals = shrinked_max_intervals;
 +		goto realloc_array;
 +	}
-+grow:
++maybe_grow:
 +	if (nelems > new_max_intervals) {
 +		if (nft_set_is_anonymous(set) &&
 +		    new_max_intervals < NFT_ARRAY_INITIAL_ANON_THRESH) {
