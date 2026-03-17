@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-11240-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11242-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OAKsD2s7uWmvwAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11240-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:51 +0100
+	id OCoPL1c7uWmvwAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11242-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:31 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64AC62A8C61
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:50 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE9B2A8BEF
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 728133028A37
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 11:29:59 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 93B20302A9CB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 11:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30D53AE6E8;
-	Tue, 17 Mar 2026 11:29:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49933AF652;
+	Tue, 17 Mar 2026 11:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="CmSOscvw"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="IUNa/SaA"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602023AD503;
-	Tue, 17 Mar 2026 11:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C733AE19A;
+	Tue, 17 Mar 2026 11:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773746982; cv=none; b=o5T0Bwe8zbYR7QdIJQxw9UfRN9MR1IIJ2elNwypkDGKaA5y/OmOYFt7sSWceCJ7YgI3AlUFZuMcVl519g+p948tSizZoVnBGQrm2Ld/ZgnTbY7AAmwYw8PX2UHjYaztr1bV6fT1gmTi35puqRnW+ik7gxsVPUFNpRGmB2H9Tq+8=
+	t=1773746983; cv=none; b=taaZmCMpOCKAUDCaQuSjipupdwaFsxJ4VYQfCkdF1RUBTRdOYzCFpsNDg+qZddxlR1PN6RbVz+UkhfWnWAKZxBiPV5V38mIZqNkTTwQlLci1TPRPPDRupLD1gYNlGSuSki0Dn7fvhTMRxBz1435lRTg8cRTAeEmHKJPH/MRQZD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773746982; c=relaxed/simple;
-	bh=2N+LxRirWPjWkmhl172q75wJtGmVGrZYSSsYFA7aNGE=;
+	s=arc-20240116; t=1773746983; c=relaxed/simple;
+	bh=cv6wZ8dWLrgsnV3oBF+YY6vLLKiC/IoeN0IEuXPcyfg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fYSQU5M+zfk7ptldUUz89DyNnnHcR0P+bpdCUKIjbbybUDcp3rGPtx8TV0EkctWhwXIkkV5xB/zgpxIN+LBP5qsd05i7eRh6V7wovMXJNoGmxMtTvpcYY/dmNCWARlc7gfMbnyU8qQrM9wnzfD8i3HBAiTwBi1JftqM4F8+Wt+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=CmSOscvw; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=LJ+SfuODkoKIm6RkLMZ7m7PDzGSinh+sInuM9BrdfbvMumYL2zyREH6DDEcj/2RKusbVM1rZeKKFniBKc24HId6zuUm1T9Vhyo80K33HJkRnoyTrmG/Vh5VfBQHqOw8qt91zh69u3IojFMx2EttZmBNQcLjkIgdlHuagaP7eTEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=IUNa/SaA; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 9920E60269;
-	Tue, 17 Mar 2026 12:29:38 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 0AD236026B;
+	Tue, 17 Mar 2026 12:29:39 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1773746979;
-	bh=AhdNruwD2TeIvDY05m5DAMdYftgpTLu7ihJKqlxkumI=;
+	s=2025; t=1773746980;
+	bh=ZYJeK+aud/ltHHtuFINdU7sSNOijRKxbP50/Tcgt9Mo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CmSOscvwC15FAZkWRU7L9slaTwMrZRMEy+nwxhSSs1I2bdswbTWtKYJWLIEdB033y
-	 TDGeuQr0XWLEX1CsPmxz3KwMOG9c2Gvv6IQjf9YOcEA7x/9n0itXD4+VHg1gYsTdmX
-	 wB6J6KE+QU/0ZFy7cwJ7efdFC+ADeN9eIgDZ7OpVGzwKA8iBMvKGKW/N4fm3KFtqyY
-	 gs/G4jJlZDXWFRdGN59Pl3CwCiwsCia1pSUSPBUa0TTMV/h8M2EvmufA0+XdnhSV6Y
-	 kbbslSLCG3YIRayaQKWe0SjjIjT+HGLixniYAYT1ImFFsFU1MePv/hVsl8iPVym6dJ
-	 ZTDbusHMxzHuw==
+	b=IUNa/SaA05Bdzm8fcNC++Deh/pA/njvLf2sEm+Hkpd7EYk2sj+mkK+1RzFsGIeCKv
+	 CCPGl5BWZdCeTgvbUziW6/otRPDT5v+ehROFmyQgbrLlQY3r4xhM4Y4I8l/fMy5jgH
+	 IwkPnlDKXnto9LfROjpCxOVYUCHAc7lhE57ECQfnt6eASj1a85nb4rpMekUkNWYGvq
+	 ZaMhl6dX1d8uex/VUCWVJpUU/S/c2nI1JG3D7FuIuDn+W+3zq54Q+clqhPzD073lUQ
+	 C/s0M0PUIH3Si39hCXBybopskFbM4igTaaaz+WoFDsU5ApKLKnYZg08eFNUCiUSxz7
+	 f2NmsVmNGVEeg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -58,9 +58,9 @@ Cc: davem@davemloft.net,
 	horms@kernel.org,
 	steffen.klassert@secunet.com,
 	antony.antony@secunet.com
-Subject: [PATCH net-next,RFC 7/8] net: add dev_noqueue_xmit_list() helper function
-Date: Tue, 17 Mar 2026 12:29:16 +0100
-Message-ID: <20260317112917.4170466-8-pablo@netfilter.org>
+Subject: [PATCH net-next,RFC 8/8] net: add dev_queue_xmit_list() and use it
+Date: Tue, 17 Mar 2026 12:29:17 +0100
+Message-ID: <20260317112917.4170466-9-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260317112917.4170466-1-pablo@netfilter.org>
 References: <20260317112917.4170466-1-pablo@netfilter.org>
@@ -75,7 +75,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -84,7 +84,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11240-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11242-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -92,201 +92,265 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[secunet.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
-X-Rspamd-Queue-Id: 64AC62A8C61
+	DBL_BLOCKED_OPENRESOLVER(0.00)[secunet.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
+X-Rspamd-Queue-Id: 9CE9B2A8BEF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This new helper function wraps the device has no queue case.  This function can
-be reused from listified skb in the tx path since the device has no queue path
-already supports for skb list.
+Add listified skb tx path and use it to implement the flowtable TX
+datapath. Use the dev_dst_drop() and dev_noqueue_xmit_list() helper
+functions to build dev_queue_xmit_list().
 
-***This replaces validate_xmit_skb() by validate_xmit_skb_list()*** in this
-new helper function.
+100dfa74cad9 ("net: dev_queue_xmit() llist adoption") requires to
+reverse the skb list and then splice this list to the the last pending
+skbuff for transmission.
 
-An alternative to this patch to reuse a smaller fraction of code can be to wrap
-this common code instead in a function:
+A few notes:
 
-+                       HARD_TX_LOCK(dev, txq, cpu);
-+
-+                       if (!netif_xmit_stopped(txq)) {
-+                               dev_xmit_recursion_inc();
-+                               skb = dev_hard_start_xmit(skb, dev, txq, &rc);
-+                               dev_xmit_recursion_dec();
-+                               if (dev_xmit_complete(rc)) {
-+                                       HARD_TX_UNLOCK(dev, txq);
-+                                       goto out;
-+                               }
-+                       }
-+                       HARD_TX_UNLOCK(dev, txq);
+- I removed:
 
-Note: This comment was in the original patch from Steffen:
+       if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
+               return -1;
 
-       /* FIXME: For each skb!!! */
-       dev_core_stats_tx_dropped_inc(dev);
-       kfree_skb_list(skb);
+Only possible if skb->sk is set on, if my assumption is not correct, this
+can be checked from flowtable path.
 
-This currently reports only one packet drop through stats.
+Reducing the size of dev_queue_xmit_list() is convenient, to focus only
+on speeding up what it can be really speed up, so let's return -1 if
+either:
+
+- qdisc is not empty
+
+OR
+
+- qdisc is not work-conserving (no TCQ_F_CAN_BYPASS is set on)
+
+Then, the flowtable falls back to call dev_queue_xmit() for each single
+skbuff.
 
 Co-developed-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/core/dev.c | 121 +++++++++++++++++++++++++++----------------------
- 1 file changed, 67 insertions(+), 54 deletions(-)
+ include/linux/netdevice.h        |   2 +
+ net/core/dev.c                   | 157 +++++++++++++++++++++++++++++++
+ net/netfilter/nf_flow_table_ip.c |  18 ++--
+ 3 files changed, 169 insertions(+), 8 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 5c339416ae5d..8f5bef5a715c 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4730,6 +4730,68 @@ static inline void dev_dst_drop(const struct net_device *dev, struct sk_buff *sk
- 		skb_dst_force(skb);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index c0174aa1037f..34747e9b85d2 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3401,6 +3401,8 @@ static inline int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+ 	return ret;
  }
  
-+/* The device has no queue. Common case for software devices:
-+ * loopback, all the sorts of tunnels...
-+ *
-+ * Really, it is unlikely that netif_tx_lock protection is necessary
-+ * here.  (f.e. loopback and IP tunnels are clean ignoring statistics
-+ * counters.)
-+ * However, it is possible, that they rely on protection
-+ * made by us here.
-+ *
-+ * Check this and shot the lock. It is not prone from deadlocks.
-+ * Either shot noqueue qdisc, it is even simpler 8)
-+ */
-+static inline int dev_noqueue_xmit_list(struct sk_buff *skb,
-+					struct net_device *dev,
-+					struct netdev_queue *txq)
++int dev_queue_xmit_list(struct sk_buff *skb);
++
+ int register_netdevice(struct net_device *dev);
+ void unregister_netdevice_queue(struct net_device *dev, struct list_head *head);
+ void unregister_netdevice_many(struct list_head *head);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 8f5bef5a715c..8f114f5af537 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4920,6 +4920,163 @@ int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+ }
+ EXPORT_SYMBOL(__dev_direct_xmit);
+ 
++static int dev_queue_xmit_skb_list(struct sk_buff *skb, struct Qdisc *q,
++				   struct net_device *dev,
++				   struct netdev_queue *txq)
 +{
-+	bool again = false;
-+	int rc = -ENOMEM;
++	struct sk_buff *next, *to_free = NULL, *to_free2 = NULL;
++	spinlock_t *root_lock = qdisc_lock(q);
++	struct llist_node *ll_list, *first_n;
++	unsigned long defer_count = 0;
++	int rc = -1;
 +
-+	if (dev->flags & IFF_UP) {
-+		int cpu = smp_processor_id(); /* ok because BHs are off */
++	tcf_set_drop_reason(skb, SKB_DROP_REASON_QDISC_DROP);
 +
-+		/* Other cpus might concurrently change txq->xmit_lock_owner
-+		 * to -1 or to their cpu id, but not to our id.
-+		 */
-+		if (READ_ONCE(txq->xmit_lock_owner) != cpu) {
-+			if (dev_xmit_recursion())
-+				goto recursion_alert;
-+
-+			skb = validate_xmit_skb_list(skb, dev, &again);
-+			if (!skb)
-+				goto out;
-+
-+			HARD_TX_LOCK(dev, txq, cpu);
-+
-+			if (!netif_xmit_stopped(txq)) {
-+				dev_xmit_recursion_inc();
-+				skb = dev_hard_start_xmit(skb, dev, txq, &rc);
-+				dev_xmit_recursion_dec();
-+				if (dev_xmit_complete(rc)) {
-+					HARD_TX_UNLOCK(dev, txq);
-+					goto out;
-+				}
-+			}
-+			HARD_TX_UNLOCK(dev, txq);
-+			net_crit_ratelimited("Virtual device %s asks to queue packet!\n",
-+					     dev->name);
-+		} else {
-+			/* Recursion is detected! It is possible,
-+			 * unfortunately
++	if (q->flags & TCQ_F_NOLOCK) {
++		if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
++		    qdisc_run_begin(q)) {
++			/* Retest nolock_qdisc_is_empty() within the protection
++			 * of q->seqlock to protect from racing with requeuing.
 +			 */
-+recursion_alert:
-+			net_crit_ratelimited("Dead loop on virtual device %s, fix it urgently!\n",
-+					     dev->name);
++			if (unlikely(!nolock_qdisc_is_empty(q))) {
++				to_free2 = qdisc_run_end(q);
++				goto free_skbs;
++			}
++
++			if (sch_direct_xmit(skb, q, dev, txq, NULL, false) &&
++			    !nolock_qdisc_is_empty(q))
++				__qdisc_run(q);
++
++			to_free2 = qdisc_run_end(q);
++			rc = NET_XMIT_SUCCESS;
++			goto free_skbs;
 +		}
 +	}
 +
-+	rc = -ENETDOWN;
-+out:
++	/* Transform skb list to llist in reverse order to splice this batch
++	 * into the defer_list. The next field of skb chain and llist use the
++	 * memory layout.
++	 */
++	ll_list = llist_reverse_order(&skb->ll_node);
++
++	/* Open code llist_add(&skb->ll_node, &q->defer_list) + queue limit.
++	 * In the try_cmpxchg() loop, we want to increment q->defer_count
++	 * at most once to limit the number of skbs in defer_list.
++	 * We perform the defer_count increment only if the list is not empty,
++	 * because some arches have slow atomic_long_inc_return().
++	 */
++	first_n = READ_ONCE(q->defer_list.first);
++	do {
++		if (first_n && !defer_count) {
++			defer_count = atomic_long_inc_return(&q->defer_count);
++			if (unlikely(defer_count > READ_ONCE(net_hotdata.qdisc_max_burst))) {
++				kfree_skb_reason(skb, SKB_DROP_REASON_QDISC_BURST_DROP);
++				return NET_XMIT_DROP;
++			}
++                }
++		/* Splice using last skb in the reverse list. */
++		skb->ll_node.next = first_n;
++	} while (!try_cmpxchg(&q->defer_list.first, &first_n, ll_list));
++
++	/* If defer_list was not empty, we know the cpu which queued
++	 * the first skb will process the whole list for us.
++	 */
++	if (first_n)
++		return NET_XMIT_SUCCESS;
++
++	spin_lock(root_lock);
++
++	ll_list = llist_del_all(&q->defer_list);
++	/* There is a small race because we clear defer_count not atomically
++	 * with the prior llist_del_all(). This means defer_list could grow
++	 * over qdisc_max_burst.
++	 */
++	atomic_long_set(&q->defer_count, 0);
++
++	ll_list = llist_reverse_order(ll_list);
++
++	if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
++		llist_for_each_entry_safe(skb, next, ll_list, ll_node)
++			__qdisc_drop(skb, &to_free);
++		rc = NET_XMIT_DROP;
++		goto unlock;
++	}
++
++	if ((q->flags & TCQ_F_CAN_BYPASS) && !qdisc_qlen(q) &&
++	    !llist_next(ll_list) && qdisc_run_begin(q)) {
++		/*
++		 * This is a work-conserving queue; there are no old skbs
++		 * waiting to be sent out; and the qdisc is not running -
++		 * xmit the skb directly.
++		 */
++		DEBUG_NET_WARN_ON_ONCE(skb != llist_entry(ll_list,
++							  struct sk_buff,
++							  ll_node));
++		qdisc_bstats_update(q, skb);
++		if (sch_direct_xmit(skb, q, dev, txq, root_lock, true))
++			__qdisc_run(q);
++		to_free2 = qdisc_run_end(q);
++		rc = NET_XMIT_SUCCESS;
++	}
++unlock:
++	spin_unlock(root_lock);
++
++free_skbs:
++	tcf_kfree_skb_list(to_free);
++	tcf_kfree_skb_list(to_free2);
 +	return rc;
 +}
 +
- /**
-  * __dev_queue_xmit() - transmit a buffer
-  * @skb:	buffer to transmit
-@@ -4757,7 +4819,6 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
- 	struct netdev_queue *txq = NULL;
- 	struct Qdisc *q;
- 	int rc = -ENOMEM;
--	bool again = false;
- 
- 	skb_reset_mac_header(skb);
- 	skb_assert_len(skb);
-@@ -4808,61 +4869,13 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
- 		goto out;
- 	}
- 
--	/* The device has no queue. Common case for software devices:
--	 * loopback, all the sorts of tunnels...
--
--	 * Really, it is unlikely that netif_tx_lock protection is necessary
--	 * here.  (f.e. loopback and IP tunnels are clean ignoring statistics
--	 * counters.)
--	 * However, it is possible, that they rely on protection
--	 * made by us here.
--
--	 * Check this and shot the lock. It is not prone from deadlocks.
--	 *Either shot noqueue qdisc, it is even simpler 8)
--	 */
--	if (dev->flags & IFF_UP) {
--		int cpu = smp_processor_id(); /* ok because BHs are off */
--
--		/* Other cpus might concurrently change txq->xmit_lock_owner
--		 * to -1 or to their cpu id, but not to our id.
--		 */
--		if (READ_ONCE(txq->xmit_lock_owner) != cpu) {
--			if (dev_xmit_recursion())
--				goto recursion_alert;
--
--			skb = validate_xmit_skb(skb, dev, &again);
--			if (!skb)
--				goto out;
--
--			HARD_TX_LOCK(dev, txq, cpu);
--
--			if (!netif_xmit_stopped(txq)) {
--				dev_xmit_recursion_inc();
--				skb = dev_hard_start_xmit(skb, dev, txq, &rc);
--				dev_xmit_recursion_dec();
--				if (dev_xmit_complete(rc)) {
--					HARD_TX_UNLOCK(dev, txq);
--					goto out;
--				}
--			}
--			HARD_TX_UNLOCK(dev, txq);
--			net_crit_ratelimited("Virtual device %s asks to queue packet!\n",
--					     dev->name);
--		} else {
--			/* Recursion is detected! It is possible,
--			 * unfortunately
--			 */
--recursion_alert:
--			net_crit_ratelimited("Dead loop on virtual device %s, fix it urgently!\n",
--					     dev->name);
--		}
--	}
--
--	rc = -ENETDOWN;
++int dev_queue_xmit_list(struct sk_buff *skb)
++{
++	struct net_device *dev = skb->dev;
++	struct netdev_queue *txq;
++	struct sk_buff *iter;
++	struct Qdisc *q;
++	int rc;
++
++	/* Disable soft irqs for various locks below. Also
++	 * stops preemption for RCU.
++	 */
++	rcu_read_lock_bh();
++
++	/* Intentionally, no egress hooks here. This is called from the ingress
++	 * path, which should have already classified packets before calling
++	 * this function.
++	 */
++
++	txq = netdev_tx_queue_mapping(dev, skb);
++	if (!txq)
++		txq = netdev_core_pick_tx(dev, skb, NULL);
++
++	q = rcu_dereference_bh(txq->qdisc);
++
++	iter = skb;
++	while (iter) {
++		dev_dst_drop(dev, iter);
++		skb_copy_queue_mapping(iter, skb);
++		iter = iter->next;
++	}
++
++	if (q->enqueue) {
++		rc = dev_queue_xmit_skb_list(skb, q, dev, txq);
++		goto out;
++	}
++
 +	rc = dev_noqueue_xmit_list(skb, dev, txq);
- 	rcu_read_unlock_bh();
- 
--	dev_core_stats_tx_dropped_inc(dev);
--	kfree_skb_list(skb);
++	rcu_read_unlock_bh();
++
 +	if (rc < 0) {
 +		dev_core_stats_tx_dropped_inc(dev);
 +		kfree_skb_list(skb);
 +	}
- 	return rc;
- out:
- 	rcu_read_unlock_bh();
++	return rc;
++out:
++	rcu_read_unlock_bh();
++	return rc;
++}
++EXPORT_SYMBOL(dev_queue_xmit_list);
++
+ /*************************************************************************
+  *			Receiver routines
+  *************************************************************************/
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index 98b5d5e022c8..3d2d02be0f0d 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -863,14 +863,16 @@ static void nf_flow_neigh_xmit_list(struct sk_buff *skb, struct net_device *outd
+ 		iter = iter->next;
+ 	}
+ 
+-	iter = skb;
+-	while (iter) {
+-		struct sk_buff *next;
+-
+-		next = iter->next;
+-		iter->next = NULL;
+-		dev_queue_xmit(iter);
+-		iter = next;
++	if (dev_queue_xmit_list(skb) == -1) {
++		iter = skb;
++		while (iter) {
++			struct sk_buff *next;
++
++			next = iter->next;
++			iter->next = NULL;
++			dev_queue_xmit(iter);
++			iter = next;
++		}
+ 	}
+ }
+ 
 -- 
 2.47.3
 
