@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-11234-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11239-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iNTFAEs7uWmKwAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11234-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:19 +0100
+	id MKL5M1c7uWmvwAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11239-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:31 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 908622A8BA4
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:18 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F287C2A8BEE
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 12:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1AFFB305DA25
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 11:29:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8A9DA3025EE0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2026 11:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECE83AA51F;
-	Tue, 17 Mar 2026 11:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46AF73AE195;
+	Tue, 17 Mar 2026 11:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="CFGSgulL"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Hk66rkOk"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614823932F0;
-	Tue, 17 Mar 2026 11:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55263ACEEE;
+	Tue, 17 Mar 2026 11:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773746979; cv=none; b=r+GcwtWjOtqhOt8t0VMNcSnSaECPc7N9HkWTxS+MN9IVvbuWV2i5zW0QsYfQ1Wl88W+YgnXa+LxSSVHHmdw34BvnXEHVMORyjMieTpB8jk4Fs+ZolgToSX2PHLwfq4zZVvTIkTYuu5D+atsgXza5srjXfZt14d7+6Ca5i1kZX7A=
+	t=1773746982; cv=none; b=eR/zfD5Iz+MUwyJPy5fXo2T4ZzyaOpnyQ1dc+3cCUCpt5q4BIB/wZ9/Wg7sz0iznm7pGtRKckLYl6DoagGqGuIQkdPOBdZkCUZvPEmUOmlBADKqalboTt8kvkNgiPIv1XSNShv/vfH1p5jhQQrzeNFKHsnChSKuHxkPYuFeCNPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773746979; c=relaxed/simple;
-	bh=Qm1ZLRf9UqivDnw3PSX5xUMC4TPm004fUaxJlC2E76A=;
+	s=arc-20240116; t=1773746982; c=relaxed/simple;
+	bh=zjQ+HAPRaHRo1Oeu6TsS/Rqp3X4Af9pvCqxmMTMvlbc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bn8ELha0Cufr0xZ9hFoYUbQGSbg5tsMvpyTpZvMpu3bx2eU3i3Y+V8/WvwkqVvENP20kjhCmofk0S7K9lIrMQUPOlBiFgn5kmhKFIspXp52pN2UyqU4Gw1gBcEcJVlZWWpcpz9LCFAoTYl2+svViLIubEdPtlk6bkzcRHT0V5EM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=CFGSgulL; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=rslTrtb1ok8zbd4idiR3SI5rgKi5kJSOhDZ9vpEALAJV0HdoRygWpgDaIShWD2DG56oDGkfAeKMoaqVVSsWTn+GrJzoA5A0A5YOMXQKSMscTi0XW4Y/al7YjITUiG/F8+IwNENhgIvhPr4nkcFOL34eDAWmwl0XWJa2KU8KS5cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Hk66rkOk; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id DE9BD60263;
-	Tue, 17 Mar 2026 12:29:34 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 2ADF560264;
+	Tue, 17 Mar 2026 12:29:36 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1773746975;
-	bh=6tKSPC/Qeow2zVWRIRIvxqqrGSyDK9XzY7VdRkXQfZo=;
+	s=2025; t=1773746976;
+	bh=1hurq3r+y7BWEXsJ2KfABuEy+xsHpHpgQsbYbcADmCo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CFGSgulLtHxCF2P1gSeQgCY2ruTVo23Ld+EuP2CqpGcc4xAYq0GaDQ6W7GRbFWh41
-	 Gg+ZgL14xB83OjdxK+UBiPqHY0mumWzHBC3ARXw1T8bCZioicdE9f1f+zis1zLbbUy
-	 xkcL0Nbjf3xjSDlLMRoa8uhMNZKHA/6Ig0R+08rJG5i6bL4jPBdVJfPui5fzP8trvp
-	 HdvgB22DWOQ0ePqYQD1klWlzM7DSVCKFQ4KliSFxOSIFE66ziAjB8suB7lByB2u7OV
-	 D7Y5a5Now7aZpaJOFgCE6/8aAIM3Aq2OHy8i9Vh5LGJfQD1ro0v7xfi5nXZItgdmPJ
-	 rCfzFnWUqK4yg==
+	b=Hk66rkOkd/y15tQx5hIvqaPRsw1xUcce7f9hDxTspI7l45XdNnpwXTyriGNfS2Njy
+	 kXtuogj+P5qNS0HnghSJa0e26DdvIPll0rx6EeI6fbPmHCNK8uT9P0S9bK1mwRJ/Md
+	 o0nBSSXf9EBB48v9eE4diR9arZSlrJ1S9xovUT8bfjZ46A65n5GeOV7pVPOc7QdOER
+	 K5/zzoEp1JrmxYJT95Heo3v/Ir/oJeqnIkd0eWMsropv+AvthAdIg07krgg4m/a+he
+	 S5l/5NUHLwC5Lj6qpWoo07mkq8TVrxnbmdiHdULanshu1ST43vHJqUp9OLeSJ4zAkX
+	 Nxka7xuQwfH4w==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -58,9 +58,9 @@ Cc: davem@davemloft.net,
 	horms@kernel.org,
 	steffen.klassert@secunet.com,
 	antony.antony@secunet.com
-Subject: [PATCH net-next,RFC 4/8] netfilter: nf_tables: add nft_set_pktinfo_ingress()
-Date: Tue, 17 Mar 2026 12:29:13 +0100
-Message-ID: <20260317112917.4170466-5-pablo@netfilter.org>
+Subject: [PATCH net-next,RFC 5/8] netfilter: nf_tables: add early ingress chain
+Date: Tue, 17 Mar 2026 12:29:14 +0100
+Message-ID: <20260317112917.4170466-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260317112917.4170466-1-pablo@netfilter.org>
 References: <20260317112917.4170466-1-pablo@netfilter.org>
@@ -75,7 +75,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -84,7 +84,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11234-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11239-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -92,96 +92,178 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[secunet.com:email,ingress_state.pf:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
-X-Rspamd-Queue-Id: 908622A8BA4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,secunet.com:email]
+X-Rspamd-Queue-Id: F287C2A8BEE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Add helper function to prepare for early ingress filtering support.
+Add a new filter chain to filter out packets from the early_ingress hook.
 
-No functional changes are intended, this is a preparation patch.
+This is the second user of this new hook, after the flowtable.
 
 Co-developed-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_chain_filter.c | 48 ++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+ net/netfilter/nft_chain_filter.c | 116 ++++++++++++++++++++++++++++++-
+ 1 file changed, 114 insertions(+), 2 deletions(-)
 
 diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index b16185e9a6dd..47a612bdd03e 100644
+index 47a612bdd03e..3467f7b7bd38 100644
 --- a/net/netfilter/nft_chain_filter.c
 +++ b/net/netfilter/nft_chain_filter.c
-@@ -161,32 +161,50 @@ static unsigned int nft_do_chain_inet(void *priv, struct sk_buff *skb,
+@@ -210,17 +210,75 @@ static unsigned int nft_do_chain_inet_ingress(void *priv, struct sk_buff *skb,
  	return nft_do_chain(&pkt, priv);
  }
  
--static unsigned int nft_do_chain_inet_ingress(void *priv, struct sk_buff *skb,
--					      const struct nf_hook_state *state)
-+static int nft_set_pktinfo_ingress(struct nft_pktinfo *pkt,
-+				   struct sk_buff *skb,
-+				   struct nf_hook_state *ingress_state)
- {
--	struct nf_hook_state ingress_state = *state;
--	struct nft_pktinfo pkt;
--
- 	switch (skb->protocol) {
- 	case htons(ETH_P_IP):
- 		/* Original hook is NFPROTO_NETDEV and NF_NETDEV_INGRESS. */
--		ingress_state.pf = NFPROTO_IPV4;
--		ingress_state.hook = NF_INET_INGRESS;
--		nft_set_pktinfo(&pkt, skb, &ingress_state);
-+		ingress_state->pf = NFPROTO_IPV4;
-+		ingress_state->hook = NF_INET_INGRESS;
-+		nft_set_pktinfo(pkt, skb, ingress_state);
- 
--		if (nft_set_pktinfo_ipv4_ingress(&pkt) < 0)
--			return NF_DROP;
-+		if (nft_set_pktinfo_ipv4_ingress(pkt) < 0)
-+			return -1;
- 		break;
- 	case htons(ETH_P_IPV6):
--		ingress_state.pf = NFPROTO_IPV6;
--		ingress_state.hook = NF_INET_INGRESS;
--		nft_set_pktinfo(&pkt, skb, &ingress_state);
-+		ingress_state->pf = NFPROTO_IPV6;
-+		ingress_state->hook = NF_INET_INGRESS;
-+		nft_set_pktinfo(pkt, skb, ingress_state);
- 
--		if (nft_set_pktinfo_ipv6_ingress(&pkt) < 0)
--			return NF_DROP;
-+		if (nft_set_pktinfo_ipv6_ingress(pkt) < 0)
-+			return -1;
- 		break;
- 	default:
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static unsigned int nft_do_chain_inet_ingress(void *priv, struct sk_buff *skb,
-+					      const struct nf_hook_state *state)
++static unsigned int
++nft_do_chain_inet_early_ingress(void *priv, struct sk_buff *unused,
++				const struct nf_hook_state *state)
 +{
 +	struct nf_hook_state ingress_state = *state;
++	struct sk_buff *skb, *nskb;
 +	struct nft_pktinfo pkt;
++	LIST_HEAD(accept_list);
 +	int ret;
 +
-+	ret = nft_set_pktinfo_ingress(&pkt, skb, &ingress_state);
-+	switch (ret) {
-+	case -1:
-+		return NF_DROP;
-+	case 1:
- 		return NF_ACCEPT;
-+	default:
-+		break;
- 	}
- 
++	list_for_each_entry_safe(skb, nskb, state->skb_list, list) {
++		skb_list_del_init(skb);
++
++		skb_reset_network_header(skb);
++		if (!skb_transport_header_was_set(skb))
++			skb_reset_transport_header(skb);
++		skb_reset_mac_len(skb);
++
++		ret = nft_set_pktinfo_ingress(&pkt, skb, &ingress_state);
++		switch (ret) {
++		case 1:
++			list_add_tail(&skb->list, &accept_list);
++			continue;
++		case 0:
++			break;
++		case -1:
++			kfree_skb(skb);
++			continue;
++		default:
++			break;
++		}
++
++		ret = nft_do_chain(&pkt, priv);
++		switch (ret) {
++		case NF_ACCEPT:
++			list_add_tail(&skb->list, &accept_list);
++			break;
++		default:
++			WARN_ON_ONCE(1);
++			fallthrough;
++		case NF_DROP:
++			kfree_skb(skb);
++			break;
++		}
++	}
++
++	WARN_ON_ONCE(!list_empty(state->skb_list));
++
++	list_splice(&accept_list, state->skb_list);
++
++	if (list_empty(state->skb_list))
++		return NF_STOLEN;
++
++	return NF_ACCEPT;
++}
++
+ static const struct nft_chain_type nft_chain_filter_inet = {
+ 	.name		= "filter",
+ 	.type		= NFT_CHAIN_T_DEFAULT,
+ 	.family		= NFPROTO_INET,
+-	.hook_mask	= (1 << NF_INET_INGRESS) |
++	.hook_mask	= (1 << NF_INET_EARLY_INGRESS) |
++			  (1 << NF_INET_INGRESS) |
+ 			  (1 << NF_INET_LOCAL_IN) |
+ 			  (1 << NF_INET_LOCAL_OUT) |
+ 			  (1 << NF_INET_FORWARD) |
+ 			  (1 << NF_INET_PRE_ROUTING) |
+ 			  (1 << NF_INET_POST_ROUTING),
+ 	.hooks		= {
++		[NF_INET_EARLY_INGRESS]	= nft_do_chain_inet_early_ingress,
+ 		[NF_INET_INGRESS]	= nft_do_chain_inet_ingress,
+ 		[NF_INET_LOCAL_IN]	= nft_do_chain_inet,
+ 		[NF_INET_LOCAL_OUT]	= nft_do_chain_inet,
+@@ -324,15 +382,69 @@ static unsigned int nft_do_chain_netdev(void *priv, struct sk_buff *skb,
  	return nft_do_chain(&pkt, priv);
+ }
+ 
++static unsigned int
++nft_do_chain_netdev_early_ingress(void *priv, struct sk_buff *unused,
++				  const struct nf_hook_state *state)
++{
++	struct nf_hook_state ingress_state = *state;
++	struct sk_buff *skb, *nskb;
++	struct nft_pktinfo pkt;
++	LIST_HEAD(accept_list);
++	int ret;
++
++	list_for_each_entry_safe(skb, nskb, state->skb_list, list) {
++		skb_list_del_init(skb);
++
++		skb_reset_network_header(skb);
++		if (!skb_transport_header_was_set(skb))
++			skb_reset_transport_header(skb);
++		skb_reset_mac_len(skb);
++
++		ret = nft_set_pktinfo_ingress(&pkt, skb, &ingress_state);
++		switch (ret) {
++		case 1:
++		case -1:
++			nft_set_pktinfo(&pkt, skb, &ingress_state);
++			break;
++		default:
++			break;
++		}
++
++		ret = nft_do_chain(&pkt, priv);
++		switch (ret) {
++		case NF_ACCEPT:
++			list_add_tail(&skb->list, &accept_list);
++			break;
++		default:
++			WARN_ON_ONCE(1);
++			fallthrough;
++		case NF_DROP:
++			kfree_skb(skb);
++			break;
++		}
++	}
++
++	WARN_ON_ONCE(!list_empty(state->skb_list));
++
++	list_splice(&accept_list, state->skb_list);
++
++	if (list_empty(state->skb_list))
++		return NF_STOLEN;
++
++	return NF_ACCEPT;
++}
++
+ static const struct nft_chain_type nft_chain_filter_netdev = {
+ 	.name		= "filter",
+ 	.type		= NFT_CHAIN_T_DEFAULT,
+ 	.family		= NFPROTO_NETDEV,
+ 	.hook_mask	= (1 << NF_NETDEV_INGRESS) |
+-			  (1 << NF_NETDEV_EGRESS),
++			  (1 << NF_NETDEV_EGRESS) |
++			  (1 << NF_NETDEV_EARLY_INGRESS),
+ 	.hooks		= {
+ 		[NF_NETDEV_INGRESS]	= nft_do_chain_netdev,
+ 		[NF_NETDEV_EGRESS]	= nft_do_chain_netdev,
++		[NF_NETDEV_EARLY_INGRESS] = nft_do_chain_netdev_early_ingress,
+ 	},
+ };
+ 
 -- 
 2.47.3
 
