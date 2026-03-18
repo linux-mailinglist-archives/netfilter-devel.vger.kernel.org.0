@@ -1,49 +1,65 @@
-Return-Path: <netfilter-devel+bounces-11273-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11274-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qLuFEYzUummfcAIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11273-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2026 17:36:28 +0100
+	id cAYdDVfZumkycgIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11274-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2026 17:56:55 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33192BF5C6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2026 17:36:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9727A2BFBA9
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2026 17:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 15B3331A45C1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2026 15:51:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C4793338E546
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2026 16:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D671E29AB00;
-	Wed, 18 Mar 2026 15:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C4F3D649D;
+	Wed, 18 Mar 2026 16:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="Cq0poo8Z"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACAE7194C98
-	for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2026 15:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB0E3D333D
+	for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2026 16:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773849010; cv=none; b=NZ3HCJ8xzPPpv9Th1eOXe/dQzEglwICugO2CcwnyULjLgrQ8H84Lomp1ZwwkpwR4SL2Ym74GNCeT1whJBszVRYdyvLxWJw1/eakA1NWtTSaqtEwK1Vc5nrVTdVIu7JgDsxNnrfIlexyPpelIIw1ThMECFp8Xq4OsSbmYIMDV5uY=
+	t=1773851003; cv=none; b=To5pjPgEEz4EU8Re+fra4gZlcXZrO/LS8FjWUya/G1HYieO4bC2l10O04gcrunq1FOY8otGGvPaC+Yt8NbXErK/UYgyxnqHNEg1r87UC/Na4iVwV85daZWkVw+zEHYVnXoHsdCOSQZOJes8S/QFDy9X+jkzF64nTNHzaWYp+6yY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773849010; c=relaxed/simple;
-	bh=nRC98jvHWdkdWwIgs0/ZvzJOJvgB+vAjP0ymRwhYLrA=;
+	s=arc-20240116; t=1773851003; c=relaxed/simple;
+	bh=p1F8Sn20b3QxUsuCFzfi80nxEWRheD8p+QZAcFqTKOo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sv5Jv9Rcb0ZS2g0QcRSMQjaHWsadSWPTKl7PDdLA1TWaq5LhXW7PF45ih0l1S/nH3S4Zi+L242MGaL8mvJx2Qk0enbcxkQBOu5v7dFSQ3QiRNnIVJgt1jzPg42/SGMXjOyQLEtk4DTwNB+tfkRhva6/5eHY093bevY6WzRfQljc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 3BEEA605C3; Wed, 18 Mar 2026 16:50:05 +0100 (CET)
-Date: Wed, 18 Mar 2026 16:50:00 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Chris Arges <carges@cloudflare.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf,v4] netfilter: nft_set_rbtree: revisit array resize
- logic
-Message-ID: <abrJqK4aQWzlInCL@strlen.de>
-References: <20260317170721.12396-1-pablo@netfilter.org>
- <abrI8CZV3c8fi9x3@20HS2G4>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DMRIy23Kby+DV/uXj50iCCutOPHXdrHWPwONOKwe66PStQy1ZjF0Lb5ULmzpMwYmtwycZHXnIT0hKZbtYOcOtj7TPlPK0iOA3ffSMtF1hpSSlgIR01XP6Uf8YpFYsTzO1dj1HS76zp15k19Lm/ZDUx27+X9YwVL41aaPISkDA9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Cq0poo8Z; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=GuTYUyLS6U4U+/UVZBLW5YXCUKGvwXKeJpOsg1rNfdQ=; b=Cq0poo8Z1pUqqsiok4fjkaJk/p
+	z1+nHcqXZfV5uFCAZm3Zcw5XpU0JpYUbWZ+c+IWwJ8pQXuZPsEwmEc+xqSmfz+ERxdDgUxhAsYYUi
+	nZ6rfGwacfOgtcHqrYTTw7YlpBj/kFfDWN0bn4GIA0c2NOGiD9jfklFeXmK6AwMTVg+iY+/P19Xyq
+	RFIsHi1tpCXnC1ovJHjUto7tUa0MKPxIkhjH4c+t+K5RcPWurBQvlGJp22MGaHy5Ed5OT2/uDsS1E
+	VW+yZGvFXf0Wh5R4IKdZtvH4touemt5QtqRuJFHh4Whw5gAsMtGW6KUJXwdP2x0r3Ftcafwo4owPu
+	Wk/HQHvw==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1w2tfw-000000002y3-48jR;
+	Wed, 18 Mar 2026 17:23:17 +0100
+Date: Wed, 18 Mar 2026 17:23:16 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, Eric Garver <eric@garver.life>
+Subject: Re: [nft PATCH 0/5] Enhance cache filter for list commands
+Message-ID: <abrRdC2OXLyj6xnt@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org, Eric Garver <eric@garver.life>
+References: <20260310231115.25638-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,47 +68,58 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <abrI8CZV3c8fi9x3@20HS2G4>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+In-Reply-To: <20260310231115.25638-1-phil@nwl.cc>
+X-Spamd-Result: default: False [-0.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-11273-lists,netfilter-devel=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11274-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[nwl.cc];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
+	RCPT_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[nwl.cc:-];
 	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.727];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.153];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,cloudflare.com:email,netfilter.org:email,strlen.de:mid]
-X-Rspamd-Queue-Id: B33192BF5C6
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,orbyte.nwl.cc:mid]
+X-Rspamd-Queue-Id: 9727A2BFBA9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Chris Arges <carges@cloudflare.com> wrote:
-> > Reported-by: Chris Arges <carges@cloudflare.com>
-> > Fixes: 7e43e0a1141d ("netfilter: nft_set_rbtree: translate rbtree to array for binary search")
-> > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> > ---
-> > v4: use maybe_grow: goto tag instead of grow:
-> >     Add note in commit description: "The shrink logic is skipped by anonymous sets."
-> > 
+On Wed, Mar 11, 2026 at 12:11:10AM +0100, Phil Sutter wrote:
+> Reducing the amount of data fetched from kernel improves performance
+> with large rule sets but also reduces adverse side-effects if multiple
+> versions of nftables access the same kernel rule set. Being able to
+> ignore parts of the rule set one is not interested in allows for (more or
+> less) safe coexistence if each tool is operating on the data it created
+> itself only.
 > 
-> I will be able to testing this more in depth early next week.
+> This series reduces caching for list commands which specify a family
+> and/or table. To help testing this, patch 1 extends netlink debug output
+> to include chains, flowtables and objects so a test case may check if
+> they are fetched or not.
+> 
+> The remaining patches actually increase filter use.
+> 
+> Phil Sutter (5):
+>   cache: Include chains, flowtables and objects in netlink debug output
+>   cache: Respect family in all list commands
+>   cache: Relax chain_cache_dump filter application
+>   cache: Filter for table when listing sets or maps
+>   cache: Filter for table when listing flowtables
 
-Thanks, I will hold off on this patch and will defer it to next week
-then.
+Series applied after inserting suggested Fixes: tags.
 
