@@ -1,77 +1,64 @@
-Return-Path: <netfilter-devel+bounces-11305-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11306-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APKEBjQpvGkxtgIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11305-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 17:49:56 +0100
+	id CGe9FBQuvGlcuQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11306-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 18:10:44 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5CAD2CF1C5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 17:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4B22CF8F8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 18:10:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 59BDD321AC92
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 16:36:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E46003325D18
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 17:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFC53ED5B8;
-	Thu, 19 Mar 2026 16:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F91C3EE1C4;
+	Thu, 19 Mar 2026 16:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J1NYDEFe"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="VZAr0Mzy"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326563ED125;
-	Thu, 19 Mar 2026 16:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B39F2F0C62
+	for <netfilter-devel@vger.kernel.org>; Thu, 19 Mar 2026 16:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773938205; cv=none; b=bPI2DONl8TAPEuPkhcRlKLg3sStsU4IOy/mkjSa7izgR8tDvemzCq6Mso61OtuiBQ6sutTWNePjd4iVva5kQvPXcutoOcvcc6HPWsExM0RRSnTwKbiuS39OMGKAlwk5LpKefr3jztgUw54d+LqE+DkIAzzQu2xo00TbjqcIY/ho=
+	t=1773939565; cv=none; b=kuGl2oYfiWppMjHyWEA6R+GtpxAeqv7j7lYGvo/r8fhRFK5qnG0J+aI9i5L27PYOCCGgLxFuo8yXKDR4J+H8Od6+fpaSVkclTuu6tLaWbO2a6OkZpCVPj0O/7xuRdZabjS3Ttr4SGQnhtHHARaVWilfYKD/Tqejf3n6Qi6JqFAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773938205; c=relaxed/simple;
-	bh=7S+sw9mF8TJewYvW7cVs+bKNPogMLQz3GWRSiugdtyc=;
+	s=arc-20240116; t=1773939565; c=relaxed/simple;
+	bh=1IKD/W+/MoaCwaMbpxOlcCZw4LcVYjXwcn8Jx6i9qQ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LULFs6a21D4/jdA3/gVsQuauUqw9kJE3mfF2/yuJAakC3OqcEwZAOznePvUMjAmfRlLGAtZcp09SfOkvmdr6GPdJQF+42FUjE0Fjl5gZ1Qc60QsSSkLi22PgYSc6ktFrIZFpEBUWOWVOurAW1NEwUWhBJWBpPT9S09wUHOsGikc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J1NYDEFe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 737E0C19424;
-	Thu, 19 Mar 2026 16:36:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773938204;
-	bh=7S+sw9mF8TJewYvW7cVs+bKNPogMLQz3GWRSiugdtyc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J1NYDEFe/raeSCrUL/BX9oSVtThyhVPAAkuHylFwhFQgb7ty/7pJr3XD+9MPUKVs1
-	 K7GQIy5F6HfEqfN60CYB3jeLBiWHMGsZMUnZsYoM90hXfT4PdR7Z+lUROzJSOkOuiT
-	 6oUda3cT2a2uFX8khWtSyFtxz/HBF7Nk6BrBXUcwg8/c+ghkJzxORHAHr8qoe2tF+r
-	 vgsuLDx6Nbmotg/IGQQ7gmgx6PGugrz2qWURC4gNdcaEa/KHCIuh+b226dEWHpqpEq
-	 oGJsAGjV62WaA5IFPIBwMqDfbzNcQ5RUgBApitZ3mHNve+qTCC7yziWL0RlRpB9fOk
-	 VmubECZikG4cg==
-Date: Thu, 19 Mar 2026 16:36:37 +0000
-From: Simon Horman <horms@kernel.org>
-To: Ismael Luceno <iluceno@suse.de>
-Cc: linux-kernel@vger.kernel.org, Julian Anastasov <ja@ssi.bg>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Federico Pinca <federico.pinca@suse.com>,
-	Andreas Taschner <andreas.taschner@suse.com>,
-	Brad Bendily <brad.bendily@suse.com>,
-	Brendon Caligari <brendon.caligari@suse.com>,
-	Clemens Famulla-Conrad <cfamullaconrad@suse.com>,
-	Firo Yang <firo.yang@suse.com>,
-	Gabriel Krisman Bertazi <gabriel.bertazi@suse.com>,
-	Hans van den Heuvel <hvdheuvel@suse.com>,
-	Jean Delvare <jdelvare@suse.com>, Michal Hocko <mhocko@suse.com>,
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-	Petr Mladek <pmladek@suse.com>, Petr Tesarik <ptesarik@suse.com>,
-	Richard Thompson <richard.thompson@suse.com>,
-	William Preston <wpreston@suse.com>, Yu Xu <yu.xu@suse.com>,
-	netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH] ipvs: Move defense_work to system_dfl_long_wq
-Message-ID: <20260319163637.GK1753385@horms.kernel.org>
-References: <20260317140100.24993-2-iluceno@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f7lA/DzajQCpVjRubJ/PwCIlaxcXRn+GiRHcl9Jb6tyothC7sWt8Un2Pq9DBvD0luK6AxdGyvS2oez2FMUUn1+M6uz5OeFr/D28GsK1bMFgVQe+tjIVJE98nRMZDelcvN/RpFw1DzB6bJ+smwXaAUVAkWCtuGIXyzu+FBPLuxbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=VZAr0Mzy; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=gKX1Sk/rx5dAPz+x8S3q9XloNQcTT+ADSrBM8c0MQ+o=; b=VZAr0MzyCOMrQ/7tWFt/RBwWTO
+	6bj/nEBlBxIzkUipx4lB5el/QzTX8p3oTZKZTRVbQqu4rPL2HNM4xWCF9LNNhO4OPnqY3z8mWDiZf
+	lhAn/HfWmc1UCR/+4aDVgNDXgcTVmXXCEmOqDGBmOlNRP1o0hF/X56+IQxYjFHsUy8FL2JJIuhWUT
+	4xRLcfdxQOR5huj6KadEPMN7PSfr2bwhiwx+Da1a/6mMCUmn8xRkTpv/NIY5H8x3j/qQADQ28ZvbS
+	00BmjnIGe0FeM7hhvlvUoVxrvpC/vaPm6MQ3/kqjN1r7NlUHnKXdKqq01s+3yiCr36fZWlyDQgWQ6
+	ZnW6/BlQ==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1w3GiO-000000007NE-0ikv;
+	Thu, 19 Mar 2026 17:59:20 +0100
+Date: Thu, 19 Mar 2026 17:59:20 +0100
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org
+Subject: Re: [nf-next PATCH] netfilter: nfnetlink_hook: Dump nat type chains
+Message-ID: <abwraHUuxizN4krg@orbyte.nwl.cc>
+References: <20260313153220.19662-1-phil@nwl.cc>
+ <abwegj2TijkaQVLz@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -80,60 +67,85 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260317140100.24993-2-iluceno@suse.de>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <abwegj2TijkaQVLz@strlen.de>
+X-Spamd-Result: default: False [-0.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11305-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11306-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[nwl.cc];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[31];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DKIM_TRACE(0.00)[nwl.cc:-];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.996];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,horms.kernel.org:mid,suse.de:email]
-X-Rspamd-Queue-Id: B5CAD2CF1C5
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.087];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: AB4B22CF8F8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Mar 17, 2026 at 03:00:59PM +0100, Ismael Luceno wrote:
-> Under synflood conditions binding defense_work to system_long_wq may
-> pin it to a saturated CPU.
+On Thu, Mar 19, 2026 at 05:04:18PM +0100, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > These chains are indirectly attached to the hook since they are
+> > not called for packets belonging to an established connection.
+> > 
+> > Introduce NF_HOOK_OP_NAT to identify the container and dump attached
+> > entries instead of the container itself.
 > 
-> We've observed improved throughtput on a DPDK/VPP application with
-> this change. We attribute this to the reduced context switching.
+> Please lets not do this.
 > 
-> The defense_work handler has no per-CPU data dependencies and no cache
-> locality requirements that would justify this.
+> Before:
 > 
-> Signed-off-by: Ismael Luceno <iluceno@suse.de>
-> ---
-> Depends-on: wq/for-7.1 c116737e972e ("workqueue: Add system_dfl_long_wq for long unbound works")
+>         hook postrouting {
+>                 +0000000100 nf_nat_ipv6_out [nf_nat]
+>                 +2147483647 nf_confirm [nf_conntrack]
+>         }
+> 
+> After:
+>         hook postrouting {
+>                 +0000200000 chain inet nat postrouting [nft_chain_nat]
+>                 +2147483647 nf_confirm [nf_conntrack]
+>         }
+> 
+> ... and thats not true.  The nat chain isn't hooked at 200000.
+> 
+> It hooks at +100, this is a dispatcher.
+> Concealing the actual hook location and then unrolling the embedded
+> nat hooks gives a wrong impression and will mislead users wrt. the
+> actual ordering.
 
-Hi Ismael,
+Ah, so the nat-type chain's priority value orders it inside the
+dispatcher's list.
 
-This patch seems suitable to be targeted at the nf-next tree.
-That should be annotated like this:
+Maybe I should print them below the dispatcher hook with extra
+indentation? Maybe extra braces could further clarify, e.g.:
 
-Subject [PATCH nf-next] ipvs: ...
+| hook postrouting {
+|         +0000000100 nf_nat_ipv6_out [nf_nat] {
+|                 +0000200000 chain inet nat postrouting [nft_chain_nat]
+|         }
+|         +2147483647 nf_confirm [nf_conntrack]
+| }
 
-And the patch must compile when applied to it's target tree.
-So you'll need to repost this patch once the dependency above
-has reached that tree.
+> If we really want the ability to list the nat hooks, I think this
+> needs a new command to dump them.
+
+We may change 'nft list hooks' output arbitrarily, right? Or should we
+fear braking some third-party parsers when doing too fancy stuff?
+
+Thanks, Phil
 
