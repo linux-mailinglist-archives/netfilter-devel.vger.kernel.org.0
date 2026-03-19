@@ -1,64 +1,49 @@
-Return-Path: <netfilter-devel+bounces-11306-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11307-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CGe9FBQuvGlcuQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11306-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 18:10:44 +0100
+	id CPkDKF4uvGlcuQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11307-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 18:11:58 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4B22CF8F8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 18:10:43 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 497652CF9BB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 18:11:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E46003325D18
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 17:01:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 327C6300D1DA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 17:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F91C3EE1C4;
-	Thu, 19 Mar 2026 16:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="VZAr0Mzy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557953E714F;
+	Thu, 19 Mar 2026 17:06:19 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B39F2F0C62
-	for <netfilter-devel@vger.kernel.org>; Thu, 19 Mar 2026 16:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D9B3EF0BE
+	for <netfilter-devel@vger.kernel.org>; Thu, 19 Mar 2026 17:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773939565; cv=none; b=kuGl2oYfiWppMjHyWEA6R+GtpxAeqv7j7lYGvo/r8fhRFK5qnG0J+aI9i5L27PYOCCGgLxFuo8yXKDR4J+H8Od6+fpaSVkclTuu6tLaWbO2a6OkZpCVPj0O/7xuRdZabjS3Ttr4SGQnhtHHARaVWilfYKD/Tqejf3n6Qi6JqFAM=
+	t=1773939979; cv=none; b=aFKTKqs5eC0UPICU0cmM0AGU0iOYUwOWnMlxjfyxs3FYZjbZF682ivkmA4W9uTqQP8mhjRxWSHBLaAJ/FJABm2QOa7DW6qsHz50iviZCjWJyIxcOCd6TycUt0xoA763e4pPYSGVUG1f7BWq2NEe35apou4+4/08InZQ3bdophvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773939565; c=relaxed/simple;
-	bh=1IKD/W+/MoaCwaMbpxOlcCZw4LcVYjXwcn8Jx6i9qQ0=;
+	s=arc-20240116; t=1773939979; c=relaxed/simple;
+	bh=Qnrol6MusTgtV93+UBTh4bbT0y1stTFnAdCK6AIHohk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f7lA/DzajQCpVjRubJ/PwCIlaxcXRn+GiRHcl9Jb6tyothC7sWt8Un2Pq9DBvD0luK6AxdGyvS2oez2FMUUn1+M6uz5OeFr/D28GsK1bMFgVQe+tjIVJE98nRMZDelcvN/RpFw1DzB6bJ+smwXaAUVAkWCtuGIXyzu+FBPLuxbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=VZAr0Mzy; arc=none smtp.client-ip=151.80.46.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=gKX1Sk/rx5dAPz+x8S3q9XloNQcTT+ADSrBM8c0MQ+o=; b=VZAr0MzyCOMrQ/7tWFt/RBwWTO
-	6bj/nEBlBxIzkUipx4lB5el/QzTX8p3oTZKZTRVbQqu4rPL2HNM4xWCF9LNNhO4OPnqY3z8mWDiZf
-	lhAn/HfWmc1UCR/+4aDVgNDXgcTVmXXCEmOqDGBmOlNRP1o0hF/X56+IQxYjFHsUy8FL2JJIuhWUT
-	4xRLcfdxQOR5huj6KadEPMN7PSfr2bwhiwx+Da1a/6mMCUmn8xRkTpv/NIY5H8x3j/qQADQ28ZvbS
-	00BmjnIGe0FeM7hhvlvUoVxrvpC/vaPm6MQ3/kqjN1r7NlUHnKXdKqq01s+3yiCr36fZWlyDQgWQ6
-	ZnW6/BlQ==;
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1w3GiO-000000007NE-0ikv;
-	Thu, 19 Mar 2026 17:59:20 +0100
-Date: Thu, 19 Mar 2026 17:59:20 +0100
-From: Phil Sutter <phil@nwl.cc>
-To: Florian Westphal <fw@strlen.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQoZipcfi1h5B5pXfB1qgEIwtfvoE5OfNMpKMGJwjYzREnaZvZFn3GBqMp5nDpMrhMPtqmiqXcZEEWXFyA9Q845Wibk9lioEBweZl+rYKSEPmMXXsjWfCGnNJI0J8CunuPjbL0MoHvx+ON83nHW+6sKBp+q1ouV1+tmKtDEsJFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 4DB68606E1; Thu, 19 Mar 2026 18:06:15 +0100 (CET)
+Date: Thu, 19 Mar 2026 18:06:10 +0100
+From: Florian Westphal <fw@strlen.de>
+To: Phil Sutter <phil@nwl.cc>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
 	netfilter-devel@vger.kernel.org
 Subject: Re: [nf-next PATCH] netfilter: nfnetlink_hook: Dump nat type chains
-Message-ID: <abwraHUuxizN4krg@orbyte.nwl.cc>
+Message-ID: <abwtAkSF8-SmH684@strlen.de>
 References: <20260313153220.19662-1-phil@nwl.cc>
  <abwegj2TijkaQVLz@strlen.de>
+ <abwraHUuxizN4krg@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -67,85 +52,62 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <abwegj2TijkaQVLz@strlen.de>
-X-Spamd-Result: default: False [-0.46 / 15.00];
+In-Reply-To: <abwraHUuxizN4krg@orbyte.nwl.cc>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11306-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[nwl.cc];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-11307-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
 	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.087];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.711];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AB4B22CF8F8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 497652CF9BB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 19, 2026 at 05:04:18PM +0100, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > These chains are indirectly attached to the hook since they are
-> > not called for packets belonging to an established connection.
-> > 
-> > Introduce NF_HOOK_OP_NAT to identify the container and dump attached
-> > entries instead of the container itself.
-> 
-> Please lets not do this.
-> 
-> Before:
-> 
->         hook postrouting {
->                 +0000000100 nf_nat_ipv6_out [nf_nat]
->                 +2147483647 nf_confirm [nf_conntrack]
->         }
-> 
-> After:
->         hook postrouting {
->                 +0000200000 chain inet nat postrouting [nft_chain_nat]
->                 +2147483647 nf_confirm [nf_conntrack]
->         }
-> 
-> ... and thats not true.  The nat chain isn't hooked at 200000.
-> 
-> It hooks at +100, this is a dispatcher.
-> Concealing the actual hook location and then unrolling the embedded
-> nat hooks gives a wrong impression and will mislead users wrt. the
-> actual ordering.
+Phil Sutter <phil@nwl.cc> wrote:
+> Ah, so the nat-type chain's priority value orders it inside the
+> dispatcher's list.
 
-Ah, so the nat-type chain's priority value orders it inside the
-dispatcher's list.
+Yes.
 
-Maybe I should print them below the dispatcher hook with extra
-indentation? Maybe extra braces could further clarify, e.g.:
+> Maybe I should print them below the dispatcher hook with extra
+> indentation? Maybe extra braces could further clarify, e.g.:
+> 
+> | hook postrouting {
+> |         +0000000100 nf_nat_ipv6_out [nf_nat] {
+> |                 +0000200000 chain inet nat postrouting [nft_chain_nat]
+> |         }
+> |         +2147483647 nf_confirm [nf_conntrack]
+> | }
 
-| hook postrouting {
-|         +0000000100 nf_nat_ipv6_out [nf_nat] {
-|                 +0000200000 chain inet nat postrouting [nft_chain_nat]
-|         }
-|         +2147483647 nf_confirm [nf_conntrack]
-| }
+Actually  one could override the hook value with the one of the
+nat base hook.  The ordering inside the dispatcher is whats important,
+the exact numerical value isn't important.
 
-> If we really want the ability to list the nat hooks, I think this
-> needs a new command to dump them.
+> > If we really want the ability to list the nat hooks, I think this
+> > needs a new command to dump them.
+> 
+> We may change 'nft list hooks' output arbitrarily, right? Or should we
+> fear braking some third-party parsers when doing too fancy stuff?
 
-We may change 'nft list hooks' output arbitrarily, right? Or should we
-fear braking some third-party parsers when doing too fancy stuff?
-
-Thanks, Phil
+Ugh. No mercy for screenscrapers.  But maybe my suggestion above is
+enough.
 
