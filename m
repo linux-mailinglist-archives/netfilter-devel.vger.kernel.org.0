@@ -1,152 +1,124 @@
-Return-Path: <netfilter-devel+bounces-11294-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11296-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YHTMBBLfu2lXpQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11294-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 12:33:38 +0100
+	id 2LI/Ne3hu2lXpQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11296-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 12:45:49 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 933542CA59E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 12:33:37 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48F892CA8A6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 12:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ADA5430A1726
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 11:28:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 499F8304952F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Mar 2026 11:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E79C3CA4AD;
-	Thu, 19 Mar 2026 11:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B3F379EFD;
+	Thu, 19 Mar 2026 11:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="QMCWqbyj"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Jvbczgvr"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx1.secunet.com (mx1.secunet.com [62.96.220.36])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D318137CD42;
-	Thu, 19 Mar 2026 11:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44722344D8B
+	for <netfilter-devel@vger.kernel.org>; Thu, 19 Mar 2026 11:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773919697; cv=none; b=qfYB646TlHV9k7PmqcDxcYNtfU0Ov9l0O1s9SBx7L2m+ChpCeFA0cWJizrQ4qzebgTctg0RHnz3GY7AnZfK5xfYD7+9uI5USvDGmlcKSmdELj80v6kaGdWc5wNRvyRh5WGQ7BIyD8pqGoTiFba+CcMnsAhRnwncA/F2bCk3hTe0=
+	t=1773920690; cv=none; b=h0GxVzuzwE7DcxkrPfEok/aDfbiym8B6KLtjDKFVBiVoXVWddfQjMd+5eEhTh0MMy5mMnaWpv1c8sq44hmEgC1O/iX/JyblhqY2C4flOAVcchd+qQCh8o0RuI71KSqULNsTSTkRC4oUogCF6dM69y1GvaE1Ccypcumeia8RkXws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773919697; c=relaxed/simple;
-	bh=aOqzJJ5YRI8E/VLa+ga5+6EnThOkbGiIHCc4MREh6VU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XdKAgrFjmlpYiTm7JFa3AtHoKzEQGSbmQNwUeVHdtP8LIjDSGAZ0eQEBwqgEOiHSA2oPMdFtU+r7iDOxRd5XGIubzm7J7q6EX7nOmj4Np4UXkJR2f5FNYgpz21R05c/lRcUdlGSO58emjn1C7DYQeSRoldzERsv0jw5xrEQvFEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=QMCWqbyj; arc=none smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=secunet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
-Received: from localhost (localhost [127.0.0.1])
-	by mx1.secunet.com (Postfix) with ESMTP id 827CA207D8;
-	Thu, 19 Mar 2026 12:28:10 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from mx1.secunet.com ([127.0.0.1])
- by localhost (mx1.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id RtnoKNRB0nW1; Thu, 19 Mar 2026 12:28:10 +0100 (CET)
-Received: from EXCH-01.secunet.de (rl1.secunet.de [10.32.0.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.secunet.com (Postfix) with ESMTPS id EDB6B20719;
-	Thu, 19 Mar 2026 12:28:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.secunet.com EDB6B20719
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
-	s=202301; t=1773919690;
-	bh=FpPcf2zYVlX/bAnS7l+22UDVIe0i1TfwB7L5FW7b2BI=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-	b=QMCWqbyjItPB2BayX276S7x5X/pNTZTAHZKGm4X60WAb0Lg2jn5n9Js0p1z4LpeQC
-	 xihU7ImvtmK9d/QHyZBADE84ooOsNX5vR0cYUKdg7jnMNzQX4YocDN5qVic8jdixrx
-	 P2VtDcSc5jb/ZLSwdpcnXJaW7LkKsefQeY5e3mq6YqNMbNvgXtoW34MYziWlRlze68
-	 /QVJ+ro9tEXQYo5dHfAvvt0vWjf9zQHnxY9XG7MrSBdVheU5GrnRWlqU26jDty8tjy
-	 7SexsYO7rxjzB+cFrQe4+UibNBF40WEmIfyD/R90mtnlLxM85d1SwqcxlrllPrn6K0
-	 4WYZktOBDTN3g==
-Received: from secunet.com (10.182.7.193) by EXCH-01.secunet.de (10.32.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Thu, 19 Mar
- 2026 12:28:09 +0100
-Received: (nullmailer pid 3250698 invoked by uid 1000);
-	Thu, 19 Mar 2026 11:28:08 -0000
-Date: Thu, 19 Mar 2026 12:28:08 +0100
-From: Steffen Klassert <steffen.klassert@secunet.com>
-To: Qingfang Deng <dqfext@gmail.com>
-CC: Pablo Neira Ayuso <pablo@netfilter.org>,
-	<netfilter-devel@vger.kernel.org>, <davem@davemloft.net>,
-	<netdev@vger.kernel.org>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<edumazet@google.com>, <fw@strlen.de>, <horms@kernel.org>,
-	<antony.antony@secunet.com>, Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH net-next,RFC 0/8] netfilter: flowtable bulking
-Message-ID: <abvdyDVJ8OYW52fw@secunet.com>
-References: <20260317112917.4170466-1-pablo@netfilter.org>
- <20260319061520.356946-1-dqfext@gmail.com>
+	s=arc-20240116; t=1773920690; c=relaxed/simple;
+	bh=osZEMEGGkRgrGAggnnaH2fkPruSYTrE24B2+nmUz+po=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WKr6DB951LlHCOnIHTwNM4H/kubpLiPL07rOa4y/M09BzUYlJ40bAzBBpRvGvtju8XjdVtT2sZTm+v61UZdAUip9NBCNquWxPYqbwJTIgsSkVgnmbKB764+jEL5xOixGBmyD394kq9JQoyLiI0Jx5tf9EapAprorAzKD5MkFjUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Jvbczgvr; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 7B53F60272
+	for <netfilter-devel@vger.kernel.org>; Thu, 19 Mar 2026 12:44:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1773920684;
+	bh=sFwU6te0IXYDHmUrBWaudJ9pKNHrRMW/e2bYlZ3+dcQ=;
+	h=From:To:Subject:Date:From;
+	b=JvbczgvreP4AMW7eZ+lKmo7ojySKPHlZprDZt5FXNKMnTIUGd3DV2rhmhXj4l7bb5
+	 Uwc96k/sCet3gJ0DfyAG4W1P2Oi68vLpnoVacLVAu3fxeYWAwZ8n41+/8Qt0Mh8pP+
+	 pmdN1lo/L82I9vy74+14mMKBg5K4qD91XrlRDVElHu770GKGgeV791HvkahgR75iZP
+	 ZlpdREcevlyZiN6pMdqC7PjTjIXcAuNGxRCKqM8CuH91Jasienia456nyUMlxplKEM
+	 vP7E51LT5aAboW/VC3CU830PKvOMc3VXnOn42ypugc8nn+UCk/4sbaqh8EYjzaYW2T
+	 V4etdQ7gOKq6A==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH libnftnl 1/2] tunnel: check kernel does not provide too large geneve data
+Date: Thu, 19 Mar 2026 12:44:40 +0100
+Message-ID: <20260319114441.205740-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20260319061520.356946-1-dqfext@gmail.com>
-X-ClientProxiedBy: EXCH-03.secunet.de (10.32.0.183) To EXCH-01.secunet.de
- (10.32.0.171)
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[secunet.com,none];
-	R_DKIM_ALLOW(-0.20)[secunet.com:s=202301];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11294-lists,netfilter-devel=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,secunet.com:dkim,secunet.com:mid];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[secunet.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[steffen.klassert@secunet.com,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[netfilter.org];
+	RCPT_COUNT_ONE(0.00)[1];
+	TAGGED_FROM(0.00)[bounces-11296-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.997];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-0.998];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 933542CA59E
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 48F892CA8A6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 19, 2026 at 02:15:17PM +0800, Qingfang Deng wrote:
-> Hi Pablo,
-> 
-> On Tue, 17 Mar 2026 12:29:09 +0100, Pablo Neira Ayuso wrote:
-> > Hi,
-> >  
-> > Back in 2018 [1], a new fast forwarding combining the flowtable and
-> > GRO/GSO was proposed, however, "GRO is specialized to optimize the
-> > non-forwarding case", so it was considered "counter-intuitive to base a
-> > fast forwarding path on top of it".
-> >  
-> > Then, Steffen Klassert proposed the idea of adding a new engine for the
-> > flowtable that operates on the skb list that is provided after the NAPI
-> > cycle. The idea is to process this skb list to create bulks grouped by
-> > the ethertype, output device, next hop and tos/dscp. Then, add a
-> > specialized xmit path that can deal with these skb bulks. Note that GRO
-> > needs to be disabled so this new forwarding engine obtains the list of
-> > skbs that resulted from the NAPI cycle.
-> 
-> +Cc: Felix Fietkau
-> 
-> How does this compare to fraglist GRO with the original flowtable?
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
 
-GRO can only aggregate packets of the same L4 flow. This can
-aggregate all packets the are treated  the same by the
-forwarding path. Packets need to have the same output device
-and next hop, but can be from different L3 and L4 flows.
+Make sure kernel does not provide geneve data larger than
+NFTNL_TUNNEL_GENEVE_DATA_MAXLEN, which might overrun the buffer.
 
-Packet forwarders usually receive many different flows.
-GRO might not even kick in if there are not at least
-two packets from the same flow on a napi cycle.
+Fixes: 239fbdb8979d ("tunnel: add support to geneve options")
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/obj/tunnel.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/obj/tunnel.c b/src/obj/tunnel.c
+index ea9cb021741d..08adeb50b107 100644
+--- a/src/obj/tunnel.c
++++ b/src/obj/tunnel.c
+@@ -596,6 +596,11 @@ nftnl_obj_tunnel_parse_geneve(struct nftnl_tunnel_opts *opts, struct nlattr *att
+ 	if (tb[NFTA_TUNNEL_KEY_GENEVE_DATA]) {
+ 		uint32_t len = mnl_attr_get_payload_len(tb[NFTA_TUNNEL_KEY_GENEVE_DATA]);
+ 
++		if (len > NFTNL_TUNNEL_GENEVE_DATA_MAXLEN) {
++			free(opt);
++			return -1;
++		}
++
+ 		memcpy(opt->geneve.data,
+ 		       mnl_attr_get_payload(tb[NFTA_TUNNEL_KEY_GENEVE_DATA]),
+ 		       len);
+-- 
+2.47.3
+
 
