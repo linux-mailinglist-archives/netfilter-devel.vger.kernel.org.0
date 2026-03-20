@@ -1,60 +1,47 @@
-Return-Path: <netfilter-devel+bounces-11325-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11326-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yNU/LLQzvWmI7QIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11325-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2026 12:47:00 +0100
+	id yC3IBdMzvWmI7QIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11326-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2026 12:47:31 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B76292D9CA2
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2026 12:46:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A064F2D9CAA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2026 12:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C8CAD3008092
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2026 11:46:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A98E23009B07
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2026 11:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D0D3009C7;
-	Fri, 20 Mar 2026 11:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="bggIZ/nO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CC83469E6;
+	Fri, 20 Mar 2026 11:47:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3A61A6800
-	for <netfilter-devel@vger.kernel.org>; Fri, 20 Mar 2026 11:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4881A6800
+	for <netfilter-devel@vger.kernel.org>; Fri, 20 Mar 2026 11:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774007214; cv=none; b=k9XTzKz0IVfRWqpswU/BeUyPP/RSwBGj9ZIk4yQ9Yg4RC9aDUJTX1zy/WSz4SOuy2+ZzzjOwjuBLVY2SUKbBSDzVMEwx/Zs7MkGYi8h7KLODy1+GhN8LfEn5oaiFRLaERjMZ+wNPFAGYRHvlBpMPG1MOosSR2FXEz9r7re6qB94=
+	t=1774007247; cv=none; b=E8yTkeOP5D5BDbeabxAe0Az6psJvv8wRf8B5iXNe4b86IFpRlXWsXJOux+TqjA6qrX7TnBZJohoVpkrtlWdGNZHow0iSsEbzmgLRSnBOm93gf7m8ckRFbB/QdDZs+HxJLWYXQKXtxNp+DkOA5c0yehHvk3DIwJolbClaXI2y1L8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774007214; c=relaxed/simple;
-	bh=x7CAjI/ggsEfOdnWsbh25AQDFXcvbXBDgZm7AdTzht0=;
+	s=arc-20240116; t=1774007247; c=relaxed/simple;
+	bh=S9zoxZm219qSC+Ioy70FND7phXJtbI115058U3z+dNI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z+jMDuK1HeCzz+P/S5HsYadPsQBPUCXew3LAGILhnRuptu+fjjd8tsBHWRaNVopB0kYgjUMz5/cor8l3Yku2a20r5Iw+G5qYT2fq16TVrtgquk0/YwkCA5IQ1lPjX1dEyEum4d7S5PS5bKHwdjiyX7GSODreN4W2UZcIIY4uV5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=bggIZ/nO; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 4FA4260181;
-	Fri, 20 Mar 2026 12:46:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1774007209;
-	bh=rA+QX3NxvZyXMTDgEGPJVWztoSEOuOXufKasry/j/DI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bggIZ/nOnsbqkvJMVhg0WzoyX9gLDEly6GJUYTAcHWACKR4fAKbwtYHIZ0q33HN0p
-	 WcMPlvwCWBNTNbQenAOQLQCueKRnK7LGzWjXz4xaemU4lH6Es7raD/COKO1j79xBF1
-	 nFyAW1IlV/JfFimM7MtKCZLMTFgOQr67WlI98t31fJBnseul2nbEX+JEQpQpM1maKG
-	 OiQ8ws2VzUBXaYzIa8f2mBtNvNciDPIbQRnJ1ks1Qvi3KEk0V6KPXP563OtpJGsOPw
-	 7Z+XENv+lsFFaZyqpgw2Zv8iESjegI1MIZo0Y0J3HhtUycc4jBNHFYbFqjw+OAoi7T
-	 vq+yrL0VrILWQ==
-Date: Fri, 20 Mar 2026 12:46:46 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DgZzCTzsB4gSjgiWtaVJ+TF3QUCkRZVOxbyb72S6sckkod/zf81xCJuaz5rndEBBNZXqt5KEYguxeX0AGOZQf3Wn8ad94FeOz0lkXfFIiyU1eP46XMrckuori7X15QJm5Q8l1q1V0AT5hWlhSZaolBPXvn/ftODzqv67Onc56FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 3C70A6080C; Fri, 20 Mar 2026 12:47:24 +0100 (CET)
+Date: Fri, 20 Mar 2026 12:47:23 +0100
+From: Florian Westphal <fw@strlen.de>
 To: Phil Sutter <phil@nwl.cc>
-Cc: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org
 Subject: Re: [nf-next PATCH] netfilter: nfnetlink_hook: Dump nat type chains
-Message-ID: <ab0zptb70prDy1fy@chamomile>
-References: <20260313153220.19662-1-phil@nwl.cc>
- <abwegj2TijkaQVLz@strlen.de>
+Message-ID: <ab0zy4fOLraYqVPJ@strlen.de>
+References: <abwegj2TijkaQVLz@strlen.de>
  <abwraHUuxizN4krg@orbyte.nwl.cc>
  <abwtAkSF8-SmH684@strlen.de>
  <abxlzn7lymOxWUFa@orbyte.nwl.cc>
@@ -63,75 +50,57 @@ References: <20260313153220.19662-1-phil@nwl.cc>
  <ab0rbTfE7LWIk7f-@orbyte.nwl.cc>
  <ab0tB2o90FukwQxU@strlen.de>
  <ab0u4JS4Z7THrP6B@orbyte.nwl.cc>
+ <ab0xNu8tKdWigNQ1@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ab0u4JS4Z7THrP6B@orbyte.nwl.cc>
-X-Spamd-Result: default: False [-1.16 / 15.00];
+In-Reply-To: <ab0xNu8tKdWigNQ1@orbyte.nwl.cc>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[netfilter.org];
-	TAGGED_FROM(0.00)[bounces-11325-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[3];
-	NEURAL_HAM(-0.00)[-0.994];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.554];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: B76292D9CA2
+	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11326-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3]
+X-Rspamd-Queue-Id: A064F2D9CAA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Mar 20, 2026 at 12:26:24PM +0100, Phil Sutter wrote:
-> On Fri, Mar 20, 2026 at 12:18:31PM +0100, Florian Westphal wrote:
-> > Phil Sutter <phil@nwl.cc> wrote:
-> > > On Fri, Mar 20, 2026 at 11:17:00AM +0100, Phil Sutter wrote:
-> > > [...]
-> > > > A remark from a practical perspective: Florian's suggestion to dump the
-> > > > nat-type chains in their order with the dispatcher's priority value is
-> > > > super-easy to implement (just have to pass the priority value to
-> > > > nfnl_hook_dump_one() via parameter) and does not require adjustments in
-> > > > user space.
-> > > 
-> > > Famous last words. :(
-> > 
-> > diff --git a/src/mnl.c b/src/mnl.c
-> > index 4893af8322ae..b9efd3cfd3ce 100644
-> > --- a/src/mnl.c
-> > +++ b/src/mnl.c
-> > @@ -2520,7 +2520,7 @@ static void basehook_list_add_tail(struct basehook *b, struct list_head *head)
-> >                         continue;
-> >                 if (!basehook_eq(hook, b))
-> >                         continue;
-> > -               if (hook->prio < b->prio)
-> > +               if (hook->prio <= b->prio)
-> >                         continue;
-> >  
-> >                 list_add(&b->list, &hook->list);
-> > 
-> > ?
+Phil Sutter <phil@nwl.cc> wrote:
+> > Sure, but <=nftables-1.1.6 will still get it wrong. Can we tolerate
+> > that?
 > 
-> Sure, but <=nftables-1.1.6 will still get it wrong. Can we tolerate
-> that?
+> The kernel could dump them in reverse. :D
 
-I think this qualifies as a fix.
+WTF, no no no.
+
+The kernel is fine, this is a userspace bug.
+
+It wasn't noticed because typical configurations don't add same-prio
+hooks.
+
+Userspace MUST dump in the order received so the dumped list reflects
+the actual execution order.
 
