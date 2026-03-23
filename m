@@ -1,78 +1,81 @@
-Return-Path: <netfilter-devel+bounces-11375-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11372-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AEAjKdl4wWkQTQQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11375-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Mar 2026 18:31:05 +0100
+	id OBRDIHB/wWl2TgQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11372-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Mar 2026 18:59:12 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A562F9F92
-	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Mar 2026 18:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B23DB2FABC1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Mar 2026 18:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D11EF32C4160
-	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Mar 2026 16:37:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E5F5E315E4E4
+	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Mar 2026 16:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A213C13E5;
-	Mon, 23 Mar 2026 16:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6990C3ACA5C;
+	Mon, 23 Mar 2026 16:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="2kK8fOPV"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="aptCwODm"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F513C0610;
-	Mon, 23 Mar 2026 16:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656AF3B2FDF;
+	Mon, 23 Mar 2026 16:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774283803; cv=none; b=mTQe7ACSX5su/qAnHfsTv6p/OOCalC9Vhu+n1cLFFh177wg6lxs5ebRJFQgu7sW/SfvWljmyW4r7DLuQZuZhQsuAVEfYFdb9uYAGNxou8Li6iuottg6zXwNIMUdUjFyZfyN/+Np3zWvq9/O4OvUHBHC9xTOVeGRAh30XM5kRrC0=
+	t=1774283487; cv=none; b=YjCbLYzk28VcPEjKVcp61L4/enfF2c9KCkTyrMxwJAwlVq+rjmp0yvVozGxlxM0htOiSlXIsoB3JTKFH04keCUe93/kDnWDFlH6AYn0jaNH3Ijs1H4ZESf1/hDoyIv3EBxRW5fdROXKkhZ5sC2Xin6lTLtPTKWTYMpylqpUpqSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774283803; c=relaxed/simple;
-	bh=wmqJAd7pDyIbGcVBkUcGpINHuM3F5E9PQOs2AxbkeDU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RxOIlA0dozWZgBqbzBDtgUBgV2krQ/USvEU9PKn9HL1jJ7Wj+0sJR5jyksnfWg/ub3JVUeKl3ef+sdO64LfNOVHJDcgXJuzNdJKcmnCkvzwn10COHIJLoPM4yzTT5wHJCPPlGXMpaDsODMhWrNSoaXErg/uLvcoS3XFwjSM0kyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=2kK8fOPV; arc=none smtp.client-ip=193.238.174.39
+	s=arc-20240116; t=1774283487; c=relaxed/simple;
+	bh=50t7WZ0ceOFwIoRskZfQvuWU2rGk4ljSFgK/sfrNbr4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=EV0Juv+lHXJ+SULmLWeTWlDiQK56kv6CcJy02cn93F+1TSI388t0gj8rB8HEvecwjCklmdEaIgYu4GL5y03AkPk38oNosBmmjwOcY3Ves0UM0BBNddo0xe2MNRhCxNx9eMZqXoVoxViQD6uKpipXCchI7lrruVJqFIP0i9YE33c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=aptCwODm; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id C965121830;
-	Mon, 23 Mar 2026 18:26:35 +0200 (EET)
+	by mx.ssi.bg (Potsfix) with ESMTP id D680C21834;
+	Mon, 23 Mar 2026 18:31:19 +0200 (EET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-transfer-encoding:date:from:from:message-id
-	:mime-version:reply-to:subject:subject:to:to; s=ssi; bh=p1MV6Hpb
-	8RR03QgFcfBlMCPr6Bvpm4eWKCv+NQqe/X0=; b=2kK8fOPVCUPfHIfHb5PKraY9
-	KXhY6VeQe1EbVqgSPYvqZ/+UuerjUGb/UkKw6//YitGpncLkBUBYiG/RPBLTiA0I
-	WLmegS/bg3KU7Tb130DlRWuF9Li0zFP9RCkc9hCnI/MOESCACZY01J/O/Zdmui+w
-	9JvlVGezq/hz2sycoBohU/tZw6TlcCYfn2tDaZdpjnMxzS/a6lN4dRFZoBmGaNqN
-	XJpSAnyUUI5Dpf9uIUJF+O5jvE9YNbvGGV3mdXfhlm1D0R7bnQKdWdt/msdNFdbP
-	NBAhd+IPQ8h5RJexTcHqBJ+F2jo+2T3u1PafiVfG5o8Jgvc1sgzxecJhfRnaaE3a
-	QkJsLtG5bZYzg9JeLZtS/ukWCjcDvQDfSPbYF1L5wE6M+zmcesOMqUVgWmPKX8AY
-	02ed6gW4/WuEHzXnRYk3zJGiBH0rDsr95JHUf9Js+Nd1eLWBK5bhgG7AYxsMOoJb
-	ycj5dw31LJAAkbWpD2cPgeZamzj5UNZusA+WSniuULNMYqrC/NohSgyq3wUy95zf
-	klIIH6u1m5g645o8Rvey5PLU4LSB0bCt1Rimnd+4hON3a6rs3/qbrGd9lRjASaML
-	n5yQs/lNKb5M6yMS6lEHSqpmduUYLWP++ZKGJyG6KjFKmhZq6rxqNon00kB0GnOs
-	8vhil+KZgD/kngOhJEI=
+	:content-transfer-encoding:date:from:from:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
+	 bh=YGzvaAygqsreh0fVCganI86iTjrmERDlHPucQzqodVE=; b=aptCwODm9otG
+	GFdSKMpJK6qKupZPP7N1DwdJ3YzFCwymZhsf3PZsLqSUOSKpxNm0vnUt6ni0AySB
+	HdTP/3ZAURtZZZmnAkPYtUy0/fX7I3OLRZAb4uBDC3N9wqjZNfRlHZhJktHZUqjF
+	QSe3+95mfsZMt/8LALV4UVFYLKyyZrkIuNnRQ8+eRfanw7OSk/8LNurudQLkEm6c
+	UDkXuYg4Z4wcwW03G+CxrWcPwjD2+bH6X3CaB3fXjULaY8ywertZx/wF9imjCC7y
+	RXiq/JBjtWQhryNOHRCy42jVtlBVkaZf0t1PcJqhbEATfUX8Lf0TgAgjL6lEQszG
+	WLoMKj7FsRZGX//wPJoXlY9jyV0gSvCSaIKozYNkhiQUyifyVHSzeau+H3WWba+R
+	mrxW8Hjr838ZYZXeT8SEk2B+TdaEHCz4HIQaoZdWPLVdwGdw8S6h1hIOipn8J+bS
+	vk6lZTltaAFEN9B8/e3ndQPk7g4iEwQ4uO1Gxl/6299vptTczq+HR3/DZDlfSSTG
+	4yMKQgVzl8pGZIuWuGDmt+R6ZC1L8ULjD7ak4umMJN3cWmTR8pFikOeqBo/bKd0d
+	zkOs7EchOxMpArOAYd1nKcN0r+ULsVO9A+WuwcoaDI6yRf7DeEz4TqpbYj3yMRLa
+	7pNSFxuMSzBVjU3mn3N7CVodaaqWBmE=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Mon, 23 Mar 2026 18:26:34 +0200 (EET)
+	Mon, 23 Mar 2026 18:31:18 +0200 (EET)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 7FDD460AD5;
-	Mon, 23 Mar 2026 18:26:34 +0200 (EET)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 5460660AD5;
+	Mon, 23 Mar 2026 18:31:19 +0200 (EET)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 62NGQWQ6045001;
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 62NGQWrt045005;
 	Mon, 23 Mar 2026 18:26:32 +0200
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 62NGQRdh044999;
-	Mon, 23 Mar 2026 18:26:27 +0200
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 62NGQWf4045004;
+	Mon, 23 Mar 2026 18:26:32 +0200
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
         lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
         Dust Li <dust.li@linux.alibaba.com>,
         Jiejian Wu <jiejian@linux.alibaba.com>
-Subject: [PATCH nf-next 0/3] IPVS changes, part 4 of 4 - extras
-Date: Mon, 23 Mar 2026 18:25:20 +0200
-Message-ID: <20260323162523.44964-1-ja@ssi.bg>
+Subject: [PATCH nf-next 1/3] ipvs: show the current conn_tab size to users
+Date: Mon, 23 Mar 2026 18:25:21 +0200
+Message-ID: <20260323162523.44964-2-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260323162523.44964-1-ja@ssi.bg>
+References: <20260323162523.44964-1-ja@ssi.bg>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -93,7 +96,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[ssi.bg:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11375-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11372-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -102,79 +105,94 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ssi.bg:dkim,ssi.bg:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ssi.bg:dkim,ssi.bg:email,ssi.bg:mid];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCVD_COUNT_SEVEN(0.00)[8]
-X-Rspamd-Queue-Id: 05A562F9F92
+X-Rspamd-Queue-Id: B23DB2FABC1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-        Hello,
+As conn_tab is per-net, better to show the current hash table size
+to users instead of the ip_vs_conn_tab_size (max).
 
-        This patchset is part 4 of changes that accumulated in
-recent time. It is for nf-next and should be applied when the
-patches from part 1-3 are already applied. It contains extras
-for the per-net tables.
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+---
+ net/netfilter/ipvs/ip_vs_ctl.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-        All patches here come from the work
-"ipvs: per-net tables and optimizations" last posted
-on 19 Oct 2025 as v6, with the following changes:
-
-Patch 1 comes from v6/patch 10 with added get_conn_tab_size() helper
-
-Patch 2 comes from v6/patch 13 with added text for the commit
-
-Patch 3 comes from v6/patch 14 with updated docs
-
-	As result, the following patches will:
-
-* As the connection table is not with fixed size, show its current
-  size to user space
-
-* Add /proc/net/ip_vs_status to show current state of IPVS, per-net
-
-cat /proc/net/ip_vs_status
-Conns:	9401
-Conn buckets:	524288 (19 bits, lfactor -5)
-Conn buckets empty:	505633 (96%)
-Conn buckets len-1:	18322 (98%)
-Conn buckets len-2:	329 (1%)
-Conn buckets len-3:	3 (0%)
-Conn buckets len-4:	1 (0%)
-Services:	12
-Service buckets:	128 (7 bits, lfactor -3)
-Service buckets empty:	116 (90%)
-Service buckets len-1:	12 (100%)
-Stats thread slots:	1 (max 16)
-Stats chain max len:	16
-Stats thread ests:	38400
-
-It shows the table size, the load factor (2^n), how many are the empty
-buckets, with percents from the all buckets, the number of buckets
-with length 1..7 where len-7 catches all len>=7 (zero values are
-not shown). The len-N percents ignore the empty buckets, so they
-are relative among all len-N buckets. It shows that smaller lfactor
-is needed to achieve len-1 buckets to be ~98%. Only real tests can
-show if relying on len-1 buckets is a better option because the
-hash table becomes too large with multiple connections. And as
-every table uses random key, the services may not avoid collision
-in all cases.
-
-* add conn_lfactor and svc_lfactor sysctl vars, so that one can tune
-  the connection/service hash table sizing
-
-
-Julian Anastasov (3):
-  ipvs: show the current conn_tab size to users
-  ipvs: add ip_vs_status info
-  ipvs: add conn_lfactor and svc_lfactor sysctl vars
-
- Documentation/networking/ipvs-sysctl.rst |  35 ++++
- net/netfilter/ipvs/ip_vs_ctl.c           | 247 ++++++++++++++++++++++-
- 2 files changed, 278 insertions(+), 4 deletions(-)
-
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index b472e564b769..3129b15dadc2 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -281,6 +281,13 @@ static void est_reload_work_handler(struct work_struct *work)
+ 	mutex_unlock(&ipvs->est_mutex);
+ }
+ 
++static int get_conn_tab_size(struct netns_ipvs *ipvs)
++{
++	struct ip_vs_rht *t = rcu_dereference(ipvs->conn_tab);
++
++	return t? t->size : 0;
++}
++
+ int
+ ip_vs_use_count_inc(void)
+ {
+@@ -2742,10 +2749,14 @@ static void ip_vs_info_seq_stop(struct seq_file *seq, void *v)
+ 
+ static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
+ {
++	struct net *net = seq_file_net(seq);
++	struct netns_ipvs *ipvs = net_ipvs(net);
++
+ 	if (v == SEQ_START_TOKEN) {
+ 		seq_printf(seq,
+ 			"IP Virtual Server version %d.%d.%d (size=%d)\n",
+-			NVERSION(IP_VS_VERSION_CODE), ip_vs_conn_tab_size);
++			NVERSION(IP_VS_VERSION_CODE),
++			get_conn_tab_size(ipvs));
+ 		seq_puts(seq,
+ 			 "Prot LocalAddress:Port Scheduler Flags\n");
+ 		seq_puts(seq,
+@@ -3424,9 +3435,13 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
+ 	case IP_VS_SO_GET_VERSION:
+ 	{
+ 		char buf[64];
++		int csize;
+ 
++		rcu_read_lock();
++		csize = get_conn_tab_size(ipvs);
++		rcu_read_unlock();
+ 		sprintf(buf, "IP Virtual Server version %d.%d.%d (size=%d)",
+-			NVERSION(IP_VS_VERSION_CODE), ip_vs_conn_tab_size);
++			NVERSION(IP_VS_VERSION_CODE), csize);
+ 		if (copy_to_user(user, buf, strlen(buf)+1) != 0) {
+ 			ret = -EFAULT;
+ 			goto out;
+@@ -3438,8 +3453,11 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
+ 	case IP_VS_SO_GET_INFO:
+ 	{
+ 		struct ip_vs_getinfo info;
++
+ 		info.version = IP_VS_VERSION_CODE;
+-		info.size = ip_vs_conn_tab_size;
++		rcu_read_lock();
++		info.size = get_conn_tab_size(ipvs);
++		rcu_read_unlock();
+ 		info.num_services =
+ 			atomic_read(&ipvs->num_services[IP_VS_AF_INET]);
+ 		if (copy_to_user(user, &info, sizeof(info)) != 0)
+@@ -4448,7 +4466,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
+ 		if (nla_put_u32(msg, IPVS_INFO_ATTR_VERSION,
+ 				IP_VS_VERSION_CODE) ||
+ 		    nla_put_u32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE,
+-				ip_vs_conn_tab_size))
++				get_conn_tab_size(ipvs)))
+ 			goto nla_put_failure;
+ 		break;
+ 	}
 -- 
 2.53.0
 
