@@ -1,158 +1,365 @@
-Return-Path: <netfilter-devel+bounces-11386-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11388-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mAiWGYb4wmklngQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11386-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2026 21:48:06 +0100
+	id 7/KSMlACw2lKnwQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11388-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2026 22:29:52 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341CC31C7FD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2026 21:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC4A31CDB9
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2026 22:29:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 87E6131065DD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2026 20:41:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2B6FF30134AB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2026 21:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1713563E1;
-	Tue, 24 Mar 2026 20:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8789E35E921;
+	Tue, 24 Mar 2026 21:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kwp2MvlY"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="X82e3rBP"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAFF34A77D
-	for <netfilter-devel@vger.kernel.org>; Tue, 24 Mar 2026 20:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25378352921;
+	Tue, 24 Mar 2026 21:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774384893; cv=none; b=WvjyOvQYQmIWaR0Ujjl3L2PUCXucCaqZrLmPn8kCYYQVB6KzHkpiY7+xkAGyYJiR2P8KZQ87vRpWUoL2hyHflsevo6BiCCLGcnPjHoonwjfsiA3iaonQkjb/+tQ6RQfJ7B0cWdL1B1XbJuMBLIxl7Iyy6Gv6sDofRhVNqUZ8wXs=
+	t=1774387718; cv=none; b=Fw4j8N28o4sSDFni3A0ANKxPemuzItUQ2t9nY7QoeKPVPeFiAfJ4gz2Chyh08A4XJMXCkFnqMJxMlnc1umSU//T+QAWU/spQVBEfhnf0f/mc9cp0qzsT0RzIYce97kOZveUDv7urKR14VtT3QKB4q/FXOqhmcQWDWsY6y/KU2k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774384893; c=relaxed/simple;
-	bh=JST0wXweMblcvbScw9Mq0yslegnTNej/ZY8bqddZfTc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QDR7Tx4cSBVeXZ1m1j7Gk0gyfVZgxhqewMGwVrPqBCy3H7+bJlFWiTF3K4cHCLKPPvDR5fhp1DtkKGyonzmn4MW9xqQBjv1HDuzC3Pdr6YXI360tzPvHRv4fBdRZ5CZ17LIu1OYOJCrSJjFbAnIl3tuxL8knJ6FPTLgHjc+bDK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kwp2MvlY; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-48334ee0aeaso15630175e9.1
-        for <netfilter-devel@vger.kernel.org>; Tue, 24 Mar 2026 13:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774384890; x=1774989690; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BUoxypdfQgAMyIah8TMnPeb4KQBvT5cjozWxWchgdfs=;
-        b=Kwp2MvlYjBPeV7omWDQ3PzTV/oqb/w2aKiE9f927+sUFTFntXw/muApuK5UunGe+8d
-         svIjFyc3vraclWTTILt/eAjU6LENkAARTzMGw5K0k88mK1AJ0rqYvJsd6/Qi9GsDWshH
-         JEwrH2Xbw/+/1w5HFupyUyZeUn7bSh5RfdgmMmxvxucnOASIAwA1kL9zziG1J1XH5lxz
-         /5a1+YAtGrpyMOPfUwVpxCrBUTAhGivaPaIoAlZrY33F+BD1Pq7WQk/ereh94LXXq40e
-         WYAEN2P0SNSE05H7jCtQ5aQwiEI7j2MYirZsRaqQhssQ5GrDq2YFlaL+K5qcEVfzGc4m
-         3VTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774384890; x=1774989690;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BUoxypdfQgAMyIah8TMnPeb4KQBvT5cjozWxWchgdfs=;
-        b=hiXDykrL0FfgVZFo3zQMbwt5v6Lghy+noL9WGRU5bvBcW35xBk3h2NTOAkCAGLWEro
-         4yc/C/MblYvdYD1tEmQYn2GLeRbGXmKgcpUfDK1Z66M4u6rxTgPAo4thRvWsV60gyfst
-         KuZ3Jr6hEGuP8Kqj0WCTLGsRvsbu+6hg5PnmikHyrqgyIDv9e4E80DTCyty+sN8oNZ+D
-         lYM4NMZhDo2XAvxt4YTr2/L9JJPvWscOSMScGBus/BOUUrkq97R10bRlYRQ+jHHZ6w2n
-         zkpplpmtG9yj9Z7GM5YS2C6DlBDX5t3a5viGyfOd/UyTSHOvpKiRCePtB2pSC+/ar+Yq
-         jeIQ==
-X-Gm-Message-State: AOJu0YwrOvY2LOwS4DBs3ZkQKWwbXPTnpt/u6Tx3NScMArBL3cceBZ3P
-	x2Gy254pP0Oq4vcKzuNRxUFtOMVMdIjBkrzr73qq1QHt1sSPWtZMvPOjM0zyUm+8e2zhcw==
-X-Gm-Gg: ATEYQzzbhWzMqAPiuSu+5QfuaHh/+Ot8SxGN4yQQHqbpStpuI3JmGwLl/07opCJbQM4
-	mpHN5X36H2J2z879bKxqlsCIG9K70zb6Q/nQ5NdBfTaQi9V1F8HdO1v8IgvIeRPFBdCb2dkiEm8
-	pNjb9VQ+YQrHPLvhOMvcVOVcDy127ZSXbFjcZ+wuSTh5vj8hChoNH40Nt6wpn7I+hM8B4ivhfen
-	lyXqLWAC/oxi3PrlE4bxoVAjiIQakys3Ijfk8K2AwuBU3WtyhCuFs3+11OqHcdAZqjWyj0I/bbF
-	JMh3JOI7gV7GA8IHMWhFkZ1BNjDUWjUSThmzeaAhpGO2TM/Ipnc0jDu2mbFamppYaPLDIp/QTH1
-	YCrlxjJeXK9mI3UGbHwvRUbTNPp3MD4xzCWAVslh/NxWgFZzUMcUuPHPJ/PrE3NUUvagBtv+Lc4
-	eJ7NvmRH2SIpH8rE8VA6OP
-X-Received: by 2002:a05:600c:a0a:b0:487:288:1198 with SMTP id 5b1f17b1804b1-4871605ce9fmr17884155e9.22.1774384889809;
-        Tue, 24 Mar 2026 13:41:29 -0700 (PDT)
-Received: from azaki-desk1.. ([41.234.201.118])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48716658352sm3686825e9.13.2026.03.24.13.41.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2026 13:41:29 -0700 (PDT)
-From: Ahmed Zaki <anzaki@gmail.com>
-To: netfilter-devel@vger.kernel.org,
-	andrew@lunn.ch,
-	olteanv@gmail.com,
-	pablo@netfilter.org,
-	fw@strlen.de,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com
-Cc: coreteam@netfilter.org,
-	netdev@vger.kernel.org
-Subject: [PATCH nf-next v2 2/2] net: dsa: update net_device stats with HW offloaded flows stats
-Date: Tue, 24 Mar 2026 14:40:16 -0600
-Message-ID: <20260324204016.2089193-3-anzaki@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260324204016.2089193-1-anzaki@gmail.com>
+	s=arc-20240116; t=1774387718; c=relaxed/simple;
+	bh=Pa8Giaac+RQBM5prQwB6l2LD3PHYdrPNru5oOwF2NrA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dn3GagCHqNk+F5Jirg/UxR8HCdGpXxWgj//kiMbP5uBbF+R90gsDq5KfYynQIPquuhDcp+t+QDZ8HBUTrIjQRUcY3lKMq1ubQkPoS7TeXoHDBAiyIeH7SitrxPW1UVAelr956TFxmQW+GHYpmJfjXGwqIcX1TLeqW7qOqxvuHrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=X82e3rBP; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id D79C5600B5;
+	Tue, 24 Mar 2026 22:28:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1774387706;
+	bh=WSV63YLJEh/5Og9YjArs+nqErNOE9rA2hd+2DB8uIaA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X82e3rBP0FBVPefVhG7N9M30FVISRNddarhBBB4O/1HKKVYjVDpbVC+gdGiIccGQi
+	 hY2e8FsDEgW/aPXWZJhOY/WJCsukYLDqkfabn6yMBshRB9E1iJaRvXuJLWdNtu24FP
+	 ub/P/0mEeJyEmE9p3WpgsFmK3ZIeL9aeyXq4OdEwvPEppDIeAR/y66MsuHMwona5qD
+	 vchmdhqVGk07hIkHrxr9qsK1mGea5x5uJS/y8K3AWlKN2Z78vXIf4amLXOw2I07e7f
+	 ETtBtaXJWVr2UCwq7kyL8wDXyqBsJJ+lzgwZ236UnNiZ7ZFAEcrAbG3TKEHOkMADZT
+	 CJxfuZx+/t+OQ==
+Date: Tue, 24 Mar 2026 22:28:23 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Ahmed Zaki <anzaki@gmail.com>
+Cc: netfilter-devel@vger.kernel.org, andrew@lunn.ch, olteanv@gmail.com,
+	fw@strlen.de, kuba@kernel.org, pabeni@redhat.com,
+	edumazet@google.com, coreteam@netfilter.org, netdev@vger.kernel.org
+Subject: Re: [PATCH nf-next v2 1/2] netfilter: flowtable: update netdev stats
+ with HW_OFFLOAD flows
+Message-ID: <acMB9xSTEmwly8QK@chamomile>
 References: <20260324204016.2089193-1-anzaki@gmail.com>
+ <20260324204016.2089193-2-anzaki@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260324204016.2089193-2-anzaki@gmail.com>
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11386-lists,netfilter-devel=lfdr.de];
-	FREEMAIL_TO(0.00)[vger.kernel.org,lunn.ch,gmail.com,netfilter.org,strlen.de,kernel.org,redhat.com,google.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[anzaki@gmail.com,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-11388-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lunn.ch,gmail.com,strlen.de,kernel.org,redhat.com,google.com,netfilter.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 341CC31C7FD
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim]
+X-Rspamd-Queue-Id: 2CC4A31CDB9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Set the new net_device flag flow_offload_via_parent to update the
-user net_device TX/RX stats with the HW offloaded traffic.
+On Tue, Mar 24, 2026 at 02:40:15PM -0600, Ahmed Zaki wrote:
+> Some drivers (notably DSA) delegate the nft flowtable HW_OFFLOAD flows
+> to a parent driver. While the parent driver is able to report the
+> offloaded traffic stats directly from the HW, the delegating driver
+> does not report the stats. This fails SNMP-based monitoring tools that
+> rely on netdev stats to report the network traffic.
+> 
+> Add a new struct pcpu_sw_netstats "fstats" to net_device that gets
+> allocated only if the new flag "flow_offload_via_parent" is set by the
+> driver. The new stats are lazily allocated by the nft flow offloading
+> code when the first flow is offloaded. The stats are updated periodically
+> in flow_offload_work_stats() and also once in flow_offload_work_del()
+> before the flow is deleted. For this, flow_offload_work_del() had to
+> be moved below flow_offload_tuple_stats().
 
-Signed-off-by: Ahmed Zaki <anzaki@gmail.com>
----
- net/dsa/user.c | 1 +
- 1 file changed, 1 insertion(+)
+Hm, I think v1 was a simpler approach... except that you innecesarily
+modified a lot of callsites as Jakub pointed out. I don't see why you
+need this new callback for netdev_ops.
 
-diff --git a/net/dsa/user.c b/net/dsa/user.c
-index c4bd6fe90b45..331bc581bce7 100644
---- a/net/dsa/user.c
-+++ b/net/dsa/user.c
-@@ -2807,6 +2807,7 @@ int dsa_user_create(struct dsa_port *port)
- 
- 	p = netdev_priv(user_dev);
- 	user_dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
-+	user_dev->flow_offload_via_parent = true;
- 
- 	ret = gro_cells_init(&p->gcells, user_dev);
- 	if (ret)
--- 
-2.43.0
-
+> Signed-off-by: Ahmed Zaki <anzaki@gmail.com>
+> ---
+>  include/linux/netdevice.h             | 45 ++++++++++++
+>  net/core/dev.c                        |  8 +++
+>  net/netfilter/nf_flow_table_offload.c | 98 +++++++++++++++++++++++++--
+>  3 files changed, 145 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 67e25f6d15a4..647758f78213 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -1840,6 +1840,11 @@ enum netdev_reg_state {
+>   *	@stats:		Statistics struct, which was left as a legacy, use
+>   *			rtnl_link_stats64 instead
+>   *
+> + *	@fstats:	HW offloaded flow statistics: RX/TX packets,
+> + *			RX/TX bytes. Lazily allocated by the flow offload
+> + *			path on the first offloaded flow for devices that
+> + *			set @flow_offload_via_parent. Freed by free_netdev().
+> + *
+>   *	@core_stats:	core networking counters,
+>   *			do not use this in drivers
+>   *	@carrier_up_count:	Number of times the carrier has been up
+> @@ -2048,6 +2053,12 @@ enum netdev_reg_state {
+>   *	@change_proto_down: device supports setting carrier via IFLA_PROTO_DOWN
+>   *	@netns_immutable: interface can't change network namespaces
+>   *	@fcoe_mtu:	device supports maximum FCoE MTU, 2158 bytes
+> + *	@flow_offload_via_parent: device delegates nft flowtable hardware
+> + *				  offload to a parent/conduit device (e.g. DSA
+> + *				  user ports delegate to their conduit MAC).
+> + *				  The parent's HW count the offloaded traffic
+> + *				  but this device's sw netstats path does not.
+> + *				  @fstats is allocated to fill that gap.
+>   *
+>   *	@net_notifier_list:	List of per-net netdev notifier block
+>   *				that follow this device when it is moved
+> @@ -2233,6 +2244,7 @@ struct net_device {
+>  
+>  	struct net_device_stats	stats; /* not used by modern drivers */
+>  
+> +	struct pcpu_sw_netstats __percpu *fstats;
+>  	struct net_device_core_stats __percpu *core_stats;
+>  
+>  	/* Stats to monitor link on/off, flapping */
+> @@ -2463,6 +2475,7 @@ struct net_device {
+>  	unsigned long		change_proto_down:1;
+>  	unsigned long		netns_immutable:1;
+>  	unsigned long		fcoe_mtu:1;
+> +	unsigned long		flow_offload_via_parent:1;
+>  
+>  	struct list_head	net_notifier_list;
+>  
+> @@ -2992,6 +3005,38 @@ struct pcpu_lstats {
+>  
+>  void dev_lstats_read(struct net_device *dev, u64 *packets, u64 *bytes);
+>  
+> +static inline void dev_fstats_rx_add(struct net_device *dev,
+> +				     unsigned int packets,
+> +				     unsigned int len)
+> +{
+> +	struct pcpu_sw_netstats *fstats;
+> +
+> +	if (!dev->fstats)
+> +		return;
+> +
+> +	fstats = this_cpu_ptr(dev->fstats);
+> +	u64_stats_update_begin(&fstats->syncp);
+> +	u64_stats_add(&fstats->rx_bytes, len);
+> +	u64_stats_add(&fstats->rx_packets, packets);
+> +	u64_stats_update_end(&fstats->syncp);
+> +}
+> +
+> +static inline void dev_fstats_tx_add(struct net_device *dev,
+> +				     unsigned int packets,
+> +				     unsigned int len)
+> +{
+> +	struct pcpu_sw_netstats *fstats;
+> +
+> +	if (!dev->fstats)
+> +		return;
+> +
+> +	fstats = this_cpu_ptr(dev->fstats);
+> +	u64_stats_update_begin(&fstats->syncp);
+> +	u64_stats_add(&fstats->tx_bytes, len);
+> +	u64_stats_add(&fstats->tx_packets, packets);
+> +	u64_stats_update_end(&fstats->syncp);
+> +}
+> +
+>  static inline void dev_sw_netstats_rx_add(struct net_device *dev, unsigned int len)
+>  {
+>  	struct pcpu_sw_netstats *tstats = this_cpu_ptr(dev->tstats);
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index f48dc299e4b2..07fb315ad42c 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -11865,6 +11865,7 @@ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+>  {
+>  	const struct net_device_ops *ops = dev->netdev_ops;
+>  	const struct net_device_core_stats __percpu *p;
+> +	const struct pcpu_sw_netstats __percpu *fstats;
+>  
+>  	/*
+>  	 * IPv{4,6} and udp tunnels share common stat helpers and use
+> @@ -11893,6 +11894,11 @@ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+>  		netdev_stats_to_stats64(storage, &dev->stats);
+>  	}
+>  
+> +	/* This READ_ONCE() pairs with cmpxchg in flow_offload_fstats_ensure() */
+> +	fstats = READ_ONCE(dev->fstats);
+> +	if (fstats)
+> +		dev_fetch_sw_netstats(storage, fstats);
+> +
+>  	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+>  	p = READ_ONCE(dev->core_stats);
+>  	if (p) {
+> @@ -12212,6 +12218,8 @@ void free_netdev(struct net_device *dev)
+>  	free_percpu(dev->pcpu_refcnt);
+>  	dev->pcpu_refcnt = NULL;
+>  #endif
+> +	free_percpu(dev->fstats);
+> +	dev->fstats = NULL;
+>  	free_percpu(dev->core_stats);
+>  	dev->core_stats = NULL;
+>  	free_percpu(dev->xdp_bulkq);
+> diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+> index b2e4fb6fa011..fc1e67a79904 100644
+> --- a/net/netfilter/nf_flow_table_offload.c
+> +++ b/net/netfilter/nf_flow_table_offload.c
+> @@ -925,13 +925,80 @@ static void flow_offload_work_add(struct flow_offload_work *offload)
+>  	nf_flow_offload_destroy(flow_rule);
+>  }
+>  
+> -static void flow_offload_work_del(struct flow_offload_work *offload)
+> +static bool flow_offload_fstats_ensure(struct net_device *dev)
+>  {
+> -	clear_bit(IPS_HW_OFFLOAD_BIT, &offload->flow->ct->status);
+> -	flow_offload_tuple_del(offload, FLOW_OFFLOAD_DIR_ORIGINAL);
+> -	if (test_bit(NF_FLOW_HW_BIDIRECTIONAL, &offload->flow->flags))
+> -		flow_offload_tuple_del(offload, FLOW_OFFLOAD_DIR_REPLY);
+> -	set_bit(NF_FLOW_HW_DEAD, &offload->flow->flags);
+> +	struct pcpu_sw_netstats __percpu *p;
+> +
+> +	if (!dev->flow_offload_via_parent)
+> +		return false;
+> +
+> +	/* Pairs with cmpxchg() below. */
+> +	if (likely(READ_ONCE(dev->fstats)))
+> +		return true;
+> +
+> +	p = __netdev_alloc_pcpu_stats(struct pcpu_sw_netstats, GFP_ATOMIC);
+> +	if (!p)
+> +		return false;
+> +
+> +	if (cmpxchg(&dev->fstats, NULL, p))
+> +		free_percpu(p);	/* lost the race, discard and use winner's */
+> +
+> +	return true;
+> +}
+> +
+> +static u32 flow_offload_egress_ifidx(const struct flow_offload_tuple *tuple)
+> +{
+> +	switch (tuple->xmit_type) {
+> +	case FLOW_OFFLOAD_XMIT_NEIGH:
+> +		return tuple->ifidx;
+> +	case FLOW_OFFLOAD_XMIT_DIRECT:
+> +		return tuple->out.ifidx;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +static void flow_offload_netdev_update(struct flow_offload_work *offload,
+> +				       struct flow_stats *stats)
+> +{
+> +	const struct flow_offload_tuple *tuple;
+> +	struct net_device *indev, *outdev;
+> +	struct net *net;
+> +
+> +	rcu_read_lock();
+> +	net = read_pnet(&offload->flowtable->net);
+> +	if (stats[FLOW_OFFLOAD_DIR_ORIGINAL].pkts) {
+> +		tuple = &offload->flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple;
+> +		indev = dev_get_by_index_rcu(net, tuple->iifidx);
+> +		if (indev && flow_offload_fstats_ensure(indev))
+> +			dev_fstats_rx_add(indev,
+> +					  stats[FLOW_OFFLOAD_DIR_ORIGINAL].pkts,
+> +					  stats[FLOW_OFFLOAD_DIR_ORIGINAL].bytes);
+> +
+> +		outdev = dev_get_by_index_rcu(net,
+> +					      flow_offload_egress_ifidx(tuple));
+> +		if (outdev && flow_offload_fstats_ensure(outdev))
+> +			dev_fstats_tx_add(outdev,
+> +					  stats[FLOW_OFFLOAD_DIR_ORIGINAL].pkts,
+> +					  stats[FLOW_OFFLOAD_DIR_ORIGINAL].bytes);
+> +	}
+> +
+> +	if (stats[FLOW_OFFLOAD_DIR_REPLY].pkts) {
+> +		tuple = &offload->flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple;
+> +		indev = dev_get_by_index_rcu(net, tuple->iifidx);
+> +		if (indev && flow_offload_fstats_ensure(indev))
+> +			dev_fstats_rx_add(indev,
+> +					  stats[FLOW_OFFLOAD_DIR_REPLY].pkts,
+> +					  stats[FLOW_OFFLOAD_DIR_REPLY].bytes);
+> +
+> +		outdev = dev_get_by_index_rcu(net,
+> +					      flow_offload_egress_ifidx(tuple));
+> +		if (outdev && flow_offload_fstats_ensure(outdev))
+> +			dev_fstats_tx_add(outdev,
+> +					  stats[FLOW_OFFLOAD_DIR_REPLY].pkts,
+> +					  stats[FLOW_OFFLOAD_DIR_REPLY].bytes);
+> +	}
+> +	rcu_read_unlock();
+>  }
+>  
+>  static void flow_offload_tuple_stats(struct flow_offload_work *offload,
+> @@ -968,6 +1035,25 @@ static void flow_offload_work_stats(struct flow_offload_work *offload)
+>  				       FLOW_OFFLOAD_DIR_REPLY,
+>  				       stats[1].pkts, stats[1].bytes);
+>  	}
+> +
+> +	flow_offload_netdev_update(offload, stats);
+> +}
+> +
+> +static void flow_offload_work_del(struct flow_offload_work *offload)
+> +{
+> +	struct flow_stats stats[FLOW_OFFLOAD_DIR_MAX] = {};
+> +
+> +	flow_offload_tuple_stats(offload, FLOW_OFFLOAD_DIR_ORIGINAL, &stats[0]);
+> +	if (test_bit(NF_FLOW_HW_BIDIRECTIONAL, &offload->flow->flags))
+> +		flow_offload_tuple_stats(offload, FLOW_OFFLOAD_DIR_REPLY,
+> +					 &stats[1]);
+> +	flow_offload_netdev_update(offload, stats);
+> +
+> +	clear_bit(IPS_HW_OFFLOAD_BIT, &offload->flow->ct->status);
+> +	flow_offload_tuple_del(offload, FLOW_OFFLOAD_DIR_ORIGINAL);
+> +	if (test_bit(NF_FLOW_HW_BIDIRECTIONAL, &offload->flow->flags))
+> +		flow_offload_tuple_del(offload, FLOW_OFFLOAD_DIR_REPLY);
+> +	set_bit(NF_FLOW_HW_DEAD, &offload->flow->flags);
+>  }
+>  
+>  static void flow_offload_work_handler(struct work_struct *work)
+> -- 
+> 2.43.0
+> 
 
