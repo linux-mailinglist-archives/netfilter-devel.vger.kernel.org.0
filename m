@@ -1,38 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11394-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11396-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iC9sCZrkw2lvugQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11394-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:35:22 +0100
+	id QLdtNozhw2lvugQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11396-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:22:20 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E592325E04
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:35:21 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A8D325A42
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8B1C830DDA50
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:11:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 77112310537D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF073D810F;
-	Wed, 25 Mar 2026 13:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B393D9DD5;
+	Wed, 25 Mar 2026 13:11:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BD1309DDF;
-	Wed, 25 Mar 2026 13:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BD83D9022;
+	Wed, 25 Mar 2026 13:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774444302; cv=none; b=VHH6zPkj9HfMV6qQxr4rgrZwHSVAfO/AIt+VPtmKwK0Lcn4+R6s7F26zh4/gw743DpokKueFOHuSMpgM1OZE6zy7f+WNUuJr5QZhM/VKY07bKGtYsPCdj3ZP3oqUcLwgClIZVD6rKAV63LLQZW1Vq9EeBk2RjVyIo155revK16g=
+	t=1774444306; cv=none; b=VHNLrqbMniX94IKKsGsss4ilfaXiRX1oaSd59Lmt/hKtinXQBhut3u7BaCf0KNeF6QZYOzORO1jY7S62/kNtlnYWsWHVTZp7gFekDWZW7vHJO7OgFQUKfNeRRdBEl2EeqwelBjQX2dcjlLdGV80Sd+zHp/oUfohPx4Ft9Q7C6p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774444302; c=relaxed/simple;
-	bh=3AmlJPot+VL+VEaLAr7y61rdZG26HyCu2M4NIujBSLA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IOdKAYRQOVF7L8hzXsjb1gtbJKnsJglVzcjCdy/z8eFuoJjL/P1++tKD7xgflhqhJBUT8q8ZWlyvXPjwSuw4B3PsGErRpaXLBqHSrg25MXgS5WAghQJffI9tLMR5JboaUZBa8yfU0zT5KiHXF5rGCaGRqZg78KDbr/tcRsFLfeE=
+	s=arc-20240116; t=1774444306; c=relaxed/simple;
+	bh=d04Zfo0BIF6gHy3v4BYuPlJBjVxEQOB7Z3gsWVJVK54=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=d0yiGXySbcfb9k5kCoWGXNy30ZhCJxvg/tuJHsfubUYjg7UwxixQ9IhBg0Bbj7nyUVKKtmdzLUzoAexVOYeMCloX3zibIoArUYKIHUr5nc2nD6Yn42peFOs9VamEyFG3eD90SsPoXPmpL/yfnlrb3bPPEZ5B8dKon62kyMTZnm8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 540316080C; Wed, 25 Mar 2026 14:11:33 +0100 (CET)
+	id A86E3609EF; Wed, 25 Mar 2026 14:11:37 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -41,10 +42,12 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 00/14] netfilter: updates for net
-Date: Wed, 25 Mar 2026 14:10:54 +0100
-Message-ID: <20260325131108.23045-1-fw@strlen.de>
+Subject: [PATCH net 01/14] netfilter: nft_set_pipapo_avx2: don't return non-matching entry on expiry
+Date: Wed, 25 Mar 2026 14:10:55 +0100
+Message-ID: <20260325131108.23045-2-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260325131108.23045-1-fw@strlen.de>
+References: <20260325131108.23045-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -56,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11394-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11396-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -68,7 +71,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -76,116 +79,158 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8E592325E04
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 93A8D325A42
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi,
+New test case fails unexpectedly when avx2 matching functions are used.
 
-The following patchset contains Netfilter fixes for *net*.
-Note that most bugs fixed here stem from 2.6 days, the large PR
-is not due to an increase in regressions.
+The test first loads a ranomly generated pipapo set
+with 'ipv4 . port' key, i.e.  nft -f foo.
 
-1) Fix incorrect reject of set updates with nf_tables pipapo set
-   avx2 backend.  This comes with a regression test in patch 2.
+This works.  Then, it reloads the set after a flush:
+(echo flush set t s; cat foo) | nft -f -
 
-3) Fix a syzkaller reported data race in ipset, from Jozsef Kadlecsik.
+This is expected to work, because its the same set after all and it was
+already loaded once.
 
-4) nfnetlink_log needs to zero padding to prevent infoleak to userspace,
-   from Weiming Shi.
+But with avx2, this fails: nft reports a clashing element.
 
-5) pay more attention to xtables hook masks + NFPROTO_UNSPEC.
-   UNSPEC+hook_mask is only valid for ipv4, ipv6 and bridge families.
-   This can cause a crash because arp family has different meaning for
-   hook constants. We need to reject rule adds when we have a match that
-   sets both a hook mask and proto_unspec, unless the requesting family
-   is one of ip/ip6/bridge. Also from Weiming Shi.
+The reported clash is of following form:
 
-6) xtables ip6t_rt module never validated that addrnr length is within the
-   allowed array boundary. Reject bogus values.  From Ren Wei.
+    We successfully re-inserted
+      a . b
+      c . d
 
-7) Fix high memory usage in rbtree set backend that was unwanted side-effect
-   of the recently added binary search blob. From Pablo Neira Ayuso.
+Then we try to insert a . d
 
-Patches 8 to 12, also from Pablo, address long-standing RCU safety bugs
-in conntracks handling of expectations: We can never safely defer
-a conntrack extension area without holding a reference. Yet expectation
-handling does so in multiple places.  Fix this by avoiding the need to
-look into the master conntrack to begin with and by extending locked
-sections in a few places.
+avx2 finds the already existing a . d, which (due to 'flush set') is marked
+as invalid in the new generation.  It skips the element and moves to next.
 
-13) fix use of uninitialized rtp_addr in the sip conntrack helper,
-    also from Weiming Shi.
+Due to incorrect masking, the skip-step finds the next matching
+element *only considering the first field*,
 
-14) Add stricter netlink policy checks in ctnetlink, from David Carlier.
-    This avoids undefined behaviour when userspace provides huge wscale
-    value.
+i.e. we return the already reinserted "a . b", even though the
+last field is different and the entry should not have been matched.
 
-Please, pull these changes from:
-The following changes since commit c4ea7d8907cf72b259bf70bd8c2e791e1c4ff70f:
+No such error is reported for the generic c implementation (no avx2) or when
+the last field has to use the 'nft_pipapo_avx2_lookup_slow' fallback.
 
-  net: mana: fix use-after-free in add_adev() error path (2026-03-24 21:07:58 -0700)
+Bisection points to
+7711f4bb4b36 ("netfilter: nft_set_pipapo: fix range overlap detection")
+but that fix merely uncovers this bug.
 
-are available in the Git repository at:
+Before this commit, the wrong element is returned, but erronously
+reported as a full, identical duplicate.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-26-03-25
+The root-cause is too early return in the avx2 match functions.
+When we process the last field, we should continue to process data
+until the entire input size has been consumed to make sure no stale
+bits remain in the map.
 
-for you to fetch changes up to 65182deffd243cb451c7e1f532e7de1ed59afbeb:
+Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+Link: https://lore.kernel.org/netfilter-devel/20260321152506.037f68c0@elisabeth/
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nft_set_pipapo_avx2.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-  netfilter: ctnetlink: use netlink policy range checks (2026-03-25 13:36:45 +0100)
-
-----------------------------------------------------------------
-netfilter pull request nf-26-03-25
-
-----------------------------------------------------------------
-David Carlier (1):
-  netfilter: ctnetlink: use netlink policy range checks
-
-Florian Westphal (2):
-  netfilter: nft_set_pipapo_avx2: don't return non-matching entry on expiry
-  selftests: netfilter: nft_concat_range.sh: add check for flush+reload bug
-
-Jozsef Kadlecsik (1):
-  netfilter: ipset: Fix data race between add and list header in all hash types
-
-Pablo Neira Ayuso (6):
-  netfilter: nft_set_rbtree: revisit array resize logic
-  netfilter: nf_conntrack_expect: honor expectation helper field
-  netfilter: nf_conntrack_expect: use expect->helper
-  netfilter: ctnetlink: ensure safe access to master conntrack
-  netfilter: nf_conntrack_expect: store netns and zone in expectation
-  netfilter: nf_conntrack_expect: skip expectations in other netns via proc
-
-Ren Wei (1):
-  netfilter: ip6t_rt: reject oversized addrnr in rt_mt6_check()
-
-Weiming Shi (3):
-  netfilter: nfnetlink_log: fix uninitialized padding leak in NFULA_PAYLOAD
-  netfilter: x_tables: reject unsupported families in xt_check_match/xt_check_target
-  netfilter: nf_conntrack_sip: fix use of uninitialized rtp_addr in process_sdp
-
- include/net/netfilter/nf_conntrack_core.h     |  5 +
- include/net/netfilter/nf_conntrack_expect.h   | 20 +++-
- .../linux/netfilter/nf_conntrack_common.h     |  4 +
- net/ipv6/netfilter/ip6t_rt.c                  |  4 +
- net/netfilter/ipset/ip_set_core.c             |  4 +-
- net/netfilter/nf_conntrack_broadcast.c        |  2 +-
- net/netfilter/nf_conntrack_ecache.c           |  2 +
- net/netfilter/nf_conntrack_expect.c           | 30 +++++-
- net/netfilter/nf_conntrack_h323_main.c        | 12 +--
- net/netfilter/nf_conntrack_helper.c           | 11 ++-
- net/netfilter/nf_conntrack_netlink.c          | 73 ++++++++-------
- net/netfilter/nf_conntrack_proto_tcp.c        | 10 +-
- net/netfilter/nf_conntrack_sip.c              | 18 ++--
- net/netfilter/nfnetlink_log.c                 |  8 +-
- net/netfilter/nft_set_pipapo_avx2.c           | 20 ++--
- net/netfilter/nft_set_rbtree.c                | 92 +++++++++++++++----
- net/netfilter/x_tables.c                      | 36 ++++++++
- net/netfilter/xt_devgroup.c                   |  5 +
- .../net/netfilter/nft_concat_range.sh         | 70 +++++++++++++-
- 19 files changed, 323 insertions(+), 103 deletions(-)
-
+diff --git a/net/netfilter/nft_set_pipapo_avx2.c b/net/netfilter/nft_set_pipapo_avx2.c
+index 7ff90325c97f..6395982e4d95 100644
+--- a/net/netfilter/nft_set_pipapo_avx2.c
++++ b/net/netfilter/nft_set_pipapo_avx2.c
+@@ -242,7 +242,7 @@ static int nft_pipapo_avx2_lookup_4b_2(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -319,7 +319,7 @@ static int nft_pipapo_avx2_lookup_4b_4(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -414,7 +414,7 @@ static int nft_pipapo_avx2_lookup_4b_8(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -505,7 +505,7 @@ static int nft_pipapo_avx2_lookup_4b_12(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -641,7 +641,7 @@ static int nft_pipapo_avx2_lookup_4b_32(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -699,7 +699,7 @@ static int nft_pipapo_avx2_lookup_8b_1(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -764,7 +764,7 @@ static int nft_pipapo_avx2_lookup_8b_2(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -839,7 +839,7 @@ static int nft_pipapo_avx2_lookup_8b_4(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -925,7 +925,7 @@ static int nft_pipapo_avx2_lookup_8b_6(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
+@@ -1019,7 +1019,7 @@ static int nft_pipapo_avx2_lookup_8b_16(unsigned long *map, unsigned long *fill,
+ 
+ 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
+ 		if (last)
+-			return b;
++			ret = b;
+ 
+ 		if (unlikely(ret == -1))
+ 			ret = b / XSAVE_YMM_SIZE;
 -- 
 2.52.0
+
 
