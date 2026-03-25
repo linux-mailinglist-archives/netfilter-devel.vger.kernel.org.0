@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-11425-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11427-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cGXIGy5hxGkuywQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11425-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:26:54 +0100
+	id 8IbWFhZixGkuywQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11427-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:30:46 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1906932CF0B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:26:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02E6532D03E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:30:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B9FE9305040B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 22:26:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AE58730D6A5A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 22:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9835138B7C5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D060C383C6E;
 	Wed, 25 Mar 2026 22:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ErY5CTQ0"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Ycm9i/sA"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5853793DB;
-	Wed, 25 Mar 2026 22:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C943822AE;
+	Wed, 25 Mar 2026 22:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774477597; cv=none; b=d9ZgSKNfn/h7c+VHN2mHu9ngKXdFibWFGDzA0aWv2uYwdShw3U79TT0pWBC/5231NazP/GDlzRauYhusl1xbAj2gf/qaiEPngnMGW7nB/4H6Maaeeei7/MgaA9ELDjq7jBWW4rvLEUBjWf5YJLL2MBuGQMRjtvEvaJXfHzOlIsc=
+	t=1774477597; cv=none; b=RnWHsMWanxlPiwWZ4xKqgnV4WYgTCkHpiNqctyaEFbir5ZyeuIDX/JUvvFEKKEgVRk13DCUiCHr4DAUl0i6Sw9Bsiajgdqe0rhJb6XZQqeY/o7YmpKh7ndQV70hVVd1o4hG/Sn3iqYW4MJ3d6M4ksWU468xLNxK2t4jWEPLm7OA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1774477597; c=relaxed/simple;
-	bh=bSSQeRLAt8ztWJBujreX42RmbME573EsxO32BJwsp4Y=;
+	bh=w9FIUx0v0Qp3GBaguyz6w92Mv2UIgTtyGFsY3Imt3Ac=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rxdr5y0MLDiUK0yStENAKx2UkFmf086vV6UlV+je4zPcJTQRdyXRtW8NbKd094VuK0Xo4bgTMHUJ0RewMhs/a2ogwR6BT6IWZyu6qXp3NswoLqdi5ySR3XCf05+BWClQgXwuqh8aAxxEDOMOO5Snvw3pMC77DPFGFdT0AizttWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ErY5CTQ0; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=Iir2o7vtkbzB06/6yPbNprdo17r42KdTBMbjjpFGzclFGXhMPOGfF9xwvMp2zk8PMx5q3fqk9fOZmdKxR8P1uDYK5S1Zw6WwtMCBBqEEwKBanxO5uMwj8YtWyVCIgNp7qpgIFRHzT2mTMZCOob/+OGpR+LJ1A4v8vdXaxUHKXgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Ycm9i/sA; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 2CEDB60251;
-	Wed, 25 Mar 2026 23:26:32 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 810ED60253;
+	Wed, 25 Mar 2026 23:26:33 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1774477592;
-	bh=WNxZdluDIh5L9aujGAa+6rLbauRkSSIt5jI038ei7zg=;
+	s=2025; t=1774477594;
+	bh=+NbN5O/uWXAdsBJq9nQa4A8E5k87OUZjnzdXlSAYu4I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ErY5CTQ0Yd0OL0gUlChua7RuLEE+yaL9Rep20S599vrSRAw7osBpb1iUzqqwPZyUb
-	 mYjAWkk5edpxhPqQJ0gM76fkcL7/R3H7CnSFNvBcQ6lGI0vlKs/I/ObhUv0/zJ561P
-	 nBh1hfofgUGNoOQfbJxBSUxKEX5DaQqe9vJYyrSwxpxCOBQfYIJUnvpISrnYEpcYbd
-	 /BmNQ/l305qkTdHIpL3eKl4x7bysLDzwxH2cCP4Tf9q+oadJrFQ1GsWdfIz+wazf4z
-	 80aO4uKy5/5tc9jD/i2j5xF80GAx/K0OZv8ng3euav3rx+CClBs+E7m9P4KoO7q1Vz
-	 mIovu/w9NauVw==
+	b=Ycm9i/sAWZM3nWVaetghq0Tax/Scoj9cTfCH1Eg6kNqAZcOXdjCcSmxzhu/IpCKaT
+	 ezSUnPwKVmSySG8IkRi2sB19UG0KucZlikBTvwjvQq9E1rNVv38rr8TNN7M2IpR2xd
+	 p90AVUfJMgRRhqLycM4NIisOrMMSwmGz9CZHPI6hUFWwSZ2F3cdsGFWR5Al0qAvytT
+	 MpzSj+zfro210HM7vqWaMhtRz4mAz49F4YrfXiFVUhArDTioEkZTTnrUpfPG54TZlu
+	 FVD3N4bKusNukvs5hkdB9TnUkWaK/YIOSEMa62V1zhk7n3j6yLGNpoP13zwq5Do3jZ
+	 yR4amZITFSrfw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 07/14] netfilter: nft_set_rbtree: revisit array resize logic
-Date: Wed, 25 Mar 2026 23:26:08 +0100
-Message-ID: <20260325222615.637793-8-pablo@netfilter.org>
+Subject: [PATCH net 08/14] netfilter: nf_conntrack_expect: honor expectation helper field
+Date: Wed, 25 Mar 2026 23:26:09 +0100
+Message-ID: <20260325222615.637793-9-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260325222615.637793-1-pablo@netfilter.org>
 References: <20260325222615.637793-1-pablo@netfilter.org>
@@ -73,7 +73,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11425-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11427-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -90,192 +90,214 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1906932CF0B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
+X-Rspamd-Queue-Id: 02E6532D03E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Chris Arges reports high memory consumption with thousands of
-containers, this patch revisits the array allocation logic.
+The expectation helper field is mostly unused. As a result, the
+netfilter codebase relies on accessing the helper through exp->master.
 
-For anonymous sets, start by 16 slots (which takes 256 bytes on x86_64).
-Expand it by x2 until threshold of 512 slots is reached, over that
-threshold, expand it by x1.5.
+Always set on the expectation helper field so it can be used to reach
+the helper.
 
-For non-anonymous set, start by 1024 slots in the array (which takes 16
-Kbytes initially on x86_64). Expand it by x1.5.
+nf_ct_expect_init() is called from packet path where the skb owns
+the ct object, therefore accessing exp->master for the newly created
+expectation is safe. This saves a lot of updates in all callsites
+to pass the ct object as parameter to nf_ct_expect_init().
 
-Use set->ndeact to subtract deactivated elements when calculating the
-number of the slots in the array, otherwise the array size array gets
-increased artifically. Add special case shrink logic to deal with flush
-set too.
+This is a preparation patches for follow up fixes.
 
-The shrink logic is skipped by anonymous sets.
-
-Use check_add_overflow() to calculate the new array size.
-
-Add a WARN_ON_ONCE check to make sure elements fit into the new array
-size.
-
-Reported-by: Chris Arges <carges@cloudflare.com>
-Fixes: 7e43e0a1141d ("netfilter: nft_set_rbtree: translate rbtree to array for binary search")
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_set_rbtree.c | 92 +++++++++++++++++++++++++++-------
- 1 file changed, 75 insertions(+), 17 deletions(-)
+ include/net/netfilter/nf_conntrack_expect.h |  2 +-
+ net/netfilter/nf_conntrack_broadcast.c      |  2 +-
+ net/netfilter/nf_conntrack_expect.c         | 14 +++++++++++++-
+ net/netfilter/nf_conntrack_h323_main.c      | 12 ++++++------
+ net/netfilter/nf_conntrack_helper.c         |  7 ++++++-
+ net/netfilter/nf_conntrack_netlink.c        |  2 +-
+ net/netfilter/nf_conntrack_sip.c            |  2 +-
+ 7 files changed, 29 insertions(+), 12 deletions(-)
 
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index fe8bd497d74a..737c339decd0 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -572,14 +572,12 @@ static struct nft_array *nft_array_alloc(u32 max_intervals)
- 	return array;
- }
+diff --git a/include/net/netfilter/nf_conntrack_expect.h b/include/net/netfilter/nf_conntrack_expect.h
+index 165e7a03b8e9..1b01400b10bd 100644
+--- a/include/net/netfilter/nf_conntrack_expect.h
++++ b/include/net/netfilter/nf_conntrack_expect.h
+@@ -40,7 +40,7 @@ struct nf_conntrack_expect {
+ 			 struct nf_conntrack_expect *this);
  
--#define NFT_ARRAY_EXTRA_SIZE	10240
--
- /* Similar to nft_rbtree_{u,k}size to hide details to userspace, but consider
-  * packed representation coming from userspace for anonymous sets too.
-  */
- static u32 nft_array_elems(const struct nft_set *set)
+ 	/* Helper to assign to new connection */
+-	struct nf_conntrack_helper *helper;
++	struct nf_conntrack_helper __rcu *helper;
+ 
+ 	/* The conntrack of the master connection */
+ 	struct nf_conn *master;
+diff --git a/net/netfilter/nf_conntrack_broadcast.c b/net/netfilter/nf_conntrack_broadcast.c
+index a7552a46d6ac..1964c596c646 100644
+--- a/net/netfilter/nf_conntrack_broadcast.c
++++ b/net/netfilter/nf_conntrack_broadcast.c
+@@ -70,7 +70,7 @@ int nf_conntrack_broadcast_help(struct sk_buff *skb,
+ 	exp->expectfn             = NULL;
+ 	exp->flags                = NF_CT_EXPECT_PERMANENT;
+ 	exp->class		  = NF_CT_EXPECT_CLASS_DEFAULT;
+-	exp->helper               = NULL;
++	rcu_assign_pointer(exp->helper, helper);
+ 
+ 	nf_ct_expect_related(exp, 0);
+ 	nf_ct_expect_put(exp);
+diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
+index cfc2daa3fc7f..841e316240da 100644
+--- a/net/netfilter/nf_conntrack_expect.c
++++ b/net/netfilter/nf_conntrack_expect.c
+@@ -309,12 +309,19 @@ struct nf_conntrack_expect *nf_ct_expect_alloc(struct nf_conn *me)
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_expect_alloc);
+ 
++/* This function can only be used from packet path, where accessing
++ * master's helper is safe, because the packet holds a reference on
++ * the conntrack object. Never use it from control plane.
++ */
+ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
+ 		       u_int8_t family,
+ 		       const union nf_inet_addr *saddr,
+ 		       const union nf_inet_addr *daddr,
+ 		       u_int8_t proto, const __be16 *src, const __be16 *dst)
  {
--	u32 nelems = atomic_read(&set->nelems);
-+	u32 nelems = atomic_read(&set->nelems) - set->ndeact;
++	struct nf_conntrack_helper *helper = NULL;
++	struct nf_conn *ct = exp->master;
++	struct nf_conn_help *help;
+ 	int len;
  
- 	/* Adjacent intervals are represented with a single start element in
- 	 * anonymous sets, use the current element counter as is.
-@@ -595,27 +593,87 @@ static u32 nft_array_elems(const struct nft_set *set)
- 	return (nelems / 2) + 2;
+ 	if (family == AF_INET)
+@@ -325,7 +332,12 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
+ 	exp->flags = 0;
+ 	exp->class = class;
+ 	exp->expectfn = NULL;
+-	exp->helper = NULL;
++
++	help = nfct_help(ct);
++	if (help)
++		helper = rcu_dereference(help->helper);
++
++	rcu_assign_pointer(exp->helper, helper);
+ 	exp->tuple.src.l3num = family;
+ 	exp->tuple.dst.protonum = proto;
+ 
+diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
+index a2a0e22ccee1..3f5c50455b71 100644
+--- a/net/netfilter/nf_conntrack_h323_main.c
++++ b/net/netfilter/nf_conntrack_h323_main.c
+@@ -643,7 +643,7 @@ static int expect_h245(struct sk_buff *skb, struct nf_conn *ct,
+ 			  &ct->tuplehash[!dir].tuple.src.u3,
+ 			  &ct->tuplehash[!dir].tuple.dst.u3,
+ 			  IPPROTO_TCP, NULL, &port);
+-	exp->helper = &nf_conntrack_helper_h245;
++	rcu_assign_pointer(exp->helper, &nf_conntrack_helper_h245);
+ 
+ 	nathook = rcu_dereference(nfct_h323_nat_hook);
+ 	if (memcmp(&ct->tuplehash[dir].tuple.src.u3,
+@@ -767,7 +767,7 @@ static int expect_callforwarding(struct sk_buff *skb,
+ 	nf_ct_expect_init(exp, NF_CT_EXPECT_CLASS_DEFAULT, nf_ct_l3num(ct),
+ 			  &ct->tuplehash[!dir].tuple.src.u3, &addr,
+ 			  IPPROTO_TCP, NULL, &port);
+-	exp->helper = nf_conntrack_helper_q931;
++	rcu_assign_pointer(exp->helper, nf_conntrack_helper_q931);
+ 
+ 	nathook = rcu_dereference(nfct_h323_nat_hook);
+ 	if (memcmp(&ct->tuplehash[dir].tuple.src.u3,
+@@ -1234,7 +1234,7 @@ static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
+ 				&ct->tuplehash[!dir].tuple.src.u3 : NULL,
+ 			  &ct->tuplehash[!dir].tuple.dst.u3,
+ 			  IPPROTO_TCP, NULL, &port);
+-	exp->helper = nf_conntrack_helper_q931;
++	rcu_assign_pointer(exp->helper, nf_conntrack_helper_q931);
+ 	exp->flags = NF_CT_EXPECT_PERMANENT;	/* Accept multiple calls */
+ 
+ 	nathook = rcu_dereference(nfct_h323_nat_hook);
+@@ -1306,7 +1306,7 @@ static int process_gcf(struct sk_buff *skb, struct nf_conn *ct,
+ 	nf_ct_expect_init(exp, NF_CT_EXPECT_CLASS_DEFAULT, nf_ct_l3num(ct),
+ 			  &ct->tuplehash[!dir].tuple.src.u3, &addr,
+ 			  IPPROTO_UDP, NULL, &port);
+-	exp->helper = nf_conntrack_helper_ras;
++	rcu_assign_pointer(exp->helper, nf_conntrack_helper_ras);
+ 
+ 	if (nf_ct_expect_related(exp, 0) == 0) {
+ 		pr_debug("nf_ct_ras: expect RAS ");
+@@ -1523,7 +1523,7 @@ static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
+ 			  &ct->tuplehash[!dir].tuple.src.u3, &addr,
+ 			  IPPROTO_TCP, NULL, &port);
+ 	exp->flags = NF_CT_EXPECT_PERMANENT;
+-	exp->helper = nf_conntrack_helper_q931;
++	rcu_assign_pointer(exp->helper, nf_conntrack_helper_q931);
+ 
+ 	if (nf_ct_expect_related(exp, 0) == 0) {
+ 		pr_debug("nf_ct_ras: expect Q.931 ");
+@@ -1577,7 +1577,7 @@ static int process_lcf(struct sk_buff *skb, struct nf_conn *ct,
+ 			  &ct->tuplehash[!dir].tuple.src.u3, &addr,
+ 			  IPPROTO_TCP, NULL, &port);
+ 	exp->flags = NF_CT_EXPECT_PERMANENT;
+-	exp->helper = nf_conntrack_helper_q931;
++	rcu_assign_pointer(exp->helper, nf_conntrack_helper_q931);
+ 
+ 	if (nf_ct_expect_related(exp, 0) == 0) {
+ 		pr_debug("nf_ct_ras: expect Q.931 ");
+diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
+index ceb48c3ca0a4..294a6ffcbccd 100644
+--- a/net/netfilter/nf_conntrack_helper.c
++++ b/net/netfilter/nf_conntrack_helper.c
+@@ -399,7 +399,7 @@ static bool expect_iter_me(struct nf_conntrack_expect *exp, void *data)
+ 	const struct nf_conntrack_helper *me = data;
+ 	const struct nf_conntrack_helper *this;
+ 
+-	if (exp->helper == me)
++	if (rcu_access_pointer(exp->helper) == me)
+ 		return true;
+ 
+ 	this = rcu_dereference_protected(help->helper,
+@@ -421,6 +421,11 @@ void nf_conntrack_helper_unregister(struct nf_conntrack_helper *me)
+ 
+ 	nf_ct_expect_iterate_destroy(expect_iter_me, NULL);
+ 	nf_ct_iterate_destroy(unhelp, me);
++
++	/* nf_ct_iterate_destroy() does an unconditional synchronize_rcu() as
++	 * last step, this ensures rcu readers of exp->helper are done.
++	 * No need for another synchronize_rcu() here.
++	 */
  }
+ EXPORT_SYMBOL_GPL(nf_conntrack_helper_unregister);
  
--static int nft_array_may_resize(const struct nft_set *set)
-+#define NFT_ARRAY_INITIAL_SIZE		1024
-+#define NFT_ARRAY_INITIAL_ANON_SIZE	16
-+#define NFT_ARRAY_INITIAL_ANON_THRESH	(8192U / sizeof(struct nft_array_interval))
-+
-+static int nft_array_may_resize(const struct nft_set *set, bool flush)
- {
--	u32 nelems = nft_array_elems(set), new_max_intervals;
-+	u32 initial_intervals, max_intervals, new_max_intervals, delta;
-+	u32 shrinked_max_intervals, nelems = nft_array_elems(set);
- 	struct nft_rbtree *priv = nft_set_priv(set);
- 	struct nft_array *array;
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index c156574e1273..a42d14290786 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -3573,7 +3573,7 @@ ctnetlink_alloc_expect(const struct nlattr * const cda[], struct nf_conn *ct,
  
--	if (!priv->array_next) {
--		array = nft_array_alloc(nelems + NFT_ARRAY_EXTRA_SIZE);
--		if (!array)
--			return -ENOMEM;
-+	if (nft_set_is_anonymous(set))
-+		initial_intervals = NFT_ARRAY_INITIAL_ANON_SIZE;
-+	else
-+		initial_intervals = NFT_ARRAY_INITIAL_SIZE;
-+
-+	if (priv->array_next) {
-+		max_intervals = priv->array_next->max_intervals;
-+		new_max_intervals = priv->array_next->max_intervals;
-+	} else {
-+		if (priv->array) {
-+			max_intervals = priv->array->max_intervals;
-+			new_max_intervals = priv->array->max_intervals;
-+		} else {
-+			max_intervals = 0;
-+			new_max_intervals = initial_intervals;
-+		}
-+	}
+ 	exp->class = class;
+ 	exp->master = ct;
+-	exp->helper = helper;
++	rcu_assign_pointer(exp->helper, helper);
+ 	exp->tuple = *tuple;
+ 	exp->mask.src.u3 = mask->src.u3;
+ 	exp->mask.src.u.all = mask->src.u.all;
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index 4ab5ef71d96d..106b2f419e19 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -1297,7 +1297,7 @@ static int process_register_request(struct sk_buff *skb, unsigned int protoff,
+ 	nf_ct_expect_init(exp, SIP_EXPECT_SIGNALLING, nf_ct_l3num(ct),
+ 			  saddr, &daddr, proto, NULL, &port);
+ 	exp->timeout.expires = sip_timeout * HZ;
+-	exp->helper = helper;
++	rcu_assign_pointer(exp->helper, helper);
+ 	exp->flags = NF_CT_EXPECT_PERMANENT | NF_CT_EXPECT_INACTIVE;
  
--		priv->array_next = array;
-+	if (nft_set_is_anonymous(set))
-+		goto maybe_grow;
-+
-+	if (flush) {
-+		/* Set flush just started, nelems still report elements.*/
-+		nelems = 0;
-+		new_max_intervals = NFT_ARRAY_INITIAL_SIZE;
-+		goto realloc_array;
- 	}
- 
--	if (nelems < priv->array_next->max_intervals)
--		return 0;
-+	if (check_add_overflow(new_max_intervals, new_max_intervals,
-+			       &shrinked_max_intervals))
-+		return -EOVERFLOW;
-+
-+	shrinked_max_intervals = DIV_ROUND_UP(shrinked_max_intervals, 3);
- 
--	new_max_intervals = priv->array_next->max_intervals + NFT_ARRAY_EXTRA_SIZE;
--	if (nft_array_intervals_alloc(priv->array_next, new_max_intervals) < 0)
-+	if (shrinked_max_intervals > NFT_ARRAY_INITIAL_SIZE &&
-+	    nelems < shrinked_max_intervals) {
-+		new_max_intervals = shrinked_max_intervals;
-+		goto realloc_array;
-+	}
-+maybe_grow:
-+	if (nelems > new_max_intervals) {
-+		if (nft_set_is_anonymous(set) &&
-+		    new_max_intervals < NFT_ARRAY_INITIAL_ANON_THRESH) {
-+			new_max_intervals <<= 1;
-+		} else {
-+			delta = new_max_intervals >> 1;
-+			if (check_add_overflow(new_max_intervals, delta,
-+					       &new_max_intervals))
-+				return -EOVERFLOW;
-+		}
-+	}
-+
-+realloc_array:
-+	if (WARN_ON_ONCE(nelems > new_max_intervals))
- 		return -ENOMEM;
- 
-+	if (priv->array_next) {
-+		if (max_intervals == new_max_intervals)
-+			return 0;
-+
-+		if (nft_array_intervals_alloc(priv->array_next, new_max_intervals) < 0)
-+			return -ENOMEM;
-+	} else {
-+		array = nft_array_alloc(new_max_intervals);
-+		if (!array)
-+			return -ENOMEM;
-+
-+		priv->array_next = array;
-+	}
-+
- 	return 0;
- }
- 
-@@ -630,7 +688,7 @@ static int nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 
- 	nft_rbtree_maybe_reset_start_cookie(priv, tstamp);
- 
--	if (nft_array_may_resize(set) < 0)
-+	if (nft_array_may_resize(set, false) < 0)
- 		return -ENOMEM;
- 
- 	do {
-@@ -741,7 +799,7 @@ nft_rbtree_deactivate(const struct net *net, const struct nft_set *set,
- 	    nft_rbtree_interval_null(set, this))
- 		priv->start_rbe_cookie = 0;
- 
--	if (nft_array_may_resize(set) < 0)
-+	if (nft_array_may_resize(set, false) < 0)
- 		return NULL;
- 
- 	while (parent != NULL) {
-@@ -811,7 +869,7 @@ static void nft_rbtree_walk(const struct nft_ctx *ctx,
- 
- 	switch (iter->type) {
- 	case NFT_ITER_UPDATE_CLONE:
--		if (nft_array_may_resize(set) < 0) {
-+		if (nft_array_may_resize(set, true) < 0) {
- 			iter->err = -ENOMEM;
- 			break;
- 		}
+ 	hooks = rcu_dereference(nf_nat_sip_hooks);
 -- 
 2.47.3
 
