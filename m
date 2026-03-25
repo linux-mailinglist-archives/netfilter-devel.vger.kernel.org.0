@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11404-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11405-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ONDKJ3bjw2lvugQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11404-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:30:30 +0100
+	id OPjPLEHjw2lvugQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11405-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:29:37 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBB3325CB2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:30:30 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B95325C75
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:29:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3D8C6316D6EB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:13:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9FD90311E605
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D888F3DA5C4;
-	Wed, 25 Mar 2026 13:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E95A3D9DD5;
+	Wed, 25 Mar 2026 13:12:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8AD3D9DC2;
-	Wed, 25 Mar 2026 13:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A51FB3D9022;
+	Wed, 25 Mar 2026 13:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774444339; cv=none; b=XBGhIErnGflv1VVVwesAP4ok5Y4hqB1qId3toTg7JmZqD2fr5T+pdb3fRSE2rA50JAbk5teAi0vXwVPi1l9Q5CxGwp8Zh0hxzDu0wLWJlbSljThz2tCjZ/JCTiN9gMnui4Ho5vJkrgGYTprPMd4wvUVJFku3WuZAQ+Tzozl4HuI=
+	t=1774444344; cv=none; b=Cy62wdjyhaHzjrwx6F/EVWus2m+H6gLXceCXKhrlICsZYN6ig7wFc8YCSNnR6HDNecRlhATv/uMxk/+uh4t27GmDiWeTpFw4fW1wIbNEQcf/vmmqFg1+BJZOacnwpwfRocF1baPupVrePjlo7OdR4tmPDtMqkcUoYoECpNPkGuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774444339; c=relaxed/simple;
-	bh=B1rBLtY538GMjXZ96www7wmb1ZFn6bQoyyqdFO+3sis=;
+	s=arc-20240116; t=1774444344; c=relaxed/simple;
+	bh=/E6hGD2SWtfR8W6UsJdY6xZ4Q4GbinANu0aUHkmUkEA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t5HuocoRskop+wkNhzr584OuOIWrra94ZL8JjrZPs+kQq+dz2aOK9k3t5s6l5qWgSsqQ+8KfZ3IMErjH10fCoMc/lVW788VIeCIWSl91QkNEYoP7DcoCbKmax2X4A6WNMaSBEDgyLHx+HHPImdddyy4sM8OcbE6WfcsQXX8CRkc=
+	 MIME-Version; b=M42j28R3Xd5Ie1dAkMPhe+4v6nev8XKMvsdIqoxglswcE4YFFkB6VDeXojIOfXe0fGG/UDyiIv//PzPdhDkx6MHBZH7+VuEpoYdDsiAZtUE6OhmuNTyVmU23dxshPA28QAn/jW+AdanCncGz+SMmwaYAYtQi+dN1YGXp1SJCW+U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id ED3EE60A3E; Wed, 25 Mar 2026 14:12:16 +0100 (CET)
+	id 514F860AE1; Wed, 25 Mar 2026 14:12:21 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 10/14] netfilter: ctnetlink: ensure safe access to master conntrack
-Date: Wed, 25 Mar 2026 14:11:04 +0100
-Message-ID: <20260325131108.23045-11-fw@strlen.de>
+Subject: [PATCH net 11/14] netfilter: nf_conntrack_expect: store netns and zone in expectation
+Date: Wed, 25 Mar 2026 14:11:05 +0100
+Message-ID: <20260325131108.23045-12-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260325131108.23045-1-fw@strlen.de>
 References: <20260325131108.23045-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11404-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11405-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,7 +71,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -79,218 +79,129 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid,netfilter.org:email]
-X-Rspamd-Queue-Id: 3FBB3325CB2
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
+X-Rspamd-Queue-Id: 00B95325C75
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Holding reference on the expectation is not sufficient, the master
-conntrack object can just go away, making exp->master invalid.
-
-To access exp->master safely:
-
-- Grab the nf_conntrack_expect_lock, this gets serialized with
-  clean_from_lists() which also holds this lock when the master
-  conntrack goes away.
-
-- Hold reference on master conntrack via nf_conntrack_find_get().
-  Not so easy since the master tuple to look up for the master conntrack
-  is not available in the existing problematic paths.
-
-This patch goes for extending the nf_conntrack_expect_lock section
-to address this issue for simplicity, in the cases that are described
-below this is just slightly extending the lock section.
-
-The add expectation command already holds a reference to the master
-conntrack from ctnetlink_create_expect().
-
-However, the delete expectation command needs to grab the spinlock
-before looking up for the expectation. Expand the existing spinlock
-section to address this to cover the expectation lookup. Note that,
-the nf_ct_expect_iterate_net() calls already grabs the spinlock while
-iterating over the expectation table, which is correct.
-
-The get expectation command needs to grab the spinlock to ensure master
-conntrack does not go away. This also expands the existing spinlock
-section to cover the expectation lookup too. I needed to move the
-netlink skb allocation out of the spinlock to keep it GFP_KERNEL.
-
-For the expectation events, the IPEXP_DESTROY event is already delivered
-under the spinlock, just move the delivery of IPEXP_NEW under the
-spinlock too because the master conntrack event cache is reached through
+__nf_ct_expect_find() and nf_ct_expect_find_get() are called under
+rcu_read_lock() but they dereference the master conntrack via
 exp->master.
 
-While at it, add lockdep notations to help identify what codepaths need
-to grab the spinlock.
+Since the expectation does not hold a reference on the master conntrack,
+this could be dying conntrack or different recycled conntrack than the
+real master due to SLAB_TYPESAFE_RCU.
+
+Store the netns, the master_tuple and the zone in struct
+nf_conntrack_expect as a safety measure.
+
+This patch is required by the follow up fix not to dump expectations
+that do not belong to this netns.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_conntrack_core.h |  5 ++++
- net/netfilter/nf_conntrack_ecache.c       |  2 ++
- net/netfilter/nf_conntrack_expect.c       | 10 +++++++-
- net/netfilter/nf_conntrack_netlink.c      | 28 +++++++++++++++--------
- 4 files changed, 35 insertions(+), 10 deletions(-)
+ include/net/netfilter/nf_conntrack_expect.h | 18 +++++++++++++++++-
+ net/netfilter/nf_conntrack_expect.c         |  8 ++++++--
+ net/netfilter/nf_conntrack_netlink.c        |  3 +++
+ 3 files changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
-index 3384859a8921..8883575adcc1 100644
---- a/include/net/netfilter/nf_conntrack_core.h
-+++ b/include/net/netfilter/nf_conntrack_core.h
-@@ -83,6 +83,11 @@ void nf_conntrack_lock(spinlock_t *lock);
+diff --git a/include/net/netfilter/nf_conntrack_expect.h b/include/net/netfilter/nf_conntrack_expect.h
+index 1b01400b10bd..e9a8350e7ccf 100644
+--- a/include/net/netfilter/nf_conntrack_expect.h
++++ b/include/net/netfilter/nf_conntrack_expect.h
+@@ -22,10 +22,16 @@ struct nf_conntrack_expect {
+ 	/* Hash member */
+ 	struct hlist_node hnode;
  
- extern spinlock_t nf_conntrack_expect_lock;
++	/* Network namespace */
++	possible_net_t net;
++
+ 	/* We expect this tuple, with the following mask */
+ 	struct nf_conntrack_tuple tuple;
+ 	struct nf_conntrack_tuple_mask mask;
  
-+static inline void lockdep_nfct_expect_lock_held(void)
-+{
-+	lockdep_assert_held(&nf_conntrack_expect_lock);
++#ifdef CONFIG_NF_CONNTRACK_ZONES
++	struct nf_conntrack_zone zone;
++#endif
+ 	/* Usage count. */
+ 	refcount_t use;
+ 
+@@ -62,7 +68,17 @@ struct nf_conntrack_expect {
+ 
+ static inline struct net *nf_ct_exp_net(struct nf_conntrack_expect *exp)
+ {
+-	return nf_ct_net(exp->master);
++	return read_pnet(&exp->net);
 +}
 +
- /* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
++static inline bool nf_ct_exp_zone_equal_any(const struct nf_conntrack_expect *a,
++					    const struct nf_conntrack_zone *b)
++{
++#ifdef CONFIG_NF_CONNTRACK_ZONES
++	return a->zone.id == b->id;
++#else
++	return true;
++#endif
+ }
  
- static inline void __nf_ct_set_timeout(struct nf_conn *ct, u64 timeout)
-diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
-index 81baf2082604..9df159448b89 100644
---- a/net/netfilter/nf_conntrack_ecache.c
-+++ b/net/netfilter/nf_conntrack_ecache.c
-@@ -247,6 +247,8 @@ void nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
- 	struct nf_ct_event_notifier *notify;
- 	struct nf_conntrack_ecache *e;
- 
-+	lockdep_nfct_expect_lock_held();
-+
- 	rcu_read_lock();
- 	notify = rcu_dereference(net->ct.nf_conntrack_event_cb);
- 	if (!notify)
+ #define NF_CT_EXP_POLICY_NAME_LEN	16
 diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
-index 16c7af4044b3..2505d1f4b68c 100644
+index 2505d1f4b68c..8896fb20b58e 100644
 --- a/net/netfilter/nf_conntrack_expect.c
 +++ b/net/netfilter/nf_conntrack_expect.c
-@@ -51,6 +51,7 @@ void nf_ct_unlink_expect_report(struct nf_conntrack_expect *exp,
- 	struct net *net = nf_ct_exp_net(exp);
- 	struct nf_conntrack_net *cnet;
- 
-+	lockdep_nfct_expect_lock_held();
- 	WARN_ON(!master_help);
- 	WARN_ON(timer_pending(&exp->timeout));
- 
-@@ -118,6 +119,8 @@ nf_ct_exp_equal(const struct nf_conntrack_tuple *tuple,
+@@ -113,8 +113,8 @@ nf_ct_exp_equal(const struct nf_conntrack_tuple *tuple,
+ 		const struct net *net)
+ {
+ 	return nf_ct_tuple_mask_cmp(tuple, &i->tuple, &i->mask) &&
+-	       net_eq(net, nf_ct_net(i->master)) &&
+-	       nf_ct_zone_equal_any(i->master, zone);
++	       net_eq(net, read_pnet(&i->net)) &&
++	       nf_ct_exp_zone_equal_any(i, zone);
+ }
  
  bool nf_ct_remove_expect(struct nf_conntrack_expect *exp)
+@@ -324,6 +324,8 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
+ 		       const union nf_inet_addr *daddr,
+ 		       u_int8_t proto, const __be16 *src, const __be16 *dst)
  {
-+	lockdep_nfct_expect_lock_held();
++	struct net *net = read_pnet(&exp->master->ct_net);
 +
- 	if (timer_delete(&exp->timeout)) {
- 		nf_ct_unlink_expect(exp);
- 		nf_ct_expect_put(exp);
-@@ -177,6 +180,8 @@ nf_ct_find_expectation(struct net *net,
- 	struct nf_conntrack_expect *i, *exp = NULL;
- 	unsigned int h;
+ 	int len;
  
-+	lockdep_nfct_expect_lock_held();
-+
- 	if (!cnet->expect_count)
- 		return NULL;
+ 	if (family == AF_INET)
+@@ -335,6 +337,8 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
+ 	exp->class = class;
+ 	exp->expectfn = NULL;
+ 	rcu_assign_pointer(exp->helper, nfct_help(exp->master)->helper);
++	write_pnet(&exp->net, net);
++	exp->zone = exp->master->zone;
+ 	exp->tuple.src.l3num = family;
+ 	exp->tuple.dst.protonum = proto;
  
-@@ -446,6 +451,8 @@ static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect,
- 	unsigned int h;
- 	int ret = 0;
- 
-+	lockdep_nfct_expect_lock_held();
-+
- 	if (!master_help) {
- 		ret = -ESHUTDOWN;
- 		goto out;
-@@ -502,8 +509,9 @@ int nf_ct_expect_related_report(struct nf_conntrack_expect *expect,
- 
- 	nf_ct_expect_insert(expect);
- 
--	spin_unlock_bh(&nf_conntrack_expect_lock);
- 	nf_ct_expect_event_report(IPEXP_NEW, expect, portid, report);
-+	spin_unlock_bh(&nf_conntrack_expect_lock);
-+
- 	return 0;
- out:
- 	spin_unlock_bh(&nf_conntrack_expect_lock);
 diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 8477c3736432..89540112d165 100644
+index 89540112d165..2ec33c0518e9 100644
 --- a/net/netfilter/nf_conntrack_netlink.c
 +++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3355,31 +3355,37 @@ static int ctnetlink_get_expect(struct sk_buff *skb,
- 	if (err < 0)
- 		return err;
+@@ -3538,6 +3538,7 @@ ctnetlink_alloc_expect(const struct nlattr * const cda[], struct nf_conn *ct,
+ 		       struct nf_conntrack_tuple *tuple,
+ 		       struct nf_conntrack_tuple *mask)
+ {
++	struct net *net = read_pnet(&ct->ct_net);
+ 	struct nf_conntrack_expect *exp;
+ 	struct nf_conn_help *help;
+ 	u32 class = 0;
+@@ -3577,6 +3578,8 @@ ctnetlink_alloc_expect(const struct nlattr * const cda[], struct nf_conn *ct,
  
-+	skb2 = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!skb2)
-+		return -ENOMEM;
-+
-+	spin_lock_bh(&nf_conntrack_expect_lock);
- 	exp = nf_ct_expect_find_get(info->net, &zone, &tuple);
--	if (!exp)
-+	if (!exp) {
-+		spin_unlock_bh(&nf_conntrack_expect_lock);
-+		kfree_skb(skb2);
- 		return -ENOENT;
-+	}
- 
- 	if (cda[CTA_EXPECT_ID]) {
- 		__be32 id = nla_get_be32(cda[CTA_EXPECT_ID]);
- 
- 		if (id != nf_expect_get_id(exp)) {
- 			nf_ct_expect_put(exp);
-+			spin_unlock_bh(&nf_conntrack_expect_lock);
-+			kfree_skb(skb2);
- 			return -ENOENT;
- 		}
- 	}
- 
--	skb2 = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
--	if (!skb2) {
--		nf_ct_expect_put(exp);
--		return -ENOMEM;
--	}
--
- 	rcu_read_lock();
- 	err = ctnetlink_exp_fill_info(skb2, NETLINK_CB(skb).portid,
- 				      info->nlh->nlmsg_seq, IPCTNL_MSG_EXP_NEW,
- 				      exp);
- 	rcu_read_unlock();
- 	nf_ct_expect_put(exp);
-+	spin_unlock_bh(&nf_conntrack_expect_lock);
-+
- 	if (err <= 0) {
- 		kfree_skb(skb2);
- 		return -ENOMEM;
-@@ -3426,22 +3432,26 @@ static int ctnetlink_del_expect(struct sk_buff *skb,
- 		if (err < 0)
- 			return err;
- 
-+		spin_lock_bh(&nf_conntrack_expect_lock);
-+
- 		/* bump usage count to 2 */
- 		exp = nf_ct_expect_find_get(info->net, &zone, &tuple);
--		if (!exp)
-+		if (!exp) {
-+			spin_unlock_bh(&nf_conntrack_expect_lock);
- 			return -ENOENT;
-+		}
- 
- 		if (cda[CTA_EXPECT_ID]) {
- 			__be32 id = nla_get_be32(cda[CTA_EXPECT_ID]);
- 
- 			if (id != nf_expect_get_id(exp)) {
- 				nf_ct_expect_put(exp);
-+				spin_unlock_bh(&nf_conntrack_expect_lock);
- 				return -ENOENT;
- 			}
- 		}
- 
- 		/* after list removal, usage count == 1 */
--		spin_lock_bh(&nf_conntrack_expect_lock);
- 		if (timer_delete(&exp->timeout)) {
- 			nf_ct_unlink_expect_report(exp, NETLINK_CB(skb).portid,
- 						   nlmsg_report(info->nlh));
+ 	exp->class = class;
+ 	exp->master = ct;
++	write_pnet(&exp->net, net);
++	exp->zone = ct->zone;
+ 	if (!helper)
+ 		helper = rcu_dereference(help->helper);
+ 	rcu_assign_pointer(exp->helper, helper);
 -- 
 2.52.0
 
