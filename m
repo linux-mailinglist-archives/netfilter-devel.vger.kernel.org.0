@@ -1,96 +1,113 @@
-Return-Path: <netfilter-devel+bounces-11416-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11417-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WD3ON44fxGmZwgQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11416-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 18:46:54 +0100
+	id iJ2TN3IgxGmZwgQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11417-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 18:50:42 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B21C032A145
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 18:46:54 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6EBA32A1BF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 18:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2C2BE300B06D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 17:43:16 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7A9EF3005150
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 17:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015A340627B;
-	Wed, 25 Mar 2026 17:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F54B3502A4;
+	Wed, 25 Mar 2026 17:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="dLrB24iW"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1F43E1228;
-	Wed, 25 Mar 2026 17:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EFF402B89;
+	Wed, 25 Mar 2026 17:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774460594; cv=none; b=WlLKbPgrdJdm8FcSMZC34DFYsJXJpFeU5LPA5dZUlzkOoAClA5A9Ps6iAttErd6GK6y2ONoyCP/I0bo0gV2c8DNBmBSlFVTBmQYvTenGMX28bNlXw/bU2faHZluGARK1GML3kP4dY96+imRjrA8qlbhbfZJhtm/490lq9lUGEcA=
+	t=1774460941; cv=none; b=B4CjL0YvN7T/s1lcOJpwsDiiWOZjsM7d4cvm6PjpFHRwXSnDLFvbX/XJ18o90T7/ps+4bIW1jn3OyeiVC1ZYPQ8Xj0BVA8P33zB/979fInR1EuL9w6Tk+igbjRrYuwj5P8Rd5p5fULwy0Dhe8CoMSsbgh08ZY/6Gi7hpypLhmFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774460594; c=relaxed/simple;
-	bh=9nOzvTOWDYHYjqWZEIDiCZjN6zoOgRNM98wjdmmg10M=;
+	s=arc-20240116; t=1774460941; c=relaxed/simple;
+	bh=hNlZT99ZtZwiTYpq5bBjvL5AKd1qeEcHL4Ekvpii4Ew=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HzFFNBNlSeuKf1ik+DC1wAgV3LgdEBv81beQQxKUhrKkS7SNgzRyrTfkz+FJp3leuQ7dBoyoajRyZcae5qXRkj5yZlmMxvNvXu5VacpqAtIp2PRm3ApBN62zdVn0H/P33u45Yy9EVXwUw2aNhnVkic2/BN4uWXj0E9Nr09eQeiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 7D32D608BD; Wed, 25 Mar 2026 18:43:10 +0100 (CET)
-Date: Wed, 25 Mar 2026 18:42:50 +0100
-From: Florian Westphal <fw@strlen.de>
-To: netdev@vger.kernel.org
-Cc: Paolo Abeni <pabeni@redhat.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=omO1xQZzPpy3OxXEwNFa5688PD95w61dKz2sWZhFSpeZfnW/Xm5r8Fhjh/RQq8UKajp22D6y+TasDt7j28RK9q1UzDCzPoceNnT/VsgazpMlHPAFbqqHRmyiMRYbLlHOlVm1QtsiUNVTnZ30eNEnywW6+t8ySMHuQqFl0qQkQ+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=dLrB24iW; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 3F33B600B5;
+	Wed, 25 Mar 2026 18:48:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1774460936;
+	bh=3a98aCNzUG7RIJEQkjk8/YAJhffjtA16hOkwN0kGb0c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dLrB24iWJZu0JkCYy2cHOU5jmR2DVGeVd1q2WnLVRTslU/OVKXX8nz0l8qUqxWecL
+	 C9fmo6wzkobE9Y2squ9jmnMJyUBR+0DH0Ky4hY9YSh0iNgUY32YAaohD6kR0tRCr6s
+	 JMvj8teK0sxVzHJKcJYZ/FnnZNqAp9PnmyAYaIEbTqUCYUMq27V/eVrR6/iCeJzavl
+	 lOpGdFJQ67J/y92nXmhdB7i5qSEl+tMLjrMpLPLf17fCaQByQ+4xlJdr5M+9D4mXEY
+	 DDcu1K2g/lPSenzHLSoweFSDamHG+urgBSi6maoirck4fuHHPdl7LgzI7eVkHDzRBQ
+	 z/EeOigtboaEg==
+Date: Wed, 25 Mar 2026 18:48:53 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, netfilter-devel@vger.kernel.org,
-	pablo@netfilter.org
+	Jakub Kicinski <kuba@kernel.org>, netfilter-devel@vger.kernel.org
 Subject: Re: [PATCH net 00/14] netfilter: updates for net
-Message-ID: <acQemtlq03AZvjL7@strlen.de>
+Message-ID: <acQgBRbJHRqbu--0@chamomile>
 References: <20260325131108.23045-1-fw@strlen.de>
+ <acQemtlq03AZvjL7@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260325131108.23045-1-fw@strlen.de>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+In-Reply-To: <acQemtlq03AZvjL7@strlen.de>
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11416-lists,netfilter-devel=lfdr.de];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-11417-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	R_DKIM_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B21C032A145
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:email,netfilter.org:dkim]
+X-Rspamd-Queue-Id: D6EBA32A1BF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Florian Westphal <fw@strlen.de> wrote:
-> Hi,
+On Wed, Mar 25, 2026 at 06:42:50PM +0100, Florian Westphal wrote:
+> Florian Westphal <fw@strlen.de> wrote:
+> > Hi,
+> > 
+> > The following patchset contains Netfilter fixes for *net*.
+> > Note that most bugs fixed here stem from 2.6 days, the large PR
+> > is not due to an increase in regressions.
 > 
-> The following patchset contains Netfilter fixes for *net*.
-> Note that most bugs fixed here stem from 2.6 days, the large PR
-> is not due to an increase in regressions.
+> please toss this.  I'm not sending a new PR.
 
-please toss this.  I'm not sending a new PR.
+Will you please collapse this incremental fix to 8/14 in the new PR?
 
-I hate my life.
+Thanks.
 
