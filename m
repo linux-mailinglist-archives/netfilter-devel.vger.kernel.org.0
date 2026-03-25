@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-11424-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11426-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2JFUKABixGkuywQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11424-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:30:24 +0100
+	id aLCfGi9hxGkuywQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11426-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:26:55 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5119732D026
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:30:24 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B7C32CF12
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:26:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2A20630B7A2A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 22:26:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0D9253053CD8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 22:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C6A38839B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7C938C439;
 	Wed, 25 Mar 2026 22:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Is8pgJJv"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="WQv4vnTU"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA851381B1D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99CB37C91E;
 	Wed, 25 Mar 2026 22:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774477597; cv=none; b=PUgJb+5LMV4V6Q/n8T0Ok/THDd27VjEMfNhHkvYnoegyfDsJtOOA8IPE/KSYALu0k3lD8z74scvvpckcYvwidKiay7EM6xpjvNqIMnHFBpgfxKYJ+O4yfDWOGkB75581EXTNAP2enjCShpgb4803rjVJv6BLiVpnv2Jr3IWVm80=
+	t=1774477597; cv=none; b=UJ1suHzqZT1aPZHV/dtJg/PzJ6iVhRWUdgDobF5wD0NPRLwF7IMTJPIl3QCEtPF9Jrcuc57st+TUi5jpLx9aRIrrIQj1R4JZjQ1aZa1jBcmtta7JKmfGuH8MGWhsOkQojJGMAMgsfwSG5GOEM/RaczhvY4zfiFk/0/N9JyFik98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1774477597; c=relaxed/simple;
-	bh=K7RSrdEFZy6Z+RlJPtEraPlErH2kH671nvcT1Ug4334=;
+	bh=kg1OayMZV+GDtLjuLidMVS9iNPpBQZ69aqy5dc4Q6WI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gtOV3iW9f9OEk9qwByR/EU3b5i088bCtAESxDdojN4t1ulTjcoi+VFxFzLUqjwcYpEl7km6yzDeBCsJ5L3Q+IVcVgaABCUB0j8Y5bEySTMLfhV4pBP9kEBXV/S5V4IdoIEG0VAVGoSNmCeJBHKEBW4a+P11myozr7pl0JlOFsec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Is8pgJJv; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=NHRJweIVJKLwnyJ6cY5sGBX/hB6YphHOi+Ps1bbK//Y9hrmN2YYzF9bgHRoqFXSTqFGtXxQqpdz0nD9Ujet//w9SUS4yrpWlJix+wwD4aqjv3zGt7H7iGvnqroLsIEUizKRTNQWB92VTwebbKB6R1wsl4YC3PFZfJd2TPmOKukA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=WQv4vnTU; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id C893B60180;
-	Wed, 25 Mar 2026 23:26:28 +0100 (CET)
+	by mail.netfilter.org (Postfix) with ESMTPSA id DDD5360181;
+	Wed, 25 Mar 2026 23:26:29 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1774477589;
-	bh=PIh+oFx3ncJBBFZxKgZDh/cS8gnROLybKH/NG8EuEkg=;
+	s=2025; t=1774477590;
+	bh=cVccOpvjmCnsd1Ql2RpElCCheT0DBWh3gcduTvNEq8o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Is8pgJJvbBEHBFukM7CRaU4lKTha55XlKQnijXNkRApB/2eCo5Tg8ittoZtX8r4l3
-	 hjW9iNWZOv2WXsmbNeskBgL8Sfkd9z422DpHON5SKp59RLVLYBfKgJ5aBAzsryq/ZT
-	 89pw5Um4jsEeT8W17S4ZqRTB4ycrjm8baZBtJYu9D5IWREiaCgVvWqkkA84L0o4Dpe
-	 575V+5daaRrHr/hcrj5C/SyKZCNAHNFFPajbOL2dkrXkD/GZo7vz9RF+T54DDwMm0t
-	 omecxgkbAUwHG4D6Fo2M/xlrFcQSKtgHgSs9CF3PqnlluSjwKVgh6REww4VeM/wTKk
-	 JJ1fXv1Z9EsXg==
+	b=WQv4vnTUbJuvQUOtZlIufGw3Q/qPfyAVTOdsVPSA64F/RxrccvazDQ/pHvHDXuwaz
+	 xcxmnONjf7xJnvBi6X2F6/dOjhJuBbnhMTTrKr+hTbyLJ4pQ/OMeaHyec6JSzq2K2c
+	 tu4426j2NOpZ7Pz34+jTCDObb7scKG3T03sIGfD60xuIZ2z2wC94mIs+ZBrhvZ2+Xh
+	 528G7m2rwcb+qfDOh2xEgf/GVK7wzDR/MtqgIMcq9YEtW5jT5l4gHnQ1ZZfpz18u/P
+	 acppAmKkBpSNw0sOvtrQpzC6jlIGMJ0aybV4pC/uvbmc11M2Uw6gPOlfQRx1B4jlxW
+	 HKRiJu3Ez7jUg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 04/14] netfilter: nfnetlink_log: fix uninitialized padding leak in NFULA_PAYLOAD
-Date: Wed, 25 Mar 2026 23:26:05 +0100
-Message-ID: <20260325222615.637793-5-pablo@netfilter.org>
+Subject: [PATCH net 05/14] netfilter: x_tables: reject unsupported families in xt_check_match/xt_check_target
+Date: Wed, 25 Mar 2026 23:26:06 +0100
+Message-ID: <20260325222615.637793-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260325222615.637793-1-pablo@netfilter.org>
 References: <20260325222615.637793-1-pablo@netfilter.org>
@@ -73,7 +73,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11424-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11426-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -90,62 +90,141 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
-X-Rspamd-Queue-Id: 5119732D026
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
+X-Rspamd-Queue-Id: 26B7C32CF12
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Weiming Shi <bestswngs@gmail.com>
 
-__build_packet_message() manually constructs the NFULA_PAYLOAD netlink
-attribute using skb_put() and skb_copy_bits(), bypassing the standard
-nla_reserve()/nla_put() helpers. While nla_total_size(data_len) bytes
-are allocated (including NLA alignment padding), only data_len bytes
-of actual packet data are copied. The trailing nla_padlen(data_len)
-bytes (1-3 when data_len is not 4-byte aligned) are never initialized,
-leaking stale heap contents to userspace via the NFLOG netlink socket.
+xt_match and xt_target structs registered with NFPROTO_UNSPEC can be
+loaded by any protocol family through nft_compat. When such a
+match/target sets .hooks to restrict which hooks it may run on, the
+bitmask uses NF_INET_* constants. This is only correct for families
+whose hook layout matches NF_INET_*: IPv4, IPv6, INET, and bridge
+all share the same five hooks (PRE_ROUTING ... POST_ROUTING).
 
-Replace the manual attribute construction with nla_reserve(), which
-handles the tailroom check, header setup, and padding zeroing via
-__nla_reserve(). The subsequent skb_copy_bits() fills in the payload
-data on top of the properly initialized attribute.
+ARP only has three hooks (IN=0, OUT=1, FORWARD=2) with different
+semantics. Because NF_ARP_OUT == 1 == NF_INET_LOCAL_IN, the .hooks
+validation silently passes for the wrong reasons, allowing matches to
+run on ARP chains where the hook assumptions (e.g. state->in being
+set on input hooks) do not hold. This leads to NULL pointer
+dereferences; xt_devgroup is one concrete example:
 
-Fixes: df6fb868d611 ("[NETFILTER]: nfnetlink: convert to generic netlink attribute functions")
+ Oops: general protection fault, probably for non-canonical address 0xdffffc0000000044: 0000 [#1] SMP KASAN NOPTI
+ KASAN: null-ptr-deref in range [0x0000000000000220-0x0000000000000227]
+ RIP: 0010:devgroup_mt+0xff/0x350
+ Call Trace:
+  <TASK>
+  nft_match_eval (net/netfilter/nft_compat.c:407)
+  nft_do_chain (net/netfilter/nf_tables_core.c:285)
+  nft_do_chain_arp (net/netfilter/nft_chain_filter.c:61)
+  nf_hook_slow (net/netfilter/core.c:623)
+  arp_xmit (net/ipv4/arp.c:666)
+  </TASK>
+ Kernel panic - not syncing: Fatal exception in interrupt
+
+Add a helper xt_family_has_inet_hooks() and call it from both
+xt_check_match() and xt_check_target(): when a UNSPEC match/target
+declares .hooks, reject families whose hook numbering differs from
+the NF_INET_* scheme.
+
+Also add .hooks to xt_devgroup so the framework-level check covers it;
+previously it relied on manual hook validation in checkentry using
+NF_INET_* constants, which suffers from the same collision.
+
+Fixes: 9291747f118d ("netfilter: xtables: add device group match")
 Reported-by: Xiang Mei <xmei5@asu.edu>
 Signed-off-by: Weiming Shi <bestswngs@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nfnetlink_log.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ net/netfilter/x_tables.c    | 36 ++++++++++++++++++++++++++++++++++++
+ net/netfilter/xt_devgroup.c |  5 +++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index b35a90955e2e..fcbe54940b2e 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -647,15 +647,11 @@ __build_packet_message(struct nfnl_log_net *log,
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index e594b3b7ad82..a600592d0bff 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -477,6 +477,28 @@ int xt_check_proc_name(const char *name, unsigned int size)
+ }
+ EXPORT_SYMBOL(xt_check_proc_name);
  
- 	if (data_len) {
- 		struct nlattr *nla;
--		int size = nla_attr_size(data_len);
- 
--		if (skb_tailroom(inst->skb) < nla_total_size(data_len))
-+		nla = nla_reserve(inst->skb, NFULA_PAYLOAD, data_len);
-+		if (!nla)
- 			goto nla_put_failure;
- 
--		nla = skb_put(inst->skb, nla_total_size(data_len));
--		nla->nla_type = NFULA_PAYLOAD;
--		nla->nla_len = size;
--
- 		if (skb_copy_bits(skb, 0, nla_data(nla), data_len))
- 			BUG();
++/*
++ * Families whose hook numbering follows the NF_INET_* scheme.
++ * ARP hooks (IN=0, OUT=1, FORWARD=2) use different semantics and
++ * collide numerically with NF_INET_* values, so UNSPEC matches/targets
++ * that declare .hooks must not run on ARP (or any other family whose
++ * hooks do not follow the INET layout).
++ */
++static bool xt_family_has_inet_hooks(u_int8_t family)
++{
++	switch (family) {
++	case NFPROTO_IPV4:
++	case NFPROTO_IPV6:
++	case NFPROTO_BRIDGE:
++		return true;
++	case NFPROTO_INET:
++		/* nftables only */
++		return false;
++	default:
++		return false;
++	}
++}
++
+ int xt_check_match(struct xt_mtchk_param *par,
+ 		   unsigned int size, u16 proto, bool inv_proto)
+ {
+@@ -501,6 +523,13 @@ int xt_check_match(struct xt_mtchk_param *par,
+ 				    par->match->table, par->table);
+ 		return -EINVAL;
  	}
++	if (par->match->family == NFPROTO_UNSPEC &&
++	    par->match->hooks &&
++	    !xt_family_has_inet_hooks(par->family)) {
++		pr_info_ratelimited("%s_tables: %s match: not valid for this family\n",
++				    xt_prefix[par->family], par->match->name);
++		return -EINVAL;
++	}
+ 	if (par->match->hooks && (par->hook_mask & ~par->match->hooks) != 0) {
+ 		char used[64], allow[64];
+ 
+@@ -1016,6 +1045,13 @@ int xt_check_target(struct xt_tgchk_param *par,
+ 				    par->target->table, par->table);
+ 		return -EINVAL;
+ 	}
++	if (par->target->family == NFPROTO_UNSPEC &&
++	    par->target->hooks &&
++	    !xt_family_has_inet_hooks(par->family)) {
++		pr_info_ratelimited("%s_tables: %s target: not valid for this family\n",
++				    xt_prefix[par->family], par->target->name);
++		return -EINVAL;
++	}
+ 	if (par->target->hooks && (par->hook_mask & ~par->target->hooks) != 0) {
+ 		char used[64], allow[64];
+ 
+diff --git a/net/netfilter/xt_devgroup.c b/net/netfilter/xt_devgroup.c
+index 9520dd00070b..8246bcfd2094 100644
+--- a/net/netfilter/xt_devgroup.c
++++ b/net/netfilter/xt_devgroup.c
+@@ -62,6 +62,11 @@ static struct xt_match devgroup_mt_reg __read_mostly = {
+ 	.checkentry	= devgroup_mt_checkentry,
+ 	.matchsize	= sizeof(struct xt_devgroup_info),
+ 	.family		= NFPROTO_UNSPEC,
++	.hooks		= (1 << NF_INET_PRE_ROUTING) |
++			  (1 << NF_INET_LOCAL_IN) |
++			  (1 << NF_INET_FORWARD) |
++			  (1 << NF_INET_LOCAL_OUT) |
++			  (1 << NF_INET_POST_ROUTING),
+ 	.me		= THIS_MODULE
+ };
+ 
 -- 
 2.47.3
 
