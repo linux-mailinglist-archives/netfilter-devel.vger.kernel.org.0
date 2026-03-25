@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11395-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11397-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sL/gBLPkw2lvugQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11395-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:35:47 +0100
+	id EKVOLiDkw2lvugQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11397-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:33:20 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88347325E1E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:35:46 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2907325D78
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:33:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6AA8F314013A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:12:02 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 31664317A908
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132713D9DAE;
-	Wed, 25 Mar 2026 13:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A38A3DA7E3;
+	Wed, 25 Mar 2026 13:11:49 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5109D3D8129;
-	Wed, 25 Mar 2026 13:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC473D811A;
+	Wed, 25 Mar 2026 13:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774444305; cv=none; b=pQIxj4B+dn80U+VHZGjiPX+2gSpynvyHUmuOdz0XJqhTAkjEpwSLwdIrmMfqzrSkw3WIsp3s5AenyGf3xqu7x945NHcalViSBODUORupUkxVduVfdHj6UQhRFMDEw4EjbSBIdNSr/jkp/lPtfSJNIhCHhVlfHXfo05/FXgy9aVY=
+	t=1774444309; cv=none; b=omn9CpjrTSnVil03bbMuKi3/BmKbMQqurzRVlw7b4SlI+FHcyGJjTMEfTPokKAZRfut119rNs3xNFfyC3kJCfAcer9axeZSktLQgXPS3Zo+TVX3lHUBOgp5oa0Hv/N7OybHLkqAbyk5bvFkfAvmurbwg2c8RBQoW38t5odPU41g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774444305; c=relaxed/simple;
-	bh=wyirzOaifRVpofa3XyhHv0r4PAfN2d9M6Y4+MC9Ltio=;
+	s=arc-20240116; t=1774444309; c=relaxed/simple;
+	bh=7LJwjfMW+33BUDCwZ+QwbkDerNfIMt/vKofRzW3dKCE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UeRoHuQLHK86PcW9aP+S+ZX8YjA8XDgGFN/O+GZUzcrgSlszYw89+TszO38H91nCxHmYRJlo3DFiQISf7Y1HshDw4nBwOts3AxxTdkVvHoqkBT6jUGd8Q+IKOVZqlFZvUY8SLsOpcxRJErru1K4z6Y9ejyAxheV59ty0Sku6GyM=
+	 MIME-Version; b=ShAflMilGOp9LnoQMbGbXrT1kwXksIIGuDrQ1d9NsaOYgQ+8Z+fOkyaTp9KaMdNX7uIuNiFYdnC64CPo2wysqbmnb4PNPGPEYB4FyMoqI7zj5kzqTZwZ8BKS2hAOHiS6NlhI076cMdWaUtcHzJA2LAH7RAgBpsnGuBBSr+vMcjo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 0815D60A0F; Wed, 25 Mar 2026 14:11:41 +0100 (CET)
+	id 600006080C; Wed, 25 Mar 2026 14:11:46 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 02/14] selftests: netfilter: nft_concat_range.sh: add check for flush+reload bug
-Date: Wed, 25 Mar 2026 14:10:56 +0100
-Message-ID: <20260325131108.23045-3-fw@strlen.de>
+Subject: [PATCH net 03/14] netfilter: ipset: Fix data race between add and list header in all hash types
+Date: Wed, 25 Mar 2026 14:10:57 +0100
+Message-ID: <20260325131108.23045-4-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260325131108.23045-1-fw@strlen.de>
 References: <20260325131108.23045-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11395-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11397-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,7 +71,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -79,119 +79,47 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 88347325E1E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,strlen.de:email,strlen.de:mid,netfilter.org:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C2907325D78
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This test will fail without
-the preceding commit ("netfilter: nft_set_pipapo_avx2: fix match retart if found element is expired"):
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-  reject overlapping range on add       0s                              [ OK ]
-  reload with flush                 /dev/stdin:59:32-52: Error: Could not process rule: File exists
-add element inet filter test { 10.0.0.29 . 10.0.2.29 }
+The "ipset list -terse" command is actually a dump operation which
+may run parallel with "ipset add" commands, which can trigger an
+internal resizing of the hash type of sets just being dumped. However,
+dumping just the header part of the set was not protected against
+underlying resizing. Fix it by protecting the header dumping part
+as well.
 
-Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+Reported-by: syzbot+786c889f046e8b003ca6@syzkaller.appspotmail.com
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- .../net/netfilter/nft_concat_range.sh         | 70 ++++++++++++++++++-
- 1 file changed, 69 insertions(+), 1 deletion(-)
+ net/netfilter/ipset/ip_set_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/netfilter/nft_concat_range.sh b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-index 394166f224a4..ffdc6ccc6511 100755
---- a/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-+++ b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
-@@ -29,7 +29,8 @@ TYPES="net_port port_net net6_port port_proto net6_port_mac net6_port_mac_proto
-        net6_port_net6_port net_port_mac_proto_net"
- 
- # Reported bugs, also described by TYPE_ variables below
--BUGS="flush_remove_add reload net_port_proto_match avx2_mismatch doublecreate insert_overlap"
-+BUGS="flush_remove_add reload net_port_proto_match avx2_mismatch doublecreate
-+      insert_overlap load_flush_load4 load_flush_load8"
- 
- # List of possible paths to pktgen script from kernel tree for performance tests
- PKTGEN_SCRIPT_PATHS="
-@@ -432,6 +433,30 @@ race_repeat	0
- perf_duration	0
- "
- 
-+TYPE_load_flush_load4="
-+display		reload with flush, 4bit groups
-+type_spec	ipv4_addr . ipv4_addr
-+chain_spec	ip saddr . ip daddr
-+dst		addr4
-+proto		icmp
-+
-+race_repeat	0
-+
-+perf_duration	0
-+"
-+
-+TYPE_load_flush_load8="
-+display		reload with flush, 8bit groups
-+type_spec	ipv4_addr . ipv4_addr
-+chain_spec	ip saddr . ip daddr
-+dst		addr4
-+proto		icmp
-+
-+race_repeat	0
-+
-+perf_duration	0
-+"
-+
- # Set template for all tests, types and rules are filled in depending on test
- set_template='
- flush ruleset
-@@ -1997,6 +2022,49 @@ test_bug_insert_overlap()
- 	return 0
- }
- 
-+test_bug_load_flush_load4()
-+{
-+	local i
-+
-+	setup veth send_"${proto}" set || return ${ksft_skip}
-+
-+	for i in $(seq 0 255); do
-+		local addelem="add element inet filter test"
-+		local j
-+
-+		for j in $(seq 0 20); do
-+			echo "$addelem { 10.$j.0.$i . 10.$j.1.$i }"
-+			echo "$addelem { 10.$j.0.$i . 10.$j.2.$i }"
-+		done
-+	done > "$tmp"
-+
-+	nft -f "$tmp" || return 1
-+
-+	( echo "flush set inet filter test";cat "$tmp") | nft -f -
-+	[ $? -eq 0 ] || return 1
-+
-+	return 0
-+}
-+
-+test_bug_load_flush_load8()
-+{
-+	local i
-+
-+	setup veth send_"${proto}" set || return ${ksft_skip}
-+
-+	for i in $(seq 1 100); do
-+		echo "add element inet filter test { 10.0.0.$i . 10.0.1.$i }"
-+		echo "add element inet filter test { 10.0.0.$i . 10.0.2.$i }"
-+	done > "$tmp"
-+
-+	nft -f "$tmp" || return 1
-+
-+	( echo "flush set inet filter test";cat "$tmp") | nft -f -
-+	[ $? -eq 0 ] || return 1
-+
-+	return 0
-+}
-+
- test_reported_issues() {
- 	eval test_bug_"${subtest}"
- }
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index a2fe711cb5e3..2cc04da95afd 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -1648,13 +1648,13 @@ ip_set_dump_do(struct sk_buff *skb, struct netlink_callback *cb)
+ 			if (cb->args[IPSET_CB_PROTO] > IPSET_PROTOCOL_MIN &&
+ 			    nla_put_net16(skb, IPSET_ATTR_INDEX, htons(index)))
+ 				goto nla_put_failure;
++			if (set->variant->uref)
++				set->variant->uref(set, cb, true);
+ 			ret = set->variant->head(set, skb);
+ 			if (ret < 0)
+ 				goto release_refcount;
+ 			if (dump_flags & IPSET_FLAG_LIST_HEADER)
+ 				goto next_set;
+-			if (set->variant->uref)
+-				set->variant->uref(set, cb, true);
+ 			fallthrough;
+ 		default:
+ 			ret = set->variant->list(set, skb, cb);
 -- 
 2.52.0
 
