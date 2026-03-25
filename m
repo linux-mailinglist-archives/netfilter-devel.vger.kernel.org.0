@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11396-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11395-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QLdtNozhw2lvugQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11396-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:22:20 +0100
+	id sL/gBLPkw2lvugQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11395-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:35:47 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A8D325A42
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:22:20 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88347325E1E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 14:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 77112310537D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:12:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6AA8F314013A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 13:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B393D9DD5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132713D9DAE;
 	Wed, 25 Mar 2026 13:11:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BD83D9022;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5109D3D8129;
 	Wed, 25 Mar 2026 13:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774444306; cv=none; b=VHNLrqbMniX94IKKsGsss4ilfaXiRX1oaSd59Lmt/hKtinXQBhut3u7BaCf0KNeF6QZYOzORO1jY7S62/kNtlnYWsWHVTZp7gFekDWZW7vHJO7OgFQUKfNeRRdBEl2EeqwelBjQX2dcjlLdGV80Sd+zHp/oUfohPx4Ft9Q7C6p8=
+	t=1774444305; cv=none; b=pQIxj4B+dn80U+VHZGjiPX+2gSpynvyHUmuOdz0XJqhTAkjEpwSLwdIrmMfqzrSkw3WIsp3s5AenyGf3xqu7x945NHcalViSBODUORupUkxVduVfdHj6UQhRFMDEw4EjbSBIdNSr/jkp/lPtfSJNIhCHhVlfHXfo05/FXgy9aVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774444306; c=relaxed/simple;
-	bh=d04Zfo0BIF6gHy3v4BYuPlJBjVxEQOB7Z3gsWVJVK54=;
+	s=arc-20240116; t=1774444305; c=relaxed/simple;
+	bh=wyirzOaifRVpofa3XyhHv0r4PAfN2d9M6Y4+MC9Ltio=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d0yiGXySbcfb9k5kCoWGXNy30ZhCJxvg/tuJHsfubUYjg7UwxixQ9IhBg0Bbj7nyUVKKtmdzLUzoAexVOYeMCloX3zibIoArUYKIHUr5nc2nD6Yn42peFOs9VamEyFG3eD90SsPoXPmpL/yfnlrb3bPPEZ5B8dKon62kyMTZnm8=
+	 MIME-Version; b=UeRoHuQLHK86PcW9aP+S+ZX8YjA8XDgGFN/O+GZUzcrgSlszYw89+TszO38H91nCxHmYRJlo3DFiQISf7Y1HshDw4nBwOts3AxxTdkVvHoqkBT6jUGd8Q+IKOVZqlFZvUY8SLsOpcxRJErru1K4z6Y9ejyAxheV59ty0Sku6GyM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id A86E3609EF; Wed, 25 Mar 2026 14:11:37 +0100 (CET)
+	id 0815D60A0F; Wed, 25 Mar 2026 14:11:41 +0100 (CET)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 01/14] netfilter: nft_set_pipapo_avx2: don't return non-matching entry on expiry
-Date: Wed, 25 Mar 2026 14:10:55 +0100
-Message-ID: <20260325131108.23045-2-fw@strlen.de>
+Subject: [PATCH net 02/14] selftests: netfilter: nft_concat_range.sh: add check for flush+reload bug
+Date: Wed, 25 Mar 2026 14:10:56 +0100
+Message-ID: <20260325131108.23045-3-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260325131108.23045-1-fw@strlen.de>
 References: <20260325131108.23045-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11396-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11395-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,7 +71,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -79,157 +79,119 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 93A8D325A42
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 88347325E1E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-New test case fails unexpectedly when avx2 matching functions are used.
+This test will fail without
+the preceding commit ("netfilter: nft_set_pipapo_avx2: fix match retart if found element is expired"):
 
-The test first loads a ranomly generated pipapo set
-with 'ipv4 . port' key, i.e.  nft -f foo.
-
-This works.  Then, it reloads the set after a flush:
-(echo flush set t s; cat foo) | nft -f -
-
-This is expected to work, because its the same set after all and it was
-already loaded once.
-
-But with avx2, this fails: nft reports a clashing element.
-
-The reported clash is of following form:
-
-    We successfully re-inserted
-      a . b
-      c . d
-
-Then we try to insert a . d
-
-avx2 finds the already existing a . d, which (due to 'flush set') is marked
-as invalid in the new generation.  It skips the element and moves to next.
-
-Due to incorrect masking, the skip-step finds the next matching
-element *only considering the first field*,
-
-i.e. we return the already reinserted "a . b", even though the
-last field is different and the entry should not have been matched.
-
-No such error is reported for the generic c implementation (no avx2) or when
-the last field has to use the 'nft_pipapo_avx2_lookup_slow' fallback.
-
-Bisection points to
-7711f4bb4b36 ("netfilter: nft_set_pipapo: fix range overlap detection")
-but that fix merely uncovers this bug.
-
-Before this commit, the wrong element is returned, but erronously
-reported as a full, identical duplicate.
-
-The root-cause is too early return in the avx2 match functions.
-When we process the last field, we should continue to process data
-until the entire input size has been consumed to make sure no stale
-bits remain in the map.
+  reject overlapping range on add       0s                              [ OK ]
+  reload with flush                 /dev/stdin:59:32-52: Error: Could not process rule: File exists
+add element inet filter test { 10.0.0.29 . 10.0.2.29 }
 
 Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
-Link: https://lore.kernel.org/netfilter-devel/20260321152506.037f68c0@elisabeth/
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_set_pipapo_avx2.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ .../net/netfilter/nft_concat_range.sh         | 70 ++++++++++++++++++-
+ 1 file changed, 69 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_set_pipapo_avx2.c b/net/netfilter/nft_set_pipapo_avx2.c
-index 7ff90325c97f..6395982e4d95 100644
---- a/net/netfilter/nft_set_pipapo_avx2.c
-+++ b/net/netfilter/nft_set_pipapo_avx2.c
-@@ -242,7 +242,7 @@ static int nft_pipapo_avx2_lookup_4b_2(unsigned long *map, unsigned long *fill,
+diff --git a/tools/testing/selftests/net/netfilter/nft_concat_range.sh b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
+index 394166f224a4..ffdc6ccc6511 100755
+--- a/tools/testing/selftests/net/netfilter/nft_concat_range.sh
++++ b/tools/testing/selftests/net/netfilter/nft_concat_range.sh
+@@ -29,7 +29,8 @@ TYPES="net_port port_net net6_port port_proto net6_port_mac net6_port_mac_proto
+        net6_port_net6_port net_port_mac_proto_net"
  
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
+ # Reported bugs, also described by TYPE_ variables below
+-BUGS="flush_remove_add reload net_port_proto_match avx2_mismatch doublecreate insert_overlap"
++BUGS="flush_remove_add reload net_port_proto_match avx2_mismatch doublecreate
++      insert_overlap load_flush_load4 load_flush_load8"
  
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -319,7 +319,7 @@ static int nft_pipapo_avx2_lookup_4b_4(unsigned long *map, unsigned long *fill,
+ # List of possible paths to pktgen script from kernel tree for performance tests
+ PKTGEN_SCRIPT_PATHS="
+@@ -432,6 +433,30 @@ race_repeat	0
+ perf_duration	0
+ "
  
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
++TYPE_load_flush_load4="
++display		reload with flush, 4bit groups
++type_spec	ipv4_addr . ipv4_addr
++chain_spec	ip saddr . ip daddr
++dst		addr4
++proto		icmp
++
++race_repeat	0
++
++perf_duration	0
++"
++
++TYPE_load_flush_load8="
++display		reload with flush, 8bit groups
++type_spec	ipv4_addr . ipv4_addr
++chain_spec	ip saddr . ip daddr
++dst		addr4
++proto		icmp
++
++race_repeat	0
++
++perf_duration	0
++"
++
+ # Set template for all tests, types and rules are filled in depending on test
+ set_template='
+ flush ruleset
+@@ -1997,6 +2022,49 @@ test_bug_insert_overlap()
+ 	return 0
+ }
  
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -414,7 +414,7 @@ static int nft_pipapo_avx2_lookup_4b_8(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -505,7 +505,7 @@ static int nft_pipapo_avx2_lookup_4b_12(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -641,7 +641,7 @@ static int nft_pipapo_avx2_lookup_4b_32(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -699,7 +699,7 @@ static int nft_pipapo_avx2_lookup_8b_1(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -764,7 +764,7 @@ static int nft_pipapo_avx2_lookup_8b_2(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -839,7 +839,7 @@ static int nft_pipapo_avx2_lookup_8b_4(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -925,7 +925,7 @@ static int nft_pipapo_avx2_lookup_8b_6(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
-@@ -1019,7 +1019,7 @@ static int nft_pipapo_avx2_lookup_8b_16(unsigned long *map, unsigned long *fill,
- 
- 		b = nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
- 		if (last)
--			return b;
-+			ret = b;
- 
- 		if (unlikely(ret == -1))
- 			ret = b / XSAVE_YMM_SIZE;
++test_bug_load_flush_load4()
++{
++	local i
++
++	setup veth send_"${proto}" set || return ${ksft_skip}
++
++	for i in $(seq 0 255); do
++		local addelem="add element inet filter test"
++		local j
++
++		for j in $(seq 0 20); do
++			echo "$addelem { 10.$j.0.$i . 10.$j.1.$i }"
++			echo "$addelem { 10.$j.0.$i . 10.$j.2.$i }"
++		done
++	done > "$tmp"
++
++	nft -f "$tmp" || return 1
++
++	( echo "flush set inet filter test";cat "$tmp") | nft -f -
++	[ $? -eq 0 ] || return 1
++
++	return 0
++}
++
++test_bug_load_flush_load8()
++{
++	local i
++
++	setup veth send_"${proto}" set || return ${ksft_skip}
++
++	for i in $(seq 1 100); do
++		echo "add element inet filter test { 10.0.0.$i . 10.0.1.$i }"
++		echo "add element inet filter test { 10.0.0.$i . 10.0.2.$i }"
++	done > "$tmp"
++
++	nft -f "$tmp" || return 1
++
++	( echo "flush set inet filter test";cat "$tmp") | nft -f -
++	[ $? -eq 0 ] || return 1
++
++	return 0
++}
++
+ test_reported_issues() {
+ 	eval test_bug_"${subtest}"
+ }
 -- 
 2.52.0
 
