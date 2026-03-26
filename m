@@ -1,222 +1,181 @@
-Return-Path: <netfilter-devel+bounces-11433-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11435-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wObUBmtixGkuywQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11433-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:32:11 +0100
+	id IAvvHBSBxGkazwQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11435-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Mar 2026 01:43:00 +0100
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6B3232D06B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 23:32:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA3CA32DAFD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Mar 2026 01:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0945C3117C99
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Mar 2026 22:27:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 60D36301BF59
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Mar 2026 00:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CE6372B51;
-	Wed, 25 Mar 2026 22:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0FF2D94B4;
+	Thu, 26 Mar 2026 00:42:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Ue5r8A0j"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eOyLg1ID"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE18C35AC15;
-	Wed, 25 Mar 2026 22:26:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A57912D21B
+	for <netfilter-devel@vger.kernel.org>; Thu, 26 Mar 2026 00:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774477608; cv=none; b=WsbrOiKuwEXSxjtmmryI6Of1QGYRHXNPohpphEYcy+C48L10yPfxgxq3R/QCVgRbL/DhBi5ikh+q8gqFvuRWruPXbyXme8tVQ4c91Lq+JFB34f9AObkQCrK9koVybH3g8GbTXw6yCVA6yo8j/KVq+XsvWe/XsGTyd0KWKhiZrf8=
+	t=1774485777; cv=none; b=ZVrdHGsYQzpHmN+34JtexdkO2V7kZFHEdrBsK6+EBQnGkhZa3KPc6lMnSiHNvwBfC7ad/s0dOx1CZEIlzoCfsMlGpuRRHmxZTSp+rNkCOXTfmI98dDboEWxWlGL0AgVbMYGfP9E/CeBFjTJIGsQndh4Sn165B4q2dao02X3V378=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774477608; c=relaxed/simple;
-	bh=Z8VaIwLgQA/av0H8n9muksqcbn+Q701gs7JlCkayF7M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s4aYJV+MR02RGCm85mP3EHFENd5rm9Z83ye/ImanFrhcKv6PbMj3ZZfqJOmWEQpdGTBBHs+U3M2V9yl5Aw52Ewp5Ha9OtMiIRZCm5GwyyTEoB7C9RfVR/npfiLEZfP/pUVbtqrkHfVt0a6vkDDZ6EMq9wyxLAjG/mWhBoNzK29Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Ue5r8A0j; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id E493F6017D;
-	Wed, 25 Mar 2026 23:26:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1774477602;
-	bh=tKlJaj9U7c38ELFAdca3PIUUbb8OxL/XU9NoLfXhTFk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ue5r8A0jNoNHIm+O6+hkQ9icaShV+O898e8pfMn9VZ+LAkmFj/oLIpZc0EH5LkyDw
-	 9x//Vyq0DY7nmHWDPE3BuccdwoVTtWtPaEW3+deAj9xP4mnO499MV+HEFVqwK50Oil
-	 7qXLcfkN71t1frolbhQqwIGcXyeH45gcQH6zgco1qG0rxQc4JXacEFoHFFc8Wkw1+i
-	 4lnkrYh9RGKXDPkeKU7uDUJSaxpJrukkhaUwkA76+Xu9KZ0r8iH3lg5fS0fnQTSRYF
-	 kNPUkoSGb8Ky6EMvvK/FsXIUEYf2Nb+yuEXXCsNIXkPTmpfLWbKkOHsuE9psFeLELR
-	 rDdugPdEvL8qg==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de,
-	horms@kernel.org
-Subject: [PATCH net 14/14] netfilter: ctnetlink: use netlink policy range checks
-Date: Wed, 25 Mar 2026 23:26:15 +0100
-Message-ID: <20260325222615.637793-15-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260325222615.637793-1-pablo@netfilter.org>
-References: <20260325222615.637793-1-pablo@netfilter.org>
+	s=arc-20240116; t=1774485777; c=relaxed/simple;
+	bh=nurTYeK+77J4t+lk0EYRHTrnDi4rMtMPOXgZPX1122s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OfLIePgzg9TTal+lWdwEJ/qUcOTkOOiKSZvX77NsmWxSqQXNaif4mXNO4scnRw7ZqJdx59jJ3NUN9kVKo1KxYJVX+xAzjodTPOz2zQzG04CVSyLSnmDMMH/8XTiWBkoUeL0ZTGjeEH+rSU6mVKAj5CWVkhHvhmHe9pHuhvQp0zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eOyLg1ID; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-4648447e29bso163109b6e.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 25 Mar 2026 17:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1774485775; x=1775090575; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fRvhcDOzU0N5aAgfsR1DHF+wIdqPpgSRXdXqAgcNkJQ=;
+        b=eOyLg1IDqWNS/wbpzqbNS7hpXLcdGIvtT0d1NQVRV3A47aXBjTifrKtky6gO6TFRxr
+         cVgGAWO0llZ5X4oGD07+bRtKv0jwhWWABwh7WZdy1E+jBAVI7zn23a1Ne5G8IVzAyUj2
+         ZXY3XmNjZ7SDmMTWUQUV2UsKKlu/syaqm/fBDB1gr34jrmtaVAYIIgbfufs2jyFQL9Qb
+         mcZ+skWtAqwDWuY7KW4KYLnLU45UMFct0k5qhJkSxw77dwmwqpG3ipSZXk7tYLRRu0lF
+         i7f6pZ73lV6OAPzhyEwC+a84NJgb0IhScq89nuNscg94UsoGMv+gPsg2m36kNvJghFCv
+         /42Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774485775; x=1775090575;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fRvhcDOzU0N5aAgfsR1DHF+wIdqPpgSRXdXqAgcNkJQ=;
+        b=RqTX6I5EBXgJr+f6t7SUPDW5AQvkjXaQmrPYlFYeosC7qNgNfdPjLLJ4E7ymSKanx1
+         CkWJBOc9I69VIddgrjXUfwRxQhC4E6YQFNItLyc8knjJUpfHa3azZr/cOl1+2PMsSmpt
+         KOSPSSdeECrqiSXnv7GTQoI7ZXQzOwbGk1H98iIC/ZZK+A4XipP9tSGafkZ5ColBxkqw
+         7y0OPkAEq7FI6U0b+TxRSByeLgFhLiUNes6wNOIBGeKPIQinoA8EFIc4wwPfjsv5tgMO
+         2JW3WDHBrCpn2kEBeZlWeFQqR3l4T5L04uNByPEsxato9Gi/hIuSRfj77SYsxeeNOP13
+         99AA==
+X-Gm-Message-State: AOJu0YydU+l57Ail0tAu+7BIUXq9xQFHCdYI7LFIKReOiAI9m93WP0Yg
+	bMu85FTIVBxRqLslTCVPSOzaXAukj1sVZOqsFWB5Qbbn4pw3AO5eK2S4a+bsR0He0Kk=
+X-Gm-Gg: ATEYQzzWELDiPBF99PyLHIS11UNolYA41+eAJ8OKiPJLM6+nmQkk3VvlVqa+XebdoM5
+	t4A6mTx8ND3EGa4QrB9X2Uy1WR6xQsGlVXUcF9TiIf30ph0fKEd0nrM2D/uB1vmZ7j2vScaJpIw
+	mhw5NxzT1C3F2syCEfA++EyaN1kZcNptrb5u2ABlI36qtnLClxnKeUvMlLPPr/ZUlmtskM0dUJ5
+	U0eZB5ujSiHdbnBkaoZwi49kJr5PZFGWt5AAu/RCYhh5P2cnZIR1N313zTDwfeNV40ckaMNDHit
+	ny0tAEKh7ZtUbvji8sUjt4+gYpfwtsJpr3eKcPpxx9WmEOPnOQb4qD5Xzf+zlOwfbItFK6dF6Yp
+	qr7WmQrBr/U4jzIrXtVigbQcGRFjHcBQnTIcIOhHNYJZPLIIjiMuLc8KD8Jiya53QP0hM98p8sf
+	14uppIV1s=
+X-Received: by 2002:a05:6808:1907:b0:467:a44:dde2 with SMTP id 5614622812f47-46a5c7fd037mr2627930b6e.56.1774485774988;
+        Wed, 25 Mar 2026 17:42:54 -0700 (PDT)
+Received: from 20HS2G4 ([2a09:bac6:bf21:15e1::22e:48])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d9e6fddb47sm983541a34.8.2026.03.25.17.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Mar 2026 17:42:54 -0700 (PDT)
+Date: Wed, 25 Mar 2026 19:42:52 -0500
+From: Chris Arges <carges@cloudflare.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, fw@strlen.de
+Subject: Re: [PATCH nf,v4] netfilter: nft_set_rbtree: revisit array resize
+ logic
+Message-ID: <acSBDEog6wFw7Khp@20HS2G4>
+References: <20260317170721.12396-1-pablo@netfilter.org>
+ <abrI8CZV3c8fi9x3@20HS2G4>
+ <abrZkrarLXbZzXEO@chamomile>
+ <acF4eJn_ZSdHe635@20HS2G4>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <acF4eJn_ZSdHe635@20HS2G4>
+X-Spamd-Result: default: False [-8.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[cloudflare.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	DMARC_POLICY_ALLOW(-0.50)[cloudflare.com,reject];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[cloudflare.com:s=google09082023];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	DMARC_NA(0.00)[netfilter.org];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11433-lists,netfilter-devel=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-11435-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[cloudflare.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[carges@cloudflare.com,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[3];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
-X-Rspamd-Queue-Id: B6B3232D06B
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cloudflare.com:dkim,cloudflare.com:email]
+X-Rspamd-Queue-Id: CA3CA32DAFD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: David Carlier <devnexen@gmail.com>
+On 2026-03-23 12:29:30, Chris Arges wrote:
+> On 2026-03-18 17:57:54, Pablo Neira Ayuso wrote:
+> > On Wed, Mar 18, 2026 at 10:46:56AM -0500, Chris Arges wrote:
+> > > On 2026-03-17 18:07:21, Pablo Neira Ayuso wrote:
+> > > > Chris Arges reports high memory consumption with thousands of
+> > > > containers, this patch revisits the array allocation logic.
+> > > > 
+> > > > For anonymous sets, start by 16 slots (which takes 256 bytes on x86_64).
+> > > > Expand it by x2 until threshold of 512 slots is reached, over that
+> > > > threshold, expand it by x1.5.
+> > > > 
+> > > > For non-anonymous set, start by 1024 slots in the array (which takes 16
+> > > > Kbytes initially on x86_64). Expand it by x1.5.
+> > > > 
+> > > > Use set->ndeact to subtract deactivated elements when calculating the
+> > > > number of the slots in the array, otherwise the array size array gets
+> > > > increased artifically. Add special case shrink logic to deal with flush
+> > > > set too.
+> > > > 
+> > > > The shrink logic is skipped by anonymous sets.
+> > > > 
+> > > > Use check_add_overflow() to calculate the new array size.
+> > > > 
+> > > > Add a WARN_ON_ONCE check to make sure elements fit into the new array
+> > > > size.
+> > > > 
+> > > > Reported-by: Chris Arges <carges@cloudflare.com>
+> > > > Fixes: 7e43e0a1141d ("netfilter: nft_set_rbtree: translate rbtree to array for binary search")
+> > > > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> > > > ---
+> > > > v4: use maybe_grow: goto tag instead of grow:
+> > > >     Add note in commit description: "The shrink logic is skipped by anonymous sets."
+> > > > 
+> > > 
+> > > I will be able to testing this more in depth early next week. Just to confirm,
+> > > this patch requires this to be applied first?
+> > > https://lore.kernel.org/netfilter-devel/20260307001124.2897063-1-pablo@netfilter.org/
+> > 
+> > Yes, it requires that fix to be applied first.
+> 
+> Thanks, these two patches applied on 6.18 stable show slab unreclaimable memory
+> leveling out at 1.5GB for my local reproducer. I'll be deploying this to a
+> wider set of machines for more real-world testing this week.
+> 
+> So far seems good.
+> --chris
 
-Replace manual range and mask validations with netlink policy
-annotations in ctnetlink code paths, so that the netlink core rejects
-invalid values early and can generate extack errors.
+We have deployed this successfully and memory usage looks good in production.
 
-- CTA_PROTOINFO_TCP_STATE: reject values > TCP_CONNTRACK_SYN_SENT2 at
-  policy level, removing the manual >= TCP_CONNTRACK_MAX check.
-- CTA_PROTOINFO_TCP_WSCALE_ORIGINAL/REPLY: reject values > TCP_MAX_WSCALE
-  (14). The normal TCP option parsing path already clamps to this value,
-  but the ctnetlink path accepted 0-255, causing undefined behavior when
-  used as a u32 shift count.
-- CTA_FILTER_ORIG_FLAGS/REPLY_FLAGS: use NLA_POLICY_MASK with
-  CTA_FILTER_F_ALL, removing the manual mask checks.
-- CTA_EXPECT_FLAGS: use NLA_POLICY_MASK with NF_CT_EXPECT_MASK, adding
-  a new mask define grouping all valid expect flags.
+Tested-by: Chris Arges <carges@cloudflare.com>
 
-Extracted from a broader nf-next patch by Florian Westphal, scoped to
-ctnetlink for the fixes tree.
-
-Fixes: c8e2078cfe41 ("[NETFILTER]: ctnetlink: add support for internal tcp connection tracking flags handling")
-Signed-off-by: David Carlier <devnexen@gmail.com>
-Co-developed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- .../uapi/linux/netfilter/nf_conntrack_common.h   |  4 ++++
- net/netfilter/nf_conntrack_netlink.c             | 16 +++++-----------
- net/netfilter/nf_conntrack_proto_tcp.c           | 10 +++-------
- 3 files changed, 12 insertions(+), 18 deletions(-)
-
-diff --git a/include/uapi/linux/netfilter/nf_conntrack_common.h b/include/uapi/linux/netfilter/nf_conntrack_common.h
-index 26071021e986..56b6b60a814f 100644
---- a/include/uapi/linux/netfilter/nf_conntrack_common.h
-+++ b/include/uapi/linux/netfilter/nf_conntrack_common.h
-@@ -159,5 +159,9 @@ enum ip_conntrack_expect_events {
- #define NF_CT_EXPECT_INACTIVE		0x2
- #define NF_CT_EXPECT_USERSPACE		0x4
- 
-+#ifdef __KERNEL__
-+#define NF_CT_EXPECT_MASK	(NF_CT_EXPECT_PERMANENT | NF_CT_EXPECT_INACTIVE | \
-+				 NF_CT_EXPECT_USERSPACE)
-+#endif
- 
- #endif /* _UAPI_NF_CONNTRACK_COMMON_H */
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 2ec33c0518e9..e99f15cdcc5a 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -910,8 +910,8 @@ struct ctnetlink_filter {
- };
- 
- static const struct nla_policy cta_filter_nla_policy[CTA_FILTER_MAX + 1] = {
--	[CTA_FILTER_ORIG_FLAGS]		= { .type = NLA_U32 },
--	[CTA_FILTER_REPLY_FLAGS]	= { .type = NLA_U32 },
-+	[CTA_FILTER_ORIG_FLAGS]		= NLA_POLICY_MASK(NLA_U32, CTA_FILTER_F_ALL),
-+	[CTA_FILTER_REPLY_FLAGS]	= NLA_POLICY_MASK(NLA_U32, CTA_FILTER_F_ALL),
- };
- 
- static int ctnetlink_parse_filter(const struct nlattr *attr,
-@@ -925,17 +925,11 @@ static int ctnetlink_parse_filter(const struct nlattr *attr,
- 	if (ret)
- 		return ret;
- 
--	if (tb[CTA_FILTER_ORIG_FLAGS]) {
-+	if (tb[CTA_FILTER_ORIG_FLAGS])
- 		filter->orig_flags = nla_get_u32(tb[CTA_FILTER_ORIG_FLAGS]);
--		if (filter->orig_flags & ~CTA_FILTER_F_ALL)
--			return -EOPNOTSUPP;
--	}
- 
--	if (tb[CTA_FILTER_REPLY_FLAGS]) {
-+	if (tb[CTA_FILTER_REPLY_FLAGS])
- 		filter->reply_flags = nla_get_u32(tb[CTA_FILTER_REPLY_FLAGS]);
--		if (filter->reply_flags & ~CTA_FILTER_F_ALL)
--			return -EOPNOTSUPP;
--	}
- 
- 	return 0;
- }
-@@ -2634,7 +2628,7 @@ static const struct nla_policy exp_nla_policy[CTA_EXPECT_MAX+1] = {
- 	[CTA_EXPECT_HELP_NAME]	= { .type = NLA_NUL_STRING,
- 				    .len = NF_CT_HELPER_NAME_LEN - 1 },
- 	[CTA_EXPECT_ZONE]	= { .type = NLA_U16 },
--	[CTA_EXPECT_FLAGS]	= { .type = NLA_U32 },
-+	[CTA_EXPECT_FLAGS]	= NLA_POLICY_MASK(NLA_BE32, NF_CT_EXPECT_MASK),
- 	[CTA_EXPECT_CLASS]	= { .type = NLA_U32 },
- 	[CTA_EXPECT_NAT]	= { .type = NLA_NESTED },
- 	[CTA_EXPECT_FN]		= { .type = NLA_NUL_STRING },
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index 0c1d086e96cb..b67426c2189b 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -1385,9 +1385,9 @@ static int tcp_to_nlattr(struct sk_buff *skb, struct nlattr *nla,
- }
- 
- static const struct nla_policy tcp_nla_policy[CTA_PROTOINFO_TCP_MAX+1] = {
--	[CTA_PROTOINFO_TCP_STATE]	    = { .type = NLA_U8 },
--	[CTA_PROTOINFO_TCP_WSCALE_ORIGINAL] = { .type = NLA_U8 },
--	[CTA_PROTOINFO_TCP_WSCALE_REPLY]    = { .type = NLA_U8 },
-+	[CTA_PROTOINFO_TCP_STATE]	    = NLA_POLICY_MAX(NLA_U8, TCP_CONNTRACK_SYN_SENT2),
-+	[CTA_PROTOINFO_TCP_WSCALE_ORIGINAL] = NLA_POLICY_MAX(NLA_U8, TCP_MAX_WSCALE),
-+	[CTA_PROTOINFO_TCP_WSCALE_REPLY]    = NLA_POLICY_MAX(NLA_U8, TCP_MAX_WSCALE),
- 	[CTA_PROTOINFO_TCP_FLAGS_ORIGINAL]  = { .len = sizeof(struct nf_ct_tcp_flags) },
- 	[CTA_PROTOINFO_TCP_FLAGS_REPLY]	    = { .len = sizeof(struct nf_ct_tcp_flags) },
- };
-@@ -1414,10 +1414,6 @@ static int nlattr_to_tcp(struct nlattr *cda[], struct nf_conn *ct)
- 	if (err < 0)
- 		return err;
- 
--	if (tb[CTA_PROTOINFO_TCP_STATE] &&
--	    nla_get_u8(tb[CTA_PROTOINFO_TCP_STATE]) >= TCP_CONNTRACK_MAX)
--		return -EINVAL;
--
- 	spin_lock_bh(&ct->lock);
- 	if (tb[CTA_PROTOINFO_TCP_STATE])
- 		ct->proto.tcp.state = nla_get_u8(tb[CTA_PROTOINFO_TCP_STATE]);
--- 
-2.47.3
-
+--chris
 
