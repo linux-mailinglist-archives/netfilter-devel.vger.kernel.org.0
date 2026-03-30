@@ -1,56 +1,56 @@
-Return-Path: <netfilter-devel+bounces-11486-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11487-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QPO9J5w8ymmd6wUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11486-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2026 11:04:28 +0200
+	id WG7KHhI+ymnD6gUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11487-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2026 11:10:42 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A68D357BB8
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2026 11:04:27 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3D71357E39
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2026 11:10:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0A39A300DF4E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2026 09:02:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9F0603060AF8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2026 09:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404A837F00E;
-	Mon, 30 Mar 2026 09:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564523AD531;
+	Mon, 30 Mar 2026 09:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ol34aShc"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ay3SeocO"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B964237EFF5
-	for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2026 09:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7453AB27C
+	for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2026 09:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774861328; cv=none; b=Ad58V6ZvNEc6js7iSp2OnbxdNwms5o3h59wtJTrWJUAzDFwmZ1FgN/eqEZ2KUhaleHCWwcwRJVX3x+W6hBhbd0cSVFjiJAslkdu8WGeDWXynUU1eds66SUAdDl9n+q2UWZU8Msdd2V+b6ca4t5uFlA7OCXqvkaqMBqfRCIAImAg=
+	t=1774861451; cv=none; b=VIzcUkodwE+9QI4KT04gXIn0Jc7eBV3MWckRh6wed9wIUg5ke5z3hRLXqBPJV1sXXFLMa/iot3V2GkufyLP/oMyK7jPRF37PijS8F1e8WE8RvILpsofoYG/R5zd//L9Cm60UQMnfoS21H6g6c1jnWfrPl/zX03EXfkS77w+lpZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774861328; c=relaxed/simple;
+	s=arc-20240116; t=1774861451; c=relaxed/simple;
 	bh=y4jjoljjJl38d3JWVJJ3Y1gxuZusdNwusuQ0lQkghYc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Kav1DRsPr1eGmHXjUcqr6SRvRbBlYL/LzhOaQAUzgnae0StsbfNxB3dr69gd/gK9fpSZ7zXoB5k+JJOtXAvtYpb7yN/4Ph+hMG7AVIpGPaVi+E2xFb28EBrx6k7BO33T0v9mq2ZCYCzCfv14WMohVM46am2cfa5Z5NbiAsj8gOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ol34aShc; arc=none smtp.client-ip=217.70.190.124
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=KCvFE3ROqJV63RQx1fPII3gPv/R4U38J0nCywEippYTNy0Hi00yJEMJZ8OVSMoPk+eWGoDQABhdY0fcelMBLLPtyyDZcBwVeuHTyrrQAQbHKSksgE8jsBBQi7teSb5MRob3mATuR2v0bWq4RDHZVOyYCU9AxrPMWJ0t0oxNr5XA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ay3SeocO; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 65CD960177
-	for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2026 11:01:57 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id F2CDE60177
+	for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2026 11:04:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1774861317;
+	s=2025; t=1774861447;
 	bh=R4bV+OKybGJTVGTJQv9qpMVJBxLZZwoC4FooMpcNHxY=;
 	h=From:To:Subject:Date:From;
-	b=ol34aShcwN2ZO+GqkrI/KhuiwK/5sDR9c7b4NPu4qJ/U0x2OxPqBQ8zjUTDKyCOiV
-	 jLOGNo8u/ryO0/Ug/nzcn3KmcwuhpbsUpxwtiO9A/PAqBq4ddhzH8PuVynz/Z5seTc
-	 /PiyFe7zadv5N98XUiDuD8p2OqhNNunYLNWSU0FfySEtJxCPW8uYgU1wcilJGwzOGS
-	 67dg+frzwSdHA6mu8bbK8qQo1VPckYGR9HXKN8r9xj4HHyJvlZ98pltbg1feXpmIZR
-	 IiRoJ24AbuQLw8/K/A3KcZKKT+rqNoj6ScWR7B0zYldff1sKlZoffBMhjp7n7Dc0od
-	 KE08Ukc8Y7qlw==
+	b=ay3SeocOcNYQH8DexW4DpOfNnTIJVEXUss3bTniPJh1IA2gJJXhf7lLJczdpryAaR
+	 C1aSuSv6D9GKu7xvFFBvuQgjqHM8lDdjrpImaS9k6pY76Wc1GkncwTaJCKeOkUa5Km
+	 +1j8mayEHdYnSHGwZyezMd++eRlPTGc8sUOEFxNBlRjnR23wUAi0Yt3brzQZueCRiP
+	 lyMkniROF0gaWH6Mk1DjN1VsnVNB8bDuWDTQwk1PHz2/y+Rp4bBlrMg0xWXctRwLNN
+	 0/7qNcwTI/Xa20yyGZWZ4ZVkylHodI47OqMaeJOe/0QNnmaXauVa+eeWXyeAkFvSDu
+	 XgOwPoxjnpMhw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Subject: [PATCH nf-next] netfilter: nf_tables_offload: add nft_flow_action_entry_next() and use it
-Date: Mon, 30 Mar 2026 11:01:53 +0200
-Message-ID: <20260330090153.809877-1-pablo@netfilter.org>
+Date: Mon, 30 Mar 2026 11:04:02 +0200
+Message-ID: <20260330090402.810083-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -63,7 +63,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -73,7 +73,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
 	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-11486-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11487-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -84,9 +84,9 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
-X-Rspamd-Queue-Id: 9A68D357BB8
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid]
+X-Rspamd-Queue-Id: F3D71357E39
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
