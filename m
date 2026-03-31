@@ -1,65 +1,65 @@
-Return-Path: <netfilter-devel+bounces-11520-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11522-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QIrkGZD9y2mcNAYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11520-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2026 19:00:00 +0200
+	id YEOaJoL9y2nqNAYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11522-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2026 18:59:46 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5B436DA07
-	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2026 18:59:59 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C30C36D9E9
+	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2026 18:59:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A85113094006
-	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2026 16:51:02 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id EC61130470A7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2026 16:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D93042668E;
-	Tue, 31 Mar 2026 16:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F30426EBC;
+	Tue, 31 Mar 2026 16:50:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DEGNpU6C"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VI2JNtc8"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C479425CD9
-	for <netfilter-devel@vger.kernel.org>; Tue, 31 Mar 2026 16:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72C9426EA2
+	for <netfilter-devel@vger.kernel.org>; Tue, 31 Mar 2026 16:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774975850; cv=none; b=Q9aAf7ovFBQ5J0cp4rI9W+zofAagZw9uGYyI84GtIIMuqUUIJFHSQkmb8s3kbJC/5KeiUT6aQVvX7cICsPeYS3yz+P3YBL4yRKApVlTdhnVCpqKSUFDX1e/es7G54qyytp68bKij3uArxhGYSHydmWqkRjp0KcEOjS2CSgZft3U=
+	t=1774975854; cv=none; b=KLP0JhqCimXnTceMAf0RgIbTKkckxcF9gMGIwwns1DkL1t9IWpGFsUWlkku1Qf37Jpb5pUZ4tvvle9F+l6bxYVeM1KLbypbubcX5BNOeWjU2mr6AH85oRy3sCSyfvbTSaPFnKfvF+Zh3bvH5a8iUtko7HEHeFBoqTrEIouqXDi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774975850; c=relaxed/simple;
-	bh=Wx3rCjft+f2xsQztl0u/tUkCuC3NJhEmQV+HjeE0iDk=;
+	s=arc-20240116; t=1774975854; c=relaxed/simple;
+	bh=ZyVbSFWmIU7uDytGreLAcaUQEeqjF+w10rnvomXCMqY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AkhGGOFHBuXtdIr5ZhW33R0bpUrPWGV4gGRh4D50MDL7FRNtr8HNjzFKNEcw6ehX5C4A3cICY42/LZ8SPwoEbCxDE8F+eHyzN6t32OXJqNEHPAilqvijF6130RpVcvumIJ2gDfbguoZ6IGURuc9T7xUsuO8k1cxohMNu14UpEGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DEGNpU6C; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=am1q8dUqIsyOvTZ+0Jvhy5Eqv1K3YmiFWRsB2H68X32NJh+kW6qJoLt03j1Ae2ES2AER4GCeUMeqbYTx0VZsqEiHz7ndw2m021Q5zdTsXpLQRaqipwblMDm1QvDSSmhP6dzezel/1SUoSNuLhujmTh9qmEM/8/eJIZuwaF3bzmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VI2JNtc8; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1774975848;
+	s=mimecast20190719; t=1774975852;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NM71jEPy1P0WHGHdPzJuToYXqWbTBefaY9NqYpg0IOU=;
-	b=DEGNpU6ChfjLoNW2dkyowSlFIh2W8ERWnEE52G7IOUK17S87akUxQVKOtu9sujDQnj1UuX
-	/KcHsAmJFkNGO2etv1ubmpv+4QqwkC8khzFXFWO1eBNQcsfOP2fsfEb5R/6rIA4nuiO3nN
-	22c7fK/WAALMKdw/JoMmsT5J0sK6Hd4=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=Smk7qzOFqWQpEDvgIootgLUtedzkckjlb8UVNDwFioI=;
+	b=VI2JNtc8TZ1eqfuk2be86jIBfWjoEWNTDQOQu42l1iwjz7IHUB55w8HCSuBaqtSjOfasAM
+	Jr9VO8az3s2OtIouP/zF2FNOht/o3b2hnQaq3qiK45jwgVZAxpJ8nr0lKxuF0UnsLMJqq1
+	urlonkBbZQv3U0NckzbIuoZEfn9MjWk=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-93-QYj4AEahP0GCg0Tqw5U3Wg-1; Tue,
- 31 Mar 2026 12:50:44 -0400
-X-MC-Unique: QYj4AEahP0GCg0Tqw5U3Wg-1
-X-Mimecast-MFC-AGG-ID: QYj4AEahP0GCg0Tqw5U3Wg_1774975841
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-516-koyYgahXNDmXFd0erQnMjg-1; Tue,
+ 31 Mar 2026 12:50:47 -0400
+X-MC-Unique: koyYgahXNDmXFd0erQnMjg-1
+X-Mimecast-MFC-AGG-ID: koyYgahXNDmXFd0erQnMjg_1774975845
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F054619560B1;
-	Tue, 31 Mar 2026 16:50:39 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D2E681800371;
+	Tue, 31 Mar 2026 16:50:43 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.80.26])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8787A180075B;
-	Tue, 31 Mar 2026 16:50:36 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id AE87B180036E;
+	Tue, 31 Mar 2026 16:50:40 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Simon Horman <horms@verge.net.au>,
 	Julian Anastasov <ja@ssi.bg>,
@@ -81,9 +81,9 @@ Cc: linux-kernel@vger.kernel.org,
 	coreteam@netfilter.org,
 	sheviks <sheviks@gmail.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH-next v2 1/2] sched/isolation: Make HK_TYPE_KTHREAD an alias of HK_TYPE_DOMAIN
-Date: Tue, 31 Mar 2026 12:50:14 -0400
-Message-ID: <20260331165015.2777765-2-longman@redhat.com>
+Subject: [PATCH-next v2 2/2] ipvs: Guard access of HK_TYPE_KTHREAD cpumask with RCU
+Date: Tue, 31 Mar 2026 12:50:15 -0400
+Message-ID: <20260331165015.2777765-3-longman@redhat.com>
 In-Reply-To: <20260331165015.2777765-1-longman@redhat.com>
 References: <20260331165015.2777765-1-longman@redhat.com>
 Precedence: bulk
@@ -100,14 +100,14 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,gmail.com,redhat.com];
 	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-11520-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11522-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[redhat.com:+];
@@ -120,52 +120,112 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0B5B436DA07
+X-Rspamd-Queue-Id: 7C30C36D9E9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Since commit 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred
-affinity management"), kthreads default to use the HK_TYPE_DOMAIN
-cpumask. IOW, it is no longer affected by the setting of the nohz_full
-boot kernel parameter.
+The ip_vs_ctl.c file and the associated ip_vs.h file are the only places
+in the kernel where HK_TYPE_KTHREAD cpumask is being retrieved and used.
+Now that HK_TYPE_KTHREAD/HK_TYPE_DOMAIN cpumask can be changed at run
+time. We need to use RCU to guard access to this cpumask to avoid a
+potential UAF problem as the returned cpumask may be freed before it
+is being used.
 
-That means HK_TYPE_KTHREAD should now be an alias of HK_TYPE_DOMAIN
-instead of HK_TYPE_KERNEL_NOISE to correctly reflect the current kthread
-behavior. Make the change as HK_TYPE_KTHREAD is still being used in
-some networking code.
+We can replace HK_TYPE_KTHREAD by HK_TYPE_DOMAIN as they are aliases
+of each other, but keeping the HK_TYPE_KTHREAD name can highlight the
+fact that it is the kthread initiated by ipvs that is being controlled.
 
-Fixes: 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred affinity management")
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- include/linux/sched/isolation.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/net/ip_vs.h            | 20 ++++++++++++++++----
+ net/netfilter/ipvs/ip_vs_ctl.c | 13 ++++++++-----
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index dc3975ff1b2e..cf0fd03dd7a2 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -20,6 +20,11 @@ enum hk_type {
- 	HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_MAX,
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index 72d325c81313..7bda92fd3fe6 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -1411,7 +1411,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
+ 	return ipvs->sysctl_run_estimation;
+ }
  
-+	/*
-+	 * HK_TYPE_KTHREAD is now an alias of HK_TYPE_DOMAIN
-+	 */
-+	HK_TYPE_KTHREAD = HK_TYPE_DOMAIN,
+-static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
++static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
+ {
+ 	if (ipvs->est_cpulist_valid)
+ 		return ipvs->sysctl_est_cpulist;
+@@ -1529,7 +1529,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
+ 	return 1;
+ }
+ 
+-static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
++static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
+ {
+ 	return housekeeping_cpumask(HK_TYPE_KTHREAD);
+ }
+@@ -1564,6 +1564,18 @@ static inline int sysctl_svc_lfactor(struct netns_ipvs *ipvs)
+ 	return READ_ONCE(ipvs->sysctl_svc_lfactor);
+ }
+ 
++static inline bool sysctl_est_cpulist_empty(struct netns_ipvs *ipvs)
++{
++	guard(rcu)();
++	return cpumask_empty(__sysctl_est_cpulist(ipvs));
++}
 +
- 	/*
- 	 * The following housekeeping types are only set by the nohz_full
- 	 * boot commandline option. So they can share the same value.
-@@ -29,7 +34,6 @@ enum hk_type {
- 	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
- };
++static inline unsigned int sysctl_est_cpulist_weight(struct netns_ipvs *ipvs)
++{
++	guard(rcu)();
++	return cpumask_weight(__sysctl_est_cpulist(ipvs));
++}
++
+ /* IPVS core functions
+  * (from ip_vs_core.c)
+  */
+@@ -1895,7 +1907,7 @@ static inline void ip_vs_est_stopped_recalc(struct netns_ipvs *ipvs)
+ 	/* Stop tasks while cpulist is empty or if disabled with flag */
+ 	ipvs->est_stopped = !sysctl_run_estimation(ipvs) ||
+ 			    (ipvs->est_cpulist_valid &&
+-			     cpumask_empty(sysctl_est_cpulist(ipvs)));
++			     sysctl_est_cpulist_empty(ipvs));
+ #endif
+ }
  
- #ifdef CONFIG_CPU_ISOLATION
+@@ -1911,7 +1923,7 @@ static inline bool ip_vs_est_stopped(struct netns_ipvs *ipvs)
+ static inline int ip_vs_est_max_threads(struct netns_ipvs *ipvs)
+ {
+ 	unsigned int limit = IPVS_EST_CPU_KTHREADS *
+-			     cpumask_weight(sysctl_est_cpulist(ipvs));
++			     sysctl_est_cpulist_weight(ipvs);
+ 
+ 	return max(1U, limit);
+ }
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 032425025d88..e253a1ceef48 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -2338,11 +2338,14 @@ static int ipvs_proc_est_cpumask_get(const struct ctl_table *table,
+ 
+ 	mutex_lock(&ipvs->est_mutex);
+ 
+-	if (ipvs->est_cpulist_valid)
+-		mask = *valp;
+-	else
+-		mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
+-	ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
++	/* HK_TYPE_KTHREAD cpumask needs RCU protection */
++	scoped_guard(rcu) {
++		if (ipvs->est_cpulist_valid)
++			mask = *valp;
++		else
++			mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
++		ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
++	}
+ 
+ 	mutex_unlock(&ipvs->est_mutex);
+ 
 -- 
 2.53.0
 
