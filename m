@@ -1,112 +1,100 @@
-Return-Path: <netfilter-devel+bounces-11536-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11539-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IEjLCLvPzGlFWwYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11536-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Apr 2026 09:56:43 +0200
+	id MNk0OsbTzGlFWwYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11539-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Apr 2026 10:13:58 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1403765CF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Apr 2026 09:56:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C74E3768C3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Apr 2026 10:13:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ABB1C301FD49
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Apr 2026 07:46:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 71A9F312AABB
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Apr 2026 08:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA4539A046;
-	Wed,  1 Apr 2026 07:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E70394792;
+	Wed,  1 Apr 2026 08:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ICgU3kYI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HnlDtbNi"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E702B35E936;
-	Wed,  1 Apr 2026 07:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEA2386C3E
+	for <netfilter-devel@vger.kernel.org>; Wed,  1 Apr 2026 08:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775029547; cv=none; b=NQ++2YkEVUvJxdfNb8+aDqCgpjoJumppJXjSj4Wzg0jIPjs4STQMz/4knnWFwcAnpp+f1spxlVZmdisID6BKOsghdFhyJh1c6MpuVZnXUzeCOrgcdWzfR+bkYm0Vgh2EOG1vAtctQWu6PaJRs2IhhL9utEX/dzuBeHV35WWcv0Y=
+	t=1775030448; cv=none; b=Srr9MyFIQpeFInJlbJ2fbkH7yEMkk/eh8NAbi8izuR/r5TGDOTWFU9qgJ2xUhnKM/ZIW8IR+Auc0OR3un4NtPCPCNqoJbMApX1Q5A+sFZVDlBcP137hZeczLSvYB2liyqMq/YmecyNfQSEB06b8+32R6VrWhHm+XDZZCl2n++WE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775029547; c=relaxed/simple;
-	bh=kApfysLmil/v0Oj2JmnKLBK0dorCkw228crfG1s8AD0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xpes9io5/H/23AXuW3XYrkaIxb2kXso3Qv/alnLwHoAEtSUgbo8guJbFlAoQMYeV/fcc+vv3IwMdIMwr8rzMQYC54nzznCGJm85Zjy/9KwPZczQKWFvqNNGezIYE4yAkRnLIM7orkcH9CspWxkwwpOatgdUjyxrmS60zVneIe3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ICgU3kYI; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:From:Reply-To:
-	Cc:Content-Type:Content-ID:Content-Description;
-	bh=TjlEaZufkIfdPkUMCDh5SD89kPYTqyaHCXw8Muwc4Dk=; b=ICgU3kYIYD7TcubUA2flzaCQ0/
-	Y1xq8IIwcHVpeuRBs2Sk5bzpKgsAJH4Ach8Tt1JHYt4wh0jYcY6e+SATwyK4RcZ/7221wQ27l1y2E
-	O3cgTAk/OztH7NNk72E5Bf2RwSS34DSuaYUnyizucHQyG/+WmOWj1vdkACs6nq4qlMsZGSsEfWGNS
-	hXSAVX0fEOkaA99zZ9kqYN6yxmdUYCJQkEtOxNFaQ7BJhkHkfggNP9lw9mMGOfHK6IUONyvssH4Q0
-	9gZpb8pHebi9BTlNi6Yopj0pLSCVCcKonmuA4rkAb/dLverJuSQ9UZS7Ic1Jul4M9LMCBmkEXo8vL
-	C49g96Qw==;
-Received: from [2001:8b0:10b:1::425] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7qGN-0000000HLQS-0BKX;
-	Wed, 01 Apr 2026 07:45:19 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7qGM-00000007xeP-3Bbt;
-	Wed, 01 Apr 2026 08:45:18 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Willem de Bruijn <willemb@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	Neal Cardwell <ncardwell@google.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
+	s=arc-20240116; t=1775030448; c=relaxed/simple;
+	bh=IPr2oYPn/26eQSmWxcSleR1D2ek6vWmOS678MnORj2o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GgUx+m8ghMctwF716N0aUdju0lQSwvZ7y0teMS0/31rhzt4winIMBud9ispcHMbgXyGUd45tSVVXlGbxCuHCkTIbyMZSjQH8mngjM1XM62aIiSGvC0+ub417m8oW2hc5FVHfJZ49fYa3xp7B2coWPYIhxlHAgod261Yz1g/mJuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HnlDtbNi; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c74244dc0b3so3942755a12.2
+        for <netfilter-devel@vger.kernel.org>; Wed, 01 Apr 2026 01:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775030446; x=1775635246; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2y8dUPGFi+UBO55SBUip5Hfz6jHTFtt4ylYjmLjQEmw=;
+        b=HnlDtbNiLMneGLpWqFnifSQaPv14PcjRdIP6OuLaTJvhit+92zAPvm5zwqbtO26tub
+         zMEWYmhjaJX0lxSMph241x1sJVwJTNgpKrhlwbs4w4kD0J1+JggpTaknNKWswBOpyuoE
+         58Q4acqJXuJaio+Q4xObL2vVC7zzD8d55YsOLGA5+HtnKPdbJevveFsKWtqjgLvzN8ZK
+         7Dn8wtHseyeJymCBbbMvAADrvGifMvI8Vj/1wsiR1CA1p3YPr/ZkihAefaD7g3LnjExa
+         KwcuJGZQY/Bl4EXCrAzdg4oNaWbhjx1ruCJ/wEsoEyLhbIkKgkGFf/LVEAsUlWizCkhe
+         ZBWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775030446; x=1775635246;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2y8dUPGFi+UBO55SBUip5Hfz6jHTFtt4ylYjmLjQEmw=;
+        b=Yqo3w7fyYbXtYbDrRFmXWij8hU1GZcv239+8Vawsv9yypv43tQa1TKgeOj7plQhQHy
+         Yl8egSJzqxWYAQmYjXwkxAliPp7CO7ctQPdEvooiCh587SoJgIbLL+8MhxOmSYSvgzgk
+         Fj9ovXsqzMSPjbGBCdwwtqAuDOq1XpNvYWJ2mfjDvL87nIPGOD93uaC/jgvrR83O7Qqz
+         8yL0V/0misyXBQr0/ZtGmkQnKL30Iv/YnSoVwV/7cTxkSkWS2NCQPYE/f8pxoLiet61K
+         Qe58G5Fj2MscJ7MoLkMw9fIiUA1Gxkhph7AuOB7q1o1fMd1t9Wpri6VwtC0y0smyG6Iz
+         pUWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcQ34mHerCihbjRWL6Me24i/T+y89cOKILmGAfiteH+LYDXeEr1Y57fi2xoDY6nqL3yt4inA//0mYi1RUKrnI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoRkajfqF1lYqbbFo3bV4guEgtIyXxY1GxQ85r1uwS3xFVwXPg
+	CGvA0eR6+onFp+qcbATIDcPeXOww39tZkCKp46Iv6panU5KWNHTWGyEk
+X-Gm-Gg: ATEYQzzjKhq9Rwi2rThDc4At3OLQrq9nGnr/jSCELgV0NZesvGOoKp8inHoxhWcOs2G
+	z6AMEcKV/k5yW0n6zkzQUF6nKlbl8nRq8LUrpXUjgSEAx7XPHrF7b1J13jNUkmt2i1IstBlFRqX
+	LDBIKA0cAno2YBClzIHaHDeYY4xQg+ejMtPo2GPhXjigNMZaEnPX7zRUEHNh5JVRy/Oohieogtu
+	h0m2Bb3urDj07RBDyrotvYOfg3Z2gPxt1ji/rhDhm/N6LB8xlEj1t8aaWrpOULw6VuaKy/OapqV
+	ncDGPPKHxFxSylC/i5AgMwHG9mZM7u/VqOUPG7Ox4IBpZs9o4JGAqQ0NZdkKyyvZnGkd/DQoQNu
+	dFc+hri8SnbWVMVSzQITbwJ/wN9bL8pUxq9xuezRqv2VWeMbtV+vacdMvVU48hpX52AWWxNJOda
+	VFNN31STWEnPPFQXP0eYqe+rPngGx6toSyrCtpAZMESjiot/UgoLcx6vczN7Ne3raG11s1WR0m3
+	tLzX4d+IUHE
+X-Received: by 2002:a05:6a20:2592:b0:394:5513:ce5 with SMTP id adf61e73a8af0-39ef774ffadmr2721870637.51.1775030446152;
+        Wed, 01 Apr 2026 01:00:46 -0700 (PDT)
+Received: from SLSGDTSWING002.tail0ac356.ts.net ([129.126.109.177])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82ca846e08dsm12865913b3a.24.2026.04.01.01.00.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Apr 2026 01:00:45 -0700 (PDT)
+From: Weiming Shi <bestswngs@gmail.com>
+To: Simon Horman <horms@verge.net.au>,
+	Julian Anastasov <ja@ssi.bg>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	Guillaume Nault <gnault@redhat.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Kees Cook <kees@kernel.org>,
-	Alexei Lazar <alazar@nvidia.com>,
-	Gal Pressman <gal@nvidia.com>,
-	Paul Moore <paul@paul-moore.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Phil Sutter <phil@nwl.cc>,
 	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	oss-drivers@corigine.com,
-	bridge@lists.linux.dev,
-	bpf@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
+	lvs-devel@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
-	torvalds@linux-foundation.org,
-	jon.maddog.hall@gmail.com
-Subject: [PATCH 6/6] net: Warn when processes listen on AF_INET sockets
-Date: Wed,  1 Apr 2026 08:44:20 +0100
-Message-ID: <20260401074509.1897527-7-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260401074509.1897527-1-dwmw2@infradead.org>
-References: <20260401074509.1897527-1-dwmw2@infradead.org>
+	Xiang Mei <xmei5@asu.edu>,
+	Weiming Shi <bestswngs@gmail.com>
+Subject: [PATCH net v2] ipvs: fix NULL deref in ip_vs_add_service error path
+Date: Wed,  1 Apr 2026 15:58:01 +0800
+Message-ID: <20260401075800.3344266-2-bestswngs@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -114,68 +102,92 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[nvidia.com,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,blackwall.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,sipsolutions.net,netfilter.org,strlen.de,nwl.cc,amazon.co.uk,paul-moore.com,vger.kernel.org,corigine.com,lists.linux.dev,linux-foundation.org];
-	RCPT_COUNT_TWELVE(0.00)[49];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[nwl.cc,vger.kernel.org,netfilter.org,asu.edu,gmail.com];
+	TAGGED_FROM(0.00)[bounces-11539-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11536-lists,netfilter-devel=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dwmw2@infradead.org,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[bestswngs@gmail.com,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[netfilter-devel,netdev];
-	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amazon.co.uk:email,infradead.org:dkim,infradead.org:mid]
-X-Rspamd-Queue-Id: 8A1403765CF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,asu.edu:email]
+X-Rspamd-Queue-Id: 4C74E3768C3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+When ip_vs_bind_scheduler() succeeds in ip_vs_add_service(), the local
+variable sched is set to NULL.  If ip_vs_start_estimator() subsequently
+fails, the out_err cleanup calls ip_vs_unbind_scheduler(svc, sched)
+with sched == NULL.  ip_vs_unbind_scheduler() passes the cur_sched NULL
+check (because svc->scheduler was set by the successful bind) but then
+dereferences the NULL sched parameter at sched->done_service, causing a
+kernel panic at offset 0x30 from NULL.
 
-There is no need to listen on AF_INET sockets; a modern application can
-listen on IPv6 (without IPV6_V6ONLY) and will accept connections from
-the 20th century via IPv4-mapped addresses (::ffff:x.x.x.x) on the IPv6
-socket.
+ Oops: general protection fault, probably for non-canonical address 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN NOPTI
+ KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+ RIP: 0010:ip_vs_unbind_scheduler (net/netfilter/ipvs/ip_vs_sched.c:69)
+ Call Trace:
+  <TASK>
+  ip_vs_add_service.isra.0 (net/netfilter/ipvs/ip_vs_ctl.c:1500)
+  do_ip_vs_set_ctl (net/netfilter/ipvs/ip_vs_ctl.c:2809)
+  nf_setsockopt (net/netfilter/nf_sockopt.c:102)
+  ip_setsockopt (net/ipv4/ip_sockglue.c:1427)
+  raw_setsockopt (net/ipv4/raw.c:850)
+  do_sock_setsockopt (net/socket.c:2322)
+  __sys_setsockopt (net/socket.c:2339)
+  __x64_sys_setsockopt (net/socket.c:2350)
+  do_syscall_64 (arch/x86/entry/syscall_64.c:94)
+  entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130)
+  </TASK>
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Fix by simply not clearing the local sched variable after a successful
+bind.  ip_vs_unbind_scheduler() already detects whether a scheduler is
+installed via svc->scheduler, and keeping sched non-NULL ensures the
+error path passes the correct pointer to both ip_vs_unbind_scheduler()
+and ip_vs_scheduler_put().
+
+Fixes: 05f00505a89a ("ipvs: fix crash if scheduler is changed")
+Reported-by: Xiang Mei <xmei5@asu.edu>
+Signed-off-by: Weiming Shi <bestswngs@gmail.com>
 ---
- net/ipv4/af_inet.c | 3 +++
- 1 file changed, 3 insertions(+)
+v2: Remove "sched = NULL" instead of recovering it in out_err (Julian)
 
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index dc358faa1647..3838782a8437 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -240,6 +240,9 @@ int inet_listen(struct socket *sock, int backlog)
- 	struct sock *sk = sock->sk;
- 	int err = -EINVAL;
+ net/netfilter/ipvs/ip_vs_ctl.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 35642de2a0fee..2aaf50f52c8e8 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -1452,7 +1452,6 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
+ 		ret = ip_vs_bind_scheduler(svc, sched);
+ 		if (ret)
+ 			goto out_err;
+-		sched = NULL;
+ 	}
  
-+	pr_warn_once("process '%s' (pid %d) is listening on an AF_INET socket. Consider using AF_INET6 with IPV6_V6ONLY=0 instead.\n",
-+		     current->comm, task_pid_nr(current));
-+
- 	lock_sock(sk);
- 
- 	if (sock->state != SS_UNCONNECTED || sock->type != SOCK_STREAM)
+ 	ret = ip_vs_start_estimator(ipvs, &svc->stats);
 -- 
-2.51.0
+2.43.0
 
 
