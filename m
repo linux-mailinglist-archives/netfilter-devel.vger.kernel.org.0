@@ -1,45 +1,59 @@
-Return-Path: <netfilter-devel+bounces-11602-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11603-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CNfOFaHJz2lH0QYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11602-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 16:07:29 +0200
+	id kC4iKUXKz2lH0QYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11603-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 16:10:13 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D403F394F57
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 16:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D313394FEC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 16:10:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C089230CBE31
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 14:00:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 32EB0301AA54
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 14:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB023B27F8;
-	Fri,  3 Apr 2026 13:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DE1339878;
+	Fri,  3 Apr 2026 14:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="cD3RJNFl"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D063AF65B
-	for <netfilter-devel@vger.kernel.org>; Fri,  3 Apr 2026 13:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B53F3A16A1
+	for <netfilter-devel@vger.kernel.org>; Fri,  3 Apr 2026 14:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775224767; cv=none; b=b+zpdhKrjDrirWkHQfb3sHF6kopWAMQZnViFKNEvgq9KM45G5Kty5yUDbIinoi+LFRD+AanZd5obDqKiJSPUYJ+r79VgPv4N7cIAGe+B9jzQ8uKwGz3X9f60bKNZEqZMIpQIHgETgvcCN2kL4xv5HOQe4pdxcGquJ8FbEJwB7ug=
+	t=1775224972; cv=none; b=p34nGGbimR/E2/a4PaynSTjsG4x/nXW5k6DYl7jiC4wPmuHju5evOaNlLeE9tYErbknQ5NWGVDDF+7NvYpGMIlpBpFLb+TvSmkg2YiSijnjvfW0QaUlIblh0H9poRHxBVGC+79rLxOP5z4NcP/6T+cGdb/8+dnYKg12B91fUBtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775224767; c=relaxed/simple;
-	bh=63z81I2FhXg8ObOmxhSpuo9ppjedyhToTSLkmY9KQKI=;
+	s=arc-20240116; t=1775224972; c=relaxed/simple;
+	bh=Vn/Ft5V/Ag9AZC/Vhc+z2Q8am5/l7wN+gS54LfRTZtc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MeSo90VdumexLulHYDHxwLHjE7uclRhxC+Nq8irojfzZNzRmTsUWRZZaeBdraWmQDmniNW/qBJIhp4IjZgzF/fX536QcFZu9SzpcEQtIsZX0Ah3HENjHBMagSu9vKEdYxmEz8fGGaGIRZK5+Uf6ggUZCbQsOnXUrNutpaXOfAHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 1392160913; Fri, 03 Apr 2026 15:59:23 +0200 (CEST)
-Date: Fri, 3 Apr 2026 15:59:22 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Scott Mitchell <scott.k.mitch1@gmail.com>
-Cc: netfilter-devel@vger.kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=nRDFNgyQO7yS2G9tDvkstgfGvOVhadzs3nKLgBEff4FzgDEdVPBn8IOLGudggGtu6x7wem3PR3TzAENhGi8OX9LXGrXiCZkVy2hwtHgbtuPllYj+84dktk7HoN0TKmv9QXjXPa5B4+39K0hXwI+RFxGf6JtF8ZoewKlXZFfYlec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=cD3RJNFl; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 20D0560253;
+	Fri,  3 Apr 2026 16:02:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1775224968;
+	bh=M40QkbEubt89bq6MU9/OJ7e7aB2WkoaDnEG7eVT5cDk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cD3RJNFlyaQBs1M4UIG/vxABNdq8dMtJvkwSgbJfarfpRG+QBq/959gbyKUwvllW7
+	 Nu/unH7YcC/tL+JBl5ifyzBGvB82Yo4M2/jKbnOXaCT7uxHPt1FSYIrHwDGOxwN70h
+	 N/oDHT9xjZj72EVKxUEXSLA1E9Le+k5Uvlxj14wxZm9yBri7JkABuKeDSHmG/Fq4SJ
+	 gsurUjj33upRjkhpYkZY9to1iZcXJYHtGgerCfuHbTsEUXOf3yb7z3IjdTnhsQ+Iah
+	 TzeICtLT9soUcyfISTwQi0IVZ8xO7IamH0uFtEw11LcTbkXY+a52GAMJ79yCGc7WZ0
+	 WDL/Dqa/O2vrg==
+Date: Fri, 3 Apr 2026 16:02:45 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: Scott Mitchell <scott.k.mitch1@gmail.com>,
+	netfilter-devel@vger.kernel.org
 Subject: Re: nfnetlink_queue crashes kernel
-Message-ID: <ac_HuuPNrGxpW7CL@strlen.de>
+Message-ID: <ac_IheNLTM2crhl3@lemonverbena>
 References: <ac-w6e33txkgTRJj@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -47,41 +61,105 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <ac-w6e33txkgTRJj@strlen.de>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11602-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11603-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[3];
+	NEURAL_HAM(-0.00)[-0.999];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.366];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: D403F394F57
+X-Rspamd-Queue-Id: 0D313394FEC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Florian Westphal <fw@strlen.de> wrote:
+On Fri, Apr 03, 2026 at 02:22:01PM +0200, Florian Westphal wrote:
+> Hello,
+> 
+> nfnetlink_queue is currently broken in at least two ways.
+> 1). kernel will crash under pressure because
+>     struct nf_queue_entry is freed via kfree, but parallel
+>     cpu can still observe this while walking the (global) rhashtable.
+> 
 > 2) a4400a5b343d ("netfilter: nfnetlink_queue: nfqnl_instance GFP_ATOMIC -> GFP_KERNEL_ACCOUNT allocation") should have updated the spinlock to use the _bh variant, if the queue exists we risk deadlock via softirq recursion.
+> 
+> Minimal fix, that I am not a fan of:
+> 
+> diff --git a/include/net/netfilter/nf_queue.h b/include/net/netfilter/nf_queue.h
+> --- a/include/net/netfilter/nf_queue.h
+> +++ b/include/net/netfilter/nf_queue.h
+> @@ -24,6 +24,7 @@ struct nf_queue_entry {
+>  	bool			nf_ct_is_unconfirmed;
+>  	u16			size; /* sizeof(entry) + saved route keys */
+>  	u16			queue_num;
+> +	struct rcu_head		head;
+>  
+>  	/* extra space to store route keys */
+>  };
+> diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
+> index 7f12e56e6e52..385d1fe704ae 100644
+> --- a/net/netfilter/nf_queue.c
+> +++ b/net/netfilter/nf_queue.c
+> @@ -74,7 +74,7 @@ static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
+>  void nf_queue_entry_free(struct nf_queue_entry *entry)
+>  {
+>  	nf_queue_entry_release_refs(entry);
+> -	kfree(entry);
+> +	kfree_rcu(entry, head);
+>  }
+>  EXPORT_SYMBOL_GPL(nf_queue_entry_free);
+>  
+> diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+> index 47f7f62906e2..fc44ea4e5128 100644
+> --- a/net/netfilter/nfnetlink_queue.c
+> +++ b/net/netfilter/nfnetlink_queue.c
+> @@ -190,7 +190,7 @@ instance_create(struct nfnl_queue_net *q, u_int16_t queue_num, u32 portid)
+>  	spin_lock_init(&inst->lock);
+>  	INIT_LIST_HEAD(&inst->queue_list);
+>  
+> -	spin_lock(&q->instances_lock);
+> +	spin_lock_bh(&q->instances_lock);
+>  	if (instance_lookup(q, queue_num)) {
+>  		err = -EEXIST;
+>  		goto out_unlock;
+> @@ -204,7 +204,7 @@ instance_create(struct nfnl_queue_net *q, u_int16_t queue_num, u32 portid)
+>  	h = instance_hashfn(queue_num);
+>  	hlist_add_head_rcu(&inst->hlist, &q->instance_table[h]);
+>  
+> -	spin_unlock(&q->instances_lock);
+> +	spin_unlock_bh(&q->instances_lock);
+>  
+>  	return inst;
+>  
+> 
+> 
+> 
+> A probably better fix is to make the rhashtable perqueue, which is
+> much more intrusive at this late stage.
+> 
+> I prefer to revert both changes and not accept a reworked hashtable
+> until we have an extension to nft_queue.sh selftest.
 
-Nope, this one is fine, the instance lock is only taken from process
-context, but 1) still stands.
++1, then take a bit more time to get this right.
 
