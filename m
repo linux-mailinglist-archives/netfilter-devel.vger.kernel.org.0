@@ -1,193 +1,219 @@
-Return-Path: <netfilter-devel+bounces-11609-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11611-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aENiASniz2kS1gYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11609-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:52:09 +0200
+	id oJadKy7jz2kS1gYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11611-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:56:30 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58788395F8C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:52:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DBE9396018
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:56:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 37698305CA3B
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 15:50:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7EE8E304EAA0
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 15:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632543C7DEF;
-	Fri,  3 Apr 2026 15:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="m5w1A24B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D4F3C65E7;
+	Fri,  3 Apr 2026 15:53:46 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADAB280A51;
-	Fri,  3 Apr 2026 15:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.75.44.102])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD6F230BDB;
+	Fri,  3 Apr 2026 15:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.75.44.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775231436; cv=none; b=JYJXVw1MulzrNtTJkrhpeK1+8Zf+KGqdA8GdKRiFc+Fp7kDEW2WJRmgWRXAO0NCwHwZ6JjJBEgpE6G7xtqqVMt/Qwu7jf9nhPzJl+WJVGodUCnoEb7O83B3k+Zejj9sLTMMkLDNSXMX+5+Z5/Rn01LchHs4e2Z1ODr42migieas=
+	t=1775231626; cv=none; b=VfwJ6j4TOdnG8ebaeYxfxVjF0azebyE6mC5DOajVdjFyS+Kw2WRQSNPGV/fh1vBKBbawvAiKu+Za7s1bQpZ2vCo5IpOhryjPtPKUoxlUVyOm/xufYBk+bRqefGbwBmOP9pIZ9uhEW9P3KV04lKWMFmlPm2xFz8tibS20OCWBpwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775231436; c=relaxed/simple;
-	bh=LY+xPNa22+WbSd7wyfRtnKVWdGr1NXJcepvxE9ed2Mw=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=NahyTV2BMCpThC9BM3bQxMRlgHD0Ea9zbF5x6KoJPRm/XuKYDOBsnX5Z8FdxiGhByGMDQ83Ge2GOlw2UzF3iOOm6GP9SwCYbt/AlMXmIFt0JrT4EqQVgYE58Cfc/kEMEMpr3mdr0LM7YFv+GVUV0eAKufgiGtklvyAGS0ntv+sE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=m5w1A24B; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 80A8A21C5B;
-	Fri, 03 Apr 2026 18:50:29 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-type:content-type:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=O18+hfUNzACqcP51D6CnMotQefBBC43pIwM9YBC39KM=; b=m5w1A24BV94q
-	elfFe5HTwW8v3Kusd3uKAFltnhN9FZKnir5NZ19XAzsMHYEaCvDt516BchsGJAL5
-	OSZwjnoZ5L5bRRJgtQ188OAflXTrQkYoHM9HfH8W+Gs9D8ocYwI2rjityJ9bM/2Q
-	5bRf2IZ7Xb43T0bl6HYuDf7vg9tzThpETF2ZbMzm7i68Dsz2xiKY3iEI+3RifDJW
-	gnIysI4it4QeLQFoRUKX00adh8C/6TyrBmx9/m8v4TUgxWWFmRWCE8QhpAh45qn9
-	6cuCUL16ipdviMS+DD4VRovrAX77YDxwaD1weWEziJdanI202j9RoGYXw5EN0n17
-	XOkMrXalW76pCNH2Yeyay1yxnjYhwP/xgYktCfOanMBpRGrg8ztZdJvVZp3d7FYS
-	bYrlf2e6d1QGQJtqo6puYuMgaTLviC3UqPVf6sekeF4Yjy7NNv3JuwvIPvmde6CF
-	AWwgA+Fo4ucW8UC5qyTWuTjExjJVFExEvcqnMNkn21b+/p7vG79HQ+8eELNORcfv
-	2Kk3byKNRFxIWY/b5NYpCNecMOVmJNvVwqmMe5glX5C/zoY9LTjhg40+UtI2k1J4
-	PO+Fuu/EoynUugT1YYtpnjtjnhBC3DCTIjaxu7Nwl8O7i38m6QShhVeQNqNvQ/AO
-	4/4vtv3g8ZsJwNYaSebin3Ovi14N7l8=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Fri, 03 Apr 2026 18:50:28 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id DD12660ADE;
-	Fri,  3 Apr 2026 18:50:27 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 633FoOTq046122;
-	Fri, 3 Apr 2026 18:50:24 +0300
-Date: Fri, 3 Apr 2026 18:50:24 +0300 (EEST)
-From: Julian Anastasov <ja@ssi.bg>
-To: Weiming Shi <bestswngs@gmail.com>
-cc: Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Phil Sutter <phil@nwl.cc>,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Xiang Mei <xmei5@asu.edu>
-Subject: Re: [PATCH net v2] ipvs: fix NULL deref in ip_vs_add_service error
- path
-In-Reply-To: <20260401075800.3344266-2-bestswngs@gmail.com>
-Message-ID: <733280f5-ce3b-ea65-d9c5-471da6f601b3@ssi.bg>
-References: <20260401075800.3344266-2-bestswngs@gmail.com>
+	s=arc-20240116; t=1775231626; c=relaxed/simple;
+	bh=D1e2olgVJeIYMvsd6OjKX99SYPIpmzcquojkKTFR1tI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=m0tTAtTtSGkQPqZhgTAM5od6eTrL1CfqEypvCW2Jfi3uLV42p5w93UZ0nwbuzgEcNm5xDBHiWYj1BXvDXOd71a3HOCZweZCGgQzSSkL+eoU4P7Md6Ng5LtvTnTCKZFaz3XISGGwyuIkFfXTMcFQ/+9fC74kZLyGmZm57vhCwRjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=13.75.44.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
+Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
+	by app1 (Coremail) with SMTP id ygmowABXz_9U4s9p5d2jAA--.37129S2;
+	Fri, 03 Apr 2026 23:52:52 +0800 (CST)
+From: Ren Wei <n05ec@lzu.edu.cn>
+To: netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: pablo@netfilter.org,
+	fw@strlen.de,
+	phil@nwl.cc,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	yasuyuki.kozakai@toshiba.co.jp,
+	kaber@trash.net,
+	yifanwucs@gmail.com,
+	tomapufckgml@gmail.com,
+	yuantan098@gmail.com,
+	bird@lzu.edu.cn,
+	z1652074432@gmail.com,
+	n05ec@lzu.edu.cn,
+	enjou1224z@gmail.com
+Subject: [PATCH v4] netfilter: xt_multiport: validate range encoding in checkentry
+Date: Fri,  3 Apr 2026 23:52:52 +0800
+Message-ID: <df9ac8b2cfbfcacf0cc4e6f2e01113f0b16ad37f.1775228821.git.n05ec@lzu.edu.cn>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <cover.1774624314.git.n05ec@lzu.edu.cn>
+References: <cover.1774624314.git.n05ec@lzu.edu.cn>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:ygmowABXz_9U4s9p5d2jAA--.37129S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw45Cw4UuF45ur18uF45Wrg_yoW5Kr1xpa
+	y5GF15GrWkZFWaqFsayr1kJF15Cr4kXr48ua43J3srJFsxWr95tw4rtF9IvFs8Ary5CFW8
+	tF4qvrn0kw15u37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2
+	jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+	x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+	GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+	8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVW8ZVWrXwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8V
+	W8GwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRpOJnUUUUU=
+X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQMGCWnOkPwYCQAAsX
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	TAGGED_FROM(0.00)[bounces-11609-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-11611-lists,netfilter-devel=lfdr.de];
+	DMARC_NA(0.00)[lzu.edu.cn];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,toshiba.co.jp,trash.net,gmail.com,lzu.edu.cn];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-0.991];
+	TO_DN_NONE(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 58788395F8C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lzu.edu.cn:email,lzu.edu.cn:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4DBE9396018
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+ports_match_v1() treats any non-zero pflags entry as the start of a
+port range and unconditionally consumes the next ports[] element as
+the range end.
 
-	Hello,
+The checkentry path currently validates protocol, flags and count, but
+it does not validate the range encoding itself. As a result, malformed
+rules can mark the last slot as a range start or place two range starts
+back to back, leaving ports_match_v1() to step past the last valid
+ports[] element while interpreting the rule.
 
-On Wed, 1 Apr 2026, Weiming Shi wrote:
+Reject malformed multiport v1 rules in checkentry by validating that
+each range start has a following element and that the following element
+is not itself marked as another range start.
 
-> When ip_vs_bind_scheduler() succeeds in ip_vs_add_service(), the local
-> variable sched is set to NULL.  If ip_vs_start_estimator() subsequently
-> fails, the out_err cleanup calls ip_vs_unbind_scheduler(svc, sched)
-> with sched == NULL.  ip_vs_unbind_scheduler() passes the cur_sched NULL
-> check (because svc->scheduler was set by the successful bind) but then
-> dereferences the NULL sched parameter at sched->done_service, causing a
-> kernel panic at offset 0x30 from NULL.
-> 
->  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN NOPTI
->  KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
->  RIP: 0010:ip_vs_unbind_scheduler (net/netfilter/ipvs/ip_vs_sched.c:69)
->  Call Trace:
->   <TASK>
->   ip_vs_add_service.isra.0 (net/netfilter/ipvs/ip_vs_ctl.c:1500)
->   do_ip_vs_set_ctl (net/netfilter/ipvs/ip_vs_ctl.c:2809)
->   nf_setsockopt (net/netfilter/nf_sockopt.c:102)
->   ip_setsockopt (net/ipv4/ip_sockglue.c:1427)
->   raw_setsockopt (net/ipv4/raw.c:850)
->   do_sock_setsockopt (net/socket.c:2322)
->   __sys_setsockopt (net/socket.c:2339)
->   __x64_sys_setsockopt (net/socket.c:2350)
->   do_syscall_64 (arch/x86/entry/syscall_64.c:94)
->   entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130)
->   </TASK>
-> 
-> Fix by simply not clearing the local sched variable after a successful
-> bind.  ip_vs_unbind_scheduler() already detects whether a scheduler is
-> installed via svc->scheduler, and keeping sched non-NULL ensures the
-> error path passes the correct pointer to both ip_vs_unbind_scheduler()
-> and ip_vs_scheduler_put().
-> 
-> Fixes: 05f00505a89a ("ipvs: fix crash if scheduler is changed")
-> Reported-by: Xiang Mei <xmei5@asu.edu>
-> Signed-off-by: Weiming Shi <bestswngs@gmail.com>
+Fixes: a89ecb6a2ef7 ("[NETFILTER]: x_tables: unify IPv4/IPv6 multiport match")
+Reported-by: Yifan Wu <yifanwucs@gmail.com>
+Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+Co-developed-by: Yuan Tan <yuantan098@gmail.com>
+Signed-off-by: Yuan Tan <yuantan098@gmail.com>
+Suggested-by: Xin Liu <bird@lzu.edu.cn>
+Tested-by: Yuhang Zheng <z1652074432@gmail.com>
+Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+---
+Changes in v2:
+- drop the selftest patch
+- send the fix publicly to netfilter-devel
 
-	Looks good to me, thanks!
+Changes in v3:
+- drop datatype cleanup from the fix
+- keep the original check() interface unchanged
+- validate malformed range encoding in checkentry
 
-Acked-by: Julian Anastasov <ja@ssi.bg>
+Changes in v4:
+- follow Pablo's suggested validation form
+- drop inline from multiport_valid_ranges
+- reject reversed port ranges
 
-	But the problem popups in more recent kernels (6.2, not 4.2),
-when the new error path is added after the ip_vs_start_estimator()
-call in commit 705dd3444081 ("ipvs: use kthreads for stats estimation").
+ net/netfilter/xt_multiport.c | 34 ++++++++++++++++++++++++++++++----
+ 1 file changed, 30 insertions(+), 4 deletions(-)
 
-> ---
-> v2: Remove "sched = NULL" instead of recovering it in out_err (Julian)
-> 
->  net/netfilter/ipvs/ip_vs_ctl.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> index 35642de2a0fee..2aaf50f52c8e8 100644
-> --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> @@ -1452,7 +1452,6 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
->  		ret = ip_vs_bind_scheduler(svc, sched);
->  		if (ret)
->  			goto out_err;
-> -		sched = NULL;
->  	}
->  
->  	ret = ip_vs_start_estimator(ipvs, &svc->stats);
-> -- 
-> 2.43.0
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+diff --git a/net/netfilter/xt_multiport.c b/net/netfilter/xt_multiport.c
+index 44a00f5acde8..a1691ff405d3 100644
+--- a/net/netfilter/xt_multiport.c
++++ b/net/netfilter/xt_multiport.c
+@@ -105,6 +105,28 @@ multiport_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	return ports_match_v1(multiinfo, ntohs(pptr[0]), ntohs(pptr[1]));
+ }
+ 
++static bool
++multiport_valid_ranges(const struct xt_multiport_v1 *multiinfo)
++{
++	unsigned int i;
++
++	for (i = 0; i < multiinfo->count; i++) {
++		if (!multiinfo->pflags[i])
++			continue;
++
++		if (++i >= multiinfo->count)
++			return false;
++
++		if (multiinfo->pflags[i])
++			return false;
++
++		if (multiinfo->ports[i - 1] > multiinfo->ports[i])
++			return false;
++	}
++
++	return true;
++}
++
+ static inline bool
+ check(u_int16_t proto,
+       u_int8_t ip_invflags,
+@@ -127,8 +149,10 @@ static int multiport_mt_check(const struct xt_mtchk_param *par)
+ 	const struct ipt_ip *ip = par->entryinfo;
+ 	const struct xt_multiport_v1 *multiinfo = par->matchinfo;
+ 
+-	return check(ip->proto, ip->invflags, multiinfo->flags,
+-		     multiinfo->count) ? 0 : -EINVAL;
++	if (!check(ip->proto, ip->invflags, multiinfo->flags, multiinfo->count))
++		return -EINVAL;
++
++	return multiport_valid_ranges(multiinfo) ? 0 : -EINVAL;
+ }
+ 
+ static int multiport_mt6_check(const struct xt_mtchk_param *par)
+@@ -136,8 +160,10 @@ static int multiport_mt6_check(const struct xt_mtchk_param *par)
+ 	const struct ip6t_ip6 *ip = par->entryinfo;
+ 	const struct xt_multiport_v1 *multiinfo = par->matchinfo;
+ 
+-	return check(ip->proto, ip->invflags, multiinfo->flags,
+-		     multiinfo->count) ? 0 : -EINVAL;
++	if (!check(ip->proto, ip->invflags, multiinfo->flags, multiinfo->count))
++		return -EINVAL;
++
++	return multiport_valid_ranges(multiinfo) ? 0 : -EINVAL;
+ }
+ 
+ static struct xt_match multiport_mt_reg[] __read_mostly = {
+-- 
+2.51.0
 
 
