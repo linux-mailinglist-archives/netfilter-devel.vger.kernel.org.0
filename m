@@ -1,187 +1,176 @@
-Return-Path: <netfilter-devel+bounces-11610-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11612-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2LRAGSjjz2kS1gYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11610-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:56:24 +0200
+	id 8HaXGj/jz2kS1gYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11612-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:56:47 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C197839600A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:56:23 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3E8B39602F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1FE3E304B019
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 15:53:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 354BF301F498
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 15:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FBD33BD22E;
-	Fri,  3 Apr 2026 15:53:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060D33C9432;
+	Fri,  3 Apr 2026 15:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="VmsJNkOm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F11tEcvP"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azazel.net (taras.nevrast.org [35.176.194.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31D92E1EE7
-	for <netfilter-devel@vger.kernel.org>; Fri,  3 Apr 2026 15:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775231606; cv=none; b=YQC9XJ7C8BTfd7nHnLKDMruOY/CV9jgNtkJ4xB5vnvG+y1gwQnfZE6ODIN+JSLn/Q6SzRnbp5K8aZik2YRPnW9+lsICpQRMyeQAcyEcsWfQ+4GXdkSP9hTCEcAFuAsaHYqQxy2MSQC5GrDQwrjSYLY0Dl7clC8PupSfhyY9Wm2I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775231606; c=relaxed/simple;
-	bh=MjwxJvLLYZ1f7y8bbBxb5If0oh2osKSI/g5eC8H6dpA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OtvH+RoF61laXjroVvnYxlzrCb8oiATsItfkV22zyhiLN/MPdGAHd3EHeWiBFHyyPy2kr46xBBz+PyPN/wzmbagSnle7pzryFknTkw4c7NE58KEfJQ0EC8kKYDeAkn+lQMrynpCbbQYPccGEP6jYolhhTijbHFoS7BDVkKevyKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=VmsJNkOm; arc=none smtp.client-ip=35.176.194.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=+M+gW0XOLNwATkZmrQ+4KSPsn2vv7qSO6D49Wf/sWUg=; b=VmsJNkOmINObrKyHqXxBrE3mcm
-	YJuE/2bTaFRsph67/doa/zz7W8kW0Jd2kWFUsugftiroRV/9cayfF7i9NAd8LNlzFAxs3gNR8oznH
-	UlXTs5LvfLWk34j33bte5dbujI8eVQ/KLngP3jM+qVyUDhimIvVkvcqU7oemL38oM5Z9i1YHK5BIb
-	YxoAt5tWxk6thFJiKNixP7DUQcrpjIPEoH+NkCxaMOAzdgac32vm0WyDI6r66LoAWTSNKr2eXAzCf
-	hqkflyIsVjbakXPFi0lC1+g7V3MWUFmWUOMRE4ns3H9VWVzLjMj0otT6z5IPvPsgfK7wfSApQeuRb
-	jiRqYA5g==;
-Received: from [2a00:23c8:a49f:6601:3e21:9cff:fe2f:35f] (helo=celephais.dreamlands)
-	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <jeremy@azazel.net>)
-	id 1w8gpg-0000000EQCl-0BOi;
-	Fri, 03 Apr 2026 16:53:16 +0100
-Date: Fri, 3 Apr 2026 16:53:14 +0100
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Phil Sutter <phil@nwl.cc>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH 0/2] A bit of non-constant binop follow-up
-Message-ID: <20260403155314.GC5449@celephais.dreamlands>
-References: <20260402184320.14862-1-phil@nwl.cc>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD2C3CB2E1
+	for <netfilter-devel@vger.kernel.org>; Fri,  3 Apr 2026 15:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.222.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1775231740; cv=pass; b=S5Wl3HjQr0ToP5UP3iGJKUMCvNutYrIjkBhdjwCj0VixLZgv+KVfAMw9opXVYLeG5kc3h79pOn5aGjGXS2zh5/3e/a2HIxKnDfSr7fzVBUzgMd+W6UD8bErVgcCKAlgdt3Ys9RIZ1eHHw/gjFE4onl92mmjcvAvgg7g2OiRfWaU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1775231740; c=relaxed/simple;
+	bh=vvWbGlNi6TFlplucfWZOlihteJtMnLTcNCquKtF8bUU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ngpSK200AfWjiqpKfFvQ+ycCbjHlY5skUtUgBKDbr09frzVZfpjMjmGZOHIx7n0N+FdAR2YxiXn/YS6Mv2FnI/ew4X9XBGqkwH6H3vRwjt6IrZ3Tx0gyQVcxfydo+4qF5Nvly/564yRENLUpoMKVOG+RMVlH+XqLus1/S0a4ZBg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F11tEcvP; arc=pass smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-953b9fd8ebdso1318507241.1
+        for <netfilter-devel@vger.kernel.org>; Fri, 03 Apr 2026 08:55:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1775231738; cv=none;
+        d=google.com; s=arc-20240605;
+        b=FwWXuLy0AGGBIEvtJ68LaiNpx5qgUMqrEvyqYQJbYNOwFliu0jI25PIr9+wb7s61oA
+         OwnOmgGBx24yqc+cPW/yh2pny0WVlEGMs/AJ1XGI6CuqQ26l7JarEL3Uo563Yj20rHgN
+         AXGiEkt94zTX6xlgzK/k1dvsEstVRa1kap8/19VwDKDkIVzt2tgGg2QoHfXCB5q3yiqU
+         tTmkRC+uccTM3PlXmXNNusUjYrYwvyTvBMaWDrs9unwHbLjPO2P6i07cEjlHwasyrXUQ
+         1obMEZDygxTmKAvROivOshffzQMAPtzOF7qwVJ0o0/prXgY8SrONqY2aqPI9hhZiT6aq
+         D/IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=bSlULmnrafbTFmkOz05b2qK30GDxC9T/cfATlW/fQBg=;
+        fh=n5dbouMqIJ5MdRme7pWNhtW7d6Cas+P+7EHDjxWUlbg=;
+        b=YTujGcv2KxdCtv6/yvtwyK8O9MgoPcq32ip5aqDT9++dwiGXSuVAMQn8yPkia8K+4D
+         1KkF96ZXBOsQmLsCc5VLedMtu/eGhwjaSU0L34S2kP4cS5UgbI10Gb0qvkNR7v3ARx8Z
+         1kGW2xGwboPZA3WiQ28UzXIbaoYkN5z2pBBr3UY6cvlvkV6nGnYmebzAYDXI95n7XCJV
+         J1RvrW6BF1p2pMNjdhj5JCWNVRBCWstY99JuFaIQ4PQ9eQv9Q/ANRgIgD4+9IrE2elp2
+         bGpajl0gveBaX54jfkxckGkRFBwQEAAq/A2yqEKdHtGDasVU+dp2S5UC2/kmqS++Pm7e
+         beMg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775231738; x=1775836538; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bSlULmnrafbTFmkOz05b2qK30GDxC9T/cfATlW/fQBg=;
+        b=F11tEcvPgqKYb4KPaaxtaHz3a+/FG9H+7KF3zMtysUDl+QqDCj8NDdfo7HDVjEQWQD
+         qjWK7b3ASXW4y7mkbFYc2KjDoxGE5JJE8LQz4YMAlTgNdCf741vK8AcMzTlisf+Cq1Ze
+         onMNXEXJTvJP/apFU3SJ4x1CX43iWesyQcXBlJ/oRdqvFtjeMUWjZEuUESQvfQHOYjHc
+         XtHk7425VGN3jbe2a75NNatKsJC2LhrbfybRuz8w2W670txaLoOrlqCTbfRW9++jbFux
+         7rmqCTfR+LzPyVyBp81XLiexTZ3E5aC0oTap28BYYvlIKLDy6KmsXPvpBZTg/yPf9lAd
+         MBDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775231738; x=1775836538;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bSlULmnrafbTFmkOz05b2qK30GDxC9T/cfATlW/fQBg=;
+        b=htcmbxBuIRohSzFpxcbysV52ryugoLZn8LHmVGAdDHEJaBh8JyDaYpQ0T8Flr2aQp/
+         xbo1u7pCAHAHknufd0qrfdcVbEbHLBCBn5Os3xg1lCgr4BSvw9Y+w9bHgY+4pUNAY+EC
+         tfRLr8mrTAcnOse3Am+Dc6fDS1g0LfqZt8Jjbs+MFBDEsIGOEvs90TcDMJ6OmQ+fMdNn
+         KJZ2O0parhzBo1w748pse2PVczEjnr3YAtApLvTWhBH9dLKiDDi/bdBMwW6n6SDenm7w
+         zHICjjpphRQK3l2ou8azvtWN401z9BJe3NGmMBp/ManAC5zrCNbReixgaii7JWvrapaC
+         68yQ==
+X-Gm-Message-State: AOJu0Yzt4uENw6oHP8Wnqbq3X/FzNWUGSXzB/B69alsAyZ226cuWec7B
+	Z/R4wRYs8GaB2hM2EJys6vcO/ABg3ubdlwGh3t2ZAEdGc0TAJCSYawbbEM82kNN7dHTlKQvHVg8
+	/kEwk8e6inIRS9aM9c3wYN9e71fRRvQij/XP7
+X-Gm-Gg: AeBDietib4ck44MwfJ7KRwtt72KVhoruvvHRmwTy0kD0nYv+QEAvVbZMnL5FY9dr3dN
+	1E6SS0NlkK+zS2XpV7NT7NrOLmbBg0CXKkO0jx+sVfM2EC1nDOkvNykzKG/+9tB1gl2SP/LdR0j
+	Uh31S3bOz979eQxLCeoRiZ9GR5uUwznRAWO9gK5WB7BZrdo5wPTpwakiLjOILdDWnWd/dp1R7Yk
+	lFi5zwlQUz0PZ94rhmt6pzFxb011Vuxjs0/8Gfu0E1MfKPtZ3NLuHlZoUS/vesIyWB9Vy9z3vK2
+	tPWqHqE=
+X-Received: by 2002:a05:6102:358d:b0:5ff:be25:894a with SMTP id
+ ada2fe7eead31-605a5139644mr1403489137.32.1775231738311; Fri, 03 Apr 2026
+ 08:55:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mb0THA/CW7hWSlR+"
-Content-Disposition: inline
-In-Reply-To: <20260402184320.14862-1-phil@nwl.cc>
-X-SA-Exim-Connect-IP: 2a00:23c8:a49f:6601:3e21:9cff:fe2f:35f
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
-X-Spamd-Result: default: False [-2.46 / 15.00];
-	SIGNED_PGP(-2.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[azazel.net:s=20220717];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+References: <ac-w6e33txkgTRJj@strlen.de> <ac_EY9ciqt5yQ6wr@strlen.de>
+In-Reply-To: <ac_EY9ciqt5yQ6wr@strlen.de>
+From: Scott Mitchell <scott.k.mitch1@gmail.com>
+Date: Fri, 3 Apr 2026 08:55:27 -0700
+X-Gm-Features: AQROBzDt5ARLDV79X-KOKclhATQ7c5tLSV8mUTRzkTu_Zfk9b8SQmhf-nx8sbrY
+Message-ID: <CAFn2buDAPLPjS5fXejDiuY5pV1rduMes2Ho=sSYmFVMVmh5xAw@mail.gmail.com>
+Subject: Re: nfnetlink_queue crashes kernel
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[azazel.net : SPF not aligned (relaxed),none];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11610-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	DKIM_TRACE(0.00)[azazel.net:-];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jeremy@azazel.net,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.943];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	TAGGED_FROM(0.00)[bounces-11612-lists,netfilter-devel=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C197839600A
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[scottkmitch1@gmail.com,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D3E8B39602F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+> diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+> index 47f7f62906e2..15c6276f6592 100644
+> --- a/net/netfilter/nfnetlink_queue.c
+> +++ b/net/netfilter/nfnetlink_queue.c
+> @@ -60,29 +60,10 @@
+>   */
+>  #define NFQNL_MAX_COPY_RANGE (0xffff - NLA_HDRLEN)
 
---mb0THA/CW7hWSlR+
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+NFQNL_HASH_MIN (1024) and NFQNL_HASH_MAX(1048576) were set when the
+table was global, but if table is moved to per queue it can likely be
+reduced. Suggested values:
 
-On 2026-04-02, at 20:43:18 +0200, Phil Sutter wrote:
-> When asked about how to translate ebtables' --arp-gratuitous match, I
-> noticed that basically everything is there already but the parser
-> rejects it.
->=20
-> While we can't do a simple 'arp saddr ip =3D=3D arp daddr ip' because cmp
-> expression requires for one side of the equation to be constant, using
-> XOR on LHS we can work around this limitation:
->=20
-> arp saddr ip ^ arp daddr ip =3D=3D 0.0.0.0
->=20
-> Thanks to Jeremy's work on bitwise expression (which one might want to
-> repeat for cmp),
+#define NFQNL_HASH_MIN 8
+#define NFQNL_HASH_MAX 32768
 
-I'll take a look. :)
+>
+> -cleanup_netlink_subsys:
+> -       nfnetlink_subsys_unregister(&nfqnl_subsys);
+> -cleanup_netlink_notifier:
+> +cleanup_nfqnl_subsys:
+> +       netlink_unregister_notifier(&nfqnl_dev_notifier);
 
-J.
+Should `netlink_unregister_notifier(&nfqnl_dev_notifier);` be
+'unregister_netdevice_notifier(&nfqnl_dev_notifier);' ?
 
-> the above is possible in VM code:
->=20
-> [ payload load 4b @ network header + 14 =3D> reg 1 ]
-> [ payload load 4b @ network header + 24 =3D> reg 2 ]
-> [ bitwise reg 1 =3D ( reg 1 ^ reg 2 ) ]
-> [ cmp eq reg 1 0x00000000 ]
->=20
-> Patch 2 of this series relaxes the parser so it accepts the input.
-> Basically it undoes an old workaround needed before we introduced start
-> conditions.
->=20
-> Patch 1 removes a similar restriction in JSON parser. It is needed at
-> least to accept the JSON equivalent of above match (conversion to JSON
-> on output was already correct).
->=20
-> Phil Sutter (2):
->   parser_json: Accept non-RHS expressions in binop RHS
->   parser_bison: Accept non-constant binop on LHS of relationals
->=20
->  doc/payload-expression.txt        |  6 ++++
->  src/parser_bison.y                | 16 +++++-----
->  src/parser_json.c                 |  2 +-
->  src/scanner.l                     |  2 +-
->  tests/py/arp/arp.t                |  4 +++
->  tests/py/arp/arp.t.json           | 51 +++++++++++++++++++++++++++++++
->  tests/py/arp/arp.t.payload        | 14 +++++++++
->  tests/py/arp/arp.t.payload.netdev | 18 +++++++++++
->  8 files changed, 104 insertions(+), 9 deletions(-)
->=20
-> --=20
-> 2.51.0
->=20
->=20
-
---mb0THA/CW7hWSlR+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsG7BAABCgBvBYJpz+JjCRAphqwKvfEEDUcUAAAAAAAeACBzYWx0QG5vdGF0aW9u
-cy5zZXF1b2lhLXBncC5vcmdZuH3Xvej0qIwfofYfaTJQCYgzsjDCldAK4hQ9N2S4
-HxYhBGwdtFNj70A3vVbVFymGrAq98QQNAAAE8RAA0cTBfm9IwCgkxdt5N2WlDNOS
-5f8NrQACveuB/0CjONCYqT4wdOZwv1Mnt0RXkDxZCrh9dNh7c03+3koikClGa6qe
-0CElTGZT1JKVTqR08Tk/MxXpaw0I4jvKyDuOQwP6hZsbWJVFVcR+wQkl0cpa9/qm
-fb4ujflpOjUvd7WsUmvXJ8M3476/I8a/+2COYp7cVU/RwE2fIzSqJ43IGjL3GI3H
-lmYoZqR4CyBGXVnSnaWKQIWYpuvjCjHEvEf0MVEOhkwyr3gq4eD5y2yQ8XaBqb+K
-enivFh0fOFCXvKV6bkjPJjTHATrZViBRkCa+EO4Yj1MYkJfnbBJl1M8QMR85MiXe
-Yt2kgcpVyYmR09GOhVLKyUva6BZzMc7MI5bGygQ8Ivt9uUA1m2uC5iWkMlS5+yAK
-Hout91X54HvQXFEO9RmicO7xlbgaRRR2Zv1KpGsh2JvKzhA+UFTnOitH/ynKdMCU
-RIw2YC8H+SJ4jMPiTNhHxQdabxNOuKGiZCiFpLT0Fs/yDf4oE5obWfH7SgONcuWt
-PodJ4e7dvBaaUQYhodO1ekA5LyuWrN8hUweTCdkwWtfAkoL/s+prBUBnBz3ge2f1
-nLUAJ934Zn/YaNafNxsh1KOsU5WNwvynPdWX1IwJy/2XLtHXC6D9ADvDOZRQNgQ2
-my9mFFgFoRj/n3Rer0s=
-=Ace2
------END PGP SIGNATURE-----
-
---mb0THA/CW7hWSlR+--
+> +cleanup_dev_notifier:
+>         netlink_unregister_notifier(&nfqnl_rtnl_notifier);
+> +cleanup_rtnl_notifier:
+>         unregister_pernet_subsys(&nfnl_queue_net_ops);
+> -cleanup_rhashtable:
+> -       rhashtable_destroy(&nfqnl_packet_map);
+> +cleanup_pernet_subsys:
+> +       destroy_workqueue(nfq_cleanup_wq);
+>         return status;
+>  }
 
