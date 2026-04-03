@@ -1,63 +1,81 @@
-Return-Path: <netfilter-devel+bounces-11608-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11609-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yJqBNKXYz2mb1AYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11608-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:11:33 +0200
+	id aENiASniz2kS1gYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11609-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:52:09 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81969395A12
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:11:33 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58788395F8C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Apr 2026 17:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ED0163024A64
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 15:09:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 37698305CA3B
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Apr 2026 15:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20965353ED9;
-	Fri,  3 Apr 2026 15:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632543C7DEF;
+	Fri,  3 Apr 2026 15:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mIEKPtK3"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="m5w1A24B"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98FC34D3B2;
-	Fri,  3 Apr 2026 15:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADAB280A51;
+	Fri,  3 Apr 2026 15:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775228987; cv=none; b=Fr/3LLTZtza9zIe0ubbxSwFBKygCHgXypKUQTOnAc96gfTYL6cEwVW12FetmS3IajOQNhG6JqMBjO/WlZfpi6QeLrg4zcpuhG/GA/EmqPRXNLdX/R2g8OmdEHw+wbIQvzw2j9Kw0/qaH9ebYaUVUKB2rHoGck9R8JPBFbG1FinU=
+	t=1775231436; cv=none; b=JYJXVw1MulzrNtTJkrhpeK1+8Zf+KGqdA8GdKRiFc+Fp7kDEW2WJRmgWRXAO0NCwHwZ6JjJBEgpE6G7xtqqVMt/Qwu7jf9nhPzJl+WJVGodUCnoEb7O83B3k+Zejj9sLTMMkLDNSXMX+5+Z5/Rn01LchHs4e2Z1ODr42migieas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775228987; c=relaxed/simple;
-	bh=dzw39lTHOtbmWCTxz7JcXvT0Hqgw0nWp17MXJ0dRIbg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oSRflbnKmm3uIOsSgebAInbn3tOKs8OCxz05kY6sAAUUhKZdvtqBAjiGYnSELoG/xfnXuZx2g7R+U6s/xK9DcGjk+z3HZ0qbtShFP6qaeiOXnY1EnyBDbAlb49mDTxIQti3D3P8pIJmukhkgXzD77KRl4vK3c4Re2vC9l2mq5cA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mIEKPtK3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04AA4C2BCAF;
-	Fri,  3 Apr 2026 15:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775228986;
-	bh=dzw39lTHOtbmWCTxz7JcXvT0Hqgw0nWp17MXJ0dRIbg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mIEKPtK31JGGZt8EQzXoTc4oZzV0Yi935aoVir3YEjx0RQBqkRWLTYXO8QcaX2wMN
-	 I46ND0ihvBBWVUgJIreALPPtc1Tx2MBkYkY47Pb0n+AQNPZSRZvuHTIiFgtW7c7TYB
-	 jZa5Dd5z92a4hIlyNff6pv3cnUA/hmJJL2fA8VUJcpEIMbQ05RrB2O0X77w0wiN40B
-	 jkb51AixPgUgQPBqKW4sPLcfCAq9E1T0fEtddJjl885JTv7/3gf1u6PP/sNrYzN7ln
-	 HqZwJO1Hno/s+jK0tWBm3HcXyR1jJfLdK4upu6tgoBojc8wBjbW8//2UbMy61gxV9o
-	 3W6URSkw/rFKQ==
-Date: Fri, 3 Apr 2026 16:09:41 +0100
-From: Simon Horman <horms@kernel.org>
+	s=arc-20240116; t=1775231436; c=relaxed/simple;
+	bh=LY+xPNa22+WbSd7wyfRtnKVWdGr1NXJcepvxE9ed2Mw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=NahyTV2BMCpThC9BM3bQxMRlgHD0Ea9zbF5x6KoJPRm/XuKYDOBsnX5Z8FdxiGhByGMDQ83Ge2GOlw2UzF3iOOm6GP9SwCYbt/AlMXmIFt0JrT4EqQVgYE58Cfc/kEMEMpr3mdr0LM7YFv+GVUV0eAKufgiGtklvyAGS0ntv+sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=m5w1A24B; arc=none smtp.client-ip=193.238.174.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mx.ssi.bg (localhost [127.0.0.1])
+	by mx.ssi.bg (Potsfix) with ESMTP id 80A8A21C5B;
+	Fri, 03 Apr 2026 18:50:29 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
+	:content-type:content-type:date:from:from:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
+	 bh=O18+hfUNzACqcP51D6CnMotQefBBC43pIwM9YBC39KM=; b=m5w1A24BV94q
+	elfFe5HTwW8v3Kusd3uKAFltnhN9FZKnir5NZ19XAzsMHYEaCvDt516BchsGJAL5
+	OSZwjnoZ5L5bRRJgtQ188OAflXTrQkYoHM9HfH8W+Gs9D8ocYwI2rjityJ9bM/2Q
+	5bRf2IZ7Xb43T0bl6HYuDf7vg9tzThpETF2ZbMzm7i68Dsz2xiKY3iEI+3RifDJW
+	gnIysI4it4QeLQFoRUKX00adh8C/6TyrBmx9/m8v4TUgxWWFmRWCE8QhpAh45qn9
+	6cuCUL16ipdviMS+DD4VRovrAX77YDxwaD1weWEziJdanI202j9RoGYXw5EN0n17
+	XOkMrXalW76pCNH2Yeyay1yxnjYhwP/xgYktCfOanMBpRGrg8ztZdJvVZp3d7FYS
+	bYrlf2e6d1QGQJtqo6puYuMgaTLviC3UqPVf6sekeF4Yjy7NNv3JuwvIPvmde6CF
+	AWwgA+Fo4ucW8UC5qyTWuTjExjJVFExEvcqnMNkn21b+/p7vG79HQ+8eELNORcfv
+	2Kk3byKNRFxIWY/b5NYpCNecMOVmJNvVwqmMe5glX5C/zoY9LTjhg40+UtI2k1J4
+	PO+Fuu/EoynUugT1YYtpnjtjnhBC3DCTIjaxu7Nwl8O7i38m6QShhVeQNqNvQ/AO
+	4/4vtv3g8ZsJwNYaSebin3Ovi14N7l8=
+Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
+	by mx.ssi.bg (Potsfix) with ESMTPS;
+	Fri, 03 Apr 2026 18:50:28 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by box.ssi.bg (Potsfix) with ESMTPSA id DD12660ADE;
+	Fri,  3 Apr 2026 18:50:27 +0300 (EEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 633FoOTq046122;
+	Fri, 3 Apr 2026 18:50:24 +0300
+Date: Fri, 3 Apr 2026 18:50:24 +0300 (EEST)
+From: Julian Anastasov <ja@ssi.bg>
 To: Weiming Shi <bestswngs@gmail.com>
-Cc: Julian Anastasov <ja@ssi.bg>, Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Phil Sutter <phil@nwl.cc>, netdev@vger.kernel.org,
-	lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, Xiang Mei <xmei5@asu.edu>
+cc: Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Phil Sutter <phil@nwl.cc>,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Xiang Mei <xmei5@asu.edu>
 Subject: Re: [PATCH net v2] ipvs: fix NULL deref in ip_vs_add_service error
  path
-Message-ID: <20260403150941.GI113102@horms.kernel.org>
+In-Reply-To: <20260401075800.3344266-2-bestswngs@gmail.com>
+Message-ID: <733280f5-ce3b-ea65-d9c5-471da6f601b3@ssi.bg>
 References: <20260401075800.3344266-2-bestswngs@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -65,42 +83,44 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260401075800.3344266-2-bestswngs@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	TAGGED_FROM(0.00)[bounces-11609-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11608-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[ssi.bg:+];
 	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[asu.edu:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 81969395A12
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 58788395F8C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 01, 2026 at 03:58:01PM +0800, Weiming Shi wrote:
+
+	Hello,
+
+On Wed, 1 Apr 2026, Weiming Shi wrote:
+
 > When ip_vs_bind_scheduler() succeeds in ip_vs_add_service(), the local
 > variable sched is set to NULL.  If ip_vs_start_estimator() subsequently
 > fails, the out_err cleanup calls ip_vs_unbind_scheduler(svc, sched)
@@ -136,6 +156,38 @@ On Wed, Apr 01, 2026 at 03:58:01PM +0800, Weiming Shi wrote:
 > Reported-by: Xiang Mei <xmei5@asu.edu>
 > Signed-off-by: Weiming Shi <bestswngs@gmail.com>
 
-Acked-by: Simon Horman <horms@kernel.org>
+	Looks good to me, thanks!
+
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+	But the problem popups in more recent kernels (6.2, not 4.2),
+when the new error path is added after the ip_vs_start_estimator()
+call in commit 705dd3444081 ("ipvs: use kthreads for stats estimation").
+
+> ---
+> v2: Remove "sched = NULL" instead of recovering it in out_err (Julian)
+> 
+>  net/netfilter/ipvs/ip_vs_ctl.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index 35642de2a0fee..2aaf50f52c8e8 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -1452,7 +1452,6 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
+>  		ret = ip_vs_bind_scheduler(svc, sched);
+>  		if (ret)
+>  			goto out_err;
+> -		sched = NULL;
+>  	}
+>  
+>  	ret = ip_vs_start_estimator(ipvs, &svc->stats);
+> -- 
+> 2.43.0
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
 
