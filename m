@@ -1,224 +1,219 @@
-Return-Path: <netfilter-devel+bounces-11626-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11629-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WOa3CYzc0GniBQcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11626-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 11:40:28 +0200
+	id AK7XAVfj0GmIBgcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11629-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 12:09:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FA5439A8B6
-	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 11:40:27 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0839A39AB75
+	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 12:09:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CE6CD300F79C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Apr 2026 09:40:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E67333002D38
+	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Apr 2026 10:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E152538236B;
-	Sat,  4 Apr 2026 09:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA643A8748;
+	Sat,  4 Apr 2026 10:09:20 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3183537EF
-	for <netfilter-devel@vger.kernel.org>; Sat,  4 Apr 2026 09:40:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084E633554B
+	for <netfilter-devel@vger.kernel.org>; Sat,  4 Apr 2026 10:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775295610; cv=none; b=B1geVS/ynjaaWH8g9EtRFabgnuEe+KZW1p79/BFvmKhkv8SNmH0VcyWPTKVZ/a1hHl+g2IIgDB3bw3FjKhGH8qmydiexL2LWMoRPG3P2QYHkDBubS+DB7xSGkx0aiF1ATGuna9f6Ma9WzvC46bSZrxtwaM3JLxfFIf6JTIcFwpU=
+	t=1775297359; cv=none; b=fIadN3JwsKYGjvjZt3y2HOj1Djig7bf4p7Grie/CHeRdDDsItwEG/mL00JDnkNJK5szHHpe+TOP5FN3KZb7kEO338WdrmsdYyh4o3tYXlnWrtPotoNYGaSKM9uU+wnHcz12951mP3pxoA62V6f30Kv3Vd1ZiflZlsqCfvfIybu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775295610; c=relaxed/simple;
-	bh=w1XitjBBnouKais+OpvibSw5CtCyRfJ6XXTfrCt4kdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mqCxAljGlaSukzVi9wK7AZDvABOybmZiWODxy2qX+njJrNW35J/KV7zbDY7GLbuA6cSkK/yiXu2xMvB42yXpVXI42R1t9/6EbPkG5pvYXYDbOvGI32fKdj1+U56h/i9s64htq7Ta7ssRFJ96zTKjUqmmxYqAp1RUStu2iqZvClU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+	s=arc-20240116; t=1775297359; c=relaxed/simple;
+	bh=4RNuESg17tAqqEpID/6fI9k4pqlM8AXbSMyzfTSooYI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VVpqSOESgos25xA4l0+hw+exTM+YivxrxoKWV5/50Bo+65eCedidt8kbt/3hOUKmy7HQF299E81QJVHFYn6fyscXiDJHdKTI0QDiD4q70W/5DYBk5NBdEW+HRdbCJT95KX4O/qvuZWlk3ZN/e2eeAdi5MM/458eJKvEGZq27LJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 9548260508; Sat, 04 Apr 2026 11:40:06 +0200 (CEST)
-Date: Sat, 4 Apr 2026 11:40:00 +0200
+	id D1D556079E; Sat, 04 Apr 2026 12:09:15 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
-To: Fernando Fernandez Mancera <fmancera@suse.de>
-Cc: Scott Mitchell <scott.k.mitch1@gmail.com>,
-	netfilter-devel@vger.kernel.org
-Subject: Re: nfnetlink_queue crashes kernel
-Message-ID: <adDccAnxkl4to_ta@strlen.de>
-References: <ac-w6e33txkgTRJj@strlen.de>
- <ac_EY9ciqt5yQ6wr@strlen.de>
- <b0c495e4-2137-443b-986e-ed0c10251d0c@suse.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next v2] netfilter: nfnetlink: prefer skb_mac_header helpers
+Date: Sat,  4 Apr 2026 12:09:05 +0200
+Message-ID: <20260404100909.19412-1-fw@strlen.de>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0c495e4-2137-443b-986e-ed0c10251d0c@suse.de>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-11626-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-11629-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.700];
-	MID_RHS_MATCH_FROM(0.00)[];
 	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.996];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 8FA5439A8B6
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
+X-Rspamd-Queue-Id: 0839A39AB75
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Fernando Fernandez Mancera <fmancera@suse.de> wrote:
-> On 4/3/26 3:45 PM, Florian Westphal wrote:
-> > Florian Westphal <fw@strlen.de> wrote:
-> > > A probably better fix is to make the rhashtable perqueue, which is
-> > > much more intrusive at this late stage.
-> > 
-> > Tentative patch to do this, still misses selftest extensions:
-> > 
-> 
-> I could help with selftests. I have written a couple already. Let me prepare
-> some this week and I will send them as proposals on the list.
-
-Thanks Fernando, much appreciated.
-This will be hard to trigger, the autoresize means that we'll typically
-not have two entries per bucket.
-
-What might help is to add a mode to nf_queue.c to:
-1. send out-of-order-verdicts
-2. send *bogus* verdicts that are expected to
-   fail w. -ENOENT.
-
-I had a go at adding a stress test but its not
-triggering for me even if i run it for 10m.
-
-I'm attaching what I had:
-
-selftests: nft_queue.sh: add a parallel stress test
-
-XXX: Not complete, should extend nf_queue.c to allow
-OOO verdicts + bogus verdicts to increase likelyhood of
-accessing already-freed objects in the hash table.
+This adds implicit DEBUG_WARN_ON_ONCE for debug configurations.
+No other changes intended.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ v2: also convert nfnetlink_log (spotted by Pablo)
 
-diff --git a/tools/testing/selftests/net/netfilter/nft_queue.sh b/tools/testing/selftests/net/netfilter/nft_queue.sh
-index ea766bdc5d04..c05f2e5fef0b 100755
---- a/tools/testing/selftests/net/netfilter/nft_queue.sh
-+++ b/tools/testing/selftests/net/netfilter/nft_queue.sh
-@@ -11,6 +11,7 @@ ret=0
- timeout=5
+ net/netfilter/nfnetlink_log.c   | 19 ++++++++++---------
+ net/netfilter/nfnetlink_queue.c | 25 ++++++++++++-------------
+ 2 files changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index 3e08e3212983..009e18b542aa 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -401,7 +401,7 @@ nfulnl_timer(struct timer_list *t)
  
- SCTP_TEST_TIMEOUT=60
-+STRESS_TEST_TIMEOUT=300
- 
- cleanup()
+ static u32 nfulnl_get_bridge_size(const struct sk_buff *skb)
  {
-@@ -719,6 +720,64 @@ EOF
- 	fi
+-	u32 size = 0;
++	u32 mac_len, size = 0;
+ 
+ 	if (!skb_mac_header_was_set(skb))
+ 		return 0;
+@@ -412,14 +412,17 @@ static u32 nfulnl_get_bridge_size(const struct sk_buff *skb)
+ 		size += nla_total_size(sizeof(u16)); /* tag */
+ 	}
+ 
+-	if (skb->network_header > skb->mac_header)
+-		size += nla_total_size(skb->network_header - skb->mac_header);
++	mac_len = skb_mac_header_len(skb);
++	if (mac_len > 0)
++		size += nla_total_size(mac_len);
+ 
+ 	return size;
  }
  
-+check_tainted()
-+{
-+	local msg="$1"
-+
-+	if [ "$tainted_then" -ne 0 ];then
-+		return
-+	fi
-+
-+	read tainted_now < /proc/sys/kernel/tainted
-+	if [ "$tainted_now" -eq 0 ];then
-+		echo "PASS: $msg"
-+	else
-+		echo "TAINT: $msg"
-+		dmesg
-+		ret=1
-+	fi
-+}
-+
-+test_queue_stress()
-+{
-+	read tainted_then < /proc/sys/kernel/tainted
-+	local i
-+
-+        ip netns exec "$nsrouter" nft -f /dev/stdin <<EOF
-+flush ruleset
-+table inet t {
-+	chain forward {
-+		type filter hook forward priority 0; policy accept;
-+
-+		queue flags bypass to numgen random mod 8
-+	}
-+}
-+EOF
-+	timeout "$STRESS_TEST_TIMEOUT" ip netns exec "$ns2" socat -u UDP-LISTEN:12345,fork,pf=ipv4 STDOUT > /dev/null &
-+	timeout "$STRESS_TEST_TIMEOUT" ip netns exec "$ns3" socat -u UDP-LISTEN:12345,fork,pf=ipv4 STDOUT > /dev/null &
-+
-+	for i in $(seq 0 7); do
-+		ip netns exec "$nsrouter" timeout "$STRESS_TEST_TIMEOUT" ./nf_queue -q $i -t 2 > /dev/null &
-+	done
-+
-+	ip netns exec "$ns1" timeout "$STRESS_TEST_IMEOUT" ping -q -f 10.0.2.99 > /dev/null 2>&1 &
-+	ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" ping -q -f 10.0.3.99 > /dev/null 2>&1 &
-+	ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" ping -q -f "dead:2::99" > /dev/null 2>&1 &
-+	ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" ping -q -f "dead:3::99" > /dev/null 2>&1 &
-+
-+	busywait "$BUSYWAIT_TIMEOUT" udp_listener_ready "$ns2" 12345
-+	busywait "$BUSYWAIT_TIMEOUT" udp_listener_ready "$ns3" 12345
-+
-+	for i in $(seq 1 4);do
-+		ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" socat -u STDIN UDP-DATAGRAM:10.0.2.99:12345 < /dev/zero > /dev/null &
-+		ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" socat -u STDIN UDP-DATAGRAM:10.0.3.99:12345 < /dev/zero > /dev/null &
-+	done
-+
-+	wait
-+
-+	check_tainted "concurrent queueing"
-+}
-+
- test_queue_removal()
+ static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff *skb)
  {
- 	read tainted_then < /proc/sys/kernel/tainted
-@@ -742,18 +801,7 @@ EOF
++	u32 mac_len;
++
+ 	if (!skb_mac_header_was_set(skb))
+ 		return 0;
  
- 	ip netns exec "$ns1" nft flush ruleset
+@@ -437,12 +440,10 @@ static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff
+ 		nla_nest_end(inst->skb, nest);
+ 	}
  
--	if [ "$tainted_then" -ne 0 ];then
--		return
--	fi
+-	if (skb->mac_header < skb->network_header) {
+-		int len = (int)(skb->network_header - skb->mac_header);
 -
--	read tainted_now < /proc/sys/kernel/tainted
--	if [ "$tainted_now" -eq 0 ];then
--		echo "PASS: queue program exiting while packets queued"
--	else
--		echo "TAINT: queue program exiting while packets queued"
--		dmesg
--		ret=1
--	fi
-+	check_tainted "queue program exiting while packets queued"
+-		if (nla_put(inst->skb, NFULA_L2HDR, len, skb_mac_header(skb)))
+-			goto nla_put_failure;
+-	}
++	mac_len = skb_mac_header_len(skb);
++	if (mac_len > 0 &&
++	    nla_put(inst->skb, NFULA_L2HDR, mac_len, skb_mac_header(skb)))
++		goto nla_put_failure;
+ 
+ 	return 0;
+ 
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index 4e579ddb7428..3fd1dfc0c105 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -602,6 +602,7 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+ {
+ 	struct sk_buff *entskb = entry->skb;
+ 	u32 nlalen = 0;
++	u32 mac_len;
+ 
+ 	if (entry->state.pf != PF_BRIDGE || !skb_mac_header_was_set(entskb))
+ 		return 0;
+@@ -610,9 +611,9 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+ 		nlalen += nla_total_size(nla_total_size(sizeof(__be16)) +
+ 					 nla_total_size(sizeof(__be16)));
+ 
+-	if (entskb->network_header > entskb->mac_header)
+-		nlalen += nla_total_size((entskb->network_header -
+-					  entskb->mac_header));
++	mac_len = skb_mac_header_len(entskb);
++	if (mac_len > 0)
++		nlalen += nla_total_size(mac_len);
+ 
+ 	return nlalen;
+ }
+@@ -620,6 +621,7 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
+ {
+ 	struct sk_buff *entskb = entry->skb;
++	u32 mac_len;
+ 
+ 	if (entry->state.pf != PF_BRIDGE || !skb_mac_header_was_set(entskb))
+ 		return 0;
+@@ -638,12 +640,10 @@ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
+ 		nla_nest_end(skb, nest);
+ 	}
+ 
+-	if (entskb->mac_header < entskb->network_header) {
+-		int len = (int)(entskb->network_header - entskb->mac_header);
+-
+-		if (nla_put(skb, NFQA_L2HDR, len, skb_mac_header(entskb)))
+-			goto nla_put_failure;
+-	}
++	mac_len = skb_mac_header_len(entskb);
++	if (mac_len > 0 &&
++	    nla_put(skb, NFQA_L2HDR, mac_len, skb_mac_header(entskb)))
++		goto nla_put_failure;
+ 
+ 	return 0;
+ 
+@@ -1027,13 +1027,13 @@ nf_queue_entry_dup(struct nf_queue_entry *e)
+ static void nf_bridge_adjust_skb_data(struct sk_buff *skb)
+ {
+ 	if (nf_bridge_info_get(skb))
+-		__skb_push(skb, skb->network_header - skb->mac_header);
++		__skb_push(skb, skb_mac_header_len(skb));
  }
  
- ip netns exec "$nsrouter" sysctl net.ipv6.conf.all.forwarding=1 > /dev/null
-@@ -799,6 +847,7 @@ test_sctp_forward
- test_sctp_output
- test_udp_nat_race
- test_udp_gro_ct
-+test_queue_stress
+ static void nf_bridge_adjust_segmented_data(struct sk_buff *skb)
+ {
+ 	if (nf_bridge_info_get(skb))
+-		__skb_pull(skb, skb->network_header - skb->mac_header);
++		__skb_pull(skb, skb_mac_header_len(skb));
+ }
+ #else
+ #define nf_bridge_adjust_skb_data(s) do {} while (0)
+@@ -1492,8 +1492,7 @@ static int nfqa_parse_bridge(struct nf_queue_entry *entry,
+ 	}
  
- # should be last, adds vrf device in ns1 and changes routes
- test_icmp_vrf
+ 	if (nfqa[NFQA_L2HDR]) {
+-		int mac_header_len = entry->skb->network_header -
+-			entry->skb->mac_header;
++		u32 mac_header_len = skb_mac_header_len(entry->skb);
+ 
+ 		if (mac_header_len != nla_len(nfqa[NFQA_L2HDR]))
+ 			return -EINVAL;
+-- 
+2.53.0
+
 
