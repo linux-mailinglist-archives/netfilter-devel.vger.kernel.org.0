@@ -1,292 +1,224 @@
-Return-Path: <netfilter-devel+bounces-11628-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11626-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iFrGH7jc0GniBQcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11628-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 11:41:12 +0200
+	id WOa3CYzc0GniBQcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11626-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 11:40:28 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9C339A928
-	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 11:41:12 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA5439A8B6
+	for <lists+netfilter-devel@lfdr.de>; Sat, 04 Apr 2026 11:40:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E9A79301495D
-	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Apr 2026 09:40:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CE6CD300F79C
+	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Apr 2026 09:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520823A8746;
-	Sat,  4 Apr 2026 09:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E152538236B;
+	Sat,  4 Apr 2026 09:40:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.229.168.213])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84EA3A7F52;
-	Sat,  4 Apr 2026 09:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.229.168.213
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3183537EF
+	for <netfilter-devel@vger.kernel.org>; Sat,  4 Apr 2026 09:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775295653; cv=none; b=NtC6nRFUr/Xxf9/HCO0wo860T0Qjieusv4IzA/kaxzZkItk8z96zCmweVDjeXZ+X8epBHtJDl5KvUmEvr3d3JhkBnxG+Fr1SEDdqG1+NQjJ+NF8QA5rx6aSROpmWo5BjXPkf3SQMuso3PDL8AIBcn5GOLC2bgbD60sDufEjPT0s=
+	t=1775295610; cv=none; b=B1geVS/ynjaaWH8g9EtRFabgnuEe+KZW1p79/BFvmKhkv8SNmH0VcyWPTKVZ/a1hHl+g2IIgDB3bw3FjKhGH8qmydiexL2LWMoRPG3P2QYHkDBubS+DB7xSGkx0aiF1ATGuna9f6Ma9WzvC46bSZrxtwaM3JLxfFIf6JTIcFwpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775295653; c=relaxed/simple;
-	bh=OwPt9XHHkjnSsh68AOZSdcby1t48S2XGm/KMVKt3zlE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P3exEs52xNs1SMmvENl58idW3VQJ3XmWLxedsUz38KOrodaECOFfcRGtzh/AtIeRank/uGapctBP/2RvkwcKxvVzob8pBKgT+gQMGLtLA36+M+J2ikZkaoiPJo6+uouoTF+/w3JdCBC/b3udLwK5Mi/C9R/Ihoo21sgCogPklvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=52.229.168.213
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
-Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
-	by app1 (Coremail) with SMTP id ygmowADnXwB93NBps2+lAA--.38592S3;
-	Sat, 04 Apr 2026 17:40:25 +0800 (CST)
-From: Ren Wei <n05ec@lzu.edu.cn>
-To: netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: pablo@netfilter.org,
-	fw@strlen.de,
-	phil@nwl.cc,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	yifanwucs@gmail.com,
-	tomapufckgml@gmail.com,
-	yuantan098@gmail.com,
-	bird@lzu.edu.cn,
-	enjou1224z@gmail.com,
-	zcliangcn@gmail.com,
-	n05ec@lzu.edu.cn
-Subject: [PATCH nf v2 2/2] netfilter: require Ethernet MAC header before using eth_hdr()
-Date: Sat,  4 Apr 2026 17:39:48 +0800
-Message-ID: <8a97a5560b3bcede951dbd1214e126754dc55cb4.1775260446.git.zcliangcn@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1774859629.git.zcliangcn@gmail.com>
-References: <cover.1774859629.git.zcliangcn@gmail.com>
+	s=arc-20240116; t=1775295610; c=relaxed/simple;
+	bh=w1XitjBBnouKais+OpvibSw5CtCyRfJ6XXTfrCt4kdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mqCxAljGlaSukzVi9wK7AZDvABOybmZiWODxy2qX+njJrNW35J/KV7zbDY7GLbuA6cSkK/yiXu2xMvB42yXpVXI42R1t9/6EbPkG5pvYXYDbOvGI32fKdj1+U56h/i9s64htq7Ta7ssRFJ96zTKjUqmmxYqAp1RUStu2iqZvClU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 9548260508; Sat, 04 Apr 2026 11:40:06 +0200 (CEST)
+Date: Sat, 4 Apr 2026 11:40:00 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Fernando Fernandez Mancera <fmancera@suse.de>
+Cc: Scott Mitchell <scott.k.mitch1@gmail.com>,
+	netfilter-devel@vger.kernel.org
+Subject: Re: nfnetlink_queue crashes kernel
+Message-ID: <adDccAnxkl4to_ta@strlen.de>
+References: <ac-w6e33txkgTRJj@strlen.de>
+ <ac_EY9ciqt5yQ6wr@strlen.de>
+ <b0c495e4-2137-443b-986e-ed0c10251d0c@suse.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:ygmowADnXwB93NBps2+lAA--.38592S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3XryftF1DZryxKr1fGF18Grg_yoWxtF15pa
-	1DCa4rJrs3Jr43Gr18Ca1xZr45Jw4kAF4S934Yy3sYv3WqgrZ5tay0kr4ag3W8XrZYgrsx
-	W3Wjvw4ruws8XrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
-	87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-	Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-	6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-	vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r4a6rW5MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6c
-	x26r48MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRi_HU3UUUUU==
-X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQQHCWnP4nwFrAAAsa
-X-Spamd-Result: default: False [-0.96 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0c495e4-2137-443b-986e-ed0c10251d0c@suse.de>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-0.990];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[lzu.edu.cn];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-11626-lists,netfilter-devel=lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,davemloft.net,kernel.org,google.com,redhat.com,gmail.com,lzu.edu.cn];
-	TAGGED_FROM(0.00)[bounces-11628-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 1E9C339A928
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.700];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 8FA5439A8B6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Zhengchuan Liang <zcliangcn@gmail.com>
+Fernando Fernandez Mancera <fmancera@suse.de> wrote:
+> On 4/3/26 3:45 PM, Florian Westphal wrote:
+> > Florian Westphal <fw@strlen.de> wrote:
+> > > A probably better fix is to make the rhashtable perqueue, which is
+> > > much more intrusive at this late stage.
+> > 
+> > Tentative patch to do this, still misses selftest extensions:
+> > 
+> 
+> I could help with selftests. I have written a couple already. Let me prepare
+> some this week and I will send them as proposals on the list.
 
-`ip6t_eui64`, `xt_mac`, the `bitmap:ip,mac`, `hash:ip,mac`, and
-`hash:mac` ipset types, and `nf_log_syslog` access `eth_hdr(skb)`
-after either assuming that the skb is associated with an Ethernet
-device or checking only that the `ETH_HLEN` bytes at
-`skb_mac_header(skb)` lie between `skb->head` and `skb->data`.
+Thanks Fernando, much appreciated.
+This will be hard to trigger, the autoresize means that we'll typically
+not have two entries per bucket.
 
-Make these paths first verify that the skb is associated with an
-Ethernet device, that the MAC header was set, and that it spans at
-least a full Ethernet header before accessing `eth_hdr(skb)`.
+What might help is to add a mode to nf_queue.c to:
+1. send out-of-order-verdicts
+2. send *bogus* verdicts that are expected to
+   fail w. -ENOENT.
 
-Suggested-by: Florian Westphal <fw@strlen.de>
-Tested-by: Ren Wei <enjou1224z@gmail.com>
-Signed-off-by: Zhengchuan Liang <zcliangcn@gmail.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
----
-Changes in v2:
-This patch addresses suspicious `eth_hdr(skb)` users by requiring an
-Ethernet device together with a valid MAC header before accessing it.
+I had a go at adding a stress test but its not
+triggering for me even if i run it for 10m.
 
- net/ipv6/netfilter/ip6t_eui64.c           | 7 +++++--
- net/netfilter/ipset/ip_set_bitmap_ipmac.c | 5 +++--
- net/netfilter/ipset/ip_set_hash_ipmac.c   | 9 +++++----
- net/netfilter/ipset/ip_set_hash_mac.c     | 5 +++--
- net/netfilter/nf_log_syslog.c             | 7 ++++++-
- net/netfilter/xt_mac.c                    | 4 +---
- 6 files changed, 23 insertions(+), 14 deletions(-)
+I'm attaching what I had:
 
-diff --git a/net/ipv6/netfilter/ip6t_eui64.c b/net/ipv6/netfilter/ip6t_eui64.c
-index da69a27e8332c..bbb684f9964c0 100644
---- a/net/ipv6/netfilter/ip6t_eui64.c
-+++ b/net/ipv6/netfilter/ip6t_eui64.c
-@@ -7,6 +7,7 @@
- #include <linux/module.h>
- #include <linux/skbuff.h>
- #include <linux/ipv6.h>
-+#include <linux/if_arp.h>
- #include <linux/if_ether.h>
+selftests: nft_queue.sh: add a parallel stress test
+
+XXX: Not complete, should extend nf_queue.c to allow
+OOO verdicts + bogus verdicts to increase likelyhood of
+accessing already-freed objects in the hash table.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+
+diff --git a/tools/testing/selftests/net/netfilter/nft_queue.sh b/tools/testing/selftests/net/netfilter/nft_queue.sh
+index ea766bdc5d04..c05f2e5fef0b 100755
+--- a/tools/testing/selftests/net/netfilter/nft_queue.sh
++++ b/tools/testing/selftests/net/netfilter/nft_queue.sh
+@@ -11,6 +11,7 @@ ret=0
+ timeout=5
  
- #include <linux/netfilter/x_tables.h>
-@@ -21,8 +22,10 @@ eui64_mt6(const struct sk_buff *skb, struct xt_action_param *par)
+ SCTP_TEST_TIMEOUT=60
++STRESS_TEST_TIMEOUT=300
+ 
+ cleanup()
  {
- 	unsigned char eui64[8];
+@@ -719,6 +720,64 @@ EOF
+ 	fi
+ }
  
--	if (!(skb_mac_header(skb) >= skb->head &&
--	      skb_mac_header(skb) + ETH_HLEN <= skb->data)) {
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER)
-+		return false;
++check_tainted()
++{
++	local msg="$1"
 +
-+	if (!skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN) {
- 		par->hotdrop = true;
- 		return false;
- 	}
-diff --git a/net/netfilter/ipset/ip_set_bitmap_ipmac.c b/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-index 2c625e0f49ec0..752f59ef87442 100644
---- a/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-+++ b/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-@@ -11,6 +11,7 @@
- #include <linux/etherdevice.h>
- #include <linux/skbuff.h>
- #include <linux/errno.h>
-+#include <linux/if_arp.h>
- #include <linux/if_ether.h>
- #include <linux/netlink.h>
- #include <linux/jiffies.h>
-@@ -220,8 +221,8 @@ bitmap_ipmac_kadt(struct ip_set *set, const struct sk_buff *skb,
- 		return -IPSET_ERR_BITMAP_RANGE;
- 
- 	/* Backward compatibility: we don't check the second flag */
--	if (skb_mac_header(skb) < skb->head ||
--	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER ||
-+	    !skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN)
- 		return -EINVAL;
- 
- 	e.id = ip_to_id(map, ip);
-diff --git a/net/netfilter/ipset/ip_set_hash_ipmac.c b/net/netfilter/ipset/ip_set_hash_ipmac.c
-index 467c59a83c0ab..b9a2681e24888 100644
---- a/net/netfilter/ipset/ip_set_hash_ipmac.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipmac.c
-@@ -11,6 +11,7 @@
- #include <linux/skbuff.h>
- #include <linux/errno.h>
- #include <linux/random.h>
-+#include <linux/if_arp.h>
- #include <linux/if_ether.h>
- #include <net/ip.h>
- #include <net/ipv6.h>
-@@ -89,8 +90,8 @@ hash_ipmac4_kadt(struct ip_set *set, const struct sk_buff *skb,
- 	struct hash_ipmac4_elem e = { .ip = 0, { .foo[0] = 0, .foo[1] = 0 } };
- 	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
- 
--	if (skb_mac_header(skb) < skb->head ||
--	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER ||
-+	    !skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN)
- 		return -EINVAL;
- 
- 	if (opt->flags & IPSET_DIM_TWO_SRC)
-@@ -205,8 +206,8 @@ hash_ipmac6_kadt(struct ip_set *set, const struct sk_buff *skb,
- 	};
- 	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
- 
--	if (skb_mac_header(skb) < skb->head ||
--	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER ||
-+	    !skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN)
- 		return -EINVAL;
- 
- 	if (opt->flags & IPSET_DIM_TWO_SRC)
-diff --git a/net/netfilter/ipset/ip_set_hash_mac.c b/net/netfilter/ipset/ip_set_hash_mac.c
-index 718814730acf6..41a122591fe24 100644
---- a/net/netfilter/ipset/ip_set_hash_mac.c
-+++ b/net/netfilter/ipset/ip_set_hash_mac.c
-@@ -8,6 +8,7 @@
- #include <linux/etherdevice.h>
- #include <linux/skbuff.h>
- #include <linux/errno.h>
-+#include <linux/if_arp.h>
- #include <linux/if_ether.h>
- #include <net/netlink.h>
- 
-@@ -77,8 +78,8 @@ hash_mac4_kadt(struct ip_set *set, const struct sk_buff *skb,
- 	struct hash_mac4_elem e = { { .foo[0] = 0, .foo[1] = 0 } };
- 	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
- 
--	if (skb_mac_header(skb) < skb->head ||
--	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER ||
-+	    !skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN)
- 		return -EINVAL;
- 
- 	if (opt->flags & IPSET_DIM_ONE_SRC)
-diff --git a/net/netfilter/nf_log_syslog.c b/net/netfilter/nf_log_syslog.c
-index 41503847d9d7f..f62049d429653 100644
---- a/net/netfilter/nf_log_syslog.c
-+++ b/net/netfilter/nf_log_syslog.c
-@@ -78,7 +78,9 @@ dump_arp_packet(struct nf_log_buf *m,
- 	else
- 		logflags = NF_LOG_DEFAULT_MASK;
- 
--	if (logflags & NF_LOG_MACDECODE) {
-+	if ((logflags & NF_LOG_MACDECODE) &&
-+	    skb->dev && skb->dev->type == ARPHRD_ETHER &&
-+	    skb_mac_header_was_set(skb) &&
-+	    skb_mac_header_len(skb) >= ETH_HLEN) {
- 		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM ",
- 			       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest);
- 		nf_log_dump_vlan(m, skb);
-@@ -789,6 +791,9 @@ static void dump_mac_header(struct nf_log_buf *m,
- 
- 	switch (dev->type) {
- 	case ARPHRD_ETHER:
-+		if (!skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN)
-+			return;
++	if [ "$tainted_then" -ne 0 ];then
++		return
++	fi
 +
- 		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM ",
- 			       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest);
- 		nf_log_dump_vlan(m, skb);
-diff --git a/net/netfilter/xt_mac.c b/net/netfilter/xt_mac.c
-index 81649da57ba5d..4798cd2ca26ed 100644
---- a/net/netfilter/xt_mac.c
-+++ b/net/netfilter/xt_mac.c
-@@ -29,9 +29,7 @@ static bool mac_mt(const struct sk_buff *skb, struct xt_action_param *par)
++	read tainted_now < /proc/sys/kernel/tainted
++	if [ "$tainted_now" -eq 0 ];then
++		echo "PASS: $msg"
++	else
++		echo "TAINT: $msg"
++		dmesg
++		ret=1
++	fi
++}
++
++test_queue_stress()
++{
++	read tainted_then < /proc/sys/kernel/tainted
++	local i
++
++        ip netns exec "$nsrouter" nft -f /dev/stdin <<EOF
++flush ruleset
++table inet t {
++	chain forward {
++		type filter hook forward priority 0; policy accept;
++
++		queue flags bypass to numgen random mod 8
++	}
++}
++EOF
++	timeout "$STRESS_TEST_TIMEOUT" ip netns exec "$ns2" socat -u UDP-LISTEN:12345,fork,pf=ipv4 STDOUT > /dev/null &
++	timeout "$STRESS_TEST_TIMEOUT" ip netns exec "$ns3" socat -u UDP-LISTEN:12345,fork,pf=ipv4 STDOUT > /dev/null &
++
++	for i in $(seq 0 7); do
++		ip netns exec "$nsrouter" timeout "$STRESS_TEST_TIMEOUT" ./nf_queue -q $i -t 2 > /dev/null &
++	done
++
++	ip netns exec "$ns1" timeout "$STRESS_TEST_IMEOUT" ping -q -f 10.0.2.99 > /dev/null 2>&1 &
++	ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" ping -q -f 10.0.3.99 > /dev/null 2>&1 &
++	ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" ping -q -f "dead:2::99" > /dev/null 2>&1 &
++	ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" ping -q -f "dead:3::99" > /dev/null 2>&1 &
++
++	busywait "$BUSYWAIT_TIMEOUT" udp_listener_ready "$ns2" 12345
++	busywait "$BUSYWAIT_TIMEOUT" udp_listener_ready "$ns3" 12345
++
++	for i in $(seq 1 4);do
++		ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" socat -u STDIN UDP-DATAGRAM:10.0.2.99:12345 < /dev/zero > /dev/null &
++		ip netns exec "$ns1" timeout "$STRESS_TEST_TIMEOUT" socat -u STDIN UDP-DATAGRAM:10.0.3.99:12345 < /dev/zero > /dev/null &
++	done
++
++	wait
++
++	check_tainted "concurrent queueing"
++}
++
+ test_queue_removal()
+ {
+ 	read tainted_then < /proc/sys/kernel/tainted
+@@ -742,18 +801,7 @@ EOF
  
- 	if (skb->dev == NULL || skb->dev->type != ARPHRD_ETHER)
- 		return false;
--	if (skb_mac_header(skb) < skb->head)
--		return false;
--	if (skb_mac_header(skb) + ETH_HLEN > skb->data)
-+	if (!skb_mac_header_was_set(skb) || skb_mac_header_len(skb) < ETH_HLEN)
- 		return false;
- 	ret  = ether_addr_equal(eth_hdr(skb)->h_source, info->srcaddr);
- 	ret ^= info->invert;
--- 
-2.43.0
-
+ 	ip netns exec "$ns1" nft flush ruleset
+ 
+-	if [ "$tainted_then" -ne 0 ];then
+-		return
+-	fi
+-
+-	read tainted_now < /proc/sys/kernel/tainted
+-	if [ "$tainted_now" -eq 0 ];then
+-		echo "PASS: queue program exiting while packets queued"
+-	else
+-		echo "TAINT: queue program exiting while packets queued"
+-		dmesg
+-		ret=1
+-	fi
++	check_tainted "queue program exiting while packets queued"
+ }
+ 
+ ip netns exec "$nsrouter" sysctl net.ipv6.conf.all.forwarding=1 > /dev/null
+@@ -799,6 +847,7 @@ test_sctp_forward
+ test_sctp_output
+ test_udp_nat_race
+ test_udp_gro_ct
++test_queue_stress
+ 
+ # should be last, adds vrf device in ns1 and changes routes
+ test_icmp_vrf
 
