@@ -1,51 +1,51 @@
-Return-Path: <netfilter-devel+bounces-11647-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11648-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8IuJO1LG1GmPxQcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11647-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:54:43 +0200
+	id MP2rOqLG1GlbxQcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11648-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:56:02 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D09393AB922
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:54:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A59DB3AB9CF
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:56:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id F2326300610E
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 08:54:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 29F57303B5E1
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 08:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC7939A808;
-	Tue,  7 Apr 2026 08:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2C739B94A;
+	Tue,  7 Apr 2026 08:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dc+oyp3H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ndIuyLJn"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1B039A800;
-	Tue,  7 Apr 2026 08:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899FD39A7F8;
+	Tue,  7 Apr 2026 08:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775552081; cv=none; b=pnSfIM0qHDT+gmIXKOekO1B7V2wsG9INdCW27+5QXskyUez5ctP0QZ7vDWaJ5tl72QZHXXZ1uiEs0pFmRqJK+O91IN3fT4pt16fjkSsfCv37ccKOQbXsvMuMbMLAzQet+UkyH0y4jt986rfO4gaV0XMUw6w2nbdNveM2uRyyCuE=
+	t=1775552086; cv=none; b=HHPlYP+eHvGoVdqgYf0gE6pQk1FQhAQN1EKYBnMXeCNt/j8GWrEO+TTGyugmYBbCaqqOye1nYpfo3nShgeZ/upr1yhz0rdQ6GMfVcmeab0yrEcuIciU5WB+TMVPDng5OcxVkD3cLBes4D29WzXS5vFls4xz5jf82Vqsy9tZt6uQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775552081; c=relaxed/simple;
-	bh=UL+6LCFKPk7yFRK5fJynV3ISPtCdF2Q7VprzdKpG5nY=;
+	s=arc-20240116; t=1775552086; c=relaxed/simple;
+	bh=SjBcneGtGEBBNpNj//JNTkqgCJxRCk2wahLRcyQu83M=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=XJinogf5mieRT8HeTB34aYb9g8qBj31p4O9yWrLowDKfBSpYOgu9N5lndr3OmOSLB3nkeAmng/drdZToeEtnlbnMOoHd7yoGIaO+h3SeoKolcxq80BoryjZJc2FBGPttnmUoBYRL09klh1CQMclZ9EdXTwhgbsmaPYz2iSnpq/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dc+oyp3H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3577C116C6;
-	Tue,  7 Apr 2026 08:54:40 +0000 (UTC)
+	 Content-Type; b=IfoR/nuX+re4LJatjJiAaFKOCRl4KFmS2fkNRNVTwHb1PEbSt/gcfafy3OQgNMgvT85vhP83lXyJwvFsNVdVaDXi8PeknpbxM5Z8AlRfQVd2jTnpDqLSkmxddP322BTPHKVb9EX637ArAbU5teb9c859ibHKoICKhikOnsbJDNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ndIuyLJn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F3B3C2BC9E;
+	Tue,  7 Apr 2026 08:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775552081;
-	bh=UL+6LCFKPk7yFRK5fJynV3ISPtCdF2Q7VprzdKpG5nY=;
+	s=k20201202; t=1775552086;
+	bh=SjBcneGtGEBBNpNj//JNTkqgCJxRCk2wahLRcyQu83M=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=Dc+oyp3HDzq2W0AHQxB+zsNiplHE4y7RN7NfWpV/DCznDKnLMSQoWq+MVs9GN00i2
-	 opR4INWui9lEgMqTXmR1Wy0Hyq75xHwCuQHQzImwLD9EcSWfw0VAWXreqxOmXgh/dV
-	 rdyQnC9PpKDAoPf5P7f1IX0/LKeswUNawNvRa4bdrMDdCRZQ05MjKxtSBRYoICXPl4
-	 ysgI13NMqf2MFyEk1AUXbxA1MN9Bjci2QkTtBnfZgWK28EKi+F8zBNbdYSfQ8CG0b4
-	 e/VoJ3R6R/945cQUaZjaqyPOWQRkgM6U19oZNIi3+sO2cJH1nvIV49ex/x1XNiTTmA
-	 VkVtbr80y39TQ==
-Date: Tue, 07 Apr 2026 10:54:38 +0200
-Message-ID: <20260407083247.831143104@kernel.org>
+	b=ndIuyLJnqI4xTXK8fAk0gJhLGYSqS9IVQnjgQr9yi/hh/j8Z3mUC0glA8C2s4E3AM
+	 KL3ziHhdsMj7VZm01vEc18AMd3vMBigSAblgHUV/0NbRGR9GOdHTuJNRZieV0eZ8lx
+	 JTco+fCBHhjilmukPJ1hf+QQMGiACiN1fdB6VX4XwN30paB5ZjbHw7nXrCs5CxfqcF
+	 vDdStCbbkezwEPf4VASCsLggWtcRWidwcVbiNg49LmV8olNqALIMg1kCv2MIezjUea
+	 hWgvdl0UcVAZEUt4UImTRaj5IUSaxPZ+f/E/OF3KljHfDAOlrZ/8oz5pBMHDtdDA1P
+	 lfJHo8jlIpypg==
+Date: Tue, 07 Apr 2026 10:54:43 +0200
+Message-ID: <20260407083247.898494239@kernel.org>
 User-Agent: quilt/0.68
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
@@ -67,7 +67,7 @@ Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
  Phil Sutter <phil@nwl.cc>,
  netfilter-devel@vger.kernel.org,
  coreteam@netfilter.org
-Subject: [patch 05/12] posix-timers: Handle the timer_[re]arm() return value
+Subject: [patch 06/12] posix-timers: Switch to hrtimer_start_expires_user()
 References: <20260407083219.478203185@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -79,20 +79,20 @@ Content-Type: text/plain; charset=UTF-8
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11647-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11648-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
@@ -101,72 +101,48 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linutronix.de:email]
-X-Rspamd-Queue-Id: D09393AB922
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linutronix.de:email]
+X-Rspamd-Queue-Id: A59DB3AB9CF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The [re]arm callbacks will return true when the timer was queued and false
-if it was already expired at enqueue time.
-
-In both cases the call sites can trivially queue the signal right there,
-when the timer was already expired.
+Switch the arm and rearm callbacks for hrtimer based posix timers over to
+hrtimer_start_expires_user() so that already expired timers are not
+queued. Hand the result back to the caller, which then queues the signal.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
 Cc: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/posix-timers.c |   22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ kernel/time/posix-timers.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 --- a/kernel/time/posix-timers.c
 +++ b/kernel/time/posix-timers.c
-@@ -299,6 +299,8 @@ static bool common_hrtimer_rearm(struct
+@@ -293,8 +293,7 @@ static bool common_hrtimer_rearm(struct
+ 	struct hrtimer *timer = &timr->it.real.timer;
+ 
+ 	timr->it_overrun += hrtimer_forward_now(timer, timr->it_interval);
+-	hrtimer_restart(timer);
+-	return true;
++	return hrtimer_start_expires_user(timer, HRTIMER_MODE_ABS);
+ }
  
  static bool __posixtimer_deliver_signal(struct kernel_siginfo *info, struct k_itimer *timr)
- {
-+	bool queued;
-+
- 	guard(spinlock)(&timr->it_lock);
+@@ -829,9 +828,11 @@ static bool common_hrtimer_arm(struct k_
+ 		expires = ktime_add_safe(expires, hrtimer_cb_get_time(timer));
+ 	hrtimer_set_expires(timer, expires);
  
- 	/*
-@@ -312,12 +314,18 @@ static bool __posixtimer_deliver_signal(
- 	if (!timr->it_interval || WARN_ON_ONCE(timr->it_status != POSIX_TIMER_REQUEUE_PENDING))
- 		return true;
- 
--	timr->kclock->timer_rearm(timr);
--	timr->it_status = POSIX_TIMER_ARMED;
-+	/* timer_rearm() updates timr::it_overrun */
-+	queued = timr->kclock->timer_rearm(timr);
-+
- 	timr->it_overrun_last = timr->it_overrun;
- 	timr->it_overrun = -1LL;
- 	++timr->it_signal_seq;
- 	info->si_overrun = timer_overrun_to_int(timr);
-+
-+	if (queued)
-+		timr->it_status = POSIX_TIMER_ARMED;
-+	else
-+		posix_timer_queue_signal(timr);
- 	return true;
- }
- 
-@@ -905,9 +913,13 @@ int common_timer_set(struct k_itimer *ti
- 		expires = timens_ktime_to_host(timr->it_clock, expires);
- 	sigev_none = timr->it_sigev_notify == SIGEV_NONE;
- 
--	kc->timer_arm(timr, expires, flags & TIMER_ABSTIME, sigev_none);
 -	if (!sigev_none)
--		timr->it_status = POSIX_TIMER_ARMED;
-+	if (kc->timer_arm(timr, expires, flags & TIMER_ABSTIME, sigev_none)) {
-+		if (!sigev_none)
-+			timr->it_status = POSIX_TIMER_ARMED;
-+	} else {
-+		/* Timer was already expired, queue the signal */
-+		posix_timer_queue_signal(timr);
-+	}
- 	return 0;
+-		hrtimer_start_expires(timer, HRTIMER_MODE_ABS);
+-	return true;
++	/* For sigev_none pretend that the timer is queued */
++	if (sigev_none)
++		return true;
++
++	return hrtimer_start_expires_user(timer, HRTIMER_MODE_ABS);
  }
  
+ static int common_hrtimer_try_to_cancel(struct k_itimer *timr)
 
 
