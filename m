@@ -1,51 +1,51 @@
-Return-Path: <netfilter-devel+bounces-11649-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11650-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oNTPGl7G1GlbxQcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11649-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:54:54 +0200
+	id kCH5CXPH1GlbxQcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11650-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:59:31 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 153823AB92A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:54:54 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFD63ABA7D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 10:59:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7EE1A3005A89
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 08:54:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B6908308CAE6
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 08:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFBC139B4A5;
-	Tue,  7 Apr 2026 08:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0033B39B4A5;
+	Tue,  7 Apr 2026 08:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0+sjaJI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uXYP2mPt"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E7F39A7E5;
-	Tue,  7 Apr 2026 08:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF8739A7E5;
+	Tue,  7 Apr 2026 08:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775552091; cv=none; b=n4fA6ubmxN5AwIPxILYTBy84FmnMJRierInFvV0AQwPeE99BfwpbGJlOA/fTtcXIPV2RExXScnincRtQXD16iE7G4seUjNWtERxFcol3QaGTqfEEbUzR9mkfg5c0pKCDUW8ft72M0UWNvxx8PKR6AjGSr8kpsJyg/R75B3atqs0=
+	t=1775552096; cv=none; b=PbSKRZtuU1oTUQx8s71NRqLueEc+13VnHwgIglxoF3FZeDk0ekNMSgnnXJxxlAk2E1zayKURrLP3M1dbrZCPWk0Q0Y4+gTFTCPHObWTxyK/MdIzDcbbD9vJPIgL44OV5dS3sPXKrrrfp0Sq3SzeeYhfHfwCqzin+IL5L0LbNEkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775552091; c=relaxed/simple;
-	bh=HVbYIByFSN+TWQMQtOO5s/XrlbdzeKGowXqhoZ1SPWU=;
+	s=arc-20240116; t=1775552096; c=relaxed/simple;
+	bh=SGqb2Nn/k7ufjxJEqlr54Yc4uqryYsKlaFtjHcAKMnA=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=hZQXmiFDS0AfbGm8fH5gl1kdtmN8/RT3TyvGs8vjyjJuCBoREb/9RH2GFP6GPctVTHLhcg4U9CSLzmW1Y/l0fHDU1Sko8DkYSUmwtExZ/w3y0eYantiQIQoRELVa7M1pdQP3x5oUmE4VqpNKAyBpyO33ZFREY5WkM3VfX1CjYWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0+sjaJI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D49B7C116C6;
-	Tue,  7 Apr 2026 08:54:50 +0000 (UTC)
+	 Content-Type; b=gA3b/DZGfSqtSo+kudHxZdPJlMnIaq1S/TlQuQXeNpUTyLRg8h9ADreqKG9MbqdgiAH0ZPKzNHciIGnQmjoNDw8Hrbs0N73E20ihuXF3IsQOlwhhan9o64mVvLjnFk2ZJlpRHbzOUBOs9pnmsioYF89yU4TcoF8Nt3PYC4K0kEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uXYP2mPt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93E21C2BCB1;
+	Tue,  7 Apr 2026 08:54:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775552091;
-	bh=HVbYIByFSN+TWQMQtOO5s/XrlbdzeKGowXqhoZ1SPWU=;
+	s=k20201202; t=1775552096;
+	bh=SGqb2Nn/k7ufjxJEqlr54Yc4uqryYsKlaFtjHcAKMnA=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=B0+sjaJIuGE4mFMigwRoPUvZUWwbO5cH8Gdbg09DMFOnVTG0FQYDSTQHLNVCXdK3V
-	 X7O+NDyKp+SaDBp730XnWN+59hG8wavraM+vUSg8bnAmLjFJjd0KnrE+R8aZ7SOSh3
-	 +FPJKIEsg7lQehOafwPnpQvypqLZw4RelwCUHOcXB2U7YtKIxEgKcPeVVgJxOw7nRd
-	 dHrwRPHNxLOXTuvAmvm4le081QJSzMJ54bfotCe/hQBkehWK4cyFt1iqt4sW3DNoFN
-	 B2+lYl5z30N9T5m8C991EZPdLx1BrYZ+f8vLdcVmk4YAPdhSNX+OTxM3wvSow9vxeH
-	 8yBNvJKIew7eQ==
-Date: Tue, 07 Apr 2026 10:54:48 +0200
-Message-ID: <20260407083247.965539525@kernel.org>
+	b=uXYP2mPtISsacH9fy9EJuFy4Trw0qj4yNykTHl4pjDjZfkkniz6W2Dzi+hEQJahkJ
+	 uWOGIWvrO1JzKx15louDi4it6yg1tzfakFRXyb+QrDw8w6o+nPHNXtux4Kp+3I1tw7
+	 wJ4XkBnKJh76eUNHSKCDKV0Q4Eg0BvZcUkp6JSKh3DZp2YUSnWW1JGaA/vqrMkjHPp
+	 EDJcIaN8r0dYv4YQgqq8Qnt7l3a3o+Ldw1IVYvoMb02z9cKM0yOIweaF7LrfYR7QSW
+	 qBnkERgrjTO45WN+HI4XrB8Rh44jcY1s9O9VdRLTC2smXp5yXgKB1p7j+f4MEFsT90
+	 0KIcOFpN6L1DA==
+Date: Tue, 07 Apr 2026 10:54:53 +0200
+Message-ID: <20260407083248.035227538@kernel.org>
 User-Agent: quilt/0.68
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
@@ -67,7 +67,8 @@ Cc: John Stultz <jstultz@google.com>,
  Phil Sutter <phil@nwl.cc>,
  netfilter-devel@vger.kernel.org,
  coreteam@netfilter.org
-Subject: [patch 07/12] alarmtimer: Provide alarmtimer_start()
+Subject: [patch 08/12] alarmtimer: Convert posix timer functions to
+ alarmtimer_start()
 References: <20260407083219.478203185@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -79,20 +80,20 @@ Content-Type: text/plain; charset=UTF-8
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11649-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11650-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
@@ -101,83 +102,65 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 153823AB92A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BCFD63ABA7D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Alarm timers utilize hrtimers for normal operation and only switch to the
-RTC on suspend. In order to catch already expired timers early and without
-going through a timer interrupt cycle, provide a new start function which
-internally uses hrtimer_start_range_ns_user().
-
-If hrtimer_start_range_ns_user() detects an already expired timer, it does
-not queue it. In that case remove the timer from the alarm base as well.
-
-Return the status queued or not back to the caller to handle the early
-expiry.
+Use the new alarmtimer_start() for arming and rearming posix interval
+timers and for clock_nanosleep() so that already expired timers do not go
+through the full timer interrupt cycle.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 Cc: John Stultz <jstultz@google.com>
 Cc: Stephen Boyd <sboyd@kernel.org>
 ---
- include/linux/alarmtimer.h |    6 ++++++
- kernel/time/alarmtimer.c   |   28 ++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+ kernel/time/alarmtimer.c |   20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
---- a/include/linux/alarmtimer.h
-+++ b/include/linux/alarmtimer.h
-@@ -42,8 +42,14 @@ struct alarm {
- 	void			*data;
- };
- 
-+static __always_inline ktime_t alarm_get_expires(struct alarm *alarm)
-+{
-+	return alarm->node.expires;
-+}
-+
- void alarm_init(struct alarm *alarm, enum alarmtimer_type type,
- 		void (*function)(struct alarm *, ktime_t));
-+bool alarmtimer_start(struct alarm *alarm, ktime_t expires, bool relative);
- void alarm_start(struct alarm *alarm, ktime_t start);
- void alarm_start_relative(struct alarm *alarm, ktime_t start);
- void alarm_restart(struct alarm *alarm);
 --- a/kernel/time/alarmtimer.c
 +++ b/kernel/time/alarmtimer.c
-@@ -365,6 +365,34 @@ void alarm_start_relative(struct alarm *
- }
- EXPORT_SYMBOL_GPL(alarm_start_relative);
+@@ -556,8 +556,7 @@ static bool alarm_timer_rearm(struct k_i
+ 	struct alarm *alarm = &timr->it.alarm.alarmtimer;
  
-+/**
-+ * alarmtimer_start - Sets an alarm to fire
-+ * @alarm:	Pointer to alarm to set
-+ * @expires:	Expiry time
-+ * @relative:	True if @expires is relative
-+ *
-+ * Returns: True if the alarm was queued. False if it already expired
-+ */
-+bool alarmtimer_start(struct alarm *alarm, ktime_t expires, bool relative)
-+{
-+	struct alarm_base *base = &alarm_bases[alarm->type];
+ 	timr->it_overrun += alarm_forward_now(alarm, timr->it_interval);
+-	alarm_start(alarm, alarm->node.expires);
+-	return true;
++	return alarmtimer_start(alarm, alarm->node.expires, false);
+ }
+ 
+ /**
+@@ -621,11 +620,16 @@ static bool alarm_timer_arm(struct k_iti
+ 
+ 	if (!absolute)
+ 		expires = ktime_add_safe(expires, base->get_ktime());
+-	if (sigev_none)
 +
-+	if (relative)
-+		expires = ktime_add_safe(expires, base->get_ktime());
-+
-+	trace_alarmtimer_start(alarm, base->get_ktime());
-+
-+	guard(spinlock_irqsave)(&base->lock);
-+	alarm->node.expires = expires;
-+	alarmtimer_enqueue(base, alarm);
-+	if (!hrtimer_start_range_ns_user(&alarm->timer, expires, 0, HRTIMER_MODE_ABS)) {
-+		alarmtimer_dequeue(base, alarm);
-+		return false;
++	/*
++	 * sigev_none needs to update the expires value and pretend
++	 * that the timer is queued
++	 */
++	if (sigev_none) {
+ 		alarm->node.expires = expires;
+-	else
+-		alarm_start(&timr->it.alarm.alarmtimer, expires);
+-	return true;
++		return true;
 +	}
-+	return true;
-+}
-+EXPORT_SYMBOL_GPL(alarmtimer_start);
++	return alarmtimer_start(&timr->it.alarm.alarmtimer, expires, false);
+ }
+ 
+ /**
+@@ -732,7 +736,9 @@ static int alarmtimer_do_nsleep(struct a
+ 	alarm->data = (void *)current;
+ 	do {
+ 		set_current_state(TASK_INTERRUPTIBLE);
+-		alarm_start(alarm, absexp);
++		if (!alarmtimer_start(alarm, absexp, false))
++			alarm->data = NULL;
 +
- void alarm_restart(struct alarm *alarm)
- {
- 	struct alarm_base *base = &alarm_bases[alarm->type];
+ 		if (likely(alarm->data))
+ 			schedule();
+ 
 
 
