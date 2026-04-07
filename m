@@ -1,49 +1,49 @@
-Return-Path: <netfilter-devel+bounces-11667-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11668-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0Fs4Hmjr1GkjywcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11667-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 13:32:56 +0200
+	id wFPRFbXr1GkjywcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11668-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 13:34:13 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16F73ADBDB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 13:32:55 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0118D3ADC16
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 13:34:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 26CC9302A695
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 11:32:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E6C12301B4E2
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 11:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846F33ACF05;
-	Tue,  7 Apr 2026 11:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB143AE19E;
+	Tue,  7 Apr 2026 11:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WSrAj41I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FYid9cix"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E47F3ACEE0;
-	Tue,  7 Apr 2026 11:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5D338AC86;
+	Tue,  7 Apr 2026 11:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775561553; cv=none; b=YON2nyg65iBX3h6vpoD18318V3hm0QFuL8fd9/TjGDknROBwHY2BLhuN38K6tFbH2d+qtr5AX81yGaFntbb0jGmlRqbo2JtGpLEtmYrzqgvnOA5ChcpKtSzzpr4cWOFBaOvj2KIfwY0uT4beDktVOzWPIGEhv6cKsF4M6M7+PLs=
+	t=1775561646; cv=none; b=hGvQgHiKXoR6/UGlt6PE9FsS0THDsGiGwGzANhibfP0VTZevJEQumNnIYb2KdBl/NjsPrly02WJnqZv7gbbCUPYzXi+x4C2tKJXOnCrJvudMcF3HGe3tB1CG54/1GIpduTiHAI1lvftI8xJ1n7OvzNTUJfyOI7cgCbT1ix8kfQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775561553; c=relaxed/simple;
-	bh=zEpIb1DowHXXHcAi/mnSRKMnbVGwODsD4BMvq/qGzb8=;
+	s=arc-20240116; t=1775561646; c=relaxed/simple;
+	bh=yUDM3hFghJ6baIkLXjXRO9LIWzDz12fJ6chmAdiLZG8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FS0DYDqcs6Z/W7ZRVx6dDhkpfUwG9iDBqHNzamM8owrItCP9ZbRf7kQebhNEM7j6XLApAsMQOpclFl2/BS1uqT+jktIW5sybr2z/YvbpK9DFxH3EWP71AQl2qC8/xQ4jpHCVY5AEUxuLcRb5AkXrtCsHWIOAo/TlqLaqOhZVbUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WSrAj41I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C45C116C6;
-	Tue,  7 Apr 2026 11:32:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Fd3WG9NBzTOosT1ke8gtoZe4Ohaa6tiTGeqoXuv5fkF2L4hD6mQZDTflhafopdHkgOlQlpwQbJ94q7+xY+gOR1EYIj18vjyGBIRejgBCnL6+IKnEwZIwtxNehlUBmTZYWS7JlN3Ko3BzmLA59WKFvaYPrsBvfbyw2Qaw8Zq/l6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FYid9cix; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC040C2BCB1;
+	Tue,  7 Apr 2026 11:34:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775561553;
-	bh=zEpIb1DowHXXHcAi/mnSRKMnbVGwODsD4BMvq/qGzb8=;
+	s=k20201202; t=1775561645;
+	bh=yUDM3hFghJ6baIkLXjXRO9LIWzDz12fJ6chmAdiLZG8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=WSrAj41Ib39zggoqaJ9MDss07O5NLMJ8dWPsDVAzLYvu55WSpZZV6in+Me1/IqYlG
-	 6jCzsReNOCYLMP8sXbnKDIL9BKUeg+XncA2iKEQyB9d06XmVpbC8JAip0MVJVe6tzQ
-	 BLY6tzVhdYsiq9FCRagvyKwh3U7vAtuSkLLCxgd9k785LNdoBcTyaKYm0BBz/cyzAE
-	 +F74vTiWkk033bgRWoLNGv1FsLhrtHLGD03DoNkGk4FFQtNUKEaj37zRBJnPkrnWd+
-	 Ej+TmKEj73taCfhM+adExAhtzC+pkFJdbagEDTYpu5i8khxyhKc9hp2Z8cD7v39oFg
-	 4WGYPtiuzhl7g==
+	b=FYid9cixGFlaEndKwF1W5Z/APgig2klLq1AAkPKmWkbCqjZvvb2y1nlR1R0AYLmQx
+	 NdNdarAy7GAUMUOdjE2F8aDM1KCDAovw3k0ubMvVSIXcM7kpaGtLqkjrAXOfb9mdJM
+	 OH0oOetFFUq4i/d/I+wPCkw/L/LVmq9k9bkzzOg0ElgQhWRAmbfzTEzP8x6EnUQmaC
+	 5F1YvUwxJ9hn7IV+2BEvmT2Rn1UAmBxD1teksdxj3TTMbBjp31gTUQu1WFcpP+tCgC
+	 eBLqoSkPViaEsoCZJk0CV90aCbh7dWaxIbF8wBk8HsWFlGwTNEUcB7/AzjdwR4fGk2
+	 yfumHFLut2Azw==
 From: Thomas Gleixner <tglx@kernel.org>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, Calvin Owens <calvin@wbinvd.org>,
@@ -56,12 +56,12 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Calvin Owens <calvin@wbinvd.org>,
  <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>, Phil Sutter
  <phil@nwl.cc>, netfilter-devel@vger.kernel.org, coreteam@netfilter.org
 Subject: Re: [patch 02/12] hrtimer: Provide hrtimer_start_range_ns_user()
-In-Reply-To: <20260407095421.GM2872@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260407095758.GN2872@noisy.programming.kicks-ass.net>
 References: <20260407083219.478203185@kernel.org>
  <20260407083247.630389532@kernel.org>
- <20260407095421.GM2872@noisy.programming.kicks-ass.net>
-Date: Tue, 07 Apr 2026 13:32:29 +0200
-Message-ID: <87ldez57le.ffs@tglx>
+ <20260407095758.GN2872@noisy.programming.kicks-ass.net>
+Date: Tue, 07 Apr 2026 13:34:02 +0200
+Message-ID: <87ika357it.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -75,19 +75,19 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11667-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11668-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
@@ -97,34 +97,20 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D16F73ADBDB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0118D3ADC16
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 07 2026 at 11:54, Peter Zijlstra wrote:
+On Tue, Apr 07 2026 at 11:57, Peter Zijlstra wrote:
 > On Tue, Apr 07, 2026 at 10:54:22AM +0200, Thomas Gleixner wrote:
->> -	if (__hrtimer_start_range_ns(timer, tim, delta_ns, mode, base))
->> +	switch (hrtimer_start_range_ns_common(timer, tim, delta_ns, mode, base)) {
->> +	case HRTIMER_REPROGRAM:
->>  		hrtimer_reprogram(timer, true);
->> +		break;
->> +	case HRTIMER_REPROGRAM_FORCE:
->> +		hrtimer_force_reprogram(timer->base->cpu_base, 1);
->> +		break;
->> +	}
->>  
->>  	unlock_hrtimer_base(timer, &flags);
->>  }
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(hrtimer_start_range_ns_user);
 >
-> Something is going to figure out that hrtimer_start_range_ns_common() is
-> really returning that enum and then complain you don't handle NONE :-)
+> Can we do that hrtimer_check_user_timer() in
+> hrtimer_start_range_ns_user() and then not duplicate
+> hrtimer_*reprogram() ?
 
-:)
-
-> Anyway, to me it would make sense to instead pass that value to
-> hrtimer_reprogram() as the second argument. But this works I suppose.
-
-I can do that too. Splitting it this way made me more comfortable to
-validate the logic I was implementing.
+We probably can. Let me have a look.
 
