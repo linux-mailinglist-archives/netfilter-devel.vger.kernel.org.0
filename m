@@ -1,164 +1,204 @@
-Return-Path: <netfilter-devel+bounces-11709-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11711-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6DJ+AjcA1mk7AAgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11709-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 09:13:59 +0200
+	id UAZoKF4G1mnbAQgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11711-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 09:40:14 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 894843B7FAD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 09:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 124F93B86EE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 09:40:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3FCC030455E2
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 07:13:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9024530166CC
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 07:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11E3376BD7;
-	Wed,  8 Apr 2026 07:13:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCACA38237C;
+	Wed,  8 Apr 2026 07:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="GjW/wwJp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxoi6Qpo"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5583F374E5B
-	for <netfilter-devel@vger.kernel.org>; Wed,  8 Apr 2026 07:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75593EED8
+	for <netfilter-devel@vger.kernel.org>; Wed,  8 Apr 2026 07:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775632396; cv=none; b=Hgtez2FaxcQlqtdbEBdgpdS01NDkMTz0q6LjbJHHzEqbM130aCPZDV6K1ckWI88k5IlMNzQeTuwyITXj73eVwQ3wJ/77IScm/BhQCMKCtDd5NTAuv2+NfJI9TwO7JFhI9jfSCGPXQvA8CPyMn+p0Lbz0X3OscHgPngw0B4xyCIA=
+	t=1775633749; cv=none; b=ASV3qo2OWeyYQb+lgD122+kCFaDp663rlyUeVZm5hAHxsTWtRJzIxT2k6T7AQrp7XjsU9/bcrQzK6RKqcGqJ7lKcbTC8vI051OghSuEPxh5xEapJtdb+g0CXxEmW8UD9YbLSr7fYFOlG0CkqXM9VbatMNDin2kvEL5dfBEcGxhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775632396; c=relaxed/simple;
-	bh=ceBuwgOrGdTJRMGljasRbtuSVZswPAXGOGqSqWSmMWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p5HH/GhbZ4wgaUc25sMs1p5/dfzd7vUZAjKnzclvT77Rh7n8sX/gKe1e2QqoBhUpfgIaNUTd9VYiCKfUhU+LV19YtVXZiXJz+UxMAyqOwERh3Wu0rEprtEt2Z9HlAwGIKMnWsZqCMNdvfAjGypKV4aVjPcbv7vKNIfmPSR+Ct+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=GjW/wwJp; arc=none smtp.client-ip=148.6.0.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 4frDXz1qFBz7s85c;
-	Wed,  8 Apr 2026 09:02:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:references:in-reply-to
-	:x-mailer:message-id:date:date:from:from:received:received
-	:received; s=20151130; t=1775631777; x=1777446178; bh=wMXc7XMZgr
-	Xyg7Y3UM17LRW1mDQQUfQ91BE2SkA1rAQ=; b=GjW/wwJpxqvleyIpqFnPyQrRii
-	/PRTPmUQBjLk5NgZMIuvYKTpiywQJthHAcEvD/iWCQkIzEl2mIyILNoEcwQxMu9M
-	rD8FQEo3jb3M0xxQv38chEHMpjVf+70ckbof57WAl6PmKKZGtUOx1sV4WTXx/olN
-	LgOPhRfOUhTqD8v0o=
-X-Virus-Scanned: Debian amavis at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
- by localhost (smtp2.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id QBF8QebXEkj2; Wed,  8 Apr 2026 09:02:57 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 4frDXx17VRz7s85Y;
-	Wed,  8 Apr 2026 09:02:57 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-	id 1736A34316C; Wed,  8 Apr 2026 09:02:57 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH 2/2] netfilter: ipset: Fix data race between add and dump in all hash types
-Date: Wed,  8 Apr 2026 09:02:57 +0200
-Message-Id: <20260408070257.2437291-3-kadlec@netfilter.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260408070257.2437291-1-kadlec@netfilter.org>
-References: <20260408070257.2437291-1-kadlec@netfilter.org>
+	s=arc-20240116; t=1775633749; c=relaxed/simple;
+	bh=R7PA/g6K4REX21a1EZN0dOR2dm5+usLDZ0alII/Z+OM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cjVh0ye2dLy7kZ2zMle1xVumnBx0+nuA4BP16d+u+ubOuggKoMzx+3jNqw6/J3OjQ5l8ePG9E9CRFxLP9aW8zmlf50easy28QbIwvq6vDL9R78DbqnVFMrGw416kjWkRvdszN/QBAd9R4IuUdcXsMO7ZDDHuPl97TgpeWWsNygw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dxoi6Qpo; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-354bc7c2c46so3739389a91.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 08 Apr 2026 00:35:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775633748; x=1776238548; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=h3bM1X10xUppCtHTO+2IL4JdoVmrCaHQpNjU1IvmstQ=;
+        b=dxoi6QpoDyeuiYCxMCzajRbf3uxydcZbn6q7ZnXbu2f8PbeFQeng5VhVbK3MAciHhA
+         jGUKr9KNhm7CA9hqmKTdFUsc+LdcwEivZn6zmoHcQXsz58msejenVbwp9AbAaSqWeX4v
+         /E0WQJ2xpLIhDtHrACr8ZUDZXSY1vL3w9c2B1xCYuelV7XQO5D1oIcIoNKRuKLcv1Io9
+         y5uiNERWz7xYiXLIn+aaGZYORUknZM/fhiAvdEj5JKKD5gL9tYPWRk09XHPNd99iYBHK
+         +V3W3PM9ECnxgzOojcHe//GBE7+eO9cSoYyqwooIAd3WAdrNAm4zso4k/3jUmEbHNSiW
+         pOcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775633748; x=1776238548;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h3bM1X10xUppCtHTO+2IL4JdoVmrCaHQpNjU1IvmstQ=;
+        b=Zoac9NSpCP+U4IunSE6w3G4XcS1iC+CM2gtALlYaTKWkQ04TQx7u9IUNOjVhDRjepW
+         ymFVAUIOt3m7/wueBiKad8ycmEClNG/x6SxBX+DgrcHfFdP7o5XB/JpcKatpOD0JIQXY
+         aK4papPYHosjVR/qlrGb2WzkDR700BxlJK3KVK8yX4VsFELTpT+UXYmzf0CSH/J1D/uh
+         iwixvOjPN88xBkE5VubwKQO9MxOfGe33IXHysFIYIe3NuR6VEwPa2sx57PTV3X7nEE3I
+         Us0VdO7FsTApejTsPqf+KDQHGP3ZUlIztuqmlRWYf7m3Ihk/Dv7K9PlFwJT4fTYL1y0k
+         JxSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUmuWuC17053mewL0V7NADqSSy/PQ9jBuYY4LLoD3AAnq9iUgU8B5a1ysA8dXidW+oRnG38vtLp29q22j0w018=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2y/zcEM1JDDHyUh0pzgOHktgFhy6hCXuuIJbzf2PNIO186L5w
+	rFNMRgv4bIS54Q+LVe5rMoLXg2o4/r5moHytdJ3KOnmhrOtypAbv5pt3
+X-Gm-Gg: AeBDieuNJvsPf8B3r8a2+jSroa/58ACCScUiRj5QNy989hlGDIS5WF4oUapvNzsf1/2
+	Pyvylq+O465adBJqA6i78QuNHU1P6WCGxOv/NZQwtRsMp24rNLoKyuFEj3OUkIOcHV4iu7IA1ef
+	UDRsL/z1dLCH5az2WH0QVtE1NpVcV4CckkKkhyfE4RDoUutCCgoGAUOQkz0uGLL4VvahBG0HGXr
+	6Z6XIdeoPqs/lRfFgJ7J1dwRLca0h+478YfbYYvgRqhOgZ/0CIp8rVviqq8UxP5pJFRC/t31m3X
+	Ow8IEsZ8cbr5FsUaVw/F5vB496Yc1xBxF/fd6hIu7+6ubXoLG2abjjF9Cmis4enT/KWeUL8hDWm
+	ieQDMMKSbXnyGfXE2ipLTw92ipL4w768vI+fPto8HtLNSWKugnkvWw/hWqE3s6UZoB8SXFdL1gY
+	k2AT3O+ARCK4lTpZZD2SgkmcUr5XH0ivgB76R1HXeGbClMffG6l3rAp71/m5q7MA8UJTSmTvNC4
+	cbU8kKYarO4
+X-Received: by 2002:a17:90b:2e0d:b0:35d:982d:96c7 with SMTP id 98e67ed59e1d1-35de6980b71mr21542963a91.27.1775633747539;
+        Wed, 08 Apr 2026 00:35:47 -0700 (PDT)
+Received: from SLSGDTSWING002.tail0ac356.ts.net ([129.126.109.177])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35e2734c88asm1311610a91.2.2026.04.08.00.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2026 00:35:46 -0700 (PDT)
+From: Weiming Shi <bestswngs@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	"David S . Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Phil Sutter <phil@nwl.cc>,
+	Simon Horman <horms@kernel.org>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	Xiang Mei <xmei5@asu.edu>,
+	Weiming Shi <bestswngs@gmail.com>
+Subject: [PATCH nf] netfilter: arp_tables: fix IEEE1394 ARP payload parsing in arp_packet_match()
+Date: Wed,  8 Apr 2026 15:35:16 +0800
+Message-ID: <20260408073515.79296-2-bestswngs@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-0.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-11709-lists,netfilter-devel=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[nwl.cc,kernel.org,vger.kernel.org,netfilter.org,asu.edu,gmail.com];
+	TAGGED_FROM(0.00)[bounces-11711-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[bestswngs@gmail.com,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,blackhole.kfki.hu:dkim,netfilter.org:email,netfilter.org:mid,appspotmail.com:email];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 894843B7FAD
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 124F93B86EE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When adding a new entry to the next position in the existing hash bucket,
-the position index was incremented too early and parallel dump could
-read it before the entry was populated with the value. Move the setting
-of the position index after populating the entry.
+arp_packet_match() unconditionally parses the ARP payload assuming two
+hardware addresses are present (source and target). However,
+IPv4-over-IEEE1394 ARP (RFC 2734) omits the target hardware address
+field, and arp_hdr_len() already accounts for this by returning a
+shorter length for ARPHRD_IEEE1394 devices.
 
-Reported-by: syzbot+786c889f046e8b003ca6@syzkaller.appspotmail.com
-Reported-by: syzbot+1da17e4b41d795df059e@syzkaller.appspotmail.com
-Reported-by: syzbot+421c5f3ff8e9493084d9@syzkaller.appspotmail.com
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+As a result, on IEEE1394 interfaces arp_packet_match() advances past a
+nonexistent target hardware address and reads the wrong bytes for both
+the target device address comparison and the target IP address. This
+causes arptables rules to match against garbage data, leading to
+incorrect filtering decisions: packets that should be accepted may be
+dropped and vice versa.
+
+The ARP stack in net/ipv4/arp.c (arp_create and arp_process) already
+handles this correctly by skipping the target hardware address for
+ARPHRD_IEEE1394. Apply the same pattern to arp_packet_match().
+
+Fixes: 6752c8db8e0c ("firewire net, ipv4 arp: Extend hardware address and remove driver-level packet inspection.")
+Reported-by: Xiang Mei <xmei5@asu.edu>
+Signed-off-by: Weiming Shi <bestswngs@gmail.com>
 ---
- net/netfilter/ipset/ip_set_hash_gen.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/ipv4/netfilter/arp_tables.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/=
-ip_set_hash_gen.h
-index b79e5dd2af03..492c2095c11b 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -844,7 +844,7 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- 	const struct mtype_elem *d =3D value;
- 	struct mtype_elem *data;
- 	struct hbucket *n, *old =3D ERR_PTR(-ENOENT);
--	int i, j =3D -1, ret;
-+	int i, j =3D -1, npos, ret;
- 	bool flag_exist =3D flags & IPSET_FLAG_EXIST;
- 	bool deleted =3D false, forceadd =3D false, reuse =3D false;
- 	u32 r, key, multi =3D 0, elements, maxelem;
-@@ -889,6 +889,7 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- 			ext_size(AHASH_INIT_SIZE, set->dsize);
- 		goto copy_elem;
- 	}
-+	npos =3D n->pos;
- 	for (i =3D 0; i < n->pos; i++) {
- 		if (!test_bit(i, n->used)) {
- 			/* Reuse first deleted entry */
-@@ -962,7 +963,7 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- 	}
-=20
- copy_elem:
--	j =3D n->pos++;
-+	j =3D npos =3D n->pos + 1;
- 	data =3D ahash_data(n, j, set->dsize);
- copy_data:
- 	t->hregion[r].elements++;
-@@ -985,6 +986,7 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- 	if (SET_WITH_TIMEOUT(set))
- 		ip_set_timeout_set(ext_timeout(data, set), ext->timeout);
- 	smp_mb__before_atomic();
-+	n->pos =3D npos;
- 	set_bit(j, n->used);
- 	if (old !=3D ERR_PTR(-ENOENT)) {
- 		rcu_assign_pointer(hbucket(t, key), n);
---=20
-2.39.5
+diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
+index 1cdd9c28ab2da..4b2392bdcd0a6 100644
+--- a/net/ipv4/netfilter/arp_tables.c
++++ b/net/ipv4/netfilter/arp_tables.c
+@@ -86,7 +86,7 @@ static inline int arp_packet_match(const struct arphdr *arphdr,
+ 				   const struct arpt_arp *arpinfo)
+ {
+ 	const char *arpptr = (char *)(arphdr + 1);
+-	const char *src_devaddr, *tgt_devaddr;
++	const char *src_devaddr, *tgt_devaddr = NULL;
+ 	__be32 src_ipaddr, tgt_ipaddr;
+ 	long ret;
+ 
+@@ -110,13 +110,23 @@ static inline int arp_packet_match(const struct arphdr *arphdr,
+ 	arpptr += dev->addr_len;
+ 	memcpy(&src_ipaddr, arpptr, sizeof(u32));
+ 	arpptr += sizeof(u32);
+-	tgt_devaddr = arpptr;
+-	arpptr += dev->addr_len;
++	switch (dev->type) {
++#if IS_ENABLED(CONFIG_FIREWIRE_NET)
++	case ARPHRD_IEEE1394:
++		break;
++#endif
++	default:
++		tgt_devaddr = arpptr;
++		arpptr += dev->addr_len;
++		break;
++	}
+ 	memcpy(&tgt_ipaddr, arpptr, sizeof(u32));
+ 
+ 	if (NF_INVF(arpinfo, ARPT_INV_SRCDEVADDR,
+ 		    arp_devaddr_compare(&arpinfo->src_devaddr, src_devaddr,
+-					dev->addr_len)) ||
++					dev->addr_len)))
++		return 0;
++	if (tgt_devaddr &&
+ 	    NF_INVF(arpinfo, ARPT_INV_TGTDEVADDR,
+ 		    arp_devaddr_compare(&arpinfo->tgt_devaddr, tgt_devaddr,
+ 					dev->addr_len)))
+-- 
+2.43.0
 
 
