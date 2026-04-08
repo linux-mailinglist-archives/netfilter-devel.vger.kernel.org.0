@@ -1,128 +1,100 @@
-Return-Path: <netfilter-devel+bounces-11705-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11706-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APDELNFw1WmN6QcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11705-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 23:02:09 +0200
+	id 8NrBLM2o1Wlf8gcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11706-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 03:01:01 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46963B4D20
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Apr 2026 23:02:08 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 831D23B5CDD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 03:01:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B9293301575D
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2026 20:58:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D74FA300463C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 01:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7522F35DA6D;
-	Tue,  7 Apr 2026 20:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A583290C2;
+	Wed,  8 Apr 2026 01:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L+nE9I02"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WCTzbAIb"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48671313E30;
-	Tue,  7 Apr 2026 20:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF243314DE;
+	Wed,  8 Apr 2026 01:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775595500; cv=none; b=XE9gDT6iLPYV2x4HQI/oyNcv/UsKulvOg0eFKdW4OXaitPl6TaY8cZv8Vy1/aJQJDo6qLSIwUatrAsTDV/rJneqoCU1h0HkQgLoKzheiZUnXqNvQXnmsXYN6yZwT3IJ5vOZB1Hk3CG9SgsyzOfWjlU3/c313r1s/gpbED/SPqUk=
+	t=1775610056; cv=none; b=AQhrG2inBjBVYBpdoRpdR8hhEijhlpIed7U8UOqWKsTAS9ZwPDwYPTEVrp7LozDZkqbvrybPaglpFBGSA4yErG7WdeO5KGEMQVozFIYo06BFMty8zu6+4m/wDjy0ZmGki5VfgTGodUmDBBq4cwO85C52DHHWMQvLSGXX71qBDDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775595500; c=relaxed/simple;
-	bh=azI9MIFpXRuzEZQXX/hxvHrFrp7m5B/1P6YlrzqI9C8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=oxFdynfL5BW1sHkoQd2VvehIQTCMh84XDbchxnDBU8yT3QX248MJ62BgqeJkKmVMwbT1OHEU9AdhxIgETBOQyGs4J3RYCj1k/nTsXWldtR6hXJzJYzKtjcUW22RfhGkiLwM0LVPZpS80Vnu0XPIfGlQUmDcVc5OnbOocnhqieMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L+nE9I02; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A9BC116C6;
-	Tue,  7 Apr 2026 20:58:19 +0000 (UTC)
+	s=arc-20240116; t=1775610056; c=relaxed/simple;
+	bh=YASJzz2Ts/JJ3gSO0szgf0KjWGJjSJ5Igch4+9QITig=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HIu6LdJls918gnkjKB93HSXOgT93xJ1WYQwHz2amICXfwDqks/CPKxzIS1k5huQjQcl8QIa2aDSaGhCml6pCHZjrDMNINUvwQzT0Cf2cmrkV3QO12zrTtd84GtLW3YS4Zf7WCLP33sflJUJahEdCI5uKdoahC3nARCKdzP6KcBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WCTzbAIb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7240DC116C6;
+	Wed,  8 Apr 2026 01:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775595500;
-	bh=azI9MIFpXRuzEZQXX/hxvHrFrp7m5B/1P6YlrzqI9C8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=L+nE9I02IxZxS4Ni9MXq6/89TVLA0jMQWLRuUe9unn2BRSZARrFeatLTGesgC0lhh
-	 FyMJhUN/9Ih6oXz6cotXiaP60n5KI+Rzfy9u7l33aqx04PY9E3mpCm3+fv8oz2x1Qm
-	 Sqixfln6WsMpm8aCtPVG8dLllQ+qHYRHdnqNInWq037b/dl2ymRLL4j8K8z6L6Feag
-	 VAvKt7nxHoocnqxTq/k2WfyprCh+TMt+G0DjeERJhF/q1FuEnP9qT4fWNIM+KCUO0V
-	 0VgkNma4b7imM4xCsRi0Z2v1V3JyNiWidmrQ87Dth1WTKuEy/mPjRqWnkzAOwtoYfy
-	 si3zib4l86Ovg==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Calvin Owens <calvin@wbinvd.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
- John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
- <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
- linux-pm@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Florian
- Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [patch 00/12] hrtimers: Prevent hrtimer interrupt starvation
-In-Reply-To: <adVOdTnyIbKz2F91@mozart.vkv.me>
-References: <20260407083219.478203185@kernel.org>
- <adVA_uv1srA_bsKj@mozart.vkv.me> <87ika24phf.ffs@tglx>
- <adVOdTnyIbKz2F91@mozart.vkv.me>
-Date: Tue, 07 Apr 2026 22:58:16 +0200
-Message-ID: <87fr564hef.ffs@tglx>
+	s=k20201202; t=1775610054;
+	bh=YASJzz2Ts/JJ3gSO0szgf0KjWGJjSJ5Igch4+9QITig=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WCTzbAIbXhob6NOVBkHMxKJfzB2gCPeE/iIf5ceHXumenjbcuoJORpCyNaN4lrKne
+	 KU644YeWnph2VVUcFKWl5i/o462BRVNR2rTGMgrYSwxa11uF3k+qgPPrzZNsRxCDrV
+	 MKXy1YU+JWpBqCF2BbuzSY5drssMd5JjRudTWQe4dIMKCD9QYCq68D6qnoMIlkiswK
+	 6bPEnsq06aWKfFSrMloKpApFY9HR9X/CyEzAqceuzOV4Iuie7HELI3KadY2pF+NgNz
+	 bs0FsLj228DMM9NlUlG0HYEqPfI1COeY3PsoSYQQlT2z1XBVXQMlN+/XO0n8grb8Ze
+	 SatuJMlp9edaw==
+Date: Tue, 7 Apr 2026 18:00:53 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ <netfilter-devel@vger.kernel.org>, pablo@netfilter.org
+Subject: Re: [PATCH net-next 00/13] netfilter: updates for net-next
+Message-ID: <20260407180053.1fb5ffc4@kernel.org>
+In-Reply-To: <20260407141540.11549-1-fw@strlen.de>
+References: <20260407141540.11549-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spamd-Result: default: False [2.84 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11705-lists,netfilter-devel=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-11706-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: C46963B4D20
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 831D23B5CDD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Apr 07 2026 at 11:35, Calvin Owens wrote:
-> On Tuesday 04/07 at 20:03 +0200, Thomas Gleixner wrote:
->> On Tue, Apr 07 2026 at 10:38, Calvin Owens wrote:
->> > On Tuesday 04/07 at 10:54 +0200, Thomas Gleixner wrote:
->> >> He provided a reproducer, which sets up a timerfd based timer and then
->> >> rearms it in a loop with an absolute expiry time of 1ns.
->> >
->> > The original AMD machines survive the reproducer with this series.
->> >
->> > Tested-by: Calvin Owens <calvin@wbinvd.org>
->> >
->> > I'm happy to test subsets of it and stable backports too, if that's
->> > helpful, just let me know.
->> 
->> We'll only backport the first patch, so confirming that it still
->> prevents the issue would be nice. The rest is slated for upstream only.
->
-> Confirmed, [1/12] alone passes.
+On Tue,  7 Apr 2026 16:15:27 +0200 Florian Westphal wrote:
+> netfilter pull request nf-next-26-04-07
 
-Thanks a lot for all your help. Very appreciated.
-
-       tglx
-
+IIUC plan is to send v2, LMK if I misread
 
