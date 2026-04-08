@@ -1,139 +1,166 @@
-Return-Path: <netfilter-devel+bounces-11737-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11738-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GBS0C5Jy1ml2FQgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11737-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 17:21:54 +0200
+	id kMEYMS2E1mmwFwgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11738-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 18:37:01 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B97993BE1C8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 17:21:53 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E8233BEEA0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 18:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 080E63005798
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 15:18:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F11C6300EAA5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 16:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691B33D6663;
-	Wed,  8 Apr 2026 15:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VW/ctqfW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C2139F19E;
+	Wed,  8 Apr 2026 16:35:19 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10AF33CEA8;
-	Wed,  8 Apr 2026 15:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB69331A7B;
+	Wed,  8 Apr 2026 16:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775661536; cv=none; b=YIDqanZrVvQ9lKC7T1+Fas+O/MvGd14zjpMkvCCX0e7LSje0UIY9zk6pPb6REhPuEjviKz+KX2m3ZET0m/pdbcK2P0Azujz+la2j3mqj0hR0s+JpyrnoNr7RNg9uxp19g60hUEltBLkL234oT9U6+tkxHga3jJHVAwivD0Abadk=
+	t=1775666119; cv=none; b=Rp0Tx5yFkZch1Sa4lM2gaYh9qwZcwvgd9mJsh6nPL0ETmuE1ZsYXT4W2urw2cc59zu47xcVDAowQRDjMetdjH572r4NULdBj8bQxaoq4MmuXRUY1PdCP5WzMHtgLvQkDiK+6f/59cR27Xm2NsEmt0mASv/tg+2amvDZ2kBeAKq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775661536; c=relaxed/simple;
-	bh=K0smtATRRlPhzZC/f2FuIGBbZSELomfitHg/FX7/F+c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iEO/y9+6ejXZVaGCFO8haC0YEsA72V0c4lpaJJlMixkC2GaNgYG0N4sZ5wMzjKjUqqgX9gaZ8xGBeCvVEiu18ACdbDwM9LI0qYC6vpqUu/pp2MdvvSOw+zg9c0ERRt8/VitzKZfBugCoz6pN6kRiuK9r4J1v326pYY457tTYw4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VW/ctqfW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43AAAC19421;
-	Wed,  8 Apr 2026 15:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775661536;
-	bh=K0smtATRRlPhzZC/f2FuIGBbZSELomfitHg/FX7/F+c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=VW/ctqfWbUrk670cLw5GbIb5IloiAdZviNrvkFPmmqRL6p6+EHv5DTHowzQ3ovPHw
-	 aRyqchU1bT7LNV6SxiCzsNRrDzSIksRADxnKGdFnxZu5htqCFFWMc5u4QUutAHEU1e
-	 bbeMUvdRBC/OUqesuEbPWcgFzb7v3IPc6PFqJ5FWwDz5RC8ZiqmsiYY+EOitBJtd7e
-	 +CqsG0M1uIUi6yhv0paoxwNL2WB4EdiwtIPK93Jo3LVqSamcT+azpoKYqcMOBSsiMo
-	 dcSjPFgJA5WWka/2nOwZ8pzHBEmYJXn6Y5bhs6DwVHhWS5jUB27L4TVtnPgc+wdJD+
-	 nz239NiXc2oxw==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Calvin Owens <calvin@wbinvd.org>,
- Peter Zijlstra <peterz@infradead.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>,
- Ingo Molnar <mingo@kernel.org>, John Stultz <jstultz@google.com>, Stephen
- Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
- linux-pm@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Florian
- Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [patch 01/12] clockevents: Prevent timer interrupt starvation
-In-Reply-To: <20260408155353-42aeefa4-db66-48aa-ab07-0538a8cfdbf0@linutronix.de>
-References: <20260407083219.478203185@kernel.org>
- <20260407083247.562657657@kernel.org>
- <20260408143313-ac6c3b82-70e6-4ce3-b33a-20f5e6ba160b@linutronix.de>
- <20260408155353-42aeefa4-db66-48aa-ab07-0538a8cfdbf0@linutronix.de>
-Date: Wed, 08 Apr 2026 17:18:52 +0200
-Message-ID: <87zf3d32g3.ffs@tglx>
+	s=arc-20240116; t=1775666119; c=relaxed/simple;
+	bh=xebDANJS1qaiAVwhbW4aCjYdayt/kHgjH6bSpEIKVtE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TUxevWaP7dmQbKafxOaSErMhIliOea7Rj/SuzMvcCjvhjy6pGnPifrEuPtm6tnHq3k0VEfBBG5KRrT/iWprec0YvU2vq4z06Wz6biwpTUBaSHkWi2cq9eExJYU1o2yGaUKucOEVrxx9QVSA7PnDRCAGjkiatyb+anKiGhzXxCUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 5BD6560560; Wed, 08 Apr 2026 18:35:15 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netdev@vger.kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	<netfilter-devel@vger.kernel.org>,
+	pablo@netfilter.org
+Subject: [PATCH net 0/7] netfilter updates for net
+Date: Wed,  8 Apr 2026 18:35:05 +0200
+Message-ID: <20260408163512.30537-1-fw@strlen.de>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-11738-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11737-lists,netfilter-devel=lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.938];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B97993BE1C8
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:mid]
+X-Rspamd-Queue-Id: 4E8233BEEA0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 08 2026 at 15:55, Thomas Wei=C3=9Fschuh wrote:
-> On Wed, Apr 08, 2026 at 02:41:20PM +0200, Thomas Wei=C3=9Fschuh wrote:
-> --- a/kernel/time/clockevents.c
-> +++ b/kernel/time/clockevents.c
-> @@ -369,7 +369,7 @@ int clockevents_program_event(struct clock_event_devi=
-ce *dev, ktime_t expires, b
->         if (dev->next_event_forced)
->                 return 0;
->=20=20
-> -       if (dev->set_next_event(dev->min_delta_ticks, dev)) {
-> +       if (dev->set_next_event(dev->min_delta_ns, dev)) {
+Hi.
 
-That's wrong as the callback expects cycles (ticks) not nanoseconds.
+This pull requests contain netfilter fixes for the *net* tree.
+I only included crash fixes, as we're closer to a release, rest will
+be handled via -next.
 
-I've just pushed out an updated version to tip timers/urgent which
-addresses a potentially related issue. Delta patch below.
+1) Fix a NULL pointer dereference in ip_vs_add_service error path, from
+   Weiming Shi, bug added in 6.2 development cycle.
 
-Thanks,
+2) Don't leak kernel data bytes from allocator to userspace: nfnetlink_log
+   needs to init the trailing NLMSG_DONE terminator. From Xiang Mei.
 
-        tglx
----
---- a/kernel/time/clockevents.c
-+++ b/kernel/time/clockevents.c
-@@ -324,6 +324,8 @@ int clockevents_program_event(struct clo
- 		return dev->set_next_ktime(expires, dev);
-=20
- 	delta =3D ktime_to_ns(ktime_sub(expires, ktime_get()));
-+	if (delta <=3D 0 && !force)
-+		return -ETIME;
-=20
- 	if (delta > (int64_t)dev->min_delta_ns) {
- 		delta =3D min(delta, (int64_t) dev->max_delta_ns);
+3) xt_multiport match lacks range validation, bogus userspace request will
+   cause out-of-bounds read. From Ren Wei.
+
+4) ip6t_eui64 match must reject packets with invalid mac header before
+   calling eth_hdr. Make existing check unconditional.  From Zhengchuan
+   Liang.
+
+5) nft_ct timeout policies are free'd via kfree() while they may still
+   be reachable by other cpus that process a conntrack object that
+   uses such a timeout policy.  Existing reaping of entries is not
+   sufficient because it doesn't wait for a grace period.  Use kfree_rcu().
+   From Tuan Do.
+
+6/7) Make nfnetlink_queue hash table per queue.  As-is we can hit a page
+   fault in case underlying page of removed element was free'd.  Per-queue
+   hash prevents parallel lookups.  This comes with a test case that
+   demonstrates the bug, from Fernando Fernandez Mancera.
+
+Please, pull these changes from:
+The following changes since commit f821664dde29302e8450aa0597bf1e4c7c5b0a22:
+
+  Merge branch 'seg6-fix-dst_cache-sharing-in-seg6-lwtunnel' (2026-04-07 20:21:00 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-26-04-08
+
+for you to fetch changes up to dde1a6084c5ca9d143a562540d5453454d79ea15:
+
+  selftests: nft_queue.sh: add a parallel stress test (2026-04-08 13:34:51 +0200)
+
+----------------------------------------------------------------
+netfilter pull request nf-26-04-08
+
+----------------------------------------------------------------
+
+Fernando Fernandez Mancera (1):
+  selftests: nft_queue.sh: add a parallel stress test
+
+Florian Westphal (1):
+  netfilter: nfnetlink_queue: make hash table per queue
+
+Ren Wei (1):
+  netfilter: xt_multiport: validate range encoding in checkentry
+
+Tuan Do (1):
+  netfilter: nft_ct: fix use-after-free in timeout object destroy
+
+Weiming Shi (1):
+  ipvs: fix NULL deref in ip_vs_add_service error path
+
+Xiang Mei (1):
+  netfilter: nfnetlink_log: initialize nfgenmsg in NLMSG_DONE terminator
+
+Zhengchuan Liang (1):
+  netfilter: ip6t_eui64: reject invalid MAC header for all packets
+
+ include/net/netfilter/nf_conntrack_timeout.h  |   1 +
+ include/net/netfilter/nf_queue.h              |   1 -
+ net/ipv6/netfilter/ip6t_eui64.c               |   3 +-
+ net/netfilter/ipvs/ip_vs_ctl.c                |   1 -
+ net/netfilter/nfnetlink_log.c                 |   8 +-
+ net/netfilter/nfnetlink_queue.c               | 139 ++++++------------
+ net/netfilter/nft_ct.c                        |   2 +-
+ net/netfilter/xt_multiport.c                  |  34 ++++-
+ .../selftests/net/netfilter/nf_queue.c        |  50 ++++++-
+ .../selftests/net/netfilter/nft_queue.sh      |  83 +++++++++--
+ 10 files changed, 201 insertions(+), 121 deletions(-)
+-- 
+2.52.0
 
