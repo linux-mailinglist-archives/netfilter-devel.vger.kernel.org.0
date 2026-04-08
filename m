@@ -1,192 +1,125 @@
-Return-Path: <netfilter-devel+bounces-11724-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11727-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MPxnNMRC1mkFCwgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11724-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 13:57:56 +0200
+	id 8FUEKTxE1mkFCwgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11727-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 14:04:12 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDE43BB913
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 13:57:56 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FAEF3BBB79
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Apr 2026 14:04:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 619C53004DD8
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 11:55:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C48D3303BBFF
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2026 11:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 259B93BE17C;
-	Wed,  8 Apr 2026 11:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF803B8BA1;
+	Wed,  8 Apr 2026 11:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iyB1bTwk"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="iuzd1VJg"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FB33B8BA1;
-	Wed,  8 Apr 2026 11:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19473B27F9
+	for <netfilter-devel@vger.kernel.org>; Wed,  8 Apr 2026 11:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775649276; cv=none; b=TXjm5ZAGYNF99+ZY+TfF2oEY+zfEkv2kkG0WEubbD2QVB02dvTHOQPbITMfjc5zh2fH4gdISTnuSSkLYNkXlisfNoouNSgRKTBOz12uHDUOzYCbO5t0+XEfscR948OL7J1j76MLexkaB2350W/DVb7i59LfKJnZ4YqLHmELAm3U=
+	t=1775649574; cv=none; b=OQ0cFU+CPs486Kaduq+zVKowuhLq/Mq7YIFjcM0rxsM/+MQn8nNatt4wDi3vw8TUHxn01iTpWUgIVXikI7nEAkTtEoPQu4aNH0QSwv8p/SKMpnuVbG+S8JtNLSWwm9uUr7KD9jjJsmJZ1bcOFKHRPH62UXavslOKHhDQrwIBJ+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775649276; c=relaxed/simple;
-	bh=i/wmEqzr8cLPxjWlHlsd+92dfmzqBOEHLkGGWjyw9LI=;
-	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=gr7iWNf5NXVCCrubHrBuXgLSi2+q2oEjP0x4VwtBj8ZvA/SQDfXsW5gLGktbXcF9Eq4zp/vDcUw1t9wguSoR6NMQV+jFT0vuCw0g3Vhqccd0nmmlZTbmI9EFMh4O45fePkcJiu3iBTFiiHeS/6Nk+YAVrtzgWu54xeXg3TBCgEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iyB1bTwk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76911C19421;
-	Wed,  8 Apr 2026 11:54:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775649275;
-	bh=i/wmEqzr8cLPxjWlHlsd+92dfmzqBOEHLkGGWjyw9LI=;
-	h=Date:From:To:Cc:Subject:References:From;
-	b=iyB1bTwkN+T08pJYvRFU5eniRw5AJo7Sm893nl3t1fkXfREHMYyh5j1ra1e7Vp8yS
-	 TzXasolokBsFZJ4CEqS+Zsf+Img6CFTsRxClak5P98JNVMQvZxZ+OAfmCoCKlfFy0C
-	 UTIxkgEXOOS2mCBYjFIM4p5Eh/hoKrT9dh3nZD/LdjIcARxhVMF+MUP3zqDdyz96H5
-	 NJSmC6Ex8eaYtdmIb32tUQ3Of9Jf2VPrECZrr/XRpCkSUaSDeWqTP2zY24vXXoGAKj
-	 dkwGt3f07u0s1l9xZWaUslyQ2SLw5JSCBJ9ijNXCs/mJTn3bQPGKGBpxZPzrmLJOvu
-	 7jmoaGC9YNAog==
-Date: Wed, 08 Apr 2026 13:54:33 +0200
-Message-ID: <20260408114952.670899355@kernel.org>
-User-Agent: quilt/0.68
-From: Thomas Gleixner <tglx@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>,
- Calvin Owens <calvin@wbinvd.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>,
- linux-fsdevel@vger.kernel.org,
- Sebastian Reichel <sre@kernel.org>,
- linux-pm@vger.kernel.org,
- Pablo Neira Ayuso <pablo@netfilter.org>,
- Florian Westphal <fw@strlen.de>,
- Phil Sutter <phil@nwl.cc>,
- netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org
-Subject: [patch V2 11/11] alarmtimer: Remove unused interfaces
-References: <20260408102356.783133335@kernel.org>
+	s=arc-20240116; t=1775649574; c=relaxed/simple;
+	bh=2MjC5VNZm6To9bNvwN9eeGPeAMXqmUphZQ75Dljp8ho=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N17H4QfpULugSpgH7ErNkFlFaFQt0pbcwo0IrB9ZEpEOh/2vCr76nEAYhlZ6yCbH6X3tj6GaL/L1Fgj4We2e+Jgw7AN/ot+s3orMsP5bWXPJ5aKk1TEAGoY/u1G3/HD+gE7nR5AopGMYcyr2Q1+OwPYsWJVptmKQJE5UdZNMvdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=iuzd1VJg; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 1A41760337;
+	Wed,  8 Apr 2026 13:59:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1775649568;
+	bh=8G2ELB2sHrUVwCIt96IH8En0a1242BTbK/uFKVH7C50=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iuzd1VJgtGjkd1wtrLytT++rDuI77TXo6qbJJ3goSjDtERS9PdpCixP/RwpVwveAl
+	 pPT2s1fTJsjsJwpMEnzXoKbnZgr/EgJ7Spk3PZ+kqx4gT+orzftQZ0ncs7dzdcbinP
+	 LFN7zKYOcu1QjK7FhWwyFuxgFGGnYLw0lnd6WSS3UwJq8yCMfRMk6Tug9wFk/1gevF
+	 L32Hogekna2UeBCIoXGCOwj2a5C5FkPaUdd6+qZ6qicAm7FCo1kYLwV24Faynw52ju
+	 SvWgi+6uPaFoOmiddBz3L8PiKf7P5c612ub5bukL7eHqe5VxXKxQYZ4dwEakpwUhuq
+	 Rt0yDjjotyEEA==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: phil@nwl.cc,
+	fw@strlen.de
+Subject: [PATCH nft 0/5] support for several list and reset commands
+Date: Wed,  8 Apr 2026 13:59:17 +0200
+Message-ID: <20260408115922.48676-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-11727-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11724-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[netfilter.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6EDE43BB913
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:mid,ozlabs.org:url]
+X-Rspamd-Queue-Id: 9FAEF3BBB79
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-All alarmtimer users are converted to alarm_start_timer(). Remove the now
-unused interfaces.
+Hi Phil,
 
-Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-Cc: John Stultz <jstultz@google.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
+This is alternative proposal to address the issue reported in this patch:
 
----
- include/linux/alarmtimer.h |    3 ---
- kernel/time/alarmtimer.c   |   44 --------------------------------------------
- 2 files changed, 47 deletions(-)
---- a/include/linux/alarmtimer.h
-+++ b/include/linux/alarmtimer.h
-@@ -50,9 +50,6 @@ static __always_inline ktime_t alarm_get
- void alarm_init(struct alarm *alarm, enum alarmtimer_type type,
- 		void (*function)(struct alarm *, ktime_t));
- bool alarm_start_timer(struct alarm *alarm, ktime_t expires, bool relative);
--void alarm_start(struct alarm *alarm, ktime_t start);
--void alarm_start_relative(struct alarm *alarm, ktime_t start);
--void alarm_restart(struct alarm *alarm);
- int alarm_try_to_cancel(struct alarm *alarm);
- int alarm_cancel(struct alarm *alarm);
- 
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -333,39 +333,6 @@ void alarm_init(struct alarm *alarm, enu
- EXPORT_SYMBOL_GPL(alarm_init);
- 
- /**
-- * alarm_start - Sets an absolute alarm to fire
-- * @alarm: ptr to alarm to set
-- * @start: time to run the alarm
-- */
--void alarm_start(struct alarm *alarm, ktime_t start)
--{
--	struct alarm_base *base = &alarm_bases[alarm->type];
--
--	scoped_guard(spinlock_irqsave, &base->lock) {
--		alarm->node.expires = start;
--		alarmtimer_enqueue(base, alarm);
--		hrtimer_start(&alarm->timer, alarm->node.expires, HRTIMER_MODE_ABS);
--	}
--
--	trace_alarmtimer_start(alarm, base->get_ktime());
--}
--EXPORT_SYMBOL_GPL(alarm_start);
--
--/**
-- * alarm_start_relative - Sets a relative alarm to fire
-- * @alarm: ptr to alarm to set
-- * @start: time relative to now to run the alarm
-- */
--void alarm_start_relative(struct alarm *alarm, ktime_t start)
--{
--	struct alarm_base *base = &alarm_bases[alarm->type];
--
--	start = ktime_add_safe(start, base->get_ktime());
--	alarm_start(alarm, start);
--}
--EXPORT_SYMBOL_GPL(alarm_start_relative);
--
--/**
-  * alarm_start_timer - Sets an alarm to fire
-  * @alarm:	Pointer to alarm to set
-  * @expires:	Expiry time
-@@ -393,17 +360,6 @@ bool alarm_start_timer(struct alarm *ala
- }
- EXPORT_SYMBOL_GPL(alarm_start_timer);
- 
--void alarm_restart(struct alarm *alarm)
--{
--	struct alarm_base *base = &alarm_bases[alarm->type];
--
--	guard(spinlock_irqsave)(&base->lock);
--	hrtimer_set_expires(&alarm->timer, alarm->node.expires);
--	hrtimer_restart(&alarm->timer);
--	alarmtimer_enqueue(base, alarm);
--}
--EXPORT_SYMBOL_GPL(alarm_restart);
--
- /**
-  * alarm_try_to_cancel - Tries to cancel an alarm timer
-  * @alarm: ptr to alarm to be canceled
+  https://patchwork.ozlabs.org/project/netfilter-devel/patch/20260311194100.21983-1-phil@nwl.cc/
+
+On top of this, it aims at addressing a longstanding issue, which is to
+allow users to add a list command in their .nft files.
+
+Please, see 5/5 for details.
+
+Comments welcome, thanks.
+
+Pablo Neira Ayuso (5):
+  libnftables: report EPERM to non-root users with -f/--filename
+  libnftables: add nft_run_cmd_release() helper and use it
+  libnftables: consolidate evaluation and netlink run
+  libnftables: use nft_eval_run_cmds() in nft_run_cmd_from_filename()
+  libnftables: support for several list and reset commands
+
+ include/cmd.h      |  10 ++++
+ src/cmd.c          | 100 +++++++++++++++++++++++++++++++++-
+ src/libnftables.c  | 133 +++++++++++++++++++++++++++------------------
+ src/parser_bison.y |  12 +++-
+ src/parser_json.c  |   9 +--
+ 5 files changed, 203 insertions(+), 61 deletions(-)
+
+-- 
+2.47.3
 
 
