@@ -1,135 +1,187 @@
-Return-Path: <netfilter-devel+bounces-11754-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11774-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yCQNGhl312nTOAgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11754-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 11:53:29 +0200
+	id QDjHLs7A12mdSQgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11774-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 17:07:58 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 135F53C8BD0
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 11:53:29 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99EE3CC698
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 17:07:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8AB19301DE1E
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Apr 2026 09:50:40 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5977A3006816
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Apr 2026 15:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCD53B4EB5;
-	Thu,  9 Apr 2026 09:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346BC3D88E4;
+	Thu,  9 Apr 2026 15:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K1NYr8nc"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8678348866;
-	Thu,  9 Apr 2026 09:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0A13D34B6
+	for <netfilter-devel@vger.kernel.org>; Thu,  9 Apr 2026 15:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775728239; cv=none; b=O1vw4gGB7YcCi9rDZikl7FiS0z310eNb8RVKYrr1nLTz1WG3qOEUXm8j33OT/VLD9v7zZk+m3iVHtn4rOTWBLU4bc6Lmk2CRD1KmwZybcLHHeyZkoFvV62jwTUKYyRagf4JYVY1erxb19a/XNkTiDSln03xgQcSlb4yas66RQTo=
+	t=1775747269; cv=none; b=LYf5/q1zP3xCmULgtcnJlb+Sd/qurQsXMxyZPSTfcqHzzmelHhb7andTbojXYm2kZNoVAVfVW+fpE8wx57SrMEbpyNv/envmsDwPSzyYsEaytKimhcBx6S90x93/o/MqfRN/s2iL4JC5YH1LV8KPvh1/gkZPX4wrIkOjV+tzTc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775728239; c=relaxed/simple;
-	bh=i+6hlVdUZ7Xyw2twTV+z+yoWBuQrnAz2c3XD/5XMwDc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BGNUvq9GOYh+AkWCVil79gM1lFnQwjEJCGTDtw31pAmk6L69GyA5W99TXZjIyeCTE4A64d/wnpY0MBgxbzwgxHdE2M6DGrhVzqsdL07/71jZVLxmCuCP29DQ/omhZ2o8zUjP6eK1g343dfnEyVImZnjLXaOYugZ0cR3n2watuQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id F3F3760636; Thu, 09 Apr 2026 11:50:34 +0200 (CEST)
-Date: Thu, 9 Apr 2026 11:50:34 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Weiming Shi <bestswngs@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	s=arc-20240116; t=1775747269; c=relaxed/simple;
+	bh=Tzx1JoLPABShYM1Pm3RTCn9DyXuxVz/UCK8Zh9PzwWQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UnYMkFTYd7dBTZh5W5+W4wqZYpI/g7tH+14ii8+sp+gdaHpHA+u1in/aoOO3aSH62wUOyqNpr5jF9aXWjGLBIPgPW2piOTgTmXkTcwJTw7C86nhCaeB6tggj6dSw0S5EqC7m5d4pbSSMswthyGYVkzVImIxsFDnQKBQYBa8DkWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K1NYr8nc; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-c06cb8004e8so507571a12.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 09 Apr 2026 08:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775747267; x=1776352067; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PrEq8JFBlKt4BxwmLLBZiPMRBW9tfYXXYLLd/dH/SyE=;
+        b=K1NYr8ncZ7rDgEspHQQy3QHmOK2zePYvr1Y/8hWeYphQM8gDSZO73Px+8E7JCfZ+8f
+         5pb+QBGtVyQX0HJgArVXV7MhpjCIqfnNYR3s71h5cEfxiOK4FhQXnJV0Qhsn6dJrSzQv
+         gYq7DUaLSop3GgBGksn7MEJdEJ0ZPnjJ4DHpSUGRJLyTn4qg1qg6leTAzcSppzGctOJq
+         VHVpqtmqyBbPUdToOPr/EcVfgGpFlU4CM10/CctapHwjpbatQ2ScoZ1ka3lOwwPmsg45
+         LzP8wLgXIxF+qYEbSEvoNUvEMsR9xFpdwaKFWhflad4bC4ogrQuy+/CHd6mMKrMPD4O8
+         RivA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775747267; x=1776352067;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PrEq8JFBlKt4BxwmLLBZiPMRBW9tfYXXYLLd/dH/SyE=;
+        b=tH0aRe3XeyJsvm1h8ApJ9WoIxWcCgyi3HJbx/gYlI+3xboJSDQ+kRtqZD484wgCtb9
+         brk8dY4BYYh8tH5HIR+0Wr8/HYYN1DPksGR1aOcFtwu8a0vtGiT69olOxo6ETaf74paN
+         R8PVi4OsJ6PggyfOtyXH8v1ViYYn+gVtZrDY8Lvgh+eJauCF543Onn5p6sqdk7egfRdG
+         BTqTfkkaUd8tPigIvo0AenDNWK80t+Ufoel1doOD6sWhfFjPwEF/7+yp2tUXgM8HBYcM
+         6QiaWkMc5twIOObNLMIACCv+dd/LJrOjIB/bCPbJHzrraLOjc8GtvfPLgSoDTg4QwBYE
+         4Egg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5nYdQXJZzmqom7+jHsE3FQJeUYV87BHn9ffTHQC8KJsNH8U4FVLWcAfq27k0CBZYZALzPEJ2i6WG/6dJtwFQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAY9HlPwTYBKaywdo333gYJ3Ug/yQ0gJC1B5YOlL4ysS1JWtQR
+	G3DCM+9DgVJN55d8/dFExAuPqFtAilQXQfenpsVhq1SeWy2UilIdYy5A
+X-Gm-Gg: AeBDievYJDl59sarnZ2ehdSO91EXcl+WlRREgwrFW8NWwj++xn64XBEYbeim8XYdE55
+	9RAxL1Ll2Y3IUb0phuRTC8MUVmejPxaY9HaoM/AZLW5GOkADEEyQYOjGUZUYxtr1BJr7Fz0i502
+	c971Z4+ZsVzZvHzpJrLZZgdKIrY5kKYzJ9kJLYfYs2Ad8sF8/Q8/tGy4RwlG+BEJYduOkDA3GUi
+	K8xbGJ+o/451PTbhN4gSGb+qB6CnlpMmINheWlS9mQ0brVRjRjbrnazJEtzzoXvRRZDOm2TqkOJ
+	8e3bOrff7t9dzL3nTcoRV0QpRPxB4jsNn6kwe/ULzD/m8gWKxKQ2oa43DDTXMl8exfw4BrGxosw
+	AwKzmGMOLVR2CTJ3bZsQf3Ma1FBqKruaa+nGAfod7rmarbdpkz6xdSOyre2KhG4d3d2iuzOpncK
+	Iv9RfGK7pJBmkfy1lZokbI0iBptQbUfJPsKGmkrWl3iKB16g6a0tK6bRYTb8Gvdf9BL4VW+t71o
+	Inlx9mDjOSpf8Z0BuGq1Ss=
+X-Received: by 2002:a17:903:22c6:b0:2ae:3b9b:db34 with SMTP id d9443c01a7336-2b28188da6amr269183375ad.42.1775747267056;
+        Thu, 09 Apr 2026 08:07:47 -0700 (PDT)
+Received: from SLSGDTSWING002.tail0ac356.ts.net ([129.126.109.177])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b27497af47sm312363305ad.42.2026.04.09.08.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2026 08:07:46 -0700 (PDT)
+From: Weiming Shi <bestswngs@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
 	"David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Phil Sutter <phil@nwl.cc>, Simon Horman <horms@kernel.org>,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, Xiang Mei <xmei5@asu.edu>
-Subject: Re: [PATCH nf] netfilter: nft_fwd_netdev: use recursion counter in
- neigh egress path
-Message-ID: <add2ajF5YGqd4MxZ@strlen.de>
-References: <20260409053629.698822-2-bestswngs@gmail.com>
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Phil Sutter <phil@nwl.cc>,
+	Simon Horman <horms@kernel.org>,
+	Patrick McHardy <kaber@trash.net>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xiang Mei <xmei5@asu.edu>,
+	Weiming Shi <bestswngs@gmail.com>
+Subject: [PATCH nf] netfilter: nf_conntrack_sip: fix OOB read in epaddr_len and ct_sip_parse_header_uri
+Date: Thu,  9 Apr 2026 17:50:57 +0800
+Message-ID: <20260409095056.706441-2-bestswngs@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260409053629.698822-2-bestswngs@gmail.com>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[nwl.cc,kernel.org,trash.net,vger.kernel.org,netfilter.org,asu.edu,gmail.com];
+	TAGGED_FROM(0.00)[bounces-11774-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11754-lists,netfilter-devel=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.992];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bestswngs@gmail.com,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:mid,asu.edu:email]
-X-Rspamd-Queue-Id: 135F53C8BD0
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[asu.edu:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E99EE3CC698
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Weiming Shi <bestswngs@gmail.com> wrote:
-> Fixes: f87b9464d152 ("netfilter: nft_fwd_netdev: Support egress hook")
-> Reported-by: Xiang Mei <xmei5@asu.edu>
-> Signed-off-by: Weiming Shi <bestswngs@gmail.com>
-> ---
->  include/net/netfilter/nf_dup_netdev.h |  4 ++++
->  net/netfilter/nf_dup_netdev.c         | 18 ++++++++++++++++++
->  net/netfilter/nft_fwd_netdev.c        |  7 +++++++
->  3 files changed, 29 insertions(+)
-> 
-> diff --git a/include/net/netfilter/nf_dup_netdev.h b/include/net/netfilter/nf_dup_netdev.h
-> index b175d271aec9..17362f76d1d1 100644
-> --- a/include/net/netfilter/nf_dup_netdev.h
-> +++ b/include/net/netfilter/nf_dup_netdev.h
-> @@ -7,6 +7,10 @@
->  void nf_dup_netdev_egress(const struct nft_pktinfo *pkt, int oif);
->  void nf_fwd_netdev_egress(const struct nft_pktinfo *pkt, int oif);
->  
-> +bool nf_dup_netdev_has_recursed(void);
-> +void nf_dup_netdev_recursion_inc(void);
-> +void nf_dup_netdev_recursion_dec(void);
-> +
->  struct nft_offload_ctx;
->  struct nft_flow_rule;
->  
-> diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
-> index fab8b9011098..e2fe8bb6fe0d 100644
-> --- a/net/netfilter/nf_dup_netdev.c
-> +++ b/net/netfilter/nf_dup_netdev.c
-> @@ -29,6 +29,24 @@ static u8 *nf_get_nf_dup_skb_recursion(void)
->  
->  #endif
->  
-> +bool nf_dup_netdev_has_recursed(void)
-> +{
-> +	return *nf_get_nf_dup_skb_recursion() > NF_RECURSION_LIMIT;
-> +}
-> +EXPORT_SYMBOL_GPL(nf_dup_netdev_has_recursed);
+In epaddr_len() and ct_sip_parse_header_uri(), after sip_parse_addr()
+successfully parses an IP address, the code checks whether the next
+character is ':' to determine if a port number follows. However,
+neither function verifies that the pointer is still within bounds
+before dereferencing it.
 
-I think thats a bit too heavy-handed.
-nf_get_nf_dup_skb_recursion() fetches from pcpu counter or current->.
+When a SIP header URI contains an IP address that extends to the last
+byte of the packet data, in4_pton() or in6_pton() consumes all
+available bytes and returns with the end pointer equal to limit. The
+subsequent dereference reads one byte past the valid SIP message data.
 
-Can you move nf_get_nf_dup_skb_recursion to a shared header file
-and make it inline instead of having a function call?
+ct_sip_parse_request() already handles this correctly:
+
+    if (end < limit && *end == ':') {
+
+Apply the same bounds check to the two functions that are missing it.
+
+Fixes: 9fafcd7b2032 ("[NETFILTER]: nf_conntrack/nf_nat: add SIP helper port")
+Reported-by: Xiang Mei <xmei5@asu.edu>
+Signed-off-by: Weiming Shi <bestswngs@gmail.com>
+---
+ net/netfilter/nf_conntrack_sip.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index 939502ff7c87..83741901c6fb 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -194,7 +194,7 @@ static int epaddr_len(const struct nf_conn *ct, const char *dptr,
+ 	}
+ 
+ 	/* Port number */
+-	if (*dptr == ':') {
++	if (dptr < limit && *dptr == ':') {
+ 		dptr++;
+ 		dptr += digits_len(ct, dptr, limit, shift);
+ 	}
+@@ -520,7 +520,7 @@ int ct_sip_parse_header_uri(const struct nf_conn *ct, const char *dptr,
+ 
+ 	if (!sip_parse_addr(ct, dptr + *matchoff, &c, addr, limit, true))
+ 		return -1;
+-	if (*c == ':') {
++	if (c < limit && *c == ':') {
+ 		c++;
+ 		p = simple_strtoul(c, (char **)&c, 10);
+ 		if (p < 1024 || p > 65535)
+-- 
+2.43.0
 
 
