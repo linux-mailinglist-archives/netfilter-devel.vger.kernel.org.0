@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-11749-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11750-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MAkRFR0G12mdKggAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11749-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 03:51:25 +0200
+	id uBqUG8AK12nNKggAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11750-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 04:11:12 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0F73C557A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 03:51:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A753C574A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 04:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 22EC7301CD99
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Apr 2026 01:51:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C64833013A9A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Apr 2026 02:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA2D363C4E;
-	Thu,  9 Apr 2026 01:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C368367F26;
+	Thu,  9 Apr 2026 02:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VzNMksFH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeFDhaJw"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C6E3630B2;
-	Thu,  9 Apr 2026 01:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A15366DB4;
+	Thu,  9 Apr 2026 02:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775699477; cv=none; b=E2IjT2E7b4jRjpwkJz5gpGEREpfTr0nvbtBvhm+uIY0vPcRK/5GqRMEF+UOv/Js3Zfr69kTokgZhFj/ygXWi0ldaTUnxOpHBb4JwqDm34b2nTMJQNmGUvY29UbJNxpqTEGO59VbhfgI2mp7G9bW1HnlRgLikqXpeMy7ZjxeneNU=
+	t=1775700651; cv=none; b=ZIkSKqzZqD8kJTcU3mWxfLnt83mWhrQkpHqWUyVHRIQcNNknZ/AQYw2qHFLXpwqxi/prYtWxFh3YSPBg+bZayzCHnPTZQ+LMNCSC8MTn4kHMGudHlGi1huCTG/UHj4oCEEuouRkoZgS9NVXgO5PfYavbZQwcyy/m8TR+n+fXVl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775699477; c=relaxed/simple;
-	bh=4tiPiLc0ubj/toDkCFd3Kanmf/vGuOCItA7BcG8m7dI=;
+	s=arc-20240116; t=1775700651; c=relaxed/simple;
+	bh=EaPrOgTxWoqU8C9XFfG15r7fDJrbShuNy2iejK1eBak=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=G6kb3aDmCHmY7Kt8Ujy6KvjpppJ+vH0gLOC2E7muUViUYSGGcsZGTBXR1SabAhTbJ0FWqirifyTAPwNkCllNZapR/IEFgpGRt55ARhOMBUQTXuENWOcw7C0oPm8cIKAGAgdIV2MC68p8QCoMx8fWJWoJ4iKSOiUZ6q5ChFEWgdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VzNMksFH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39B3C2BC9E;
-	Thu,  9 Apr 2026 01:51:16 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=M68oRthZQzfDNl1bidedOL/mnMqVo9Y9b/ik0Utd+rkE4u/87cwjLuqgIA2oz9B78/7rMvXlLV7pKSNkFaalFM9Hmj7FnMkhR2wbJVGYEJVHcqRwyfmk1OisMF6OTetCuUyYb78fUqu5lFJl6P1Mxws5LuvTplHLXS2CaisY32s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UeFDhaJw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 033C4C19421;
+	Thu,  9 Apr 2026 02:10:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775699477;
-	bh=4tiPiLc0ubj/toDkCFd3Kanmf/vGuOCItA7BcG8m7dI=;
+	s=k20201202; t=1775700651;
+	bh=EaPrOgTxWoqU8C9XFfG15r7fDJrbShuNy2iejK1eBak=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=VzNMksFHoV6aND36MDY/hkIUoZUAU0zwJ82EBaLrq/HspZiycQmenGv+jqdSO1qfy
-	 o+XGCaigT6yDgeqnDdMpdfCkaGAhAjB23Z0+rTzBOzqPVgpqbjY4jTkKadJs4Ri9eT
-	 r0BYI5wU2fAcFHrqgUBnO/IXiZjIMe5B9gXndAxjDrCZcvdnjJlexiprj1u+qoBkF9
-	 2IkVaJYwn094Ll7GTzdsImsrm8p5Mzfd3JsB0ZUp20jjCJfxxE4S8tqiF42vVb1dO1
-	 4rzO8mvya9c7jAZrP2tL+A2qobpUGpIYdAPPCYHt3kX1Tqx0k7scvgPyr0CxeyDHn0
-	 zPbxm4Jm4YkKw==
+	b=UeFDhaJwyBd6348KsvU8MxlCnDrGJoi6Onsd2rRbrO1I7b8xMVGCPTLS1/bhILQQb
+	 yA2B5KFq5rgqSb4HxtzInplUu2bvblGhcu9QgJOgiDCaO6itZb/HFcqebmVif8Lfgr
+	 uaIfYpmGJUBZGm3h5GZJ+WmtFlMdcN+2NPj8P/KMxrGuqa+1QkkA2bMcjMkHFdzxHl
+	 ayxXis7HPFY8bAdom+IEXbiH/ppNaAnxOH+l1y3MISNDnPlSpMGtn3fmDq4ruq/t/T
+	 Ol9JU7Mh3mzMEkLOM48k+2sQlcFJsN96LOcJjZK/JFMoBLjYFWd/i8Va802A21wvLD
+	 x9tQaHNtO29jg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CF783930793;
-	Thu,  9 Apr 2026 01:50:54 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CD133930793;
+	Thu,  9 Apr 2026 02:10:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -55,14 +55,13 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/7] ipvs: fix NULL deref in ip_vs_add_service error
- path
+Subject: Re: [GIT PULL v2 net-next] netfilter: updates for net-next
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <177569945304.949482.10774857473121933938.git-patchwork-notify@kernel.org>
-Date: Thu, 09 Apr 2026 01:50:53 +0000
-References: <20260408163512.30537-2-fw@strlen.de>
-In-Reply-To: <20260408163512.30537-2-fw@strlen.de>
+ <177570062729.956260.4386026678361572614.git-patchwork-notify@kernel.org>
+Date: Thu, 09 Apr 2026 02:10:27 +0000
+References: <20260408060419.25258-1-fw@strlen.de>
+In-Reply-To: <20260408060419.25258-1-fw@strlen.de>
 To: Florian Westphal <fw@strlen.de>
 Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
  edumazet@google.com, kuba@kernel.org, netfilter-devel@vger.kernel.org,
@@ -70,7 +69,7 @@ Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -79,7 +78,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11749-lists,netfilter-devel=lfdr.de,netdevbpf];
+	TAGGED_FROM(0.00)[bounces-11750-lists,netfilter-devel=lfdr.de,netdevbpf];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_NO_DN(0.00)[];
@@ -88,49 +87,55 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,strlen.de:email]
-X-Rspamd-Queue-Id: BD0F73C557A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C8A753C574A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 Hello:
 
-This series was applied to netdev/net.git (main)
-by Florian Westphal <fw@strlen.de>:
+This pull request was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed,  8 Apr 2026 18:35:06 +0200 you wrote:
-> From: Weiming Shi <bestswngs@gmail.com>
+On Wed,  8 Apr 2026 08:04:19 +0200 you wrote:
+> No changes since v1, I only dropped the last patch (13/13).  This is also
+> why I am not resending the individual patches again.
 > 
-> When ip_vs_bind_scheduler() succeeds in ip_vs_add_service(), the local
-> variable sched is set to NULL.  If ip_vs_start_estimator() subsequently
-> fails, the out_err cleanup calls ip_vs_unbind_scheduler(svc, sched)
-> with sched == NULL.  ip_vs_unbind_scheduler() passes the cur_sched NULL
-> check (because svc->scheduler was set by the successful bind) but then
-> dereferences the NULL sched parameter at sched->done_service, causing a
-> kernel panic at offset 0x30 from NULL.
+> The following PR contains Netfilter updates for *net-next*:
+> 
+> 1) Fix ancient sparse warnings in nf conntrack nat modules, from
+>    Sun Jian.
+> 2) Fix typo in enum description, from Jelle van der Waa.
+> 3) remove redundant refetch of netns pointer in nf_conntrack_sip.
+> 4) add a deprecation warning for dccp match.
+>    We can extend the deadline later if needed, but plan atm is to
+>    remove the feature.
+> 5) remove nf_conntrack_h323 debug code that can read out-of-bounds
+>    with malformed messages. This code was commented out, but better
+>    remove this.
+> 6+7) add more netlink policy validations in netfilter.
+>    This could theoretically cause issues when a client sends e.g.
+>    unsupported feature flags that were previously ignored, so we
+>    may have to relax some changes. For now, try to be stricter and
+>    reject upfront.
+> 8+9) minor code cleanup in nft_set_pipapo (an nftables set backend).
+> 10) Add nftables matching support fro double-tagged vlan and pppoe
+>     frames, from Pablo Neira Ayuso.
+> 11) Fix up indentation of debug messages in nf_conntrack_h323 conntrack
+>     helper, from David Laight.
+> 12) Add a helper to iterate to next flow action and bail out if the
+>     maximum number of actions is reached, also from Pablo.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,1/7] ipvs: fix NULL deref in ip_vs_add_service error path
-    https://git.kernel.org/netdev/net/c/9a91797e61d2
-  - [net,2/7] netfilter: nfnetlink_log: initialize nfgenmsg in NLMSG_DONE terminator
-    https://git.kernel.org/netdev/net/c/1f3083aec883
-  - [net,3/7] netfilter: xt_multiport: validate range encoding in checkentry
-    https://git.kernel.org/netdev/net/c/ff64c5bfef12
-  - [net,4/7] netfilter: ip6t_eui64: reject invalid MAC header for all packets
-    https://git.kernel.org/netdev/net/c/fdce0b3590f7
-  - [net,5/7] netfilter: nft_ct: fix use-after-free in timeout object destroy
-    https://git.kernel.org/netdev/net/c/f8dca15a1b19
-  - [net,6/7] netfilter: nfnetlink_queue: make hash table per queue
-    https://git.kernel.org/netdev/net/c/936206e3f6ff
-  - [net,7/7] selftests: nft_queue.sh: add a parallel stress test
-    https://git.kernel.org/netdev/net/c/dde1a6084c5c
+  - [GIT,PULL,v2,net-next] netfilter: updates for net-next
+    https://git.kernel.org/netdev/net-next/c/1795654f0005
 
 You are awesome, thank you!
 -- 
