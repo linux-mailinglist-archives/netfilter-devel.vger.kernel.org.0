@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-11763-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11764-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QPPgNqOk12lfQwgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11763-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 15:07:47 +0200
+	id eIlYKCGl12lfQwgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11764-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 15:09:53 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8CEB3CACBC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 15:07:45 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A2D33CAD22
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Apr 2026 15:09:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8E65130069A1
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Apr 2026 13:07:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E5B163020EA1
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Apr 2026 13:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830D83CF039;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985EE3CF66E;
 	Thu,  9 Apr 2026 13:07:39 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC3B3CE494;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBAB3C6A39;
 	Thu,  9 Apr 2026 13:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775740059; cv=none; b=q4LGfBO4Vw4xhezY4CeqGJrzInEtTW6QWG1xv/22NjkOPaM+sDTo6qRuQbvv+ts4Dj/HJ6waOxq8j16KTtg0eNKIEXR84DIgqqICeM/bZU6+UtkU+tn+qsWIbq6lN+8Pz10MxnGTjMB1NCxWwlUJNqXrD/DlKPyZPsnGVvEWIcY=
+	t=1775740059; cv=none; b=EasXYTomy1U5NbXYWBvSK0VNi1Vhio5XzXbzjK3XEZv7nbF/6xi1+Tq93p+rmVj6VheY1HdOAMsICD0ozfYtPMZRC0s6CZQtmGjdUfgcehJmYW2+2G5rBwsVoKitpxuE4d/ORRUPr48GjH6tgqHk/dACMtWzl4n/JBuJLn4XsQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1775740059; c=relaxed/simple;
-	bh=0baEriNkC/Y6wDoeOryOBErKLQExcCEELcjgBz/Ep94=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=jIJhehL/0mAhoQCPlkCaKdVIA+ptN/FFs3imLGfWz+R71M0A+/erY2x5dpyrLXXcs0uhw5Scvdm1HWXdnmFdiYtyzvBEixnxKynqze2FpDZa9XXFYgHeZKTkMJMwFXYuTZkfL/vBEiVJUoYaFX+Z+3fGal2SyFWA6Y5vFM8+kAE=
+	bh=dls/Wpp1Eq0cIYONF2jW98TENqkjUWDdoHaOOiHpl34=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DopUIG2jcoNO1jHz4dSMc2r9h8l51B6yDAn6YnYzINZBMjq3JojAfdHwmFFmBQ/J4b0Z1p3WvOixzjeXDD9+UfkhNL4wHSIf1BSt28NnYz0+ZSGMxfkjBtfI0h96evXmTActWWnG+gB/IqjUzvgf8gykZLvTbxWurGhvB/kL4xM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
@@ -36,9 +36,9 @@ Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.99)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1wAp6T-000000001k1-21AP;
-	Thu, 09 Apr 2026 13:07:25 +0000
-Date: Thu, 9 Apr 2026 14:07:22 +0100
+	id 1wAp6a-000000001k4-1gBy;
+	Thu, 09 Apr 2026 13:07:32 +0000
+Date: Thu, 9 Apr 2026 14:07:29 +0100
 From: Daniel Golle <daniel@makrotopia.org>
 To: Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
 	Lorenzo Bianconi <lorenzo@kernel.org>,
@@ -55,8 +55,10 @@ To: Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org, netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org
-Subject: [PATCH RFC net-next 0/4] improve hw flow offload byte accounting
-Message-ID: <cover.1775739840.git.daniel@makrotopia.org>
+Subject: [PATCH RFC net-next 1/4] net: flow_offload: let drivers report byte
+ counter semantics
+Message-ID: <15636456e2bb94a565d139333e586ce5b63bc8c2.1775739840.git.daniel@makrotopia.org>
+References: <cover.1775739840.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -65,23 +67,24 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1775739840.git.daniel@makrotopia.org>
 X-Spamd-Result: default: False [1.04 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11763-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11764-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[nbd.name,phrozen.org,kernel.org,lunn.ch,davemloft.net,google.com,redhat.com,gmail.com,collabora.com,netfilter.org,strlen.de,nwl.cc,vger.kernel.org,lists.infradead.org];
 	DMARC_NA(0.00)[makrotopia.org];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
@@ -92,41 +95,47 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel,netdev];
 	RCPT_COUNT_TWELVE(0.00)[20];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: B8CEB3CACBC
+X-Rspamd-Queue-Id: 1A2D33CAD22
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hardware flow counters report raw byte counts whose semantics
-vary by vendor -- some count ingress L2 frames, others egress
-L2, others L3. The nf_flow_table framework currently passes
-these bytes straight to conntrack without conversion, and
-sub-interfaces (VLAN, PPPoE) that are bypassed by hw offload
-never see any counter updates at all.
+Hardware flow offload engines count bytes at different points --
+some report ingress L2 frame bytes, others egress L2, others L3.
+Add an enum so drivers can declare what their counters represent.
+The framework can then convert to L3 as needed for conntrack.
 
-This series lets drivers declare what their counters represent,
-so the framework can normalize to L3 for conntrack and
-propagate per-layer stats to encap sub-interfaces.
+Default is FLOW_STATS_BYTES_L3 (zero), preserving existing
+behaviour for all current drivers.
 
-Questions:
- - Sub-interface stats accesses vlan_dev_priv() directly --
-   should there be a generic netdev callback instead?
- - Are there hw offload drivers whose counters do not fit the
-   ingress-L2 / egress-L2 / L3 model?
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ include/net/flow_offload.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Daniel Golle (4):
-  net: flow_offload: let drivers report byte counter semantics
-  nf_flow_table: track sub-interface and bridge ifindex in flow tuple
-  nf_flow_table: convert hw byte counts and update sub-interface stats
-  net: ethernet: mtk_eth_soc: report INGRESS_L2 byte_type in flow stats
-
- .../net/ethernet/mediatek/mtk_ppe_offload.c   |   1 +
- include/net/flow_offload.h                    |   7 +
- include/net/netfilter/nf_flow_table.h         |   5 +
- net/netfilter/nf_flow_table_core.c            |   2 +
- net/netfilter/nf_flow_table_offload.c         | 174 +++++++++++++++++-
- net/netfilter/nf_flow_table_path.c            |   8 +
- 6 files changed, 195 insertions(+), 2 deletions(-)
-
+diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
+index 70a02ee143080..7f5ef29b3abce 100644
+--- a/include/net/flow_offload.h
++++ b/include/net/flow_offload.h
+@@ -541,12 +541,19 @@ static inline bool flow_rule_match_has_control_flags(const struct flow_rule *rul
+ 	return flow_rule_has_control_flags(match.mask->flags, extack);
+ }
+ 
++enum flow_stats_byte_type {
++	FLOW_STATS_BYTES_L3 = 0,	/* L3 (inner IP) bytes */
++	FLOW_STATS_BYTES_INGRESS_L2,	/* full ingress L2 frame bytes */
++	FLOW_STATS_BYTES_EGRESS_L2,	/* full egress L2 frame bytes */
++};
++
+ struct flow_stats {
+ 	u64	pkts;
+ 	u64	bytes;
+ 	u64	drops;
+ 	u64	lastused;
+ 	enum flow_action_hw_stats used_hw_stats;
++	enum flow_stats_byte_type byte_type;
+ 	bool used_hw_stats_valid;
+ };
+ 
 -- 
 2.53.0
 
