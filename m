@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11800-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11801-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eEN9CHHf2GnHjAgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11800-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:30:57 +0200
+	id 4CLWMOrd2GnHjAgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11801-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:24:26 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8D23D62E4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:30:56 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB8AF3D61E4
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:24:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 89104307D8D0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 11:24:17 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 41F5A3014F77
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 11:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4919F39DBEA;
-	Fri, 10 Apr 2026 11:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0073A0B11;
+	Fri, 10 Apr 2026 11:24:20 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E61340A57;
-	Fri, 10 Apr 2026 11:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F4239DBEB;
+	Fri, 10 Apr 2026 11:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775820256; cv=none; b=ukGrJO6s6/ByyRKBnbDb1PQ34Dx4TzYK54LyCp6+uCAwVHYmT/hkuUrWTuLgkAX3Esww958gEhHuGRfplp9tEnfZp9xgUbJoiK5lcrl2MEU00a4r2fgdjJ+i7JpnHd5hRen4KWDNl/SyuA5Z/Wb2G4C6O+KaT5zG64k0XrkVvgw=
+	t=1775820260; cv=none; b=rwEFeEJqA3IodVQYteR5EK3WOfpU+Rd6c1Sgoq5lkhrMfGkdiF3cCNPK4EA1xbAnYWjVo1/3+nz9wIGocqZcgpZOcF/+YTnhepK7+NwGp8VRr0mmqAB9c7h0fC3DdNaVZYslu8UEsmaDLvs+d2jUP+SuN8fzIfYi/x5YD7ldb9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775820256; c=relaxed/simple;
-	bh=4XmxidoOF/y3Pc0J5mnUEYyng5coGfSki2nSQjs+Bjs=;
+	s=arc-20240116; t=1775820260; c=relaxed/simple;
+	bh=pIrTkanCiDQpmujH5RjT+aLdBLhafdd2InFmW1v3e5A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UL91jIf5opxBnrripWTX4xNjsGia05uqrSndnuH1RYJliIWrGbSGnE+CIDj+dnshywWLajFP0+ZHSwVz6wnzdVHZgghRIvOMk9ejgvL2n7xw20GvciYqKck7/3gXQCMjyVZ4G33ea2atnuP8cJRKkNfYixlr420dhZZhF+O1jAw=
+	 MIME-Version; b=pnsdw6owY57wyYzBNShFXx/5BkjGe70Ypz/SUeMdiqUb+HyvV92t1uVEJZVLP/qI+Il8qEQtxa10W11A9RG96svITTF6DKEQx5A51Bfa+ekxYS7LEnhmx31a9JnN/WMb81kkvy1fWNaoGXSS4Ho+9jUyNg+hTdu0Y9jYtGuhZjU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 93B8260490; Fri, 10 Apr 2026 13:24:13 +0200 (CEST)
+	id E41CF6065F; Fri, 10 Apr 2026 13:24:17 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 04/11] netfilter: x_physdev: reject empty or not-nul terminated device names
-Date: Fri, 10 Apr 2026 13:23:45 +0200
-Message-ID: <20260410112352.23599-5-fw@strlen.de>
+Subject: [PATCH net-next 05/11] netfilter: nfnetlink: prefer skb_mac_header helpers
+Date: Fri, 10 Apr 2026 13:23:46 +0200
+Message-ID: <20260410112352.23599-6-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260410112352.23599-1-fw@strlen.de>
 References: <20260410112352.23599-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11800-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11801-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,7 +71,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -79,53 +79,146 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
-X-Rspamd-Queue-Id: 6B8D23D62E4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: AB8AF3D61E4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Reject names that lack a \0 character and reject the empty string as
-well. iptables allows this but it fails to re-parse iptables-save output
-that contain such rules.
+This adds implicit DEBUG_WARN_ON_ONCE for debug configurations.
+No other changes intended.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/xt_physdev.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ net/netfilter/nfnetlink_log.c   | 19 ++++++++++---------
+ net/netfilter/nfnetlink_queue.c | 25 ++++++++++++-------------
+ 2 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/net/netfilter/xt_physdev.c b/net/netfilter/xt_physdev.c
-index 343e65f377d4..53997771013f 100644
---- a/net/netfilter/xt_physdev.c
-+++ b/net/netfilter/xt_physdev.c
-@@ -107,6 +107,28 @@ static int physdev_mt_check(const struct xt_mtchk_param *par)
- 		return -EINVAL;
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index b2c24cb919d4..2439cbbd5b26 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -401,7 +401,7 @@ nfulnl_timer(struct timer_list *t)
+ 
+ static u32 nfulnl_get_bridge_size(const struct sk_buff *skb)
+ {
+-	u32 size = 0;
++	u32 mac_len, size = 0;
+ 
+ 	if (!skb_mac_header_was_set(skb))
+ 		return 0;
+@@ -412,14 +412,17 @@ static u32 nfulnl_get_bridge_size(const struct sk_buff *skb)
+ 		size += nla_total_size(sizeof(u16)); /* tag */
  	}
  
-+#define X(memb) strnlen(info->memb, sizeof(info->memb)) >= sizeof(info->memb)
-+	if (info->bitmask & XT_PHYSDEV_OP_IN) {
-+		if (info->physindev[0] == '\0')
-+			return -EINVAL;
-+		if (X(physindev))
-+			return -ENAMETOOLONG;
-+	}
+-	if (skb->network_header > skb->mac_header)
+-		size += nla_total_size(skb->network_header - skb->mac_header);
++	mac_len = skb_mac_header_len(skb);
++	if (mac_len > 0)
++		size += nla_total_size(mac_len);
+ 
+ 	return size;
+ }
+ 
+ static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff *skb)
+ {
++	u32 mac_len;
 +
-+	if (info->bitmask & XT_PHYSDEV_OP_OUT) {
-+		if (info->physoutdev[0] == '\0')
-+			return -EINVAL;
-+
-+		if (X(physoutdev))
-+			return -ENAMETOOLONG;
-+	}
-+
-+	if (X(in_mask))
-+		return -ENAMETOOLONG;
-+	if (X(out_mask))
-+		return -ENAMETOOLONG;
-+#undef X
-+
- 	if (!brnf_probed) {
- 		brnf_probed = true;
- 		request_module("br_netfilter");
+ 	if (!skb_mac_header_was_set(skb))
+ 		return 0;
+ 
+@@ -437,12 +440,10 @@ static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff
+ 		nla_nest_end(inst->skb, nest);
+ 	}
+ 
+-	if (skb->mac_header < skb->network_header) {
+-		int len = (int)(skb->network_header - skb->mac_header);
+-
+-		if (nla_put(inst->skb, NFULA_L2HDR, len, skb_mac_header(skb)))
+-			goto nla_put_failure;
+-	}
++	mac_len = skb_mac_header_len(skb);
++	if (mac_len > 0 &&
++	    nla_put(inst->skb, NFULA_L2HDR, mac_len, skb_mac_header(skb)))
++		goto nla_put_failure;
+ 
+ 	return 0;
+ 
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index c7ee6f6ff725..58304fd1f70f 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -579,6 +579,7 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+ {
+ 	struct sk_buff *entskb = entry->skb;
+ 	u32 nlalen = 0;
++	u32 mac_len;
+ 
+ 	if (entry->state.pf != PF_BRIDGE || !skb_mac_header_was_set(entskb))
+ 		return 0;
+@@ -587,9 +588,9 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+ 		nlalen += nla_total_size(nla_total_size(sizeof(__be16)) +
+ 					 nla_total_size(sizeof(__be16)));
+ 
+-	if (entskb->network_header > entskb->mac_header)
+-		nlalen += nla_total_size((entskb->network_header -
+-					  entskb->mac_header));
++	mac_len = skb_mac_header_len(entskb);
++	if (mac_len > 0)
++		nlalen += nla_total_size(mac_len);
+ 
+ 	return nlalen;
+ }
+@@ -597,6 +598,7 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
+ {
+ 	struct sk_buff *entskb = entry->skb;
++	u32 mac_len;
+ 
+ 	if (entry->state.pf != PF_BRIDGE || !skb_mac_header_was_set(entskb))
+ 		return 0;
+@@ -615,12 +617,10 @@ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
+ 		nla_nest_end(skb, nest);
+ 	}
+ 
+-	if (entskb->mac_header < entskb->network_header) {
+-		int len = (int)(entskb->network_header - entskb->mac_header);
+-
+-		if (nla_put(skb, NFQA_L2HDR, len, skb_mac_header(entskb)))
+-			goto nla_put_failure;
+-	}
++	mac_len = skb_mac_header_len(entskb);
++	if (mac_len > 0 &&
++	    nla_put(skb, NFQA_L2HDR, mac_len, skb_mac_header(entskb)))
++		goto nla_put_failure;
+ 
+ 	return 0;
+ 
+@@ -1004,13 +1004,13 @@ nf_queue_entry_dup(struct nf_queue_entry *e)
+ static void nf_bridge_adjust_skb_data(struct sk_buff *skb)
+ {
+ 	if (nf_bridge_info_get(skb))
+-		__skb_push(skb, skb->network_header - skb->mac_header);
++		__skb_push(skb, skb_mac_header_len(skb));
+ }
+ 
+ static void nf_bridge_adjust_segmented_data(struct sk_buff *skb)
+ {
+ 	if (nf_bridge_info_get(skb))
+-		__skb_pull(skb, skb->network_header - skb->mac_header);
++		__skb_pull(skb, skb_mac_header_len(skb));
+ }
+ #else
+ #define nf_bridge_adjust_skb_data(s) do {} while (0)
+@@ -1469,8 +1469,7 @@ static int nfqa_parse_bridge(struct nf_queue_entry *entry,
+ 	}
+ 
+ 	if (nfqa[NFQA_L2HDR]) {
+-		int mac_header_len = entry->skb->network_header -
+-			entry->skb->mac_header;
++		u32 mac_header_len = skb_mac_header_len(entry->skb);
+ 
+ 		if (mac_header_len != nla_len(nfqa[NFQA_L2HDR]))
+ 			return -EINVAL;
 -- 
 2.52.0
 
