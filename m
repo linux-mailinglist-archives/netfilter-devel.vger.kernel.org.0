@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-11801-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11802-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4CLWMOrd2GnHjAgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11801-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:24:26 +0200
+	id 2FeaF7Df2GnHjAgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11802-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:32:00 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8AF3D61E4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:24:25 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3C433D631B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 13:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 41F5A3014F77
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 11:24:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C810330915FC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2026 11:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0073A0B11;
-	Fri, 10 Apr 2026 11:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586E439DBEF;
+	Fri, 10 Apr 2026 11:24:25 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F4239DBEB;
-	Fri, 10 Apr 2026 11:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209881448E0;
+	Fri, 10 Apr 2026 11:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775820260; cv=none; b=rwEFeEJqA3IodVQYteR5EK3WOfpU+Rd6c1Sgoq5lkhrMfGkdiF3cCNPK4EA1xbAnYWjVo1/3+nz9wIGocqZcgpZOcF/+YTnhepK7+NwGp8VRr0mmqAB9c7h0fC3DdNaVZYslu8UEsmaDLvs+d2jUP+SuN8fzIfYi/x5YD7ldb9I=
+	t=1775820265; cv=none; b=J53HuGp+r4JUHvnNg5yAduwZsdbGSR0/ugvf96hxKYlDp/C8vcvviLsvyyjxIyz2sydhyD6d5RD3Kc76theTp/nYCrl5CIGijcjdfgR8XtMhirZ5Cc6A2PyVUPC1sKn3JLYH0aD+l8Vd976gA8pmBJ3cGsLI5Fti6YUjIb7njTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775820260; c=relaxed/simple;
-	bh=pIrTkanCiDQpmujH5RjT+aLdBLhafdd2InFmW1v3e5A=;
+	s=arc-20240116; t=1775820265; c=relaxed/simple;
+	bh=TBTiNZweeWkez7cak9BlklkN+msCb9QglyhD54CmUCM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pnsdw6owY57wyYzBNShFXx/5BkjGe70Ypz/SUeMdiqUb+HyvV92t1uVEJZVLP/qI+Il8qEQtxa10W11A9RG96svITTF6DKEQx5A51Bfa+ekxYS7LEnhmx31a9JnN/WMb81kkvy1fWNaoGXSS4Ho+9jUyNg+hTdu0Y9jYtGuhZjU=
+	 MIME-Version; b=Eu1JtRi5GKjHSWXGRXz6Nm83mQy+E75FXrAwes9pFC5xP17/VswUlskmrY2/DRuFcUGuOAt4Jv+sFjXR/eZZT7ZP0jx4nqkXiE1W2c7gBmC3Ae/IRKg478oW8Oo8Rl2I0Y4r7lYYYIvJUWYjLL7B+udYbSneglsJOSALvG+vaO4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id E41CF6065F; Fri, 10 Apr 2026 13:24:17 +0200 (CEST)
+	id 412D560490; Fri, 10 Apr 2026 13:24:22 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 05/11] netfilter: nfnetlink: prefer skb_mac_header helpers
-Date: Fri, 10 Apr 2026 13:23:46 +0200
-Message-ID: <20260410112352.23599-6-fw@strlen.de>
+Subject: [PATCH net-next 06/11] netfilter: xt_HL: add pr_fmt and checkentry validation
+Date: Fri, 10 Apr 2026 13:23:47 +0200
+Message-ID: <20260410112352.23599-7-fw@strlen.de>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260410112352.23599-1-fw@strlen.de>
 References: <20260410112352.23599-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11801-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11802-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,7 +71,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -79,146 +79,95 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AB8AF3D61E4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:email,strlen.de:mid]
+X-Rspamd-Queue-Id: B3C433D631B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This adds implicit DEBUG_WARN_ON_ONCE for debug configurations.
-No other changes intended.
+From: Marino Dzalto <marino.dzalto@gmail.com>
 
+Add pr_fmt to prefix log messages with the module name for
+easier debugging in dmesg.
+
+Add checkentry functions for IPv4 (ttl_mt_check) and IPv6
+(hl_mt6_check) to validate the match mode at rule registration
+time, rejecting invalid modes with -EINVAL.
+
+The evaluation function returns false in case the mode is
+unknown, so this is a cleanup, not a bug fix.
+
+Signed-off-by: Marino Dzalto <marino.dzalto@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nfnetlink_log.c   | 19 ++++++++++---------
- net/netfilter/nfnetlink_queue.c | 25 ++++++++++++-------------
- 2 files changed, 22 insertions(+), 22 deletions(-)
+ net/netfilter/xt_hl.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index b2c24cb919d4..2439cbbd5b26 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -401,7 +401,7 @@ nfulnl_timer(struct timer_list *t)
+diff --git a/net/netfilter/xt_hl.c b/net/netfilter/xt_hl.c
+index c1a70f8f0441..4a12a757ecbf 100644
+--- a/net/netfilter/xt_hl.c
++++ b/net/netfilter/xt_hl.c
+@@ -6,6 +6,7 @@
+  * Hop Limit matching module
+  * (C) 2001-2002 Maciej Soltysiak <solt@dns.toxicfilms.tv>
+  */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
- static u32 nfulnl_get_bridge_size(const struct sk_buff *skb)
- {
--	u32 size = 0;
-+	u32 mac_len, size = 0;
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+@@ -22,6 +23,18 @@ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("ipt_ttl");
+ MODULE_ALIAS("ip6t_hl");
  
- 	if (!skb_mac_header_was_set(skb))
- 		return 0;
-@@ -412,14 +412,17 @@ static u32 nfulnl_get_bridge_size(const struct sk_buff *skb)
- 		size += nla_total_size(sizeof(u16)); /* tag */
- 	}
- 
--	if (skb->network_header > skb->mac_header)
--		size += nla_total_size(skb->network_header - skb->mac_header);
-+	mac_len = skb_mac_header_len(skb);
-+	if (mac_len > 0)
-+		size += nla_total_size(mac_len);
- 
- 	return size;
- }
- 
- static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff *skb)
- {
-+	u32 mac_len;
++static int ttl_mt_check(const struct xt_mtchk_param *par)
++{
++	const struct ipt_ttl_info *info = par->matchinfo;
 +
- 	if (!skb_mac_header_was_set(skb))
- 		return 0;
- 
-@@ -437,12 +440,10 @@ static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff
- 		nla_nest_end(inst->skb, nest);
- 	}
- 
--	if (skb->mac_header < skb->network_header) {
--		int len = (int)(skb->network_header - skb->mac_header);
--
--		if (nla_put(inst->skb, NFULA_L2HDR, len, skb_mac_header(skb)))
--			goto nla_put_failure;
--	}
-+	mac_len = skb_mac_header_len(skb);
-+	if (mac_len > 0 &&
-+	    nla_put(inst->skb, NFULA_L2HDR, mac_len, skb_mac_header(skb)))
-+		goto nla_put_failure;
- 
- 	return 0;
- 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index c7ee6f6ff725..58304fd1f70f 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -579,6 +579,7 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
++	if (info->mode > IPT_TTL_GT) {
++		pr_err("Unknown TTL match mode: %d\n", info->mode);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static bool ttl_mt(const struct sk_buff *skb, struct xt_action_param *par)
  {
- 	struct sk_buff *entskb = entry->skb;
- 	u32 nlalen = 0;
-+	u32 mac_len;
- 
- 	if (entry->state.pf != PF_BRIDGE || !skb_mac_header_was_set(entskb))
- 		return 0;
-@@ -587,9 +588,9 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
- 		nlalen += nla_total_size(nla_total_size(sizeof(__be16)) +
- 					 nla_total_size(sizeof(__be16)));
- 
--	if (entskb->network_header > entskb->mac_header)
--		nlalen += nla_total_size((entskb->network_header -
--					  entskb->mac_header));
-+	mac_len = skb_mac_header_len(entskb);
-+	if (mac_len > 0)
-+		nlalen += nla_total_size(mac_len);
- 
- 	return nlalen;
- }
-@@ -597,6 +598,7 @@ static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
- static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
- {
- 	struct sk_buff *entskb = entry->skb;
-+	u32 mac_len;
- 
- 	if (entry->state.pf != PF_BRIDGE || !skb_mac_header_was_set(entskb))
- 		return 0;
-@@ -615,12 +617,10 @@ static int nfqnl_put_bridge(struct nf_queue_entry *entry, struct sk_buff *skb)
- 		nla_nest_end(skb, nest);
- 	}
- 
--	if (entskb->mac_header < entskb->network_header) {
--		int len = (int)(entskb->network_header - entskb->mac_header);
--
--		if (nla_put(skb, NFQA_L2HDR, len, skb_mac_header(entskb)))
--			goto nla_put_failure;
--	}
-+	mac_len = skb_mac_header_len(entskb);
-+	if (mac_len > 0 &&
-+	    nla_put(skb, NFQA_L2HDR, mac_len, skb_mac_header(entskb)))
-+		goto nla_put_failure;
- 
- 	return 0;
- 
-@@ -1004,13 +1004,13 @@ nf_queue_entry_dup(struct nf_queue_entry *e)
- static void nf_bridge_adjust_skb_data(struct sk_buff *skb)
- {
- 	if (nf_bridge_info_get(skb))
--		__skb_push(skb, skb->network_header - skb->mac_header);
-+		__skb_push(skb, skb_mac_header_len(skb));
+ 	const struct ipt_ttl_info *info = par->matchinfo;
+@@ -41,6 +54,18 @@ static bool ttl_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	return false;
  }
  
- static void nf_bridge_adjust_segmented_data(struct sk_buff *skb)
++static int hl_mt6_check(const struct xt_mtchk_param *par)
++{
++	const struct ip6t_hl_info *info = par->matchinfo;
++
++	if (info->mode > IP6T_HL_GT) {
++		pr_err("Unknown Hop Limit match mode: %d\n", info->mode);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static bool hl_mt6(const struct sk_buff *skb, struct xt_action_param *par)
  {
- 	if (nf_bridge_info_get(skb))
--		__skb_pull(skb, skb->network_header - skb->mac_header);
-+		__skb_pull(skb, skb_mac_header_len(skb));
- }
- #else
- #define nf_bridge_adjust_skb_data(s) do {} while (0)
-@@ -1469,8 +1469,7 @@ static int nfqa_parse_bridge(struct nf_queue_entry *entry,
- 	}
- 
- 	if (nfqa[NFQA_L2HDR]) {
--		int mac_header_len = entry->skb->network_header -
--			entry->skb->mac_header;
-+		u32 mac_header_len = skb_mac_header_len(entry->skb);
- 
- 		if (mac_header_len != nla_len(nfqa[NFQA_L2HDR]))
- 			return -EINVAL;
+ 	const struct ip6t_hl_info *info = par->matchinfo;
+@@ -65,6 +90,7 @@ static struct xt_match hl_mt_reg[] __read_mostly = {
+ 		.name       = "ttl",
+ 		.revision   = 0,
+ 		.family     = NFPROTO_IPV4,
++		.checkentry = ttl_mt_check,
+ 		.match      = ttl_mt,
+ 		.matchsize  = sizeof(struct ipt_ttl_info),
+ 		.me         = THIS_MODULE,
+@@ -73,6 +99,7 @@ static struct xt_match hl_mt_reg[] __read_mostly = {
+ 		.name       = "hl",
+ 		.revision   = 0,
+ 		.family     = NFPROTO_IPV6,
++		.checkentry = hl_mt6_check,
+ 		.match      = hl_mt6,
+ 		.matchsize  = sizeof(struct ip6t_hl_info),
+ 		.me         = THIS_MODULE,
 -- 
 2.52.0
 
