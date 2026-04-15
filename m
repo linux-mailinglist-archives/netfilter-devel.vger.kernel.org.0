@@ -1,228 +1,139 @@
-Return-Path: <netfilter-devel+bounces-11906-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11907-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8GNDLA5e32m5SAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11906-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 11:44:46 +0200
+	id WDkMErBf32k0SQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11907-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 11:51:44 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582CD402C60
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 11:44:46 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBED1402E44
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 11:51:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A2F8A304C61C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 09:43:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F89330A2DA7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 09:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5878B33B974;
-	Wed, 15 Apr 2026 09:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="BFOUapi1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70F433A9E2;
+	Wed, 15 Apr 2026 09:44:11 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B6233CE9A
-	for <netfilter-devel@vger.kernel.org>; Wed, 15 Apr 2026 09:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126DC3368B1;
+	Wed, 15 Apr 2026 09:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776246214; cv=none; b=W6EKh4M+mhRYsbKyqmSZ+zQR6NxsNdOGifDLHZ6pyuxfFCM1E9u7BF6jh5rY2Qe78GdvLZUpgmNt8CE7o7HEbmdDrUpdZl8s6P4qasbDuzUst5NfE95il8fj6T2LMYZgjeajhK+8+jXQlvCioMLAfE/Lvo3vWkYb6/6vMzNOnUo=
+	t=1776246251; cv=none; b=IBZrX2kwbRbsimDzPIXEWOF89OLGmEKQvKNqmZ9tBHA7W+JBYQHIYo97khXANwvcpoFU0DE/y4PnEt3/OmWeUG8eD2FxQOtMmFc3enNmEe+41eukoP0R9OkL9dKF7kNvNfjETYhar2T7f0OalA2JKrjPea44/VVm4ExpAJzGH5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776246214; c=relaxed/simple;
-	bh=Ar9lfTUBJXLiwjN0Q2k4dS8SSr2b7rqYKrTeNV5Xlwo=;
+	s=arc-20240116; t=1776246251; c=relaxed/simple;
+	bh=iT0ho2XklXWmEyjVCwL/uZx0vgXGXFxFZ8anJWFAwNg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nGttoNRuvlkjTmb/+rB079B+ua61T907haAN/Z57Gdx3ZhpHi2dDPti57ftshRGpD3sbIKMqoZZ+Ia1Zxch+oq7IOrCJ+tuwAWGMcgkoOoXy9IDbgD2/H9PGmwGmbMBssnJ+XqIfZ5xwUMb2Y9M71PiNa2yW4IRLVsjJw/3X03A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=BFOUapi1; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 3D6F860263;
-	Wed, 15 Apr 2026 11:43:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1776246210;
-	bh=bWibnMuHQaoUcsdM0nQx+LOr2H9TAFWnPn+q7oeVcJg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BFOUapi1F6BuZ4jFss6MPk++jr/N8Uk+V+fCZr3lLVLKxsfZv6XXg0Vser7EBEO6K
-	 R0g9EUbqiEJcxkw8paE1QpvGmnhC61ukBm/o22ziub5Hpotjf7+Zp3FRpqwnmxxhg8
-	 Qk9gUiKdphKvVH6Vt2TZjqo5amWXVOwsxSwPQK50sNaarc3oGOVxA1RlNw/VY+8iMc
-	 7eooG3wiO1+Cv+30U+1lntiKOZ8qvT+q5flUFE17Dgsvzc8b2zFDOCQZXuO95tKyo0
-	 iFTdSYjMQFq3XugWok7P2tHEObt7Axy8NiZ5MCrGbA3CyabsCu6KmW0E/60P7oX/eU
-	 NxGs4PIlzJjIg==
-Date: Wed, 15 Apr 2026 11:43:27 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: netfilter-devel@vger.kernel.org, joelagnelf@nvidia.com,
-	josh@joshtriplett.org, boqun@kernel.org, urezki@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com, qiang.zhang@linux.dev, fw@strlen.de
-Subject: Re: [PATCH nf 1/3] rculist: add list_splice_rcu() for private lists
-Message-ID: <ad9dv-rjSUAxCyDp@chamomile>
-References: <20260413220415.43221-1-pablo@netfilter.org>
- <25a270bf-0011-4784-9a32-5a62b64a6200@paulmck-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FnsFTVB1OL5j2fiCkXHE6qc3Vzn2X+SGUworUFhEr+uQ7wFuoSVAOSZgNPKvsNmlhuEyxNfiOv6F9Nvbi9o+BVwRSooN+/ehGVANIIQjsuKMJBGcZi1L7YFjaJ70oZ/+coKU8IFX43BwOVp+RcMa43A27P7FY5BVb6twhlbs+w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id CC2C660640; Wed, 15 Apr 2026 11:44:07 +0200 (CEST)
+Date: Wed, 15 Apr 2026 11:44:07 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: "Kito Xu (veritas501)" <hxzene@gmail.com>, phil@nwl.cc,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, jengelh@medozas.de,
+	kaber@trash.net, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: xt_realm: fix null-ptr-deref in realm_mt()
+Message-ID: <ad9d52dQWrS1H_ju@strlen.de>
+References: <20260415034343.107920-1-hxzene@gmail.com>
+ <ad9UF5Cr12YGJnbi@strlen.de>
+ <ad9aDziQEBR0h3U8@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25a270bf-0011-4784-9a32-5a62b64a6200@paulmck-laptop>
-X-Spamd-Result: default: False [-1.16 / 15.00];
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ad9aDziQEBR0h3U8@chamomile>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11907-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[netfilter.org];
-	TAGGED_FROM(0.00)[bounces-11906-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,nvidia.com,joshtriplett.org,kernel.org,gmail.com,goodmis.org,efficios.com,linux.dev,strlen.de];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,medozas.de,trash.net,vger.kernel.org,netfilter.org];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,netfilter.org:dkim,netfilter.org:email]
-X-Rspamd-Queue-Id: 582CD402C60
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.997];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,netfilter.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BBED1402E44
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Paul,
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> On Wed, Apr 15, 2026 at 11:02:15AM +0200, Florian Westphal wrote:
+> > Kito Xu (veritas501) <hxzene@gmail.com> wrote:
+> > > realm_mt() unconditionally dereferences skb_dst(skb) without a NULL
+> > > check. The xt_realm match registers with .family =3D NFPROTO_UNSPEC,
+> > > making it available to all netfilter protocol families. Through the
+> > > nftables compat layer (nft_compat), an unprivileged user inside a
+> > > user/net namespace can load this match into a bridge-family chain.
+> >=20
+> > I do not think this bug is related to nft_compat.
+> > You can also use ebtables setsockopt api to request xt_realm, no?
+> >=20
+> > > Fixes: ab4f21e6fb1c ("netfilter: xtables: use NFPROTO_UNSPEC in more =
+extensions")
+> >=20
+> > Looks correct.  Alternatively we could revert the xt_realm.c change.
+> > But I don't have a strong opinion here, patch looks correct.
+>=20
+> Maybe partial revert makes sense, since in ab4f21e6fb1c:
+>=20
+> - xt_MARK: OK
+> - xt_NOTRACK: OK
+> - xt_comment: OK
 
-Thanks for your review.
+Agree.
 
-On Tue, Apr 14, 2026 at 04:35:57PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 14, 2026 at 12:04:15AM +0200, Pablo Neira Ayuso wrote:
-> > This patch adds a helper function, list_splice_rcu(), to safely splice
-> > a private (non-RCU-protected) list into an RCU-protected list.
-> > 
-> > The function ensures that only the pointer visible to RCU readers
-> > (prev->next) is updated using rcu_assign_pointer(), while the rest of
-> > the list manipulations are performed with regular assignments, as the
-> > source list is private and not visible to concurrent RCU readers.
-> > 
-> > This is useful for moving elements from a private list into a global
-> > RCU-protected list, ensuring safe publication for RCU readers.
-> > Subsystems with some sort of batching mechanism from userspace can
-> > benefit from this new function.
-> > 
-> > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> Looks plausible and useful.  Please see some comments inline below.
+> - xt_mac: There is a better way to do this in bridge.
 
-Thanks, see below.
+Right.
 
-> > ---
-> > @I need this to fix a unsafe list_splice() of a private list to an
-> > existing RCU-protected list. This is based on an existing idiom in
-> > __list_splice_init_rcu().
-> > 
-> >  include/linux/rculist.h | 35 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 35 insertions(+)
-> > 
-> > diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> > index 2abba7552605..3c18c3336459 100644
-> > --- a/include/linux/rculist.h
-> > +++ b/include/linux/rculist.h
-> > @@ -261,6 +261,41 @@ static inline void list_replace_rcu(struct list_head *old,
-> >  	old->prev = LIST_POISON2;
-> >  }
-> >  
-> > +/**
-> > + * __list_splice_rcu - join a non-RCU list into an existing list.
-> > + * @list:	the RCU-protected list to splice
-> 
-> This is actually not RCU-protected, correct?  Sure, its elements
-> (aside from the list header) are RCU-protected upon exit from this
-> function, but by then they are in the {@prev,@next} list, not in
-> this @list.
+> - xt_owner, no sockets in bridge.
 
-Correct, I can fix this.
+Output/postrouting maybe?
 
-> > + * @prev:	points to the last element of the existing list
-> > + * @next:	points to the first element of the existing list
-> > + *
-> > + * The list pointed to by @prev and @next can be RCU-read traversed
-> > + * concurrently with this function.
-> 
-> Doesn't this last sentence also need to go into the list_splice_rcu()
-> function's kernel-doc header?  But please see below.
+> - xt_physdev, which makes no sense in bridge, this is for br_netfilter
+>   only.
 
-OK.
+Agree.
 
-> > + */
-> > +static inline void __list_splice_rcu(struct list_head *list,
-> > +				     struct list_head *prev,
-> > +				     struct list_head *next)
-> > +{
-> > +	struct list_head *first = list->next;
-> > +	struct list_head *last = list->prev;
-> > +
-> > +	last->next = next;
-> > +	rcu_assign_pointer(list_next_rcu(prev), first);
-> > +	first->prev = prev;
-> > +	next->prev = last;
-> 
-> Although putting these last two after the rcu_assign_pointer() is safe,
-> given that RCU readers do not traverse ->prev pointers, it would be
-> better to place them before the rcu_assign_pointer() in order to avoid
-> false sharing between this code path and any concurrent RCU readers.
+> - xt_realm (as already mentioned).
+> That is, a partial revert of this patch for:
+>=20
+> - xt_mac
+> - xt_owner
+> - xt_physdev
+> - xt_realm
 
-I can do that.
-
-> > +}
-> > +
-> > +/**
-> > + * list_splice_rcu - splice a non-RCU list into an RCU-protected list,
-> > + *                   designed for stacks.
-> > + * @list:	the non RCU-protected list to splice
-> > + * @head:	the place in the existing list to splice the first list into
-> 
-> Please add something about @head being RCU-protected.
-
-Will do.
-
-> > + */
-> > +static inline void list_splice_rcu(struct list_head *list,
-> > +				   struct list_head *head)
-> > +{
-> > +	if (!list_empty(list))
-> > +		__list_splice_rcu(list, head, head->next);
-> > +}
-> 
-> I don't understand the purpose of having __list_splice_rcu() split out
-> from list_splice_rcu().  If you are planning to add more callers of
-> __list_splice_rcu(), you can always do the split when you add the first
-> such caller.  In the meantime, why the extra code?
-
-I only have a use-case for list_splice_rcu(), so OK, single function
-is fine with.
-
-> Yes, we do have __list_splice_init_rcu(), but that is because it is
-> called from both list_splice_init_rcu() and list_splice_tail_init_rcu().
-
-Understood.
-
-I will be posting a v2 asap.
-
-Thanks!
-
-> > +
-> >  /**
-> >   * __list_splice_init_rcu - join an RCU-protected list into an existing list.
-> >   * @list:	the RCU-protected list to splice
-> > -- 
-> > 2.47.3
-> > 
+I'm ok with that too.
 
