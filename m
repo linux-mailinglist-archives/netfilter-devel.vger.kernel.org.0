@@ -1,210 +1,138 @@
-Return-Path: <netfilter-devel+bounces-11899-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11900-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wCJMMEhK32mFRQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11899-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:20:24 +0200
+	id qMR0HohK32mFRQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11900-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:21:28 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37435401D9D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:20:24 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FDF401DCA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:21:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 883A83008530
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 08:19:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 103B03045562
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 08:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F33307AE3;
-	Wed, 15 Apr 2026 08:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DE23CFF4C;
+	Wed, 15 Apr 2026 08:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bceXyvJq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BPCAzqnt";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bceXyvJq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BPCAzqnt"
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="mQRrFKMj"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FDA1A275
-	for <netfilter-devel@vger.kernel.org>; Wed, 15 Apr 2026 08:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09953CE4B3
+	for <netfilter-devel@vger.kernel.org>; Wed, 15 Apr 2026 08:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776241170; cv=none; b=hOb0Oj1N3P8Wi0jpjyl3PHkWEI/yefun5y6JlFPbN0pWat9dUvA01uiHjp+MQnTg53LXpx7TI+2SZy5BxBIOrxeJaKOEgPMj5aMvO1+ehBlA/YoZ+any53z9ng7TFpP0xWf+ISAlF5G6x7/hubeZGpOtLznnFw0aUYy++9BFfqI=
+	t=1776241252; cv=none; b=tYGoFHQZt7LhCdJHz50kkih1x3QTIQ5k2e+Ssh1/seQIrz/IuW8Gz77PTi7nYYHDRvtZ+ZnR1M0aPv8BoJHyKraBP29q/GCTulN2iFcF7Qq2IkikdlLkCr4P7PHf6Kl/hB09StjuntOUvRg22dnbxQFSoWaUV0VyzwkV9KoVz8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776241170; c=relaxed/simple;
-	bh=0CJhqkuHbSYxX6FgR+5XXPyYt33YfWEkXPJmPQAcBfQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iYzey5PHi4LJOdSAFMMmO6t80D6dLsw5dIvSid/GynWAbml1ukfYpdPqDAZoyU1RJ/7Pw6wjTVzSBvICH+M07ovL990CyGD6lZJ3W4zch9Nw39Aw7/KzJEppFocdkXZxVEvmPGkQon1OgeEbzT5E2R7Z4kOuiWYIERmECCEsQ/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bceXyvJq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BPCAzqnt; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bceXyvJq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BPCAzqnt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3C1D26A7DB;
-	Wed, 15 Apr 2026 08:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1776241167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWu0+5CPB13fa3KvNixAplh3nxn9ycFPeiv7HS8ztBk=;
-	b=bceXyvJqti+VG4dUeuHIjcDrTOAQvyzLzt9nKAdjrnFzCE7fFbBm+THgOT2P3fwIdqCP6Q
-	qkez/OsIN4qM7t+IpkHP6UvT5e+6opdH4smQUD7nShOEih9DrnbYzdFDbdZ5xqHfEahyHB
-	eb9/LLJqNBd4rTrJ1yXJfATvAz3wtXM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1776241167;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWu0+5CPB13fa3KvNixAplh3nxn9ycFPeiv7HS8ztBk=;
-	b=BPCAzqntMBmt1DZ83nIO4keH0aEyd3yZsMJpywZkc4TLaCsFBaQzbATBjsgg1PHbosL7+1
-	oSy+ip70Cl7jTiDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1776241167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWu0+5CPB13fa3KvNixAplh3nxn9ycFPeiv7HS8ztBk=;
-	b=bceXyvJqti+VG4dUeuHIjcDrTOAQvyzLzt9nKAdjrnFzCE7fFbBm+THgOT2P3fwIdqCP6Q
-	qkez/OsIN4qM7t+IpkHP6UvT5e+6opdH4smQUD7nShOEih9DrnbYzdFDbdZ5xqHfEahyHB
-	eb9/LLJqNBd4rTrJ1yXJfATvAz3wtXM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1776241167;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWu0+5CPB13fa3KvNixAplh3nxn9ycFPeiv7HS8ztBk=;
-	b=BPCAzqntMBmt1DZ83nIO4keH0aEyd3yZsMJpywZkc4TLaCsFBaQzbATBjsgg1PHbosL7+1
-	oSy+ip70Cl7jTiDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC4CC4B8EB;
-	Wed, 15 Apr 2026 08:19:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sA0MLw5K32lBMQAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Wed, 15 Apr 2026 08:19:26 +0000
-Message-ID: <767aa4eb-fd87-4bc5-a4ea-654b28310cfb@suse.de>
-Date: Wed, 15 Apr 2026 10:19:16 +0200
+	s=arc-20240116; t=1776241252; c=relaxed/simple;
+	bh=lRYidYLkPnZz+p5075EonPA6T7+6f4qBKv3r9NuuMNc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WTurnvQ5FaDmKXhcegt/yTqnavfoOgwuQG1mvN2XmBaOXIneBuav1oEKOwuer0BJMe+qO/9+qZNgk8Wzuf+HszSpAfA8FuveheIpamR9UYo+gSa3g+z+gMYLP9icfsAb2Nqplxy/ZBOL6YXTVNJUiG7tldsJwyvVBrBI0tMfirA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=mQRrFKMj; arc=none smtp.client-ip=148.6.0.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
+Received: from localhost (localhost [127.0.0.1])
+	by smtp0.kfki.hu (Postfix) with ESMTP id 4fwYxP4wx3z3sb9B;
+	Wed, 15 Apr 2026 10:20:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
+	:from:from:received:received:received; s=20151130; t=1776241239;
+	 x=1778055640; bh=Cj5ypcYX4abMajpOuB/KBgq2MXNK4NCt8v6LzouYick=; b=
+	mQRrFKMjs+WDQ1CmSVdqiCU1kY3Zy3sVrbkp3Of4RkETuZdXTnB+pvV9Rz7Uar9x
+	EXlO9GK9dZk6a9b40qsAPee1cCJE/eyfVOfltfQuvN6AhXe8ppphgBrQ6LKGCvYa
+	BOQ7Uiq/oe1G76iouTtAygP+RXujFOA2SrsokZ1C6S0=
+X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+ by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id rtjmnCVdVsL5; Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+	by smtp0.kfki.hu (Postfix) with ESMTP id 4fwYxM5F92z3sb8s;
+	Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+	id A9D8A34316A; Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH 0/2 v3] netfilter: ipset: concurrent add and dump fixes
+Date: Wed, 15 Apr 2026 10:20:37 +0200
+Message-Id: <20260415082039.4133308-1-kadlec@netfilter.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH nf v2] netfilter: nfnetlink_osf: fix divide-by-zero in
- OSF_WSS_MODULO
-To: Xiang Mei <xmei5@asu.edu>, netfilter-devel@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
- Phil Sutter <phil@nwl.cc>, coreteam@netfilter.org,
- Weiming Shi <bestswngs@gmail.com>
-References: <20260414221401.2809350-1-xmei5@asu.edu>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <20260414221401.2809350-1-xmei5@asu.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11899-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-11900-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	DMARC_NA(0.00)[netfilter.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCPT_COUNT_THREE(0.00)[3];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,netfilter.org:mid];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,netfilter.org:email,suse.de:email,suse.de:dkim,suse.de:mid]
-X-Rspamd-Queue-Id: 37435401D9D
+	NEURAL_HAM(-0.00)[-0.997];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 05FDF401DCA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/15/26 12:14 AM, Xiang Mei wrote:
-> nf_osf_match_one() computes ctx->window % f->wss.val in the
-> OSF_WSS_MODULO branch with no guard for f->wss.val == 0. A
-> CAP_NET_ADMIN user can add such a fingerprint via nfnetlink; a
-> subsequent matching TCP SYN divides by zero and panics the kernel.
-> 
-> Reject the bogus fingerprint in nfnl_osf_add_callback() above the
-> per-option for-loop. f->wss is per-fingerprint, not per-option, so
-> the check must run regardless of f->opt_num (including 0). Also
-> reject wss.wc >= OSF_WSS_MAX; nf_osf_match_one() already treats that
-> as "should not happen".
-> 
-> Crash:
->   Oops: divide error: 0000 [#1] SMP KASAN NOPTI
->   RIP: 0010:nf_osf_match_one (net/netfilter/nfnetlink_osf.c:98)
->   Call Trace:
->   <IRQ>
->    nf_osf_match (net/netfilter/nfnetlink_osf.c:220)
->    xt_osf_match_packet (net/netfilter/xt_osf.c:32)
->    ipt_do_table (net/ipv4/netfilter/ip_tables.c:348)
->    nf_hook_slow (net/netfilter/core.c:622)
->    ip_local_deliver (net/ipv4/ip_input.c:265)
->    ip_rcv (include/linux/skbuff.h:1162)
->    __netif_receive_skb_one_core (net/core/dev.c:6181)
->    process_backlog (net/core/dev.c:6642)
->    __napi_poll (net/core/dev.c:7710)
->    net_rx_action (net/core/dev.c:7945)
->    handle_softirqs (kernel/softirq.c:622)
-> 
-> Fixes: 11eeef41d5f6 ("netfilter: passive OS fingerprint xtables match")
-> Reported-by: Weiming Shi <bestswngs@gmail.com>
-> Suggested-by: Florian Westphal <fw@strlen.de>
-> Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> Signed-off-by: Xiang Mei <xmei5@asu.edu>
-> ---
+Hi Pablo, Florian,
 
-This looks good to me.
+Please consider applying the next patches:
 
-Reviewed-by: Fernando Fernandez Mancera <fmancera@suse.de>
+* Fix a data race between add and list in all hash types due to setting
+  the position index too early.
+* Fix a data race between add and list header commands in all hash types=20
+  by protecting the list header dumping part as well.
 
-> v2: Fix the bug in configure path and correct the fix tag
-> 
->   net/netfilter/nfnetlink_osf.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-> index 45d9ad231..70172ca07 100644
-> --- a/net/netfilter/nfnetlink_osf.c
-> +++ b/net/netfilter/nfnetlink_osf.c
-> @@ -320,6 +320,10 @@ static int nfnl_osf_add_callback(struct sk_buff *skb,
->   	if (f->opt_num > ARRAY_SIZE(f->opt))
->   		return -EINVAL;
->   
-> +	if (f->wss.wc >= OSF_WSS_MAX ||
-> +	    (f->wss.wc == OSF_WSS_MODULO && f->wss.val == 0))
-> +		return -EINVAL;
-> +
->   	for (i = 0; i < f->opt_num; i++) {
->   		if (!f->opt[i].length || f->opt[i].length > MAX_IPOPTLEN)
->   			return -EINVAL;
+Best regards,
+Jozsef
 
+The following changes since commit a9d4f4f6e65e0bf9bbddedecc84d6724999197=
+9c:
+
+  net/mlx5: Update the list of the PCI supported devices (2026-04-06 19:1=
+7:42 -0700)
+
+are available in the Git repository at:
+
+  git://blackhole.kfki.hu/nf 90262ae5b482a4bfb9282c
+
+for you to fetch changes up to 90262ae5b482a4bfb9282c19f035aafcc7ac9af2:
+
+  netfilter: ipset: Fix data race between add and dump in all hash types =
+(2026-04-15 10:16:33 +0200)
+
+----------------------------------------------------------------
+Jozsef Kadlecsik (2):
+      netfilter: ipset: Fix data race between add and list header in all =
+hash types
+      netfilter: ipset: Fix data race between add and dump in all hash ty=
+pes
+
+ net/netfilter/ipset/ip_set_core.c     | 4 ++--
+ net/netfilter/ipset/ip_set_hash_gen.h | 6 ++++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
