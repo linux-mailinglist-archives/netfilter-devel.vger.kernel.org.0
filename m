@@ -1,65 +1,69 @@
-Return-Path: <netfilter-devel+bounces-11900-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11902-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qMR0HohK32mFRQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11900-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:21:28 +0200
+	id KLFAIllL32mFRQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11902-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:24:57 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05FDF401DCA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:21:27 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8946401E95
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 10:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 103B03045562
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 08:21:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 67ED9305871F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Apr 2026 08:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DE23CFF4C;
-	Wed, 15 Apr 2026 08:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE1D3D1CA4;
+	Wed, 15 Apr 2026 08:20:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="mQRrFKMj"
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="A1vJcHWA"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09953CE4B3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C903CF034
 	for <netfilter-devel@vger.kernel.org>; Wed, 15 Apr 2026 08:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776241252; cv=none; b=tYGoFHQZt7LhCdJHz50kkih1x3QTIQ5k2e+Ssh1/seQIrz/IuW8Gz77PTi7nYYHDRvtZ+ZnR1M0aPv8BoJHyKraBP29q/GCTulN2iFcF7Qq2IkikdlLkCr4P7PHf6Kl/hB09StjuntOUvRg22dnbxQFSoWaUV0VyzwkV9KoVz8o=
+	t=1776241253; cv=none; b=cVr+avY61yYEbsNj8lir10ycEyEp7atyQxWcDU5gAtjKVnXYPjQ8kgk6LzPkoYopm5RjpP70/gP45r/JIK00EvZxthjIhxgdGV2GkIxsdQQN99kIEaYgfbCGju5J+3cp0zOepSXsy69y9pF4RzMEBXvNP4a9zqvtNuP5Bnb8MFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776241252; c=relaxed/simple;
-	bh=lRYidYLkPnZz+p5075EonPA6T7+6f4qBKv3r9NuuMNc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WTurnvQ5FaDmKXhcegt/yTqnavfoOgwuQG1mvN2XmBaOXIneBuav1oEKOwuer0BJMe+qO/9+qZNgk8Wzuf+HszSpAfA8FuveheIpamR9UYo+gSa3g+z+gMYLP9icfsAb2Nqplxy/ZBOL6YXTVNJUiG7tldsJwyvVBrBI0tMfirA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=mQRrFKMj; arc=none smtp.client-ip=148.6.0.49
+	s=arc-20240116; t=1776241253; c=relaxed/simple;
+	bh=mhivghAY4iqzWA8QMbRoxlpLf9wlOsy2eI7mzmhbFMM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=D1+t4BTsG7DTp95BBG4d+F5TMOnbeYcYcgx8WyAhq1GGfwUcLuRVOysdkJkD2faM66rjKlSqh+gtaDHcfm1PPLgoyL8f3TzCmEM1LYb2zwbpC6KqT4SRWXCJ48q4KOajL67bWgimnWw0u1W0UjDOI2t1CY7HZvh946aHRgqs+/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=A1vJcHWA; arc=none smtp.client-ip=148.6.0.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
 Received: from localhost (localhost [127.0.0.1])
-	by smtp0.kfki.hu (Postfix) with ESMTP id 4fwYxP4wx3z3sb9B;
+	by smtp2.kfki.hu (Postfix) with ESMTP id 4fwYxP6cQtz7s85N;
 	Wed, 15 Apr 2026 10:20:41 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
-	:from:from:received:received:received; s=20151130; t=1776241239;
-	 x=1778055640; bh=Cj5ypcYX4abMajpOuB/KBgq2MXNK4NCt8v6LzouYick=; b=
-	mQRrFKMjs+WDQ1CmSVdqiCU1kY3Zy3sVrbkp3Of4RkETuZdXTnB+pvV9Rz7Uar9x
-	EXlO9GK9dZk6a9b40qsAPee1cCJE/eyfVOfltfQuvN6AhXe8ppphgBrQ6LKGCvYa
-	BOQ7Uiq/oe1G76iouTtAygP+RXujFOA2SrsokZ1C6S0=
-X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
- by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id rtjmnCVdVsL5; Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
+	blackhole.kfki.hu; h=mime-version:references:in-reply-to
+	:x-mailer:message-id:date:date:from:from:received:received
+	:received; s=20151130; t=1776241240; x=1778055641; bh=UPYFQnNHUB
+	vCFSBcJlCDrBtq0YeZvIr5oN6GY29vYpg=; b=A1vJcHWA9W94tyqQ76NK5gClCh
+	zhV2VdOMLoJO1f42G/k4HyXGRTB7rzlDlSSuT5kjBMTiFXQbEoKNjyjgXIthCFbQ
+	kbJ/ewgde4TS7+Eq3RfZGM/yb55XPrG0hWeTrWSf7mrlm9aw8/RvY/jx4+aCKerW
+	EwSzH743qRvOuRlLM=
+X-Virus-Scanned: Debian amavis at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+ by localhost (smtp2.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id TYnsdlxcN5gb; Wed, 15 Apr 2026 10:20:40 +0200 (CEST)
 Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-	by smtp0.kfki.hu (Postfix) with ESMTP id 4fwYxM5F92z3sb8s;
+	by smtp2.kfki.hu (Postfix) with ESMTP id 4fwYxM5RJwz7s85G;
 	Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
 Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-	id A9D8A34316A; Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
+	id AD11934316B; Wed, 15 Apr 2026 10:20:39 +0200 (CEST)
 From: Jozsef Kadlecsik <kadlec@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>
-Subject: [PATCH 0/2 v3] netfilter: ipset: concurrent add and dump fixes
-Date: Wed, 15 Apr 2026 10:20:37 +0200
-Message-Id: <20260415082039.4133308-1-kadlec@netfilter.org>
+Subject: [PATCH 1/2] netfilter: ipset: Fix data race between add and list header in all hash types
+Date: Wed, 15 Apr 2026 10:20:38 +0200
+Message-Id: <20260415082039.4133308-2-kadlec@netfilter.org>
 X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20260415082039.4133308-1-kadlec@netfilter.org>
+References: <20260415082039.4133308-1-kadlec@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -68,71 +72,70 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-11900-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-11902-lists,netfilter-devel=lfdr.de];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCPT_COUNT_THREE(0.00)[3];
-	PRECEDENCE_BULK(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,netfilter.org:mid];
+	RCPT_COUNT_THREE(0.00)[3];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-0.997];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 05FDF401DCA
+X-Rspamd-Queue-Id: A8946401E95
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Pablo, Florian,
+The "ipset list -terse" command is actually a dump operation which
+may run parallel with "ipset add" commands, which can trigger an
+internal resizing of the hash type of sets just being dumped. However,
+dumping just the header part of the set was not protected against
+underlying resizing. Fix it by protecting the header dumping part
+as well.
 
-Please consider applying the next patches:
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+---
+ net/netfilter/ipset/ip_set_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-* Fix a data race between add and list in all hash types due to setting
-  the position index too early.
-* Fix a data race between add and list header commands in all hash types=20
-  by protecting the list header dumping part as well.
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_s=
+et_core.c
+index d0c9fe59c67d..e6a8b3acc556 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -1648,13 +1648,13 @@ ip_set_dump_do(struct sk_buff *skb, struct netlin=
+k_callback *cb)
+ 			if (cb->args[IPSET_CB_PROTO] > IPSET_PROTOCOL_MIN &&
+ 			    nla_put_net16(skb, IPSET_ATTR_INDEX, htons(index)))
+ 				goto nla_put_failure;
++			if (set->variant->uref)
++				set->variant->uref(set, cb, true);
+ 			ret =3D set->variant->head(set, skb);
+ 			if (ret < 0)
+ 				goto release_refcount;
+ 			if (dump_flags & IPSET_FLAG_LIST_HEADER)
+ 				goto next_set;
+-			if (set->variant->uref)
+-				set->variant->uref(set, cb, true);
+ 			fallthrough;
+ 		default:
+ 			ret =3D set->variant->list(set, skb, cb);
+--=20
+2.39.5
 
-Best regards,
-Jozsef
-
-The following changes since commit a9d4f4f6e65e0bf9bbddedecc84d6724999197=
-9c:
-
-  net/mlx5: Update the list of the PCI supported devices (2026-04-06 19:1=
-7:42 -0700)
-
-are available in the Git repository at:
-
-  git://blackhole.kfki.hu/nf 90262ae5b482a4bfb9282c
-
-for you to fetch changes up to 90262ae5b482a4bfb9282c19f035aafcc7ac9af2:
-
-  netfilter: ipset: Fix data race between add and dump in all hash types =
-(2026-04-15 10:16:33 +0200)
-
-----------------------------------------------------------------
-Jozsef Kadlecsik (2):
-      netfilter: ipset: Fix data race between add and list header in all =
-hash types
-      netfilter: ipset: Fix data race between add and dump in all hash ty=
-pes
-
- net/netfilter/ipset/ip_set_core.c     | 4 ++--
- net/netfilter/ipset/ip_set_hash_gen.h | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
 
