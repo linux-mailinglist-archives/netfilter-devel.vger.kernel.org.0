@@ -1,179 +1,106 @@
-Return-Path: <netfilter-devel+bounces-11966-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-11967-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4EG9G/ra4Gk/mwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-11966-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Apr 2026 14:50:02 +0200
+	id qDVYOCTh4GlUnAAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-11967-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Apr 2026 15:16:20 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A3540E5FD
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Apr 2026 14:50:01 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6049540E9A5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Apr 2026 15:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0DA6330265B5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Apr 2026 12:49:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 20973304F7CC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Apr 2026 13:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D3A3491D6;
-	Thu, 16 Apr 2026 12:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="b414dE1P";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QZ3CCXa8";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="b414dE1P";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QZ3CCXa8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1237F3B9DA4;
+	Thu, 16 Apr 2026 13:14:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0061221256C
-	for <netfilter-devel@vger.kernel.org>; Thu, 16 Apr 2026 12:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E4122A4FC;
+	Thu, 16 Apr 2026 13:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776343798; cv=none; b=Hj+xxMaZnJTIu3t7E2ULHCn1nS92WxD9iCQ+ai1H6kF2P7IM1bUoviwpI5uvtTlrWHK+wTfqT+D+BKWbFWBCYcia32XpC+Ih8jP8C3J8V9kEC/Zg+8AJX25gsQD8HLeEg67a+OOMD4zy+QKug3ohwQHmz8216+n+LSCraYuIM78=
+	t=1776345290; cv=none; b=q9qge544gyX8AxyOk4voNwwuUc9p0D6PDg+ipVhV0JMt7bReaXjUslzZdbt/V3hye8KRtK//HFfjyCphulRICtYRnqCTznbrbGi9f6bcRF5gaC+ApocNQE+vdsBRL0lB6kQ7OiWGDDjTovh6Ad6PbdanY8A3m5FU511O0O0L5Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776343798; c=relaxed/simple;
-	bh=a5/EXqMpsyNKARVOGE8LVXFdjOrH0z354sE/5WhVgi8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dg21LeiBid8vhCc8n01Fivk4GcAbuKP6l804z5eSu//bCmsCr3TirOClH/JeDqat7q+cU82bfw3WT100gWM8N96uvEl1eRQ0zBRhITnPhU/aJeXYwY6K1HuuOR4kT5TC0N46zK5AJPSX9fnY8LgLbY130/x4SRiXlGLgW9tLuiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=b414dE1P; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QZ3CCXa8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=b414dE1P; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QZ3CCXa8; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1F52B6A7EC;
-	Thu, 16 Apr 2026 12:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1776343795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dOlzxVPcvYutYtQY5iy+XsmQJuhqUgyyo2HCgwKbxuo=;
-	b=b414dE1P8ZhPw+EQZ/L5BN3osxzulpHYCw214h53vsa7PfAND2hKp/1PgmwujHj1z0pEO2
-	K+fI4wZBIoyYa70rZtzw32QOLNl8iF3oxJMc7/k9KVENfwi0UUf681Ix4ZYpurJ08jdP9C
-	0zGaoWNwMvd9Rmr6o/QhN4/Wv3Mg4Q8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1776343795;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dOlzxVPcvYutYtQY5iy+XsmQJuhqUgyyo2HCgwKbxuo=;
-	b=QZ3CCXa8ORVS3YRF8de0TpzKLsspQ/RJ0PW1eTixfueTWhG06d/ss7ZoPQGtNEqjXM9blO
-	QNGbK0UcVkuvsMCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=b414dE1P;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=QZ3CCXa8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1776343795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dOlzxVPcvYutYtQY5iy+XsmQJuhqUgyyo2HCgwKbxuo=;
-	b=b414dE1P8ZhPw+EQZ/L5BN3osxzulpHYCw214h53vsa7PfAND2hKp/1PgmwujHj1z0pEO2
-	K+fI4wZBIoyYa70rZtzw32QOLNl8iF3oxJMc7/k9KVENfwi0UUf681Ix4ZYpurJ08jdP9C
-	0zGaoWNwMvd9Rmr6o/QhN4/Wv3Mg4Q8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1776343795;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dOlzxVPcvYutYtQY5iy+XsmQJuhqUgyyo2HCgwKbxuo=;
-	b=QZ3CCXa8ORVS3YRF8de0TpzKLsspQ/RJ0PW1eTixfueTWhG06d/ss7ZoPQGtNEqjXM9blO
-	QNGbK0UcVkuvsMCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D376593A3;
-	Thu, 16 Apr 2026 12:49:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7NuuI/La4GmpMgAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Thu, 16 Apr 2026 12:49:54 +0000
-Message-ID: <36ccd420-25f2-43e9-89bf-088fcad40f81@suse.de>
-Date: Thu, 16 Apr 2026 14:49:50 +0200
+	s=arc-20240116; t=1776345290; c=relaxed/simple;
+	bh=5VxFvtXzgD/Usniop52OI0UINxVtvaGZU4hH6Iu2F3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gGHiuuBtwZJ64TKESX7bf9Mpt+J95ACwTHG/6omvx9J19GAYVBi6vVeZtYUskllMdQLzlupAy6lqfp70rHS6s6lzUtHjyNj915Sw9w/paBK0noj4OY8gsEIyc7tBAp6VE0VE95EYKi/6eUSerDapQOdvgfAMrDGcAksDmdCB7+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 71B8A60923; Thu, 16 Apr 2026 15:14:40 +0200 (CEST)
+Date: Thu, 16 Apr 2026 15:14:39 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Fernando Fernandez Mancera <fmancera@suse.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	netfilter-devel@vger.kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+	edumazet@google.com, horms@kernel.org
+Subject: Re: [PATCH net 00/14] Netfilter/IPVS fixes for net
+Message-ID: <aeDgvwlyuGF4HnWK@strlen.de>
+References: <20260416013101.221555-1-pablo@netfilter.org>
+ <aeCPB1_WaFOX-Xos@chamomile>
+ <aeC4A75gYD9qT5OR@chamomile>
+ <aeC8hyj6IFW7UvUG@strlen.de>
+ <36ccd420-25f2-43e9-89bf-088fcad40f81@suse.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 00/14] Netfilter/IPVS fixes for net
-To: Florian Westphal <fw@strlen.de>, Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
- netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, horms@kernel.org
-References: <20260416013101.221555-1-pablo@netfilter.org>
- <aeCPB1_WaFOX-Xos@chamomile> <aeC4A75gYD9qT5OR@chamomile>
- <aeC8hyj6IFW7UvUG@strlen.de>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <aeC8hyj6IFW7UvUG@strlen.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36ccd420-25f2-43e9-89bf-088fcad40f81@suse.de>
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-11967-lists,netfilter-devel=lfdr.de];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-11966-lists,netfilter-devel=lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,suse.de:dkim,suse.de:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C2A3540E5FD
+	R_DKIM_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,suse.de:email,strlen.de:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6049540E9A5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/16/26 12:40 PM, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->> I cannot send a batch before 16h my local time, I need a bit more
->> time.
->>
->> Sorry.
-> 
-> No problem.  Alternative is to drop patches, this is what I did in the
-> past.  Some LLM comment indicates problem, remove patch from v2
-> and defer to next week.
-> 
-> But that was before LLM reviews flagged 50% of patches.
-> I'll pick up on anything left behind for next weeks batch(es).
-> 
+Fernando Fernandez Mancera <fmancera@suse.de> wrote:
+> I would like to propose to add netfilter-devel mailing list to 
+> sashiko.dev and also to Netdev CI.. I think Jakub mentioned it was 
+> possible on a previous situation.
 
-Hi,
+I already run all my pull requests through most of NIPAs test, with
+additional netfilter-specific tests.
 
-I would like to propose to add netfilter-devel mailing list to 
-sashiko.dev and also to Netdev CI.. I think Jakub mentioned it was 
-possible on a previous situation.
+> I think it isn't sustainable to review and address the AI/LLM comments 
+> when sending the pull request to for net/net-next.
 
-I think it isn't sustainable to review and address the AI/LLM comments 
-when sending the pull request to for net/net-next.
+The current bug report influx is already unsustainable for us.
 
-If you agree I could help moving this forward.
+> If you agree I could help moving this forward.
 
-Thanks,
-Fernando.
-
+If you know who to contact to make sashiko also digest netfilter-devel
+that would be good to have.
 
