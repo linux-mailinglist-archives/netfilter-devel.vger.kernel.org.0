@@ -1,106 +1,146 @@
-Return-Path: <netfilter-devel+bounces-12000-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12001-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EHRhBj4t4ml22gAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12000-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Apr 2026 14:53:18 +0200
+	id 8IkVAmIz4mkZ3QAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12001-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Apr 2026 15:19:30 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7561641B5A5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Apr 2026 14:53:17 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C524B41B8EA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Apr 2026 15:19:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C61103075E50
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Apr 2026 12:49:19 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7B7C7301F3D5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Apr 2026 13:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4721F373C10;
-	Fri, 17 Apr 2026 12:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B895374E4E;
+	Fri, 17 Apr 2026 13:19:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4823A2D5923
-	for <netfilter-devel@vger.kernel.org>; Fri, 17 Apr 2026 12:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB7B39D6E5
+	for <netfilter-devel@vger.kernel.org>; Fri, 17 Apr 2026 13:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776430159; cv=none; b=QTixVA1dN30/G6yiAe2WjAKPy6ETxDFSa6VWHFLTSDYaqmezMrA5NdqEb/jicnKIP933ML+CIP56sRXJS2iYvuowKThMnBSs6zOligNaNHmmTif7DyE1L4UFWjhLeqI6mC1Y8pKdx5r3tCqvLIJ9xjCw0E+boeXqckZeSjGOg78=
+	t=1776431964; cv=none; b=XeqxvFsUx1c01Q1InhBXykSEKmIE299TeSo9XXT18NTWPGwVQXmQ7avRTDcWG8ztyUmFWlTxsFG5bWw2CGEA/diAceU6/uQ4gs467VKmwn6yK3AHt1ufE1n0ofTxoN1TI7x8yFSdMNeBr4EAuXbeHsAOcO/pQr7p8/MwSa945+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776430159; c=relaxed/simple;
-	bh=rNgEHZbFc3zKt0mvwzF6iqtexFRd5porjihrs2W26Xg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U62ryGLgQ4x6Uhg52Y0qJyZOOzn2hzDS7pYpdL3DBbxiMps1wWAn7d2V6DbQ5h9YuI0Wfl9Bxau5mAs9l9xRE/xCsw/SzfDljKqxve/g+hDMQQ9g4vcD0ySp5c7Zu6RnzilX1kPVwpEfXzwyDnydpqv/nCkUhk0RNTkwiHJb9AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+	s=arc-20240116; t=1776431964; c=relaxed/simple;
+	bh=NXsNJmjEDNJ1ab2syQQd0ymCfmmePOx4N7AbtgrxcYY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ltmvJW36kyLpLzvVfshVXXXJc3gOsJY7h1fcLOVSSChjj62Y7K1gwl1jzf9za8zk3EdfzSdiBqkZB5Gkc5u1eoGlMpXNBcLuQa5yGAq3sj+mUB0UeemNUTQ1GutXqW2QM60ubymVgE4s+Kh64S5rpr2sDYQmYQPiLMKV1650Hd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id EC18460640; Fri, 17 Apr 2026 14:49:14 +0200 (CEST)
-Date: Fri, 17 Apr 2026 14:49:14 +0200
+	id 478A860301; Fri, 17 Apr 2026 15:19:15 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
-To: Ren Wei <n05ec@lzu.edu.cn>
-Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org, phil@nwl.cc,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, ebiederm@xmission.com,
-	yuantan098@gmail.com, yifanwucs@gmail.com, tomapufckgml@gmail.com,
-	bird@lzu.edu.cn, wangjiexun2025@gmail.com
-Subject: Re: [PATCH nf 1/1] netfilter: xt_policy: fix strict mode inbound
- policy matching
-Message-ID: <aeIsSl26ZZJZ1n7U@strlen.de>
-References: <cover.1776141503.git.wangjiexun2025@gmail.com>
- <85a95e0ef783ed8f5f4a787138cca22f995d8056.1776141503.git.wangjiexun2025@gmail.com>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf] netfilter: arp_tables: fix IEEE1394 ARP payload mangling
+Date: Fri, 17 Apr 2026 15:19:05 +0200
+Message-ID: <20260417131910.17932-1-fw@strlen.de>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85a95e0ef783ed8f5f4a787138cca22f995d8056.1776141503.git.wangjiexun2025@gmail.com>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12000-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,xmission.com,gmail.com,lzu.edu.cn];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-12001-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
 	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.925];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lzu.edu.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:mid,strlen.de:email]
-X-Rspamd-Queue-Id: 7561641B5A5
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,strlen.de:mid,strlen.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C524B41B8EA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Ren Wei <n05ec@lzu.edu.cn> wrote:
-> From: Jiexun Wang <wangjiexun2025@gmail.com>
-> 
-> match_policy_in() walks sec_path entries from the last transform to the
-> first one, but strict policy matching needs to consume info->pol[] in
-> the same forward order as the rule layout.
-> 
-> Derive the strict-match policy position from the number of transforms
-> already consumed so that multi-element inbound rules are matched
-> consistently.
+sashiko.dev noticed that similar bug pattern exists in arpt_mangle:
+  "IEEE1394 ARP payloads omit the target hardware address, advancing
+  arpptr by hln after the source IP address skips over the actual target
+  IP address."
 
-That hints that secpaths with len > 1 do not exist, or at least
-have never been used.  This has always been broken.
+Apply similar fix: check dev->type.  If we're asked to mangle what
+doesn't exist, drop the packet.
 
-For the patch
+Fixes: 6752c8db8e0c ("firewire net, ipv4 arp: Extend hardware address and remove driver-level packet inspection.")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ Collides with a inflight patch.
+ I'll rebase or discard depending on what netdev@ does.
 
-Acked-by: Florian Westphal <fw@strlen.de>
+ net/ipv4/netfilter/arpt_mangle.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv4/netfilter/arpt_mangle.c b/net/ipv4/netfilter/arpt_mangle.c
+index a4e07e5e9c11..5a3560e1b59b 100644
+--- a/net/ipv4/netfilter/arpt_mangle.c
++++ b/net/ipv4/netfilter/arpt_mangle.c
+@@ -13,6 +13,7 @@ static unsigned int
+ target(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct arpt_mangle *mangle = par->targinfo;
++	bool has_tgt_devaddr = true;
+ 	const struct arphdr *arp;
+ 	unsigned char *arpptr;
+ 	int pln, hln;
+@@ -39,13 +40,33 @@ target(struct sk_buff *skb, const struct xt_action_param *par)
+ 		memcpy(arpptr, &mangle->u_s.src_ip, pln);
+ 	}
+ 	arpptr += pln;
++
++	if (IS_ENABLED(CONFIG_FIREWIRE_NET)) {
++		const struct net_device *dev = skb->dev;
++
++		if (!dev) {
++			/* can't munge without arphrd type. */
++			if (mangle->flags & (ARPT_MANGLE_TDEV|ARPT_MANGLE_TIP))
++				return NF_DROP;
++			return mangle->target;
++		}
++
++		if (dev->type == ARPHRD_IEEE1394)
++			has_tgt_devaddr = false;
++	}
++
+ 	if (mangle->flags & ARPT_MANGLE_TDEV) {
++		if (!has_tgt_devaddr)
++			return NF_DROP;
++
+ 		if (ARPT_DEV_ADDR_LEN_MAX < hln ||
+ 		   (arpptr + hln > skb_tail_pointer(skb)))
+ 			return NF_DROP;
+ 		memcpy(arpptr, mangle->tgt_devaddr, hln);
+ 	}
+-	arpptr += hln;
++	if (has_tgt_devaddr)
++		arpptr += hln;
++
+ 	if (mangle->flags & ARPT_MANGLE_TIP) {
+ 		if (ARPT_MANGLE_ADDR_LEN_MAX < pln ||
+ 		   (arpptr + pln > skb_tail_pointer(skb)))
+-- 
+2.52.0
+
 
