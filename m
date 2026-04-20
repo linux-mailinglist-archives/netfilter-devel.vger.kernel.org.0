@@ -1,424 +1,275 @@
-Return-Path: <netfilter-devel+bounces-12054-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12052-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4E8+FMEq5mkDswEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12054-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2026 15:31:45 +0200
+	id 2FebAnMn5mm6sgEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12052-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2026 15:17:39 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9933942BEAA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2026 15:31:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BDD642B7E7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2026 15:17:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 49A1E30939A9
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2026 13:26:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8B1F63077694
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2026 13:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6BE3C2774;
-	Mon, 20 Apr 2026 13:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70DF39FCD6;
+	Mon, 20 Apr 2026 13:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LTqLF4vV"
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="oM/3mySC"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7643C2769;
-	Mon, 20 Apr 2026 13:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B81399019
+	for <netfilter-devel@vger.kernel.org>; Mon, 20 Apr 2026 13:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776691049; cv=none; b=GQhLg5K5pDE2Trnf5kFMCsPTXSc7Nq7LRuMTrRLD2zwVr1ObB7bElqlscEARSsAMreh6oMyhFSwSPZz9xISIDAbfTaxDHLkOK7M1wUFz8obD9EtTwiuaIb0GH4N2tlJUaBLen6eBrJxxOPNW6BLA1BuLtIHAtn7Wxl5u0ED00jw=
+	t=1776690692; cv=none; b=pf7UUjH9MsjXunV9dNeS5FAQCeCaWqUkMgnnhF/lGo60C6YSpQ5ksn0W66h6maMRfQQsmUWjsAevnnzunrXoIDdWveMb0DunjHOU1MzqzvawiMCZCj/38zVU5wImS8xOuDkqYrDaVOKsLKOAeJmxwv7IpEx7R1CAkXmxOrj6KF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776691049; c=relaxed/simple;
-	bh=9aPVkcRuTSgqcTqdXSJQNUbhuhgr30ISjyLMfNdWJGc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J4B8wZqkuR69hkJhPsZYI84X953c7tnLidjhezkoNdq3UPMblAVVlxrgm0OttQJObYs2GRGTU0vWVsUfhMwFnWytBave+fDI5Gf5qq2vLsX1S4Ny2FEVXonicZd5N68xfhU3FQQqy0OA0s0zg0CpEYZjBhXjcw/vWY0xeDZ0SV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LTqLF4vV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD75C2BCB6;
-	Mon, 20 Apr 2026 13:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776691049;
-	bh=9aPVkcRuTSgqcTqdXSJQNUbhuhgr30ISjyLMfNdWJGc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LTqLF4vV3/Sne7oYCJWMEG6rfbDUDxx81+X7XczzK5acB16PJOxXj7KI3ngX/2Eqh
-	 PRlTlsRQppYZzv4o0UNC/9ugIwe3oloIiiuOzSOjm87MFgs78B0Oxxaw5snTcEoPvt
-	 8LRL+AYNOO3vql9B3PVZ6cXAubt0atv2VaNgRqUBFcB7dUylrEOXRsgTKFhzGbv4VW
-	 k6sN2hMZ7biEERBwEmj66cFkcb8nVUgnGuQ3miH5wdaCGF8xNSoZNtKtD8G+geT6WK
-	 yReR2BER6bKHaHTkGIxg0HD0Hqyf3gIRgQ0MEkj4Ook+oVAEOfUgYHpSL3pM7WLEta
-	 nmMYUUgFGiZTw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Florian Westphal <fw@strlen.de>,
-	Scott Mitchell <scott.k.mitch1@gmail.com>,
-	Sasha Levin <sashal@kernel.org>,
-	pablo@netfilter.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18] netfilter: nfnetlink_queue: make hash table per queue
-Date: Mon, 20 Apr 2026 09:08:50 -0400
-Message-ID: <20260420131539.986432-64-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260420131539.986432-1-sashal@kernel.org>
-References: <20260420131539.986432-1-sashal@kernel.org>
+	s=arc-20240116; t=1776690692; c=relaxed/simple;
+	bh=6X9w+a1doJSDKdQBjPF0L27atXhSk1iynvIRjrh6O7o=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=EgBD9fC1NVFD6JKygSddq/DYbPuSO6mGbH0uw+HDf6BGZUATDTB4u951/tJkMcf/8D0bZAVhiC2yG38gcQ2gjV84eA63PVTSP6WLJu280F2SidmvjW7qmB3XnrdnISXpWCV9/yRE7O45DcFmRyXOmkXbxMPIkSzi2NCv5vlX6A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=blackhole.kfki.hu; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=oM/3mySC; arc=none smtp.client-ip=148.6.0.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=blackhole.kfki.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 4fzm8V25yYz7s85C;
+	Mon, 20 Apr 2026 15:11:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=mime-version:references:message-id
+	:in-reply-to:from:from:date:date:received:received:received
+	:received; s=20151130; t=1776690680; x=1778505081; bh=aVfqHj2Jyw
+	BWpt+gfxLGgQSvAZL4GsZ86QxpWgIr+yo=; b=oM/3mySCUgVhjLdBkL5S9MCcHO
+	l5g7ZLdEzm2sbwtsyk7VU/JIRe+cRMThHfAi9EqlIYFO9sxXPo49JGeDAfojW/F0
+	8SRDuyqs62Q5GjmCu52a/fohkcwnzb+xMRpsykPP8y78CkpjR7RkySfB6vsxq7I0
+	62mVKxzNb1F08/3W8=
+X-Virus-Scanned: Debian amavis at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+ by localhost (smtp2.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id AaIniT8gAok0; Mon, 20 Apr 2026 15:11:20 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 4fzm8S17fBz7s856;
+	Mon, 20 Apr 2026 15:11:20 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+	id 1B75334316A; Mon, 20 Apr 2026 15:11:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by blackhole.kfki.hu (Postfix) with ESMTP id 1976F340D75;
+	Mon, 20 Apr 2026 15:11:20 +0200 (CEST)
+Date: Mon, 20 Apr 2026 15:11:20 +0200 (CEST)
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+To: Florian Westphal <fw@strlen.de>
+cc: Jozsef Kadlecsik <kadlec@netfilter.org>, netfilter-devel@vger.kernel.org, 
+    Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH 2/2] netfilter: ipset: Fix data race between add and dump
+ in all hash types
+In-Reply-To: <ad9mzYNk5JpDfklg@strlen.de>
+Message-ID: <4e01c555-2f4c-81b7-e6c4-d1f7b3e2e99f@blackhole.kfki.hu>
+References: <20260415082039.4133308-1-kadlec@netfilter.org> <20260415082039.4133308-3-kadlec@netfilter.org> <ad9mzYNk5JpDfklg@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.23
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[blackhole.kfki.hu,quarantine];
+	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12054-lists,netfilter-devel=lfdr.de];
-	FREEMAIL_CC(0.00)[strlen.de,gmail.com,kernel.org,netfilter.org,davemloft.net,google.com,redhat.com,vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,blackhole.kfki.hu:dkim,blackhole.kfki.hu:mid];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12052-lists,netfilter-devel=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,netfilter-devel@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kadlec@blackhole.kfki.hu,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 9933942BEAA
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[8]
+X-Rspamd-Queue-Id: 5BDD642B7E7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Florian Westphal <fw@strlen.de>
+Hi Florian,
 
-[ Upstream commit 936206e3f6ff411581e615e930263d6f8b78df9d ]
+On Wed, 15 Apr 2026, Florian Westphal wrote:
 
-Sharing a global hash table among all queues is tempting, but
-it can cause crash:
+>>  	data = ahash_data(n, j, set->dsize);
+>>  copy_data:
+>>  	t->hregion[r].elements++;
+>> @@ -985,6 +986,7 @@ mtype_add(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+>>  	if (SET_WITH_TIMEOUT(set))
+>>  		ip_set_timeout_set(ext_timeout(data, set), ext->timeout);
+>>  	smp_mb__before_atomic();
+>> +	n->pos = npos;
+>>  	set_bit(j, n->used);
+>
+> I think this needs a followup-patch to switch this to smp_store_release
+> and readers to smp_load_acquire helpers.
 
-BUG: KASAN: slab-use-after-free in nfqnl_recv_verdict+0x11ac/0x15e0 [nfnetlink_queue]
-[..]
- nfqnl_recv_verdict+0x11ac/0x15e0 [nfnetlink_queue]
- nfnetlink_rcv_msg+0x46a/0x930
- kmem_cache_alloc_node_noprof+0x11e/0x450
+I'm pondering over the helpers and unsure. The hash bucket structure is as 
+follows:
 
-struct nf_queue_entry is freed via kfree, but parallel cpu can still
-encounter such an nf_queue_entry when walking the list.
+/* A hash bucket */
+struct hbucket {
+         struct rcu_head rcu;    /* for call_rcu */
+         /* Which positions are used in the array */
+         DECLARE_BITMAP(used, AHASH_MAX_TUNED);
+         u8 size;                /* size of the array */
+         u8 pos;                 /* position of the first free entry */
+         unsigned char value[]   /* the array of the values */
+                 __aligned(__alignof__(u64));
+};
 
-Alternative fix is to free the nf_queue_entry via kfree_rcu() instead,
-but as we have to alloc/free for each skb this will cause more mem
-pressure.
+The elements in "value" are filled up successively, "pos" is there to 
+limit the searching range for existing elements (which might be timed out 
+as well). So until the "size" is unchanged (no growing/shrinking), the 
+worst things which can happen if it's not "correct":
 
-Cc: Scott Mitchell <scott.k.mitch1@gmail.com>
-Fixes: e19079adcd26 ("netfilter: nfnetlink_queue: optimize verdict lookup with hash table")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+- new element added but dump/test don't "find" it
+- element deleted but dump/test find it
 
-LLM Generated explanations, may be completely bogus:
+The critical part is when "size" changes. But "size" never updated 
+directly: a completely new bucket is created when growing/shrinking and 
+the new bucket is assigned via RCU mechanism.
 
-Error: Failed to generate final synthesis
+So why do you thing the helpers are required to read/update the "pos" 
+element of the hash bucket? I might not see the wood for the trees.
 
- include/net/netfilter/nf_queue.h |   1 -
- net/netfilter/nfnetlink_queue.c  | 139 +++++++++++--------------------
- 2 files changed, 49 insertions(+), 91 deletions(-)
+Best regards,
+Jozsef
 
-diff --git a/include/net/netfilter/nf_queue.h b/include/net/netfilter/nf_queue.h
-index 45eb26b2e95b3..d17035d14d96c 100644
---- a/include/net/netfilter/nf_queue.h
-+++ b/include/net/netfilter/nf_queue.h
-@@ -23,7 +23,6 @@ struct nf_queue_entry {
- 	struct nf_hook_state	state;
- 	bool			nf_ct_is_unconfirmed;
- 	u16			size; /* sizeof(entry) + saved route keys */
--	u16			queue_num;
- 
- 	/* extra space to store route keys */
- };
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index a39d3b989063c..fe5942535245d 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -49,8 +49,8 @@
- #endif
- 
- #define NFQNL_QMAX_DEFAULT 1024
--#define NFQNL_HASH_MIN     1024
--#define NFQNL_HASH_MAX     1048576
-+#define NFQNL_HASH_MIN     8
-+#define NFQNL_HASH_MAX     32768
- 
- /* We're using struct nlattr which has 16bit nla_len. Note that nla_len
-  * includes the header length. Thus, the maximum packet length that we
-@@ -60,29 +60,10 @@
-  */
- #define NFQNL_MAX_COPY_RANGE (0xffff - NLA_HDRLEN)
- 
--/* Composite key for packet lookup: (net, queue_num, packet_id) */
--struct nfqnl_packet_key {
--	possible_net_t net;
--	u32 packet_id;
--	u16 queue_num;
--} __aligned(sizeof(u32));  /* jhash2 requires 32-bit alignment */
--
--/* Global rhashtable - one for entire system, all netns */
--static struct rhashtable nfqnl_packet_map __read_mostly;
--
--/* Helper to initialize composite key */
--static inline void nfqnl_init_key(struct nfqnl_packet_key *key,
--				  struct net *net, u32 packet_id, u16 queue_num)
--{
--	memset(key, 0, sizeof(*key));
--	write_pnet(&key->net, net);
--	key->packet_id = packet_id;
--	key->queue_num = queue_num;
--}
--
- struct nfqnl_instance {
- 	struct hlist_node hlist;		/* global list of queues */
--	struct rcu_head rcu;
-+	struct rhashtable nfqnl_packet_map;
-+	struct rcu_work	rwork;
- 
- 	u32 peer_portid;
- 	unsigned int queue_maxlen;
-@@ -106,6 +87,7 @@ struct nfqnl_instance {
- 
- typedef int (*nfqnl_cmpfn)(struct nf_queue_entry *, unsigned long);
- 
-+static struct workqueue_struct *nfq_cleanup_wq __read_mostly;
- static unsigned int nfnl_queue_net_id __read_mostly;
- 
- #define INSTANCE_BUCKETS	16
-@@ -124,34 +106,10 @@ static inline u_int8_t instance_hashfn(u_int16_t queue_num)
- 	return ((queue_num >> 8) ^ queue_num) % INSTANCE_BUCKETS;
- }
- 
--/* Extract composite key from nf_queue_entry for hashing */
--static u32 nfqnl_packet_obj_hashfn(const void *data, u32 len, u32 seed)
--{
--	const struct nf_queue_entry *entry = data;
--	struct nfqnl_packet_key key;
--
--	nfqnl_init_key(&key, entry->state.net, entry->id, entry->queue_num);
--
--	return jhash2((u32 *)&key, sizeof(key) / sizeof(u32), seed);
--}
--
--/* Compare stack-allocated key against entry */
--static int nfqnl_packet_obj_cmpfn(struct rhashtable_compare_arg *arg,
--				  const void *obj)
--{
--	const struct nfqnl_packet_key *key = arg->key;
--	const struct nf_queue_entry *entry = obj;
--
--	return !net_eq(entry->state.net, read_pnet(&key->net)) ||
--	       entry->queue_num != key->queue_num ||
--	       entry->id != key->packet_id;
--}
--
- static const struct rhashtable_params nfqnl_rhashtable_params = {
- 	.head_offset = offsetof(struct nf_queue_entry, hash_node),
--	.key_len = sizeof(struct nfqnl_packet_key),
--	.obj_hashfn = nfqnl_packet_obj_hashfn,
--	.obj_cmpfn = nfqnl_packet_obj_cmpfn,
-+	.key_offset = offsetof(struct nf_queue_entry, id),
-+	.key_len = sizeof(u32),
- 	.automatic_shrinking = true,
- 	.min_size = NFQNL_HASH_MIN,
- 	.max_size = NFQNL_HASH_MAX,
-@@ -190,6 +148,10 @@ instance_create(struct nfnl_queue_net *q, u_int16_t queue_num, u32 portid)
- 	spin_lock_init(&inst->lock);
- 	INIT_LIST_HEAD(&inst->queue_list);
- 
-+	err = rhashtable_init(&inst->nfqnl_packet_map, &nfqnl_rhashtable_params);
-+	if (err < 0)
-+		goto out_free;
-+
- 	spin_lock(&q->instances_lock);
- 	if (instance_lookup(q, queue_num)) {
- 		err = -EEXIST;
-@@ -210,6 +172,8 @@ instance_create(struct nfnl_queue_net *q, u_int16_t queue_num, u32 portid)
- 
- out_unlock:
- 	spin_unlock(&q->instances_lock);
-+	rhashtable_destroy(&inst->nfqnl_packet_map);
-+out_free:
- 	kfree(inst);
- 	return ERR_PTR(err);
- }
-@@ -217,15 +181,18 @@ instance_create(struct nfnl_queue_net *q, u_int16_t queue_num, u32 portid)
- static void nfqnl_flush(struct nfqnl_instance *queue, nfqnl_cmpfn cmpfn,
- 			unsigned long data);
- 
--static void
--instance_destroy_rcu(struct rcu_head *head)
-+static void instance_destroy_work(struct work_struct *work)
- {
--	struct nfqnl_instance *inst = container_of(head, struct nfqnl_instance,
--						   rcu);
-+	struct nfqnl_instance *inst;
- 
-+	inst = container_of(to_rcu_work(work), struct nfqnl_instance,
-+			    rwork);
- 	rcu_read_lock();
- 	nfqnl_flush(inst, NULL, 0);
- 	rcu_read_unlock();
-+
-+	rhashtable_destroy(&inst->nfqnl_packet_map);
-+
- 	kfree(inst);
- 	module_put(THIS_MODULE);
- }
-@@ -234,7 +201,9 @@ static void
- __instance_destroy(struct nfqnl_instance *inst)
- {
- 	hlist_del_rcu(&inst->hlist);
--	call_rcu(&inst->rcu, instance_destroy_rcu);
-+
-+	INIT_RCU_WORK(&inst->rwork, instance_destroy_work);
-+	queue_rcu_work(nfq_cleanup_wq, &inst->rwork);
- }
- 
- static void
-@@ -250,9 +219,7 @@ __enqueue_entry(struct nfqnl_instance *queue, struct nf_queue_entry *entry)
- {
- 	int err;
- 
--	entry->queue_num = queue->queue_num;
--
--	err = rhashtable_insert_fast(&nfqnl_packet_map, &entry->hash_node,
-+	err = rhashtable_insert_fast(&queue->nfqnl_packet_map, &entry->hash_node,
- 				     nfqnl_rhashtable_params);
- 	if (unlikely(err))
- 		return err;
-@@ -266,23 +233,19 @@ __enqueue_entry(struct nfqnl_instance *queue, struct nf_queue_entry *entry)
- static void
- __dequeue_entry(struct nfqnl_instance *queue, struct nf_queue_entry *entry)
- {
--	rhashtable_remove_fast(&nfqnl_packet_map, &entry->hash_node,
-+	rhashtable_remove_fast(&queue->nfqnl_packet_map, &entry->hash_node,
- 			       nfqnl_rhashtable_params);
- 	list_del(&entry->list);
- 	queue->queue_total--;
- }
- 
- static struct nf_queue_entry *
--find_dequeue_entry(struct nfqnl_instance *queue, unsigned int id,
--		   struct net *net)
-+find_dequeue_entry(struct nfqnl_instance *queue, unsigned int id)
- {
--	struct nfqnl_packet_key key;
- 	struct nf_queue_entry *entry;
- 
--	nfqnl_init_key(&key, net, id, queue->queue_num);
--
- 	spin_lock_bh(&queue->lock);
--	entry = rhashtable_lookup_fast(&nfqnl_packet_map, &key,
-+	entry = rhashtable_lookup_fast(&queue->nfqnl_packet_map, &id,
- 				       nfqnl_rhashtable_params);
- 
- 	if (entry)
-@@ -1531,7 +1494,7 @@ static int nfqnl_recv_verdict(struct sk_buff *skb, const struct nfnl_info *info,
- 
- 	verdict = ntohl(vhdr->verdict);
- 
--	entry = find_dequeue_entry(queue, ntohl(vhdr->id), info->net);
-+	entry = find_dequeue_entry(queue, ntohl(vhdr->id));
- 	if (entry == NULL)
- 		return -ENOENT;
- 
-@@ -1880,40 +1843,38 @@ static int __init nfnetlink_queue_init(void)
- {
- 	int status;
- 
--	status = rhashtable_init(&nfqnl_packet_map, &nfqnl_rhashtable_params);
--	if (status < 0)
--		return status;
-+	nfq_cleanup_wq = alloc_ordered_workqueue("nfq_workqueue", 0);
-+	if (!nfq_cleanup_wq)
-+		return -ENOMEM;
- 
- 	status = register_pernet_subsys(&nfnl_queue_net_ops);
--	if (status < 0) {
--		pr_err("failed to register pernet ops\n");
--		goto cleanup_rhashtable;
--	}
-+	if (status < 0)
-+		goto cleanup_pernet_subsys;
- 
--	netlink_register_notifier(&nfqnl_rtnl_notifier);
--	status = nfnetlink_subsys_register(&nfqnl_subsys);
--	if (status < 0) {
--		pr_err("failed to create netlink socket\n");
--		goto cleanup_netlink_notifier;
--	}
-+	status = netlink_register_notifier(&nfqnl_rtnl_notifier);
-+	if (status < 0)
-+	       goto cleanup_rtnl_notifier;
- 
- 	status = register_netdevice_notifier(&nfqnl_dev_notifier);
--	if (status < 0) {
--		pr_err("failed to register netdevice notifier\n");
--		goto cleanup_netlink_subsys;
--	}
-+	if (status < 0)
-+		goto cleanup_dev_notifier;
-+
-+	status = nfnetlink_subsys_register(&nfqnl_subsys);
-+	if (status < 0)
-+		goto cleanup_nfqnl_subsys;
- 
- 	nf_register_queue_handler(&nfqh);
- 
- 	return status;
- 
--cleanup_netlink_subsys:
--	nfnetlink_subsys_unregister(&nfqnl_subsys);
--cleanup_netlink_notifier:
-+cleanup_nfqnl_subsys:
-+	unregister_netdevice_notifier(&nfqnl_dev_notifier);
-+cleanup_dev_notifier:
- 	netlink_unregister_notifier(&nfqnl_rtnl_notifier);
-+cleanup_rtnl_notifier:
- 	unregister_pernet_subsys(&nfnl_queue_net_ops);
--cleanup_rhashtable:
--	rhashtable_destroy(&nfqnl_packet_map);
-+cleanup_pernet_subsys:
-+	destroy_workqueue(nfq_cleanup_wq);
- 	return status;
- }
- 
-@@ -1924,9 +1885,7 @@ static void __exit nfnetlink_queue_fini(void)
- 	nfnetlink_subsys_unregister(&nfqnl_subsys);
- 	netlink_unregister_notifier(&nfqnl_rtnl_notifier);
- 	unregister_pernet_subsys(&nfnl_queue_net_ops);
--
--	rhashtable_destroy(&nfqnl_packet_map);
--
-+	destroy_workqueue(nfq_cleanup_wq);
- 	rcu_barrier(); /* Wait for completion of call_rcu()'s */
- }
- 
--- 
-2.53.0
-
+> Here is a diff for this (generated by LLM and only compile tested).
+> I think this can be a separate patch to not make this change too big and
+> to not mix different fixes.
+>
+> diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
+> index 0da02a8dfbae..2ca674e51699 100644
+> --- a/net/netfilter/ipset/ip_set_hash_gen.h
+> +++ b/net/netfilter/ipset/ip_set_hash_gen.h
+> @@ -682,10 +682,13 @@ mtype_resize(struct ip_set *set, bool retried)
+> 		rcu_read_lock_bh();
+> 		for (i = ahash_bucket_start(r, orig->htable_bits);
+> 		     i < ahash_bucket_end(r, orig->htable_bits); i++) {
+> +			u8 pos;
+> +
+> 			n = __ipset_dereference(hbucket(orig, i));
+> 			if (!n)
+> 				continue;
+> -			for (j = 0; j < n->pos; j++) {
+> +			pos = smp_load_acquire(&n->pos);
+> +			for (j = 0; j < pos; j++) {
+> 				if (!test_bit(j, n->used))
+> 					continue;
+> 				data = ahash_data(n, j, dsize);
+> @@ -817,10 +820,13 @@ mtype_ext_size(struct ip_set *set, u32 *elements, size_t *ext_size)
+> 	for (r = 0; r < ahash_numof_locks(t->htable_bits); r++) {
+> 		for (i = ahash_bucket_start(r, t->htable_bits);
+> 		     i < ahash_bucket_end(r, t->htable_bits); i++) {
+> +			u8 pos;
+> +
+> 			n = rcu_dereference_bh(hbucket(t, i));
+> 			if (!n)
+> 				continue;
+> -			for (j = 0; j < n->pos; j++) {
+> +			pos = smp_load_acquire(&n->pos);
+> +			for (j = 0; j < pos; j++) {
+> 				if (!test_bit(j, n->used))
+> 					continue;
+> 				data = ahash_data(n, j, set->dsize);
+> @@ -963,7 +969,8 @@ mtype_add(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+> 	}
+>
+> copy_elem:
+> -	j = npos = n->pos + 1;
+> +	j = npos;
+> +	npos = n->pos + 1;
+> 	data = ahash_data(n, j, set->dsize);
+> copy_data:
+> 	t->hregion[r].elements++;
+> @@ -985,8 +992,8 @@ mtype_add(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+> 	/* Must come last for the case when timed out entry is reused */
+> 	if (SET_WITH_TIMEOUT(set))
+> 		ip_set_timeout_set(ext_timeout(data, set), ext->timeout);
+> -	smp_mb__before_atomic();
+> -	n->pos = npos;
+> +	/* Ensure all data writes are visible before updating position */
+> +	smp_store_release(&n->pos, npos);
+> 	set_bit(j, n->used);
+> 	if (old != ERR_PTR(-ENOENT)) {
+> 		rcu_assign_pointer(hbucket(t, key), n);
+> @@ -1172,6 +1179,7 @@ mtype_test_cidrs(struct ip_set *set, struct mtype_elem *d,
+> 	int ret, i, j = 0;
+> #endif
+> 	u32 key, multi = 0;
+> +	u8 pos;
+>
+> 	pr_debug("test by nets\n");
+> 	for (; j < NLEN && h->nets[j].cidr[0] && !multi; j++) {
+> @@ -1189,7 +1197,8 @@ mtype_test_cidrs(struct ip_set *set, struct mtype_elem *d,
+> 		n = rcu_dereference_bh(hbucket(t, key));
+> 		if (!n)
+> 			continue;
+> -		for (i = 0; i < n->pos; i++) {
+> +		pos = smp_load_acquire(&n->pos);
+> +		for (i = 0; i < pos; i++) {
+> 			if (!test_bit(i, n->used))
+> 				continue;
+> 			data = ahash_data(n, i, set->dsize);
+> @@ -1223,6 +1232,7 @@ mtype_test(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+> 	struct mtype_elem *data;
+> 	int i, ret = 0;
+> 	u32 key, multi = 0;
+> +	u8 pos;
+>
+> 	rcu_read_lock_bh();
+> 	t = rcu_dereference_bh(h->table);
+> @@ -1245,7 +1255,8 @@ mtype_test(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+> 		ret = 0;
+> 		goto out;
+> 	}
+> -	for (i = 0; i < n->pos; i++) {
+> +	pos = smp_load_acquire(&n->pos);
+> +	for (i = 0; i < pos; i++) {
+> 		if (!test_bit(i, n->used))
+> 			continue;
+> 		data = ahash_data(n, i, set->dsize);
+> @@ -1373,6 +1384,8 @@ mtype_list(const struct ip_set *set,
+> 	rcu_read_lock();
+> 	for (; cb->args[IPSET_CB_ARG0] < jhash_size(t->htable_bits);
+> 	     cb->args[IPSET_CB_ARG0]++) {
+> +		u8 pos;
+> +
+> 		cond_resched_rcu();
+> 		incomplete = skb_tail_pointer(skb);
+> 		n = rcu_dereference(hbucket(t, cb->args[IPSET_CB_ARG0]));
+> @@ -1380,7 +1393,9 @@ mtype_list(const struct ip_set *set,
+> 			 cb->args[IPSET_CB_ARG0], t, n);
+> 		if (!n)
+> 			continue;
+> -		for (i = 0; i < n->pos; i++) {
+> +		/* Acquire ordering with smp_store_release in mtype_add */
+> +		pos = smp_load_acquire(&n->pos);
+> +		for (i = 0; i < pos; i++) {
+> 			if (!test_bit(i, n->used))
+> 				continue;
+> 			e = ahash_data(n, i, set->dsize);
+>
+>
+>
 
