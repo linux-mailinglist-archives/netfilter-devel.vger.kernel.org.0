@@ -1,76 +1,79 @@
-Return-Path: <netfilter-devel+bounces-12165-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12167-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QOn1F6Ps6mnCFgAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12165-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2026 06:08:03 +0200
+	id gOkOLXDt6mm9FwAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12167-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2026 06:11:28 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFEF0459A82
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2026 06:08:02 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562AF459AD3
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2026 06:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 640A93003D2C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2026 04:08:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1568B300C022
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2026 04:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6263E31AF31;
-	Fri, 24 Apr 2026 04:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD2532AABD;
+	Fri, 24 Apr 2026 04:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="6yeXKlvw"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="2tQxFIIA"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B12211A28;
-	Fri, 24 Apr 2026 04:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523963264CC;
+	Fri, 24 Apr 2026 04:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777003678; cv=none; b=fWkDiM/LpBRDAFbC2SRkZ6qYufltsAxVkq4fzdlhqFoEgrn9U4Wek5Z+F3N2LYfFXJH9TOfLUf8SP5dO5Ukkazs6CmVA8I5nPdh7q2ISD+x84dP99WQI3VczcA/OmTSDMju12VHXUIVZmmhY+0yhA/JDn7Qx/vQpUe+1INJDyJg=
+	t=1777003885; cv=none; b=PO8a++66Xg8q6BgvhwEPxroQf3SXQgUDvlLLo9dRhAMIxZhdEuUK+YGXPf24YcPvzq4/v7iWCrHIL6byhsaTCanl0ZqHIJ5utWi3HwW6vxrlTwD6z7m8A55ScqlKOdVYzpJgDoCQlQcbG8s0ZfRmZn9xxfTIfmHa0ON2HtFaz9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777003678; c=relaxed/simple;
-	bh=0DV8j0AWbwd01YUWwODvf3S96mEaLIBEUKSwnR534E4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q1Oe6ov/9QTbfBxfblvl8OwQVfOho7z9KYnSmz667ssFZI85tYL0p7vkvo0dCwttBL7npOdWHfM7AMve6HHdsbDX4/iTHj8J6jriP6+e6LIhl/ODG4u4D+wREP55cHw7YdcCdZhYCSJbb0TK+Vyljq1I4O34aT+dhv9OrpX5i/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=6yeXKlvw; arc=none smtp.client-ip=193.238.174.39
+	s=arc-20240116; t=1777003885; c=relaxed/simple;
+	bh=F4lUGPMdS/bvoUN+XN4+UZKi3zTbHNgMNCrxglybtcU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZFmlBH0g3Qp+36Im3ouno/I2s8Y0NkR//JklX7LAWAbUk/eMZVIpDK3T+eG06X7kbgrejlOY7atks2gqxY+2qQ2UYmlxbTMIFo/+oKn/DtyKlp+auamiYMEGKsXIOSAy7i5nAikNj0nGIQKbStwlcyXnZeaBsr2qV4VUIP71XGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=2tQxFIIA; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 32E9921269;
-	Fri, 24 Apr 2026 07:07:46 +0300 (EEST)
+	by mx.ssi.bg (Potsfix) with ESMTP id E87D82126F;
+	Fri, 24 Apr 2026 07:11:14 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-transfer-encoding:date:from:from:message-id
-	:mime-version:reply-to:subject:subject:to:to; s=ssi; bh=5tLSa8rS
-	PmTjWE90FCxnV/aucT9T+tmRCc7GBQfwwbI=; b=6yeXKlvwoGtW42jznBgis+DF
-	2E/XC1UYva69z3z4cEze2409tdhy3mEoQTaDqPm1cX2841nQyS/uKFfMcbh0LTfK
-	uT1HWuZTiX4+1gaWci3ibVzEVI6hIRZKS3wMITXzaqYCR8htQk3Y9FsJ+VfXN+OV
-	U95FvAD7MWo/T6nhz5CcCwpNK9oMiECYiBgG2j3jAD/nWVmK98RhjAVX736oKuCO
-	xmoluCuwLGvMBQ1TQQBKd8pPqytQwJv0MXwafD67qMs4wGVq1+wGSVq/oM8Bzv9Q
-	vBPfCXM5FPhx61TVAK00IUA/p7L9D6oT+PutjDIlSf7LwhxNrPVoWPlKeJewSbJD
-	CyRRvXhgy08aapjdMDj9QGu4GpVDaGevelkhIhS0EMzmhT8+44oAyT24398GdvhV
-	UCEZQOvEqNfZ7ABahULjkam10c+VxgdQzOzC/45vyRe7d0uo0rKHJzUOG9bSPrxm
-	kU0H4FAp8I70ECK+SghJtpmne7DZcVtZMBSLGq6v0qc9zWYpUcLwUBLG+99f8PLq
-	eU1AqDJJJhyMayjJOZkYNPfbLS8durUufNAbQ46jMYwQ7vbIpHfLwoh8yPmT+LIC
-	4k088hgE+L98OWB8E+1BehSG7rdPYbSQC3nAI3AnFgNOT6syrfRhA+l8l5F+8HTs
-	qpjiaZ+IJYyS8bapnFk=
+	:content-transfer-encoding:date:from:from:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
+	 bh=gsAvRDH20KwST110vB0xZmQ42TWjJ6vjg6gG+LolkGU=; b=2tQxFIIAMHTN
+	RKfWv/+v2hQ9e9mv9tRgQjc2KsWsRZY9Fp3y88ZLpOmv1ez+wCv3LeNaH79ErrKP
+	vPqX21w3WkonuZsvs6H7qYz/cyLLIDAbXsQbF3ZfkynjpohDWuW2Xm3BDO/5SEb7
+	xwN4Kvatp9EDO4U3/fMR3plvsjP6jfJITWCOUNoGqIeC6vxCGZnxsefC1vvHtKnH
+	L9312eRAmevrK45+HIhFe9Ulm/9rA8eXsYISXyOntWxvaKkgAmGMZwLvXZJkfGBf
+	YgZPLOWoEHlXZL8N1T19HybD+pt6vOJU2qhsTgAf6bAGjApWx7TdaGhdwr3vmbvT
+	0Ua9kal4fLqBZ/qVaJ6vHoh1gICoZVbvQu1rAbjQQehBMxQWZV2/mGnC3G5etBI7
+	CX1iquwjxvb74301SNGEHpL864D6TlL6d3GTO0BjWgZ0BApMJIoP7J//SJy4a1PR
+	G5N3YCoA/yMCZhgd5KczzEEz45O6iFh/h22mi7H/wSNwkqbk1ppooOhnFgEPDUzT
+	mkG2clc1SV8XpyNibgUijSxfyJQ2DAPbxhIiffzPqIFqEyCrOxJUADbuY8GpH5T2
+	VA307VR66SAn6Ojc0sCaFwcYCSCSf3MI/jIoFnCViHpvxzmsynKt8nU5+d4tOxov
+	YXpkRxEmNm3pdiJO5b1fk8YUP32O8g8=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Fri, 24 Apr 2026 07:07:45 +0300 (EEST)
+	Fri, 24 Apr 2026 07:11:13 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 849A960B2A;
-	Fri, 24 Apr 2026 07:07:44 +0300 (EEST)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 95C5961C35;
+	Fri, 24 Apr 2026 07:11:12 +0300 (EEST)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63O47gAJ006122;
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63O47gOf006126;
 	Fri, 24 Apr 2026 07:07:42 +0300
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63O47aJj006120;
-	Fri, 24 Apr 2026 07:07:36 +0300
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63O47gbr006125;
+	Fri, 24 Apr 2026 07:07:42 +0300
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
         lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [PATCHv4 net 0/3] IPVS: fixes after the new hash tables
-Date: Fri, 24 Apr 2026 07:07:20 +0300
-Message-ID: <20260424040723.6104-1-ja@ssi.bg>
+Subject: [PATCHv4 net 1/3] ipvs: fixes for the new ip_vs_status info
+Date: Fri, 24 Apr 2026 07:07:21 +0300
+Message-ID: <20260424040723.6104-2-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260424040723.6104-1-ja@ssi.bg>
+References: <20260424040723.6104-1-ja@ssi.bg>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -78,7 +81,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: EFEF0459A82
+X-Rspamd-Queue-Id: 562AF459AD3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -86,15 +89,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12165-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12167-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -105,38 +108,201 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[ssi.bg:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[5];
 	RCVD_COUNT_SEVEN(0.00)[8]
 
-        Hello,
+Sashiko reports some problems for the recently added
+/proc/net/ip_vs_status:
 
-        This patchset contains fixes after the recent net-next
-work for resizable hash tables. We target multiple reports from
-Sashiko and one from syzkaller. The patches are based on the
-net tree where the fixed commits are present...
+* ip_vs_status_show() as a table reader may run long after the
+conn_tab and svc_table table are released. While ip_vs_conn_flush()
+properly changes the conn_tab_changes counter when conn_tab is removed,
+ip_vs_del_service() and ip_vs_flush() were missing such change for
+the svc_table_changes counter. As result, readers like
+ip_vs_dst_event() and ip_vs_status_show() may continue to use
+a freed table after a cond_resched_rcu() call.
 
-v4:
-  patch 3: add error message for too many hash table changes in
-  ip_vs_conn_fill_cport()
+* While counting the buckets in ip_vs_status_show() make sure we
+traverse only the needed number of entries in the chain. This also
+prevents possible overflow of the 'count' variable.
 
-v3:
-  patch 3: use cp->lock in ip_vs_conn_fill_cport() to protect the
-  cp->flags modifications
+* Add check for 'loops' to prevent infinite loops while restarting
+the traversal on table change.
 
-v2:
-* patch 3: remove cp->lock from ip_vs_conn_fill_cport() and avoid
-  races with resizing and possible multiple attempts to fill cport.
+* While IP_VS_CONN_TAB_MAX_BITS is 20 on 32-bit platforms and
+there is no risk to overflow when multiplying the number of
+conn_tab buckets to 100, prefer the div_u64() helper to make
+the following dividing safer.
 
-Julian Anastasov (3):
-  ipvs: fixes for the new ip_vs_status info
-  ipvs: fix races around the conn_lfactor and svc_lfactor sysctl vars
-  ipvs: fix the spin_lock usage for RT build
+* Use 0440 permissions for ip_vs_status to restrict the
+info only to root due to the exported information for hash
+distribution.
 
- net/netfilter/ipvs/ip_vs_conn.c | 71 +++++++++++++++++----------------
- net/netfilter/ipvs/ip_vs_ctl.c  | 63 ++++++++++++++++++++---------
- 2 files changed, 82 insertions(+), 52 deletions(-)
+Link: https://sashiko.dev/#/patchset/20260410112352.23599-1-fw%40strlen.de
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+---
+ net/netfilter/ipvs/ip_vs_ctl.c | 51 ++++++++++++++++++++++++----------
+ 1 file changed, 36 insertions(+), 15 deletions(-)
 
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 6632daa87ded..27e50afe9a54 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -2032,6 +2032,9 @@ static int ip_vs_del_service(struct ip_vs_service *svc)
+ 		cancel_delayed_work_sync(&ipvs->svc_resize_work);
+ 		if (t) {
+ 			rcu_assign_pointer(ipvs->svc_table, NULL);
++			/* Inform readers that table is removed */
++			smp_mb__before_atomic();
++			atomic_inc(&ipvs->svc_table_changes);
+ 			while (1) {
+ 				p = rcu_dereference_protected(t->new_tbl, 1);
+ 				call_rcu(&t->rcu_head, ip_vs_rht_rcu_free);
+@@ -2078,6 +2081,9 @@ static int ip_vs_flush(struct netns_ipvs *ipvs, bool cleanup)
+ 	t = rcu_dereference_protected(ipvs->svc_table, 1);
+ 	if (t) {
+ 		rcu_assign_pointer(ipvs->svc_table, NULL);
++		/* Inform readers that table is removed */
++		smp_mb__before_atomic();
++		atomic_inc(&ipvs->svc_table_changes);
+ 		while (1) {
+ 			p = rcu_dereference_protected(t->new_tbl, 1);
+ 			call_rcu(&t->rcu_head, ip_vs_rht_rcu_free);
+@@ -3004,7 +3010,8 @@ static int ip_vs_status_show(struct seq_file *seq, void *v)
+ 	int old_gen, new_gen;
+ 	u32 counts[8];
+ 	u32 bucket;
+-	int count;
++	u32 count;
++	int loops;
+ 	u32 sum1;
+ 	u32 sum;
+ 	int i;
+@@ -3020,6 +3027,7 @@ static int ip_vs_status_show(struct seq_file *seq, void *v)
+ 	if (!atomic_read(&ipvs->conn_count))
+ 		goto after_conns;
+ 	old_gen = atomic_read(&ipvs->conn_tab_changes);
++	loops = 0;
+ 
+ repeat_conn:
+ 	smp_rmb(); /* ipvs->conn_tab and conn_tab_changes */
+@@ -3032,8 +3040,11 @@ static int ip_vs_status_show(struct seq_file *seq, void *v)
+ 			resched_score++;
+ 			ip_vs_rht_walk_bucket_rcu(t, bucket, head) {
+ 				count = 0;
+-				hlist_bl_for_each_entry_rcu(hn, e, head, node)
++				hlist_bl_for_each_entry_rcu(hn, e, head, node) {
+ 					count++;
++					if (count >= ARRAY_SIZE(counts) - 1)
++						break;
++				}
+ 			}
+ 			resched_score += count;
+ 			if (resched_score >= 100) {
+@@ -3042,37 +3053,41 @@ static int ip_vs_status_show(struct seq_file *seq, void *v)
+ 				new_gen = atomic_read(&ipvs->conn_tab_changes);
+ 				/* New table installed ? */
+ 				if (old_gen != new_gen) {
++					/* Too many changes? */
++					if (++loops >= 5)
++						goto after_conns;
+ 					old_gen = new_gen;
+ 					goto repeat_conn;
+ 				}
+ 			}
+-			counts[min(count, (int)ARRAY_SIZE(counts) - 1)]++;
++			counts[count]++;
+ 		}
+ 	}
+ 	for (sum = 0, i = 0; i < ARRAY_SIZE(counts); i++)
+ 		sum += counts[i];
+ 	sum1 = sum - counts[0];
+-	seq_printf(seq, "Conn buckets empty:\t%u (%lu%%)\n",
+-		   counts[0], (unsigned long)counts[0] * 100 / max(sum, 1U));
++	seq_printf(seq, "Conn buckets empty:\t%u (%llu%%)\n",
++		   counts[0], div_u64((u64)counts[0] * 100U, max(sum, 1U)));
+ 	for (i = 1; i < ARRAY_SIZE(counts); i++) {
+ 		if (!counts[i])
+ 			continue;
+-		seq_printf(seq, "Conn buckets len-%d:\t%u (%lu%%)\n",
++		seq_printf(seq, "Conn buckets len-%d:\t%u (%llu%%)\n",
+ 			   i, counts[i],
+-			   (unsigned long)counts[i] * 100 / max(sum1, 1U));
++			   div_u64((u64)counts[i] * 100U, max(sum1, 1U)));
+ 	}
+ 
+ after_conns:
+ 	t = rcu_dereference(ipvs->svc_table);
+ 
+ 	count = ip_vs_get_num_services(ipvs);
+-	seq_printf(seq, "Services:\t%d\n", count);
++	seq_printf(seq, "Services:\t%u\n", count);
+ 	seq_printf(seq, "Service buckets:\t%d (%d bits, lfactor %d)\n",
+ 		   t ? t->size : 0, t ? t->bits : 0, t ? t->lfactor : 0);
+ 
+ 	if (!count)
+ 		goto after_svc;
+ 	old_gen = atomic_read(&ipvs->svc_table_changes);
++	loops = 0;
+ 
+ repeat_svc:
+ 	smp_rmb(); /* ipvs->svc_table and svc_table_changes */
+@@ -3086,8 +3101,11 @@ static int ip_vs_status_show(struct seq_file *seq, void *v)
+ 			ip_vs_rht_walk_bucket_rcu(t, bucket, head) {
+ 				count = 0;
+ 				hlist_bl_for_each_entry_rcu(svc, e, head,
+-							    s_list)
++							    s_list) {
+ 					count++;
++					if (count >= ARRAY_SIZE(counts) - 1)
++						break;
++				}
+ 			}
+ 			resched_score += count;
+ 			if (resched_score >= 100) {
+@@ -3096,24 +3114,27 @@ static int ip_vs_status_show(struct seq_file *seq, void *v)
+ 				new_gen = atomic_read(&ipvs->svc_table_changes);
+ 				/* New table installed ? */
+ 				if (old_gen != new_gen) {
++					/* Too many changes? */
++					if (++loops >= 5)
++						goto after_svc;
+ 					old_gen = new_gen;
+ 					goto repeat_svc;
+ 				}
+ 			}
+-			counts[min(count, (int)ARRAY_SIZE(counts) - 1)]++;
++			counts[count]++;
+ 		}
+ 	}
+ 	for (sum = 0, i = 0; i < ARRAY_SIZE(counts); i++)
+ 		sum += counts[i];
+ 	sum1 = sum - counts[0];
+-	seq_printf(seq, "Service buckets empty:\t%u (%lu%%)\n",
+-		   counts[0], (unsigned long)counts[0] * 100 / max(sum, 1U));
++	seq_printf(seq, "Service buckets empty:\t%u (%llu%%)\n",
++		   counts[0], div_u64((u64)counts[0] * 100U, max(sum, 1U)));
+ 	for (i = 1; i < ARRAY_SIZE(counts); i++) {
+ 		if (!counts[i])
+ 			continue;
+-		seq_printf(seq, "Service buckets len-%d:\t%u (%lu%%)\n",
++		seq_printf(seq, "Service buckets len-%d:\t%u (%llu%%)\n",
+ 			   i, counts[i],
+-			   (unsigned long)counts[i] * 100 / max(sum1, 1U));
++			   div_u64((u64)counts[i] * 100U, max(sum1, 1U)));
+ 	}
+ 
+ after_svc:
+@@ -5039,7 +5060,7 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
+ 				    ipvs->net->proc_net,
+ 				    ip_vs_stats_percpu_show, NULL))
+ 		goto err_percpu;
+-	if (!proc_create_net_single("ip_vs_status", 0, ipvs->net->proc_net,
++	if (!proc_create_net_single("ip_vs_status", 0440, ipvs->net->proc_net,
+ 				    ip_vs_status_show, NULL))
+ 		goto err_status;
+ #endif
 -- 
 2.53.0
 
