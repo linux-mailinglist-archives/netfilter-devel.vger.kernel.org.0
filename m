@@ -1,77 +1,77 @@
-Return-Path: <netfilter-devel+bounces-12268-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12266-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MJ/zAOv18GnUbQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12268-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:01:15 +0200
+	id 4JdgNtz18GnUbQEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12266-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:01:00 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B59448A52D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:01:14 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F38248A517
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:01:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 578BE300E5CE
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 18:01:13 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6C24A30004ED
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 18:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EADC33FE36;
-	Tue, 28 Apr 2026 18:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937BD27E045;
+	Tue, 28 Apr 2026 18:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="E5+lJux/"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="VKbQLraQ"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79CF3290DE;
-	Tue, 28 Apr 2026 18:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE121448D5;
+	Tue, 28 Apr 2026 18:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777399272; cv=none; b=KIJaWgyq0ROWqUlZIf6yxC9QpqCFH96DUIwRJGd2DpdE52YCTs0KD2koa93znv60CcoIv1QKWWzgnPwSoK/wEVpZ1CAUHyshpfl6PrrsopjscMIAKsD6/sc8oK+U5Qq3STmHeBnHG5AJEQdGDNVpW+IO006/JYtKMCX/las7inY=
+	t=1777399257; cv=none; b=bK5XhoqH6NLvfiL+VeIrXNkLPKpMSM6oU8lId2833lw6ByrfHWhp4yQDss2G/4C3gmtRP7QE//gVoKVNsPXmoyJluYEISZfjSpfQnaTOTS2A6Vzp9VZZikvOsMVEogVcS2xCK8R47ZAjeOUp19wZ70aeKiBl2BQ9l+37p1MEt4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777399272; c=relaxed/simple;
-	bh=oUFlTiGYqw73lHnw86juUKMkGTiWASsaJfIxIyDpvY8=;
+	s=arc-20240116; t=1777399257; c=relaxed/simple;
+	bh=cHpTXYdncN0sHiHi0Ms7JpGzF7pP+YHf+1oy4qGGudY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oAXewMCtXEivUC3z0GqJ+kWRiLziSOpaV4Wwu+5/EUp6XMJpZ6Y1UIbhSUHFlm9beMIQd5lV/RHk/4QbblGSGZ71cCaM5WvmGEvoa7ExxPN0WY9YF0ICqZalVsoHZLEyOzdVMNP6OuBCpHrPoNqMAPBb2hDMqal8dSOdt5hsxDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=E5+lJux/; arc=none smtp.client-ip=193.238.174.39
+	 MIME-Version; b=GbfP9QU72tHopDJZne9oZPsOtD3SaEV0aQEhe5Jk5aBXi1t+byi5jrM+dKNt8d7VKCBpgXs1UnXeBZMky0Pop+exz+g+B+0HxTYU0d2z4Bm3XXju3wDVpn/9HjJHuILmQU+u1NhDK6K5/iLn358bIJ8z2WLcQSKlGSBWsnyjMYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=VKbQLraQ; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 5CAD9213AE;
-	Tue, 28 Apr 2026 21:00:55 +0300 (EEST)
+	by mx.ssi.bg (Potsfix) with ESMTP id 45122211C1;
+	Tue, 28 Apr 2026 21:00:53 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
 	:content-transfer-encoding:date:from:from:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=+N8l8xhO6EweGkIZO6SUeyy8/92nakMTqZK+u/GGXGQ=; b=E5+lJux/OpJz
-	HVweWmZS1f8CpNvgRPE1Mhnk6B2Xtb6FFkIGhj1yOHiLRcfJIkrxx4rGeDsO9xdG
-	Ltf0Y8vHtlS/h2yfvXDOrKKPR/dRjPQVldSXrlSnZyLERzNYqHME3Svu6G7Gwyz3
-	t6e6D+acpmuB7DPjfQb7y1IHyTuKiLChOD6gAtBzVMO+gd+xs+xRrtOa67KIGTZd
-	wHQDnJcrSNHRsn1Tr4hZvZHsUfSaSsyupdulRDezeBdq+TFbfyqXDRUU21p3kIpP
-	w2ItFqNMaIhv2J72BQKhibKHTelOFDwhXjLwGz5c32grSCOroxC0IWnr08EhEAmm
-	YUM+j0M/k+OcEZpWL9AYV2ZKCGgnThZ8pQ7IsBkwuBE9xxQH5+0FM72K2dftJ3Ye
-	VRY5sJ3UveDufSLXQnztI0lNwnWGB6eMKq7jXwIWnHem5wdiYI9HKgn4Ps32Scfl
-	Jg/9aY9D1fUikFshxCwFJN7srjZwz5eWOF/wgiV5RHKp4rWdy6r03cjocR+QDs7K
-	EveoxjIhjm5IwWJJZJ+pPtH+lgTAPGZRxCABBHupSfD2w4lP0c7KkENgevqVej7m
-	dEqsEakVRxuIQXftWt/KNsKOjEqDEVFpc38cvSqvBVNKDQ3SjZCPXh2MwJBi0w4r
-	Gib8jR7p5MTwV0nmcyx7KtZ4C11qZbY=
+	 bh=ze54CW2mwfMfZTw+E7Thpy8KpJFaQca7HuFNShQe8X4=; b=VKbQLraQnBZN
+	+9bYPZ4TKJU7wANWg9otMVdlZVcR/mqF1IQAXhQiFiwDKbsmceMuKY1LhFsQKjS8
+	uXBxglQWcIpcLdzpUSrPTQdDaQm+12JV04kOaPjTiIq1TTvn/+ZxYZ+DO9KFp7a/
+	9hR12XTSt5+JPwlivrzG2obDrgyRNOXYOUpiIohGkIqUIbHc4PUZ88CufgjHoNCb
+	eTDt2gOF5Pa6YUmBIoWPVMK+/M+KwJ8VTCXET/pu6u0U1l+yM+5tqBB/xXaqEVP0
+	mxCAr1PfdQ7B24yGO3aO3GerTGA17jF+0O3YtlIfavwvhc/NdD5uI24WyPk5hJz5
+	i+q5lDq7hNnSLNvCODbeeoerUZFBp2dz4ANCJ+wMKl//ZiurI/ONMORZ8PLCkCKs
+	6aFi7iWTwUPhhCHyoiAXm3W1goSj8oeexOnJiY5YUo88ssF0KDM1eEHIqu62V4gf
+	B1V9MgfLJjtkAeD5ivKT5gEdxXRMG+CCyrbflFLkDSNwgA16njeZrashfOVvcaUF
+	fMAm4OfGPVXBbJrJshJIfyz8UjyoF0UL2l5ricHmfu0VAoTLp0XcFP57WzrF/mre
+	vPnWmtD7W/P7eAnMHFHO9arEBcT5ANPl/nRZ0TkjW0ZDU4GGKrLqQzRXgbNJZjw7
+	4HkKnrqQpKE8wHcgT/CjxlmEwi7X6qM=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 28 Apr 2026 21:00:54 +0300 (EEST)
+	Tue, 28 Apr 2026 21:00:52 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 8A9D76089A;
-	Tue, 28 Apr 2026 21:00:53 +0300 (EEST)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 9B12B6089A;
+	Tue, 28 Apr 2026 21:00:51 +0300 (EEST)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63SHvnTG072098;
-	Tue, 28 Apr 2026 20:57:49 +0300
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63SHvogF072102;
+	Tue, 28 Apr 2026 20:57:50 +0300
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63SHvnTL072097;
-	Tue, 28 Apr 2026 20:57:49 +0300
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63SHvoCC072101;
+	Tue, 28 Apr 2026 20:57:50 +0300
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
         Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
         netfilter-devel@vger.kernel.org
-Subject: [PATCH nf 5/7] ipvs: fix shift-out-of-bounds in ip_vs_rht_desired_size
-Date: Tue, 28 Apr 2026 20:57:23 +0300
-Message-ID: <20260428175725.72050-6-ja@ssi.bg>
+Subject: [PATCH nf 6/7] sched/isolation: Make HK_TYPE_KTHREAD an alias of HK_TYPE_DOMAIN
+Date: Tue, 28 Apr 2026 20:57:24 +0300
+Message-ID: <20260428175725.72050-7-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260428175725.72050-1-ja@ssi.bg>
 References: <20260428175725.72050-1-ja@ssi.bg>
@@ -82,7 +82,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6B59448A52D
+X-Rspamd-Queue-Id: 6F38248A517
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -91,73 +91,71 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12268-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12266-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:email,ssi.bg:dkim,ssi.bg:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,ssi.bg:dkim,ssi.bg:mid];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[8]
 
-Calling roundup_pow_of_two() with 0 has undefined result:
+From: Waiman Long <longman@redhat.com>
 
-UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-shift exponent 64 is too large for 64-bit type 'unsigned long'
-CPU: 1 UID: 0 PID: 77 Comm: kworker/u8:4 Not tainted syzkaller #0 PREEMPT(full)
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/18/2026
-Workqueue: events_unbound conn_resize_work_handler
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- ubsan_epilogue+0xa/0x30 lib/ubsan.c:233
- __ubsan_handle_shift_out_of_bounds+0x385/0x410 lib/ubsan.c:494
- __roundup_pow_of_two include/linux/log2.h:57 [inline]
- ip_vs_rht_desired_size+0x2cf/0x410 net/netfilter/ipvs/ip_vs_core.c:240
- ip_vs_conn_desired_size net/netfilter/ipvs/ip_vs_conn.c:765 [inline]
- conn_resize_work_handler+0x1b6/0x14c0 net/netfilter/ipvs/ip_vs_conn.c:822
- process_one_work kernel/workqueue.c:3302 [inline]
- process_scheduled_works+0xb5d/0x1860 kernel/workqueue.c:3385
- worker_thread+0xa53/0xfc0 kernel/workqueue.c:3466
- kthread+0x388/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+Since commit 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred
+affinity management"), kthreads default to use the HK_TYPE_DOMAIN
+cpumask. IOW, it is no longer affected by the setting of the nohz_full
+boot kernel parameter.
 
-Reported-by: syzbot+217f1db9c791e27fe54a@syzkaller.appspotmail.com
-Fixes: b655388111cf ("ipvs: add resizable hash tables")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+That means HK_TYPE_KTHREAD should now be an alias of HK_TYPE_DOMAIN
+instead of HK_TYPE_KERNEL_NOISE to correctly reflect the current kthread
+behavior. Make the change as HK_TYPE_KTHREAD is still being used in
+some networking code.
+
+Fixes: 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred affinity management")
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/sched/isolation.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index f5b7a2047291..ea450944465f 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -237,7 +237,7 @@ int ip_vs_rht_desired_size(struct netns_ipvs *ipvs, struct ip_vs_rht *t, int n,
- {
- 	if (!t)
- 		return 1 << min_bits;
--	n = roundup_pow_of_two(n);
-+	n = n ? roundup_pow_of_two(n) : 1;
- 	if (lfactor < 0) {
- 		int factor = min(-lfactor, max_bits);
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index dc3975ff1b2e..cf0fd03dd7a2 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -20,6 +20,11 @@ enum hk_type {
+ 	HK_TYPE_KERNEL_NOISE,
+ 	HK_TYPE_MAX,
  
++	/*
++	 * HK_TYPE_KTHREAD is now an alias of HK_TYPE_DOMAIN
++	 */
++	HK_TYPE_KTHREAD = HK_TYPE_DOMAIN,
++
+ 	/*
+ 	 * The following housekeeping types are only set by the nohz_full
+ 	 * boot commandline option. So they can share the same value.
+@@ -29,7 +34,6 @@ enum hk_type {
+ 	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
+ 	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
+ 	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
+ };
+ 
+ #ifdef CONFIG_CPU_ISOLATION
 -- 
 2.53.0
 
