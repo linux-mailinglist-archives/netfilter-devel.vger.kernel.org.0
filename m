@@ -1,44 +1,76 @@
-Return-Path: <netfilter-devel+bounces-12264-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12267-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mBBwLWXx8Gn9bAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12264-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 19:41:57 +0200
+	id SFNdG+f18GkPbgEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12267-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:01:11 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D34448A1FD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 19:41:56 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DADF48A526
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:01:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8B5CF300CC21
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 17:41:55 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2C0F53012E5B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 18:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9973B2FC8;
-	Tue, 28 Apr 2026 17:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8DE3290DE;
+	Tue, 28 Apr 2026 18:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="OK6PhHZV"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2AD44D022
-	for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2026 17:41:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871BA27E045;
+	Tue, 28 Apr 2026 18:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777398114; cv=none; b=qTQfinbYhOCg952lNf+PtETg/tI6Xm4O+Rg2O0V9oH4X86oqKnIEmfXQ3UYdpPInibMm7NDU7ghSqBeWJRPWrGdh0UVCZ6Mke+leOFLNdGX4ynmZFE7OPYeW8IYGhv6C/zDr79f7sy13a7uycpMSv13WiWnFhv9Juaq6HzFJCWA=
+	t=1777399264; cv=none; b=NnqDyfOvQ+4IyMAnM1n+gy8dERrEfHXSIhNrweeBEW85qN3KBXbVRSLMEYvvaBwdbGgySyj7lM+1JWcAkuEXAdd4oRmSD8xjxjCXYNaLCA92dMBEwbpfyP2yG2yoRIo/hozpF5b8dSZjKaCJ88lj4a7hKphofJ0vCiArqw3nJh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777398114; c=relaxed/simple;
-	bh=8mUgn8gYZ7wybOzSRhjEXcennaKpyJGHLCbcD26Pb/M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TlbOsAAEACc2JHXQwPop0w+ePQMJjyE059LyhXN64ZZH8ctl0okNYw5GAFqaxNpU1cn8JZ14Z65ZlwESpGaj/P6Jeoo1N3kEfwJ0yD54OoSMpXH4Ykzp9+9zDAbPb0vPqrTDGj5WASp70NQz3sEao2Dqz5XXBn9J38aRMB8zlUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 39F3760420; Tue, 28 Apr 2026 19:41:51 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH conntrack-tools] tests: nfct: make it suitable for CI pipeline
-Date: Tue, 28 Apr 2026 19:41:26 +0200
-Message-ID: <20260428174130.14287-1-fw@strlen.de>
+	s=arc-20240116; t=1777399264; c=relaxed/simple;
+	bh=P5oh7R4o0xFOfhPvD27lFRyTEccAfIrpV5bZ6UfOayw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jwYPKHVuheLCr/1dWssFOxnFJFB4g4ZzJqTBp+i1Ot32icbNAgs24uf+rSe8NoTIx6pgbZhtIuSa/JHEFIIbm/rnFbmtETll4bju5CM97h2iFEr7cUeSZCB81aGdM33I7PFAbL2cwcYGbxRY6cGFg2tIFq+9Y5gG2XayFUsK/UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=OK6PhHZV; arc=none smtp.client-ip=193.238.174.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mx.ssi.bg (localhost [127.0.0.1])
+	by mx.ssi.bg (Potsfix) with ESMTP id AB608212E8;
+	Tue, 28 Apr 2026 21:00:54 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
+	:content-transfer-encoding:date:from:from:message-id
+	:mime-version:reply-to:subject:subject:to:to; s=ssi; bh=tw7H3kER
+	OqKJbQMovylro4lI5okdam/U9KOsRQsbeZU=; b=OK6PhHZVt51eyUlW8q0Yhh0x
+	wRzuvwz6/KhRmqqhoWkHWj/i63IT77Gyma1Q6mpTr6R1FK2xp+6ahfiOHOujhVgy
+	FEnws7eoD3FZv54bdjiB3VLjf5CnkNAsTNF+ysRaCgCy2NrhMFEhSxAkvHTKZW/i
+	7lCSY2+CXBDcy8xxcVuH4iZJMzTWTzTplL3hGR5DmA/gqYY2hyn9rUc1Y70hfem6
+	6GUJIWSd1R25VsmUWOfrN9++44iK2fhZhAf9RR2PjY7iYAoDFXx4y7AK+SijC7I1
+	sdGCt0KK2/tToMAuFJa+/4FmeILqJtoXVMUfbj5FhxJO8iQi9ThaxHgU3tgzar95
+	ZFV3V9mgqAM2Vsj6XidPUZhdolzUsATrV2zrbZuq0PtmTaaBryb73aVKnjHxrQgX
+	P7a7Ia0bHjbs5eR6WDcIPtcgZM8NxS+ngF4uWIF1wDT4oAre7U2b6JGt04fJQR5e
+	UqOt18XJ9kozVNQr4vBYLjyHDaOld3J2ROVKuZks4bfNA1Nqm3IGEaEalfp0ldUR
+	FjFijR6GjzVBMF/P9/4Xg7L4Lc8mWIFp0nSiJAAChtjuJztvqp8DPREzWvVqicHX
+	FTuYwhnbeF6h3gapVCog1GYjlr5xvd0/x3dD8+2aODkyrX4P/N70p5fwdhzpJPeb
+	KFIEc5ACEBfUbVqfgDo=
+Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
+	by mx.ssi.bg (Potsfix) with ESMTPS;
+	Tue, 28 Apr 2026 21:00:53 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by box.ssi.bg (Potsfix) with ESMTPSA id 9E9D462902;
+	Tue, 28 Apr 2026 21:00:52 +0300 (EEST)
+Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63SHvmJD072078;
+	Tue, 28 Apr 2026 20:57:48 +0300
+Received: (from root@localhost)
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63SHvkB6072076;
+	Tue, 28 Apr 2026 20:57:46 +0300
+From: Julian Anastasov <ja@ssi.bg>
+To: Simon Horman <horms@verge.net.au>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
+        Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: [PATCH nf 0/7] IPVS fixes for nf
+Date: Tue, 28 Apr 2026 20:57:18 +0300
+Message-ID: <20260428175725.72050-1-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -47,311 +79,87 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 3D34448A1FD
+X-Rspamd-Queue-Id: 3DADF48A526
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[strlen.de];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-12264-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12267-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	NEURAL_SPAM(0.00)[0.109];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:dkim,ssi.bg:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test-live.sh:url,strlen.de:mid,strlen.de:email]
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[ssi.bg:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_SEVEN(0.00)[8]
 
-1. make run-test.sh call test prog via unshare -n.
-2. remove various modprobe calls, these are all built into
-   nf_conntrack.ko.
-3. make test.c exit nonzero when bad tests are detected.
-4. remove dccp+udplite, they fail on modern kernels due to removal of
-   these protocols.
-5. update test-live.sh.  Auto-rexec via unshare. Streamline output:
+        Hello,
 
-Check timeout policy test-generic for protocol 13
-    [NEW] unknown  13 3 src=10.0.0.1 dst=8.8.8.8 [UNREPLIED] src=8.8.8.8 dst=10.0.0.1
-Check timeout policy test-tcp for protocol tcp
-    [NEW] tcp      6 2 SYN_SENT src=10.0.0.1 dst=8.8.8.8 sport=5050 dport=80 [UNREPLIED] src=8.8.8.8 dst=10.0.0.1 sport=80 dport=5050
-Check timeout policy test-icmp for protocol icmp
-    [NEW] icmp     1 4 src=10.0.0.1 dst=8.8.8.8 type=8 code=0 id=41473 [UNREPLIED] src=8.8.8.8 dst=10.0.0.1 type=0 code=0 id=41473
+        This patchset contains accumulated fixes for the nf tree:
 
-The effective timeout is validated by checking the new timeout reported
-via ctnetlink.
+1-3) Fixes for the recently added resizable hash tables (v5)
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- tests/nfct/run-test.sh       |  15 +----
- tests/nfct/test-live.sh      | 125 +++++++++++++++++++++++------------
- tests/nfct/test.c            |   4 ++
- tests/nfct/timeout/03udplite |  16 -----
- tests/nfct/timeout/07dccp    |  16 -----
- 5 files changed, 89 insertions(+), 87 deletions(-)
- mode change 100644 => 100755 tests/nfct/run-test.sh
- mode change 100644 => 100755 tests/nfct/test-live.sh
- delete mode 100644 tests/nfct/timeout/03udplite
- delete mode 100644 tests/nfct/timeout/07dccp
+4) fixed races and locking for the estimation kthreads (v5)
 
-diff --git a/tests/nfct/run-test.sh b/tests/nfct/run-test.sh
-old mode 100644
-new mode 100755
-index f5f220baebf1..88999f8c8517
---- a/tests/nfct/run-test.sh
-+++ b/tests/nfct/run-test.sh
-@@ -7,16 +7,5 @@ then
- 	exit 1
- fi
- 
--gcc test.c -o test
--#
--# XXX: module auto-load not support by nfnetlink_cttimeout yet :-(
--#
--# any or all of these might be built-ins rather than modules, so don't error
--# out on failure from modprobe
--modprobe nf_conntrack_ipv4 || true
--modprobe nf_conntrack_ipv6 || true
--modprobe nf_conntrack_proto_udplite || true
--modprobe nf_conntrack_proto_sctp || true
--modprobe nf_conntrack_proto_dccp || true
--modprobe nf_conntrack_proto_gre || true
--./test timeout
-+test -x test || gcc test.c -o test
-+exec unshare -n ./test timeout
-diff --git a/tests/nfct/test-live.sh b/tests/nfct/test-live.sh
-old mode 100644
-new mode 100755
-index 22570875f4e6..6f752ee61f59
---- a/tests/nfct/test-live.sh
-+++ b/tests/nfct/test-live.sh
-@@ -3,71 +3,112 @@
- # simple testing for cttimeout infrastructure using one single computer
- #
- 
--WAIT_BETWEEN_TESTS=10
--
--# flush cttimeout table
--nfct flush timeout
--
--# flush the conntrack table
--conntrack -F
-+if [ "$1" != "run" ] ;then
-+	exec unshare -n ./$0 "run"
-+fi
-+
-+die() {
-+	echo "$@"
-+	exit 1
-+}
-+
-+warn() {
-+	echo "WARN: $@"
-+}
-+
-+tmp=$(mktemp)
-+cleanup()
-+{
-+	ip link del eth0
-+	rm -f "$tmp"
-+}
-+trap cleanup EXIT
-+
-+ret=0
-+check_timeout() {
-+	local proto="$1"
-+	local timeout="$2"
-+
-+	if ! grep '[NEW]' "$tmp" | grep "$proto $timeout";then
-+		warn "Did not find expected output, got:"
-+		cat "$tmp"
-+		echo ----- EOF -----
-+		ret=1
-+	fi
-+}
-+
-+add_rule() {
-+	local proto="$1"
-+	local name="$2"
-+
-+	echo "Check timeout policy $name for protocol $proto"
-+	iptables -I OUTPUT -t raw -p "$proto" -j CT --timeout "$name" || die "can't add -p $proto -j CT $name"
-+}
-+
-+rm_rules() {
-+	local proto="$1"
-+	local name="$2"
-+
-+	iptables -D OUTPUT -t raw -p $proto -j CT --timeout "$name" || warn "can't remove $proto $name rule"
-+	nfct del timeout "$name" || warn "can't remove $name policy"
-+}
-+
-+ip link add eth0 type dummy
-+ip link set eth0 up
-+ip link set lo up
-+ip addr add 10.0.0.1/8 dev eth0
-+ip route add default via 10.0.0.99 dev eth0
-+
-+WAIT_BETWEEN_TESTS=5
- 
- #
- # No.1: test generic timeout policy
- #
-+conntrack -E -p 13 > "$tmp" 2>/dev/null &
-+pid=$!
- 
--echo "---- test no. 1 ----"
--
--conntrack -E -p 13 &
--
--nfct add timeout test-generic inet generic timeout 100
--iptables -I OUTPUT -t raw -p all -j CT --timeout test-generic
--hping3 -c 1 -V -I eth0 -0 8.8.8.8 -H 13
--
--killall -15 conntrack
--
--echo "---- end test no. 1 ----"
-+nfct add timeout "test-generic" inet generic timeout 3 || die "can't add generic timeout"
-+add_rule 13 "test-generic"
-+hping3 -c 1 -I eth0 -0 8.8.8.8 -H 13 > /dev/null 2>&1
-+check_timeout 13 3
-+kill $pid
- 
- sleep $WAIT_BETWEEN_TESTS
--
--iptables -D OUTPUT -t raw -p all -j CT --timeout test-generic
--nfct del timeout test-generic
-+rm_rules 13 "test-generic"
- 
- #
- # No.2: test TCP timeout policy
- #
- 
--echo "---- test no. 2 ----"
-+conntrack -E -p tcp > "$tmp" 2>/dev/null &
-+pid=$!
- 
--conntrack -E -p tcp &
-+nfct add timeout test-tcp inet tcp syn_sent 2 || die "can't add tcp timeout policy"
-+add_rule "tcp" "test-tcp"
-+hping3 -S -p 80 -s 5050 8.8.8.8 -c 1 > /dev/null 2>&1
- 
--nfct add timeout test-tcp inet tcp syn_sent 100
--iptables -I OUTPUT -t raw -p tcp -j CT --timeout test-tcp
--hping3 -V -S -p 80 -s 5050 8.8.8.8 -c 1
-+check_timeout 6 2
-+kill $pid
- 
- sleep $WAIT_BETWEEN_TESTS
--
--iptables -D OUTPUT -t raw -p tcp -j CT --timeout test-tcp
--nfct del timeout test-tcp
--
--killall -15 conntrack
--
--echo "---- end test no. 2 ----"
-+rm_rules "tcp" "test-tcp"
- 
- #
- # No. 3: test ICMP timeout policy
- #
- 
--echo "---- test no. 3 ----"
-+conntrack -E -p icmp > "$tmp" 2>/dev/null &
-+pid=$!
- 
--conntrack -E -p icmp &
-+nfct add timeout test-icmp inet icmp timeout 4 || die "can't add test-icmp policy"
-+add_rule "icmp" "test-icmp"
- 
--nfct add timeout test-icmp inet icmp timeout 50
--iptables -I OUTPUT -t raw -p icmp -j CT --timeout test-icmp
--hping3 -1 8.8.8.8 -c 2
-+hping3 -1 8.8.8.8 -c 2 > /dev/null 2>&1
- 
--iptables -D OUTPUT -t raw -p icmp -j CT --timeout test-icmp
--nfct del timeout test-icmp
-+check_timeout 1 4
-+kill "$pid"
- 
--killall -15 conntrack
-+sleep $WAIT_BETWEEN_TESTS
-+rm_rules "icmp" "test-icmp"
- 
--echo "---- end test no. 3 ----"
-+exit $ret
-diff --git a/tests/nfct/test.c b/tests/nfct/test.c
-index a833dcc9e99b..bce927829190 100644
---- a/tests/nfct/test.c
-+++ b/tests/nfct/test.c
-@@ -97,4 +97,8 @@ int main(int argc, char *argv[])
- 	closedir(d);
- 
- 	fprintf(stdout, "OK: %d BAD: %d\n", ok, bad);
-+	if (bad)
-+		return 1;
-+
-+	return ok > 0 ? 0 : 1;
- }
-diff --git a/tests/nfct/timeout/03udplite b/tests/nfct/timeout/03udplite
-deleted file mode 100644
-index 8ed345901651..000000000000
---- a/tests/nfct/timeout/03udplite
-+++ /dev/null
-@@ -1,16 +0,0 @@
--# add policy object `test'
--nfct add timeout test inet udplite unreplied 10 ; OK
--# get policy object `test'
--nfct get timeout test ; OK
--# delete policy object `test'
--nfct delete timeout test ; OK
--# get unexistent policy object `dummy'
--nfct get timeout test ; BAD
--# delete policy object `test', however, it does not exists anymore
--nfct delete timeout test ; BAD
--# add policy object `test'
--nfct add timeout test inet udplite unreplied 1 replied 2 ; OK
--# get policy object `test'
--nfct get timeout test ; OK
--# delete policy object `test'
--nfct delete timeout test ; OK
-diff --git a/tests/nfct/timeout/07dccp b/tests/nfct/timeout/07dccp
-deleted file mode 100644
-index 1d885853f577..000000000000
---- a/tests/nfct/timeout/07dccp
-+++ /dev/null
-@@ -1,16 +0,0 @@
--# add policy object `test'
--nfct add timeout test inet dccp request 100 ; OK
--# get policy object `test'
--nfct get timeout test ; OK
--# delete policy object `test'
--nfct delete timeout test ; OK
--# get unexistent policy object `dummy'
--nfct get timeout test ; BAD
--# delete policy object `test', however, it does not exists anymore
--nfct delete timeout test ; BAD
--# add policy object `test'
--nfct add timeout test inet dccp request 1 respond 2 partopen 3 open 4 closereq 5 closing 6 timewait 7 ; OK
--# get policy object `test'
--nfct get timeout test ; OK
--# delete policy object `test'
--nfct delete timeout test ; OK
+5) fix for wrong roundup_pow_of_two() usage in the resizable hash
+   tables
+
+6-7) v2 of the changes from Waiman Long to properly guard against
+  the housekeeping_cpumask() updates:
+
+  https://lore.kernel.org/netfilter-devel/20260331165015.2777765-1-longman@redhat.com/
+
+  I added Fixes tag to the 7th patch. The original description:
+
+  Since commit 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred
+  affinity management"), the HK_TYPE_KTHREAD housekeeping cpumask may no
+  longer be correct in showing the actual CPU affinity of kthreads that
+  have no predefined CPU affinity. As the ipvs networking code is still
+  using HK_TYPE_KTHREAD, we need to make HK_TYPE_KTHREAD reflect the
+  reality.
+
+  This patch series makes HK_TYPE_KTHREAD an alias of HK_TYPE_DOMAIN
+  and uses RCU to protect access to the HK_TYPE_KTHREAD housekeeping
+  cpumask.
+
+Julian Anastasov (5):
+  ipvs: fixes for the new ip_vs_status info
+  ipvs: fix races around the conn_lfactor and svc_lfactor sysctl vars
+  ipvs: fix the spin_lock usage for RT build
+  ipvs: fix races around est_mutex and est_cpulist
+  ipvs: fix shift-out-of-bounds in ip_vs_rht_desired_size
+
+Waiman Long (2):
+  sched/isolation: Make HK_TYPE_KTHREAD an alias of HK_TYPE_DOMAIN
+  ipvs: Guard access of HK_TYPE_KTHREAD cpumask with RCU
+
+ include/linux/sched/isolation.h |   6 +-
+ include/net/ip_vs.h             |  31 ++++++--
+ net/netfilter/ipvs/ip_vs_conn.c |  76 ++++++++++---------
+ net/netfilter/ipvs/ip_vs_core.c |   2 +-
+ net/netfilter/ipvs/ip_vs_ctl.c  | 127 ++++++++++++++++++++++++--------
+ net/netfilter/ipvs/ip_vs_est.c  |  83 ++++++++++++---------
+ 6 files changed, 217 insertions(+), 108 deletions(-)
+
 -- 
 2.53.0
+
 
 
