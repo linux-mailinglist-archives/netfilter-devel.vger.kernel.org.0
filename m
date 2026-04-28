@@ -1,224 +1,228 @@
-Return-Path: <netfilter-devel+bounces-12270-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12273-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cMlTCSX38GkpbgEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12270-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:06:29 +0200
+	id OMIlNdYV8WmDdAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12273-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 22:17:26 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585C848A699
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 599E848B9AA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 22:17:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 69D6E309C664
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 18:01:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C8CC33013787
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2026 20:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886CF391831;
-	Tue, 28 Apr 2026 18:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8022F12CE;
+	Tue, 28 Apr 2026 20:15:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="xz81/0qx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KlhTZCEL"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D72328B62;
-	Tue, 28 Apr 2026 18:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777399285; cv=none; b=nCKnVXH9hX2L7fT5jY7a2w43W94QoFsl7QUIqGlWVHlL9Ldic/+AlYclp0bVPkXSVHcx4boJXE1xFx9y1hTyJ4nVEhncyk0Dez/y6W+RCsp2m5pq9tSxbxO6jSmA1KuenTQr70/pFPaKAhH8lv1MNK51HhA8to0BJxo8jmVP2P4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777399285; c=relaxed/simple;
-	bh=HnsSggn59XwsXpXlw26F6woxCxqLez7Uhtrw5KcGl7k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FXnL4j2p2/93yQ9QgVRhSyrGM7R0cioXNp0JxqUADTVK/FTbok0wr18fkhMSe2I681/TpsFFlIFDMmx4hsPJxFyrDRAJweqhEuFIBYAFmRcwb+XyYBAzNtJvy6KWNi5ajCsA3be5cFp+4lgLD6isXMOhow0ttA82jIWN3H/jtEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=xz81/0qx; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 9B80521833;
-	Tue, 28 Apr 2026 21:00:56 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-transfer-encoding:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=0/PuZJiSSrczQwBCm21KJcXxxGep/c+U2tjHmFj4Djo=; b=xz81/0qx0Xu/
-	PlNplArP29eyt/f4ojtmUqoKv7oVg/Rlp8H4RdPMKF6OJAy2xgBTKC09w2Cnkxv5
-	8tesBO3xuAjGD2kQmA/7mdhVI7XXuL9Gaujb5EeyuKJcJq1+36eHXm394DcfgUr8
-	VeLKfFW+u03SfEUAQdbACn/UEZxDl1bi9k1FVeKpjRHxZqPaesx6oBvMO8a+9wct
-	uxo/Ci20MIDKYpx22rgwBXtf0bT+EZ5VGnF79PusJ7nbmDgcYaQC6dT6GLrUsll/
-	XczRqM8mlhkkg/8yjfu0FsSaUyW1ZZkWO304ETItPxncC6CPKjDIdzm3QG7sG9nH
-	06Z8jFQrUaRm5AM/nXA1ovWhCcsShVhSWiMCeKfW3fHgXD27U21wVBKDKsjqzT6P
-	ENK/53BcgOYnmH6P/58k/a9VS0S+sHRy0xg90saO/qAUGi8hszvoOxGXspI68o87
-	Q8QE2rKbf6pfIABVw2vqgw3bh8sqNb8q6ZxZDZyBfL2/7479JLAkiKvNvtxlBm8V
-	udw+cMb5gtQnE950+h9fnfUl5/ni36I0yyqigk4vGWe3FxS8+A1WcaB4emXqBcWg
-	RmsrFSyVxYYHQeh80vSnHYuBfYhJkKf0F+KcafK7fwgPQV84efaiQp/40jlxwYnL
-	u4tUfPMmDgTxVJKMYQOAC0Cm1dF4onY=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 28 Apr 2026 21:00:55 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 1876F62902;
-	Tue, 28 Apr 2026 21:00:55 +0300 (EEST)
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63SHvoG7072106;
-	Tue, 28 Apr 2026 20:57:50 +0300
-Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63SHvoaR072105;
-	Tue, 28 Apr 2026 20:57:50 +0300
-From: Julian Anastasov <ja@ssi.bg>
-To: Simon Horman <horms@verge.net.au>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
-        Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH nf 7/7] ipvs: Guard access of HK_TYPE_KTHREAD cpumask with RCU
-Date: Tue, 28 Apr 2026 20:57:25 +0300
-Message-ID: <20260428175725.72050-8-ja@ssi.bg>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260428175725.72050-1-ja@ssi.bg>
-References: <20260428175725.72050-1-ja@ssi.bg>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4D125FA05
+	for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2026 20:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.180
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777407354; cv=pass; b=afULjdDVFbWztcKSKHMEsFNgALPBLi2QeluQQtkA/4LhLFyrUMa/SuewkH0WesYndsUwLdgl4WZmq7ogd3FeK4NRqvzGdVUj9eSMGDVhWKPsQRaFv1dNQf9Ab5MSbAfr/Nt1wehCTeg1Uusp3sSHav7AS3nBx65kvvsVNxFVegU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777407354; c=relaxed/simple;
+	bh=jubsY6PGHnTXGhA5KKyDi/LWS9PbjTsPha5xbgCuu/I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CcjcT6rr2t5oltJf5MBanZGTM+8puySF1Nora7X8u/Jt6IlU2oMecEHGCajrIDWl16RJjGWVhlmyayMnLa9Snh90On0TdmWUHRiRtgBHypMzMkj+wz7iRIK7Yk8oeKqMtRm8Bz+XHiPuaHBNNYAfHB2i7GFIkSTiXeECFlvCvok=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KlhTZCEL; arc=pass smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-82f9fdfc965so4822745b3a.1
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2026 13:15:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1777407353; cv=none;
+        d=google.com; s=arc-20240605;
+        b=igBXgRMatx4MYrVwNxfDT1GOSX1gbdvwYWIr9mF4LYgU5faU8xz0ftUQQlIewrLyY6
+         Csv3WRYck+o5FGa2l3+QkXFUu7qhM4tlzXs5/+tdbJVYagVyf9ae83t7rK28gcGKGHzu
+         +ter1LGewNaYYd4ql4Tz7I5gCBlpzfGBQISu00BHgNTawdg9pHaRDW6/RzBXBW6vyCGx
+         82QsPTpB6k2nGF2bDfikFDH6uEzL1cD/cTG55conIJv4RBnGYORimNUTWVLNdWbYMu1o
+         FtiP/pE1US1ZouUSl0DNHgvj6dtRIIggVPa3zjSOwL8Zmv0bwcWoMYgYHYBSSPxUB9Vb
+         nSag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=uQV+ZUo0kltumkkS/38YnBQvpZ5Ru0K+aNTeRpdyz74=;
+        fh=/qhlLF6Ita+oB42LPl2GTS5UkBhHCTiZ8SE+c0x9POg=;
+        b=SovVt7WMxA7bnMCWEUitsLQlmt0qK4w6/zihYgjwQihf9dOqNb5sii39YfOOjy2ufY
+         xDm4XxFNKHGSTOf/VnlvzSKVuy/66ImM5d6vsI1CXyNkfVnMYgL4UKGaGOrP3aViQd5t
+         kRlWT18z3QxqaoRAw3cRRb96GhT3q3P8Nyl3UikG7q19VbBFfrMcNBsI6LQG+0H1wbmd
+         sN5Y4OwokfPgU8A6ncIf9KY6k/Lt0KXxlpIawNDMqbC/T3ooRfT50Th9XEN8OdUSmCdh
+         PIoDiUrzUCEl6iNtiEvNBeElOPEgDclYAhwQDhd8FoF4rF21FzmY5MFI/vnqkByBkZa0
+         BWGQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1777407353; x=1778012153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uQV+ZUo0kltumkkS/38YnBQvpZ5Ru0K+aNTeRpdyz74=;
+        b=KlhTZCELSkeBlc2IBRjM/spYNSJcZEx+XzogZUf8EXFJF3JgePK7hmDvz5NuTFJiJv
+         0BK3ai6GXs6Ba5FV/d4g1cdK/BL6ls/W71AfgslX1RqhbkmZGwqATBsS3wGqmGeH6nb/
+         xNU61DVSE4tbJYhfIKjDVbPYfQHKGcxwSbWUEqeSX2GlYVe7n1TWGmwLyTSdTy2lzZnj
+         VNdG2g0+RgBVVsWPCECBHC8P2dK1ajWkNZH/0ZwWaclyCSZEiTKU6Gl1JhiyMvC/Ti3k
+         KiEHqJicHui4HFNs3+FoX2afrvltIR+2kaN7IlVkx5wnlKskFTKJ6aVIH+p0ujd5d0bl
+         zUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777407353; x=1778012153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=uQV+ZUo0kltumkkS/38YnBQvpZ5Ru0K+aNTeRpdyz74=;
+        b=KyM9oVo16lI3B4ajcCxNY9Q7lMuG55XD65U3XylprZ6qCMyEZ1AX9Ff408iQAw0pOz
+         UIcmfpSmGj+RATas8ii35NN8OFAJaQT1VBu0ZsZbeoN3xUy/+UOV9Wmu6d2h88g9kFYE
+         r/mDFmukzXJLVfo7vTbrjAQNIYl3Dd8QYPr4GVUKVSSYyAG+KZTadw9v+1cCDD97dG0S
+         u4eFvTLYZlhXVRK2G4hFbpixCelGXXQVjKd0IAM3SEzpqOIkplWdTw/ybYzVetLK0MOO
+         pC8vTlESzesl0t7JII0QuTf0dKTWdrKDsqlOGOCwkCQbivsX6HCFcpQ7g9OcVa6AhG9q
+         U06A==
+X-Forwarded-Encrypted: i=1; AFNElJ+19sddNGxjBLtbBYJQBT8y5eETIrSzksHGh+Eg1tx8xY1wZmsxWM8uAv52Qxze4mZ2BsW/tvnyaLmIFV11zDU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJ1OQXwW6K5iVSvMaNE7wfr7UUh19LUp4Bb31Xb+PEQgiocnPI
+	eErS/0ZFNabFwAfpF8+NIp6rRMD6nLc4C6LYaEQrUNKGZdxhEil/VPK9Eaapdzn7jmBB15kGnMB
+	0zLcGP65CjulbNK+ym85pv39xcwuQuzE=
+X-Gm-Gg: AeBDieuzA4/uR9m6yMJuNxODFvXr72bx2A6fkGplkfU6OBZtoavx393UO5X3mUUDmuv
+	He7Bt00oanwp1Ol2R8mS+kS4H194w3eOOAVenC14t8xRdJvcJdRBvY3bTBqhPb2rqHqBQnlgFR9
+	TbfdcRwIdyTOtwvEffgWt7BvglfOTctvE3QZBmez/EcdKoVZwv2fF0xdV+thTmN+oXYobyAJmtI
+	5eorFvc7UY5JCaCuGVbnDM3u2ConcnY6G3fBmhXPraxXtyDOCsA53jfuZl8Io2PYeyz4SV81zjT
+	sQowRSF904apztrytnFjT9Z8EroF6c15ryHm/8jOUkXXyez/THQieYBxMfg/P1R9Ky7ljvLCGKY
+	Y2HU31D8uFadqYgwHX8+0tIxJLCaK0vdl5oE2n9AYN5yKuxFs9g==
+X-Received: by 2002:a05:6a00:f9a:b0:82c:2155:5b6d with SMTP id
+ d2e1a72fcca58-834ddabdb7dmr4872052b3a.12.1777407352913; Tue, 28 Apr 2026
+ 13:15:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 585C848A699
+References: <cover.1777214801.git.lucien.xin@gmail.com> <20260428140642.GT900403@horms.kernel.org>
+In-Reply-To: <20260428140642.GT900403@horms.kernel.org>
+From: Xin Long <lucien.xin@gmail.com>
+Date: Tue, 28 Apr 2026 16:15:40 -0400
+X-Gm-Features: AVHnY4Kx985VXS0AEmk_DrhzVNCcnQW-CWSjNlk5dYUnFRn6jZWfAV-j5B80K0Q
+Message-ID: <CADvbK_dNRkb8UeGi+x=HhH+tJZSpUTDyHdQLDxUQA1dinbaFNg@mail.gmail.com>
+Subject: Re: [PATCH net v2 0/2] sctp: fix a vtag verification failure caused
+ by stale INITs
+To: Simon Horman <horms@kernel.org>
+Cc: network dev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org, 
+	linux-sctp@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, 
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Yi Chen <yiche.cy@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 599E848B9AA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12270-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-12273-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,kernel.org,google.com,redhat.com,netfilter.org,strlen.de,nwl.cc,gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:dkim,ssi.bg:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lucienxin@gmail.com,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-From: Waiman Long <longman@redhat.com>
+On Tue, Apr 28, 2026 at 10:06=E2=80=AFAM Simon Horman <horms@kernel.org> wr=
+ote:
+>
+> On Sun, Apr 26, 2026 at 10:46:39AM -0400, Xin Long wrote:
+> > Similar to Scenario B in commit 8e56b063c865 ( netfilter: handle the
+> > connecting collision properly in nf_conntrack_proto_sctp"):
+> >
+> > Scenario B: INIT_ACK is delayed until the peer completes its own handsh=
+ake
+> >
+> >   192.168.1.2 > 192.168.1.1: sctp (1) [INIT] [init tag: 3922216408]
+> >     192.168.1.1 > 192.168.1.2: sctp (1) [INIT] [init tag: 144230885]
+> >     192.168.1.2 > 192.168.1.1: sctp (1) [INIT ACK] [init tag: 392221640=
+8]
+> >     192.168.1.1 > 192.168.1.2: sctp (1) [COOKIE ECHO]
+> >     192.168.1.2 > 192.168.1.1: sctp (1) [COOKIE ACK]
+> >   192.168.1.1 > 192.168.1.2: sctp (1) [INIT ACK] [init tag: 3914796021]=
+ *
+> >
+> > There is another case:
+> >
+> > Scenario F: INIT is delayed until the peer completes its own handshake
+> >
+> >   192.168.1.2 > 192.168.1.1: sctp (1) [INIT] [init tag: 3922216408]
+> >   (OVS upcall)
+> >     192.168.1.1 > 192.168.1.2: sctp (1) [INIT] [init tag: 144230885]
+> >     192.168.1.2 > 192.168.1.1: sctp (1) [INIT ACK] [init tag: 392221640=
+8]
+> >     192.168.1.1 > 192.168.1.2: sctp (1) [COOKIE ECHO]
+> >     192.168.1.2 > 192.168.1.1: sctp (1) [COOKIE ACK]
+> >   192.168.1.2 > 192.168.1.1: sctp (1) [INIT] [init tag: 3922216408]
+> >   (delayed)
+> >   192.168.1.1 > 192.168.1.2: sctp (1) [INIT ACK] [init tag: 3914796021]=
+ *
+> >
+> > In this case, the delayed INIT (e.g. due to OVS upcall) is recorded by
+> > conntrack, which prevents vtag verification from dropping the unexpecte=
+d
+> > INIT-ACK in nf_conntrack_sctp_packet():
+> >
+> >   vtag =3D ct->proto.sctp.vtag[!dir];
+> >   if (!ct->proto.sctp.init[!dir] && vtag && vtag !=3D ih->init_tag)
+> >           goto out_unlock;
+> >
+> > This happens because ct->proto.sctp.init[!dir] is set by the delayed IN=
+IT,
+> > even though it is stale.
+> >
+> > Fix this in two parts:
+> >
+> > - In netfilter: Do not record INITs whose init_tag matches the peer vta=
+g,
+> >   as they carry no new handshake state in the 1st patch.
+> >
+> > - In SCTP: Prevent endpoints from responding to such INITs with INIT-AC=
+K,
+> >   ensuring correctness even when middleboxes lack the netfilter fix in
+> >   the 2nd patch.
+> >
+> > A follow-up selftest for this scenario will be posted in a separate pat=
+ch
+> > by Yi Chen.
+>
+> Hi Xin,
+>
+> FTR: There is an AI generated review of this patchset available on
+> sashiko.dev. I have looked over this and I do not believe the feedback
+> there should block progress of this patchset.
+Right, the feedback is false in practice::
 
-The ip_vs_ctl.c file and the associated ip_vs.h file are the only places
-in the kernel where HK_TYPE_KTHREAD cpumask is being retrieved and used.
-Now that HK_TYPE_KTHREAD/HK_TYPE_DOMAIN cpumask can be changed at run
-time. We need to use RCU to guard access to this cpumask to avoid a
-potential UAF problem as the returned cpumask may be freed before it
-is being used.
+- "No response" is not a clean signal
+  (could be loss, firewall, rate limiting, etc.).
+- Even guessing this init_tag does not let attackers hijack the association
+  (they still lack the correct verification tag and state).
 
-We can replace HK_TYPE_KTHREAD by HK_TYPE_DOMAIN as they are aliases
-of each other, but keeping the HK_TYPE_KTHREAD name can highlight the
-fact that it is the kthread initiated by ipvs that is being controlled.
-
-Fixes: 03ff73510169 ("cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/net/ip_vs.h            | 20 ++++++++++++++++----
- net/netfilter/ipvs/ip_vs_ctl.c | 13 ++++++++-----
- 2 files changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index d28ad8a0541f..02762ce73a0c 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1412,7 +1412,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
- 	return ipvs->sysctl_run_estimation;
- }
- 
--static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
-+static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
- {
- 	if (ipvs->est_cpulist_valid)
- 		return ipvs->sysctl_est_cpulist;
-@@ -1530,7 +1530,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
- 	return 1;
- }
- 
--static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
-+static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
- {
- 	return housekeeping_cpumask(HK_TYPE_KTHREAD);
- }
-@@ -1565,6 +1565,18 @@ static inline int sysctl_svc_lfactor(struct netns_ipvs *ipvs)
- 	return READ_ONCE(ipvs->sysctl_svc_lfactor);
- }
- 
-+static inline bool sysctl_est_cpulist_empty(struct netns_ipvs *ipvs)
-+{
-+	guard(rcu)();
-+	return cpumask_empty(__sysctl_est_cpulist(ipvs));
-+}
-+
-+static inline unsigned int sysctl_est_cpulist_weight(struct netns_ipvs *ipvs)
-+{
-+	guard(rcu)();
-+	return cpumask_weight(__sysctl_est_cpulist(ipvs));
-+}
-+
- /* IPVS core functions
-  * (from ip_vs_core.c)
-  */
-@@ -1904,7 +1916,7 @@ static inline void ip_vs_est_stopped_recalc(struct netns_ipvs *ipvs)
- 	/* Stop tasks while cpulist is empty or if disabled with flag */
- 	ipvs->est_stopped = !sysctl_run_estimation(ipvs) ||
- 			    (ipvs->est_cpulist_valid &&
--			     cpumask_empty(sysctl_est_cpulist(ipvs)));
-+			     sysctl_est_cpulist_empty(ipvs));
- #endif
- }
- 
-@@ -1920,7 +1932,7 @@ static inline bool ip_vs_est_stopped(struct netns_ipvs *ipvs)
- static inline int ip_vs_est_max_threads(struct netns_ipvs *ipvs)
- {
- 	unsigned int limit = IPVS_EST_CPU_KTHREADS *
--			     cpumask_weight(sysctl_est_cpulist(ipvs));
-+			     sysctl_est_cpulist_weight(ipvs);
- 
- 	return max(1U, limit);
- }
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 18b89f096d83..cc684dfa556d 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2383,11 +2383,14 @@ static int ipvs_proc_est_cpumask_get(const struct ctl_table *table,
- 
- 	mutex_lock(&ipvs->est_mutex);
- 
--	if (ipvs->est_cpulist_valid)
--		mask = *valp;
--	else
--		mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
--	ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
-+	/* HK_TYPE_KTHREAD cpumask needs RCU protection */
-+	scoped_guard(rcu) {
-+		if (ipvs->est_cpulist_valid)
-+			mask = *valp;
-+		else
-+			mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
-+		ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
-+	}
- 
- 	mutex_unlock(&ipvs->est_mutex);
- 
--- 
-2.53.0
-
-
+Thanks.
 
