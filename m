@@ -1,222 +1,93 @@
-Return-Path: <netfilter-devel+bounces-12284-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12285-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wMoHIgrY8Wm3kgEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12284-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 12:06:02 +0200
+	id WN3wH4P98WmElwEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12285-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 14:45:55 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E323E492933
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 12:06:01 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF3F49439E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 14:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E225E3123141
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 10:00:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4DC9330325B5
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 12:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2ED3C3BF7;
-	Wed, 29 Apr 2026 09:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5C33F54C9;
+	Wed, 29 Apr 2026 12:42:00 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from a3.inai.de (a3.inai.de [144.76.212.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4C575809
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2026 09:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D283F23AA
+	for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2026 12:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.212.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777456798; cv=none; b=ojNv8lta1a7ypyRde/HyeZIQxjPy1YXGkJ7egGTnOy9Z06ih4tq1PL54LnjxwNZlV/E+/X2YW2C2Pgpakx1WbUeD4SVoIDZmn6RpBl7suBDzBs3yQTwPrJ4RTQAXqYCa3pCJkxacdrdYD8RTpPkztPDqvAnyE0vswBUOLbc6aPs=
+	t=1777466520; cv=none; b=LUQUhN5wcN7G8AcSNRR4JN8o9NPifdPBeiJ5pGihY1gEhZyzH/SIecXePVAWTOE3sfgTR/gAH3ghL0UcKEKD/miHN5rCQQYZOCMPxXZuVrkEftWAkqmOzuDMQ0Lo2wl8VFszPpGm0GmTrn16xDQdOti4r6Z3xql8LMLu+0RSlC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777456798; c=relaxed/simple;
-	bh=rhuy/sYm+M0zYQwug0X402cIA2TyRVKh+edLoRpK3Hg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CPOBlAfwXJFYHU71ReLH5BVSw8qnX/XPQovdGX3zkbtC6cLsi+0RlIifu3Ay3BKe4Jg9OoHQ59yQXQpn+rGtHNBYOVRrZVjFFh1u9WEqQ7DNQ85FRb0I71o2oVNUbwTvHjks8ptACBEEZL7+CIdkbs58+jtRc1HjHoOlvO/pEMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 062B960331; Wed, 29 Apr 2026 11:59:53 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next] netfilter: x_tables: disable 32bit compat interface in user namespaces
-Date: Wed, 29 Apr 2026 11:59:46 +0200
-Message-ID: <20260429095949.20910-1-fw@strlen.de>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1777466520; c=relaxed/simple;
+	bh=JQJFRLFeX3aIm4bSI7SbBlzTzXsY8sbWqb2cMuwhMAM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=hp8MYV/nFdj8r0FnLtpK6uUlfjXfypnXOjOBwAnju2q1iGUh6S3T3W7/ZS/OE8mV3XIs+9EzyRg9B19VYLn981bsG1vtkwqMPg4x/r5B1fZxX2N/P4+zk4MyEPl/VwBxsI7jOLVhtWEEMMABrKE9HGEg3tcyU1eV11KqHqOi33s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de; spf=pass smtp.mailfrom=inai.de; arc=none smtp.client-ip=144.76.212.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inai.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inai.de
+Received: by a3.inai.de (Postfix, from userid 25121)
+	id 879C11003C5108; Wed, 29 Apr 2026 14:33:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by a3.inai.de (Postfix) with ESMTP id 8726A1100AFC08;
+	Wed, 29 Apr 2026 14:33:02 +0200 (CEST)
+Date: Wed, 29 Apr 2026 14:33:02 +0200 (CEST)
+From: Jan Engelhardt <ej@inai.de>
+To: Florian Westphal <fw@strlen.de>
+cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next] netfilter: x_tables: disable 32bit compat
+ interface in user namespaces
+In-Reply-To: <20260429095949.20910-1-fw@strlen.de>
+Message-ID: <950150qr-9p6p-q772-9796-p5o9o06r32q0@vanv.qr>
+References: <20260429095949.20910-1-fw@strlen.de>
+User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E323E492933
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 3BF3F49439E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[strlen.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-12284-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.476];
-	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[inai.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:mid,strlen.de:email]
+	MIME_TRACE(0.00)[0:+];
+	NEURAL_HAM(-0.00)[-0.952];
+	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FROM_NEQ_ENVFROM(0.00)[ej@inai.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12285-lists,netfilter-devel=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-This feature is required to use 32bit arp/ip/ip6/ebtables binaries on
-64bit kernels.  I don't think there are many users left.
 
-Support has been a compile-time option since 2021 and defaults to off
-since 2023.
+On Wednesday 2026-04-29 11:59, Florian Westphal wrote:
 
-The XTABLES_COMPAT config option is already off in many distributions
-including Debian and Fedora.
+>This feature is required to use 32bit arp/ip/ip6/ebtables binaries on
+>64bit kernels.  I don't think there are many users left.
 
-Give a few more months before complete removal but disable support in
-user namespaces already.
-
-Assisted-by: Claude Code:claude-sonnet-4-6
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- Alternatively this could be ripped out instantly, if thats
- preferred.  This provides a mix, it would still allow such
- a system to work in init userns.
-
- include/linux/netfilter/x_tables.h | 17 +++++++++++++++++
- net/bridge/netfilter/ebtables.c    |  4 ++++
- net/ipv4/netfilter/arp_tables.c    |  4 ++++
- net/ipv4/netfilter/ip_tables.c     |  4 ++++
- net/ipv6/netfilter/ip6_tables.c    |  4 ++++
- 5 files changed, 33 insertions(+)
-
-diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter/x_tables.h
-index 77c778d84d4c..4c5b3eba5a6e 100644
---- a/include/linux/netfilter/x_tables.h
-+++ b/include/linux/netfilter/x_tables.h
-@@ -524,4 +524,21 @@ int xt_compat_check_entry_offsets(const void *base, const char *elems,
- 				  unsigned int next_offset);
- 
- #endif /* CONFIG_NETFILTER_XTABLES_COMPAT */
-+
-+static inline bool xt_compat_check(void)
-+{
-+#ifdef CONFIG_NETFILTER_XTABLES_COMPAT
-+	if (!in_compat_syscall())
-+		return true;
-+
-+	pr_warn_once("%s %s\n",
-+		     "xtables 32bit compat interface no longer supported",
-+		     "in namespaces and will be removed soon.");
-+
-+	if (!capable(CAP_NET_ADMIN))
-+		return false;
-+#endif
-+	return true;
-+}
-+
- #endif /* _X_TABLES_H */
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index aea3e19875c6..92461c7e1e18 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -2449,6 +2449,8 @@ static int do_ebt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 	struct ebt_table *t;
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-@@ -2514,6 +2516,8 @@ static int do_ebt_set_ctl(struct sock *sk, int cmd, sockptr_t arg,
- 	struct net *net = sock_net(sk);
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 1cdd9c28ab2d..acb346731d89 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1416,6 +1416,8 @@ static int do_arpt_set_ctl(struct sock *sk, int cmd, sockptr_t arg,
- {
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-@@ -1444,6 +1446,8 @@ static int do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len
- {
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 23c8deff8095..e34647da90e9 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1622,6 +1622,8 @@ do_ipt_set_ctl(struct sock *sk, int cmd, sockptr_t arg, unsigned int len)
- {
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-@@ -1651,6 +1653,8 @@ do_ipt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- {
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index d585ac3c1113..0c037f025210 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1631,6 +1631,8 @@ do_ip6t_set_ctl(struct sock *sk, int cmd, sockptr_t arg, unsigned int len)
- {
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
-@@ -1660,6 +1662,8 @@ do_ip6t_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- {
- 	int ret;
- 
-+	if (!xt_compat_check())
-+		return -EPERM;
- 	if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
- 
--- 
-2.53.0
-
+This breaks the setup in a Debian x32 systemd-nspawn container with 
+xtables-legacy-multi.
 
