@@ -1,162 +1,168 @@
-Return-Path: <netfilter-devel+bounces-12288-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12296-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qDpVJz4T8mningEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12288-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 16:18:38 +0200
+	id iOn/FTcV8mljnwEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12296-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 16:27:03 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A219495888
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 16:18:34 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E883C495B36
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 16:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0FF9230B4A79
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 14:14:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9399630128C1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 14:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26D43BA243;
-	Wed, 29 Apr 2026 14:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825EA32B9B6;
+	Wed, 29 Apr 2026 14:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="C8zSWFFM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hx3STMW7"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DE53F166E;
-	Wed, 29 Apr 2026 14:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD081922F5;
+	Wed, 29 Apr 2026 14:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777472053; cv=none; b=BV3k3b+YeJnH14APooHIcwZGZRvsPaV/UFKNhH+yuCXG4qLpbb3RUB+uVXHA1IGlM2nDpUCRshK8UzkYUOULXvGzTC2YHFj6s7bw0i4DD5vW2k9a6VoepeSjV7Pp8UIXaeGw0iTHFKxaboAsXjxG2p8JAPWeLzNAFmJU1XPRMLk=
+	t=1777472677; cv=none; b=rqRgyB2oQ9yTZRF0WZnlr3jVJr0cNptgIemlKC00X2dItm201hY+H6kMaxcqp9wokw6f0t1vcMzSHxTT8Kp5N57YPZAsANlptm/5glrRs02FU6sB+StBTBIGZHNS0BAo14zMaATRn9CCMUIBwQcdwkvdfbnHkWB52A3aHY4bPfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777472053; c=relaxed/simple;
-	bh=q3hgn3XtgGXyTlNF4i4VVkcHuQBF9ThMMVu0/ffjyeo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iUGe7yJT21lGItKYkCEo91zmTytwMMzhdHnR4qMiPZ6D5fYlvymh/A/a17x6SMlpwcCuLyj6nwz5ysoh+r1N/47d1QpLI8qcClG0tGyOGhZAxuG8QHT9J1UY9S5TE3ikFTaTEm1XTAx7T1HdE8Jn8M7jdZtJ/Y4wk3lnKcNnGIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=C8zSWFFM; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 3184D21C5F;
-	Wed, 29 Apr 2026 17:14:09 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-transfer-encoding:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=gw69bEhoW4BCbmbNr3RmsbECGj6mMQOxqGgLHbtIkVE=; b=C8zSWFFMg/D1
-	HARb5MdFd3h9xCNOmrIDyCbCoENCA2MN1XOMzLS9siBCKsRBL39wcTUH6n7X3QqX
-	61MCx00++pGT1djV2og8Uu7pgvtqbCE5FvdNXKx5aXq03OvjwHrb419RUjLzFJu9
-	lQU69wAju/BzCHX2oaIRWpnbUf7fgLca8cBa5P1spz7pxQVMabyGN6wHBf5TpWUm
-	EIWzJVRLxYwXUkyEVgauNOFLD8y1nCXRX4tr1cs0aETRbZ/8IqkqV6NfBT0vNiyD
-	E1UWJGJN6DO9LhLTFRwmjUqQ6PhD5QMfkDI9gsNy0eGX/rM2FQFAJ52rhmIr6e6o
-	ImoYEOfzi9iU6QDEsyac09HTOqvTNunXBssVXdw1DxCcY92OEJJ9q3eLYQeRFGxp
-	hZNL2Tb298GF9Dhvuaw6nAlXGTSLApyFAAHWG9DPqlccxEFHEdpwcasYvI87gL8x
-	++9giJEBp4ZVQ7YVOIiMupOe9UbR6/XFxrGspom7WpxUPhatdu7QmkrpYhy0m/kJ
-	JXVgbqcKUZ7qzt3dI5M9nNw0bp0SeFVxKZxlj85TdtDRXGmawoDyU/0Ox/QzrkLV
-	mIXMmMGWH+8PWF9lnNiOcqj7/ZquZmYPsmJDsbK55HnRZuEUDeakZdoIbkqiWSE+
-	ydbjTKsUNctBaYfFJ9OGjl5pr+vEDPc=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Wed, 29 Apr 2026 17:14:08 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 9FD966088F;
-	Wed, 29 Apr 2026 17:14:07 +0300 (EEST)
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63TEBNAx085114;
-	Wed, 29 Apr 2026 17:11:23 +0300
-Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63TEBNE4085113;
-	Wed, 29 Apr 2026 17:11:23 +0300
-From: Julian Anastasov <ja@ssi.bg>
-To: Simon Horman <horms@verge.net.au>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
-        Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCHv2 nf 8/8] sched/isolation: Make HK_TYPE_KTHREAD an alias of HK_TYPE_DOMAIN
-Date: Wed, 29 Apr 2026 17:10:55 +0300
-Message-ID: <20260429141055.85052-9-ja@ssi.bg>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260429141055.85052-1-ja@ssi.bg>
-References: <20260429141055.85052-1-ja@ssi.bg>
+	s=arc-20240116; t=1777472677; c=relaxed/simple;
+	bh=H3g4OX8A13YSN1s3iVOllHQBhUlNDzTOhla9m9vQ+3o=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=oImG/9sYMCd/e+X4U0Rs9TBYQ2toZVpl+VS2dAG6xyEIgC/vifVxcxRmm/+4igsE9Zgf7DmEKAe5WmlvSp1G7olQQEwT6+xeoLiw8EjzQMfnenqVmSJu0CzOU3RyzNjk1u1+UbM6Eoj0Cruc/2XHbTitrvj/fVPxgPuS3ybVk+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hx3STMW7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE315C19425;
+	Wed, 29 Apr 2026 14:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777472677;
+	bh=H3g4OX8A13YSN1s3iVOllHQBhUlNDzTOhla9m9vQ+3o=;
+	h=From:Date:Subject:To:Cc:From;
+	b=hx3STMW7U4Q8kOOtOytA7jMOa6uDH5ystakdlPJ8CcErJhllOfMXMfgxTSTCQYI6D
+	 K27HXFU8dC5NvFr6g11Abt593FDBK3FoVBDTE/uzjKhzj+E3ObVfVQzpI734eRHkaK
+	 dfudEuKxyaz93qnghFMRYXMNs/j6qLGvR1e3bhxDtoRDEYLEKWbUyVEx8O6vY1oBZh
+	 CsZV+/H8nHe/WUXRu+gtclYIUCLLgPwTQUovMy2gAnlosn+sUi3QvpVcwId/JMOAQs
+	 wiEwKRvZhcqdwbrS0yWqBShmrR5ex2WlqpnNK3sEouoSc8Td6LTUAubM8Ve4DI+Te4
+	 XIm68GfAmDsrA==
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+Date: Wed, 29 Apr 2026 16:24:16 +0200
+Subject: [PATCH nf-next] netfilter: flowtable_offload: propagate CT mark to
+ hardware offload path
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 2A219495888
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260429-nft-flowtable-priority-v1-1-d4d7574bcf43@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/4WNQQqDMBBFryKz7pQk1kC76j2KC60THSqJTIJVJ
+ Hdv8AJdPh7//QMiCVOER3WA0MqRgy+gLxW8p86PhDwUBqOMVTej0LuEbg7f1PUz4SIchNOOlsj
+ dlRlM03RQxouQ4+0Mv8A79LQlaIuYOKYg+3m46lP/a68aNVqratf3TtfWPj8knuZrkBHanPMPS
+ wxQy8YAAAA=
+X-Change-ID: 20260420-nft-flowtable-priority-6eef902d255a
+To: Pablo Neira Ayuso <pablo@netfilter.org>, 
+ Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>
+Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+ netdev@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>
+X-Mailer: b4 0.14.3
+X-Rspamd-Queue-Id: E883C495B36
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12288-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12296-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	FROM_NEQ_ENVFROM(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	TO_DN_SOME(0.00)[]
 
-From: Waiman Long <longman@redhat.com>
+When a user-space process sets the Connection Tracking (CT) mark on a
+flow via nft_ct or xt_CONNMARK, that mark should be visible to the
+hardware offload path when the flow is accelerated through the flowtable
+infrastructure.
+Extend the flowtable offload attribute set to include the ct mark field
+when it has been explicitly set on the conntrack entry. This info can be
+used to fill QoS hw rules for the offloaded traffic.
 
-Since commit 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred
-affinity management"), kthreads default to use the HK_TYPE_DOMAIN
-cpumask. IOW, it is no longer affected by the setting of the nohz_full
-boot kernel parameter.
-
-That means HK_TYPE_KTHREAD should now be an alias of HK_TYPE_DOMAIN
-instead of HK_TYPE_KERNEL_NOISE to correctly reflect the current kthread
-behavior. Make the change as HK_TYPE_KTHREAD is still being used in
-some networking code.
-
-Fixes: 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred affinity management")
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- include/linux/sched/isolation.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/netfilter/nf_flow_table_offload.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index dc3975ff1b2e..cf0fd03dd7a2 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -20,6 +20,11 @@ enum hk_type {
- 	HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_MAX,
+diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+index 002ec15d988b..d5fe35b1a647 100644
+--- a/net/netfilter/nf_flow_table_offload.c
++++ b/net/netfilter/nf_flow_table_offload.c
+@@ -679,6 +679,22 @@ static int flow_offload_decap_tunnel(const struct flow_offload *flow,
+ 	return 0;
+ }
  
-+	/*
-+	 * HK_TYPE_KTHREAD is now an alias of HK_TYPE_DOMAIN
-+	 */
-+	HK_TYPE_KTHREAD = HK_TYPE_DOMAIN,
++static void nf_flow_rule_ct_meta_mark(const struct flow_offload *flow,
++				      struct nf_flow_rule *flow_rule)
++{
++#if IS_ENABLED(CONFIG_NF_CONNTRACK_MARK)
++	u32 mark = flow->ct ? READ_ONCE(flow->ct->mark) : 0;
 +
- 	/*
- 	 * The following housekeeping types are only set by the nohz_full
- 	 * boot commandline option. So they can share the same value.
-@@ -29,7 +34,6 @@ enum hk_type {
- 	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
- };
++	if (mark) {
++		struct flow_action_entry *entry;
++
++		entry = flow_action_entry_next(flow_rule);
++		entry->id = FLOW_ACTION_CT_METADATA;
++		entry->ct_metadata.mark = mark;
++	}
++#endif /* IS_ENABLED(CONFIG_NF_CONNTRACK_MARK) */
++}
++
+ static int
+ nf_flow_rule_route_common(struct net *net, const struct flow_offload *flow,
+ 			  enum flow_offload_tuple_dir dir,
+@@ -747,6 +763,8 @@ int nf_flow_rule_route_ipv4(struct net *net, struct flow_offload *flow,
+ 	if (nf_flow_rule_route_common(net, flow, dir, flow_rule) < 0)
+ 		return -1;
  
- #ifdef CONFIG_CPU_ISOLATION
--- 
-2.53.0
++	nf_flow_rule_ct_meta_mark(flow, flow_rule);
++
+ 	if (test_bit(NF_FLOW_SNAT, &flow->flags)) {
+ 		if (flow_offload_ipv4_snat(net, flow, dir, flow_rule) < 0 ||
+ 		    flow_offload_port_snat(net, flow, dir, flow_rule) < 0)
+@@ -776,6 +794,8 @@ int nf_flow_rule_route_ipv6(struct net *net, struct flow_offload *flow,
+ 	if (nf_flow_rule_route_common(net, flow, dir, flow_rule) < 0)
+ 		return -1;
+ 
++	nf_flow_rule_ct_meta_mark(flow, flow_rule);
++
+ 	if (test_bit(NF_FLOW_SNAT, &flow->flags)) {
+ 		if (flow_offload_ipv6_snat(net, flow, dir, flow_rule) < 0 ||
+ 		    flow_offload_port_snat(net, flow, dir, flow_rule) < 0)
 
+---
+base-commit: 09942ddedcb960f9e78fd817ec33f501d1040c5b
+change-id: 20260420-nft-flowtable-priority-6eef902d255a
+
+Best regards,
+-- 
+Lorenzo Bianconi <lorenzo@kernel.org>
 
 
