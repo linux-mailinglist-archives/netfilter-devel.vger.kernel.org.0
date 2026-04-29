@@ -1,95 +1,65 @@
-Return-Path: <netfilter-devel+bounces-12303-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12304-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0PL9NHFG8mmTpQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12303-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 19:57:05 +0200
+	id eM1eM1FP8mlHpgEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12304-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 20:34:57 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9546A498636
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 19:57:05 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE6D4992DA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 20:34:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4764C3037647
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 17:56:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 63F54306B0F7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2026 18:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C491941B376;
-	Wed, 29 Apr 2026 17:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E4441B346;
+	Wed, 29 Apr 2026 18:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cOCqCjDy"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="E/YwELSc"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07662413234
-	for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2026 17:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087CD41B379;
+	Wed, 29 Apr 2026 18:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777485379; cv=none; b=V16CCXBjX0MG/sOZYjfvbFbl/wYrClriNRC5CMpJvTfB1qA9as8cizvn6OKgPNwyH4b9ag68wTU0JCIkUasRgGcAX6Pw3TUh7jsGC0nzdTgN9eZx4IipUBdsOBVbnOT/GzT8KLcqDdU+iZoJiFId8N4ehMRTFPjVEkFETZHmnP0=
+	t=1777486978; cv=none; b=s+pu1UbQgYwxLU2ZpO6TSat+ckAN5TAKUs5mLnvwyh60u5hvc+Yqmf/NDqiGyoKGllT8LNYJohiTf6fiDlxG0z6945FKsmgnoAFyqYSRuufNokpVJ90iDc5G94t500kULjFfFAtPArGxXqsqP9aDBN1ytwQ17luwKohbj5IRD9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777485379; c=relaxed/simple;
-	bh=hPxaXd3xjy2aLoQlfjNn2TCMZsSvXUAXKxOi1BUCOho=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Eo2V1V8gHAOSietNt2HPKoWQfZUdSriT7TYLipFyLR8+KcMxtITMROlK1EcZcOCO19ksf4uFlMfu61BdA4J/OhntwwZjLEqF3I+Y23va5MlHxhbqzRxE/+HclzwHALfleh9pFwhZcald9Lazhk2uwuxkyhRVJChY6smMJSa1BcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cOCqCjDy; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-43cfd832155so59306f8f.1
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2026 10:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777485376; x=1778090176; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m+m+c0QFSmHtefs8UGhgSoeILNWZg2rQuDAplxBi5ys=;
-        b=cOCqCjDy12B6ro9esSG+onM18Ju1+DNt8/lJj8j5rlGgFor/h5mlDqT3erRDdbA+ES
-         gHnNUhRutovnkf/sUDku21JaD+l5b3ZO7HzsvKFyA+v1p8eOYzU+H/FXzPAMhg2ke7yG
-         UNeh6nngm5LEjC2jXkbTF3ix0qJV3IHHLcfDQX/YcUUl2BwRkS8XkBfbgD6gMUlnw+ji
-         lC5Ht0vquY4rWMH8MPLqKQAS/TYI6O7AFSiq9VyoMmWuzZPY4MDdk5o1k7fLD+0zEts9
-         TKqYWefBXPw6owlzPTYACRXr2GBB3VqLj7eitM5b9JV8SJJyPi5S7jhq1CfRZOEhEsBv
-         eMzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777485376; x=1778090176;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=m+m+c0QFSmHtefs8UGhgSoeILNWZg2rQuDAplxBi5ys=;
-        b=QV3RC+kvGMOhgNRirjuGfWlIa6PKv2iJc4lYp0F+JfYUVI/gWrfbqXRWHm9iqjINc8
-         moCZTFNmk+K4XhJS5EjwaPcgd5U27sZgNftsKNnpNBiZX7irmVQ7PCRfQa0bC32NjgCc
-         4HjsN6eWnQ34vQ751svLiizo9beCm+4pSU74Gf5vZx6OQuSnPR3Uu2XnmXG24Vxw0ngM
-         qZEGGerWxR7a4vrZjuBXiYznGceigRSGqAmk7KVpqZSpiOIZp7+8BipDMn35D52txtS9
-         QJVmCmFSvifZrHznkAEYE75OsEAn5ZQW9SUtOQnL4xRzP4elsjC0ZPGnkDYwp71isMzU
-         9NLA==
-X-Forwarded-Encrypted: i=1; AFNElJ/Oc1OkdX4TmHTCiNk7ylq7tIsryK3HrRGHYAH4wbgoB9HSJKH0XpPUJnuiTVbwTT6w6V276DtKtmn2TNyXn7k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbjVS9SCXTkyTKSvo8pnEM+YgNf9VVSdgnb0Su8NwTTSYUGUL5
-	ZtJAwmZRt/YA+7knNnOFwbsk8DQMgEt4PvX3noz4pSlnby+2yPBrDxI=
-X-Gm-Gg: AeBDiesS4xiUB53ALca6LBpaa9OOwkcqWd4m4dWTQUpD+P+mvqMynQLwJMgu6cz1XDD
-	lk7meWAv7KH3q+1c5pDrUcyWaBBH+cN6SKgUm1Os67NtSt8NfjSPKL3jP0XVrkYxlJY1Hm4t51V
-	Hw0RC6fcDpoMCxzIzqawjrzftPyrVv4lE3eDp9EvGlawILvxNMlDyIVxhwgYkXIt45bb11708rL
-	GcUxPM8xQuZHBRmaOSYjyHOGu6bcmU37UlFGv7CRrTWCphEtkJPq4K3iGuOmAbWoX/7tDPMUzwz
-	DvPiAVZ2xBmMdm36eciT4EgjpD55Fo08ymu15M7OmRxnKN1kzLjS/J4TeznSa+hREpXV0+NzGlq
-	doRG8mYzP77H3/gZAAAitHiLRD3Ak7RNo1VMiomJ6xu7DLub8z6gjiVs8AITHg5azY33slwarUo
-	GVsIXjAtDUhBzQSg==
-X-Received: by 2002:a5d:5848:0:b0:441:2473:c30a with SMTP id ffacd0b85a97d-446496d79aemr15475160f8f.31.1777485376333;
-        Wed, 29 Apr 2026 10:56:16 -0700 (PDT)
-Received: from debian.. ([2001:41d0:303:db6b::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-447b3d48517sm6183750f8f.5.2026.04.29.10.56.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2026 10:56:15 -0700 (PDT)
-From: Tristan Madani <tristmd@gmail.com>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	stable@vger.kernel.org,
+	s=arc-20240116; t=1777486978; c=relaxed/simple;
+	bh=pxBQFD3yB0Gs60ovsaXwB0grb9kcRUuCWUi5TwOVx3k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VyUVqRr9oMfVZyF3h6I5QW9AhgVxUIw2Lhj0BTuHgSavpcwgZggTmijqVtIp44G6/tGGBIfhQp49o5ca2aJbarZOVpTOj4/A5afRA/Bf6O7VZ4smlcTltBBOVZSapxvsmNTrS1TMdkRuZ/PccofuSzwwmCF6ov5C3NsB5mUUUD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=E/YwELSc; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=JIjFb8gPaZ6kuiayMq8XWinpuxhx075Z9YsnxLBDwpI=; b=E/YwELScW7aKXm7Cyz4kst3P9H
+	xqHlru3VzyZHf9l2aU8BCloTR+HE57Kv6SjDO+Lk0UQ8kv1mTjIzI73GWd4c5zk9Pf4pJjDYinkAZ
+	2YNHEIcOuFzDYSFdwzM+2etRKeINi6wbQYQeVdvsQwz0sKipxzGCsx88zy7MdvVcUbFKHY1aIYgjW
+	xgOVRAOf936qnr273MxWYb21O8wRcAh0gPtB6sYrNusuIr55OIHsH0R8IvaFbuWtIhtD0XWAwWsbD
+	1ZlLwNxOroAgdErVmLytu5mQGON+4Y7MdkW87LzfHqZfzRKEKTBM2N2vu+PC6FMqCUPcHYjtGgwJ7
+	QzlDMWkg==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1wI9TE-000000002Zv-2Qq1;
+	Wed, 29 Apr 2026 20:17:12 +0200
+Date: Wed, 29 Apr 2026 20:17:12 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Tristan Madani <tristmd@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org, stable@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Tristan Madani <tristan@talencesecurity.com>
-Subject: [PATCH 2/2] netfilter: ip6_tables: allocate hook ops before making table visible
-Date: Wed, 29 Apr 2026 17:56:12 +0000
-Message-ID: <20260429175613.1459342-3-tristmd@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260429175613.1459342-1-tristmd@gmail.com>
+Subject: Re: [PATCH 0/2] netfilter: fix NULL ops race in iptable lazy init
+Message-ID: <afJLKOpoHEGZ0zT_@orbyte.nwl.cc>
 References: <20260429175613.1459342-1-tristmd@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -97,116 +67,70 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9546A498636
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260429175613.1459342-1-tristmd@gmail.com>
+X-Rspamd-Queue-Id: CCE6D4992DA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12303-lists,netfilter-devel=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tristmd@gmail.com,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12304-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	DMARC_NA(0.00)[nwl.cc];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[nwl.cc:-];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.996];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[talencesecurity.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,orbyte.nwl.cc:mid]
 
-From: Tristan Madani <tristan@talencesecurity.com>
+Hi,
 
-ip6t_register_table() first calls xt_register_table() which adds the
-table to the per-netns list, making it visible to other code paths. Only
-after that does it allocate the per-net copy of hook ops via
-kmemdup_array(). This leaves a window where the table is findable via
-xt_find_table() but has ops=NULL.
+On Wed, Apr 29, 2026 at 05:56:10PM +0000, Tristan Madani wrote:
+> From: Tristan Madani <tristan@talencesecurity.com>
+> 
+> ipt_register_table() and ip6t_register_table() call xt_register_table()
+> which adds the new table to the per-netns list, making it visible to
+> other code paths.  Only afterwards do they allocate the per-net copy of
+> hook ops via kmemdup_array().  This leaves a window where the table is
+> findable via xt_find_table() but has ops=NULL.
+> 
+> If cleanup_net runs during this window (racing namespace teardown against
+> lazy table init), ipt_unregister_table_pre_exit() /
+> ip6t_unregister_table_pre_exit() finds the table and passes the NULL ops
+> pointer to nf_unregister_net_hooks(), causing a general protection fault.
+> 
+> Fix both ip_tables.c and ip6_tables.c by moving the ops allocation
+> before xt_register_table(), so the table is never in the list with a
+> NULL ops pointer.
 
-If cleanup_net runs during this window (racing namespace teardown
-against lazy table init), ip6t_unregister_table_pre_exit() finds the
-table via xt_find_table() and passes the NULL ops pointer to
-nf_unregister_net_hooks(), causing a general protection fault when it
-dereferences ops[0].pf.
+Is this true? Your patch moves the ops allocation, but new_table->ops is
+still assigned after xt_register_table() has returned. AIUI, the race
+window is just reduced, not eliminated.
 
-Fix this by allocating the ops array before calling xt_register_table(),
-so the table is never visible in the list with a NULL ops pointer.
+First I thought you could assign to table->ops since xt_register_table()
+calls kmemdup(), but 'table' is const.
 
-Fixes: ee177a54413a ("netfilter: ip6_tables: pass table pointer via nf_hook_ops")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tristan Madani <tristan@talencesecurity.com>
----
- net/ipv6/netfilter/ip6_tables.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
+I guess checking table->ops value in *_pre_exit() is nonsense as well
+since *_register_table() still runs in parallel. Do we need
+serialization between the two routines?
 
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index d585ac3c11133..17143277637a5 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1754,6 +1754,21 @@ int ip6t_register_table(struct net *net, const struct xt_table *table,
- 		return ret;
- 	}
- 
-+	if (template_ops) {
-+		num_ops = hweight32(table->valid_hooks);
-+		if (num_ops == 0) {
-+			xt_free_table_info(newinfo);
-+			return -EINVAL;
-+		}
-+
-+		ops = kmemdup_array(template_ops, num_ops, sizeof(*ops),
-+				    GFP_KERNEL);
-+		if (!ops) {
-+			xt_free_table_info(newinfo);
-+			return -ENOMEM;
-+		}
-+	}
-+
- 	new_table = xt_register_table(net, table, &bootstrap, newinfo);
- 	if (IS_ERR(new_table)) {
- 		struct ip6t_entry *iter;
-@@ -1761,24 +1776,13 @@ int ip6t_register_table(struct net *net, const struct xt_table *table,
- 		xt_entry_foreach(iter, loc_cpu_entry, newinfo->size)
- 			cleanup_entry(iter, net);
- 		xt_free_table_info(newinfo);
-+		kfree(ops);
- 		return PTR_ERR(new_table);
- 	}
- 
- 	if (!template_ops)
- 		return 0;
- 
--	num_ops = hweight32(table->valid_hooks);
--	if (num_ops == 0) {
--		ret = -EINVAL;
--		goto out_free;
--	}
--
--	ops = kmemdup_array(template_ops, num_ops, sizeof(*ops), GFP_KERNEL);
--	if (!ops) {
--		ret = -ENOMEM;
--		goto out_free;
--	}
--
- 	for (i = 0; i < num_ops; i++)
- 		ops[i].priv = new_table;
- 
--- 
-2.47.3
-
+Cheers, Phil
 
