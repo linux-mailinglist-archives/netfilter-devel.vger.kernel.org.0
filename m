@@ -1,60 +1,72 @@
-Return-Path: <netfilter-devel+bounces-12341-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12345-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oNYRCYB582mt4AEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12341-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 17:47:12 +0200
+	id 3zegNhiD82kx4wEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12345-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 18:28:08 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831004A514C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 17:47:11 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05C5F4A5AF0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 18:28:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E60613092950
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 15:42:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 37CA03018A9C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 16:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCD43AE70F;
-	Thu, 30 Apr 2026 15:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C3347276E;
+	Thu, 30 Apr 2026 16:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="hCU3qFkA"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=rexion.ai header.i=@rexion.ai header.b="XuWIc38a"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from out-13.smtp.spacemail.com (out-13.smtp.spacemail.com [63.250.43.96])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A04263B9
-	for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2026 15:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C733382FC;
+	Thu, 30 Apr 2026 16:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.250.43.96
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777563765; cv=none; b=RSZWWDr3MkY2Q6OHtJNJVUTdsBvxOf0bGPW5jypyfO8m0XDSxHCTXRG+0QMi7sokcPWI6TLCvVQ00tbsWHCYIORLqH4WC6x7GV4KupRdZ7CAIj1IJu2nKy75Sktp2X7no2fSymloaZp+UmZZxuWylRX7JTjinv4dFTQ9cpHNzUU=
+	t=1777566003; cv=none; b=p4YASj4Ed3HFrZ1mOhB+7ll5ygsS9eBbZ8cUtVnIgvmbewjxKK9DOgFru8nwk2eMgONp4Qnzn0r6zR0Xjr8Mq0yUihWhr7i+YSvr6qAVzOTc/MXWjZBa27xNvH3ykD42+h8GTgDkqEskeUXhHdaJoLWDXXdtOgm5Dcp3mp7rQVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777563765; c=relaxed/simple;
-	bh=+Jbm4ner5M/08dPujDY70fPGeAV6tg8DRXyC4MiCr5o=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MMckxgjmz0U5DU9t96RjMpoxPNsKunPuO+Q9P1yhE7nJ5iZSXXvxXM5C77Tlb+JNyF3zuw441A/4O3KbR331XxOE50ZQKpG15CZnnrrAT2VDZoJK3XApvjsrelxFs0Yzy5l3y/o6S/1zXj+/ayQQiJQN4YUln+jLlEgpm9Qmtlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=hCU3qFkA; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 4D1B66027F
-	for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2026 17:42:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1777563759;
-	bh=KTjRyHqSFhy5EE/SBRl+7FtJNy1JaxxWIyjOZobZ6Ss=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=hCU3qFkAJsLanf2tc9Hyh07hKYrEYqibWqMyaHbtt2b59DyvgRX1cuvDLA/S/MGTp
-	 WM22r+6CHkkyfGHF2eaiT75je03vXnPjkGjC4dsKM5NHdy9+KDQh+EdTWbgbonQTbg
-	 2/opkoBmf7KFohh789gBpoph56zoNsQINemGUl50EMyb7PpPBipOMA9uyNkmT5NH7/
-	 6Z8lVY8zBC9BfurR1RLtQy76WzZnOpRwfFFph3647LG3KHBYLgstdisGw+TFRekjn7
-	 yHwZAdSeK2rwbXySuzSZ1m29OkVbbZMtoykH0DlTE9l2lQTmBbHKzgYrzeA9Ay9AwR
-	 zmvKEoY35ZJGw==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf,v6 3/3] netfilter: flowtable: fix inline pppoe encapsulation in xmit path
-Date: Thu, 30 Apr 2026 17:42:17 +0200
-Message-ID: <20260430154217.260522-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260430154217.260522-1-pablo@netfilter.org>
-References: <20260430154217.260522-1-pablo@netfilter.org>
+	s=arc-20240116; t=1777566003; c=relaxed/simple;
+	bh=qcWpcofcD5xQONZRCZG2JVsf06Gg8/Szb89ksk12cPc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EOfdTe/nCzb38XWdJL28Vb/zKCPar62jUw/0LtdN+sxkgYCj28yoskoIpY82JLoCRTcdu88M3lk8NLJiIHIdJVL0utq/cnNHDdiDwWVV0SKKY/BunZb38t5t9sqpq3X2IC00tOFeFVJadg5SflfmlkDmnUgfC07Qbo+7s8eiXWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rexion.ai; spf=pass smtp.mailfrom=rexion.ai; dkim=fail (0-bit key) header.d=rexion.ai header.i=@rexion.ai header.b=XuWIc38a reason="key not found in DNS"; arc=none smtp.client-ip=63.250.43.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rexion.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rexion.ai
+Received: from Kyren (unknown [49.207.224.37])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.spacemail.com (Postfix) with ESMTPSA id 4g5zhy2N22z2x9M;
+	Thu, 30 Apr 2026 16:12:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rexion.ai;
+	s=spacemail; t=1777565558;
+	bh=6pgjt9PVUYpaS1esvDnc3/NQF+deIy8NLJHpEbltOuU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XuWIc38aDBqengf1KoqK6026kkWGm61ataZV36C7HzK24FQkNQQwbp9t8G5urljI7
+	 pc05NVEyrXCk/ZbMm9+ztAn8+xgdxqBdDLA+53dsf5yw6YrhmDeUILe7Q11T1d2unN
+	 2oN3kiFrewLAibblDAabMffJ+9Crep6ThLZ8vMCB7Se3jUDrUK8bJhEg+LISg6PO6K
+	 xOz7Swy5AqMqu12/Ba5tqe0F1ZtRYImpUKViuH0pelA0/6Clh6EUJLEb1Ig/RnwnB9
+	 +FCgZWfFI6ocpC3IHoTjsje9Xs2E/VfYokxQDF9ZIQjxmXpWc/fkF+ni1j90sGaxdz
+	 tAYnufDxflWGg==
+From: HACKE-RC <rc@rexion.ai>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>
+Cc: Phil Sutter <phil@nwl.cc>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	HACKE-RC <rc@rexion.ai>
+Subject: [PATCH net-next 0/2] netfilter: conntrack: validate parsed port values in IRC and Amanda helpers
+Date: Thu, 30 Apr 2026 21:42:28 +0530
+Message-ID: <20260430161230.3438973-1-rc@rexion.ai>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -62,226 +74,60 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 831004A514C
+X-Envelope-From: rc@rexion.ai
+X-Rspamd-Queue-Id: 05C5F4A5AF0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-12345-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
-	RCPT_COUNT_ONE(0.00)[1];
-	TAGGED_FROM(0.00)[bounces-12341-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[rexion.ai];
+	RCVD_COUNT_THREE(0.00)[4];
+	R_DKIM_PERMFAIL(0.00)[rexion.ai:s=spacemail];
+	DKIM_TRACE(0.00)[rexion.ai:~];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	NEURAL_SPAM(0.00)[0.005];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[rc@rexion.ai,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	NEURAL_HAM(-0.00)[-0.990];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[rexion.ai:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-Address two issues in the inline pppoe encapsulation:
+Both nf_conntrack_irc and nf_conntrack_amanda parse port numbers from
+application-layer protocol data using simple_strtoul(), which returns
+unsigned long. The results are stored in u16 variables without range
+checks, silently truncating values above 65535.
 
-- Add needs_gso_segment flag to segment PPPoE packets in software
-  given that there is no GSO support for this.
+This series adds explicit upper-bound validation in both helpers.
 
-- Use FLOW_OFFLOAD_XMIT_DIRECT since neighbour cache is not available
-  in point-to-point device, use the hardware address that is obtained
-  via flowtable path discovery (ie. fill_forward_path).
+Note: checkpatch warns about simple_strtoul being obsolete. Both
+call sites use the endptr output parameter to advance the parse
+position, which kstrtoul does not provide. Converting to kstrtoul
+would require restructuring the parsers, which is out of scope for
+this fix.
 
-Fixes: 18d27bed0880 ("netfilter: flowtable: inline pppoe encapsulation in xmit path")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v6: no changes
+HACKE-RC (2):
+  netfilter: nf_conntrack_irc: reject DCC port values above 65535
+  netfilter: nf_conntrack_amanda: reject port values above 65535
 
- include/net/netfilter/nf_flow_table.h |  4 ++-
- net/netfilter/nf_flow_table_core.c    |  1 +
- net/netfilter/nf_flow_table_ip.c      | 42 +++++++++++++++++++++++++--
- net/netfilter/nf_flow_table_path.c    |  7 ++++-
- 4 files changed, 49 insertions(+), 5 deletions(-)
+ net/netfilter/nf_conntrack_amanda.c | 10 ++++++----
+ net/netfilter/nf_conntrack_irc.c    |  7 ++++++-
+ 2 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-index b09c11c048d5..7b23b245a5a8 100644
---- a/include/net/netfilter/nf_flow_table.h
-+++ b/include/net/netfilter/nf_flow_table.h
-@@ -148,9 +148,10 @@ struct flow_offload_tuple {
- 	/* All members above are keys for lookups, see flow_offload_hash(). */
- 	struct { }			__hash;
- 
--	u8				dir:2,
-+	u16				dir:2,
- 					xmit_type:3,
- 					encap_num:2,
-+					needs_gso_segment:1,
- 					tun_num:2,
- 					in_vlan_ingress:2;
- 	u16				mtu;
-@@ -232,6 +233,7 @@ struct nf_flow_route {
- 			u32			hw_ifindex;
- 			u8			h_source[ETH_ALEN];
- 			u8			h_dest[ETH_ALEN];
-+			u8			needs_gso_segment:1;
- 		} out;
- 		enum flow_offload_xmit_type	xmit_type;
- 	} tuple[FLOW_OFFLOAD_DIR_MAX];
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 2c4140e6f53c..785d8c244a77 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -122,6 +122,7 @@ static int flow_offload_fill_route(struct flow_offload *flow,
- 
- 	flow_tuple->tun = route->tuple[dir].in.tun;
- 	flow_tuple->encap_num = route->tuple[dir].in.num_encaps;
-+	flow_tuple->needs_gso_segment = route->tuple[dir].out.needs_gso_segment;
- 	flow_tuple->tun_num = route->tuple[dir].in.num_tuns;
- 
- 	switch (route->tuple[dir].xmit_type) {
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 54263878451b..0cf8226d413d 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -552,7 +552,8 @@ static int nf_flow_vlan_push(struct sk_buff *skb, __be16 proto, u16 id,
- 	return 0;
- }
- 
--static int nf_flow_pppoe_push(struct sk_buff *skb, u16 id)
-+static int nf_flow_pppoe_push(struct sk_buff *skb, u16 id,
-+			      u32 needed_headroom)
- {
- 	int data_len = skb->len + sizeof(__be16);
- 	struct ppp_hdr {
-@@ -561,7 +562,7 @@ static int nf_flow_pppoe_push(struct sk_buff *skb, u16 id)
- 	} *ph;
- 	__be16 proto;
- 
--	if (skb_cow_head(skb, PPPOE_SES_HLEN))
-+	if (skb_cow_head(skb, needed_headroom + PPPOE_SES_HLEN))
- 		return -1;
- 
- 	switch (skb->protocol) {
-@@ -754,7 +755,8 @@ static int nf_flow_encap_push(struct sk_buff *skb,
- 				return -1;
- 			break;
- 		case htons(ETH_P_PPP_SES):
--			if (nf_flow_pppoe_push(skb, tuple->encap[i].id) < 0)
-+			if (nf_flow_pppoe_push(skb, tuple->encap[i].id,
-+					       needed_headroom) < 0)
- 				return -1;
- 			break;
- 		}
-@@ -768,6 +770,7 @@ struct nf_flow_xmit {
- 	const void		*source;
- 	struct net_device	*outdev;
- 	struct flow_offload_tuple *tuple;
-+	bool			needs_gso_segment;
- };
- 
- static void __nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
-@@ -788,10 +791,41 @@ static void __nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
- 	dev_queue_xmit(skb);
- }
- 
-+static unsigned int nf_flow_encap_gso_xmit(struct net *net, struct sk_buff *skb,
-+					   struct nf_flow_xmit *xmit)
-+{
-+	struct sk_buff *segs, *nskb;
-+
-+	segs = skb_gso_segment(skb, 0);
-+	if (IS_ERR(segs))
-+		return NF_DROP;
-+
-+	if (segs)
-+		consume_skb(skb);
-+	else
-+		segs = skb;
-+
-+	skb_list_walk_safe(segs, segs, nskb) {
-+		skb_mark_not_on_list(segs);
-+
-+		if (nf_flow_encap_push(segs, xmit->tuple, xmit->outdev) < 0) {
-+			kfree_skb(segs);
-+			kfree_skb_list(nskb);
-+			return NF_STOLEN;
-+		}
-+		__nf_flow_queue_xmit(net, segs, xmit);
-+	}
-+
-+	return NF_STOLEN;
-+}
-+
- static unsigned int nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
- 				       struct nf_flow_xmit *xmit)
- {
- 	if (xmit->tuple->encap_num) {
-+		if (skb_is_gso(skb) && xmit->needs_gso_segment)
-+			return nf_flow_encap_gso_xmit(net, skb, xmit);
-+
- 		if (nf_flow_encap_push(skb, xmit->tuple, xmit->outdev) < 0)
- 			return NF_DROP;
- 	}
-@@ -875,6 +909,7 @@ nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
- 		return NF_DROP;
- 	}
- 	xmit.tuple = other_tuple;
-+	xmit.needs_gso_segment = tuplehash->tuple.needs_gso_segment;
- 
- 	return nf_flow_queue_xmit(state->net, skb, &xmit);
- }
-@@ -1195,6 +1230,7 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
- 		return NF_DROP;
- 	}
- 	xmit.tuple = other_tuple;
-+	xmit.needs_gso_segment = tuplehash->tuple.needs_gso_segment;
- 
- 	return nf_flow_queue_xmit(state->net, skb, &xmit);
- }
-diff --git a/net/netfilter/nf_flow_table_path.c b/net/netfilter/nf_flow_table_path.c
-index 6bb9579dcc2a..9e88ea6a2eef 100644
---- a/net/netfilter/nf_flow_table_path.c
-+++ b/net/netfilter/nf_flow_table_path.c
-@@ -86,6 +86,7 @@ struct nft_forward_info {
- 	u8 ingress_vlans;
- 	u8 h_source[ETH_ALEN];
- 	u8 h_dest[ETH_ALEN];
-+	bool needs_gso_segment;
- 	enum flow_offload_xmit_type xmit_type;
- };
- 
-@@ -138,8 +139,11 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
- 					path->encap.proto;
- 				info->num_encaps++;
- 			}
--			if (path->type == DEV_PATH_PPPOE)
-+			if (path->type == DEV_PATH_PPPOE) {
- 				memcpy(info->h_dest, path->encap.h_dest, ETH_ALEN);
-+				info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
-+				info->needs_gso_segment = 1;
-+			}
- 			break;
- 		case DEV_PATH_BRIDGE:
- 			if (is_zero_ether_addr(info->h_source))
-@@ -279,6 +283,7 @@ static void nft_dev_forward_path(const struct nft_pktinfo *pkt,
- 		memcpy(route->tuple[dir].out.h_dest, info.h_dest, ETH_ALEN);
- 		route->tuple[dir].xmit_type = info.xmit_type;
- 	}
-+	route->tuple[dir].out.needs_gso_segment = info.needs_gso_segment;
- }
- 
- int nft_flow_route(const struct nft_pktinfo *pkt, const struct nf_conn *ct,
 -- 
-2.47.3
+2.54.0
 
 
