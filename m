@@ -1,165 +1,140 @@
-Return-Path: <netfilter-devel+bounces-12346-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12350-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uIwPLvKB82kY4wEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12346-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 18:23:14 +0200
+	id kCd7CUSh82ly5QEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12350-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 20:36:52 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6AD4A5A01
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 18:23:14 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C38584A70CB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 20:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 15E15300C801
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 16:21:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2A3873029AC9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 18:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605B243DA56;
-	Thu, 30 Apr 2026 16:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF2547CC87;
+	Thu, 30 Apr 2026 18:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Dhc0qfwc"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=rexion.ai header.i=@rexion.ai header.b="BH4EeMzB"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from out-12.smtp.spacemail.com (out-12.smtp.spacemail.com [198.54.127.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B20834D4CC;
-	Thu, 30 Apr 2026 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E7C47CC70;
+	Thu, 30 Apr 2026 18:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.54.127.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777566090; cv=none; b=QaflLQO9SMTvwR6EdXskiqT+e7WI8vzGPsyFa7d1gR0LAm2F/2J9txHMIRZt8bYc6josEu8Py9nLBen+77fuq9ePqL1AcQqhJ39yH6FvoyS9TPFiOZoLxh5TpvyoeDC/GScTQvgx4jXJJcX8dumUx5rua/oTcKOj5+AKU2/V2XE=
+	t=1777574102; cv=none; b=T8z7XtMRoCrUDX3qzVBBw/p5Qwo1vHdehuZLo/x+R+UEo7qGkYZVcrhZRtCaYU7dwyksYnDVjhqNilBYlKCW8SblcWgp17SWK1OMJXLg51qLlUnMZ73yo2Z86+cLSGqcAsjjeWBrgQGbhxPeH6+X8839fFCZQOnfYquvsGUx0rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777566090; c=relaxed/simple;
-	bh=ai6+QVjyr+hlKt887iNpLWeIMLjufD7i076g2yHFK6o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TP/Lu5J1aD/0/pJZPs+TnEORvt24Y6ZB5Wwz3xBDxMdfat+2ykFo1xBIQotU+RteZg/Dpqdh4vU+PYiUiTHqhiPWorABxq1ceJHVXBkW2cO+4Ip5Fnv/2NqO0NBPGh1SjoSDRVgrp1QVdHeHQKr/tNy8bs4poiXbdNqL4YQoHuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Dhc0qfwc; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 24C1460265;
-	Thu, 30 Apr 2026 18:21:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1777566087;
-	bh=Mfb7idhAW77GRVWo14Dge1zqfEz94ADSCClG6QGYrks=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dhc0qfwc9o+8SlyGPFA59cNGDTXu1D+rO/uLDn+KBFAKIZbB7yho60O6ELKIabmtA
-	 zMfNXyRxtMtKsvOI7cWYtDhVkqMUnnn0VLOF0mGr9SB5MR2gMWR1/fiBr+4nFyn6tA
-	 al65FDDAQqZhSKMSfl3YSCC3kd9mXahZD0CUcRXr5kLi9q6Jo8yDORheVNUjwE+nNM
-	 q+Y1YbVOUDTh98dkuHhzet+2KrKnpUW6Qm1CnEwODVkfgF+O3bpmGm9dsFjSvgBzQF
-	 V+IQyTb2nIJtCvYtCvoc93Rak0xVzZ/0WzVdY+gwtTyl9fShvAF9fKT0PEfdmQ66ye
-	 GE7nmIxSBSvfQ==
-Date: Thu, 30 Apr 2026 18:21:24 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: HACKE-RC <rc@rexion.ai>
-Cc: Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+	s=arc-20240116; t=1777574102; c=relaxed/simple;
+	bh=swLMH6pLURjgirL9xBadXFGC5E5pIa70YvFJGr2fQdE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fJNr5icc4Hxd/899Zk2yOL9+kdWeLlcKwhKVaIglIZdkmn43ttNgxyogTxJ4E2Ve+df7I95DInrk/jf81zWEBUI5gXLungfc35c0tx8RMg+FwzkDBctN6t9qvGBTk4paKLeRT3zOfWAYkHfwSilMsKnOrEmiaSYuRCYqHi4spQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rexion.ai; spf=pass smtp.mailfrom=rexion.ai; dkim=fail (0-bit key) header.d=rexion.ai header.i=@rexion.ai header.b=BH4EeMzB reason="key not found in DNS"; arc=none smtp.client-ip=198.54.127.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rexion.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rexion.ai
+Received: from Kyren (unknown [49.207.224.37])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.spacemail.com (Postfix) with ESMTPSA id 4g62fl0M0Yz8sd3;
+	Thu, 30 Apr 2026 18:25:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rexion.ai;
+	s=spacemail; t=1777573555;
+	bh=Ug20lDJ3azlJTOlx8qs0QKzdbTa2xWSAosLLSGBJEeE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BH4EeMzB/5ZNqzC1qSp7bN29dC9UjlzTzUktuGZ5YX+SPqZb+05KYx7B9+7ZXG8t/
+	 fwIDjrrBr7gbOoK86eQoWMPgulpuTMEWNP5DPtupauGaVspIfZew6GyICcu6GjEZDA
+	 33PPBQDDf5haylTQ5lufQLraXvIEuY/Z/097LE0qj1dpRyodPNrJWZEuxmKjceLJVB
+	 Y30g3BBoAXGIRVQetzv3KHrIGcN65GfZfPdi8FAft7ecMKsMEu0DRqyaQrOHnGxqGd
+	 M7apYFFxJWS2oNHIGZM9+7TLB12Gw0TEJBhsjUBfxL5IRRktNud4pA+sWEXukeBlH9
+	 o73byxgxaNo7Q==
+From: HACKE-RC <rc@rexion.ai>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>
+Cc: Phil Sutter <phil@nwl.cc>,
 	"David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] netfilter: nf_conntrack_amanda: reject port
- values above 65535
-Message-ID: <afOBhH9Ef7z-QqxL@chamomile>
-References: <20260430161515.3449513-3-rc@rexion.ai>
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	HACKE-RC <rc@rexion.ai>
+Subject: [PATCH net-next v2 0/3] netfilter: conntrack: add shared port parser and use it in IRC and Amanda helpers
+Date: Thu, 30 Apr 2026 23:55:40 +0530
+Message-ID: <20260430182543.3931718-1-rc@rexion.ai>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260430161515.3449513-3-rc@rexion.ai>
-X-Rspamd-Queue-Id: 7B6AD4A5A01
+Content-Transfer-Encoding: 8bit
+X-Envelope-From: rc@rexion.ai
+X-Rspamd-Queue-Id: C38584A70CB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-12350-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-12346-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DMARC_NA(0.00)[rexion.ai];
+	RCVD_COUNT_THREE(0.00)[4];
+	R_DKIM_PERMFAIL(0.00)[rexion.ai:s=spacemail];
+	DKIM_TRACE(0.00)[rexion.ai:~];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_SPAM(0.00)[0.078];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[rc@rexion.ai,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,rexion.ai:email]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,rexion.ai:mid]
 
-Hi,
+Both nf_conntrack_irc and nf_conntrack_amanda parse port numbers
+from application-layer protocol data using simple_strtoul(), which
+relies on nul-terminated strings and returns unsigned long without
+range checking. Port values above 65535 silently truncate when
+stored in u16.
 
-On Thu, Apr 30, 2026 at 09:45:15PM +0530, HACKE-RC wrote:
-> amanda_help() converts the result of simple_strtoul() to __be16 via
-> htons() without checking the parsed value fits in 16 bits. The
-> existing len > 5 guard limits strings to five digits, capping the
-> parseable range at 99999, but values 65536-99999 still silently
-> truncate on the htons() conversion.
-> 
-> Use an intermediate unsigned long and reject out-of-range values
-> before converting to network byte order.
-> 
-> Fixes: 16958900578b ("[NETFILTER]: nf_conntrack/nf_nat: add amanda helper port")
-> Signed-off-by: HACKE-RC <rc@rexion.ai>
-> ---
->  net/netfilter/nf_conntrack_amanda.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_conntrack_amanda.c b/net/netfilter/nf_conntrack_amanda.c
-> index d2c09e8dd..58d6c9f29 100644
-> --- a/net/netfilter/nf_conntrack_amanda.c
-> +++ b/net/netfilter/nf_conntrack_amanda.c
-> @@ -88,11 +88,12 @@ static int amanda_help(struct sk_buff *skb,
->  	struct nf_conntrack_expect *exp;
->  	struct nf_conntrack_tuple *tuple;
->  	unsigned int dataoff, start, stop, off, i;
-> +	nf_nat_amanda_hook_fn *nf_nat_amanda;
->  	char pbuf[sizeof("65535")], *tmp;
-> +	unsigned long parsed_port;
-> +	int ret = NF_ACCEPT;
->  	u_int16_t len;
->  	__be16 port;
-> -	int ret = NF_ACCEPT;
-> -	nf_nat_amanda_hook_fn *nf_nat_amanda;
->  
->  	/* Only look at packets from the Amanda server */
->  	if (CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL)
-> @@ -132,10 +133,11 @@ static int amanda_help(struct sk_buff *skb,
->  			break;
->  		pbuf[len] = '\0';
->  
-> -		port = htons(simple_strtoul(pbuf, &tmp, 10));
-> +		parsed_port = simple_strtoul(pbuf, &tmp, 10);
+This v2 adds a shared nf_ct_helper_parse_port() function to the
+conntrack helper core, modeled after the approach in 8cf6809cddcb
+("netfilter: nf_conntrack_sip: don't use simple_strtoul"), then
+converts both helpers to use it.
 
-While being here, I would replace this simple_strtoul by a parser
-which does not rely on nul-terminated strings.
+Changes since v1:
+  - Added shared nf_ct_helper_parse_port() in the helper core
+    instead of open-coding range checks in each helper (Pablo)
+  - Parser does not rely on nul-terminated strings
+  - Dropped simple_strtoul usage entirely for port parsing
 
-A similar patch went in for the sip helper recently, maybe you can
-just take such function to parse ports, move it to the
-nf_conntrack_helper core so it can be shared by helpers.
+HACKE-RC (3):
+  netfilter: conntrack: add shared port parser for helpers
+  netfilter: nf_conntrack_irc: use nf_ct_helper_parse_port()
+  netfilter: nf_conntrack_amanda: use nf_ct_helper_parse_port()
 
->  		len = tmp - pbuf;
-> -		if (port == 0 || len > 5)
-> +		if (parsed_port == 0 || parsed_port > 65535 || len > 5)
->  			break;
-> +		port = htons(parsed_port);
->  
->  		exp = nf_ct_expect_alloc(ct);
->  		if (exp == NULL) {
-> -- 
-> 2.54.0
-> 
+ include/net/netfilter/nf_conntrack_helper.h |  3 +++
+ net/netfilter/nf_conntrack_amanda.c         | 11 ++++----
+ net/netfilter/nf_conntrack_helper.c         | 28 +++++++++++++++++++++
+ net/netfilter/nf_conntrack_irc.c            |  4 ++-
+ 4 files changed, 40 insertions(+), 6 deletions(-)
+
+-- 
+2.54.0
+
 
