@@ -1,77 +1,77 @@
-Return-Path: <netfilter-devel+bounces-12327-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12325-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cLsYL08J82l0wwEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12327-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:31 +0200
+	id oHN+BEsJ82l0wwEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12325-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6204549ED78
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:31 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066AC49ED6A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 79A0A300E59F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 07:48:28 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A252D30086BF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 07:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0523FA5EF;
-	Thu, 30 Apr 2026 07:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6713D4123;
+	Thu, 30 Apr 2026 07:48:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="CEh5f4GD"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="wcdTu9ax"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CC83FA5FA;
-	Thu, 30 Apr 2026 07:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC55E35836B;
+	Thu, 30 Apr 2026 07:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777535305; cv=none; b=eEgBWRnUFSrdTr3dx6yksAvxLJrECTj0QNKA++3vX01ORAV6v9WliyLXtZ+Xb0x1g60CjyaIJGmmStYCkiai32qGPM967rhQYscMV2nW4BGY8Ge+gFbNjkWTT4wPX7DPs5zouX4nvtnF2mTPffTZ4/NCZzxlNHhcN5XGLJf2ONw=
+	t=1777535292; cv=none; b=CyIGWWlufBMmKj03s0HfDrvYd1ihR82d6jFnMFjaV89gfX5Qx5Jq5/oAz3hNgquN8XfGSUBdjgukCOdmdtiHYwoPr7b8zPUsLJp+7sMzadIFQvZE+gKMdpNHDwhjN5eHyqjqo9n3Fm/jvdZ7q7izZZOkHN2OB6wN7Z3Mk2yRPhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777535305; c=relaxed/simple;
-	bh=C2hWpN7sSjdGkm4rOVk6n/xWQGh7Kysu6wMLYYWievA=;
+	s=arc-20240116; t=1777535292; c=relaxed/simple;
+	bh=VTwq0UWthz0QpJzYDrKRtfiupj+O/yP9vV5eAzWzF8g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KE18zgPGK8ZcMR4ZkDhm7G6qcLamQesV4tE/fwH1oD0v8sX3AKs7qgrFCKZ2MD5HOUtAlEshGh0+rjlPCykcabLlGmDd7g9/D3YJ8Z1M6xNm7netFfHTPNAM33chCVCvxmqhJTdP72f59yOKOfuIhARkSLdIYE2MrMmk9syvvvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=CEh5f4GD; arc=none smtp.client-ip=193.238.174.39
+	 MIME-Version; b=psTnn4tSrHBZbNp3GrlImUkfEpuICgfL3ztFQuvAnUbm/IJMlFb/6PmkwlQ6bLXl5QR4LH52NWdlrzqrWWmfv32d+mtjJ41oUaZuP60okFWAkex4lvc5q2oKVnTfGPAc+IvX3BQKozJRtLrVFIkrIvfaXqq+pqPaQhtguiTKJRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=wcdTu9ax; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 127892292E;
+	by mx.ssi.bg (Potsfix) with ESMTP id 3671622931;
 	Thu, 30 Apr 2026 10:47:55 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
 	:content-transfer-encoding:date:from:from:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=Uqax325+N5JDs/S0EJd8JLZMGuyA5PI6DaXMbKDlAP4=; b=CEh5f4GDo9s0
-	hrY2APBtEq1mtRLihUwrP1iEC4NzVCCiqNb/uXkMBMD1dDlfmV3bCi9+I1g2c3Kb
-	164dYHYPY3urvIqu1UtHuVaw1do1wX7GOeQEx/QBDWPCPXZntM/aBTxhgECwm8nY
-	Go4rwEgypJ2n4jH+O57fhqWP+28KevpGLmmdCyZ4bZV+fQWAst1cLdTSlOtUIq7p
-	g87K+esT2aQxzwr20G6f4EZdu+++vNdeBFYLTxTgYyTivn/evVcV2U1YBHkBiDYl
-	tE5qLGWi1T9e0rwIcGzs63Q6nNg4rZX37+mUNJ0Wyk2Zvr/A1nfCZa5AHWyF1xMy
-	YFI8IMajbxS+LGaOAk6oTwgONtKyzTn1Rde06lUYVR8EcNLVjVgcT4FKdWvesHy0
-	SUvLnjzfIGbeDYXYZi6tKXxdX8/UvxnESR0kZQzm3H0XS0VjMkdUfya9ij0VbJN5
-	SHJCsD0EF5xRjnvJLyFt0t+8tTK9ni6HMqxO00SUgLBSpbaamG4uOyYREQQc78Th
-	nrLsbrADVZbrYd8xJRSUotd/d2gBLgq9tAuXZNqQsCmThp5JhDmuUnSUn6rMW98Z
-	BjmD/4EUYfJAiDCEw0sVSFmJdTJUGS2d4MxjPCnZX/NA2py5pmGNBHeSbujbSRX1
-	jB5VTqBEgmmKf2boR2YtVod412MnWrU=
+	 bh=eDhsBF6QpJzkCaUZXdy+0cspQLn0pC7/3H/qKuY5fz4=; b=wcdTu9axOTmS
+	eGDvTDhwld5GltvBJmznYhs6bhPtREzRFhJOZvpeAtrZeqzqrHmZ0KTs+8YIJQ9s
+	iM5URSXZtTsic8XDHYuSdYYwmCv0Kt/yqz0UIX1KNA5ndSg13Hi+4I85A4uCH1uE
+	sLRY44PC/GhS8R3GxnJ0zmkWHL6MGWhnIjrfZwb/GdQvz7QF9PXJ5xHRZCYJURxY
+	Ouj3T+BtppuBgjcruzRMi0VYI4K6hz1ANZjKHdQNplt1T0wpTXAVqDJZBEieZbLE
+	S0aCAYQrX0wMoT80+wgJ6yVqNocc3JcGW+wCq+WvUHiVN1r/EZjARBsrXSXK+pnd
+	J+9BB0vDMNJaHrbBZdtBR928gWkJ4s4ZnSKIvC/LcHLlQWMRvXjGssXwb7YIYyiv
+	YqiNBK2/oWDoiQnvQ64PT9XZmV52jzubfNiXqzPQE3h0Tb54K2aijIhv6aiBDJRR
+	CiA4YGD/kLm6khHWGv5tAqzKSuB8ZHRBNGQIgSnF7Vl54J2aSu34ZUXUZkZy+prj
+	BvHDPD6WGGSaCkCZSq6jf3g6uqSrytRUc09Kvxbsei5PmUTkT+mLDD5cRsTppPm2
+	QvFr/G4ZWUxSM/25uNmatGenP+DRGS5QjyZ0KDsZmL+lwyxfHZOHub2eVXX0eEiU
+	rbXEp7b3lOuWmvNPzLL+w2KDOw7gLRU=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
 	Thu, 30 Apr 2026 10:47:53 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 8F03660980;
-	Thu, 30 Apr 2026 10:47:52 +0300 (EEST)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 25C9362BA9;
+	Thu, 30 Apr 2026 10:47:53 +0300 (EEST)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63U7ixD9027474;
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63U7ixZu027478;
 	Thu, 30 Apr 2026 10:44:59 +0300
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63U7ixTa027473;
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63U7ixYV027477;
 	Thu, 30 Apr 2026 10:44:59 +0300
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
         Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
         netfilter-devel@vger.kernel.org
-Subject: [PATCHv3 nf 6/8] ipvs: fix shift-out-of-bounds in ip_vs_rht_desired_size
-Date: Thu, 30 Apr 2026 10:44:18 +0300
-Message-ID: <20260430074420.26697-7-ja@ssi.bg>
+Subject: [PATCHv3 nf 7/8] ipvs: Guard access of HK_TYPE_KTHREAD cpumask with RCU
+Date: Thu, 30 Apr 2026 10:44:19 +0300
+Message-ID: <20260430074420.26697-8-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260430074420.26697-1-ja@ssi.bg>
 References: <20260430074420.26697-1-ja@ssi.bg>
@@ -82,7 +82,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6204549ED78
+X-Rspamd-Queue-Id: 066AC49ED6A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -90,15 +90,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12327-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12325-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -109,53 +109,113 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[ssi.bg:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_COUNT_SEVEN(0.00)[8]
 
-Calling roundup_pow_of_two() with 0 has undefined result:
+From: Waiman Long <longman@redhat.com>
 
-UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-shift exponent 64 is too large for 64-bit type 'unsigned long'
-CPU: 1 UID: 0 PID: 77 Comm: kworker/u8:4 Not tainted syzkaller #0 PREEMPT(full)
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/18/2026
-Workqueue: events_unbound conn_resize_work_handler
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- ubsan_epilogue+0xa/0x30 lib/ubsan.c:233
- __ubsan_handle_shift_out_of_bounds+0x385/0x410 lib/ubsan.c:494
- __roundup_pow_of_two include/linux/log2.h:57 [inline]
- ip_vs_rht_desired_size+0x2cf/0x410 net/netfilter/ipvs/ip_vs_core.c:240
- ip_vs_conn_desired_size net/netfilter/ipvs/ip_vs_conn.c:765 [inline]
- conn_resize_work_handler+0x1b6/0x14c0 net/netfilter/ipvs/ip_vs_conn.c:822
- process_one_work kernel/workqueue.c:3302 [inline]
- process_scheduled_works+0xb5d/0x1860 kernel/workqueue.c:3385
- worker_thread+0xa53/0xfc0 kernel/workqueue.c:3466
- kthread+0x388/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+The ip_vs_ctl.c file and the associated ip_vs.h file are the only places
+in the kernel where HK_TYPE_KTHREAD cpumask is being retrieved and used.
+Now that HK_TYPE_KTHREAD/HK_TYPE_DOMAIN cpumask can be changed at run
+time. We need to use RCU to guard access to this cpumask to avoid a
+potential UAF problem as the returned cpumask may be freed before it
+is being used.
 
-Reported-by: syzbot+217f1db9c791e27fe54a@syzkaller.appspotmail.com
-Fixes: b655388111cf ("ipvs: add resizable hash tables")
+We can replace HK_TYPE_KTHREAD by HK_TYPE_DOMAIN as they are aliases
+of each other, but keeping the HK_TYPE_KTHREAD name can highlight the
+fact that it is the kthread initiated by ipvs that is being controlled.
+
+Fixes: 03ff73510169 ("cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset")
+Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Julian Anastasov <ja@ssi.bg>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/ip_vs.h            | 20 ++++++++++++++++----
+ net/netfilter/ipvs/ip_vs_ctl.c | 13 ++++++++-----
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index f5b7a2047291..d40b404c1bf6 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -237,7 +237,7 @@ int ip_vs_rht_desired_size(struct netns_ipvs *ipvs, struct ip_vs_rht *t, int n,
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index d28ad8a0541f..02762ce73a0c 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -1412,7 +1412,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
+ 	return ipvs->sysctl_run_estimation;
+ }
+ 
+-static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
++static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
  {
- 	if (!t)
- 		return 1 << min_bits;
--	n = roundup_pow_of_two(n);
-+	n = n > 0 ? roundup_pow_of_two(n) : 1;
- 	if (lfactor < 0) {
- 		int factor = min(-lfactor, max_bits);
+ 	if (ipvs->est_cpulist_valid)
+ 		return ipvs->sysctl_est_cpulist;
+@@ -1530,7 +1530,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
+ 	return 1;
+ }
+ 
+-static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
++static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
+ {
+ 	return housekeeping_cpumask(HK_TYPE_KTHREAD);
+ }
+@@ -1565,6 +1565,18 @@ static inline int sysctl_svc_lfactor(struct netns_ipvs *ipvs)
+ 	return READ_ONCE(ipvs->sysctl_svc_lfactor);
+ }
+ 
++static inline bool sysctl_est_cpulist_empty(struct netns_ipvs *ipvs)
++{
++	guard(rcu)();
++	return cpumask_empty(__sysctl_est_cpulist(ipvs));
++}
++
++static inline unsigned int sysctl_est_cpulist_weight(struct netns_ipvs *ipvs)
++{
++	guard(rcu)();
++	return cpumask_weight(__sysctl_est_cpulist(ipvs));
++}
++
+ /* IPVS core functions
+  * (from ip_vs_core.c)
+  */
+@@ -1904,7 +1916,7 @@ static inline void ip_vs_est_stopped_recalc(struct netns_ipvs *ipvs)
+ 	/* Stop tasks while cpulist is empty or if disabled with flag */
+ 	ipvs->est_stopped = !sysctl_run_estimation(ipvs) ||
+ 			    (ipvs->est_cpulist_valid &&
+-			     cpumask_empty(sysctl_est_cpulist(ipvs)));
++			     sysctl_est_cpulist_empty(ipvs));
+ #endif
+ }
+ 
+@@ -1920,7 +1932,7 @@ static inline bool ip_vs_est_stopped(struct netns_ipvs *ipvs)
+ static inline int ip_vs_est_max_threads(struct netns_ipvs *ipvs)
+ {
+ 	unsigned int limit = IPVS_EST_CPU_KTHREADS *
+-			     cpumask_weight(sysctl_est_cpulist(ipvs));
++			     sysctl_est_cpulist_weight(ipvs);
+ 
+ 	return max(1U, limit);
+ }
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 5c9f8e0e238f..c7c7f6a7a9f6 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -2394,11 +2394,14 @@ static int ipvs_proc_est_cpumask_get(const struct ctl_table *table,
+ 
+ 	mutex_lock(&ipvs->est_mutex);
+ 
+-	if (ipvs->est_cpulist_valid)
+-		mask = *valp;
+-	else
+-		mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
+-	ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
++	/* HK_TYPE_KTHREAD cpumask needs RCU protection */
++	scoped_guard(rcu) {
++		if (ipvs->est_cpulist_valid)
++			mask = *valp;
++		else
++			mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
++		ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
++	}
+ 
+ 	mutex_unlock(&ipvs->est_mutex);
  
 -- 
 2.53.0
