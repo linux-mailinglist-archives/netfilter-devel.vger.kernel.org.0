@@ -1,77 +1,77 @@
-Return-Path: <netfilter-devel+bounces-12326-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12329-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4J1fNkYJ82l0wwEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12326-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:22 +0200
+	id yNjQM3sJ82l0wwEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12329-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:49:15 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E89B49ED51
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:22 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92F4949EDBA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 56FE33002D6A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 07:48:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 80E3330143EC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 07:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57C437754C;
-	Thu, 30 Apr 2026 07:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8AA3FA5EF;
+	Thu, 30 Apr 2026 07:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="t3D3iJ6u"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="h/K8D65T"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C3735836B;
-	Thu, 30 Apr 2026 07:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2A33FAE10;
+	Thu, 30 Apr 2026 07:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777535298; cv=none; b=rfWq4Qwh9tvlcoQpEb25aY1S6mUwmNshuBz6SYvQSZQLNbUojsvptPugYgEcHrtRciddtjzXBFTvfMnXzGoAs/s7GtgKujZBrE6IL0HJIkGn2t6LLQCu8464NfRIOvpNV4lC3b/sLjQz/IIi+FaU3N9vlU7Pfo0ICuPfTvzwU/w=
+	t=1777535326; cv=none; b=X9yaKADPv3K8x6GDPF4cr9fPzxcwCTJZJKheskBD0Zm87IA/7Hm//P9C1w7xVL7tQYMb6YAXVyShsOhnfs28rpkTEP3EdoSAs+93j+V8xmTXExiaHzQmFETWz+RY6rv1R75vAjP/er0u0z71Q2byVoAjr3ndM2yF1nhuAAbrMfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777535298; c=relaxed/simple;
-	bh=ftM5ukXQISH48XnQp4wEHNTt7YUjmI2Y/ZpTwXIbrFY=;
+	s=arc-20240116; t=1777535326; c=relaxed/simple;
+	bh=xNKfHpUnbuQgCKWAd0/rPtiBRJsZj1IasreB0uU5dCA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IQzqsONUeC+G8+kM49ISsToLPbqY+TjOkw05ugvCE3IqJslyr/2WTf652QDj25ZMzh/nM+UrE9DFPJ6WT3L7S8ocdi6cpwPN+btv6b6O4C8V4Cpvb2SDEv5oowFv9alffyaeQhrszMCAFLR/s9C8U/k+XlCZTsxjZ0B1Ov/E5CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=t3D3iJ6u; arc=none smtp.client-ip=193.238.174.39
+	 MIME-Version; b=TkoToHzdAbHeOdutiuC685b4aaBqgS5bYYFeIDh8dcVlL5qdi3pXxRsE9T6GNIX001tq9TxTlBqY3zCbmqeBD2SOKmdLxGA/kR459uexJqKvBxq6Okso2p56bS6eTzGLfW739FXs0wTw964Ynj381EXuPkzwZcJOOLngx0pOTuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=h/K8D65T; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 2BA1E2292F;
-	Thu, 30 Apr 2026 10:47:55 +0300 (EEST)
+	by mx.ssi.bg (Potsfix) with ESMTP id BBAA721CDD;
+	Thu, 30 Apr 2026 10:47:56 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
 	:content-transfer-encoding:date:from:from:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=CGEZvvNmG16fhPrQ1MGOmC9UlX+Su1JVXJPJ01Yi0Ys=; b=t3D3iJ6udtUA
-	5vy67EJOsa+ZdNRbgj4x2Bcn8ia7XLH8abfFBGq9oSqX6FMiiBXXIMAawuO56NcH
-	AfbGucllLY027SuyIDw69tCS1eAl55TKRC0JTCYDHnFsErcvekZgYDT6FwhAAX3K
-	AdQo7FK85QDMekHZ5JUNKIB8SbOws09AUrMH1MqoiGWsyAlqp2eZ7OH2dR0u3YEz
-	iB3XdAdzZ26n8+AcchmGHn300XkTLkkWp+mEvIhZytN2AfWtNiskOp4CN/sOfsRH
-	yK+nuiCgg7Qu6d2L+Q07JgfTGrB3W033uv3VSp2MkYD8rZuGT2Rk6HQO5ZNi7Rzn
-	3vNrfl09gEkuIg39JKeqlr2VLoky3m4GWQ37jA5FIEWTZJ5Zxq4kzY5/BpLwWmEZ
-	ujbUHMv6IavrphKubjGjY2su5PyX//7E4fvhs1Nf5b6Qy3ZdjdxssECjE4WlYxSD
-	Mph6q19NWBXpu7HNsD5OO/5TcGbjxOE8BM2RBudgrwUiStQCbKAf8Af+8SEnp1+w
-	+ys7YKNjA5B29tTW5c2aTBV2KLQCCZpIidVdhKRNZg902acDo2ZfJqeNjVLAhOlf
-	7Igg9RbYPK14hvE27SFVqTttso4JKkNz3/k+MaFiHhqsTXqNZbq12qxiC9MRWOAd
-	qO9K4MQqvaGqPM/lpxWTiAr+WKYhquA=
+	 bh=Q+1wYlj2TMWDMHUtxtFR1v3/AEpQpZ/nztQnYdp4dz8=; b=h/K8D65TQ6tc
+	wbezLjeqsuYy1EfS9POjbuXYyHdhzWZZohgO3dxdLUGHjR3nOeKqIqf2OdML366a
+	0cQQpzcigvQREdq1+tmwJFmoKWVgtybWi897oKtAJt5zuy61wSmAYcdg0rASFSl0
+	dOQTPjJeKlgCqQaktHMw1kbNg0t1TsznGKWWg2HFxhcgW87dGVDm7kZmVCDYBp8H
+	keD7File2Zj2MfAobeCbP8l5i6zppNgki62NFXIGMWtWhFjfNvsqJUd1DFhdgPSp
+	E3UZlwoXfVQm0+6CzKgF0oq7L7uxHt2spveuG3y0CMgbjDoZeUlk4+iale5IsZTV
+	XqKEUdPHUS990M0aCx0qbzY73/+WhaB8P9cKsRFa7gVuvE1K/yiP84CY0eVnHsPL
+	t6gLxZ52aGsBE/7/eRMuDbc951G8lCIPxIfkWVIWgpTZr99yVRhN6yr43v+f6Qj0
+	QvMEBFChlpvyc4dBHIDVat/lgSsXW6jyOdPDw3oH3DwEGnlGKvXF9UNV68ZhEPue
+	62mvIewDL1pybvS1ysXegIxiq4K1YdQyIRt/AmBTKxPG7tNni2EUNWtfgotvuBmu
+	n3nCJKTQt+VeK/WXofC9MT5Q8CDXGEkIGP5lyNdNTO5FdvCuzNdBWwzOPdJmm7ni
+	Q2915LXXrpNv5HW+7jHXmas4PYmbWY4=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Thu, 30 Apr 2026 10:47:53 +0300 (EEST)
+	Thu, 30 Apr 2026 10:47:54 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id BA6986296D;
-	Thu, 30 Apr 2026 10:47:52 +0300 (EEST)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 6D15B62CA0;
+	Thu, 30 Apr 2026 10:47:53 +0300 (EEST)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63U7iwIp027457;
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63U7iwh7027461;
 	Thu, 30 Apr 2026 10:44:58 +0300
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63U7iwfR027456;
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63U7iwWL027460;
 	Thu, 30 Apr 2026 10:44:58 +0300
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
         Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
         netfilter-devel@vger.kernel.org
-Subject: [PATCHv3 nf 2/8] ipvs: fix races around the conn_lfactor and svc_lfactor sysctl vars
-Date: Thu, 30 Apr 2026 10:44:14 +0300
-Message-ID: <20260430074420.26697-3-ja@ssi.bg>
+Subject: [PATCHv3 nf 3/8] ipvs: fix the spin_lock usage for RT build
+Date: Thu, 30 Apr 2026 10:44:15 +0300
+Message-ID: <20260430074420.26697-4-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260430074420.26697-1-ja@ssi.bg>
 References: <20260430074420.26697-1-ja@ssi.bg>
@@ -82,7 +82,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5E89B49ED51
+X-Rspamd-Queue-Id: 92F4949EDBA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -90,15 +90,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12326-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12329-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,sashiko.dev:url];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,ssi.bg:email,ssi.bg:dkim,ssi.bg:mid,appspotmail.com:email];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -109,81 +109,275 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[ssi.bg:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_COUNT_SEVEN(0.00)[8]
 
-Sashiko warns that the new sysctls vars can be changed
-after the hash tables are destroyed and their respective
-resizing works canceled, leading to mod_delayed_work()
-being called for canceled works.
+syzbot reports for sleeping function called from invalid context [1].
+The recently added code for resizable hash tables uses
+hlist_bl bit locks in combination with spin_lock for
+the connection fields (cp->lock).
 
-Solve this in different ways. conn_tab can be present even
-without services and is destroyed only on netns exit, so use
-disable_delayed_work_sync() to disable the work instead of
-adding more synchronization mechanisms.
+Fix the following problems:
 
-As for the svc_table, it is destroyed when the services
-are deleted, so we must be sure that netns exit is not
-called yet (the check for 'enable') and the work is
-not canceled by checking all under same mutex lock.
+* avoid using spin_lock(&cp->lock) under locked bit lock
+because it sleeps on PREEMPT_RT
 
-Also, use WRITE_ONCE when updating the sysctl vars as we
-already read them with READ_ONCE.
+* as the recent changes call ip_vs_conn_hash() only for newly
+allocated connection, the spin_lock can be removed there because
+the connection is still not linked to table and does not need
+cp->lock protection.
 
-Link: https://sashiko.dev/#/patchset/20260410112352.23599-1-fw%40strlen.de
-Fixes: 8d7de5477e47 ("ipvs: add conn_lfactor and svc_lfactor sysctl vars")
+* the lock can be removed also from ip_vs_conn_unlink() where we
+are the last connection user.
+
+* the last place that is fixed is ip_vs_conn_fill_cport()
+where now the cp->lock is locked before the other locks to
+ensure other packets do not modify the cp->flags in non-atomic
+way. Here we make sure cport and flags are changed only once
+if two or more packets race to fill the cport. Also, we fill
+cport early, so that if we race with resizing there will be
+valid cport key for the hashing. Add a warning if too many
+hash table changes occur for our RCU read-side critical
+section which is error condition but minor because the
+connection still can expire gracefully. Still, restore the
+cport to 0 to allow retransmitted packet to properly fill
+the cport. Problems reported by Sashiko.
+
+[1]:
+BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 16, name: ktimers/0
+preempt_count: 2, expected: 0
+RCU nest depth: 3, expected: 3
+8 locks held by ktimers/0/16:
+ #0: ffffffff8de5f260 (local_bh){.+.+}-{1:3}, at: __local_bh_disable_ip+0x3c/0x420 kernel/softirq.c:163
+ #1: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: __local_bh_disable_ip+0x3c/0x420 kernel/softirq.c:163
+ #2: ffff8880b8826360 (&base->expiry_lock){+...}-{3:3}, at: spin_lock include/linux/spinlock_rt.h:45 [inline]
+ #2: ffff8880b8826360 (&base->expiry_lock){+...}-{3:3}, at: timer_base_lock_expiry kernel/time/timer.c:1502 [inline]
+ #2: ffff8880b8826360 (&base->expiry_lock){+...}-{3:3}, at: __run_timer_base+0x120/0x9f0 kernel/time/timer.c:2384
+ #3: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:300 [inline]
+ #3: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:838 [inline]
+ #3: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: __rt_spin_lock kernel/locking/spinlock_rt.c:50 [inline]
+ #3: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: rt_spin_lock+0x1e0/0x400 kernel/locking/spinlock_rt.c:57
+ #4: ffffc90000157a80 ((&cp->timer)){+...}-{0:0}, at: call_timer_fn+0xd4/0x5e0 kernel/time/timer.c:1745
+ #5: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:300 [inline]
+ #5: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:838 [inline]
+ #5: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: ip_vs_conn_unlink net/netfilter/ipvs/ip_vs_conn.c:315 [inline]
+ #5: ffffffff8dfc80c0 (rcu_read_lock){....}-{1:3}, at: ip_vs_conn_expire+0x257/0x2390 net/netfilter/ipvs/ip_vs_conn.c:1260
+ #6: ffffffff8de5f260 (local_bh){.+.+}-{1:3}, at: __local_bh_disable_ip+0x3c/0x420 kernel/softirq.c:163
+ #7: ffff888068d4c3f0 (&cp->lock#2){+...}-{3:3}, at: spin_lock include/linux/spinlock_rt.h:45 [inline]
+ #7: ffff888068d4c3f0 (&cp->lock#2){+...}-{3:3}, at: ip_vs_conn_unlink net/netfilter/ipvs/ip_vs_conn.c:324 [inline]
+ #7: ffff888068d4c3f0 (&cp->lock#2){+...}-{3:3}, at: ip_vs_conn_expire+0xd4a/0x2390 net/netfilter/ipvs/ip_vs_conn.c:1260
+Preemption disabled at:
+[<ffffffff898a6358>] bit_spin_lock include/linux/bit_spinlock.h:38 [inline]
+[<ffffffff898a6358>] hlist_bl_lock+0x18/0x110 include/linux/list_bl.h:149
+CPU: 0 UID: 0 PID: 16 Comm: ktimers/0 Tainted: G        W    L      syzkaller #0 PREEMPT_{RT,(full)}
+Tainted: [W]=WARN, [L]=SOFTLOCKUP
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ __might_resched+0x329/0x480 kernel/sched/core.c:9162
+ __rt_spin_lock kernel/locking/spinlock_rt.c:48 [inline]
+ rt_spin_lock+0xc2/0x400 kernel/locking/spinlock_rt.c:57
+ spin_lock include/linux/spinlock_rt.h:45 [inline]
+ ip_vs_conn_unlink net/netfilter/ipvs/ip_vs_conn.c:324 [inline]
+ ip_vs_conn_expire+0xd4a/0x2390 net/netfilter/ipvs/ip_vs_conn.c:1260
+ call_timer_fn+0x192/0x5e0 kernel/time/timer.c:1748
+ expire_timers kernel/time/timer.c:1799 [inline]
+ __run_timers kernel/time/timer.c:2374 [inline]
+ __run_timer_base+0x6a3/0x9f0 kernel/time/timer.c:2386
+ run_timer_base kernel/time/timer.c:2395 [inline]
+ run_timer_softirq+0xb7/0x170 kernel/time/timer.c:2405
+ handle_softirqs+0x1de/0x6d0 kernel/softirq.c:622
+ __do_softirq kernel/softirq.c:656 [inline]
+ run_ktimerd+0x69/0x100 kernel/softirq.c:1151
+ smpboot_thread_fn+0x541/0xa50 kernel/smpboot.c:160
+ kthread+0x388/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+Reported-by: syzbot+504e778ddaecd36fdd17@syzkaller.appspotmail.com
+Link: https://sashiko.dev/#/patchset/20260415200216.79699-1-ja%40ssi.bg
+Link: https://sashiko.dev/#/patchset/20260420165539.85174-4-ja%40ssi.bg
+Link: https://sashiko.dev/#/patchset/20260422135823.50489-4-ja%40ssi.bg
+Fixes: 2fa7cc9c7025 ("ipvs: switch to per-net connection table")
 Signed-off-by: Julian Anastasov <ja@ssi.bg>
 ---
- net/netfilter/ipvs/ip_vs_conn.c |  2 +-
- net/netfilter/ipvs/ip_vs_ctl.c  | 12 +++++++++---
- 2 files changed, 10 insertions(+), 4 deletions(-)
+
+v5:
+  restore cp->cport to 0 when ntbl reaches 2 to allow
+  connection to continue on retransmission
+
+v4:
+  add error message for too many hash table changes in
+  ip_vs_conn_fill_cport()
+
+v3:
+* use cp->lock in ip_vs_conn_fill_cport() to protect the
+  cp->flags modifications
+
+v2:
+* remove cp->lock from ip_vs_conn_fill_cport() and avoid
+  races with resizing and possible multiple attempts to fill cport.
+
+ net/netfilter/ipvs/ip_vs_conn.c | 74 ++++++++++++++++++---------------
+ 1 file changed, 41 insertions(+), 33 deletions(-)
 
 diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index 2082bfb2d93c..84a4921a7865 100644
+index 84a4921a7865..9ea6b4fa78bf 100644
 --- a/net/netfilter/ipvs/ip_vs_conn.c
 +++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -1835,7 +1835,7 @@ static void ip_vs_conn_flush(struct netns_ipvs *ipvs)
+@@ -267,27 +267,20 @@ static inline int ip_vs_conn_hash(struct ip_vs_conn *cp)
+ 		hash_key2 = hash_key;
+ 		use2 = false;
+ 	}
++
+ 	conn_tab_lock(t, cp, hash_key, hash_key2, use2, true /* new_hash */,
+ 		      &head, &head2);
+-	spin_lock(&cp->lock);
+-
+-	if (!(cp->flags & IP_VS_CONN_F_HASHED)) {
+-		cp->flags |= IP_VS_CONN_F_HASHED;
+-		WRITE_ONCE(cp->hn0.hash_key, hash_key);
+-		WRITE_ONCE(cp->hn1.hash_key, hash_key2);
+-		refcount_inc(&cp->refcnt);
+-		hlist_bl_add_head_rcu(&cp->hn0.node, head);
+-		if (use2)
+-			hlist_bl_add_head_rcu(&cp->hn1.node, head2);
+-		ret = 1;
+-	} else {
+-		pr_err("%s(): request for already hashed, called from %pS\n",
+-		       __func__, __builtin_return_address(0));
+-		ret = 0;
+-	}
  
- 	if (!rcu_dereference_protected(ipvs->conn_tab, 1))
- 		return;
--	cancel_delayed_work_sync(&ipvs->conn_resize_work);
-+	disable_delayed_work_sync(&ipvs->conn_resize_work);
- 	if (!atomic_read(&ipvs->conn_count))
- 		goto unreg;
+-	spin_unlock(&cp->lock);
++	cp->flags |= IP_VS_CONN_F_HASHED;
++	WRITE_ONCE(cp->hn0.hash_key, hash_key);
++	WRITE_ONCE(cp->hn1.hash_key, hash_key2);
++	refcount_inc(&cp->refcnt);
++	hlist_bl_add_head_rcu(&cp->hn0.node, head);
++	if (use2)
++		hlist_bl_add_head_rcu(&cp->hn1.node, head2);
++
+ 	conn_tab_unlock(head, head2);
++	ret = 1;
  
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 27e50afe9a54..caec516856e9 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2469,7 +2469,7 @@ static int ipvs_proc_conn_lfactor(const struct ctl_table *table, int write,
- 		if (val < -8 || val > 8) {
- 			ret = -EINVAL;
- 		} else {
--			*valp = val;
-+			WRITE_ONCE(*valp, val);
- 			if (rcu_access_pointer(ipvs->conn_tab))
- 				mod_delayed_work(system_unbound_wq,
- 						 &ipvs->conn_resize_work, 0);
-@@ -2496,10 +2496,16 @@ static int ipvs_proc_svc_lfactor(const struct ctl_table *table, int write,
- 		if (val < -8 || val > 8) {
- 			ret = -EINVAL;
- 		} else {
--			*valp = val;
--			if (rcu_access_pointer(ipvs->svc_table))
-+			mutex_lock(&ipvs->service_mutex);
-+			WRITE_ONCE(*valp, val);
-+			/* Make sure the services are present */
-+			if (rcu_access_pointer(ipvs->svc_table) &&
-+			    READ_ONCE(ipvs->enable) &&
-+			    !test_bit(IP_VS_WORK_SVC_NORESIZE,
-+				      &ipvs->work_flags))
- 				mod_delayed_work(system_unbound_wq,
- 						 &ipvs->svc_resize_work, 0);
-+			mutex_unlock(&ipvs->service_mutex);
+ 	/* Schedule resizing if load increases */
+ 	if (atomic_read(&ipvs->conn_count) > t->u_thresh &&
+@@ -321,7 +314,6 @@ static inline bool ip_vs_conn_unlink(struct ip_vs_conn *cp)
+ 
+ 	conn_tab_lock(t, cp, hash_key, hash_key2, use2, false /* new_hash */,
+ 		      &head, &head2);
+-	spin_lock(&cp->lock);
+ 
+ 	if (cp->flags & IP_VS_CONN_F_HASHED) {
+ 		/* Decrease refcnt and unlink conn only if we are last user */
+@@ -334,7 +326,6 @@ static inline bool ip_vs_conn_unlink(struct ip_vs_conn *cp)
  		}
  	}
- 	return ret;
+ 
+-	spin_unlock(&cp->lock);
+ 	conn_tab_unlock(head, head2);
+ 
+ 	rcu_read_unlock();
+@@ -637,6 +628,7 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
+ 	struct ip_vs_conn_hnode *hn;
+ 	u32 hash_key, hash_key_new;
+ 	struct ip_vs_conn_param p;
++	bool by_me = false;
+ 	int ntbl;
+ 	int dir;
+ 
+@@ -664,8 +656,16 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
+ 		t = rcu_dereference(t->new_tbl);
+ 		ntbl++;
+ 		/* We are lost? */
+-		if (ntbl >= 2)
++		if (ntbl >= 2) {
++			spin_lock_bh(&cp->lock);
++			if (cp->flags & IP_VS_CONN_F_NO_CPORT && by_me)
++				cp->cport = 0;
++			/* hn1 will be rehashed on next packet */
++			spin_unlock_bh(&cp->lock);
++			IP_VS_ERR_RL("%s(): Too many ht changes for dir %d\n",
++				     __func__, dir);
+ 			return;
++		}
+ 	}
+ 
+ 	/* Rehashing during resize? Use the recent table for adds */
+@@ -683,10 +683,13 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
+ 	if (head > head2 && t == t2)
+ 		swap(head, head2);
+ 
++	/* Protect the cp->flags modification */
++	spin_lock_bh(&cp->lock);
++
+ 	/* Lock seqcount only for the old bucket, even if we are on new table
+ 	 * because it affects the del operation, not the adding.
+ 	 */
+-	spin_lock_bh(&t->lock[hash_key & t->lock_mask].l);
++	spin_lock(&t->lock[hash_key & t->lock_mask].l);
+ 	preempt_disable_nested();
+ 	write_seqcount_begin(&t->seqc[hash_key & t->seqc_mask]);
+ 
+@@ -704,14 +707,23 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
+ 		hlist_bl_unlock(head);
+ 		write_seqcount_end(&t->seqc[hash_key & t->seqc_mask]);
+ 		preempt_enable_nested();
+-		spin_unlock_bh(&t->lock[hash_key & t->lock_mask].l);
++		spin_unlock(&t->lock[hash_key & t->lock_mask].l);
++		spin_unlock_bh(&cp->lock);
+ 		hash_key = hash_key_new;
+ 		goto retry;
+ 	}
+ 
+-	spin_lock(&cp->lock);
+-	if ((cp->flags & IP_VS_CONN_F_NO_CPORT) &&
+-	    (cp->flags & IP_VS_CONN_F_HASHED)) {
++	/* Fill cport once, even if multiple packets try to do it */
++	if (cp->flags & IP_VS_CONN_F_NO_CPORT && (!cp->cport || by_me)) {
++		/* If we race with resizing make sure cport is set for dir 1 */
++		if (!cp->cport) {
++			cp->cport = cport;
++			by_me = true;
++		}
++		if (!dir) {
++			atomic_dec(&ipvs->no_cport_conns[af_id]);
++			cp->flags &= ~IP_VS_CONN_F_NO_CPORT;
++		}
+ 		/* We do not recalc hash_key_r under lock, we assume the
+ 		 * parameters in cp do not change, i.e. cport is
+ 		 * the only possible change.
+@@ -726,21 +738,17 @@ void ip_vs_conn_fill_cport(struct ip_vs_conn *cp, __be16 cport)
+ 			hlist_bl_del_rcu(&hn->node);
+ 			hlist_bl_add_head_rcu(&hn->node, head_new);
+ 		}
+-		if (!dir) {
+-			atomic_dec(&ipvs->no_cport_conns[af_id]);
+-			cp->flags &= ~IP_VS_CONN_F_NO_CPORT;
+-			cp->cport = cport;
+-		}
+ 	}
+-	spin_unlock(&cp->lock);
+ 
+ 	if (head != head2)
+ 		hlist_bl_unlock(head2);
+ 	hlist_bl_unlock(head);
+ 	write_seqcount_end(&t->seqc[hash_key & t->seqc_mask]);
+ 	preempt_enable_nested();
+-	spin_unlock_bh(&t->lock[hash_key & t->lock_mask].l);
+-	if (dir--)
++	spin_unlock(&t->lock[hash_key & t->lock_mask].l);
++
++	spin_unlock_bh(&cp->lock);
++	if (dir-- && by_me)
+ 		goto next_dir;
+ }
+ 
 -- 
 2.53.0
 
