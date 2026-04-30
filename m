@@ -1,77 +1,77 @@
-Return-Path: <netfilter-devel+bounces-12325-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12323-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oHN+BEsJ82l0wwEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12325-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:27 +0200
+	id MFJWBNQJ82l0wwEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12323-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:50:44 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066AC49ED6A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:48:25 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A293249EE30
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 09:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A252D30086BF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 07:48:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6FE3B303A5EE
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2026 07:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6713D4123;
-	Thu, 30 Apr 2026 07:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162F03FA5E6;
+	Thu, 30 Apr 2026 07:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="wcdTu9ax"
+	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="KqkpTx22"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC55E35836B;
-	Thu, 30 Apr 2026 07:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EA635836B;
+	Thu, 30 Apr 2026 07:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777535292; cv=none; b=CyIGWWlufBMmKj03s0HfDrvYd1ihR82d6jFnMFjaV89gfX5Qx5Jq5/oAz3hNgquN8XfGSUBdjgukCOdmdtiHYwoPr7b8zPUsLJp+7sMzadIFQvZE+gKMdpNHDwhjN5eHyqjqo9n3Fm/jvdZ7q7izZZOkHN2OB6wN7Z3Mk2yRPhg=
+	t=1777535278; cv=none; b=P5sDkaan1J0y/gOpIrgkPOpBFKRBEMOk53jsiv0XwOERgUKAkXlW6JbI/3tE5Yv1gvQ1VwrC7zB4IrCJskMX4K6JFQdtmRiAaAozT5+CVaKa+kOVMUngkJqLA4jyc7u0WymDOtrRA3F9MasNKcyOfYcP3MBUVclAUWEZ335rIu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777535292; c=relaxed/simple;
-	bh=VTwq0UWthz0QpJzYDrKRtfiupj+O/yP9vV5eAzWzF8g=;
+	s=arc-20240116; t=1777535278; c=relaxed/simple;
+	bh=q3hgn3XtgGXyTlNF4i4VVkcHuQBF9ThMMVu0/ffjyeo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=psTnn4tSrHBZbNp3GrlImUkfEpuICgfL3ztFQuvAnUbm/IJMlFb/6PmkwlQ6bLXl5QR4LH52NWdlrzqrWWmfv32d+mtjJ41oUaZuP60okFWAkex4lvc5q2oKVnTfGPAc+IvX3BQKozJRtLrVFIkrIvfaXqq+pqPaQhtguiTKJRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=wcdTu9ax; arc=none smtp.client-ip=193.238.174.39
+	 MIME-Version; b=KURNvfakzSbV/DB4IDZ7vKs3sOwtx1DotBCRxmP6Man+50Hx1udnv5ZfWn+1ypECe1mIiOCx2nREFTyLOiDoCAGfyYVyL9wax/OkbZUq52O/MvU5G+BhR2iVCjDVC6JVoHMwmnRa2gNPRhfC5NzNv8441Os+hSQilPnfy/HQHig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=KqkpTx22; arc=none smtp.client-ip=193.238.174.39
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 3671622931;
-	Thu, 30 Apr 2026 10:47:55 +0300 (EEST)
+	by mx.ssi.bg (Potsfix) with ESMTP id 0AAF42292A;
+	Thu, 30 Apr 2026 10:47:54 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
 	:content-transfer-encoding:date:from:from:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=eDhsBF6QpJzkCaUZXdy+0cspQLn0pC7/3H/qKuY5fz4=; b=wcdTu9axOTmS
-	eGDvTDhwld5GltvBJmznYhs6bhPtREzRFhJOZvpeAtrZeqzqrHmZ0KTs+8YIJQ9s
-	iM5URSXZtTsic8XDHYuSdYYwmCv0Kt/yqz0UIX1KNA5ndSg13Hi+4I85A4uCH1uE
-	sLRY44PC/GhS8R3GxnJ0zmkWHL6MGWhnIjrfZwb/GdQvz7QF9PXJ5xHRZCYJURxY
-	Ouj3T+BtppuBgjcruzRMi0VYI4K6hz1ANZjKHdQNplt1T0wpTXAVqDJZBEieZbLE
-	S0aCAYQrX0wMoT80+wgJ6yVqNocc3JcGW+wCq+WvUHiVN1r/EZjARBsrXSXK+pnd
-	J+9BB0vDMNJaHrbBZdtBR928gWkJ4s4ZnSKIvC/LcHLlQWMRvXjGssXwb7YIYyiv
-	YqiNBK2/oWDoiQnvQ64PT9XZmV52jzubfNiXqzPQE3h0Tb54K2aijIhv6aiBDJRR
-	CiA4YGD/kLm6khHWGv5tAqzKSuB8ZHRBNGQIgSnF7Vl54J2aSu34ZUXUZkZy+prj
-	BvHDPD6WGGSaCkCZSq6jf3g6uqSrytRUc09Kvxbsei5PmUTkT+mLDD5cRsTppPm2
-	QvFr/G4ZWUxSM/25uNmatGenP+DRGS5QjyZ0KDsZmL+lwyxfHZOHub2eVXX0eEiU
-	rbXEp7b3lOuWmvNPzLL+w2KDOw7gLRU=
+	 bh=gw69bEhoW4BCbmbNr3RmsbECGj6mMQOxqGgLHbtIkVE=; b=KqkpTx22L3Oa
+	TLwMSmeBpYhgPiW2Wevu0/M0bu2dNqTHPsU7oX32OmqzBxn7WoqrDEfjtgsCOe5M
+	sjR4FYAb7uwcAy2+CxcxfSdSvahRm9gRzb8W55b/vydnPTGwMAynwfcC7/ljKt0t
+	OcCZMWKGVtqN71Wc3HklOvC2VOb7zXi6E4XD6OEtAiAtIA0o4id6QVaMNpsQxB7j
+	Ad/GSJ9bCphRxXe4weTg5s6a/a6vuUW2sigLh7PpEqC/KvhaDofJxbx4976J1EOd
+	Fp6+kIj+YlQMfPu241iHRh4FiWVw/0eyMoHi3QRrH4lQDP79PhMPEI+sDdxavgyW
+	ck2WQmyeWtYmkacWt+np+jfI0q2O9ZMCApi8OH/kXYAFB6YUxwRN/LxmW2zQ3f5A
+	FBhOdKRDjTG3f34jga2ivdssJweUqdK/EpgTpGMaFfEpnjybXL55OaPbqPKLIYpj
+	+oh2pJzFchL+GhflBu+KQFGLqZkRyCeJ4NI3zkQPVf5eZjHsYIkxZEfGI3TiIcJ8
+	0tjs/aKGwlClRv1oee7PLlbJ9PypjvyBEYxW1gezEWE/0kPsZ1fJHtq5e49J3bRU
+	zgg7iaIY0KcPM2Yvz96mGz8P6Ad4N3XkldCGEFaUUUUniUnYcF4u+WqXHPoOEsF+
+	zPp2n+Sm1otSn5EHUUVBi/n+DVj4Lh4=
 Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
 	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Thu, 30 Apr 2026 10:47:53 +0300 (EEST)
+	Thu, 30 Apr 2026 10:47:52 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 25C9362BA9;
-	Thu, 30 Apr 2026 10:47:53 +0300 (EEST)
+	by box.ssi.bg (Potsfix) with ESMTPSA id 6859B60818;
+	Thu, 30 Apr 2026 10:47:52 +0300 (EEST)
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63U7ixZu027478;
+	by ja.ssi.bg (8.18.1/8.18.1) with ESMTP id 63U7ixT4027482;
 	Thu, 30 Apr 2026 10:44:59 +0300
 Received: (from root@localhost)
-	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63U7ixYV027477;
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 63U7ixHa027481;
 	Thu, 30 Apr 2026 10:44:59 +0300
 From: Julian Anastasov <ja@ssi.bg>
 To: Simon Horman <horms@verge.net.au>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
         Waiman Long <longman@redhat.com>, lvs-devel@vger.kernel.org,
         netfilter-devel@vger.kernel.org
-Subject: [PATCHv3 nf 7/8] ipvs: Guard access of HK_TYPE_KTHREAD cpumask with RCU
-Date: Thu, 30 Apr 2026 10:44:19 +0300
-Message-ID: <20260430074420.26697-8-ja@ssi.bg>
+Subject: [PATCHv3 nf 8/8] sched/isolation: Make HK_TYPE_KTHREAD an alias of HK_TYPE_DOMAIN
+Date: Thu, 30 Apr 2026 10:44:20 +0300
+Message-ID: <20260430074420.26697-9-ja@ssi.bg>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260430074420.26697-1-ja@ssi.bg>
 References: <20260430074420.26697-1-ja@ssi.bg>
@@ -82,7 +82,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 066AC49ED6A
+X-Rspamd-Queue-Id: A293249EE30
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -90,15 +90,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12325-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12323-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ssi.bg:email,ssi.bg:dkim,ssi.bg:mid];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -109,114 +109,53 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[ssi.bg:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_COUNT_SEVEN(0.00)[8]
 
 From: Waiman Long <longman@redhat.com>
 
-The ip_vs_ctl.c file and the associated ip_vs.h file are the only places
-in the kernel where HK_TYPE_KTHREAD cpumask is being retrieved and used.
-Now that HK_TYPE_KTHREAD/HK_TYPE_DOMAIN cpumask can be changed at run
-time. We need to use RCU to guard access to this cpumask to avoid a
-potential UAF problem as the returned cpumask may be freed before it
-is being used.
+Since commit 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred
+affinity management"), kthreads default to use the HK_TYPE_DOMAIN
+cpumask. IOW, it is no longer affected by the setting of the nohz_full
+boot kernel parameter.
 
-We can replace HK_TYPE_KTHREAD by HK_TYPE_DOMAIN as they are aliases
-of each other, but keeping the HK_TYPE_KTHREAD name can highlight the
-fact that it is the kthread initiated by ipvs that is being controlled.
+That means HK_TYPE_KTHREAD should now be an alias of HK_TYPE_DOMAIN
+instead of HK_TYPE_KERNEL_NOISE to correctly reflect the current kthread
+behavior. Make the change as HK_TYPE_KTHREAD is still being used in
+some networking code.
 
-Fixes: 03ff73510169 ("cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset")
+Fixes: 041ee6f3727a ("kthread: Rely on HK_TYPE_DOMAIN for preferred affinity management")
 Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Julian Anastasov <ja@ssi.bg>
 ---
- include/net/ip_vs.h            | 20 ++++++++++++++++----
- net/netfilter/ipvs/ip_vs_ctl.c | 13 ++++++++-----
- 2 files changed, 24 insertions(+), 9 deletions(-)
+ include/linux/sched/isolation.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index d28ad8a0541f..02762ce73a0c 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1412,7 +1412,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
- 	return ipvs->sysctl_run_estimation;
- }
+diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+index dc3975ff1b2e..cf0fd03dd7a2 100644
+--- a/include/linux/sched/isolation.h
++++ b/include/linux/sched/isolation.h
+@@ -20,6 +20,11 @@ enum hk_type {
+ 	HK_TYPE_KERNEL_NOISE,
+ 	HK_TYPE_MAX,
  
--static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
-+static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
- {
- 	if (ipvs->est_cpulist_valid)
- 		return ipvs->sysctl_est_cpulist;
-@@ -1530,7 +1530,7 @@ static inline int sysctl_run_estimation(struct netns_ipvs *ipvs)
- 	return 1;
- }
- 
--static inline const struct cpumask *sysctl_est_cpulist(struct netns_ipvs *ipvs)
-+static inline const struct cpumask *__sysctl_est_cpulist(struct netns_ipvs *ipvs)
- {
- 	return housekeeping_cpumask(HK_TYPE_KTHREAD);
- }
-@@ -1565,6 +1565,18 @@ static inline int sysctl_svc_lfactor(struct netns_ipvs *ipvs)
- 	return READ_ONCE(ipvs->sysctl_svc_lfactor);
- }
- 
-+static inline bool sysctl_est_cpulist_empty(struct netns_ipvs *ipvs)
-+{
-+	guard(rcu)();
-+	return cpumask_empty(__sysctl_est_cpulist(ipvs));
-+}
++	/*
++	 * HK_TYPE_KTHREAD is now an alias of HK_TYPE_DOMAIN
++	 */
++	HK_TYPE_KTHREAD = HK_TYPE_DOMAIN,
 +
-+static inline unsigned int sysctl_est_cpulist_weight(struct netns_ipvs *ipvs)
-+{
-+	guard(rcu)();
-+	return cpumask_weight(__sysctl_est_cpulist(ipvs));
-+}
-+
- /* IPVS core functions
-  * (from ip_vs_core.c)
-  */
-@@ -1904,7 +1916,7 @@ static inline void ip_vs_est_stopped_recalc(struct netns_ipvs *ipvs)
- 	/* Stop tasks while cpulist is empty or if disabled with flag */
- 	ipvs->est_stopped = !sysctl_run_estimation(ipvs) ||
- 			    (ipvs->est_cpulist_valid &&
--			     cpumask_empty(sysctl_est_cpulist(ipvs)));
-+			     sysctl_est_cpulist_empty(ipvs));
- #endif
- }
+ 	/*
+ 	 * The following housekeeping types are only set by the nohz_full
+ 	 * boot commandline option. So they can share the same value.
+@@ -29,7 +34,6 @@ enum hk_type {
+ 	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
+ 	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
+ 	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
+-	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
+ };
  
-@@ -1920,7 +1932,7 @@ static inline bool ip_vs_est_stopped(struct netns_ipvs *ipvs)
- static inline int ip_vs_est_max_threads(struct netns_ipvs *ipvs)
- {
- 	unsigned int limit = IPVS_EST_CPU_KTHREADS *
--			     cpumask_weight(sysctl_est_cpulist(ipvs));
-+			     sysctl_est_cpulist_weight(ipvs);
- 
- 	return max(1U, limit);
- }
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 5c9f8e0e238f..c7c7f6a7a9f6 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2394,11 +2394,14 @@ static int ipvs_proc_est_cpumask_get(const struct ctl_table *table,
- 
- 	mutex_lock(&ipvs->est_mutex);
- 
--	if (ipvs->est_cpulist_valid)
--		mask = *valp;
--	else
--		mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
--	ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
-+	/* HK_TYPE_KTHREAD cpumask needs RCU protection */
-+	scoped_guard(rcu) {
-+		if (ipvs->est_cpulist_valid)
-+			mask = *valp;
-+		else
-+			mask = (struct cpumask *)housekeeping_cpumask(HK_TYPE_KTHREAD);
-+		ret = scnprintf(buffer, size, "%*pbl\n", cpumask_pr_args(mask));
-+	}
- 
- 	mutex_unlock(&ipvs->est_mutex);
- 
+ #ifdef CONFIG_CPU_ISOLATION
 -- 
 2.53.0
 
