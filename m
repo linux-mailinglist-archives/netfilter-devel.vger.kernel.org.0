@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12377-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12379-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SHlELI2b9GloCwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12377-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:24:45 +0200
+	id aLNlLqub9GloCwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12379-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:25:15 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006A64AC5B8
-	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A3A4AC5CD
+	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:25:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4AE433038B8C
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2026 12:22:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D4D64303F2A6
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2026 12:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164193A1E69;
-	Fri,  1 May 2026 12:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3085B3A2551;
+	Fri,  1 May 2026 12:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="sio3TbyT"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="wKqt8mZ+"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8756F3A1E7F;
-	Fri,  1 May 2026 12:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F053A1CEA;
+	Fri,  1 May 2026 12:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777638175; cv=none; b=f86s9bncWY4Dv+r7/Fju8L1BDJGXpSScXglahy78eJGY/DjoDR4+IZ4m9m+rMabMPZaPlrZylcPMEdvuylgeYD12J8iCNUpp6MmcHxtmLWbF85p8TKIftZuDCfuGoU42tvlnfNfVfefgNddR+Y2pBGgsy+i9GOIowEPZbZAw178=
+	t=1777638176; cv=none; b=IDSbFo1FjunjCsSuLvNdiULjdGD3ec/34fEPpetQtZmG2PyyUjHvutLwj6wSUm62PBQjeR+USYw2QduWK+8C4fTt5FmiVLgPZo3KtiP5dKjNlmZcK8uXnlZowejhFkpWIat56uJplqE/FXFodfJJ5JEMGYFk0SHTQSttrkGlo4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777638175; c=relaxed/simple;
-	bh=7cVhC4mHuC0X7QDUWV7jjfBUkCP2haTgkhRBZrub6cg=;
+	s=arc-20240116; t=1777638176; c=relaxed/simple;
+	bh=iGCgKKAZjuVFe8NtGypebr2FL+6Q+sjCRSubmoZeE3Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N/UEEzPE237nvXdGbYY+0FTalrJO5Wol+K89pxSkAIHthor/WWy3yoR0KrGLynt7Y0EBcJ3nLzDmqtJ/iDBvTniTjP4E6Gg2RTq9LfPwonp8PUFsAwEOBSvcI1M9Sy6DsMdHdKuEnjx36uf8aS0XZElNYX7J7XF45pA5vSBupnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=sio3TbyT; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=FhftahwUmP3yrBQjfISxvDewPcSLfJFqAEyHlWwSxoRjt5DNadJJCd0WPJW8jyRn+wx8j2VggoaznIddIlOCYx9Gxs9Kx5ltUcwe9YHSR9g9ejND28YBfDsu+XZKzS/azQbbCySDmC9a+ml01aVHOOvcRUSKHcXtAX/1joaVag0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=wKqt8mZ+; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 80FF560254;
-	Fri,  1 May 2026 14:22:51 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id B54E060253;
+	Fri,  1 May 2026 14:22:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1777638172;
-	bh=hnkzbGd5HMf6I7DzRoyho73vMYVHs0QfInsJSnj6z3E=;
+	s=2025; t=1777638173;
+	bh=6S4r3Pu5p6LNj+T8frNczIDvTk2FQ6ZslXgCCio8jsM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sio3TbyTUgXjXc5emWPBiHbcpzv3yWrhCuWvoh8wQ7e/SShb8scmSznYqv8gEgllj
-	 mMSozqBrN8paP80qY1afGuzthca8t2IARTIc4ZrsG2E8M7o5WSp+IxRlJe2yxPP9RU
-	 /jOsqZOqjo1Pdq2XGzwmEV2YsFwHOubmwsYupgDVzflZdmSbxjO46SC4iCuflu89zU
-	 Zp93itxBVyEyo/jVkoibCwn2+zae0EH9rzDGFUIrWPA9Mlcgj1gfPPMhBxjKD1T4eh
-	 llrvwKr8af5/PIBm9gEb24muQsF5WPdCT04x2/YDnNU9O++4LE0Yt11GOoJpWUjzjN
-	 NvFOWdqh4xxfw==
+	b=wKqt8mZ++gkA62ec7xICkI7komtSl5D3tbV3w6ggzEDDeVYSqfqc4j3giEBhTOlio
+	 Z68583Lrs221Rr1bNRzEje5gh7ipCVdZ7IkxIPP9b1XBVNtEtk853GJGJC36b020EU
+	 Mqfmqt0d8+24PL24oNYnV5GiIT6piZECZ/1b+WBq/6Po7HcN4FcsI+t3/hIdV27+SB
+	 rlqlCWw706DRCVVfQIXdVMH8v+2+KMgbxRpP3SB+EVnAqs+FsMF55ZotD2K71H4uHj
+	 u/+lrWWfYb1hi/LqUFcWZ7bCaSE+0316BdntwwmNgjE1x/e3faw0useQ/GBWUMhj3N
+	 7JxWyssZvUA2Q==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 07/14] netfilter: nf_tables: fix netdev hook allocation memleak with dormant tables
-Date: Fri,  1 May 2026 14:22:30 +0200
-Message-ID: <20260501122237.296262-8-pablo@netfilter.org>
+Subject: [PATCH net 08/14] netfilter: nf_socket: skip socket lookup for non-first fragments
+Date: Fri,  1 May 2026 14:22:31 +0200
+Message-ID: <20260501122237.296262-9-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260501122237.296262-1-pablo@netfilter.org>
 References: <20260501122237.296262-1-pablo@netfilter.org>
@@ -69,7 +69,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 006A64AC5B8
+X-Rspamd-Queue-Id: 43A3A4AC5CD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
@@ -85,7 +85,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12377-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12379-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -98,107 +98,69 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,suse.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-From: Florian Westphal <fw@strlen.de>
+From: Fernando Fernandez Mancera <fmancera@suse.de>
 
-sashiko says:
- could the related code in __nf_tables_abort() leak the struct nft_hook objects when the table is dormant?
+Both nft_socket and xt_socket relies on L4 headers to perform socket
+lookup in the slow path. For fragmented packets, while the IP protocol
+remains constant across all fragments, only the first fragment contains
+the actual L4 header.
 
- In __nf_tables_abort(), when rolling back a NEWCHAIN transaction that
- updates hooks, the code conditionally unregisters and frees the hooks only
- if the table is not dormant [..]
-            if (!(table->flags & NFT_TABLE_F_DORMANT)) {
-                nft_netdev_unregister_hooks(net,
-                                            &nft_trans_chain_hooks(trans),
-                                            true);
-            }
-            ...
-            nft_trans_destroy(trans);
+As the expression/match could be attached to a chain with a priority
+lower than -400, it could bypass defragmentation.
 
-Unfortunately netdev family mixes hook registration and allocation.
-Push table struct down and only check for the flag to unregister.
+Add a check for fragmentation in the lookup functions directly so the
+problem is handled for both nft_socket and xt_socket at the same time.
+In addition, future users of the functions would not need to care about
+this.
 
-Fixes: 216e7bf7402c ("netfilter: nf_tables: skip netdev hook unregistration if table is dormant")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: 902d6a4c2a4f ("netfilter: nf_defrag: Skip defrag if NOTRACK is set")
+Fixes: 554ced0a6e29 ("netfilter: nf_tables: add support for native socket matching")
+Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 34 ++++++++++++++++++++--------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+ net/ipv4/netfilter/nf_socket_ipv4.c | 3 +++
+ net/ipv6/netfilter/nf_socket_ipv6.c | 5 +++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 38e33c66c618..87387adbca65 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -407,6 +407,7 @@ static void nft_netdev_unregister_trans_hook(struct net *net,
- }
+diff --git a/net/ipv4/netfilter/nf_socket_ipv4.c b/net/ipv4/netfilter/nf_socket_ipv4.c
+index 5080fa5fbf6a..f9c6755f5ec5 100644
+--- a/net/ipv4/netfilter/nf_socket_ipv4.c
++++ b/net/ipv4/netfilter/nf_socket_ipv4.c
+@@ -94,6 +94,9 @@ struct sock *nf_sk_lookup_slow_v4(struct net *net, const struct sk_buff *skb,
+ #endif
+ 	int doff = 0;
  
- static void nft_netdev_unregister_hooks(struct net *net,
-+					const struct nft_table *table,
- 					struct list_head *hook_list,
- 					bool release_netdev)
- {
-@@ -414,8 +415,10 @@ static void nft_netdev_unregister_hooks(struct net *net,
- 	struct nf_hook_ops *ops;
++	if (ntohs(iph->frag_off) & IP_OFFSET)
++		return NULL;
++
+ 	if (iph->protocol == IPPROTO_UDP || iph->protocol == IPPROTO_TCP) {
+ 		struct tcphdr _hdr;
+ 		struct udphdr *hp;
+diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
+index ced8bd44828e..893f2aeb4711 100644
+--- a/net/ipv6/netfilter/nf_socket_ipv6.c
++++ b/net/ipv6/netfilter/nf_socket_ipv6.c
+@@ -100,6 +100,7 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
+ 	const struct in6_addr *daddr = NULL, *saddr = NULL;
+ 	struct ipv6hdr *iph = ipv6_hdr(skb), ipv6_var;
+ 	struct sk_buff *data_skb = NULL;
++	unsigned short fragoff = 0;
+ 	int doff = 0;
+ 	int thoff = 0, tproto;
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+@@ -107,8 +108,8 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
+ 	struct nf_conn const *ct;
+ #endif
  
- 	list_for_each_entry_safe(hook, next, hook_list, list) {
--		list_for_each_entry(ops, &hook->ops_list, list)
--			nf_unregister_net_hook(net, ops);
-+		if (!(table->flags & NFT_TABLE_F_DORMANT)) {
-+			list_for_each_entry(ops, &hook->ops_list, list)
-+				nf_unregister_net_hook(net, ops);
-+		}
- 		if (release_netdev)
- 			nft_netdev_hook_unlink_free_rcu(hook);
+-	tproto = ipv6_find_hdr(skb, &thoff, -1, NULL, NULL);
+-	if (tproto < 0) {
++	tproto = ipv6_find_hdr(skb, &thoff, -1, &fragoff, NULL);
++	if (tproto < 0 || fragoff) {
+ 		pr_debug("unable to find transport header in IPv6 packet, dropping\n");
+ 		return NULL;
  	}
-@@ -452,20 +455,25 @@ static void __nf_tables_unregister_hook(struct net *net,
- 	struct nft_base_chain *basechain;
- 	const struct nf_hook_ops *ops;
- 
--	if (table->flags & NFT_TABLE_F_DORMANT ||
--	    !nft_is_base_chain(chain))
-+	if (!nft_is_base_chain(chain))
- 		return;
- 	basechain = nft_base_chain(chain);
- 	ops = &basechain->ops;
- 
-+	/* must also be called for dormant tables */
-+	if (nft_base_chain_netdev(table->family, basechain->ops.hooknum)) {
-+		nft_netdev_unregister_hooks(net, table, &basechain->hook_list,
-+					    release_netdev);
-+		return;
-+	}
-+
-+	if (table->flags & NFT_TABLE_F_DORMANT)
-+		return;
-+
- 	if (basechain->type->ops_unregister)
- 		return basechain->type->ops_unregister(net, ops);
- 
--	if (nft_base_chain_netdev(table->family, basechain->ops.hooknum))
--		nft_netdev_unregister_hooks(net, &basechain->hook_list,
--					    release_netdev);
--	else
--		nf_unregister_net_hook(net, &basechain->ops);
-+	nf_unregister_net_hook(net, &basechain->ops);
- }
- 
- static void nf_tables_unregister_hook(struct net *net,
-@@ -11282,11 +11290,9 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- 			break;
- 		case NFT_MSG_NEWCHAIN:
- 			if (nft_trans_chain_update(trans)) {
--				if (!(table->flags & NFT_TABLE_F_DORMANT)) {
--					nft_netdev_unregister_hooks(net,
--								    &nft_trans_chain_hooks(trans),
--								    true);
--				}
-+				nft_netdev_unregister_hooks(net, table,
-+							    &nft_trans_chain_hooks(trans),
-+							    true);
- 				free_percpu(nft_trans_chain_stats(trans));
- 				kfree(nft_trans_chain_name(trans));
- 				nft_trans_destroy(trans);
 -- 
 2.47.3
 
