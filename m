@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12384-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12380-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2GhSJk+b9Gl1CwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12384-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:23:43 +0200
+	id UFg2Ncmb9GloCwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12380-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:25:45 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321444AC563
-	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:23:43 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8ED4AC5D7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 01 May 2026 14:25:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5E48A301A7DA
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2026 12:23:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D166F304651B
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2026 12:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B953A255D;
-	Fri,  1 May 2026 12:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9553A16BE;
+	Fri,  1 May 2026 12:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="lXq6RYmy"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Nikf5LU+"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADF13A1E67;
-	Fri,  1 May 2026 12:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE8C3A1E69;
+	Fri,  1 May 2026 12:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777638183; cv=none; b=q8kCc3B/mBckfi6koXcBmBtnla7OFYbR6tPqVCoYRVVpnF2oVFayRCtfnqZPSCqoaJLv8glcDUsIHzXriUXPj8joII3CsgURHaOP7krY/ySiBYzXuzIGNGoim9LO69EbiCM/NCbCyapjt9D4KapPgB4TbdU5d9HLt2iwvGOOzp0=
+	t=1777638179; cv=none; b=jHfHlCIYdSGcwDFbYFhgw2fR5nIwiKyt8RiZiIWg6/u6nOJ0Uxt5vrb/9dENTO3cspLxn91re59C9ZFvD+yJW0zwDrVjprCnXDGOWyVu7PQB/T3YMFhPqOKCw/pzTEl3Rr8M/OTX+erFhtVaElBAWBZmlresrP9SJI2IX6Zfhkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777638183; c=relaxed/simple;
-	bh=oqqTWfGnPyLAtneYKuVaq1SsjDyTKX3QVfdWOIBC5qI=;
+	s=arc-20240116; t=1777638179; c=relaxed/simple;
+	bh=tNhHT6Abv/3zT8k+dHNKaWWWmJxFJX3NgbugeEhWMX0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AifHXP0clDzbZ33c0gGUV+J5miohkcjAlibZe+7BnyaThLEh+xRo61pM9P7iB7dFO6UtXXjDMSkNSjNhq3ZcXQVr4Hb69cGZfMsXucJwezbSmTyAQCJnAEz/8/ZTGOYUxwbnjhWh0Tk4MvwCECuUN65zcN2y0V8mKW4ig+RsbfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=lXq6RYmy; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=oKemPZdNHou9TI8ec6ZJjJgXH700zK6Dacokpkf480ZMZKa/Cu/XipCxi53/lbX/PlGD2HGDoylhTXr/3+c7ExmX8MxSV016k4mqVf9c8XHIvdhqdUk/bpFVTIQeXND0y83N7/xfAWh7gX92HOtFuqOKkhjli/PpnfRhjxidaO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Nikf5LU+; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id E1F1F6017E;
-	Fri,  1 May 2026 14:22:53 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 2DCDD60254;
+	Fri,  1 May 2026 14:22:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1777638174;
-	bh=Mp/JXNuUBdeI9ihtX9QNuyNpx7fuho/7XkOS4owfwW8=;
+	s=2025; t=1777638175;
+	bh=cR6WNktAkRA0KiTvVIoCiQDDxvWm++CwvuGFEmxHJkc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lXq6RYmyW9lydJFM/mXDGNkXsxjedmWgkXAz0nJAojDelrFMlFNRn+0yVHhJdH35h
-	 qZp5BUGj3Vp9s1zsXP+3wCsc71YjCEhqSdbg3dYTgVO2PhEQlT8FEb9s+LZRlzQSeA
-	 MXEvXYCJpz2yd2i16cfkApApXJ+YDL+kcj1FoCWvNZYxPJlzE70cV/z19eYBhSo6Kp
-	 zG/jIcG7wnQQoA5625Fz1ARGo0P7ih+vLzb1VGtv5qIi8ZC/yke94yBz+7rcNB6tc4
-	 VaaRb2T9qQUO/9xsZgHKdmeZlfjibImR3nZjet4dsv+phLgVQAU9jnup9WcKVPM56J
-	 edQvJSC5XHWWg==
+	b=Nikf5LU+3WYCXSAB6F+leXSn1bUWtgZagWIqXhSAGS4l5RaCUs4OE+aeKE3eEZFnq
+	 zxnGVN8qScLZl9j2LF5wndmn3IYe7QIfH43MeTyACxZtvH1gVrBfhKb61hY3vLJruS
+	 5vmn6iODCs6iUSOYwtIxoS/b/XcJVFgJIjZJ+Sw2ebZdZnCt6qqzj6CUbZ9zJ1uVRG
+	 gonfzB76ifMXv/TbjSfzgazWt8m+2jxk6UAik/jLDc59pOUYHJR8XWOWxhKAhxHNfr
+	 r6WIElEuSVH5bYDksJcAhpuzHY/DeLyleakIGI/lxSfrksyd8CBhdQFiwu6l5Hf3BI
+	 lJPvVYO1oqsAA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 09/14] netfilter: nf_tables: skip L4 header parsing for non-first fragments
-Date: Fri,  1 May 2026 14:22:32 +0200
-Message-ID: <20260501122237.296262-10-pablo@netfilter.org>
+Subject: [PATCH net 10/14] netfilter: xtables: fix L4 header parsing for non-first fragments
+Date: Fri,  1 May 2026 14:22:33 +0200
+Message-ID: <20260501122237.296262-11-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260501122237.296262-1-pablo@netfilter.org>
 References: <20260501122237.296262-1-pablo@netfilter.org>
@@ -69,14 +69,14 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 321444AC563
+X-Rspamd-Queue-Id: 1C8ED4AC5D7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -85,7 +85,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12384-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12380-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -93,106 +93,149 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,suse.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:dkim,netfilter.org:mid,suse.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 
-The tproxy, osf and exthdr (SCTP) expressions rely on the presence of
-transport layer headers to perform socket lookups, fingerprint matching,
-or chunk extraction. For fragmented packets, while the IP protocol
-remains constant across all fragments, only the first fragment contains
-the actual L4 header.
+Multiple targets and matches relies on L4 header to operate. For
+fragmented packets, every fragment carries the transport protocol
+identifier, but only the first fragment contains the L4 header.
 
-The expressions could be attached to a chain with a priority lower than
--400, bypassing defragmentation. Or could be used in stateless
-environments where defragmentation is not happening at all.  This could
-result in garbage data being used for the matching.
+As the 'raw' table can be configured to run at priority -450 (before
+defragmentation at -400), the target/match can be reached before
+reassembly. In this case, non-first fragments have their payload
+incorrectly parsed as a TCP/UDP header. This would be of course a
+misconfiguration scenario. In most of the cases this just lead to a
+unreliable behavior for fragmented traffic.
 
-Add a check for pkt->fragoff so only unfragmented packets or the first
-fragment is processed.
+Add a fragment check to ensure target/match only evaluates unfragmented
+packets or the first fragment in the stream.
 
-Fixes: 133dc203d77d ("netfilter: nft_exthdr: Support SCTP chunks")
-Fixes: 4ed8eb6570a4 ("netfilter: nf_tables: Add native tproxy support")
-Fixes: b96af92d6eaf ("netfilter: nf_tables: implement Passive OS fingerprint module in nft_osf")
+Fixes: 902d6a4c2a4f ("netfilter: nf_defrag: Skip defrag if NOTRACK is set")
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_core.c | 2 +-
- net/netfilter/nft_exthdr.c     | 2 +-
- net/netfilter/nft_osf.c        | 2 +-
- net/netfilter/nft_tproxy.c     | 8 ++++----
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ net/netfilter/xt_TPROXY.c    | 11 +++++++++--
+ net/netfilter/xt_ecn.c       |  4 ++++
+ net/netfilter/xt_hashlimit.c |  4 +++-
+ net/netfilter/xt_osf.c       |  3 +++
+ net/netfilter/xt_tcpmss.c    |  4 ++++
+ 5 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
-index 5ddd5b6e135f..8ab186f86dd4 100644
---- a/net/netfilter/nf_tables_core.c
-+++ b/net/netfilter/nf_tables_core.c
-@@ -153,7 +153,7 @@ static bool nft_payload_fast_eval(const struct nft_expr *expr,
- 	if (priv->base == NFT_PAYLOAD_NETWORK_HEADER)
- 		ptr = skb_network_header(skb) + pkt->nhoff;
- 	else {
--		if (!(pkt->flags & NFT_PKTINFO_L4PROTO))
-+		if (!(pkt->flags & NFT_PKTINFO_L4PROTO) || pkt->fragoff)
- 			return false;
- 		ptr = skb->data + nft_thoff(pkt);
- 	}
-diff --git a/net/netfilter/nft_exthdr.c b/net/netfilter/nft_exthdr.c
-index 0407d6f708ae..e6a07c0df207 100644
---- a/net/netfilter/nft_exthdr.c
-+++ b/net/netfilter/nft_exthdr.c
-@@ -376,7 +376,7 @@ static void nft_exthdr_sctp_eval(const struct nft_expr *expr,
- 	const struct sctp_chunkhdr *sch;
- 	struct sctp_chunkhdr _sch;
+diff --git a/net/netfilter/xt_TPROXY.c b/net/netfilter/xt_TPROXY.c
+index e4bea1d346cf..5f60e7298a1e 100644
+--- a/net/netfilter/xt_TPROXY.c
++++ b/net/netfilter/xt_TPROXY.c
+@@ -86,6 +86,9 @@ tproxy_tg4_v0(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct xt_tproxy_target_info *tgi = par->targinfo;
  
--	if (pkt->tprot != IPPROTO_SCTP)
-+	if (pkt->tprot != IPPROTO_SCTP || pkt->fragoff)
- 		goto err;
++	if (par->fragoff)
++		return NF_DROP;
++
+ 	return tproxy_tg4(xt_net(par), skb, tgi->laddr, tgi->lport,
+ 			  tgi->mark_mask, tgi->mark_value);
+ }
+@@ -95,6 +98,9 @@ tproxy_tg4_v1(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct xt_tproxy_target_info_v1 *tgi = par->targinfo;
  
- 	do {
-diff --git a/net/netfilter/nft_osf.c b/net/netfilter/nft_osf.c
-index c02d5cb52143..45fe56da5044 100644
---- a/net/netfilter/nft_osf.c
-+++ b/net/netfilter/nft_osf.c
-@@ -33,7 +33,7 @@ static void nft_osf_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 		return;
- 	}
- 
--	if (pkt->tprot != IPPROTO_TCP) {
-+	if (pkt->tprot != IPPROTO_TCP || pkt->fragoff) {
- 		regs->verdict.code = NFT_BREAK;
- 		return;
- 	}
-diff --git a/net/netfilter/nft_tproxy.c b/net/netfilter/nft_tproxy.c
-index f2101af8c867..89be443734f6 100644
---- a/net/netfilter/nft_tproxy.c
-+++ b/net/netfilter/nft_tproxy.c
-@@ -30,8 +30,8 @@ static void nft_tproxy_eval_v4(const struct nft_expr *expr,
- 	__be16 tport = 0;
++	if (par->fragoff)
++		return NF_DROP;
++
+ 	return tproxy_tg4(xt_net(par), skb, tgi->laddr.ip, tgi->lport,
+ 			  tgi->mark_mask, tgi->mark_value);
+ }
+@@ -106,6 +112,7 @@ tproxy_tg6_v1(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct ipv6hdr *iph = ipv6_hdr(skb);
+ 	const struct xt_tproxy_target_info_v1 *tgi = par->targinfo;
++	unsigned short fragoff = 0;
+ 	struct udphdr _hdr, *hp;
  	struct sock *sk;
+ 	const struct in6_addr *laddr;
+@@ -113,8 +120,8 @@ tproxy_tg6_v1(struct sk_buff *skb, const struct xt_action_param *par)
+ 	int thoff = 0;
+ 	int tproto;
  
--	if (pkt->tprot != IPPROTO_TCP &&
--	    pkt->tprot != IPPROTO_UDP) {
-+	if ((pkt->tprot != IPPROTO_TCP &&
-+	     pkt->tprot != IPPROTO_UDP) || pkt->fragoff) {
- 		regs->verdict.code = NFT_BREAK;
- 		return;
+-	tproto = ipv6_find_hdr(skb, &thoff, -1, NULL, NULL);
+-	if (tproto < 0)
++	tproto = ipv6_find_hdr(skb, &thoff, -1, &fragoff, NULL);
++	if (tproto < 0 || fragoff)
+ 		return NF_DROP;
+ 
+ 	hp = skb_header_pointer(skb, thoff, sizeof(_hdr), &_hdr);
+diff --git a/net/netfilter/xt_ecn.c b/net/netfilter/xt_ecn.c
+index b96e8203ac54..a8503f5d26bf 100644
+--- a/net/netfilter/xt_ecn.c
++++ b/net/netfilter/xt_ecn.c
+@@ -30,6 +30,10 @@ static bool match_tcp(const struct sk_buff *skb, struct xt_action_param *par)
+ 	struct tcphdr _tcph;
+ 	const struct tcphdr *th;
+ 
++	/* this is fine for IPv6 as ecn_mt_check6() enforces -p tcp */
++	if (par->fragoff)
++		return false;
++
+ 	/* In practice, TCP match does this, so can't fail.  But let's
+ 	 * be good citizens.
+ 	 */
+diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
+index 3bd127bfc114..2704b4b60d1e 100644
+--- a/net/netfilter/xt_hashlimit.c
++++ b/net/netfilter/xt_hashlimit.c
+@@ -658,6 +658,8 @@ hashlimit_init_dst(const struct xt_hashlimit_htable *hinfo,
+ 		if (!(hinfo->cfg.mode &
+ 		      (XT_HASHLIMIT_HASH_DPT | XT_HASHLIMIT_HASH_SPT)))
+ 			return 0;
++		if (ntohs(ip_hdr(skb)->frag_off) & IP_OFFSET)
++			return -1;
+ 		nexthdr = ip_hdr(skb)->protocol;
+ 		break;
+ #if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
+@@ -681,7 +683,7 @@ hashlimit_init_dst(const struct xt_hashlimit_htable *hinfo,
+ 			return 0;
+ 		nexthdr = ipv6_hdr(skb)->nexthdr;
+ 		protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr, &frag_off);
+-		if ((int)protoff < 0)
++		if ((int)protoff < 0 || ntohs(frag_off) & IP6_OFFSET)
+ 			return -1;
+ 		break;
  	}
-@@ -97,8 +97,8 @@ static void nft_tproxy_eval_v6(const struct nft_expr *expr,
+diff --git a/net/netfilter/xt_osf.c b/net/netfilter/xt_osf.c
+index dc9485854002..e8807caede68 100644
+--- a/net/netfilter/xt_osf.c
++++ b/net/netfilter/xt_osf.c
+@@ -27,6 +27,9 @@
+ static bool
+ xt_osf_match_packet(const struct sk_buff *skb, struct xt_action_param *p)
+ {
++	if (p->fragoff)
++		return false;
++
+ 	return nf_osf_match(skb, xt_family(p), xt_hooknum(p), xt_in(p),
+ 			    xt_out(p), p->matchinfo, xt_net(p), nf_osf_fingers);
+ }
+diff --git a/net/netfilter/xt_tcpmss.c b/net/netfilter/xt_tcpmss.c
+index 0d32d4841cb3..b9da8269161d 100644
+--- a/net/netfilter/xt_tcpmss.c
++++ b/net/netfilter/xt_tcpmss.c
+@@ -32,6 +32,10 @@ tcpmss_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	u8 _opt[15 * 4 - sizeof(_tcph)];
+ 	unsigned int i, optlen;
  
- 	memset(&taddr, 0, sizeof(taddr));
- 
--	if (pkt->tprot != IPPROTO_TCP &&
--	    pkt->tprot != IPPROTO_UDP) {
-+	if ((pkt->tprot != IPPROTO_TCP &&
-+	     pkt->tprot != IPPROTO_UDP) || pkt->fragoff) {
- 		regs->verdict.code = NFT_BREAK;
- 		return;
- 	}
++	/* this is fine for IPv6 as xt_tcpmss enforces -p tcp */
++	if (par->fragoff)
++		return false;
++
+ 	/* If we don't have the whole header, drop packet. */
+ 	th = skb_header_pointer(skb, par->thoff, sizeof(_tcph), &_tcph);
+ 	if (th == NULL)
 -- 
 2.47.3
 
