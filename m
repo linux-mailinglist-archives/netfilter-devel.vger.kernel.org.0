@@ -1,153 +1,153 @@
-Return-Path: <netfilter-devel+bounces-12432-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12433-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MPyHBTi3+WmNBAMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12432-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 11:24:08 +0200
+	id WCKmNE7L+Wn3EAMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12433-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 12:49:50 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84B734C98F6
-	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 11:24:07 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7E4C4CBD1D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 12:49:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5B8DD308F719
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 May 2026 09:19:27 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B4AAE304E848
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 May 2026 10:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D7730CD85;
-	Tue,  5 May 2026 09:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="nO44IJFL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E07401A26;
+	Tue,  5 May 2026 10:37:48 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBB4309F1D;
-	Tue,  5 May 2026 09:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B4733C502
+	for <netfilter-devel@vger.kernel.org>; Tue,  5 May 2026 10:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777972765; cv=none; b=JARL8b4o00Z3eUjyjDmIzN71hAv60jo7O/keG0+XExq2qS3Mn8fpH8lLW+gtwKGk5fMSiJv3bVzVjd4b7nnRWI6DrSyjtF6pZwdjwup5F6KDGVUW+QZOpbCGbC5++PsRRJOh90Wl5SXUPhsHLaGFkdyiBUtur+0mM/yfOai8iww=
+	t=1777977468; cv=none; b=igfJgN7Gos+fPnFFio2ie8x4pTHXoPgXsUneYwyXrAU2NuOjYalA8YuXlB63p0G7mLs8ChSLlWYAs+qEFemXpxQnsp96x1PQKrL0th2QfK8E0wWB2j4y4FUYXfnMHdlxKAL1NFHiy13uk3PkVeJfNYZR6b5ZrpXkKEqb2nX1Nes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777972765; c=relaxed/simple;
-	bh=Sa1cZpOj2vBVDkew0f+0GqoneqbSh2eHUpErybrPNVQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k74Vg9A+110Z61hjWpT07Raw2csYb6e0QgLdY9l40CKuPpRldNwNq0mvbY/MTSBLDGjOTkZYnKrXePz2+cWhbxhMQLuhliboomgY7qydcQQu8F9L6qT89qyZcvnpr8UbL6ctsU34XtMKEuiB0MIs/B8DcTcTYR8EyuzwNsYdx+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nO44IJFL; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 32E6F600B5;
-	Tue,  5 May 2026 11:19:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1777972761;
-	bh=/jvsMDAng95ZDXouFnr0lTKBoKIcHWdA0+U30YrDN0A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nO44IJFLaNffpH/icrQrgPj74VxOP1bbmvcMCae7UClnGEkGSWi9gZ4GxQMJo0NUA
-	 mKAQXnYMuTBspoN3b0PQgJxjAKIa/lsyosa4RQa9a6jxvN8OpM65ZIT7Z7DX7PDSeZ
-	 3bLlykSBup06TzgXRTiMavS589KX/CCwQoy1rhrJE74UdA20iUVrlz/8skaWeny0u+
-	 LyG/VgDqC6oI+6faWZ4h8rcgku5p6Pjj8qI5854JwemLKDvx7bJt9TDS9tFBKF3L0m
-	 mTANgiJJ/i3VkDhbSkPkgnUv3hpcvMwSUdCA4DB9LEOrh3N++yZwDs4Z8Ksdi/uLEg
-	 LtRFTH9oVvspg==
-Date: Tue, 5 May 2026 11:19:18 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Pratham Gupta <pratham36gupta@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, fw@strlen.de, phil@nwl.cc,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH net] netfilter: ctnetlink: use nf_ct_exp_net() in
- expectation dump
-Message-ID: <afm2FhEytJzShYhk@chamomile>
-References: <20260505051157.3895177-1-pratham36gupta@gmail.com>
+	s=arc-20240116; t=1777977468; c=relaxed/simple;
+	bh=W5+xFC/lJtnAZDL0WPlbZDCZdFGUHqBmE2lkotgtrhI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FqmoTJEAldJoJRTHcBXQ889ZQoPYeo25E2Uvqcu40JB5OW34O/1E84CzsA08LiA0TyG+HRcTq3/WyZaKjO0tz4WBsXSgID7R6ecuauhBwu+hA9+mBAFywdkbvGC/hFWU+8O+nN5utj5rb5dQsJTcDe5aV03Pc79ZT+sbc+3KTRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 8D796607D4; Tue, 05 May 2026 12:37:44 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] scanner: enable verdicts in rate scope too
+Date: Tue,  5 May 2026 12:37:30 +0200
+Message-ID: <20260505103739.25949-1-fw@strlen.de>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260505051157.3895177-1-pratham36gupta@gmail.com>
-X-Rspamd-Queue-Id: 84B734C98F6
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: D7E4C4CBD1D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[netfilter.org];
-	FREEMAIL_TO(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12432-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	DMARC_NA(0.00)[strlen.de];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12433-lists,netfilter-devel=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.879];
+	RCPT_COUNT_THREE(0.00)[3];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[]
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:mid,strlen.de:email]
 
-Hi,
+Blamed commit added first use of exclusive start conditions in the
+nftables parser.
 
-This is nf-next material.
+Inclusive start conditions extend the grammar:
+ - token NEW_COND will start to match in scanner.l
+ - all other known tokens remain valid
+ - bison calls back into scanner.l (via scanner_pop_start_cond())
+   when it has parsed a complete rule.
 
-On Mon, May 04, 2026 at 10:11:57PM -0700, Pratham Gupta wrote:
-> Commit 02a3231b6d82 ("netfilter: nf_conntrack_expect: store netns and zone in expectation")
-> introduced exp->net so RCU-only expectation paths no longer need to
-> dereference exp->master for netns lookups.
-> 
-> Commit 3db5647984de ("netfilter: nf_conntrack_expect: skip expectations in other netns via proc")
-> updated the proc path accordingly, but ctnetlink_exp_dump_table() still
-> compares against nf_ct_net(exp->master).
+Exclusive start conditions work in the same way, but with a slight
+difference: Once we enter SCANSTATE_RATE, ALL OTHER tokens that are
+not SCANSTATE_RATE or tagged as <*>, will stop matching.
 
-There was no check in the /proc path.
+This was done to allow something like 1 mbytes/second get handled
+via NUM MBYTES SLASH SECOND rather than STRING (which is no longer
+in scope).
 
-> Use nf_ct_exp_net(exp) here as well so the netlink dump path matches
-> the rest of the March 2026 expectation netns/RCU cleanup.
+This is a problem: in nftables, there is no end-token for
+the 'rate' keyword.  The scanstate is popped the same way as for
+the inclusive start conditions.  But flex is greedy.  By the time
+we call scanner_pop_start_cond(), next token has already been parsed
+according to RATE rules.
 
-yes, this is a leftover, but it is safe to access 
+This breaks following rule:
+  nft add rule .. limit rate over 1 mbytes/second drop
+  Error: syntax error, unexpected junk
+  expected any of: end of file, newline, semicolon, [..] drop, continue ...
 
-> Fixes: 02a3231b6d82 ("netfilter: nf_conntrack_expect: store netns and zone in expectation")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Pratham Gupta <pratham36gupta@gmail.com>
-> ---
-> Tested expectation create/dump/delete on the host and in fresh Ubuntu 24.04
-> Docker userspace. Concurrent namespace churn/dump testing did not reproduce
-> a cross-netns leak.
+Problem is that flex parsed 'd'(rop) while in SCANSTATE_RATE.
 
-What cross-netns leak are you refering? This is simply using the
-conntrack netns instead of exp->netns which was added in 02a3231b6d82.
+There is no good solution for this problem (aside from altering the
+grammar to be explicitly scoped, e.g. limit rate { over ... }
 
-This is nf-next material.
+Another alternative might be to add some string-alike catchall rule to
+<SCANSTATE_RATE> in scanner.l and use that to pop state + rescan via
+yyless(0).  But it feels even more gross than this.
 
->  net/netfilter/nf_conntrack_netlink.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-> index eda5fe4a75c8..8ae3f6acc2d2 100644
-> --- a/net/netfilter/nf_conntrack_netlink.c
-> +++ b/net/netfilter/nf_conntrack_netlink.c
-> @@ -3158,7 +3158,7 @@ ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
->  			if (l3proto && exp->tuple.src.l3num != l3proto)
->  				continue;
->  
-> -			if (!net_eq(nf_ct_net(exp->master), net))
-> +			if (!net_eq(nf_ct_exp_net(exp), net))
->  				continue;
->  
->  			if (cb->args[1]) {
-> -- 
-> 2.43.0
-> 
+Technially we'd have to <*> a lot more keywords, e.g.
+
+ rate over 1 mbytes/second ip saddr 1.2.3.4
+
+is valid (or should be).  Its not allowed anymore either.
+It makes a bit less sense to add expressions after a rate limiter, however.
+
+Fixes: 9d105581b5f1 ("scanner: Introduce SCANSTATE_RATE")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ src/scanner.l | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/scanner.l b/src/scanner.l
+index 1b4eb1cf13a4..bd66cf7bbfa1 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -348,12 +348,15 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ }
+ "tproxy"		{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_TPROXY); return TPROXY; }
+ 
++<*>{
+ "accept"		{ return ACCEPT; }
+ "drop"			{ return DROP; }
+ "continue"		{ return CONTINUE; }
+ "jump"			{ return JUMP; }
+ "goto"			{ return GOTO; }
+ "return"		{ return RETURN; }
++}
++
+ <SCANSTATE_EXPR_QUEUE,SCANSTATE_STMT_DUP,SCANSTATE_STMT_FWD,SCANSTATE_STMT_NAT,SCANSTATE_STMT_TPROXY,SCANSTATE_IP,SCANSTATE_IP6>"to"			{ return TO; } /* XXX: SCANSTATE_IP is a workaround */
+ 
+ "inet"			{ return INET; }
+-- 
+2.53.0
+
 
