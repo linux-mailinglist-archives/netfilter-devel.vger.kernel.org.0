@@ -1,173 +1,153 @@
-Return-Path: <netfilter-devel+bounces-12431-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12432-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wGwWMFV8+Wl59AIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12431-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 07:12:53 +0200
+	id MPyHBTi3+WmNBAMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12432-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 11:24:08 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683FE4C6BCF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 07:12:53 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84B734C98F6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 05 May 2026 11:24:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A264F3020A6D
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 May 2026 05:12:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5B8DD308F719
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 May 2026 09:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3923BD24A;
-	Tue,  5 May 2026 05:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D7730CD85;
+	Tue,  5 May 2026 09:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ATGH2O+s"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="nO44IJFL"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0842E3624A6
-	for <netfilter-devel@vger.kernel.org>; Tue,  5 May 2026 05:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBB4309F1D;
+	Tue,  5 May 2026 09:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777957963; cv=none; b=G7eAi9wCBbm78uN0AtVZnJt8lITzedZ3tvYcy1Vby0m1NgvgqYQuH41gNWvrNW3h4ALqDDTJOyZvbZsm6enmKoSillaPMN1vU4XEj8WSzr5D0ATacG3pbHwz4vUGlfj1gBy27xZ31IBcyOKBjDTx8dT9PaL9k0qYYMajfYlkE5k=
+	t=1777972765; cv=none; b=JARL8b4o00Z3eUjyjDmIzN71hAv60jo7O/keG0+XExq2qS3Mn8fpH8lLW+gtwKGk5fMSiJv3bVzVjd4b7nnRWI6DrSyjtF6pZwdjwup5F6KDGVUW+QZOpbCGbC5++PsRRJOh90Wl5SXUPhsHLaGFkdyiBUtur+0mM/yfOai8iww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777957963; c=relaxed/simple;
-	bh=iUgeGSsqv7MOSHVQK8yrYNQjBQhy4lMDkURuG/cYfgk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i9NDGXuh8BpgndI/J/dzxdksY1WDLlau4FvpJICbdFZTEiPO3WOsgF3hPgVl1hcWMfvgnsHc0RoLm4y4DGYPZDnIi6VXo0uKaYLsKZDm7ArvDUpeYa08iSLna5+U2zUHFMrJzMIzkNIY/1CCtvuwo6W+O+W8a/sya/mXQWErvA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ATGH2O+s; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3650a628473so2915641a91.3
-        for <netfilter-devel@vger.kernel.org>; Mon, 04 May 2026 22:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777957961; x=1778562761; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrhTMqHn+rMdQZeR0f4MqPn+xrSow9rW/RMkyGQyv4Q=;
-        b=ATGH2O+swMAsO4QhgOqgtXsjMBSGxUHlO6WqLXQvHOu+dMrJB6f5zYw/2oSa1TMQ4k
-         Y65WnbOUjJRzFXz7zNn9y6MQ+f3kTUd0zOviw4JeY5aCaF41HSui9ClbWkgfqTnPuhjG
-         UGsZfibRcsh/qCoMj2sC7z4dvTRHbV1BbCJ6oXmNivv78JK+nWBD2jxEPa5daL2aROg3
-         tkhF0qCSJOwpZmhS/mqHJEo+aFswaKF1D6f5eSfANPgK6iqy4ZDEYh9WUAYd/INwzQds
-         5qxLSg+PUYHgzmKbrmU0qGYyqrZFB+/VvyLnbnxhhLEAUkK4XYz0+RTQup+qWhYN2rCU
-         z61Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777957961; x=1778562761;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NrhTMqHn+rMdQZeR0f4MqPn+xrSow9rW/RMkyGQyv4Q=;
-        b=Db2WibUyoM5Y424X4MGRgGXto6QNNmZ2u9hR8Wzphvf+W+wqq8+hfE1FelGttDoOMR
-         HyIvvI6x7XOHfBEfS+VRzGzhcy/yY/FL1K2p2ZsgvcoHDGiR7DaBQ2Ui/sZbYtT3HoXu
-         4gW7zUQACRj4kbZjUcvxX8xyuY9EoVCyXr0NxQoaQtbhY4a2WNL3y0Odw//AzVlGuWXT
-         mI4SK4Wf1H7DMotC1gVCCDK6FKBw1QgJTlxGvOv1eLJgvOysV1+xPkpH4fNB9CKYRHuC
-         v7j/H6Psr4rELd8i113z6Y3Zo1flqqTD3EzBxbPGMtCOJIpa9uZHT5GJRm6cTm1DIbaG
-         cW9A==
-X-Gm-Message-State: AOJu0YxOHsBdGEFwC9AwWkEdOvrHBKmDdwzanqqTT1nqYdRq/NRTtCW3
-	Hx+ErVGYbOcwf/vcpZxnZI9IFl0xZCys6+C1npTeMPo/Nes8cA35SAZ1mhQM+Ouv4BQVfw==
-X-Gm-Gg: AeBDieu4aimYvBMevPDUg18q/nJCKdn4pIXPcll97NR88P4ZfuArz33cDgntF+xyRrP
-	C6oVNNagovtL+bDp097CqzPb3UxwRuBz5gIegHNfN0Rj1Cj00Ebuy2eh8RYapoZRFueq/KyvlwG
-	5UEuUyj7kQ/zsqsURiiLpXGOdNY0YgRyMHrpoVs/so0QCUmp/Lczd1QwlIF7kAH1kBBykNmUNyq
-	hiOqDRRurP3vfS6gXTQ/imsvfExxnma9c6+IgMpeaZyLnps9qTd7LK1hpCrhu81bChhLIsxGQO0
-	PFE07RWZmxf1UciV5mRYAg6za4W533/lgYSk6jA2U6so/vSeOzHdhFdvagViwQfyqn63gvYayST
-	SE4JP9WA4Svjah+sEhbbal+2Utap6wYezhr9blFAp0zpH0nRHvGsJnEDppkp5Vn37GUD6nc3Z7p
-	GXfWaO+SYPqvGYcre5CzrbvVRkMloMadcyeWycbVxaU/XJQR1TKqByyMOHU6AOxN2RVesaciAJ6
-	OVN5jNllLVO0txGDzjtyoalLT4vKorfhGewQXyYzeVhX1eC1eSpmj8XyiihtENsCRl7wM1IbIU=
-X-Received: by 2002:a17:902:f651:b0:2b0:6e12:bb21 with SMTP id d9443c01a7336-2b9f2846196mr116836475ad.41.1777957960980;
-        Mon, 04 May 2026 22:12:40 -0700 (PDT)
-Received: from alchemy-Precision-3630-Tower.tail7db246.ts.net ([156.146.97.67])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b9cae0e5fasm120896855ad.54.2026.05.04.22.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2026 22:12:40 -0700 (PDT)
-From: Pratham Gupta <pratham36gupta@gmail.com>
-To: netfilter-devel@vger.kernel.org
-Cc: pablo@netfilter.org,
-	fw@strlen.de,
-	phil@nwl.cc,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Pratham Gupta <pratham36gupta@gmail.com>
-Subject: [PATCH net] netfilter: ctnetlink: use nf_ct_exp_net() in expectation dump
-Date: Mon,  4 May 2026 22:11:57 -0700
-Message-ID: <20260505051157.3895177-1-pratham36gupta@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1777972765; c=relaxed/simple;
+	bh=Sa1cZpOj2vBVDkew0f+0GqoneqbSh2eHUpErybrPNVQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k74Vg9A+110Z61hjWpT07Raw2csYb6e0QgLdY9l40CKuPpRldNwNq0mvbY/MTSBLDGjOTkZYnKrXePz2+cWhbxhMQLuhliboomgY7qydcQQu8F9L6qT89qyZcvnpr8UbL6ctsU34XtMKEuiB0MIs/B8DcTcTYR8EyuzwNsYdx+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nO44IJFL; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 32E6F600B5;
+	Tue,  5 May 2026 11:19:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1777972761;
+	bh=/jvsMDAng95ZDXouFnr0lTKBoKIcHWdA0+U30YrDN0A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nO44IJFLaNffpH/icrQrgPj74VxOP1bbmvcMCae7UClnGEkGSWi9gZ4GxQMJo0NUA
+	 mKAQXnYMuTBspoN3b0PQgJxjAKIa/lsyosa4RQa9a6jxvN8OpM65ZIT7Z7DX7PDSeZ
+	 3bLlykSBup06TzgXRTiMavS589KX/CCwQoy1rhrJE74UdA20iUVrlz/8skaWeny0u+
+	 LyG/VgDqC6oI+6faWZ4h8rcgku5p6Pjj8qI5854JwemLKDvx7bJt9TDS9tFBKF3L0m
+	 mTANgiJJ/i3VkDhbSkPkgnUv3hpcvMwSUdCA4DB9LEOrh3N++yZwDs4Z8Ksdi/uLEg
+	 LtRFTH9oVvspg==
+Date: Tue, 5 May 2026 11:19:18 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Pratham Gupta <pratham36gupta@gmail.com>
+Cc: netfilter-devel@vger.kernel.org, fw@strlen.de, phil@nwl.cc,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, coreteam@netfilter.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH net] netfilter: ctnetlink: use nf_ct_exp_net() in
+ expectation dump
+Message-ID: <afm2FhEytJzShYhk@chamomile>
+References: <20260505051157.3895177-1-pratham36gupta@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 683FE4C6BCF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260505051157.3895177-1-pratham36gupta@gmail.com>
+X-Rspamd-Queue-Id: 84B734C98F6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-12431-lists,netfilter-devel=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	FREEMAIL_TO(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-12432-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pratham36gupta@gmail.com,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-0.998];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[]
 
-Commit 02a3231b6d82 ("netfilter: nf_conntrack_expect: store netns and zone in expectation")
-introduced exp->net so RCU-only expectation paths no longer need to
-dereference exp->master for netns lookups.
+Hi,
 
-Commit 3db5647984de ("netfilter: nf_conntrack_expect: skip expectations in other netns via proc")
-updated the proc path accordingly, but ctnetlink_exp_dump_table() still
-compares against nf_ct_net(exp->master).
+This is nf-next material.
 
-Use nf_ct_exp_net(exp) here as well so the netlink dump path matches
-the rest of the March 2026 expectation netns/RCU cleanup.
+On Mon, May 04, 2026 at 10:11:57PM -0700, Pratham Gupta wrote:
+> Commit 02a3231b6d82 ("netfilter: nf_conntrack_expect: store netns and zone in expectation")
+> introduced exp->net so RCU-only expectation paths no longer need to
+> dereference exp->master for netns lookups.
+> 
+> Commit 3db5647984de ("netfilter: nf_conntrack_expect: skip expectations in other netns via proc")
+> updated the proc path accordingly, but ctnetlink_exp_dump_table() still
+> compares against nf_ct_net(exp->master).
 
-Fixes: 02a3231b6d82 ("netfilter: nf_conntrack_expect: store netns and zone in expectation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pratham Gupta <pratham36gupta@gmail.com>
----
-Tested expectation create/dump/delete on the host and in fresh Ubuntu 24.04
-Docker userspace. Concurrent namespace churn/dump testing did not reproduce
-a cross-netns leak.
- net/netfilter/nf_conntrack_netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There was no check in the /proc path.
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index eda5fe4a75c8..8ae3f6acc2d2 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3158,7 +3158,7 @@ ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 			if (l3proto && exp->tuple.src.l3num != l3proto)
- 				continue;
- 
--			if (!net_eq(nf_ct_net(exp->master), net))
-+			if (!net_eq(nf_ct_exp_net(exp), net))
- 				continue;
- 
- 			if (cb->args[1]) {
--- 
-2.43.0
+> Use nf_ct_exp_net(exp) here as well so the netlink dump path matches
+> the rest of the March 2026 expectation netns/RCU cleanup.
 
+yes, this is a leftover, but it is safe to access 
+
+> Fixes: 02a3231b6d82 ("netfilter: nf_conntrack_expect: store netns and zone in expectation")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Pratham Gupta <pratham36gupta@gmail.com>
+> ---
+> Tested expectation create/dump/delete on the host and in fresh Ubuntu 24.04
+> Docker userspace. Concurrent namespace churn/dump testing did not reproduce
+> a cross-netns leak.
+
+What cross-netns leak are you refering? This is simply using the
+conntrack netns instead of exp->netns which was added in 02a3231b6d82.
+
+This is nf-next material.
+
+>  net/netfilter/nf_conntrack_netlink.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+> index eda5fe4a75c8..8ae3f6acc2d2 100644
+> --- a/net/netfilter/nf_conntrack_netlink.c
+> +++ b/net/netfilter/nf_conntrack_netlink.c
+> @@ -3158,7 +3158,7 @@ ctnetlink_exp_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
+>  			if (l3proto && exp->tuple.src.l3num != l3proto)
+>  				continue;
+>  
+> -			if (!net_eq(nf_ct_net(exp->master), net))
+> +			if (!net_eq(nf_ct_exp_net(exp), net))
+>  				continue;
+>  
+>  			if (cb->args[1]) {
+> -- 
+> 2.43.0
+> 
 
