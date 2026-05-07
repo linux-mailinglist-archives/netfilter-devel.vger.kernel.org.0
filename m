@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12492-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12491-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sG55DYAk/Wn6YAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12492-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:47:12 +0200
+	id yB4gF3ck/Wn6YAAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12491-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:47:03 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82234F0400
-	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB72A4F03F2
+	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ACC213058497
+	by sea.lore.kernel.org (Postfix) with ESMTP id 102CA3055D5B
 	for <lists+netfilter-devel@lfdr.de>; Thu,  7 May 2026 23:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1085373BEC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A8C372ED2;
 	Thu,  7 May 2026 23:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="onhgfNMV"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ZlFbZr7c"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD8E36167E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE11361DCA;
 	Thu,  7 May 2026 23:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778197527; cv=none; b=GUbk1dIQ2pdSHeh1sjy8xTzFAmQCZtWRcRlL17a+8uOj9BPgukZiGeLDY8OiiGWSTWOUEkXlTftCdQWz4uWMpFXVj0Y/s1eDMjqw95WdlEWn5J1dM7+uiRYV42zM8vknUZ50YhEGU3TSLYlnMHuCrYS5/vmLMy5eGtLdTa0cBQk=
+	t=1778197527; cv=none; b=rCqEky7E31rXirlzVs9lKW1thBmneYlraAi0gvHF0LhG0uSretc94tunTg4mA4ijRN6fhpLEmqMnEJZOOiZ2KlfXQEoRpYLh+Ta1/N64nTUtkAZqCDL18/GbQ/hxphYhPtKckgNJZCfNXugXLqvcJqRucH3Qhr/jFNKwE0ThKTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1778197527; c=relaxed/simple;
-	bh=xRq5MwwaMSU3GYVLaWW7d+WaUVXayo7Uus3k1LjKlaQ=;
+	bh=/gCUC/nkis+TYlRbES+seCQZaWrgZUNBBtgDuBnQ0hQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Kw9JgxvABz0Va4b4/pKkWnZrrYRBRbdJNtEeY/B4KWaWdun5VVXFwoYndMOXh+alu5dv1yRF4WvCApDFWixOMbcOwvpdPJ+bbtFwoCJAQbledJma6RwVbW6NtdpfhvFYDBjmAIdAqV8hpljYVNs1rk8svy8phW+GMkqqSJ1cva8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=onhgfNMV; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=P3bQsPm4B7Z/BwGW0U3m3DpC+MbvIrUOVaTx6gVmAlkjTbYBKCBhBWOS9NNRVUV1LpFhZMjgdwYWql7PfkH+3zfMlrkfSfJqmpwTCmj3ocydzzcFYb2F/sYgvZdSragnuZcjJ5YLZs/1nkBL4q0cLhUoQEv14aCpsj2P7toSTm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ZlFbZr7c; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id CFA9960262;
-	Fri,  8 May 2026 01:45:20 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 88D9260263;
+	Fri,  8 May 2026 01:45:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1778197521;
-	bh=vtmxE4Q0eNoU7LlL6Pqy2rhfCgPALD8EClH8Whijnq0=;
+	s=2025; t=1778197523;
+	bh=TeBPLd9z7YmGCnIEWPkwB5FOzDi0MAtczyZc3tl65Vg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=onhgfNMV77CIn2A9kQYXL5X1El9Kck7D2uVngw0HK2KTY/qkR+37Nf2bRP+Wi3zLy
-	 5imFuhxN6UkeKHRgTeAxoxpHaX2imzYLP0n0sGfrcY/VipfKnUL7nk6sqebmU+lAbW
-	 xiN3QyAeAh2KrvuWnpwmiIgJcU9QgU5yX9GHTwIYc3b8GVL2v12Z8sWCf3k9GDXHEJ
-	 etl3RC7R6HTpTkcdJlMl4aH7ur8ePUPU4Y6hAHeU2tWDeLTlj0ex+xiwnfRzoTQNAd
-	 CS7/hTV2ZY5DlTb5zl3B+imI+BHk3mEhMNjLmV09vU3DL5iPLQFDQ51f0gVHIPDmBt
-	 TAMoRH18HsWyw==
+	b=ZlFbZr7cUEoIFR7ZS6y0yglA2FwmT6gD0OcCVeDe6puQ/yl3c/cs+VZ1CMgkGJgxe
+	 H9CKt+FOZGfwBiY9/kNCVrbQ+7m2gTH5jy55g7vE0e6RySz2LUht6cpaLdmVc4mXV+
+	 mffOrUcmsRK09uz1RAnpmczGp8tiE1j6uaHvsD4WYOzlmIxxbnZOQFF88qmzcOBznQ
+	 mzYkVdcQBBWukU+abJY+pqpdsdF1XDCI9pTcHV1XWATFR3HUe5Nlbe2POm8Gc7gCby
+	 thUznxDRZ7PVarr+kqxbiYeKRth+GLlrJI5jv87rEpWRioiFGtzG2kiSbcyIAUm+iR
+	 6fPvb0qyyiGyA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 05/13] netfilter: x_tables: add and use xtables_unregister_table_exit
-Date: Fri,  8 May 2026 01:45:01 +0200
-Message-ID: <20260507234509.603182-6-pablo@netfilter.org>
+Subject: [PATCH net 06/13] netfilter: ebtables: move to two-stage removal scheme
+Date: Fri,  8 May 2026 01:45:02 +0200
+Message-ID: <20260507234509.603182-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260507234509.603182-1-pablo@netfilter.org>
 References: <20260507234509.603182-1-pablo@netfilter.org>
@@ -69,7 +69,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B82234F0400
+X-Rspamd-Queue-Id: CB72A4F03F2
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -80,7 +80,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-12492-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12491-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
@@ -103,327 +103,190 @@ X-Rspamd-Action: no action
 
 From: Florian Westphal <fw@strlen.de>
 
-Previous change added xtables_unregister_table_pre_exit to detach the
-table from the packetpath and to unlink it from the active table list.
-In case of rmmod, userspace that is doing set/getsockopt for this table
-will not be able to re-instantiate the table:
- 1. The larval table has been removed already
- 2. existing instantiated table is no longer on the xt pernet table list.
+Like previous patches for x_tables, follow same pattern in ebtables.
+We can't reuse xt helpers: ebt_table struct layout is incompatible.
 
-This adds the second stage helper:
+table->ops assignment is now done while still holding the ebt mutex
+to make sure we never expose partially-filled table struct.
 
-unlink the table from the dying list, free the hook ops (if any) and do
-the audit notification.  It replaces xt_unregister_table().
-
-Fixes: fdacd57c79b7 ("netfilter: x_tables: never register tables by default")
-Reported-by: Tristan Madani <tristan@talencesecurity.com>
+Fixes: 87663c39f898 ("netfilter: ebtables: do not hook tables by default")
 Reviewed-by: Tristan Madani <tristan@talencesecurity.com>
-Closes: https://lore.kernel.org/netfilter-devel/20260429175613.1459342-1-tristmd@gmail.com/
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/linux/netfilter/x_tables.h |  2 +-
- net/ipv4/netfilter/arp_tables.c    |  9 ++--
- net/ipv4/netfilter/ip_tables.c     |  9 ++--
- net/ipv4/netfilter/iptable_nat.c   |  5 +-
- net/ipv6/netfilter/ip6_tables.c    |  9 ++--
- net/ipv6/netfilter/ip6table_nat.c  |  5 +-
- net/netfilter/x_tables.c           | 81 +++++++++++++++++++++++-------
- 7 files changed, 83 insertions(+), 37 deletions(-)
+ net/bridge/netfilter/ebtable_broute.c |  2 +-
+ net/bridge/netfilter/ebtable_filter.c |  2 +-
+ net/bridge/netfilter/ebtable_nat.c    |  2 +-
+ net/bridge/netfilter/ebtables.c       | 60 +++++++++++++++++----------
+ 4 files changed, 40 insertions(+), 26 deletions(-)
 
-diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter/x_tables.h
-index 74486714ae20..5a1c5c336fa4 100644
---- a/include/linux/netfilter/x_tables.h
-+++ b/include/linux/netfilter/x_tables.h
-@@ -308,8 +308,8 @@ struct xt_table *xt_register_table(struct net *net,
- 				   const struct nf_hook_ops *template_ops,
- 				   struct xt_table_info *bootstrap,
- 				   struct xt_table_info *newinfo);
--void *xt_unregister_table(struct xt_table *table);
- void xt_unregister_table_pre_exit(struct net *net, u8 af, const char *name);
-+struct xt_table *xt_unregister_table_exit(struct net *net, u8 af, const char *name);
+diff --git a/net/bridge/netfilter/ebtable_broute.c b/net/bridge/netfilter/ebtable_broute.c
+index 741360219552..e6f9e343b41f 100644
+--- a/net/bridge/netfilter/ebtable_broute.c
++++ b/net/bridge/netfilter/ebtable_broute.c
+@@ -128,8 +128,8 @@ static int __init ebtable_broute_init(void)
  
- struct xt_table_info *xt_replace_table(struct xt_table *table,
- 				       unsigned int num_counters,
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index bd348b7bad2c..ad2259678c78 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1501,13 +1501,11 @@ static int do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len
- 
- static void __arpt_unregister_table(struct net *net, struct xt_table *table)
+ static void __exit ebtable_broute_fini(void)
  {
--	struct xt_table_info *private;
--	void *loc_cpu_entry;
-+	struct xt_table_info *private = table->private;
- 	struct module *table_owner = table->me;
-+	void *loc_cpu_entry;
- 	struct arpt_entry *iter;
- 
--	private = xt_unregister_table(table);
--
- 	/* Decrease module usage counts and free resources */
- 	loc_cpu_entry = private->entries;
- 	xt_entry_foreach(iter, loc_cpu_entry, private->size)
-@@ -1515,6 +1513,7 @@ static void __arpt_unregister_table(struct net *net, struct xt_table *table)
- 	if (private->number > private->initial_entries)
- 		module_put(table_owner);
- 	xt_free_table_info(private);
-+	kfree(table);
+-	unregister_pernet_subsys(&broute_net_ops);
+ 	ebt_unregister_template(&broute_table);
++	unregister_pernet_subsys(&broute_net_ops);
  }
  
- int arpt_register_table(struct net *net,
-@@ -1556,7 +1555,7 @@ int arpt_register_table(struct net *net,
+ module_init(ebtable_broute_init);
+diff --git a/net/bridge/netfilter/ebtable_filter.c b/net/bridge/netfilter/ebtable_filter.c
+index dacd81b12e62..02b6501c15a5 100644
+--- a/net/bridge/netfilter/ebtable_filter.c
++++ b/net/bridge/netfilter/ebtable_filter.c
+@@ -109,8 +109,8 @@ static int __init ebtable_filter_init(void)
  
- void arpt_unregister_table(struct net *net, const char *name)
+ static void __exit ebtable_filter_fini(void)
  {
--	struct xt_table *table = xt_find_table(net, NFPROTO_ARP, name);
-+	struct xt_table *table = xt_unregister_table_exit(net, NFPROTO_ARP, name);
- 
- 	if (table)
- 		__arpt_unregister_table(net, table);
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 864489928fb5..5cbdb0815857 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1704,12 +1704,10 @@ do_ipt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 
- static void __ipt_unregister_table(struct net *net, struct xt_table *table)
- {
--	struct xt_table_info *private;
--	void *loc_cpu_entry;
-+	struct xt_table_info *private = table->private;
- 	struct module *table_owner = table->me;
- 	struct ipt_entry *iter;
--
--	private = xt_unregister_table(table);
-+	void *loc_cpu_entry;
- 
- 	/* Decrease module usage counts and free resources */
- 	loc_cpu_entry = private->entries;
-@@ -1718,6 +1716,7 @@ static void __ipt_unregister_table(struct net *net, struct xt_table *table)
- 	if (private->number > private->initial_entries)
- 		module_put(table_owner);
- 	xt_free_table_info(private);
-+	kfree(table);
+-	unregister_pernet_subsys(&frame_filter_net_ops);
+ 	ebt_unregister_template(&frame_filter);
++	unregister_pernet_subsys(&frame_filter_net_ops);
  }
  
- int ipt_register_table(struct net *net, const struct xt_table *table,
-@@ -1758,7 +1757,7 @@ int ipt_register_table(struct net *net, const struct xt_table *table,
+ module_init(ebtable_filter_init);
+diff --git a/net/bridge/netfilter/ebtable_nat.c b/net/bridge/netfilter/ebtable_nat.c
+index 0f2a8c6118d4..9985a82555c4 100644
+--- a/net/bridge/netfilter/ebtable_nat.c
++++ b/net/bridge/netfilter/ebtable_nat.c
+@@ -109,8 +109,8 @@ static int __init ebtable_nat_init(void)
  
- void ipt_unregister_table_exit(struct net *net, const char *name)
+ static void __exit ebtable_nat_fini(void)
  {
--	struct xt_table *table = xt_find_table(net, NFPROTO_IPV4, name);
-+	struct xt_table *table = xt_unregister_table_exit(net, NFPROTO_IPV4, name);
- 
- 	if (table)
- 		__ipt_unregister_table(net, table);
-diff --git a/net/ipv4/netfilter/iptable_nat.c b/net/ipv4/netfilter/iptable_nat.c
-index 8fc4912e790d..a0df72554025 100644
---- a/net/ipv4/netfilter/iptable_nat.c
-+++ b/net/ipv4/netfilter/iptable_nat.c
-@@ -119,8 +119,11 @@ static int iptable_nat_table_init(struct net *net)
- 	}
- 
- 	ret = ipt_nat_register_lookups(net);
--	if (ret < 0)
-+	if (ret < 0) {
-+		xt_unregister_table_pre_exit(net, NFPROTO_IPV4, "nat");
-+		synchronize_rcu();
- 		ipt_unregister_table_exit(net, "nat");
-+	}
- 
- 	kfree(repl);
- 	return ret;
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index edf50bc7787e..9d9c3763f2f5 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1713,12 +1713,10 @@ do_ip6t_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 
- static void __ip6t_unregister_table(struct net *net, struct xt_table *table)
- {
--	struct xt_table_info *private;
--	void *loc_cpu_entry;
-+	struct xt_table_info *private = table->private;
- 	struct module *table_owner = table->me;
- 	struct ip6t_entry *iter;
--
--	private = xt_unregister_table(table);
-+	void *loc_cpu_entry;
- 
- 	/* Decrease module usage counts and free resources */
- 	loc_cpu_entry = private->entries;
-@@ -1727,6 +1725,7 @@ static void __ip6t_unregister_table(struct net *net, struct xt_table *table)
- 	if (private->number > private->initial_entries)
- 		module_put(table_owner);
- 	xt_free_table_info(private);
-+	kfree(table);
+-	unregister_pernet_subsys(&frame_nat_net_ops);
+ 	ebt_unregister_template(&frame_nat);
++	unregister_pernet_subsys(&frame_nat_net_ops);
  }
  
- int ip6t_register_table(struct net *net, const struct xt_table *table,
-@@ -1767,7 +1766,7 @@ int ip6t_register_table(struct net *net, const struct xt_table *table,
+ module_init(ebtable_nat_init);
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index aea3e19875c6..3578ffbc14ae 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -42,6 +42,7 @@
  
- void ip6t_unregister_table_exit(struct net *net, const char *name)
- {
--	struct xt_table *table = xt_find_table(net, NFPROTO_IPV6, name);
-+	struct xt_table *table = xt_unregister_table_exit(net, NFPROTO_IPV6, name);
- 
- 	if (table)
- 		__ip6t_unregister_table(net, table);
-diff --git a/net/ipv6/netfilter/ip6table_nat.c b/net/ipv6/netfilter/ip6table_nat.c
-index bb8aa3fc42b4..c2394e2c94b5 100644
---- a/net/ipv6/netfilter/ip6table_nat.c
-+++ b/net/ipv6/netfilter/ip6table_nat.c
-@@ -121,8 +121,11 @@ static int ip6table_nat_table_init(struct net *net)
- 	}
- 
- 	ret = ip6t_nat_register_lookups(net);
--	if (ret < 0)
-+	if (ret < 0) {
-+		xt_unregister_table_pre_exit(net, NFPROTO_IPV6, "nat");
-+		synchronize_rcu();
- 		ip6t_unregister_table_exit(net, "nat");
-+	}
- 
- 	kfree(repl);
- 	return ret;
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 9c1e896c7b03..4e6708c23922 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -55,6 +55,9 @@ static struct list_head xt_templates[NFPROTO_NUMPROTO];
- 
- struct xt_pernet {
- 	struct list_head tables[NFPROTO_NUMPROTO];
-+
-+	/* stash area used during netns exit */
-+	struct list_head dead_tables[NFPROTO_NUMPROTO];
+ struct ebt_pernet {
+ 	struct list_head tables;
++	struct list_head dead_tables;
  };
  
- struct compat_delta {
-@@ -1634,23 +1637,6 @@ struct xt_table *xt_register_table(struct net *net,
- }
- EXPORT_SYMBOL_GPL(xt_register_table);
+ struct ebt_template {
+@@ -1162,11 +1163,6 @@ static int do_replace(struct net *net, sockptr_t arg, unsigned int len)
  
--void *xt_unregister_table(struct xt_table *table)
--{
--	struct xt_table_info *private;
--
--	mutex_lock(&xt[table->af].mutex);
--	private = table->private;
--	list_del(&table->list);
--	mutex_unlock(&xt[table->af].mutex);
--	audit_log_nfcfg(table->name, table->af, private->number,
--			AUDIT_XT_OP_UNREGISTER, GFP_KERNEL);
--	kfree(table->ops);
--	kfree(table);
--
--	return private;
--}
--EXPORT_SYMBOL_GPL(xt_unregister_table);
--
- /**
-  * xt_unregister_table_pre_exit - pre-shutdown unregister of a table
-  * @net: network namespace
-@@ -1660,6 +1646,14 @@ EXPORT_SYMBOL_GPL(xt_unregister_table);
-  * Unregisters the specified netfilter table from the given network namespace
-  * and also unregisters the hooks from netfilter core: no new packets will be
-  * processed.
-+ *
-+ * This must be called prior to xt_unregister_table_exit() from the pernet
-+ * .pre_exit callback.  After this call, the table is no longer visible to
-+ * the get/setsockopt path.  In case of rmmod, module exit path must have
-+ * called xt_unregister_template() prior to unregistering pernet ops to
-+ * prevent re-instantiation of the table.
-+ *
-+ * See also: xt_unregister_table_exit()
-  */
- void xt_unregister_table_pre_exit(struct net *net, u8 af, const char *name)
+ static void __ebt_unregister_table(struct net *net, struct ebt_table *table)
  {
-@@ -1669,6 +1663,7 @@ void xt_unregister_table_pre_exit(struct net *net, u8 af, const char *name)
- 	mutex_lock(&xt[af].mutex);
- 	list_for_each_entry(t, &xt_net->tables[af], list) {
- 		if (strcmp(t->name, name) == 0) {
-+			list_move(&t->list, &xt_net->dead_tables[af]);
- 			mutex_unlock(&xt[af].mutex);
+-	mutex_lock(&ebt_mutex);
+-	list_del(&table->list);
+-	mutex_unlock(&ebt_mutex);
+-	audit_log_nfcfg(table->name, AF_BRIDGE, table->private->nentries,
+-			AUDIT_XT_OP_UNREGISTER, GFP_KERNEL);
+ 	EBT_ENTRY_ITERATE(table->private->entries, table->private->entries_size,
+ 			  ebt_cleanup_entry, net, NULL);
+ 	if (table->private->nentries)
+@@ -1267,13 +1263,15 @@ int ebt_register_table(struct net *net, const struct ebt_table *input_table,
+ 	for (i = 0; i < num_ops; i++)
+ 		ops[i].priv = table;
  
- 			if (t->ops) /* nat table registers with nat core, t->ops is NULL. */
-@@ -1679,6 +1674,50 @@ void xt_unregister_table_pre_exit(struct net *net, u8 af, const char *name)
- 	mutex_unlock(&xt[af].mutex);
+-	list_add(&table->list, &ebt_net->tables);
+-	mutex_unlock(&ebt_mutex);
+-
+ 	table->ops = ops;
+ 	ret = nf_register_net_hooks(net, ops, num_ops);
+-	if (ret)
++	if (ret) {
++		synchronize_rcu();
+ 		__ebt_unregister_table(net, table);
++	} else {
++		list_add(&table->list, &ebt_net->tables);
++	}
++	mutex_unlock(&ebt_mutex);
+ 
+ 	audit_log_nfcfg(repl->name, AF_BRIDGE, repl->nentries,
+ 			AUDIT_XT_OP_REGISTER, GFP_KERNEL);
+@@ -1339,7 +1337,7 @@ void ebt_unregister_template(const struct ebt_table *t)
  }
- EXPORT_SYMBOL(xt_unregister_table_pre_exit);
-+
-+/**
-+ * xt_unregister_table_exit - remove a table during namespace teardown
-+ * @net: the network namespace from which to unregister the table
-+ * @af: address family (e.g., NFPROTO_IPV4, NFPROTO_IPV6)
-+ * @name: name of the table to unregister
-+ *
-+ * Completes the unregister process for a table. This must be called from
-+ * the pernet ops .exit callback. This is the second stage after
-+ * xt_unregister_table_pre_exit().
-+ *
-+ * pair with xt_unregister_table_pre_exit() during namespace shutdown.
-+ *
-+ * Return: the unregistered table or NULL if the table was never
-+ *         instantiated. The caller needs to kfree() the table after it
-+ *         has removed the family specific matches/targets.
-+ */
-+struct xt_table *xt_unregister_table_exit(struct net *net, u8 af, const char *name)
-+{
-+	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
-+	struct xt_table *table;
-+
-+	mutex_lock(&xt[af].mutex);
-+	list_for_each_entry(table, &xt_net->dead_tables[af], list) {
-+		struct nf_hook_ops *ops = NULL;
-+
-+		if (strcmp(table->name, name) != 0)
-+			continue;
-+
-+		list_del(&table->list);
-+
-+		audit_log_nfcfg(table->name, table->af, table->private->number,
-+				AUDIT_XT_OP_UNREGISTER, GFP_KERNEL);
-+		swap(table->ops, ops);
-+		mutex_unlock(&xt[af].mutex);
-+
-+		kfree(ops);
-+		return table;
-+	}
-+	mutex_unlock(&xt[af].mutex);
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(xt_unregister_table_exit);
- #endif
+ EXPORT_SYMBOL(ebt_unregister_template);
  
- #ifdef CONFIG_PROC_FS
-@@ -2125,8 +2164,10 @@ static int __net_init xt_net_init(struct net *net)
- 	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
- 	int i;
+-static struct ebt_table *__ebt_find_table(struct net *net, const char *name)
++void ebt_unregister_table_pre_exit(struct net *net, const char *name)
+ {
+ 	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
+ 	struct ebt_table *t;
+@@ -1348,30 +1346,36 @@ static struct ebt_table *__ebt_find_table(struct net *net, const char *name)
  
--	for (i = 0; i < NFPROTO_NUMPROTO; i++)
-+	for (i = 0; i < NFPROTO_NUMPROTO; i++) {
- 		INIT_LIST_HEAD(&xt_net->tables[i]);
-+		INIT_LIST_HEAD(&xt_net->dead_tables[i]);
+ 	list_for_each_entry(t, &ebt_net->tables, list) {
+ 		if (strcmp(t->name, name) == 0) {
++			list_move(&t->list, &ebt_net->dead_tables);
+ 			mutex_unlock(&ebt_mutex);
+-			return t;
++			nf_unregister_net_hooks(net, t->ops, hweight32(t->valid_hooks));
++			return;
+ 		}
+ 	}
+ 
+ 	mutex_unlock(&ebt_mutex);
+-	return NULL;
+-}
+-
+-void ebt_unregister_table_pre_exit(struct net *net, const char *name)
+-{
+-	struct ebt_table *table = __ebt_find_table(net, name);
+-
+-	if (table)
+-		nf_unregister_net_hooks(net, table->ops, hweight32(table->valid_hooks));
+ }
+ EXPORT_SYMBOL(ebt_unregister_table_pre_exit);
+ 
+ void ebt_unregister_table(struct net *net, const char *name)
+ {
+-	struct ebt_table *table = __ebt_find_table(net, name);
++	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
++	struct ebt_table *t;
+ 
+-	if (table)
+-		__ebt_unregister_table(net, table);
++	mutex_lock(&ebt_mutex);
++
++	list_for_each_entry(t, &ebt_net->dead_tables, list) {
++		if (strcmp(t->name, name) == 0) {
++			list_del(&t->list);
++			audit_log_nfcfg(t->name, AF_BRIDGE, t->private->nentries,
++					AUDIT_XT_OP_UNREGISTER, GFP_KERNEL);
++			__ebt_unregister_table(net, t);
++			mutex_unlock(&ebt_mutex);
++			return;
++		}
 +	}
++
++	mutex_unlock(&ebt_mutex);
+ }
+ 
+ /* userspace just supplied us with counters */
+@@ -2556,11 +2560,21 @@ static int __net_init ebt_pernet_init(struct net *net)
+ 	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
+ 
+ 	INIT_LIST_HEAD(&ebt_net->tables);
++	INIT_LIST_HEAD(&ebt_net->dead_tables);
  	return 0;
  }
  
-@@ -2135,8 +2176,10 @@ static void __net_exit xt_net_exit(struct net *net)
- 	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
- 	int i;
- 
--	for (i = 0; i < NFPROTO_NUMPROTO; i++)
-+	for (i = 0; i < NFPROTO_NUMPROTO; i++) {
- 		WARN_ON_ONCE(!list_empty(&xt_net->tables[i]));
-+		WARN_ON_ONCE(!list_empty(&xt_net->dead_tables[i]));
-+	}
- }
- 
- static struct pernet_operations xt_net_ops = {
++static void __net_exit ebt_pernet_exit(struct net *net)
++{
++	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
++
++	WARN_ON_ONCE(!list_empty(&ebt_net->tables));
++	WARN_ON_ONCE(!list_empty(&ebt_net->dead_tables));
++}
++
+ static struct pernet_operations ebt_net_ops = {
+ 	.init = ebt_pernet_init,
++	.exit = ebt_pernet_exit,
+ 	.id   = &ebt_pernet_id,
+ 	.size = sizeof(struct ebt_pernet),
+ };
 -- 
 2.47.3
 
