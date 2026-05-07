@@ -1,51 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12489-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12487-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qK55AkUk/Wn6YAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12489-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:46:13 +0200
+	id 6PPzOSMk/Wn6YAAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12487-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:45:39 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B3A14F03C2
-	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88FC24F0387
+	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 01:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9D5AA3041AAB
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 May 2026 23:45:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 700FE3035B7E
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 May 2026 23:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04BE3612EC;
-	Thu,  7 May 2026 23:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12243164B5;
+	Thu,  7 May 2026 23:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="uDCXudwa"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="iM3kaQfd"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270ED330305;
-	Thu,  7 May 2026 23:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26FC23191D0;
+	Thu,  7 May 2026 23:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778197525; cv=none; b=ao33TJpIzZ3wqHWkMxzznH4fJq7btVULrZxZURP9xj9P+lRr60W6OjmrT88jYUEoM4DxudRA1EDRyQpFAUqfyo25iDiqTzJigTLrbPKInTYmQnhrhf9GzFaIiM93D7pTNrCQG1/brGUPDFPZdhHIJ/2b65pEY11b5y7KcqoN4v8=
+	t=1778197524; cv=none; b=I+zsNxSdSEz9a38me85iGqxvt85tizVk9xQqygaYtkdRjT3qAnr+LxQAWElgD8Z39TqhEVJ0DcsOglp5pRdcWr//kDfZ7VdrwQAMiUaPrg0MlHGsqrl2T70Iwz21NkvjyJmEKtDUQTUSgHnDd3UGgaktLjQHm2eM9GUp0bYHt1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778197525; c=relaxed/simple;
-	bh=6313JbgSj3366JDYAEs+/R0pd26r81Du1o4AG3y+t3g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y5OkA0NZMTQtRJn/gv3OtQjm5DdxaCILAaAXotqUbDwSsvI2Qdv6p+lfatBa8/4oa4syd3P8t9y872i7Gv6FzR80FsbWioopcxrV2MwlJILihnAJIhfnnzMV1D2RVI0+aLQp6ZeWz60LXVtaHnas6Zj6VnE+HDmv0kYw3NXnXGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=uDCXudwa; arc=none smtp.client-ip=217.70.190.124
+	s=arc-20240116; t=1778197524; c=relaxed/simple;
+	bh=Rwx2dyJN5OeIwY2b0MS6uB5ze7XT8RLvUe1M5pAl+Sc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=toVlubQFst0u7NpQO6VUXzmrMPetQ3wpv8+UqtcYlbRI8omMMg5Mi1qeTJMKEMSrZiUQSIdFw2nnyrvxTS6H5XIUjMCJnLCbYz929Uh+JTnvJcQJc4KNEfJVlb6imzwbUngVw50kV31FC/F2SCktFQJQlpddZfUkUqpf8cCo5fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=iM3kaQfd; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id E8F20600BA;
-	Fri,  8 May 2026 01:45:12 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 6C6CD60251;
+	Fri,  8 May 2026 01:45:14 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1778197513;
-	bh=c6PnoKMOyQUzQrF9GqgROkXZMQlV3PBzK7Uphy7GUZU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=uDCXudwa09Cf1NNYYzxSZF0R8tQvC7JwQmASyr/NNek2WkY4wvYZsjpxNUrMT8cSh
-	 6PMi6B7UHMKkPHmQ4N4K0L4JEqmBEfU2cUHR+NfABhSxfpl1L3cRCrnF+0HGM262ie
-	 p0sJxB9FoaJEU9pVSKW72jzLw/0X1kPwcHFvO+zGoXgjLLIHODYOIdyI92BGMJTplI
-	 SHxUA0j/A03emUq1BvieJcDG2RL3St1fxk7o8vpix6C2LQk3oxuApQvVpxSr8q9Yb6
-	 GiK7mOhxcIGeF4pJ3a+93+B7vbGpM6uiSXWAo+/5orXjXdQw/eWgBX4aiXVI7KQcdO
-	 /I5LMG7waLqLg==
+	s=2025; t=1778197514;
+	bh=KHvdJb6vxqHy5YtM29r/lP1H4y+EHXhBx9V1uFnpTg4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iM3kaQfdtpObPSXbF8i7p34MD0Et2xFIafV+7EInMcz8LLawmuyeUF0MTnaMLQGt7
+	 /2eTNBustVCH8s0ClmtIYsxjPhJ1U2X8J78BNAFAQfHSPRouXwpfZr0Y+F8820/puJ
+	 HjfxI6U3MNHvqSWqDqXsulfEVDTtqUG7hP+v7LtzUE3bFfvWbIhgjQ811YdGzwebdL
+	 yLg0mGgi+Aj+n28GN+3Ei9ECk79euyXgGAJ3egbhbNpUib2KaY6Yoj6NpzfjecHKEF
+	 cD6vwHyvTEfGJF6oz8mYS5VDglPBAjI/SIRK3xxmqESfzS7Kimtr0YZ537QuCj+nfi
+	 w8Co6zKY/qRAQ==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -55,10 +56,12 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 00/13] Netfilter fixes for net
-Date: Fri,  8 May 2026 01:44:56 +0200
-Message-ID: <20260507234509.603182-1-pablo@netfilter.org>
+Subject: [PATCH net 01/13] netfilter: x_tables: allow initial table replace without emitting audit log message
+Date: Fri,  8 May 2026 01:44:57 +0200
+Message-ID: <20260507234509.603182-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260507234509.603182-1-pablo@netfilter.org>
+References: <20260507234509.603182-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -66,7 +69,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9B3A14F03C2
+X-Rspamd-Queue-Id: 88FC24F0387
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -77,7 +80,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-12489-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12487-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DMARC_NA(0.00)[netfilter.org];
@@ -95,145 +98,72 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:mid,netfilter.org:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Hi,
+From: Florian Westphal <fw@strlen.de>
 
-The following batch contains Netfilter fixes for net:
+At the moment we emit the audit log a bit too early, which makes it
+necessary to also emit an unregister log in case we have to unwind
+errors after possible hook register failure.
 
-1) Allow initial x_tables table replacement without emitting an audit
-   log message. Delay the register message until after hooks are wired up
-   to avoid unnecessary unregister logs during error unwinding.
+Followup patch will be slightly simpler if we can delay the
+register message until after the hooks have been wired up.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/x_tables.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 2c67c2e6b132..bb0cb3959551 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1472,11 +1472,9 @@ struct xt_counters *xt_counters_alloc(unsigned int counters)
+ }
+ EXPORT_SYMBOL(xt_counters_alloc);
  
-2) Fix a NULL dereference by allocating hook ops before adding the
-   table to the per-netns list. Use `synchronize_rcu()` during error
-   unwinding to ensure the table stops processing packets before
-   teardown. Defer audit log register message until all operations 
-   succeed.
+-struct xt_table_info *
+-xt_replace_table(struct xt_table *table,
+-	      unsigned int num_counters,
+-	      struct xt_table_info *newinfo,
+-	      int *error)
++static struct xt_table_info *
++do_replace_table(struct xt_table *table, unsigned int num_counters,
++		 struct xt_table_info *newinfo, int *error)
+ {
+ 	struct xt_table_info *private;
+ 	unsigned int cpu;
+@@ -1531,10 +1529,23 @@ xt_replace_table(struct xt_table *table,
+ 		}
+ 	}
  
-3) Refactor xtables to use a single `xt_unregister_table_pre_exit`
-   function. Eliminate code duplication by centralizing table
-   unregistration logic within the xtables core. ebtables cannot be
-   changed due to incompatibility.
- 
-4) Unregister xtables templates before module removal. This prevents
-   a race condition where userspace instantiates a new table after the
-   pernet unreg removed the current table.
- 
-5) Add `xtables_unregister_table_exit` to fully unregister netfilter
-   tables during module removal. Unlink the table from dying lists,
-   then free hook operations.
- 
-6) Implement a two-stage removal scheme for ebtables following the
-   x_tables pattern. Assign table->ops while holding the ebt mutex to
-   prevent exposing partially-filled structures.
- 
-7) Fix ebtables module initialization race. Register the template last
-   in table initialization functions. Prevent table instantiation before
-   pernet operations are available.
- 
-8) Fix a race condition in x_tables module initialization. Ensure
-   pernet ops are fully set up before exposing the table to userspace.
+-	audit_log_nfcfg(table->name, table->af, private->number,
+-			!private->number ? AUDIT_XT_OP_REGISTER :
+-					   AUDIT_XT_OP_REPLACE,
+-			GFP_KERNEL);
++	return private;
++}
++
++struct xt_table_info *
++xt_replace_table(struct xt_table *table, unsigned int num_counters,
++		 struct xt_table_info *newinfo,
++		 int *error)
++{
++	struct xt_table_info *private;
++
++	private = do_replace_table(table, num_counters, newinfo, error);
++	if (private)
++		audit_log_nfcfg(table->name, table->af, private->number,
++				!private->number ? AUDIT_XT_OP_REGISTER :
++				AUDIT_XT_OP_REPLACE,
++				GFP_KERNEL);
++
+ 	return private;
+ }
+ EXPORT_SYMBOL_GPL(xt_replace_table);
+-- 
+2.47.3
 
-9) Fix a race condition in ebtables module initialization, similar to
-   previous patch.
-
-10) Restore propagation of helper to expected connection, this is a
-    fix-for-recent-fix.
-
-11) Validate that the expectation tuple and mask netlink attributes are
-    present when adding expectation via nfqueue, this fixes a possible
-    null-ptr-deref.
-
-12) Fix possible rare memleak in the SIP helper in case helper has been
-    detached from conntrack entry, from Li Xiasong.
-
-13) Fix refcount leak in nft_ct when creating custom expectation, also
-    from Li Xiason.
-
-Patches 1-9 from Florian Westphal.
-
-10) Restore propagation of helper to expected connection, this is a
-    fix-for-recent-fix.
-
-11) Check that tuple and mask netlink attributes are set when creating an
-    expectation via nfqueue.
-
-Please, pull these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-26-05-08
-
-Thanks.
-
-----------------------------------------------------------------
-
-The following changes since commit fcee7d82f27d6a8b1ddc5bbefda59b4e441e9bc0:
-
-  Merge tag 'net-7.1-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2026-05-07 10:32:03 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-26-05-08
-
-for you to fetch changes up to 19f94b6fee75b3ef7fbc06f3745b9a771a8a19a4:
-
-  netfilter: nft_ct: fix missing expect put in obj eval (2026-05-08 01:30:17 +0200)
-
-----------------------------------------------------------------
-netfilter pull request 26-05-08
-
-----------------------------------------------------------------
-Florian Westphal (9):
-      netfilter: x_tables: allow initial table replace without emitting audit log message
-      netfilter: x_tables: allocate hook ops while under mutex
-      netfilter: x_tables: add and use xt_unregister_table_pre_exit
-      netfilter: x_tables: unregister the templates first
-      netfilter: x_tables: add and use xtables_unregister_table_exit
-      netfilter: ebtables: move to two-stage removal scheme
-      netfilter: ebtables: close dangling table module init race
-      netfilter: x_tables: close dangling table module init race
-      netfilter: bridge: eb_tables: close module init race
-
-Li Xiasong (2):
-      netfilter: nf_conntrack_sip: get helper before allocating expectation
-      netfilter: nft_ct: fix missing expect put in obj eval
-
-Pablo Neira Ayuso (2):
-      netfilter: nf_conntrack_expect: restore helper propagation via expectation
-      netfilter: ctnetlink: check tuple and mask in expectations created via nfqueue
-
- include/linux/netfilter/x_tables.h          |   4 +-
- include/linux/netfilter_arp/arp_tables.h    |   1 -
- include/linux/netfilter_ipv4/ip_tables.h    |   1 -
- include/linux/netfilter_ipv6/ip6_tables.h   |   1 -
- include/net/netfilter/nf_conntrack_expect.h |   5 +-
- net/bridge/netfilter/ebtable_broute.c       |  14 +--
- net/bridge/netfilter/ebtable_filter.c       |  14 +--
- net/bridge/netfilter/ebtable_nat.c          |  12 +-
- net/bridge/netfilter/ebtables.c             |  71 ++++++-----
- net/ipv4/netfilter/arp_tables.c             |  53 ++-------
- net/ipv4/netfilter/arptable_filter.c        |  27 +++--
- net/ipv4/netfilter/ip_tables.c              |  59 ++--------
- net/ipv4/netfilter/iptable_filter.c         |  27 +++--
- net/ipv4/netfilter/iptable_mangle.c         |  29 ++---
- net/ipv4/netfilter/iptable_nat.c            |   6 +-
- net/ipv4/netfilter/iptable_raw.c            |  26 ++--
- net/ipv4/netfilter/iptable_security.c       |  27 +++--
- net/ipv6/netfilter/ip6_tables.c             |  56 ++-------
- net/ipv6/netfilter/ip6table_filter.c        |  26 ++--
- net/ipv6/netfilter/ip6table_mangle.c        |  27 +++--
- net/ipv6/netfilter/ip6table_nat.c           |   6 +-
- net/ipv6/netfilter/ip6table_raw.c           |  24 ++--
- net/ipv6/netfilter/ip6table_security.c      |  27 +++--
- net/netfilter/nf_conntrack_broadcast.c      |   1 +
- net/netfilter/nf_conntrack_core.c           |   7 +-
- net/netfilter/nf_conntrack_expect.c         |   1 +
- net/netfilter/nf_conntrack_h323_main.c      |  12 +-
- net/netfilter/nf_conntrack_helper.c         |   5 +
- net/netfilter/nf_conntrack_netlink.c        |  21 +++-
- net/netfilter/nf_conntrack_sip.c            |  10 +-
- net/netfilter/nft_ct.c                      |   2 +
- net/netfilter/x_tables.c                    | 177 +++++++++++++++++++++++-----
- 32 files changed, 415 insertions(+), 364 deletions(-)
 
