@@ -1,44 +1,44 @@
-Return-Path: <netfilter-devel+bounces-12519-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12520-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eNURD6Cu/2mu9AAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12519-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sun, 10 May 2026 00:01:04 +0200
+	id WExeKryu/2mu9AAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12520-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sun, 10 May 2026 00:01:32 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEFC05019EE
-	for <lists+netfilter-devel@lfdr.de>; Sun, 10 May 2026 00:01:03 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 339135019F6
+	for <lists+netfilter-devel@lfdr.de>; Sun, 10 May 2026 00:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8CC04300B545
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2026 22:01:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 236D5300E60D
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2026 22:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375753D3CF0;
-	Sat,  9 May 2026 22:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53D8330301;
+	Sat,  9 May 2026 22:01:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2DF39F180
-	for <netfilter-devel@vger.kernel.org>; Sat,  9 May 2026 22:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988133D3D1C
+	for <netfilter-devel@vger.kernel.org>; Sat,  9 May 2026 22:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778364061; cv=none; b=ASqTKfzI9THRuYokMqlYluLDDJr/LuZPJyJrxpmEG5rNKJ5XJzgu8M+96byidAMnRhRKqWzadgBma/IBa4GCmTRQIrq+aeIZZkLLyO92HQDcTrPQD0g+HItiRUTmZBkV6W7tEtdEOHfuEOAdImVtD5BCWZJ54n2V8t1NZrRquj4=
+	t=1778364087; cv=none; b=FP2skhJwlYI6lnl/PPy4spPPppI5NmcwiInCwhHcR3I0Tfh0ipKcNiChGQ7NQ1AmKWUcWtpRgOvmzCiZ8jbbztce01yNb33MQf/qu6tNtufBBf6X2Yt+QbyxHfWkz1YKKjTqWmr5rCZiF+L2hEpMRexKou0Vdv0wMpAgbzaIbxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778364061; c=relaxed/simple;
-	bh=Ypj0rdDzNWvHSMm9ORSPOsZn1E5QJT7T9sAHy+jsi7g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Sf+IAtToMS8KXtiBIs8FcqWJ0z4GL5HMzRziZZCT0NJU/Uy310OQVMz1Jh3xBuiivs+Cd4bcaDYfXuDhaxkubQNt7ph+GHs1SKSJmfktOV+lMHkWOiyrbXDgXeRt/31/H8pPUAcTrfaM7USblAHBjKtlnFn7tbIFtaQ+VFJFjKI=
+	s=arc-20240116; t=1778364087; c=relaxed/simple;
+	bh=AUB+nV9/XWGT3eKr+7UqHlx3HPmPLGTdlxbaT27IuA4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mMPsDLFCfEHeAAkI9Uh7pj5Owva6QqdwUYGWZtJUzWKOtwuihrhTX+PVhxdBbcxpuIeVu7TUbFzcZcUD58zaWsyllWTJ692cetAYiPmy5vJuWJ2RK++DTo3p50Ldbsz03pPlnG+bT9jA5/VvZ5ONCAsS68agcihufXoXkidajmY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 9538660712; Sun, 10 May 2026 00:00:55 +0200 (CEST)
+	id 447B660712; Sun, 10 May 2026 00:01:22 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH conntrack-tools] tests: bulk-load-stress.sh: return early if ct_max is reached
-Date: Sun, 10 May 2026 00:00:45 +0200
-Message-ID: <20260509220048.1076852-1-fw@strlen.de>
+Subject: [PATCH conntrack-tools] tests: cli-test.sh: improve logging for CI pipelines
+Date: Sun, 10 May 2026 00:01:13 +0200
+Message-ID: <20260509220117.1076896-1-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -47,13 +47,13 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: AEFC05019EE
+X-Rspamd-Queue-Id: 339135019F6
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -64,51 +64,34 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-12519-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12520-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.830];
+	NEURAL_HAM(-0.00)[-0.829];
 	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-In case this script runs from a CI pipeline its possible the
-executing netns has a conntrack_max setting that isn't enough
-for the default 128k size that is autogenerated in the script.
-
-We can't change conntrack_max either, as we might be
-running via unshare(1).  Fetch the max allowed setting
-and then cap the generated output once that is reached.
-
-Furthermore add a assert() helper to emit PASS/FAIL
-messages so CI logs are more grep friedly.
+make logs more grep-friendly by adding FAIL/PASS
+prefix to subtests.  Also make sure failing subtest has its retval
+propagated.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- tests/conntrack/bulk-load-stress.sh | 47 +++++++++++++++++++++--------
- 1 file changed, 35 insertions(+), 12 deletions(-)
+ tests/conntrack/cli-test.sh | 54 ++++++++++++++++++-------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/tests/conntrack/bulk-load-stress.sh b/tests/conntrack/bulk-load-stress.sh
-index 64f51b9c75e8..31ad1086887f 100755
---- a/tests/conntrack/bulk-load-stress.sh
-+++ b/tests/conntrack/bulk-load-stress.sh
-@@ -14,12 +14,27 @@ TMP_FILE="$(mktemp)"
- CT_ZONE=$DEFAULT_CT_ZONE
- GEN_ONLY=$DEFAULT_GEN_ONLY
- CLEANUP_INDIVIDUAL=$DEFAULT_CLEANUP_INDIVIDUAL
-+ret=0
-+
-+ct_max=0
-+read ct_max < /proc/sys/net/netfilter/nf_conntrack_max
- 
- cleanup() {
- 	rm -f "$TMP_FILE"
- }
- trap cleanup EXIT
+diff --git a/tests/conntrack/cli-test.sh b/tests/conntrack/cli-test.sh
+index a0da740442dc..0b967ad53d75 100755
+--- a/tests/conntrack/cli-test.sh
++++ b/tests/conntrack/cli-test.sh
+@@ -10,57 +10,61 @@ DPORT=21
+ ret=0
+ lret=0
  
 +assert() {
 +	local r="$1"
@@ -121,72 +104,129 @@ index 64f51b9c75e8..31ad1086887f 100755
 +	fi
 +}
 +
- print_help()
- {
- 	me=$(basename "$0")
-@@ -52,9 +67,18 @@ print_help()
- 
- function ct_data_gen()
- {
-+	local cnt=1
-+
- 	for (( d = 1; d <= $DPORT_COUNT; d++ )) do
- 		for (( s = 1; s <= $SPORT_COUNT; s++ )) do
- 			echo "-I -w $CT_ZONE -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport ${s} --dport ${d} --state LISTEN -u SEEN_REPLY -t 50"
-+
-+			cnt=$((cnt+1))
-+			[ $ct_max -eq 0 ] && continue
-+			if [ $cnt -ge $ct_max ]; then
-+				echo "WARN: Generated only $cnt entries ct_max ($ct_max) reached" 1>&2
-+				return
-+			fi
+ case $1 in
+ 	dump)
+-		echo "Dumping conntrack table"
+ 		$CONNTRACK -L
+-		ret=$?
++		assert $? "Dumping conntrack table"
+ 		;;
+ 	flush)
+-		echo "Flushing conntrack table"
+ 		$CONNTRACK -F
+-		ret=$?
++		assert $? "Flushing conntrack table"
+ 		;;
+ 	new)
+-		echo "creating a new conntrack"
+ 		$CONNTRACK -I --orig-src $SRC --orig-dst $DST \
+ 		 --reply-src $DST --reply-dst $SRC -p tcp \
+ 		 --orig-port-src $SPORT  --orig-port-dst $DPORT \
+ 		 --reply-port-src $DPORT --reply-port-dst $SPORT \
+ 		--state LISTEN -u SEEN_REPLY -t 50
+-		ret=$?
++		assert $? "creating a new conntrack"
+ 		;;
+ 	new-simple)
+-		echo "creating a new conntrack (simplified)"
+ 		$CONNTRACK -I -s $SRC -d $DST \
+ 		-p tcp --sport $SPORT  --dport $DPORT \
+ 		--state LISTEN -u SEEN_REPLY -t 50
+-		ret=$?
++		assert $? "creating a new conntrack (simplified)"
+ 		;;
+ 	new-nat)
+-		echo "creating a new conntrack (NAT)"
+ 		$CONNTRACK -I -s $SRC -d $DST \
+ 		-p tcp --sport $SPORT  --dport $DPORT \
+ 		--state LISTEN -u SEEN_REPLY -t 50 --dst-nat 8.8.8.8
+-		ret=$?
++		assert $? "creating a new conntrack (NAT)"
+ 		;;
+ 	get)
+-		echo "getting a conntrack"
+ 		$CONNTRACK -G -s $SRC -d $DST \
+ 		-p tcp --sport $SPORT --dport $DPORT
+-		ret=$?
++		assert $? "getting a conntrack"
+ 		;;
+ 	change)
+-		echo "change a conntrack"
+ 		$CONNTRACK -U -s $SRC -d $DST \
+ 		-p tcp --sport $SPORT --dport $DPORT \
+ 		--state TIME_WAIT -u ASSURED,SEEN_REPLY -t 500
+-		ret=$?
++		assert $? "change a conntrack"
+ 		;;
+ 	delete)
+ 		$CONNTRACK -D -s $SRC -d $DST \
+ 		-p tcp --sport $SPORT --dport $DPORT
+-		ret=$?
++		assert $? "delete a conntrack"
+ 		;;
+ 	output)
+ 		proc=$(cat /proc/net/nf_conntrack | wc -l)
+@@ -75,15 +79,15 @@ case $1 in
+ 				echo "now $proc"
+ 			fi
+ 		fi
+-		ret=$?
++		assert $? "output: check proc and netlink entry count"
+ 		;;
+ 	dump-expect)
+ 		$CONNTRACK -L expect
+-		ret=$?
++		assert $? "conntrack -L expect"
+ 		;;
+ 	flush-expect)
+ 		$CONNTRACK -F expect
+-		ret=$?
++		assert $? "conntrack -F expect"
+ 		;;
+ 	create-expect)
+ 		conntrack -L
+@@ -94,36 +98,32 @@ case $1 in
+ 		-p tcp --orig-port-src $SPORT --orig-port-dst $DPORT \
+ 		-t 200 --tuple-port-src 10240 --tuple-port-dst 10241\
+ 		--mask-port-src 10 --mask-port-dst 300
+-		ret=$?
++		assert $? "create conntrack expectation"
+ 		;;
+ 	get-expect)
+ 		$CONNTRACK -G expect --orig-src 4.4.4.4 --orig-dst 5.5.5.5 \
+ 		--p tcp --orig-port-src 10240 --orig-port-dst 10241 \
+ 		--reply-port-src $DPORT --reply-port-dst $SPORT
+-		ret=$?
++		assert $? "get conntrack expectation"
+ 		;;
+ 	delete-expect)
+ 		$CONNTRACK -D expect --orig-src 4.4.4.4 \
+ 		--orig-dst 5.5.5.5 -p tcp --orig-port-src 10240 \
+ 		--orig-port-dst 10241 \
+ 		--reply-port-src $DPORT --reply-port-dst $SPORT
+-		ret=$?
++		assert $? "delete conntrack expectation"
+ 		;;
+ 	all-ns)
+ 		unshare -n "$0" all
+-		ret=$?
++		assert $? "all-ns"
+ 		;;
+ 	all)
+ 		for T in new delete new-simple flush new-nat \
+ 			dump \
+ 			change output \
+ 			flush ; do
+-			echo "Checking: $T"
+ 			"$0" "$T"
+-			lret=$?
+-
+-			[ "$lret" -ne 0 ] && echo "FAIL: $T"
+-			[ "$ret" -eq 0 ] && ret=$lret
++			assert $? "all: $T"
  		done
- 	done
- }
-@@ -135,7 +159,7 @@ ct_data_gen > $TMP_FILE
- 
- NUM_ENTRIES=$(cat ${TMP_FILE} | wc -l)
- 
--echo "File ${TMP_FILE} is generated, number of entries: ${NUM_ENTRIES}."
-+echo "File ${TMP_FILE} is generated, number of entries: ${NUM_ENTRIES}. ct_max is $ct_max."
- 
- if [ "$GEN_ONLY" -eq "1" ]; then
- 	# Retain tmpfile in this mode
-@@ -151,8 +175,9 @@ fi
- 
- echo "Loading ${NUM_ENTRIES} entries from ${TMP_FILE} .."
- time -p ${CT} -R $TMP_FILE
--lret=$?
--ret=$lret
-+assert $? "$CT -R $TMP_FILE"
-+$CT -C
-+assert $? "$CT -C"
- 
- if [ "$CLEANUP_INDIVIDUAL" -eq "1" ]; then
- 	sed -i -e "s/-I/-D/g" -e "s/-t 50//g" $TMP_FILE
-@@ -163,15 +188,13 @@ if [ "$CLEANUP_INDIVIDUAL" -eq "1" ]; then
- 
- 	echo "Cleaning ${NUM_ENTRIES} entries from ${TMP_FILE} .."
- 	time -p ${CT} -R $TMP_FILE
--	lret=$?
--	[ $ret -eq 0 ] && ret=$lret
-+	assert $? "$CT -R $TMP_FILE - cleaning"
-+else
-+	echo "Cleaning up zone ${CT_ZONE}.."
-+	time -p ${CT} -D -w $CT_ZONE > /dev/null
-+	assert $? "$CT -D -w $CT_ZONE"
-+	conntrack -C
-+	assert $? "$CT -C"
- fi
- 
--
--echo "Cleaning up zone ${CT_ZONE}.."
--time -p ${CT} -D -w $CT_ZONE > /dev/null
--lret=$?
--[ $ret -eq 0 ] && ret=$lret
--rm $TMP_FILE
--
- exit $ret
+ 		;;
+ 	*)
 -- 
 2.54.0
 
