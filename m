@@ -1,150 +1,153 @@
-Return-Path: <netfilter-devel+bounces-12510-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12516-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UEUHLNdP/ml/pAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12510-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 23:04:23 +0200
+	id IJgcHLyQ/mmFswAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12516-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 09 May 2026 03:41:16 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 271444FBBA1
-	for <lists+netfilter-devel@lfdr.de>; Fri, 08 May 2026 23:04:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6964FD5BA
+	for <lists+netfilter-devel@lfdr.de>; Sat, 09 May 2026 03:41:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C5386302A19E
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 May 2026 21:04:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F38E23013D52
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2026 01:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3310E421EE3;
-	Fri,  8 May 2026 21:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CD427F19F;
+	Sat,  9 May 2026 01:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="G7o1Dc11"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNSqAgvs"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313F7361679
-	for <netfilter-devel@vger.kernel.org>; Fri,  8 May 2026 21:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515F2278156;
+	Sat,  9 May 2026 01:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778274261; cv=none; b=RI6moT4L55emQXOny4X9PS0OmVRuj+i2YiiXajfRGWC37+2MHGFvGxHdBXXI1idG+RKe/QH08EuOY4JtQvwISUfw+IcKUJxL890VOGzmHS31SDTtI3gsX5wi3WQXurY1cTvz8Smfb0OYYYjdODgtYqOtVkK6BANEdDI1UV/m/8w=
+	t=1778290873; cv=none; b=DwEcyjT8dzjSej1tFKhXr2pLU+oLk1RICh35cPIug1VH9/u9LF5FcM3yc9VZ6kR7i3xtmStxio79N9wEtvwFLQ/Fl9NoVDnBm3MGL9aeWOEInNtDhAvZSV/esIub2NOpzU3qjs+XpwcjRMwchSd2JIudJ3yVHllktNxbarrgJgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778274261; c=relaxed/simple;
-	bh=j9IDwMADCNHDAQRRycLHCCBmnD6CmWccaTi7ow3CRVk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bY4II83yQgDy0VgOhuUsCzUSl2nbOkpHHmmAXFnCd1hkLTA/ufZ8qu5ARcGIJf23sSZd2mLKLfBm8zUDf4VsCnBAji38ikU+hy16qd1tAdbYlB9WU5d+foFg0xu4ro1oTn2aN313TyJPuHibkIijg5hWABGhEWR1pesLteYyB/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=G7o1Dc11; arc=none smtp.client-ip=148.6.0.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
-Received: from localhost (localhost [127.0.0.1])
-	by smtp0.kfki.hu (Postfix) with ESMTP id 4gC1gw3s7Tz3sb9B;
-	Fri,  8 May 2026 22:59:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:references:in-reply-to
-	:x-mailer:message-id:date:date:from:from:received:received
-	:received; s=20151130; t=1778273946; x=1780088347; bh=CQbQZUzsz8
-	8tk+CALMJaG2u7tCysd9JcPbH5uMG7xyY=; b=G7o1Dc110QmxU8eGd4xTl47NVt
-	L4Wsl2ilfW7j52c5KnReBjlgW+F3W2WqwnpE3vyYXvUAqzPRJ2j14CLNaFJNw/Sx
-	ZZRcwGuEmbv5FaPLLC2Xs/b9jZqQvwTPF7cuS1XHGnxr/1wg+q1spFqVNvSTca2w
-	SzKePgev21Mlw4phY=
-X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
- by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id Gy7Be4RqH0gJ; Fri,  8 May 2026 22:59:06 +0200 (CEST)
-Received: from mentat.rmki.kfki.hu (254C131D.nat.pool.telekom.hu [37.76.19.29])
-	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp0.kfki.hu (Postfix) with ESMTPSA id 4gC1gs1YkRz3sb9S;
-	Fri,  8 May 2026 22:59:05 +0200 (CEST)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 084FA141F66; Fri,  8 May 2026 22:59:04 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH v6 8/8] netfilter: ipset: fix order of usage counters
-Date: Fri,  8 May 2026 22:59:03 +0200
-Message-Id: <20260508205903.10238-9-kadlec@netfilter.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260508205903.10238-1-kadlec@netfilter.org>
-References: <20260508205903.10238-1-kadlec@netfilter.org>
+	s=arc-20240116; t=1778290873; c=relaxed/simple;
+	bh=LPHO7mWMRRT8fu6h/79gWlYEjg9jE+RXDoObQaxTUSk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=nsraXsBj3iET8Z66g6zwZBdaLs3vTZC0D7vHKTONUtVKAipgzo/rBJad1A1Uotpj/rMMaWeh4TmXhGn0TA5QfcL1YIHtb6S0sVJi1h8wsVRGqNlzXkA69BqZynlWiHaHnKNyucab4sWhlmYGye51vZbCbjkqhyssVE2V8A5sKkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNSqAgvs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED232C2BCB0;
+	Sat,  9 May 2026 01:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778290873;
+	bh=LPHO7mWMRRT8fu6h/79gWlYEjg9jE+RXDoObQaxTUSk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lNSqAgvsqnAMn0JbjXmj1zhPby6CXnj9hhdr6cGkCv0HSYT3IWeGyApFL2FokkEtV
+	 dzFaRDt75KtH4QJCL12PGxvZqDQuprlGo5F2KiMk/YioYX4LfH3w6dTVEDXEQzEPsY
+	 8LYTK+Iortxhlq3Yt4eq41oiBV5XltdHDcfFncRApHD7t4BEhe0k6cp+dw+j58BlJg
+	 9zA5c4cD/LbaY2J22PwxnygdB+rwPy8jaPUreBzVSGHf0HFtwxpydPZ1Saez0sYwWL
+	 YlDpZJt5U01T7ONSSgnwPwQjzdEoxrrQea3yMtsfRPnvgHlw49adrwkbNWHTHsw497
+	 /3svYnNM45tLA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CEF738119E4;
+	Sat,  9 May 2026 01:40:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-deepspam: ham 1%
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 271444FBBA1
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 01/13] netfilter: x_tables: allow initial table
+ replace
+ without emitting audit log message
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177829082130.929250.13481267199654221976.git-patchwork-notify@kernel.org>
+Date: Sat, 09 May 2026 01:40:21 +0000
+References: <20260507234509.603182-2-pablo@netfilter.org>
+In-Reply-To: <20260507234509.603182-2-pablo@netfilter.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
+ netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, fw@strlen.de, horms@kernel.org
+X-Rspamd-Queue-Id: BF6964FD5BA
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12510-lists,netfilter-devel=lfdr.de];
+	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12516-lists,netfilter-devel=lfdr.de,netdevbpf];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DMARC_NA(0.00)[netfilter.org];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NO_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:email]
 X-Rspamd-Action: no action
 
-Eulgyu Kim reported a slab-use-after-free issue when resizing
-a set and gc runs in parallel. Resizing may run parallel with
-already running gc or gc can start but notice that resizing
-started. The operation which finishes last must destroy the
-original set. The logic for the testing is: "I was the last
-user of the set and it was resized". However setting the
-counters in resizing was: "the set will be resized and I'm
-going to use the set". That created a small racing window
-at the testing phase. Fix the order in the resizing functions.
+Hello:
 
-Reported by: Eulgyu Kim <eulgyukim@snu.ac.kr>
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
----
- net/netfilter/ipset/ip_set_hash_gen.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This series was applied to netdev/net.git (main)
+by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/=
-ip_set_hash_gen.h
-index 71b57c731dcb..023a3d7aeba0 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -681,8 +681,9 @@ mtype_resize(struct ip_set *set, bool retried)
- 	 * between the original and resized sets.
- 	 */
- 	orig =3D ipset_dereference_bh_nfnl(h->table);
--	atomic_set(&orig->ref, 1);
- 	atomic_inc(&orig->uref);
-+	smp_mb__after_atomic();
-+	atomic_set(&orig->ref, 1);
- 	pr_debug("attempt to resize set %s from %u to %u, t %p\n",
- 		 set->name, orig->htable_bits, htable_bits, orig);
- 	for (r =3D 0; r < ahash_numof_locks(orig->htable_bits); r++) {
-@@ -799,6 +800,7 @@ mtype_resize(struct ip_set *set, bool retried)
- cleanup:
- 	rcu_read_unlock_bh();
- 	atomic_set(&orig->ref, 0);
-+	smp_mb__before_atomic();
- 	atomic_dec(&orig->uref);
- 	mtype_ahash_destroy(set, t, false);
- 	if (ret =3D=3D -EAGAIN)
---=20
-2.39.5
+On Fri,  8 May 2026 01:44:57 +0200 you wrote:
+> From: Florian Westphal <fw@strlen.de>
+> 
+> At the moment we emit the audit log a bit too early, which makes it
+> necessary to also emit an unregister log in case we have to unwind
+> errors after possible hook register failure.
+> 
+> Followup patch will be slightly simpler if we can delay the
+> register message until after the hooks have been wired up.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,01/13] netfilter: x_tables: allow initial table replace without emitting audit log message
+    https://git.kernel.org/netdev/net/c/8e72510db9fa
+  - [net,02/13] netfilter: x_tables: allocate hook ops while under mutex
+    https://git.kernel.org/netdev/net/c/b62eb8dcf2c4
+  - [net,03/13] netfilter: x_tables: add and use xt_unregister_table_pre_exit
+    https://git.kernel.org/netdev/net/c/527d6931473b
+  - [net,04/13] netfilter: x_tables: unregister the templates first
+    https://git.kernel.org/netdev/net/c/d338693d7785
+  - [net,05/13] netfilter: x_tables: add and use xtables_unregister_table_exit
+    https://git.kernel.org/netdev/net/c/b4597d5fd7d2
+  - [net,06/13] netfilter: ebtables: move to two-stage removal scheme
+    https://git.kernel.org/netdev/net/c/b7f0544d86d4
+  - [net,07/13] netfilter: ebtables: close dangling table module init race
+    https://git.kernel.org/netdev/net/c/92c603fa07bc
+  - [net,08/13] netfilter: x_tables: close dangling table module init race
+    https://git.kernel.org/netdev/net/c/16bc4b6686b2
+  - [net,09/13] netfilter: bridge: eb_tables: close module init race
+    https://git.kernel.org/netdev/net/c/27414ff1b287
+  - [net,10/13] netfilter: nf_conntrack_expect: restore helper propagation via expectation
+    https://git.kernel.org/netdev/net/c/dcb0f9aefdd6
+  - [net,11/13] netfilter: ctnetlink: check tuple and mask in expectations created via nfqueue
+    https://git.kernel.org/netdev/net/c/d8ef54c83ad7
+  - [net,12/13] netfilter: nf_conntrack_sip: get helper before allocating expectation
+    https://git.kernel.org/netdev/net/c/eb6317739b1e
+  - [net,13/13] netfilter: nft_ct: fix missing expect put in obj eval
+    https://git.kernel.org/netdev/net/c/19f94b6fee75
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
