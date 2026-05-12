@@ -1,113 +1,144 @@
-Return-Path: <netfilter-devel+bounces-12567-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12568-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MBGpM/i2A2pg9QEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12567-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 01:25:44 +0200
+	id WJnZAjC7A2o69gEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12568-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 01:43:44 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 671CE52B496
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 01:25:43 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0765152B5E3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 01:43:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0A85B3070381
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 May 2026 23:25:43 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AABFF3002917
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 May 2026 23:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC9535A398;
-	Tue, 12 May 2026 23:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C832F385D9D;
+	Tue, 12 May 2026 23:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Bqfi4nV2"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9013839B1
-	for <netfilter-devel@vger.kernel.org>; Tue, 12 May 2026 23:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FBA3815D9
+	for <netfilter-devel@vger.kernel.org>; Tue, 12 May 2026 23:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778628341; cv=none; b=DB+MUfFpOdRiR3w/AgVvSEfqlaaPS36KtCy203WkJkh8+a8rYy5+jVl6bb5DUvjYEssZItJzSHvSYlTL1nx2FdQN9fXlY5S7xCz4kH3sv7EOsRCvbTe3KUUNew1iMU8GfJyA9CL1g1av7MJU5v736pC6IdAc5XWsP3enu7f4y20=
+	t=1778629417; cv=none; b=lddwEdPn/FA3RddxsnhW7oxUMb8l/2u9uqDrCGvSHgKjK/vRG5WDTdG6f9GMRjOs3Nx8m/LwLZWHIuY+ZnECRnJyjhpZdeQwIpSXAh8hYEhu8ZlOuj5Nr35sDRJ3NU0wzsSvFmZwRsYz41OmMlWN9vrEzxclhYrUJYVaSfh5wxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778628341; c=relaxed/simple;
-	bh=EYheQIsDtWtVaZlyZvuu9XfTYFj76GYYDSvOkyOwlnY=;
-	h=Date:From:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vBBmCG+noCzTl2G6ULL326OZbYjOSlPAWp4de+Kj16liWgfgqN4C+uQG4Vwyyc4PBjbjh+LEXa1IorW9BO7sGN5x6LzwNQ1nCWcFek0C9tA5jdimy7OxRkmuk56q2gk9M7maYOQlKLqMi4+L9vdozyaU2w6yQE69TtgJdxU8pUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id B320560D66; Wed, 13 May 2026 01:25:36 +0200 (CEST)
-Date: Wed, 13 May 2026 01:25:32 +0200
-From: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: nf_queue: hold reference on skb->dev
-Message-ID: <agO27EBuW7aLbdqu@strlen.de>
-References: <20260512224417.812214-1-pablo@netfilter.org>
+	s=arc-20240116; t=1778629417; c=relaxed/simple;
+	bh=Ru2wAsQsQfI0cwcVTpiXUaYel/AKpcOcqJIoDYTZE+E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VdZX0AmdABkEPD++w9vh5P9DeP1oiTyuU3lG016mtvu2YX+HLd59XBHAZlf2VMp0ztq/wXytfIfg8QcraXZ1sCuk5JIr4xjGgPmpAggU8nugWkVPA3pJc0Xe+kLhyvV206+ndt1uMSFrk8x0IFEAzF6cIZXJ7qtXcQrmJMjr1ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Bqfi4nV2; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 7BDBA60180;
+	Wed, 13 May 2026 01:43:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1778629413;
+	bh=MlRTGSaUXsEozshlql4HRv+af5rmczwwXbeQ3/5uKU8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Bqfi4nV2WLteXhw3mcdCHHroyW0oImhkeBSxAPtcfQ4f6kyVrN/DoOtVUW0mRl9Ni
+	 NDPe4C56utU/TyHZNvGmVUHnvNOLryUIp9q4KYlkaFPoGyhGDWqfkOcuatZEAmZdHW
+	 UhxPrQsmL5b6TilUxegrmLYEmcxJgENNrhXfA593o9D5uwO/eJQafHdQcwZBsUntN4
+	 9QHx6BAqRlu1CIRAL4eIS+nCKnTTaGEJvtl0rlhnB+fPEd/RPPsvpcjKMdf8eiDktT
+	 U8TJ9YRfUJupbzAuKWb+6hTxJFchwLeksE7jPioD8kfSzoyRf4oObmMfq0XD14P532
+	 5+xjWHnLZrZzw==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: fw@strlen.de
+Subject: [PATCH nf,v2] netfilter: nf_queue: hold reference on skb->dev
+Date: Wed, 13 May 2026 01:43:30 +0200
+Message-ID: <20260512234330.817709-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260512224417.812214-1-pablo@netfilter.org>
-X-Rspamd-Queue-Id: 671CE52B496
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 0765152B5E3
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.54 / 15.00];
-	MISSING_TO(2.00)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-12567-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	NEURAL_HAM(-0.00)[-0.990];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-12568-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lzu.edu.cn:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,netfilter.org:email]
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim]
 X-Rspamd-Action: no action
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> Before NF_BR_LOCAL_IN, skb->dev is mangled in a way that results in
-> state->in != skb->dev, which can result in UaF when accessing the bridge
-> device if removed while in the queue.
-> 
-> Reported-by: Ren Wei <n05ec@lzu.edu.cn>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
->  net/netfilter/nf_queue.c        | 6 ++++++
->  net/netfilter/nfnetlink_queue.c | 3 +++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
-> index a6c81c04b3a5..9c6741673842 100644
-> --- a/net/netfilter/nf_queue.c
-> +++ b/net/netfilter/nf_queue.c
-> @@ -59,8 +59,11 @@ static void nf_queue_sock_put(struct sock *sk)
->  static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
->  {
->  	struct nf_hook_state *state = &entry->state;
-> +	struct sk_buff *skb = entry->skb;
->  
->  	/* Release those devices we held, or Alexey will kill me. */
-> +	if (skb->dev)
-> +		dev_put(skb->dev);
+Before NF_BR_LOCAL_IN, skb->dev is mangled in a way that results in
+state->in != skb->dev, which can result in UaF when accessing the bridge
+device if removed while in the queue.
 
-dev_hold/put(NULL) is safe, no need for NULL guard (and no need
-to resend).
+Reported-by: Ren Wei <n05ec@lzu.edu.cn>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: remove check on NULL skb->dev, per Florian.
 
-Thanks for making a patch.  I'll make a patch for the pptp/gre bug in
-case reporter remains silent.
+ net/netfilter/nf_queue.c        | 2 ++
+ net/netfilter/nfnetlink_queue.c | 3 +++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
+index a6c81c04b3a5..a0ff8717746d 100644
+--- a/net/netfilter/nf_queue.c
++++ b/net/netfilter/nf_queue.c
+@@ -61,6 +61,7 @@ static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
+ 	struct nf_hook_state *state = &entry->state;
+ 
+ 	/* Release those devices we held, or Alexey will kill me. */
++	dev_put(entry->skb->dev);
+ 	dev_put(state->in);
+ 	dev_put(state->out);
+ 	if (state->sk)
+@@ -102,6 +103,7 @@ bool nf_queue_entry_get_refs(struct nf_queue_entry *entry)
+ 	if (state->sk && !refcount_inc_not_zero(&state->sk->sk_refcnt))
+ 		return false;
+ 
++	dev_hold(entry->skb->dev);
+ 	dev_hold(state->in);
+ 	dev_hold(state->out);
+ 
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index 58304fd1f70f..7408b348da13 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -1212,6 +1212,9 @@ dev_cmp(struct nf_queue_entry *entry, unsigned long ifindex)
+ 	if (physinif == ifindex || physoutif == ifindex)
+ 		return 1;
+ #endif
++	if (entry->skb->dev)
++		if (entry->skb->dev->ifindex == ifindex)
++			return 1;
+ 	if (entry->state.in)
+ 		if (entry->state.in->ifindex == ifindex)
+ 			return 1;
+-- 
+2.47.3
+
 
