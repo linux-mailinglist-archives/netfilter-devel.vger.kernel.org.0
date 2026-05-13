@@ -1,113 +1,185 @@
-Return-Path: <netfilter-devel+bounces-12577-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12578-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sFr0APSVBGqrLgIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12577-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 17:17:08 +0200
+	id sNwOAHObBGr3LwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12578-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 17:40:35 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5631B535EA7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 17:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5166F53651A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 17:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 85278308D1BA
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 14:13:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 32D1330EF02E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 14:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3B8314A79;
-	Wed, 13 May 2026 14:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C015038CFF6;
+	Wed, 13 May 2026 14:53:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hRK4wTQq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oB2ay75Q";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hRK4wTQq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="oB2ay75Q"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A5C3126C0
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 May 2026 14:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699642253FC
+	for <netfilter-devel@vger.kernel.org>; Wed, 13 May 2026 14:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778681625; cv=none; b=BP+tFnNmYTdvw7FzDOnDzYy0tIr4t/Tf8xab/lsC2TSHTGK5aA1Cf/VlRu4YmGBZGDAtlovn0ec6eRjC0XfL3jOwirDj2GsohkLq1srXagNoLaH7TuBOTWzXGWTaLp0ZNKbFIBkWybojTz01h0LCQBnLLErwJ2meKUMFdd3VGw0=
+	t=1778683981; cv=none; b=FaSSxEmnV8qrE1EXZP9qxMUOUKPPYFaliKNENooTYQi5dqF8s2gXhPnfxot17AXyg0DI/eNN3oPlbpS1lgKvCmjc38rn8SxpMU7bBD5fA115favEecCZI2zOiVremkVqKEHJmCBTX3qUKB97bKgXXL/cIlQaTcMKJGY8PJzCs/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778681625; c=relaxed/simple;
-	bh=ttzpDJhVmpyNGB2eMU89VmfUuWsmFT/BiZg0U5aoIRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WHaROOh5KH2VjzWU0F1ZStI3ketCGjltnuc2PhHnpB9YM7K/oFSPehnsydf//yjzCMlet0ohyJh/+Xe0bQQhaR8Oc63WzzXlPhYiyqPJVPhK0hbSHokka7krzOuQNTdRm8AbgitXi3r/S2YDi+fkM2gLZLoIv1L3HVTbxhX/e1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id EF04E609A6; Wed, 13 May 2026 16:13:40 +0200 (CEST)
-Date: Wed, 13 May 2026 16:13:35 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Fernando Fernandez Mancera <fmancera@suse.de>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org, phil@nwl.cc,
-	pablo@netfilter.org,
-	Alejandro Olivan Alvarez <alejandro.olivan.alvarez@gmail.com>
-Subject: Re: [PATCH nf] netfilter: nf_conncount: prevent connlimit drops for
- early confirmed ct
-Message-ID: <agSHD2ZVclEeKSJC@strlen.de>
-References: <20260513121547.6434-1-fmancera@suse.de>
- <agRygM7hHtKs8jQB@strlen.de>
- <7fbd428e-93b7-4e17-8360-5434f0d1f6bc@suse.de>
+	s=arc-20240116; t=1778683981; c=relaxed/simple;
+	bh=yh7W8TPukbs7vQi2iQ7hChVx93uR2ur64qyuy+rAA20=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C2OyO9nl3FwWRBbcYwupjgiV+OWfnsSN/mAxZ7/Y29b055cmGBIf1etpnHYiF4Ky7KqBUyuLMSnCtkCtpwGE0EAiuXyRi727FnFdh/eBhblsBFZepAO6HZLyxRHIE/cgtiwd/OkIFfdoDzeizocBQ+r5lCniKvGrQAWAZ1Li6WY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hRK4wTQq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oB2ay75Q; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hRK4wTQq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=oB2ay75Q; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9CC036270B;
+	Wed, 13 May 2026 14:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1778683978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5zMZR7SuI7oFBK4PHgX4+47NnJp7FOdesE/JOzeUHg=;
+	b=hRK4wTQqlfMgqzafZQKlMcGndEKu5XCIGbXi0fOAix77IqbB6R3uk5ZbMoLAb3o48yx9e5
+	bDWqNkPFQPvCx1IJUqXMM8OHvuZxYvxZmsXP21Esxu7QjXTV57+oPk9itVoVkNfJexORaF
+	idAgx9LQaRwPT0FBek9jZoUO7Bd1Nko=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1778683978;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5zMZR7SuI7oFBK4PHgX4+47NnJp7FOdesE/JOzeUHg=;
+	b=oB2ay75QHJY3yCLokvEPfs+TTP8Srk9ujahfLo0zl7IHlwnfPf25ct5/GA26LFIwkSv2zS
+	xs32V7EtN5PZcLDg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1778683978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5zMZR7SuI7oFBK4PHgX4+47NnJp7FOdesE/JOzeUHg=;
+	b=hRK4wTQqlfMgqzafZQKlMcGndEKu5XCIGbXi0fOAix77IqbB6R3uk5ZbMoLAb3o48yx9e5
+	bDWqNkPFQPvCx1IJUqXMM8OHvuZxYvxZmsXP21Esxu7QjXTV57+oPk9itVoVkNfJexORaF
+	idAgx9LQaRwPT0FBek9jZoUO7Bd1Nko=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1778683978;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5zMZR7SuI7oFBK4PHgX4+47NnJp7FOdesE/JOzeUHg=;
+	b=oB2ay75QHJY3yCLokvEPfs+TTP8Srk9ujahfLo0zl7IHlwnfPf25ct5/GA26LFIwkSv2zS
+	xs32V7EtN5PZcLDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46009593A9;
+	Wed, 13 May 2026 14:52:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7klJDkqQBGrQNAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Wed, 13 May 2026 14:52:58 +0000
+Message-ID: <7ed7e852-79e2-44ac-9705-32a1258ca7ae@suse.de>
+Date: Wed, 13 May 2026 16:52:47 +0200
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7fbd428e-93b7-4e17-8360-5434f0d1f6bc@suse.de>
-X-Rspamd-Queue-Id: 5631B535EA7
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH nf] netfilter: nf_conncount: prevent connlimit drops for
+ early confirmed ct
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org, phil@nwl.cc,
+ pablo@netfilter.org,
+ Alejandro Olivan Alvarez <alejandro.olivan.alvarez@gmail.com>
+References: <20260513121547.6434-1-fmancera@suse.de>
+ <agRygM7hHtKs8jQB@strlen.de> <7fbd428e-93b7-4e17-8360-5434f0d1f6bc@suse.de>
+ <agSHD2ZVclEeKSJC@strlen.de>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <agSHD2ZVclEeKSJC@strlen.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Rspamd-Queue-Id: 5166F53651A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,nwl.cc,gmail.com];
+	TAGGED_FROM(0.00)[bounces-12578-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12577-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,nwl.cc,gmail.com];
+	DKIM_TRACE(0.00)[suse.de:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.990];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:mid]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Fernando Fernandez Mancera <fmancera@suse.de> wrote:
-> About IP_CT_ESTABLISHED, I added it because it was not clear to me that 
-> IPS_ASSURED_BIT is always set. I guess yes for TCP/UDP but what about 
-> other protocols? (Are we supporting other protocols???) Anyway, I have 
-> tested it and confirmed that for TCP/UDP it is safe to drop it.
+On 5/13/26 4:13 PM, Florian Westphal wrote:
+> Fernando Fernandez Mancera <fmancera@suse.de> wrote:
+>> About IP_CT_ESTABLISHED, I added it because it was not clear to me that
+>> IPS_ASSURED_BIT is always set. I guess yes for TCP/UDP but what about
+>> other protocols? (Are we supporting other protocols???) Anyway, I have
+>> tested it and confirmed that for TCP/UDP it is safe to drop it.
+> 
+> SCTP is the only other relevant one for this use-case, I think.
+> 
 
-SCTP is the only other relevant one for this use-case, I think.
+Then we can drop it, thanks Florian.
 
-> And please note that the idea is to be cautious when returning --EXIST. 
-> If IPS_ASSURED_BIT is set we can for sure skip the tracking BUT if not, 
-> we run a GC skipping the skip optimization..
+>> And please note that the idea is to be cautious when returning --EXIST.
+>> If IPS_ASSURED_BIT is set we can for sure skip the tracking BUT if not,
+>> we run a GC skipping the skip optimization..
+> 
+> 6 months from now I will no longer know wtf this assured check is
+> doing.  Please consider rewriting the existing comments so that this
+> makes some sense.
+> 
 
-6 months from now I will no longer know wtf this assured check is
-doing.  Please consider rewriting the existing comments so that this
-makes some sense.
+Fair point, let me add some comments around it.
 
-> Is it that bad? I mean, it has some back and forth and I apologize for 
-> that but overall this is fixing some real use cases.
+>> Is it that bad? I mean, it has some back and forth and I apologize for
+>> that but overall this is fixing some real use cases.
+> 
+> I know, this isn't your fault. Conncount is used in all kinds of cases
+> that it wasn't designed for and thus we have this esoteric breakage in
+> first place.
+> 
+> No way we can avoid it.  I think your patch is the best we can do here.
+> 
 
-I know, this isn't your fault. Conncount is used in all kinds of cases
-that it wasn't designed for and thus we have this esoteric breakage in
-first place.
-
-No way we can avoid it.  I think your patch is the best we can do here.
 
