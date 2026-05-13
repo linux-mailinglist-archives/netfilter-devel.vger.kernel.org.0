@@ -1,104 +1,122 @@
-Return-Path: <netfilter-devel+bounces-12574-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12575-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UBDvLY1yBGprIQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12574-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 14:46:05 +0200
+	id kOXAFEt3BGqpKAIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12575-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 15:06:19 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6134B53344D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 14:46:04 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E424533943
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 15:06:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 61971300FA9E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 12:46:04 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 39B3A30794F2
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2026 12:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F123C4219E8;
-	Wed, 13 May 2026 12:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3573A3828;
+	Wed, 13 May 2026 12:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b0Pn3Xpu"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A1B1B87C9
-	for <netfilter-devel@vger.kernel.org>; Wed, 13 May 2026 12:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A17136D4E4;
+	Wed, 13 May 2026 12:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778676361; cv=none; b=XH/nnS2hQtWuO24x+iC+R7lzU3rcFf7hxFByCX4IXESjfHQ18NGPeEx5msw+ttW/Obvxznm2QGbb6nBfQ10rWisRyAwdatP/hhfKspSJZdahd6Oui/uhgcvGOOFH2ETJCk8mXl43ypII5qVfyoyw7oY7KoKUocJljf9Z616HxDE=
+	t=1778677062; cv=none; b=bNAwhxBWSujwvKp1ZZyjfd/6QfZyOAvctEQvEcZySl2AP4bPt9vmr7C+RigzKH5HwNgoz20xv5dwvZ+QBkf4FrZZJYMrB+u75QYpD/gtpzmQWj6CM80bpRw9FUmRtD02ib3AKHlEdO2haCbxVmMbvLh6+iSlCY45yPelZhfv+34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778676361; c=relaxed/simple;
-	bh=L8je4aMxwkkPIF72GdBYB2RCogqX6qa/XxyL3LH8B90=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eC2h7jvpYXkGp3wpjkVLQZM0sYIrN/P/SH9z/QGZPx9mb3sgcanUgAJUeE2NqGx9upBKdmYLwT0nERS4jPlEAXBOw7hFBXtfdcuHnZD0HLdv+/qDwud8s2UGfYQ70BQU9Z7tReQt3Khi8PR9uFrfLEW1d7/gy8l2pn+tySnC2fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 8D940609A6; Wed, 13 May 2026 14:45:57 +0200 (CEST)
-Date: Wed, 13 May 2026 14:45:52 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Fernando Fernandez Mancera <fmancera@suse.de>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org, phil@nwl.cc,
-	pablo@netfilter.org,
-	Alejandro Olivan Alvarez <alejandro.olivan.alvarez@gmail.com>
-Subject: Re: [PATCH nf] netfilter: nf_conncount: prevent connlimit drops for
- early confirmed ct
-Message-ID: <agRygM7hHtKs8jQB@strlen.de>
-References: <20260513121547.6434-1-fmancera@suse.de>
+	s=arc-20240116; t=1778677062; c=relaxed/simple;
+	bh=lgKLUMReZlkJVnwJxFYAv74XGD7vVCHGZVXTfs65Qa8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=BaH8pRnSHe0mz4MtUyMFdC2O6WKEiAtOBUqCZPvPrVS8lobQG/j1Nd82npLe1fav+jEXd792JKtO/R6i1NF0RaXMOQTABSrAineCuUdG8CqrtOWPCIJ+yA6BWYUs4hsh6M3nnDz9mf6QZQrbFeQKCJwr1LpCvajAHQoatRirv4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b0Pn3Xpu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EEABC2BCB7;
+	Wed, 13 May 2026 12:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778677061;
+	bh=lgKLUMReZlkJVnwJxFYAv74XGD7vVCHGZVXTfs65Qa8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=b0Pn3XpuZg23jIkbHo0OfOHaMz1KojnyHGQHu2sFS/+dvU7dxMhfRu8ONJz/vWi8x
+	 gskYh193yof5zXc0yg5pb9zutE/fDJ/47nv/cFYDJuSJTm/YB2M+aB9HRK4dS2b93l
+	 oDO0K/dq9PDXAxT3jA/VUy9s6fwHZ3EsbJSJCfD9pct70Z+LZ+ZQZyvOpT6r+g+cT5
+	 CCK9qGiztx8FD5Ri9L2aatytEOm4oyr8oTHIot8kQmHfukH53f0YEkmzh16Tkng3mA
+	 wAoQr5SJ4S7gaOBBirBcc+8MHc0zsZWTJR56iPrKhqYZyP7XN1FbSp7t3pLGkN8Fus
+	 xTVAFkYbnwN0A==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Dan Carpenter <error27@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Calvin Owens <calvin@wbinvd.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker
+ <frederic@kernel.org>, "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+ <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+ linux-pm@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Florian
+ Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [patch V2 01/11] hrtimer: Provide hrtimer_start_range_ns_user()
+In-Reply-To: <agLfbp9yEiQlTYYl@stanley.mountain>
+References: <20260408102356.783133335@kernel.org>
+ <20260408114951.995031895@kernel.org> <agLfbp9yEiQlTYYl@stanley.mountain>
+Date: Wed, 13 May 2026 14:57:38 +0200
+Message-ID: <87wlx779h9.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260513121547.6434-1-fmancera@suse.de>
-X-Rspamd-Queue-Id: 6134B53344D
+Content-Type: text/plain
+X-Rspamd-Queue-Id: 4E424533943
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [2.84 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12574-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_FROM(0.00)[bounces-12575-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,nwl.cc,gmail.com];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.993];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	R_DKIM_NA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Fernando Fernandez Mancera <fmancera@suse.de> wrote:
->  	if (ct && nf_ct_is_confirmed(ct)) {
-> -		/* local connections are confirmed in postrouting so confirmation
-> -		 * might have happened before hitting connlimit
-> -		 */
-> -		if (skb->skb_iif != LOOPBACK_IFINDEX) {
-> +		if (test_bit(IPS_ASSURED_BIT, &ct->status) || ctinfo == IP_CT_ESTABLISHED) {
->  			err = -EEXIST;
->  			goto out_put;
->  		}
+On Tue, May 12 2026 at 11:06, Dan Carpenter wrote:
+> On Wed, Apr 08, 2026 at 01:53:46PM +0200, Thomas Gleixner wrote:
+>> +enum {
+>> +	HRTIMER_REPROGRAM_NONE,
+>> +	HRTIMER_REPROGRAM,
+>> +	HRTIMER_REPROGRAM_FORCE,
+>> +};
+>> +
+>>  static bool __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim, u64 delta_ns,
+>>  				     const enum hrtimer_mode mode, struct hrtimer_clock_base *base)
+>
+> The return type for this function needs to changed from bool to
+> enum whatever...  Otherwise HRTIMER_REPROGRAM and HRTIMER_REPROGRAM_FORCE
+> are both just true.
 
-IIRC IP_CT_ESTABLISHED requires we can observe traffic in both
-directions.  I'm not sure it was a good idea to allow this new
-usage case added in 69894e5b4c5e ("netfilter: nft_connlimit: update the count if add was skipped"),
-but I don't think we can revert it either :-(
-
-No idea how to fix this mess.
+Duh, yes.
 
