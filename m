@@ -1,66 +1,66 @@
-Return-Path: <netfilter-devel+bounces-12596-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12598-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YMCmJB+OBWpNYgIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12596-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2026 10:55:59 +0200
+	id oF3VBCqOBWppYgIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12598-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2026 10:56:10 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE81B53F861
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2026 10:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 748CD53F876
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2026 10:56:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 747913016506
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2026 08:55:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 63264303EF79
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2026 08:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CD33DFC86;
-	Thu, 14 May 2026 08:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775433DFC98;
+	Thu, 14 May 2026 08:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="an+Hk3jU"
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="I3jBCVw4"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469803DF01F
-	for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2026 08:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611803DF006
+	for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2026 08:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778748936; cv=none; b=hjnLW+dXp5q7/SY8OKg6sTrnG0LWz7YNowoOAzZlNOUhvRgrsmxLNuT+PFlckv2ZneDJSQ4b1JnE0GjqAxQJGa8oINeKA6NcPatv60jdm4kZrlkznTbw07TaWm83rJM6I7ZbThwpdnygVqkDnlKrNFrjBQHzTUqAo1ldvRoW3T0=
+	t=1778748938; cv=none; b=T2yzANqpWWDF0zCL3UI2AjEKCkWQHXXbUQEF8ByaLAnHgsA3nDbFVG5yAnyvKlRwYg7guzF1BfDfdLPu68X78OF9gwXSi1zTD5HVXcT9Cd6Q7hKyL1JFj32m023u8/ij4mLFiPbpHIoyeKAfAYUjzjnKDAn8JAEQIi64Oj+98GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778748936; c=relaxed/simple;
-	bh=+6BRIaNtvk5rAKXpix7QthaF+1jRDMPHqYJCsvUAxL4=;
+	s=arc-20240116; t=1778748938; c=relaxed/simple;
+	bh=uXhEKHdDl4WnrovN6UHaH6hD2nSZAkmM8tGmr7OGc54=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fdi29gcjbP51tqBK8ce396TiZ4jhvv0hHjQWaSAyR+qXM6NLCOCRkb3lPL3gbU9e7aEVlsTzz5mw3XWqGmz2jiq8sUzQA96LBxW2hiLzJsnSsoJz003eytsjs/CbYyFmp7UyQJwcFUy/77Rk8UlQfdR/TURNlm4GJ7rLKUtSut0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=an+Hk3jU; arc=none smtp.client-ip=148.6.0.50
+	 MIME-Version; b=YQI7/KyPmivSaS52WrOL/fg2GF/pf4yXaDPuNhFCp9K6RXjvd7JVIzlXhAimZgO+oqNvIefzN5+sAGvlqrgvNXQvsvnrjX3/GWuYMtGkbqA5U3m81OL1HxPfJzVZnddvuwUutZuUMXzxGaF7encNUghoeq9XGn9RDmerBfzeICA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=I3jBCVw4; arc=none smtp.client-ip=148.6.0.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.kfki.hu (Postfix) with ESMTP id 4gGPL509wTzGFDNJ;
+	by smtp1.kfki.hu (Postfix) with ESMTP id 4gGPL50K6jzGFDNQ;
 	Thu, 14 May 2026 10:55:25 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	blackhole.kfki.hu; h=mime-version:references:in-reply-to
 	:x-mailer:message-id:date:date:from:from:received:received
-	:received; s=20151130; t=1778748923; x=1780563324; bh=djO71CRZBk
-	+p+L+kr8DM1adBQijJI2N1oXOlYF6D9tA=; b=an+Hk3jUVHAIjEYN1ExEWfSMYT
-	mQA10WTwc9t1HJuoMJmP/GCv9ELHofvZl/JhSAT8zwLlKPoqZW0TJarvSNXEpe9K
-	qIQQUzGByv1kFSbRrVXmobpVVWmt1YqCQhFEHwc7R9vCGy1I8LEpKwSgqoP8YF6R
-	u7cHACc1SaUpLkL2o=
+	:received; s=20151130; t=1778748923; x=1780563324; bh=nmhbrxjjU4
+	xZ/4sTseBUEhY1BAx/xwL/ErzzK7qQJmI=; b=I3jBCVw424YNqk0JXESmNj6uJ9
+	ayicbMY6/JKl6wIXGrxlRlYILjQwSpOQ0F0FkTS8xjJX1Cq98kYy+xI98eG1QbqN
+	rHszH/k/IpMaMsrOia9hXsUd9IKKTN/jNRSNlgAEEYrIMxG1k4u2dfmALhGHenES
+	Q/3OWz20xPiYmN/WM=
 X-Virus-Scanned: Debian amavis at smtp1.kfki.hu
 Received: from smtp1.kfki.hu ([127.0.0.1])
  by localhost (smtp1.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id RRHQwcZ-UdsO; Thu, 14 May 2026 10:55:23 +0200 (CEST)
+ id AmN7P_fDXR9f; Thu, 14 May 2026 10:55:23 +0200 (CEST)
 Received: from mentat.rmki.kfki.hu (guest-144-149.eduroam.kfki.hu [148.6.144.149])
 	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp1.kfki.hu (Postfix) with ESMTPSA id 4gGPKz3lkSzGFDNS;
+	by smtp1.kfki.hu (Postfix) with ESMTPSA id 4gGPKz3SLgzGFDNR;
 	Thu, 14 May 2026 10:55:19 +0200 (CEST)
 Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 0EF55140E21; Thu, 14 May 2026 10:55:20 +0200 (CEST)
+	id 11ACF140E92; Thu, 14 May 2026 10:55:20 +0200 (CEST)
 From: Jozsef Kadlecsik <kadlec@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH v7 07/10] netfilter: ipset: fix order of kfree_rcu() and rcu_assign_pointer()
-Date: Thu, 14 May 2026 10:55:16 +0200
-Message-Id: <20260514085519.12729-8-kadlec@netfilter.org>
+Subject: [PATCH v7 08/10] netfilter: ipset: skip gc when resize is in progress
+Date: Thu, 14 May 2026 10:55:17 +0200
+Message-Id: <20260514085519.12729-9-kadlec@netfilter.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260514085519.12729-1-kadlec@netfilter.org>
 References: <20260514085519.12729-1-kadlec@netfilter.org>
@@ -71,7 +71,7 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: EE81B53F861
+X-Rspamd-Queue-Id: 748CD53F876
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12596-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12598-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
@@ -96,48 +96,135 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:email,netfilter.org:mid,blackhole.kfki.hu:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,blackhole.kfki.hu:dkim,snu.ac.kr:email];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-Sashiko pointed out that kfree_rcu() was called before
-rcu_assign_pointer() in handling the comment extension.
-Fix the order so that rcu_assign_pointer() called first.
+Zhengchuan Liang reported that because resize does not copy
+the comment extension into the resized set but uses it's pointer,
+ongoing gc can free the extension in the original set which then
+results stale pointer in the resized one. The proposed patch was
+to recreate the extensions for every element in the resized set.
+It is both expensive and wastes memory, so better skip gc
+when resizing in progress detected: resizing will destroy
+the original set anyway, so doing gc on it unnecessary.
 
+Reported by: Zhengchuan Liang <zcliangcn@gmail.com>
+Reported by: Eulgyu Kim <eulgyukim@snu.ac.kr>
 Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 ---
- net/netfilter/ipset/ip_set_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/ipset/ip_set_hash_gen.h | 40 ++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_s=
-et_core.c
-index 3706b4a85a0f..a531b654b8d9 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -351,8 +351,8 @@ ip_set_init_comment(struct ip_set *set, struct ip_set=
-_comment *comment,
+diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/=
+ip_set_hash_gen.h
+index 6a31f2db824a..ba560ebb4719 100644
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -75,7 +75,9 @@ struct hbucket {
+ struct htable_gc {
+ 	struct delayed_work dwork;
+ 	struct ip_set *set;	/* Set the gc belongs to */
++	spinlock_t lock;	/* Lock to exclude gc and resize */
+ 	u32 region;		/* Last gc run position */
++	bool resizing;		/* Signal resize in progress */
+ };
 =20
- 	if (unlikely(c)) {
- 		set->ext_size -=3D sizeof(*c) + strlen(c->str) + 1;
--		kfree_rcu(c, rcu);
- 		rcu_assign_pointer(comment->c, NULL);
-+		kfree_rcu(c, rcu);
+ /* The hash table: the table size stored here in order to make resizing =
+easy */
+@@ -569,28 +571,24 @@ mtype_gc(struct work_struct *work)
+ 	set =3D gc->set;
+ 	h =3D set->data;
+=20
+-	spin_lock_bh(&set->lock);
+ 	t =3D ipset_dereference_set(h->table, set);
+-	atomic_inc(&t->uref);
+ 	numof_locks =3D ahash_numof_locks(t->htable_bits);
+-	r =3D gc->region++;
+-	if (r >=3D numof_locks) {
+-		r =3D gc->region =3D 0;
+-	}
+ 	next_run =3D (IPSET_GC_PERIOD(set->timeout) * HZ) / numof_locks;
+ 	if (next_run < HZ/10)
+ 		next_run =3D HZ/10;
+-	spin_unlock_bh(&set->lock);
+-
+-	mtype_gc_do(set, h, t, r);
+=20
+-	if (atomic_dec_and_test(&t->uref) && atomic_read(&t->ref)) {
+-		pr_debug("Table destroy after resize by expire: %p\n", t);
+-		mtype_ahash_destroy(set, t, false);
++	spin_lock_bh(&gc->lock);
++	if (gc->resizing)
++		goto skip_gc;
++	r =3D gc->region++;
++	if (r >=3D numof_locks) {
++		r =3D gc->region =3D 0;
  	}
- 	if (!len)
- 		return;
-@@ -393,8 +393,8 @@ ip_set_comment_free(struct ip_set *set, void *ptr)
- 	if (unlikely(!c))
- 		return;
- 	set->ext_size -=3D sizeof(*c) + strlen(c->str) + 1;
--	kfree_rcu(c, rcu);
- 	rcu_assign_pointer(comment->c, NULL);
-+	kfree_rcu(c, rcu);
++	mtype_gc_do(set, h, t, r);
++skip_gc:
++	spin_unlock_bh(&gc->lock);
+=20
+ 	queue_delayed_work(system_power_efficient_wq, &gc->dwork, next_run);
+-
  }
 =20
- typedef void (*destroyer)(struct ip_set *, void *);
+ static void
+@@ -646,6 +644,9 @@ mtype_resize(struct ip_set *set, bool retried)
+ #endif
+ 	orig =3D ipset_dereference_bh_nfnl(h->table);
+ 	htable_bits =3D orig->htable_bits;
++	spin_lock_bh(&h->gc.lock);
++	h->gc.resizing =3D 1;
++	spin_unlock_bh(&h->gc.lock);
+=20
+ retry:
+ 	ret =3D 0;
+@@ -672,7 +673,11 @@ mtype_resize(struct ip_set *set, bool retried)
+ 		spin_lock_init(&t->hregion[i].lock);
+=20
+ 	/* There can't be another parallel resizing,
+-	 * but dumping, gc, kernel side add/del are possible
++	 * but dumping, kernel side add/del are possible.
++	 *
++	 * Parallel gc is explicitly excluded because
++	 * resize destroys the old set and its extensions
++	 * which can interfere with an ongoing gc.
+ 	 */
+ 	orig =3D ipset_dereference_bh_nfnl(h->table);
+ 	atomic_set(&orig->ref, 1);
+@@ -692,8 +697,7 @@ mtype_resize(struct ip_set *set, bool retried)
+ 				if (!test_bit_acquire(j, n->used))
+ 					continue;
+ 				data =3D ahash_data(n, j, dsize);
+-				if (SET_ELEM_EXPIRED(set, data))
+-					continue;
++				/* Expired elements copied as well */
+ #ifdef IP_SET_HASH_WITH_NETS
+ 				/* We have readers running parallel with us,
+ 				 * so the live data cannot be modified.
+@@ -785,6 +789,9 @@ mtype_resize(struct ip_set *set, bool retried)
+ 	}
+=20
+ out:
++	spin_lock_bh(&h->gc.lock);
++	h->gc.resizing =3D 0;
++	spin_unlock_bh(&h->gc.lock);
+ #ifdef IP_SET_HASH_WITH_NETS
+ 	kfree(tmp);
+ #endif
+@@ -1594,6 +1601,7 @@ IPSET_TOKEN(HTYPE, _create)(struct net *net, struct=
+ ip_set *set,
+ 		return -ENOMEM;
+ 	}
+ 	h->gc.set =3D set;
++	spin_lock_init(&h->gc.lock);
+ 	for (i =3D 0; i < ahash_numof_locks(hbits); i++)
+ 		spin_lock_init(&t->hregion[i].lock);
+ 	h->maxelem =3D maxelem;
 --=20
 2.39.5
 
