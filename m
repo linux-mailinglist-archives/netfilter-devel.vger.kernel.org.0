@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12636-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12637-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mBX2GrBbCGrAkwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12636-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:57:36 +0200
+	id cKQsFMlbCGrAkwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12637-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:58:01 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 916FC55B96B
-	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:57:35 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9266F55B99F
+	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:58:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D57AD300ADA5
-	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 11:56:57 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3EC7B3008D3F
+	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 11:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A113DFC7B;
-	Sat, 16 May 2026 11:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC493E0097;
+	Sat, 16 May 2026 11:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="L61z6dK5"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="cRPRDPex"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0C03DD85F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A693DEADC;
 	Sat, 16 May 2026 11:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778932604; cv=none; b=gjEmnKxGMJToA/uSj7nLbI34AnUUkATUECHi5zrfBo2gyOhIZshr2T5nVT8Rqw7bBVVobutcm74BXoStyohlmPLIBiCBenC0vD0xe4UkzOVwqhkw10C6UIjLn9yy0I0Lo7uLM3VV00XO/eRjivum/HGPG3mNQucFEOa9+52oRqk=
+	t=1778932605; cv=none; b=VgLrDuPVzuLyOv72h0nX5A2QfEXhZYDYOYTGc+LhKLO03bPBQKYznYvs03ImhtyTQl7UtkY8v0JnVAyoYk0YG0U5MY/dYjmZQtSmE1LYn00aWhqob2bsYnTZ1pudoCpQEogO+wnvH3W1+MUa4zOFvD87Md6HlzsZOMNMm9LN/rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778932604; c=relaxed/simple;
-	bh=JefqsPYBkJHuwCij1iFGEuAgMSCJkR/jRWODK7bmbnA=;
+	s=arc-20240116; t=1778932605; c=relaxed/simple;
+	bh=W0rW3ngmPiDSQ5KcHgnuJc8HkrZXnu4i7fmvwV70UqM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EgesNXD2B64Pu+KzcdODB49NdpmOAPxnWSrTgKS6/PiPM7M2VgBtHapTZwbIJyBCqlbJSdjbVcIMh+4TRYod0Uo1Lty7WzWw4qOoV3Xqkh4u/KMWOj01rrcvMs9R+dnIP+Oas2xEWuhJYqsHL6bjsJq3L5Ptaa+O6N4iSKhyTXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=L61z6dK5; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=fgCSksw0gFglU8dc519QcLSoG6OutCjaKVqelAn9gsAbI7s3PxVCO9+XovjYfKTscvD0jxRjC2SXeZxk7jFckQtK2zxW2ChWgwWxAaC5FrdenGpCwzOKJgUnpofCp3oZva0MgJ3dxlfYP5E0BhPETFuzsIvf4DqjJOoSay+/evk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=cRPRDPex; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 3BC0F601AC;
-	Sat, 16 May 2026 13:56:40 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 61A2F601AD;
+	Sat, 16 May 2026 13:56:41 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1778932600;
-	bh=2396ArVGoiugvDwfn7q9+W8VnBJfBYPrShW4td7yOPY=;
+	s=2025; t=1778932601;
+	bh=ZpmprRPZNvg/oOpTAMEKYZpMhSJbD2/SkUoV8T1PCSE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L61z6dK5dqM9Pc/5id5akm3u70bra5MWSL8iOOse22Stf60Icspr5xSEV/iW2/her
-	 VpKdctldKxztSekuXHfTc4E3etO+uSyXQQYL5mp+6eBxvUJ8Zfa6hZl/l83sGhWOgw
-	 dh6Q1J3/ll4cqJe6okvrkQR29g5CWHl704gpghg+OuDQVH6nF3iX7nUgl/37h5dbyU
-	 OUr9LlngdkEyfDGENZ+u47G2uC5pagSeqq4WxngURm9W15FOnWUt8XQ+AnhbyPB5Pv
-	 rxAtKrNeScVlePU4DsoHH5q2pP0bb6P7U7heQoRnFcx378d1olJfql93rETkZmMSOF
-	 sDoI9GNk9p61A==
+	b=cRPRDPexye1qhCg9m/YH7AGWq8mrocveu0JgrOS8hGKtHmapsVP6AkAPrtz6K0zkU
+	 amySiN62eyzm3wcGG82+d/ryVbND5ULkb5SYm91ATvSTUNOzsvhHTXsEqSv3y0ULu+
+	 0nVa0mKVO5A231xvYEePp3MrNgmW1csCfO25wP8ZFTO5vaHjQLe/w0ARDc2DLbDzJO
+	 1tlx1Iit2sfU+2s6A35+3Zp07fDBrin5d4T+UqxLVX6QNbmZclcqilDGOSYbIxrKUh
+	 QdwoBI2iulwK3gMj2yOdEbbYIZWPlYabrWbIgXUbhGDvzfat2jeRELcvKHA+a/yvRI
+	 hqEC7ctRzgRdA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 07/12] netfilter: ip6t_hbh: reject oversized option lists
-Date: Sat, 16 May 2026 13:56:22 +0200
-Message-ID: <20260516115627.967773-8-pablo@netfilter.org>
+Subject: [PATCH net 08/12] netfilter: ipset: Fix data race between add and list header in all hash types
+Date: Sat, 16 May 2026 13:56:23 +0200
+Message-ID: <20260516115627.967773-9-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260516115627.967773-1-pablo@netfilter.org>
 References: <20260516115627.967773-1-pablo@netfilter.org>
@@ -69,13 +69,13 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 916FC55B96B
+X-Rspamd-Queue-Id: 9266F55B99F
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -84,7 +84,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12636-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12637-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -92,59 +92,50 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim,lzu.edu.cn:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim]
 X-Rspamd-Action: no action
 
-From: Zhengchuan Liang <zcliangcn@gmail.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-struct ip6t_opts stores at most IP6T_OPTS_OPTSNR option descriptors,
-but hbh_mt6_check() does not reject larger optsnr values supplied from
-userspace.
+The "ipset list -terse" command is actually a dump operation which
+may run parallel with "ipset add" commands, which can trigger an
+internal resizing of the hash type of sets just being dumped. However,
+dumping just the header part of the set was not protected against
+underlying resizing. Fix it by protecting the header dumping part
+as well.
 
-Validate optsnr in the rule setup path so only match data that fits the
-fixed-size opts array can be installed. This follows the existing xtables
-pattern of rejecting invalid user-provided counts in checkentry() and
-keeps the packet matching path unchanged.
-
-`struct ip6t_opts` has a fixed `opts[IP6T_OPTS_OPTSNR]` array,
-where `IP6T_OPTS_OPTSNR` is 16, then off-by-one array access is possible:
-
-[  137.924693][ T8692] UBSAN: array-index-out-of-bounds in ../net/ipv6/netfilter/ip6t_hbh.c:110:29
-[  137.926167][ T8692] index 16 is out of range for type '__u16 [16]'
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Signed-off-by: Zhengchuan Liang <zcliangcn@gmail.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+Fixes: c4c997839cf9 ("netfilter: ipset: Fix parallel resizing and listing of the same set")
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/ipv6/netfilter/ip6t_hbh.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/netfilter/ipset/ip_set_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/netfilter/ip6t_hbh.c b/net/ipv6/netfilter/ip6t_hbh.c
-index e7a3fb9355ee..450dd53846a2 100644
---- a/net/ipv6/netfilter/ip6t_hbh.c
-+++ b/net/ipv6/netfilter/ip6t_hbh.c
-@@ -168,6 +168,10 @@ static int hbh_mt6_check(const struct xt_mtchk_param *par)
- 		pr_debug("unknown flags %X\n", optsinfo->invflags);
- 		return -EINVAL;
- 	}
-+	if (optsinfo->optsnr > IP6T_OPTS_OPTSNR) {
-+		pr_debug("too many supported opts specified\n");
-+		return -EINVAL;
-+	}
- 
- 	if (optsinfo->flags & IP6T_OPTS_NSTRICT) {
- 		pr_debug("Not strict - not implemented");
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index 0874029cb0f2..3706b4a85a0f 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -1649,13 +1649,13 @@ ip_set_dump_do(struct sk_buff *skb, struct netlink_callback *cb)
+ 			if (cb->args[IPSET_CB_PROTO] > IPSET_PROTOCOL_MIN &&
+ 			    nla_put_net16(skb, IPSET_ATTR_INDEX, htons(index)))
+ 				goto nla_put_failure;
++			if (set->variant->uref)
++				set->variant->uref(set, cb, true);
+ 			ret = set->variant->head(set, skb);
+ 			if (ret < 0)
+ 				goto release_refcount;
+ 			if (dump_flags & IPSET_FLAG_LIST_HEADER)
+ 				goto next_set;
+-			if (set->variant->uref)
+-				set->variant->uref(set, cb, true);
+ 			fallthrough;
+ 		default:
+ 			ret = set->variant->list(set, skb, cb);
 -- 
 2.47.3
 
