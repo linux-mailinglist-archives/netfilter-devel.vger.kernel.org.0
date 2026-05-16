@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12631-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12633-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QNFdMZ9bCGrAkwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12631-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:57:19 +0200
+	id ADr7GrtbCGrAkwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12633-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:57:47 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E4055B946
-	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0933D55B989
+	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 13:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 116B8302291E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 11:56:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 81AF8302811E
+	for <lists+netfilter-devel@lfdr.de>; Sat, 16 May 2026 11:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747323DE44B;
-	Sat, 16 May 2026 11:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5EB3DEAF2;
+	Sat, 16 May 2026 11:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="HflGJOj8"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="BY1F4QFt"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC39C37C937;
-	Sat, 16 May 2026 11:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EC13D8113;
+	Sat, 16 May 2026 11:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778932602; cv=none; b=hc8wSg1J3imYNiN6LJW8Cs9kCyU3iCTTx5FcxNLXDN2WNgCt1QZg+AUzWY9FXtwKTBcbqMkqDjBgJ9NvDKOM9NuGdjcdNpXapuAqayiXxyHZe3wVcl044ckCcDuGDK0j3l6fnkJwf5LiIrK47/SBVF4IxqWF1uvxVFVdAm3zoNw=
+	t=1778932604; cv=none; b=AegdWGTp13Cm5bt5+RHi1SRnWIrCtaW8q4kONcAnf5N39/8rLOuCNjIS1RYcu5P7ntKFT/jgzLsB6WuI8LyoenaXvhY3EPV3wv9nwvuIzlkFoBXkolQYRA8UTAMlrVPBF0Aleqvwh/DO1nA6Zd56hvpOhddbDMDe5sAK01lTtIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778932602; c=relaxed/simple;
-	bh=AkBosYE6dkFdWGwYlkNYL64YRPEyHCeZSUrdrVMZyR8=;
+	s=arc-20240116; t=1778932604; c=relaxed/simple;
+	bh=fV2CDfwH+z19oDaiviB/aF9MeqM3/P70LFB+h2zmB/c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P2ZNpjaJcuTQdFHfGnuXyIeJ4IFn9T+enbLidRQWm4tcAoT/nDx4sisq8scbpNiIqMH6SCIK6l3z6bYaX8L1WRjkiI5yYJ4r5+bH/KoDX6smDcWeBuFam6kUGgnKH/fU/O/woAl3TNnUkekEYYhU2reIFP83XIF74aFfAPZMEuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=HflGJOj8; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=m/JZM9/W+PHJU3xQL8TPsQfEomIyC4i3WrOHTvDz4ycfuHu89Q2+0/hHTbWZ1ZZecrnuMSy+C/RPXZAmIhhLKPxPIoVnBeOf3ngMzZZEwG55bk2OTXnmwVMHYJCC1QVZ9Nohr9eEDzfoN+dwVR/B4zr1jSvyPKxYu9cc9KkAJz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=BY1F4QFt; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id BE092601A9;
-	Sat, 16 May 2026 13:56:36 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id E74BC601AA;
+	Sat, 16 May 2026 13:56:37 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1778932597;
-	bh=0GmtqaXtt+ZaSlWG1mBiVsaFE9cLgk2OKCrSYbK+tnc=;
+	s=2025; t=1778932598;
+	bh=fwTyBk3ughoK4Jc4LSjyVgxtPRZRV5JVnEb+wikaKi8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HflGJOj8vN7D4GLhuMBrQry+1dbB5l7p+30VuqGIh2Iv/SpKGMHq0P+KNX6Q2wm2k
-	 IPfFYHkCYfvwQ1LZzo4Zh167AYVbQIkg6LveFyO+Jnwz64rHhedH2nmIxRnPO/z8tp
-	 nz8/xGvxqVvREaWMPNPs754XknqOpaWibNFY9J7duIbWkkVpTrDoO3OH/yodfZ8W6Z
-	 pS3gAzaGRe2nWaGUOkhFmLplsoIhbJUfjv1QM1C6i1Q5tWH4Rd/l1ZTsa+4QsniSSs
-	 2WYTJtfW8u/nEDQptlh7UlbeKB0XDRdcRA5f47XfgdsaVFrzMkiG3tY+Ws28FHtRux
-	 MtwWVop0K5D5A==
+	b=BY1F4QFtb5GoxUE4qj71gPyTcJNJSFJj9io9ZE8KUPmeClvjXq8TpXHYY8j0aIK5f
+	 HoDk/rtz43B07+sOyCFVyPSfWNpcwFkiN4zdk1piEYy2lkZUl0PqdUUDq+0LwNHYmC
+	 ho18bCs8hgIBFR7uWNIHVTgGXVyfXP2gipmM2k65W0/HobXboQF5gdLDRY5mA69RRY
+	 +5oMnSCcdSAp4mjJQbiSIKhiM2g1/jzb5e57XIC1X2aORG8y6bL04vYoNW66LpTMUK
+	 flpqFKU+XJLvghu0RyRPhjcotLUF/SweBP1SXMPMHKvUuRjz7uq8TdnVGQRlfkrzTC
+	 jd1GP4H9u5j/w==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 04/12] netfilter: nft_inner: Fix IPv6 inner_thoff desync
-Date: Sat, 16 May 2026 13:56:19 +0200
-Message-ID: <20260516115627.967773-5-pablo@netfilter.org>
+Subject: [PATCH net 05/12] netfilter: ipset: stop hash:* range iteration at end
+Date: Sat, 16 May 2026 13:56:20 +0200
+Message-ID: <20260516115627.967773-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260516115627.967773-1-pablo@netfilter.org>
 References: <20260516115627.967773-1-pablo@netfilter.org>
@@ -68,82 +68,168 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 42E4055B946
+X-Rspamd-Queue-Id: 0933D55B989
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[netfilter.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12631-lists,netfilter-devel=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[netfilter.org:+];
+	DMARC_NA(0.00)[netfilter.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12633-lists,netfilter-devel=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim,tsinghua.edu.cn:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim,lzu.edu.cn:email]
 X-Rspamd-Action: no action
 
-From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+From: Nan Li <tonanli66@gmail.com>
 
-In nft_inner_parse_l2l3(), when processing inner IPv6 packets,
-ipv6_find_hdr() correctly computes the transport header offset
-traversing all extension headers, but the result is immediately
-overwritten with nhoff + sizeof(_ip6h) (40 bytes), which only
-accounts for the IPv6 base header. This creates a desync between
-inner_thoff (wrong — points to extension header start) and l4proto
-(correct — e.g., IPPROTO_TCP), enabling transport header forgery
-and potential firewall bypass. This issue affects stable versions
-from Linux 6.2.
+The following hash set variants:
 
-For comparison, the normal (non-inner) IPv6 path correctly
-preserves ipv6_find_hdr()'s result. Removing the incorrect overwrite
-ensures that ipv6_find_hdr()'s calculated transport header offset is
-preserved, thereby fixing the desynchronization.
+hash:ip,mark
+hash:ip,port
+hash:ip,port,ip
+hash:ip,port,net
 
-Fixes: 3a07327d10a0 ("netfilter: nft_inner: support for inner tunnel header matching")
-Cc: stable@vger.kernel.org
-Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
-Reported-by: Xuewei Feng <fengxw06@126.com>
-Reported-by: Qi Li <qli01@tsinghua.edu.cn>
-Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
-Assisted-by: GLM:5.1 Z.ai
-Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-Reviewed-by: Fernando Fernandez Mancera <fmancera@suse.de>
+iterate IPv4 ranges with a 32-bit iterator.
+
+The iterator must stop once the last address in the requested range has
+been processed. Advancing it once more can move the traversal state past
+the end of the request, so a later retry may continue from an unintended
+position.
+
+Handle the iterator increment explicitly at the end of the loop and stop
+once the upper bound has been processed. This keeps the existing retry
+behaviour intact for valid ranges while preventing traversal from
+continuing past the original boundary.
+
+Fixes: 48596a8ddc46 ("netfilter: ipset: Fix adding an IPv4 range containing more than 2^31 addresses")
+Cc: stable@kernel.org
+Reported-by: Yuan Tan <yuantan098@gmail.com>
+Reported-by: Yifan Wu <yifanwucs@gmail.com>
+Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+Reported-by: Xin Liu <bird@lzu.edu.cn>
+Signed-off-by: Nan Li <tonanli66@gmail.com>
+Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_inner.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/netfilter/ipset/ip_set_hash_ipmark.c    | 6 +++++-
+ net/netfilter/ipset/ip_set_hash_ipport.c    | 5 ++++-
+ net/netfilter/ipset/ip_set_hash_ipportip.c  | 5 ++++-
+ net/netfilter/ipset/ip_set_hash_ipportnet.c | 5 ++++-
+ 4 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nft_inner.c b/net/netfilter/nft_inner.c
-index 03ffb1159fc1..859aa38e333b 100644
---- a/net/netfilter/nft_inner.c
-+++ b/net/netfilter/nft_inner.c
-@@ -163,7 +163,6 @@ static int nft_inner_parse_l2l3(const struct nft_inner *priv,
- 			return -1;
+diff --git a/net/netfilter/ipset/ip_set_hash_ipmark.c b/net/netfilter/ipset/ip_set_hash_ipmark.c
+index a22ec1a6f6ec..e26ca2a370e3 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipmark.c
++++ b/net/netfilter/ipset/ip_set_hash_ipmark.c
+@@ -150,7 +150,7 @@ hash_ipmark4_uadt(struct ip_set *set, struct nlattr *tb[],
  
- 		if (fragoff == 0) {
--			thoff = nhoff + sizeof(_ip6h);
- 			ctx->flags |= NFT_PAYLOAD_CTX_INNER_TH;
- 			ctx->inner_thoff = thoff;
- 			ctx->l4proto = l4proto;
+ 	if (retried)
+ 		ip = ntohl(h->next.ip);
+-	for (; ip <= ip_to; ip++, i++) {
++	for (; ip <= ip_to; i++) {
+ 		e.ip = htonl(ip);
+ 		if (i > IPSET_MAX_RANGE) {
+ 			hash_ipmark4_data_next(&h->next, &e);
+@@ -162,6 +162,10 @@ hash_ipmark4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 			return ret;
+ 
+ 		ret = 0;
++
++		if (ip == ip_to)
++			break;
++		ip++;
+ 	}
+ 	return ret;
+ }
+diff --git a/net/netfilter/ipset/ip_set_hash_ipport.c b/net/netfilter/ipset/ip_set_hash_ipport.c
+index e977b5a9c48d..41ca24a22a02 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipport.c
++++ b/net/netfilter/ipset/ip_set_hash_ipport.c
+@@ -186,7 +186,7 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 
+ 	if (retried)
+ 		ip = ntohl(h->next.ip);
+-	for (; ip <= ip_to; ip++) {
++	for (; ip <= ip_to;) {
+ 		p = retried && ip == ntohl(h->next.ip) ? ntohs(h->next.port)
+ 						       : port;
+ 		for (; p <= port_to; p++, i++) {
+@@ -203,6 +203,9 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 
+ 			ret = 0;
+ 		}
++		if (ip == ip_to)
++			break;
++		ip++;
+ 	}
+ 	return ret;
+ }
+diff --git a/net/netfilter/ipset/ip_set_hash_ipportip.c b/net/netfilter/ipset/ip_set_hash_ipportip.c
+index 39a01934b153..b9ac2efaa15c 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipportip.c
++++ b/net/netfilter/ipset/ip_set_hash_ipportip.c
+@@ -182,7 +182,7 @@ hash_ipportip4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 
+ 	if (retried)
+ 		ip = ntohl(h->next.ip);
+-	for (; ip <= ip_to; ip++) {
++	for (; ip <= ip_to;) {
+ 		p = retried && ip == ntohl(h->next.ip) ? ntohs(h->next.port)
+ 						       : port;
+ 		for (; p <= port_to; p++, i++) {
+@@ -199,6 +199,9 @@ hash_ipportip4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 
+ 			ret = 0;
+ 		}
++		if (ip == ip_to)
++			break;
++		ip++;
+ 	}
+ 	return ret;
+ }
+diff --git a/net/netfilter/ipset/ip_set_hash_ipportnet.c b/net/netfilter/ipset/ip_set_hash_ipportnet.c
+index 5c6de605a9fb..2d6652d43199 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipportnet.c
++++ b/net/netfilter/ipset/ip_set_hash_ipportnet.c
+@@ -274,7 +274,7 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 		p = port;
+ 		ip2 = ip2_from;
+ 	}
+-	for (; ip <= ip_to; ip++) {
++	for (; ip <= ip_to;) {
+ 		e.ip = htonl(ip);
+ 		for (; p <= port_to; p++) {
+ 			e.port = htons(p);
+@@ -298,6 +298,9 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 			ip2 = ip2_from;
+ 		}
+ 		p = port;
++		if (ip == ip_to)
++			break;
++		ip++;
+ 	}
+ 	return ret;
+ }
 -- 
 2.47.3
 
