@@ -1,55 +1,47 @@
-Return-Path: <netfilter-devel+bounces-12673-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12674-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qOGoGC+MC2p1IwUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12673-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 00:01:19 +0200
+	id oLRGD+qSC2ohJgUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12674-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 00:30:02 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD86D574316
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 00:01:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A721F574741
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 00:30:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D413C3025C79
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 22:01:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 621BA303CA5F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 22:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FDA399000;
-	Mon, 18 May 2026 22:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7F83ACA77;
+	Mon, 18 May 2026 22:29:17 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2052302CD5
-	for <netfilter-devel@vger.kernel.org>; Mon, 18 May 2026 22:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E274215A85A
+	for <netfilter-devel@vger.kernel.org>; Mon, 18 May 2026 22:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779141675; cv=none; b=rrw6x9nX7jjW9GfJn3D9/D6iN7Bi3Lf6U3d56nVqY7dcdltB4mpwEurfxrDLTZrMlI20irLwLdkEdluGXTvoMFaFUfwOA3/upd0LyWcEuvwB8Q0L8X/Klz4wpuZJsJXHZpgAZzbP4AXnzfHjgCTV5MHhMHQLnlAHFCmZ0mQO/dE=
+	t=1779143356; cv=none; b=HG6E/Iiwx80wdRWmyc6RQsPDUrEeSFkTop7qh9/Xru3unOd1mAzzPUCOwbqPw8QKnxPvCrgfeokum+aa6NkThePrZU9EtcYr6u4BCZSeDxGBm9CHfnjrzowUQE8b3nU5Ex7Pz7+gYTk0tT47d7Ofukl5MNBGazSquw92diFmRP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779141675; c=relaxed/simple;
-	bh=WRfzVV/uagex8qvOdVAvuTN8zOdMkgdQ4y1/pDwHgPA=;
+	s=arc-20240116; t=1779143356; c=relaxed/simple;
+	bh=htBbReYfPRGO9i/v8//YvaJyBinaqCsUQxGraVth5uY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qyhV30SZL6VfkAr6hXUGARzVqAE6pMFkb/C6LtbwHRc50n3DI5ugCVvRb0pcFSV/BxiFMLCeVHmwDvZldcvR4Lz6uTVA8WD53K0XQAVEC/PL7fVnQd2nrEpP2ygcH/fHfkPdgI7I6oF+svClxd4bZM3ZaauOghUjx+TYTfW/UlI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=toxd8rkNjHrjaxdPJzrGGKVWDN7t/3M8SaHQd7F3HGmpxSjfCkmlLq3gHQFoONeXI97mjmSmFKZjP3R3DrJ9LnWJCnLfQ7Ty8p8f1ex1rsKw2t8GO3MNBGW3UQNHh4aKC5wKeYZxvclYi9pxDj6efof1taRJeNFamPTVbg19kAY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 59112607E9; Tue, 19 May 2026 00:01:11 +0200 (CEST)
-Date: Mon, 18 May 2026 23:49:55 +0200
+	id 0BDC7607E9; Tue, 19 May 2026 00:29:12 +0200 (CEST)
+Date: Tue, 19 May 2026 00:17:56 +0200
 From: Florian Westphal <fw@strlen.de>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf,v2] netfilter: conntrack: add dead flag to helpers
-Message-ID: <aguJgxyz9OemEwlZ@strlen.de>
-References: <20260514143016.874811-1-pablo@netfilter.org>
- <agXfhQb8Dcl9p5ce@strlen.de>
- <agXl-3NDpK3YUZiF@chamomile>
- <agXt-m9yN-oayY1G@strlen.de>
- <agZbFvp_KgGUr2Kw@chamomile>
- <agZg3JjBx6xXyEnW@strlen.de>
- <agZkiu4q1Ln9ImR4@chamomile>
- <agZm_JyKhSFOrV94@chamomile>
- <agcQ90JCmlkojf6s@strlen.de>
- <agtjebGnfVh6VZ32@chamomile>
+Subject: Re: [PATCH 4/3 nf,v4] netfilter: nf_conntrack_helper: call
+ .destroy() when helper is unregistered
+Message-ID: <aguQFExPbJtWeapP@strlen.de>
+References: <20260518194752.1063189-1-pablo@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -58,17 +50,17 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <agtjebGnfVh6VZ32@chamomile>
+In-Reply-To: <20260518194752.1063189-1-pablo@netfilter.org>
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,strlen.de:mid,netfilter.org:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,strlen.de:mid,strlen.de:email];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DMARC_NA(0.00)[strlen.de];
 	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
@@ -79,101 +71,47 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12673-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12674-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: CD86D574316
+X-Rspamd-Queue-Id: A721F574741
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> Just to close this previous thread now that we're mixing things here:
-> No issue with unconfirmed conntrack that gets enqueued in nfqueue
-> since 
+> When the helper is removed, call .destroy to release the pptp binding
+> with gre conntrack entries, otherwise the gre keymap stays with stale
+> list entries.
 > 
->   c56716c69ce1 ("netfilter: extensions: introduce extension genid count")
+> Fixes: f09943fefe6b ("[NETFILTER]: nf_conntrack/nf_nat: add PPTP helper port")
+> Reported-by: Florian Westphal <fw@strlen.de>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+>  net/netfilter/nf_conntrack_helper.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> handles the unconfirmed ct sitting in nfqueue or elsewhere.
+> diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
+> index 9a10b3449957..b226291a5c7f 100644
+> --- a/net/netfilter/nf_conntrack_helper.c
+> +++ b/net/netfilter/nf_conntrack_helper.c
+> @@ -241,9 +241,17 @@ EXPORT_SYMBOL_GPL(__nf_ct_try_assign_helper);
+>  static int unhelp(struct nf_conn *ct, void *me)
+>  {
+>  	struct nf_conn_help *help = nfct_help(ct);
+> +	struct nf_conntrack_helper *helper;
+> +
+> +	if (!help)
+> +		return 0;
+>  
+> -	if (help && rcu_dereference_raw(help->helper) == me) {
+> +	helper = rcu_dereference_raw(help->helper);
+> +	if (helper == me) {
+>  		nf_conntrack_event(IPCT_HELPER, ct);
+> +		if (helper->destroy)
+> +			helper->destroy(ct);
+> +
 
-Sorry :-(   There are so many things going on that I am losing track
-of some stuff.
-
-Yes, I think its fine but I need/want to go over this in detail.  Not
-sure I can though, I am tied up with non-software related things
-tomorrow.  I hope I can look into the conntrack stuff on Wed or
-Thursday.
-
-> Are you referring to this specifically?
-> 
-> "This isn't an issue introduced by this patch, but does destroy_gre_conntrack()
-> safely cast the master connection's helper data?
-> If an unprivileged attacker with CAP_NET_ADMIN uses ctnetlink to create a GRE
-> expectation linked to a master connection that uses a different helper
-> (like FTP) or no helper at all, the function blindly casts the helper data
-> to struct nf_ct_pptp_master.
-> Since FTP helper data contains attacker-controllable sequence numbers, could
-> this cause list_del_rcu() and kfree_rcu() to operate on attacker-controlled
-> addresses, leading to an arbitrary free or list corruption?"
-
-Yes, that is waht I was referring to.
-
-> I don't think that is really possible via ctnetlink:
-> 
-> - ctnetlink_alloc_expect() currently checks if nfct_help() exists,
->   otherwise it reports EOPNOTSUPP.
-> 
-> - ctnetlink_alloc_expect() uses the existing helper in the master
->   conntrack to create the expectation.
-> 
-> - exp->assign_helper attaches a helper to the expected conntrack.
->   But that is a basically a new different conntrack.
-
-Thank you for these pointers.  The bug would only manifest if you can
-make a GRE conntrack entry whose ct->master is tracked by FTP for instance.
-
-> > Proposal: Get rid of data[] and nfct_help_data().  Explicit structure,
-> > explicit helpers (e.g. nfct_help_data_sip(), type enum in nf_conn_help.
-> 
-> I don't see how yet this access to mismatching helper data type area
-> can happen.
-
-Great :-)
-
-> > Callers must handle NULL return value everywhere (wrong helper type,
-> > helper invalidated, etc).
-> 
-> Yes, callers must handle NULL in nfct_help_data() because the helper
-> extension might become stale as per c56716c69ce1.
-
-I will work on something for nf-next to handle this. I spent yesterday
-looking at helper infra and there is some code that can be axed,
-leftovers from autoassign days.   I'll work on that.
-
-> > static int unhelp(struct nf_conn *ct, void *me)
-> > {
-> >         struct nf_conn_help *help = nfct_help(ct);
-> > 
-> >         if (help && rcu_dereference_raw(help->helper) == me) {
-> >                 nf_conntrack_event(IPCT_HELPER, ct);
-> >                 RCU_INIT_POINTER(help->helper, NULL);
-> >         }
-> > 
-> > This can't be right, we lose the ->destroy() CB?
-> 
-> Yes, I think .destroy should be called from unhelp() path otherwise
-> pptp info will remain in the GRE keymap.
-
-I'll send/apply a patch to do that this week and will include it in PR.
-
-> > Ideally we could get rid of ->destroy, but that would require
-> > permanent removal of pptp.
-> 
-> This is the only user of ->destroy, I think the pptp helper is a
-> candidate to be deprecated.
-
-Yes, its the only user of this destructor.  I'll make a patch for
-nf-next to add deprecation tags (pr_warn_once + Kconfig).
-
-Thanks Pablo!
+There is a nf_ct_helper_destroy() helper that could be used here instead
+of open-coding.  Other than that this looks correct.
 
