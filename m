@@ -1,51 +1,94 @@
-Return-Path: <netfilter-devel+bounces-12660-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12661-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wMYOGqwWC2o5/wQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12660-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 15:39:56 +0200
+	id sA8bB78hC2reDgUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12661-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 16:27:11 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3EF456DCB8
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 15:39:55 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A5FE56EBDB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 16:27:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 724A23038D2D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 13:39:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A2F293088454
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 May 2026 14:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BF043D50F;
-	Mon, 18 May 2026 13:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379714949F9;
+	Mon, 18 May 2026 14:21:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hpNf0cNi"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7DCF3F44CF;
-	Mon, 18 May 2026 13:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC19C48B37B
+	for <netfilter-devel@vger.kernel.org>; Mon, 18 May 2026 14:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779111571; cv=none; b=qwkWBWeEMXfCTz9ppGjx11IKRMBeVo8KuOfCVpBeOS+PjliQmGmIUYyqHZUricKaD1uuNFnwyNVR2SZlg8wVENc6IpMV4bZyci818yZZ7lI52AggZei7IPMqKXjxdttpQtlBxd1ad81VjO8rBNWizlZFbQaqglaLERxTvPsXAAY=
+	t=1779114088; cv=none; b=uT+MiHp+oBFTcYReNnZzoAsmZSprl+ZxXefXXgA8Cl/FrG2Zfgd+A/7uKK+Rn4smtX+Y3bp57s+qbcZT8B2u3QY0/3iap1e8Jr3TzpB3z4UBYJruOGkFaB5VoQac1ntWXpL1ZfmiB9zaSWde7/QONJNFLJG2IxI2/DAgbNB6jrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779111571; c=relaxed/simple;
-	bh=Hir8hmBKYGNMjJzZBtqB1RYzJK/DlWgUxnz/DMurzv8=;
+	s=arc-20240116; t=1779114088; c=relaxed/simple;
+	bh=ViOooZ5q6HLjbn4PmRfwA6YbFDqGs3bxZJ7jJDAirp4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tVnNC6ITRyHibQq8iP59F6DkREgVvcOjCE/ZjJFfqUYppbUb0LF+d9lSirajduj28PKIiOXtoSdcFOojQxO8kUjbmOrbKuU2iYJfyq/LkAK1JzdoLAMOlzQ6dfoaYqKB0kq+6p7hWz8+VZ850Lss7g08rY7MQcC+QMD5W2dvLIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 8E56B607E9; Mon, 18 May 2026 15:39:21 +0200 (CEST)
-Date: Mon, 18 May 2026 15:39:18 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Qi Tang <tpluszz77@gmail.com>, netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org, herbert@gondor.apana.org.au,
-	michael.bommarito@gmail.com, lyutoon@gmail.com
-Subject: Re: [RFC] netfilter: disable payload mangling in userns
-Message-ID: <agsWhgktcApPkJY7@strlen.de>
-References: <20260515100411.3141-1-fw@strlen.de>
- <20260515114848.1105927-1-tpluszz77@gmail.com>
- <agcWBZNugohelNp6@strlen.de>
- <agr9ry_EKdTfgoaj@chamomile>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RPkFkkzf5+iH2QeL5cZNx8s+ziPJyxe72Ba63K0KQSk1XrhvKtFLbUaUvq380NTT0VTCGrChHs7yWWy6G65fiBOvEuTMbrlfu3jP6tXMQW6ZEQOkrENwtrB6d9+aLr9/NsP7qV58M1iLdyMdvqFkO0L3D7oclKfvgb1ZqEp3OJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hpNf0cNi; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-44e5624c053so1357983f8f.2
+        for <netfilter-devel@vger.kernel.org>; Mon, 18 May 2026 07:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779114083; x=1779718883; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EYFr7XXcKEsZj+Bv1UNXpfsZHaxqcET1cNdw3E5KQ6o=;
+        b=hpNf0cNigPpXw9DykFa6IzN5idA/nkAFGlX77z4gmiktlupdS+NvYA293YJl/UyhX9
+         QVJh0DLrqKNAxMZ1YqiW92drtZZcx8zCwaS4BIysSLKp0R2IshQAbpcLiVhNm6SSRB80
+         tHjgNex6fZKg2y2caMDnNx5xlQqEOJLltG+/VHBUf8tHF5WVom4Qp5ORpdguND6ywqCS
+         +DiPpp5DVDNRgP6iz+SFa4fwAduZDZKRSKMiOI7TYMYCRFd0xM3k8THTJBSem9u0Hau8
+         1ZddxKq98msBx9Gf2+jXNHcxihO+uSH7vyUuKpauUBPl9Z9RosFCkWFuYbqbUfwco+dR
+         BCRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779114083; x=1779718883;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EYFr7XXcKEsZj+Bv1UNXpfsZHaxqcET1cNdw3E5KQ6o=;
+        b=YGuaEZ5DvSsLRt8o9O24tICI/vlrdGi0kI4Hbb77w8bedM2LL2rmv5LPPJGuJCAmLP
+         2TRGtm7Y1yM3dX5Nga8YiGc7wzRVmp43o081hmHdSxwwRzShxAPyEEx0dMpTIZAnR8s0
+         mya+9VY6Nu76uXmsJqR2gTmYAz559g0CjKXq6PUY1FmI0kQ9Fq9G91HEXrd/6V/2kms/
+         CH/CtAa3gTzn+uMcxWlOqnOKyB4CI/EDKNvIHwG2qa4V/oq3akwGeDHYjjH3gHCpSnoL
+         joM+zOU5h6iqSpvT5YATZl/65EfumSS5NXodsoJauxJOglPSmKyZ2ToJ3LW9fDOwHFdq
+         nSaA==
+X-Forwarded-Encrypted: i=1; AFNElJ9ZOW88wUU97vA2GsA/IQ8HxokfhMoqTtpR4avRafYFDLBM/Vd4lCOerbwHfjNxYOEle6QKu0Gefm0rnidvxDQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTsy3KQjUiSyg9zeZUCppPWCZ4QRTiKUfG2MEb1RMJqsnHDuA7
+	81m+W51MymhVHYOPEsx02PLstsVOmv0YaSf5VyDF7xRNylHzrm0ihAit
+X-Gm-Gg: Acq92OFlGkmuJ8d/FODpfojz1JAJL1v3PV+NvK1Lvj5ztUTs+T91MLURoew3ojs+1qo
+	JqQv/e+uktslmo80pdJcYhP1T3sWqUAccGy/I/BR4SPVo3JkNAixQ9zBF+/8eQrIFpMPd8sVkjD
+	wpWrcrCBJG/31gU23TLuIl52xZ4yS4M+KkO3aacoHNWSvnL0fvg/O61OU2wuoOB1CBz0zSy93sF
+	kS1sMN+xXbCRZTlZ2Q4U0vBrSBwndicbVUrtgdfP9GQeHxv0OcmwaxDveTuXRokcI+jJ6gN6TZC
+	w0tdc1uH4VMBc5kia4DJEkkyoUVXkapbHtOCD16ezmG/E9TGd+kh+aN4OsYNCEPqcCYyKgPUgKu
+	HqlNqyAlcsprsV3juuspcEH77syUJL338qM4EhV56WxlxRxDFtJbqa/m9265MlIJZCuzi9czp4D
+	ShXfFrvDg0ObVsY6iNz9978PiepxThgF82VajC4EO9FC7FdAi/ihvVgby4QrR4EqO6Qw==
+X-Received: by 2002:a05:6000:2083:b0:43e:a9ba:b194 with SMTP id ffacd0b85a97d-45e5c5dd921mr25324601f8f.34.1779114082921;
+        Mon, 18 May 2026 07:21:22 -0700 (PDT)
+Received: from gmail.com (deskosmtp.auranext.com. [195.134.167.217])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45da0a1a22csm36715510f8f.19.2026.05.18.07.21.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2026 07:21:22 -0700 (PDT)
+Date: Mon, 18 May 2026 16:21:20 +0200
+From: Mahe Tardy <mahe.tardy@gmail.com>
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
+	john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
+	yonghong.song@linux.dev, jordan@jrife.io, netdev@vger.kernel.org,
+	netfilter-devel@vger.kernel.org, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, martin.lau@kernel.org,
+	eddyz87@gmail.com, clm@meta.com, ihor.solodrai@linux.dev
+Subject: Re: [PATCH bpf-next v6 1/6] net: move netfilter
+ nf_reject_fill_skb_dst to core ipv4
+Message-ID: <agsgYJsHZzA_0L97@gmail.com>
+References: <20260518122842.218522-2-mahe.tardy@gmail.com>
+ <af01ada15e1b76da2dfb6cfa749727e0337787f117ddf5724a3cb702513e81dc@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -54,47 +97,103 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <agr9ry_EKdTfgoaj@chamomile>
-X-Spamd-Result: default: False [0.04 / 15.00];
+In-Reply-To: <af01ada15e1b76da2dfb6cfa749727e0337787f117ddf5724a3cb702513e81dc@mail.kernel.org>
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,gondor.apana.org.au];
-	TAGGED_FROM(0.00)[bounces-12660-lists,netfilter-devel=lfdr.de];
-	DMARC_NA(0.00)[strlen.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,linux.dev,iogearbox.net,gmail.com,kernel.org,jrife.io,google.com,redhat.com,meta.com];
+	TAGGED_FROM(0.00)[bounces-12661-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mahetardy@gmail.com,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel,bpf-ci];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: F3EF456DCB8
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 8A5FE56EBDB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > I think we have to update nfqueue to do rudimentary header revalidation
-> > and drop the packet on failure, e.g. at least making sure tot_len is not
-> > past skb->len.
+On Mon, May 18, 2026 at 01:07:54PM +0000, bot+bpf-ci@kernel.org wrote:
+> > diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+> > index bc1296f0ea69..1f031c5ef554 100644
+> > --- a/net/ipv4/route.c
+> > +++ b/net/ipv4/route.c
+> > @@ -2945,6 +2945,21 @@ struct rtable *ip_route_output_flow(struct net *net, struct flowi4 *flp4,
+> >  }
+> >  EXPORT_SYMBOL_GPL(ip_route_output_flow);
+> >
+> > +int ip_route_reply_fill_dst(struct sk_buff *skb)
+> > +{
+> > +	struct rtable *rt;
+> > +	struct flowi4 fl4 = {
+> > +		.daddr = ip_hdr(skb)->saddr
+> > +	};
 > 
-> Agreed, nfqueue has been there for long time and such parser would
-> validate the packet is correct from stack POV.
+> Can this lead to an out-of-bounds read?
 > 
-> But if a new function to validate that the IP header mangling is not
-> valid is feasible, then why not simply apply the same sanitization
-> from inet hooks to nft_payload/nft_exthdr?
+> Now that this is exported for BPF kfuncs, it can be reached from early
+> hooks like TC ingress where the IPv4 header might not be linearized yet.
+> 
+> If a malformed packet contains less than sizeof(struct iphdr) bytes of
+> linear data, does accessing ->saddr require validation via pskb_may_pull()
+> or similar?
+> 
+> This concern was raised by sashiko-bot@kernel.org in v4 review:
+> https://lore.kernel.org/bpf/20260421111320.D97D9C2BCB0@smtp.kernel.org/
 
-Ok, I will have a look.  Thanks for the feedback.
+Yes but it should be fine since it's the caller responsability to make
+sure the header has been linearized, and we are calling
+pskb_network_may_pull.
+
+> > +
+> > +	rt = ip_route_output_key(dev_net(skb->dev), &fl4);
+> 
+> Can skb->dev be NULL here?
+> 
+> While safe in its original netfilter context, a BPF_PROG_TYPE_NETFILTER
+> program attached to the NF_INET_LOCAL_OUT hook will receive locally
+> generated SKBs before skb->dev is assigned (e.g., in __ip_local_out before
+> ip_output).
+> 
+> Does dev_net(skb->dev) need a check to prevent a kernel panic when called
+> from such contexts?
+> 
+> This concern was raised by sashiko-bot@kernel.org in v4 review:
+> https://lore.kernel.org/bpf/20260421111320.D97D9C2BCB0@smtp.kernel.org/
+
+We can't attach such program as now it's only cgroup_skb and tc,
+outdated.
+
+> > +	if (IS_ERR(rt))
+> > +		return PTR_ERR(rt);
+> > +	skb_dst_set(skb, &rt->dst);
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(ip_route_reply_fill_dst);
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/26034287312
+
 
