@@ -1,104 +1,129 @@
-Return-Path: <netfilter-devel+bounces-12700-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12702-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WMjSLyq8DGo+lgUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12700-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 21:38:18 +0200
+	id IF4UGCfADGqJlgUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12702-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 21:55:19 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EEFE5843B0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 21:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 030325845BC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 21:55:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7809A3052EB5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 19:38:17 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C6CE83020C0D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 19:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A7537883E;
-	Tue, 19 May 2026 19:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43983B52F4;
+	Tue, 19 May 2026 19:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="X3uT1IhZ"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C43C367B81
-	for <netfilter-devel@vger.kernel.org>; Tue, 19 May 2026 19:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A593603F7
+	for <netfilter-devel@vger.kernel.org>; Tue, 19 May 2026 19:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779219496; cv=none; b=ch2AcTBfPafpVrugIS82F8vD4BOxOVfCKc59YJSXhT0VlfKHEQ68S1FxLfyq5bv1mIC9IPeActrD8jh2GvuSydUDviNMooUF4ZFSd3GiyMElYZ8eTn8bk7JtqeEV9TTxFGPrD8U/6YYKHQyFDVticSXA/wHnmuKz7A0F9LVPtu0=
+	t=1779220516; cv=none; b=CIV4J9nq0dFX+NmTzGk4IxrptJgUmdbsHRwIZd6oI7BRvnFbEE1pzgM6a2hRcHgdWFVtsQ0pExEFrSPAlcd43dL8r8iqKH19u1nVDovYwpMR/u+tjhn/NnTjEUd4/JTSC4x6NyDZxI2SXPRnAAGIFfo3lkEEQll1Be7VMLoYLcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779219496; c=relaxed/simple;
-	bh=8vDURQvobHAVFN9s/LzQ7RFMeHEUZ40/G2jwXhUARF8=;
+	s=arc-20240116; t=1779220516; c=relaxed/simple;
+	bh=zK8biS6ueYNg+J1bdkGdqYK82Ry64FL2dC/o/cWYDx0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sCD3/0kIagtNXx9J2zyk8Np3HaS1dgruc4HRgqZY5RGc1+GuwaxtKk1ZgzLbRjn85BusfUPE2S+R9TwSFNB43qbnO9Nven8fD5Q35w7FKiqNRM2w9rwl+QrIXXnfXW7MCb1OJ8Rbkura17OPb3ruhmUOErUTfycqTy7iZQ0LC7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id BEF29607BD; Tue, 19 May 2026 21:38:12 +0200 (CEST)
-Date: Tue, 19 May 2026 21:38:12 +0200
-From: Florian Westphal <fw@strlen.de>
-To: =?iso-8859-1?Q?=C0lex_Fern=E1ndez?= <tomaquet18@protonmail.com>
-Cc: pablo@netfilter.org, netfilter-devel@vger.kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lp7/VrYgYZXCIPny/XpEf1sf3oxDESc29tTlQQw53vDOinwpu9v+z9TXV0os2yaK/HwZYQrr9Z4ZaKwJNIoEMoagyagBvcwZYdZQmxD03XR+qJmVk1XpEoC+OAuDv4J071DCr3nAH6Skrbc4xVnskulygCWm0GfQkrbtBWw/5s4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=X3uT1IhZ; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 158C1601AC;
+	Tue, 19 May 2026 21:55:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1779220505;
+	bh=2SnGJXq3GlKSyqjYXDOxIpb9vFMo/TsiMP+0YL2cUpA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X3uT1IhZZIw3dROasWQsg9qWlxH94BoLr5OxnOqkoWeiTNSa6hAZE1sFZwPgW5lg4
+	 gpVLl1OeUBdtSOzmVxlvx2E3QTuwpTeUTf2yda9JlelkQxrB4iVpjgL8gBDILHUMXx
+	 1z83edB3xWyZ07/Pr3mTXW3E4ZZFiPyLAtnQNbGQL/UliTRKXIlgZCQu55NP/bJYDK
+	 FubSEqs86iMg5LES2dyLxElBActDEt0Cp+k7ufxLOEun1wKrqylhNVB1hfJMqdhsm1
+	 cRlImV6TzAIFrCFlrZvtzQory+x82bPns/ZtX4jf5VhVTH5b5VOJMKJcpPZum0cDlv
+	 exnXut8/p2ZrA==
+Date: Tue, 19 May 2026 21:55:02 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: =?utf-8?Q?=C3=80lex_Fern=C3=A1ndez?= <tomaquet18@protonmail.com>,
+	netfilter-devel@vger.kernel.org
 Subject: Re: [PATCH v4] netfilter: conntrack: fix integer overflow in
  expectation timeout
-Message-ID: <agy8JBZYvx54GYfL@strlen.de>
+Message-ID: <agzAFhNpiYNcBeZ5@chamomile>
 References: <20260504112300.715192-1-tomaquet18@protonmail.com>
+ <agy8JBZYvx54GYfL@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260504112300.715192-1-tomaquet18@protonmail.com>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+In-Reply-To: <agy8JBZYvx54GYfL@strlen.de>
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12700-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[protonmail.com];
-	RCPT_COUNT_THREE(0.00)[3];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-12702-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FREEMAIL_CC(0.00)[protonmail.com,vger.kernel.org];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,protonmail.com:email]
-X-Rspamd-Queue-Id: 6EEFE5843B0
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,sashiko.dev:url,protonmail.com:email]
+X-Rspamd-Queue-Id: 030325845BC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-¿lex Fern·ndez <tomaquet18@protonmail.com> wrote:
->  		x->timeout.expires = jiffies +
-> -			ntohl(nla_get_be32(cda[CTA_EXPECT_TIMEOUT])) * HZ;
-> +			(u64)ntohl(nla_get_be32(cda[CTA_EXPECT_TIMEOUT])) * HZ;
+On Tue, May 19, 2026 at 09:38:12PM +0200, Florian Westphal wrote:
+> √Älex Fern√°ndez <tomaquet18@protonmail.com> wrote:
+> >  		x->timeout.expires = jiffies +
+> > -			ntohl(nla_get_be32(cda[CTA_EXPECT_TIMEOUT])) * HZ;
+> > +			(u64)ntohl(nla_get_be32(cda[CTA_EXPECT_TIMEOUT])) * HZ;
 
-https://sashiko.dev/#/patchset/20260504112300.715192-1-tomaquet18%40protonmail.com
+Yes, for correctness, fixing this is fine but...
 
-Does this fully resolve the overflow on 32-bit architectures?
-The expires field in struct timer_list is an unsigned long, which is 32 bits
-wide on 32-bit systems. Assigning the 64-bit multiplication result directly
-to expires will silently truncate it back to 32 bits, causing the same
-wraparound this patch intends to fix.
-Additionally, does providing a timeout delta larger than INT_MAX break the
-kernel's signed timer comparisons?
-If the delta exceeds INT_MAX, macros like time_after() will evaluate the
-timer as being in the past, causing it to expire immediately.
-Should the computed timeout delta be explicitly clamped to a safe maximum
-(such as INT_MAX or MAX_JIFFY_OFFSET), similar to the logic used for
-standard conntrack timeouts?
+> https://sashiko.dev/#/patchset/20260504112300.715192-1-tomaquet18%40protonmail.com
+> 
+> Does this fully resolve the overflow on 32-bit architectures?
+> The expires field in struct timer_list is an unsigned long, which is 32 bits
+> wide on 32-bit systems. Assigning the 64-bit multiplication result directly
+> to expires will silently truncate it back to 32 bits, causing the same
+> wraparound this patch intends to fix.
+> Additionally, does providing a timeout delta larger than INT_MAX break the
+> kernel's signed timer comparisons?
+> If the delta exceeds INT_MAX, macros like time_after() will evaluate the
+> timer as being in the past, causing it to expire immediately.
+
+the submitter claims you can create expectations that expires
+inmediately, but what is the issue with this?
+
+> Should the computed timeout delta be explicitly clamped to a safe maximum
+> (such as INT_MAX or MAX_JIFFY_OFFSET), similar to the logic used for
+> standard conntrack timeouts?
+
+I think this is just a cleanup / nf-next material?
 
