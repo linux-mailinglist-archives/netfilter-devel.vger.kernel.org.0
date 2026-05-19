@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12683-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12684-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iBzhOJcYDGp+WAUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12683-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 10:00:23 +0200
+	id ALDmNqsXDGrrVwUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12684-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 09:56:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33139579910
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 10:00:23 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC2F579821
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 09:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1674F3067FBB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 07:55:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9D1C2301073B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 07:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23153C3C15;
-	Tue, 19 May 2026 07:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B68E3C73D7;
+	Tue, 19 May 2026 07:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b="mFoonKzu"
+	dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b="2F1K0J3s"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from n169-110.mail.139.com (n169-110.mail.139.com [120.232.169.110])
+Received: from n169-112.mail.139.com (n169-112.mail.139.com [120.232.169.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BAF3B19D9;
-	Tue, 19 May 2026 07:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=120.232.169.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAB619644B;
+	Tue, 19 May 2026 07:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=120.232.169.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779177320; cv=none; b=XA7pIZJau/Yak2fPmDVnwXL2HS6FNRA/MvCY/xAGVDEInuwHvK1aD6/PIgGgS+3ByQXr+TTqIH/BeOvkJ0OpBNLzNCwhfWHzT+CDA6THbymTv5V/DRRYcXSna+zMLaP+oTrkWTBRatRUKzk6XlH1t4ncFcDuKxn0NDMVGNqW9PA=
+	t=1779177330; cv=none; b=qIQSbVPUztRoOGebI10tgZXv+F3Qrzvsib6DDSEM0rXYwq7wtEeeALQXNh3LjjJfegKi5dgCAnWAze4jeZDunRpH1P25krzR5L/u1FGd9X7HxVnlJ9N5N1yp5AI0I5NEHpee72TIARFHimM3/SVRPAIkhTlmcaMYwe/QZ7EGALM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779177320; c=relaxed/simple;
-	bh=tDuDIK3V3CGm8L/unmZRnnQnobIt9tRlnUeRADbdy2s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cltqXW6L6V58Ue6xS4zqbKDxOuif3Ldytphfgv4ZiVSuhidpqyDmmDFF3mMhHwkDU4XLGWZL8L9nIeDxOs+Jpq3r+p8zroR/zDXhXS1vGNvD1l850Ehuq0zqiSKwyz0cpbkHEs5eIYQS5+Hb2qk4nQbAn2lEQ91ofpq5eU8pR/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com; spf=pass smtp.mailfrom=139.com; dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b=mFoonKzu; arc=none smtp.client-ip=120.232.169.110
+	s=arc-20240116; t=1779177330; c=relaxed/simple;
+	bh=hvwJY0zgagSKeFkymx3E5hGWKUTh3knZ/BDqdUWZXUE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bO10K3QPW6oRVhmMBF6I9V0EH7JTyuGJB9jl8ZNZDHU0MCVov20RWKM1nW5aZQQC76LJjxjuP2Eaa5P1FCFMPuCtg0EBNV0t1lIWAbXH5q58NM6EkB0dkMf2100/LdYmaZU4PAV5jUz1UwK7HOYfteorsRhI2wRftyTepY7O0gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com; spf=pass smtp.mailfrom=139.com; dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b=2F1K0J3s; arc=none smtp.client-ip=120.232.169.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=139.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=139.com; s=dkim; l=0;
 	h=from:subject:message-id:to:cc:mime-version;
 	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	b=mFoonKzuehcIcBc2VCeG++kZwtLT213ZfUdKMu+GK+fh/onrUFhHwxce1rTiIazej5NJ11by82cko
-	 geOHrZ5ntX6+PTDMtNXkrdIYIHs1gkPY4sF8aC87UwWPQUbN8dW7KnWPSbiXhIVDC8lvQRkP8PRDIp
-	 NnZWuLjBGG271j6Q=
+	b=2F1K0J3s1Gokcf+pR4XKMSorKna0Hh8p9Vfw3WOKT6kK61i1omLfMb2Tvygm6395iXfFiTCmRKpsl
+	 8IqYSxCAX9MLGuqhWliSzXf4XZ/wtlyKz3QPfNhsvw/i8Mgbkpw80NxHD50VwPIf+1vFg7XihRLIrG
+	 i7mX0xWx8bktkbrQ=
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM:                                                                                        
 X-RM-SPAM-FLAG:00000000
 Received:from NTT-kernel-dev (unknown[60.247.85.88])
-	by rmsmtp-lg-appmail-09-12087 (RichMail) with SMTP id 2f376a0c1757369-033a8;
-	Tue, 19 May 2026 15:55:05 +0800 (CST)
-X-RM-TRANSID:2f376a0c1757369-033a8
+	by rmsmtp-lg-appmail-24-12027 (RichMail) with SMTP id 2efb6a0c17611ba-021e2;
+	Tue, 19 May 2026 15:55:19 +0800 (CST)
+X-RM-TRANSID:2efb6a0c17611ba-021e2
 From: Li hongliang <1468888505@139.com>
 To: gregkh@linuxfoundation.org,
 	stable@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc: patches@lists.linux.dev,
 	netdev@vger.kernel.org,
 	y0un9sa@gmail.com,
 	fw@strlen.de
-Subject: [PATCH 6.12.y] netfilter: nf_tables: unconditionally bump set->nelems before insertion
-Date: Tue, 19 May 2026 15:55:04 +0800
-Message-Id: <20260519075504.2064229-1-1468888505@139.com>
+Subject: [PATCH 6.6.y] netfilter: nf_tables: unconditionally bump set->nelems before insertion
+Date: Tue, 19 May 2026 15:55:18 +0800
+Message-Id: <20260519075518.2106753-1-1468888505@139.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -80,13 +80,13 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[lists.linux.dev,vger.kernel.org,netfilter.org,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,strlen.de];
-	TAGGED_FROM(0.00)[bounces-12683-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12684-lists,netfilter-devel=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	DMARC_NA(0.00)[139.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -100,9 +100,9 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[1468888505@139.com,netfilter-devel@vger.kernel.org];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	TO_DN_NONE(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,139.com:mid,139.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,netfilter.org:email]
-X-Rspamd-Queue-Id: 33139579910
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,139.com:mid,139.com:email,strlen.de:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: EBC2F579821
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -131,22 +131,22 @@ Signed-off-by: Florian Westphal <fw@strlen.de>
 [ Minor conflict resolved. ]
 Signed-off-by: Li hongliang <1468888505@139.com>
 ---
- net/netfilter/nf_tables_api.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ net/netfilter/nf_tables_api.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e373afdf0f07..838c9f49e4e0 100644
+index a0914a92e07d..6fc88bf51109 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -6981,6 +6981,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+@@ -6803,6 +6803,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	struct nft_data_desc desc;
  	enum nft_registers dreg;
  	struct nft_trans *trans;
- 	u8 update_flags;
 +	bool set_full = false;
- 	u64 expiration;
  	u64 timeout;
+ 	u64 expiration;
  	int err, i;
-@@ -7267,10 +7268,18 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+@@ -7095,10 +7096,18 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
  	if (err < 0)
  		goto err_elem_free;
  
@@ -166,16 +166,7 @@ index e373afdf0f07..838c9f49e4e0 100644
  	}
  
  	ext->genmask = nft_genmask_cur(ctx->net);
-@@ -7312,7 +7321,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 						nft_trans_elem_priv(trans) = elem_priv;
- 						nft_trans_elem_update_flags(trans) = update_flags;
- 						nft_trans_commit_list_add_tail(ctx->net, trans);
--						goto err_elem_free;
-+						goto err_set_size;
- 					}
- 				}
- 			}
-@@ -7330,23 +7339,16 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+@@ -7130,23 +7139,16 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
  		goto err_element_clash;
  	}
  
@@ -188,12 +179,12 @@ index e373afdf0f07..838c9f49e4e0 100644
 -		}
 -	}
 -
- 	nft_trans_elem_priv(trans) = elem.priv;
+ 	nft_trans_elem(trans) = elem;
  	nft_trans_commit_list_add_tail(ctx->net, trans);
 -	return 0;
  
 -err_set_full:
--	nft_setelem_remove(ctx->net, set, elem.priv);
+-	nft_setelem_remove(ctx->net, set, &elem);
 +	return set_full ? -ENFILE : 0;
 +
  err_element_clash:
