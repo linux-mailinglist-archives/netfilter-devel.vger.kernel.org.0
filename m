@@ -1,64 +1,93 @@
-Return-Path: <netfilter-devel+bounces-12706-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12707-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UO+YHdjRDGrImQUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12706-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 23:10:48 +0200
+	id oHzNAWrUDGqJnAUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12707-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 23:21:46 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9472585027
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 23:10:47 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A57585234
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 23:21:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D78C23036F82
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 21:10:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4C27530125FC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 May 2026 21:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003FB3E2ADD;
-	Tue, 19 May 2026 21:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8188C3E63A8;
+	Tue, 19 May 2026 21:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="XD7PwdoF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQi4rLMb"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com [209.85.215.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB40A3DCD94;
-	Tue, 19 May 2026 21:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AEE1BC2A
+	for <netfilter-devel@vger.kernel.org>; Tue, 19 May 2026 21:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779225035; cv=none; b=UuZ24K1VVSkMAOesQRlgLsHXZIRMpK7+FTxT/FTJRqxssQDPZUY3d9ftBWhZSYDKoCFRadwRKCtFDlNHzupmKRVTM6SOJw0RvqcEH0B5tvQg1PAVr826ZarSU4VkhYnereAO1qvP0DenfmAIp9b0r9TvCkKPfLlUE4FkFLlsTrE=
+	t=1779225652; cv=none; b=EY44LLxZtyLPsAx0navsKfls3fmUbPnZ29iZgne1KZsFiRkCOplJLRQQT++TFJHAhuya6Ib4W0KxLfjlY4jWgsTXXbeTuJtug6NwV9ONsam4G6CQxBdO1xVxNsYPIs1emZpfUZfRDegaBQD8/Mq+Z9EQirPW3kMvw91BOL3ez3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779225035; c=relaxed/simple;
-	bh=nzEGScfWNf0R2M0QS4gGZ1kxLs/u77Kd3Kz4ZIK5NSg=;
+	s=arc-20240116; t=1779225652; c=relaxed/simple;
+	bh=O+BWYgzCHwjTvXK7MA4AReNobXoJmXJlYv8uwm5nxvo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hhbjCpn+KFdGG1B/ZFntk4VCablmNmXn4FP26DBtIt6/f3YMxk0vDMdAioDYVeEyDa2bfe22Z+T9OfR1KD3SkB/gI6MKY9485ATjOzMZLNuiumDhMI8KBWS/j+aLpan93JX3e1/UCe1G9DyM+atf1WIdqD5cRpNBQaVjW0FjUdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XD7PwdoF; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 5AD9E601B3;
-	Tue, 19 May 2026 23:10:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1779225031;
-	bh=OUTzr1IFS2bDUk5iMxsxfp+LOZ9OTmDj5OSUK0QK+RA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XD7PwdoFOtKp9ObW+xW/lbVcSG3WptJoejPk1vFSRaH1YKyV4Elvg77LDom6TTlSL
-	 2p6eogVcCoSxuabBwt0cnhN8EZ//Br5PBr/Qv9mBqVZFS4fV17B17ryL9VPK11zv7/
-	 d+4vPlq19jWfQh2VI1VkTrf+BOnxTe/TtskfOM8HmRO0nd2yCyWsbJj0FwJk/cRg4H
-	 Yss3aa6I7yRS56nUFLEJSuboAT/0KB6P/xc3h4E7jxVxgJ3WLCZtjlli7DKIjT5A6P
-	 IUsApR61lQOmKWreLhTz+lHkjmVq9lCF63koHtwoNbHChI3iD+1OLj6xpMsNsuBtYG
-	 KVkRLRR3jGlQA==
-Date: Tue, 19 May 2026 23:10:27 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
-	fw@strlen.de, horms@kernel.org
-Subject: Re: [PATCH net 12/12] netfilter: nf_queue: hold bridge skb->dev
- while queued
-Message-ID: <agzRw16rOjemQX7H@chamomile>
-References: <20260516115627.967773-1-pablo@netfilter.org>
- <20260516115627.967773-13-pablo@netfilter.org>
- <20260518170150.06a575c3@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=o9PJmDS8mCVH5DKFuWljqlH1OuO1EiQH2wtXQ/XrreBen/HkOsDgp7WWYZHTkhznTP83C88aYlg6YuDC39inAiOY5ERA+G7+2V3ctoeFM3Dt27MLSyHfye01JsGu8MbZpTH6X4y3NAuJ8dOqlN7uNCGnP3NvCBsh8YfBz8dUZL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQi4rLMb; arc=none smtp.client-ip=209.85.215.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f196.google.com with SMTP id 41be03b00d2f7-c801d732058so1796429a12.1
+        for <netfilter-devel@vger.kernel.org>; Tue, 19 May 2026 14:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779225650; x=1779830450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DQE+A4dldZsiuCry6rodKF1gp5JxyNaxO+EZ49og5TE=;
+        b=YQi4rLMbQW/7Dzls4euHNes99RHcOxD9zr2oTcmyjFb+EJ52aMcWa2v7+htCOkBtIP
+         Qj3LfOIVws2Xo4CgbUnMHE54Y0sVpkOvls8ExCoiaQc1Yiykf2gTG5eI6Y7tKH4mpk6U
+         jE5OWAovAdkQXTQL49TlatzylwX/zVZJHH8twnDonPAIG/3l3rdYnaGtIt3Co0NsvShy
+         YkqdXbDBswGgSE1EZOgShanu6cBTjOO25Ml02GUL5WqqQEYjV+DdecTaac8kCXOE2xuh
+         oYCW1nWkW58cchEfIKu1hayp5kg7nuf0Cm/6jKa17+FQGs/fvNe1fhffTsjliphOo+mL
+         0a1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779225650; x=1779830450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DQE+A4dldZsiuCry6rodKF1gp5JxyNaxO+EZ49og5TE=;
+        b=TUWSMtS/K+bOUeHtNBjheag2sjbTC0nuBLLNzH+znzbab5MXq0nCfy3xgAYfb3+khd
+         DaQJOpkmVEt+JG0mEqhC56ogDzB5j1c30V52IrkYF0V68kGLoQhWKR2ItoeQQ0WnofEi
+         MkY2Sfb6S0K0t7LhXPcgb0q1OKAcoZA/Gw6RiQpC5yeUuofAk5Jv+gVs080zPVQwzDJv
+         +Hdwn6MZHpKC3xhoPeKJ74JdNcedDjwH0osAC4p0ZDZFXyQcPZgBJckVDTtXuQ6T7+R0
+         +leNqJ+3qANGf69K7oVvU483nRmElCvwVhd00qmotu0A2YwHUcXrlCpjdilJFdj0xUwI
+         SyOA==
+X-Forwarded-Encrypted: i=1; AFNElJ/FTRzbjGnA3PzodLyWdEX0pLX5T4lzu4ZSuqTE6YaYe0FdBrw0fkUe4fm4WMoeEuaqHO4MauwTxOGxNkz3slU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyvneGIklGDu632ezEBwr5Ss+SZ0dlckIqGpcVn9I4NtRPp3zf4
+	Bb0p1npeoosDyWMjIu5z4zyXehUszN28rRSkm/vG/I4dKrq02H4T9osE
+X-Gm-Gg: Acq92OHcECJHOD6XPbxpEbK23MApdLFQ+HyGtLcX/j5xqrz5Ubni9ABQQhSL3DvZH0k
+	gRwB9A1xbqo/fyivhX8fkIFlTmPSexqh4HgeotkCH3q0qYp3glqJ4eW/iusF0dMdvIK3peNsm+0
+	zFdldDyx6kjNlLaHmiGuNNE6reiPa1jt68Eli3PUKSABvrQ5u0zLEg4p5Ypv5EXyjPZDIl8KpA0
+	DHTbGLQFLDIRbwMrPl4azYxKf0qJqDQVE3B3yaEgZAEcwRJhj9tfvpQOun1VzYKNfMspClNvlAE
+	0W7BbFCN8hgCKKofaCPdWc6XcIi74IxfVKLE4dBQYsCelhO1SH0cHEEENO2Lh+Z2raA8uMmgAKC
+	JlW5o8cPmPCyOZAd0FkG4rfwfI2WnLAUA2QmyRHy1HVMf03GpcczqLEmLvgATd2d/1Wyj6hiD00
+	u0nkslrIYOdz58tcFc
+X-Received: by 2002:a05:6a20:914f:b0:3a3:adea:83bc with SMTP id adf61e73a8af0-3b22d3369b4mr18265361637.15.1779225650394;
+        Tue, 19 May 2026 14:20:50 -0700 (PDT)
+Received: from localhost ([2a03:2880:2ff:46::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-83f19c7809esm24275139b3a.44.2026.05.19.14.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2026 14:20:50 -0700 (PDT)
+Date: Tue, 19 May 2026 14:20:49 -0700
+From: Stanislav Fomichev <sdf.kernel@gmail.com>
+To: Mahe Tardy <mahe.tardy@gmail.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org, yonghong.song@linux.dev, 
+	jordan@jrife.io, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH bpf-next v6 3/6] bpf: add bpf_icmp_send kfunc
+Message-ID: <agzUE_ky01u_YuSe@devvm7509.cco0.facebook.com>
+References: <20260518122842.218522-1-mahe.tardy@gmail.com>
+ <20260518122842.218522-4-mahe.tardy@gmail.com>
+ <ags3HARTFYwKU8nR@devvm7509.cco0.facebook.com>
+ <agtJ0e_hlHS3Es_q@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -67,72 +96,198 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260518170150.06a575c3@kernel.org>
-X-Spamd-Result: default: False [-1.16 / 15.00];
+In-Reply-To: <agtJ0e_hlHS3Es_q@gmail.com>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12707-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[netfilter.org];
-	TAGGED_FROM(0.00)[bounces-12706-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[vger.kernel.org,linux.dev,iogearbox.net,gmail.com,kernel.org,jrife.io,google.com,redhat.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sdfkernel@gmail.com,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,netfilter.org:dkim]
-X-Rspamd-Queue-Id: E9472585027
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[devvm7509.cco0.facebook.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 62A57585234
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, May 18, 2026 at 05:01:50PM -0700, Jakub Kicinski wrote:
-> On Sat, 16 May 2026 13:56:27 +0200 Pablo Neira Ayuso wrote:
-> > diff --git a/include/net/netfilter/nf_queue.h b/include/net/netfilter/nf_queue.h
-> > index d17035d14d96..3978c3174cdb 100644
-> > --- a/include/net/netfilter/nf_queue.h
-> > +++ b/include/net/netfilter/nf_queue.h
-> > @@ -14,6 +14,7 @@ struct nf_queue_entry {
-> >  	struct list_head	list;
-> >  	struct rhash_head	hash_node;
-> >  	struct sk_buff		*skb;
-> > +	struct net_device	*skb_dev;
-> >  	unsigned int		id;
-> >  	unsigned int		hook_index;	/* index in hook_entries->hook[] */
-> >  #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-> > diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
-> > index a6c81c04b3a5..57b450024a99 100644
-> > --- a/net/netfilter/nf_queue.c
-> > +++ b/net/netfilter/nf_queue.c
-> > @@ -61,6 +61,7 @@ static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
-> >  	struct nf_hook_state *state = &entry->state;
-> >  
-> >  	/* Release those devices we held, or Alexey will kill me. */
-> > +	dev_put(entry->skb_dev);
-> >  	dev_put(state->in);
-> >  	dev_put(state->out);
-> >  	if (state->sk)
-> > @@ -102,6 +103,7 @@ bool nf_queue_entry_get_refs(struct nf_queue_entry *entry)
-> >  	if (state->sk && !refcount_inc_not_zero(&state->sk->sk_refcnt))
-> >  		return false;
-> >  
-> > +	dev_hold(entry->skb_dev);
-> >  	dev_hold(state->in);
-> >  	dev_hold(state->out);
+On 05/18, Mahe Tardy wrote:
+> On Mon, May 18, 2026 at 09:17:45AM -0700, Stanislav Fomichev wrote:
+> > On 05/18, Mahe Tardy wrote:
+> > > This is needed in the context of Tetragon to provide improved feedback
+> > > (in contrast to just dropping packets) to east-west traffic when blocked
+> > > by policies using cgroup_skb programs. We also extend this kfunc to tc
+> > > program as a convenience.
+> > > 
+> > > This reuses concepts from netfilter reject target codepath with the
+> > > differences that:
+> > > * Packets are cloned since the BPF user can still let the packet pass
+> > >   (SK_PASS from the cgroup_skb progs for example) and the current skb
+> > >   need to stay untouched (cgroup_skb hooks only allow read-only skb
+> > >   payload).
+> > > * We protect against recursion since the kfunc, by generating an ICMP
+> > >   error message, could retrigger the BPF prog that invoked it.
+> > > 
+> > > For now, we support cgroup_skb and tc program types. For cgroup_skb and
+> > > tc egress, almost everything should be good. However for tc ingress:
+> > > - packet will not be routed yet: need to set the net device for
+> > >   icmp_send, thus the call to ip[6]_route_reply_fill_dst.
+> > > - fragments could trigger hook: icmp_send will only reply to fragment 0.
+> > > - ensure the ip headers is linearized before processing, and zero out
+> > >   the SKB control block after cloning to prevent icmp_send()/icmpv6_send()
+> > >   from misinterpreting garbage data as IP options.
+> > > 
+> > > Only ICMP_DEST_UNREACH and ICMPV6_DEST_UNREACH are currently supported.
+> > > The interface accepts a type parameter to facilitate future extension to
+> > > other ICMP control message types.
+> > > 
+> > > Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
+> > > ---
+> > >  net/core/filter.c | 118 ++++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 118 insertions(+)
+> > > 
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index 9590877b0714..843fa775596b 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -84,6 +84,8 @@
+> > >  #include <linux/un.h>
+> > >  #include <net/xdp_sock_drv.h>
+> > >  #include <net/inet_dscp.h>
+> > > +#include <linux/icmpv6.h>
+> > > +#include <net/icmp.h>
+> > > 
+> > >  #include "dev.h"
+> > > 
+> > > @@ -12464,6 +12466,110 @@ __bpf_kfunc int bpf_xdp_pull_data(struct xdp_md *x, u32 len)
+> > >  	return 0;
+> > >  }
+> > > 
+> > > +static DEFINE_PER_CPU(bool, bpf_icmp_send_in_progress);
+> > > +
+> > > +/**
+> > > + * bpf_icmp_send - Send an ICMP control message
+> > > + * @skb_ctx: Packet that triggered the control message
+> > > + * @type: ICMP type (only ICMP_DEST_UNREACH/ICMPV6_DEST_UNREACH supported)
+> > > + * @code: ICMP code (0-15 for IPv4, 0-6 for IPv6)
+> > > + *
+> > > + * Sends an ICMP control message in response to the packet. The original packet
+> > > + * is cloned before sending the ICMP message, so the BPF program can still let
+> > > + * the packet pass if desired.
+> > > + *
+> > > + * Currently only ICMP_DEST_UNREACH (IPv4) and ICMPV6_DEST_UNREACH (IPv6) are
+> > > + * supported.
+> > > + *
+> > > + * Recursion protection: If called from a context that would trigger recursion
+> > > + * (e.g., root cgroup processing its own ICMP packets), returns -EBUSY on
+> > > + * re-entry.
+> > > + *
+> > > + * Return: 0 on success, negative error code on failure:
+> > > + *         -EINVAL: Invalid code parameter
+> > > + *         -EBADMSG: Packet too short or malformed
+> > > + *         -ENOMEM: Memory allocation failed
+> > > + *         -EBUSY: Recursion detected
+> > > + *         -EHOSTUNREACH: Routing failed
+> > > + *         -EPROTONOSUPPORT: Non-IP protocol
+> > > + *         -EOPNOTSUPP: Unsupported ICMP type
+> > > + */
+> > > +__bpf_kfunc int bpf_icmp_send(struct __sk_buff *skb_ctx, int type, int code)
+> > > +{
+> > > +	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+> > > +	struct sk_buff *nskb;
+> > > +	bool *in_progress;
+> > > +
+> > > +	in_progress = this_cpu_ptr(&bpf_icmp_send_in_progress);
+> > > +	if (*in_progress)
+> > > +		return -EBUSY;
+> > > +
+> > > +	switch (skb->protocol) {
+> > > +#if IS_ENABLED(CONFIG_INET)
+> > > +	case htons(ETH_P_IP):
+> > > +		if (type != ICMP_DEST_UNREACH)
+> > > +			return -EOPNOTSUPP;
+> > > +		if (code < 0 || code > NR_ICMP_UNREACH)
+> > > +			return -EINVAL;
+> > > +
+> > > +		nskb = skb_clone(skb, GFP_ATOMIC);
+> > > +		if (!nskb)
+> > > +			return -ENOMEM;
+> > > +
+> > > +		if (!pskb_network_may_pull(nskb, sizeof(struct iphdr))) {
+> > > +			kfree_skb(nskb);
+> > > +			return -EBADMSG;
+> > > +		}
+> > > +
+> > > +		if (!skb_dst(nskb) && ip_route_reply_fill_dst(nskb) < 0) {
+> > > +			kfree_skb(nskb);
+> > > +			return -EHOSTUNREACH;
+> > > +		}
+> > > +
+> > > +		memset(IPCB(nskb), 0, sizeof(struct inet_skb_parm));
+> > > +
+> > > +		*in_progress = true;
+> > > +		icmp_send(nskb, type, code, 0);
+> > > +		*in_progress = false;
+> > 
+> > [..]
+> > 
+> > > +		kfree_skb(nskb);
+> > 
+> > I was going to suggest to use consume_skb here, I think it is a better fit?
 > 
-> Please follow up and add a ref tracker to this?
+> Yeah correct, I can replace it with consume_skb, didn't know about it,
+> thanks.
+> 
+> > But I'm not sure why you do the clone here, I don't see any requirement from
+> > the icmp_send side, can you clarify? Is it because of the pull?
+> 
+> From the icmp_send side I think it's fine, however, this part might
+> touch the original packet, especially ip_route_reply_fill_dst:
+> 
+> 
+> if (!pskb_network_may_pull(nskb, sizeof(struct iphdr))) {
+> 	kfree_skb(nskb);
+> 	return -EBADMSG;
+> }
+> 
+> if (!skb_dst(nskb) && ip_route_reply_fill_dst(nskb) < 0) {
+> 	kfree_skb(nskb);
+> 	return -EHOSTUNREACH;
+> }
+> 
+> memset(IPCB(nskb), 0, sizeof(struct inet_skb_parm));
+> 
+> 
+> All of this is mostly there because we allow this kfunc for tc and
+> especially tc ingress. At this stage, the skb might not have a routing
+> entry yet and icmp_send needs to know the dev from this or fail
+> silently. This is the original reason why I added the the net patches
+> (patch 1 and 2) and it was also spotted by Sashiko when I tried to
+> remove them[^1].
+> 
+> [^1]: https://lore.kernel.org/bpf/20260515202358.20252C2BCB0@smtp.kernel.org/
 
-I'll do net-next.
+Thanks for the details. Then yeah, let's just do the consume_skb part,
+the rest looks good.
 
