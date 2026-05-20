@@ -1,49 +1,57 @@
-Return-Path: <netfilter-devel+bounces-12736-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12737-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8HavFiGnDWpr1AUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12736-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 14:20:49 +0200
+	id qKVSKGOpDWpr1AUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12737-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 14:30:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51C0558D87D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 14:20:43 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FEE458DADD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 14:30:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C5654304E97A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 12:17:43 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 476F13007888
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 12:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A2F3DC4A7;
-	Wed, 20 May 2026 12:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DD9A3DE451;
+	Wed, 20 May 2026 12:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="o9T6pZaE"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D06F3D7D82
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 May 2026 12:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E753DDDCB
+	for <netfilter-devel@vger.kernel.org>; Wed, 20 May 2026 12:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779279460; cv=none; b=NwmFSmdBowpP7uqknwIWx2c6bDTyZxFkHDhLokf014ZPP/xpdxyt6PYgZvQRpPL92nzpkVvQCJv4t/3UaraDcW2BiXf+zK8dzxqMJSK3qoa+Us6CxazDewkYwdYbBpvXQM7iOiSwbPDQ4cttsh6Y3dghfUhK5BZGdyGO7MvjPy0=
+	t=1779280222; cv=none; b=dzJTp9A5aH1G1G0t24IPPLBCbgenQ05/qHT3REb3fmw45j7e2I2MgIaVn4MDPo1jcXf5YI1n40dHPT4d3Ps18IAZ7thJ0dv24yaUGHqZQQEif1Mhrn3CiSmZw8/pElZ6a8EVHv8pmBITNHBWrE9vel+suf1rD8e9U7r1gGUMpm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779279460; c=relaxed/simple;
-	bh=yIabCz2BEUUI51YoOBYPpuyLDXGTJemzSWFTWnHysgM=;
+	s=arc-20240116; t=1779280222; c=relaxed/simple;
+	bh=Vyed2tYaveYCEKlYKEZ6e7+IZT3MVXC1GVL6Bz/bO8s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZcmXx41eU70mOY5m/TOBGL6gaOg/ln8b++qjUQH9YBFou+O1hVYSRyfDbKQbdy/isDB91NZ4OqPKxS+WRPzQmH5Qv78oLg9fjPuBh2Sd4lzRhA9RnUjqS7EsDPywZXTzJFANDY3eGoLxKgzCp7/mk8XegNFGctMK3km4DWa4cSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 503E3607BF; Wed, 20 May 2026 14:17:36 +0200 (CEST)
-Date: Wed, 20 May 2026 14:17:34 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Greg KH <gregkh@linuxfoundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fG3+jCW1/7irhqrkW7vXbNdLWJipFcXKyaRNmDT3gmgMu6HIdQmDg1uDe537RA3dQ3fi4pv6P3rSMcC+JqnaI4MK6L1d8mwM9MZACV5zNVWuh3FP5VMYcTA+efOjkniJPw2XL28/J7zGTWH9Fs7RDJfXm2qEq96TF5yKkWp8XK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=o9T6pZaE; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2014D1F00894;
+	Wed, 20 May 2026 12:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1779280220;
+	bh=/bCznaWvWSKo/e5ITZme/13Vdy8sDSVQosgruBsqaoQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=o9T6pZaEtiyPIZh4bJY6Gcl+O3ALvq/3eAfVuAglvjCowT0YgB63+NeFHuJqThCTi
+	 Of1ZphmYGvddHgu+AO4nmu3ZAKEcSZSA0nEgFkeQLcWti+9e6wpQ30AuqrSkqeyk1y
+	 OTDp5WAaov0L+RVbgp9gm1Psa7RBk6EVm8PplOL0=
+Date: Wed, 20 May 2026 14:30:23 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Florian Westphal <fw@strlen.de>
 Cc: Igor Garofano <igorgarofano@gmail.com>, security@kernel.org,
 	pablo@netfilter.org, netfilter-devel@vger.kernel.org
 Subject: Re: [SECURITY] nft_byteorder: incorrect u32* stride in 64-bit
  byteorder eval leading to firewall bypass
-Message-ID: <ag2mXk1L4bL55GV1@strlen.de>
+Message-ID: <2026052017-showroom-shortcut-6384@gregkh>
 References: <CAOOOOYyfpwO7inyq2wXtpT0kY0s19-n4OZf2MCR62WRi7vzMMg@mail.gmail.com>
  <2026052028-grain-pencil-0d8b@gregkh>
+ <ag2mXk1L4bL55GV1@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -52,41 +60,47 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2026052028-grain-pencil-0d8b@gregkh>
-X-Spamd-Result: default: False [-1.46 / 15.00];
+In-Reply-To: <ag2mXk1L4bL55GV1@strlen.de>
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,netfilter.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-12736-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-12737-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,netfilter.org,vger.kernel.org];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DMARC_DNSFAIL(0.00)[strlen.de : query timed out];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.990];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[linuxfoundation.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linuxfoundation.org:email,strlen.de:mid]
-X-Rspamd-Queue-Id: 51C0558D87D
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 3FEE458DADD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Greg KH <gregkh@linuxfoundation.org> wrote:
-> Can you turn this into a real patch that can be applied so you get full
-> credit for resolving this issue?
+On Wed, May 20, 2026 at 02:17:34PM +0200, Florian Westphal wrote:
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+> > Can you turn this into a real patch that can be applied so you get full
+> > credit for resolving this issue?
+> 
+> No need, this code will be removed.  There are no users.
+> Patch is already pending in patchwork.
 
-No need, this code will be removed.  There are no users.
-Patch is already pending in patchwork.
+Great, that's even better!
 
