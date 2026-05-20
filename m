@@ -1,172 +1,184 @@
-Return-Path: <netfilter-devel+bounces-12738-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12739-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iOBFFWe5DWpT2wUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12738-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 15:38:47 +0200
+	id yDVIKGPWDWrW3wUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12739-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 17:42:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB75058EEA8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 15:38:46 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7303C5911B0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 17:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7D2BC300D733
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 13:35:34 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3624E305B8E7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 May 2026 15:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31282D7DC4;
-	Wed, 20 May 2026 13:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0933ED5C8;
+	Wed, 20 May 2026 15:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LGn1XMEq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HmxflIBq"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB942C325C
-	for <netfilter-devel@vger.kernel.org>; Wed, 20 May 2026 13:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779284131; cv=pass; b=E/JshIgvVt07LfCoRm0D8iqq1DCjWFNY8OUqj4aA696orTaz1WhjcYUZeUV3PKjAOUKZkNgebmRiPy71f2gud7+vf0+JX9gfL7dZ+E6JjPsPecId7jIRrdI3uyLigFkGUE+cLkj0fdRPjxiQYi1Qbro4ZfBWyVVILwpcMat3tVA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779284131; c=relaxed/simple;
-	bh=TaewVaaJSRTgVv7uiAvCvNN525apvixVpdwb+G50UPM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bH7M472NnuBSGlFXVkB9XfoYWroJyPse0OD9kexeJPgj7Hvexx3pTPUOxNnXi+SlneGASX2nY39jysNUZXOi/OEyz/2z+1CHCyC1i90yo21lo33HaErB+Zl8jhFNYCbB+A7Opf2hV7+QtSa04cEQFhrw0lrovO3tVIM3SnZAlgw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LGn1XMEq; arc=pass smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5a88db610ccso5521314e87.2
-        for <netfilter-devel@vger.kernel.org>; Wed, 20 May 2026 06:35:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779284128; cv=none;
-        d=google.com; s=arc-20240605;
-        b=laQrkvwO9c0DHJgA2Hm1DRaDadtB8NH+H022ngH0/f2JhI/0lxb5IEnfON6V2rbcTU
-         v98nxl3hR+fMwVXI/Bgs0LkaH7CH0WvtOrN1dv0X6A2v1NNOlpwDoEh80uxDK5zUxpU4
-         bJHqWt1gP/uEoyrqfAgUZx4Ra0isAp31fAxFgidmnAeyLF7b/aYfeE5irzC75Hb3pYTo
-         me0gkcox+t/ew1YC7aiyTf/n5jJZeNH2klrEHRF2P6GbAwH0/d2s+c8P1oWdx83+eUl1
-         nYfvKtyv6PtsvtVupB7ny1rCAB4xve5CzD93K8TstNcMWP/qYBJ9AnOtQzY1KaycAPBm
-         bcmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Yu0/XtO4dIfAu/cztcBneHSKuN0SeWCUAeJO4rKJAag=;
-        fh=i1zdjvduu3TK15E75kek1OZT5labH4iGUMnMcMuuCyA=;
-        b=k8nrkX5yRlrN5IQnBDWWXbRkrMWUtAP6Bx9nFK/7BYm54gEqIJnSZ4rX9oSI6dqd88
-         pkIu8KEOfFp8Maf1nOLeiRdj+DtSAkLzC8zJZN8eCCnuKDxSUN8bSp6LpkvUSPPongox
-         u7xbPG5rMEVzozIzEAvwqcN3K9aNJ4EJz4dwzRGXIOhjclB85iLfgdEjGHKPcKFT7JNr
-         87LSUjgHvYzCPr5AlGhrueW8el4GE5ioa3sdtwHG0RRq/HFadnQmExsNyRbRMY2yXcoR
-         TilZ8NgJd9Et/6ePmg2wSEECHULh19/T3lTfuPq+S8RUUhD5mALa8otrsZgb6je4FMIo
-         QCfQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1779284128; x=1779888928; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yu0/XtO4dIfAu/cztcBneHSKuN0SeWCUAeJO4rKJAag=;
-        b=LGn1XMEqc7BwAhuIEoaGJz1Ki15lwdTkwh5ZqSasJbAHLIPYwItSy8PyDWIqj7TiRL
-         +/tqPFnreQHSqMjI+CDSKlR5UmBY80l3eOzhsVNwsHk2hFT3IMlzAqjI0HAw2QdbQLWy
-         xluVpgZ55mwkiBKrJNRzafPc5fdTSbXQfXgOIhqvjd5owAMLxTmTEYriHrHqu048yPpp
-         iYwowOEwcgfbNesWsaDGvFmot3AM/WxdRjaM24e/8Ubil/X06kWrSLd6OaUIaM5S3+Aw
-         skpgfWDVFbWWvacsKCsNzYkSWoI4yjb+kPgO3iPVHAv3bj2BpJuNYTXL2/xW2Cr21+8U
-         BKtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779284128; x=1779888928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Yu0/XtO4dIfAu/cztcBneHSKuN0SeWCUAeJO4rKJAag=;
-        b=K12bSnPj1z7y1i1ArWsYKD+xUVoD8LAjCbDMBUXGVRnHf3uHiIgloGQ0hDcCTZl65m
-         R45fWCE7ejNPeuMvNtIH6qZ+gOTQSlCoZlUwu6uYeiavZvMtgtLcth/wcN2EIwaDalSz
-         8VU8cEJXLlvTpm04G7vIzoL2HyrNatgHnbIE33Mw73z2rzXZEZ/QLL72q6iKenXnL83G
-         TDBm3OOlMBthq0P9AoejzJ6VoP9Qpk2jPwbCGUsU7HDsq1e689O7PtolsLtGIXJI4fPu
-         pjh9HTV8rep+HLiX9QgAR8jlXgadzR/K7bKYBChaYMKjo/OkTJA+Ya6kyMDdSrzWrHqQ
-         Gs7Q==
-X-Forwarded-Encrypted: i=1; AFNElJ/o4uKBUdH23TVWg31l+azTnnFERdY74LP56QqCUQd4bLNefoxoinPHNacQLWy3j4zelIP5GL3FlC5csQpaYVA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCnDMBo4sVAjbRHhSsewsIqmV+FBETYMNngZjlkfbiAgbd4zuN
-	v2e0bFFY3U7sycTLutFvY9c6ZbK+E6UGDC2KbHq5UbK7urKixw30Z9P4myx7zYLYsSsXnbujxwH
-	ex37sxhEdYHXXX++hzm9hCmaSkjQWKB5YIQdJUQTIYg==
-X-Gm-Gg: Acq92OFRpdZIELDwauR6u2lSRwv5V42Twf5psd5hhvPLGdaqCxwTwFd0xm6NFS4d5EV
-	MVn8xFgIl3nRjWyI57hIFNDZjCtKJXfG4bGTWw/cn6cphWBOEDlPYc707RFXju5f6kpmOrYRPue
-	lP2rP04FiaK9ZkRgkOVchzR+rHOk578fNDhuKWeA+FO+QaukOgqcU3SLBFvGRDH6buNEcfxoNm7
-	/B2hFUeUKEnIOWwPaDliiK30Vxh88ZFRxKGsPz2ow1Ha7Aw/a6VG+MVj1p8bJ50CWGFRH5vwSwS
-	R6XUv4GyPtRmriMYZ9M=
-X-Received: by 2002:a05:6512:3d17:b0:5a4:1096:94e4 with SMTP id
- 2adb3069b0e04-5aa0e73f375mr6835140e87.2.1779284128482; Wed, 20 May 2026
- 06:35:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B283D903E;
+	Wed, 20 May 2026 15:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779291388; cv=none; b=ZIEEZ/n1VijTaS9ZXgGQntKYSBiruSNmvFhGBEtiEjzCTlO5OgkBd6Q9axaH8MnL/jHkzM1G8PT8b+na1v0JGUW3aVr8JmLPgVx4EYSIN1nmwEbcxW0NHo9EsUweGQyxUqONewj/P9KIF4bti5q7asUzrOaytpPYrovRrrHTmBM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779291388; c=relaxed/simple;
+	bh=MNY5MML6AuvZHU3oIRofKtZEGFa9zFjnoghjgfd7Ct8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RmpUOl43lwP0lJxQj5i5p2grAIUgvUzzuOnZCGuxzZ9K7c4h7hdV+OYUzl0DyNwe6GJQozi1wfJPAqPjfUY853x8zH9tJ5BQ8nxiAv8iLg38Llsjm+lLlhzBBezBo12y0lFiEDNwQZ3SeDfgxqVmzJQtyrrEx/of7gKzfM9nGGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HmxflIBq; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2EE51F000E9;
+	Wed, 20 May 2026 15:36:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779291387;
+	bh=a2tRUQgRwBejUhg1cYn+oCvO34Dh5HeYuLe9vbd7LI8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=HmxflIBqTEPMrZ+FGAoQNKSPX0MdonqQ8oPlwrBuupAyWh8MEA/9OI5MpxCzJm1wM
+	 QODUBzFOQ+Oqpwp9I0lQMxZvcd1zFDdeVNBxcgdL686H736PWU/zRbBoQb1Kl22FPi
+	 i4qJixTzCo5BEpVWY2XJ73Zh6vOIVWL3qRqzPhkzxkuHhTEAvYwmBdyU0oOCZVfXwg
+	 lMWx50jMpnZaXz6Uje8rPeHsmi74KdcPe4EgDvG5SIZSjwxWtLI6lA3RaiobMf5UoA
+	 nnTsPH6T+Liog+P/nQw9U2klbHKMi4zQwsKkZzUXeBSYhx8sT6ROmC425Uu734bObH
+	 b1VY5rjrZbHVg==
+Date: Wed, 20 May 2026 17:36:24 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Felix Fietkau <nbd@nbd.name>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+	Shuah Khan <shuah@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, netdev@vger.kernel.org,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH nf-next v2 0/6] Add IPv4 over IPv6 and SIT flowtable SW
+ acceleration
+Message-ID: <ag3U-DmEWiwcH0uB@lore-desk>
+References: <20260506-b4-flowtable-sw-accel-ip6ip-v2-0-439fd427726e@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260515135143.259669-1-marco.crivellari@suse.com>
- <20260515135143.259669-3-marco.crivellari@suse.com> <20260519182219.0d685a27@kernel.org>
- <10173685-596f-1eb0-0903-a3d7ba4dff9b@ssi.bg>
-In-Reply-To: <10173685-596f-1eb0-0903-a3d7ba4dff9b@ssi.bg>
-From: Marco Crivellari <marco.crivellari@suse.com>
-Date: Wed, 20 May 2026 15:35:17 +0200
-X-Gm-Features: AVHnY4IeRKHo331ej-I0dmnws79oeyR-8QctDEsIk4GCUGbIHbl2IQWDS5Yw-jk
-Message-ID: <CAAofZF47k3FiALNvNzaU8W=sNXXUH2Wfx==0G9qJAGM1rFOS_A@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next 2/2] ipvs: Replace use of system_unbound_wq
- with system_dfl_long_wq
-To: Julian Anastasov <ja@ssi.bg>
-Cc: Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Michal Hocko <mhocko@suse.com>, Simon Horman <horms@verge.net.au>, Eric Dumazet <edumazet@google.com>, 
-	"David S . Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
-	Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>, 
-	lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	coreteam@netfilter.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="y1SQHS4FsUVyGc0Q"
+Content-Disposition: inline
+In-Reply-To: <20260506-b4-flowtable-sw-accel-ip6ip-v2-0-439fd427726e@kernel.org>
+X-Spamd-Result: default: False [-2.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-12738-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12739-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[lunn.ch,davemloft.net,google.com,kernel.org,redhat.com,nbd.name,gmail.com,collabora.com,nvidia.com,netfilter.org,strlen.de,nwl.cc];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com,linutronix.de,suse.com,verge.net.au,google.com,davemloft.net,redhat.com,netfilter.org,strlen.de,nwl.cc];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[marco.crivellari@suse.com,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[netfilter-devel,netdev];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,suse.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,ssi.bg:email]
-X-Rspamd-Queue-Id: DB75058EEA8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 7303C5911B0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 20, 2026 at 6:11=E2=80=AFAM Julian Anastasov <ja@ssi.bg> wrote:
-> [...]
-> > On Fri, 15 May 2026 15:51:37 +0200 Marco Crivellari wrote:
-> > > Subject: [PATCH v2 net-next 2/2] ipvs: Replace use of system_unbound_=
-wq with system_dfl_long_wq
-> >
-> > FTR leaving this one to netfilter folks
->
->         Yep, we wait net to be merged to net-next because the patch
-> depends on commit 5522d65d81a7
-> ("ipvs: avoid possible loop in ip_vs_dst_event on resizing")
 
-Thanks to both of you.
+--y1SQHS4FsUVyGc0Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---=20
+> Similar to IPIP and IP6I6 tunnels, introduce sw acceleration for IPv4 over
+> IPv6 and SIT tunnels in the netfilter flowtable infrastructure.
+>=20
+> ---
+> Changes in v2:
+> - Fix MTU check in nf_flow_offload_forward() and in
+>   nf_flow_offload_ipv6_forward()
+> - Add SIT sw acceleration support
+> - Link to v1: https://lore.kernel.org/r/20260505-b4-flowtable-sw-accel-ip=
+6ip-v1-0-9ac39ccc9ea9@kernel.org
 
-Marco Crivellari
+Hi Pablo and Florian,
 
-SUSE Labs
+Any update about this series? Thanks in advance.
+
+Regards,
+Lorenzo
+
+>=20
+> ---
+> Lorenzo Bianconi (6):
+>       net: netfilter: Add ether_type to net_device_path_ctx
+>       net: netfilter: Add encap_proto to flow_offload_tunnel
+>       net: netfilter: Add IPv4 over IPv6 tunnel flowtable acceleration
+>       selftests: netfilter: nft_flowtable.sh: Add IPv4 over IPv6 flowtabl=
+e selftest
+>       net: netfilter: Add SIT tunnel flowtable acceleration
+>       selftests: netfilter: nft_flowtable.sh: Add SIT flowtable selftest
+>=20
+>  drivers/net/ethernet/airoha/airoha_ppe.c           |  14 +-
+>  drivers/net/ethernet/mediatek/mtk_ppe_offload.c    |  13 +-
+>  include/linux/netdevice.h                          |   5 +-
+>  include/net/netfilter/nf_flow_table.h              |   1 +
+>  net/core/dev.c                                     |   6 +-
+>  net/ipv4/ipip.c                                    |   1 +
+>  net/ipv6/ip6_tunnel.c                              |   6 +-
+>  net/ipv6/sit.c                                     |  26 ++
+>  net/netfilter/nf_flow_table_core.c                 |  14 +-
+>  net/netfilter/nf_flow_table_ip.c                   | 386 +++++++++++++--=
+------
+>  net/netfilter/nf_flow_table_path.c                 |  16 +-
+>  tools/testing/selftests/net/netfilter/config       |   1 +
+>  .../selftests/net/netfilter/nft_flowtable.sh       |  78 ++++-
+>  13 files changed, 402 insertions(+), 165 deletions(-)
+> ---
+> base-commit: c1e5127b577c6b88fa48e532616932ae978528d5
+> change-id: 20260505-b4-flowtable-sw-accel-ip6ip-7101034cd147
+>=20
+> Best regards,
+> --=20
+> Lorenzo Bianconi <lorenzo@kernel.org>
+>=20
+
+--y1SQHS4FsUVyGc0Q
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCag3U+AAKCRA6cBh0uS2t
+rPv9AQCAeVJ4LW3/ZIxsIiBE3XnXj6UlIBCD6SYxGD9HVjHqTAD9ETIzVKrKIpnn
+TWQXuXJqNaEhL7TTPrv+698yNy3I2QA=
+=eDma
+-----END PGP SIGNATURE-----
+
+--y1SQHS4FsUVyGc0Q--
 
