@@ -1,53 +1,99 @@
-Return-Path: <netfilter-devel+bounces-12767-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12768-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2K/MKJ81EGoaVAYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12767-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 12:53:19 +0200
+	id 8NJZBqg2EGoaVAYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12768-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 12:57:44 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 094235B2869
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 12:53:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E41A5B2960
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 12:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7994030DC784
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 10:45:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9528530EAFAA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 10:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5143E024E;
-	Fri, 22 May 2026 10:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE3F3D4130;
+	Fri, 22 May 2026 10:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="kMxbOTPM";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HdQVJWS/";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zn+L3DRt";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Pap94sS1"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A54B3D8910;
-	Fri, 22 May 2026 10:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9343D4104
+	for <netfilter-devel@vger.kernel.org>; Fri, 22 May 2026 10:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779446630; cv=none; b=Q10OJhwRAqqUIDnjRymTRSDpuTRhYXIj8qEO0bGq/exq8yhfuQOiUlz9lXxfgWtNF0/xb66bvHAqgDn4R6PUgKEsX2EXydgs5IYjijlU+mpbYJo/c6gC79ucf40UPmDZbnuOoQQ864VH6rPi6uIEGRHnRrFo8nMMRJn3G4RMqzw=
+	t=1779446858; cv=none; b=o66aNfD+FmvH8TokmXEsCNdmGqSIy19eMgu+u73mKzZG35iR/Wo8qvYE8o+nE1JutVGux7wJfXwKvPnCbk33vdTrLx9Kr/ybt8W4n3T7ypcpC03aFeXYErUBHtbyTEW4r/MqtbbQ9C3QqhRRonfz5HiWphe0+kcNdm/VU2dzupM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779446630; c=relaxed/simple;
-	bh=4b1L+oyxq+TV5Z+SvySWMP2YDp06kBI7OOkc7DCJY+M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dx0PWQvGZiLrhkz/qW5xtBPeurMWx8A1/QaLa2WpQhcJfljWybHd3LKxc586kXDFcK57GabVRsu71WM+pRDs6MfT+lSKYXxFBdYvcY8NuMM/CUozOchinbNvQfE8qIZqoIJsLcHIXPr1Hd3JXu+0pqyKC36/p9BoC3erQye5+5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 7EF7E607BD; Fri, 22 May 2026 12:43:46 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netdev@vger.kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	<netfilter-devel@vger.kernel.org>,
-	pablo@netfilter.org
-Subject: [PATCH net 10/10] netfilter: nf_tables: fix dst corruption in same register operation
-Date: Fri, 22 May 2026 12:42:57 +0200
-Message-ID: <20260522104257.2008-11-fw@strlen.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260522104257.2008-1-fw@strlen.de>
-References: <20260522104257.2008-1-fw@strlen.de>
+	s=arc-20240116; t=1779446858; c=relaxed/simple;
+	bh=LvfZwekDKzhY+lwc2Toq8mqFmyQ8NwNml6cPjdoVUjE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p8K6aB78Xl2bn6qhmgghxDZWeoOJ5Ik8f7ZFhbp52Y+pLY/Hz3aKkchXPdFU1G6tcWrmd4HTXlF46HyIlunePBALg/T7Awgzv+X22SWfGaoZqLJjCVhrIXq++cnDZBxI2Y+ZjHvzvZ9Q3YRHzEYjQEzZ67Qcy+2pg95C6pCngj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=kMxbOTPM; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HdQVJWS/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=zn+L3DRt; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Pap94sS1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A74A6670B4;
+	Fri, 22 May 2026 10:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1779446855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CyoBrGtxhdMuOlR+j+ihqUPCKsb0f8cNaKVqC0Ld1Ek=;
+	b=kMxbOTPM0BnLCKz9RwsxPITtMhCqjojfmVgYLiaxCueBzUB6lLkSNctO/KxClzDZYofp30
+	M/LRRszh2h07YlMS6cC3Y7HTr8ZoW258EVGemI7WMt8JlI+jGTNW8xiXKIx7alO52+vCuW
+	RnWvSUNAiAvO1tjS78CydDtvYKKcA5M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1779446855;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CyoBrGtxhdMuOlR+j+ihqUPCKsb0f8cNaKVqC0Ld1Ek=;
+	b=HdQVJWS/UkqsKvccUkLaiRy9XnIUTbO1OrdpAYhxewitgXlpiMe/A5xfRMoGXuz4rjI8fh
+	ol6wEHro33/JQjCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=zn+L3DRt;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Pap94sS1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1779446854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CyoBrGtxhdMuOlR+j+ihqUPCKsb0f8cNaKVqC0Ld1Ek=;
+	b=zn+L3DRtAKQN1sr1wb1XYWiw7p5a5Edx5XVDvyzEboBGjkjCB08b+lklZwSKId6fgy79iw
+	93DRT3Jfvr1Ynojt1tTBnngcsPZKiAORDDNTIZaBvB4je5DzOuC7f0NQyiVSmXrCJ0RwE/
+	8mYgeCubn83iY4JwTgxTJJF9Li9moWY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1779446854;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=CyoBrGtxhdMuOlR+j+ihqUPCKsb0f8cNaKVqC0Ld1Ek=;
+	b=Pap94sS1sl8g5iTGB7bQz7cx9Tir7qfiJR2trsdeN8rxc9SXPkgtWVIMWj6/imGWZlo4CX
+	PQtTOhCinTzReZCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 397C3593A8;
+	Fri, 22 May 2026 10:47:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jRHZCUY0EGq8FAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Fri, 22 May 2026 10:47:34 +0000
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+To: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org,
+	pablo@netfilter.org,
+	fw@strlen.de,
+	phil@nwl.cc,
+	Fernando Fernandez Mancera <fmancera@suse.de>
+Subject: [PATCH nf] netfilter: xt_NFQUEUE: prefer raw_smp_processor_id
+Date: Fri, 22 May 2026 12:47:17 +0200
+Message-ID: <20260522104717.27286-1-fmancera@suse.de>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -55,165 +101,66 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spam-Score: -3.01
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-12767-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-12768-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.964];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,strlen.de:mid,strlen.de:email,suse.de:email,azazel.net:email]
-X-Rspamd-Queue-Id: 094235B2869
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid,suse.de:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 8E41A5B2960
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Fernando Fernandez Mancera <fmancera@suse.de>
+With PREEMPT_RCU this triggers a splat because smp_processor_id() can be
+preempted while inside a RCU critical section. If xt_NFQUEUE target is
+invoked via nft_compat_eval() path, we are inside a RCU critical
+section.
 
-For lshift and rshift, the shift operations are performed in a loop over
-32-bit words. The loop calculates the shifted value and write it to dst,
-and then immediately reads from src to calculate the carry for the next
-iteration. Because src and dst could point to the same memory location,
-the carry is incorrectly calculated using the newly modified dst value
-instead of the original src value.
+Just use the raw version instead.
 
-Adding a temporary local variable to cache the original value before
-writing to dst and using it for the carry calculation solves the
-problem. In addition, partial overlap is rejected from control plane for
-all kind of operations including byteorder. This was tested with the
-following bytecode:
-
-table test_table ip flags 0 use 1 handle 1
-ip test_table test_chain use 3 type filter hook input prio 0 policy accept packets 0 bytes 0 flags 1
-ip test_table test_chain 2
-  [ immediate reg 1 0x44332211 0x88776655 ]
-  [ bitwise reg 1 = ( reg 1 << 0x08000000 ) ]
-  [ cmp eq reg 1 0x66443322 0x00887766 ]
-  [ counter pkts 0 bytes 0 ]
-ip test_table test_chain 4 3
-  [ immediate reg 1 0x44332211 0x88776655 ]
-  [ bitwise reg 1 = ( reg 1 << 0x08000000 ) ]
-  [ cmp eq reg 1 0x55443322 0x00887766 ]
-  [ counter pkts 21794 bytes 1917798 ]
-
-Fixes: 567d746b55bc ("netfilter: bitwise: add support for shifts.")
-Acked-by: Jeremy Sowden <jeremy@azazel.net>
+Fixes: 0ca743a55991 ("netfilter: nf_tables: add compatibility layer for x_tables")
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
-Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_tables.h |  7 +++++++
- net/netfilter/nft_bitwise.c       | 18 ++++++++++++++----
- net/netfilter/nft_byteorder.c     | 13 ++++++++++---
- 3 files changed, 31 insertions(+), 7 deletions(-)
+ net/netfilter/xt_NFQUEUE.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index cff7b773e972..9d844354c4d9 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -180,6 +180,13 @@ static inline u64 nft_reg_load64(const u32 *sreg)
- 	return get_unaligned((u64 *)sreg);
- }
+diff --git a/net/netfilter/xt_NFQUEUE.c b/net/netfilter/xt_NFQUEUE.c
+index 466da23e36ff..b32d153e3a18 100644
+--- a/net/netfilter/xt_NFQUEUE.c
++++ b/net/netfilter/xt_NFQUEUE.c
+@@ -91,7 +91,7 @@ nfqueue_tg_v3(struct sk_buff *skb, const struct xt_action_param *par)
  
-+static inline bool nft_reg_overlap(u8 src, u8 dst, u32 len)
-+{
-+	unsigned int n = DIV_ROUND_UP(len, sizeof(u32));
-+
-+	return src != dst && src < dst + n && dst < src + n;
-+}
-+
- static inline void nft_data_copy(u32 *dst, const struct nft_data *src,
- 				 unsigned int len)
- {
-diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
-index 94dccdcfa06b..785b8e9731d1 100644
---- a/net/netfilter/nft_bitwise.c
-+++ b/net/netfilter/nft_bitwise.c
-@@ -43,8 +43,10 @@ static void nft_bitwise_eval_lshift(u32 *dst, const u32 *src,
- 	u32 carry = 0;
+ 	if (info->queues_total > 1) {
+ 		if (info->flags & NFQ_FLAG_CPU_FANOUT) {
+-			int cpu = smp_processor_id();
++			int cpu = raw_smp_processor_id();
  
- 	for (i = DIV_ROUND_UP(priv->len, sizeof(u32)); i > 0; i--) {
--		dst[i - 1] = (src[i - 1] << shift) | carry;
--		carry = src[i - 1] >> (BITS_PER_TYPE(u32) - shift);
-+		u32 tmp_src = src[i - 1];
-+
-+		dst[i - 1] = (tmp_src << shift) | carry;
-+		carry = tmp_src >> (BITS_PER_TYPE(u32) - shift);
- 	}
- }
- 
-@@ -56,8 +58,10 @@ static void nft_bitwise_eval_rshift(u32 *dst, const u32 *src,
- 	u32 carry = 0;
- 
- 	for (i = 0; i < DIV_ROUND_UP(priv->len, sizeof(u32)); i++) {
--		dst[i] = carry | (src[i] >> shift);
--		carry = src[i] << (BITS_PER_TYPE(u32) - shift);
-+		u32 tmp_src = src[i];
-+
-+		dst[i] = carry | (tmp_src >> shift);
-+		carry = tmp_src << (BITS_PER_TYPE(u32) - shift);
- 	}
- }
- 
-@@ -235,6 +239,9 @@ static int nft_bitwise_init_bool(const struct nft_ctx *ctx,
- 					      &priv->sreg2, priv->len);
- 		if (err < 0)
- 			return err;
-+
-+		if (nft_reg_overlap(priv->sreg2, priv->dreg, priv->len))
-+			return -EINVAL;
- 	}
- 
- 	return 0;
-@@ -265,6 +272,9 @@ static int nft_bitwise_init(const struct nft_ctx *ctx,
- 	if (err < 0)
- 		return err;
- 
-+	if (nft_reg_overlap(priv->sreg, priv->dreg, priv->len))
-+		return -EINVAL;
-+
- 	if (tb[NFTA_BITWISE_OP]) {
- 		priv->op = ntohl(nla_get_be32(tb[NFTA_BITWISE_OP]));
- 		switch (priv->op) {
-diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
-index e00dddfa2fc0..2316c77f4228 100644
---- a/net/netfilter/nft_byteorder.c
-+++ b/net/netfilter/nft_byteorder.c
-@@ -144,9 +144,16 @@ static int nft_byteorder_init(const struct nft_ctx *ctx,
- 	if (err < 0)
- 		return err;
- 
--	return nft_parse_register_store(ctx, tb[NFTA_BYTEORDER_DREG],
--					&priv->dreg, NULL, NFT_DATA_VALUE,
--					priv->len);
-+	err = nft_parse_register_store(ctx, tb[NFTA_BYTEORDER_DREG],
-+				       &priv->dreg, NULL, NFT_DATA_VALUE,
-+				       priv->len);
-+	if (err < 0)
-+		return err;
-+
-+	if (nft_reg_overlap(priv->sreg, priv->dreg, priv->len))
-+		return -EINVAL;
-+
-+	return 0;
- }
- 
- static int nft_byteorder_dump(struct sk_buff *skb,
+ 			queue = info->queuenum + cpu % info->queues_total;
+ 		} else {
 -- 
 2.53.0
 
