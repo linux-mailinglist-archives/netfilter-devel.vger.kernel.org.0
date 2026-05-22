@@ -1,39 +1,39 @@
-Return-Path: <netfilter-devel+bounces-12763-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12764-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id prV8Le81EGorVAYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12763-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 12:54:39 +0200
+	id iPP3HU04EGoaVAYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12764-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 13:04:45 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B38D5B2896
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 12:54:38 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D3F5B2AF7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 13:04:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5EB14309AE6D
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 10:43:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8AFB930B0458
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2026 10:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9333CC7C7;
-	Fri, 22 May 2026 10:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961B73CE0AF;
+	Fri, 22 May 2026 10:43:36 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1833CC7E4;
-	Fri, 22 May 2026 10:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE9F3AE6E9;
+	Fri, 22 May 2026 10:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779446612; cv=none; b=QG8NGBQKt3xdQBaEqWuj32LC2lkesBBqQquG4qcvSJyfkYdY2JPVFr9HMCXcHJub2j604f4CRVYH2dicNpfkIlp/W5ZdQ4DkroPdgOmRmsoObbr9ukMivYcywXMOjv9WCXgcvHLhRLNlECpCau9BBrhjhWRZ9fI3kwxpCLDJcm0=
+	t=1779446616; cv=none; b=URWGaxzGGcWCYWRAfAYo+kqMAiUwHISlVoKilN3+zPvjj4gwj/TB2PJ7oHL51KFRwIfMk+KmAJ4KTca/+5jI4oKD53EDOwcCwJ6rWx/35Q8kZWuVUyfG85IwopHzxM+gYbVB13yl4lr1xgpiWxwJq6gPX3liKYxi12BGsfPoQIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779446612; c=relaxed/simple;
-	bh=eFXomPykvk/bdrsChX4aesHq40wtSgu3pwRm1rk0J6Q=;
+	s=arc-20240116; t=1779446616; c=relaxed/simple;
+	bh=XgzkTC3vRLHX/YHjdeUQpNxgoMy1bH2aoalGUr1p3so=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vlwe679nZr1KAPDAxz7+vDrMeqvclGjdIqqCmOTNN3hrgKLimgViBrmGcaeXuk2hvnK1c239pZ6fSXPA0hBcQ3d142GIC7w0SxGJy5eGqquLJSRx51us1Fw5UOawPeHocFFPqXHo+P0syUYmyWVacVXxVIcIrzgzLCfrVc+WO4I=
+	 MIME-Version; b=scdMmYUbwiQngXxeTJdxjqFXY3ka2MLb4nNFXlg0UYcu6tlnymzUuCyjPexGoNxmy5sdFzWTpvDYcmV85TwnFViH18o85k9n9BP0pxYuDjejqn3o+8DRrpYN6g0pCPMCK0cim73fBn69tx9qNGijBwD8JitbBQjh8ZoukPtj8X0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 714A4602C8; Fri, 22 May 2026 12:43:29 +0200 (CEST)
+	id B1259602C8; Fri, 22 May 2026 12:43:33 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -42,9 +42,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 06/10] netfilter: ebtables: fix OOB read in compat_mtw_from_user
-Date: Fri, 22 May 2026 12:42:53 +0200
-Message-ID: <20260522104257.2008-7-fw@strlen.de>
+Subject: [PATCH net 07/10] netfilter: nft_fib_ipv6: walk fib6_siblings under RCU
+Date: Fri, 22 May 2026 12:42:54 +0200
+Message-ID: <20260522104257.2008-8-fw@strlen.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260522104257.2008-1-fw@strlen.de>
 References: <20260522104257.2008-1-fw@strlen.de>
@@ -59,11 +59,11 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-12763-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12764-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -71,113 +71,49 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.962];
+	NEURAL_HAM(-0.00)[-0.963];
 	PRECEDENCE_BULK(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,suse.de:email,lzu.edu.cn:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 1B38D5B2896
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:mid,strlen.de:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:email]
+X-Rspamd-Queue-Id: 78D3F5B2AF7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Luxiao Xu says:
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
 
- The function compat_mtw_from_user() converts ebtables extensions from
- 32-bit user structures to kernel native structures. However, it lacks
- proper validation of the user-supplied match_size/target_size.
+nft_fib6_info_nh_uses_dev() runs from nft_fib6_eval() in softirq under
+rcu_read_lock().  fib6_siblings is modified by writers that hold
+tb6_lock but do not wait for RCU readers, so the sibling walk should
+use list_for_each_entry_rcu(): it adds READ_ONCE() on the ->next
+pointer and lets CONFIG_PROVE_RCU_LIST validate the locking.
 
- When certain extensions are processed, the kernel-side translation
- logic may perform memory accesses based on the extension's expected
- size. If the user provides a size smaller than what the extension
- requires, it results in an out-of-bounds read as reported by KASAN.
+No functional change for non-debug builds.
 
- This fix introduces a check to ensure match_size is at least as large
- as the extension's required compatsize. This covers matches, watchers,
- and targets, while maintaining compatibility with standard targets.
-
-AFAIU this is relevant for matches that need to go though
-match->compat_from_user() call.  Those that use plain memcpy with the
-user-provided size are ok because the caller checks that size vs the
-start of the next rule entry offset (which itself is checked vs. total
-size copied from userspace).
-
-The ->compat_from_user() callbacks assume they can read compatsize bytes,
-so they need this extra check.
-
-Based on an earlier patch from Luxiao Xu.
-
-Fixes: 81e675c227ec ("netfilter: ebtables: add CONFIG_COMPAT support")
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Signed-off-by: Luxiao Xu <rakukuip@gmail.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
-Reviewed-by: Fernando Fernandez Mancera <fmancera@suse.de>
+Fixes: 1c32b24c234b ("netfilter: nft_fib_ipv6: switch to fib6_lookup")
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/bridge/netfilter/ebtables.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ net/ipv6/netfilter/nft_fib_ipv6.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index b9f4daac09af..8a6a069329d2 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -1956,6 +1956,25 @@ enum compat_mwt {
- 	EBT_COMPAT_TARGET,
- };
+diff --git a/net/ipv6/netfilter/nft_fib_ipv6.c b/net/ipv6/netfilter/nft_fib_ipv6.c
+index 8b2dba88ee96..5e192a446ec8 100644
+--- a/net/ipv6/netfilter/nft_fib_ipv6.c
++++ b/net/ipv6/netfilter/nft_fib_ipv6.c
+@@ -170,7 +170,7 @@ static bool nft_fib6_info_nh_uses_dev(struct fib6_info *rt,
+ 	if (nft_fib6_info_nh_dev_match(nh_dev, dev))
+ 		return true;
  
-+static bool match_size_ok(const struct xt_match *match, unsigned int match_size)
-+{
-+	u16 csize;
-+
-+	if (match->matchsize == -1) /* cannot validate ebt_among */
-+		return true;
-+
-+	csize = match->compatsize ? : match->matchsize;
-+
-+	return match_size >= csize;
-+}
-+
-+static bool tgt_size_ok(const struct xt_target *tgt, unsigned int tgt_size)
-+{
-+	u16 csize = tgt->compatsize ? : tgt->targetsize;
-+
-+	return tgt_size >= csize;
-+}
-+
- static int compat_mtw_from_user(const struct compat_ebt_entry_mwt *mwt,
- 				enum compat_mwt compat_mwt,
- 				struct ebt_entries_buf_state *state,
-@@ -1981,6 +2000,11 @@ static int compat_mtw_from_user(const struct compat_ebt_entry_mwt *mwt,
- 		if (IS_ERR(match))
- 			return PTR_ERR(match);
+-	list_for_each_entry(iter, &rt->fib6_siblings, fib6_siblings) {
++	list_for_each_entry_rcu(iter, &rt->fib6_siblings, fib6_siblings) {
+ 		nh_dev = fib6_info_nh_dev(iter);
  
-+		if (!match_size_ok(match, match_size)) {
-+			module_put(match->me);
-+			return -EINVAL;
-+		}
-+
- 		off = ebt_compat_match_offset(match, match_size);
- 		if (dst) {
- 			if (match->compat_from_user)
-@@ -2000,6 +2024,12 @@ static int compat_mtw_from_user(const struct compat_ebt_entry_mwt *mwt,
- 					    mwt->u.revision);
- 		if (IS_ERR(wt))
- 			return PTR_ERR(wt);
-+
-+		if (!tgt_size_ok(wt, match_size)) {
-+			module_put(wt->me);
-+			return -EINVAL;
-+		}
-+
- 		off = xt_compat_target_offset(wt);
- 
- 		if (dst) {
+ 		if (nft_fib6_info_nh_dev_match(nh_dev, dev))
 -- 
 2.53.0
 
