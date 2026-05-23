@@ -1,97 +1,97 @@
-Return-Path: <netfilter-devel+bounces-12793-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12792-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wLbmLsEEEmrDtQYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12793-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 21:49:21 +0200
+	id oAq0MocFEmrDtQYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12792-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 21:52:39 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 627CC5C0A7D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 21:49:20 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9DA55C0B11
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 21:52:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0F00030198BA
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 19:48:39 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E9EA5302E8DD
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 19:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEE6335081;
-	Sat, 23 May 2026 19:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7E133D6E6;
+	Sat, 23 May 2026 19:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MnzvZ1cq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="a+hHQK0Z";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MnzvZ1cq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="a+hHQK0Z"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="e6rKEQuA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E4J8Bw8N";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="e6rKEQuA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E4J8Bw8N"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9251C68F
-	for <netfilter-devel@vger.kernel.org>; Sat, 23 May 2026 19:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03E93403E6
+	for <netfilter-devel@vger.kernel.org>; Sat, 23 May 2026 19:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779565709; cv=none; b=b49uJW6hiMP/it/OwnEIaEeSrA1KRKAmqMI3+URICwej/kzyXDRfgnpHLz1kJmlTNyxunWnVyzPqA7EZ9/x8N46FW7h5vyPU4/arBjZMYB3yWld0b3MUHv4rD2G/dbDKIn3MKkchGloQ3+YZ43ktBCzZc+h/dGk3M+k1ocG8U3Y=
+	t=1779565706; cv=none; b=pPU2Y6OR7+wA4jBWvtpgXjPYtC7GdzvNbd8RqAThwxVyC/d2ebpt+Erllbj5gw3ZumasB8AMP4z60CSTRpa/beN57gk3W0J4H2ZO0oNqQT742lHTTjB/rzp15TQbHmThSpxhfzIWv/qTBGk2up5sLnQdj1cLteMWzG6Xn403pHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779565709; c=relaxed/simple;
-	bh=i5fcyVMx/pxYdjwCuNGaEcmDwnMhp3RMXLtbMcdOxrA=;
+	s=arc-20240116; t=1779565706; c=relaxed/simple;
+	bh=rXkMdfolOS9eaZibezW42eajj1kLWX3GWTkpL+MjvtU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XxmtxbfxaMjx01khhLH3PeuIuYfM+fD2bZR3EAqcmNLbIeT6i9eDb+7QfFmoZ2rxfHcZ7yoHYt47cdNNdISZQd5YNyqt6VmBiMN6O3ZIjY+gHaP4fwa1fSKTwcGVtmTjzbblNkxDoAmqyEKzO8CDxRggJMdXECla+Kefx7t8gtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MnzvZ1cq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=a+hHQK0Z; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MnzvZ1cq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=a+hHQK0Z; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=MebnmE/WTXTi/2iBsi4lcLnTapD7uGgBqsw5Q5ZywKxjpCQbmj5R+Dmz7z7HAmKOw6TNTepnUcjU03xzExmikQFlSCEz2tnsb8Bt25wnVgDVEruDlGR1/iFtub8UvtH4jjVohYV+1BWxWlRLB1ij6fpS7bHHykL9aBd1O7f/2/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=e6rKEQuA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E4J8Bw8N; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=e6rKEQuA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E4J8Bw8N; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 37E376851B;
-	Sat, 23 May 2026 19:48:21 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6F3E063FEA;
+	Sat, 23 May 2026 19:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1779565701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1779565702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AFc+FmrI31TjpTeBzeACSQoOuuqWrr93OxbmIWnOQMo=;
-	b=MnzvZ1cqQ3oogSroxezvM/O5ROSbYPkrC7vZ9AjlMUf2JPKWGF8kU3RCTdbVdR/YyPrECb
-	3X9oSJjw9U4s0R8THazPHtEj6h8tTeGKe5SFowRBeZyMHeMORJJv576Z/X/9UVbXhd7U8D
-	JNl65Ge94zsO98CFGmK7S7WhUmEyyvE=
+	bh=yx89mf0Zmg1pvV1DJdN8WyTHaAbQIOE3XTW9JK3xuMw=;
+	b=e6rKEQuA4VgjusyGqGCmTjvmNXSBmUUG1xbqNnsTXgi2FPUmFDcaJfv/dJlxbElF/aUpxo
+	pCsXn5QareDrWUktR79y68TQoSGQhfKlwIMXWzVuT/soqYZZh2q8+Kc/p9Gk7x1iAP8b6U
+	V2rXpc1mBEjIVagZSs466ZYvMa64NAE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1779565701;
+	s=susede2_ed25519; t=1779565702;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AFc+FmrI31TjpTeBzeACSQoOuuqWrr93OxbmIWnOQMo=;
-	b=a+hHQK0ZxCZv4vbYiVkFznyaMnNk1wgEaajFjIbX6gfyDcrwhQGa8hL9vpMHf+xQ6bCV9o
-	a9ksRP7yn+l/h1BA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=MnzvZ1cq;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=a+hHQK0Z
+	bh=yx89mf0Zmg1pvV1DJdN8WyTHaAbQIOE3XTW9JK3xuMw=;
+	b=E4J8Bw8NUZ5jZdQW5wenRWBaqJZcR/lEXsUcQ/h92XpER4i+bJeWAP/7if6KqWZ7mmwdav
+	KJEU2EZ0qMO3QuCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=e6rKEQuA;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=E4J8Bw8N
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1779565701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1779565702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AFc+FmrI31TjpTeBzeACSQoOuuqWrr93OxbmIWnOQMo=;
-	b=MnzvZ1cqQ3oogSroxezvM/O5ROSbYPkrC7vZ9AjlMUf2JPKWGF8kU3RCTdbVdR/YyPrECb
-	3X9oSJjw9U4s0R8THazPHtEj6h8tTeGKe5SFowRBeZyMHeMORJJv576Z/X/9UVbXhd7U8D
-	JNl65Ge94zsO98CFGmK7S7WhUmEyyvE=
+	bh=yx89mf0Zmg1pvV1DJdN8WyTHaAbQIOE3XTW9JK3xuMw=;
+	b=e6rKEQuA4VgjusyGqGCmTjvmNXSBmUUG1xbqNnsTXgi2FPUmFDcaJfv/dJlxbElF/aUpxo
+	pCsXn5QareDrWUktR79y68TQoSGQhfKlwIMXWzVuT/soqYZZh2q8+Kc/p9Gk7x1iAP8b6U
+	V2rXpc1mBEjIVagZSs466ZYvMa64NAE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1779565701;
+	s=susede2_ed25519; t=1779565702;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AFc+FmrI31TjpTeBzeACSQoOuuqWrr93OxbmIWnOQMo=;
-	b=a+hHQK0ZxCZv4vbYiVkFznyaMnNk1wgEaajFjIbX6gfyDcrwhQGa8hL9vpMHf+xQ6bCV9o
-	a9ksRP7yn+l/h1BA==
+	bh=yx89mf0Zmg1pvV1DJdN8WyTHaAbQIOE3XTW9JK3xuMw=;
+	b=E4J8Bw8NUZ5jZdQW5wenRWBaqJZcR/lEXsUcQ/h92XpER4i+bJeWAP/7if6KqWZ7mmwdav
+	KJEU2EZ0qMO3QuCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0320593A8;
-	Sat, 23 May 2026 19:48:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0373C593A8;
+	Sat, 23 May 2026 19:48:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CJeoK4QEEmodWQAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Sat, 23 May 2026 19:48:20 +0000
+	id 2OBJOYUEEmodWQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Sat, 23 May 2026 19:48:21 +0000
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 To: netfilter-devel@vger.kernel.org
 Cc: coreteam@netfilter.org,
@@ -99,9 +99,9 @@ Cc: coreteam@netfilter.org,
 	fw@strlen.de,
 	phil@nwl.cc,
 	Fernando Fernandez Mancera <fmancera@suse.de>
-Subject: [PATCH 2/3 nf-next] netfilter: synproxy: drop packets with duplicated timestamp options
-Date: Sat, 23 May 2026 21:47:43 +0200
-Message-ID: <20260523194743.5888-4-fmancera@suse.de>
+Subject: [PATCH 3/3 nf-next] netfilter: synproxy: fix unaligned memory access in timestamp adjustment
+Date: Sat, 23 May 2026 21:47:44 +0200
+Message-ID: <20260523194743.5888-5-fmancera@suse.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260523194743.5888-2-fmancera@suse.de>
 References: <20260523194743.5888-2-fmancera@suse.de>
@@ -120,13 +120,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12793-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12792-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
@@ -139,62 +139,67 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[suse.de:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,suse.de:email,suse.de:mid,suse.de:dkim]
-X-Rspamd-Queue-Id: 627CC5C0A7D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,suse.de:email,suse.de:mid,suse.de:dkim]
+X-Rspamd-Queue-Id: C9DA55C0B11
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-RFC 9293 does not mention anything about duplicated options and each
-networking stack handles it in their own way. Currently, Linux kernel is
-processing options sequentially and in case of duplicated timestamp
-options, the value from the latest one overrides the others.
+Use get_unaligned_be32() and put_unaligned_be32() to safely read and
+write the timestamp fields. This prevents performance degradation due to
+unaligned memory access or even a crash on strict alignment
+architectures.
 
-As SYNPROXY is modifying only the first timestamp option found, a packet
-can reach the backend server and it might parse the wrong timestamp
-value.  As there is not a use-case for duplicated timestamp option, drop
-the packet directly when such situation is found.
+This follows the implementation of timestamp parsing in the networking
+stack at tcp_parse_options() and synproxy_parse_options().
 
 Fixes: 48b1de4c110a ("netfilter: add SYNPROXY core/target")
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 ---
- net/netfilter/nf_synproxy_core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ net/netfilter/nf_synproxy_core.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/net/netfilter/nf_synproxy_core.c b/net/netfilter/nf_synproxy_core.c
-index 51a3dd48995b..49ce18f9c8ef 100644
+index 49ce18f9c8ef..a49124e8e552 100644
 --- a/net/netfilter/nf_synproxy_core.c
 +++ b/net/netfilter/nf_synproxy_core.c
-@@ -189,6 +189,7 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
- 		       const struct nf_conn_synproxy *synproxy)
+@@ -190,7 +190,7 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
  {
  	unsigned int optoff, optend;
-+	bool tstamp_seen = false;
- 	__be32 *ptr, old;
+ 	bool tstamp_seen = false;
+-	__be32 *ptr, old;
++	u32 new, old;
  
  	if (synproxy->tsoff == 0)
-@@ -216,6 +217,8 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
- 				return false;
- 			if (op[0] == TCPOPT_TIMESTAMP &&
- 			    op[1] == TCPOLEN_TIMESTAMP) {
-+				if (tstamp_seen)
-+					return false;
+ 		return true;
+@@ -220,18 +220,17 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
+ 				if (tstamp_seen)
+ 					return false;
  				if (CTINFO2DIR(ctinfo) == IP_CT_DIR_REPLY) {
- 					ptr = (__be32 *)&op[2];
- 					old = *ptr;
-@@ -229,7 +232,10 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
+-					ptr = (__be32 *)&op[2];
+-					old = *ptr;
+-					*ptr = htonl(ntohl(*ptr) -
+-						     synproxy->tsoff);
++					old = get_unaligned_be32(&op[2]);
++					new = old - synproxy->tsoff;
++					put_unaligned_be32(new, &op[2]);
+ 				} else {
+-					ptr = (__be32 *)&op[6];
+-					old = *ptr;
+-					*ptr = htonl(ntohl(*ptr) +
+-						     synproxy->tsoff);
++					old = get_unaligned_be32(&op[6]);
++					new = old + synproxy->tsoff;
++					put_unaligned_be32(new, &op[6]);
  				}
  				inet_proto_csum_replace4(&th->check, skb,
- 							 old, *ptr, false);
--				return true;
-+				/* continue parsing options in case there is a
-+				 * duplicated tstamp, drop the packet
-+				 */
-+				tstamp_seen = true;
- 			}
- 			optoff += op[1];
- 		}
+-							 old, *ptr, false);
++							 cpu_to_be32(old),
++							 cpu_to_be32(new), false);
+ 				/* continue parsing options in case there is a
+ 				 * duplicated tstamp, drop the packet
+ 				 */
 -- 
 2.53.0
 
