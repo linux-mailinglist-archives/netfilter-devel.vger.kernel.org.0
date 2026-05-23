@@ -1,66 +1,66 @@
-Return-Path: <netfilter-devel+bounces-12785-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12782-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oEsROoeqEWryogYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12785-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 15:24:23 +0200
+	id TVObC8WpEWrfogYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12782-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 15:21:09 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8809A5BF05D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 15:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEF45BF036
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 15:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 291DE30137A7
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 13:24:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DA99F3013798
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2026 13:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC3238736B;
-	Sat, 23 May 2026 13:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB2A256C61;
+	Sat, 23 May 2026 13:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="C3ZJbmcT"
+	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="Z6mZawPG"
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.50])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA2934DB52
-	for <netfilter-devel@vger.kernel.org>; Sat, 23 May 2026 13:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572E619004A
+	for <netfilter-devel@vger.kernel.org>; Sat, 23 May 2026 13:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779542658; cv=none; b=U2DYF2dOeYGo9NuyhgP54IdEaJ+30r35AiGRtZ7FWbqcWD2RQA2ZLM3agF4Z0d2kQXUI5RMPj0KBDfWhKZHw4MjDs+7h6OaaXD2SJw3MzHxETl7S3vhUHT4NehbazWmi9TEotY/mcau71W6Wjn57xi6FJmARW+hMM6hb5AfW/5E=
+	t=1779542464; cv=none; b=fi8LNqkZHCOOkN95YGyJ745KfwYPyOBXRxWshPqZxE7g+B4ZHpbYBE5C1TEbevBk5ufG+jD8lJ2ndQtuQAR/5+1Xdqs5MenxT71UaC1kujBgXMoO1KcrL2eFOdhJe7yvbb/jzXUBX1KEoigoYwrzQOmLiHc0Hj1pQxxClUUOqxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779542658; c=relaxed/simple;
-	bh=RTg/GdwJI8Bbf4KJNpxkua1HzHrSD7ideGSwnP35mJE=;
+	s=arc-20240116; t=1779542464; c=relaxed/simple;
+	bh=OFc8DjmEbYuGQq4/+z3qKunvvIzgBdptjKqNTSCg5gY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rr9qWHLh55bzF4sxuGIH/hYs+bMGYyHOI5wwYDQ1Q9/NBDa+Zn+aF2tHYuOL8AEW7IIar1BvgmHXktFCQYryQrRF1ATe4466U04801a5MG2JV/goPzpdDS/Ysq4bxqbLYWYkiH7Jny5kDdhio7uILP/Mb2eWen0KpNn2N0uoBnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=C3ZJbmcT; arc=none smtp.client-ip=148.6.0.50
+	 MIME-Version; b=bb5WFHLGUzK7YGB1ZqkkMp3X/iEKD39NO3THj6sfqNnlGRNg+qPJLZsVDZLHnqHzjdRzj+wi4sE5N3yW0BjMYCVEHVuAivc4zxzq7+MOxHP6T0LQ55kj92ntm1R/r0/lBF/bgGKb0ga9UKoBIlVK+1+NwdzSFno1lO6Mwz3bHYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=Z6mZawPG; arc=none smtp.client-ip=148.6.0.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
 Received: from localhost (localhost [127.0.0.1])
-	by smtp1.kfki.hu (Postfix) with ESMTP id 4gN2gv1WzpzGFDMM;
-	Sat, 23 May 2026 15:15:23 +0200 (CEST)
+	by smtp0.kfki.hu (Postfix) with ESMTP id 4gN2gs3kCmz3sb0f;
+	Sat, 23 May 2026 15:15:21 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	blackhole.kfki.hu; h=mime-version:references:in-reply-to
 	:x-mailer:message-id:date:date:from:from:received:received
-	:received; s=20151130; t=1779542121; x=1781356522; bh=i1WeacfPgb
-	NntIDHr5gKZYI1Y9vdNB5KGRuvFR4+jKI=; b=C3ZJbmcTA9XDJP6Qr8d7F1rf6F
-	YodJ3wmOtvy89SFYTUF5OkpwT4qObjDlYqEYm8aBDpZNtOzNIeYX1WRTUD9YtPfC
-	CSIrVe4JsQeycfEaib0ecrXyd4IJf3kV5g2LLO3BY+1GcqDMk6w48BV93jiwbPDm
-	ui/8HwogqBgaeIjzs=
-X-Virus-Scanned: Debian amavis at smtp1.kfki.hu
-Received: from smtp1.kfki.hu ([127.0.0.1])
- by localhost (smtp1.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id m0fFdAE6NK28; Sat, 23 May 2026 15:15:21 +0200 (CEST)
+	:received; s=20151130; t=1779542119; x=1781356520; bh=UMCgCl3Qja
+	ouI+4/X+yWQma/WUGVqMAaEfE1Ozl1Ftk=; b=Z6mZawPGK0d/YKquWcD5VUS889
+	3zqqMvzjnPu54AqJu0YVX1QVjxEtfbv2qwVtV8JDwC3LMdVlC/CzXT32TY/vzzfI
+	BYIaCgrgsKN1IvpA5UFaWLW6kfdd0Avf1Ainr4BeJCP6dkCMH3w6JvMedpIEf5yO
+	F88jbL6YWfNeO6nT4=
+X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+ by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id plJxi3-CwrqC; Sat, 23 May 2026 15:15:19 +0200 (CEST)
 Received: from mentat.rmki.kfki.hu (85-66-106-71.pool.digikabel.hu [85.66.106.71])
 	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp1.kfki.hu (Postfix) with ESMTPSA id 4gN2gq4C1zzGFDMJ;
+	by smtp0.kfki.hu (Postfix) with ESMTPSA id 4gN2gq487Mz3sb0c;
 	Sat, 23 May 2026 15:15:19 +0200 (CEST)
 Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 4A11D141227; Sat, 23 May 2026 15:15:19 +0200 (CEST)
+	id 4C71B1412C5; Sat, 23 May 2026 15:15:19 +0200 (CEST)
 From: Jozsef Kadlecsik <kadlec@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5/6] netfilter: ipset: fix potential torn read in reuse/forceadd cases
-Date: Sat, 23 May 2026 15:15:18 +0200
-Message-Id: <20260523131519.99953-6-kadlec@netfilter.org>
+Subject: [PATCH 6/6] netfilter: ipset: add comment how cidr bookkeeping is working
+Date: Sat, 23 May 2026 15:15:19 +0200
+Message-Id: <20260523131519.99953-7-kadlec@netfilter.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260523131519.99953-1-kadlec@netfilter.org>
 References: <20260523131519.99953-1-kadlec@netfilter.org>
@@ -70,19 +70,19 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-deepspam: maybeham 4%
+X-deepspam: ham 1%
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12785-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12782-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
@@ -95,71 +95,60 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[blackhole.kfki.hu:dkim,netfilter.org:mid,netfilter.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[blackhole.kfki.hu:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	NEURAL_HAM(-0.00)[-0.996];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 8809A5BF05D
+X-Rspamd-Queue-Id: 6FEF45BF036
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Sashiko pointed out that due to using memcpy() to overwrite
-already existing entry in reuse/forceadd cases, it can lead to
-torn reads for concurrent lockless RCU readers. Set the element
-explicitly to unused before trying to reuse it.
+Sashiko thinks that cidr bookkeeping might be unsafe because the
+concurrent RCU reader in mtype_test_cidrs() uses the data without
+sequence locks or read-side barriers. However every right shift
+(add new entry) and left shift (delete entry) is performed by
+duplicating the entry just shifted. Therefore concurrent reader
+will just duplicate a test with the same value twice thus existing
+entries cannot be skipped.
 
 Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 ---
- net/netfilter/ipset/ip_set_hash_gen.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/netfilter/ipset/ip_set_hash_gen.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/=
 ip_set_hash_gen.h
-index 4928196a737e..d97b783174d6 100644
+index d97b783174d6..658b012a154c 100644
 --- a/net/netfilter/ipset/ip_set_hash_gen.h
 +++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -868,7 +868,7 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- 	bool flag_exist =3D flags & IPSET_FLAG_EXIST;
- 	bool deleted =3D false, forceadd =3D false, reuse =3D false;
- 	u32 r, key, multi =3D 0, elements, maxelem;
--	u8 npos =3D 0;
-+	u8 npos =3D 0, retried =3D 0;
-=20
- 	rcu_read_lock_bh();
- 	t =3D rcu_dereference_bh(h->table);
-@@ -893,6 +893,7 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- 	}
- 	rcu_read_unlock_bh();
-=20
-+retry:
- 	spin_lock_bh(&t->hregion[r].lock);
- 	n =3D rcu_dereference_bh(hbucket(t, key));
- 	if (!n) {
-@@ -941,6 +942,10 @@ mtype_add(struct ip_set *set, void *value, const str=
-uct ip_set_ext *ext,
- 			j =3D 0;
- 		data =3D ahash_data(n, j, set->dsize);
- 		if (!deleted) {
-+			if (retried++)
-+				goto set_full;
-+			clear_bit(j, n->used);
-+			smp_mb__after_atomic();
- #ifdef IP_SET_HASH_WITH_NETS
- 			for (i =3D 0; i < IPSET_NET_COUNT; i++)
- 				mtype_del_cidr(set, h,
-@@ -949,6 +954,8 @@ mtype_add(struct ip_set *set, void *value, const stru=
-ct ip_set_ext *ext,
- #endif
- 			ip_set_ext_destroy(set, data);
- 			t->hregion[r].elements--;
-+			spin_unlock_bh(&t->hregion[r].lock);
-+			goto retry;
+@@ -342,6 +342,12 @@ mtype_add_cidr(struct ip_set *set, struct htype *h, =
+u8 cidr, u8 n)
  		}
- 		goto copy_data;
  	}
+ 	if (j !=3D -1) {
++		/* We shift the cidr values to the right
++		 * by duplicating the entries one by one,
++		 * starting from the end.
++		 * It means the same test can be repeated twice
++		 * by a concurrent mtype_test_cidrs() reader.
++		 */
+ 		for (; i > j; i--)
+ 			h->nets[i].cidr[n] =3D h->nets[i - 1].cidr[n];
+ 	}
+@@ -363,6 +369,11 @@ mtype_del_cidr(struct ip_set *set, struct htype *h, =
+u8 cidr, u8 n)
+ 		h->nets[CIDR_POS(cidr)].nets[n]--;
+ 		if (h->nets[CIDR_POS(cidr)].nets[n] > 0)
+ 			goto unlock;
++		/* We shift the cidr values to the left
++		 * by duplicating the remaining entries one by one.
++		 * It means the same test can be repeated twice
++		 * by a concurrent mtype_test_cidrs() reader.
++		 */
+ 		for (j =3D i; j < net_end && h->nets[j].cidr[n]; j++)
+ 			h->nets[j].cidr[n] =3D h->nets[j + 1].cidr[n];
+ 		h->nets[j].cidr[n] =3D 0;
 --=20
 2.39.5
 
