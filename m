@@ -1,96 +1,55 @@
-Return-Path: <netfilter-devel+bounces-12851-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12853-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8PhHAWStFWpkXwcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12851-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:25:40 +0200
+	id 4PSpCDuuFWr2XwcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12853-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:29:15 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D9F75D76F7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:25:39 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE175D77E7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:29:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E6948301049D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 14:19:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AE06B32C08DC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 14:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7430E3FBEC2;
-	Tue, 26 May 2026 14:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qqBFUpf0";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7a+h7yCo";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qqBFUpf0";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7a+h7yCo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192C93FE666;
+	Tue, 26 May 2026 14:19:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF95337E302
-	for <netfilter-devel@vger.kernel.org>; Tue, 26 May 2026 14:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C0C22083
+	for <netfilter-devel@vger.kernel.org>; Tue, 26 May 2026 14:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779805144; cv=none; b=AR6Z/CL73DRzRnMD/pKHGtSFzPNpBQYutbRnWu+wWRQ7YVSOQ3eohrOHe/k7KNBKp7FUJlFIFIGy9OJ+FoBncyiGbEUdc4jR8bpbV3Ysdy9KvHxGEAl7DZU5tKwYNHI2oCA1DZBwEqkfWldXwUeb3MSzXuxODG+KTCCW6ouKf3Q=
+	t=1779805152; cv=none; b=V/5b2rpS7SGYQwXk0g56dxxEy3JemkI8Ka9fSqx3lDaokmCCX28Fmktn2X1zTmZSdY+RBk6iQopWIpuo0c0eVhAdN3squCyqgYLKBky9CG4ZeLmXzAoa7ftRdR4qmVUDRi1G/dmTTK7SeKvsDLUuPrYiDklmJ+3Aez0zMztTtmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779805144; c=relaxed/simple;
-	bh=ZYIphicvblmGkG70Qfi+Yulqc3S5qSAjMXNu5D0NOMY=;
+	s=arc-20240116; t=1779805152; c=relaxed/simple;
+	bh=sGhraC+lMkT0Cf4ErsA+3XKd30ZlK1hs67dc5guu1VE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=APXbLrCXs0HmhYbMi2aSdKEmMzluY7w2jrcSouWZb/DJgmPmjVu/i+3stKBaNcBTi7AKLQD4tAOe9RgU2t62WfrGcNiUab1yhXxuMUD6ISStg2UH5wqWt4LtS1YlCtdl7OkeJFaEFKt4bCysaDLO/b6ziXKzk+CQIXMm4+d0vac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qqBFUpf0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7a+h7yCo; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qqBFUpf0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7a+h7yCo; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=gSrg9qf0xFIrn7PKUjeEXYNk+GhM8UapvETcjr/qIeETY2WfK4EXRyj7mqLHAXsi/gl54wcSZQzN0kIWhdZc2Z3KHoJPRp/fKDgyOYqjIISg5fyCuAAaiQgz0ogdQKViRKlXuouvhGEPG55+HPeVWGM2YszRvoTWbU3WxxtMknA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3C7B25CEBD;
-	Tue, 26 May 2026 14:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1779805141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g9Z8pv6SZKfW8NNpXKczlflnAHLcQRG68a0cZ/I8MoQ=;
-	b=qqBFUpf0KR/th7oLTFV5wpMjIilnaGXj1hHLH45PbsEWuEsg8C27pjRDsAy7cB+cF5pdom
-	LefYoWCvpdJIY4cgxtVrHAyT618KrpBAsK2okT85vmTUPlToMKigvtDucxty+bZFGiVKno
-	/wbBFWovpqcva/OW3W7AX6arbcVhCUE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1779805141;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g9Z8pv6SZKfW8NNpXKczlflnAHLcQRG68a0cZ/I8MoQ=;
-	b=7a+h7yCoYuYnRe3JT4jaVbto4X7MXlJSxvbNjvFJDLphi2lEDccgHHa47LqMA2bfgILBCf
-	daSamvhXGrU51jAg==
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 44C4F66D1D;
+	Tue, 26 May 2026 14:19:02 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1779805141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g9Z8pv6SZKfW8NNpXKczlflnAHLcQRG68a0cZ/I8MoQ=;
-	b=qqBFUpf0KR/th7oLTFV5wpMjIilnaGXj1hHLH45PbsEWuEsg8C27pjRDsAy7cB+cF5pdom
-	LefYoWCvpdJIY4cgxtVrHAyT618KrpBAsK2okT85vmTUPlToMKigvtDucxty+bZFGiVKno
-	/wbBFWovpqcva/OW3W7AX6arbcVhCUE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1779805141;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g9Z8pv6SZKfW8NNpXKczlflnAHLcQRG68a0cZ/I8MoQ=;
-	b=7a+h7yCoYuYnRe3JT4jaVbto4X7MXlJSxvbNjvFJDLphi2lEDccgHHa47LqMA2bfgILBCf
-	daSamvhXGrU51jAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB9825A24D;
-	Tue, 26 May 2026 14:19:00 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D433F5A24D;
+	Tue, 26 May 2026 14:19:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UDvNLtSrFWqbJQAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Tue, 26 May 2026 14:19:00 +0000
+	id 0ELfMNWrFWqbJQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 26 May 2026 14:19:01 +0000
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 To: netfilter-devel@vger.kernel.org
 Cc: coreteam@netfilter.org,
@@ -98,9 +57,9 @@ Cc: coreteam@netfilter.org,
 	fw@strlen.de,
 	phil@nwl.cc,
 	Fernando Fernandez Mancera <fmancera@suse.de>
-Subject: [PATCH 4/5 nf-next v3] netfilter: synproxy: protect nf_ct_seqadj_init() with conntrack lock
-Date: Tue, 26 May 2026 16:18:37 +0200
-Message-ID: <20260526141838.4191-5-fmancera@suse.de>
+Subject: [PATCH 5/5 nf-next v3] netfilter: synproxy: add mutex to guard hook reference counting
+Date: Tue, 26 May 2026 16:18:38 +0200
+Message-ID: <20260526141838.4191-6-fmancera@suse.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260526141838.4191-1-fmancera@suse.de>
 References: <20260526141838.4191-1-fmancera@suse.de>
@@ -111,121 +70,143 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Flag: NO
-X-Spam-Score: -6.80
 X-Spam-Level: 
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [0.14 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[suse.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12851-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.de:+];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-12853-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.de:email,suse.de:mid,suse.de:dkim]
-X-Rspamd-Queue-Id: 6D9F75D76F7
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-0.961];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.de:mid,suse.de:email]
+X-Rspamd-Queue-Id: BDE175D77E7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-nf_ct_seqadj_init() is called without holding the ct lock. This can race
-with nf_ct_seq_adjust() when a connection is in CLOSE state due to an
-RST or connection reopening. In addition for SYN_RECV state, concurrent
-processing of packets can trigger nf_ct_seq_adjust() too. These
-situations create a read/write data race.
+As the synproxy infrastructure register netfilter hooks on-demand when a
+user adds the first iptables target or nftables expression, if done
+concurrently they can race each other.
 
-Fix this by wrapping the nf_ct_seqadj_init() calls in the synproxy hooks
-with locking.
+Introduce a mutex to serialize the refcount control blocks access from
+both frontends. While a per namespace mutex might be more efficient, it
+is not needed for target/expression like SYNPROXY.
 
-Fixes: 48b1de4c110a ("netfilter: add SYNPROXY core/target")
+Fixes: ad49d86e07a4 ("netfilter: nf_tables: Add synproxy support")
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 ---
- net/netfilter/nf_synproxy_core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/netfilter/nf_synproxy_core.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/net/netfilter/nf_synproxy_core.c b/net/netfilter/nf_synproxy_core.c
-index 5413133a42fa..3e02e252eecc 100644
+index 3e02e252eecc..6745c09a2a6f 100644
 --- a/net/netfilter/nf_synproxy_core.c
 +++ b/net/netfilter/nf_synproxy_core.c
-@@ -669,8 +669,10 @@ ipv4_synproxy_hook(void *priv, struct sk_buff *skb,
- 	switch (state->state) {
- 	case TCP_CONNTRACK_CLOSE:
- 		if (th->rst && CTINFO2DIR(ctinfo) != IP_CT_DIR_ORIGINAL) {
-+			spin_lock_bh(&ct->lock);
- 			nf_ct_seqadj_init(ct, ctinfo, synproxy->isn -
- 						      ntohl(th->seq) + 1);
-+			spin_unlock_bh(&ct->lock);
- 			break;
- 		}
+@@ -22,6 +22,8 @@
+ #include <net/netfilter/nf_conntrack_zones.h>
+ #include <net/netfilter/nf_synproxy.h>
  
-@@ -682,7 +684,9 @@ ipv4_synproxy_hook(void *priv, struct sk_buff *skb,
- 		 * adjustments, they will get initialized once the connection is
- 		 * reestablished.
- 		 */
-+		spin_lock_bh(&ct->lock);
- 		nf_ct_seqadj_init(ct, ctinfo, 0);
-+		spin_unlock_bh(&ct->lock);
- 		synproxy->tsoff = 0;
- 		this_cpu_inc(snet->stats->conn_reopened);
- 		fallthrough;
-@@ -731,7 +735,9 @@ ipv4_synproxy_hook(void *priv, struct sk_buff *skb,
- 		swap(opts.tsval, opts.tsecr);
- 		synproxy_send_server_ack(net, state, skb, th, &opts);
++static DEFINE_MUTEX(synproxy_mutex);
++
+ unsigned int synproxy_net_id;
+ EXPORT_SYMBOL_GPL(synproxy_net_id);
  
-+		spin_lock_bh(&ct->lock);
- 		nf_ct_seqadj_init(ct, ctinfo, synproxy->isn - ntohl(th->seq));
-+		spin_unlock_bh(&ct->lock);
- 		nf_conntrack_event_cache(IPCT_SEQADJ, ct);
+@@ -773,26 +775,31 @@ static const struct nf_hook_ops ipv4_synproxy_ops[] = {
  
- 		swap(opts.tsval, opts.tsecr);
-@@ -1094,8 +1100,10 @@ ipv6_synproxy_hook(void *priv, struct sk_buff *skb,
- 	switch (state->state) {
- 	case TCP_CONNTRACK_CLOSE:
- 		if (th->rst && CTINFO2DIR(ctinfo) != IP_CT_DIR_ORIGINAL) {
-+			spin_lock_bh(&ct->lock);
- 			nf_ct_seqadj_init(ct, ctinfo, synproxy->isn -
- 						      ntohl(th->seq) + 1);
-+			spin_unlock_bh(&ct->lock);
- 			break;
- 		}
+ int nf_synproxy_ipv4_init(struct synproxy_net *snet, struct net *net)
+ {
+-	int err;
++	int err = 0;
  
-@@ -1107,7 +1115,9 @@ ipv6_synproxy_hook(void *priv, struct sk_buff *skb,
- 		 * adjustments, they will get initialized once the connection is
- 		 * reestablished.
- 		 */
-+		spin_lock_bh(&ct->lock);
- 		nf_ct_seqadj_init(ct, ctinfo, 0);
-+		spin_unlock_bh(&ct->lock);
- 		synproxy->tsoff = 0;
- 		this_cpu_inc(snet->stats->conn_reopened);
- 		fallthrough;
-@@ -1156,7 +1166,9 @@ ipv6_synproxy_hook(void *priv, struct sk_buff *skb,
- 		swap(opts.tsval, opts.tsecr);
- 		synproxy_send_server_ack_ipv6(net, state, skb, th, &opts);
++	mutex_lock(&synproxy_mutex);
+ 	if (snet->hook_ref4 == 0) {
+ 		err = nf_register_net_hooks(net, ipv4_synproxy_ops,
+ 					    ARRAY_SIZE(ipv4_synproxy_ops));
+ 		if (err)
+-			return err;
++			goto out;
+ 	}
  
-+		spin_lock_bh(&ct->lock);
- 		nf_ct_seqadj_init(ct, ctinfo, synproxy->isn - ntohl(th->seq));
-+		spin_unlock_bh(&ct->lock);
- 		nf_conntrack_event_cache(IPCT_SEQADJ, ct);
+ 	snet->hook_ref4++;
+-	return 0;
++out:
++	mutex_unlock(&synproxy_mutex);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(nf_synproxy_ipv4_init);
  
- 		swap(opts.tsval, opts.tsecr);
+ void nf_synproxy_ipv4_fini(struct synproxy_net *snet, struct net *net)
+ {
++	mutex_lock(&synproxy_mutex);
+ 	snet->hook_ref4--;
+ 	if (snet->hook_ref4 == 0)
+ 		nf_unregister_net_hooks(net, ipv4_synproxy_ops,
+ 					ARRAY_SIZE(ipv4_synproxy_ops));
++	mutex_unlock(&synproxy_mutex);
+ }
+ EXPORT_SYMBOL_GPL(nf_synproxy_ipv4_fini);
+ 
+@@ -1205,27 +1212,32 @@ static const struct nf_hook_ops ipv6_synproxy_ops[] = {
+ int
+ nf_synproxy_ipv6_init(struct synproxy_net *snet, struct net *net)
+ {
+-	int err;
++	int err = 0;
+ 
++	mutex_lock(&synproxy_mutex);
+ 	if (snet->hook_ref6 == 0) {
+ 		err = nf_register_net_hooks(net, ipv6_synproxy_ops,
+ 					    ARRAY_SIZE(ipv6_synproxy_ops));
+ 		if (err)
+-			return err;
++			goto out;
+ 	}
+ 
+ 	snet->hook_ref6++;
+-	return 0;
++out:
++	mutex_unlock(&synproxy_mutex);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(nf_synproxy_ipv6_init);
+ 
+ void
+ nf_synproxy_ipv6_fini(struct synproxy_net *snet, struct net *net)
+ {
++	mutex_lock(&synproxy_mutex);
+ 	snet->hook_ref6--;
+ 	if (snet->hook_ref6 == 0)
+ 		nf_unregister_net_hooks(net, ipv6_synproxy_ops,
+ 					ARRAY_SIZE(ipv6_synproxy_ops));
++	mutex_unlock(&synproxy_mutex);
+ }
+ EXPORT_SYMBOL_GPL(nf_synproxy_ipv6_fini);
+ #endif /* CONFIG_IPV6 */
 -- 
 2.53.0
 
