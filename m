@@ -1,34 +1,34 @@
-Return-Path: <netfilter-devel+bounces-12852-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12854-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MStaGjquFWr2XwcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12852-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:29:14 +0200
+	id kKuOF2+tFWpkXwcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12854-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:25:51 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D28C5D77E3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:29:13 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D90B25D770E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 16:25:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AC3ED32402B5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 14:19:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 31FE030EF405
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2026 14:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402823FF1CB;
-	Tue, 26 May 2026 14:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90853FE67B;
+	Tue, 26 May 2026 14:19:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965CA3B47C6
-	for <netfilter-devel@vger.kernel.org>; Tue, 26 May 2026 14:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDE23FF1B7
+	for <netfilter-devel@vger.kernel.org>; Tue, 26 May 2026 14:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779805144; cv=none; b=gZZEOnuR0iXKFhjTec80vQG2akxbS28R18Yl8CDXv6yESIDTwm84ce8rI4rfR5Th/i3V9oXMTxQKED3TTI4Xks24nyNOd5IctZdZROwbacw+46BksIsAH2a7H6fhxsuWqbLtJJJALP9hrXEmVK1X2W3pmGKiZQt7zA5qXl3a0n0=
+	t=1779805153; cv=none; b=BfT11/3f9AIc4oQg4a5yE2uRNwFMRIL0JRNo45exPHjbopSpR6B6TUEsZ4r1sEJi7Er1g234fduGxBpWqj93PkTXzkJRFMd2eOEl7cwWrPhfuwMOn/wrr31Ev4HhD0CzpE2d11BLiZAn0Fdw+a1Dt8Zr4xs/V7v1x7RcFYA/ePA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779805144; c=relaxed/simple;
-	bh=tHkoFjUzxmDOH9yR0yD7JW1ujTU7N8Ymb77IcancDG8=;
+	s=arc-20240116; t=1779805153; c=relaxed/simple;
+	bh=rtD48gbCesQ/D7jcQPUyMafQfuCFKt72YgVmVuRvES4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GA3EtacobXtfpSNyy+nPiltap/1v3ic4mHvqyfJJ0079gZt033I+TA4JJ5XrOlxBLGeJsJgtfeOvi0p68E2UH/1dflDFgEGYZ6MWFpPftuEcMqXwZXlE84lJKOl2U0262t15AwT5+UJcV9n0fDKqb9V1DZTQ6W1oZ9DM7dbAdsw=
+	 MIME-Version; b=TBYzzQtSVHxHc4D/fPptKbvXBW+mfamEBCjPM3tMJxuKe9m/Ccj1KaBxAGEanAOmpt8VZvQHBsFfMITERpa3UrYE9UhzXZtGvlgxBBPgEX8SAKApUh55IBlTFDYyDAanqwSjN1/W+lOavMIyeKUGRaqKSYkOP+qeSf63piS5s4c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
@@ -36,20 +36,20 @@ Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1A07A65700;
-	Tue, 26 May 2026 14:18:58 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2C1186573E;
+	Tue, 26 May 2026 14:18:59 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A9C845A24D;
-	Tue, 26 May 2026 14:18:57 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB2AE5A24D;
+	Tue, 26 May 2026 14:18:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IOOPJtGrFWqbJQAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Tue, 26 May 2026 14:18:57 +0000
+	id 4ITAKtKrFWqbJQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 26 May 2026 14:18:58 +0000
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 To: netfilter-devel@vger.kernel.org
 Cc: coreteam@netfilter.org,
@@ -57,9 +57,9 @@ Cc: coreteam@netfilter.org,
 	fw@strlen.de,
 	phil@nwl.cc,
 	Fernando Fernandez Mancera <fmancera@suse.de>
-Subject: [PATCH 1/5 nf-next v3] netfilter: synproxy: drop packets if timestamp adjustment fails
-Date: Tue, 26 May 2026 16:18:34 +0200
-Message-ID: <20260526141838.4191-2-fmancera@suse.de>
+Subject: [PATCH 2/5 nf-next v3] netfilter: synproxy: adjust duplicate timestamp options
+Date: Tue, 26 May 2026 16:18:35 +0200
+Message-ID: <20260526141838.4191-3-fmancera@suse.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260526141838.4191-1-fmancera@suse.de>
 References: <20260526141838.4191-1-fmancera@suse.de>
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[suse.de : SPF not aligned (relaxed), No valid DKIM,none];
@@ -91,123 +91,52 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-12852-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12854-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.962];
+	NEURAL_HAM(-0.00)[-0.963];
 	RCVD_COUNT_FIVE(0.00)[6];
 	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.de:mid,suse.de:email]
-X-Rspamd-Queue-Id: 0D28C5D77E3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.de:mid,suse.de:email]
+X-Rspamd-Queue-Id: D90B25D770E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-If a packet was malformed or if skb_ensure_writable() failed, the
-synproxy_tstamp_adjust() function returned 0 indicating an error but it
-was ignored on the callers.
+RFC 9293 does not mention anything about duplicated options and each
+networking stack handles it in their own way. Currently, Linux kernel is
+processing options sequentially and in case of duplicated timestamp
+options, the value from the latest one overrides the others.
 
-Make the function return a boolean instead to clarify the result and
-drop the packet if synproxy_tstamp_adjust() failed due to ENOMEM from
-skb_ensure_writable(). In addition, if there are malformed options, skip
-the tstamp update but do not drop the packet as that should be done by
-the policy directly.
+As SYNPROXY is modifying only the first timestamp option found, a packet
+can reach the backend server and it might parse the wrong timestamp
+value. Let's just continue parsing the following options and in case a
+duplicated timestamp is found, adjust it too.
 
 Fixes: 48b1de4c110a ("netfilter: add SYNPROXY core/target")
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 ---
- net/netfilter/nf_synproxy_core.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ net/netfilter/nf_synproxy_core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/net/netfilter/nf_synproxy_core.c b/net/netfilter/nf_synproxy_core.c
-index 57f57e2fc80a..e523b64bf839 100644
+index e523b64bf839..6bd63f5ab75d 100644
 --- a/net/netfilter/nf_synproxy_core.c
 +++ b/net/netfilter/nf_synproxy_core.c
-@@ -182,7 +182,7 @@ synproxy_check_timestamp_cookie(struct synproxy_options *opts)
- 	opts->options |= opts->tsecr & (1 << 5) ? NF_SYNPROXY_OPT_ECN : 0;
- }
- 
--static unsigned int
-+static bool
- synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
- 		       struct tcphdr *th, struct nf_conn *ct,
- 		       enum ip_conntrack_info ctinfo,
-@@ -192,20 +192,20 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
- 	__be32 *ptr, old;
- 
- 	if (synproxy->tsoff == 0)
--		return 1;
-+		return true;
- 
- 	optoff = protoff + sizeof(struct tcphdr);
- 	optend = protoff + th->doff * 4;
- 
- 	if (skb_ensure_writable(skb, optend))
--		return 0;
-+		return false;
- 
- 	while (optoff < optend) {
- 		unsigned char *op = skb->data + optoff;
- 
- 		switch (op[0]) {
- 		case TCPOPT_EOL:
--			return 1;
-+			return true;
- 		case TCPOPT_NOP:
- 			optoff++;
- 			continue;
-@@ -213,7 +213,7 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
- 			if (optoff + 1 == optend ||
- 			    optoff + op[1] > optend ||
- 			    op[1] < 2)
--				return 0;
-+				return true;
- 			if (op[0] == TCPOPT_TIMESTAMP &&
- 			    op[1] == TCPOLEN_TIMESTAMP) {
- 				if (CTINFO2DIR(ctinfo) == IP_CT_DIR_REPLY) {
-@@ -229,12 +229,12 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
+@@ -229,7 +229,6 @@ synproxy_tstamp_adjust(struct sk_buff *skb, unsigned int protoff,
  				}
  				inet_proto_csum_replace4(&th->check, skb,
  							 old, *ptr, false);
--				return 1;
-+				return true;
+-				return true;
  			}
  			optoff += op[1];
  		}
- 	}
--	return 1;
-+	return true;
- }
- 
- #ifdef CONFIG_PROC_FS
-@@ -745,7 +745,9 @@ ipv4_synproxy_hook(void *priv, struct sk_buff *skb,
- 		break;
- 	}
- 
--	synproxy_tstamp_adjust(skb, thoff, th, ct, ctinfo, synproxy);
-+	if (!synproxy_tstamp_adjust(skb, thoff, th, ct, ctinfo, synproxy))
-+		return NF_DROP_REASON(skb, SKB_DROP_REASON_NETFILTER_DROP, ENOMEM);
-+
- 	return NF_ACCEPT;
- }
- EXPORT_SYMBOL_GPL(ipv4_synproxy_hook);
-@@ -1168,7 +1170,9 @@ ipv6_synproxy_hook(void *priv, struct sk_buff *skb,
- 		break;
- 	}
- 
--	synproxy_tstamp_adjust(skb, thoff, th, ct, ctinfo, synproxy);
-+	if (!synproxy_tstamp_adjust(skb, thoff, th, ct, ctinfo, synproxy))
-+		return NF_DROP_REASON(skb, SKB_DROP_REASON_NETFILTER_DROP, ENOMEM);
-+
- 	return NF_ACCEPT;
- }
- EXPORT_SYMBOL_GPL(ipv6_synproxy_hook);
 -- 
 2.53.0
 
