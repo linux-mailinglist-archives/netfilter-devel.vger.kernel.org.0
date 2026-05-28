@@ -1,48 +1,51 @@
-Return-Path: <netfilter-devel+bounces-12918-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12919-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cP/TB/DyF2q5WAgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12918-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2026 09:46:56 +0200
+	id 2M3aEHr4F2oWXwgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12919-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2026 10:10:34 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF0C25EDE62
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2026 09:46:55 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7E3D5EE4CF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2026 10:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3BB5230336D8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2026 07:46:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A2DFE3111092
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2026 08:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF993451AB;
-	Thu, 28 May 2026 07:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BFC367B7F;
+	Thu, 28 May 2026 08:01:40 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7880E31195C
-	for <netfilter-devel@vger.kernel.org>; Thu, 28 May 2026 07:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86E03655F1
+	for <netfilter-devel@vger.kernel.org>; Thu, 28 May 2026 08:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779954413; cv=none; b=gLBzd8E+HlelJuGSdRdU9tWCz5pKriv0EjCGQhEmXtXuq1be2P+0sFzXtcGmp6P4WDeFVgtMcphN2GhZZMXL4oLHgYYKZcA5Cc2dr7qsbdA3UE283K4V+kuAZvir63hgcUQ1DAs+mNWYYo5pWQBJC1pVNMOBY/aBiS7BcCbAiB0=
+	t=1779955300; cv=none; b=mTdvzcwP1gsmOO0F4w2YG2SgR+sI5Qk50NXR2FWYJVG361/OF+3DbKLA3Gz+JH1zQQiW1CyfGBi4b3UgNuxPDRqFqm+kTy6seVZUUjs0/lJizmnwQ2FG6NgY3yRH9z7t7eXYX34e7Vvmir1adbtl3AHJOdSO/m2sB+Rhfyr/pdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779954413; c=relaxed/simple;
-	bh=kqd0XNH3/BUvHkv0YeyaJRpUAmjkcpR6sTZpn10OkdE=;
+	s=arc-20240116; t=1779955300; c=relaxed/simple;
+	bh=sfcPjCfe3f8Q/p6c9vKTUwhptulcgx7TKoqT78i46NY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dkd9P4Nnb/UyqLsNFmo69OITVo+3x8ggeMoaqcQ0fMLFhv9KADCs4lSe7S5m1vjf1jgo2C+7K6LBnfEM1mZ0U1Nio5yph/hGjcCMA1f173UNkLygoXiN+GBVD/b6Lcxrb/uWbPZ4n7x/fCeo5CPeuJ92bjbpEX1X14LXcgat9A8=
+	 Content-Type:Content-Disposition:In-Reply-To; b=CJnRUnBfEej8mvtRyWYdd6OtXvhUnNstC9qMpLN7inCWlM9Xn3w6XDgLBgh/pbrd6ZdLxPaVglHmWz8fTNiQnuc2GG+5xESSJxewpL91CssfWBOYGbHRB/r+RQzuKjIysjE2xZaOIDxImP9zqSlXAYicSZl9mziCSaJNwrBkwWU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id A5659604A0; Thu, 28 May 2026 09:46:50 +0200 (CEST)
-Date: Thu, 28 May 2026 09:46:50 +0200
+	id 6515660138; Thu, 28 May 2026 10:01:32 +0200 (CEST)
+Date: Thu, 28 May 2026 10:01:32 +0200
 From: Florian Westphal <fw@strlen.de>
-To: Phil Sutter <phil@nwl.cc>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH v2] scanner: Accept all statements' first words in
- all scopes
-Message-ID: <ahfy6vvK8dhvBig-@strlen.de>
-References: <20260508111538.3783172-1-phil@nwl.cc>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter: nft_ct: fix OOB in NFT_CT_SRC/DST eval
+Message-ID: <ahf2XAmRnsjK0krp@strlen.de>
+References: <20260528042620.263828-1-jiayuan.chen@linux.dev>
+ <ahfQGCNs8hl6FlHL@strlen.de>
+ <ahfV6K6KrG0akLUZ@strlen.de>
+ <88abc4d7-8316-4c9e-aca0-351fe0ecb2b0@linux.dev>
+ <ahfqfM6xQKZr_xbA@strlen.de>
+ <58fc5150-76e7-46e5-a72f-41133c408109@linux.dev>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -51,19 +54,19 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260508111538.3783172-1-phil@nwl.cc>
+In-Reply-To: <58fc5150-76e7-46e5-a72f-41133c408109@linux.dev>
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-12918-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12919-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -71,35 +74,34 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.994];
 	MID_RHS_MATCH_FROM(0.00)[];
 	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,strlen.de:mid,strlen.de:email,nwl.cc:email]
-X-Rspamd-Queue-Id: AF0C25EDE62
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:email,sashiko.dev:url]
+X-Rspamd-Queue-Id: C7E3D5EE4CF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Phil Sutter <phil@nwl.cc> wrote:
-> To fix for token lookahead with exclusive start conditions, we must
-> accept all keywords which may immediately follow the exclusive scope in
-> that scope as well. This affects basically the first word of every
-> statement which may follow a limit statement.
-> 
-> Add a test case to make sure things stay that way. A few quirks exist
-> though:
-> - xt statement would need special testing since having it in a rule is
->   supposed to fail the command
-> - The parser formally accepts nonsensical things like strings, numbers
->   and variable references on LHS, but these seem to be needed for the
->   data part in map elements only
-> 
-> Suggested-by: Florian Westphal <fw@strlen.de>
-> Fixes: 9d105581b5f1b ("scanner: Introduce SCANSTATE_RATE")
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
+Jiayuan Chen <jiayuan.chen@linux.dev> wrote:
+> > > > nf_ct_l3num(ct) == NFPROTO_IPV6 ? 16 : 4);
+> > > As defense-in-depth, IIUC?
+> > Yes, alternatively merge your v1 with the template check. I don't see how
+> > we can ever have nf_ct_l3num(ct) != nft_pf(pkt) outside of the template
+> > bug.
+> I think the template check plus the family check (nf_ct_l3num(ct) !=
+> nft_pf(pkt)) is enough as defense-in-depth.
 
-Is there anything missing here or were you waiting for a formal ack?
+Actually, I think we need to fix this to copy priv->len unconditionally.
+Or, alternatively, add a memcpy wrapper that zero-pads the remainder of
+the registers.
 
-Acked-by: Florian Westphal <fw@strlen.de>
+https://sashiko.dev/#/patchset/20260528042620.263828-1-jiayuan.chen%40linux.dev
+
+"This is a pre-existing issue, but does copying only addr_len bytes when
+priv->len is larger leave the remainder of the register uninitialized?
+In nft_do_chain(), the register array is allocated on the kernel stack
+without zero-initialization. If priv->len is 16 and addr_len is 4, only
+the first 4 bytes are written."
 
