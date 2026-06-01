@@ -1,97 +1,97 @@
-Return-Path: <netfilter-devel+bounces-12979-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12981-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eMwbGHzfHWpsfQkAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12979-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 21:37:32 +0200
+	id WMadKkjeHWpsfQkAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12981-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 21:32:24 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C267E624B4F
-	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 21:37:31 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0C7624AC8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 21:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8F2B6306A155
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Jun 2026 19:31:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 91AC9300FB57
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Jun 2026 19:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4199A358369;
-	Mon,  1 Jun 2026 19:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4013603D8;
+	Mon,  1 Jun 2026 19:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="JHw3+6ir";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PEq+/tIz";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="z8LXQIp7";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9sY2RdP6"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Bn+Q9xxy";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Yg/Uui87";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Bn+Q9xxy";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Yg/Uui87"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752F833260E
-	for <netfilter-devel@vger.kernel.org>; Mon,  1 Jun 2026 19:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4EA34D901
+	for <netfilter-devel@vger.kernel.org>; Mon,  1 Jun 2026 19:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780342271; cv=none; b=U+48b8N1feLAtQPzp9iYihb36roU5OqG6Q7d/7kRtSfVnogxnD32C30hPaof2Ha1wmlU9aW/L2BwqCP5Y4Gq2slZtMyKj/aa4+F8dsnlfMAPUGPlM3wpRIPpDX9zpNVjBpqOyfycpVqShWj/lXeoHEYe8t5/UOP1iGPgz3GMf+o=
+	t=1780342278; cv=none; b=JrJo45uTKjeIwTCUbDfWOFZITRwPOLrLfvsE4aMY+Gf9p0vmZsXI40K4EDKAMXK+XJ1emOOPnDe5pkB25CTHDUS0qf9GO4aP7UzHy/zUIx9DS2dAwzgRpqC26TuipKzK7f53HkAr6fo1G2AupWUA7IjhD+HvVYKxJETYJksXRc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780342271; c=relaxed/simple;
-	bh=eqUuQhtQ0kI9tdLW2gmrMlB9BryvNrXVwY1TBtXEgSg=;
+	s=arc-20240116; t=1780342278; c=relaxed/simple;
+	bh=M/G/GNaddIz04e9CbYH47okBCckKiqqtMtCdMjL5CFA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qtO89Ktlkv2IAY7Aun1HApkbqr/jZepthsRQ6C1Qom+My+Mm9HzqrmdW1XBCFK1sGCia+wLpqgL3PV/KswSYxdKksjIbZbHX6dW+tTw+Cu8zi74DESlllSMKNOZU5/6Kzh1YB1IA1kmmA+NPujY9Yi1is5rbnajv3+D7AMRA5b0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=JHw3+6ir; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=PEq+/tIz; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=z8LXQIp7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9sY2RdP6; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=rlekHWXeu4HYDNmBEHAALFSMhK3O2j8qu7pjLeadMJkjFda+9pw9fkpxPwUIBhbMRfbUCCKBVVX1s2jIqfTBuOHWiIOTZSmhe03l1O77+ClYizv0JgHc9MwvHGoxYcn6gOclsPTslEXIEHxGh2eUcjuasY4I6eWjC3jcUVWKpDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Bn+Q9xxy; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Yg/Uui87; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Bn+Q9xxy; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Yg/Uui87; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9BDD868735;
-	Mon,  1 Jun 2026 19:31:02 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A1C4766DAD;
+	Mon,  1 Jun 2026 19:31:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
 	t=1780342263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VPLAln0f/XXdCts3zlCF/8KgiNeBPgEVXTafC2W+rJE=;
-	b=JHw3+6irTGEfcTgZzymIbX33YTi4ZrtxQ1JlMEeVOHBvTdirX5xLtxmJWXz81FGQ8UNpP7
-	qstp24O0tURzT2+MPg0sJY2g4kAufMq7a30SOplutXYJFNgydr887nouikHH0l/2udlXlr
-	JILecPahQZweku20cYr4xZaxwlbWH9U=
+	bh=qX6JkJFNmJXzGaFvfoCZxiXFU1RI30IbsMx5b2ba3bw=;
+	b=Bn+Q9xxyKgyjssu5BPN9iB6wtTyMfxJwqeyeKkFlAoG+PQq7DkB2fyXt0ZgoZk6Gdtdmow
+	YY+XXkJlA5hg+mUmOPzOYa9k+FOlGjYS0DbQI+CBYdyUsIQy7kQkV2kfdrHBg03szXOv4K
+	W3MdQeiduOHbqJ/Kge39xDtj08Tne5o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1780342263;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VPLAln0f/XXdCts3zlCF/8KgiNeBPgEVXTafC2W+rJE=;
-	b=PEq+/tIzaZZi/cEPtarvGEHGQrUH/jY5iAdaA33N2ZmY8ZOhF6dqLr0sf1CIx8onJpdR3O
-	HQKeqQHULkxADAAQ==
+	bh=qX6JkJFNmJXzGaFvfoCZxiXFU1RI30IbsMx5b2ba3bw=;
+	b=Yg/Uui87bmi1Oqe+g1EFPXUN0nb3LjA4r0zexg4hZrsMD0Tg5ap3dJSuaR749KIuscFrGe
+	V/vrI6sI7xFDCHCA==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=z8LXQIp7;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=9sY2RdP6
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Bn+Q9xxy;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="Yg/Uui87"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1780342262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1780342263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VPLAln0f/XXdCts3zlCF/8KgiNeBPgEVXTafC2W+rJE=;
-	b=z8LXQIp7Q13PuNPa3Fqxx2OO0Svzoqu+Z/6fvfE8U1+3JFJmiZ5RzKWmXQTsN0sYUJ8Zth
-	as6cKHawWfITIDrag6dEcI3smazkgnGkiIPVxXSEamA2Uxne7OtaMgfcQYcEXum8MGJiMD
-	Jle115Uk2Njca3mkjYMIkSj/iUbXQdw=
+	bh=qX6JkJFNmJXzGaFvfoCZxiXFU1RI30IbsMx5b2ba3bw=;
+	b=Bn+Q9xxyKgyjssu5BPN9iB6wtTyMfxJwqeyeKkFlAoG+PQq7DkB2fyXt0ZgoZk6Gdtdmow
+	YY+XXkJlA5hg+mUmOPzOYa9k+FOlGjYS0DbQI+CBYdyUsIQy7kQkV2kfdrHBg03szXOv4K
+	W3MdQeiduOHbqJ/Kge39xDtj08Tne5o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1780342262;
+	s=susede2_ed25519; t=1780342263;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VPLAln0f/XXdCts3zlCF/8KgiNeBPgEVXTafC2W+rJE=;
-	b=9sY2RdP6pdjYIQcLpJH5zdtwBg6aFSBDoL3VYabo/fB/59clHE84Vub9dy66IZSfk8gp8C
-	xYazQJ/gSn39frDA==
+	bh=qX6JkJFNmJXzGaFvfoCZxiXFU1RI30IbsMx5b2ba3bw=;
+	b=Yg/Uui87bmi1Oqe+g1EFPXUN0nb3LjA4r0zexg4hZrsMD0Tg5ap3dJSuaR749KIuscFrGe
+	V/vrI6sI7xFDCHCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C15B779A7;
-	Mon,  1 Jun 2026 19:31:02 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B994779A8;
+	Mon,  1 Jun 2026 19:31:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yB7lC/bdHWobLwAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Mon, 01 Jun 2026 19:31:02 +0000
+	id WA7PC/fdHWobLwAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Mon, 01 Jun 2026 19:31:03 +0000
 From: Fernando Fernandez Mancera <fmancera@suse.de>
 To: netfilter-devel@vger.kernel.org
 Cc: coreteam@netfilter.org,
@@ -99,9 +99,9 @@ Cc: coreteam@netfilter.org,
 	fw@strlen.de,
 	pablo@netfilter.org,
 	Fernando Fernandez Mancera <fmancera@suse.de>
-Subject: [PATCH 1/9 nf-next] netfilter: xtables: use DEBUG_NET_WARN_ON_ONCE in packet and control paths
-Date: Mon,  1 Jun 2026 21:30:41 +0200
-Message-ID: <20260601193049.8131-2-fmancera@suse.de>
+Subject: [PATCH 2/9 nf-next] netfilter: nf_tables: use DEBUG_NET_WARN_ON_ONCE in packet and control paths
+Date: Mon,  1 Jun 2026 21:30:42 +0200
+Message-ID: <20260601193049.8131-3-fmancera@suse.de>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260601193049.8131-1-fmancera@suse.de>
 References: <20260601193049.8131-1-fmancera@suse.de>
@@ -113,20 +113,20 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-X-Spam-Score: -3.01
 X-Spam-Level: 
+X-Spam-Score: -3.01
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12979-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12981-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
@@ -139,291 +139,572 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[suse.de:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.de:email,suse.de:mid,suse.de:dkim]
-X-Rspamd-Queue-Id: C267E624B4F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid,suse.de:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 3A0C7624AC8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Replace WARN_ON and WARN_ON_ONCE with DEBUG_NET_WARN_ON_ONCE in the
-xtables matching and target execution loops. This prevents unnecessary
-system panics when panic_on_warn=1 is enabled in production systems.
-Also, remove a redundant hook verification macro block in xt_NETMAP.c.
+Replace raw warning macros with DEBUG_NET_WARN_ON_ONCE across the
+nf_tables API, core engine, and expression evaluations. This prevents
+unnecessary system panics when panic_on_warn=1 is enabled in production
+systems.
 
 Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
 ---
- net/ipv4/netfilter/ip_tables.c    |  6 +++---
- net/ipv4/netfilter/iptable_nat.c  |  4 +++-
- net/ipv6/netfilter/ip6_tables.c   |  6 +++---
- net/ipv6/netfilter/ip6table_nat.c |  4 +++-
- net/netfilter/x_tables.c          | 12 +++++++++---
- net/netfilter/xt_NETMAP.c         |  4 ----
- net/netfilter/xt_cluster.c        |  4 ++--
- net/netfilter/xt_nat.c            | 30 +++++++++++++++---------------
- net/netfilter/xt_socket.c         |  3 ++-
- 9 files changed, 40 insertions(+), 33 deletions(-)
+ net/netfilter/nf_tables_api.c     | 38 +++++++++++++++++++++++--------
+ net/netfilter/nf_tables_core.c    |  8 ++++---
+ net/netfilter/nf_tables_offload.c |  2 +-
+ net/netfilter/nf_tables_trace.c   |  6 +++--
+ net/netfilter/nft_ct.c            |  2 +-
+ net/netfilter/nft_ct_fast.c       |  2 +-
+ net/netfilter/nft_exthdr.c        |  2 +-
+ net/netfilter/nft_fib.c           |  2 +-
+ net/netfilter/nft_inner.c         |  2 +-
+ net/netfilter/nft_lookup.c        |  2 +-
+ net/netfilter/nft_masq.c          |  2 +-
+ net/netfilter/nft_meta.c          | 10 ++++----
+ net/netfilter/nft_payload.c       |  6 ++---
+ net/netfilter/nft_redir.c         |  2 +-
+ net/netfilter/nft_reject.c        |  8 +++++--
+ net/netfilter/nft_rt.c            |  2 +-
+ net/netfilter/nft_set_hash.c      |  2 +-
+ net/netfilter/nft_set_pipapo.c    |  2 +-
+ net/netfilter/nft_set_rbtree.c    |  6 +++--
+ net/netfilter/nft_socket.c        |  8 ++++---
+ net/netfilter/nft_tunnel.c        |  2 +-
+ net/netfilter/nft_xfrm.c          |  6 ++---
+ 22 files changed, 76 insertions(+), 46 deletions(-)
 
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index f917a9004a01..99d01b5c7edc 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -254,7 +254,7 @@ ipt_do_table(void *priv,
- 	acpar.hotdrop = false;
- 	acpar.state   = state;
- 
--	WARN_ON(!(table->valid_hooks & (1 << hook)));
-+	DEBUG_NET_WARN_ON_ONCE(!(table->valid_hooks & (1 << hook)));
- 	local_bh_disable();
- 	addend = xt_write_recseq_begin();
- 	private = READ_ONCE(table->private); /* Address dependency. */
-@@ -279,7 +279,7 @@ ipt_do_table(void *priv,
- 		const struct xt_entry_match *ematch;
- 		struct xt_counters *counter;
- 
--		WARN_ON(!e);
-+		DEBUG_NET_WARN_ON_ONCE(!e);
- 		if (!ip_packet_match(ip, indev, outdev,
- 		    &e->ip, acpar.fragoff)) {
-  no_match:
-@@ -298,7 +298,7 @@ ipt_do_table(void *priv,
- 		ADD_COUNTER(*counter, skb->len, 1);
- 
- 		t = ipt_get_target_c(e);
--		WARN_ON(!t->u.kernel.target);
-+		DEBUG_NET_WARN_ON_ONCE(!t->u.kernel.target);
- 
- #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
- 		/* The packet is traced: log it */
-diff --git a/net/ipv4/netfilter/iptable_nat.c b/net/ipv4/netfilter/iptable_nat.c
-index a0df72554025..bb866f076d4d 100644
---- a/net/ipv4/netfilter/iptable_nat.c
-+++ b/net/ipv4/netfilter/iptable_nat.c
-@@ -65,8 +65,10 @@ static int ipt_nat_register_lookups(struct net *net)
- 
- 	xt_nat_net = net_generic(net, iptable_nat_net_id);
- 	table = xt_find_table(net, NFPROTO_IPV4, "nat");
--	if (WARN_ON_ONCE(!table))
-+	if (unlikely(!table)) {
-+		DEBUG_NET_WARN_ON_ONCE(1);
- 		return -ENOENT;
-+	}
- 
- 	ops = kmemdup(nf_nat_ipv4_ops, sizeof(nf_nat_ipv4_ops), GFP_KERNEL);
- 	if (!ops)
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index ecf79d05a51b..3147326786a5 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -275,7 +275,7 @@ ip6t_do_table(void *priv, struct sk_buff *skb,
- 	acpar.hotdrop = false;
- 	acpar.state   = state;
- 
--	WARN_ON(!(table->valid_hooks & (1 << hook)));
-+	DEBUG_NET_WARN_ON_ONCE(!(table->valid_hooks & (1 << hook)));
- 
- 	local_bh_disable();
- 	addend = xt_write_recseq_begin();
-@@ -301,7 +301,7 @@ ip6t_do_table(void *priv, struct sk_buff *skb,
- 		const struct xt_entry_match *ematch;
- 		struct xt_counters *counter;
- 
--		WARN_ON(!e);
-+		DEBUG_NET_WARN_ON_ONCE(!e);
- 		acpar.thoff = 0;
- 		if (!ip6_packet_match(skb, indev, outdev, &e->ipv6,
- 		    &acpar.thoff, &acpar.fragoff, &acpar.hotdrop)) {
-@@ -321,7 +321,7 @@ ip6t_do_table(void *priv, struct sk_buff *skb,
- 		ADD_COUNTER(*counter, skb->len, 1);
- 
- 		t = ip6t_get_target_c(e);
--		WARN_ON(!t->u.kernel.target);
-+		DEBUG_NET_WARN_ON_ONCE(!t->u.kernel.target);
- 
- #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
- 		/* The packet is traced: log it */
-diff --git a/net/ipv6/netfilter/ip6table_nat.c b/net/ipv6/netfilter/ip6table_nat.c
-index c2394e2c94b5..03ed7a5803d0 100644
---- a/net/ipv6/netfilter/ip6table_nat.c
-+++ b/net/ipv6/netfilter/ip6table_nat.c
-@@ -66,8 +66,10 @@ static int ip6t_nat_register_lookups(struct net *net)
- 	int i, ret;
- 
- 	table = xt_find_table(net, NFPROTO_IPV6, "nat");
--	if (WARN_ON_ONCE(!table))
-+	if (unlikely(!table)) {
-+		DEBUG_NET_WARN_ON_ONCE(1);
- 		return -ENOENT;
-+	}
- 
- 	xt_nat_net = net_generic(net, ip6table_nat_net_id);
- 	ops = kmemdup(nf_nat_ipv6_ops, sizeof(nf_nat_ipv6_ops), GFP_KERNEL);
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 4e6708c23922..b8b6e03a6116 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -714,8 +714,10 @@ int xt_compat_add_offset(u_int8_t af, unsigned int offset, int delta)
- 
- 	WARN_ON(!mutex_is_locked(&xt[af].compat_mutex));
- 
--	if (WARN_ON(!xp->compat_tab))
-+	if (unlikely(!xp->compat_tab)) {
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 87387adbca65..4884f7f7aaee 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3378,8 +3378,10 @@ static int nf_tables_delchain(struct sk_buff *skb, const struct nfnl_info *info,
+  */
+ int nft_register_expr(struct nft_expr_type *type)
+ {
+-	if (WARN_ON_ONCE(type->maxattr > NFT_EXPR_MAXATTR))
++	if (unlikely(type->maxattr > NFT_EXPR_MAXATTR)) {
 +		DEBUG_NET_WARN_ON_ONCE(1);
  		return -ENOMEM;
 +	}
  
- 	if (xp->cur >= xp->number)
- 		return -EINVAL;
-@@ -769,8 +771,10 @@ int xt_compat_init_offsets(u8 af, unsigned int number)
- 	if (!number || number > (INT_MAX / sizeof(struct compat_delta)))
- 		return -EINVAL;
+ 	nfnl_lock(NFNL_SUBSYS_NFTABLES);
+ 	if (type->family == NFPROTO_UNSPEC)
+@@ -3691,8 +3693,10 @@ int nft_expr_clone(struct nft_expr *dst, struct nft_expr *src, gfp_t gfp)
+ {
+ 	int err;
  
--	if (WARN_ON(xt[af].compat_tab))
-+	if (unlikely(xt[af].compat_tab)) {
+-	if (WARN_ON_ONCE(!src->ops->clone))
++	if (unlikely(!src->ops->clone)) {
 +		DEBUG_NET_WARN_ON_ONCE(1);
  		return -EINVAL;
 +	}
  
- 	mem = sizeof(struct compat_delta) * number;
- 	if (mem > XT_MAX_TABLE_SIZE)
-@@ -1973,8 +1977,10 @@ int xt_register_template(const struct xt_table *table,
- 	mutex_lock(&xt[af].mutex);
+ 	dst->ops = src->ops;
+ 	err = src->ops->clone(dst, src, gfp);
+@@ -8327,8 +8331,10 @@ static int nf_tables_newobj(struct sk_buff *skb, const struct nfnl_info *info,
+ 			return 0;
  
- 	list_for_each_entry(t, &xt_templates[af], list) {
--		if (WARN_ON_ONCE(strcmp(table->name, t->name) == 0))
-+		if (strcmp(table->name, t->name) == 0) {
+ 		type = nft_obj_type_get(net, objtype, family);
+-		if (WARN_ON_ONCE(IS_ERR(type)))
++		if (IS_ERR(type)) {
 +			DEBUG_NET_WARN_ON_ONCE(1);
- 			goto out_unlock;
+ 			return PTR_ERR(type);
 +		}
+ 
+ 		nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+ 
+@@ -10306,19 +10312,25 @@ static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *cha
+ 
+ 		prule = (struct nft_rule_dp *)data;
+ 		data += offsetof(struct nft_rule_dp, data);
+-		if (WARN_ON_ONCE(data > data_boundary))
++		if (unlikely(data > data_boundary)) {
++			DEBUG_NET_WARN_ON_ONCE(1);
+ 			return -ENOMEM;
++		}
+ 
+ 		size = 0;
+ 		nft_rule_for_each_expr(expr, last, rule) {
+-			if (WARN_ON_ONCE(data + size + expr->ops->size > data_boundary))
++			if (unlikely(data + size + expr->ops->size > data_boundary)) {
++				DEBUG_NET_WARN_ON_ONCE(1);
+ 				return -ENOMEM;
++			}
+ 
+ 			memcpy(data + size, expr, expr->ops->size);
+ 			size += expr->ops->size;
+ 		}
+-		if (WARN_ON_ONCE(size >= 1 << 12))
++		if (unlikely(size >= 1 << 12)) {
++			DEBUG_NET_WARN_ON_ONCE(1);
+ 			return -ENOMEM;
++		}
+ 
+ 		prule->handle = rule->handle;
+ 		prule->dlen = size;
+@@ -10329,8 +10341,10 @@ static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *cha
+ 		chain->blob_next->size += (unsigned long)(data - (void *)prule);
  	}
  
- 	ret = -ENOMEM;
-diff --git a/net/netfilter/xt_NETMAP.c b/net/netfilter/xt_NETMAP.c
-index cb2ee80d84fa..180d3b2138c3 100644
---- a/net/netfilter/xt_NETMAP.c
-+++ b/net/netfilter/xt_NETMAP.c
-@@ -74,10 +74,6 @@ netmap_tg4(struct sk_buff *skb, const struct xt_action_param *par)
- 	const struct nf_nat_ipv4_multi_range_compat *mr = par->targinfo;
- 	struct nf_nat_range2 newrange;
+-	if (WARN_ON_ONCE(data > data_boundary))
++	if (unlikely(data > data_boundary)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return -ENOMEM;
++	}
  
--	WARN_ON(xt_hooknum(par) != NF_INET_PRE_ROUTING &&
--		xt_hooknum(par) != NF_INET_POST_ROUTING &&
--		xt_hooknum(par) != NF_INET_LOCAL_OUT &&
--		xt_hooknum(par) != NF_INET_LOCAL_IN);
- 	ct = nf_ct_get(skb, &ctinfo);
+ 	prule = (struct nft_rule_dp *)data;
+ 	nft_last_rule(chain, prule);
+@@ -11636,8 +11650,10 @@ int nft_parse_register_load(const struct nft_ctx *ctx,
+ 	next_register = DIV_ROUND_UP(len, NFT_REG32_SIZE) + reg;
  
- 	netmask = ~(mr->range[0].min_ip ^ mr->range[0].max_ip);
-diff --git a/net/netfilter/xt_cluster.c b/net/netfilter/xt_cluster.c
-index 908fd5f2c3c8..c2d4feac1888 100644
---- a/net/netfilter/xt_cluster.c
-+++ b/net/netfilter/xt_cluster.c
-@@ -49,7 +49,7 @@ xt_cluster_hash(const struct nf_conn *ct,
- 		hash = xt_cluster_hash_ipv6(nf_ct_orig_ipv6_src(ct), info);
+ 	/* Can't happen: nft_validate_register_load() should have failed */
+-	if (WARN_ON_ONCE(next_register > NFT_REG32_NUM))
++	if (unlikely(next_register > NFT_REG32_NUM)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return -EINVAL;
++	}
+ 
+ 	/* find first register that did not see an earlier store. */
+ 	invalid_reg = find_next_zero_bit(ctx->reg_inited, NFT_REG32_NUM, reg);
+@@ -11884,8 +11900,10 @@ int nft_data_init(const struct nft_ctx *ctx, struct nft_data *data,
+ 	struct nlattr *tb[NFTA_DATA_MAX + 1];
+ 	int err;
+ 
+-	if (WARN_ON_ONCE(!desc->size))
++	if (unlikely(!desc->size)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return -EINVAL;
++	}
+ 
+ 	err = nla_parse_nested_deprecated(tb, NFTA_DATA_MAX, nla,
+ 					  nft_data_policy, NULL);
+@@ -11950,7 +11968,7 @@ int nft_data_dump(struct sk_buff *skb, int attr, const struct nft_data *data,
  		break;
  	default:
+ 		err = -EINVAL;
 -		WARN_ON(1);
 +		DEBUG_NET_WARN_ON_ONCE(1);
- 		break;
  	}
  
-@@ -69,7 +69,7 @@ xt_cluster_is_multicast_addr(const struct sk_buff *skb, u_int8_t family)
- 		is_multicast = ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr);
+ 	nla_nest_end(skb, nest);
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index 8ab186f86dd4..01a72f334dc6 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -314,8 +314,10 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
+ 
+ 	switch (regs.verdict.code) {
+ 	case NFT_JUMP:
+-		if (WARN_ON_ONCE(stackptr >= NFT_JUMP_STACK_SIZE))
+-			return NF_DROP;
++		if (unlikely(stackptr >= NFT_JUMP_STACK_SIZE)) {
++			DEBUG_NET_WARN_ON_ONCE(1);
++			return NF_DROP_REASON(pkt->skb, SKB_DROP_REASON_NETFILTER_DROP, ELOOP);
++		}
+ 		jumpstack[stackptr].rule = nft_rule_next(rule);
+ 		stackptr++;
+ 		fallthrough;
+@@ -326,7 +328,7 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
+ 	case NFT_RETURN:
  		break;
  	default:
--		WARN_ON(1);
+-		WARN_ON_ONCE(1);
 +		DEBUG_NET_WARN_ON_ONCE(1);
+ 	}
+ 
+ 	if (stackptr > 0) {
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index 9101b1703b52..8998a24651ff 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -361,7 +361,7 @@ static int nft_block_setup(struct nft_base_chain *basechain,
+ 		err = nft_flow_offload_unbind(bo, basechain);
  		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		err = -EOPNOTSUPP;
  	}
- 	return is_multicast;
-diff --git a/net/netfilter/xt_nat.c b/net/netfilter/xt_nat.c
-index b4f7bbc3f3ca..1572092c41f0 100644
---- a/net/netfilter/xt_nat.c
-+++ b/net/netfilter/xt_nat.c
-@@ -57,9 +57,9 @@ xt_snat_target_v0(struct sk_buff *skb, const struct xt_action_param *par)
- 	struct nf_conn *ct;
  
- 	ct = nf_ct_get(skb, &ctinfo);
--	WARN_ON(!(ct != NULL &&
--		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
--		  ctinfo == IP_CT_RELATED_REPLY)));
-+	DEBUG_NET_WARN_ON_ONCE(!(ct != NULL &&
-+				 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
-+				  ctinfo == IP_CT_RELATED_REPLY)));
+diff --git a/net/netfilter/nf_tables_trace.c b/net/netfilter/nf_tables_trace.c
+index a88abae5a9de..d85b6a2fb43c 100644
+--- a/net/netfilter/nf_tables_trace.c
++++ b/net/netfilter/nf_tables_trace.c
+@@ -227,8 +227,10 @@ static const struct nft_chain *nft_trace_get_chain(const struct nft_rule_dp *rul
  
- 	xt_nat_convert_range(&range, &mr->range[0]);
- 	return nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
-@@ -74,8 +74,8 @@ xt_dnat_target_v0(struct sk_buff *skb, const struct xt_action_param *par)
- 	struct nf_conn *ct;
+ 	last = (const struct nft_rule_dp_last *)rule;
  
- 	ct = nf_ct_get(skb, &ctinfo);
--	WARN_ON(!(ct != NULL &&
--		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED)));
-+	DEBUG_NET_WARN_ON_ONCE(!(ct != NULL &&
-+				 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED)));
+-	if (WARN_ON_ONCE(!last->chain))
++	if (unlikely(!last->chain)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return &info->basechain->chain;
++	}
  
- 	xt_nat_convert_range(&range, &mr->range[0]);
- 	return nf_nat_setup_info(ct, &range, NF_NAT_MANIP_DST);
-@@ -90,9 +90,9 @@ xt_snat_target_v1(struct sk_buff *skb, const struct xt_action_param *par)
- 	struct nf_conn *ct;
- 
- 	ct = nf_ct_get(skb, &ctinfo);
--	WARN_ON(!(ct != NULL &&
--		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
--		  ctinfo == IP_CT_RELATED_REPLY)));
-+	DEBUG_NET_WARN_ON_ONCE(!(ct != NULL &&
-+				 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
-+				  ctinfo == IP_CT_RELATED_REPLY)));
- 
- 	memcpy(&range, range_v1, sizeof(*range_v1));
- 	memset(&range.base_proto, 0, sizeof(range.base_proto));
-@@ -109,8 +109,8 @@ xt_dnat_target_v1(struct sk_buff *skb, const struct xt_action_param *par)
- 	struct nf_conn *ct;
- 
- 	ct = nf_ct_get(skb, &ctinfo);
--	WARN_ON(!(ct != NULL &&
--		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED)));
-+	DEBUG_NET_WARN_ON_ONCE(!(ct != NULL &&
-+				 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED)));
- 
- 	memcpy(&range, range_v1, sizeof(*range_v1));
- 	memset(&range.base_proto, 0, sizeof(range.base_proto));
-@@ -126,9 +126,9 @@ xt_snat_target_v2(struct sk_buff *skb, const struct xt_action_param *par)
- 	struct nf_conn *ct;
- 
- 	ct = nf_ct_get(skb, &ctinfo);
--	WARN_ON(!(ct != NULL &&
--		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
--		  ctinfo == IP_CT_RELATED_REPLY)));
-+	DEBUG_NET_WARN_ON_ONCE(!(ct != NULL &&
-+				 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED ||
-+				  ctinfo == IP_CT_RELATED_REPLY)));
- 
- 	return nf_nat_setup_info(ct, range, NF_NAT_MANIP_SRC);
+ 	return last->chain;
  }
-@@ -141,8 +141,8 @@ xt_dnat_target_v2(struct sk_buff *skb, const struct xt_action_param *par)
- 	struct nf_conn *ct;
+@@ -354,7 +356,7 @@ void nft_trace_notify(const struct nft_pktinfo *pkt,
+ 	return;
  
- 	ct = nf_ct_get(skb, &ctinfo);
--	WARN_ON(!(ct != NULL &&
--		 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED)));
-+	DEBUG_NET_WARN_ON_ONCE(!(ct != NULL &&
-+				 (ctinfo == IP_CT_NEW || ctinfo == IP_CT_RELATED)));
- 
- 	return nf_nat_setup_info(ct, range, NF_NAT_MANIP_DST);
- }
-diff --git a/net/netfilter/xt_socket.c b/net/netfilter/xt_socket.c
-index 811e53bee408..e3f68b0734d1 100644
---- a/net/netfilter/xt_socket.c
-+++ b/net/netfilter/xt_socket.c
-@@ -161,7 +161,8 @@ static int socket_mt_enable_defrag(struct net *net, int family)
- 		return nf_defrag_ipv6_enable(net);
- #endif
- 	}
--	WARN_ONCE(1, "Unknown family %d\n", family);
-+	pr_warn_once("xt_socket: Unknown family %d\n", family);
+  nla_put_failure:
+-	WARN_ON_ONCE(1);
 +	DEBUG_NET_WARN_ON_ONCE(1);
- 	return 0;
+ 	kfree_skb(skb);
  }
+ 
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index fa2cc556331c..bdeffc61d02c 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -1136,7 +1136,7 @@ static void nft_ct_helper_obj_eval(struct nft_object *obj,
+ 		to_assign = priv->helper6;
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return;
+ 	}
+ 
+diff --git a/net/netfilter/nft_ct_fast.c b/net/netfilter/nft_ct_fast.c
+index e684c8a91848..c509e1c66fa1 100644
+--- a/net/netfilter/nft_ct_fast.c
++++ b/net/netfilter/nft_ct_fast.c
+@@ -53,7 +53,7 @@ void nft_ct_get_fast_eval(const struct nft_expr *expr,
+ 		return;
+ #endif
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		regs->verdict.code = NFT_BREAK;
+ 		break;
+ 	}
+diff --git a/net/netfilter/nft_exthdr.c b/net/netfilter/nft_exthdr.c
+index e6a07c0df207..8861b4d191d1 100644
+--- a/net/netfilter/nft_exthdr.c
++++ b/net/netfilter/nft_exthdr.c
+@@ -298,7 +298,7 @@ static void nft_exthdr_tcp_set_eval(const struct nft_expr *expr,
+ 						 old.v32, new.v32, false);
+ 			break;
+ 		default:
+-			WARN_ON_ONCE(1);
++			DEBUG_NET_WARN_ON_ONCE(1);
+ 			break;
+ 		}
+ 
+diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
+index 327a5f33659c..1d0d815c8745 100644
+--- a/net/netfilter/nft_fib.c
++++ b/net/netfilter/nft_fib.c
+@@ -155,7 +155,7 @@ void nft_fib_store_result(void *reg, const struct nft_fib *priv,
+ 			strscpy_pad(reg, dev ? dev->name : "", IFNAMSIZ);
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		*dreg = 0;
+ 		break;
+ 	}
+diff --git a/net/netfilter/nft_inner.c b/net/netfilter/nft_inner.c
+index d14ca157910b..97fb4eea2d66 100644
+--- a/net/netfilter/nft_inner.c
++++ b/net/netfilter/nft_inner.c
+@@ -308,7 +308,7 @@ static void nft_inner_eval(const struct nft_expr *expr, struct nft_regs *regs,
+ 		nft_meta_inner_eval((struct nft_expr *)&priv->expr, regs, pkt, &tun_ctx);
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 	nft_inner_save_tun_ctx(pkt, &tun_ctx);
+diff --git a/net/netfilter/nft_lookup.c b/net/netfilter/nft_lookup.c
+index 9fafe5afc490..ba512e94b402 100644
+--- a/net/netfilter/nft_lookup.c
++++ b/net/netfilter/nft_lookup.c
+@@ -50,7 +50,7 @@ __nft_set_do_lookup(const struct net *net, const struct nft_set *set,
+ 	if (set->ops == &nft_set_rbtree_type.ops)
+ 		return nft_rbtree_lookup(net, set, key);
+ 
+-	WARN_ON_ONCE(1);
++	DEBUG_NET_WARN_ON_ONCE(1);
+ #endif
+ 	return set->ops->lookup(net, set, key);
+ }
+diff --git a/net/netfilter/nft_masq.c b/net/netfilter/nft_masq.c
+index 2b01128737a3..841efd981e20 100644
+--- a/net/netfilter/nft_masq.c
++++ b/net/netfilter/nft_masq.c
+@@ -123,7 +123,7 @@ static void nft_masq_eval(const struct nft_expr *expr,
+ 		break;
+ #endif
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	}
+ }
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 5b25851381e5..9b5821c64442 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -116,12 +116,12 @@ nft_meta_get_eval_pkttype_lo(const struct nft_pktinfo *pkt,
+ 			nft_reg_store8(dest, PACKET_MULTICAST);
+ 			break;
+ 		default:
+-			WARN_ON_ONCE(1);
++			DEBUG_NET_WARN_ON_ONCE(1);
+ 			return false;
+ 		}
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return false;
+ 	}
+ 
+@@ -460,7 +460,7 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 		nft_meta_get_eval_sdifname(dest, pkt);
+ 		break;
+ 	default:
+-		WARN_ON(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 	return;
+@@ -506,7 +506,7 @@ void nft_meta_set_eval(const struct nft_expr *expr,
+ 		break;
+ #endif
+ 	default:
+-		WARN_ON(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(nft_meta_set_eval);
+@@ -886,7 +886,7 @@ void nft_meta_inner_eval(const struct nft_expr *expr,
+ 		nft_reg_store8(dest, tun_ctx->l4proto);
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 	return;
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index 01e13e5255a9..d803aae5cbcd 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -196,7 +196,7 @@ void nft_payload_eval(const struct nft_expr *expr,
+ 			goto err;
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 	offset += priv->offset;
+@@ -603,7 +603,7 @@ void nft_payload_inner_eval(const struct nft_expr *expr, struct nft_regs *regs,
+ 		offset = tun_ctx->inner_thoff;
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 	offset += priv->offset;
+@@ -866,7 +866,7 @@ static void nft_payload_set_eval(const struct nft_expr *expr,
+ 			goto err;
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 
+diff --git a/net/netfilter/nft_redir.c b/net/netfilter/nft_redir.c
+index 58ae802db8f5..a98aa28180fb 100644
+--- a/net/netfilter/nft_redir.c
++++ b/net/netfilter/nft_redir.c
+@@ -126,7 +126,7 @@ static void nft_redir_eval(const struct nft_expr *expr,
+ 		break;
+ #endif
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	}
+ }
+diff --git a/net/netfilter/nft_reject.c b/net/netfilter/nft_reject.c
+index 196a92c7ea09..e3972e904cf0 100644
+--- a/net/netfilter/nft_reject.c
++++ b/net/netfilter/nft_reject.c
+@@ -102,8 +102,10 @@ static u8 icmp_code_v4[NFT_REJECT_ICMPX_MAX + 1] = {
+ 
+ int nft_reject_icmp_code(u8 code)
+ {
+-	if (WARN_ON_ONCE(code > NFT_REJECT_ICMPX_MAX))
++	if (unlikely(code > NFT_REJECT_ICMPX_MAX)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return ICMP_NET_UNREACH;
++	}
+ 
+ 	return icmp_code_v4[code];
+ }
+@@ -120,8 +122,10 @@ static u8 icmp_code_v6[NFT_REJECT_ICMPX_MAX + 1] = {
+ 
+ int nft_reject_icmpv6_code(u8 code)
+ {
+-	if (WARN_ON_ONCE(code > NFT_REJECT_ICMPX_MAX))
++	if (unlikely(code > NFT_REJECT_ICMPX_MAX)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return ICMPV6_NOROUTE;
++	}
+ 
+ 	return icmp_code_v6[code];
+ }
+diff --git a/net/netfilter/nft_rt.c b/net/netfilter/nft_rt.c
+index e23cd4759851..aeb0094eafd8 100644
+--- a/net/netfilter/nft_rt.c
++++ b/net/netfilter/nft_rt.c
+@@ -93,7 +93,7 @@ void nft_rt_get_eval(const struct nft_expr *expr,
+ 		break;
+ #endif
+ 	default:
+-		WARN_ON(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		goto err;
+ 	}
+ 	return;
+diff --git a/net/netfilter/nft_set_hash.c b/net/netfilter/nft_set_hash.c
+index b0e571c8e3f3..eb4e382119d4 100644
+--- a/net/netfilter/nft_set_hash.c
++++ b/net/netfilter/nft_set_hash.c
+@@ -385,7 +385,7 @@ static void nft_rhash_walk(const struct nft_ctx *ctx, struct nft_set *set,
+ 		break;
+ 	default:
+ 		iter->err = -EINVAL;
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	}
+ }
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 50d4a4f04309..706c78853f24 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -2199,7 +2199,7 @@ static void nft_pipapo_walk(const struct nft_ctx *ctx, struct nft_set *set,
+ 		break;
+ 	default:
+ 		iter->err = -EINVAL;
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	}
+ }
+diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
+index b4f0b5fdf1f2..018bbb6df4ce 100644
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -654,8 +654,10 @@ static int nft_array_may_resize(const struct nft_set *set, bool flush)
+ 	}
+ 
+ realloc_array:
+-	if (WARN_ON_ONCE(nelems > new_max_intervals))
++	if (unlikely(nelems > new_max_intervals)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return -ENOMEM;
++	}
+ 
+ 	if (priv->array_next) {
+ 		if (max_intervals == new_max_intervals)
+@@ -878,7 +880,7 @@ static void nft_rbtree_walk(const struct nft_ctx *ctx,
+ 		break;
+ 	default:
+ 		iter->err = -EINVAL;
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	}
+ }
+diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+index a146a45d7531..52d892e04261 100644
+--- a/net/netfilter/nft_socket.c
++++ b/net/netfilter/nft_socket.c
+@@ -71,8 +71,10 @@ static noinline int nft_socket_cgroup_subtree_level(void)
+ 	if (level > 255)
+ 		return -ERANGE;
+ 
+-	if (WARN_ON_ONCE(level < 0))
++	if (unlikely(level < 0)) {
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return -EINVAL;
++	}
+ 
+ 	return level;
+ }
+@@ -97,7 +99,7 @@ static struct sock *nft_socket_do_lookup(const struct nft_pktinfo *pkt)
+ 		break;
+ #endif
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	}
+ 
+@@ -152,7 +154,7 @@ static void nft_socket_eval(const struct nft_expr *expr,
+ 		break;
+ #endif
+ 	default:
+-		WARN_ON(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		regs->verdict.code = NFT_BREAK;
+ 	}
+ 
+diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
+index 0b987bc2132a..b60015140fb1 100644
+--- a/net/netfilter/nft_tunnel.c
++++ b/net/netfilter/nft_tunnel.c
+@@ -60,7 +60,7 @@ static void nft_tunnel_get_eval(const struct nft_expr *expr,
+ 			regs->verdict.code = NFT_BREAK;
+ 		break;
+ 	default:
+-		WARN_ON(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		regs->verdict.code = NFT_BREAK;
+ 	}
+ }
+diff --git a/net/netfilter/nft_xfrm.c b/net/netfilter/nft_xfrm.c
+index 65a75d88e5f0..8cec43064319 100644
+--- a/net/netfilter/nft_xfrm.c
++++ b/net/netfilter/nft_xfrm.c
+@@ -132,7 +132,7 @@ static void nft_xfrm_state_get_key(const struct nft_xfrm *priv,
+ 	switch (priv->key) {
+ 	case NFT_XFRM_KEY_UNSPEC:
+ 	case __NFT_XFRM_KEY_MAX:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		break;
+ 	case NFT_XFRM_KEY_DADDR_IP4:
+ 		*dest = (__force __u32)state->id.daddr.a4;
+@@ -206,7 +206,7 @@ static void nft_xfrm_get_eval(const struct nft_expr *expr,
+ 		nft_xfrm_get_eval_out(priv, regs, pkt);
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		regs->verdict.code = NFT_BREAK;
+ 		break;
+ 	}
+@@ -252,7 +252,7 @@ static int nft_xfrm_validate(const struct nft_ctx *ctx, const struct nft_expr *e
+ 			(1 << NF_INET_POST_ROUTING);
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		DEBUG_NET_WARN_ON_ONCE(1);
+ 		return -EINVAL;
+ 	}
  
 -- 
 2.54.0
