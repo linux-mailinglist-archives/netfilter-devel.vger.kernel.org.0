@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-12968-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-12971-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IOFrM3B1HWqebAkAu9opvQ
-	(envelope-from <netfilter-devel+bounces-12968-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 14:05:04 +0200
+	id aBV0IkB0HWp8bAkAu9opvQ
+	(envelope-from <netfilter-devel+bounces-12971-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 14:00:00 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1631961EC9C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 14:05:03 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1DBF61EB93
+	for <lists+netfilter-devel@lfdr.de>; Mon, 01 Jun 2026 13:59:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C6690307BAC9
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Jun 2026 11:59:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9F4F8302BBFE
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Jun 2026 11:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9453750BE;
-	Mon,  1 Jun 2026 11:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455323750CC;
+	Mon,  1 Jun 2026 11:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="hZPloisn"
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="N2lPlPPj"
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E6E371D1F;
-	Mon,  1 Jun 2026 11:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5370374E79;
+	Mon,  1 Jun 2026 11:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780315173; cv=none; b=Lmg5qQFTFrEZuglfiD1hK0Yz2g2mNN+X6RqHL6LrMHlsppx+ZymI9rMPDmef4SsJ3dZ2gMRSPjw2GRQ1Y9pVAIVJZEq4zHCp0HdJGVeiXW5af1SGeEp24t8aZ38EOqe8dXPG/0KxDAESKSfwpd1xS4jnRx0NieX5IIcPNCNr/o8=
+	t=1780315178; cv=none; b=UZNfR67WKopN7o06YDSieG/g9JWQFP8f7H6RGs/filfU6vC+EVFwM4luDpWcw5raCLpAhEuD4brXvyVnwVYWJDsA9USHRNaV/C5ijNYaM4NDzYWqBFzK61fCMk8WmbkOKos9MT2gk5dyi6sVYZLJgSLMMHNPkbgxreQa0WeR/f8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780315173; c=relaxed/simple;
-	bh=dGRDo5qy+AY8E5TCSrtDQhBNBdbPPtuvL2sixRM+eXQ=;
+	s=arc-20240116; t=1780315178; c=relaxed/simple;
+	bh=qxGyo5lcwTcYiy1bxQWskAn+0eIYtlgI1OpHWPeTQ1U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QssFEdERlJjGJ3KZxdjCpmaaTwA7eHrZIscnAV8CICpkWTi+EVOndTdqwO/fG0jAzXZ5oIde1gfcCNnqb1Jh0YS1VbMNVs208Hh7ZTO8L9UVvg8DQw/dqH+8mcFKL/C9BEfqKnyGUPUuSeI/6iojeW3+ec8/algykjtUbIzbNcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=hZPloisn; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=TEEMafTenLM8dW8V2knk1qJzRbsFcVHMMJOjJC/IEG0W+PlCNEeQIJVLRIHmzhrFSAd/gvHXJ1Ej/lBOfTAculQ5uR4JjU7OOfQqtb+M9BlfJ9LJWHccGIqBW/ILL3XU1HIiKKNAVt1LUUd91xgY8xoeapeJZxtBhNDwvxRoo04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=N2lPlPPj; arc=none smtp.client-ip=217.70.190.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 7BC8C601BD;
-	Mon,  1 Jun 2026 13:59:29 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 9A26B601BE;
+	Mon,  1 Jun 2026 13:59:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1780315169;
-	bh=+hvLSFXcLLnHE5Px2v78qKJo5uK7ipTjAqAd9sdDd+E=;
+	s=2025; t=1780315171;
+	bh=34Ln5KKptG607EnwW2FAzEVL7IgJxxv+IO0awX+Ee3M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hZPloisnU+YGLnBA63ueEvli64tyXwdBf5MJh6ZWJ69Ase4EIFJohx0ZBRpJACF7D
-	 AcdP+wgq99M+kRLX0rKsZTiDMyumx0pHPnTdYVnNgbnJacTuXbDV2nM8VMlXbyMPJu
-	 jaDgt9HwkdzEJQto/SQkTLhapXXopTxmGP3u74HMPvw5bP3oZS62GRgfjji0D9RH1p
-	 WT+VEqVrvcA59B7DIc+Obp+Xtnco5+lebz0u9WVfbCe2jlf0/v8XSgBH3kRzLspcwu
-	 ZzmnWaqD4hhwdI4Qu9JmRNIPm9lpUDPgD7MnjGmZv5sxF43KEqaQQG+lujyrXzhIdy
-	 EQzikJK5Lg5JA==
+	b=N2lPlPPjWdoOC120UUO0mMer/Z6ZNGHVw8zcDy/H9CpJa1W+V6lvyVwMCNyP6MD+g
+	 o5fpVj6uxjiZHWn6Owhbn91MZ/OlRKDsMz6dw1YbBF2yPDWTzMTorBuOrFZgV7KPBj
+	 Q2GJhepB2096e9QPx0BIyqlFJ1qoP92eRdHMGv5iYrMDrjOdly7XNkVsYoip9k3dS1
+	 hNWuWKxg+y5sDCteAKjIUBhnUJ74GKR2XNjR8Y65KlRKRNtvfiQBcqxUmvuJBr9NPF
+	 Coflb0T9KUmwcNg5yDaBm7y4bluAcVjQWq2jEhISlkOAUNVRWopsj6sxunyjIna3WI
+	 CzzfZphiKCMjQ==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 1/9] netfilter: xt_NFQUEUE: prefer raw_smp_processor_id
-Date: Mon,  1 Jun 2026 13:59:15 +0200
-Message-ID: <20260601115923.433946-2-pablo@netfilter.org>
+Subject: [PATCH net 2/9] ipvs: clear the svc scheduler ptr early on edit
+Date: Mon,  1 Jun 2026 13:59:16 +0200
+Message-ID: <20260601115923.433946-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260601115923.433946-1-pablo@netfilter.org>
 References: <20260601115923.433946-1-pablo@netfilter.org>
@@ -73,7 +73,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	DMARC_NA(0.00)[netfilter.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-12968-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-12971-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -90,46 +90,132 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_NONE(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.995];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,netfilter.org:mid,netfilter.org:dkim,strlen.de:email,suse.de:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 1631961EC9C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,sashiko.dev:url,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim]
+X-Rspamd-Queue-Id: F1DBF61EB93
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Fernando Fernandez Mancera <fmancera@suse.de>
+From: Julian Anastasov <ja@ssi.bg>
 
-With PREEMPT_RCU this triggers a splat because smp_processor_id() can be
-preempted while inside a RCU critical section. If xt_NFQUEUE target is
-invoked via nft_compat_eval() path, we are inside a RCU critical
-section.
+ip_vs_edit_service() while unbinding the old scheduler clears
+the svc->scheduler ptr after the scheduler module initiates
+RCU callbacks. This can cause packets to use the old
+scheduler at the time when svc->sched_data is already freed
+after RCU grace period.
 
-Just use the raw version instead.
+Fix it by clearing the ptr early in ip_vs_unbind_scheduler(),
+before the done_service method schedules any RCU callbacks.
 
-Fixes: 0ca743a55991 ("netfilter: nf_tables: add compatibility layer for x_tables")
-Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+Also, if the new scheduler fails to initialize when replacing
+the old scheduler, try to restore the old scheduler while still
+returning the error code.
+
+Link: https://sashiko.dev/#/patchset/20260519015506.634185-1-rosenp%40gmail.com
+Fixes: 05f00505a89a ("ipvs: fix crash if scheduler is changed")
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/xt_NFQUEUE.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/ip_vs.h              |  3 +--
+ net/netfilter/ipvs/ip_vs_ctl.c   | 13 ++++++++-----
+ net/netfilter/ipvs/ip_vs_sched.c | 14 +++++++-------
+ 3 files changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/net/netfilter/xt_NFQUEUE.c b/net/netfilter/xt_NFQUEUE.c
-index 466da23e36ff..b32d153e3a18 100644
---- a/net/netfilter/xt_NFQUEUE.c
-+++ b/net/netfilter/xt_NFQUEUE.c
-@@ -91,7 +91,7 @@ nfqueue_tg_v3(struct sk_buff *skb, const struct xt_action_param *par)
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index a02e569813d2..e517eaaa177b 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -1824,8 +1824,7 @@ int register_ip_vs_scheduler(struct ip_vs_scheduler *scheduler);
+ int unregister_ip_vs_scheduler(struct ip_vs_scheduler *scheduler);
+ int ip_vs_bind_scheduler(struct ip_vs_service *svc,
+ 			 struct ip_vs_scheduler *scheduler);
+-void ip_vs_unbind_scheduler(struct ip_vs_service *svc,
+-			    struct ip_vs_scheduler *sched);
++void ip_vs_unbind_scheduler(struct ip_vs_service *svc);
+ struct ip_vs_scheduler *ip_vs_scheduler_get(const char *sched_name);
+ void ip_vs_scheduler_put(struct ip_vs_scheduler *scheduler);
+ struct ip_vs_conn *
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index bd9cae44d214..16daba8cac83 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -1898,7 +1898,7 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
+ 	if (ret_hooks >= 0)
+ 		ip_vs_unregister_hooks(ipvs, u->af);
+ 	if (svc != NULL) {
+-		ip_vs_unbind_scheduler(svc, sched);
++		ip_vs_unbind_scheduler(svc);
+ 		ip_vs_service_free(svc);
+ 	}
+ 	ip_vs_scheduler_put(sched);
+@@ -1962,9 +1962,8 @@ ip_vs_edit_service(struct ip_vs_service *svc, struct ip_vs_service_user_kern *u)
+ 	old_sched = rcu_dereference_protected(svc->scheduler, 1);
+ 	if (sched != old_sched) {
+ 		if (old_sched) {
+-			ip_vs_unbind_scheduler(svc, old_sched);
+-			RCU_INIT_POINTER(svc->scheduler, NULL);
+-			/* Wait all svc->sched_data users */
++			ip_vs_unbind_scheduler(svc);
++			/* Wait all svc->scheduler/sched_data users */
+ 			synchronize_rcu();
+ 		}
+ 		/* Bind the new scheduler */
+@@ -1972,6 +1971,10 @@ ip_vs_edit_service(struct ip_vs_service *svc, struct ip_vs_service_user_kern *u)
+ 			ret = ip_vs_bind_scheduler(svc, sched);
+ 			if (ret) {
+ 				ip_vs_scheduler_put(sched);
++				/* Try to restore the old_sched */
++				if (old_sched &&
++				    !ip_vs_bind_scheduler(svc, old_sched))
++					old_sched = NULL;
+ 				goto out;
+ 			}
+ 		}
+@@ -2027,7 +2030,7 @@ static void __ip_vs_del_service(struct ip_vs_service *svc, bool cleanup)
  
- 	if (info->queues_total > 1) {
- 		if (info->flags & NFQ_FLAG_CPU_FANOUT) {
--			int cpu = smp_processor_id();
-+			int cpu = raw_smp_processor_id();
+ 	/* Unbind scheduler */
+ 	old_sched = rcu_dereference_protected(svc->scheduler, 1);
+-	ip_vs_unbind_scheduler(svc, old_sched);
++	ip_vs_unbind_scheduler(svc);
+ 	ip_vs_scheduler_put(old_sched);
  
- 			queue = info->queuenum + cpu % info->queues_total;
- 		} else {
+ 	/* Unbind persistence engine, keep svc->pe */
+diff --git a/net/netfilter/ipvs/ip_vs_sched.c b/net/netfilter/ipvs/ip_vs_sched.c
+index c6e421c4e299..24adc38942a0 100644
+--- a/net/netfilter/ipvs/ip_vs_sched.c
++++ b/net/netfilter/ipvs/ip_vs_sched.c
+@@ -56,19 +56,19 @@ int ip_vs_bind_scheduler(struct ip_vs_service *svc,
+ /*
+  *  Unbind a service with its scheduler
+  */
+-void ip_vs_unbind_scheduler(struct ip_vs_service *svc,
+-			    struct ip_vs_scheduler *sched)
++void ip_vs_unbind_scheduler(struct ip_vs_service *svc)
+ {
+-	struct ip_vs_scheduler *cur_sched;
++	struct ip_vs_scheduler *sched;
+ 
+-	cur_sched = rcu_dereference_protected(svc->scheduler, 1);
+-	/* This check proves that old 'sched' was installed */
+-	if (!cur_sched)
++	sched = rcu_dereference_protected(svc->scheduler, 1);
++	if (!sched)
+ 		return;
+ 
++	/* Reset the scheduler before initiating any RCU callbacks */
++	rcu_assign_pointer(svc->scheduler, NULL);
++	smp_wmb();	/* paired with smp_rmb() in ip_vs_schedule() */
+ 	if (sched->done_service)
+ 		sched->done_service(svc);
+-	/* svc->scheduler can be set to NULL only by caller */
+ }
+ 
+ 
 -- 
 2.47.3
 
