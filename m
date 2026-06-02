@@ -1,58 +1,58 @@
-Return-Path: <netfilter-devel+bounces-13003-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13007-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TGIwLbNGH2oTjgAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13003-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 23:10:11 +0200
+	id eJ0LGbZGH2oUjgAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13007-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 23:10:14 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E5B0632058
-	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 23:10:11 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 030DC63205F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 23:10:14 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=spmJFM85;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13003-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13003-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=ANia7XRx;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13007-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13007-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2EFED301F169
-	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Jun 2026 21:10:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3780830357F6
+	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Jun 2026 21:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD5C39C621;
-	Tue,  2 Jun 2026 21:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05743A3E9C;
+	Tue,  2 Jun 2026 21:10:09 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07682DCF55
-	for <netfilter-devel@vger.kernel.org>; Tue,  2 Jun 2026 21:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D4B23B62B
+	for <netfilter-devel@vger.kernel.org>; Tue,  2 Jun 2026 21:10:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780434607; cv=none; b=qFP5czWzcRQ19k10dUZBD2t2UGWfLk+A2Hux8EcV3fA9JYG8Z6yn7xKorjLvDOTWdyS3wJkzE1Fb/YAkUEH3cj2h16SxX/qKcCsFKJTFdPaEwhFF+6Kd/qoQkN5oTxCZc3WcxWZS2PDgWSp1fy7pn0GnDiQsnu9EMd7CP3WiLuU=
+	t=1780434609; cv=none; b=tkvSs/Roh1nhdpn4n4yX1MefPXOkbi8bVuQIWeWWBTxOmRkYoSgqFOWQVD/mt7wwVPXtwGsPICEDg7AsqLhKu8rWu2zrlI7iA+/AeEi7u+hVWsHOuwrAAWbw6aDX4uea8r6iNJkJ4ZKwF3LABSDLkd9qg2YDCVYDJnfR/9LPoVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780434607; c=relaxed/simple;
-	bh=cX7VEeUGBVsEWPwRkxbusQPZ8QnFi0er49SbO5pitG8=;
+	s=arc-20240116; t=1780434609; c=relaxed/simple;
+	bh=4IdCtbUEW5g+/I5RIRcohKEBzfAPfmleE+C3Wfs0CRE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WaIaw1IAsleVRQhMtINrkmgOx1wGB6e32xKAgGB8G0+/9SLGU991T26NfvKtmGJTwDdeLkpy+NDcYwak7Rvi32K1QxJ1wflkNIFMbF+ZRQqz8NnJ+00yMgUmGPrPjE77M3SysdJ0WGlG4xc/BEWx4CNbaqDiB5/Ds0nTTu8p93o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=spmJFM85; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=PDbB+kV/w2br9/iziczTcwVgYkqcbC3a2ywXfnWBlRjwCrO7HhqFaYPZ7IE2ZimnOq6H6gaSbXcYL+K3hjTsIAk5LKoA+ZpglM0PREBPmqhF6PF1XhWxOQxUOeqiXqDrvskpnFQ1UJzNxLYaWL20eTHD1CWEddEJpyThBqmjjs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ANia7XRx; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 25E176019F;
-	Tue,  2 Jun 2026 23:10:02 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 4A1EA601A0;
+	Tue,  2 Jun 2026 23:10:03 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1780434602;
-	bh=i1WFES42b2YJ3bAbhMn/OY0kybIY++WWw2ZEs8e+Ll8=;
+	s=2025; t=1780434603;
+	bh=VwK11x22SqLJIm8pjumjdjKOV6r3u7x75foese0Wj0M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=spmJFM85kRdY9W/JIlPkhqUTvUrD0a7851MiZ59y4vS3RDI1c8spRzrgWciLdoabO
-	 GgXxludW9otxx4uRI1pYfgd2rzmAjO2LLHIaSC9SV+mv6DhGAHN35zFiVFxav6Lkyv
-	 cljI9gOlLz7jg9ekXSj0pQEKNRKsOXe5xwfaz1Nm9kyW1HTp0LfS9M132YDHNkzxhX
-	 UHDkgSk9ET6YyCb6c38GV8f2y2blqrWLW2JfaBqCSHgfCd9yll8j4PyfRLaDPMzOlp
-	 IvU/2xxQEXZbJdCQMTahf4A/9Ub+eQ9742UAOb4FirQOtE7JOrEV0etbD3fMwRZUM7
-	 vsiBswQrs1pNA==
+	b=ANia7XRxMabHad9JBNthG0QJiCK0U2OAbgWJ9gQ3GcyucqPxo21FLFOSrBSpshn0F
+	 pqTkOXIVFXEsXlGZ3ziVLasoE9SKq8kgdcclIdddrNhV7/HuH6Y5shxrm+Pq43E6nB
+	 +expC7Zuez3ICU1vNDpMyd64Ag+iZRaUASJacZSV+3lzjel9t00ZSRooycdD/fv2d7
+	 9GauWmAIpi1tfGob/M5krcHFuhVHJkuRV40Bxd63mlEzNlrYTUGiV1/qziFSASupTR
+	 CbfH7BQ1dktME4l4ts/8Q6qgaVEO7XyAVdnM0BHko5qwraWKN7AC9RnA0oi12ciosi
+	 xr1Uv//2OIWmQ==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: fw@strlen.de
-Subject: [PATCH nf-next,v3 5/6] netfilter: conntrack: revert ct extension genid infrastructure
-Date: Tue,  2 Jun 2026 23:09:51 +0200
-Message-ID: <20260602210952.736311-5-pablo@netfilter.org>
+Subject: [PATCH nf-next,v3 6/6] netfilter: nat: clean up nf_nat_bysource in module exit path
+Date: Tue,  2 Jun 2026 23:09:52 +0200
+Message-ID: <20260602210952.736311-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260602210952.736311-1-pablo@netfilter.org>
 References: <20260602210952.736311-1-pablo@netfilter.org>
@@ -68,22 +68,22 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13003-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13007-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
 	DMARC_NA(0.00)[netfilter.org];
 	FORWARDED(0.00)[lists@lfdr.de];
 	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -95,234 +95,68 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2E5B0632058
+X-Rspamd-Queue-Id: 030DC63205F
 
-This infrastructure is not used anymore after moving ct timeout and
-helper to use datapath refcount to track object use.
+nf_ct_iterate_destroy() removes all conntracks with NAT when the module
+is going away.
 
-Revert commit c56716c69ce1 ("netfilter: extensions: introduce extension
-genid count") this patch disables all ct extensions (leading to NULL)
-for unconfirmed conntracks, when this is only targeted at ct helper and
-ct timeout. There is also codebase that dereferences the ct extension
-without checking for NULL which could lead to crash.
+However, unconfirmed conntracks are skipped and the .nat_bysource field
+becomes stale. Walk the nf_nat_bysource hash to remove the conntrack
+when the nf_nat module is going away and set the dying bit so this never
+gets confirmed.
 
-This also reverts commit 2843fb69980b ("netfilter: conntrack: add
-nf_ct_iterate_destroy") since the sledgehammer approach does not work
-with unconfirmed conntrack that are flying to sit in nfqueue, or
-elsewhere, then allowing potential UaF on reinjection.
-
-Fixes: c56716c69ce1 ("netfilter: extensions: introduce extension genid count")
+Fixes: c7232c9979cb ("netfilter: add protocol independent NAT core")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v3: no changes
+v3: new in this series, address possible rare corner case with nat
+    module and unconfirmed conntrack entries found by AI reviewer.
 
- include/net/netfilter/nf_conntrack_extend.h | 12 -----
- net/netfilter/nf_conntrack_core.c           | 58 ---------------------
- net/netfilter/nf_conntrack_extend.c         | 32 +-----------
- 3 files changed, 1 insertion(+), 101 deletions(-)
+ net/netfilter/nf_nat_core.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/include/net/netfilter/nf_conntrack_extend.h b/include/net/netfilter/nf_conntrack_extend.h
-index 0b247248b032..fd5c4dbf72ca 100644
---- a/include/net/netfilter/nf_conntrack_extend.h
-+++ b/include/net/netfilter/nf_conntrack_extend.h
-@@ -38,7 +38,6 @@ enum nf_ct_ext_id {
- struct nf_ct_ext {
- 	u8 offset[NF_CT_EXT_NUM];
- 	u8 len;
--	unsigned int gen_id;
- 	char data[] __aligned(8);
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 74ec224ce0d6..d3df176e8bf9 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -1309,6 +1309,27 @@ static const struct nf_nat_hook nat_hook = {
+ 	.remove_nat_bysrc	= nf_nat_cleanup_conntrack,
  };
  
-@@ -52,8 +51,6 @@ static inline bool nf_ct_ext_exist(const struct nf_conn *ct, u8 id)
- 	return (ct->ext && __nf_ct_ext_exist(ct->ext, id));
- }
- 
--void *__nf_ct_ext_find(const struct nf_ct_ext *ext, u8 id);
--
- static inline void *nf_ct_ext_find(const struct nf_conn *ct, u8 id)
++/* Unconfirmed conntrack are also found in the bysource hash. */
++static void nf_nat_bysource_flush(void)
++{
++	unsigned int i;
++
++	for (i = 0; i < nf_nat_htable_size; i++) {
++		spinlock_t *lock = &nf_nat_locks[i % CONNTRACK_LOCKS];
++		struct nf_conn *ct;
++		struct hlist_node *next;
++
++		spin_lock_bh(lock);
++		hlist_for_each_entry_safe(ct, next,
++					  &nf_nat_bysource[i], nat_bysource) {
++			hlist_del_rcu(&ct->nat_bysource);
++			set_bit(IPS_DYING_BIT, &ct->status);
++		}
++		spin_unlock_bh(lock);
++		cond_resched();
++	}
++}
++
+ static int __init nf_nat_init(void)
  {
- 	struct nf_ct_ext *ext = ct->ext;
-@@ -61,19 +58,10 @@ static inline void *nf_ct_ext_find(const struct nf_conn *ct, u8 id)
- 	if (!ext || !__nf_ct_ext_exist(ext, id))
- 		return NULL;
+ 	int ret, i;
+@@ -1358,6 +1379,8 @@ static void __exit nf_nat_cleanup(void)
+ 	RCU_INIT_POINTER(nf_nat_hook, NULL);
  
--	if (unlikely(ext->gen_id))
--		return __nf_ct_ext_find(ext, id);
--
- 	return (void *)ct->ext + ct->ext->offset[id];
- }
- 
- /* Add this type, returns pointer to data or NULL. */
- void *nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp);
- 
--/* ext genid.  if ext->id != ext_genid, extensions cannot be used
-- * anymore unless conntrack has CONFIRMED bit set.
-- */
--extern atomic_t nf_conntrack_ext_genid;
--void nf_ct_ext_bump_genid(void);
--
- #endif /* _NF_CONNTRACK_EXTEND_H */
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 31e0bae1d75d..e3b03a58de97 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -840,33 +840,6 @@ static void __nf_conntrack_hash_insert(struct nf_conn *ct,
- 			   &nf_conntrack_hash[reply_hash]);
- }
- 
--static bool nf_ct_ext_valid_pre(const struct nf_ct_ext *ext)
--{
--	/* if ext->gen_id is not equal to nf_conntrack_ext_genid, some extensions
--	 * may contain stale pointers to e.g. helper that has been removed.
--	 *
--	 * The helper can't clear this because the nf_conn object isn't in
--	 * any hash and synchronize_rcu() isn't enough because associated skb
--	 * might sit in a queue.
--	 */
--	return !ext || ext->gen_id == atomic_read(&nf_conntrack_ext_genid);
--}
--
--static bool nf_ct_ext_valid_post(struct nf_ct_ext *ext)
--{
--	if (!ext)
--		return true;
--
--	if (ext->gen_id != atomic_read(&nf_conntrack_ext_genid))
--		return false;
--
--	/* inserted into conntrack table, nf_ct_iterate_cleanup()
--	 * will find it.  Disable nf_ct_ext_find() id check.
--	 */
--	WRITE_ONCE(ext->gen_id, 0);
--	return true;
--}
--
- int
- nf_conntrack_hash_check_insert(struct nf_conn *ct)
- {
-@@ -882,9 +855,6 @@ nf_conntrack_hash_check_insert(struct nf_conn *ct)
- 
- 	zone = nf_ct_zone(ct);
- 
--	if (!nf_ct_ext_valid_pre(ct->ext))
--		return -EAGAIN;
--
- 	local_bh_disable();
- 	do {
- 		sequence = read_seqcount_begin(&nf_conntrack_generation);
-@@ -918,18 +888,6 @@ nf_conntrack_hash_check_insert(struct nf_conn *ct)
- 			goto chaintoolong;
- 	}
- 
--	/* If genid has changed, we can't insert anymore because ct
--	 * extensions could have stale pointers and nf_ct_iterate_destroy
--	 * might have completed its table scan already.
--	 *
--	 * Increment of the ext genid right after this check is fine:
--	 * nf_ct_iterate_destroy blocks until locks are released.
--	 */
--	if (!nf_ct_ext_valid_post(ct->ext)) {
--		err = -EAGAIN;
--		goto out;
--	}
--
- 	smp_wmb();
- 	/* The caller holds a reference to this object */
- 	refcount_set(&ct->ct_general.use, 2);
-@@ -1257,11 +1215,6 @@ __nf_conntrack_confirm(struct sk_buff *skb)
- 		return NF_DROP;
- 	}
- 
--	if (!nf_ct_ext_valid_pre(ct->ext)) {
--		NF_CT_STAT_INC(net, insert_failed);
--		goto dying;
--	}
--
- 	/* We have to check the DYING flag after unlink to prevent
- 	 * a race against nf_ct_get_next_corpse() possibly called from
- 	 * user context, else we insert an already 'dead' hash, blocking
-@@ -1324,16 +1277,6 @@ __nf_conntrack_confirm(struct sk_buff *skb)
- 	nf_conntrack_double_unlock(hash, reply_hash);
- 	local_bh_enable();
- 
--	/* ext area is still valid (rcu read lock is held,
--	 * but will go out of scope soon, we need to remove
--	 * this conntrack again.
--	 */
--	if (!nf_ct_ext_valid_post(ct->ext)) {
--		nf_ct_kill(ct);
--		NF_CT_STAT_INC_ATOMIC(net, drop);
--		return NF_DROP;
--	}
--
- 	help = nfct_help(ct);
- 	if (help && help->helper)
- 		nf_conntrack_event_cache(IPCT_HELPER, ct);
-@@ -2439,7 +2382,6 @@ nf_ct_iterate_destroy(int (*iter)(struct nf_conn *i, void *data), void *data)
- 	 */
  	synchronize_net();
- 
--	nf_ct_ext_bump_genid();
- 	iter_data.data = data;
- 	nf_ct_iterate_cleanup(iter, &iter_data);
- 
-diff --git a/net/netfilter/nf_conntrack_extend.c b/net/netfilter/nf_conntrack_extend.c
-index dd62cc12e775..0da105e1ded9 100644
---- a/net/netfilter/nf_conntrack_extend.c
-+++ b/net/netfilter/nf_conntrack_extend.c
-@@ -27,8 +27,6 @@
- 
- #define NF_CT_EXT_PREALLOC	128u /* conntrack events are on by default */
- 
--atomic_t nf_conntrack_ext_genid __read_mostly = ATOMIC_INIT(1);
--
- static const u8 nf_ct_ext_type_len[NF_CT_EXT_NUM] = {
- 	[NF_CT_EXT_HELPER] = sizeof(struct nf_conn_help),
- #if IS_ENABLED(CONFIG_NF_NAT)
-@@ -118,10 +116,8 @@ void *nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
- 	if (!new)
- 		return NULL;
- 
--	if (!ct->ext) {
-+	if (!ct->ext)
- 		memset(new->offset, 0, sizeof(new->offset));
--		new->gen_id = atomic_read(&nf_conntrack_ext_genid);
--	}
- 
- 	new->offset[id] = newoff;
- 	new->len = newlen;
-@@ -131,29 +127,3 @@ void *nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
- 	return (void *)new + newoff;
++
++	nf_nat_bysource_flush();
+ 	kvfree(nf_nat_bysource);
+ 	unregister_pernet_subsys(&nat_net_ops);
  }
- EXPORT_SYMBOL(nf_ct_ext_add);
--
--/* Use nf_ct_ext_find wrapper. This is only useful for unconfirmed entries. */
--void *__nf_ct_ext_find(const struct nf_ct_ext *ext, u8 id)
--{
--	unsigned int gen_id = atomic_read(&nf_conntrack_ext_genid);
--	unsigned int this_id = READ_ONCE(ext->gen_id);
--
--	if (!__nf_ct_ext_exist(ext, id))
--		return NULL;
--
--	if (this_id == 0 || ext->gen_id == gen_id)
--		return (void *)ext + ext->offset[id];
--
--	return NULL;
--}
--EXPORT_SYMBOL(__nf_ct_ext_find);
--
--void nf_ct_ext_bump_genid(void)
--{
--	unsigned int value = atomic_inc_return(&nf_conntrack_ext_genid);
--
--	if (value == UINT_MAX)
--		atomic_set(&nf_conntrack_ext_genid, 1);
--
--	msleep(HZ);
--}
 -- 
 2.47.3
 
