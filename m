@@ -1,316 +1,113 @@
-Return-Path: <netfilter-devel+bounces-13000-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13001-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id X486BMv5HmpebQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13000-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 17:42:03 +0200
+	id mnhUDBAqH2pLiQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13001-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 21:08:00 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D8262FE4D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 17:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75FD96314D3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 02 Jun 2026 21:07:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13000-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13000-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=mBEol8qI;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13001-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13001-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 46CF830EC92B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Jun 2026 15:04:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 00700301DE3E
+	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Jun 2026 19:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3DA3CF04F;
-	Tue,  2 Jun 2026 15:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4893A3E88;
+	Tue,  2 Jun 2026 19:02:41 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664923E022A
-	for <netfilter-devel@vger.kernel.org>; Tue,  2 Jun 2026 15:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF8838A714
+	for <netfilter-devel@vger.kernel.org>; Tue,  2 Jun 2026 19:02:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780412679; cv=none; b=cSrcphcDv73UbLarm5KZB0LsBcuQp5L+pQJzqBNrSI3DzKyXHJ6r1oxQ4NyjnJjbO4IJTIKZOx3Q6Mluaf19t8MXFjO1NEGDP86qO0995U+6NoZmE54kf9A5TKif3i6EopyMNxclAXj34Dyx4Y9VolKNRNVKgyEnFb8jxBMgyIM=
+	t=1780426961; cv=none; b=S5iaFtSs0M5RdiUry3J1yOSxuQTrhe1GtSzplbKtIB+rlv1Sj5yXZ9Ofc8UpkUJRRuRVrEmWpEIYyKPYnFdIie5XsR+eqC11/RLRGuEUYcCgdhxLCO1oZjQ6UC2bD6xmQZswaUUlIUXqqYVwnJ5hG+06KQPDkrIbqnO7Ra2irD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780412679; c=relaxed/simple;
-	bh=036CHtRbDar5B7fzaGT2QuwAvBl41twEoGJn3XGH6uI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eZV9yOcDhI9meuF0PIceFDQkXs8lJ2LzVXCtiDAP0E2ALOgCs4W1kUgPfrBNqCfLbJq+bqkQRuBNtMeHeX2OwLZGY1an6syO595C2wnsAFextz1TheleMOPqyahVf8sKIo4aTNQPARTpF+L6nBTKwzXVI22RbcAM8gya1+BZoCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 0C02F60337; Tue, 02 Jun 2026 17:04:35 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>,
-	Ji'an Zhou <eilaimemedsnaimel@gmail.com>
-Subject: [PATCH nf] netfilter: nf_queue: reinject must revalidate bridge ports
-Date: Tue,  2 Jun 2026 17:04:25 +0200
-Message-ID: <20260602150428.5302-1-fw@strlen.de>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1780426961; c=relaxed/simple;
+	bh=zRWO3lDjuoOzzsPNSGwHCpuV9ffmZ2m/AHaCaP0KNr8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u0oTK1M3SJhFJqwVgXGTI3fM1Ge4S92zx0FC8nLVcDp1sCYKbA3QswKNzzW7X4A6NNj24dwmj2gdCHSKXgAzMlA2OQ7aXqUwzxlE0PFRVqXOovneprgZ8D1YOlEqQMC7nl0rqBo3QEkjQXdHIWTI/3qil/PQ+08+3wDFjI5DhOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=mBEol8qI; arc=none smtp.client-ip=151.80.46.58
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=+yeSY5P5ynJO6eGXQ2Kh3Hya0FwHXUc6a9QRu05ykW0=; b=mBEol8qIor0txMi1j0RmlnhJcO
+	3Nr408BXw5iPZ2CFLufVbVrk4SKHJyDPx7QL4vJsDecCo1JIw6+ZwknBO7Yojs95a+mls8yAxYMVj
+	8yLJGSqSO0Q4vR26Chrp2VbA5vD8PqgSlyI5t/cKER+YHXQP5KtVbskcJKFoeYhsP9sZsFWtr9ELH
+	NR/kGhbcv6p1cbmm/v9xYOUIZOZDuA02OYLCJlQMKMBQZsi/8t1cF2tusAt5lnfyT7DzBbkKoLUTx
+	s3m2uv+EcesWeMC4oyOwzZh80sR5DTM3+tw+BldaSVhxd8O3LaQ8flKlv3CBc6I/O65S7ob5SRnJU
+	OPQ9XZ8Q==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1wUUNp-0000000061F-1fVG;
+	Tue, 02 Jun 2026 21:02:37 +0200
+Date: Tue, 2 Jun 2026 21:02:37 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] tests: shell: packetpath/ct_count: Add missing socat
+ feature test
+Message-ID: <ah8ozdhOrSlSj7uh@orbyte.nwl.cc>
+References: <20260602130715.727246-1-phil@nwl.cc>
+ <ah7etAsr7mvjXKk1@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ah7etAsr7mvjXKk1@strlen.de>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.46 / 15.00];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13000-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[strlen.de,gmail.com];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[nwl.cc];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13001-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,m:eilaimemedsnaimel@gmail.com,s:lists@lfdr.de];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWO(0.00)[2];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[nwl.cc:-];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,orbyte.nwl.cc:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 20D8262FE4D
+X-Rspamd-Queue-Id: 75FD96314D3
 
-ebt_redirect_tg() dereferences br_port_get_rcu() return without a
-NULL check, causing a kernel panic when the bridge port has been
-removed between the original hook invocation and an NFQUEUE
-reinject.
+On Tue, Jun 02, 2026 at 03:46:28PM +0200, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > Skip the test on systems which don't have socat installed.
+> 
+> Ah, thanks. Please apply.
 
-A mere NULL check isn't sufficient, however.  As sashiko review
-points out userspace can not only remove the port from the bridge,
-it could also place the device in a different virtual device, e.g.
-macvlan.
-
-If this happens, we must drop the packet, there is no way for us to
-reinject it into the bridge path.
-
-Switch to _upper API, we don't need the bridge port structure.
-Also, this fix keeps another bug intact:
-
-Both nfnetlink_log and nfnetlink_queue use CONFIG_BRIDGE_NETFILTER
-too aggressive, which prevents certain logging features when queueing
-in bridge family: NETFILTER_FAMILY_BRIDGE can be enabled while the old
-CONFIG_BRIDGE_NETFILTER cruft is off.
-
-Fixes tag is a common ancestor, this was always broken.
-
-Fixes: f350a0a87374 ("bridge: use rx_handler_data pointer to store net_bridge_port pointer")
-Reported-by: Ji'an Zhou <eilaimemedsnaimel@gmail.com>
-Assisted-by: Claude:claude-sonnet-4-6
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/bridge/netfilter/ebt_dnat.c     |  4 +-
- net/bridge/netfilter/ebt_redirect.c | 16 +++++---
- net/netfilter/nfnetlink_log.c       | 23 +++++++++--
- net/netfilter/nfnetlink_queue.c     | 64 +++++++++++++++++++++++++----
- 4 files changed, 89 insertions(+), 18 deletions(-)
-
-diff --git a/net/bridge/netfilter/ebt_dnat.c b/net/bridge/netfilter/ebt_dnat.c
-index 3fda71a8579d..73f185cccd63 100644
---- a/net/bridge/netfilter/ebt_dnat.c
-+++ b/net/bridge/netfilter/ebt_dnat.c
-@@ -39,7 +39,9 @@ ebt_dnat_tg(struct sk_buff *skb, const struct xt_action_param *par)
- 			dev = xt_in(par);
- 			break;
- 		case NF_BR_PRE_ROUTING:
--			dev = br_port_get_rcu(xt_in(par))->br->dev;
-+			dev = netdev_master_upper_dev_get_rcu(xt_in(par));
-+			if (!dev) /* bridge port removed? */
-+				return EBT_DROP;
- 			break;
- 		default:
- 			dev = NULL;
-diff --git a/net/bridge/netfilter/ebt_redirect.c b/net/bridge/netfilter/ebt_redirect.c
-index 307790562b49..83486cd4d564 100644
---- a/net/bridge/netfilter/ebt_redirect.c
-+++ b/net/bridge/netfilter/ebt_redirect.c
-@@ -24,12 +24,18 @@ ebt_redirect_tg(struct sk_buff *skb, const struct xt_action_param *par)
- 	if (skb_ensure_writable(skb, 0))
- 		return EBT_DROP;
- 
--	if (xt_hooknum(par) != NF_BR_BROUTING)
--		/* rcu_read_lock()ed by nf_hook_thresh */
--		ether_addr_copy(eth_hdr(skb)->h_dest,
--				br_port_get_rcu(xt_in(par))->br->dev->dev_addr);
--	else
-+	if (xt_hooknum(par) != NF_BR_BROUTING) {
-+		const struct net_device *dev;
-+
-+		dev = netdev_master_upper_dev_get_rcu(xt_in(par));
-+		if (!dev)
-+			return EBT_DROP;
-+
-+		ether_addr_copy(eth_hdr(skb)->h_dest, dev->dev_addr);
-+	} else {
- 		ether_addr_copy(eth_hdr(skb)->h_dest, xt_in(par)->dev_addr);
-+	}
-+
- 	skb->pkt_type = PACKET_HOST;
- 	return info->target;
- }
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index 2439cbbd5b26..fa3657599861 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -451,6 +451,23 @@ static int nfulnl_put_bridge(struct nfulnl_instance *inst, const struct sk_buff
- 	return -1;
- }
- 
-+#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+static int nflog_put_master_ifindex(struct sk_buff *nlskb, int attr,
-+				    const struct net_device *dev)
-+{
-+	const struct net_device *upper;
-+
-+	if (dev && !netif_is_bridge_port(dev))
-+		return 0;
-+
-+	upper = netdev_master_upper_dev_get_rcu((struct net_device *)dev);
-+	if (upper && nla_put_be32(nlskb, attr, htonl(upper->ifindex)))
-+		return -EMSGSIZE;
-+
-+	return 0;
-+}
-+#endif
-+
- /* This is an inline function, we don't really care about a long
-  * list of arguments */
- static inline int
-@@ -505,8 +522,7 @@ __build_packet_message(struct nfnl_log_net *log,
- 			/* rcu_read_lock()ed by nf_hook_thresh or
- 			 * nf_log_packet.
- 			 */
--			    nla_put_be32(inst->skb, NFULA_IFINDEX_INDEV,
--					 htonl(br_port_get_rcu(indev)->br->dev->ifindex)))
-+			    nflog_put_master_ifindex(inst->skb, NFULA_IFINDEX_INDEV, indev))
- 				goto nla_put_failure;
- 		} else {
- 			int physinif;
-@@ -542,8 +558,7 @@ __build_packet_message(struct nfnl_log_net *log,
- 			/* rcu_read_lock()ed by nf_hook_thresh or
- 			 * nf_log_packet.
- 			 */
--			    nla_put_be32(inst->skb, NFULA_IFINDEX_OUTDEV,
--					 htonl(br_port_get_rcu(outdev)->br->dev->ifindex)))
-+			    nflog_put_master_ifindex(inst->skb, NFULA_IFINDEX_OUTDEV, outdev))
- 				goto nla_put_failure;
- 		} else {
- 			struct net_device *physoutdev;
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index 60ab88d45096..c5e29fec419b 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -440,10 +440,47 @@ static bool nf_ct_drop_unconfirmed(const struct nf_queue_entry *entry, bool *is_
- 	return false;
- }
- 
-+static bool nf_bridge_port_valid(const struct net_device *dev)
-+{
-+	if (!dev)
-+		return true;
-+
-+	return netif_is_bridge_port(dev);
-+}
-+
-+/* queued skbs leave rcu protection.  We bump device refcount so that
-+ * the device cannot go away.  However, while packet was out the port
-+ * could have been removed from the bridge.
-+ *
-+ * Ensure in+outdev are still part of a bridge at reinject time.
-+ *
-+ * The device rx_handler_data could even be pointing at data that is
-+ * not a net_bridge_port structure.
-+ */
-+static bool nf_bridge_ports_valid(const struct nf_queue_entry *entry)
-+{
-+#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+	if (!nf_bridge_port_valid(entry->physin) ||
-+	    !nf_bridge_port_valid(entry->physout))
-+		return false;
-+#endif
-+	if (entry->state.pf != PF_BRIDGE)
-+		return true;
-+
-+	if (!nf_bridge_port_valid(entry->state.in) ||
-+	    !nf_bridge_port_valid(entry->state.out))
-+		return false;
-+
-+	return true;
-+}
-+
- static void nfqnl_reinject(struct nf_queue_entry *entry, unsigned int verdict)
- {
- 	const struct nf_ct_hook *ct_hook;
- 
-+	if (!nf_bridge_ports_valid(entry))
-+		verdict = NF_DROP;
-+
- 	if (verdict == NF_ACCEPT ||
- 	    verdict == NF_REPEAT ||
- 	    verdict == NF_STOP) {
-@@ -636,6 +673,23 @@ static int nf_queue_checksum_help(struct sk_buff *entskb)
- 	return skb_checksum_help(entskb);
- }
- 
-+#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+static int nfqnl_put_master_ifindex(struct sk_buff *nlskb, int attr,
-+				    const struct net_device *dev)
-+{
-+	const struct net_device *upper;
-+
-+	if (dev && !netif_is_bridge_port(dev))
-+		return 0;
-+
-+	upper = netdev_master_upper_dev_get_rcu((struct net_device *)dev);
-+	if (upper && nla_put_be32(nlskb, attr, htonl(upper->ifindex)))
-+		return -EMSGSIZE;
-+
-+	return 0;
-+}
-+#endif
-+
- static struct sk_buff *
- nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 			   struct nf_queue_entry *entry,
-@@ -771,10 +825,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 			 * netfilter_bridge) */
- 			if (nla_put_be32(skb, NFQA_IFINDEX_PHYSINDEV,
- 					 htonl(indev->ifindex)) ||
--			/* this is the bridge group "brX" */
--			/* rcu_read_lock()ed by __nf_queue */
--			    nla_put_be32(skb, NFQA_IFINDEX_INDEV,
--					 htonl(br_port_get_rcu(indev)->br->dev->ifindex)))
-+			    nfqnl_put_master_ifindex(skb, NFQA_IFINDEX_INDEV, indev))
- 				goto nla_put_failure;
- 		} else {
- 			int physinif;
-@@ -805,10 +856,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 			 * netfilter_bridge) */
- 			if (nla_put_be32(skb, NFQA_IFINDEX_PHYSOUTDEV,
- 					 htonl(outdev->ifindex)) ||
--			/* this is the bridge group "brX" */
--			/* rcu_read_lock()ed by __nf_queue */
--			    nla_put_be32(skb, NFQA_IFINDEX_OUTDEV,
--					 htonl(br_port_get_rcu(outdev)->br->dev->ifindex)))
-+			    nfqnl_put_master_ifindex(skb, NFQA_IFINDEX_OUTDEV, outdev))
- 				goto nla_put_failure;
- 		} else {
- 			int physoutif;
--- 
-2.53.0
-
+Done already, sorry for not sending an "applied" message.
 
