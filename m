@@ -1,62 +1,62 @@
-Return-Path: <netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13025-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id omuLD8mBIGrm4QAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:33 +0200
+	id dCVqM9WBIGrq4QAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13025-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:45 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E6463AE36
-	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7097A63AE3E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=fpJvrXuf;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=jnDOcv67;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13025-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13025-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 74E0F30DFE66
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2026 19:29:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1520830E32E4
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2026 19:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4439348B382;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B4248B373;
 	Wed,  3 Jun 2026 19:29:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5916F48B373
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2026 19:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54ADF48BD21
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2026 19:29:32 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780514974; cv=none; b=TsMFpsNxl6dW6aDDQqJDCeTAD0WQzB9OQ+ALzTUCpRX3JP6Z7HQmVieM57suHb1dn6JGV5th1veXxoaaXZa4AM73FnBFkZRoSSAflFDFAPkVcRQz0mw3aiiufj6RLVJ9LJEBPwhp3UUbbRZ1MA0GOPk3na6TNLuN6l7WeepXwFs=
+	t=1780514974; cv=none; b=AAk087QzZsb4J3JBfN7lJjBIumi8rYIoTr7OHqnpGq5sx64yzTqzsrQwSaRqHH8GaRz6p0qT1nRDce7xF7DY7lRwRYyt0/BQYqk6ivQRp1jVllvgSIwedT/HUTGemWJD6frfsVP2DrFQD2MCD6ysBc/TTrcl1z/fXngroSiuq0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1780514974; c=relaxed/simple;
-	bh=8LIg1bHP2gZjXz+nW6xDyz7GsIoFYc3lgJ1e8pbwpSU=;
+	bh=IrgOH9iORTVtmENBbIj/Q5sPzIJ2HqopPG7YrMlt8ig=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aCYN29DyeIYlQ/4D3aeKYLrYXXRF7MxW7YYXtNXA3ieheo0GX4Lfw3SvW4gzkAcehgfPj1DSgmHFi3x1V/V5c7s1hSo3sB9SdUkIN0iMUaN9mHnGaMiGgApsMEgxpbEPMXTDlQYSivK2VHAdtmLUpBTSgurfg4Hx5trWAW56lvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fpJvrXuf; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=SwhudfXNktNgBtBbV0CAGhtVTuvAJiS+tb8Ei+gRRJU+VEOgMOs7UOM/78nBi4zQksd8775hdonhji9k6Q4sZXSzQhmp8yaCqXcflS7RVdTPucVuOU0SMQgJektell+GhXdZTL4gPFe56ZOdfut1wFqmczWcZUX/yTi8wTixsas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=jnDOcv67; arc=none smtp.client-ip=151.80.46.58
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=pLuUSIQ56JLPVpWeQv5thhKz31V3nD/t9kVHhWzZfPw=; b=fpJvrXufMRPR2y7W3se5jKpE1v
-	ol8f6KIjaaBoXrcKZc0Y/JsMgfmA5fdbdEo0d3z1PIKty3JPNallHE/l5cZylZn61s5vnC/DGI6pF
-	tR+NAhO8shz8/ZObZVVSeBoa6PtN9+D88Y0cA4UhBA6+pIn+HD/kMhlF3msR3LmXvdvpdjws0Y/gq
-	FQ+mRoR9yToNGzpAGkGm/QU3TlPrIFnwViUBEos0o8VpcbFBEy+ZfEXuh2JcSQLG8vybdTbeY6eOq
-	DK0D+wjoX3W+iUAt2nW7RvnK3gi7aAwoc9ea3eqMwkbOiEc+NjnMbFtf2+515c68rs10FvJcvYwdC
-	MomUlH/Q==;
+	bh=upR0ilaS47n/XHMV7PNh+azvIb0GZV6nO4fp5AzBq/8=; b=jnDOcv67yNlBtDqwCZw4UMm+U0
+	6zoid7Nb7ErY2hD4pr4ECc5dkgVLZ0kiw4ExdL6de2sj2/mnHyslwtV2zkgaKSkVpZ/dyldqhgeKT
+	uhQwNJ/9N9VwIkPOXTjN5KfvAOBDjWtPwraE75mlth1a9p5pn5WuC2W07jROk/XH27bZhK8zx1bi/
+	K8pJXIhNWdB/3Km2DlBXpRUkPZqj2qizSkUAq3iRiYT/XCVE6P6yy0WUMP0O1oYld/dMzjx73ZHOC
+	1HyF8z3ILRwsAiKQY1YAbPzUjYcMZYYnEolC7GdVJoSkv824UkVlp85L9JNW7d0VPtW/UlvrAShRH
+	Kn511fyg==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1wUrHN-0000000033v-3lfy;
-	Wed, 03 Jun 2026 21:29:29 +0200
+	id 1wUrHO-00000000345-3dG2;
+	Wed, 03 Jun 2026 21:29:30 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 4/6] rule: Introduce tunnel_obj_print_data()
-Date: Wed,  3 Jun 2026 21:29:21 +0200
-Message-ID: <20260603192923.1378815-5-phil@nwl.cc>
+Subject: [nft PATCH 5/6] src: Avoid variable declarations in switch cases
+Date: Wed,  3 Jun 2026 21:29:22 +0200
+Message-ID: <20260603192923.1378815-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260603192923.1378815-1-phil@nwl.cc>
 References: <20260603192923.1378815-1-phil@nwl.cc>
@@ -87,7 +87,7 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13023-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13025-lists,netfilter-devel=lfdr.de];
 	DKIM_TRACE(0.00)[nwl.cc:-];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
@@ -101,250 +101,78 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nwl.cc:mid,nwl.cc:from_mime,nwl.cc:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C7E6463AE36
+X-Rspamd-Queue-Id: 7097A63AE3E
 
-Move tunnel object printing into its own function to reduce size of
-obj_print_data().
+Older compilers reject this, so fix up the remaining two cases after
+previous patches.
 
-While at it, merge closing brace printing which also fixes broken syntax
-in case of unexpected tunnel type.
-
-Also move declaration of 'geneve' variable on top of the function. Older
-compilers complain about the declaration inside a switch-case.
-
+Fixes: 59f03bf14835f ("tunnel: add geneve support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/rule.c | 210 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 106 insertions(+), 104 deletions(-)
+ src/mnl.c     |  3 +--
+ src/netlink.c | 11 +++++------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/src/rule.c b/src/rule.c
-index 6a6d8f880d7b9..579e65ba19271 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -1847,6 +1847,111 @@ static void obj_print_header(const struct obj *obj,
- 			  obj->comment);
- }
- 
-+static void tunnel_obj_print_data(const struct obj *obj,
-+				  struct print_fmt_options *opts,
-+				  struct output_ctx *octx)
-+{
+diff --git a/src/mnl.c b/src/mnl.c
+index b9efd3cfd3cea..364773c5642c6 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -1544,6 +1544,7 @@ static void obj_tunnel_add_opts(struct nftnl_obj *nlo, struct tunnel *tunnel)
+ {
+ 	struct nftnl_tunnel_opts *opts;
+ 	struct nftnl_tunnel_opt *opt;
 +	struct tunnel_geneve *geneve;
-+
-+	obj_print_header(obj, opts, octx);
-+
-+	nft_print(octx, "%s%s%sid %u",
-+		  opts->nl, opts->tab, opts->tab, obj->tunnel.id);
-+
-+	if (obj->tunnel.src) {
-+		if (obj->tunnel.src->len == 32) {
-+			nft_print(octx, "%s%s%sip saddr ",
-+				  opts->nl, opts->tab, opts->tab);
-+			expr_print(obj->tunnel.src, octx);
-+		} else if (obj->tunnel.src->len == 128) {
-+			nft_print(octx, "%s%s%sip6 saddr ",
-+				  opts->nl, opts->tab, opts->tab);
-+			expr_print(obj->tunnel.src, octx);
-+		}
-+	}
-+	if (obj->tunnel.dst) {
-+		if (obj->tunnel.dst->len == 32) {
-+			nft_print(octx, "%s%s%sip daddr ",
-+				  opts->nl, opts->tab, opts->tab);
-+			expr_print(obj->tunnel.dst, octx);
-+		} else if (obj->tunnel.dst->len == 128) {
-+			nft_print(octx, "%s%s%sip6 daddr ",
-+				  opts->nl, opts->tab, opts->tab);
-+			expr_print(obj->tunnel.dst, octx);
-+		}
-+	}
-+	if (obj->tunnel.sport) {
-+		nft_print(octx, "%s%s%ssport %u",
-+			  opts->nl, opts->tab, opts->tab,
-+			  obj->tunnel.sport);
-+	}
-+	if (obj->tunnel.dport) {
-+		nft_print(octx, "%s%s%sdport %u",
-+			  opts->nl, opts->tab, opts->tab,
-+			  obj->tunnel.dport);
-+	}
-+	if (obj->tunnel.tos) {
-+		nft_print(octx, "%s%s%stos %u",
-+			  opts->nl, opts->tab, opts->tab,
-+			  obj->tunnel.tos);
-+	}
-+	if (obj->tunnel.ttl) {
-+		nft_print(octx, "%s%s%sttl %u",
-+			  opts->nl, opts->tab, opts->tab,
-+			  obj->tunnel.ttl);
-+	}
-+	switch (obj->tunnel.type) {
-+	case TUNNEL_ERSPAN:
-+		nft_print(octx, "%s%s%serspan {",
-+			  opts->nl, opts->tab, opts->tab);
-+		nft_print(octx, "%s%s%s%sversion %u",
-+			  opts->nl, opts->tab, opts->tab, opts->tab,
-+			  obj->tunnel.erspan.version);
-+		if (obj->tunnel.erspan.version == 1) {
-+			nft_print(octx, "%s%s%s%sindex %u",
-+				  opts->nl, opts->tab, opts->tab, opts->tab,
-+				  obj->tunnel.erspan.v1.index);
-+		} else {
-+			nft_print(octx, "%s%s%s%sdirection %s",
-+				  opts->nl, opts->tab, opts->tab, opts->tab,
-+				  obj->tunnel.erspan.v2.direction ? "egress"
-+								  : "ingress");
-+			nft_print(octx, "%s%s%s%sid %u",
-+				  opts->nl, opts->tab, opts->tab, opts->tab,
-+				  obj->tunnel.erspan.v2.hwid);
-+		}
-+		break;
-+	case TUNNEL_VXLAN:
-+		nft_print(octx, "%s%s%svxlan {",
-+			  opts->nl, opts->tab, opts->tab);
-+		nft_print(octx, "%s%s%s%sgbp %u",
-+			  opts->nl, opts->tab, opts->tab, opts->tab,
-+			  obj->tunnel.vxlan.gbp);
-+		break;
-+	case TUNNEL_GENEVE:
-+		nft_print(octx, "%s%s%sgeneve {", opts->nl, opts->tab, opts->tab);
-+		list_for_each_entry(geneve, &obj->tunnel.geneve_opts, list) {
-+			char data_str[256];
-+			int offset = 0;
-+
-+			for (uint32_t i = 0; i < geneve->data_len; i++) {
-+				offset += snprintf(data_str + offset,
-+						   geneve->data_len,
-+						   "%x",
-+						   geneve->data[i]);
-+			}
-+			nft_print(octx, "%s%s%s%sclass 0x%x opt-type 0x%x data \"0x%s\"",
-+				  opts->nl, opts->tab, opts->tab, opts->tab,
-+				  geneve->geneve_class, geneve->type, data_str);
-+
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+	nft_print(octx, "%s%s%s}", opts->nl, opts->tab, opts->tab);
-+}
-+
- static void obj_print_data(const struct obj *obj,
- 			   struct print_fmt_options *opts,
- 			   struct output_ctx *octx)
-@@ -1988,110 +2093,7 @@ static void obj_print_data(const struct obj *obj,
+ 
+ 	switch (tunnel->type) {
+ 	case TUNNEL_ERSPAN:
+@@ -1594,8 +1595,6 @@ static void obj_tunnel_add_opts(struct nftnl_obj *nlo, struct tunnel *tunnel)
+ 		nftnl_obj_set_data(nlo, NFTNL_OBJ_TUNNEL_OPTS, &opts, sizeof(struct nftnl_tunnel_opts *));
+ 		break;
+ 	case TUNNEL_GENEVE:
+-		struct tunnel_geneve *geneve;
+-
+ 		opts = nftnl_tunnel_opts_alloc(NFTNL_TUNNEL_TYPE_GENEVE);
+ 		if (!opts)
+ 			memory_allocation_error();
+diff --git a/src/netlink.c b/src/netlink.c
+index 5e59cb7b2d8f2..5c263f39791f1 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -1905,7 +1905,9 @@ static int obj_parse_udata_cb(const struct nftnl_udata *attr, void *data)
+ 
+ static int tunnel_parse_opt_cb(struct nftnl_tunnel_opt *opt, void *data) {
+ 
++	struct tunnel_geneve *geneve;
+ 	struct obj *obj = data;
++	const void *gnv_data;
+ 
+ 	switch (nftnl_tunnel_opt_get_type(opt)) {
+ 	case NFTNL_TUNNEL_TYPE_ERSPAN:
+@@ -1939,9 +1941,6 @@ static int tunnel_parse_opt_cb(struct nftnl_tunnel_opt *opt, void *data) {
  		}
  		break;
- 	case NFT_OBJECT_TUNNEL:
--		obj_print_header(obj, opts, octx);
+ 	case NFTNL_TUNNEL_TYPE_GENEVE:
+-		struct tunnel_geneve *geneve;
+-		const void *data;
 -
--		nft_print(octx, "%s%s%sid %u",
--			  opts->nl, opts->tab, opts->tab, obj->tunnel.id);
--
--		if (obj->tunnel.src) {
--			if (obj->tunnel.src->len == 32) {
--				nft_print(octx, "%s%s%sip saddr ",
--					  opts->nl, opts->tab, opts->tab);
--				expr_print(obj->tunnel.src, octx);
--			} else if (obj->tunnel.src->len == 128) {
--				nft_print(octx, "%s%s%sip6 saddr ",
--					  opts->nl, opts->tab, opts->tab);
--				expr_print(obj->tunnel.src, octx);
--			}
--		}
--		if (obj->tunnel.dst) {
--			if (obj->tunnel.dst->len == 32) {
--				nft_print(octx, "%s%s%sip daddr ",
--					  opts->nl, opts->tab, opts->tab);
--				expr_print(obj->tunnel.dst, octx);
--			} else if (obj->tunnel.dst->len == 128) {
--				nft_print(octx, "%s%s%sip6 daddr ",
--					  opts->nl, opts->tab, opts->tab);
--				expr_print(obj->tunnel.dst, octx);
--			}
--		}
--		if (obj->tunnel.sport) {
--			nft_print(octx, "%s%s%ssport %u",
--				  opts->nl, opts->tab, opts->tab,
--				  obj->tunnel.sport);
--		}
--		if (obj->tunnel.dport) {
--			nft_print(octx, "%s%s%sdport %u",
--				  opts->nl, opts->tab, opts->tab,
--				  obj->tunnel.dport);
--		}
--		if (obj->tunnel.tos) {
--			nft_print(octx, "%s%s%stos %u",
--				  opts->nl, opts->tab, opts->tab,
--				  obj->tunnel.tos);
--		}
--		if (obj->tunnel.ttl) {
--			nft_print(octx, "%s%s%sttl %u",
--				  opts->nl, opts->tab, opts->tab,
--				  obj->tunnel.ttl);
--		}
--		switch (obj->tunnel.type) {
--		case TUNNEL_ERSPAN:
--			nft_print(octx, "%s%s%serspan {",
--				  opts->nl, opts->tab, opts->tab);
--			nft_print(octx, "%s%s%s%sversion %u",
--				  opts->nl, opts->tab, opts->tab, opts->tab,
--				  obj->tunnel.erspan.version);
--			if (obj->tunnel.erspan.version == 1) {
--				nft_print(octx, "%s%s%s%sindex %u",
--					  opts->nl, opts->tab, opts->tab, opts->tab,
--					  obj->tunnel.erspan.v1.index);
--			} else {
--				nft_print(octx, "%s%s%s%sdirection %s",
--					  opts->nl, opts->tab, opts->tab, opts->tab,
--					  obj->tunnel.erspan.v2.direction ? "egress"
--									  : "ingress");
--				nft_print(octx, "%s%s%s%sid %u",
--					  opts->nl, opts->tab, opts->tab, opts->tab,
--					  obj->tunnel.erspan.v2.hwid);
--			}
--			nft_print(octx, "%s%s%s}",
--				  opts->nl, opts->tab, opts->tab);
--			break;
--		case TUNNEL_VXLAN:
--			nft_print(octx, "%s%s%svxlan {",
--				  opts->nl, opts->tab, opts->tab);
--			nft_print(octx, "%s%s%s%sgbp %u",
--				  opts->nl, opts->tab, opts->tab, opts->tab,
--				  obj->tunnel.vxlan.gbp);
--			nft_print(octx, "%s%s%s}",
--				  opts->nl, opts->tab, opts->tab);
--			break;
--		case TUNNEL_GENEVE:
--			struct tunnel_geneve *geneve;
--
--			nft_print(octx, "%s%s%sgeneve {", opts->nl, opts->tab, opts->tab);
--			list_for_each_entry(geneve, &obj->tunnel.geneve_opts, list) {
--				char data_str[256];
--				int offset = 0;
--
--				for (uint32_t i = 0; i < geneve->data_len; i++) {
--					offset += snprintf(data_str + offset,
--							   geneve->data_len,
--							   "%x",
--							   geneve->data[i]);
--				}
--				nft_print(octx, "%s%s%s%sclass 0x%x opt-type 0x%x data \"0x%s\"",
--					  opts->nl, opts->tab, opts->tab, opts->tab,
--					  geneve->geneve_class, geneve->type, data_str);
--
--			}
--			nft_print(octx, "%s%s%s}", opts->nl, opts->tab, opts->tab);
--			break;
--		default:
--			break;
--		}
--
-+		tunnel_obj_print_data(obj, opts, octx);
- 		nft_print(octx, "%s", opts->stmt_separator);
- 		break;
- 	default:
+ 		if (!obj->tunnel.type) {
+ 			init_list_head(&obj->tunnel.geneve_opts);
+ 			obj->tunnel.type = TUNNEL_GENEVE;
+@@ -1958,11 +1957,11 @@ static int tunnel_parse_opt_cb(struct nftnl_tunnel_opt *opt, void *data) {
+ 			geneve->geneve_class = nftnl_tunnel_opt_get_u16(opt, NFTNL_TUNNEL_GENEVE_CLASS);
+ 
+ 		if (nftnl_tunnel_opt_get_flags(opt) & (1 << NFTNL_TUNNEL_GENEVE_DATA)) {
+-			data = nftnl_tunnel_opt_get_data(opt, NFTNL_TUNNEL_GENEVE_DATA,
++			gnv_data = nftnl_tunnel_opt_get_data(opt, NFTNL_TUNNEL_GENEVE_DATA,
+ 							 &geneve->data_len);
+-			if (!data)
++			if (!gnv_data)
+ 				return -1;
+-			memcpy(&geneve->data, data, geneve->data_len);
++			memcpy(&geneve->data, gnv_data, geneve->data_len);
+ 		}
+ 
+ 		list_add_tail(&geneve->list, &obj->tunnel.geneve_opts);
 -- 
 2.54.0
 
