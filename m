@@ -1,47 +1,50 @@
-Return-Path: <netfilter-devel+bounces-13035-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13037-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id vKFsKau0IGrX6wAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13035-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 04 Jun 2026 01:11:39 +0200
+	id 1Fh7OoWzIGqL6wAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13037-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 04 Jun 2026 01:06:45 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1173063BC80
-	for <lists+netfilter-devel@lfdr.de>; Thu, 04 Jun 2026 01:11:39 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87F2863BBC9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 04 Jun 2026 01:06:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13035-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13035-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13037-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13037-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 65C93300C936
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2026 23:06:30 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 09D7C300B1F2
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2026 23:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CF04DC532;
-	Wed,  3 Jun 2026 23:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DC84DC523;
+	Wed,  3 Jun 2026 23:06:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B7A325495
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2026 23:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C2B325495
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2026 23:06:31 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780527989; cv=none; b=aXRT0hrdv0mdwYMGfSFw398Ifz5f4EaGZF9QfXhR6U86UqQtG0sADTnEgsuMpo7RWRzCx/2WTvl0iDPTCU0m+TSY8GPT8FIndI2FqpG5LM92fxhUnAq278ir5zAkq0eJBDstumBm5/PGctLijZTQX57/ZQ3Dl8f27nyYFCTicIY=
+	t=1780527992; cv=none; b=Fjx+mJK40b01ZvTp+nDJ7LqBHaBy/8uIMxBQm1BQYRcy8ujhHMS55adCMFEOcAUbBUYaEj10cjtBlcZ/KqbXDhctXBLF+Teli3SDJ8LRvW1yirPyYkfpUzqveSwM+vVJa218MPARe6Da/rL/pQYtJLpkLYNVkdqRChl917cq7UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780527989; c=relaxed/simple;
-	bh=/5+80TdBiGSRzNme2YUQ5Z11eDHeT0HQJ59wYyopiWY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AbuRNkybEonW44f3BzbyJ+fxDR9nzfTdKKWRjDPQdA6xi7BFFF2E+eyhXUzTDzkWkEUu6OZv5FmmaNTDBzJaSk0iyyPN9/fO3bbklcuLrMRHVJl0gJTVFE46l8ktxDIMuPAtcGKdhtHHndsIWyIs6sbstL8X+gLJz6R+8N/IjWs=
+	s=arc-20240116; t=1780527992; c=relaxed/simple;
+	bh=FaYi7q58tBVLQ1E4e/f0xp0XO7ak9XxHO8hio7IE4y8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=q6/xju9ETeJLH6JeKvDGWUJcc7dOSCEMmVlOWSDMyFKO0K3QbYZTyZkgeq8Ox7Pmkp2nwmx8U9eUaMmfPpkoTk2XlaKLZoYytaqOcFG5U2fDz8uOs5+1n0gGNEMLV745q2k5EXHr5ZiDcsyIzP/DMfPucJHtXdXEHaTbJcDNkCs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 85AA0605BD; Thu, 04 Jun 2026 01:06:19 +0200 (CEST)
+	id E66CB6079A; Thu, 04 Jun 2026 01:06:23 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH v2 nf-next 0/4] netfilter: nf_conncount: fix gc and
-Date: Thu,  4 Jun 2026 01:05:59 +0200
-Message-ID: <20260603230610.7900-1-fw@strlen.de>
+Subject: [PATCH v2 nf-next 1/4] netfilter: nf_conncount: prepare for per-tree seqcount
+Date: Thu,  4 Jun 2026 01:06:00 +0200
+Message-ID: <20260603230610.7900-2-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260603230610.7900-1-fw@strlen.de>
+References: <20260603230610.7900-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -54,20 +57,20 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DMARC_NA(0.00)[strlen.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13035-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13037-lists,netfilter-devel=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -77,36 +80,193 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:from_mime,strlen.de:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,strlen.de:mid,strlen.de:from_mime,strlen.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1173063BC80
+X-Rspamd-Queue-Id: 87F2863BBC9
 
-This addresses a drive-by AI review of nf_conncount.  See patch 4 for
-details.
+This change is supposed to not have any actual changes, it
+merely replaces rb_root by a new container structure.
 
-1) Replace rb_root with a new container structure in nf_conncount to prepare
-   for a per-tree sequence counter to detect concurrent modifications.
+Followup patch will add and use a sequence counter.
 
-2) Split nf_conncount rbtree walk into a helper. Add find_tree_node() to
-   fetch matching node so folluwp patch can reuse the function.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ v2: no changes.
+ net/netfilter/nf_conncount.c | 43 ++++++++++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
-3) Add a sequence count to detect concurrent rbtree modifications.
-
-4) Fix tree_gc_worker wrap-around by updating gc_tree unconditionally.
-   Add rcu_barrier before zapping the kmem cache during module exit.
-
-Florian Westphal (4):
-  netfilter: nf_conncount: prepare for per-tree seqcount
-  netfilter: nf_conncount: split count_tree_node rbtree walk into helper
-  netfilter: nf_conncount: add sequence counter to detect tree
-    modifications
-  netfilter: nf_conncount: gc and rcu fixes
-
- net/netfilter/nf_conncount.c | 203 ++++++++++++++++++++++-------------
- 1 file changed, 130 insertions(+), 73 deletions(-)
-
+diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
+index ab28b47395bd..d3866393b4f5 100644
+--- a/net/netfilter/nf_conncount.c
++++ b/net/netfilter/nf_conncount.c
+@@ -56,10 +56,14 @@ struct nf_conncount_rb {
+ 
+ static spinlock_t nf_conncount_locks[CONNCOUNT_SLOTS] __cacheline_aligned_in_smp;
+ 
++struct nf_conncount_root {
++	struct rb_root root;
++};
++
+ struct nf_conncount_data {
+ 	unsigned int keylen;
+ 	u32 initval;
+-	struct rb_root root[CONNCOUNT_SLOTS];
++	struct nf_conncount_root root[CONNCOUNT_SLOTS];
+ 	struct net *net;
+ 	struct work_struct gc_work;
+ 	unsigned long pending_trees[BITS_TO_LONGS(CONNCOUNT_SLOTS)];
+@@ -368,7 +372,7 @@ static void __tree_nodes_free(struct rcu_head *h)
+ }
+ 
+ /* caller must hold tree nf_conncount_locks[] lock */
+-static void tree_nodes_free(struct rb_root *root,
++static void tree_nodes_free(struct nf_conncount_root *root,
+ 			    struct nf_conncount_rb *gc_nodes[],
+ 			    unsigned int gc_count)
+ {
+@@ -378,7 +382,7 @@ static void tree_nodes_free(struct rb_root *root,
+ 		rbconn = gc_nodes[--gc_count];
+ 		spin_lock(&rbconn->list.list_lock);
+ 		if (!rbconn->list.count) {
+-			rb_erase(&rbconn->node, root);
++			rb_erase(&rbconn->node, &root->root);
+ 			call_rcu(&rbconn->rcu_head, __tree_nodes_free);
+ 		}
+ 		spin_unlock(&rbconn->list.list_lock);
+@@ -396,10 +400,10 @@ insert_tree(struct net *net,
+ 	    const struct sk_buff *skb,
+ 	    u16 l3num,
+ 	    struct nf_conncount_data *data,
+-	    struct rb_root *root,
+ 	    unsigned int hash,
+ 	    const u32 *key)
+ {
++	struct nf_conncount_root *root = &data->root[hash];
+ 	struct nf_conncount_rb *gc_nodes[CONNCOUNT_GC_MAX_NODES];
+ 	const struct nf_conntrack_zone *zone = &nf_ct_zone_dflt;
+ 	bool do_gc = true, refcounted = false;
+@@ -413,7 +417,7 @@ insert_tree(struct net *net,
+ 	spin_lock_bh(&nf_conncount_locks[hash]);
+ restart:
+ 	parent = NULL;
+-	rbnode = &(root->rb_node);
++	rbnode = &root->root.rb_node;
+ 	while (*rbnode) {
+ 		int diff;
+ 		rbconn = rb_entry(*rbnode, struct nf_conncount_rb, node);
+@@ -475,7 +479,7 @@ insert_tree(struct net *net,
+ 		rbconn->list.count = count;
+ 
+ 		rb_link_node_rcu(&rbconn->node, parent, rbnode);
+-		rb_insert_color(&rbconn->node, root);
++		rb_insert_color(&rbconn->node, &root->root);
+ 	}
+ out_unlock:
+ 	if (refcounted)
+@@ -491,7 +495,7 @@ count_tree(struct net *net,
+ 	   struct nf_conncount_data *data,
+ 	   const u32 *key)
+ {
+-	struct rb_root *root;
++	struct nf_conncount_root *root;
+ 	struct rb_node *parent;
+ 	struct nf_conncount_rb *rbconn;
+ 	unsigned int hash;
+@@ -499,7 +503,7 @@ count_tree(struct net *net,
+ 	hash = jhash2(key, data->keylen, data->initval) % CONNCOUNT_SLOTS;
+ 	root = &data->root[hash];
+ 
+-	parent = rcu_dereference_raw(root->rb_node);
++	parent = rcu_dereference_raw(root->root.rb_node);
+ 	while (parent) {
+ 		int diff;
+ 
+@@ -544,14 +548,14 @@ count_tree(struct net *net,
+ 	if (!skb)
+ 		return 0;
+ 
+-	return insert_tree(net, skb, l3num, data, root, hash, key);
++	return insert_tree(net, skb, l3num, data, hash, key);
+ }
+ 
+ static void tree_gc_worker(struct work_struct *work)
+ {
+ 	struct nf_conncount_data *data = container_of(work, struct nf_conncount_data, gc_work);
+ 	struct nf_conncount_rb *gc_nodes[CONNCOUNT_GC_MAX_NODES], *rbconn;
+-	struct rb_root *root;
++	struct nf_conncount_root *root;
+ 	struct rb_node *node;
+ 	unsigned int tree, next_tree, gc_count = 0;
+ 
+@@ -560,7 +564,7 @@ static void tree_gc_worker(struct work_struct *work)
+ 
+ 	local_bh_disable();
+ 	rcu_read_lock();
+-	for (node = rb_first(root); node != NULL; node = rb_next(node)) {
++	for (node = rb_first(&root->root); node ; node = rb_next(node)) {
+ 		rbconn = rb_entry(node, struct nf_conncount_rb, node);
+ 		if (nf_conncount_gc_list(data->net, &rbconn->list))
+ 			gc_count++;
+@@ -575,7 +579,7 @@ static void tree_gc_worker(struct work_struct *work)
+ 		goto next; /* do not bother */
+ 
+ 	gc_count = 0;
+-	node = rb_first(root);
++	node = rb_first(&root->root);
+ 	while (node != NULL) {
+ 		rbconn = rb_entry(node, struct nf_conncount_rb, node);
+ 		node = rb_next(node);
+@@ -620,6 +624,11 @@ unsigned int nf_conncount_count_skb(struct net *net,
+ }
+ EXPORT_SYMBOL_GPL(nf_conncount_count_skb);
+ 
++static void nf_conncount_root_init(struct nf_conncount_root *r)
++{
++	r->root = RB_ROOT;
++}
++
+ struct nf_conncount_data *nf_conncount_init(struct net *net, unsigned int keylen)
+ {
+ 	struct nf_conncount_data *data;
+@@ -635,13 +644,15 @@ struct nf_conncount_data *nf_conncount_init(struct net *net, unsigned int keylen
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(data->root); ++i)
+-		data->root[i] = RB_ROOT;
++		nf_conncount_root_init(&data->root[i]);
+ 
+ 	data->keylen = keylen / sizeof(u32);
+ 	data->net = net;
+ 	data->initval = get_random_u32();
+ 	INIT_WORK(&data->gc_work, tree_gc_worker);
+ 
++	BUILD_BUG_ON(ARRAY_SIZE(data->root) != ARRAY_SIZE(nf_conncount_locks));
++
+ 	return data;
+ }
+ EXPORT_SYMBOL_GPL(nf_conncount_init);
+@@ -655,15 +666,15 @@ void nf_conncount_cache_free(struct nf_conncount_list *list)
+ }
+ EXPORT_SYMBOL_GPL(nf_conncount_cache_free);
+ 
+-static void destroy_tree(struct rb_root *r)
++static void destroy_tree(struct nf_conncount_root *r)
+ {
+ 	struct nf_conncount_rb *rbconn;
+ 	struct rb_node *node;
+ 
+-	while ((node = rb_first(r)) != NULL) {
++	while ((node = rb_first(&r->root)) != NULL) {
+ 		rbconn = rb_entry(node, struct nf_conncount_rb, node);
+ 
+-		rb_erase(node, r);
++		rb_erase(node, &r->root);
+ 
+ 		nf_conncount_cache_free(&rbconn->list);
+ 
 -- 
-2.53.0
+2.54.0
+
 
