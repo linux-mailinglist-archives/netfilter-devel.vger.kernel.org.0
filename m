@@ -1,62 +1,62 @@
-Return-Path: <netfilter-devel+bounces-13021-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id tUvlHMKBIGrk4QAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13021-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:26 +0200
+	id omuLD8mBIGrm4QAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:33 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 090B963AE2E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7E6463AE36
+	for <lists+netfilter-devel@lfdr.de>; Wed, 03 Jun 2026 21:34:32 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=GSWK6HRy;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13021-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13021-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=fpJvrXuf;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13023-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D287130DD615
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2026 19:29:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 74E0F30DFE66
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2026 19:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F6948B399;
-	Wed,  3 Jun 2026 19:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4439348B382;
+	Wed,  3 Jun 2026 19:29:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4B137416F
-	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2026 19:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5916F48B373
+	for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2026 19:29:31 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780514973; cv=none; b=Q+NVW8GA12fO8p6cneChlPAN6OcED0YOVULJe/O6+HNx4rKELEVQ128pHnMF4JTxLlvBXLgOn3kNIRsmOkNd89Na/N4W5dt/fVAyKMb5icNUhqVzx4iM406dLXaeEz1BGU+5KYhnUjqmh1cfNDsVjRnO/DGsXnhBRJYeZ2khgXA=
+	t=1780514974; cv=none; b=TsMFpsNxl6dW6aDDQqJDCeTAD0WQzB9OQ+ALzTUCpRX3JP6Z7HQmVieM57suHb1dn6JGV5th1veXxoaaXZa4AM73FnBFkZRoSSAflFDFAPkVcRQz0mw3aiiufj6RLVJ9LJEBPwhp3UUbbRZ1MA0GOPk3na6TNLuN6l7WeepXwFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780514973; c=relaxed/simple;
-	bh=8IuxgfH3GERfiZVIfJ12M2K4YzyLVkjx3a/60fvwS4A=;
+	s=arc-20240116; t=1780514974; c=relaxed/simple;
+	bh=8LIg1bHP2gZjXz+nW6xDyz7GsIoFYc3lgJ1e8pbwpSU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EMjXGZ36j1mH11xPLUz1t4KZGoqSdSoh4HBxlJTCk5IgBwiaDkwf/x8Hz49c97iX6ubiaDDRiKsqbfLrpyyvlD/BT3h6M7PobedbwxTXH9e+d+UIeJ//Js43HCU6EuW5f2fE/YCTzAjQLqEKUZ+vg3myt50K1u3sH7j6UYBQQF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=GSWK6HRy; arc=none smtp.client-ip=151.80.46.58
+	 MIME-Version; b=aCYN29DyeIYlQ/4D3aeKYLrYXXRF7MxW7YYXtNXA3ieheo0GX4Lfw3SvW4gzkAcehgfPj1DSgmHFi3x1V/V5c7s1hSo3sB9SdUkIN0iMUaN9mHnGaMiGgApsMEgxpbEPMXTDlQYSivK2VHAdtmLUpBTSgurfg4Hx5trWAW56lvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=fpJvrXuf; arc=none smtp.client-ip=151.80.46.58
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
 	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=6reOtMFAhkBrj06Lao48XDgMpzQ0dRYQ5hrN3kpV5co=; b=GSWK6HRyMtGIFUhjJ/ZO3SOT/O
-	+KwZLoojPNN/duMEB5PrTYKBdkCxUOZFNaB8q/SFxgVYWux64F8/TOePNr2mVHvvjnnMZwkDlKSQL
-	K5XWlsysrjLPGthnAEAUqUhs7K6ekFM5At6rEM2pdYAdMFmkCASuOr6hkt5/1lZrxs8A0WiR2LWHv
-	W+hFQPinMBgThPFVs9G5jomoYrabNtHo3KtEs3pr0MxpWcfqjBECLYCxmev5bmPTT92pVw4SF9pis
-	9CZJKHP988ouYp2g6x8B3s9eC0vomi/OOEuSjZ148hp7qmfC9Xxz0yucd0vy3o3lb97mA3eduluam
-	0pm1DnrQ==;
+	bh=pLuUSIQ56JLPVpWeQv5thhKz31V3nD/t9kVHhWzZfPw=; b=fpJvrXufMRPR2y7W3se5jKpE1v
+	ol8f6KIjaaBoXrcKZc0Y/JsMgfmA5fdbdEo0d3z1PIKty3JPNallHE/l5cZylZn61s5vnC/DGI6pF
+	tR+NAhO8shz8/ZObZVVSeBoa6PtN9+D88Y0cA4UhBA6+pIn+HD/kMhlF3msR3LmXvdvpdjws0Y/gq
+	FQ+mRoR9yToNGzpAGkGm/QU3TlPrIFnwViUBEos0o8VpcbFBEy+ZfEXuh2JcSQLG8vybdTbeY6eOq
+	DK0D+wjoX3W+iUAt2nW7RvnK3gi7aAwoc9ea3eqMwkbOiEc+NjnMbFtf2+515c68rs10FvJcvYwdC
+	MomUlH/Q==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1wUrHN-0000000033q-1gQ5;
+	id 1wUrHN-0000000033v-3lfy;
 	Wed, 03 Jun 2026 21:29:29 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 3/6] rule: Turn obj_print_comment() into obj_print_header()
-Date: Wed,  3 Jun 2026 21:29:20 +0200
-Message-ID: <20260603192923.1378815-4-phil@nwl.cc>
+Subject: [nft PATCH 4/6] rule: Introduce tunnel_obj_print_data()
+Date: Wed,  3 Jun 2026 21:29:21 +0200
+Message-ID: <20260603192923.1378815-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260603192923.1378815-1-phil@nwl.cc>
 References: <20260603192923.1378815-1-phil@nwl.cc>
@@ -87,7 +87,7 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13021-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13023-lists,netfilter-devel=lfdr.de];
 	DKIM_TRACE(0.00)[nwl.cc:-];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
@@ -101,151 +101,250 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nwl.cc:mid,nwl.cc:from_mime,nwl.cc:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 090B963AE2E
+X-Rspamd-Queue-Id: C7E6463AE36
 
-All tunnel types print the same heading, merge the duplicate code.
+Move tunnel object printing into its own function to reduce size of
+obj_print_data().
+
+While at it, merge closing brace printing which also fixes broken syntax
+in case of unexpected tunnel type.
+
+Also move declaration of 'geneve' variable on top of the function. Older
+compilers complain about the declaration inside a switch-case.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/rule.c | 64 ++++++++++++++----------------------------------------
- 1 file changed, 16 insertions(+), 48 deletions(-)
+ src/rule.c | 210 +++++++++++++++++++++++++++--------------------------
+ 1 file changed, 106 insertions(+), 104 deletions(-)
 
 diff --git a/src/rule.c b/src/rule.c
-index c32e08319d149..6a6d8f880d7b9 100644
+index 6a6d8f880d7b9..579e65ba19271 100644
 --- a/src/rule.c
 +++ b/src/rule.c
-@@ -1833,10 +1833,14 @@ int tunnel_geneve_data_str2array(const char *hexstr,
- 	return 0;
+@@ -1847,6 +1847,111 @@ static void obj_print_header(const struct obj *obj,
+ 			  obj->comment);
  }
  
--static void obj_print_comment(const struct obj *obj,
--			      struct print_fmt_options *opts,
--			      struct output_ctx *octx)
-+static void obj_print_header(const struct obj *obj,
-+			     struct print_fmt_options *opts,
-+			     struct output_ctx *octx)
- {
-+	nft_print(octx, " %s {", obj->handle.obj.name);
-+	if (nft_output_handle(octx))
-+		nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
++static void tunnel_obj_print_data(const struct obj *obj,
++				  struct print_fmt_options *opts,
++				  struct output_ctx *octx)
++{
++	struct tunnel_geneve *geneve;
 +
- 	if (obj->comment)
- 		nft_print(octx, "%s%s%scomment \"%s\"",
- 			  opts->nl, opts->tab, opts->tab,
-@@ -1849,11 +1853,7 @@ static void obj_print_data(const struct obj *obj,
- {
- 	switch (obj->type) {
- 	case NFT_OBJECT_COUNTER:
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		if (nft_output_stateless(octx))
- 			nft_print(octx, "%s", opts->nl);
- 		else
-@@ -1865,11 +1865,7 @@ static void obj_print_data(const struct obj *obj,
- 		const char *data_unit;
- 		uint64_t bytes;
- 
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		nft_print(octx, "%s%s%s", opts->nl, opts->tab, opts->tab);
- 		data_unit = get_rate(obj->quota.bytes, &bytes);
- 		nft_print(octx, "%s%" PRIu64 " %s",
-@@ -1884,20 +1880,12 @@ static void obj_print_data(const struct obj *obj,
- 		}
- 		break;
- 	case NFT_OBJECT_SECMARK:
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		nft_print(octx, "%s%s%s", opts->nl, opts->tab, opts->tab);
- 		nft_print(octx, "\"%s\"%s", obj->secmark.ctx, opts->nl);
- 		break;
- 	case NFT_OBJECT_CT_HELPER:
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		nft_print(octx, "%s", opts->nl);
- 		nft_print(octx, "%s%stype \"%s\" protocol ",
- 			  opts->tab, opts->tab, obj->ct_helper.name);
-@@ -1909,11 +1897,7 @@ static void obj_print_data(const struct obj *obj,
- 			  opts->stmt_separator);
- 		break;
- 	case NFT_OBJECT_CT_TIMEOUT:
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		nft_print(octx, "%s", opts->nl);
- 		nft_print(octx, "%s%sprotocol ", opts->tab, opts->tab);
- 		print_proto_name_proto(obj->ct_timeout.l4proto, octx);
-@@ -1926,11 +1910,7 @@ static void obj_print_data(const struct obj *obj,
- 					   obj->ct_timeout.timeout, opts, octx);
- 		break;
- 	case NFT_OBJECT_CT_EXPECT:
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		nft_print(octx, "%s", opts->nl);
- 		nft_print(octx, "%s%sprotocol ", opts->tab, opts->tab);
- 		print_proto_name_proto(obj->ct_expect.l4proto, octx);
-@@ -1956,11 +1936,7 @@ static void obj_print_data(const struct obj *obj,
- 		const char *data_unit;
- 		uint64_t rate;
- 
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 		nft_print(octx, "%s%s%s", opts->nl, opts->tab, opts->tab);
- 		switch (obj->limit.type) {
- 		case NFT_LIMIT_PKTS:
-@@ -1994,11 +1970,7 @@ static void obj_print_data(const struct obj *obj,
- 		const char *sack_str = synproxy_sack_to_str(flags);
- 		const char *ts_str = synproxy_timestamp_to_str(flags);
- 
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
--
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 
- 		if (flags & NF_SYNPROXY_OPT_MSS) {
- 			nft_print(octx, "%s%s%s", opts->nl, opts->tab, opts->tab);
-@@ -2016,11 +1988,7 @@ static void obj_print_data(const struct obj *obj,
++	obj_print_header(obj, opts, octx);
++
++	nft_print(octx, "%s%s%sid %u",
++		  opts->nl, opts->tab, opts->tab, obj->tunnel.id);
++
++	if (obj->tunnel.src) {
++		if (obj->tunnel.src->len == 32) {
++			nft_print(octx, "%s%s%sip saddr ",
++				  opts->nl, opts->tab, opts->tab);
++			expr_print(obj->tunnel.src, octx);
++		} else if (obj->tunnel.src->len == 128) {
++			nft_print(octx, "%s%s%sip6 saddr ",
++				  opts->nl, opts->tab, opts->tab);
++			expr_print(obj->tunnel.src, octx);
++		}
++	}
++	if (obj->tunnel.dst) {
++		if (obj->tunnel.dst->len == 32) {
++			nft_print(octx, "%s%s%sip daddr ",
++				  opts->nl, opts->tab, opts->tab);
++			expr_print(obj->tunnel.dst, octx);
++		} else if (obj->tunnel.dst->len == 128) {
++			nft_print(octx, "%s%s%sip6 daddr ",
++				  opts->nl, opts->tab, opts->tab);
++			expr_print(obj->tunnel.dst, octx);
++		}
++	}
++	if (obj->tunnel.sport) {
++		nft_print(octx, "%s%s%ssport %u",
++			  opts->nl, opts->tab, opts->tab,
++			  obj->tunnel.sport);
++	}
++	if (obj->tunnel.dport) {
++		nft_print(octx, "%s%s%sdport %u",
++			  opts->nl, opts->tab, opts->tab,
++			  obj->tunnel.dport);
++	}
++	if (obj->tunnel.tos) {
++		nft_print(octx, "%s%s%stos %u",
++			  opts->nl, opts->tab, opts->tab,
++			  obj->tunnel.tos);
++	}
++	if (obj->tunnel.ttl) {
++		nft_print(octx, "%s%s%sttl %u",
++			  opts->nl, opts->tab, opts->tab,
++			  obj->tunnel.ttl);
++	}
++	switch (obj->tunnel.type) {
++	case TUNNEL_ERSPAN:
++		nft_print(octx, "%s%s%serspan {",
++			  opts->nl, opts->tab, opts->tab);
++		nft_print(octx, "%s%s%s%sversion %u",
++			  opts->nl, opts->tab, opts->tab, opts->tab,
++			  obj->tunnel.erspan.version);
++		if (obj->tunnel.erspan.version == 1) {
++			nft_print(octx, "%s%s%s%sindex %u",
++				  opts->nl, opts->tab, opts->tab, opts->tab,
++				  obj->tunnel.erspan.v1.index);
++		} else {
++			nft_print(octx, "%s%s%s%sdirection %s",
++				  opts->nl, opts->tab, opts->tab, opts->tab,
++				  obj->tunnel.erspan.v2.direction ? "egress"
++								  : "ingress");
++			nft_print(octx, "%s%s%s%sid %u",
++				  opts->nl, opts->tab, opts->tab, opts->tab,
++				  obj->tunnel.erspan.v2.hwid);
++		}
++		break;
++	case TUNNEL_VXLAN:
++		nft_print(octx, "%s%s%svxlan {",
++			  opts->nl, opts->tab, opts->tab);
++		nft_print(octx, "%s%s%s%sgbp %u",
++			  opts->nl, opts->tab, opts->tab, opts->tab,
++			  obj->tunnel.vxlan.gbp);
++		break;
++	case TUNNEL_GENEVE:
++		nft_print(octx, "%s%s%sgeneve {", opts->nl, opts->tab, opts->tab);
++		list_for_each_entry(geneve, &obj->tunnel.geneve_opts, list) {
++			char data_str[256];
++			int offset = 0;
++
++			for (uint32_t i = 0; i < geneve->data_len; i++) {
++				offset += snprintf(data_str + offset,
++						   geneve->data_len,
++						   "%x",
++						   geneve->data[i]);
++			}
++			nft_print(octx, "%s%s%s%sclass 0x%x opt-type 0x%x data \"0x%s\"",
++				  opts->nl, opts->tab, opts->tab, opts->tab,
++				  geneve->geneve_class, geneve->type, data_str);
++
++		}
++		break;
++	default:
++		break;
++	}
++	nft_print(octx, "%s%s%s}", opts->nl, opts->tab, opts->tab);
++}
++
+ static void obj_print_data(const struct obj *obj,
+ 			   struct print_fmt_options *opts,
+ 			   struct output_ctx *octx)
+@@ -1988,110 +2093,7 @@ static void obj_print_data(const struct obj *obj,
  		}
  		break;
  	case NFT_OBJECT_TUNNEL:
--		nft_print(octx, " %s {", obj->handle.obj.name);
--		if (nft_output_handle(octx))
--			nft_print(octx, " # handle %" PRIu64, obj->handle.handle.id);
+-		obj_print_header(obj, opts, octx);
 -
--		obj_print_comment(obj, opts, octx);
-+		obj_print_header(obj, opts, octx);
- 
- 		nft_print(octx, "%s%s%sid %u",
- 			  opts->nl, opts->tab, opts->tab, obj->tunnel.id);
+-		nft_print(octx, "%s%s%sid %u",
+-			  opts->nl, opts->tab, opts->tab, obj->tunnel.id);
+-
+-		if (obj->tunnel.src) {
+-			if (obj->tunnel.src->len == 32) {
+-				nft_print(octx, "%s%s%sip saddr ",
+-					  opts->nl, opts->tab, opts->tab);
+-				expr_print(obj->tunnel.src, octx);
+-			} else if (obj->tunnel.src->len == 128) {
+-				nft_print(octx, "%s%s%sip6 saddr ",
+-					  opts->nl, opts->tab, opts->tab);
+-				expr_print(obj->tunnel.src, octx);
+-			}
+-		}
+-		if (obj->tunnel.dst) {
+-			if (obj->tunnel.dst->len == 32) {
+-				nft_print(octx, "%s%s%sip daddr ",
+-					  opts->nl, opts->tab, opts->tab);
+-				expr_print(obj->tunnel.dst, octx);
+-			} else if (obj->tunnel.dst->len == 128) {
+-				nft_print(octx, "%s%s%sip6 daddr ",
+-					  opts->nl, opts->tab, opts->tab);
+-				expr_print(obj->tunnel.dst, octx);
+-			}
+-		}
+-		if (obj->tunnel.sport) {
+-			nft_print(octx, "%s%s%ssport %u",
+-				  opts->nl, opts->tab, opts->tab,
+-				  obj->tunnel.sport);
+-		}
+-		if (obj->tunnel.dport) {
+-			nft_print(octx, "%s%s%sdport %u",
+-				  opts->nl, opts->tab, opts->tab,
+-				  obj->tunnel.dport);
+-		}
+-		if (obj->tunnel.tos) {
+-			nft_print(octx, "%s%s%stos %u",
+-				  opts->nl, opts->tab, opts->tab,
+-				  obj->tunnel.tos);
+-		}
+-		if (obj->tunnel.ttl) {
+-			nft_print(octx, "%s%s%sttl %u",
+-				  opts->nl, opts->tab, opts->tab,
+-				  obj->tunnel.ttl);
+-		}
+-		switch (obj->tunnel.type) {
+-		case TUNNEL_ERSPAN:
+-			nft_print(octx, "%s%s%serspan {",
+-				  opts->nl, opts->tab, opts->tab);
+-			nft_print(octx, "%s%s%s%sversion %u",
+-				  opts->nl, opts->tab, opts->tab, opts->tab,
+-				  obj->tunnel.erspan.version);
+-			if (obj->tunnel.erspan.version == 1) {
+-				nft_print(octx, "%s%s%s%sindex %u",
+-					  opts->nl, opts->tab, opts->tab, opts->tab,
+-					  obj->tunnel.erspan.v1.index);
+-			} else {
+-				nft_print(octx, "%s%s%s%sdirection %s",
+-					  opts->nl, opts->tab, opts->tab, opts->tab,
+-					  obj->tunnel.erspan.v2.direction ? "egress"
+-									  : "ingress");
+-				nft_print(octx, "%s%s%s%sid %u",
+-					  opts->nl, opts->tab, opts->tab, opts->tab,
+-					  obj->tunnel.erspan.v2.hwid);
+-			}
+-			nft_print(octx, "%s%s%s}",
+-				  opts->nl, opts->tab, opts->tab);
+-			break;
+-		case TUNNEL_VXLAN:
+-			nft_print(octx, "%s%s%svxlan {",
+-				  opts->nl, opts->tab, opts->tab);
+-			nft_print(octx, "%s%s%s%sgbp %u",
+-				  opts->nl, opts->tab, opts->tab, opts->tab,
+-				  obj->tunnel.vxlan.gbp);
+-			nft_print(octx, "%s%s%s}",
+-				  opts->nl, opts->tab, opts->tab);
+-			break;
+-		case TUNNEL_GENEVE:
+-			struct tunnel_geneve *geneve;
+-
+-			nft_print(octx, "%s%s%sgeneve {", opts->nl, opts->tab, opts->tab);
+-			list_for_each_entry(geneve, &obj->tunnel.geneve_opts, list) {
+-				char data_str[256];
+-				int offset = 0;
+-
+-				for (uint32_t i = 0; i < geneve->data_len; i++) {
+-					offset += snprintf(data_str + offset,
+-							   geneve->data_len,
+-							   "%x",
+-							   geneve->data[i]);
+-				}
+-				nft_print(octx, "%s%s%s%sclass 0x%x opt-type 0x%x data \"0x%s\"",
+-					  opts->nl, opts->tab, opts->tab, opts->tab,
+-					  geneve->geneve_class, geneve->type, data_str);
+-
+-			}
+-			nft_print(octx, "%s%s%s}", opts->nl, opts->tab, opts->tab);
+-			break;
+-		default:
+-			break;
+-		}
+-
++		tunnel_obj_print_data(obj, opts, octx);
+ 		nft_print(octx, "%s", opts->stmt_separator);
+ 		break;
+ 	default:
 -- 
 2.54.0
 
