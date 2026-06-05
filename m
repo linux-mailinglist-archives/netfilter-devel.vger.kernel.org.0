@@ -1,307 +1,168 @@
-Return-Path: <netfilter-devel+bounces-13077-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13078-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id qgOKJX/jImprewEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13077-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 05 Jun 2026 16:55:59 +0200
+	id AI4WCnTqImq+fAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13078-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 05 Jun 2026 17:25:40 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAEBA6490C4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 05 Jun 2026 16:55:58 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F40649456
+	for <lists+netfilter-devel@lfdr.de>; Fri, 05 Jun 2026 17:25:39 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13077-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13077-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=Uqg1e8sc;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13078-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13078-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 503B430F5E9B
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jun 2026 14:46:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 810DC30A54A7
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jun 2026 15:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679A83998AB;
-	Fri,  5 Jun 2026 14:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47DA3B4439;
+	Fri,  5 Jun 2026 15:17:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3515F3A2550
-	for <netfilter-devel@vger.kernel.org>; Fri,  5 Jun 2026 14:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265C835BDDB
+	for <netfilter-devel@vger.kernel.org>; Fri,  5 Jun 2026 15:17:30 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780670669; cv=none; b=DlE+b0aI9Qy2v6dCAeeVqqvfLkJh9z0KI4eK9+eVT7lKvtt5xHmQlIdzUNESP2We/mprswgBvIn+2eZsZv6e9VJytXqWzj3zfZmelSaNYadWZqaU7QxDnq3NmoxFtKVRLUHlVmMR4MzXHXj7u9sNz44R99E9p31dfwFVt++FC0k=
+	t=1780672652; cv=none; b=t2DlUpiz0uROBQp7xoccdg6M8OHPVnwBoi2AI5D8UN5HjRLKjkhZqeFFGx6oLQO0yfA3Ttb5LJL3/S4i3Xb1FFgaXN8mu9K0faWJ9ngBzc3zHQfpZde/iXmLO9Txk2z9CDzw+AGw3cds0rVzoZ7vJJVjrz25dk99yKr7MiKOGYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780670669; c=relaxed/simple;
-	bh=D316F8o+UmjYfme/lZ7Tbr4V1v9nAY+62BNjaw8O3xI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JxainspaZOl2KIuh1keV1LANA0m0czZuFfpZQxzH2non/tc9xs1YLy6539MiL0yZ+EfiA4UJYPQHOQh3rqcOr+VOFp0EAlqKdhLvrjgbCb2aZmcLIeFrPGKwaU++I34YYOWkEXFyXGjfR70af/eQ6i0/VaH9P2gdII8pPdUopJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 5016660425; Fri, 05 Jun 2026 16:44:21 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next 2/2] netfilter: nftables: restrict linklayer and network header writes
-Date: Fri,  5 Jun 2026 16:44:05 +0200
-Message-ID: <20260605144405.13010-3-fw@strlen.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260605144405.13010-1-fw@strlen.de>
-References: <20260605144405.13010-1-fw@strlen.de>
+	s=arc-20240116; t=1780672652; c=relaxed/simple;
+	bh=5wl2996vHzeZJO1WgtfgPvpebwtMnDuZhMx86GP0dc4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sU5db7vvh7NA3ihPExC0Ljm+Y2cv8V6v0Ym3Td6PS3T9o2/EBykmyvHRNHUEcjvOuZ/kmxC4v2MmPnepXjqlXWBwtTYXFqxi3qThU7LbgPWyU6i9UipoHdzaPuN60HgkecdVEs+JtibPDR5Qm+UJrVuowccvCLV4rgkA4K1FRKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Uqg1e8sc; arc=none smtp.client-ip=217.70.190.124
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id C253060177;
+	Fri,  5 Jun 2026 17:17:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1780672647;
+	bh=bayiGiowuExZeTtut7xI69ag0DwrQ+kkiDIdQ1EzFKo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Uqg1e8sc8rvU0FG+gYffZJ7ls5jbhh2Sp6rzWy3UsAy1GOsb/jSyVhExd3GFDOfg1
+	 hNw0VjxXg3ynllOhyUbHKpSGeN2gmGzuvDNztFKRjLF+PDoug6RBYpPJ1leoGndcJz
+	 ma9Hp+9/BX6TgIHPxIlHziQmYWCoRpJ/VYKqkFCWEMgGAWBzZratmEa7iyB/SNxHY6
+	 AkqKvt8Ve137TnTvbW5izii4vizE5b2cKVboJ19qbOW4Sf+fqhdQOEG3PccFv0zuLt
+	 m0bKDvLCwrRJhSv685n08shPiLHW9z62FAT0ePc3vIMNa1MdMmV6PerMn1xR31dpGF
+	 EipXv1sG2soIQ==
+Date: Fri, 5 Jun 2026 17:17:25 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: David Carlier <devnexen@gmail.com>, netfilter-devel@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>, coreteam@netfilter.org
+Subject: Re: [PATCH nf] netfilter: flowtable: fix IP6IP6 tunnel offset
+ double-count with vlan/pppoe encap
+Message-ID: <aiLohUmGT7Dto0TU@chamomile>
+References: <20260604211700.253946-1-devnexen@gmail.com>
+ <aiLU7j2jzBob9u-1@lore-desk>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aiLU7j2jzBob9u-1@lore-desk>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[strlen.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13077-lists,netfilter-devel=lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_RECIPIENTS(0.00)[m:lorenzo@kernel.org,m:devnexen@gmail.com,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,m:coreteam@netfilter.org,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13078-lists,netfilter-devel=lfdr.de];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	RCPT_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,strlen.de,netfilter.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,strlen.de:mid,strlen.de:from_mime,strlen.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,netfilter.org:from_mime,netfilter.org:dkim,chamomile:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EAEBA6490C4
+X-Rspamd-Queue-Id: B5F40649456
 
-Don't permit arbitrary writes to linklayer and network header data.
-Several spots in network stack trust header validation performed in
-ipv4/ipv6 before PRE_ROUTING hook.
+On Fri, Jun 05, 2026 at 03:53:50PM +0200, Lorenzo Bianconi wrote:
+> > nf_flow_ip6_tunnel_proto() stores the return value of ipv6_skip_exthdr()
+> > directly into ctx->tun.hdr_size and then does ctx->offset +=
+> > ctx->tun.hdr_size.
+> > 
+> > ipv6_skip_exthdr() returns an offset measured from skb->data, i.e. its
+> > result already includes the "sizeof(*ip6h) + ctx->offset" start argument.
+> > So hdr_size ends up containing ctx->offset, and the subsequent
+> > "ctx->offset += ctx->tun.hdr_size" counts the encap offset twice.
+> > 
+> > This is harmless for a bare IP6IP6 packet, where ctx->offset is 0 on
+> > entry, which is why it has gone unnoticed. But nf_flow_skb_encap_protocol()
+> > advances ctx->offset by VLAN_HLEN / PPPOE_SES_HLEN before the tunnel
+> > parser runs, so for an IP6IP6 flow carried over vlan or pppoe both
+> > ctx->offset and ctx->tun.hdr_size are off by the encap length:
+> > 
+> >   - nf_flow_tuple_ipv6() then reads the inner header at the wrong offset,
+> >     the computed tuple no longer matches the flowtable entry, and the
+> >     packet silently falls back to the slow path (IP6IP6 rx acceleration
+> >     stops working);
+> >   - on the forward path nf_flow_ip_tunnel_pop() would skb_pull() past the
+> >     inner header.
+> > 
+> > The IPv4 sibling nf_flow_ip4_tunnel_proto() does this correctly: it stores
+> > a relative header length (iph->ihl << 2) and adds that to ctx->offset.
+> > Make the IPv6 path symmetric by storing the relative size.
+> > 
+> > Fixes: d98103575dcd ("netfilter: flowtable: Add IP6IP6 rx sw acceleration")
+> > Signed-off-by: David Carlier <devnexen@gmail.com>
+> 
+> Hi David,
+> 
+> thx for fixing it. I developed the IP6IP6 vlan support using the veth as
+> underlying device. veth enables vlan rx/tx offload by default so I was
+> not able to spot the issue.
 
-For linklayer, allow writes for netdev ingress. For other hooks, only
-allow link layer writes that do not spill into network header.
+One question when looking at this code:
 
-For network header, check the offset/length combinations:
- - changing dscp requires store at offset 0 for checsum fixups, so
- make sure ip version + length field isn't altered.
- - ip6 dscp starts directly after the version field, so make sure it
-   remains 6.
+In nf_flow_ip6_tunnel_proto():
 
-Several of these checks could already be done at rule insertion time.
-Risk is that this might cause ruleset load failures for existing
-rulesets. With this change such writes are silently skipped and packet
-passes unchanged.
+        if (nexthdr == IPPROTO_IPV6) {
+                ctx->tun.hdr_size = hdrlen - ctx->offset;
+                ctx->tun.proto = IPPROTO_IPV6;
+        }
+        ctx->offset += ctx->tun.hdr_size;
 
-Transport and inner header bases are not checked / restricted.
+ctx->offset is bumped out of the branch.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nft_payload.c | 170 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 170 insertions(+)
+and nf_flow_ip4_tunnel_proto():
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 484a5490832e..8e4388bee459 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -824,6 +824,172 @@ nft_payload_set_vlan(const u32 *src, struct sk_buff *skb, u16 offset, u8 len,
- 	return true;
- }
- 
-+/* Ingress is very early, before l3 protocol handlers.
-+ * There should be no in-tree code that trusts l3/l4 headers
-+ * between ingress and NF_INET_PRE_ROUTING hooks.
-+ */
-+static bool nft_in_ingress(const struct nf_hook_state *s)
-+{
-+	return s->pf == NFPROTO_NETDEV && s->hook == NF_NETDEV_INGRESS;
-+}
-+
-+static bool nft_nh_write_ok_ip4(const struct nft_pktinfo *pkt,
-+				const struct nft_payload_set *priv,
-+				const u32 *src)
-+{
-+	unsigned int offset = priv->offset + skb_network_offset(pkt->skb);
-+	const u8 *new_octets = (const u8 *)src;
-+	u8 old_octet;
-+
-+	switch (priv->offset) {
-+	case 0: /* csum fixups does expand dscp/tos store to 2 bytes.
-+		 * make sure ihl/version remain unchanged.
-+		 */
-+		if (skb_copy_bits(pkt->skb, offset, &old_octet, sizeof(old_octet)))
-+			return false;
-+
-+		return priv->len == 2 &&
-+		       *new_octets == old_octet;
-+	case offsetof(struct iphdr, tos):
-+		return priv->len == 1;
-+	case offsetof(struct iphdr, id):
-+		return priv->len == 2;
-+	case offsetof(struct iphdr, ttl):
-+		if (priv->len == 1)
-+			return true;
-+
-+		if (priv->len != 2)
-+			return false;
-+
-+		/* same, csum fixup does expand ttl store to two bytes.
-+		 * check protocol is not altered.
-+		 */
-+		if (skb_copy_bits(pkt->skb, offset + 1, &old_octet, sizeof(old_octet)))
-+			return false;
-+
-+		return new_octets[1] == old_octet;
-+	case offsetof(struct iphdr, check):
-+		return priv->len <= 2 + 4 + 4;
-+	case offsetof(struct iphdr, saddr):
-+		return priv->len <= 4 + 4;
-+	case offsetof(struct iphdr, daddr):
-+		return priv->len <= 4;
-+	}
-+
-+	return false;
-+}
-+
-+static bool nft_nh_write_ok_ip6(const struct nft_pktinfo *pkt,
-+				const struct nft_payload_set *priv,
-+				const u32 *src)
-+{
-+	const struct ipv6hdr *ih = (const void *)src;
-+
-+	switch (priv->offset) {
-+	case 0: /* store to dscp must not alter ip6 version */
-+		return priv->len <= 4 && ih->version == 6;
-+	case 2:
-+		return priv->len <= 2;
-+	case offsetof(struct ipv6hdr, hop_limit):
-+		return priv->len == 1;
-+	case offsetof(struct ipv6hdr, saddr):
-+		return priv->len <= 16 + 16;
-+	case offsetof(struct ipv6hdr, daddr):
-+		return priv->len <= 16;
-+	}
-+
-+	return false;
-+}
-+
-+static bool nft_nh_write_ok_arp(const struct nft_payload_set *priv)
-+{
-+	/* Variable size for standard ethernet arp */
-+	const unsigned int eth_ip = 2 * (ETH_ALEN + 4);
-+	unsigned int offset = priv->offset;
-+
-+	switch (offset) {
-+	case offsetof(struct arphdr, ar_op):
-+		return priv->len == 2;
-+	default:
-+		break;
-+	}
-+
-+	/* permit writes post fixed arp header size. offset + len are
-+	 * checked vs skb size via skb_ensure_writable.
-+	 */
-+	return offset >= sizeof(struct arphdr) && priv->len <= eth_ip;
-+}
-+
-+static bool nft_nh_write_ok_netdev(const struct nft_pktinfo *pkt,
-+				   const struct nft_payload_set *priv,
-+				   const u32 *src)
-+{
-+#ifdef CONFIG_NF_TABLES_NETDEV
-+	switch (pkt->skb->protocol) {
-+	case htons(ETH_P_ARP):
-+		return nft_nh_write_ok_arp(priv);
-+	case htons(ETH_P_IP):
-+		return nft_nh_write_ok_ip4(pkt, priv, src);
-+	case htons(ETH_P_IPV6):
-+		return nft_nh_write_ok_ip6(pkt, priv, src);
-+	}
-+#endif
-+	/* default to false for now, relax later in case we have
-+	 * use-cases that need inner header manipulation for
-+	 * encapsulated traffic like vlan or PPPoE.
-+	 */
-+	return false;
-+}
-+
-+static bool nft_nh_write_ok_bridge(const struct nft_pktinfo *pkt,
-+				   const struct nft_payload_set *priv,
-+				   const u32 *src)
-+{
-+#if IS_ENABLED(CONFIG_NF_TABLES_BRIDGE)
-+	switch (pkt->ethertype) {
-+	case htons(ETH_P_ARP):
-+		return nft_nh_write_ok_arp(priv);
-+	case htons(ETH_P_IP):
-+		return nft_nh_write_ok_ip4(pkt, priv, src);
-+	case htons(ETH_P_IPV6):
-+		return nft_nh_write_ok_ip6(pkt, priv, src);
-+	}
-+#endif
-+	/* see nft_nh_write_ok_netdev: default to false */
-+	return false;
-+}
-+
-+static bool nft_nh_write_ok(const struct nft_pktinfo *pkt,
-+			    const struct nft_payload_set *priv,
-+			    const u32 *src)
-+{
-+	switch (pkt->state->pf) {
-+	case NFPROTO_ARP:
-+		return nft_nh_write_ok_arp(priv);
-+	case NFPROTO_BRIDGE:
-+		return nft_nh_write_ok_bridge(pkt, priv, src);
-+	case NFPROTO_IPV4:
-+		return nft_nh_write_ok_ip4(pkt, priv, src);
-+	case NFPROTO_IPV6:
-+		return nft_nh_write_ok_ip6(pkt, priv, src);
-+	case NFPROTO_NETDEV:
-+		if (pkt->state->hook == NF_NETDEV_INGRESS)
-+			return true;
-+		return nft_nh_write_ok_netdev(pkt, priv, src);
-+	}
-+
-+	return false;
-+}
-+
-+/* check linklayer modifications don't spill into network header. */
-+static bool nft_ll_write_ok(const struct nft_pktinfo *pkt, int offset)
-+{
-+	if (nft_in_ingress(pkt->state))
-+		return true;
-+
-+	return offset <= skb_network_offset(pkt->skb);
-+}
-+
- static void nft_payload_set_eval(const struct nft_expr *expr,
- 				 struct nft_regs *regs,
- 				 const struct nft_pktinfo *pkt)
-@@ -851,8 +1017,12 @@ static void nft_payload_set_eval(const struct nft_expr *expr,
- 		}
- 
- 		offset = skb_mac_header(skb) - skb->data - vlan_hlen;
-+		if (!nft_ll_write_ok(pkt, priv->len + priv->offset + offset))
-+			goto err;
- 		break;
- 	case NFT_PAYLOAD_NETWORK_HEADER:
-+		if (!nft_nh_write_ok(pkt, priv, src))
-+			goto err;
- 		offset = skb_network_offset(skb);
- 		break;
- 	case NFT_PAYLOAD_TRANSPORT_HEADER:
--- 
-2.53.0
+        if (iph->protocol == IPPROTO_IPIP) {
+                ctx->tun.proto = IPPROTO_IPIP;
+                ctx->tun.hdr_size = size;
+                ctx->offset += size;
+        }
 
+I think these checks are superfluous at this stage:
+
+if (nexthdr == IPPROTO_IPV6) {
+
+if (iph->protocol == IPPROTO_IPIP) {
+
+because only ipip and ip6ip6 is supported.
 
