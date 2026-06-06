@@ -1,162 +1,167 @@
-Return-Path: <netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13086-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Nk1AOHIGJGqS1wEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 13:37:22 +0200
+	id s9WGBJ+DJGqr7gEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13086-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 22:31:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DEE864D3C4
-	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 13:37:22 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F3E64E43C
+	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 22:31:26 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=cs.put.poznan.pl header.s=7168384 header.b=V+8Zrfdr;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed)" header.from=cs.put.poznan.pl (policy=none);
+	dkim=pass header.d=runbox.com header.s=selector1 header.b="UeXdlc D";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13086-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13086-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=gmail.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 06E59300EABC
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jun 2026 11:37:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 92AEE3063640
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jun 2026 20:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB21385520;
-	Sat,  6 Jun 2026 11:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA4A3CF21D;
+	Sat,  6 Jun 2026 20:27:26 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from libra.cs.put.poznan.pl (libra.cs.put.poznan.pl [150.254.30.30])
+Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4652931355D
-	for <netfilter-devel@vger.kernel.org>; Sat,  6 Jun 2026 11:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCBA3C278A;
+	Sat,  6 Jun 2026 20:27:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780745840; cv=none; b=CRdvtdnfxTHxleyTpbKG05T4QSUXnhJft2mplaaJqGrWm8Y/H2eNuRA35x7ulIaufhDPwHHAMtqzEB9z2MYmw1iSdeDZ7Uiq0Hi0qRxMev985aJlnaOQNGmeofyqku2YOvcAMtOIEv1qXear/Kt/Zq3LYnUGJjkXD0WAzp1cEOY=
+	t=1780777646; cv=none; b=FcFiGx/j7xRUkj/DBJkOv7PFNk1MFnaU7En6F4s7HR5lzzP5A4vaQY8ayeQwVk59vNfksZwmG67TUR+HF+DTUXlmg7J1P8UPCF6Otgkh4rKr3Vf/Mgj+rvfKFVTyDGndamcmEMRMm3mEjwvLH9jkfIER6cDbqzMWe9rz4bNduD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780745840; c=relaxed/simple;
-	bh=TsaC9FVIMN1AYAzZOqp4H4tH1+5j18RHuJcQnM3lfDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YEOGlWefcWspAdB3agXms16M4alplehKqPwVpoP3Vw5pr0FmJ9Liti/0sWlciOkH6lM4oDI26yHAu0HFwY3Om5vb8s8cTAnowbHA7HrlgDx7B275gFYJuc0hBfmHgNuhfr2CSo+XnzUO7K4GgGjp4PCu+LcoS3PTNhjzoVYbR+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.put.poznan.pl; spf=pass smtp.mailfrom=cs.put.poznan.pl; dkim=pass (2048-bit key) header.d=cs.put.poznan.pl header.i=@cs.put.poznan.pl header.b=V+8Zrfdr; arc=none smtp.client-ip=150.254.30.30
-X-Virus-Scanned: Debian amavis at cs.put.poznan.pl
-Received: from libra.cs.put.poznan.pl ([150.254.30.30])
- by localhost (meduza.cs.put.poznan.pl [150.254.30.40]) (amavis, port 10024)
- with ESMTP id cCJc_Y0EJ4Rs; Sat,  6 Jun 2026 11:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cs.put.poznan.pl;
-	s=7168384; t=1780745176;
-	bh=TsaC9FVIMN1AYAzZOqp4H4tH1+5j18RHuJcQnM3lfDI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V+8ZrfdrFrWSUFJrLyzhzUOJ+Z617z1YYiasdfgm2iXp/BuGdBd+Gm9vjlCMhkb+o
-	 u46oU2MxLJuAlyIgAfLQI8fxJdO4ASlULevX5F6/hcjERP44bhi0AGoMwiq8/y2J+l
-	 ZL1eZsWHRNMn+NAT/LaCg/CG0iX6oQdDZ1rvNxd0ulTK+OKUdjNd1B+XWGRjBmG1QV
-	 Wokfxu9+lVbezazbimDLBAvTJgoqx9VdSzU6AhttRCWRExCeid2pYHgNylOMsAxidD
-	 mmAG43l2LXInfNY5HwswTW+lQT/rSniluBL3RhOMvCBAJ8+FC01ATZ4fWkZrLx2L8I
-	 yDmbyWWESA5Tg==
-Received: from imladris.localnet (83.8.102.235.ipv4.supernova.orange.pl [83.8.102.235])
-	(Authenticated sender: jkonczak@libra.cs.put.poznan.pl)
-	by libra.cs.put.poznan.pl (Postfix on VMS) with ESMTPSA id 2C6F863F08;
-	Sat,  6 Jun 2026 13:37:05 +0200 (CEST)
-From: Jan =?UTF-8?B?S2/FhGN6YWs=?= <jan.konczak@cs.put.poznan.pl>
-To: Phil Sutter <phil@nwl.cc>
-Cc: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft v2] parser_bison: on syntax errors,
- output expected tokens
-Date: Sat, 06 Jun 2026 13:37:01 +0200
-Message-ID: <2063352.yKVeVyVuyW@imladris>
-Organization: Institute of Computing Science,
- =?UTF-8?B?UG96bmHFhA==?= University of Technology
-In-Reply-To: <aiLr1JDG6oWbg7hS@orbyte.nwl.cc>
-References:
- <20260120122954.18909-1-fw@strlen.de> <3901884.MHq7AAxBmi@imladris>
- <aiLr1JDG6oWbg7hS@orbyte.nwl.cc>
+	s=arc-20240116; t=1780777646; c=relaxed/simple;
+	bh=qyBfosr0+qpatC192/Bu3vOwJwINpiuk9z+PGatui7M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nk0dbcg8y2Ni7gbgU7aL1v9CITSlkCeQSz6k3/TzPjptc9uKe5lRGR1gBCuhsvOOTTvfe9y1Jyso+70dt0hCn1HHtIpEUrya/gBarJ9QJ3SOxdsDIiCDbLqlhqGBRLMRlgu42CT+rV9+hA8lZ2Ul8uvX1HpxSp9D9XBy5eY8fZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=runbox.com; dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b=UeXdlcDU; arc=none smtp.client-ip=185.226.149.37
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <david.laight.linux_spam@runbox.com>)
+	id 1wVxbu-007NR5-D2; Sat, 06 Jun 2026 22:27:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
+	 s=selector1; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+	Subject:Cc:To:From; bh=Hw6A0AUF6f2IKiQ/0woPvVgVmVP/JwV+jLZ3gu4O9Zg=; b=UeXdlc
+	DU9b8Q1zX6IJl4SD4NNLI/yIFY4vLTpx/GdDwySPQkuEFfIvCea5SnKeIL4LGcupTbLFwZzGpc3ZF
+	2S6dafhR+xljnu0eilkpUoQE9KjXWOuPBHoVEobSwesYW8l2cIVhCeBIQ7GzDAd+90KLr8CeNJtX4
+	VHvasnB6H1XL1S5fmSaKOKZp3EsoYSPq7mzQc1F+uNjKasXvWre+gwBhlVTbySryaKUQ7cROYB6iK
+	U4ITGkgue8zCukSqQHo+j8G+EN/oiTf4qx82RRyZWdq2RaK/uSZBBqHdVwRgoZW9SXxIcHIJW856Q
+	eBUvrdNbNYLySNHUgkuFWXj+hIMg==;
+Received: from [10.9.9.72] (helo=submission01.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <david.laight.linux_spam@runbox.com>)
+	id 1wVxbt-0000tq-Mf; Sat, 06 Jun 2026 22:27:13 +0200
+Received: by submission01.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.95)
+	id 1wVxbl-006V18-Md;
+	Sat, 06 Jun 2026 22:27:05 +0200
+From: david.laight.linux@gmail.com
+To: Kees Cook <kees@kernel.org>,
+	linux-hardening@vger.kernel.org,
+	Arnd Bergmann <arnd@kernel.org>,
+	coreteam@netfilter.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	netfilter-devel@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Westphal <fw@strlen.de>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	David Laight <david.laight.linux@gmail.com>
+Subject: [PATCH net-next] net/netfilter/xt_recent: Use strscpy() to copy device name
+Date: Sat,  6 Jun 2026 21:26:24 +0100
+Message-Id: <20260606202633.5018-30-david.laight.linux@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.64 / 15.00];
+X-Spamd-Result: default: False [0.44 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[cs.put.poznan.pl:s=7168384];
-	CTE_CASE(0.50)[];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[runbox.com:s=selector1];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[gmail.com : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[cs.put.poznan.pl : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13085-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13086-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:phil@nwl.cc,m:fw@strlen.de,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
-	HAS_ORG_HEADER(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[jan.konczak@cs.put.poznan.pl,netfilter-devel@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:kees@kernel.org,m:linux-hardening@vger.kernel.org,m:arnd@kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:edumazet@google.com,m:fw@strlen.de,m:kuba@kernel.org,m:pablo@netfilter.org,m:pabeni@redhat.com,m:david.laight.linux@gmail.com,m:davidlaightlinux@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,netfilter-devel@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jan.konczak@cs.put.poznan.pl,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[cs.put.poznan.pl:-];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[davemloft.net,google.com,strlen.de,kernel.org,netfilter.org,redhat.com,gmail.com];
+	FROM_NO_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,netfilter-devel@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[runbox.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,cs.put.poznan.pl:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[runbox.com:dkim,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2DEE864D3C4
+X-Rspamd-Queue-Id: 86F3E64E43C
 
-> Or am I missing some detail about YYBISON?
+From: David Laight <david.laight.linux@gmail.com>
 
-No, I don't think you're missing any detail there. I considered this
-less intrusive than forcing a define in the configure.ac. Adding a C
-macro BISON_CUSTOM_ERROR from configure is actually more versatile.
+Signed-off-by: David Laight <david.laight.linux@gmail.com>
+---
+This is one of a group of patches that remove potentially unbounded
+strcpy() calls.
 
+They are mostly replaced by strscpy() or, when strlen() has just been
+called, with memcpy() (usually including the '\0').
 
-I just discovered that while autotools forbid conditional AM_YFLAGS,
-they allow conditional YACC. It's counterintuitive to me why.
-Yet, the following works in Makefile.am:
+Calls with copy string literals into arrays are left unchanged.
+They are safe and easily detected as such.
 
-| if BISON_CUSTOM_ERROR
-| YACC += -D parse.error=custom -D parse.lac=full
-| AM_CFLAGS += -DBISON_CUSTOM_ERROR
-| else
-| YACC += -D parse.error=verbose
-| endif
+The changes were made by getting the compiler to detect the calls and
+then fixing the code by hand.
 
-Then, the configure.ac has just to set the BISON_CUSTOM_ERROR, without
-putting there the flags/define which nobody expects to be there.
-To me this looks cleaner.
+Note that all the changes are only compile tested.
 
+Some Makefiles were changed to allow files to contain strcpy().
+As well as 'difficult to fix' files, this included 'show' functions
+as they really need to use sysfs_emit() or seq_printf().
 
-I guess adding a AC_ARG_ENABLE on that might be worthwhile, too.
-Running "nft --debug parser ..." with parse.lac=full yields extra
-output which one may or may not prefer if one wishes to debug
-parser_bison.y. I mean, something akin to this:
+All the patches are being sent individually to avoid very long cc lists.
+Apologies for the terse commit messages and likely unexpected tags.
+(There are about 100 patches in total.)
 
-| AC_ARG_ENABLE([custom_parser_errors],
-|        AS_HELP_STRING(
-|                [--disable-custom-parser-errors],
-|                [Disable use of parse.error=custom and LAC in Bison]
-|        ),[
-|                # keeping the user choice for custom-parser-errors
-|        ],[
-|                enable_custom_parser_errors=no
-|                AC_SUBST([BISON],[$ac_cv_prog_YACC])
-|                AX_PROG_BISON_VERSION([3.6],
-|                    [enable_custom_parser_errors=yes])
-|        ]
-| )
-| AM_CONDITIONAL([BISON_CUSTOM_ERROR],
-|                [test "x$enable_custom_parser_errors" != xno])
+ net/netfilter/xt_recent.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Regards, Jan
-
+diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
+index f72752fa4374..d34831ce3adf 100644
+--- a/net/netfilter/xt_recent.c
++++ b/net/netfilter/xt_recent.c
+@@ -400,7 +400,7 @@ static int recent_mt_check(const struct xt_mtchk_param *par,
+ 	t->nstamps_max_mask = nstamp_mask;
+ 
+ 	memcpy(&t->mask, &info->mask, sizeof(t->mask));
+-	strcpy(t->name, info->name);
++	strscpy(t->name, info->name);
+ 	INIT_LIST_HEAD(&t->lru_list);
+ 	for (i = 0; i < ip_list_hash_size; i++)
+ 		INIT_LIST_HEAD(&t->iphash[i]);
+-- 
+2.39.5
 
 
