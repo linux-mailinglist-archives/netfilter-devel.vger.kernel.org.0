@@ -1,124 +1,162 @@
-Return-Path: <netfilter-devel+bounces-13084-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 274tHBXZI2qZzgEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13084-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 10:23:49 +0200
+	id Nk1AOHIGJGqS1wEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 13:37:22 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B24D564CEB5
-	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 10:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DEE864D3C4
+	for <lists+netfilter-devel@lfdr.de>; Sat, 06 Jun 2026 13:37:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13084-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13084-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=fail ("headers rsa verify failed") header.d=cs.put.poznan.pl header.s=7168384 header.b=V+8Zrfdr;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13085-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed)" header.from=cs.put.poznan.pl (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 390D630378B2
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jun 2026 08:21:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 06E59300EABC
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jun 2026 11:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E93E276038;
-	Sat,  6 Jun 2026 08:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB21385520;
+	Sat,  6 Jun 2026 11:37:20 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from libra.cs.put.poznan.pl (libra.cs.put.poznan.pl [150.254.30.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E8A313E31
-	for <netfilter-devel@vger.kernel.org>; Sat,  6 Jun 2026 08:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4652931355D
+	for <netfilter-devel@vger.kernel.org>; Sat,  6 Jun 2026 11:37:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780734100; cv=none; b=sakmgxx7kGYmr55JmyOYLP4Xs56botDohyt/3tl28+L+3X6lCE8ygHqbXYgHItWQeDPLpUSLsJW/tdJwCIYr4HZJPS92MUX5Uia6PTpp1j8tF/Rcg4q6gXumgFpqap7MyQlkccpbpOP4u46PUOCKl1Zb5RpeWBL98+zdu0iLwRY=
+	t=1780745840; cv=none; b=CRdvtdnfxTHxleyTpbKG05T4QSUXnhJft2mplaaJqGrWm8Y/H2eNuRA35x7ulIaufhDPwHHAMtqzEB9z2MYmw1iSdeDZ7Uiq0Hi0qRxMev985aJlnaOQNGmeofyqku2YOvcAMtOIEv1qXear/Kt/Zq3LYnUGJjkXD0WAzp1cEOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780734100; c=relaxed/simple;
-	bh=KGaiIjELfsjrDD17Fw96eMzzOu6yY9SIPVjLf/e/kl4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aCAtKLJxbyu14vekOt1GGxaJulyCSg0le3tyUZpqYtWVsowAoJCkdkZpQFRz2H4tGeCBrBU/eNDKdCVB3Heayb6MoKJdJ/C9azGRrJGStwO4VpAuO6SghpYAQbgSxtUgghVL3x1Yhp8XixbYx678blk9MdanmT6oQAIXvqNAnbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id F1E4E60337; Sat, 06 Jun 2026 10:21:28 +0200 (CEST)
-Date: Sat, 6 Jun 2026 10:21:24 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Ren Wei <n05ec@lzu.edu.cn>
-Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org, phil@nwl.cc,
-	yuantan098@gmail.com, yifanwucs@gmail.com, tomapufckgml@gmail.com,
-	bird@lzu.edu.cn, royenheart@gmail.com
-Subject: Re: [PATCH nf v4 1/1] bridge: br_netfilter: pin bridge device while
- NFQUEUE holds fake dst
-Message-ID: <aiPYhDrNiGuyRtGo@strlen.de>
-References: <cbc3a29c0654e8fcee30cb021d57883fed77fafc.1780630094.git.royenheart@gmail.com>
+	s=arc-20240116; t=1780745840; c=relaxed/simple;
+	bh=TsaC9FVIMN1AYAzZOqp4H4tH1+5j18RHuJcQnM3lfDI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YEOGlWefcWspAdB3agXms16M4alplehKqPwVpoP3Vw5pr0FmJ9Liti/0sWlciOkH6lM4oDI26yHAu0HFwY3Om5vb8s8cTAnowbHA7HrlgDx7B275gFYJuc0hBfmHgNuhfr2CSo+XnzUO7K4GgGjp4PCu+LcoS3PTNhjzoVYbR+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.put.poznan.pl; spf=pass smtp.mailfrom=cs.put.poznan.pl; dkim=pass (2048-bit key) header.d=cs.put.poznan.pl header.i=@cs.put.poznan.pl header.b=V+8Zrfdr; arc=none smtp.client-ip=150.254.30.30
+X-Virus-Scanned: Debian amavis at cs.put.poznan.pl
+Received: from libra.cs.put.poznan.pl ([150.254.30.30])
+ by localhost (meduza.cs.put.poznan.pl [150.254.30.40]) (amavis, port 10024)
+ with ESMTP id cCJc_Y0EJ4Rs; Sat,  6 Jun 2026 11:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cs.put.poznan.pl;
+	s=7168384; t=1780745176;
+	bh=TsaC9FVIMN1AYAzZOqp4H4tH1+5j18RHuJcQnM3lfDI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=V+8ZrfdrFrWSUFJrLyzhzUOJ+Z617z1YYiasdfgm2iXp/BuGdBd+Gm9vjlCMhkb+o
+	 u46oU2MxLJuAlyIgAfLQI8fxJdO4ASlULevX5F6/hcjERP44bhi0AGoMwiq8/y2J+l
+	 ZL1eZsWHRNMn+NAT/LaCg/CG0iX6oQdDZ1rvNxd0ulTK+OKUdjNd1B+XWGRjBmG1QV
+	 Wokfxu9+lVbezazbimDLBAvTJgoqx9VdSzU6AhttRCWRExCeid2pYHgNylOMsAxidD
+	 mmAG43l2LXInfNY5HwswTW+lQT/rSniluBL3RhOMvCBAJ8+FC01ATZ4fWkZrLx2L8I
+	 yDmbyWWESA5Tg==
+Received: from imladris.localnet (83.8.102.235.ipv4.supernova.orange.pl [83.8.102.235])
+	(Authenticated sender: jkonczak@libra.cs.put.poznan.pl)
+	by libra.cs.put.poznan.pl (Postfix on VMS) with ESMTPSA id 2C6F863F08;
+	Sat,  6 Jun 2026 13:37:05 +0200 (CEST)
+From: Jan =?UTF-8?B?S2/FhGN6YWs=?= <jan.konczak@cs.put.poznan.pl>
+To: Phil Sutter <phil@nwl.cc>
+Cc: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft v2] parser_bison: on syntax errors,
+ output expected tokens
+Date: Sat, 06 Jun 2026 13:37:01 +0200
+Message-ID: <2063352.yKVeVyVuyW@imladris>
+Organization: Institute of Computing Science,
+ =?UTF-8?B?UG96bmHFhA==?= University of Technology
+In-Reply-To: <aiLr1JDG6oWbg7hS@orbyte.nwl.cc>
+References:
+ <20260120122954.18909-1-fw@strlen.de> <3901884.MHq7AAxBmi@imladris>
+ <aiLr1JDG6oWbg7hS@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbc3a29c0654e8fcee30cb021d57883fed77fafc.1780630094.git.royenheart@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [0.64 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_REJECT(1.00)[cs.put.poznan.pl:s=7168384];
+	CTE_CASE(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[cs.put.poznan.pl : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13084-lists,netfilter-devel=lfdr.de];
-	DMARC_NA(0.00)[strlen.de];
+	TAGGED_FROM(0.00)[bounces-13085-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:n05ec@lzu.edu.cn,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:phil@nwl.cc,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:bird@lzu.edu.cn,m:royenheart@gmail.com,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,nwl.cc,gmail.com,lzu.edu.cn];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FORGED_RECIPIENTS(0.00)[m:phil@nwl.cc,m:fw@strlen.de,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	HAS_ORG_HEADER(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	FORGED_SENDER(0.00)[jan.konczak@cs.put.poznan.pl,netfilter-devel@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jan.konczak@cs.put.poznan.pl,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[cs.put.poznan.pl:-];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,cs.put.poznan.pl:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B24D564CEB5
+X-Rspamd-Queue-Id: 2DEE864D3C4
 
-Ren Wei <n05ec@lzu.edu.cn> wrote:
->  #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
->  	const struct sk_buff *skb = entry->skb;
-> +	struct dst_entry *dst = skb_dst(skb);
-> +	struct net_device *dev = NULL;
->  
->  	if (nf_bridge_info_exists(skb)) {
->  		entry->physin = nf_bridge_get_physindev(skb, entry->state.net);
-> @@ -92,6 +95,17 @@ static void __nf_queue_entry_init_physdevs(struct nf_queue_entry *entry)
->  		entry->physin = NULL;
->  		entry->physout = NULL;
->  	}
-> +
-> +	if (entry->state.pf == NFPROTO_BRIDGE &&
-> +	    nf_bridge_info_exists(skb) &&
+> Or am I missing some detail about YYBISON?
 
-Is this check redundant?
+No, I don't think you're missing any detail there. I considered this
+less intrusive than forcing a define in the configure.ac. Adding a C
+macro BISON_CUSTOM_ERROR from configure is actually more versatile.
 
-> +	    dst && (dst->flags & DST_FAKE_RTABLE))
 
-... this should be enough.  In which cases can we have
-FAKE_RTABLE and !nf_bridge_info_exists() ?
+I just discovered that while autotools forbid conditional AM_YFLAGS,
+they allow conditional YACC. It's counterintuitive to me why.
+Yet, the following works in Makefile.am:
 
->  #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-> +	dev_hold(entry->bridge_dev);
+| if BISON_CUSTOM_ERROR
+| YACC += -D parse.error=custom -D parse.lac=full
+| AM_CFLAGS += -DBISON_CUSTOM_ERROR
+| else
+| YACC += -D parse.error=verbose
+| endif
 
-LGTM, however, in last iteration sashiko complained that dev_cmp() in
-nfnetlink_queue.c should gain a bridge_dev->ifindev check so that entries
-are reaped in case bridge goes down.
+Then, the configure.ac has just to set the BISON_CUSTOM_ERROR, without
+putting there the flags/define which nobody expects to be there.
+To me this looks cleaner.
 
-Could you send a v5 that adds this test? Everything else here LGTM.
+
+I guess adding a AC_ARG_ENABLE on that might be worthwhile, too.
+Running "nft --debug parser ..." with parse.lac=full yields extra
+output which one may or may not prefer if one wishes to debug
+parser_bison.y. I mean, something akin to this:
+
+| AC_ARG_ENABLE([custom_parser_errors],
+|        AS_HELP_STRING(
+|                [--disable-custom-parser-errors],
+|                [Disable use of parse.error=custom and LAC in Bison]
+|        ),[
+|                # keeping the user choice for custom-parser-errors
+|        ],[
+|                enable_custom_parser_errors=no
+|                AC_SUBST([BISON],[$ac_cv_prog_YACC])
+|                AX_PROG_BISON_VERSION([3.6],
+|                    [enable_custom_parser_errors=yes])
+|        ]
+| )
+| AM_CONDITIONAL([BISON_CUSTOM_ERROR],
+|                [test "x$enable_custom_parser_errors" != xno])
+
+
+Regards, Jan
+
+
 
