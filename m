@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-13092-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13093-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id l5uYE/k+JWqpEwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13092-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Jun 2026 11:50:49 +0200
+	id CHTYCQ8/JWquEwIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13093-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Jun 2026 11:51:11 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C104464F43A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Jun 2026 11:50:48 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5A7364F446
+	for <lists+netfilter-devel@lfdr.de>; Sun, 07 Jun 2026 11:51:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=uYduBuZF;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13092-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13092-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=TOiIVu2w;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13093-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13093-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0F0A2302BE29
-	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Jun 2026 09:50:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4C6CD3036429
+	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Jun 2026 09:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4B338838F;
-	Sun,  7 Jun 2026 09:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B043876B0;
+	Sun,  7 Jun 2026 09:50:08 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C12C2EA749;
-	Sun,  7 Jun 2026 09:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC0D388391;
+	Sun,  7 Jun 2026 09:50:06 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780825806; cv=none; b=IfvZ86wuKOFdO2qd9byaI/hR3nUngeVXU5hPwJAnwjIV5pEdnnBBQIBlt/BO3+I8PJnT5W5w2bmnco/LQcYGT5TzFkvYK0hzijqQEPeMzRiKgLS/W+ByRFfcwD99wRE+Yzg8f0jvonM/+FtmJeXBf46FIqPMEjzPKsO1NTWmbNQ=
+	t=1780825808; cv=none; b=nrRD2ndrTBcZQNQPHEaDh9OhweL8vGYfYBWW1lz1CzQV2B67dfNezidHBn0ohbg/kLXkX0ke3/uJmQvT78b6fMOkcABgRnMOfjHROmY5QKMF/zhhxzeyM7lTBx9kbjUq4IX7AkvnFzCm3+upt4bFQTgj2MaQWMWQWJRApnDShnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780825806; c=relaxed/simple;
-	bh=7BmVU4tkNybgTi7CezIgNFD+tIc9a04Bw3NSwlWmOEs=;
+	s=arc-20240116; t=1780825808; c=relaxed/simple;
+	bh=vMxFXfCKHC67JeeyMYzv3O4y6gNYwNjsEOUcJeVSs/8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Sw2cR+JJIurE0MwsJu6RZOHSG0W+RZaAOla6r8qNsmxsFC+nChwcQ6NPQ6joqV5Zjj5njwSviQyCuBlXSY/dJdv0ICGTd0b9yKv7qiQKW3CK9t9nXm1zfygEw1NAt76Km0fwRyBeXL9dEjPGoQn4jEUiu/LK66SxXlrGT/KsPxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=uYduBuZF; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=QEzOhCA5HObWev7lDXsJtwLBjbwXCO7YVWKmlJiQX0jyaonV87UYjm/tOYbfSsCJuDHNO+YWFNBPwlE/ZsUALWh5q1px/zQH6eR2eUOBHErItGa06fBdppRRZf6i93iHWI/RckTNW8lYrAHeU4gHBMKjz6wUUWqo86Gyrv/zaLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=TOiIVu2w; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 1CB326019C;
-	Sun,  7 Jun 2026 11:50:03 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 8519B6017D;
+	Sun,  7 Jun 2026 11:50:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1780825803;
-	bh=lH/8Y4s/HAN0AI55N4GmKCh8A5UwLJBN8qLlXk0B/E4=;
+	s=2025; t=1780825805;
+	bh=CIXRuEsD+agHYMUhgqvZAUY7hs+vYC5tV5NWgG6DzDo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uYduBuZFWVAg0XIH/Cyhh7GOUgoMKji9CxSN0U3p0kfmpwDYTuvX3GCftNk8VoMae
-	 Cb8yD0lJJxIt+S/X3Vu8FuOn9vGPCKZ1ONjGWqXehZk/ZvrIgAYiBlLA+jFlOSEqYR
-	 iApE4ZKi764EZOa1z115q8pYMTCJLKrJgOpzoxGfx9hDfOGfz+PMDXOOn9UHnM/9aJ
-	 khozBBGbA7l9dxeK+az3ZhsuOB6KUoVo7xNN+Adc1slZufU6Blg5IHOvdO9WAaE5Yy
-	 cOpS2bnw3jM1vriw9V3UObmVVc81RdchcXuvBKHvE4wiEd7nVbrRF1jiBvQcAW7FO1
-	 PqJD88ipXfBFw==
+	b=TOiIVu2wnI+7CIYmsn+mSbMBY7djG0iZCbTIp+ZjizjyP2J0lhpSDvj78GVZXcUjP
+	 QwbeLtHWKGIBs0vSnVTcfuCB3ofbTxcR7NMBBazV29X3BJQIkIHXsGmXOZsNe0ylWL
+	 hNSBqvCy5plLquIGaCCY/7cG6deuaai3S5R6UyTyQ3yuENTiyyBgJfiaQmRsVh+TmU
+	 iIXyAGi6Xk/eQA/AH984zc3miVdELSfM58caz53W74/TMlSHLse9a2O8UTgAgYk3uj
+	 Oagn0v4hlBO85jVxOBCl5nXnoolRPAe7xx7M5aBJ1rGbID4vMsAcjvFYez/QivtMA7
+	 tuCRO57ORO7pw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net-next 02/15] netfilter: nfnetlink_osf: fix mss parsing on big-endian architectures
-Date: Sun,  7 Jun 2026 11:49:41 +0200
-Message-ID: <20260607094954.48892-3-pablo@netfilter.org>
+Subject: [PATCH net-next 03/15] netfilter: nfnetlink_cthelper: use {READ,WRITE}_ONCE for accessing helper flags
+Date: Sun,  7 Jun 2026 11:49:42 +0200
+Message-ID: <20260607094954.48892-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260607094954.48892-1-pablo@netfilter.org>
 References: <20260607094954.48892-1-pablo@netfilter.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13092-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13093-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	DMARC_NA(0.00)[netfilter.org];
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	ALIAS_RESOLVED(0.00)[];
 	TO_DN_NONE(0.00)[];
@@ -101,46 +101,124 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:mid,netfilter.org:dkim,netfilter.org:from_mime,netfilter.org:email,vger.kernel.org:from_smtp,suse.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:mid,netfilter.org:dkim,netfilter.org:from_mime,netfilter.org:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C104464F43A
+X-Rspamd-Queue-Id: B5A7364F446
 
-From: Fernando Fernandez Mancera <fmancera@suse.de>
+Conntrack helper flags are accessed from packet and netlink dump path.
+Concurrent update of userspace helper flags is not possible, because the
+nfnl_mutex in held on updates. These flags are only used by userspace
+helpers. Use {READ,WRITE}_ONCE() to access this flags from lockless
+paths.
 
-The MSS calculation in nf_osf_match_one() manually shifts bytes to
-construct a 16-bit value before passing it to ntohs().
-
-This works on little-endian hosts but it does not work on big-endian as
-the bytes are being always shifted and set in the same way for all
-architectures.
-
-Use get_unaligned_be16() to fix this on big-endian systems. It also
-simplifies the code.
-
-Fixes: 11eeef41d5f6 ("netfilter: passive OS fingerprint xtables match")
-Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
+Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nfnetlink_osf.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ net/netfilter/nf_conntrack_core.c  |  4 +++-
+ net/netfilter/nfnetlink_cthelper.c | 20 +++++++++++++-------
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-index acb753ec5697..92002079f8ea 100644
---- a/net/netfilter/nfnetlink_osf.c
-+++ b/net/netfilter/nfnetlink_osf.c
-@@ -95,11 +95,7 @@ static bool nf_osf_match_one(const struct sk_buff *skb,
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index b521b5ebd664..c072a14a306a 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2213,6 +2213,7 @@ static int nf_confirm_cthelper(struct sk_buff *skb, struct nf_conn *ct,
+ {
+ 	const struct nf_conntrack_helper *helper;
+ 	const struct nf_conn_help *help;
++	unsigned int helper_flags;
+ 	int protoff;
  
- 			switch (*optp) {
- 			case OSFOPT_MSS:
--				mss = optp[3];
--				mss <<= 8;
--				mss |= optp[2];
--
--				mss = ntohs((__force __be16)mss);
-+				mss = get_unaligned_be16(&optp[2]);
- 				break;
- 			case OSFOPT_TS:
- 				break;
+ 	help = nfct_help(ct);
+@@ -2223,7 +2224,8 @@ static int nf_confirm_cthelper(struct sk_buff *skb, struct nf_conn *ct,
+ 	if (!helper)
+ 		return NF_ACCEPT;
+ 
+-	if (!(helper->flags & NF_CT_HELPER_F_USERSPACE))
++	helper_flags = READ_ONCE(helper->flags);
++	if (!(helper_flags & NF_CT_HELPER_F_USERSPACE))
+ 		return NF_ACCEPT;
+ 
+ 	switch (nf_ct_l3num(ct)) {
+diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
+index 34af6840803e..267eac1167f3 100644
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -41,8 +41,9 @@ static int
+ nfnl_userspace_cthelper(struct sk_buff *skb, unsigned int protoff,
+ 			struct nf_conn *ct, enum ip_conntrack_info ctinfo)
+ {
+-	const struct nf_conn_help *help;
+ 	struct nf_conntrack_helper *helper;
++	const struct nf_conn_help *help;
++	unsigned int helper_flags;
+ 
+ 	help = nfct_help(ct);
+ 	if (help == NULL)
+@@ -53,8 +54,10 @@ nfnl_userspace_cthelper(struct sk_buff *skb, unsigned int protoff,
+ 	if (helper == NULL)
+ 		return NF_DROP;
+ 
++	helper_flags = READ_ONCE(helper->flags);
++
+ 	/* This is a user-space helper not yet configured, skip. */
+-	if ((helper->flags &
++	if ((helper_flags &
+ 	    (NF_CT_HELPER_F_USERSPACE | NF_CT_HELPER_F_CONFIGURED)) ==
+ 	     NF_CT_HELPER_F_USERSPACE)
+ 		return NF_ACCEPT;
+@@ -404,10 +407,10 @@ nfnl_cthelper_update(const struct nlattr * const tb[],
+ 
+ 		switch(status) {
+ 		case NFCT_HELPER_STATUS_ENABLED:
+-			helper->flags |= NF_CT_HELPER_F_CONFIGURED;
++			WRITE_ONCE(helper->flags, helper->flags | NF_CT_HELPER_F_CONFIGURED);
+ 			break;
+ 		case NFCT_HELPER_STATUS_DISABLED:
+-			helper->flags &= ~NF_CT_HELPER_F_CONFIGURED;
++			WRITE_ONCE(helper->flags, helper->flags & ~NF_CT_HELPER_F_CONFIGURED);
+ 			break;
+ 		}
+ 	}
+@@ -529,8 +532,8 @@ static int
+ nfnl_cthelper_fill_info(struct sk_buff *skb, u32 portid, u32 seq, u32 type,
+ 			int event, struct nf_conntrack_helper *helper)
+ {
+-	struct nlmsghdr *nlh;
+ 	unsigned int flags = portid ? NLM_F_MULTI : 0;
++	struct nlmsghdr *nlh;
+ 	int status;
+ 
+ 	event = nfnl_msg_type(NFNL_SUBSYS_CTHELPER, event);
+@@ -554,7 +557,7 @@ nfnl_cthelper_fill_info(struct sk_buff *skb, u32 portid, u32 seq, u32 type,
+ 	if (nla_put_be32(skb, NFCTH_PRIV_DATA_LEN, htonl(helper->data_len)))
+ 		goto nla_put_failure;
+ 
+-	if (helper->flags & NF_CT_HELPER_F_CONFIGURED)
++	if (READ_ONCE(helper->flags) & NF_CT_HELPER_F_CONFIGURED)
+ 		status = NFCT_HELPER_STATUS_ENABLED;
+ 	else
+ 		status = NFCT_HELPER_STATUS_DISABLED;
+@@ -575,6 +578,7 @@ static int
+ nfnl_cthelper_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
+ {
+ 	struct nf_conntrack_helper *cur, *last;
++	unsigned int helper_flags;
+ 
+ 	rcu_read_lock();
+ 	last = (struct nf_conntrack_helper *)cb->args[1];
+@@ -583,8 +587,10 @@ nfnl_cthelper_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
+ 		hlist_for_each_entry_rcu(cur,
+ 				&nf_ct_helper_hash[cb->args[0]], hnode) {
+ 
++			helper_flags = READ_ONCE(cur->flags);
++
+ 			/* skip non-userspace conntrack helpers. */
+-			if (!(cur->flags & NF_CT_HELPER_F_USERSPACE))
++			if (!(helper_flags & NF_CT_HELPER_F_USERSPACE))
+ 				continue;
+ 
+ 			if (cb->args[1]) {
 -- 
 2.47.3
 
