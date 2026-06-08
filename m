@@ -1,257 +1,185 @@
-Return-Path: <netfilter-devel+bounces-13113-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13114-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id qqasCMdWJmpYVAIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13113-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 08 Jun 2026 07:44:39 +0200
+	id wV2sIY6GJmp5YAIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13114-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 08 Jun 2026 11:08:30 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8BD6652E5E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 08 Jun 2026 07:44:38 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id B26E0654651
+	for <lists+netfilter-devel@lfdr.de>; Mon, 08 Jun 2026 11:08:29 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13113-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13113-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=none;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=P4qHLfO1;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13114-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13114-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9F6633003D04
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jun 2026 05:44:17 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A67903012858
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jun 2026 08:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C26378D87;
-	Mon,  8 Jun 2026 05:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8431A3B27FA;
+	Mon,  8 Jun 2026 08:54:13 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B48C36F900
-	for <netfilter-devel@vger.kernel.org>; Mon,  8 Jun 2026 05:44:10 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780897456; cv=none; b=YjW9uNHHVTL6/koufOXJQrdmRYiUBIGjimZAHQOrtmivCoOWVBhAP2yhp8Sd/Q+EU27pNDU+22xetpAXNqb4txE/3VR8e8Hu2/Zt8mpOuD8LNgAfkHLygOu9pgZWmq0q4gaCyXkH4MnM7OWr7PYNmiBUIFpozGxLW9H8cmjLPg4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780897456; c=relaxed/simple;
-	bh=40bY8FWF8bqW33p1Odm3D6ExI4WjFnsneUSJOJAMgps=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XWvwPeP1GHrA3cIR5bHW47G6aFbaxMKYZJUhI/TdIEOEy64bnoIQ2fRiYaDwn4/uXxOAm2OIDRbuqy81pmlOmtjCjOF0Gn+am+GtrfJGvlrytgjmgngCifaYO9/GT8aRU62Pt8gUylNOECc3GkMz5o6RKpax1CwQp//T1pcotPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=207.46.229.174
-Received: from enjou-Legion-Y7000P-2019 (unknown [172.23.56.36])
-	by app1 (Coremail) with SMTP id ygmowACnycOcViZqlTprAA--.51281S2;
-	Mon, 08 Jun 2026 13:43:56 +0800 (CST)
-From: Ren Wei <n05ec@lzu.edu.cn>
-To: netfilter-devel@vger.kernel.org
-Cc: pablo@netfilter.org,
-	fw@strlen.de,
-	phil@nwl.cc,
-	yuantan098@gmail.com,
-	yifanwucs@gmail.com,
-	tomapufckgml@gmail.com,
-	bird@lzu.edu.cn,
-	royenheart@gmail.com,
-	n05ec@lzu.edu.cn
-Subject: [PATCH nf v5 1/1] bridge: br_netfilter: pin bridge device while NFQUEUE holds fake dst
-Date: Mon,  8 Jun 2026 13:43:44 +0800
-Message-ID: <cb8bfe944f4afa8cec437fc15210a3d094612859.1780803571.git.royenheart@gmail.com>
-X-Mailer: git-send-email 2.51.0
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4B73B19D4
+	for <netfilter-devel@vger.kernel.org>; Mon,  8 Jun 2026 08:54:12 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780908853; cv=pass; b=uYMYYup6cQ1oQCmA7KssT0TiuAdC43yODF/jBcis1yEtJOYZIOMC+V8FyzaT+Q/zpTTqyATj0gyTKv2tjeNkXdF3655JI+2Ogfbo+PXwPpvoPCeQtHHsP9SEv57UjpmL0mrxVYM+YcFZEBp9DAl6nFtlGyJtM/D4OveiTAX/2UY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780908853; c=relaxed/simple;
+	bh=8QVx45y6QyTBCVh+SAc+yQjvfe4xgdcmAH4VAii4y3Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=egyQ6eMrkzJQxtMKIkL2lf1mmi5t3Yftau60CrOqZtmGPCGRGr5/HJ9+mnZG+j8IO1+6Tm3w8S8BOT/dV2K9BWDXqKLZHLoyM1VMCZUepCPt+zgtH/rk5aS+nOqp17c//iNVUcirJpnIMGoGXoK5nVx1gShEsVD4O/Ih+bD75kA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P4qHLfO1; arc=pass smtp.client-ip=209.85.167.174
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-48633190849so1512269b6e.3
+        for <netfilter-devel@vger.kernel.org>; Mon, 08 Jun 2026 01:54:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780908851; cv=none;
+        d=google.com; s=arc-20240605;
+        b=cRExSL4SXJt+5bc87rxSulbMTQwSFB+q04v8rfX8FnumWBTokxOkV5QzsRYnVhqTR4
+         aZ+0k7Wj9M65Z3EwwmOGKL96RAD1hBkw1Y+FYQo8VmF2+hfjK7zuDv9mUs+JpOal7jrD
+         Jg/x8V/L+c4++XHeiXVrCTbI+mjysTGARw5u2aWY7O2+nYAhtfwb1gfIppPKqPkhvujM
+         y1/q37TKHtmRK8ZJcDY1xf0qaVoCGAE10KaDp3Y6GBwa0M5cSTxvMIQh4GSK8RSwJ9Rf
+         0tPcC/V9ja3jJQlU3KpeFruFMUX/V+as6BEllW6MkROFut8+mCubKm9XkccWZ5diD6cJ
+         wuXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=8QVx45y6QyTBCVh+SAc+yQjvfe4xgdcmAH4VAii4y3Y=;
+        fh=/C/30jTGvyM4tPtfZfF1kkMQmuv1HFSpFHhKTZmy7gs=;
+        b=JwUCg2d5z6QtBRI5CGdZdNRnI2A+s/3iiDj7RNuE/+QxfjhM0ieZ8adlVoq+rflK/4
+         t3fJmjjSEygDRFQ6IGoxO5Adpzf6obWJI5lBPhh4US3UetY+PgmuMmiIIl+rJbudvRJn
+         mcUAojq90fHzNfN4/T1QDTMBUGkdvm5Y2q2iJCbA9Wqtdx0KQrwfGL9AZPTiKeqzTCbR
+         4Yh/W8zFe9shhsfUuGtiwZdAT8c27CcFZqPDzQcRgj6INVIWgSmfrvjfeRtF7L2v3gpZ
+         iaGKlpPmfF7WJLbHkSoyrzQr7s1mD5o33LPoGb/yfaSps670fFQHRmcZoU5AI2omyWQG
+         NmcQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780908851; x=1781513651; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8QVx45y6QyTBCVh+SAc+yQjvfe4xgdcmAH4VAii4y3Y=;
+        b=P4qHLfO1HlEEsX7Ms501MxKfRPgys3qGOUtyBBzsbPsXu5pf86+Eoyed+i4tl8ZXEK
+         C2R1mqz8FSjKM4ZHILanVO+OOyeToo1d2V4QgJWhc0t+XkudN0cpa/rVTINTeuHD5a3p
+         FTiVMcCMMLI6zUuO2wLoYE4FtmSWO5+ceQNHUfyolqtTnusrQXAKxPajK5hekItxmNHE
+         fbrNDE1ybzc0NxmjTKF0E0Ac4SMPhUa26wAzH8Fj8avwjkM80zTyQYVU5eKZPrBFyG/X
+         CK011MHZGZievnLgNaW93geAN9GhvcRQAnbIoLSTFwVb++/+R8oSnvbpLY7CFP/76cEi
+         QvpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780908851; x=1781513651;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8QVx45y6QyTBCVh+SAc+yQjvfe4xgdcmAH4VAii4y3Y=;
+        b=paTJ32NkINsyrY6fj+B6wtpd07uYES99PRSEXpGPTs925OY3PSNQLkKuBiCXTxoaMi
+         7GFD6BstkOinRH1jJ+D+MZ6ZNWVQqtnhzRni/NgtRCtpSC+gadsqnKBfSwlunJQRBGdB
+         93RPPNXkZGQFKW9k8oRMwUxzCyy9MIiCZxttLhdXF8UUmMQwURCzYKZ5sfPNfkT51EER
+         VXAhykd36wdqFkMMhQkO1xW9lO3Joe21SquCfWpQ2aCVCWvQmBzTw4e+5bMRHt8YyCwo
+         YFzXQ/8ekJFNTBF5gqobhSyicB5xG9AeyPqec2oEAVPAcaDH6wrvYklWmC5gPlC6293k
+         ErRQ==
+X-Gm-Message-State: AOJu0Ywp/H9y1PO4YyEz2DDD2aDIdcqBDj5t7rtORZRR4Y99nd809BoH
+	r8cLMX2Rs33e2cTMnFDXcC5VHz721mDNObgae3Vghf1r9Xfg4zitPofIHI9kzxonY7wTTmt6MZ0
+	2F0e/z+RbsyiV781clDiQQtnZY9I7cvs=
+X-Gm-Gg: Acq92OGeHQTbFdIhf9lQXiW3fkgjKvi4jmoj5l8fhKKWS90XlDMs3zVuckrEVwR2R50
+	SxJ+CO1+bPJ/An3dyeWFmMh09dcnotTblPFUBV9Y4teqhHuT0V/hFslrX8XK2vQ5yl2qzuK78nn
+	pEqGoJjJhF64TQJg4eoPFuvVbeaksCvUnGSsI4+oum5AhXvN2uqeiMEUKYun62AF79RaOqE2Nvl
+	yrqkpvETgrjZw1P2pxM6fE7xe+XvBNyy3eSmqCTNLOjQ2w101PTvxI9KSY/HFIMKwcRIMriqpHG
+	Prgo/bRL1cbx2VUnIg==
+X-Received: by 2002:a05:6808:10cc:b0:46e:c1cd:866a with SMTP id
+ 5614622812f47-4868deb1172mr8209073b6e.27.1780908851103; Mon, 08 Jun 2026
+ 01:54:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:ygmowACnycOcViZqlTprAA--.51281S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFyDtr4rKw1UJFyrtF43ZFb_yoWxGFW7pF
-	W5Kay8J392qryUK3ykAr4xAr13urs5Cr4fWry0kryFkr90qFy5Zr48KrWUZayxCF4vkr43
-	JF4YgF4ktFZ8ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9E1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2
-	jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-	x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-	GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-	8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
-	e7AKxVWUtVW8ZwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8V
-	W8GwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQ0LCWolKdAAugATsR
+References: <20260528204020.7ae744ab@pumpkin> <20260528223412.27311-1-kacper.kokot.44@gmail.com>
+ <ahjHRB0Ohn7fpd-o@chamomile>
+In-Reply-To: <ahjHRB0Ohn7fpd-o@chamomile>
+From: Kacper Kokot <kacper.kokot.44@gmail.com>
+Date: Mon, 8 Jun 2026 09:53:59 +0100
+X-Gm-Features: AVVi8Cep8npgLg1pwln0GCs-DeX3qq7kqMO_6D31-1M9IkFc4dDZxjHiY93gBbQ
+Message-ID: <CAG-Fur4ro0ktPiG7mD1YBkvuDmtCubAhPwHfKN7LrQBaJq5vKg@mail.gmail.com>
+Subject: Re: [PATCH v2] netfilter: TCPMSS: fix dropped packets when MSS option
+ is unaligned
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, kadlec@netfilter.org, fmancera@suse.de, 
+	fw@strlen.de, david.laight.linux@gmail.com, Phil Sutter <phil@nwl.cc>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.96 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13113-lists,netfilter-devel=lfdr.de];
-	DMARC_NA(0.00)[lzu.edu.cn];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:bird@lzu.edu.cn,m:royenheart@gmail.com,m:n05ec@lzu.edu.cn,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:kadlec@netfilter.org,m:fmancera@suse.de,m:fw@strlen.de,m:david.laight.linux@gmail.com,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:davidlaightlinux@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13114-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[kacperkokot44@gmail.com,netfilter-devel@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,gmail.com,lzu.edu.cn];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kacperkokot44@gmail.com,netfilter-devel@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,suse.de,strlen.de,gmail.com,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,lzu.edu.cn:from_mime,lzu.edu.cn:email]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A8BD6652E5E
+X-Rspamd-Queue-Id: B26E0654651
 
-From: Haoze Xie <royenheart@gmail.com>
+> > Padding TCP options with NOPs is optional, so it is legal to send an
+> > MSS option that is not aligned to a word boundary [...]
+>
+> Yes, but how many stacks do this?
 
-The bridge netfilter fake rtable is embedded in struct net_bridge and is
-attached to bridged packets with skb_dst_set_noref(). If such a packet is
-queued to NFQUEUE, __nf_queue() upgrades that fake dst with
-skb_dst_force().
+None that I'm aware of. Mainstream stacks pad everything to a word
+boundary and put MSS as the first option. The motivation is RFC 9293
+(MUST-64) spec conformance rather than a bug seen in the wild.
 
-At that point the queued skb can hold a real dst reference after bridge
-teardown has started. The problem is not that every bridged packet needs
-its own dst reference. The problem is that NFQUEUE can keep the bridge
-private fake dst alive after unregister begins.
+> > This has not been observed in any real environment.
+>
+> ... then why is this a fix?
+> [...]
+> To me, this qualifies as an enhancement, if anything.
 
-Fix this by keeping the bridge fake dst model unchanged and pinning the
-bridge master device only while the packet sits in NFQUEUE. Record the
-bridge device in nf_queue_entry when the queued skb carries a bridge fake
-dst, take a device reference for the queue lifetime, and drop it when the
-queue entry is freed.
+I'll drop the "fix" and reframe this as an enhancement including your
+suggested subject line.
 
-Also make sure queued entries are reaped when that bridge device goes
-down, and drop the redundant nf_bridge_info_exists() test from the fake
-dst detection.
+> This is questionably a "clean packet".
 
-This keeps netdev_priv(br->dev) alive until verdict completion, so the
-embedded fake rtable and its metrics backing storage cannot be freed out
-from under dst_release(). It also avoids the constant refcount bump and
-avoids using ipv4-specific dst helpers for IPv6 bridge traffic.
+Fair point, I shouldn't have framed it as legitimate/clean traffic
+being dropped.
 
-Fixes: 34666d467cbf ("netfilter: bridge: move br_netfilter out of the core")
-Cc: stable@kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Signed-off-by: Haoze Xie <royenheart@gmail.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
----
-Changes in v5:
-  - drop the redundant nf_bridge_info_exists() test in the fake-dst bridge
-    device lookup
-  - teach dev_cmp() to reap queued entries that hold the bridge device
-    reference when that device goes down
-  - v4 Link: https://lore.kernel.org/all/cbc3a29c0654e8fcee30cb021d57883fed77fafc.1780630094.git.royenheart@gmail.com/
-Changes in v4:
-  - inline the bridge fake-dst device lookup into
-    __nf_queue_entry_init_physdevs()
-  - drop the extra helper introduced in v3 and keep the queue-entry setup
-    local
-  - use dst_dev_rcu() as suggested during review
-  - drop the unnecessary blackhole_netdev special case
-  - expand the comment to state explicitly that dst_hold() cannot protect
-    the embedded fake rtable backing storage
-  - v3 Link: https://lore.kernel.org/all/fe4fc3d462679ba10bf85e574921ecf861000d66.1780590147.git.royenheart@gmail.com/
-Changes in v3:
-  - drop the per-packet fake dst refcounting from v2
-  - stop using ipv4-specific dst helpers for the fake dst
-  - keep the existing bridge fake rtable model unchanged on the fast path
-  - pin the bridge master device only when NFQUEUE upgrades a fake dst
-  into an asynchronous queued reference
-  - v2 Link: https://lore.kernel.org/all/831936f111e6e1f435f4f6247d07fe6a6624d271.1779680014.git.royenheart@gmail.com/
-changes in v2:
-  - spell out how NFQUEUE upgrades the fake dst into a real reference
-  - switch to rt_dst_alloc() instead of br_netfilter-private dst_ops state
-  - detach the bridge device with dst_dev_put() during teardown
-  - keep the ref-holding contract local to bridge_parent_rtable()
-  - v1 Link: https://lore.kernel.org/all/783d76ac83917b7302c1ec647794bd773bb1875a.1778687139.git.royenheart@gmail.com/
+> And "the kernel is not silently dropping anything, it is policy that
+> would drop it" [...]
 
- include/net/netfilter/nf_queue.h |  1 +
- net/netfilter/nf_queue.c         | 14 ++++++++++++++
- net/netfilter/nfnetlink_queue.c  |  3 +++
- 3 files changed, 18 insertions(+)
+I'll reword the commit message to say the mangled packet ends up with
+an invalid checksum and could then be dropped by policy, rather than
+implying the kernel itself drops it.
 
-diff --git a/include/net/netfilter/nf_queue.h b/include/net/netfilter/nf_queue.h
-index 3978c3174cdb..fc3e81c07364 100644
---- a/include/net/netfilter/nf_queue.h
-+++ b/include/net/netfilter/nf_queue.h
-@@ -18,6 +18,7 @@ struct nf_queue_entry {
- 	unsigned int		id;
- 	unsigned int		hook_index;	/* index in hook_entries->hook[] */
- #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+	struct net_device	*bridge_dev;
- 	struct net_device	*physin;
- 	struct net_device	*physout;
- #endif
-diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
-index 57b450024a99..73363ceedebe 100644
---- a/net/netfilter/nf_queue.c
-+++ b/net/netfilter/nf_queue.c
-@@ -68,6 +68,7 @@ static void nf_queue_entry_release_refs(struct nf_queue_entry *entry)
- 		nf_queue_sock_put(state->sk);
- 
- #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+	dev_put(entry->bridge_dev);
- 	dev_put(entry->physin);
- 	dev_put(entry->physout);
- #endif
-@@ -84,6 +85,8 @@ static void __nf_queue_entry_init_physdevs(struct nf_queue_entry *entry)
- {
- #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
- 	const struct sk_buff *skb = entry->skb;
-+	struct dst_entry *dst = skb_dst(skb);
-+	struct net_device *dev = NULL;
- 
- 	if (nf_bridge_info_exists(skb)) {
- 		entry->physin = nf_bridge_get_physindev(skb, entry->state.net);
-@@ -92,6 +95,16 @@ static void __nf_queue_entry_init_physdevs(struct nf_queue_entry *entry)
- 		entry->physin = NULL;
- 		entry->physout = NULL;
- 	}
-+
-+	if (entry->state.pf == NFPROTO_BRIDGE &&
-+	    dst && (dst->flags & DST_FAKE_RTABLE))
-+		dev = dst_dev_rcu(dst);
-+
-+	/* Must hold a reference on the bridge device: dst_hold() protects
-+	 * the dst itself, but the fake rtable is embedded in bridge-private
-+	 * storage that netdevice teardown can free independently.
-+	 */
-+	entry->bridge_dev = dev;
- #endif
- }
- 
-@@ -108,6 +121,7 @@ bool nf_queue_entry_get_refs(struct nf_queue_entry *entry)
- 	dev_hold(state->out);
- 
- #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+	dev_hold(entry->bridge_dev);
- 	dev_hold(entry->physin);
- 	dev_hold(entry->physout);
- #endif
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index 60ab88d45096..1c73c511a682 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -1214,6 +1214,9 @@ dev_cmp(struct nf_queue_entry *entry, unsigned long ifindex)
- 
- 	if (physinif == ifindex || physoutif == ifindex)
- 		return 1;
-+
-+	if (entry->bridge_dev && entry->bridge_dev->ifindex == ifindex)
-+		return 1;
- #endif
- 	if (entry->skb_dev && entry->skb_dev->ifindex == ifindex)
- 		return 1;
--- 
-2.47.3
-
+Thanks for the review.
 
