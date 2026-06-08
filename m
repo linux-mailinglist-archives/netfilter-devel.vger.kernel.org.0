@@ -1,65 +1,65 @@
-Return-Path: <netfilter-devel+bounces-13136-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13137-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id dwgAHEdMJ2ojugIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13136-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 01:12:07 +0200
+	id xl8sBaFMJ2o+ugIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13137-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 01:13:37 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE2B65B228
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 01:12:07 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6894965B23B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 01:13:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=I6SihNt5;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13136-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13136-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=Ul3LiJtg;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13137-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13137-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 42916301256F
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jun 2026 23:12:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7239E3026C3F
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jun 2026 23:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D42A39AD34;
-	Mon,  8 Jun 2026 23:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B175B3B19A8;
+	Mon,  8 Jun 2026 23:13:25 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA769352C4E;
-	Mon,  8 Jun 2026 23:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3B63A7F5D;
+	Mon,  8 Jun 2026 23:13:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780960322; cv=none; b=UdaRlmkBWoee7XB4RdvwEIdRV3hQnPoqIWsDJB5JcdZ7vkDz3WrYv7pVi77VEDejSDD9CpCwRVIgUkAhJb/b/U90eULnytJoyC1YGL1xDuP+bztS+z9pjpxkUdo+B6VxRnrv5JisFotntW8yKa5upZXkiJTO8SBEaAP38OH9vaU=
+	t=1780960405; cv=none; b=Zf9l2TFlPKLVeJtPI6no/ScmgB0UA+5yXqMfVjlgYtDdTVjZszTA8FuZicgsz7nWCSsm01vz8yFhB9o+85snXquWmZqLiOh6yuaVbz+V4Lxu/wbv0H2MOVylahXnU+eEolB/Ltqt20nXDM0XLx45cbZWgLyR/g42kBCDckw42lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780960322; c=relaxed/simple;
-	bh=CoYaC2kz1gOIUPLCzxgbigyZqMpM6GR136SQyU/5ZAY=;
+	s=arc-20240116; t=1780960405; c=relaxed/simple;
+	bh=++AsT4jug5R9P+O5ifhwx/I9KJ6uUNzbukRjsimfpDk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LE7WaoCbkclBh1Jx+IlVQIgewIRhVwuomvgYgYDDPc6rcx6nXYTL6VI4/PV+HtigLephS229LCcnCfxnm9hF0a+9OI/UFFynf2rdh0MjdgdpzwKtU1Z7JADIbggGg0OncoZvfxjgTUulcEHTDyHJGXULJtWInJHtVQPb7Rn/YaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=I6SihNt5; arc=none smtp.client-ip=217.70.190.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=sTBLtunVs/1W3r4MCa4rzqpr3Kf/avgcivQFAbSHF33sy62qygPgAcg679P9yAJVZyhyW77Pe4Ue249wpHRF0l6URmf/fJcBWkg9jZkG+mU6a113h/CHwqyDAG2+LHvATivZBhZi9eD7QG6RA6ZW4zTiTu/Pi41u6sK3mItfHus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Ul3LiJtg; arc=none smtp.client-ip=217.70.190.124
 Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 04A4C601A0;
-	Tue,  9 Jun 2026 01:11:59 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id EBE406017E;
+	Tue,  9 Jun 2026 01:13:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1780960319;
-	bh=JV/A69zWPQuTQ2nGVP22LDX+MvZU7+jQ+x0+XtVi+NM=;
+	s=2025; t=1780960403;
+	bh=4M5kOKRfK1cOaArhXrxaj+dAkI50k1gaaYkhIYI7Zww=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I6SihNt5Z6s83NNImMYqWKP+AlN68mHgSpT0kW1U80YuEMQJL7juyFRR839R+GkQa
-	 cLRAd8B/eXwZBOXh++d1EkqevbytUcTG4pz3TO0RJe1+62yfMFrXN5pOfyhhGEYPlD
-	 U0rpDW9dupS8Jk96IdiSHRaIMUv7lGkzSod7PxJ4j7B9RUeujaXgaz/MiLOg3mXa/o
-	 1uENn7XVqMh7e8ABQfNhyrUojBldGvC1kQ6t941UblmPuV2LW7jNBJvJJFpXdgYxz2
-	 8Kvw4+bTIiFqLBUm94NX9T0z3FlNaIwAM2xgUoNQOPMSDRJivczRkBojql3Hq+D9+v
-	 XZfs0YEWDddsw==
-Date: Tue, 9 Jun 2026 01:11:56 +0200
+	b=Ul3LiJtgpoK/nhtVF7lM8jzzCbdxoMKBWGnw66AtBWq7nqnZyJiTWxGlvqPdChfL/
+	 Tvf4xuDQppQKcjP1XO87mSwkNN60vjuThUxB9tyjGM35/dfJWhD9KEdQ3Q8V+7HmZq
+	 kfEPdVMxC7RBx6AyFeW9BAUalYeyjdEQZHL/+Txn5S5zz+8LJix/ELc32YnB5cftkU
+	 DV+UULhc9wpvIrqwvIQRf0afD3sK3aqhLf44Yx+Hc4Eu0rHHOREJPqZg1s9tS/UAPa
+	 RHWufC7sK+mtfqOtFzBSsVwqTA7f4OKbVrbiAD/b6+QrxH7MgS3KWxHvrx2F/jnVWc
+	 z1xbqFbVp+MJw==
+Date: Tue, 9 Jun 2026 01:13:20 +0200
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: flowtable: use pskb_may_pull() in
- nf_flow_ip6_tunnel_proto()
-Message-ID: <aidMPKrm9gOcPLW-@chamomile>
-References: <20260608-b4-nf_flow_ip6_tunnel_proto-update-v1-1-782c7052c8fd@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
+	fw@strlen.de, horms@kernel.org, Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH net-next 08/15] netfilter: cttimeout: detach dataplane
+ timeout policy and repurpose refcount
+Message-ID: <aidMkCI_5iYfePtp@chamomile>
+References: <20260607094954.48892-1-pablo@netfilter.org>
+ <20260607094954.48892-9-pablo@netfilter.org>
+ <aidCgrrmFJGNF-Th@chamomile>
+ <20260608155728.2b332bce@kernel.org>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -68,18 +68,18 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260608-b4-nf_flow_ip6_tunnel_proto-update-v1-1-782c7052c8fd@kernel.org>
+In-Reply-To: <20260608155728.2b332bce@kernel.org>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:lorenzo@kernel.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:fw@strlen.de,m:horms@kernel.org,m:ja@ssi.bg,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	DMARC_NA(0.00)[netfilter.org];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
@@ -87,7 +87,7 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13136-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13137-lists,netfilter-devel=lfdr.de];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -95,95 +95,21 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:from_mime,chamomile:mid,vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:from_mime,chamomile:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0CE2B65B228
+X-Rspamd-Queue-Id: 6894965B23B
 
-Hi Lorenzo,
-
-On Mon, Jun 08, 2026 at 07:06:52PM +0200, Lorenzo Bianconi wrote:
-> Switch nf_flow_ip6_tunnel_proto() from skb_header_pointer() to
-> pskb_may_pull() for header validation, aligning it with the approach
-> used in nf_flow_ip4_tunnel_proto().
-> Move ctx->offset update inside the IPPROTO_IPV6 conditional block since
-> it should only be adjusted when a tunnel is actually detected.
-> While at it, use nexthdr instead of the hardcoded IPPROTO_IPV6 constant
-> when setting ctx->tun.proto.
+On Mon, Jun 08, 2026 at 03:57:28PM -0700, Jakub Kicinski wrote:
+> On Tue, 9 Jun 2026 00:30:26 +0200 Pablo Neira Ayuso wrote:
+[...]
+> > I can post a v2 for this PR.
 > 
-> Fixes: d98103575dcdd ("netfilter: flowtable: Add IP6IP6 rx sw acceleration")
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  net/netfilter/nf_flow_table_ip.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-> index 9c05a50d6013..2946399ab715 100644
-> --- a/net/netfilter/nf_flow_table_ip.c
-> +++ b/net/netfilter/nf_flow_table_ip.c
-> @@ -347,15 +347,15 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_flowtable_ctx *ctx,
->  				     struct sk_buff *skb)
->  {
->  #if IS_ENABLED(CONFIG_IPV6)
-> -	struct ipv6hdr *ip6h, _ip6h;
-> +	struct ipv6hdr *ip6h;
->  	__be16 frag_off;
->  	u8 nexthdr;
->  	int hdrlen;
->  
-> -	ip6h = skb_header_pointer(skb, ctx->offset, sizeof(*ip6h), &_ip6h);
-> -	if (!ip6h)
-> +	if (!pskb_may_pull(skb, sizeof(*ip6h) + ctx->offset))
->  		return false;
->  
-> +	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
->  	if (ip6h->hop_limit <= 1)
->  		return false;
+> Bad timing :( Please send follow ups
 
-Not shown in the patch, but is there still a corner case here that
-needs to be covered?
-
-ipv6_skip_exthdr() uses skb_header_pointer() internal, then another
-pskb_may_pull() is needed to make sure no other IPv6 extension header
-sits between the outer and the inner IPPROTO_IPV6 header, allowing to
-be in a non-linear area of the skb?        
-
-> @@ -367,9 +367,9 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_flowtable_ctx *ctx,
->  
-
-I mean:
-
-        if (!pskb_may_pull(skb, hdrlen))
-                return false;
-
-where hdrlen is what ipv6_skip_exthdr() returns.
-
-Then, I think it should be safe to call skb_pull() on
-ctx->tun.hdr_size.
-
-Let me know, thanks.
-
->  	if (nexthdr == IPPROTO_IPV6) {
->  		ctx->tun.hdr_size = hdrlen;
-> -		ctx->tun.proto = IPPROTO_IPV6;
-> +		ctx->tun.proto = nexthdr;
-> +		ctx->offset += ctx->tun.hdr_size;
->  	}
-> -	ctx->offset += ctx->tun.hdr_size;
->  
->  	return true;
->  #else
-> 
-> ---
-> base-commit: 9772589b57e44aedc240211c5c3f7a684a034d3a
-> change-id: 20260608-b4-nf_flow_ip6_tunnel_proto-update-8b64903825b4
-> 
-> Best regards,
-> -- 
-> Lorenzo Bianconi <lorenzo@kernel.org>
-> 
+No problem, we'll follow up, thanks.
 
