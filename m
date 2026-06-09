@@ -1,117 +1,232 @@
-Return-Path: <netfilter-devel+bounces-13171-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13172-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id eF1hEnqQKGpHGQMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13171-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 00:15:22 +0200
+	id rp4zFrqRKGp9GQMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13172-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 00:20:42 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD57D6647CF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 00:15:21 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7290664846
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 00:20:41 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=G4QbA69r;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13171-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13171-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=wPalHWUC;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13172-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13172-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E2C7530488E7
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 22:15:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 53F60302AC28
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 22:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26A33DCDBB;
-	Tue,  9 Jun 2026 22:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E0533FE1F;
+	Tue,  9 Jun 2026 22:18:52 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF923DEAD1;
-	Tue,  9 Jun 2026 22:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3440350D7D
+	for <netfilter-devel@vger.kernel.org>; Tue,  9 Jun 2026 22:18:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781043319; cv=none; b=nmgQ03nLsu6G/y+Ak0Ucp1p/Yhldk3l/fcpXBGxO/NdRjMjsI02CcJgvfZ5Ppf5aKYbt+IDnOwSqtlULBXGeKfNZc39s48NtArIoRtno8nIdpzTS5DRAu6WX40tGFB8P5noG9ZWWkEEDPhN/2wPxHHAfotjM4Ml8yxCaB74DXxg=
+	t=1781043532; cv=none; b=gXWOmW17yYS5Tt5OtEiTD1ApbNT2jjxihOeMyXBbHjUeqoEU/VdIDdA+8tJmch/G3b3iTCQsQ//SSTc/wYLam6ZawQaILav0OjFqP0SQhtPCfKbE56z4NsB54j3Ilc66ZKU65H3TxSLmVb0jFvDAr3rR9AQDufL+f7G66y2NIZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781043319; c=relaxed/simple;
-	bh=Tsi7Eid3oYjZKZqrrt1SsBzu3O+/ppa0eG8VXuOYUF0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d9ElgJ0Iusskkzq5FIJfEl4kHX86P73dOal3OGVdf16cOyyJmKIlYLeldUrb7d+bnFtWd+WrCXTDV5rgjVUXs2gmzi29Ea6CZGr2ftVtZg1BrabQ0O+quMs/OfPUP+jSzQbe/DlVsFeW+vArQYieoEBVlBraS2951Dhn+9Ajey4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G4QbA69r; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C4A1F00893;
-	Tue,  9 Jun 2026 22:15:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781043318;
-	bh=JXc/IJa6zvTygittkeGvqwNmBwKvXXAouvf+JVGAfyg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=G4QbA69rI5lRSCdbDw5QhxqsrSjAYiIA2HzYucRY03h3wAdKXvs10wUAxnVzAemWZ
-	 faSXkd7+He/8XislWC2uUj/wBwGFv5I1tqVSVtjjobW9OyEcNGCVxC6GrmRvtkFbBx
-	 R8T1tI+ZlwlyDc473reKeLKkWICGRrLKXjjg8Be4/8FdzHLRGUpuS89dd2RD+pRePM
-	 R1sLmJ4W89g7T3bUGsYUxvLtptSNvSheFNH6tjsIiEFs+bvb9N1xr5DkJPxTdk1oiT
-	 1sf30I0iDA9pUSo+pP99RES01IzoD5ehi5al7Tmk4I9ydjfP3mKY2BZ5BtT0nI53M6
-	 FKwx1W1bBfBMg==
-Date: Tue, 9 Jun 2026 15:15:17 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: <netdev@vger.kernel.org>, <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: dummy: add phony ndo_setup_tc stub
-Message-ID: <20260609151517.186b1cac@kernel.org>
-In-Reply-To: <20260609142813.9197-1-fw@strlen.de>
-References: <20260609142813.9197-1-fw@strlen.de>
+	s=arc-20240116; t=1781043532; c=relaxed/simple;
+	bh=X3K7QCVeBASTQmRdV54niQxCXBktX5joj+vgOzuhQFA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rATTobParmg2hJUn9dDvjoqljf5ZWnZMRqVn/fn4+YEi+ubgDt4L6ItDqcWRJtUkoZ+e3HUDbl1mfcsVyRc30GWzKYaIjlwN2dVcvBJNGTYH4Egj/Ajxj89fL7OcJlC7EmI64UJP9qSpNNUXCL7A9VDc5RdtbpOsRvnCV2tM1Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=wPalHWUC; arc=none smtp.client-ip=217.70.190.124
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id E288F60272
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 00:18:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1781043529;
+	bh=zTHHkt4fOnYf3MNAwio73S8WWFBdMODcT9rYeRWOtOg=;
+	h=From:To:Subject:Date:From;
+	b=wPalHWUC6Qn10feDy8RkRFvbtwUJkZf0ZSV6BYIeNWeqjwv5U43uS4zk0JDQCUlte
+	 UapoFDrAiOZq6RMQDQCIwQSpabjSSO2/ljYoj0sd5NwwTH7bSzGPVoB9KMoVBnwTeX
+	 /Qpia4rPn26euV1OeywP+vFzBhO/WCEEHwaug+ezCa4I/qB25A6ZUcoc8mKp8ZNsH5
+	 b93Vok+l0YEbXcbSmbBnP6tk+bk5GcemaHor4Refp3MGCMINDhI1nU1w6gdV7S8iqh
+	 kWgRiq1ibhaMuO/6ow1lk3PSn+a3HLRteLzQJdpW1zLhxmKZgGOsjdhHQarqV3oUDB
+	 h5drw/UmCEBeA==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next] netfilter: nf_dup_netdev: add nf_dev_xmit_recursion*() helpers and use them
+Date: Wed, 10 Jun 2026 00:18:44 +0200
+Message-ID: <20260609221844.117324-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13171-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:netdev@vger.kernel.org,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13172-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	RCPT_COUNT_ONE(0.00)[1];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[netfilter.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[kuba@kernel.org,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CD57D6647CF
+X-Rspamd-Queue-Id: A7290664846
 
-On Tue,  9 Jun 2026 16:28:09 +0200 Florian Westphal wrote:
-> Unlike netdevsim, dummy is a data sink so no capabilities (e.g.
-> u32-style matcher, vport device redirects, PPPoE header push/pop etc).
-> have to be implemented.
+Update nft_dup and nft_fwd to use the nf_dev_xmit_recursion() helpers.
+This patch also disables BH when transmitting the skb to address a
+possible migration to different CPU leading to imbalanced decrementation
+of the recursion counters.
 
-If no "peer" is configured netdevsim is also a data sink.
+This is modeled after Florian Westphal's dev_xmit_recursion*() API
+available since 97cdcf37b57e ("net: place xmit recursion in softnet
+data") according to its current state in the tree.
 
-We added netdevsim because dummy and veth started accumulating
-"features" which were clearly just for test harnesses. Would be
-great if we could stay the course and put whatever changes you
-need in netdevsim, even if it requires some hacks.
+Fixes: 1d47b55b36d2 ("netfilter: nft_fwd_netdev: use recursion counter in neigh egress path")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/net/netfilter/nf_dup_netdev.h | 34 +++++++++++++++++++++++----
+ net/netfilter/nf_dup_netdev.c         | 10 ++++----
+ net/netfilter/nft_fwd_netdev.c        | 10 ++++----
+ 3 files changed, 40 insertions(+), 14 deletions(-)
 
-Is there anything fundamentally blocking the use of netdevsim?
-Or is it just convenience (since netdevsim is a bit of a PITA
-to create and establish the name of)?
+diff --git a/include/net/netfilter/nf_dup_netdev.h b/include/net/netfilter/nf_dup_netdev.h
+index 609bcf422a9b..05c0b9b4228f 100644
+--- a/include/net/netfilter/nf_dup_netdev.h
++++ b/include/net/netfilter/nf_dup_netdev.h
+@@ -11,15 +11,39 @@ void nf_fwd_netdev_egress(const struct nft_pktinfo *pkt, int oif);
+ 
+ #define NF_RECURSION_LIMIT	2
+ 
+-static inline u8 *nf_get_nf_dup_skb_recursion(void)
+-{
+ #ifndef CONFIG_PREEMPT_RT
+-	return this_cpu_ptr(&softnet_data.xmit.nf_dup_skb_recursion);
++static inline bool nf_dev_xmit_recursion(void)
++{
++	return unlikely(__this_cpu_read(softnet_data.xmit.nf_dup_skb_recursion) >
++			NF_RECURSION_LIMIT);
++}
++
++static inline void nf_dev_xmit_recursion_inc(void)
++{
++	__this_cpu_inc(softnet_data.xmit.nf_dup_skb_recursion);
++}
++
++static inline void nf_dev_xmit_recursion_dec(void)
++{
++	__this_cpu_dec(softnet_data.xmit.nf_dup_skb_recursion);
++}
+ #else
+-	return &current->net_xmit.nf_dup_skb_recursion;
+-#endif
++static inline bool nf_dev_xmit_recursion(void)
++{
++	return unlikely(current->net_xmit.nf_dup_recursion > NF_RECURSION_LIMIT);
++}
++
++static inline void nf_dev_xmit_recursion_inc(void)
++{
++	current->net_xmit.nf_dup_skb_recursion++;
+ }
+ 
++static inline void nf_dev_xmit_recursion_dec(void)
++{
++	current->net_xmit.nf_dup_skb_recursion--;
++}
++#endif
++
+ struct nft_offload_ctx;
+ struct nft_flow_rule;
+ 
+diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
+index 3d88ef927f31..914b528de90d 100644
+--- a/net/netfilter/nf_dup_netdev.c
++++ b/net/netfilter/nf_dup_netdev.c
+@@ -16,9 +16,7 @@
+ static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev,
+ 				enum nf_dev_hooks hook)
+ {
+-	u8 *nf_dup_skb_recursion = nf_get_nf_dup_skb_recursion();
+-
+-	if (*nf_dup_skb_recursion > NF_RECURSION_LIMIT)
++	if (nf_dev_xmit_recursion())
+ 		goto err;
+ 
+ 	if (hook == NF_NETDEV_INGRESS && skb_mac_header_was_set(skb)) {
+@@ -30,9 +28,11 @@ static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev,
+ 
+ 	skb->dev = dev;
+ 	skb_clear_tstamp(skb);
+-	(*nf_dup_skb_recursion)++;
++	local_bh_disable();
++	nf_dev_xmit_recursion_inc();
+ 	dev_queue_xmit(skb);
+-	(*nf_dup_skb_recursion)--;
++	nf_dev_xmit_recursion_dec();
++	local_bh_enable();
+ 	return;
+ err:
+ 	kfree_skb(skb);
+diff --git a/net/netfilter/nft_fwd_netdev.c b/net/netfilter/nft_fwd_netdev.c
+index b9e88d7cf308..b4f1dc1dfaf3 100644
+--- a/net/netfilter/nft_fwd_netdev.c
++++ b/net/netfilter/nft_fwd_netdev.c
+@@ -95,7 +95,6 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
+ 			      struct nft_regs *regs,
+ 			      const struct nft_pktinfo *pkt)
+ {
+-	u8 *nf_dup_skb_recursion = nf_get_nf_dup_skb_recursion();
+ 	struct nft_fwd_neigh *priv = nft_expr_priv(expr);
+ 	void *addr = &regs->data[priv->sreg_addr];
+ 	int oif = regs->data[priv->sreg_dev];
+@@ -154,7 +153,7 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
+ 		goto out;
+ 	}
+ 
+-	if (*nf_dup_skb_recursion > NF_RECURSION_LIMIT) {
++	if (nf_dev_xmit_recursion()) {
+ 		verdict = NF_DROP;
+ 		goto out;
+ 	}
+@@ -176,9 +175,12 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
+ 
+ 	skb->dev = dev;
+ 	skb_clear_tstamp(skb);
+-	(*nf_dup_skb_recursion)++;
++
++	local_bh_disable();
++	nf_dev_xmit_recursion_inc();
+ 	neigh_xmit(neigh_table, dev, addr, skb);
+-	(*nf_dup_skb_recursion)--;
++	nf_dev_xmit_recursion_dec();
++	local_bh_enable();
+ out:
+ 	regs->verdict.code = verdict;
+ }
+-- 
+2.47.3
+
 
