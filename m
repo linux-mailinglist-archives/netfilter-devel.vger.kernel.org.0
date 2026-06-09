@@ -1,283 +1,146 @@
-Return-Path: <netfilter-devel+bounces-13138-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13141-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id UrJBGMZWJ2rRuwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13138-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 01:56:54 +0200
+	id sxvQB8jCJ2rR1gIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13141-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 09:37:44 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9B3965B3BA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 01:56:53 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5291565D499
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 09:37:43 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=eY1BtUdK;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13138-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13138-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=blackhole.kfki.hu header.s=20151130 header.b=MWZgpLzb;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13141-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13141-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2AA3D3006793
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jun 2026 23:56:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 571FD300D7B4
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 07:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49D4286419;
-	Mon,  8 Jun 2026 23:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C3F3DDDA6;
+	Tue,  9 Jun 2026 07:34:57 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3DE22423A
-	for <netfilter-devel@vger.kernel.org>; Mon,  8 Jun 2026 23:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30353DD537
+	for <netfilter-devel@vger.kernel.org>; Tue,  9 Jun 2026 07:34:54 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780962980; cv=none; b=TEZh8xg1/bNL1ORnOtwkxlb6/9yM/gwmEbnS9Wzb2Yk4ApOCGux7sUdoWu8tgZC5UwZ5BPCC+zLfLozdleISAY2fOlGE3llhBZIeXmTY//tLBtlpHGtlkNxyhbzQhf6jQ8N5ScrsGf/dLAxWuo3I+aWhg2vPPHvqN2ZZ2hYb7tM=
+	t=1780990497; cv=none; b=dR/5siXVy0xUPTGfKCPVgLzXvEZl31agfhF8zANxKQvg1kRW6jh8aj1a2/knTQYii/L1tXFSr2o8yh7hy3TyyhP6d2RSadcyh3SXiccWwXjWH2ggP8dTJlcHvUVCcGhHvsT7jeSB8uxGFLV6X0g0jOoNBN0e670m3MAVi3eYP2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780962980; c=relaxed/simple;
-	bh=SpaAKuEssMkF3PS0YbFFnpafncMWc9/g0xD4YwxJ/4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fj6iUqmQTE5xP3Z7cQuI/oum6+c1M3irmfGnkjBheGA687+AbePkE5CX1nPhwHEqS3C9OwSkSNpx/vrJNs7AsYdg66Mn+LwtWYNFW3mVG/UlJbUUWBkWtiH0b2MU7i1XjhrgF8iLqv+DnO/8WhveQEJeCAQzWmNpsy5mu2qtKv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=eY1BtUdK; arc=none smtp.client-ip=217.70.190.124
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id D1BA56017D;
-	Tue,  9 Jun 2026 01:56:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1780962975;
-	bh=vIfblX+mw0DK+qu7jCYYxt/Sj/wgcOWhvumOJVkfVbc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eY1BtUdKxZLYq13P1u+2ElBuwoZ7J9WOB5zx7xOepdUTDbsjS1hrVZ2gcNLjwK/b+
-	 J3XHE8pw+UnOmv6xADtCWAJqUJMS0GBSfp0LvyMupszGP0nACNKz1FmtwBakjNI/x+
-	 +kTutkva4RBmlyodIurxWSm/j6oqbGmednZnWIz9wO4kk/3AkYj/X2V8dG6luG7sKk
-	 IWDQ0IpUaNVqaQFmLc4h2mIfSUiAD+unq4S/SXWu9n8YFYtXMo0ax6Fca6eg4vHo0Z
-	 n6l+1AIflBSx26BAarq74uVKW0UEOXndSCEbWf99JEbBwgFr9hlBRTqvWlLoehfEsP
-	 HS2HG9+AntBgw==
-Date: Tue, 9 Jun 2026 01:56:13 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Ren Wei <n05ec@lzu.edu.cn>
-Cc: netfilter-devel@vger.kernel.org, fw@strlen.de, phil@nwl.cc,
-	lorenzo@kernel.org, yuantan098@gmail.com, yifanwucs@gmail.com,
-	tomapufckgml@gmail.com, bird@lzu.edu.cn, chzhengyang2023@lzu.edu.cn
-Subject: Re: [PATCH nf 1/1] netfilter: nf_flow_table: separate tunnel route
- state from direct xmit
-Message-ID: <aidWndIYXO9hXFq-@chamomile>
-References: <cover.1780580352.git.chzhengyang2023@lzu.edu.cn>
- <3947a39286d335b6136bbee26f8bf44b23471c69.1780580352.git.chzhengyang2023@lzu.edu.cn>
+	s=arc-20240116; t=1780990497; c=relaxed/simple;
+	bh=17+QzvOWwrHsvjqhnNu+pqKduIne1F8+BotFG8kXrEo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KN+s60/mYaQbR/l6vhdKctP9v+MRUMIkoWeQupWp1R7R0KiX9zZThzSsGgmIZ+T/iZkbjkVec/o6YLAvh98FXinsli8BjeopO7RYYU+rMHW7QA/EUhqx7hSJUoBTWTYP1/0d9hTU/eW08mI9q+MWjPhRLSZm8q4SclAszE7yzbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=MWZgpLzb; arc=none smtp.client-ip=148.6.0.49
+Received: from localhost (localhost [127.0.0.1])
+	by smtp0.kfki.hu (Postfix) with ESMTP id 4gZL945pljz3sb0b;
+	Tue, 09 Jun 2026 09:27:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
+	:from:from:received:received:received; s=20151130; t=1780990070;
+	 x=1782804471; bh=APhPpBlHiVprsAVjFoY31i4tgscVkDJJHx5huAYCYJU=; b=
+	MWZgpLzbxpdjWF/+QdvIbWw1AezoHyrN1PuvACmd9f51C4O+Xo/DRlxI93+uFuyd
+	76UdXOXq8TYEtXI4UHLQULUyfSzV/aV6Du76BKKVwEdoF6LYmn2EuxXTabWFsyFp
+	tzqy4FlpCBJAkFMr50bA71zZIKy9881q3lX5fGs/JzY=
+X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+ by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id TtWE_dHDqVy6; Tue,  9 Jun 2026 09:27:50 +0200 (CEST)
+Received: from mentat.rmki.kfki.hu (254C0692.nat.pool.telekom.hu [37.76.6.146])
+	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
+	by smtp0.kfki.hu (Postfix) with ESMTPSA id 4gZL925mPSz3sb0c;
+	Tue, 09 Jun 2026 09:27:50 +0200 (CEST)
+Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
+	id 439441404E1; Tue,  9 Jun 2026 09:27:50 +0200 (CEST)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH v2 0/9] netfilter: ipset fixes, second batch
+Date: Tue,  9 Jun 2026 09:27:41 +0200
+Message-Id: <20260609072750.318774-1-kadlec@netfilter.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3947a39286d335b6136bbee26f8bf44b23471c69.1780580352.git.chzhengyang2023@lzu.edu.cn>
+X-deepspam: ham 0%
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:n05ec@lzu.edu.cn,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,m:phil@nwl.cc,m:lorenzo@kernel.org,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:bird@lzu.edu.cn,m:chzhengyang2023@lzu.edu.cn,s:lists@lfdr.de];
-	DMARC_NA(0.00)[netfilter.org];
-	TAGGED_FROM(0.00)[bounces-13138-lists,netfilter-devel=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
+	RCPT_COUNT_TWO(0.00)[2];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[netfilter.org];
+	TAGGED_FROM(0.00)[bounces-13141-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,strlen.de,nwl.cc,kernel.org,gmail.com,lzu.edu.cn];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:from_mime]
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A9B3965B3BA
+X-Rspamd-Queue-Id: 5291565D499
 
-Hi,
+Hi Pablo,
 
-On Fri, Jun 05, 2026 at 01:10:35AM +0800, Ren Wei wrote:
-> From: Zhengyang Chen <chzhengyang2023@lzu.edu.cn>
-> 
-> When a flow tuple carries tunnel metadata and uses
-> FLOW_OFFLOAD_XMIT_DIRECT, the transmit path may still need route state
-> for tunnel push. However, the current tuple layout stores direct xmit
-> L2 state and route state in overlapping runtime storage.
-> 
-> As a result, a tuple may keep tun_num set while the tunnel push path
-> later reads tuple->dst_cache, even though a direct xmit tuple only has
-> out.ifidx/out.h_source/out.h_dest stored in that area. This leads to
-> invalid dst usage and can trigger a crash in the tunnel transmit path.
-> 
-> Fix this by separating tunnel route state from direct xmit runtime
-> state. Store dedicated tunnel dst information for direct xmit tunnel
-> flows, use it from the IPv4/IPv6 tunnel push helpers, and validate and
-> release it independently from the normal neighbour/xfrm dst state.
-> 
-> Hardware offload rule construction still assumes that direct xmit flows
-> do not carry tunnel route state, so reject that combination there for
-> now to avoid undefined offload behaviour.
-> 
-> The issue can be reproduced with the provided namespace + flowtable +
-> IPIP setup, and after this change the reproducer no longer triggers the
-> observed GPF/panic.
-> 
-> Fixes: ab427db17885 ("netfilter: flowtable: Add IPIP rx sw acceleration")
-> Cc: stable@vger.kernel.org
-> Reported-by: Yuan Tan <yuantan098@gmail.com>
-> Reported-by: Yifan Wu <yifanwucs@gmail.com>
-> Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-> Reported-by: Xin Liu <bird@lzu.edu.cn>
-> Signed-off-by: Zhengyang Chen <chzhengyang2023@lzu.edu.cn>
-> Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
-> ---
->  include/net/netfilter/nf_flow_table.h |  4 ++++
->  net/netfilter/nf_flow_table_core.c    | 19 ++++++++++++++++++-
->  net/netfilter/nf_flow_table_ip.c      | 13 +++++++++++--
->  net/netfilter/nf_flow_table_offload.c |  5 +++++
->  4 files changed, 38 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-> index 7b23b245a5a8..4fe220f97d75 100644
-> --- a/include/net/netfilter/nf_flow_table.h
-> +++ b/include/net/netfilter/nf_flow_table.h
-> @@ -155,6 +155,10 @@ struct flow_offload_tuple {
->  					tun_num:2,
->  					in_vlan_ingress:2;
->  	u16				mtu;
-> +	struct {
-> +		struct dst_entry	*tun_dst_cache;
-> +		u32			tun_dst_cookie;
+Here comes the reworked version of the patches, including the fixes
+of the relevant new issues sashiko complained about at the last review.
 
-Instead of adding new tun_dst_cache and tun_dst_cookie fields, you
-could move the existing dst_cache and dst_cookie out of the union.
-Then, it can be used both for _NEIGH and _DIRECT modes.
+Best regards,
+Jozsef
 
-Does this make sense to simplify this patch?
+Jozsef Kadlecsik (9):
+  netfilter: ipset: Don't use test_bit() in lockless RCU readers in hash
+    types
+  netfilter: ipset: Don't use test_bit() in lockless RCU readers in
+    bitmap types
+  netfilter: ipset: fix order of kfree_rcu() and rcu_assign_pointer()
+  netfilter: ipset: Extend the rcu locked area properly
+  netfilter: ipset: exlude gc when resize is in progress
+  netfilter: ipset: fix potential double free at resize/del
+  netfilter: ipset: make sure gc is properly stopped
+  netfilter: ipset: fix potential torn read in reuse/forceadd cases
+  netfilter: ipset: rework cidr bookkeeping
 
-One more comment below.
+ include/linux/netfilter/ipset/ip_set.h       |  11 +-
+ net/netfilter/ipset/ip_set_bitmap_gen.h      |   6 +-
+ net/netfilter/ipset/ip_set_bitmap_ip.c       |   6 +-
+ net/netfilter/ipset/ip_set_bitmap_ipmac.c    |   6 +-
+ net/netfilter/ipset/ip_set_bitmap_port.c     |   6 +-
+ net/netfilter/ipset/ip_set_core.c            |   4 +-
+ net/netfilter/ipset/ip_set_hash_gen.h        | 118 ++++++++++++-------
+ net/netfilter/ipset/ip_set_hash_ipportnet.c  |   4 +-
+ net/netfilter/ipset/ip_set_hash_net.c        |   4 +-
+ net/netfilter/ipset/ip_set_hash_netiface.c   |   4 +-
+ net/netfilter/ipset/ip_set_hash_netnet.c     |   8 +-
+ net/netfilter/ipset/ip_set_hash_netport.c    |   4 +-
+ net/netfilter/ipset/ip_set_hash_netportnet.c |   8 +-
+ 13 files changed, 116 insertions(+), 73 deletions(-)
 
-> +	};
->  	union {
->  		struct {
->  			struct dst_entry *dst_cache;
-> diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-> index 785d8c244a77..5048c0a1ba2e 100644
-> --- a/net/netfilter/nf_flow_table_core.c
-> +++ b/net/netfilter/nf_flow_table_core.c
-> @@ -84,6 +84,14 @@ static u32 flow_offload_dst_cookie(struct flow_offload_tuple *flow_tuple)
->  	return 0;
->  }
->  
-> +static u32 flow_offload_tun_dst_cookie(struct flow_offload_tuple *flow_tuple)
-> +{
-> +	if (flow_tuple->tun.l3_proto == IPPROTO_IPV6)
-> +		return rt6_get_cookie(dst_rt6_info(flow_tuple->tun_dst_cache));
-> +
-> +	return 0;
-> +}
-> +
->  static struct dst_entry *nft_route_dst_fetch(struct nf_flow_route *route,
->  					     enum flow_offload_tuple_dir dir)
->  {
-> @@ -127,12 +135,17 @@ static int flow_offload_fill_route(struct flow_offload *flow,
->  
->  	switch (route->tuple[dir].xmit_type) {
->  	case FLOW_OFFLOAD_XMIT_DIRECT:
-> +		if (flow_tuple->tun_num) {
-> +			flow_tuple->tun_dst_cache = dst;
-> +			flow_tuple->tun_dst_cookie = flow_offload_tun_dst_cookie(flow_tuple);
-> +		}
->  		memcpy(flow_tuple->out.h_dest, route->tuple[dir].out.h_dest,
->  		       ETH_ALEN);
->  		memcpy(flow_tuple->out.h_source, route->tuple[dir].out.h_source,
->  		       ETH_ALEN);
->  		flow_tuple->out.ifidx = route->tuple[dir].out.ifindex;
-> -		dst_release(dst);
-> +		if (!flow_tuple->tun_num)
-> +			dst_release(dst);
->  		break;
->  	case FLOW_OFFLOAD_XMIT_XFRM:
->  	case FLOW_OFFLOAD_XMIT_NEIGH:
-> @@ -152,6 +165,10 @@ static int flow_offload_fill_route(struct flow_offload *flow,
->  static void nft_flow_dst_release(struct flow_offload *flow,
->  				 enum flow_offload_tuple_dir dir)
->  {
-> +	if (flow->tuplehash[dir].tuple.tun_num &&
-> +	    flow->tuplehash[dir].tuple.xmit_type == FLOW_OFFLOAD_XMIT_DIRECT)
-> +		dst_release(flow->tuplehash[dir].tuple.tun_dst_cache);
-> +
->  	if (flow->tuplehash[dir].tuple.xmit_type == FLOW_OFFLOAD_XMIT_NEIGH ||
->  	    flow->tuplehash[dir].tuple.xmit_type == FLOW_OFFLOAD_XMIT_XFRM)
->  		dst_release(flow->tuplehash[dir].tuple.dst_cache);
+--=20
+2.39.5
 
-dst_release() becomes no-op if it is NULL, then I think this can be
-simplified.
-
-> diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-> index 9c05a50d6013..8dbec82a663a 100644
-> --- a/net/netfilter/nf_flow_table_ip.c
-> +++ b/net/netfilter/nf_flow_table_ip.c
-> @@ -299,6 +299,11 @@ static bool nf_flow_exceeds_mtu(const struct sk_buff *skb, unsigned int mtu)
->  
->  static inline bool nf_flow_dst_check(struct flow_offload_tuple *tuple)
->  {
-> +	if (tuple->tun_num &&
-> +	    tuple->xmit_type == FLOW_OFFLOAD_XMIT_DIRECT &&
-> +	    !dst_check(tuple->tun_dst_cache, tuple->tun_dst_cookie))
-> +		return false;
-> +
->  	if (tuple->xmit_type != FLOW_OFFLOAD_XMIT_NEIGH &&
->  	    tuple->xmit_type != FLOW_OFFLOAD_XMIT_XFRM)
->  		return true;
-> @@ -597,7 +602,9 @@ static int nf_flow_tunnel_ipip_push(struct net *net, struct sk_buff *skb,
->  				    __be32 *ip_daddr)
->  {
->  	struct iphdr *iph = (struct iphdr *)skb_network_header(skb);
-> -	struct rtable *rt = dst_rtable(tuple->dst_cache);
-> +	struct dst_entry *dst = tuple->xmit_type == FLOW_OFFLOAD_XMIT_DIRECT ?
-> +				tuple->tun_dst_cache : tuple->dst_cache;
-> +	struct rtable *rt = dst_rtable(dst);
->  	u8 tos = iph->tos, ttl = iph->ttl;
->  	__be16 frag_off = iph->frag_off;
->  	u32 headroom = sizeof(*iph);
-> @@ -660,7 +667,9 @@ static int nf_flow_tunnel_ip6ip6_push(struct net *net, struct sk_buff *skb,
->  {
->  	struct ipv6hdr *ip6h = (struct ipv6hdr *)skb_network_header(skb);
->  	u8 hop_limit = ip6h->hop_limit, proto = IPPROTO_IPV6;
-> -	struct rtable *rt = dst_rtable(tuple->dst_cache);
-> +	struct dst_entry *dst = tuple->xmit_type == FLOW_OFFLOAD_XMIT_DIRECT ?
-> +				tuple->tun_dst_cache : tuple->dst_cache;
-> +	struct rtable *rt = dst_rtable(dst);
->  	__u8 dsfield = ipv6_get_dsfield(ip6h);
->  	struct flowi6 fl6 = {
->  		.daddr = tuple->tun.src_v6,
-> diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-> index 002ec15d988b..c739c9db68bd 100644
-> --- a/net/netfilter/nf_flow_table_offload.c
-> +++ b/net/netfilter/nf_flow_table_offload.c
-> @@ -820,6 +820,11 @@ nf_flow_offload_rule_alloc(struct net *net,
->  
->  	tuple = &flow->tuplehash[dir].tuple;
->  	other_tuple = &flow->tuplehash[!dir].tuple;
-> +
-> +	if (other_tuple->tun_num &&
-> +	    other_tuple->xmit_type == FLOW_OFFLOAD_XMIT_DIRECT)
-> +		goto err_flow_match;
-> +
->  	if (other_tuple->xmit_type == FLOW_OFFLOAD_XMIT_NEIGH)
->  		other_dst = other_tuple->dst_cache;
->  
-> -- 
-> 2.43.0
-> 
 
