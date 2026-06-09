@@ -1,423 +1,231 @@
-Return-Path: <netfilter-devel+bounces-13145-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13149-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id G3dVKEPDJ2r21gIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13145-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 09:39:47 +0200
+	id FNVENevsJ2qC5QIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13149-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 12:37:31 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2752A65D4EA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 09:39:47 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EAC265F067
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 12:37:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=blackhole.kfki.hu header.s=20151130 header.b="jD/HxpPm";
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13145-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13145-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="TTnAwFR/";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13149-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13149-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9903730B67D8
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 07:35:04 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C7E043028EBD
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 10:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F32390208;
-	Tue,  9 Jun 2026 07:34:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3E73F39CE;
+	Tue,  9 Jun 2026 10:28:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.50])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEE13DD520
-	for <netfilter-devel@vger.kernel.org>; Tue,  9 Jun 2026 07:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80873EFFC1;
+	Tue,  9 Jun 2026 10:28:11 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780990499; cv=none; b=IYSUvRZwX8ZDa6TkR6x6W1TAg2tSh6eXHGqdRRXzwLfVfqoV4btIpA3z8yt5jSYfPY8PHB7Z4Y3O6CIEJjdnKKntFMcjVETljQTVOYOV17CKN3jHMB93PHYmjDhW2YRenA31fjBZDR9fNPqVX+m9Lno++GX63aWMSDOy6+DmuWg=
+	t=1781000892; cv=none; b=LXIqR+5MaOuAMzqekXk2uUZKQSdnWU39D3Mg+VMOYtnT8VuyqC9gX57iMoPnDkCJDi36/hyPKW2LWl5q9aEPWZ19HHgGutG4hX88YS/k9dP0ZqsEbiOZRPnt+vRlsXNSi87vOnPmGVEkNws5oqvBkKkpM0BS6bCgreJ7cA+ELtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780990499; c=relaxed/simple;
-	bh=mU81YrbZAZBUDpT2U384d1HbTOsuVhBO2vDeex4JVF0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EHDxaYJSMl0ZROWgb06WdfC8UpzPnn+zm8zXAo5PFHwp2RiVT61/xXj4ADHELLQG1EKoT9im+knfKQ6EL8e2xlua8I0dicHGyVrdKu9Pd919Rb0wXvp6X44zpVgPf/M9Nb2OH+x0p2CqncdTn4ALZaN95tL/ZGVqq2k5bfJoiIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=jD/HxpPm; arc=none smtp.client-ip=148.6.0.50
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.kfki.hu (Postfix) with ESMTP id 4gZL962wRBzGFDCW;
-	Tue, 09 Jun 2026 09:27:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:references:in-reply-to
-	:x-mailer:message-id:date:date:from:from:received:received
-	:received; s=20151130; t=1780990072; x=1782804473; bh=zylKilm6eX
-	xKVoidY2Tc/yh9zPQF0L6R6pDF6oyrBEE=; b=jD/HxpPmyobF167+0tKR+M5kfg
-	YkW1r96TpsMyiSFb+caCzqcf3AAZ4om8ECX+JUjcrAoapcY+pAhZhF0Gv4a/ti+7
-	CUm4A1DServhxqA6cA+conEQFS2No5pZ2utJqZTIjsj8Cxr0qFPLNbOPtvUuJqH5
-	qAvglN54v1rKIsInA=
-X-Virus-Scanned: Debian amavis at smtp1.kfki.hu
-Received: from smtp1.kfki.hu ([127.0.0.1])
- by localhost (smtp1.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id eh1UFBoK0acO; Tue,  9 Jun 2026 09:27:52 +0200 (CEST)
-Received: from mentat.rmki.kfki.hu (254C0692.nat.pool.telekom.hu [37.76.6.146])
-	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp1.kfki.hu (Postfix) with ESMTPSA id 4gZL932GF8zGFDCY;
-	Tue, 09 Jun 2026 09:27:51 +0200 (CEST)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 57588141182; Tue,  9 Jun 2026 09:27:50 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH v2 9/9] netfilter: ipset: rework cidr bookkeeping
-Date: Tue,  9 Jun 2026 09:27:50 +0200
-Message-Id: <20260609072750.318774-10-kadlec@netfilter.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260609072750.318774-1-kadlec@netfilter.org>
-References: <20260609072750.318774-1-kadlec@netfilter.org>
+	s=arc-20240116; t=1781000892; c=relaxed/simple;
+	bh=xWwLjY+d3Gh7XgmD1OnRU+c8waYevIfSLbDjWLaP47g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tHK/1LJ1oKwrNV1yzUFZankl8mZq0wM1zC5DmGEdt9ZxYeBApogvlFw+XZe8KxWV9yI8gFVB5HgZ74bApvMBUIuc18QKWR3CDhpMe2QWQDId0s1Mn381bvXn3MXySFDbyH7WZXdGPvTOH4sIwFs2D6Li9MCnmAOkm5TI+94gI1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TTnAwFR/; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA3D61F00893;
+	Tue,  9 Jun 2026 10:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781000891;
+	bh=Qit49/33uthr+olUmUKc5wGFm2ZXUZOhseASV9OXSLc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=TTnAwFR/2BvccaN8RXgJnuPY8TRjY40b+HWHJJj8poJZFoplvQAG9ba3VYy9XtRHP
+	 3g3Hn3TNyBj78KqsaaV93jruuFlVNX2dyEKAjOz03o82LoYj1rSqfuY3DNZawzAFjI
+	 ceuE5aOQHDwfbZGWhzKQizTLirmVFcxJZ/kd2zJhEDwfhVNG95bV/OwOLBxuOBwzVT
+	 VZ00OWy3QlkVqUOstxaiXs0+pFVUUdF+6QPDJUmcXdyBj1ukPuE/Rl5X8uGVjZNIri
+	 xjkAIGBkhngfdDBzjab2Ud+Ti/DV/cCqetanltS9b+O+wRhYpppI5eEllVz2stRLiM
+	 aCUTYFqI3RDHQ==
+Date: Tue, 9 Jun 2026 12:28:08 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, netdev@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter: flowtable: use pskb_may_pull() in
+ nf_flow_ip6_tunnel_proto()
+Message-ID: <aifquGhK_Cijxq7m@lore-desk>
+References: <20260608-b4-nf_flow_ip6_tunnel_proto-update-v1-1-782c7052c8fd@kernel.org>
+ <aidMPKrm9gOcPLW-@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yewHE/uM8fRf8hKj"
+Content-Disposition: inline
+In-Reply-To: <aidMPKrm9gOcPLW-@chamomile>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-3.76 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[blackhole.kfki.hu:s=20151130];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
-	RCPT_COUNT_TWO(0.00)[2];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	DMARC_NA(0.00)[netfilter.org];
-	TAGGED_FROM(0.00)[bounces-13145-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kadlec@netfilter.org,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13149-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[blackhole.kfki.hu:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lore-desk:mid,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2752A65D4EA
+X-Rspamd-Queue-Id: 8EAC265F067
 
-According to sashiko, the current bookkeeping of cidr values
-are unsafe on weakly-ordered architectures. Use active/backup
-cidr tables: at updates the backup table is refreshed and
-after it is completed, the reference to the tables are swapped.
 
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
----
- net/netfilter/ipset/ip_set_hash_gen.h        | 55 +++++++++++++-------
- net/netfilter/ipset/ip_set_hash_ipportnet.c  |  4 +-
- net/netfilter/ipset/ip_set_hash_net.c        |  4 +-
- net/netfilter/ipset/ip_set_hash_netiface.c   |  4 +-
- net/netfilter/ipset/ip_set_hash_netnet.c     |  8 +--
- net/netfilter/ipset/ip_set_hash_netport.c    |  4 +-
- net/netfilter/ipset/ip_set_hash_netportnet.c |  8 +--
- 7 files changed, 51 insertions(+), 36 deletions(-)
+--yewHE/uM8fRf8hKj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/=
-ip_set_hash_gen.h
-index fb9251c59b5b..4c7dc9fd492a 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -142,6 +142,8 @@ htable_size(u8 hbits)
-=20
- #define INIT_CIDR(cidr, host_mask)	\
- 	DCIDR_PUT(((cidr) ? NCIDR_GET(cidr) : host_mask))
-+#define FIRST_CIDR(h, n)		\
-+	h->abnets[h->active][0].cidr[n]
-=20
- #ifdef IP_SET_HASH_WITH_NET0
- /* cidr from 0 to HOST_MASK value and c =3D cidr + 1 */
-@@ -305,7 +307,8 @@ struct htype {
- 	struct list_head ad;	/* Resize add|del backlist */
- 	struct mtype_elem next; /* temporary storage for uadd */
- #ifdef IP_SET_HASH_WITH_NETS
--	struct net_prefixes nets[NLEN]; /* book-keeping of prefixes */
-+	struct net_prefixes abnets[2][NLEN]; 	/* book-keeping of prefixes */
-+	u8 active;				/* active slot */
- #endif
- };
-=20
-@@ -326,26 +329,31 @@ struct mtype_resize_ad {
- static void
- mtype_add_cidr(struct ip_set *set, struct htype *h, u8 cidr, u8 n)
- {
-+	struct net_prefixes (*anets)[NLEN] =3D &h->abnets[h->active];
-+	struct net_prefixes (*bnets)[NLEN] =3D &h->abnets[!h->active];
- 	int i, j;
-=20
- 	spin_lock_bh(&set->lock);
- 	/* Add in increasing prefix order, so larger cidr first */
--	for (i =3D 0, j =3D -1; i < NLEN && h->nets[i].cidr[n]; i++) {
-+	for (i =3D 0, j =3D -1; i < NLEN && (*anets)[i].cidr[n]; i++) {
- 		if (j !=3D -1) {
- 			continue;
--		} else if (h->nets[i].cidr[n] < cidr) {
-+		} else if ((*anets)[i].cidr[n] < cidr) {
- 			j =3D i;
--		} else if (h->nets[i].cidr[n] =3D=3D cidr) {
--			h->nets[CIDR_POS(cidr)].nets[n]++;
-+		} else if ((*anets)[i].cidr[n] =3D=3D cidr) {
-+			(*anets)[CIDR_POS(cidr)].nets[n]++;
- 			goto unlock;
- 		}
- 	}
-+	memcpy(bnets, anets, sizeof(*bnets));
- 	if (j !=3D -1) {
- 		for (; i > j; i--)
--			h->nets[i].cidr[n] =3D h->nets[i - 1].cidr[n];
-+			(*bnets)[i].cidr[n] =3D (*bnets)[i - 1].cidr[n];
- 	}
--	h->nets[i].cidr[n] =3D cidr;
--	h->nets[CIDR_POS(cidr)].nets[n] =3D 1;
-+	(*bnets)[i].cidr[n] =3D cidr;
-+	(*bnets)[CIDR_POS(cidr)].nets[n] =3D 1;
-+	smp_rmb();
-+	h->active =3D !h->active;
- unlock:
- 	spin_unlock_bh(&set->lock);
- }
-@@ -353,18 +361,23 @@ mtype_add_cidr(struct ip_set *set, struct htype *h,=
- u8 cidr, u8 n)
- static void
- mtype_del_cidr(struct ip_set *set, struct htype *h, u8 cidr, u8 n)
- {
-+	struct net_prefixes (*anets)[NLEN] =3D &h->abnets[h->active];
-+	struct net_prefixes (*bnets)[NLEN] =3D &h->abnets[!h->active];
- 	u8 i, j, net_end =3D NLEN - 1;
-=20
- 	spin_lock_bh(&set->lock);
- 	for (i =3D 0; i < NLEN; i++) {
--		if (h->nets[i].cidr[n] !=3D cidr)
-+		if ((*anets)[i].cidr[n] !=3D cidr)
- 			continue;
--		h->nets[CIDR_POS(cidr)].nets[n]--;
--		if (h->nets[CIDR_POS(cidr)].nets[n] > 0)
-+		(*anets)[CIDR_POS(cidr)].nets[n]--;
-+		if ((*anets)[CIDR_POS(cidr)].nets[n] > 0)
- 			goto unlock;
--		for (j =3D i; j < net_end && h->nets[j].cidr[n]; j++)
--			h->nets[j].cidr[n] =3D h->nets[j + 1].cidr[n];
--		h->nets[j].cidr[n] =3D 0;
-+		memcpy(bnets, anets, sizeof(*bnets));
-+		for (j =3D i; j < net_end && (*bnets)[j].cidr[n]; j++)
-+			(*bnets)[j].cidr[n] =3D (*bnets)[j + 1].cidr[n];
-+		(*bnets)[j].cidr[n] =3D 0;
-+		smp_rmb();
-+		h->active =3D !h->active;
- 		goto unlock;
- 	}
- unlock:
-@@ -422,7 +435,8 @@ mtype_flush(struct ip_set *set)
- 		spin_unlock_bh(&t->hregion[r].lock);
- 	}
- #ifdef IP_SET_HASH_WITH_NETS
--	memset(h->nets, 0, sizeof(h->nets));
-+	memset(&h->abnets, 0, sizeof(h->abnets));
-+	h->active =3D 0;
- #endif
- }
-=20
-@@ -1192,6 +1206,7 @@ mtype_test_cidrs(struct ip_set *set, struct mtype_e=
-lem *d,
- 	struct htable *t =3D rcu_dereference_bh(h->table);
- 	struct hbucket *n;
- 	struct mtype_elem *data;
-+	struct net_prefixes (*nets)[NLEN] =3D &h->abnets[h->active];
- #if IPSET_NET_COUNT =3D=3D 2
- 	struct mtype_elem orig =3D *d;
- 	int ret, i, j =3D 0, k;
-@@ -1202,16 +1217,16 @@ mtype_test_cidrs(struct ip_set *set, struct mtype=
-_elem *d,
- 	u8 pos;
-=20
- 	pr_debug("test by nets\n");
--	for (; j < NLEN && h->nets[j].cidr[0] && !multi; j++) {
-+	for (; j < NLEN && (*nets)[j].cidr[0] && !multi; j++) {
- #if IPSET_NET_COUNT =3D=3D 2
- 		mtype_data_reset_elem(d, &orig);
--		mtype_data_netmask(d, NCIDR_GET(h->nets[j].cidr[0]), false);
--		for (k =3D 0; k < NLEN && h->nets[k].cidr[1] && !multi;
-+		mtype_data_netmask(d, NCIDR_GET((*nets)[j].cidr[0]), false);
-+		for (k =3D 0; k < NLEN && (*nets)[k].cidr[1] && !multi;
- 		     k++) {
--			mtype_data_netmask(d, NCIDR_GET(h->nets[k].cidr[1]),
-+			mtype_data_netmask(d, NCIDR_GET((*nets)[k].cidr[1]),
- 					   true);
- #else
--		mtype_data_netmask(d, NCIDR_GET(h->nets[j].cidr[0]));
-+		mtype_data_netmask(d, NCIDR_GET((*nets)[j].cidr[0]));
- #endif
- 		key =3D HKEY(d, h->initval, t->htable_bits);
- 		n =3D rcu_dereference_bh(hbucket(t, key));
-diff --git a/net/netfilter/ipset/ip_set_hash_ipportnet.c b/net/netfilter/=
-ipset/ip_set_hash_ipportnet.c
-index 2d6652d43199..fff732f67b5a 100644
---- a/net/netfilter/ipset/ip_set_hash_ipportnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipportnet.c
-@@ -138,7 +138,7 @@ hash_ipportnet4_kadt(struct ip_set *set, const struct=
- sk_buff *skb,
- 	const struct hash_ipportnet4 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_ipportnet4_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
-@@ -398,7 +398,7 @@ hash_ipportnet6_kadt(struct ip_set *set, const struct=
- sk_buff *skb,
- 	const struct hash_ipportnet6 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_ipportnet6_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
-diff --git a/net/netfilter/ipset/ip_set_hash_net.c b/net/netfilter/ipset/=
-ip_set_hash_net.c
-index ce0a9ce5a91f..c8efc1657830 100644
---- a/net/netfilter/ipset/ip_set_hash_net.c
-+++ b/net/netfilter/ipset/ip_set_hash_net.c
-@@ -117,7 +117,7 @@ hash_net4_kadt(struct ip_set *set, const struct sk_bu=
-ff *skb,
- 	const struct hash_net4 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_net4_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
-@@ -291,7 +291,7 @@ hash_net6_kadt(struct ip_set *set, const struct sk_bu=
-ff *skb,
- 	const struct hash_net6 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_net6_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
-diff --git a/net/netfilter/ipset/ip_set_hash_netiface.c b/net/netfilter/i=
-pset/ip_set_hash_netiface.c
-index 30a655e5c4fd..7eca5842c80a 100644
---- a/net/netfilter/ipset/ip_set_hash_netiface.c
-+++ b/net/netfilter/ipset/ip_set_hash_netiface.c
-@@ -161,7 +161,7 @@ hash_netiface4_kadt(struct ip_set *set, const struct =
-sk_buff *skb,
- 	struct hash_netiface4 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_netiface4_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 		.elem =3D 1,
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-@@ -382,7 +382,7 @@ hash_netiface6_kadt(struct ip_set *set, const struct =
-sk_buff *skb,
- 	struct hash_netiface6 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_netiface6_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 		.elem =3D 1,
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-diff --git a/net/netfilter/ipset/ip_set_hash_netnet.c b/net/netfilter/ips=
-et/ip_set_hash_netnet.c
-index 8fbe649c9dd3..7fe1a7ee37d7 100644
---- a/net/netfilter/ipset/ip_set_hash_netnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_netnet.c
-@@ -149,8 +149,8 @@ hash_netnet4_kadt(struct ip_set *set, const struct sk=
-_buff *skb,
- 	struct hash_netnet4_elem e =3D { };
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
--	e.cidr[0] =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK);
--	e.cidr[1] =3D INIT_CIDR(h->nets[0].cidr[1], HOST_MASK);
-+	e.cidr[0] =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK);
-+	e.cidr[1] =3D INIT_CIDR(FIRST_CIDR(h, 1), HOST_MASK);
- 	if (adt =3D=3D IPSET_TEST)
- 		e.ccmp =3D (HOST_MASK << (sizeof(e.cidr[0]) * 8)) | HOST_MASK;
-=20
-@@ -388,8 +388,8 @@ hash_netnet6_kadt(struct ip_set *set, const struct sk=
-_buff *skb,
- 	struct hash_netnet6_elem e =3D { };
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
--	e.cidr[0] =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK);
--	e.cidr[1] =3D INIT_CIDR(h->nets[0].cidr[1], HOST_MASK);
-+	e.cidr[0] =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK);
-+	e.cidr[1] =3D INIT_CIDR(FIRST_CIDR(h, 1), HOST_MASK);
- 	if (adt =3D=3D IPSET_TEST)
- 		e.ccmp =3D (HOST_MASK << (sizeof(u8) * 8)) | HOST_MASK;
-=20
-diff --git a/net/netfilter/ipset/ip_set_hash_netport.c b/net/netfilter/ip=
-set/ip_set_hash_netport.c
-index d1a0628df4ef..670e4d222bf8 100644
---- a/net/netfilter/ipset/ip_set_hash_netport.c
-+++ b/net/netfilter/ipset/ip_set_hash_netport.c
-@@ -133,7 +133,7 @@ hash_netport4_kadt(struct ip_set *set, const struct s=
-k_buff *skb,
- 	const struct hash_netport4 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_netport4_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
-@@ -353,7 +353,7 @@ hash_netport6_kadt(struct ip_set *set, const struct s=
-k_buff *skb,
- 	const struct hash_netport6 *h =3D set->data;
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_netport6_elem e =3D {
--		.cidr =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
-+		.cidr =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK),
- 	};
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
-diff --git a/net/netfilter/ipset/ip_set_hash_netportnet.c b/net/netfilter=
-/ipset/ip_set_hash_netportnet.c
-index bf4f91b78e1d..2c3ad8aca2bc 100644
---- a/net/netfilter/ipset/ip_set_hash_netportnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_netportnet.c
-@@ -157,8 +157,8 @@ hash_netportnet4_kadt(struct ip_set *set, const struc=
-t sk_buff *skb,
- 	struct hash_netportnet4_elem e =3D { };
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
--	e.cidr[0] =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK);
--	e.cidr[1] =3D INIT_CIDR(h->nets[0].cidr[1], HOST_MASK);
-+	e.cidr[0] =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK);
-+	e.cidr[1] =3D INIT_CIDR(FIRST_CIDR(h, 1), HOST_MASK);
- 	if (adt =3D=3D IPSET_TEST)
- 		e.ccmp =3D (HOST_MASK << (sizeof(e.cidr[0]) * 8)) | HOST_MASK;
-=20
-@@ -452,8 +452,8 @@ hash_netportnet6_kadt(struct ip_set *set, const struc=
-t sk_buff *skb,
- 	struct hash_netportnet6_elem e =3D { };
- 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
-=20
--	e.cidr[0] =3D INIT_CIDR(h->nets[0].cidr[0], HOST_MASK);
--	e.cidr[1] =3D INIT_CIDR(h->nets[0].cidr[1], HOST_MASK);
-+	e.cidr[0] =3D INIT_CIDR(FIRST_CIDR(h, 0), HOST_MASK);
-+	e.cidr[1] =3D INIT_CIDR(FIRST_CIDR(h, 1), HOST_MASK);
- 	if (adt =3D=3D IPSET_TEST)
- 		e.ccmp =3D (HOST_MASK << (sizeof(u8) * 8)) | HOST_MASK;
-=20
---=20
-2.39.5
+On Jun 09, Pablo Neira Ayuso wrote:
+> Hi Lorenzo,
+>=20
+> On Mon, Jun 08, 2026 at 07:06:52PM +0200, Lorenzo Bianconi wrote:
+> > Switch nf_flow_ip6_tunnel_proto() from skb_header_pointer() to
+> > pskb_may_pull() for header validation, aligning it with the approach
+> > used in nf_flow_ip4_tunnel_proto().
+> > Move ctx->offset update inside the IPPROTO_IPV6 conditional block since
+> > it should only be adjusted when a tunnel is actually detected.
+> > While at it, use nexthdr instead of the hardcoded IPPROTO_IPV6 constant
+> > when setting ctx->tun.proto.
+> >=20
+> > Fixes: d98103575dcdd ("netfilter: flowtable: Add IP6IP6 rx sw accelerat=
+ion")
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  net/netfilter/nf_flow_table_ip.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >=20
+> > diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_t=
+able_ip.c
+> > index 9c05a50d6013..2946399ab715 100644
+> > --- a/net/netfilter/nf_flow_table_ip.c
+> > +++ b/net/netfilter/nf_flow_table_ip.c
+> > @@ -347,15 +347,15 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_fl=
+owtable_ctx *ctx,
+> >  				     struct sk_buff *skb)
+> >  {
+> >  #if IS_ENABLED(CONFIG_IPV6)
+> > -	struct ipv6hdr *ip6h, _ip6h;
+> > +	struct ipv6hdr *ip6h;
+> >  	__be16 frag_off;
+> >  	u8 nexthdr;
+> >  	int hdrlen;
+> > =20
+> > -	ip6h =3D skb_header_pointer(skb, ctx->offset, sizeof(*ip6h), &_ip6h);
+> > -	if (!ip6h)
+> > +	if (!pskb_may_pull(skb, sizeof(*ip6h) + ctx->offset))
+> >  		return false;
+> > =20
+> > +	ip6h =3D (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
+> >  	if (ip6h->hop_limit <=3D 1)
+> >  		return false;
+>=20
+> Not shown in the patch, but is there still a corner case here that
+> needs to be covered?
+>=20
+> ipv6_skip_exthdr() uses skb_header_pointer() internal, then another
+> pskb_may_pull() is needed to make sure no other IPv6 extension header
+> sits between the outer and the inner IPPROTO_IPV6 header, allowing to
+> be in a non-linear area of the skb?       =20
+>=20
+> > @@ -367,9 +367,9 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_flow=
+table_ctx *ctx,
+> > =20
+>=20
+> I mean:
+>=20
+>         if (!pskb_may_pull(skb, hdrlen))
+>                 return false;
+>=20
+> where hdrlen is what ipv6_skip_exthdr() returns.
+>=20
+> Then, I think it should be safe to call skb_pull() on
+> ctx->tun.hdr_size.
+>=20
+> Let me know, thanks.
 
+I think you are right, here we need to run:
+
+	if (!pskb_may_pull(skb, hdrlen))
+		return false;
+
+in order to be sure we can pull ctx->tun.hdr_size in nf_flow_ip_tunnel_pop(=
+).
+Doing so, we can roll-back to the original skb_header_pointer() to access t=
+he
+outer ip6 header here. What do you think?
+
+Regards,
+Lorenzo
+
+>=20
+> >  	if (nexthdr =3D=3D IPPROTO_IPV6) {
+> >  		ctx->tun.hdr_size =3D hdrlen;
+> > -		ctx->tun.proto =3D IPPROTO_IPV6;
+> > +		ctx->tun.proto =3D nexthdr;
+> > +		ctx->offset +=3D ctx->tun.hdr_size;
+> >  	}
+> > -	ctx->offset +=3D ctx->tun.hdr_size;
+> > =20
+> >  	return true;
+> >  #else
+> >=20
+> > ---
+> > base-commit: 9772589b57e44aedc240211c5c3f7a684a034d3a
+> > change-id: 20260608-b4-nf_flow_ip6_tunnel_proto-update-8b64903825b4
+> >=20
+> > Best regards,
+> > --=20
+> > Lorenzo Bianconi <lorenzo@kernel.org>
+> >=20
+
+--yewHE/uM8fRf8hKj
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaifquAAKCRA6cBh0uS2t
+rK/WAP0U7OK/wfRFK/tcbhrI2iJS5+E65xe2Vf1TG9P++3A5sgEAtzWvE/DOWDHb
+qTqf7sEkudyyc/5VkJCnK7ODxtpSzgU=
+=iAF4
+-----END PGP SIGNATURE-----
+
+--yewHE/uM8fRf8hKj--
 
