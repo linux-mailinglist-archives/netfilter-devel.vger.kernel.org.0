@@ -1,196 +1,119 @@
-Return-Path: <netfilter-devel+bounces-13150-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13151-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id RTFFG5/+J2qJ6wIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13150-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 13:53:03 +0200
+	id gP7FFvD/J2rm6wIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13151-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 13:58:40 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B861665FB16
-	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 13:53:02 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD58965FC0D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 09 Jun 2026 13:58:39 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=PD4tQSfC;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13150-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13150-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=none;
 	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13151-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13151-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B3BF9305092F
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 11:48:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D877B3044F0A
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2026 11:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8AE3FD13A;
-	Tue,  9 Jun 2026 11:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88642403E97;
+	Tue,  9 Jun 2026 11:52:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE6B3BBFAC;
-	Tue,  9 Jun 2026 11:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFE3403150
+	for <netfilter-devel@vger.kernel.org>; Tue,  9 Jun 2026 11:52:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781005726; cv=none; b=J/T2xwvVz7DSQTZkx4mHXQrVISInoFTCnFIsS7YlAGcfKqGQPrbMOtaDqZ3uJJmtZeEv1+ZtyEQkZ4d4AnwGOC7zQ5GZfTjfL4x4ehSZ9dMivvRtINnLQdnsOnIOaq8+D90XG9yrXqnJU8Wiftv53zcaoSuYMEHUsN8sG8BqXD4=
+	t=1781005930; cv=none; b=J8NTyG7s36vhv3c78fOl7aej58X39LCl0jAOagfrqDjpmDjRX2wYHRXH5RnFcVEAinAQwWuziqy49boEx/Vdso8600SWvdSoKhmSypuToPykMaTbCF/goAsPocc9pZLPnMBC1y77jFJXhqDZP1Yyfl67lRLd0KVxkTG+orQOX20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781005726; c=relaxed/simple;
-	bh=ldWhcXnwh+A+XWhyxIjx0R8yNZMMzv9lZ1aS0VvRq4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bb+TzaZ2f0ipVG+Uran1H8RYkMTtR7b+Z4dZaHAwVrm3nSl14ZJ/eEzC/ednRu7JxhBTNkQGqo1ImhI6Zhk0FdBC5Pzd6AaDnjbE+n0N5FdP/upEUh81K6jMBOOcMsvEYiKF+cUhFmliRe1U23cyBU9fSwJoXkEOn4fu/JDFPa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=PD4tQSfC; arc=none smtp.client-ip=217.70.190.124
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 5129460177;
-	Tue,  9 Jun 2026 13:48:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1781005715;
-	bh=QRqBRPh48kXFvPRrxaw0XzUQjHrYbLrSEoU1hs+N5ac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PD4tQSfCPqZRtYVfXg86OYvV02f0pmDA7e8RTlCABmmIzH7cybzmqVORO0liEoDDM
-	 b8i2fX5dpPlVe9l9BHlD6D4VeFZEb22FF0K434zpyVD0ilc+wGGlCsjmJvFv1MhB7p
-	 MQcNbIzhYxNtsKs1pWcXTIS7Zhy5Co2AR6iHNZAQZWHXEbiUd4wjzF90kUXXi65wGf
-	 9fh1ohBhqzXC0kVTv7fUcXbUYCgEvaAfKMKQFeAwandq2juX74Fhf0pL3ZCYiEclyv
-	 HUpP7pxpiCyVAe5Wgl7wjVZcLwv2YFQ7RrLS0g9docV8sAcSMyg9C1SxOz86w0DGNo
-	 oXPQuFSaxj5wA==
-Date: Tue, 9 Jun 2026 13:48:32 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: flowtable: use pskb_may_pull() in
- nf_flow_ip6_tunnel_proto()
-Message-ID: <aif9kL38LKNcX1Xu@chamomile>
-References: <20260608-b4-nf_flow_ip6_tunnel_proto-update-v1-1-782c7052c8fd@kernel.org>
- <aidMPKrm9gOcPLW-@chamomile>
- <aifquGhK_Cijxq7m@lore-desk>
+	s=arc-20240116; t=1781005930; c=relaxed/simple;
+	bh=D4DETkj5WF4HGieA6/01XgKkupR7dp6vRFrOTon2b+s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PnEZ0vfAW54UdAKD+M4nJEYBGjsHhi9MjaAec8IggZQKvLM95ekFq1UV3o3KSHQaKDVAHDC6mDdjCXootfdK+pEZO3yyCrMGYuTYnT5IYeLLZaLXjNBk8uRhR6wiP8MWIE9jAwOzZLP64Bok1+dSo4pHE51t75wEtvIvOUoKUUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id D9A3B605BD; Tue, 09 Jun 2026 13:52:06 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+Subject: [PATCH v3 nf-next 0/3] netfilter: add restrictions/validations for packet rewrite
+Date: Tue,  9 Jun 2026 13:51:52 +0200
+Message-ID: <20260609115201.2563-1-fw@strlen.de>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aifquGhK_Cijxq7m@lore-desk>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:lorenzo@kernel.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
-	DMARC_NA(0.00)[netfilter.org];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13150-lists,netfilter-devel=lfdr.de];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWO(0.00)[2];
+	TAGGED_FROM(0.00)[bounces-13151-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:from_mime,chamomile:mid]
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	R_DKIM_NA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B861665FB16
+X-Rspamd-Queue-Id: BD58965FC0D
 
-On Tue, Jun 09, 2026 at 12:28:08PM +0200, Lorenzo Bianconi wrote:
-> On Jun 09, Pablo Neira Ayuso wrote:
-> > Hi Lorenzo,
-> > 
-> > On Mon, Jun 08, 2026 at 07:06:52PM +0200, Lorenzo Bianconi wrote:
-> > > Switch nf_flow_ip6_tunnel_proto() from skb_header_pointer() to
-> > > pskb_may_pull() for header validation, aligning it with the approach
-> > > used in nf_flow_ip4_tunnel_proto().
-> > > Move ctx->offset update inside the IPPROTO_IPV6 conditional block since
-> > > it should only be adjusted when a tunnel is actually detected.
-> > > While at it, use nexthdr instead of the hardcoded IPPROTO_IPV6 constant
-> > > when setting ctx->tun.proto.
-> > > 
-> > > Fixes: d98103575dcdd ("netfilter: flowtable: Add IP6IP6 rx sw acceleration")
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > ---
-> > >  net/netfilter/nf_flow_table_ip.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-> > > index 9c05a50d6013..2946399ab715 100644
-> > > --- a/net/netfilter/nf_flow_table_ip.c
-> > > +++ b/net/netfilter/nf_flow_table_ip.c
-> > > @@ -347,15 +347,15 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_flowtable_ctx *ctx,
-> > >  				     struct sk_buff *skb)
-> > >  {
-> > >  #if IS_ENABLED(CONFIG_IPV6)
-> > > -	struct ipv6hdr *ip6h, _ip6h;
-> > > +	struct ipv6hdr *ip6h;
-> > >  	__be16 frag_off;
-> > >  	u8 nexthdr;
-> > >  	int hdrlen;
-> > >  
-> > > -	ip6h = skb_header_pointer(skb, ctx->offset, sizeof(*ip6h), &_ip6h);
-> > > -	if (!ip6h)
-> > > +	if (!pskb_may_pull(skb, sizeof(*ip6h) + ctx->offset))
-> > >  		return false;
-> > >  
-> > > +	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
-> > >  	if (ip6h->hop_limit <= 1)
-> > >  		return false;
-> > 
-> > Not shown in the patch, but is there still a corner case here that
-> > needs to be covered?
-> > 
-> > ipv6_skip_exthdr() uses skb_header_pointer() internal, then another
-> > pskb_may_pull() is needed to make sure no other IPv6 extension header
-> > sits between the outer and the inner IPPROTO_IPV6 header, allowing to
-> > be in a non-linear area of the skb?        
-> > 
-> > > @@ -367,9 +367,9 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_flowtable_ctx *ctx,
-> > >  
-> > 
-> > I mean:
-> > 
-> >         if (!pskb_may_pull(skb, hdrlen))
-> >                 return false;
-> > 
-> > where hdrlen is what ipv6_skip_exthdr() returns.
-> > 
-> > Then, I think it should be safe to call skb_pull() on
-> > ctx->tun.hdr_size.
-> > 
-> > Let me know, thanks.
-> 
-> I think you are right, here we need to run:
-> 
-> 	if (!pskb_may_pull(skb, hdrlen))
-> 		return false;
-> 
-> in order to be sure we can pull ctx->tun.hdr_size in nf_flow_ip_tunnel_pop().
-> Doing so, we can roll-back to the original skb_header_pointer() to access the
-> outer ip6 header here. What do you think?
+Changes since v2:
+ - In patch 1, disable write for NF_BRIDGE. Remove ARP handling.
+ ARP is not supported and NF_BRIDGE doesn't appear to be useful as-is
+ given userspace gets L3 headers only and needs to use NFQA_L2HDR nl
+ attr to alter mac header.
 
-Yes, initial skb_header_pointer() then pskb_may_pull(skb, hdrlen) to
-ensure the entire should be fine.
+1) Restrict nfnetlink_queue writes to the network header. Validate IP/IPv6
+   headers and disable IPv6 extension header changes. Ensure total length
+   matches skb length.
 
-I think this need one more fix: This needs to resort to classic path
-if there are intermediate extension headers sitting in between the
-outer and inner headers in IP6IP6, ie. ipv6_ext_hdr() == true. Those
-extensions need to be handled by the IPv6 stack.
+2) Restrict nft_payload writes to linklayer and network header data. Prevent
+   linklayer writes from spilling into network headers. Validate network
+   header updates to protect IP version and length fields.
 
-nf_flow_ip6_tunnel_proto() needs to be fixed to deal with this. 
-And I suspect nf_flow_ip4_tunnel_proto() with IP options have the same
-problem, the flowtable need to resort to the classic stack path.
+3) add restrictions to the checksum offset, without this patch 2 isn't
+   sufficient because an invalid checksum offset can e.g. overwrite iph
+   header length field.
 
-Thanks.
+This doesn't remove the userns restriction, yet.
+I would like to wait a bit before re-enabling this to make sure there
+are no other gaps (e.g. for encapsulated traffic).
+
+Florian Westphal (3):
+  netfilter: nfnetlink_queue: restrict writes to network header
+  netfilter: nftables: restrict linklayer and network header writes
+  netfilter: nftables: restrict checkum update offset
+
+ net/netfilter/nfnetlink_queue.c | 170 ++++++++++++++++++++
+ net/netfilter/nft_payload.c     | 270 ++++++++++++++++++++++++++++++++
+ 2 files changed, 440 insertions(+)
+
+-- 
+2.53.0
+
 
