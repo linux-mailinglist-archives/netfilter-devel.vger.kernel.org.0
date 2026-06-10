@@ -1,56 +1,56 @@
-Return-Path: <netfilter-devel+bounces-13184-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13185-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id a1cuH4w6KWqxSgMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13184-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:21:00 +0200
+	id c8gfAqc6KWq5SgMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13185-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:21:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77004668349
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:20:59 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB92668353
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:21:26 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=TcMxZO4Y;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13184-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13184-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=KmlXOklz;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13185-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13185-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 0DB433010F05
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 10:14:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E657E315AA13
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 10:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FAE3C09E8;
-	Wed, 10 Jun 2026 10:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6921F3ED13F;
+	Wed, 10 Jun 2026 10:16:42 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D961137DADD
-	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 10:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033AC3EDACB
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 10:16:40 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781086448; cv=none; b=IBZ8BrF1aBPPFu+QJA1dFZIETbLj5Wkm9Kk6a9elvXMfKAzaPo27HnPf8mpBQ/SbQQ5kI8ZXeDo5Etcohemu0jnsYGXJAl0A39PsI5kMubp6RC2LmQVmmW2hZSaBLl1O7S91GBTl/QN8Q6PC46AL/llpRTvwooIDgeEA54GqfsM=
+	t=1781086602; cv=none; b=MszCQcY0ceJgCZiqAHlukVgm3hlGGH4k3oFBwrv5oM0f660FfxGR/UWojKOQvSxLYwvYBjskq7WhCJTlUqg1dM42Eh54X+dSUQiO4KNRa234R2L6ojYdCJ7G7G4owjOKDWwdpO0T+5J0/uHgpWAVgs7xWRttTS5e4Gtw2Ho6GDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781086448; c=relaxed/simple;
-	bh=J+zPM441olD2U5vP36u++GYWD7Rm9xeWDTnnn4h/nm0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=quUOsPdpKIh7oVG5TMWGJ1uC7lvziREg4zy1OqdVaDdBoAhV0nkVfYvqsAR7apJvEK+6ATDjdUTH+J6DHrcRjs9xfWqLZzpBELfLcVbvj42Owyl3HXZeq0YQ1u/RQ2v8aZO4ss6a5xFtRM4wJ/PBhiA/qEmNiIBOArM2bbYgvUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=TcMxZO4Y; arc=none smtp.client-ip=217.70.190.124
+	s=arc-20240116; t=1781086602; c=relaxed/simple;
+	bh=Ix3PAKjxtrTNRatPv36Wa1gUOg2zC8dQloaVRK/p17g=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=XE3AJ/vgt+0oc5BC4O9M0CA89QtgYlHuGntDOlWsO1xdR7G8K0D65DcFVG1tCOtASxb60hcrKblAZ9lV0U1Owbxf2NCrJFZJD9yEJdNyprUL29BzD7yek1AWTd5vkG9PBXPVM0rfLxFecdU+sBB+J/Y2eSJSFBywnwX8jU2hHek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=KmlXOklz; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 5EB0C6017E
-	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 12:14:02 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id C489B600B9
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 12:16:38 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1781086442;
-	bh=eAB5PkR/8H6B02tW1d3IW+YghxC1+Xn3PfT7Hz0dhQA=;
+	s=2025; t=1781086598;
+	bh=1K0CV28foMbNV/6tTB//RWMFpC3YLL0p7+SpwxR8sFM=;
 	h=From:To:Subject:Date:From;
-	b=TcMxZO4YZnHiSxUYGpD7aypogGE0FaZv2/qX4QmODqikDDcDxBSbTlx6poL2HttoE
-	 efwxAbnRZ1ReGLAtWpUxljTkzUOrjWpMsO5bI77igQMTt25PKECP7gboy3E81Pa4Lj
-	 P4sirfY1mKbSonY+VevVxR3DFyZVzUg5SrdRzw0qCTud+hXa/wV80bchEngSO+nuDX
-	 pvbHNnTmJXOK5vrlndeY5H6wZvFhZjwKrJx+HTEGs7pfW31RJpkoyf+q/bt7WDEz4u
-	 f5EWyYhQeolL3TTlop1H6RZJCQcpESp1lY8+3krRLHc1jUhtcGSL0x7LVz+mtI6MWw
-	 yVM4ooz+wz1fg==
+	b=KmlXOklzeGjF9vCkORtrHkfd/BtBSJiTa/SLgpraIIiUfy2QZRer1JhsEu8yU0wtZ
+	 fCPOj4bgK/vH4WQAMmSohF2sQu7UCvhImMQkvJ/6GZfTqXbYySmqcq34YSBFz9Sy+/
+	 LfDs+FpucqrHQrjBpqRZyvU8/fYQMQGKHyZ+heUYvQmfRpXCnMvKdGJotrTWRyPlt5
+	 TrTo8YfuLFn2ntBGyeIDNKOf15KesWiPD8AMfdzTPjgrh2wRjVULjwB52Y/d9455we
+	 rRd2S70V8GoKM54dwvBewgms2GCHX0PFGGRfJV6terb2oyE8r7gWPp9cjHeNbPchs1
+	 mReBAKhiDJVjA==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v2] netfilter: flowtable: bail out if forward path cannot be discovered
-Date: Wed, 10 Jun 2026 12:13:59 +0200
-Message-ID: <20260610101359.162318-1-pablo@netfilter.org>
+Subject: [PATCH nf-next,v2] netfilter: nf_dup_netdev: add nf_dev_xmit_recursion*() helpers and use them
+Date: Wed, 10 Jun 2026 12:16:35 +0200
+Message-ID: <20260610101636.162482-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -64,13 +64,13 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13184-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13185-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -79,7 +79,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -91,192 +91,159 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 77004668349
+X-Rspamd-Queue-Id: 4DB92668353
 
-If forward path discovery fails for any reason or netdevice is not
-registered for this flowtable, then bail out to classic forwarding path
-rather than providing incomplete forwarding path.
+Update nft_dup and nft_fwd to use the nf_dev_xmit_recursion() helpers.
+This patch also disables BH when transmitting the skb to address a
+possible migration to different CPU leading to imbalanced decrementation
+of the recursion counters.
 
-Update the existing forward path parser functions to report an error
-so the flow_offload expressions gives up on setting up the flowtable
-entry.
+This is modeled after Florian Westphal's dev_xmit_recursion*() API
+available since 97cdcf37b57e ("net: place xmit recursion in softnet
+data") according to its current state in the tree.
 
-Link: https://sashiko.dev/#/patchset/20260607094954.48892-15-pablo%40netfilter.org?part=14
+Fixes: 1d47b55b36d2 ("netfilter: nft_fwd_netdev: use recursion counter in neigh egress path")
+Fixes: f37ad9127039 ("netfilter: nf_dup_netdev: Move the recursion counter struct netdev_xmit")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: fix AI reviewer report, dst error path leak in nft_flow_route()
+v2: address AI reviewer report:
+    - fix compile error when CONFIG_PREEMPT_RT is enabled due to typo
+    - check nf_dev_xmit_recursion() with BH disabled
 
- net/netfilter/nf_flow_table_path.c | 81 +++++++++++++++++-------------
- 1 file changed, 46 insertions(+), 35 deletions(-)
+ include/net/netfilter/nf_dup_netdev.h | 34 +++++++++++++++++++++++----
+ net/netfilter/nf_dup_netdev.c         | 15 ++++++------
+ net/netfilter/nft_fwd_netdev.c        | 18 +++++++-------
+ 3 files changed, 47 insertions(+), 20 deletions(-)
 
-diff --git a/net/netfilter/nf_flow_table_path.c b/net/netfilter/nf_flow_table_path.c
-index a3e6b82f2f8e..1e7e216b9f89 100644
---- a/net/netfilter/nf_flow_table_path.c
-+++ b/net/netfilter/nf_flow_table_path.c
-@@ -90,9 +90,9 @@ struct nft_forward_info {
- 	enum flow_offload_xmit_type xmit_type;
- };
+diff --git a/include/net/netfilter/nf_dup_netdev.h b/include/net/netfilter/nf_dup_netdev.h
+index 609bcf422a9b..f6b05bd80c3f 100644
+--- a/include/net/netfilter/nf_dup_netdev.h
++++ b/include/net/netfilter/nf_dup_netdev.h
+@@ -11,15 +11,39 @@ void nf_fwd_netdev_egress(const struct nft_pktinfo *pkt, int oif);
  
--static void nft_dev_path_info(const struct net_device_path_stack *stack,
--			      struct nft_forward_info *info,
--			      unsigned char *ha, struct nf_flowtable *flowtable)
-+static int nft_dev_path_info(const struct net_device_path_stack *stack,
-+			     struct nft_forward_info *info,
-+			     unsigned char *ha, struct nf_flowtable *flowtable)
- {
- 	const struct net_device_path *path;
- 	int i;
-@@ -120,19 +120,17 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ #define NF_RECURSION_LIMIT	2
  
- 			/* DEV_PATH_VLAN, DEV_PATH_PPPOE and DEV_PATH_TUN */
- 			if (path->type == DEV_PATH_TUN) {
--				if (info->num_tuns) {
--					info->indev = NULL;
--					break;
--				}
-+				if (info->num_tuns)
-+					return -1;
+-static inline u8 *nf_get_nf_dup_skb_recursion(void)
+-{
+ #ifndef CONFIG_PREEMPT_RT
+-	return this_cpu_ptr(&softnet_data.xmit.nf_dup_skb_recursion);
++static inline bool nf_dev_xmit_recursion(void)
++{
++	return unlikely(__this_cpu_read(softnet_data.xmit.nf_dup_skb_recursion) >
++			NF_RECURSION_LIMIT);
++}
 +
- 				info->tun.src_v6 = path->tun.src_v6;
- 				info->tun.dst_v6 = path->tun.dst_v6;
- 				info->tun.l3_proto = path->tun.l3_proto;
- 				info->num_tuns++;
- 			} else {
--				if (info->num_encaps >= NF_FLOW_TABLE_ENCAP_MAX) {
--					info->indev = NULL;
--					break;
--				}
-+				if (info->num_encaps >= NF_FLOW_TABLE_ENCAP_MAX)
-+					return -1;
++static inline void nf_dev_xmit_recursion_inc(void)
++{
++	__this_cpu_inc(softnet_data.xmit.nf_dup_skb_recursion);
++}
 +
- 				info->encap[info->num_encaps].id =
- 					path->encap.id;
- 				info->encap[info->num_encaps].proto =
-@@ -151,22 +149,23 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
- 
- 			switch (path->bridge.vlan_mode) {
- 			case DEV_PATH_BR_VLAN_UNTAG_HW:
-+				if (info->num_encaps == 0)
-+					return -1;
++static inline void nf_dev_xmit_recursion_dec(void)
++{
++	__this_cpu_dec(softnet_data.xmit.nf_dup_skb_recursion);
++}
+ #else
+-	return &current->net_xmit.nf_dup_skb_recursion;
+-#endif
++static inline bool nf_dev_xmit_recursion(void)
++{
++	return unlikely(current->net_xmit.nf_dup_skb_recursion > NF_RECURSION_LIMIT);
++}
 +
- 				info->ingress_vlans |= BIT(info->num_encaps - 1);
- 				break;
- 			case DEV_PATH_BR_VLAN_TAG:
--				if (info->num_encaps >= NF_FLOW_TABLE_ENCAP_MAX) {
--					info->indev = NULL;
--					break;
--				}
-+				if (info->num_encaps >= NF_FLOW_TABLE_ENCAP_MAX)
-+					return -1;
-+
- 				info->encap[info->num_encaps].id = path->bridge.vlan_id;
- 				info->encap[info->num_encaps].proto = path->bridge.vlan_proto;
- 				info->num_encaps++;
- 				break;
- 			case DEV_PATH_BR_VLAN_UNTAG:
--				if (info->num_encaps == 0) {
--					info->indev = NULL;
--					break;
--				}
-+				if (info->num_encaps == 0)
-+					return -1;
-+
- 				info->num_encaps--;
- 				break;
- 			case DEV_PATH_BR_VLAN_KEEP:
-@@ -175,8 +174,7 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
- 			info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
- 			break;
- 		default:
--			info->indev = NULL;
--			break;
-+			return -1;
- 		}
- 	}
- 	info->outdev = info->indev;
-@@ -184,6 +182,8 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
- 	if (nf_flowtable_hw_offload(flowtable) &&
- 	    nft_is_valid_ether_device(info->indev))
- 		info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
-+
-+	return 0;
++static inline void nf_dev_xmit_recursion_inc(void)
++{
++	current->net_xmit.nf_dup_skb_recursion++;
  }
  
- static bool nft_flowtable_find_dev(const struct net_device *dev,
-@@ -241,11 +241,11 @@ static int nft_flow_tunnel_update_route(const struct nft_pktinfo *pkt,
- 	return 0;
- }
- 
--static void nft_dev_forward_path(const struct nft_pktinfo *pkt,
--				 struct nf_flow_route *route,
--				 const struct nf_conn *ct,
--				 enum ip_conntrack_dir dir,
--				 struct nft_flowtable *ft)
-+static int nft_dev_forward_path(const struct nft_pktinfo *pkt,
-+				struct nf_flow_route *route,
-+				const struct nf_conn *ct,
-+				enum ip_conntrack_dir dir,
-+				struct nft_flowtable *ft)
- {
- 	const struct dst_entry *dst = route->tuple[dir].dst;
- 	struct net_device_path_stack stack;
-@@ -253,15 +253,16 @@ static void nft_dev_forward_path(const struct nft_pktinfo *pkt,
- 	unsigned char ha[ETH_ALEN];
- 	int i;
- 
--	if (nft_dev_fill_forward_path(route, dst, ct, dir, ha, &stack) >= 0)
--		nft_dev_path_info(&stack, &info, ha, &ft->data);
-+	if (nft_dev_fill_forward_path(route, dst, ct, dir, ha, &stack) < 0 ||
-+	    nft_dev_path_info(&stack, &info, ha, &ft->data) < 0)
-+		return -ENOENT;
++static inline void nf_dev_xmit_recursion_dec(void)
++{
++	current->net_xmit.nf_dup_skb_recursion--;
++}
++#endif
 +
-+	if (!nft_flowtable_find_dev(info.indev, ft))
-+		return -ENOENT;
+ struct nft_offload_ctx;
+ struct nft_flow_rule;
  
- 	if (info.outdev)
- 		route->tuple[dir].out.ifindex = info.outdev->ifindex;
- 
--	if (!info.indev || !nft_flowtable_find_dev(info.indev, ft))
--		return;
+diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
+index 3b0a70e154cd..c189716e986a 100644
+--- a/net/netfilter/nf_dup_netdev.c
++++ b/net/netfilter/nf_dup_netdev.c
+@@ -16,11 +16,6 @@
+ static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev,
+ 				enum nf_dev_hooks hook)
+ {
+-	u8 *nf_dup_skb_recursion = nf_get_nf_dup_skb_recursion();
 -
- 	route->tuple[!dir].in.ifindex = info.indev->ifindex;
- 	for (i = 0; i < info.num_encaps; i++) {
- 		route->tuple[!dir].in.encap[i].id = info.encap[i].id;
-@@ -285,6 +286,8 @@ static void nft_dev_forward_path(const struct nft_pktinfo *pkt,
- 		route->tuple[dir].xmit_type = info.xmit_type;
+-	if (*nf_dup_skb_recursion > NF_RECURSION_LIMIT)
+-		goto err;
+-
+ 	if (hook == NF_NETDEV_INGRESS && skb_mac_header_was_set(skb)) {
+ 		if (skb_cow_head(skb, skb->mac_len))
+ 			goto err;
+@@ -30,9 +25,15 @@ static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev,
+ 
+ 	skb->dev = dev;
+ 	skb_clear_tstamp(skb);
+-	(*nf_dup_skb_recursion)++;
++	local_bh_disable();
++	if (nf_dev_xmit_recursion()) {
++		local_bh_enable();
++		goto err;
++	}
++	nf_dev_xmit_recursion_inc();
+ 	dev_queue_xmit(skb);
+-	(*nf_dup_skb_recursion)--;
++	nf_dev_xmit_recursion_dec();
++	local_bh_enable();
+ 	return;
+ err:
+ 	kfree_skb(skb);
+diff --git a/net/netfilter/nft_fwd_netdev.c b/net/netfilter/nft_fwd_netdev.c
+index b9e88d7cf308..d5a0b67932a9 100644
+--- a/net/netfilter/nft_fwd_netdev.c
++++ b/net/netfilter/nft_fwd_netdev.c
+@@ -95,7 +95,6 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
+ 			      struct nft_regs *regs,
+ 			      const struct nft_pktinfo *pkt)
+ {
+-	u8 *nf_dup_skb_recursion = nf_get_nf_dup_skb_recursion();
+ 	struct nft_fwd_neigh *priv = nft_expr_priv(expr);
+ 	void *addr = &regs->data[priv->sreg_addr];
+ 	int oif = regs->data[priv->sreg_dev];
+@@ -154,11 +153,6 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
+ 		goto out;
  	}
- 	route->tuple[dir].out.needs_gso_segment = info.needs_gso_segment;
+ 
+-	if (*nf_dup_skb_recursion > NF_RECURSION_LIMIT) {
+-		verdict = NF_DROP;
+-		goto out;
+-	}
+-
+ 	dev = dev_get_by_index_rcu(nft_net(pkt), oif);
+ 	if (dev == NULL) {
+ 		verdict = NF_DROP;
+@@ -176,9 +170,17 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
+ 
+ 	skb->dev = dev;
+ 	skb_clear_tstamp(skb);
+-	(*nf_dup_skb_recursion)++;
 +
-+	return 0;
++	local_bh_disable();
++	if (nf_dev_xmit_recursion()) {
++		local_bh_enable();
++		verdict = NF_DROP;
++		goto out;
++	}
++	nf_dev_xmit_recursion_inc();
+ 	neigh_xmit(neigh_table, dev, addr, skb);
+-	(*nf_dup_skb_recursion)--;
++	nf_dev_xmit_recursion_dec();
++	local_bh_enable();
+ out:
+ 	regs->verdict.code = verdict;
  }
- 
- int nft_flow_route(const struct nft_pktinfo *pkt, const struct nf_conn *ct,
-@@ -329,11 +332,19 @@ int nft_flow_route(const struct nft_pktinfo *pkt, const struct nf_conn *ct,
- 	nft_default_forward_path(route, this_dst, dir);
- 	nft_default_forward_path(route, other_dst, !dir);
- 
--	if (route->tuple[dir].xmit_type	== FLOW_OFFLOAD_XMIT_NEIGH)
--		nft_dev_forward_path(pkt, route, ct, dir, ft);
--	if (route->tuple[!dir].xmit_type == FLOW_OFFLOAD_XMIT_NEIGH)
--		nft_dev_forward_path(pkt, route, ct, !dir, ft);
-+	if (route->tuple[dir].xmit_type	== FLOW_OFFLOAD_XMIT_NEIGH &&
-+	    nft_dev_forward_path(pkt, route, ct, dir, ft) < 0)
-+		goto err_dst_release;
-+
-+	if (route->tuple[!dir].xmit_type == FLOW_OFFLOAD_XMIT_NEIGH &&
-+	    nft_dev_forward_path(pkt, route, ct, !dir, ft) < 0)
-+		goto err_dst_release;
- 
- 	return 0;
-+
-+err_dst_release:
-+	dst_release(route->tuple[dir].dst);
-+	dst_release(route->tuple[!dir].dst);
-+	return -ENOENT;
- }
- EXPORT_SYMBOL_GPL(nft_flow_route);
 -- 
 2.47.3
 
