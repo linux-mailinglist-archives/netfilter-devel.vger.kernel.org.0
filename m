@@ -1,67 +1,49 @@
-Return-Path: <netfilter-devel+bounces-13206-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13207-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cPicBQeQKWqHZgMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13206-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 18:25:43 +0200
+	id 8ChBBjWmKWqEbQMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13207-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 20:00:21 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E1666B71B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 18:25:42 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD3066C1BA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 20:00:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=sWf9xJQi;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13206-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13206-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=none;
 	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13207-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13207-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7F68A304DE80
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 16:17:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1137330BDD0F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 17:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261423090E8;
-	Wed, 10 Jun 2026 16:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCC73537F5;
+	Wed, 10 Jun 2026 17:59:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0AB32AAC6;
-	Wed, 10 Jun 2026 16:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B25D429A9FE;
+	Wed, 10 Jun 2026 17:59:25 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781108207; cv=none; b=fY9G6XNbO0l25Js+V7Ca7cO4PVpy4tlpQkNC7WIJMqOCvlCq35kIIysK5F9X2CGFb8I0uA7YMFEnQYQsZp3uc/rxSHPWqMbRIioeUrqwgUh3LB9u0zdywttVvYIP4Ov0weJwX/AaLFcizgB0utxEiAHeIZzruiBl5gyw02CiHdk=
+	t=1781114367; cv=none; b=WFlXVkyGwctEO8r9GRf/UFosrq3syRDWvktN7+SXa6tiKI/+T7S+wqvIltgmSuFScYoLGCLrlv03RH/6BdO6uyGnkBnjLuKSN3lxqjHqbIdp2ubxFx0dUdO5V9BjHtUMWFQRBPof+pCs0nUGYSR3+vtPMcetvCa0DC5HZ9nbnug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781108207; c=relaxed/simple;
-	bh=x2+gipZEzGQ96L9IBsfRwA9Xx/yC+O4SKqgDciZcPZM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iOmNJq2N2w0AnQDKhc+VSGjDZzZ8nkB4wE3DuQkxmrK5IqkQXsBG5x29PmwGz+33GTPVLMY9P3nrbWgWH1JSKJ9QcNk+LpManrqF9GSmq0yM+9uZiNX6dDKunGL4Nf50EQH021HXpuzgifWrEpYAsZ0A0OJS1dzSleo3zN8hk7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=sWf9xJQi; arc=none smtp.client-ip=217.70.190.124
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id AB7BE601C5;
-	Wed, 10 Jun 2026 18:16:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1781108203;
-	bh=5uVcllhylUaGGRkjXw/I3kQSsth8SM3VuyX/RTjhKrQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sWf9xJQisTe10w2a/RK8Lje9m0e2GmU/Qr1mzxl2KjupGWJqyDVPDS+OYDdUn+xdp
-	 ecGayFBZsMzNFl+dzkF3dDU0h0gXjXifOapEAz9GhIkDQZnW+cFarnJdzlZLgm+WR6
-	 4hMkeRXzvHpzsw2mLEp9K0sUvxGm6lJJ7zrm2HejUumoZiQe4zTTtVxQzZgoeAm152
-	 OhWFuXJtke2XA1j8/NN4R7lJsit0AzI0lRFzcHyKuE0qu/Oc4hb80kgj3/Qe2l4ih/
-	 /9XtYacIlCwxSyVciyQ/AcG6kSQerVPxFrU1EdseH+zWw59pOIx+hSQzuWNq9UEW1i
-	 grj9YEKDXHekg==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: davem@davemloft.net,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	fw@strlen.de,
-	horms@kernel.org
-Subject: [PATCH net 8/8] netfilter: nft_meta_bridge: fix stale stack leak via IIFHWADDR register
-Date: Wed, 10 Jun 2026 18:16:28 +0200
-Message-ID: <20260610161629.214092-9-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260610161629.214092-1-pablo@netfilter.org>
-References: <20260610161629.214092-1-pablo@netfilter.org>
+	s=arc-20240116; t=1781114367; c=relaxed/simple;
+	bh=RJ3Jm7s1KPIJN4x4zj5ARLMufArVvTkTOOpe4fGptaU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eV7yEZURG1SyeOmiAmbsvOrfb6StjzsVI/ch03hJwBtLFBVBEGS8d1ZWHhy03hq8bApo/pBw3kDeSHqkVRU98dVL/D0YDZEDFgwZqrtDN1+caLNS1K3DcbzH66mrIf52Fxds+47k88f4tkEms7zBq6apeexKgxU5w/bECiZu8co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id C39DD607E1; Wed, 10 Jun 2026 19:59:17 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netdev@vger.kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	<netfilter-devel@vger.kernel.org>,
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH net-next 0/2] netdevsim: add fake FT/CLS_FLOWER offload
+Date: Wed, 10 Jun 2026 19:58:42 +0200
+Message-ID: <20260610175906.1767-1-fw@strlen.de>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -70,76 +52,58 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13206-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[netfilter.org];
-	FROM_HAS_DN(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:kuba@kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:fw@strlen.de,m:horms@kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	ALIAS_RESOLVED(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
+	TAGGED_FROM(0.00)[bounces-13207-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	R_DKIM_NA(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,strlen.de:mid,strlen.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 73E1666B71B
+X-Rspamd-Queue-Id: 8AD3066C1BA
 
-From: Davide Ornaghi <d.ornaghi97@gmail.com>
+1) Enable nf_tables offload control plane testing in netdevsim. Tag
+   existing offload fn to allow error injection for testing rollback and abort
+   logic.
 
-NFT_META_BRI_IIFHWADDR declares its destination register with
-len = ETH_ALEN (6 bytes), which the register-init tracking rounds up to
-two 32-bit registers (8 bytes). nft_meta_bridge_get_eval() then does
-memcpy(dest, br_dev->dev_addr, ETH_ALEN), writing only 6 bytes and
-leaving the upper 2 bytes of the second register as uninitialised
-nft_do_chain() stack. A downstream load of that register span leaks
-those stale bytes to userspace.
+2) Add nft_offload selftest to exercise the control plane and error
+   unwind via fault injection.
 
-Zero the second register before the memcpy so the full declared span is
-written.
+Florian Westphal (2):
+  netdevsim: tc: allow to test nf_tables offload control plane code
+  selftests: netfilter: add phony nft_offload test
 
-Fixes: cbd2257dc96e ("netfilter: nft_meta_bridge: introduce NFT_META_BRI_IIFHWADDR support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Davide Ornaghi <d.ornaghi97@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/bridge/netfilter/nft_meta_bridge.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/netdevsim/tc.c                    |  18 ++-
+ .../testing/selftests/net/netfilter/Makefile  |   1 +
+ tools/testing/selftests/net/netfilter/config  |   6 +
+ .../selftests/net/netfilter/nft_offload.sh    | 132 ++++++++++++++++++
+ 4 files changed, 156 insertions(+), 1 deletion(-)
+ create mode 100755 tools/testing/selftests/net/netfilter/nft_offload.sh
 
-diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
-index 7763e78abb00..219c40680260 100644
---- a/net/bridge/netfilter/nft_meta_bridge.c
-+++ b/net/bridge/netfilter/nft_meta_bridge.c
-@@ -64,6 +64,8 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
- 		if (!br_dev)
- 			goto err;
- 
-+		/* ETH_ALEN (6) is shorter than the destination register span (8) */
-+		dest[1] = 0;
- 		memcpy(dest, br_dev->dev_addr, ETH_ALEN);
- 		return;
- 	default:
 -- 
-2.47.3
+2.53.0
 
 
