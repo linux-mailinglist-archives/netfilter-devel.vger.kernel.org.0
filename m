@@ -1,174 +1,154 @@
-Return-Path: <netfilter-devel+bounces-13186-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13187-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id GQvmHSU7KWrUSgMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13186-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:23:33 +0200
+	id VtdzM31AKWogTAMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13187-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:46:21 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9573366838A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE39B6686A1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 12:46:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=XuPF31Cj;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13186-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13186-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=S8m6Rjrn;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13187-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13187-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 74C40302DB2F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 10:18:46 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 03AEF30ABEFA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 10:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8977F3C1082;
-	Wed, 10 Jun 2026 10:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571423F1672;
+	Wed, 10 Jun 2026 10:30:48 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6453DB31D
-	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 10:18:43 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781086725; cv=pass; b=QgWIdF3rTnve8EN/Fr58QfvOr+vCdRNy1UwRdkC450TTtOZBGM+1iQBstF0xjnM8PWtA6Z/G0FKn+Llp7AsPDyFPsJtJP1ZmLnQL1MG+4SH+jWgdlE0Jm9hNz9TXAy8EYdADvIT0W7l1aU10d2vtZCPKcH7MrgAAVPPesXslUII=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781086725; c=relaxed/simple;
-	bh=ui0GdkCGuCsIcJRXz2OyNHXmU4r/DI0pxvNjiCDLHjY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oujHyeA2R/Z+TRJWP54UhCovP8/W6dnaWNMEvgy5RNa7ie5nhJH9fFrQL6Va8ruEozpZttwsc8uTkbYJaYLHOV857YEk3KjsCcHo3CBwHA8Kw3bX2KQnfzsxb45UcyVcXhmahOq8l1Ghz5Rtd0e6Rya2lSREaZbt3IGOYujMCao=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XuPF31Cj; arc=pass smtp.client-ip=209.85.208.170
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-396aacc5bcfso64929771fa.3
-        for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 03:18:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781086722; cv=none;
-        d=google.com; s=arc-20240605;
-        b=QV5Q3uAb7SPZFzlqbhCAqmybx7xAtYRHrpMaPLF8ORTQ3lnRXmQs/EaJjU+p/g3KaL
-         AVrcPgctbvNkMQr2sA8sm4sAfZDEST9qLOUnusaMXlA5hDeLjUo6faEWK9vn41n7WLAO
-         s8/bV0tthhCija7Ewv2Z5+nMV3AOR10976CaI3b5mD76JBUlD7zv0DkaSwwYds5PhRCZ
-         i5LnCySgnBsO4tT9/9RMvBYedeedN48wBEaiHfC4SxngJpVafFihq6UAhxY5UPgOmhdv
-         w44FUIKyFBqfFCUo1vxhRstqnQ4fG+eQmX+PYetoKHoWHAUbaer3wh/iVY/c7U2hIhgK
-         xL0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=k/4EMOuNn6TektDFfik+66ykAw8mGkn8dGwF/XG1k4U=;
-        fh=WBXL2Z1stMBOTxIaR8rIHNXns9n1sRdh1Ccu/aBqEWo=;
-        b=M5NjNe/mXjIovIghGiC6fSR1n9NIbyAUHrRk4xkI0dITNDzV5gHg+SPO0sWRfRTupo
-         xD8s6X7RKMGI7bRGUz9uM7epYWCbhyWC9CLIdGcilVOzB9U4YdIFU8vHECz6WfZgVQMq
-         /SIxFrvrL3WClRlgSRIVrmYlx5RutZNSTR9rV0nK/iQUPkINMnH12D0dert+josMqe8c
-         Q4xFk7F4J41H02H6sWhLFnBGuJypKzb2Lh+5WBIBrsCE41cc/d/DP3mOpsbkS2MadHDJ
-         VbCbAgP3GJMPsppX0YGHAze+7G7TJ7kpiyhCAvTDaLQvb17AgxncAy0wP+ezvcVXBrwf
-         WBtw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781086722; x=1781691522; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=k/4EMOuNn6TektDFfik+66ykAw8mGkn8dGwF/XG1k4U=;
-        b=XuPF31CjduFwpJWdwSm+86TqTC8BtfSfmrkBMOIuoYMnvfqY+xtUoYxwC1o9WFe+Ns
-         u/dVFGxUdtKhBKYfcnaZZgU0nZvVxYQGbSHb1BAW5a1AOuFRxJJe30Ubm50kbuVv0RGF
-         df/kTDJ6mrRaMmQ4LZt8U5qdVq/IPUX5qzxuyX+TjzJsCTtA+of1FFwZW187Y7AXYz5W
-         KUTvBzkOJky5kRaDG1DEb6XXL0ql4tVz5Z4T/iK186q+lHdU5C0Vr7PKaWwkCKecXgFz
-         esyKHR9em47bIJpTtYvu853YWZQIomVSiFn0lUeOoLuA+mB5FXKKT3cjL2zd0s829ai8
-         ORKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781086722; x=1781691522;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k/4EMOuNn6TektDFfik+66ykAw8mGkn8dGwF/XG1k4U=;
-        b=TaFCuppduGns/xhtt5BR+yH13ZCV5wH6QUJIhWz8oYsvz+AJA7hMLrTVA11dDRwvgN
-         z5OkewR+J3MzzvhR1eUZ1iW+rQiFMBhGoYmiOT/S1XpsPgoiGTQH2RcQhvCfBe7KuVWE
-         pqccxpnqvw2LdVJ5Dt5EGT/IPAQGYm9DWO3G/hcLmVln7zw8KY3LdrHzQPVh+u0u6L+5
-         EfqPdZ86m+qHK79NtDmE/TEnW9nb+k0tYG2/d2eSZQoBEHUXWROynBrLAtSZLBLAi4bT
-         eHc9NDR7PtaC1pppjrOLEZro2nOh/1kcroapintJYbCX5pzP11Z/azFky1ev7T4QfYaq
-         lsMg==
-X-Gm-Message-State: AOJu0YwCYK+uZl1GIzNdExPadKKP0pCyamEr7kRlAEb8HfJ2jfDGynVJ
-	2eda73G6gx5HuaWk185nqq+vfhdKwIQFnCADZ4cHeB1OzidH9L4lgIyo5MdNkRjM/+5yS5rAvxs
-	r0jOd3QTNa9W/NLolvEYtxaZdhcPw5S7GGJMK2R2yEw==
-X-Gm-Gg: Acq92OFQlPzTry5Tto83GLOMcHDpu0UE6rb6z2IzubWVkuJnbXUx5sff/qjagBxj3j/
-	IQRWtjT0QxiOds9HF5TwJ1vnn939uFZ8c0vN6DbjjgrFxrpPzqrMePcP4T1+3s85ZloPnsTEre6
-	baCKzqOfP7uKp+s8IjUZckWqiToMsEmDBsJ+kCr1uGQ/UKhgXNCfj8RHBZfxaQxImHjyhEioCE8
-	Y98/A9cy/AUXfi+HFShvM4w3It5eHV70FjnrguziiC+SNZpaCAt0ed2UknYMHFLLKuKg12fogPe
-	d3JKWdfzAe+2dF+7HFKIDIVNn3DA
-X-Received: by 2002:a05:651c:1509:b0:396:9043:bb97 with SMTP id
- 38308e7fff4ca-396d074c5c0mr68417741fa.8.1781086721898; Wed, 10 Jun 2026
- 03:18:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27FE3F20ED
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 10:30:45 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781087448; cv=none; b=V40/9rhzYao+af+/3fwgjCKKv4/rIkZ/iFV4tU03hK4i6E8DAaZsBdVLeOAMbMRz7ZFQwWm7mnQ335cFupCh+hMsyNTmsUAA7xo0wy961jskY0Q/Y8rqEP0x0zmAGlcoCeu5iZsO/94szlE9R6bo+UOH03rIuT+jP19mbRcfn+A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781087448; c=relaxed/simple;
+	bh=H0jBkem1FacugaiY6wKtmQau54HUFe++eGaBe0IKaac=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WedIt2mF5AQVsEo/aSKByJcmIV4pMlNllC75CvIp6+o4M8+zT+O+q0zgNoAA82zPuiBvzbPwNR7jLwkPXyB+OZJ0XfWN3fEBq8QW1JC5iP52uShUyzhNpGgfaDCa587sKpy8qKQmdEtN+x3V6o3ZBQqa6rLvBu/dt/yRztDanvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=S8m6Rjrn; arc=none smtp.client-ip=217.70.190.124
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 75A1E6019E
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 12:30:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1781087443;
+	bh=RPJSlrJkXy2ybbGT/pf0yEl8gczbH5MRjButURvWF/k=;
+	h=From:To:Subject:Date:From;
+	b=S8m6Rjrnds4P0r/p/Hu35QSm8PsO3Bnq2Lk2CW/tYb5ktxVs2QOQE5XUM2Zl24iCg
+	 VxRdFHxwvjT/kJzhvNcaSglxopI4IPfBQwMWiq99w2V0Au/sGjhvtpw7GG/rkcuaMt
+	 96PlPOsxDUfmuRVHnfE9Y+15aTHuIkJ7B4C/RJYJN/t3u/MIDFzv5EoWazgeDP/vzK
+	 z4hCMQhKSik9FeuiEcm4Vjm/5/Yybf5eN/lLlS1ddOEm1YMBuePHWgB+/1KyUtxwr6
+	 oa3N+zp1ATGc8opoV2CFJA0njXbHQVMr9PKa27X9/JC3uwGtPupgTf9xga7o2DxtUp
+	 YM952Ir4zyW4g==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Subject: [PATCH libnetfilter_conntrack] objopt: restrict NFCT_GOPT_IS_{S,D}PAT to supported layer 4 protocols
+Date: Wed, 10 Jun 2026 12:30:39 +0200
+Message-ID: <20260610103039.167819-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260609163215.1102215-1-d.ornaghi97@gmail.com>
- <20260609163215.1102215-2-d.ornaghi97@gmail.com> <aih1JpA0iAD84GNb@strlen.de>
-In-Reply-To: <aih1JpA0iAD84GNb@strlen.de>
-From: Davide Ornaghi <d.ornaghi97@gmail.com>
-Date: Wed, 10 Jun 2026 12:18:30 +0200
-X-Gm-Features: AVVi8Ce9Zh1dIuiTxYH-zkbk3Q7m1t7nHyPHM-mW9eS6ut7WEPp9Vg2LmdKarrk
-Message-ID: <CAHH-0Uep=gt--eWNtQKZ1qOHFAVh7WsUAGsrPTiN8F2kTHkL6g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] netfilter: nft_fib: fix stale stack leak via the
- OIFNAME register
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, 
-	coreteam@netfilter.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13186-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER(0.00)[dornaghi97@gmail.com,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:coreteam@netfilter.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13187-lists,netfilter-devel=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	RCPT_COUNT_ONE(0.00)[1];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dornaghi97@gmail.com,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,strlen.de:email]
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9573366838A
+X-Rspamd-Queue-Id: BE39B6686A1
 
-Will do. v2 rejects NFTA_FIB_F_PRESENT for every result type except
-NFT_FIB_RESULT_OIF (and keeps the u8 register for that case). Sending shortly.
+If layer 4 protocol has no ports, then return false. Otherwise, users
+like the conntrack utility filtering does not properly work with layer 4
+protocol such as ICMP and ICMPv6.
 
-Il giorno mar 9 giu 2026 alle ore 22:18 Florian Westphal
-<fw@strlen.de> ha scritto:
->
-> Davide Ornaghi <d.ornaghi97@gmail.com> wrote:
-> > diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
-> > index 327a5f3365..6df811b8d5 100644
-> > --- a/net/netfilter/nft_fib.c
-> > +++ b/net/netfilter/nft_fib.c
-> > @@ -107,6 +107,9 @@ int nft_fib_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
-> >               return -EINVAL;
-> >       }
-> >
-> > +     if (priv->flags & NFTA_FIB_F_PRESENT)
-> > +             len = sizeof(u8);
-> > +
->
-> Would you mind sending a v2 that also rejects NFTA_FIB_F_PRESENT for all
-> cases except NFT_FIB_RESULT_OIF ?
->
-> Its not strictly required but its better to be explicit, I think.
->
-> Rest looks good.
+Fixes: 93c459d603cc ("objopt: use indirect calls instead of switch")
+Reported-by: Jan Kasprzak <kas@fi.muni.cz>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/conntrack/objopt.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/src/conntrack/objopt.c b/src/conntrack/objopt.c
+index 1581480667e5..6024d15e2602 100644
+--- a/src/conntrack/objopt.c
++++ b/src/conntrack/objopt.c
+@@ -182,8 +182,27 @@ static int getobjopt_is_dnat(const struct nf_conntrack *ct)
+ 	}
+ }
+ 
++static bool l4proto_has_ports(const struct nf_conntrack *ct)
++{
++	switch (ct->head.orig.l3protonum) {
++	case IPPROTO_UDP:
++	case IPPROTO_UDPLITE:
++	case IPPROTO_SCTP:
++	case IPPROTO_TCP:
++	case IPPROTO_DCCP:
++		break;
++	default:
++		return false;
++	}
++
++	return true;
++}
++
+ static int getobjopt_is_spat(const struct nf_conntrack *ct)
+ {
++	if (!l4proto_has_ports(ct))
++		return 0;
++
+ 	return ((test_bit(ATTR_STATUS, ct->head.set) ?
+ 		ct->status & IPS_SRC_NAT_DONE : 1) &&
+ 		ct->repl.l4dst.tcp.port !=
+@@ -192,6 +211,9 @@ static int getobjopt_is_spat(const struct nf_conntrack *ct)
+ 
+ static int getobjopt_is_dpat(const struct nf_conntrack *ct)
+ {
++	if (!l4proto_has_ports(ct))
++		return 0;
++
+ 	return ((test_bit(ATTR_STATUS, ct->head.set) ?
+ 		ct->status & IPS_DST_NAT_DONE : 1) &&
+ 		ct->repl.l4src.tcp.port !=
+-- 
+2.47.3
+
 
