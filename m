@@ -1,286 +1,212 @@
-Return-Path: <netfilter-devel+bounces-13208-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13210-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cHYTDx+mKWpxbQMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13208-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 19:59:59 +0200
+	id xAXPIKvWKWqoeAMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13210-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 23:27:07 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B9A66C1A8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 19:59:58 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7FF866D130
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 23:27:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
+	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=Q+9ARkPr;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13210-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13210-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13208-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13208-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 675093050DEB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 17:59:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A665310374A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2026 21:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940463546E3;
-	Wed, 10 Jun 2026 17:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4033ACA5F;
+	Wed, 10 Jun 2026 21:27:04 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF6D3546E5;
-	Wed, 10 Jun 2026 17:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF8140D580
+	for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2026 21:27:01 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781114369; cv=none; b=Xs1TexsuTV3TwnLfUdGAvFY8ln8pQA48CPJ4u+/gOYFviZbJoFIm8Mk9aXYXoSqwBGQTNFE/7zySBOnf1ljXv0wxEJfDugZ8paPjFsEIPj4fIiqP93DslgGrvjZx279/49sSBu8YJJ2pqC4EfdHuqexf9ZaAVFrBW/Y9VazjS/M=
+	t=1781126824; cv=none; b=Ag7eNTlwbCzHmOAUKsxomHYmcez/IRZgtrIb4OcinfkGDUZCyubq/6aCbXjgIqcK5NoyveFcxpg7ZNNJU4mTxvzrBti8TruCjmaAIj/ujqxHVRtQUUCC32v9VoKn4kXbPQuIgCweG+KFZGZ4F87L/fiCDz5IXOr+y+Q9tb0Tozk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781114369; c=relaxed/simple;
-	bh=zpTeorYlY6HcA3ishC/vc9S0siFloCceXbyPl8pB9HQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mC4lsl0B1oH30ZJ6DWo5ptzOOFbyHpPwgLxd47m9UB95CQynjxDjfR9oOYm8ySydF7RABEV1zCURw4QlwLD6X8gBX/9xijCpJ74+/hMAYXf93c2VYuMxZKq5P9TSp0c9qyU3Gkxd8TwRXyFxeoug0Lu+NcEniGqd4VkjkukUjbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 556FD6080D; Wed, 10 Jun 2026 19:59:26 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netdev@vger.kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	<netfilter-devel@vger.kernel.org>,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH net-next 2/2] selftests: netfilter: add phony nft_offload test
-Date: Wed, 10 Jun 2026 19:58:44 +0200
-Message-ID: <20260610175906.1767-3-fw@strlen.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260610175906.1767-1-fw@strlen.de>
-References: <20260610175906.1767-1-fw@strlen.de>
+	s=arc-20240116; t=1781126824; c=relaxed/simple;
+	bh=DBoW9AsUGjGeetGeIyAHVw8lwC7jPjASgdRrsnUlLtg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R5402jigpH9Wps/xolwFC0jM1kO26wJrL3A1G9K3iGRaoCT6Tk2X7jv48nqmGIZbccD5TtpfYxuOewIpGohSJIH6vzPgSRiJgBXhR6M80lIynvzL6biLOhgIp9RfGLsuqHjKx4N+0HTpy3xaJXsNfz6TIGs9q3TVaA6m1KE8stM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=Q+9ARkPr; arc=none smtp.client-ip=151.80.46.58
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=zl+bRuHmseo39MH/bjJxn5dlLl7iLpH+fWScC084neQ=; b=Q+9ARkPretULd+MYReu3gsXraG
+	8nP00zujACJA/qSKpQxqN35GOqikRFdnisLZz18lP4ss2aTWfMYuXNrzSMj4yf5Sif/3/yxtAo+yc
+	vq/r4zdpi0maOxvSOVtbk+H+sp5T6M9sXWx5Qmd1awRfBL4/UHgr53If0hGv23OY9JezXC8L0Zvf7
+	4c1mgFAbNR4p3ld/7gc+3mlp/V0GN0uHTIUPlem13Saaelpn2TAh7K2YMp+YDbFIc1MGfnvGsY9Jd
+	o0OYiafZVMyxsn4LwML3n6kPIZmYgGmZJSZ2o6OPDF8nn9XSq5bPO5m7QEjQwdryOwAB633uTOKoG
+	yYOHI80g==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.98.2)
+	(envelope-from <phil@nwl.cc>)
+	id 1wXQRv-000000004sS-2hte;
+	Wed, 10 Jun 2026 23:26:59 +0200
+Date: Wed, 10 Jun 2026 23:26:59 +0200
+From: Phil Sutter <phil@nwl.cc>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org,
+	Jan =?utf-8?Q?Ko=C5=84czak?= <jan.konczak@cs.put.poznan.pl>
+Subject: Re: [nft PATCH] parser_bison: Fix for bison < 3.6
+Message-ID: <ainWo2lYfwv3D2nk@orbyte.nwl.cc>
+References: <20260610115709.3982133-1-phil@nwl.cc>
+ <ail_1zfc4s__gnNI@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ail_1zfc4s__gnNI@chamomile>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-0.46 / 15.00];
+	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13210-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[strlen.de];
-	TAGGED_FROM(0.00)[bounces-13208-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[nwl.cc];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:jan.konczak@cs.put.poznan.pl,s:lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[nwl.cc:-];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,strlen.de:email,strlen.de:mid,strlen.de:from_mime]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,orbyte.nwl.cc:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C4B9A66C1A8
+X-Rspamd-Queue-Id: C7FF866D130
 
-... "phony", because its not testing offloads, it tests the control
-plane code.  Also test error unwind via fault injection framework.
+Hi Pablo,
 
-For a proper test, real hardware would be required given we'd have
-check if 'previously handed off to hardware' offload commands are
-properly removed again on failure or rule flush.
+On Wed, Jun 10, 2026 at 05:16:39PM +0200, Pablo Neira Ayuso wrote:
+> On Wed, Jun 10, 2026 at 01:57:09PM +0200, Phil Sutter wrote:
+> > Support for 'custom' parse.error value was added in bison-3.6. Fall back
+> > to previous value for earlier versions.
+> > 
+> > This is harder to get right than it seems: On one hand, preprocessor
+> > macros can't be used in parser_bison.y's declaration section and
+> > automake forbids conditional changes to AM_YFLAGS on the other.
+> > 
+> > Suggested-by: Jan Kończak <jan.konczak@cs.put.poznan.pl>
+> > Fixes: 67b822f2b2624 ("parser_bison: on syntax errors, output expected tokens")
+> > Signed-off-by: Phil Sutter <phil@nwl.cc>
+> > ---
+> >  Makefile.am        |  6 ++++++
+> >  configure.ac       | 12 ++++++++++++
+> >  src/parser_bison.y |  4 ++--
+> >  3 files changed, 20 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Makefile.am b/Makefile.am
+> > index fa71e06eefee5..ddf145a87c810 100644
+> > --- a/Makefile.am
+> > +++ b/Makefile.am
+> > @@ -164,6 +164,12 @@ AM_CFLAGS = \
+> >  	$(NULL)
+> >  
+> >  AM_YFLAGS = -d -Wno-yacc
+> > +if BISON_CUSTOM_ERROR
+> > +YACC += -D parse.error=custom -D parse.lac=full
+> > +AM_CFLAGS += -DBISON_CUSTOM_ERROR
+> > +else
+> > +YACC += -D parse.error=verbose
+> > +endif
+> >  
+> >  if BUILD_PROFILING
+> >  AM_CFLAGS += --coverage
+> > diff --git a/configure.ac b/configure.ac
+> > index 0d3ee2ac89f69..b6cad3117a51b 100644
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -45,6 +45,18 @@ then
+> >          exit 1
+> >  fi
+> >  
+> > +AC_ARG_ENABLE([extended_parser_errors],
+> > +	      AS_HELP_STRING([--disable-extended-parser-errors],
+> > +			     [Disable use of parse.error=custom and LAC in Bison]),
+> > +	      [], [
+> > +			enable_extended_parser_errors=no
+> > +			AC_SUBST([BISON], [$ac_cv_prog_YACC])
+> > +			AX_PROG_BISON_VERSION([3.6],
+> > +					      [enable_extended_parser_errors=yes])
+> > +	      ])
+> > +AM_CONDITIONAL([BISON_CUSTOM_ERROR],
+> > +	       [test "x$enable_extended_parser_errors" != xno])
+> 
+> Can this be made transparent? ie. if bison >= 3.6, then enable it
+> always. Otherwise, disable it.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- .../testing/selftests/net/netfilter/Makefile  |   1 +
- tools/testing/selftests/net/netfilter/config  |   6 +
- .../selftests/net/netfilter/nft_offload.sh    | 132 ++++++++++++++++++
- 3 files changed, 139 insertions(+)
- create mode 100755 tools/testing/selftests/net/netfilter/nft_offload.sh
+This is the default behaviour (which is the "else" case of that huge
+AC_ARG_ENABLE). Users may choose to override the version-based setting
+via --{en,dis}able-extended-parser-errors. Fine with you or am I missing
+your point?
 
-diff --git a/tools/testing/selftests/net/netfilter/Makefile b/tools/testing/selftests/net/netfilter/Makefile
-index d953ee218c0f..f88dd4ef8d26 100644
---- a/tools/testing/selftests/net/netfilter/Makefile
-+++ b/tools/testing/selftests/net/netfilter/Makefile
-@@ -32,6 +32,7 @@ TEST_PROGS := \
- 	nft_meta.sh \
- 	nft_nat.sh \
- 	nft_nat_zones.sh \
-+	nft_offload.sh \
- 	nft_queue.sh \
- 	nft_synproxy.sh \
- 	nft_tproxy_tcp.sh \
-diff --git a/tools/testing/selftests/net/netfilter/config b/tools/testing/selftests/net/netfilter/config
-index 979cff56e1f5..563a1e5c6322 100644
---- a/tools/testing/selftests/net/netfilter/config
-+++ b/tools/testing/selftests/net/netfilter/config
-@@ -11,6 +11,7 @@ CONFIG_BRIDGE_NF_EBTABLES_LEGACY=m
- CONFIG_BRIDGE_VLAN_FILTERING=y
- CONFIG_CGROUP_BPF=y
- CONFIG_CRYPTO_SHA1=m
-+CONFIG_DEBUG_FS=y
- CONFIG_DUMMY=m
- CONFIG_INET_DIAG=m
- CONFIG_INET_ESP=m
-@@ -33,9 +34,14 @@ CONFIG_IPV6_TUNNEL=m
- CONFIG_IP_VS=m
- CONFIG_IP_VS_PROTO_TCP=y
- CONFIG_IP_VS_RR=m
-+CONFIG_FAIL_FUNCTION=y
-+CONFIG_FAULT_INJECTION=y
-+CONFIG_FAULT_INJECTION_DEBUG_FS=y
-+CONFIG_FUNCTION_ERROR_INJECTION=y
- CONFIG_MACVLAN=m
- CONFIG_NAMESPACES=y
- CONFIG_NET_CLS_U32=m
-+CONFIG_NETDEVSIM=m
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_ADVANCED=y
- CONFIG_NETFILTER_NETLINK=m
-diff --git a/tools/testing/selftests/net/netfilter/nft_offload.sh b/tools/testing/selftests/net/netfilter/nft_offload.sh
-new file mode 100755
-index 000000000000..152f09a81403
---- /dev/null
-+++ b/tools/testing/selftests/net/netfilter/nft_offload.sh
-@@ -0,0 +1,132 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source lib.sh
-+
-+checktool "nft --version" "run test without nft tool"
-+modprobe -q netdevsim
-+
-+sysfs="/sys/kernel/debug/fail_function"
-+failname="/proc/self/make-it-fail"
-+duration=30
-+fault=0
-+ret=0
-+file_ft=""
-+file_rs=""
-+id=$((RANDOM%65536))
-+
-+read t < /proc/sys/kernel/tainted
-+if [ "$t" -ne 0 ];then
-+	echo SKIP: kernel is tainted
-+	exit $ksft_skip
-+fi
-+
-+cleanup() {
-+    cleanup_netdevsim "$id" "$NS"
-+    cleanup_ns "$NS"
-+    [ $fault -eq 1 ] && echo '!nsim_setup_tc' > "$sysfs/inject"
-+    rm -f "$file_ft" "$file_rs"
-+}
-+trap cleanup EXIT
-+
-+skip() {
-+	echo "SKIP: $@"
-+	[ $ret -eq 0 ] && exit 4
-+
-+	exit $ret
-+}
-+
-+set -e
-+setup_ns NS
-+
-+nsim=$(create_netdevsim "$id" "$NS" )
-+
-+nsim_port=$(create_netdevsim_port "$id" "$NS" 2)
-+
-+file_ft=$(mktemp)
-+cat > "$file_ft" <<EOF
-+flush ruleset
-+table inet t {
-+	flowtable f {
-+		flags offload
-+		hook ingress priority filter + 10
-+		devices = { "$nsim_port", "dummyf1" }
-+	}
-+
-+	chain cf {
-+		type filter hook forward priority 0; policy accept;
-+		ct state new meta l4proto tcp flow add @f
-+	}
-+}
-+EOF
-+
-+if ip netns exec "$NS" nft -f "$file_ft"; then
-+	echo "PASS: flowtable offload"
-+else
-+	echo "FAIL: flowtable offload"
-+	ret=1
-+fi
-+
-+file_rs=$(mktemp)
-+cat > "$file_rs" <<EOF
-+table netdev t {
-+	chain c {
-+		type filter hook ingress device $nsim_port priority 1
-+		flags offload
-+		ip saddr 10.2.1.1 ip daddr 10.2.1.2 ip protocol icmp accept
-+		ip saddr 10.2.1.1 ip daddr 10.2.1.3 ip protocol icmp drop
-+		ip saddr 10.2.1.0/24 ip daddr 10.2.1.0/24 ip protocol icmp accept
-+		ip6 saddr dead:beef::1 ip6 daddr dead:beef::2 meta l4proto ipv6-icmp accept
-+		ip6 saddr dead:beef::1 ip6 daddr dead:beef::3 meta l4proto ipv6-icmp drop
-+		ip6 saddr dead:beef::/64 ip6 daddr dead:beef::/64 meta l4proto ipv6-icmp accept
-+	}
-+}
-+EOF
-+if ip netns exec "$NS" nft -f "$file_rs"; then
-+	echo "PASS: ruleset offload"
-+else
-+	echo "FAIL: ruleset offload"
-+	ret=1
-+fi
-+
-+test -d "$sysfs" || skip "$sysfs not present"
-+grep -q nsim_setup_tc "$sysfs/injectable" || skip "nsim_setup_tc fault injection not available"
-+
-+echo Y > "$sysfs/task-filter"
-+echo 0 > "$sysfs/verbose"
-+echo "nsim_setup_tc" > "$sysfs/inject"
-+fault=1
-+
-+p=$(((RANDOM%90) + 10))
-+echo $p > "$sysfs/probability"
-+echo -1 > "$sysfs/times"
-+
-+count=0
-+ok=0
-+
-+now=$(date +%s)
-+stop=$((now+$duration))
-+
-+# fault-injection enabled rule loads are expected to fail.
-+set +e
-+while [ $now -le $stop ]; do
-+	for f in "$file_ft" "$file_rs"; do
-+		ip netns exec "$NS" bash -c "echo 1 > $failname ; ip netns exec "$NS" nft -f $f" 2> /dev/null
-+		[ $? -eq 0 ] && ok=$((ok+1))
-+		count=$((count+1))
-+	done
-+	now=$(date +%s)
-+done
-+
-+sleep 5
-+
-+read t < /proc/sys/kernel/tainted
-+if [ "$t" -eq 0 ];then
-+	echo PASS: kernel not tainted. $count rounds, $ok successful ruleset loads with P $p.
-+else
-+	echo ERROR: kernel is tainted. $count rounds, $ok successful ruleset loads with P $p.
-+	dmesg
-+	ret=1
-+fi
-+
-+exit $ret
--- 
-2.53.0
+> Then, include this information here in configure.ac:
+> 
+> echo "
+> nft configuration:
+>   cli support:                  ${with_cli}
+>   enable debugging symbols:     ${enable_debug}
+>   use mini-gmp:                 ${with_mini_gmp}
+>   enable man page:              ${enable_man_doc}
+>   libxtables support:           ${with_xtables}
+>   json output support:          ${with_json}
+>   collect profiling data:       ${enable_profiling}"
+> 
+> and here with -V:
+> 
+> # nft -V
+> nftables v1.1.6 (Commodore Bullmoose #7)
+>   cli:          editline
+>   json:         yes
+>   minigmp:      no
+>   libxtables:   yes
 
+Oh right, I keep forgetting about the summary (which is really useful as
+reading config.log needs training).
+
+> Maybe add:
+> 
+>   bison >= 3.6: yes
+> 
+> or similar?
+
+I'd go with "extended parser errors", to remain consistent with the
+config option and also because it calls out what actually changed.
+
+There is one other oddity still which I should check: The configure
+script always checks bison version, but 'make dist' tarballs ship with
+parser_bison.c and thus don't need bison at all. So this patch might
+disable the extended error messages for tarball users which don't have
+bison installed.
+
+Cheers, Phil
 
