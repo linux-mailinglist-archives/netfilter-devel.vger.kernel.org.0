@@ -1,54 +1,54 @@
-Return-Path: <netfilter-devel+bounces-13217-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13218-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AscuKBCRKmoksgMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13217-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jun 2026 12:42:24 +0200
+	id h+EDLTeRKmo+sgMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13218-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jun 2026 12:43:03 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C61E670F0D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jun 2026 12:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2009B670F2E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jun 2026 12:43:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=jlgUWe0b;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13217-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13217-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="N/FVvvEV";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13218-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13218-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 87A76307DFDF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jun 2026 10:40:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 89A1032E2EC3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jun 2026 10:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121413D47AD;
-	Thu, 11 Jun 2026 10:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECD03D47AF;
+	Thu, 11 Jun 2026 10:40:22 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC3D3CE0A3;
-	Thu, 11 Jun 2026 10:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A183A1E80;
+	Thu, 11 Jun 2026 10:40:21 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781174419; cv=none; b=YfndnQOwMJOvTss+jO376b7JvGHacVkb8iFOdhXZ/GsM25S2W54xFf635uDcw54r3u+NbMekXSrDi4ZEyMdvd8TWzSN6fdnL21xO263gIu/GVhbj4EYahTiVuuBsIKZiskK9wrI8hZgAOV41DhphXOHObyf+0vhGyq+Nf7OGJLs=
+	t=1781174422; cv=none; b=kg/tR45phXklgbRXjMiAwc9bcFjNYarB7WdJBC6nkynz8aDmJBuvjzI9hgRJ8bJycDCWe++3FQbEoeCQSSupwguFQl80ua8OepfhLNnD0YqLGFW4FARAMzWj2kNCevoIR80UgcCD6DVt/5co1lPR6c2OWEgk85QUDP6x6EagfOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781174419; c=relaxed/simple;
-	bh=CtI1MaLi9PcEuQdw+0OwSgRnN20SXOqElSAtwppKGrI=;
+	s=arc-20240116; t=1781174422; c=relaxed/simple;
+	bh=5tep4ZCqo8mD5ez7lhAPy8giA4HfEiACCxRP/SrgmdA=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=epGBFw2karQZeRPyAhp0QtQgxb2OvMrciE8go8fJL3x6SRYwARRASAeXuYR4jn9d+5pE6Z6YEAdTTPeOYtB+H4aXgx8/TRs2+iIepL1oi7/hDP2RnaqAEjA1ZtfbMBnrsiuv+7MKTrn+DQZc/+EibSAmGiaPSXmxiZCWPW+UBhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jlgUWe0b; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A62491F00893;
-	Thu, 11 Jun 2026 10:40:17 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=U62HNwFKYfwW7bRxguoAWikVsJ8dNV8Q77q81coFK9b54YPmnr7HdHw78A8HwehnFuXvkb4ewnjKxiEd6BvocqHzEdM5itepevEIO+wuZz2eG5gT39IYI3PGrfKMwd50y9tUMVI0Www4NUI7e6VHDLXeUTBwDPiVckbI35BpEZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N/FVvvEV; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E406F1F00893;
+	Thu, 11 Jun 2026 10:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781174417;
-	bh=lb5yR6kKw15NIkhKjlAVivaFIso9k3T093nzjy6Tiqk=;
+	s=k20260515; t=1781174420;
+	bh=sRyf/IRwECv7OLEXcVD6dn1iTbfDnqZtBreJDXUm4jA=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=jlgUWe0bTXe0c/qdZyLSvX76essm9z4hi6gizBOqwN0ELLxmKNHGDgJLWTZVphUbp
-	 CY9aHMRRoc4hhg60zRNS/h7TChmSzoPx7S/nc27HAvMMLyi3QXI0389qhK6m93jzFV
-	 d/moGTbEx4n2O3qM9Zl2LPOVnAQG74+OEm5S2TnRnw/rJ1cFThtA6ahj0/V/lAShc2
-	 ZjqKj8GgqM5N6l+J/R3pyE2judurIn5Tq3kahFvMkmyQXdxbzGB/QUYJUsEkVeY/Tp
-	 7b4JebysjWdX6U1Fj4POg51ABGDMKI4G7w7jdVOgyo7smWSY7SqV7y+46kYR5CnPCN
-	 uijnfpbnSX9ew==
+	b=N/FVvvEVIR4DWWnCmKEJ5Y0WQmR/nn8ENGu+qPpst1lpgVPbJSbhouk6ntcb/ndY1
+	 EigJZSiAvFcvPfhB7mWYae83WiTYV8GE3eyNGI//pXtHUkEhQdeC3os6KHEiesxB1U
+	 08HHzsQJbOiqnuID5tB+pl5S6SjBHQKhdCyDjXJlKZ/+wBgPQiNUMYFUArEYbO5OeR
+	 t6f42XCccs8up0YioI7XEF/sDzQ/1ubovXKWJ3rrxgUTx9otHfXp0eLvYZPG0VPC/H
+	 Ew9OK0bYElaixvuOMYqNgv+KvQSfHBPFoQB3GeCfGJAOtV0MlVaqi5x+ICNDqLrmMY
+	 i995ArVQ8TDYQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 568873930E4A;
-	Thu, 11 Jun 2026 10:40:16 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 939263930E4A;
+	Thu, 11 Jun 2026 10:40:19 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -57,86 +57,76 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/8] netfilter: revalidate bridge ports
+Subject: Re: [PATCH net v2] netfilter: nf_log: validate MAC header was set
+ before
+ dumping it
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <178117441489.3886909.15763136255322020254.git-patchwork-notify@kernel.org>
-Date: Thu, 11 Jun 2026 10:40:14 +0000
-References: <20260610161629.214092-2-pablo@netfilter.org>
-In-Reply-To: <20260610161629.214092-2-pablo@netfilter.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
- netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, fw@strlen.de, horms@kernel.org
+ <178117441822.3886909.10696734490273557626.git-patchwork-notify@kernel.org>
+Date: Thu, 11 Jun 2026 10:40:18 +0000
+References: <20260609225502.54239-1-xmei5@asu.edu>
+In-Reply-To: <20260609225502.54239-1-xmei5@asu.edu>
+To: Xiang Mei <xmei5@asu.edu>
+Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org, fw@strlen.de,
+ phil@nwl.cc, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, coreteam@netfilter.org, netdev@vger.kernel.org,
+ bestswngs@gmail.com
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13218-lists,netfilter-devel=lfdr.de,netdevbpf];
+	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13217-lists,netfilter-devel=lfdr.de,netdevbpf];
 	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:kuba@kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:fw@strlen.de,m:horms@kernel.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_RECIPIENTS(0.00)[m:xmei5@asu.edu,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:bestswngs@gmail.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	FROM_NO_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,strlen.de:email,netfilter.org:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2C61E670F0D
+X-Rspamd-Queue-Id: 2009B670F2E
 
 Hello:
 
-This series was applied to netdev/net.git (main)
+This patch was applied to netdev/net.git (main)
 by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-On Wed, 10 Jun 2026 18:16:21 +0200 you wrote:
-> From: Florian Westphal <fw@strlen.de>
-> 
-> ebt_redirect_tg() dereferences br_port_get_rcu() return without a
-> NULL check, causing a kernel panic when the bridge port has been
-> removed between the original hook invocation and an NFQUEUE
-> reinject.
+On Tue,  9 Jun 2026 15:55:02 -0700 you wrote:
+> The fallback path of dump_mac_header() guards the MAC header access
+> only with "skb->mac_header != skb->network_header", without checking
+> skb_mac_header_was_set(). When the MAC header is unset, mac_header is
+> 0xffff, so the test passes and skb_mac_header(skb) returns
+> skb->head + 0xffff, ~64 KiB past the buffer; the loop then reads
+> dev->hard_header_len bytes out of bounds into the kernel log.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,1/8] netfilter: revalidate bridge ports
-    https://git.kernel.org/netdev/net/c/ccb9fd4b8753
-  - [net,2/8] netfilter: nf_tables_offload: drop device refcount on error
-    https://git.kernel.org/netdev/net/c/efc542561729
-  - [net,3/8] netfilter: nf_conntrack: destroy stale expectfn expectations on unregister
-    https://git.kernel.org/netdev/net/c/c3009418f9fa
-  - [net,4/8] netfilter: x_tables: avoid leaking percpu counter pointers
-    https://git.kernel.org/netdev/net/c/f7f2fbb0e893
-  - [net,5/8] netfilter: nf_log: validate MAC header was set before dumping it
+  - [net,v2] netfilter: nf_log: validate MAC header was set before dumping it
     https://git.kernel.org/netdev/net/c/a84b6fedbc97
-  - [net,6/8] netfilter: nft_exthdr: fix register tracking for F_PRESENT flag
-    https://git.kernel.org/netdev/net/c/772cecf198da
-  - [net,7/8] netfilter: nft_fib: fix stale stack leak via the OIFNAME register
-    https://git.kernel.org/netdev/net/c/ab185e0c4fb8
-  - [net,8/8] netfilter: nft_meta_bridge: fix stale stack leak via IIFHWADDR register
-    https://git.kernel.org/netdev/net/c/c7d573551f92
 
 You are awesome, thank you!
 -- 
