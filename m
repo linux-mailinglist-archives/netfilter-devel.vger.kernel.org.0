@@ -1,40 +1,41 @@
-Return-Path: <netfilter-devel+bounces-13228-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13229-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id N+4WC9nPK2r/FQQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13228-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 11:22:33 +0200
+	id 0HqVJ+LPK2oFFgQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13229-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 11:22:42 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F36678366
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 11:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D1167836F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 11:22:42 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13228-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13228-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13229-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13229-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4FB0C3039C64
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 09:22:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AD7933053B1A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 09:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E6D3793AD;
-	Fri, 12 Jun 2026 09:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79E3988EB;
+	Fri, 12 Jun 2026 09:22:31 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8792836A009;
-	Fri, 12 Jun 2026 09:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB0139150A;
+	Fri, 12 Jun 2026 09:22:27 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781256146; cv=none; b=N7xCPn4zigzazt5OHFAkY/OYccx99ATJsm62CU/GSs6j9ztJQVwPR2izeO9YRdWQZa0Px5kCaAx1HEjxOQ0RaPRAtS0IONURaYxl392SFH6TubncsHSLGCzGRdQbhGEkrn7V6PB/Gbavc7q6qDuybwL3Xw5HAiiuJs/FiR4CGX4=
+	t=1781256151; cv=none; b=U5M9Yqki+k+uVVLsgXn/Ar4984N701OCoID7EOmnWs8yAKPrQKYKueSdis/Lizv6DNK63t+M1i+3j53bWRzfiL17oyTpIbU+DaCrIcwg6Y4xGEU87n12NlNQipR4zik1Qm7syBMMCsd9q6W4nszWs+xqiYa4lkZTRUCtOlh2Rk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781256146; c=relaxed/simple;
-	bh=dq4ZY9BknbSjPjIvik5Y/re2KvfeV9+X9cAKUvXwhoo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kyAKFzYrG+4AWCKJ7MyH1Wx2+6mtdRJigOXFsyv+rLobO2tY/nmFoi7PTPkstu2ZoA4GjYhj5fGI2LLSlACPPR911Qfmu7wbLNKKnPO0/guLCuIiY2AJDEGrKwOcXrpB8rKQsgI/UkGhziDqyhpxII9e+TXnpTtxJbJvCls9rlg=
+	s=arc-20240116; t=1781256151; c=relaxed/simple;
+	bh=X96KAz17YtlB5wGgCf4sE/BMaQN4rR9wxHvICVud620=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lEHlscI79a8wR8frAYLYR6Lt8zMRQm1vI8BQ7KdzTAc6qxsyf2CbuZfGe6OAZg9hwiIHoTjv35btA+EPP1ti5Eer58eRxODYmmg0O+CwoI3hTNI/nywd2k1NoYG40tV65dNt18Bnt0G/zZy1dFIMdn1Xgar/76ndwuYyRZqJnlM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 1E4E7607E1; Fri, 12 Jun 2026 11:22:21 +0200 (CEST)
+	id 6079360842; Fri, 12 Jun 2026 11:22:25 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -43,10 +44,12 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH v2 net-next 0/2] netdevsim: add fake FT/CLS_FLOWER offload
-Date: Fri, 12 Jun 2026 11:22:07 +0200
-Message-ID: <20260612092209.11966-1-fw@strlen.de>
+Subject: [PATCH v2 net-next 1/2] netdevsim: tc: allow to test nf_tables offload control plane code
+Date: Fri, 12 Jun 2026 11:22:08 +0200
+Message-ID: <20260612092209.11966-2-fw@strlen.de>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260612092209.11966-1-fw@strlen.de>
+References: <20260612092209.11966-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -64,7 +67,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13228-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13229-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
 	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -84,33 +87,81 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,strlen.de:email,strlen.de:mid,strlen.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B5F36678366
+X-Rspamd-Queue-Id: 34D1167836F
 
-v2: fix up error reporting via extack
-    shellcheck cleanups
-    sort config toggles
+The actual 'offload' is phony, all commands are ignored: this is only
+useful to test control plane code.
 
-1) Enable nf_tables offload control plane testing in netdevsim. Tag
-   existing offload fn to allow error injection for testing rollback and abort
-   logic.
+Tag the existing callback to permit error injection to test rollback/abort
+code in nf_tables.  This is also for fuzzers - the fault injection
+framework allows probabilistic error insertion.
 
-2) Add nft_offload selftest to exercise the control plane and error
-   unwind via fault injection.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ v2: move extack error to nsim_setup_tc_block_cb
 
-Florian Westphal (2):
-  netdevsim: tc: allow to test nf_tables offload control plane code
-  selftests: netfilter: add phony nft_offload test
+ drivers/net/netdevsim/bpf.c |  6 ------
+ drivers/net/netdevsim/tc.c  | 20 +++++++++++++++++++-
+ 2 files changed, 19 insertions(+), 7 deletions(-)
 
- drivers/net/netdevsim/bpf.c                   |   6 -
- drivers/net/netdevsim/tc.c                    |  20 ++-
- .../testing/selftests/net/netfilter/Makefile  |   1 +
- tools/testing/selftests/net/netfilter/config  |   6 +
- .../selftests/net/netfilter/nft_offload.sh    | 132 ++++++++++++++++++
- 5 files changed, 158 insertions(+), 7 deletions(-)
- create mode 100755 tools/testing/selftests/net/netfilter/nft_offload.sh
-
+diff --git a/drivers/net/netdevsim/bpf.c b/drivers/net/netdevsim/bpf.c
+index 8eebcc933ddb..16aa88278398 100644
+--- a/drivers/net/netdevsim/bpf.c
++++ b/drivers/net/netdevsim/bpf.c
+@@ -123,12 +123,6 @@ int nsim_bpf_setup_tc_block_cb(enum tc_setup_type type,
+ 	struct netdevsim *ns = cb_priv;
+ 	struct bpf_prog *oldprog;
+ 
+-	if (type != TC_SETUP_CLSBPF) {
+-		NSIM_EA(cls_bpf->common.extack,
+-			"only offload of BPF classifiers supported");
+-		return -EOPNOTSUPP;
+-	}
+-
+ 	if (!tc_cls_can_offload_and_chain0(ns->netdev, &cls_bpf->common))
+ 		return -EOPNOTSUPP;
+ 
+diff --git a/drivers/net/netdevsim/tc.c b/drivers/net/netdevsim/tc.c
+index 8f013a5895a2..a415e02a6df1 100644
+--- a/drivers/net/netdevsim/tc.c
++++ b/drivers/net/netdevsim/tc.c
+@@ -9,7 +9,22 @@
+ static int
+ nsim_setup_tc_block_cb(enum tc_setup_type type, void *type_data, void *cb_priv)
+ {
+-	return nsim_bpf_setup_tc_block_cb(type, type_data, cb_priv);
++	struct flow_cls_common_offload *common = type_data;
++	int err = 0;
++
++	switch (type) {
++	case TC_SETUP_CLSBPF:
++		err = nsim_bpf_setup_tc_block_cb(type, type_data, cb_priv);
++		break;
++	case TC_SETUP_CLSFLOWER:
++		break;
++	default:
++		NSIM_EA(common->extack, "offload type not supported");
++		err = -EOPNOTSUPP;
++		break;
++	}
++
++	return err;
+ }
+ 
+ static void nsim_taprio_stats(struct tc_taprio_qopt_stats *stats)
+@@ -73,7 +88,10 @@ nsim_setup_tc(struct net_device *dev, enum tc_setup_type type, void *type_data)
+ 						  &nsim_block_cb_list,
+ 						  nsim_setup_tc_block_cb,
+ 						  ns, ns, true);
++	case TC_SETUP_FT:
++		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+ }
++ALLOW_ERROR_INJECTION(nsim_setup_tc, ERRNO);
 -- 
 2.53.0
 
