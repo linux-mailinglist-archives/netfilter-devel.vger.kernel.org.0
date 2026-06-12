@@ -1,58 +1,58 @@
-Return-Path: <netfilter-devel+bounces-13234-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13232-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ogbeCZH/K2ocJQQAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13234-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 14:46:09 +0200
+	id DCkLA3z/K2oTJQQAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13232-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 14:45:48 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7495567974D
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 14:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62279679735
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 14:45:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b=ZCY6zBxq;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13234-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13234-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b=Mv2lNupw;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13232-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13232-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F161F3033536
-	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 12:42:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1398432F536D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 12 Jun 2026 12:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A06B3E2763;
-	Fri, 12 Jun 2026 12:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2223E1704;
+	Fri, 12 Jun 2026 12:42:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5033DE457
-	for <netfilter-devel@vger.kernel.org>; Fri, 12 Jun 2026 12:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A705B23EA83
+	for <netfilter-devel@vger.kernel.org>; Fri, 12 Jun 2026 12:42:30 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781268155; cv=pass; b=XT6dSKJ7+CuKnkJcY9sQZ6zO95uX+lA1xKr/adOZKHozcFp3ultT+Jy9dCzTZTnCVwZIcxoZchQFO791vtIoyGr1+McO27Iegnq/Ee4r26yYpBp6NUrLScuPrgWMDclQrDvVLfZf5/X00AEM8Hda6hxNlxt73x4fr0/DPJiuVIc=
+	t=1781268152; cv=pass; b=GGsSEbrEZs7i9s2z8xgC88hyWiIN6v+NxNhwVFO7XTPhVAfaF9EKqdTDXSX+NTG/HJfhnTLiwyeBYWTeAollNSfZMyBRKXYUnveQXZaftqmj2MAFCFIjI3TwUOfdPdu/inT/n+32HC92qGTHnr6+FLkNKSu07NVWnJ0WMhQMuag=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781268155; c=relaxed/simple;
-	bh=TaNWalm3ueLUHjtjzR2p09USmeki+oTeGC1XV1PxysQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hEa6yfOPA2nGzGIvorGsa/7gMfJZmSm08QwpNKLvGCDu7kGjgmI70U9NVvMSR4OfRMGDG5qm69R0HefgqbhesvPiZdFFfF/kH4ldCwagjk7duAlRbcdZWWvISI+vsqewXSh81bUyaDWk5ww+jcKrExllpMmoTrkANtHQqllBoJw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=ZCY6zBxq; arc=pass smtp.client-ip=136.143.169.17
-ARC-Seal: i=1; a=rsa-sha256; t=1781268131; cv=none; 
+	s=arc-20240116; t=1781268152; c=relaxed/simple;
+	bh=ngt+z5NZNP2bLxE1iGJFOZGpI8x5OafjofmlhPbgNfQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cRnF8F5J/rxRDU6LhccQtLZVRYCYDZO1c5N9f89oLwkL0CQi8xJLe5kDXmHrvdZeSNwWALVAVJdOvgnt03akUA8sz+JpToRr8IA72hLaDGXNGSGL3vGbbVHUrFcQSPUYZAvL/dzePRkADEskdnqkA1ubdyua3pkGz8vJ1qABSF4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=Mv2lNupw; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1781268137; cv=none; 
 	d=zohomail.eu; s=zohoarc; 
-	b=hN7Jzcq4cdUR6LNBnICnOk5YUmat3Im5vjFut5p940nstbYWu/XvWw15x3QJSTjHE34Xu/0vAECt1d3mSPR2/fj7WJa2kbcOBel4+qMU4PWpNMMGckD7QAZnIotztnXzPaEY6EHoXKIVm0cpnCdkEYJ+XmRpy/XhpuX3DGFud70=
+	b=Ih6aNhdo2cEG8E3Cfgp1c+Q82WzXFmvVbMCDcPS5CFeUvlZvZ0GweLcpzkI1GfPmkUGue7QZTYAFYlXve/0Ivx7Fs8bv23Usf4zwwKRUC37/bGlJ6E1WoKmmQiqLlh91RKBfQrjcG6DoEKmNeCWksnhmgifkEPp5J3wf3UPNb7A=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1781268131; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=2amGp+Uqp40v4+D/UhRTPE8frH0rHY1aE5A+EOt0im4=; 
-	b=CGF9hmApeRKHKo2Gg9MfQbnKJ9nVa1dRxb7RD0aAosg89VFq46IP8ucwKQt+hiLOSyMv9SwYX/uXHX/x8EFMqygq9tdcXn/Bv0j/LCy4GGw0Z6uTiv6Cb78YhYGqYSuZ1MMgRZWvYFbj5wmb3kAqI+D5uFLXosKTU9hehwF2FSI=
+	t=1781268137; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=JPDMg/1vcqRmkkaVbSyViyubTh4oMaFo0jk8Xx+5uoQ=; 
+	b=DW6Gl6LfNUG3EceJovnKVLV3IZAp0dxMG3veXBBpwBy79M3qc3+rgMxX8eF81cPTCc0Pbsy4fdiX6kSNEQPLuaDZHGY1QC6hr4Dektn631b1ry2dpJxUXm1uKunuwPyeinpAuKEPX0cZ+VxmOFbL0UqRbiS+FSgvDUqbV+gx2SQ=
 ARC-Authentication-Results: i=1; mx.zohomail.eu;
 	dkim=pass  header.i=carlosgrillet.me;
 	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
 	dmarc=pass header.from=<carlos@carlosgrillet.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1781268131;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1781268137;
 	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
 	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=2amGp+Uqp40v4+D/UhRTPE8frH0rHY1aE5A+EOt0im4=;
-	b=ZCY6zBxqzDim737ykvLTtgnwqiE0APQaoeRMHXDwq23JLn7bc5/ELMBYS4NpQQK7
-	BfFPe/dRexIsDb5sUHgNlvSsL6mva+qGQ2vPJTZvPkRstrhF+eSi+oak3ujdZKKW2DL
-	CKxCmQqj7/YVdEuYk+WRA11Nn71XWsGNRoxRmF7E=
-Received: by mx.zoho.eu with SMTPS id 178126812929010.282870073268896;
-	Fri, 12 Jun 2026 14:42:09 +0200 (CEST)
+	bh=JPDMg/1vcqRmkkaVbSyViyubTh4oMaFo0jk8Xx+5uoQ=;
+	b=Mv2lNupwxMNtIpYPlujRU2pN5U1Nxv39ibnhv0R+2y/Yp6jX0dJ2B2GeFBeGlSE/
+	ZDzAk5gXcZ/ITGofudER7KwbZ2IY+RE8/ORiU+0ktWF752S6ClT4ygsPRzj01FX9Ekn
+	N2yXBd/nsw3/CN6ClFji2aFREkIFwk4DJlRVEk6Q=
+Received: by mx.zoho.eu with SMTPS id 1781268135355851.5949726788033;
+	Fri, 12 Jun 2026 14:42:15 +0200 (CEST)
 From: Carlos Grillet <carlos@carlosgrillet.me>
 To: Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>,
@@ -67,9 +67,9 @@ To: Pablo Neira Ayuso <pablo@netfilter.org>,
 	netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
 	linux-kernel@vger.kernel.org (open list)
 Cc: Carlos Grillet <carlos@carlosgrillet.me>
-Subject: [PATCH nf-next 4/6] netfilter: xt_DSCP: replace u_int8_t with u8
-Date: Fri, 12 Jun 2026 14:40:24 +0200
-Message-ID: <20260612124027.71673-5-carlos@carlosgrillet.me>
+Subject: [PATCH nf-next 5/6] netfilter: xt_TCPOPTSTRIP: replace u_int8_t and u_int16_t with u8 and u16
+Date: Fri, 12 Jun 2026 14:40:25 +0200
+Message-ID: <20260612124027.71673-6-carlos@carlosgrillet.me>
 X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -98,7 +98,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13234-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13232-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -110,59 +110,52 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,carlosgrillet.me:dkim,carlosgrillet.me:email,carlosgrillet.me:mid,carlosgrillet.me:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,carlosgrillet.me:dkim,carlosgrillet.me:email,carlosgrillet.me:mid,carlosgrillet.me:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7495567974D
+X-Rspamd-Queue-Id: 62279679735
 
-Replace POSIX u_int8_t with preferred kernel type u8
+Replace POSIX u_int8_t/u_int16_t with preferred kernel types u8/u16
 
 No functional changes.
 
 Signed-off-by: Carlos Grillet <carlos@carlosgrillet.me>
 ---
- net/netfilter/xt_DSCP.c | 8 ++++----
+ net/netfilter/xt_TCPOPTSTRIP.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/xt_DSCP.c b/net/netfilter/xt_DSCP.c
-index cfa44515ab72..76231e1dc5b5 100644
---- a/net/netfilter/xt_DSCP.c
-+++ b/net/netfilter/xt_DSCP.c
-@@ -30,7 +30,7 @@ static unsigned int
- dscp_tg(struct sk_buff *skb, const struct xt_action_param *par)
- {
- 	const struct xt_DSCP_info *dinfo = par->targinfo;
--	u_int8_t dscp = ipv4_get_dsfield(ip_hdr(skb)) >> XT_DSCP_SHIFT;
-+	u8 dscp = ipv4_get_dsfield(ip_hdr(skb)) >> XT_DSCP_SHIFT;
+diff --git a/net/netfilter/xt_TCPOPTSTRIP.c b/net/netfilter/xt_TCPOPTSTRIP.c
+index 93f064306901..265d21697847 100644
+--- a/net/netfilter/xt_TCPOPTSTRIP.c
++++ b/net/netfilter/xt_TCPOPTSTRIP.c
+@@ -16,7 +16,7 @@
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/xt_TCPOPTSTRIP.h>
  
- 	if (dscp != dinfo->dscp) {
- 		if (skb_ensure_writable(skb, sizeof(struct iphdr)))
-@@ -47,7 +47,7 @@ static unsigned int
- dscp_tg6(struct sk_buff *skb, const struct xt_action_param *par)
+-static inline unsigned int optlen(const u_int8_t *opt, unsigned int offset)
++static inline unsigned int optlen(const u8 *opt, unsigned int offset)
  {
- 	const struct xt_DSCP_info *dinfo = par->targinfo;
--	u_int8_t dscp = ipv6_get_dsfield(ipv6_hdr(skb)) >> XT_DSCP_SHIFT;
-+	u8 dscp = ipv6_get_dsfield(ipv6_hdr(skb)) >> XT_DSCP_SHIFT;
+ 	/* Beware zero-length options: make finite progress */
+ 	if (opt[offset] <= TCPOPT_NOP || opt[offset+1] == 0)
+@@ -33,8 +33,8 @@ tcpoptstrip_mangle_packet(struct sk_buff *skb,
+ 	const struct xt_tcpoptstrip_target_info *info = par->targinfo;
+ 	struct tcphdr *tcph, _th;
+ 	unsigned int optl, i, j;
+-	u_int16_t n, o;
+-	u_int8_t *opt;
++	u16 n, o;
++	u8 *opt;
+ 	int tcp_hdrlen;
  
- 	if (dscp != dinfo->dscp) {
- 		if (skb_ensure_writable(skb, sizeof(struct ipv6hdr)))
-@@ -73,7 +73,7 @@ tos_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ 	/* This is a fragment, no TCP header is available */
+@@ -97,7 +97,7 @@ tcpoptstrip_tg6(struct sk_buff *skb, const struct xt_action_param *par)
  {
- 	const struct xt_tos_target_info *info = par->targinfo;
- 	struct iphdr *iph = ip_hdr(skb);
--	u_int8_t orig, nv;
-+	u8 orig, nv;
+ 	struct ipv6hdr *ipv6h = ipv6_hdr(skb);
+ 	int tcphoff;
+-	u_int8_t nexthdr;
++	u8 nexthdr;
+ 	__be16 frag_off;
  
- 	orig = ipv4_get_dsfield(iph);
- 	nv   = (orig & ~info->tos_mask) ^ info->tos_value;
-@@ -93,7 +93,7 @@ tos_tg6(struct sk_buff *skb, const struct xt_action_param *par)
- {
- 	const struct xt_tos_target_info *info = par->targinfo;
- 	struct ipv6hdr *iph = ipv6_hdr(skb);
--	u_int8_t orig, nv;
-+	u8 orig, nv;
- 
- 	orig = ipv6_get_dsfield(iph);
- 	nv   = (orig & ~info->tos_mask) ^ info->tos_value;
+ 	nexthdr = ipv6h->nexthdr;
 -- 
 2.54.0
 
