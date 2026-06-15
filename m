@@ -1,325 +1,151 @@
-Return-Path: <netfilter-devel+bounces-13270-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13273-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id fOzMOZ7FL2rcGAUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13270-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2026 11:27:58 +0200
+	id +3JdF6gAMGplLgUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13273-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2026 15:39:52 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B1786850BA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2026 11:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C38DB686CEB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2026 15:39:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=aCz9mX0d;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13270-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13270-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b=hriYTGoR;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13273-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13273-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 66AD5301FAB7
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2026 09:27:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4ED383028C64
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2026 13:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F753DA5AB;
-	Mon, 15 Jun 2026 09:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA863F58F1;
+	Mon, 15 Jun 2026 13:39:35 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264893DA7D4;
-	Mon, 15 Jun 2026 09:27:33 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781515654; cv=none; b=J+py+xzLmaHpj5aYYdaQdveJYlo38B9j+ghkWa4WFkBxe+Kub0paqilXO2VDoG1rDgvDmhRwVEpik+zRUxmHLYPV89+9V3OyHgHdedho20NDPQch7anZ5KTImBzuvrftvig50XA7J/i2mzljjoeXruHilIx06NyNrJoXeX2rBCk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781515654; c=relaxed/simple;
-	bh=UZ9BYVNtjtgZwukx1GOZPb93PDVTmK9M1EXoruYiulE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T/K1arVju7ij6zFfVM0QNojlxGlyXv0KZb3Vsu65APW7L5NEBeKvMev4Y4gHYSSVu34V7wMYadYZofdGBtIm/uCn8u4RDPwcYZrGwDiOVHOmdUwNvwLCPz+TX4UlZRltzWeaUIp4lemxfaWa24qaKRFbUpQerFY+pTszpM9cowY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCz9mX0d; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717B81F000E9;
-	Mon, 15 Jun 2026 09:27:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781515653;
-	bh=ZEcxff0/VTWOysmE51CxgyAAzzKf0arB5db1sO6Z2bw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=aCz9mX0dzlIDDBkQzgfTGqFGSMPouFXY9uqsi0Rgxoy+rrQ4qEBvvX9akYD29flte
-	 346v2oLg6grvcvKDBLGMaNFQuaW1uSGrYvmzBR94MOMgYyWK5QMxkJhcHVlSbFYZ1o
-	 9Hkzmmcj417tPBMY/Z4eaB6t+AuTVybAM/ROMv376dSD0u5jU8yke0WBwbkPeuq2R3
-	 q4OzfNwtMElvUH4QbLnWir6hwmm+sDXPMFdDo+haZa179m2SFoqZHpBSKgYlb+HpNi
-	 EvAePbMIYq+/5zPbylGHVSLWUEqYq+N0Dxdmp2gYZ1R0K+19O9rF8ESoiW2IS0/mTs
-	 NnJIj+7TIeFNQ==
-Date: Mon, 15 Jun 2026 11:27:30 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	edumazet@google.com, fw@strlen.de, horms@kernel.org
-Subject: Re: [PATCH net-next 09/11] netfilter: flowtable: bail out if forward
- path cannot be discovered
-Message-ID: <ai_Fgq_iBWNLKLro@lore-desk>
-References: <20260614114605.474783-1-pablo@netfilter.org>
- <20260614114605.474783-10-pablo@netfilter.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A253F4126;
+	Mon, 15 Jun 2026 13:39:32 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781530775; cv=pass; b=vBqYCRPLbZDGIBxBLO8kfBogafFd4luK3WXRmXIWzCzxIYE2+9CcFVJQEme0AEkCGWHaS5a9GvkSShsl94ZB53zFg2vLqtFU6x5kFTbIXwSpvNpVGiFtv/FKHb+zY7ra+IP/KtMmFi3Y1Wd4EagY1X29Hn47ixQsOEg+elcNK1w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781530775; c=relaxed/simple;
+	bh=ASGtZodxLV3FO64zH6r3PhGdLFkZRDXhr6OZzYY2y4I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nOQYNAccoBrUaTqCeeTLORnp9RrI9eFUt1jl4DlRlntpjL/ArUueo7u5iBRoVyt15Xy7EoXeR5+gA34j0ohIbWLafUXZYnqKz70dYLoG2uWTWIYUmHaOSIuSM/SP+liVPDoaRci9u8oPtJIvqZSF/0HGeK21l+Rf+fTD0oaqvCk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=hriYTGoR; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1781530743; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=dTVAfJNQeKYgmrIcTtNzo8NQu9NCsfGI6Xfv2f9RpQhAkhDnHYeD/VoUH6Kqem5UwR7j8t/5sO8SAjmOLB+OGrMUhQVfuknwO/YhJHdPnZvMD0Xj11SA3wqPVgjQ6L3AodKrswx3aeO4zpTWd5YIVJ+AUaqCB+LOmCvgD7qiN0s=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1781530743; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=dJfCvLHvQSghos3e6oW9Re3wWcWe+lXCS1XystogHFA=; 
+	b=F35xH8OwB2qh7kmPKmbJlHoDUQqAFWpYkdfmugFeFkTGo8qadZ82gYtgtirsWN8y6aN6gT226ibYjpYysvE6S/glWowSKH5Cffy8ajYsgtI+7RNIQkJkBXxWddhUrwI1R7B/oNl84KEPnvTwfqJUeAayJv7RXPSa0K3Xa+H+l9w=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=carlosgrillet.me;
+	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
+	dmarc=pass header.from=<carlos@carlosgrillet.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1781530743;
+	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=dJfCvLHvQSghos3e6oW9Re3wWcWe+lXCS1XystogHFA=;
+	b=hriYTGoRgNNVUWYT5IaXyyuFE+mQvRUC7wnOPmm1B5uqwD1hQBwFcaEaNoJs2KP2
+	PUzKDSBJvPCQaqHpxLQpk4ymG3nwi7877NLbm6flu92kmXCzBnwr3LfcRk16PX0bW27
+	TAiq/ubKwjVb4AL5tRSXiOnHqM2nioWOROuIPHwE=
+Received: by mx.zoho.eu with SMTPS id 1781530741417740.5121897517076;
+	Mon, 15 Jun 2026 15:39:01 +0200 (CEST)
+From: Carlos Grillet <carlos@carlosgrillet.me>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>
+Cc: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH nf-next v2 0/6] netfilter: replace u_int*_t with kernel int types
+Date: Mon, 15 Jun 2026 15:38:25 +0200
+Message-ID: <20260615133835.51273-1-carlos@carlosgrillet.me>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2voAxdxRxTDZPDqb"
-Content-Disposition: inline
-In-Reply-To: <20260614114605.474783-10-pablo@netfilter.org>
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-6.76 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SIGNED_PGP(-2.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[carlosgrillet.me:s=zmail];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-13270-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:kuba@kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:fw@strlen.de,m:horms@kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lorenzo@kernel.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13273-lists,netfilter-devel=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[carlosgrillet.me];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,sashiko.dev:url,netfilter.org:email,lore-desk:mid]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[carlosgrillet.me:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sashiko.dev:url,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5B1786850BA
+X-Rspamd-Queue-Id: C38DB686CEB
 
+Hi all! This is my first patch series of many, I hope :)
+I'd like to start contributing by helping out with janitor work,
+standardizing code and cleaning up.
 
---2voAxdxRxTDZPDqb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch series replaces POSIX u_int8_t/u_int16_t with the preferred
+kernel types u8/u16 across several netfilter files.
 
-> If forward path discovery fails for any reason or netdevice is not
-> registered for this flowtable, then bail out to classic forwarding path
-> rather than providing incomplete forwarding path.
->=20
-> Update the existing forward path parser functions to report an error
-> so the flow_offload expressions gives up on setting up the flowtable
-> entry.
->=20
-> Link: https://sashiko.dev/#/patchset/20260607094954.48892-15-pablo%40netf=
-ilter.org?part=3D14
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+u_int*_t appears in many other files, 48 more to be precise, but I wanted
+to keep this series small, unless advised otherwise.
 
-Tested-by: Lorenzo Bianconi <lorenzo@kernel.org>
+No functional changes.
 
-> ---
->  net/netfilter/nf_flow_table_path.c | 81 +++++++++++++++++-------------
->  1 file changed, 46 insertions(+), 35 deletions(-)
->=20
-> diff --git a/net/netfilter/nf_flow_table_path.c b/net/netfilter/nf_flow_t=
-able_path.c
-> index a3e6b82f2f8e..1e7e216b9f89 100644
-> --- a/net/netfilter/nf_flow_table_path.c
-> +++ b/net/netfilter/nf_flow_table_path.c
-> @@ -90,9 +90,9 @@ struct nft_forward_info {
->  	enum flow_offload_xmit_type xmit_type;
->  };
-> =20
-> -static void nft_dev_path_info(const struct net_device_path_stack *stack,
-> -			      struct nft_forward_info *info,
-> -			      unsigned char *ha, struct nf_flowtable *flowtable)
-> +static int nft_dev_path_info(const struct net_device_path_stack *stack,
-> +			     struct nft_forward_info *info,
-> +			     unsigned char *ha, struct nf_flowtable *flowtable)
->  {
->  	const struct net_device_path *path;
->  	int i;
-> @@ -120,19 +120,17 @@ static void nft_dev_path_info(const struct net_devi=
-ce_path_stack *stack,
-> =20
->  			/* DEV_PATH_VLAN, DEV_PATH_PPPOE and DEV_PATH_TUN */
->  			if (path->type =3D=3D DEV_PATH_TUN) {
-> -				if (info->num_tuns) {
-> -					info->indev =3D NULL;
-> -					break;
-> -				}
-> +				if (info->num_tuns)
-> +					return -1;
-> +
->  				info->tun.src_v6 =3D path->tun.src_v6;
->  				info->tun.dst_v6 =3D path->tun.dst_v6;
->  				info->tun.l3_proto =3D path->tun.l3_proto;
->  				info->num_tuns++;
->  			} else {
-> -				if (info->num_encaps >=3D NF_FLOW_TABLE_ENCAP_MAX) {
-> -					info->indev =3D NULL;
-> -					break;
-> -				}
-> +				if (info->num_encaps >=3D NF_FLOW_TABLE_ENCAP_MAX)
-> +					return -1;
-> +
->  				info->encap[info->num_encaps].id =3D
->  					path->encap.id;
->  				info->encap[info->num_encaps].proto =3D
-> @@ -151,22 +149,23 @@ static void nft_dev_path_info(const struct net_devi=
-ce_path_stack *stack,
-> =20
->  			switch (path->bridge.vlan_mode) {
->  			case DEV_PATH_BR_VLAN_UNTAG_HW:
-> +				if (info->num_encaps =3D=3D 0)
-> +					return -1;
-> +
->  				info->ingress_vlans |=3D BIT(info->num_encaps - 1);
->  				break;
->  			case DEV_PATH_BR_VLAN_TAG:
-> -				if (info->num_encaps >=3D NF_FLOW_TABLE_ENCAP_MAX) {
-> -					info->indev =3D NULL;
-> -					break;
-> -				}
-> +				if (info->num_encaps >=3D NF_FLOW_TABLE_ENCAP_MAX)
-> +					return -1;
-> +
->  				info->encap[info->num_encaps].id =3D path->bridge.vlan_id;
->  				info->encap[info->num_encaps].proto =3D path->bridge.vlan_proto;
->  				info->num_encaps++;
->  				break;
->  			case DEV_PATH_BR_VLAN_UNTAG:
-> -				if (info->num_encaps =3D=3D 0) {
-> -					info->indev =3D NULL;
-> -					break;
-> -				}
-> +				if (info->num_encaps =3D=3D 0)
-> +					return -1;
-> +
->  				info->num_encaps--;
->  				break;
->  			case DEV_PATH_BR_VLAN_KEEP:
-> @@ -175,8 +174,7 @@ static void nft_dev_path_info(const struct net_device=
-_path_stack *stack,
->  			info->xmit_type =3D FLOW_OFFLOAD_XMIT_DIRECT;
->  			break;
->  		default:
-> -			info->indev =3D NULL;
-> -			break;
-> +			return -1;
->  		}
->  	}
->  	info->outdev =3D info->indev;
-> @@ -184,6 +182,8 @@ static void nft_dev_path_info(const struct net_device=
-_path_stack *stack,
->  	if (nf_flowtable_hw_offload(flowtable) &&
->  	    nft_is_valid_ether_device(info->indev))
->  		info->xmit_type =3D FLOW_OFFLOAD_XMIT_DIRECT;
-> +
-> +	return 0;
->  }
-> =20
->  static bool nft_flowtable_find_dev(const struct net_device *dev,
-> @@ -241,11 +241,11 @@ static int nft_flow_tunnel_update_route(const struc=
-t nft_pktinfo *pkt,
->  	return 0;
->  }
-> =20
-> -static void nft_dev_forward_path(const struct nft_pktinfo *pkt,
-> -				 struct nf_flow_route *route,
-> -				 const struct nf_conn *ct,
-> -				 enum ip_conntrack_dir dir,
-> -				 struct nft_flowtable *ft)
-> +static int nft_dev_forward_path(const struct nft_pktinfo *pkt,
-> +				struct nf_flow_route *route,
-> +				const struct nf_conn *ct,
-> +				enum ip_conntrack_dir dir,
-> +				struct nft_flowtable *ft)
->  {
->  	const struct dst_entry *dst =3D route->tuple[dir].dst;
->  	struct net_device_path_stack stack;
-> @@ -253,15 +253,16 @@ static void nft_dev_forward_path(const struct nft_p=
-ktinfo *pkt,
->  	unsigned char ha[ETH_ALEN];
->  	int i;
-> =20
-> -	if (nft_dev_fill_forward_path(route, dst, ct, dir, ha, &stack) >=3D 0)
-> -		nft_dev_path_info(&stack, &info, ha, &ft->data);
-> +	if (nft_dev_fill_forward_path(route, dst, ct, dir, ha, &stack) < 0 ||
-> +	    nft_dev_path_info(&stack, &info, ha, &ft->data) < 0)
-> +		return -ENOENT;
-> +
-> +	if (!nft_flowtable_find_dev(info.indev, ft))
-> +		return -ENOENT;
-> =20
->  	if (info.outdev)
->  		route->tuple[dir].out.ifindex =3D info.outdev->ifindex;
-> =20
-> -	if (!info.indev || !nft_flowtable_find_dev(info.indev, ft))
-> -		return;
-> -
->  	route->tuple[!dir].in.ifindex =3D info.indev->ifindex;
->  	for (i =3D 0; i < info.num_encaps; i++) {
->  		route->tuple[!dir].in.encap[i].id =3D info.encap[i].id;
-> @@ -285,6 +286,8 @@ static void nft_dev_forward_path(const struct nft_pkt=
-info *pkt,
->  		route->tuple[dir].xmit_type =3D info.xmit_type;
->  	}
->  	route->tuple[dir].out.needs_gso_segment =3D info.needs_gso_segment;
-> +
-> +	return 0;
->  }
-> =20
->  int nft_flow_route(const struct nft_pktinfo *pkt, const struct nf_conn *=
-ct,
-> @@ -329,11 +332,19 @@ int nft_flow_route(const struct nft_pktinfo *pkt, c=
-onst struct nf_conn *ct,
->  	nft_default_forward_path(route, this_dst, dir);
->  	nft_default_forward_path(route, other_dst, !dir);
-> =20
-> -	if (route->tuple[dir].xmit_type	=3D=3D FLOW_OFFLOAD_XMIT_NEIGH)
-> -		nft_dev_forward_path(pkt, route, ct, dir, ft);
-> -	if (route->tuple[!dir].xmit_type =3D=3D FLOW_OFFLOAD_XMIT_NEIGH)
-> -		nft_dev_forward_path(pkt, route, ct, !dir, ft);
-> +	if (route->tuple[dir].xmit_type	=3D=3D FLOW_OFFLOAD_XMIT_NEIGH &&
-> +	    nft_dev_forward_path(pkt, route, ct, dir, ft) < 0)
-> +		goto err_dst_release;
-> +
-> +	if (route->tuple[!dir].xmit_type =3D=3D FLOW_OFFLOAD_XMIT_NEIGH &&
-> +	    nft_dev_forward_path(pkt, route, ct, !dir, ft) < 0)
-> +		goto err_dst_release;
-> =20
->  	return 0;
-> +
-> +err_dst_release:
-> +	dst_release(route->tuple[dir].dst);
-> +	dst_release(route->tuple[!dir].dst);
-> +	return -ENOENT;
->  }
->  EXPORT_SYMBOL_GPL(nft_flow_route);
-> --=20
-> 2.47.3
->=20
->=20
+Changes in v2:
+- addresses sashiko comments https://sashiko.dev/#/patchset/32368
+  - nf_sockopt: update function prototypes and struct definitions
+  - nf_log: update the corresponding function declarations and the 
+    nf_logfn typedef
+- link to v1: https://lore.kernel.org/all/20260612125146.75672-1-carlos@carlosgrillet.me
 
---2voAxdxRxTDZPDqb
-Content-Type: application/pgp-signature; name=signature.asc
+Carlos Grillet (6):
+  netfilter: nf_nat_ftp: replace u_int16_t with u16
+  netfilter: nf_nat_irc: replace u_int16_t with u16
+  netfilter: nf_sockopt: replace u_int8_t with u8
+  netfilter: xt_DSCP: replace u_int8_t with u8
+  netfilter: xt_TCPOPTSTRIP: replace u_int8_t and u_int16_t with u8 and u16
+  netfilter: nf_log: replace u_int8_t with u8
 
------BEGIN PGP SIGNATURE-----
+ include/linux/netfilter.h      |  6 +++---
+ include/net/netfilter/nf_log.h | 16 ++++++++--------
+ net/netfilter/nf_log.c         | 14 +++++++-------
+ net/netfilter/nf_nat_ftp.c     |  2 +-
+ net/netfilter/nf_nat_irc.c     |  2 +-
+ net/netfilter/nf_sockopt.c     |  8 ++++----
+ net/netfilter/xt_DSCP.c        |  8 ++++----
+ net/netfilter/xt_TCPOPTSTRIP.c |  8 ++++----
+ 8 files changed, 32 insertions(+), 32 deletions(-)
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCai/FggAKCRA6cBh0uS2t
-rDTHAQCArWt33TG4YPKD4wQMsPJrZ2iuR/QsuNtnJpKuTNejyQEAyYaX9EG5r1xw
-xkD3SKGHOSEdTeWYssd2l2biomnPNg8=
-=5HXU
------END PGP SIGNATURE-----
+-- 
+2.54.0
 
---2voAxdxRxTDZPDqb--
 
