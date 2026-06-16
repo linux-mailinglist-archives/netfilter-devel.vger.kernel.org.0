@@ -1,107 +1,70 @@
-Return-Path: <netfilter-devel+bounces-13285-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13290-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id jh3qNX/tMGpZYwUAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13285-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jun 2026 08:30:23 +0200
+	id R4bSLXSWMWo+ngUAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13290-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jun 2026 20:31:16 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2318B68C842
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jun 2026 08:30:23 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5595669433F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jun 2026 20:31:16 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b="aW3ZFOn/";
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13285-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13285-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b=NXqcxvYr;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13290-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13290-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3B1483007291
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jun 2026 06:30:20 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2CC8E3041D28
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jun 2026 18:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D73B3DC875;
-	Tue, 16 Jun 2026 06:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0B647DD64;
+	Tue, 16 Jun 2026 18:30:57 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4523D7D99
-	for <netfilter-devel@vger.kernel.org>; Tue, 16 Jun 2026 06:30:14 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781591416; cv=none; b=jjU6tIIfodEDWScBmqESJOTPWrEHtfBSKIVY5Ug95YeODwgfAi/iMDGz9mEeNCvuGaY0WmW5LpZtHdM9XJQMqkwIVVd8TuWNZ5HNBQroE/xJyhUSx24UJiQIz9iuu/Asc8hVH6CjBNHT5YLi88aBdJhBbBBY8NeAP+fynTeOk1k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781591416; c=relaxed/simple;
-	bh=XEC36mzACGCHilvo4lAGsWnkBw/V81r5v4u6FQFOgvs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AT0CsdZRU7pDK1S2XimdiFFiLXlEpMFpWecTQafl7z7Fp6uFxhTs5q9dswEg7sIsLb0BaEF0VacU8kz75Was7ZShCW253Nha/vOBfPXfJ8NxOl9L6ds/EU+fRMqjGFabJk3nWw+eRRYWUtbb/qTqOb/jOMPPKDi+aK4BV7+tSNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aW3ZFOn/; arc=none smtp.client-ip=209.85.208.174
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-39676d82b7fso37490811fa.0
-        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jun 2026 23:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781591413; x=1782196213; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hv4Oosl+VzlLTaV5qUQl01CH44gb7SsUdMG105aKzy0=;
-        b=aW3ZFOn/K+wf9orllp8Z5qGXbk3HAjMAdw5X5/TlzbdoOYU0HaM5jNQI5JXBJCgYND
-         0AME4Z1ZcJGJZAMpmva65dVhPsx4jDol1BkxKQ7o/rvzUELNznVxTW4yQKW8pYRZHIUg
-         dayoGb4Y5mLdwaCKy8G+Q6E5bpx3aH1/HX4o7gsWTvFcLa2+vwt+x44NHcPnWEGycdNJ
-         XezT0nPsMWHWVMfaLECS67Fx8C2Ud84TO+ZyCdd1VnnrVZRdTEM8dzHPJn0eEa3CKeGe
-         e/8KlnPrOnNw4OGhMLgMIFMFNARTGhKCot+0C9Iag0jf/TjPOHf5Wzuuo0JdX9iYGTH0
-         mmAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781591413; x=1782196213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hv4Oosl+VzlLTaV5qUQl01CH44gb7SsUdMG105aKzy0=;
-        b=BRhkbQ1kOk/rzXy0Z+lc56WdlsdOfQGeDIPbakpySUC6kpMbtueYm1g8cS2akMatYJ
-         sCXgQd42raOH7pMUWsjFlxQ5SltAdqVbNrwMm+YTQQJiHj6dCPEfRskD1+tPwSHFgjye
-         J+bH8XjcgYz7/qgyC/kW4heyhYvdcS6xKVVkZTqe0snn8w1fbGiyUM7MEGp7brka2bbt
-         6o96YGkV/2Xo2Nn0Wj40JPQ35QBojsbCQRYPQ6nRPRjWGpUPO9jbwzxGtCpyqo3DwEGW
-         iAnjWBiXAEYQeXQelS5Zut/yc/k5wfFkqduLUI41MlSzCflLYw4DfXJXA95rilFY+Unh
-         4x4g==
-X-Forwarded-Encrypted: i=1; AFNElJ+olO0Gw+AdVhdgpWfBF7o52J3s+1RJbiJPQ1tOtZQM4EDV7Mii13myBf7u5nb2C6vP45AQomOsKDUd7EIDd6g=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6ejD/oWdlomKfQXy1s11J3WBe6TA7JAWFKQcaJAQgaIunXVxY
-	Anqi/lEufBWdPBKWD/0MI+1R8bPUKUfjw6tS3H3CuI1kgBeCauWs82+3
-X-Gm-Gg: Acq92OHsMpdbrZ0ACkocuHjgrhb7vwRRU4wrRyHdwx59K+3B28Og2/y6AU8ywZXaNw7
-	TRpewYVIZBTR1rIcfOPR3eABPg1W8CwdGUFPdtEeUrdsZH3x4f7Yn5Rg1FGM7s5BjZba9CC8CNf
-	CEcdzzp8svTDGvvCdyfPgRk/Wm6xeJVBXY+C+RRWZrWSStr1+bysu4LsxDOwRMm2rMGY6ijweXX
-	6o1dKg4bxWWI2YkKi798NavLCXGI3kRcJGCNEaKd5nnPDxW3gP1EtgXA+7iwAQcqqYKwwSVDolM
-	3NhXxXIzlZdJ7cx34l5bWuXrD6XvjCdptH5zsmyVOOyTEnFpYWZs6KlpRVZSDXylGMIKKhA2h/R
-	sMhIu6sHTCPj1DEBKTcHHSakW2cFieiTmhvhBQ4sPFE8+0xxffoXrJPbFhFeov/VfDyi8N40g6o
-	uvmZiCo9Ifkn/2FWVhfXkM1K8fjiXAVZv+oGojRKPJBlCCdu0vAoeQChWFB/++0gQv2p8c
-X-Received: by 2002:a2e:a80e:0:b0:396:6bd5:a9c7 with SMTP id 38308e7fff4ca-3995c85103dmr6238941fa.19.1781591412632;
-        Mon, 15 Jun 2026 23:30:12 -0700 (PDT)
-Received: from cherrypc.astra-academy.ru (109-252-17-231.nat.spd-mgts.ru. [109.252.17.231])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3995c1a3706sm4045501fa.42.2026.06.15.23.30.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2026 23:30:12 -0700 (PDT)
-From: Nazar Kalashnikov <nazarkalashnikov0@gmail.com>
-To: stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Nazar Kalashnikov <nazarkalashnikov0@gmail.com>,
-	Simon Horman <horms@verge.net.au>,
-	Julian Anastasov <ja@ssi.bg>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813303D669D;
+	Tue, 16 Jun 2026 18:30:54 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781634657; cv=pass; b=Dx3cPbufDdG4MTxQ9CqgcflWIAKlWkoeORGotDAy8yoWUuz9484PMqmiAFWBzbqOPIVrPqagQcrXvDpm0fDdpEiQMEISqRH7LGz05jdhYG+EJ82aXcRu7MqO5A+k7HuqcAUBDLUfAc5wTmqb7RE2OiHgSSq9vPiIUWvnz3KrAso=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781634657; c=relaxed/simple;
+	bh=W/6XCa+fFXmOkimzDBA0YsqyIXo2sHAUIPDcNMlOvD0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cJi9fGtwJreyxWSapEiFkWMIocbDtMaP7ORpY9VxGakWHOzoacAkynNtI9aQevtexFttkDv+j1rxodNuHthh5WH5k9bV1eI4zsgZR19ooS/y4nvBctzd6haUgMAo5a8YbiAQrcDQoe2mOguTEXfWo3fsC5k/tH933l00HzeaSTA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=NXqcxvYr; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1781634624; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=ZRa8dECivJKxRZzk4ZHM672cB0Z5TjypvXML4ZeZ2LCxVGnG144rxrbfFoU6k9be/2c6pnHOIqF57LTfgQf9MiRXkRsmQpyQTzojgVb5U0zW79f+rSjyyeyeUTPsI8puLySVTEDmgcTM5nfAO6vPce7tkY03BQv1QxCQpxNGnfk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1781634624; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=I0jxdcxyJJOT9ab9Aeljnu0Xb/76IESadUXOT1Hspsc=; 
+	b=XWEhHEsnMQUQ7QQPrz03VGr7iZSuEvrbIImZDWN95GTjiT8vBiMRywKUod/E5RkzrjiyDtjcM5eXtLun5lnPrCRIyHV0kRgJunj4wKa4JJTrGavb1gvSBgz4e5FNl3gUhZ0JweRc3mNVtgPK61t3uRicSmdTyI8hoVdRiOMKoXc=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=carlosgrillet.me;
+	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
+	dmarc=pass header.from=<carlos@carlosgrillet.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1781634624;
+	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=I0jxdcxyJJOT9ab9Aeljnu0Xb/76IESadUXOT1Hspsc=;
+	b=NXqcxvYr1L2/CpQQ9qOXItGMv6fqG3peR3quH5++7l+ja+CaCkQojIL5RLo3tZLn
+	1VukCRWdY6nh12MAoXHWaqLFrPMzV0b/Do5UTN6ONuPs6/LvEUrV9WhAy82ALmrHsDN
+	IqPh/ZWouEyxX+aZwMNlKb8Ka8N8fFhS/AdW97ac=
+Received: by mx.zoho.eu with SMTPS id 1781634621560668.7632641520496;
+	Tue, 16 Jun 2026 20:30:21 +0200 (CEST)
+From: Carlos Grillet <carlos@carlosgrillet.me>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Venkata Mohan Reddy <mohanreddykv@gmail.com>,
-	Patrick McHardy <kaber@trash.net>,
-	Julius Volz <juliusv@google.com>,
-	netdev@vger.kernel.org,
-	lvs-devel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
+	Phil Sutter <phil@nwl.cc>
+Cc: netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
 	linux-kernel@vger.kernel.org,
-	Wensong Zhang <wensong@linux-vs.org>,
-	lvc-project@linuxtesting.org
-Subject: [PATCH 5.10/5.15/6.1/6.6/6.12/6.18] ipvs: skip ipv6 extension headers for csum checks
-Date: Tue, 16 Jun 2026 09:30:23 +0300
-Message-ID: <20260616063025.648647-1-nazarkalashnikov0@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	netdev@vger.kernel.org
+Subject: [PATCH nf-next v3 0/4] netfilter: replace u_int*_t with kernel int types
+Date: Tue, 16 Jun 2026 20:29:42 +0200
+Message-ID: <20260616182948.96865-1-carlos@carlosgrillet.me>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -109,240 +72,80 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[carlosgrillet.me:s=zmail];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,verge.net.au,ssi.bg,netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,trash.net,vger.kernel.org,linux-vs.org,linuxtesting.org];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-13285-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:stable@vger.kernel.org,m:gregkh@linuxfoundation.org,m:nazarkalashnikov0@gmail.com,m:horms@verge.net.au,m:ja@ssi.bg,m:pablo@netfilter.org,m:kadlec@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:mohanreddykv@gmail.com,m:kaber@trash.net,m:juliusv@google.com,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:wensong@linux-vs.org,m:lvc-project@linuxtesting.org,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[nazarkalashnikov0@gmail.com,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13290-lists,netfilter-devel=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[carlosgrillet.me];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nazarkalashnikov0@gmail.com,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DKIM_TRACE(0.00)[carlosgrillet.me:+];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,carlosgrillet.me:dkim,carlosgrillet.me:mid,carlosgrillet.me:from_mime,sashiko.dev:url,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2318B68C842
+X-Rspamd-Queue-Id: 5595669433F
 
-From: Julian Anastasov <ja@ssi.bg>
+Hi all! This is my first patch series of many, I hope :)
+I'd like to start contributing by helping out with janitor work,
+standardizing code and cleaning up.
 
-commit 05cfe9863ef049d98141dc2969eefde72fb07625 upstream.
+This patch series replaces POSIX u_int8_t/u_int16_t with the preferred
+kernel types u8/u16 across several netfilter files.
 
-Protocol checksum validation fails for IPv6 if there are extension
-headers before the protocol header. iph->len already contains its
-offset, so use it to fix the problem.
+u_int*_t appears in many other files, but I wanted to keep this series
+small, unless advised otherwise.
 
-Fixes: 2906f66a5682 ("ipvs: SCTP Trasport Loadbalancing Support")
-Fixes: 0bbdd42b7efa ("IPVS: Extend protocol DNAT/SNAT and state handlers")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Nazar Kalashnikov <nazarkalashnikov0@gmail.com>
----
-Backport fix for CVE-2026-45850
- net/netfilter/ipvs/ip_vs_proto_sctp.c | 18 ++++++------------
- net/netfilter/ipvs/ip_vs_proto_tcp.c  | 21 +++++++--------------
- net/netfilter/ipvs/ip_vs_proto_udp.c  | 20 +++++++-------------
- 3 files changed, 20 insertions(+), 39 deletions(-)
+No functional changes.
 
-diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
-index 83e452916403..63c78a1f3918 100644
---- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
-+++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
-@@ -10,7 +10,8 @@
- #include <net/ip_vs.h>
- 
- static int
--sctp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp);
-+sctp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp,
-+		unsigned int sctphoff);
- 
- static int
- sctp_conn_schedule(struct netns_ipvs *ipvs, int af, struct sk_buff *skb,
-@@ -108,7 +109,7 @@ sctp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		int ret;
- 
- 		/* Some checks before mangling */
--		if (!sctp_csum_check(cp->af, skb, pp))
-+		if (!sctp_csum_check(cp->af, skb, pp, sctphoff))
- 			return 0;
- 
- 		/* Call application helper if needed */
-@@ -156,7 +157,7 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		int ret;
- 
- 		/* Some checks before mangling */
--		if (!sctp_csum_check(cp->af, skb, pp))
-+		if (!sctp_csum_check(cp->af, skb, pp, sctphoff))
- 			return 0;
- 
- 		/* Call application helper if needed */
-@@ -185,19 +186,12 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- }
- 
- static int
--sctp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp)
-+sctp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp,
-+		unsigned int sctphoff)
- {
--	unsigned int sctphoff;
- 	struct sctphdr *sh;
- 	__le32 cmp, val;
- 
--#ifdef CONFIG_IP_VS_IPV6
--	if (af == AF_INET6)
--		sctphoff = sizeof(struct ipv6hdr);
--	else
--#endif
--		sctphoff = ip_hdrlen(skb);
--
- 	sh = (struct sctphdr *)(skb->data + sctphoff);
- 	cmp = sh->checksum;
- 	val = sctp_compute_cksum(skb, sctphoff);
-diff --git a/net/netfilter/ipvs/ip_vs_proto_tcp.c b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-index 7da51390cea6..ede4fa3b63f5 100644
---- a/net/netfilter/ipvs/ip_vs_proto_tcp.c
-+++ b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-@@ -29,7 +29,8 @@
- #include <net/ip_vs.h>
- 
- static int
--tcp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp);
-+tcp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp,
-+	       unsigned int tcphoff);
- 
- static int
- tcp_conn_schedule(struct netns_ipvs *ipvs, int af, struct sk_buff *skb,
-@@ -166,7 +167,7 @@ tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		int ret;
- 
- 		/* Some checks before mangling */
--		if (!tcp_csum_check(cp->af, skb, pp))
-+		if (!tcp_csum_check(cp->af, skb, pp, tcphoff))
- 			return 0;
- 
- 		/* Call application helper if needed */
-@@ -244,7 +245,7 @@ tcp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		int ret;
- 
- 		/* Some checks before mangling */
--		if (!tcp_csum_check(cp->af, skb, pp))
-+		if (!tcp_csum_check(cp->af, skb, pp, tcphoff))
- 			return 0;
- 
- 		/*
-@@ -301,17 +302,9 @@ tcp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 
- 
- static int
--tcp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp)
-+tcp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp,
-+	       unsigned int tcphoff)
- {
--	unsigned int tcphoff;
--
--#ifdef CONFIG_IP_VS_IPV6
--	if (af == AF_INET6)
--		tcphoff = sizeof(struct ipv6hdr);
--	else
--#endif
--		tcphoff = ip_hdrlen(skb);
--
- 	switch (skb->ip_summed) {
- 	case CHECKSUM_NONE:
- 		skb->csum = skb_checksum(skb, tcphoff, skb->len - tcphoff, 0);
-@@ -322,7 +315,7 @@ tcp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp)
- 			if (csum_ipv6_magic(&ipv6_hdr(skb)->saddr,
- 					    &ipv6_hdr(skb)->daddr,
- 					    skb->len - tcphoff,
--					    ipv6_hdr(skb)->nexthdr,
-+					    IPPROTO_TCP,
- 					    skb->csum)) {
- 				IP_VS_DBG_RL_PKT(0, af, pp, skb, 0,
- 						 "Failed checksum for");
-diff --git a/net/netfilter/ipvs/ip_vs_proto_udp.c b/net/netfilter/ipvs/ip_vs_proto_udp.c
-index 68260d91c988..ffbebda547fc 100644
---- a/net/netfilter/ipvs/ip_vs_proto_udp.c
-+++ b/net/netfilter/ipvs/ip_vs_proto_udp.c
-@@ -25,7 +25,8 @@
- #include <net/ip6_checksum.h>
- 
- static int
--udp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp);
-+udp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp,
-+	       unsigned int udphoff);
- 
- static int
- udp_conn_schedule(struct netns_ipvs *ipvs, int af, struct sk_buff *skb,
-@@ -155,7 +156,7 @@ udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		int ret;
- 
- 		/* Some checks before mangling */
--		if (!udp_csum_check(cp->af, skb, pp))
-+		if (!udp_csum_check(cp->af, skb, pp, udphoff))
- 			return 0;
- 
- 		/*
-@@ -238,7 +239,7 @@ udp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 		int ret;
- 
- 		/* Some checks before mangling */
--		if (!udp_csum_check(cp->af, skb, pp))
-+		if (!udp_csum_check(cp->af, skb, pp, udphoff))
- 			return 0;
- 
- 		/*
-@@ -297,17 +298,10 @@ udp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
- 
- 
- static int
--udp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp)
-+udp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp,
-+	       unsigned int udphoff)
- {
- 	struct udphdr _udph, *uh;
--	unsigned int udphoff;
--
--#ifdef CONFIG_IP_VS_IPV6
--	if (af == AF_INET6)
--		udphoff = sizeof(struct ipv6hdr);
--	else
--#endif
--		udphoff = ip_hdrlen(skb);
- 
- 	uh = skb_header_pointer(skb, udphoff, sizeof(_udph), &_udph);
- 	if (uh == NULL)
-@@ -325,7 +319,7 @@ udp_csum_check(int af, struct sk_buff *skb, struct ip_vs_protocol *pp)
- 				if (csum_ipv6_magic(&ipv6_hdr(skb)->saddr,
- 						    &ipv6_hdr(skb)->daddr,
- 						    skb->len - udphoff,
--						    ipv6_hdr(skb)->nexthdr,
-+						    IPPROTO_UDP,
- 						    skb->csum)) {
- 					IP_VS_DBG_RL_PKT(0, af, pp, skb, 0,
- 							 "Failed checksum for");
+Changes in v3:
+- dropping changes to nf_log and xt_DSCP (need deeper understanding of the
+  subsystem before converting these correctly)
+- link to v2: https://lore.kernel.org/all/20260615133835.51273-1-carlos@carlosgrillet.me
+
+Changes in v2:
+- addresses sashiko comments https://sashiko.dev/#/patchset/32368
+  - nf_sockopt: update function prototypes and struct definitions
+  - nf_log: update the corresponding function declarations and the
+    nf_logfn typedef
+- link to v1: https://lore.kernel.org/all/20260612125146.75672-1-carlos@carlosgrillet.me
+
+Carlos Grillet (4):
+  netfilter: nf_nat_ftp: replace u_int16_t with u16
+  netfilter: nf_nat_irc: replace u_int16_t with u16
+  netfilter: nf_sockopt: replace u_int8_t with u8
+  netfilter: xt_TCPOPTSTRIP: replace u_int8_t and u_int16_t with u8 and u16
+
+ include/linux/netfilter.h      | 6 +++---
+ net/netfilter/nf_nat_ftp.c     | 2 +-
+ net/netfilter/nf_nat_irc.c     | 2 +-
+ net/netfilter/nf_sockopt.c     | 8 ++++----
+ net/netfilter/xt_TCPOPTSTRIP.c | 8 ++++----
+ 5 files changed, 13 insertions(+), 13 deletions(-)
+
 -- 
-2.47.3
+2.54.0
+
 
