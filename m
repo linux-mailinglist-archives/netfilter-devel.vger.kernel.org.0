@@ -1,47 +1,47 @@
-Return-Path: <netfilter-devel+bounces-13318-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13320-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id nsbME1HGM2p2GAYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13318-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jun 2026 12:20:01 +0200
+	id TXbJIcbGM2qSGAYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13320-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jun 2026 12:21:58 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA3069F3AC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jun 2026 12:20:00 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B0D969F404
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jun 2026 12:21:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=S7EvzAzh;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13318-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13318-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=a0gbs1qh;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13320-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13320-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=mails.tsinghua.edu.cn;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 33302301BBA4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jun 2026 10:19:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 30829300BEBF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jun 2026 10:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108983EB7E8;
-	Thu, 18 Jun 2026 10:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD113EE1D1;
+	Thu, 18 Jun 2026 10:19:52 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907783EBF16;
-	Thu, 18 Jun 2026 10:19:38 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.75.44.102])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7383ED105;
+	Thu, 18 Jun 2026 10:19:46 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781777985; cv=none; b=lH6qkX3RtLRFEliFEhfqBqUWVg1BVadf92MNNzbCCv2Q1fwb6PtfVh6WCzk9aUkoUJSBs4GtwVVA9TeObwPKbJZOWMea2pU7WUgIURgYmsBGQzCzN7G9p4/itKwR/peUAVmvgbicXBLRNlANWa+XaelDuEsHiSFm+kNLup0Kuxo=
+	t=1781777992; cv=none; b=i0acmVo8obXhMcPyZX/KBwt7EDbJy2bjk9DzUUi1SY4OdMGPRsdwzNTfJyYoD8JmpJqcFBUaLwOFIasFXaQvlMlA/+XJbggZZMmC54boUJWVu4Z5mdcJr5Uel6alJeu8ZQ20DW+jPdRhEC9A/O7ZUZMZ5ewY2bi9JrCoIUyFiYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781777985; c=relaxed/simple;
-	bh=Hr4YQ5pAGnuxxVJ7lS+ujE2PxBUnmkoqFmAfEoJCUeM=;
+	s=arc-20240116; t=1781777992; c=relaxed/simple;
+	bh=b/X6ZNLGum2oS6sEsNNn+wpKuROst8BH4teA3a1TnvY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ubUFEOWcHBYHMuQDBU/jhEbqnA+34uI8vhqCAqXbIK2udZ0/+bUBRNV1EvzppNGfguUf8eJTIO8AYvbDLPnF7v2qgeu2WJT9/ys1CAYke8fvyubTiElVbTWaVpg82uS8/fWof9G3BgwBrUkhRN2Nueofamm7mQEmCLgAqgxGYb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=S7EvzAzh; arc=none smtp.client-ip=206.189.21.223
+	 MIME-Version; b=nNy7MVDm47y9WBGnDPhRo/D8n3TaE6nUYbXLl7y+oqVcJ2TU1a1f0UkDypBZC/Tcd0kCOIkqjYD/RCBIFIr6yTu8+8/twKuSWffbQFGOHUZPAA4gVbHTratDwv2lW0VRnQHmYnTVkpeeXlkrRmkbixADTAcBvz5pqC0ifi0Z1U4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=a0gbs1qh; arc=none smtp.client-ip=13.75.44.102
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
 	Date:Message-Id:In-Reply-To:References:MIME-Version:
-	Content-Transfer-Encoding; bh=FQQ+9Ogk6rx/0IEJYojHK6G4ICcLBRBqgr
-	yX2IKHSR4=; b=S7EvzAzhWzIp40TSIYK9q80cu4cn52zi3rsTbpIhDUodphQ7Em
-	egwT75MdaAtTs8ehLSF3JhlKAiThlofzQIoZZmD4vLijJ7Qw5MfpE8wqyg7xI9E/
-	vluHMyFgApWGm5lxQnHIWV9vPvGEg6+7uHoPmHc9uY2VAQ3jMM+u7LcDM=
+	Content-Transfer-Encoding; bh=heiPlvi0bHJFp7LAke2GAwtGSzaSOGptO9
+	dMWBxYmEg=; b=a0gbs1qhU2ZZaRGjVMGuBDv3YiFfFLoiwEX/zmY+DwHLPcHgFh
+	nSsul/O0p4mglgisan65DGBhWr2ntzrNSJbd084W/AfdautmW9AZ68ifhsfgsPXU
+	8xa3cH5ZU6kNAMtRvsZwpg8hLA+j2gMx27O3Z3B6k1BpFkDMita9RvDHI=
 Received: from c9a6c405b3f2.. (unknown [202.112.238.121])
-	by web5 (Coremail) with SMTP id zAQGZQB3L78IxjNq23+CAg--.46531S3;
-	Thu, 18 Jun 2026 18:19:01 +0800 (CST)
+	by web5 (Coremail) with SMTP id zAQGZQB3L78IxjNq23+CAg--.46531S4;
+	Thu, 18 Jun 2026 18:19:03 +0800 (CST)
 From: Yiyang Chen <chenyy23@mails.tsinghua.edu.cn>
 To: bpf@vger.kernel.org,
 	netfilter-devel@vger.kernel.org
@@ -70,9 +70,9 @@ Cc: Yiyang Chen <chenyy23@mails.tsinghua.edu.cn>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2 1/2] bpf: Guard conntrack opts error writes
-Date: Thu, 18 Jun 2026 10:18:43 +0000
-Message-Id: <9535e781fe14449b1d4e9bbc3baa7566a93bf512.1781765747.git.chenyy23@mails.tsinghua.edu.cn>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Cover small conntrack opts error writes
+Date: Thu, 18 Jun 2026 10:18:44 +0000
+Message-Id: <007dfd0341cd84560e4795a2a951cc56d4adff1d.1781765747.git.chenyy23@mails.tsinghua.edu.cn>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1781765747.git.chenyy23@mails.tsinghua.edu.cn>
 References: <cover.1781586477.git.chenyy23@mails.tsinghua.edu.cn> <cover.1781765747.git.chenyy23@mails.tsinghua.edu.cn>
@@ -83,12 +83,12 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zAQGZQB3L78IxjNq23+CAg--.46531S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXry5uFy7ZFWxXryUtFW7XFb_yoWrJr4UpF
-	4ak3s7Ar9xAr4qyF4Fvan7A3WY9an3W3W7C34rG393CrsI93WYgFWxWr40vrZ3CFWrGrnx
-	tr45K3Z8CF1kAFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:zAQGZQB3L78IxjNq23+CAg--.46531S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw17GFy5uF4xAw18Gw45KFg_yoWrAFWrpF
+	yfZanFkryrJ3WUtw1xJFs2gF45tFs7XFyUGrs3Jw13Cr4kZa40vF42gF4jqF9xuFs5Zr1S
+	kws5tFnxGrZ7uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUH014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAa
@@ -100,7 +100,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxXry5uFy7ZFWxXryUtFW7XFb_yoWrJr4UpF
 	WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAK
 	I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r
 	4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRRAwI7UUUUU==
+	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRRdWrJUUUUU==
 X-CM-SenderInfo: xfkh05r1stqzpdlo2hxwvl0wxkxdhvlgxou0/
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -109,11 +109,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[mails.tsinghua.edu.cn,quarantine];
 	R_DKIM_ALLOW(-0.20)[mails.tsinghua.edu.cn:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13318-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13320-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[chenyy23@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
@@ -132,107 +132,105 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,tsinghua.edu.cn:email,mails.tsinghua.edu.cn:dkim,mails.tsinghua.edu.cn:mid,mails.tsinghua.edu.cn:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tsinghua.edu.cn:email,mails.tsinghua.edu.cn:dkim,mails.tsinghua.edu.cn:mid,mails.tsinghua.edu.cn:from_mime,vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6FA3069F3AC
+X-Rspamd-Queue-Id: 8B0D969F404
 
-The conntrack lookup and allocation kfuncs take an opts pointer
-together with an opts__sz argument. The verifier checks only the memory
-range described by opts__sz, but the wrappers unconditionally write
-opts->error whenever the internal lookup or allocation helper returns an
-error.
+Add a conntrack kfunc regression check for opts__sz values that do not
+cover opts->error. The BPF program initializes opts->error with a guard
+value, calls the lookup and allocation kfuncs with opts__sz set to
+sizeof(opts->netns_id), and verifies that the guard is still intact
+after the kfunc returns NULL.
 
-For an invalid size smaller than the end of opts->error, that write can
-land outside the verifier-checked range. Keep returning NULL for invalid
-arguments, but only report the error through opts->error when the
-supplied size includes the field.
-
-This preserves error reporting for the supported 12-byte and 16-byte
-layouts, and for other invalid sizes that still include opts->error.
+Without the conntrack wrapper guard, the kfunc error path overwrites
+that guard with -EINVAL even though the verifier checked only the first
+four bytes of the options object.
 
 Fixes: b4c2b9593a1c ("net/netfilter: Add unstable CT lookup helpers for XDP and TC-BPF")
 Fixes: d7e79c97c00c ("net: netfilter: Add kfuncs to allocate and insert CT")
 Signed-off-by: Yiyang Chen <chenyy23@mails.tsinghua.edu.cn>
 ---
- net/netfilter/nf_conntrack_bpf.c | 35 ++++++++++++--------------------
- 1 file changed, 13 insertions(+), 22 deletions(-)
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  6 +++++
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 26 +++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
-index 40c261cd0af38..f98d1d4b42c3d 100644
---- a/net/netfilter/nf_conntrack_bpf.c
-+++ b/net/netfilter/nf_conntrack_bpf.c
-@@ -65,6 +65,15 @@ enum {
- 	NF_BPF_CT_OPTS_SZ = 16,
- };
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+index b33dba4b126e2..14d4c1793aed5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+@@ -5,6 +5,8 @@
+ #include "test_bpf_nf.skel.h"
+ #include "test_bpf_nf_fail.skel.h"
  
-+static void *bpf_ct_opts_result(struct bpf_ct_opts *opts, u32 opts__sz, void *ret)
-+{
-+	if (!IS_ERR(ret))
-+		return ret;
-+	if (opts__sz >= offsetofend(struct bpf_ct_opts, error))
-+		opts->error = PTR_ERR(ret);
-+	return NULL;
-+}
++#define CT_OPTS_ERROR_GUARD 0x12345678
 +
- static int bpf_nf_ct_tuple_parse(struct bpf_sock_tuple *bpf_tuple,
- 				 u32 tuple_len, u8 protonum, u8 dir,
- 				 struct nf_conntrack_tuple *tuple)
-@@ -297,12 +306,7 @@ bpf_xdp_ct_alloc(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+ static char log_buf[1024 * 1024];
  
- 	nfct = __bpf_nf_ct_alloc_entry(dev_net(ctx->rxq->dev), bpf_tuple, tuple__sz,
- 				       opts, opts__sz, 10);
--	if (IS_ERR(nfct)) {
--		opts->error = PTR_ERR(nfct);
--		return NULL;
--	}
--
--	return (struct nf_conn___init *)nfct;
-+	return (struct nf_conn___init *)bpf_ct_opts_result(opts, opts__sz, nfct);
- }
+ struct {
+@@ -119,6 +121,10 @@ static void test_bpf_nf_ct(int mode)
+ 	ASSERT_EQ(skel->bss->test_einval_reserved_new, -EINVAL, "Test EINVAL for reserved in new struct not set to 0");
+ 	ASSERT_EQ(skel->bss->test_einval_netns_id, -EINVAL, "Test EINVAL for netns_id < -1");
+ 	ASSERT_EQ(skel->bss->test_einval_len_opts, -EINVAL, "Test EINVAL for len__opts != NF_BPF_CT_OPTS_SZ");
++	ASSERT_EQ(skel->bss->test_einval_len_opts_small_lookup, CT_OPTS_ERROR_GUARD,
++		  "Test no error write for lookup opts__sz before error field");
++	ASSERT_EQ(skel->bss->test_einval_len_opts_small_alloc, CT_OPTS_ERROR_GUARD,
++		  "Test no error write for alloc opts__sz before error field");
+ 	ASSERT_EQ(skel->bss->test_eproto_l4proto, -EPROTO, "Test EPROTO for l4proto != TCP or UDP");
+ 	ASSERT_EQ(skel->bss->test_enonet_netns_id, -ENONET, "Test ENONET for bad but valid netns_id");
+ 	ASSERT_EQ(skel->bss->test_enoent_lookup, -ENOENT, "Test ENOENT for failed lookup");
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 076fbf03a1268..df43649ecb785 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -10,6 +10,8 @@
+ #define EINVAL 22
+ #define ENOENT 2
  
- /* bpf_xdp_ct_lookup - Lookup CT entry for the given tuple, and acquire a
-@@ -331,11 +335,7 @@ bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
++#define CT_OPTS_ERROR_GUARD 0x12345678
++
+ #define NF_CT_ZONE_DIR_ORIG (1 << IP_CT_DIR_ORIGINAL)
+ #define NF_CT_ZONE_DIR_REPL (1 << IP_CT_DIR_REPLY)
  
- 	caller_net = dev_net(ctx->rxq->dev);
- 	nfct = __bpf_nf_ct_lookup(caller_net, bpf_tuple, tuple__sz, opts, opts__sz);
--	if (IS_ERR(nfct)) {
--		opts->error = PTR_ERR(nfct);
--		return NULL;
--	}
--	return nfct;
-+	return bpf_ct_opts_result(opts, opts__sz, nfct);
- }
+@@ -19,6 +21,8 @@ int test_einval_reserved = 0;
+ int test_einval_reserved_new = 0;
+ int test_einval_netns_id = 0;
+ int test_einval_len_opts = 0;
++int test_einval_len_opts_small_lookup = 0;
++int test_einval_len_opts_small_alloc = 0;
+ int test_eproto_l4proto = 0;
+ int test_enonet_netns_id = 0;
+ int test_enoent_lookup = 0;
+@@ -124,6 +128,28 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+ 	else
+ 		test_einval_len_opts = opts_def.error;
  
- /* bpf_skb_ct_alloc - Allocate a new CT entry
-@@ -363,12 +363,7 @@ bpf_skb_ct_alloc(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
- 
- 	net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
- 	nfct = __bpf_nf_ct_alloc_entry(net, bpf_tuple, tuple__sz, opts, opts__sz, 10);
--	if (IS_ERR(nfct)) {
--		opts->error = PTR_ERR(nfct);
--		return NULL;
--	}
--
--	return (struct nf_conn___init *)nfct;
-+	return (struct nf_conn___init *)bpf_ct_opts_result(opts, opts__sz, nfct);
- }
- 
- /* bpf_skb_ct_lookup - Lookup CT entry for the given tuple, and acquire a
-@@ -397,11 +392,7 @@ bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
- 
- 	caller_net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
- 	nfct = __bpf_nf_ct_lookup(caller_net, bpf_tuple, tuple__sz, opts, opts__sz);
--	if (IS_ERR(nfct)) {
--		opts->error = PTR_ERR(nfct);
--		return NULL;
--	}
--	return nfct;
-+	return bpf_ct_opts_result(opts, opts__sz, nfct);
- }
- 
- /* bpf_ct_insert_entry - Add the provided entry into a CT map
++	opts_def.error = CT_OPTS_ERROR_GUARD;
++	ct = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
++		       sizeof(opts_def.netns_id));
++	if (ct) {
++		bpf_ct_release(ct);
++		test_einval_len_opts_small_lookup = -EINVAL;
++	} else {
++		test_einval_len_opts_small_lookup = opts_def.error;
++	}
++
++	opts_def.error = CT_OPTS_ERROR_GUARD;
++	ct = alloc_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
++		      sizeof(opts_def.netns_id));
++	if (ct) {
++		ct = bpf_ct_insert_entry(ct);
++		if (ct)
++			bpf_ct_release(ct);
++		test_einval_len_opts_small_alloc = -EINVAL;
++	} else {
++		test_einval_len_opts_small_alloc = opts_def.error;
++	}
++
+ 	opts_def.l4proto = IPPROTO_ICMP;
+ 	ct = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+ 		       sizeof(opts_def));
 -- 
 2.34.1
 
