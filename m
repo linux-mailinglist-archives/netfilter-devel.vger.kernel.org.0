@@ -1,160 +1,181 @@
-Return-Path: <netfilter-devel+bounces-13335-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13336-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id bm6tI3oJNWotmQYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13335-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 11:18:50 +0200
+	id Hz81GbISNWqHmgYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13336-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 11:58:10 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099EE6A4ED0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 11:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB89A6A5118
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 11:58:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=cZ1SaRTa;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=NiLSTnNP;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=cZ1SaRTa;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=NiLSTnNP;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13335-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13335-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=suse.de;
+	dkim=pass header.d=broadcom.com header.s=google header.b=QznLjs9B;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13336-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13336-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=broadcom.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E312A3031022
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 09:18:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 68F5A30151FA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 09:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE6B351C3B;
-	Fri, 19 Jun 2026 09:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B418369236;
+	Fri, 19 Jun 2026 09:58:07 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oo1-f100.google.com (mail-oo1-f100.google.com [209.85.161.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65BA2360EDC
-	for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2026 09:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99008368D7D
+	for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2026 09:58:03 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781860708; cv=none; b=V1KIoE9/TMwfB2FynzLBGghwOW9Z03hSQySm1xlF7AodKHdIGKyAjhOqrkgFKE4nKkAdikUEfIV5pC2LJMmoE0VtQOy8gLln5Eq/ESvCX7wKDDQJ13CRw1fZoy58CyuCQAmVAYM+0R3AtmkNbO9A7V0Z/oHhZxldH11q5dms324=
+	t=1781863087; cv=none; b=Te5tURQlz8DW4O7j1jFRyyu52GFL2CR1JckneAf9Zco/688jclNzp+DbUN2VyUpMYKBi2wHkpqjPceIzwrtUrj2I74C+8g5MMauP8DlDaotgS3yUsnFebcETh2HIWkEo7YNoDG1ud9RVhXkzlbg3X8upNnu+2R/77460EhcBLbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781860708; c=relaxed/simple;
-	bh=lTihVApC4Aw4YsFwbH938d90xKfb3aJCY+8yoi0ez4Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=c0cQGK88ssITzHSt13NTPOXOFSDKl4YapDuV9RilW2OiCHNjx2EICS0+fnNrkeCXr6MIacqDwnRJZisOkhzTrUxMjFq7FdkhMJAddIhPLf5xMiTzeJObtqhubI95qywGdWnNL2PF8OTMYS9AKAsYL8TiAhROXTazULbLwII/PWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=cZ1SaRTa; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NiLSTnNP; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=cZ1SaRTa; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NiLSTnNP; arc=none smtp.client-ip=195.135.223.130
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 247AB6D881;
-	Fri, 19 Jun 2026 09:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1781860704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gwgq7FWbOn6DX94CymExYFiIZQiFrKHwJqkDF/w76xA=;
-	b=cZ1SaRTaWbmtU2ymUNTn8l8eBVdKOuWO0HbXWT3q2t066sGqJYpmpEt/wuhm6iamuWMw4i
-	4LiflkW6oJRNPEoz2YvpPJmq02mQdGodnPhvUhRWPgfBsXnrtX62bMSD80kdkQDQ8uldZG
-	6GzHTxOCYJ4sl4Ch74UKbYtnqvsSXi8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1781860704;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gwgq7FWbOn6DX94CymExYFiIZQiFrKHwJqkDF/w76xA=;
-	b=NiLSTnNPA3G6GW+7CRk61Vt4RdgesZuJErYb9LzQsXSLXdUhItvpVaWCie/6O2ay+Cg0KV
-	TmludrAb9YIUNQCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1781860704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gwgq7FWbOn6DX94CymExYFiIZQiFrKHwJqkDF/w76xA=;
-	b=cZ1SaRTaWbmtU2ymUNTn8l8eBVdKOuWO0HbXWT3q2t066sGqJYpmpEt/wuhm6iamuWMw4i
-	4LiflkW6oJRNPEoz2YvpPJmq02mQdGodnPhvUhRWPgfBsXnrtX62bMSD80kdkQDQ8uldZG
-	6GzHTxOCYJ4sl4Ch74UKbYtnqvsSXi8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1781860704;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gwgq7FWbOn6DX94CymExYFiIZQiFrKHwJqkDF/w76xA=;
-	b=NiLSTnNPA3G6GW+7CRk61Vt4RdgesZuJErYb9LzQsXSLXdUhItvpVaWCie/6O2ay+Cg0KV
-	TmludrAb9YIUNQCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED7C2779A8;
-	Fri, 19 Jun 2026 09:18:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UtbYNl8JNWo8ZgAAD6G6ig
-	(envelope-from <fmancera@suse.de>); Fri, 19 Jun 2026 09:18:23 +0000
-Message-ID: <e9ccaee7-2e37-4bcf-9616-cb456161abd7@suse.de>
-Date: Fri, 19 Jun 2026 11:18:23 +0200
+	s=arc-20240116; t=1781863087; c=relaxed/simple;
+	bh=hk2+uuYecO2IQQF9bcMQEfm2EUhrTFMxzsBYQSG8ZtI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=i2HP/yiZJiIe+HAkRL2kXLsBq5mRnKXhnPaa052dS/6Y59UdFlOlPvnxQ4jT3sATAF73jb+pd8L/fn4hD1sAvtKk7RfSo0AdJjXdfrh/Za8O/86KI4pt+iprzTmx5w9FhjmNMy2gLSHzp78zhjOcl9O3kYqlgMvXHhvlZhqtpKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QznLjs9B; arc=none smtp.client-ip=209.85.161.100
+Received: by mail-oo1-f100.google.com with SMTP id 006d021491bc7-69de16f5f79so1038162eaf.0
+        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2026 02:58:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781863082; x=1782467882;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U57pja5e0yJSy8SFBtN6ioJCsbtDVqRKjAnvzO5IXeQ=;
+        b=pX3xUDrlqvODxNI3Wt4sSTucbG3Ii702b4doCjdklTrGo/YBvgy0qO+4ovuBqgEj76
+         XC8Y1isAIhoRv9T9G9qKQ2t/LOHw/98nUWHblpNxkF/Jf+WpqbM/9hjmRCsuCIYDV0mA
+         WDW/pSnR6uGdh2Az6A3JLEIvfuGPpk0ikko7E8TkR/MlAp9c2GY9v3Afkgah/4A6ofSq
+         0mDLzDN6RN9FPHHeuNcKlvlhK7PWR9bdk5n6wLaivC71SubTGQSgoffgPo7HSVKl61gv
+         2QN2Ux90+hFe68690FGxkJrlTbcXA97glLV1XGvBrXv8rVNkg9noytSHAUxLzL1lI0nD
+         QLZw==
+X-Forwarded-Encrypted: i=1; AFNElJ9g0Nfb9938FrmN+Eb81ZdjsY8uN+hGHG6g4LJpgVwAMjWXfsfgEzECQU1W/zDgOQZgtswzYI5j7fTUokAH+nQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDWTLcmL1FWwX6qfBSR5PK6jkQo9OLYDGpC6550ZEnQ5lnKUzM
+	rPLgyWXWdHVrYm59cARbezZIMtQ7LUNYWAXZ1ifrKI1HGZEs7L534IlvONdfi4Fnfr+u5pd6X89
+	KFgn7zrdocQnM40WMJ7swRsXY/JCzC1uN8WCgLoeWph22MPydi14sudtilTQMVmlSVi69mbmpOJ
+	QiePc/yJLRY+Z736v9oiQSWEHzVujeLJIjaFFmvQ3aPaLasmCGOJhhLZf0ZC76QCz0N9k8INuyU
+	JJzKzC4N601EJ4kuVvGaGahSCjeLA==
+X-Gm-Gg: AfdE7clYY3sfAK6ywSaTfrmrH6Rsq/tUu9Ib3pHC3IF/a8zOlE7KtQ2nudNu9xhsY78
+	csGHK0GBVR2pB7Fn27J7NPJYb52OB7B/UbUNJok540WHAOTXvycoIer5DV7/rbEv9WIO610Af2V
+	9rrr3CUSqfTMeb3MwEKEDSBoE3IGqxIJ3DX7aHyQv8/0gexu7VDArkVOnnZnD6Jqw1k/MDBVWi7
+	g2Jtcc3i6cB2+eb5lntF3dGMoU2pcaDjVNOcXvyJ91AJHTPS+idnVcb2HgxyO73NLpjQePtsqz4
+	sGmtOyI5Kb5eG3cT/nhmY4dqJgIlabVcBbWXOz2iWGh4Hi+zBbLfDvkiDwAKg4H1EfGn3l8lqsQ
+	pdBJ0HTqurMygqshZ4QLDDTT3MOkmdV3y5iw7n4FmIa0heSgr7wEjzupC0RA/id3G8t8P50Xzoz
+	HyuwIwhAsIAYHVnuAI6ZrsunpxIleG9U301K8uvsWt4tcsdZe5mw==
+X-Received: by 2002:a05:6820:1391:b0:69d:f7bf:c53f with SMTP id 006d021491bc7-6a0de0e5ca0mr1391371eaf.39.1781863082265;
+        Fri, 19 Jun 2026 02:58:02 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-18.dlp.protect.broadcom.com. [144.49.247.18])
+        by smtp-relay.gmail.com with ESMTPS id 006d021491bc7-6a0d8da63b9sm107747eaf.7.2026.06.19.02.58.01
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Jun 2026 02:58:02 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-dy1-f200.google.com with SMTP id 5a478bee46e88-30bdfcf7c14so7977890eec.0
+        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2026 02:58:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1781863080; x=1782467880; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U57pja5e0yJSy8SFBtN6ioJCsbtDVqRKjAnvzO5IXeQ=;
+        b=QznLjs9B8KH1PgsSBwi4eSo2Q4TzpP6KxpoqRJBPPGQVbFaU4K0u8mJZ2Z468/iWjk
+         +XvcI8j7zC7nSReIxgeYagABmqTrblFYZ28mSLobGCBKprg77wZAgjMhJls2TN4Ljgan
+         eTgcHFN9vEt5EDVYpP5BGG7avN7JrSDdragNk=
+X-Forwarded-Encrypted: i=1; AFNElJ+iVM19h/HiL3TWSxMJ3I1exPoTIVJ6baqbvWTXhakAQx/1V3rCHpZis56fbBTzCu1tWx5ljUyvhel7i4l7Sag=@vger.kernel.org
+X-Received: by 2002:a05:7300:2310:b0:304:705f:e4e8 with SMTP id 5a478bee46e88-30c0d1123b2mr821999eec.32.1781863080549;
+        Fri, 19 Jun 2026 02:58:00 -0700 (PDT)
+X-Received: by 2002:a05:7300:2310:b0:304:705f:e4e8 with SMTP id 5a478bee46e88-30c0d1123b2mr821973eec.32.1781863079967;
+        Fri, 19 Jun 2026 02:57:59 -0700 (PDT)
+Received: from shivania.lvn.broadcom.net ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c06d5bec5sm1851910eec.26.2026.06.19.02.57.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2026 02:57:59 -0700 (PDT)
+From: Shivani Agarwal <shivani.agarwal@broadcom.com>
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: pablo@netfilter.org,
+	fw@strlen.de,
+	phil@nwl.cc,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vamsi-krishna.brahmajosyula@broadcom.com,
+	yin.ding@broadcom.com,
+	tapas.kundu@broadcom.com,
+	Shivani Agarwal <shivani.agarwal@broadcom.com>
+Subject: [PATCH v6.1 0/3] Fix CVE-2026-23272
+Date: Fri, 19 Jun 2026 02:28:47 -0700
+Message-Id: <20260619092850.1274076-1-shivani.agarwal@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] netfilter: nf_tables_offload: drop device refcount on
- error
-To: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-References: <20260605114715.11297-1-fw@strlen.de>
-Content-Language: en-US
-From: Fernando Fernandez Mancera <fmancera@suse.de>
-In-Reply-To: <20260605114715.11297-1-fw@strlen.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.51
+Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[broadcom.com:D:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
+	DMARC_POLICY_ALLOW(-0.50)[broadcom.com,reject];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	R_DKIM_ALLOW(-0.20)[broadcom.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13335-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:stable@vger.kernel.org,m:gregkh@linuxfoundation.org,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ajay.kaher@broadcom.com,m:alexey.makhalov@broadcom.com,m:vamsi-krishna.brahmajosyula@broadcom.com,m:yin.ding@broadcom.com,m:tapas.kundu@broadcom.com,m:shivani.agarwal@broadcom.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[shivani.agarwal@broadcom.com,netfilter-devel@vger.kernel.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,broadcom.com:dkim,broadcom.com:mid,broadcom.com:from_mime];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.de:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13336-lists,netfilter-devel=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[broadcom.com:+];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fmancera@suse.de,netfilter-devel@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,suse.de:dkim,suse.de:email,suse.de:mid,suse.de:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shivani.agarwal@broadcom.com,netfilter-devel@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 099EE6A4ED0
+X-Rspamd-Queue-Id: AB89A6A5118
 
-On 6/5/26 1:47 PM, Florian Westphal wrote:
-> Reported by sashiko:
-> If nft_flow_action_entry_next() returns NULL, dev reference leaks.
-> 
-> Fixes: c6f85577584b ("netfilter: nf_tables_offload: add nft_flow_action_entry_next() and use it")
-> Reported-by: Juri Lelli <juri.lelli@redhat.com>
-> Signed-off-by: Florian Westphal <fw@strlen.de>
+To fix CVE-2026-23272, commit def602e498a4 is required; however,
+it depends on commit d4b7f29eb85c and 8d738c1869f6. Therefore,
+both patches have been backported to v6.1.
 
-Reviewed-by: Fernando Fernandez Mancera <fmancera@suse.de>
+Florian Westphal (1):
+  netfilter: nf_tables: always increment set element count
 
-Thanks!
+Pablo Neira Ayuso (2):
+  netfilter: nf_tables: fix set size with rbtree backend
+  netfilter: nf_tables: unconditionally bump set->nelems before
+    insertion
+
+ include/net/netfilter/nf_tables.h |  6 +++
+ net/netfilter/nf_tables_api.c     | 72 ++++++++++++++++++++++++++-----
+ net/netfilter/nft_set_rbtree.c    | 43 ++++++++++++++++++
+ 3 files changed, 110 insertions(+), 11 deletions(-)
+
+-- 
+2.53.0
 
 
