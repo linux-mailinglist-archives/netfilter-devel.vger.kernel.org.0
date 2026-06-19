@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-13344-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13346-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id FI/bHVYuNWpFoAYAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13344-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 13:56:06 +0200
+	id BULlJzsuNWo3oAYAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13346-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 13:55:39 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FF4C6A587B
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 13:56:06 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809C76A5861
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 13:55:39 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=YOLTLv2r;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13344-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13344-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=sAwy7lmS;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13346-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13346-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 31980302D4E9
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 11:55:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2A1E5301105B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2026 11:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BD4383300;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0E1383329;
 	Fri, 19 Jun 2026 11:55:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34E63822B5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8E238236E;
 	Fri, 19 Jun 2026 11:55:10 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781870111; cv=none; b=tMXuUkqKwpjVKgxqhdT2P4NWFksh3Hjv8BzJLlxv9+nUOdxhHNG7pEPE/qGBkQNsLLD4+obH1QVRau03perU6cinwtj0VUgRZwwFkLsWcD0YnAM4Dckk/bYs5Xrza0GRcsImQKlSgyxFRAOk6x0Ljx4JFKY5OCbEfjbFtEt4RYQ=
+	t=1781870112; cv=none; b=n6GnbR5It697ICJXInn37ulITnR7O/NM1wqU8W9giJePmNBk0CWcYYKgm1NtqOsWoea7eUqNOXJBZ/i0ZbXGkcQ8YTrHKPQ5u66+rfUpSqlci2hKhqvwU8xqVTiPkVDJ0SGrIz438EKntzQdA1bTzFjqFSGFwsmgJZPNvckuMl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781870111; c=relaxed/simple;
-	bh=R3EscX/WS4xMnCCELneLpQA3bqcziFr+S5pCLhTL7xg=;
+	s=arc-20240116; t=1781870112; c=relaxed/simple;
+	bh=GKxei/gwWs+LG9cWfqD5CW5tyC2e2c2Sg+S8bNrdPgk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K5ip9/dQPdU/qNnXF81+qq/ik9e7Nigz9bF1lmao8Edu/ZiB3l3Skcv2428Cba7Kg9GwNfgvAvRkdeLuHGkqIOP5JPQzjZgZrDsLOUtZZL79KLxGVy8TE26vEEZBEzIDeae9cMDukTX/N7cnCUhRQO2Ciw13FhVdz4nDSoHqHz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=YOLTLv2r; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=pyVzHFDnmKF6LQ3kf9/0bdh5se2UfNBYdSftUPQopfsiTuGbSDcTKkM6ccWLR4AUCWo0zwuZoirv8yB4Ak6B4iT6Xzv05sKGcbURcDPav8jR9OaJ1d19ibO4Ae4L0ubGB3ytVXNKbpa+lZwlR4zd7zkWJn5kMMmERCrXvLeGW2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=sAwy7lmS; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 09130601BD;
-	Fri, 19 Jun 2026 13:55:04 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 240BD601BE;
+	Fri, 19 Jun 2026 13:55:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1781870105;
-	bh=gcWI4cSoQ5i3BVGY8gh4jVfugum1uSkv7HSv5M4JRPM=;
+	s=2025; t=1781870106;
+	bh=jnQja1ZRxTiOgdompmbzJ3/VXLbFkJU5R6dIelIcZfE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YOLTLv2rxndevlu4RRgSlaiBzEP6p3fgjDg35PZ4Daw+cpolu26o3yMbklEyKgWED
-	 IlMTKWjO5vYVwcIzYf7TTA9PzKEP2ZYABKv+JeM3KB2YYn9KiSwff6Ez1cyawLfjgA
-	 +sRNmXI6pQD8ZnBFxmGpLHsMQuzue42MpofMDWdIhxYJs6PkjK6zN3RTGvW+3AMAMN
-	 iy068zb2iA7/ny0kQ2dTsWMPb1NszDk5tYIV/F0GXoU7WoNaw9TM9kGy7ZyVm35mMv
-	 otLgwnrOF+iqDfEAVqpWcFB5MQWi6Ekp3tLqukaDCQtVO3FJbYtKS2+K9tGXYczEkf
-	 xn2dg/5AOUaFw==
+	b=sAwy7lmSsJyVGTIyMKvu8fSU0htX3q8G+wyNxrBcODVD1HUHC/YvEq8UFR6RU4Mmx
+	 O4O9gcBHuv840MxYlTGDdlZDJ703vcbFGNE/Xg7+VDhWr5tf2gjZEqiZ12BbwZAJYN
+	 GJsv23K0aq82kKdZ85UMX3FZAT13/12ipaf0T6q5cqK4oxVfWQZPlDeUyvI1Z5x9Gg
+	 PPAixYeGrP2X2wT1xKXjcjp72+vyesAMYZgC56lrkHrv72eWLRD/dQXKzf2EsRqdV7
+	 +16xacEchKGyE/vFbLL7dwN8ckxoMdnIpw3PTFluEthvAKziO5Akn8A+hXVKtNTiJn
+	 T2tzDO0KMsOhg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 05/16] netfilter: nfnetlink: make OOM conditions fatal
-Date: Fri, 19 Jun 2026 13:54:40 +0200
-Message-ID: <20260619115452.93949-6-pablo@netfilter.org>
+Subject: [PATCH net 06/16] netfilter: ipset: Don't use test_bit() in lockless RCU readers in hash types
+Date: Fri, 19 Jun 2026 13:54:41 +0200
+Message-ID: <20260619115452.93949-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260619115452.93949-1-pablo@netfilter.org>
 References: <20260619115452.93949-1-pablo@netfilter.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13344-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13346-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	DMARC_NA(0.00)[netfilter.org];
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	ALIAS_RESOLVED(0.00)[];
 	TO_DN_NONE(0.00)[];
@@ -101,50 +101,78 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime,strlen.de:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1FF4C6A587B
+X-Rspamd-Queue-Id: 809C76A5861
 
-From: Florian Westphal <fw@strlen.de>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-Batch support design attempts to process the entire batch, even
-after a call has returned an error.  The advantage is that userspace
-gets all errors in one go.
+Sashiko pointed out that there are a few lockless RCU readers
+using test_bit() which is a relaxed atomic operation and
+provides no memory barrier guarantees. Use test_bit_acquire()
+instead where the operation may run parallel with add/del/gc,
+i.e. is not one from the next cases
 
-The disadvantages are:
- 1. ->call() needs to cope with bad-state-due-to-previous-error
- 2. One error can trigger a cascade of followup errors which
-    can obfuscate the real problem.
+- protected by region lock
+- in a set destroy phase
+- in a new/temporary set creation phase
 
-Make -ENOMEM fatal, if we cannot allocate some object there is
-a high chance we're going to report followup errors that are
-nonsensical from userspace point of view.
-
-Fixes: 0628b123c96d ("netfilter: nfnetlink: add batch support and use it from nf_tables")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: 18f84d41d34f ("netfilter: ipset: Introduce RCU locking in hash:* types")
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nfnetlink.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/netfilter/ipset/ip_set_hash_gen.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
-index 47f3ed441f64..a1d480e4789c 100644
---- a/net/netfilter/nfnetlink.c
-+++ b/net/netfilter/nfnetlink.c
-@@ -531,6 +531,13 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 				status |= NFNL_BATCH_REPLAY;
- 				goto done;
- 			}
-+
-+			/* No point in further processing; followup errors can
-+			 * be bogus (e.g. -ENOENT because object that next
-+			 * rule/element wants could not be inserted).
-+			 */
-+			if (err == -ENOMEM)
-+				goto ack;
- 		}
- ack:
- 		if (nlh->nlmsg_flags & NLM_F_ACK || err) {
+diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
+index 04e4627ddfc1..00c27b95207f 100644
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -689,7 +689,7 @@ mtype_resize(struct ip_set *set, bool retried)
+ 				continue;
+ 			pos = smp_load_acquire(&n->pos);
+ 			for (j = 0; j < pos; j++) {
+-				if (!test_bit(j, n->used))
++				if (!test_bit_acquire(j, n->used))
+ 					continue;
+ 				data = ahash_data(n, j, dsize);
+ 				if (SET_ELEM_EXPIRED(set, data))
+@@ -826,7 +826,7 @@ mtype_ext_size(struct ip_set *set, u32 *elements, size_t *ext_size)
+ 				continue;
+ 			pos = smp_load_acquire(&n->pos);
+ 			for (j = 0; j < pos; j++) {
+-				if (!test_bit(j, n->used))
++				if (!test_bit_acquire(j, n->used))
+ 					continue;
+ 				data = ahash_data(n, j, set->dsize);
+ 				if (!SET_ELEM_EXPIRED(set, data))
+@@ -1201,7 +1201,7 @@ mtype_test_cidrs(struct ip_set *set, struct mtype_elem *d,
+ 			continue;
+ 		pos = smp_load_acquire(&n->pos);
+ 		for (i = 0; i < pos; i++) {
+-			if (!test_bit(i, n->used))
++			if (!test_bit_acquire(i, n->used))
+ 				continue;
+ 			data = ahash_data(n, i, set->dsize);
+ 			if (!mtype_data_equal(data, d, &multi))
+@@ -1259,7 +1259,7 @@ mtype_test(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+ 	}
+ 	pos = smp_load_acquire(&n->pos);
+ 	for (i = 0; i < pos; i++) {
+-		if (!test_bit(i, n->used))
++		if (!test_bit_acquire(i, n->used))
+ 			continue;
+ 		data = ahash_data(n, i, set->dsize);
+ 		if (!mtype_data_equal(data, d, &multi))
+@@ -1396,7 +1396,7 @@ mtype_list(const struct ip_set *set,
+ 			continue;
+ 		pos = smp_load_acquire(&n->pos);
+ 		for (i = 0; i < pos; i++) {
+-			if (!test_bit(i, n->used))
++			if (!test_bit_acquire(i, n->used))
+ 				continue;
+ 			e = ahash_data(n, i, set->dsize);
+ 			if (SET_ELEM_EXPIRED(set, e))
 -- 
 2.47.3
 
