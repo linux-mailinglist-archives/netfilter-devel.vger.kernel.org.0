@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-13364-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13367-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id EabFKvsTN2oLJAcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13364-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Jun 2026 00:28:11 +0200
+	id uNCAEEIUN2omJAcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13367-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Jun 2026 00:29:22 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 261966A9CFE
-	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Jun 2026 00:28:11 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C907F6A9D3B
+	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Jun 2026 00:29:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=gFJCMenT;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13364-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13364-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=HFAwgBjy;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13367-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13367-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DA188301441F
-	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Jun 2026 22:27:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CDA67302C6D1
+	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Jun 2026 22:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD2C35203A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32EC356764;
 	Sat, 20 Jun 2026 22:27:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB5B348C42;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED23351C31;
 	Sat, 20 Jun 2026 22:27:53 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781994474; cv=none; b=cvV2b7lAFuQoMjcI5Xwqsv+tq2VUFt4VLzYWsOtjKeOdYfu+rHL1rCR8bb7MlHc14MJpSMeVdWQpA9zA5ivaPsXrmjD24rtgxC1tjTNPfgNVTLq/5npMFjfY7FYZ2m+Gxt5fTlkpuZmoJceTCXuB0rRzjvVykUVq4WHtZu/MIJA=
+	t=1781994475; cv=none; b=Mny/0drbz4YP0OolA1xQU0TT2eH3BCm0tOuXvktrXgCgCdIFXLjAj+CtsUShWxoZwrN87lQxbthLxsqqtxco+rFC3beBARvB1Yn8JN6pXPBGz9FAgFlb/5CMA49KhLzTiODGbGZflFZsFo5S5zDiS/XFy3BMa8kQO0ALIXRQ2WE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781994474; c=relaxed/simple;
-	bh=6ube8aCnDGhsVWLD3B2L2+JpR7ui9bWBKs+rKc/OPMo=;
+	s=arc-20240116; t=1781994475; c=relaxed/simple;
+	bh=9j64UnNpYuU64n5ULFhTdoRQq3R6+QKq4d0AAN1mv6Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tjZa6B0rLoZdJoM21cY4N+Ch/flJ0cpQz4E/NGDM50I4Oj4vkDZ0kNTZKNLdRBIQDXLfl05cXONxwMnGAYdbXJ8Hdld8IqfEMlbwJfGEgat/G0V5x+HJk3SM152wuowLvp2faKTqf8sl2hr116cGys0XVVQZ8UncbijH3yayFE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=gFJCMenT; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=L4EVW2oPZBFCAPaVhu0HHOxaYxNX1eLrgvyorS5elMEmD0yuTNJxQqlo7y/3JkY+POcZ2eJln6nWa3rn6Q7i4kNZokREyil/iKhYDC25CnsH/Sqvc25ayZBOOAYBSXdRz+B75YheqYNXjMrIoY6f0U4zotOCLyoMe5JKYIJBYvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=HFAwgBjy; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 9EE8160196;
-	Sun, 21 Jun 2026 00:27:45 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id B32496019B;
+	Sun, 21 Jun 2026 00:27:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1781994466;
-	bh=uWuuABX0tqyCSosK/9RXGrFwC2EEkpdFJ+6Epga9q+o=;
+	s=2025; t=1781994467;
+	bh=11hW//Ju2GWtkdVmhs2OR1rGa9OzCnEEfvwFfaWcjY4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gFJCMenTNPvGzpcGS+DRcwNmgRocCSexg1JnKl4lWrBz3+tmXies85e4ayzPvlhdG
-	 L52UKvkC4wlLSSc3LJ3Dkm8xcbIeCOrwq5TIHXVVMVyNuWDPLqxjAMIp7I8v7LLXDO
-	 Y/i/XPF2PcYHtJC8u/usXwFiOPq4MiPQmp0exW8CEkglmHowjUlonJL5FMsagKGHm7
-	 8zdQGZa7JRtDaDatn3p2pTml4QqrWkDyTzy8SB+1LUb208HXurSXZv6js7BeOj7bv1
-	 EFc+z5o+ehuDwvPiHzbkAkKGWK4hwkq1/pihJvJZTv2Qzih+zlyCGcHQFr/Ur2lkqX
-	 rmUD1IlC+2AZw==
+	b=HFAwgBjyxjJ6503Du0HQjb8rtxB1cTfJNpJ0lmFjCuTaLub/5VzZJotSOFyhg/yN2
+	 qENO5HF7+qkaXTrtDxOCLUM3y7k0pZxkqlVDTBJPpHmRcUNsaUY/XkPx0jgPe4tnBr
+	 2j8pBTqyuPJses/kuvsOC41gKYVRfpA67YgGUJH2fSqrMJl7ubK75yBSzv2py/OAfN
+	 YXK0bXkFBMRheI6YTFelOv9G2/dtQj67obIfZVRSwXJtfCcIlSJ8+ioCe4G3S9lNs8
+	 bxwbzmQMDJkR3iJGtgmc0Kj9qIWtlrYKm/5FLvpD/W+iUnrUMTFVrbu6lEZTpPZ0N0
+	 szIlcLd57ouXg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 03/14] netfilter: xt_cluster: reject template conntracks in hash match
-Date: Sun, 21 Jun 2026 00:27:27 +0200
-Message-ID: <20260620222738.112506-4-pablo@netfilter.org>
+Subject: [PATCH net 04/14] netfilter: flowtable: fix and simplify IP6IP6 tunnel handling
+Date: Sun, 21 Jun 2026 00:27:28 +0200
+Message-ID: <20260620222738.112506-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260620222738.112506-1-pablo@netfilter.org>
 References: <20260620222738.112506-1-pablo@netfilter.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13364-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13367-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	DMARC_NA(0.00)[netfilter.org];
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	ALIAS_RESOLVED(0.00)[];
 	TO_DN_NONE(0.00)[];
@@ -101,53 +101,280 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,icloud.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 261966A9CFE
+X-Rspamd-Queue-Id: C907F6A9D3B
 
-From: Wyatt Feng <bronzed_45_vested@icloud.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-xt_cluster_mt() treats any non-NULL nf_ct_get() result as a fully
-initialized conntrack and passes it to xt_cluster_hash().
+Fix nf_flow_ip6_tunnel_proto() to use pskb_may_pull() instead of
+skb_header_pointer() to ensure the outer IPv6 header is in the skb
+headroom, which is required for subsequent packet processing. Move
+ctx->offset update inside the IPPROTO_IPV6 conditional block since it
+should only be adjusted when an IP6IP6 tunnel is actually detected.
+Simplify the rx path by removing ipv6_skip_exthdr() and checking
+ip6h->nexthdr directly, as the flowtable fast path only handles simple
+IP6IP6 encapsulation without extension headers.
+Drop the tunnel encapsulation limit destination option support from the
+tx path to match, since the rx path no longer handles extension headers.
+Remove the encap_limit parameter from nf_flow_offload_ipv6_forward(),
+nf_flow_tunnel_ip6ip6_push() and nf_flow_tunnel_v6_push(), along with
+the ipv6_tel_txoption struct and related headroom/MTU adjustments.
 
-This causes a state confusion bug when the raw table CT target attaches
-a template conntrack to skb->_nfct before normal conntrack processing.
-Templates carry IPS_TEMPLATE status but do not have a valid tuple for
-hashing yet, so xt_cluster_hash() can hit its WARN_ON() path on the
-zeroed l3num field.
-
-Reject template conntracks before hashing them. This matches existing
-netfilter handling for template objects and avoids hashing incomplete
-conntrack state.
-
-Fixes: 0269ea493734 ("netfilter: xtables: add cluster match")
-Cc: stable@vger.kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Zhengchuan Liang <zcliangcn@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Assisted-by: Codex:GPT-5.4
-Signed-off-by: Wyatt Feng <bronzed_45_vested@icloud.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+Fixes: d98103575dcdd ("netfilter: flowtable: Add IP6IP6 rx sw acceleration")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/xt_cluster.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/ip6_tunnel.c                         |  7 ++
+ net/netfilter/nf_flow_table_ip.c              | 80 +++++--------------
+ .../selftests/net/netfilter/nft_flowtable.sh  |  8 +-
+ 3 files changed, 30 insertions(+), 65 deletions(-)
 
-diff --git a/net/netfilter/xt_cluster.c b/net/netfilter/xt_cluster.c
-index 908fd5f2c3c8..eaf2511d63f0 100644
---- a/net/netfilter/xt_cluster.c
-+++ b/net/netfilter/xt_cluster.c
-@@ -107,7 +107,7 @@ xt_cluster_mt(const struct sk_buff *skb, struct xt_action_param *par)
- 	}
+diff --git a/net/ipv6/ip6_tunnel.c b/net/ipv6/ip6_tunnel.c
+index d7c90a8533ec..bf8e40af60b0 100644
+--- a/net/ipv6/ip6_tunnel.c
++++ b/net/ipv6/ip6_tunnel.c
+@@ -1851,6 +1851,13 @@ static int ip6_tnl_fill_forward_path(struct net_device_path_ctx *ctx,
+ 	struct dst_entry *dst;
+ 	int err;
  
- 	ct = nf_ct_get(skb, &ctinfo);
--	if (ct == NULL)
-+	if (!ct || nf_ct_is_template(ct))
++	if (!(t->parms.flags & IP6_TNL_F_IGN_ENCAP_LIMIT)) {
++		/* encaplimit option is currently not supported is
++		 * sw-acceleration path.
++		 */
++		return -EOPNOTSUPP;
++	}
++
+ 	dst = ip6_route_output(dev_net(ctx->dev), NULL, &fl6);
+ 	if (!dst->error) {
+ 		path->type = DEV_PATH_TUN;
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index 9c05a50d6013..e7a3fb2b2d94 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -347,29 +347,23 @@ static bool nf_flow_ip6_tunnel_proto(struct nf_flowtable_ctx *ctx,
+ 				     struct sk_buff *skb)
+ {
+ #if IS_ENABLED(CONFIG_IPV6)
+-	struct ipv6hdr *ip6h, _ip6h;
+-	__be16 frag_off;
+-	u8 nexthdr;
+-	int hdrlen;
++	struct ipv6hdr *ip6h;
+ 
+-	ip6h = skb_header_pointer(skb, ctx->offset, sizeof(*ip6h), &_ip6h);
+-	if (!ip6h)
++	if (!pskb_may_pull(skb, sizeof(*ip6h) + ctx->offset))
  		return false;
  
- 	if (ct->master)
++	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
+ 	if (ip6h->hop_limit <= 1)
+ 		return false;
+ 
+-	nexthdr = ip6h->nexthdr;
+-	hdrlen = ipv6_skip_exthdr(skb, sizeof(*ip6h) + ctx->offset, &nexthdr,
+-				  &frag_off);
+-	if (hdrlen < 0)
++	if (ipv6_ext_hdr(ip6h->nexthdr))
+ 		return false;
+ 
+-	if (nexthdr == IPPROTO_IPV6) {
+-		ctx->tun.hdr_size = hdrlen;
+-		ctx->tun.proto = IPPROTO_IPV6;
++	if (ip6h->nexthdr == IPPROTO_IPV6) {
++		ctx->tun.proto = ip6h->nexthdr;
++		ctx->tun.hdr_size = sizeof(*ip6h);
++		ctx->offset += ctx->tun.hdr_size;
+ 	}
+-	ctx->offset += ctx->tun.hdr_size;
+ 
+ 	return true;
+ #else
+@@ -648,25 +642,19 @@ static int nf_flow_tunnel_v4_push(struct net *net, struct sk_buff *skb,
+ 	return 0;
+ }
+ 
+-struct ipv6_tel_txoption {
+-	struct ipv6_txoptions ops;
+-	__u8 dst_opt[8];
+-};
+-
+ static int nf_flow_tunnel_ip6ip6_push(struct net *net, struct sk_buff *skb,
+ 				      struct flow_offload_tuple *tuple,
+-				      struct in6_addr **ip6_daddr,
+-				      int encap_limit)
++				      struct in6_addr **ip6_daddr)
+ {
+ 	struct ipv6hdr *ip6h = (struct ipv6hdr *)skb_network_header(skb);
+-	u8 hop_limit = ip6h->hop_limit, proto = IPPROTO_IPV6;
+ 	struct rtable *rt = dst_rtable(tuple->dst_cache);
+ 	__u8 dsfield = ipv6_get_dsfield(ip6h);
+ 	struct flowi6 fl6 = {
+ 		.daddr = tuple->tun.src_v6,
+ 		.saddr = tuple->tun.dst_v6,
+-		.flowi6_proto = proto,
++		.flowi6_proto = IPPROTO_IPV6,
+ 	};
++	u8 hop_limit = ip6h->hop_limit;
+ 	int err, mtu;
+ 	u32 headroom;
+ 
+@@ -674,41 +662,18 @@ static int nf_flow_tunnel_ip6ip6_push(struct net *net, struct sk_buff *skb,
+ 	if (err)
+ 		return err;
+ 
+-	skb_set_inner_ipproto(skb, proto);
++	skb_set_inner_ipproto(skb, IPPROTO_IPV6);
+ 	headroom = sizeof(*ip6h) + LL_RESERVED_SPACE(rt->dst.dev) +
+ 		   rt->dst.header_len;
+-	if (encap_limit)
+-		headroom += 8;
+ 	err = skb_cow_head(skb, headroom);
+ 	if (err)
+ 		return err;
+ 
+ 	skb_scrub_packet(skb, true);
+ 	mtu = dst_mtu(&rt->dst) - sizeof(*ip6h);
+-	if (encap_limit)
+-		mtu -= 8;
+ 	mtu = max(mtu, IPV6_MIN_MTU);
+ 	skb_dst_update_pmtu_no_confirm(skb, mtu);
+ 
+-	if (encap_limit > 0) {
+-		struct ipv6_tel_txoption opt = {
+-			.dst_opt[2] = IPV6_TLV_TNL_ENCAP_LIMIT,
+-			.dst_opt[3] = 1,
+-			.dst_opt[4] = encap_limit,
+-			.dst_opt[5] = IPV6_TLV_PADN,
+-			.dst_opt[6] = 1,
+-		};
+-		struct ipv6_opt_hdr *hopt;
+-
+-		opt.ops.dst1opt = (struct ipv6_opt_hdr *)opt.dst_opt;
+-		opt.ops.opt_nflen = 8;
+-
+-		hopt = skb_push(skb, ipv6_optlen(opt.ops.dst1opt));
+-		memcpy(hopt, opt.ops.dst1opt, ipv6_optlen(opt.ops.dst1opt));
+-		hopt->nexthdr = IPPROTO_IPV6;
+-		proto = NEXTHDR_DEST;
+-	}
+-
+ 	skb_push(skb, sizeof(*ip6h));
+ 	skb_reset_network_header(skb);
+ 
+@@ -716,7 +681,7 @@ static int nf_flow_tunnel_ip6ip6_push(struct net *net, struct sk_buff *skb,
+ 	ip6_flow_hdr(ip6h, dsfield,
+ 		     ip6_make_flowlabel(net, skb, fl6.flowlabel, true, &fl6));
+ 	ip6h->hop_limit = hop_limit;
+-	ip6h->nexthdr = proto;
++	ip6h->nexthdr = IPPROTO_IPV6;
+ 	ip6h->daddr = tuple->tun.src_v6;
+ 	ip6h->saddr = tuple->tun.dst_v6;
+ 	ipv6_hdr(skb)->payload_len = htons(skb->len - sizeof(*ip6h));
+@@ -729,12 +694,10 @@ static int nf_flow_tunnel_ip6ip6_push(struct net *net, struct sk_buff *skb,
+ 
+ static int nf_flow_tunnel_v6_push(struct net *net, struct sk_buff *skb,
+ 				  struct flow_offload_tuple *tuple,
+-				  struct in6_addr **ip6_daddr,
+-				  int encap_limit)
++				  struct in6_addr **ip6_daddr)
+ {
+ 	if (tuple->tun_num)
+-		return nf_flow_tunnel_ip6ip6_push(net, skb, tuple, ip6_daddr,
+-						  encap_limit);
++		return nf_flow_tunnel_ip6ip6_push(net, skb, tuple, ip6_daddr);
+ 
+ 	return 0;
+ }
+@@ -1089,7 +1052,7 @@ static int nf_flow_tuple_ipv6(struct nf_flowtable_ctx *ctx, struct sk_buff *skb,
+ static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
+ 					struct nf_flowtable *flow_table,
+ 					struct flow_offload_tuple_rhash *tuplehash,
+-					struct sk_buff *skb, int encap_limit)
++					struct sk_buff *skb)
+ {
+ 	enum flow_offload_tuple_dir dir;
+ 	struct flow_offload *flow;
+@@ -1100,11 +1063,8 @@ static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
+ 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
+ 
+ 	mtu = flow->tuplehash[dir].tuple.mtu + ctx->offset;
+-	if (flow->tuplehash[!dir].tuple.tun_num) {
++	if (flow->tuplehash[!dir].tuple.tun_num)
+ 		mtu -= sizeof(*ip6h);
+-		if (encap_limit > 0)
+-			mtu -= 8; /* encap limit option */
+-	}
+ 
+ 	if (unlikely(nf_flow_exceeds_mtu(skb, mtu)))
+ 		return 0;
+@@ -1158,7 +1118,6 @@ unsigned int
+ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ 			  const struct nf_hook_state *state)
+ {
+-	int encap_limit = IPV6_DEFAULT_TNL_ENCAP_LIMIT;
+ 	struct flow_offload_tuple_rhash *tuplehash;
+ 	struct nf_flowtable *flow_table = priv;
+ 	struct flow_offload_tuple *other_tuple;
+@@ -1177,8 +1136,7 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ 	if (tuplehash == NULL)
+ 		return NF_ACCEPT;
+ 
+-	ret = nf_flow_offload_ipv6_forward(&ctx, flow_table, tuplehash, skb,
+-					   encap_limit);
++	ret = nf_flow_offload_ipv6_forward(&ctx, flow_table, tuplehash, skb);
+ 	if (ret < 0)
+ 		return NF_DROP;
+ 	else if (ret == 0)
+@@ -1198,7 +1156,7 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ 	ip6_daddr = &other_tuple->src_v6;
+ 
+ 	if (nf_flow_tunnel_v6_push(state->net, skb, other_tuple,
+-				   &ip6_daddr, encap_limit) < 0)
++				   &ip6_daddr) < 0)
+ 		return NF_DROP;
+ 
+ 	switch (tuplehash->tuple.xmit_type) {
+diff --git a/tools/testing/selftests/net/netfilter/nft_flowtable.sh b/tools/testing/selftests/net/netfilter/nft_flowtable.sh
+index 7a34ef468975..08ad07500e8a 100755
+--- a/tools/testing/selftests/net/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/net/netfilter/nft_flowtable.sh
+@@ -592,7 +592,7 @@ ip -net "$nsr1" link set tun0 up
+ ip -net "$nsr1" addr add 192.168.100.1/24 dev tun0
+ ip netns exec "$nsr1" sysctl net.ipv4.conf.tun0.forwarding=1 > /dev/null
+ 
+-ip -net "$nsr1" link add name tun6 type ip6tnl local fee1:2::1 remote fee1:2::2
++ip -net "$nsr1" link add name tun6 type ip6tnl local fee1:2::1 remote fee1:2::2 encaplimit none
+ ip -net "$nsr1" link set tun6 up
+ ip -net "$nsr1" addr add fee1:3::1/64 dev tun6 nodad
+ 
+@@ -601,7 +601,7 @@ ip -net "$nsr2" link set tun0 up
+ ip -net "$nsr2" addr add 192.168.100.2/24 dev tun0
+ ip netns exec "$nsr2" sysctl net.ipv4.conf.tun0.forwarding=1 > /dev/null
+ 
+-ip -net "$nsr2" link add name tun6 type ip6tnl local fee1:2::2 remote fee1:2::1 || ret=1
++ip -net "$nsr2" link add name tun6 type ip6tnl local fee1:2::2 remote fee1:2::1 encaplimit none || ret=1
+ ip -net "$nsr2" link set tun6 up
+ ip -net "$nsr2" addr add fee1:3::2/64 dev tun6 nodad
+ 
+@@ -651,7 +651,7 @@ ip -net "$nsr1" route change default via 192.168.200.2
+ ip netns exec "$nsr1" sysctl net.ipv4.conf.tun0/10.forwarding=1 > /dev/null
+ ip netns exec "$nsr1" nft -a insert rule inet filter forward 'meta oif tun0.10 accept'
+ 
+-ip -net "$nsr1" link add name tun6.10 type ip6tnl local fee1:4::1 remote fee1:4::2
++ip -net "$nsr1" link add name tun6.10 type ip6tnl local fee1:4::1 remote fee1:4::2 encaplimit none
+ ip -net "$nsr1" link set tun6.10 up
+ ip -net "$nsr1" addr add fee1:5::1/64 dev tun6.10 nodad
+ ip -6 -net "$nsr1" route delete default
+@@ -670,7 +670,7 @@ ip -net "$nsr2" addr add 192.168.200.2/24 dev tun0.10
+ ip -net "$nsr2" route change default via 192.168.200.1
+ ip netns exec "$nsr2" sysctl net.ipv4.conf.tun0/10.forwarding=1 > /dev/null
+ 
+-ip -net "$nsr2" link add name tun6.10 type ip6tnl local fee1:4::2 remote fee1:4::1 || ret=1
++ip -net "$nsr2" link add name tun6.10 type ip6tnl local fee1:4::2 remote fee1:4::1 encaplimit none || ret=1
+ ip -net "$nsr2" link set tun6.10 up
+ ip -net "$nsr2" addr add fee1:5::2/64 dev tun6.10 nodad
+ ip -6 -net "$nsr2" route delete default
 -- 
 2.47.3
 
