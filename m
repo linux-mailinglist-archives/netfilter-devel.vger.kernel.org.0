@@ -1,40 +1,40 @@
-Return-Path: <netfilter-devel+bounces-13381-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13382-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Ik6dFHUKOWo7lwcAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13381-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2026 12:12:05 +0200
+	id 9wmpGXoKOWo8lwcAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13382-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2026 12:12:10 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB3D6AE8F3
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2026 12:12:04 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD0B36AE8F6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2026 12:12:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13381-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13381-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13382-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13382-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7F21C300B3CA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2026 10:11:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 59F4630237F3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2026 10:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEAD3A4F5B;
-	Mon, 22 Jun 2026 10:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D363A48E6;
+	Mon, 22 Jun 2026 10:11:20 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.229.168.213])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F193A5422
-	for <netfilter-devel@vger.kernel.org>; Mon, 22 Jun 2026 10:11:07 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [4.193.249.245])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA593A4F47
+	for <netfilter-devel@vger.kernel.org>; Mon, 22 Jun 2026 10:11:13 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782123077; cv=none; b=ZP63nabqq020K8fQIhLByVUGI+L8nulU1DoEdB2iVP+Hce7QHybG3vNff/oiBiqelQxAJXBRXDv9y2E1Kb3cZrYFw7PKBi2oXt1PEI7kRSag0UOwG7rwWjIt72uHIo+buE4EzijZNOWDTgQ1ZR3F72y93qqjPh2SCj9Lq/wKMaA=
+	t=1782123080; cv=none; b=geaE0GUpDMleVTX1Ccki4ZoQ99l1JxCsG9+B344NM631HVEUN6S0esMXe0z6GoiJ8uv/4r152fmxiIrBbyv+8YZVRYjxPOpWkJOlSuTPhT5W6/W0DYcSTU3VeThWuMfXpJKMvOzAqUcW8siFJC2gxSZVZtFBtSgxR0fXELvTQ6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782123077; c=relaxed/simple;
-	bh=I+Z1DCHK3fH/16Pv1Abw5JpJMGqZWS0dimlr+j6b1YU=;
+	s=arc-20240116; t=1782123080; c=relaxed/simple;
+	bh=JY7+d5VF1Xzy8uSO+SaUCr6dkcW5BmeTdQQvD5VxEmw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VwWHbnAj3EG2PAh3HDD+SniJKwMVECQKIkvZxQ15JV1or6PJF4FZhOw2ASmyLGCeXQuQt5f1JAlsEtm6kGf4PERZY0Zi5K+zDfmzDiYEIrSATRbBaE9GemaBIKDkIx88c4k2aCqc2KUXDbwnwsFZPjDsxbDt4Gvs/b++WtsQ2zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=52.229.168.213
+	 MIME-Version; b=mzaVSaZi7wX4QAIBiC/EqtzT91bxeyxlnFcCG6hFu/iC0vqluK1K2/5YPwe47b97aawLDAAua5b6ZAPPOKbsyisgqV9W3hyyKz+gQmapEOmcYSAAAkeZ65BC351zIB/zpBOq6MpOc3xkV9peg+1XmXwBY7LQpG6dFDmp4RyIhWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=4.193.249.245
 Received: from enjou-Legion-Y7000P-2019 (unknown [172.23.56.36])
-	by app3 (Coremail) with SMTP id ywmowAC3xvkkCjlqyIYsAA--.11269S3;
-	Mon, 22 Jun 2026 18:10:53 +0800 (CST)
+	by app3 (Coremail) with SMTP id ywmowAC3xvkkCjlqyIYsAA--.11269S4;
+	Mon, 22 Jun 2026 18:10:57 +0800 (CST)
 From: Ren Wei <n05ec@lzu.edu.cn>
 To: netfilter-devel@vger.kernel.org
 Cc: pablo@netfilter.org,
@@ -47,9 +47,9 @@ Cc: pablo@netfilter.org,
 	bird@lzu.edu.cn,
 	chzhengyang2023@lzu.edu.cn,
 	n05ec@lzu.edu.cn
-Subject: [PATCH nf v3 1/2] netfilter: nf_flow_table: separate tunnel route state from direct xmit
-Date: Mon, 22 Jun 2026 18:10:26 +0800
-Message-ID: <8c46be2ef0884843963fead783d67661a6f565b1.1782092221.git.chzhengyang2023@lzu.edu.cn>
+Subject: [PATCH nf v3 2/2] selftests: netfilter: add bridge tunnel flowtable regression
+Date: Mon, 22 Jun 2026 18:10:27 +0800
+Message-ID: <5b8a9e87ff7b47401612bb0e0fc841d8bfdd333d.1782092221.git.chzhengyang2023@lzu.edu.cn>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <cover.1782092221.git.chzhengyang2023@lzu.edu.cn>
 References: <cover.1782092221.git.chzhengyang2023@lzu.edu.cn>
@@ -60,10 +60,10 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:ywmowAC3xvkkCjlqyIYsAA--.11269S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ww1kJr4kZryfuw4fWFyrXrb_yoW3XF4kpF
-	45K3yktrsxWrnIgr4fZ3yfurn8WrsYkFWa9FyYk3ySyF1UX34kGF95Ka42v3WkGFWDJFyS
-	qr1qqr1UCF1DA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:ywmowAC3xvkkCjlqyIYsAA--.11269S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr4kuFy3Zr4kZFW8CFWfZrb_yoWrGw4rpF
+	W0g34YyryxZFn8G3yDAw43Kr1rZa95Arn8uFn5G3srZrykWFWIga1rK3yDW3WUCrs3XrWa
+	vr45t34IgFn8XaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUB01xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
 	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
 	IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
@@ -77,226 +77,131 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Ww1kJr4kZryfuw4fWFyrXrb_yoW3XF4kpF
 	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
 	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
 	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUonmRUUUUU
-X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQEGCWo48FMDugAAsH
+X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQ0GCWo48FMDwAAAsx
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.96 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [3.34 / 15.00];
+	RECEIVED_BLOCKLISTDE(3.00)[4.193.249.245:received];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[lzu.edu.cn];
-	TAGGED_FROM(0.00)[bounces-13381-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,kernel.org,gmail.com,lzu.edu.cn];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13382-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[lzu.edu.cn];
 	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:lorenzo@kernel.org,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:bird@lzu.edu.cn,m:chzhengyang2023@lzu.edu.cn,m:n05ec@lzu.edu.cn,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_HAS_DN(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_NA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: ACB3D6AE8F3
+X-Rspamd-Queue-Id: CD0B36AE8F6
 
 From: Zhengyang Chen <chzhengyang2023@lzu.edu.cn>
 
-When a flow tuple carries tunnel metadata and uses
-FLOW_OFFLOAD_XMIT_DIRECT, the transmit path may still need route state
-for tunnel push. However, the current tuple layout stores direct xmit
-L2 state and route state in overlapping runtime storage.
+Add a nft_flowtable.sh regression test for the bridge direct-xmit plus
+IPIP/IP6IP6 underlay configuration that reproduces the reachable
+DIRECT+tunnel tuple combination exercised by the flowtable fix.
 
-As a result, a tuple may keep tun_num set while the tunnel push path
-later reads tuple->dst_cache, even though a direct xmit tuple only has
-out.ifidx/out.h_source/out.h_dest stored in that area. This leads to
-invalid dst usage and can trigger a crash in the tunnel transmit path.
+The test reuses the existing bridge and tunnel topology, installs flow
+rules for the tunnel egress and bridge reply path, verifies IPv4 and
+IPv6 forwarding, and checks the flowtable counters after the transfer.
 
-Fix this by moving dst_cache and dst_cookie out of the runtime union so
-that they can be shared by neighbour, xfrm, and direct tunnel flows.
-For FLOW_OFFLOAD_XMIT_DIRECT tuples carrying tunnel metadata, preserve
-route state in these shared fields and release it through the common
-dst release path.
-
-Keep dst validation on the forwarding tuple before the packet is
-modified, and validate the tunnel consumer tuple from the same early
-control point. This preserves protection for current NEIGH/XFRM users
-of tuplehash->tuple.dst_cache while avoiding the late-check fallback
-after decap, NAT, and TTL updates.
-
-Hardware offload rule construction still assumes that direct xmit flows
-do not carry tunnel route state, so reject that combination there for
-now to avoid undefined offload behaviour.
-
-Fixes: d30301ba4b07 ("netfilter: flowtable: Add IPIP tx sw acceleration")
-Cc: stable@vger.kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
 Signed-off-by: Zhengyang Chen <chzhengyang2023@lzu.edu.cn>
 Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
 ---
 changes in v3:
-  - add the nft_flowtable.sh regression coverage in patch2
-  - Clarify that the DIRECT+tunnel tuple combination is reachable via
-    nft_dev_forward_path() updating xmit_type while filling tunnel
-    metadata
+  - Add nft_flowtable.sh coverage for the bridge direct-xmit plus
+    IPIP/IP6IP6 underlay case
   - v2 Link: https://lore.kernel.org/all/7016923271a6bb3e26f9a21757922d3c5b1a7487.1781683535.git.chzhengyang2023@lzu.edu.cn/
-changes in v2:
-  - Move dst_cache and dst_cookie out of the runtime union instead of
-    introducing dedicated tunnel dst fields
-  - Reuse the shared dst_cache/dst_cookie storage for DIRECT tunnel
-    flows
-  - Simplify dst release through the common dst_cache path
-  - Update Fixes: to d30301ba4b07 ("netfilter: flowtable: Add IPIP tx sw
-    acceleration")
-  - v1 Link: https://lore.kernel.org/all/3947a39286d335b6136bbee26f8bf44b23471c69.1780580352.git.chzhengyang2023@lzu.edu.cn/
 ---
- include/net/netfilter/nf_flow_table.h |  4 ++--
- net/netfilter/nf_flow_table_core.c    | 12 ++++++++----
- net/netfilter/nf_flow_table_ip.c      | 19 +++++++++++++++++++
- net/netfilter/nf_flow_table_offload.c |  3 +++
- 4 files changed, 32 insertions(+), 6 deletions(-)
+ .../selftests/net/netfilter/nft_flowtable.sh  | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-index 7b23b245a5a8..369f6a717811 100644
---- a/include/net/netfilter/nf_flow_table.h
-+++ b/include/net/netfilter/nf_flow_table.h
-@@ -155,11 +155,11 @@ struct flow_offload_tuple {
- 					tun_num:2,
- 					in_vlan_ingress:2;
- 	u16				mtu;
-+	struct dst_entry		*dst_cache;
-+	u32				dst_cookie;
- 	union {
- 		struct {
--			struct dst_entry *dst_cache;
- 			u32		ifidx;
--			u32		dst_cookie;
- 		};
- 		struct {
- 			u32		ifidx;
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 785d8c244a77..252b081319a7 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -127,12 +127,18 @@ static int flow_offload_fill_route(struct flow_offload *flow,
+diff --git a/tools/testing/selftests/net/netfilter/nft_flowtable.sh b/tools/testing/selftests/net/netfilter/nft_flowtable.sh
+index 7a34ef468975..cecbec148bdb 100755
+--- a/tools/testing/selftests/net/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/net/netfilter/nft_flowtable.sh
+@@ -736,6 +736,61 @@ if ! test_tcp_forwarding_nat "$ns1" "$ns2" 1 "on bridge"; then
+ 	ret=1
+ fi
  
- 	switch (route->tuple[dir].xmit_type) {
- 	case FLOW_OFFLOAD_XMIT_DIRECT:
-+		if (flow_tuple->tun_num) {
-+			flow_tuple->dst_cache = dst;
-+			flow_tuple->dst_cookie =
-+				flow_offload_dst_cookie(flow_tuple);
-+		}
- 		memcpy(flow_tuple->out.h_dest, route->tuple[dir].out.h_dest,
- 		       ETH_ALEN);
- 		memcpy(flow_tuple->out.h_source, route->tuple[dir].out.h_source,
- 		       ETH_ALEN);
- 		flow_tuple->out.ifidx = route->tuple[dir].out.ifindex;
--		dst_release(dst);
-+		if (!flow_tuple->tun_num)
-+			dst_release(dst);
- 		break;
- 	case FLOW_OFFLOAD_XMIT_XFRM:
- 	case FLOW_OFFLOAD_XMIT_NEIGH:
-@@ -152,9 +158,7 @@ static int flow_offload_fill_route(struct flow_offload *flow,
- static void nft_flow_dst_release(struct flow_offload *flow,
- 				 enum flow_offload_tuple_dir dir)
- {
--	if (flow->tuplehash[dir].tuple.xmit_type == FLOW_OFFLOAD_XMIT_NEIGH ||
--	    flow->tuplehash[dir].tuple.xmit_type == FLOW_OFFLOAD_XMIT_XFRM)
--		dst_release(flow->tuplehash[dir].tuple.dst_cache);
-+	dst_release(flow->tuplehash[dir].tuple.dst_cache);
- }
- 
- void flow_offload_route_init(struct flow_offload *flow,
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 9c05a50d6013..b125868ab1fb 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -299,6 +299,11 @@ static bool nf_flow_exceeds_mtu(const struct sk_buff *skb, unsigned int mtu)
- 
- static inline bool nf_flow_dst_check(struct flow_offload_tuple *tuple)
- {
-+	if (tuple->tun_num &&
-+	    tuple->xmit_type == FLOW_OFFLOAD_XMIT_DIRECT &&
-+	    !dst_check(tuple->dst_cache, tuple->dst_cookie))
-+		return false;
++if ip -net "$nsr1" link show tun0 > /dev/null 2>&1 &&
++   ip -net "$nsr2" link show tun0 > /dev/null 2>&1; then
++	ip -net "$nsr1" route change default via 192.168.100.2
++	ip -net "$nsr2" route change default via 192.168.100.1
++	ip -6 -net "$nsr1" route delete default
++	ip -6 -net "$nsr1" route add default via fee1:3::2
++	ip -6 -net "$nsr2" route delete default
++	ip -6 -net "$nsr2" route add default via fee1:3::1
++	ip -net "$ns2" route add default via 10.0.2.1
++	ip -6 -net "$ns2" route add default via dead:2::1
 +
- 	if (tuple->xmit_type != FLOW_OFFLOAD_XMIT_NEIGH &&
- 	    tuple->xmit_type != FLOW_OFFLOAD_XMIT_XFRM)
- 		return true;
-@@ -482,6 +487,7 @@ static int nf_flow_offload_forward(struct nf_flowtable_ctx *ctx,
- 				   struct flow_offload_tuple_rhash *tuplehash,
- 				   struct sk_buff *skb)
- {
-+	struct flow_offload_tuple *other_tuple;
- 	enum flow_offload_tuple_dir dir;
- 	struct flow_offload *flow;
- 	unsigned int thoff, mtu;
-@@ -507,6 +513,12 @@ static int nf_flow_offload_forward(struct nf_flowtable_ctx *ctx,
- 		return 0;
- 	}
- 
-+	other_tuple = &flow->tuplehash[!dir].tuple;
-+	if (other_tuple->tun_num && !nf_flow_dst_check(other_tuple)) {
-+		flow_offload_teardown(flow);
-+		return 0;
-+	}
++	ip netns exec "$nsr1" nft -a insert rule inet filter forward \
++		'meta oif "tun0" tcp dport 12345 ct mark set 1 flow add @f1 counter name routed_orig accept'
++	ip netns exec "$nsr1" nft -a insert rule inet filter forward \
++		'meta oif "tun6" tcp dport 12345 ct mark set 1 flow add @f1 counter name routed_orig accept'
++	ip netns exec "$nsr1" nft -a insert rule inet filter forward \
++		'meta oif "veth0" tcp sport 12345 ct mark set 1 flow add @f1 counter name routed_repl accept'
++	ip netns exec "$nsr1" nft -a insert rule inet filter forward \
++		'meta oif "br0" tcp sport 12345 ct mark set 1 flow add @f1 counter name routed_repl accept'
++	ip netns exec "$nsr1" nft -a insert rule inet filter forward \
++		'meta oif "tun0" accept'
++	ip netns exec "$nsr1" nft -a insert rule inet filter forward \
++		'meta oif "tun6" accept'
 +
- 	if (skb_ensure_writable(skb, thoff + ctx->hdrsize))
- 		return -1;
- 
-@@ -1091,6 +1103,7 @@ static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
- 					struct flow_offload_tuple_rhash *tuplehash,
- 					struct sk_buff *skb, int encap_limit)
- {
-+	struct flow_offload_tuple *other_tuple;
- 	enum flow_offload_tuple_dir dir;
- 	struct flow_offload *flow;
- 	unsigned int thoff, mtu;
-@@ -1119,6 +1132,12 @@ static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
- 		return 0;
- 	}
- 
-+	other_tuple = &flow->tuplehash[!dir].tuple;
-+	if (other_tuple->tun_num && !nf_flow_dst_check(other_tuple)) {
-+		flow_offload_teardown(flow);
-+		return 0;
-+	}
++	ip netns exec "$nsr1" nft reset counters table inet filter >/dev/null
 +
- 	if (skb_ensure_writable(skb, thoff + ctx->hdrsize))
- 		return -1;
++	if test_tcp_forwarding "$ns1" "$ns2" 1 4 10.0.2.99 12345; then
++		check_counters "bridge + IPIP tunnel"
++	else
++		echo "FAIL: flow offload for ns1/ns2 with bridge + IPIP tunnel" 1>&2
++		ip netns exec "$nsr1" nft list ruleset
++		ret=1
++	fi
++
++	if test_tcp_forwarding "$ns1" "$ns2" 1 6 "[dead:2::99]" 12345; then
++		check_counters "bridge + IP6IP6 tunnel"
++	else
++		echo "FAIL: flow offload for ns1/ns2 with bridge + IP6IP6 tunnel" 1>&2
++		ip netns exec "$nsr1" nft list ruleset
++		ret=1
++	fi
++
++	ip -net "$nsr1" route change default via 192.168.10.2
++	ip -net "$nsr2" route change default via 192.168.10.1
++	ip -net "$ns2" route del default via 10.0.2.1
++	ip -6 -net "$nsr1" route delete default
++	ip -6 -net "$nsr1" route add default via fee1:2::2
++	ip -6 -net "$nsr2" route delete default
++	ip -6 -net "$nsr2" route add default via fee1:2::1
++	ip -6 -net "$ns2" route del default via dead:2::1
++else
++	echo "SKIP: bridge + tunnel flowtable regression (tun0 missing)"
++	[ "$ret" -eq 0 ] && ret=$ksft_skip
++fi
++
  
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index 002ec15d988b..e3ace6435074 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -820,6 +820,9 @@ nf_flow_offload_rule_alloc(struct net *net,
- 
- 	tuple = &flow->tuplehash[dir].tuple;
- 	other_tuple = &flow->tuplehash[!dir].tuple;
-+	if (other_tuple->tun_num &&
-+	    other_tuple->xmit_type == FLOW_OFFLOAD_XMIT_DIRECT)
-+		goto err_flow_match;
- 	if (other_tuple->xmit_type == FLOW_OFFLOAD_XMIT_NEIGH)
- 		other_dst = other_tuple->dst_cache;
- 
+ # Another test:
+ # Add bridge interface br0 to Router1, with NAT and VLAN.
 -- 
 2.43.0
 
