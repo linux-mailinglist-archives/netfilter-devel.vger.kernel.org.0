@@ -1,52 +1,52 @@
-Return-Path: <netfilter-devel+bounces-13430-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13433-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id riM0O8wFO2rmOggAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13430-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 00:16:44 +0200
+	id NLtLB7QGO2o7OwgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13433-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 00:20:36 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948B96BA5F6
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 00:16:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A596BA64F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 00:20:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=ZqjEbLX4;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13430-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13430-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=XiMG3BeE;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13433-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13433-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C9F2F308FFD7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2026 22:16:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E7A2330078F7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2026 22:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8C93C4B89;
-	Tue, 23 Jun 2026 22:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD713C9895;
+	Tue, 23 Jun 2026 22:16:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069353B95E3;
-	Tue, 23 Jun 2026 22:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7640F3C5DA1;
+	Tue, 23 Jun 2026 22:16:11 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782252971; cv=none; b=JOJ6a7KFVKx0YOycWtljRU2CYeWd8fYb0NseJY+P+oj6XkkqP0haqmFImixmYwEN0AWgD0np9Jto4g3IIdib3vq6V1wnSi3e5zfgGr2EHIMP6aPb16icon2bkYIJ7EoRqE/tbkD4u+N4kqzcRynaFzKmXBCmfQLxXEO1AdkZ8rs=
+	t=1782252972; cv=none; b=QXxJO52hbMgW2KpQ7rWTKhuEamPcEVUcArP3jcgRJAKAkXLyU9IbxZau1QejWIQ7DDKrevdNapCbr4hNA0A3Dv/a6fZlxqhpVM8eUPCS4p/1VGuM7MpVCRLquKtA2Thrd4AeCNfJDLdfLkUqpO3TRWn/UI+wKNEb8CpHvSYuFTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782252971; c=relaxed/simple;
-	bh=gcJ7r0Rk+emwSkMoID38ls+8+FMwhKsvBCZII3jWDcU=;
+	s=arc-20240116; t=1782252972; c=relaxed/simple;
+	bh=J6P+u+7MgfcSrbwUnmeSyucjL8/8qGFurSZ/PRIoyZs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DODb/92OGztvWW534jZ8fthR7l4RsG8b3cTgd+GmmF6XiH7FTnLiaNrByTaVfQCqUrOSFpnluTehIMMNS52WBL/jYa70Kk9BYlvwPBT5ISj6jkNq8zvvk/DViyFLEMhfB509iAWJ7hY1cdKiNuF2q/G3xCAyJdsIK+VOW8497Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ZqjEbLX4; arc=none smtp.client-ip=217.70.190.124
+	 MIME-Version; b=eL8Eo7YvO47BkdrK6HeG3M6aXRJdGHLyGM2QpXUtivJnGZcj6XxBQ9eORAuY6iSsFBi3X8M3v7v01F7pHVbOG+4KlWEdzFpVB1qPwnd2iAG9CsjVNfjblnQpw+7Qgh+ZhBSY7jPvpfwFqypHi9wcn5MomSTYJykOPNKpUOhMuIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XiMG3BeE; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 17CF960586;
-	Wed, 24 Jun 2026 00:16:08 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 6121060588;
+	Wed, 24 Jun 2026 00:16:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1782252968;
-	bh=3dBrP8MaA39eTKZ2h9cyivMwFirS08+AfOlg0FkjNvI=;
+	s=2025; t=1782252969;
+	bh=mXGikmyIXAlYw6RpAUAMKdOgOY4BOMCTM004dM2AmXo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZqjEbLX4HIJiPraFsPPbvemHhtAV4C7M8eU5bl1rEJjCe5DwD+q195HcXrRglh/5Z
-	 gy/noVdyWQaOu+t/4Mr5rrkdFxWYpAkG9L7iayHDj4K678UUtL/hWiM+cdHheSTN2r
-	 HWDaQK7gzWItLbUBn8i/kx/+FuiFv3C4oH2ROtQXX/qqx57GJ2RuRxQwV86C6oRuxa
-	 Az8y7Z//TCnwVs5t5jla0DUkNYcIeCoCtC5gfEOdR/3e3YIIsjyoef2uMz3NrvYyEs
-	 98RTCn5CWfkXzYLPKwhWbUKm885riF2LImBh7ujA+vvJ49HldIE0hsn02yn8Ll7hxD
-	 1p7yKts8hE3UA==
+	b=XiMG3BeE6/sQnkB93yLeOvbOgxTdOx9pngxI1WPPuwMKzSr+8dV43RSa+SKGdycN8
+	 M7C1P0cfX1MwqbiekeuU3prf/wwckG3GjiBMUvMEvx4k20+RJvDHpAYczl9jmahJ4k
+	 7SL8sMVRWJzmz+IpkKIpEfWvXfWdXLi66aENhP1vnWaW7d8nUvxY/lEjFkShXusj6+
+	 Eh/5v3jZRK1YVSqDGA+VDFUyECRhFlX0+QWYQPS+42UCux1lxRMCqMBbobl/4BbbKQ
+	 4MI5fFy8UWTUaLVM7b/6f18FLJ1T+jCxdiaqU3pcc9H4I9yasxXqc9W/Tqg2So+0zo
+	 rVKZsDUtmluSw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -56,9 +56,9 @@ Cc: davem@davemloft.net,
 	edumazet@google.com,
 	fw@strlen.de,
 	horms@kernel.org
-Subject: [PATCH net 12/14] netfilter: nf_conntrack_expect: run expectation eviction with no helper
-Date: Wed, 24 Jun 2026 00:15:45 +0200
-Message-ID: <20260623221548.701545-13-pablo@netfilter.org>
+Subject: [PATCH net 13/14] netfilter: nft_ct: expectation timeouts are passed in milliseconds
+Date: Wed, 24 Jun 2026 00:15:46 +0200
+Message-ID: <20260623221548.701545-14-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260623221548.701545-1-pablo@netfilter.org>
 References: <20260623221548.701545-1-pablo@netfilter.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13430-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13433-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	DMARC_NA(0.00)[netfilter.org];
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	ALIAS_RESOLVED(0.00)[];
 	TO_DN_NONE(0.00)[];
@@ -101,40 +101,87 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime,strlen.de:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 948B96BA5F6
+X-Rspamd-Queue-Id: A5A596BA64F
 
-Run expectation eviction if no helper is specified to deal with the
-nft_ct expectation support.
+From: Florian Westphal <fw@strlen.de>
 
-Cap the maximum expectation limit per master conntrack to
-NF_CT_EXPECT_MAX_CNT (255).
+Userspace passes '5000' in case user asks for 5 seconds.
+
+Allowing for sub-second expectation lifetimes makes sense to me. so
+fix up the kernel side instead of munging nft to send a value rounded
+up to next second.
+
+Also note that this violates nft convention of passing integers in
+network byte order, but we can't change this anymore.
 
 Fixes: 857b46027d6f ("netfilter: nft_ct: add ct expectations support")
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_expect.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/netfilter/nft_ct.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
-index 9454913e1b33..113bb1cb1683 100644
---- a/net/netfilter/nf_conntrack_expect.c
-+++ b/net/netfilter/nf_conntrack_expect.c
-@@ -499,6 +499,13 @@ static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect,
- 		if (p->max_expected &&
- 		    master_help->expecting[expect->class] >= p->max_expected)
- 			evict_oldest_expect(master_help, expect, p);
-+	} else {
-+		const struct nf_conntrack_expect_policy default_exp_policy = {
-+			.max_expected = NF_CT_EXPECT_MAX_CNT,
-+		};
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index 958054dd2e2e..03a88c77e0f0 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -1215,11 +1215,23 @@ struct nft_ct_expect_obj {
+ 	u32		timeout;
+ };
+ 
++static int nft_ct_expect_timeout_get(const struct nlattr *attr, u32 *val)
++{
++	unsigned long jiffies_val = msecs_to_jiffies(nla_get_u32(attr));
 +
-+		if (master_help->expecting[expect->class] >= default_exp_policy.max_expected)
-+			evict_oldest_expect(master_help, expect, &default_exp_policy);
++	if (jiffies_val > UINT_MAX)
++		return -ERANGE;
++
++	*val = jiffies_val;
++	return 0;
++}
++
+ static int nft_ct_expect_obj_init(const struct nft_ctx *ctx,
+ 				  const struct nlattr * const tb[],
+ 				  struct nft_object *obj)
+ {
+ 	struct nft_ct_expect_obj *priv = nft_obj_data(obj);
++	int err;
+ 
+ 	if (!tb[NFTA_CT_EXPECT_L4PROTO] ||
+ 	    !tb[NFTA_CT_EXPECT_DPORT] ||
+@@ -1254,8 +1266,11 @@ static int nft_ct_expect_obj_init(const struct nft_ctx *ctx,
+ 		return -EOPNOTSUPP;
  	}
  
- 	cnet = nf_ct_pernet(net);
++	err = nft_ct_expect_timeout_get(tb[NFTA_CT_EXPECT_TIMEOUT], &priv->timeout);
++	if (err)
++		return err;
++
+ 	priv->dport = nla_get_be16(tb[NFTA_CT_EXPECT_DPORT]);
+-	priv->timeout = nla_get_u32(tb[NFTA_CT_EXPECT_TIMEOUT]);
+ 	priv->size = nla_get_u8(tb[NFTA_CT_EXPECT_SIZE]);
+ 
+ 	return nf_ct_netns_get(ctx->net, ctx->family);
+@@ -1275,7 +1290,7 @@ static int nft_ct_expect_obj_dump(struct sk_buff *skb,
+ 	if (nla_put_be16(skb, NFTA_CT_EXPECT_L3PROTO, htons(priv->l3num)) ||
+ 	    nla_put_u8(skb, NFTA_CT_EXPECT_L4PROTO, priv->l4proto) ||
+ 	    nla_put_be16(skb, NFTA_CT_EXPECT_DPORT, priv->dport) ||
+-	    nla_put_u32(skb, NFTA_CT_EXPECT_TIMEOUT, priv->timeout) ||
++	    nla_put_u32(skb, NFTA_CT_EXPECT_TIMEOUT, jiffies_to_msecs(priv->timeout)) ||
+ 	    nla_put_u8(skb, NFTA_CT_EXPECT_SIZE, priv->size))
+ 		return -1;
+ 
+@@ -1325,7 +1340,7 @@ static void nft_ct_expect_obj_eval(struct nft_object *obj,
+ 		          &ct->tuplehash[!dir].tuple.src.u3,
+ 		          &ct->tuplehash[!dir].tuple.dst.u3,
+ 		          priv->l4proto, NULL, &priv->dport);
+-	exp->timeout += priv->timeout * HZ;
++	exp->timeout += priv->timeout;
+ 
+ 	if (nf_ct_expect_related(exp, 0) != 0)
+ 		regs->verdict.code = NF_DROP;
 -- 
 2.47.3
 
