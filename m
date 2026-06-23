@@ -1,137 +1,241 @@
-Return-Path: <netfilter-devel+bounces-13419-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13420-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hbZBNIzvOmqDMAgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13419-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2026 22:41:48 +0200
+	id BNoNFaAFO2rQOggAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13420-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 00:16:00 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630486BA135
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2026 22:41:48 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1E7C6BA5D0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 00:15:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=lwn.net header.s=20201203 header.b=AHeQRFYV;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13419-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13419-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=lwn.net;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=WjtAuoio;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13420-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13420-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9B5AA300A607
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2026 20:41:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6DBB3300B108
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2026 22:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43A83A6F06;
-	Tue, 23 Jun 2026 20:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E603AFCF6;
+	Tue, 23 Jun 2026 22:15:57 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88F7367280;
-	Tue, 23 Jun 2026 20:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F7F23D2B1;
+	Tue, 23 Jun 2026 22:15:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782247295; cv=none; b=QvriPlEQbh7A4tOVw5OXnsKGVImc0RtPK7DYsOUIHfbu/MHUZybTm0GjenIFPh8MVYzbqvbzXhpZkxhSN+UHyAxkqSstxfi9Mrxfe2RqsrubnG2X5erCUrs6XHjm6jh9/+883jBq4kOoStTVa/YL8Xgz7ihA3gqH0M7ygqAl+p4=
+	t=1782252957; cv=none; b=u/1fNyDqlUv1JGmw8maBg2HIYwEy+spzrdBrNR/PomcvQEx61KTQ5lACX++ExBcFOgoDSZyVxxBT0uwSGzu3hxkl7Y4SIHuvF2/cO8R8Bcqbdip+sRQQSgfMsF1JTwU4TuhY8lV6DSTxhP2oiFGul2z9s4fjSpDitYnaKRj7CLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782247295; c=relaxed/simple;
-	bh=TRvVLCE4WUSeDsaz0R1scaBP6Qb6DNcQEjs9LzVZSwo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mgGkpuQMXCYmuo0q+G60XEtycBF3ehtumrNW7ID3YIx+o+cwO1I6P1thY5pjQW1Jc1dPbARkXXlQmq76InYX8DyfnTYbuyPqv4hBmX9VZHsfZ7/3ZT6KgLKqRmzWmdJTFMBnXcyIZrbA8mZCrJQF/72nXginnxLXszYshfss2qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=AHeQRFYV; arc=none smtp.client-ip=45.79.88.28
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 130FE40E41
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1782247294; bh=SR5FJlzO/zhOqtsG5QxAmkqqCAWbEuSh7STi7uLw1eY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=AHeQRFYVbbL2R+ASwcQG/pkZSmI4cyJsi1YlebW+Skt0bNHeaW4ybvGYxtQFedSMb
-	 wPwcLxhOvjmHmqFf/ZvIUYK8aGh/jH6Ym4++KWGK43hbbsQbG2AJK/RZij+fyV0kxZ
-	 QHgr2YBvgNpZoicTAkY9JKD7jzEUWMQDtIePwAxZWBrK2q+Z0/BF/cSJTesRlxn1WS
-	 pY1XekbAI7+119xHTjjDi8kBM/o4tzZO9Xs+f105NPm2fdBXmtSTpw4ZPO/KMwDvCE
-	 TLrk7/6bWXhI4OQLC/t0So9OOyfroE5vvqcintj8npPmqv4v8HEJZHXxleqYKmFoIO
-	 LquNsjdKv++uA==
-Received: from localhost (unknown [IPv6:2601:280:4600:27b::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 130FE40E41;
-	Tue, 23 Jun 2026 20:41:34 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Shuah Khan
- <skhan@linuxfoundation.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] kdoc: xforms_lists: handle DECLARE_PER_CPU() in kernel-doc
-In-Reply-To: <20260614052452.1557987-1-rdunlap@infradead.org>
-References: <20260614052452.1557987-1-rdunlap@infradead.org>
-Date: Tue, 23 Jun 2026 14:41:33 -0600
-Message-ID: <875x39at1e.fsf@trenco.lwn.net>
+	s=arc-20240116; t=1782252957; c=relaxed/simple;
+	bh=YjVtdJy+L1yQfS11Ok8T84a99kNXonKUTEflc+MvcKM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tii4m0rqUL7b1urDHT59DuE+Fagpff8gdYQ7b2Z2H/I5UTax7p4pAo94BVi43rQR/H6ZNYN9SX+03iv/DNejOxn4aQfC53sitjjc+UXLw+8zh8/nDDodnGZa8WLPKEuhiAV+w2JdnXZoOf769nwPo/fHmrGu09A3KHBaFsoBqds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=WjtAuoio; arc=none smtp.client-ip=217.70.190.124
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id D3CA96019B;
+	Wed, 24 Jun 2026 00:15:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1782252953;
+	bh=k6lBIv6rU9US0qk2zk6Geq/S+U1eDJnbqh1QKtBWJ1w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WjtAuoio6WWaADMtGlSyxgbv2ZDZrsehG+P5cwN7aTNp7yqa25Adkb5dCTE17nE/0
+	 8IFsnhwYIfDrWwVq3QbM4ot/HflzOrxTfzbxNeOq+Y4BSWWh7yt6m4XGhCphbBG44A
+	 pIoQvr1QGAbF40MWsy6CahHc97Nic82Ji/f1HIJGBi7b0ZCrfzqrMqE+vueox+a5/U
+	 d0azSo57xHYC6K6Vw+wRtQp/pxDtzhQA/8djjNnTT6iNRLjPdByl73b3hSgwRnseXg
+	 OYWVsgs1oFE37ghfLN0ntuHiXiiGNuGpxj36d6AtZa9bSBuIteIrsRYB2Prc6X0JO3
+	 cRA/2lFmwyOTg==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: davem@davemloft.net,
+	netdev@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	fw@strlen.de,
+	horms@kernel.org
+Subject: [PATCH net 00/14] Netfilter fixes for net
+Date: Wed, 24 Jun 2026 00:15:33 +0200
+Message-ID: <20260623221548.701545-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[lwn.net,none];
-	R_DKIM_ALLOW(-0.20)[lwn.net:s=20201203];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13419-lists,netfilter-devel=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER(0.00)[corbet@lwn.net,netfilter-devel@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:rdunlap@infradead.org,m:linux-doc@vger.kernel.org,m:skhan@linuxfoundation.org,m:mchehab@kernel.org,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13420-lists,netfilter-devel=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[lwn.net:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[corbet@lwn.net,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DMARC_NA(0.00)[netfilter.org];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:kuba@kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:fw@strlen.de,m:horms@kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,trenco.lwn.net:mid,lwn.net:dkim,lwn.net:email,lwn.net:from_mime]
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 630486BA135
+X-Rspamd-Queue-Id: A1E7C6BA5D0
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+Hi,
 
-> Add support for DECLARE_PER_CPU() as a var (variable) as used in
-> <linux/netfilter/x_tables.h>.
->
-> Warning: include/linux/netfilter/x_tables.h:345 function parameter 'seqcount_t' not described in 'DECLARE_PER_CPU'
-> Warning: include/linux/netfilter/x_tables.h:345 function parameter 'xt_recseq' not described in 'DECLARE_PER_CPU'
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> ---
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: netfilter-devel@vger.kernel.org
->
->  tools/lib/python/kdoc/xforms_lists.py |    1 +
->  1 file changed, 1 insertion(+)
->
-> --- linext-2026-0610.orig/tools/lib/python/kdoc/xforms_lists.py
-> +++ linext-2026-0610/tools/lib/python/kdoc/xforms_lists.py
-> @@ -118,6 +118,7 @@ class CTransforms:
->          (CMatch("__guarded_by"), ""),
->          (CMatch("__pt_guarded_by"), ""),
->          (CMatch("LIST_HEAD"), r"struct list_head \1"),
-> +        (CMatch("DECLARE_PER_CPU"), r"\1 \2[PER_CPU]; }"),
->  
-Applied, thanks.
+The following patchset contains Netfilter fixes for net:
 
-jon
+1) Add a workaround to avoid a possible crash if nf_nat and nft_chain_nat are
+   compiled built-in and nf_nat fails to register, allowing nft_chain_nat to
+   access the incorrect pernetns area. This is crash specific of all built-in
+   compilation. From Matias Krause.
+
+2) Revisit conncount GC optimization for confirmed conntracks, skip GC round
+   if IPS_ASSURED is set on. This is addressing an issue for corner case
+   use case scenario involving locally generated traffic. No crash, just a
+   functionality fix. From Fernando F. Mancera.
+
+3) Validate iph->ihl in flowtable IPIP tunnel support, from Lorenzo Bianconi.
+   This a sanity check to bounces back malformed IPIP packets to classic
+   forwarding path.
+
+4) Kdoc fixes for x_tables.h, from Randy Dunlap.
+
+5) Use info->options so nft_synproxy_tcp_options() stays on the same local
+   snapshot, otherwise eval path can observe inconsistent mix of mss and
+   timestamps. From Runyu Xiao.
+
+6) Add conntrack_sctp_collision.sh to cover for SCTP INIT collisions.
+   From Yi Chen.
+
+7) Do not allow NFPROTO_UNSPEC targets if family is NFPROTO_BRIDGE in
+   nft_compat. This allows to use non-sense targets such as xt_nat leading
+   to crash. From Florian Westphal.
+
+8) Add a selftest queueing from bridge family. From Florian Westphal.
+
+9) Do not allow to reset a conntrack helper via ctnetlink. This feature
+   antedates the creation of the conntrack-tools, and it is not used
+   I don't have a usecase for it, I prefer to remove than fixing it.
+
+10) Add deprecation warning for IPv4 only conntrack helpers for PPTP
+    and IRC. From Florian Westphal.
+
+11) Store the master tuple in the expectation object and use it,
+    otherwise SLAB_TYPESAFE_RCU rules allow to display incorrect
+    master tuple information through ctnetlink.
+
+12) Run expectation eviction when inserting an expectation with no
+    helper, this is a fix for the nft_ct custom expectation support.
+
+13) Fix nft_ct custom expectation timeouts, userspace provides a
+    timeout in milliseconds but kernel assumes this comes in seconds.
+    From Florian Westphal.
+
+14) Cap maximum number of expectations per class to 255 expectations
+    per master conntrack at helper registration. This is a fix to
+    restrict the maximum number of expectations per master conntrack
+    which can be a issue for the new lazy GC expectation approach.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-26-06-23
+
+Thanks.
+
+P.S: Sashiko has been reporting "Failed to apply" with recent patches,
+     I suspect it relies on the Linus' tree which does not contain
+     yet the patches that were recently included in the last PR.
+     If it fails to deliver a report, I can provide a list of list
+     to the reviews that sashiko provided when patches were posted to
+     the netfilter-devel mailing list.
+
+----------------------------------------------------------------
+
+The following changes since commit a986fde914d88af47eb78fd29c5d1af7952c3500:
+
+  bnx2x: fix potential memory leak in bnx2x_alloc_mem_bp() (2026-06-22 18:39:12 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-26-06-23
+
+for you to fetch changes up to 397c8300972f6e1486fd1afd99a044648a401cd5:
+
+  netfilter: nf_conntrack_helper: cap maximum number of expectation at helper registration (2026-06-23 13:10:48 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 26-06-23
+
+----------------------------------------------------------------
+Fernando Fernandez Mancera (1):
+      netfilter: nf_conncount: prevent connlimit drops for early confirmed ct
+
+Florian Westphal (4):
+      netfilter: nft_compat: ebtables emulation must reject non-bridge targets
+      selftests: nft_queue.sh: add a bridge queue test
+      netfilter: conntrack: add deprecation warnings for irc and pptp trackers
+      netfilter: nft_ct: expectation timeouts are passed in milliseconds
+
+Lorenzo Bianconi (1):
+      netfilter: flowtable: Validate iph->ihl in nf_flow_ip4_tunnel_proto()
+
+Mathias Krause (1):
+      netfilter: nf_nat: avoid invalid nat_net pointer use on failed nf_nat_init()
+
+Pablo Neira Ayuso (4):
+      netfilter: ctnetlink: do not allow to reset helper on existing conntrack
+      netfilter: nf_conntrack_expect: store master_tuple in expectation
+      netfilter: nf_conntrack_expect: run expectation eviction with no helper
+      netfilter: nf_conntrack_helper: cap maximum number of expectation at helper registration
+
+Randy Dunlap (1):
+      netfilter: x_tables.h: fix all kernel-doc warnings
+
+Runyu Xiao (1):
+      netfilter: nft_synproxy: stop bypassing the priv->info snapshot
+
+Yi Chen (1):
+      selftests: netfilter: conntrack_sctp_collision.sh: Introduce SCTP INIT collision test
+
+ include/linux/netfilter/x_tables.h                 | 29 +++++--
+ include/net/netfilter/nf_conntrack_expect.h        |  1 +
+ include/net/netfilter/nf_conntrack_helper.h        |  4 +
+ net/netfilter/Kconfig                              | 11 +--
+ net/netfilter/nf_conncount.c                       | 11 ++-
+ net/netfilter/nf_conntrack_broadcast.c             |  1 +
+ net/netfilter/nf_conntrack_expect.c                | 12 ++-
+ net/netfilter/nf_conntrack_helper.c                |  9 ++-
+ net/netfilter/nf_conntrack_irc.c                   |  2 +
+ net/netfilter/nf_conntrack_netlink.c               | 23 +-----
+ net/netfilter/nf_conntrack_pptp.c                  |  2 +
+ net/netfilter/nf_flow_table_ip.c                   |  8 +-
+ net/netfilter/nf_nat_core.c                        | 10 +++
+ net/netfilter/nft_compat.c                         | 24 +++++-
+ net/netfilter/nft_ct.c                             | 21 ++++-
+ net/netfilter/nft_synproxy.c                       |  9 +--
+ .../net/netfilter/conntrack_sctp_collision.sh      | 89 ++++++++++++++++------
+ tools/testing/selftests/net/netfilter/nft_queue.sh | 66 ++++++++++++++--
+ 18 files changed, 246 insertions(+), 86 deletions(-)
 
