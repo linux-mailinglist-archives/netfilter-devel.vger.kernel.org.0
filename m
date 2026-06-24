@@ -1,46 +1,78 @@
-Return-Path: <netfilter-devel+bounces-13446-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13451-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id PWdfERcCPGrmiQgAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13446-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 18:13:11 +0200
+	id 0MjUK6AlPGoZkggAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13451-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 20:44:48 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0CF6BFED2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 18:13:10 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32A766C0C9A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 20:44:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
+	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b="fZYk/96p";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13451-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13451-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13446-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13446-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4E2B93017C24
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 16:12:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5298230451EC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2026 18:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C549D3BB13B;
-	Wed, 24 Jun 2026 16:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A309D33FE0F;
+	Wed, 24 Jun 2026 18:42:14 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124FB20E023
-	for <netfilter-devel@vger.kernel.org>; Wed, 24 Jun 2026 16:12:42 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782317564; cv=none; b=OPBMrgvMYryfc9/pBBIlfc4cueKse8fMI3LrP99P0R6yMn/xVtykDtcoBhqUzlh+zmw0OH1/VOXBP5/J5vxYFKL6EGxNeM6mvuObeyySEI99KKrvzUx8CtpZmXBeA//VAJ+3BNJPHQBn3sLq1wgcrijgtjEOkZJEYr95aE+PAbQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782317564; c=relaxed/simple;
-	bh=nPf2ok3K1jjbveGrjKyag27RzyGZQoVMxSHaxT+S6Us=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fzcgyDezacfB60bpbrs0StVwRBSRcIt8IUtZEF2w8AAzZ0tHtpxBakJ2WkqzGO7OFxP34qYlH71yGsSEDOWKx9ZU4iP6F0fkWr4hTXeoSTIQ5Kx4NL71KGyiVpnhLeQQQ69Oa9LPWmMjrS6542bKJhioKrW0upmK+1TK2AgovTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 2337560491; Wed, 24 Jun 2026 18:12:35 +0200 (CEST)
-From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] tests: shell: add tunnel vxlan test
-Date: Wed, 24 Jun 2026 18:12:23 +0200
-Message-ID: <20260624161227.1167740-1-fw@strlen.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E0533CE80
+	for <netfilter-devel@vger.kernel.org>; Wed, 24 Jun 2026 18:42:12 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782326534; cv=pass; b=IGjEJi3NKsTOe9qV/7jJxtYWxKN4zl3S9cMHmi2eEFs6hVDwDRh9FZEfvyRF/yvm8mTVlNvSCIlvOBz7xFemipROX7lQKEl5705aFvagnGyM074Th05mMQ/feSVUNhSd7UgvK6FuEAAzn3m9iY+HMGzyNi1rU/jI44gw4u+h+Gw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782326534; c=relaxed/simple;
+	bh=IkQsTtpNf5O8v6teUrL9vw29Pt8sEnlFUc9uGuBtbXk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a9JDd7b19Dom+t2u8hwZSDPToMqUUlCP9ZZE05teosM9lmWYVnYWSihYgAbquFyy62LUJR/uvw9IGL+ypxvGf4msSaPnCNDV72EAhljWWzkCQcKM08u4PvAeFYwC77i0NDRPiZeYQcI34SBQwmAcY8LZ6wVbbqCEt/mFnP70Y80=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=fZYk/96p; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1782326465; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=X9SYeuu16TSyQRPsN/alANO7/n+yOqQZCqLp9jT44wyyJ3dZyaeaCEKeLOWrr2ZLu0tMKyCOBhkYksAlIMYi5Rxlb6plqIXpmrkD1inLNljSDmLtTlBc4EH+swA/MkZtRLDkNoQ6+Q59NsReTrm/OLifSfvl63fXJSuka9dE9R0=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1782326465; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=N9PyBqyjrYTdl1NJmQEata3xoHGmh+KLI2s/D41VKiI=; 
+	b=Q128i4nqxxMV2rfJecspTNId5oAQ9PDMzdefje4s5Ii99mdqbI8TC6YNhxSsMiZlqRy1t/gsIlj2qA5Knu/1ydt8s8P70IZQzDVkidDIaMeJZMUD4TG+boE525mYaEDYvqiYRBdbrImDuCcCWF/yGjM/FwE1BuO3Nt1hR1w4gfE=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=carlosgrillet.me;
+	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
+	dmarc=pass header.from=<carlos@carlosgrillet.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1782326465;
+	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=N9PyBqyjrYTdl1NJmQEata3xoHGmh+KLI2s/D41VKiI=;
+	b=fZYk/96pH5kZJoPf2V9RR3NxqL//UlfEjzozI3OWmFiKnyq+7rpOuwXjgX3/sGoZ
+	nmaqV7/zQ8HTEQ+5Y6hejne6maTfW9iOhnmytFov3iKWPp/bP6lubPX8Es/JgwoPR5u
+	sL4a4H5zq81jPgPUys7VCZB89AVfWd87T1iWW7Gw=
+Received: by mx.zoho.eu with SMTPS id 1782326463388745.8448071704419;
+	Wed, 24 Jun 2026 20:41:03 +0200 (CEST)
+From: Carlos Grillet <carlos@carlosgrillet.me>
+To: Simon Horman <horms@verge.net.au>,
+	Julian Anastasov <ja@ssi.bg>,
+	David Ahern <dsahern@kernel.org>,
+	Ido Schimmel <idosch@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>
+Cc: netdev@vger.kernel.org,
+	lvs-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org
+Subject: [PATCH nf-next 0/4] netfilter: replace u_int*_t with kernel int types (batch 2)
+Date: Wed, 24 Jun 2026 20:40:30 +0200
+Message-ID: <20260624184036.71051-1-carlos@carlosgrillet.me>
 X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -49,156 +81,64 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[carlosgrillet.me:s=zmail];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[strlen.de];
+	FORGED_RECIPIENTS(0.00)[m:horms@verge.net.au,m:ja@ssi.bg,m:dsahern@kernel.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	FORWARDED(0.00)[lists@lfdr.de];
+	DMARC_NA(0.00)[carlosgrillet.me];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWO(0.00)[2];
-	TAGGED_FROM(0.00)[bounces-13446-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13451-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[carlosgrillet.me:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_HAS_DN(0.00)[]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,carlosgrillet.me:dkim,carlosgrillet.me:mid,carlosgrillet.me:from_mime,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8F0CF6BFED2
+X-Rspamd-Queue-Id: 32A766C0C9A
 
-based off a script from Fernando Fernandez Mancera.
+This patch series replaces POSIX u_int8_t/u_int16_t with the preferred
+kernel types u8/u16 across several netfilter files and updates the
+corresponding header definitions.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- tests/shell/testcases/packetpath/tunnel-vxlan | 103 ++++++++++++++++++
- 1 file changed, 103 insertions(+)
- create mode 100755 tests/shell/testcases/packetpath/tunnel-vxlan
+This continues the work started in:
+https://lore.kernel.org/all/20260616182948.96865-1-carlos@carlosgrillet.me
 
-diff --git a/tests/shell/testcases/packetpath/tunnel-vxlan b/tests/shell/testcases/packetpath/tunnel-vxlan
-new file mode 100755
-index 000000000000..59f9516a8f28
---- /dev/null
-+++ b/tests/shell/testcases/packetpath/tunnel-vxlan
-@@ -0,0 +1,103 @@
-+#!/bin/bash
-+
-+# NFT_TEST_REQUIRES(NFT_TEST_HAVE_tcpdump)
-+
-+# OVERLAY (The Virtual Network)
-+# =============================
-+#
-+# [ ns0: 10.0.0.1 ]     [ ns1: 10.0.0.2 ]     [ ns2: 10.0.0.3 ]
-+#     |                      |                     |
-+#    (vxlan0)             (vxlan0)            (vxlan0)
-+#     |                      |                     |
-+#     |~~~~~~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~~~~~|
-+#     |                 nftables                   |
-+#     |         (attaches the Underlay IP)         |
-+#     |~~~~~~~~~~~~~~~~~~~~~~|~~~~~~~~~~~~~~~~~~~~~|
-+#     |                      |                     |
-+#     [ 192.168.1.1 ]   [ 192.168.1.2 ]   [ 192.168.1.3 ]
-+#     |                      |                     |
-+#     +------------------[ Bridge ]----------------+
-+#UNDERLAY (The Physical Network)
-+
-+tmpfile=""
-+cleanup() {
-+	rm -f "$tmpfile"
-+	for i in "${ns[@]}"; do
-+		ip netns del "$i"
-+	done
-+}
-+trap cleanup EXIT
-+
-+set -e
-+set -x
-+
-+rnd=$(mktemp -u XXXXXXXX)
-+ns=("sw-$rnd" "vxlan-ns1-$rnd" "vxlan-ns2-$rnd" "vxlan-ns3-$rnd")
-+tmpfile=$(mktemp)
-+
-+for i in $(seq 0 3); do
-+	ip netns add "${ns[$i]}"
-+done
-+
-+ip -n "${ns[0]}" link add br0 type bridge
-+ip -n "${ns[0]}" link set br0 up
-+
-+for i in 1 2 3; do
-+	# create the link and move ends to appropriate namespaces
-+	ip link add veth$i type veth peer name veth${i}_sw netns "${ns[0]}"
-+	ip link set veth$i netns "${ns[$i]}"
-+
-+	# linux bridge (switch)
-+	ip -n "${ns[0]}" link set veth${i}_sw master br0 up
-+
-+	# configure the node side
-+	ip -n "${ns[$i]}" addr add 192.168.1.$i/24 dev veth$i
-+	ip -n "${ns[$i]}" link set veth$i up
-+	ip -n "${ns[$i]}" link set lo up
-+
-+	# create the Overlay VXLAN interface
-+	ip -n "${ns[$i]}" link add vxlan0 type vxlan dstport 4789 external
-+	ip -n "${ns[$i]}" addr add 10.0.0.$i/24 dev vxlan0
-+	ip -n "${ns[$i]}" link set vxlan0 up
-+
-+	# route the ENTIRE overlay subnet into the single VXLAN device
-+# ip -n "${ns[$i]}" route add 10.0.0.0/24 dev vxlan0
-+done
-+
-+# check we cannot reach the peer via the overlay network as-is
-+ip netns exec ${ns[1]} ping -c 1 10.0.0.2 && exit 1
-+ip netns exec ${ns[1]} ping -c 2 10.0.0.3 && exit 1
-+
-+for i in 1 2 3; do
-+	echo "table netdev t {" > "$tmpfile"
-+
-+	for j in 1 2 3 ; do
-+		[ $j -eq $i ] && continue
-+		echo "tunnel tun_to_ns$j { id 100; ip saddr 192.168.1.$i; ip daddr 192.168.1.$j; }" >> "$tmpfile"
-+	done
-+cat - >> "$tmpfile" <<EOF
-+chain egress_filter {
-+         type filter hook egress device "vxlan0" priority 0; policy accept;
-+EOF
-+	for j in 1 2 3 ; do
-+		[ $j -eq $i ] && continue
-+		echo ip daddr 10.0.0.$j tunnel name "tun_to_ns$j" >> "$tmpfile"
-+		echo arp daddr ip 10.0.0.$j tunnel name "tun_to_ns$j" >> "$tmpfile"
-+	done
-+cat - >> "$tmpfile" <<EOF
-+     }
-+}
-+EOF
-+ip netns exec ${ns[$i]} $NFT -f $tmpfile
-+done
-+
-+timeout 3 ip netns exec ${ns[0]} tcpdump --immediate-mode -nni br0 -w "$tmpfile" &
-+tpid=$!
-+sleep 1
-+
-+ip netns exec ${ns[1]} ping -c 1 10.0.0.2
-+ip netns exec ${ns[1]} ping -c 2 10.0.0.3
-+
-+kill "$tpid"
-+wait
-+tcpdump -n -r "$tmpfile" | grep -q VXLAN
+No functional changes.
+
+Carlos Grillet (4):
+  netfilter: nf_conntrack_sane: replace u_int16_t with u16
+  netfilter: nf_conntrack_h323_main: replace u_int8_t with u8
+  netfilter: nf_conntrack_amanda: replace u_int16_t with u16
+  netfilter: ip_vs_nfct: replace u_int8_t with u8
+
+ include/net/ip_vs.h                    | 2 +-
+ net/netfilter/ipvs/ip_vs_nfct.c        | 2 +-
+ net/netfilter/nf_conntrack_amanda.c    | 2 +-
+ net/netfilter/nf_conntrack_h323_main.c | 2 +-
+ net/netfilter/nf_conntrack_sane.c      | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
 -- 
 2.54.0
 
