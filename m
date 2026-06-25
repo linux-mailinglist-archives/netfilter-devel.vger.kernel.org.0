@@ -1,96 +1,79 @@
-Return-Path: <netfilter-devel+bounces-13469-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13473-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id A8MtDcktPWonyggAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13469-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 15:31:53 +0200
+	id 0sl2An5lPWru2QgAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13473-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 19:29:34 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CABB6C6258
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 15:31:52 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56D8C6C7C8F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 19:29:33 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=eS3r46eC;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13469-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13469-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b=TIxArBBx;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13473-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13473-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 20531300B9FF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 13:31:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EF6BB30D94F5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 17:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C165D32B10C;
-	Thu, 25 Jun 2026 13:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B713E9C2D;
+	Thu, 25 Jun 2026 17:27:03 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-dl1-f51.google.com (mail-dl1-f51.google.com [74.125.82.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0699317166
-	for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2026 13:31:44 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782394305; cv=none; b=VDqQC4FW+G4dCzAx7TKzGswSD61wyoPDLVEv2QXeAnlqxdK6ohvf59WvHrtl002jlsFsBCaDdqG8XSXO82mbpQrNG5vruRNY038Szi2Q9MpHrQNMopJWLDMlNiEE1nQqTX6SwCQGTsUYqbP6ioosmfdT2uOB9qbLBx82ag4yTPQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782394305; c=relaxed/simple;
-	bh=GkObJTGOwvo/yZsse89jgOyAK3tQLcC4VOm5XflDZOQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=chrCA6yL8hcXREQR49KRcJtaP2WvLVq3MJm7bvr+lRNpbpT3IYSv7meUMrXST4FkCD8gJOCmeknCRkudOuUfWlP558EmJBhhHTlAMf8Z0KkcoznFH5fZdUDsQkQZBFGpn0GRkan+tsgOsq0+k2uTBqmlkZwrw/OsEuIz009uQxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eS3r46eC; arc=none smtp.client-ip=74.125.82.51
-Received: by mail-dl1-f51.google.com with SMTP id a92af1059eb24-139b5e604b9so2607590c88.0
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2026 06:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782394304; x=1782999104; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NK6SpJYh+oLbM19wL4RZRwc0NJUjhwQHIffBTILtoP8=;
-        b=eS3r46eC4opLOzjO0f2kQBTShxHcOHDa3ckBl3twkGEkKAtbVuHFvB6AJ6aTMweHG0
-         LC/JXTA5kiU00rW3GXXNIRjcTlQWoV7oVtkFiQ/UvsSDtR3ZrAfUROeirefsM/X/qXxW
-         Wx8IYJHsZv3q5/utYbvHnBkaUjb6zb7G6/aAjf1+TKNpbswG0jhxqYhnK9XmP8+2z1HX
-         uwWbp8mJkEkZQlFWZa0zaEQ3wXWeE0Ud3867ViRubxCgee0kljfwEJ45L6UGN3pkJcSo
-         ObOOavSn3bPSKCzVmdo+Aq+SVblcj7nNZHxF17GESq7DrFdnUYYBRLVkAdzxt11IL3AU
-         RrfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782394304; x=1782999104;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NK6SpJYh+oLbM19wL4RZRwc0NJUjhwQHIffBTILtoP8=;
-        b=Vfwhm5eIAc9SVZ00XdWKij9adFshHIrtlDl3IAW2cJH/XozOQFirnxhRTA1rXspM3B
-         0IZ3HwidoO5nbxSBj9AqF48TVyiqtE8TFBNatiZP95Js6PIPovbrs0MfibcVhO4osoOc
-         mOJ5PowiN/M4670tOETENK/+vNXFKBQhXi6s2htkpHWSUzpbL4AaaTf22otL+0Ccn6v2
-         E4mrxZVatilBKXIWDb1NYca/A1OHtBfX0OtJZ+Aom8skOj/jzUA92VTowP5RGCEcEMe2
-         N+6pCCMYktCKMBUxBBiPdi3i/XDPOK2nSpP4G16Q7TSCAH49fl2WGgB30EcEm3yxUCsk
-         wUbg==
-X-Gm-Message-State: AOJu0Yy6CR/LeDln+t52gKI7GnJgb704cz02GHxmVUfodPo9pDLGf/PL
-	n14dnygsUwu1XACKy1mUDhkGavajmEd9gk1DUgDzyAIAwfc8HNqDWYBH
-X-Gm-Gg: AfdE7cn8ZxhtB64K+Y/QL5lEuR2zax7LPI+uWoc9BFy7oBowU1Zs25hlBZKRlGTg5oG
-	Ug2J0EX4mcKvhvQz7dtCO/UCmDer4l08fMbhDCkVJkgPRAmv5X2e8B0LPD59o1hM9uHbY0auDpp
-	hVqnGFeWmksRUBYze6PAPROu4RJX66aX/Et3hxue5anAphw2yik51zjU2UQTNhijFknOzoTJeTy
-	M8Jqb3izY8JF9RLN7tKEDR6ajmOUBDLJRhJnRdcfiPSvM//eY5Uqbi5PhNJw4eHyVEKZ/Wkb3y6
-	2FUGJTAcTJORMhfW7CprJmQeO+Zhoo4G53CK1cdsDupgR5lt9GoH6ldBhcKZhBLZGOHpDG700zz
-	iDoypnFGwUaomw4JuV4YDbFUiW6GCcAD1MXGWscoKRuaeT4xYedSyVwGDqfrOd0qmF5CtjYGfgg
-	BcxTTK51JteK3KiLLiT2RsVZxiZTKNHf8=
-X-Received: by 2002:a05:7022:6192:b0:138:e4:c44d with SMTP id a92af1059eb24-139dbae0ad1mr2171642c88.25.1782394303648;
-        Thu, 25 Jun 2026 06:31:43 -0700 (PDT)
-Received: from idcredbox1391.. ([2404:f801:8028:3:40af:bf67:9423:25ae])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-139d8f55b04sm8806333c88.4.2026.06.25.06.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2026 06:31:43 -0700 (PDT)
-From: Subasri S <subasris1210@gmail.com>
-To: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	Phil Sutter <phil@nwl.cc>,
-	"David S . Miller" <davem@davemloft.net>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E253E639E;
+	Thu, 25 Jun 2026 17:27:00 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782408423; cv=pass; b=AbzEWQB1Dqd7lmQbuYafxR/NBBzN8gO58ljp0fGyM2dMuJa83uD4JzJaH1ASIngf/X+MeCQ1uA94oG6qC90ta87h1x6BjUcA1coFPnZHUvHk9/a/n35JtVBeLwqFY/s93MVaXu9E0ol4lSARm+XDAZpsSsNi91+FXKZtIjZCogk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782408423; c=relaxed/simple;
+	bh=Ug0eG1VVaEp7nO7BUGyBVoG5qvI6yMGXn3rxqnFoWAQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bSZ2bkTNQaH6onRMTacJBE9cV29NfpHaFBTjnikG6oV/HSPCD9yTUmf+mvNBqNjJMSR8KWWmTLvWyYhRUawmOJXnCZK3yig/PqTjcyVmjJ91ZSJY9LFbEoI0woGAy3Ujs1ohrdVdgjMbQn4LcEQ5qM+HXLMNlpYAWLTEtgjmXos=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=TIxArBBx; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1782408371; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=RvTsikr34kprXvmqimSC8UmvW6vKymAppxhUFh3jkL8+zjv7MM/9XDOy/uy1sdWhsSpoljVjPHSSNADCIY7zsNNa61KusbiV3qLKk6FRC7m0idHciFqfOumZLo0YTb9p+xB/o6lMyS52cQBLvTmsSstmVU6u6i3wvNvDknqrl08=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1782408371; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=nqlBUO6e+NBSYVxKJwIybFo1EvvTPef5DEWLeoUqZdc=; 
+	b=gIISjy2RQ0pMJv02ZMlfl/KYSyCK2IX+lVFqESuPhWNzfhsMZ+dFwAwnoBujs37vPNGF5hPOVY37fFP8Q9wjh6NLfN7S/Jr1rDVReb7oOmsh0SSNzfqxLkqktgJ1zrsy8V4gBEgRjUtISj06S4HoABz7Ze2+efaQWmCYXhX+hvE=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=carlosgrillet.me;
+	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
+	dmarc=pass header.from=<carlos@carlosgrillet.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1782408371;
+	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=nqlBUO6e+NBSYVxKJwIybFo1EvvTPef5DEWLeoUqZdc=;
+	b=TIxArBBx9JXpTit9AogkxsZY5uX2EpZtMVD6TMJV1RDn+eWk698dCpq50r1SQ9Pk
+	2r0YTE2SOPw0Nd/e6rXgghtEdSTi10xOnsUsWsq1CwybnEhCq/tjqEAQsRN33BI/A4O
+	tYYV02zRQVWVc4Sdm0i43HSPEnLLaIaRsz2cmXtI=
+Received: by mx.zoho.eu with SMTPS id 178240836812329.259167655362717;
+	Thu, 25 Jun 2026 19:26:08 +0200 (CEST)
+From: Carlos Grillet <carlos@carlosgrillet.me>
+To: Simon Horman <horms@verge.net.au>,
+	Julian Anastasov <ja@ssi.bg>,
+	David Ahern <dsahern@kernel.org>,
+	Ido Schimmel <idosch@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>
-Cc: netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>
+Cc: netdev@vger.kernel.org,
+	lvs-devel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Subasri S <subasris1210@gmail.com>
-Subject: [PATCH nf-next] netfilter: remove redundant null check before kvfree()
-Date: Thu, 25 Jun 2026 19:01:24 +0530
-Message-ID: <20260625133124.970238-1-subasris1210@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org
+Subject: [PATCH nf-next v2 0/3] netfilter: replace u_int*_t with kernel int types (batch 2)
+Date: Thu, 25 Jun 2026 19:25:45 +0200
+Message-ID: <20260625172550.35781-1-carlos@carlosgrillet.me>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -98,72 +81,67 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[carlosgrillet.me:s=zmail];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,gmail.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-13469-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:subasris1210@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[subasris1210@gmail.com,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:horms@verge.net.au,m:ja@ssi.bg,m:dsahern@kernel.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	FORWARDED(0.00)[lists@lfdr.de];
+	DMARC_NA(0.00)[carlosgrillet.me];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13473-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[subasris1210@gmail.com,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[carlosgrillet.me:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,carlosgrillet.me:dkim,carlosgrillet.me:mid,carlosgrillet.me:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2CABB6C6258
+X-Rspamd-Queue-Id: 56D8C6C7C8F
 
-kvfree() internally performs NULL check on the pointer
-handed to it and takes no action if it indeed is NULL.
-Hence there is no need for a pre-check of the memory
-pointer before handing it to kvfree().
+This patch series replaces POSIX u_int8_t/u_int16_t with the preferred
+kernel types u8/u16 across several netfilter files and updates the
+corresponding header definitions.
 
-Issue reported by ifnullfree.cocci Coccinelle semantic
-patch script.
+This continues the work started in:
+https://lore.kernel.org/all/20260616182948.96865-1-carlos@carlosgrillet.me
 
-Signed-off-by: Subasri S <subasris1210@gmail.com>
----
- net/netfilter/nft_set_rbtree.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+No functional changes.
 
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 018bbb6df4ce..efc25e788a1c 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -544,8 +544,7 @@ static int nft_array_intervals_alloc(struct nft_array *array, u32 max_intervals)
- 	if (!intervals)
- 		return -ENOMEM;
- 
--	if (array->intervals)
--		kvfree(array->intervals);
-+	kvfree(array->intervals);
- 
- 	array->intervals = intervals;
- 	array->max_intervals = max_intervals;
+Changes in v2:
+- Drop nf_conntrack_sane patch (Florian Westphal: ports[] removal pending)
+- link to v1: https://lore.kernel.org/all/20260624184036.71051-1-carlos@carlosgrillet.me
+
+Carlos Grillet (3):
+  netfilter: nf_conntrack_h323_main: replace u_int8_t with u8
+  netfilter: nf_conntrack_amanda: replace u_int16_t with u16
+  netfilter: ip_vs_nfct: replace u_int8_t with u8
+
+ include/net/ip_vs.h                    | 2 +-
+ net/netfilter/ipvs/ip_vs_nfct.c        | 2 +-
+ net/netfilter/nf_conntrack_amanda.c    | 2 +-
+ net/netfilter/nf_conntrack_h323_main.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
 -- 
-2.43.0
+2.54.0
 
 
