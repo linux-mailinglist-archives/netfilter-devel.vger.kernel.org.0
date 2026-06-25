@@ -1,95 +1,55 @@
-Return-Path: <netfilter-devel+bounces-13461-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13462-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id kcziNp59PGq+oggAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13461-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 03:00:14 +0200
+	id 3iiTOvaZPGr2pggAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13462-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 05:01:10 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1046C20C9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 03:00:14 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE3836C280E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 05:01:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=asu.edu header.s=google header.b=tHudH2uU;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13461-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13461-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=asu.edu;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=KrvsSS8p;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13462-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13462-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D1448303DD03
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 01:00:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E7EE1300A675
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2026 03:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D2F366DB4;
-	Thu, 25 Jun 2026 01:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5717274B3B;
+	Thu, 25 Jun 2026 03:01:05 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB79335E923
-	for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2026 01:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11431C5D7D;
+	Thu, 25 Jun 2026 03:01:04 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782349212; cv=none; b=V3GFA5qtLJ89r+1bTptghNgKIvK/e2JUl4wwpkEk136WapDXtuYVP/P1e0wcTh+a3VfalwXM+t3e4RKd6P+chgUhRhZDpOgPR9o+OdXcc+JWT/3yB13yFDGWd7K3SxAKDBHr0/aU8gSODoSUn3GBVv6iQhSjDT8/5cRdfQfImQU=
+	t=1782356465; cv=none; b=fZBUOiJC1223IHhEb+LTUndsjOD9QClnd+Iyoy0z3rJiLqmPy2wB2yUT0qx9xHnmomd6FwZDwWuhULpdQPU7rW+8r3G5bYePzl1O/T3mlGrEWGObT665EVSxtuo+R0wrfTQzyoUoLnj1lAI5jONSjiolU/LFElgP2JqWQ2mK1AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782349212; c=relaxed/simple;
-	bh=7ttSot8uvmbmDr25iVgapfOaLEdfFBfLqnBp0maLbAU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U47XXyvuaUVNsd9XzJld0U4RmI6DbndDM/f1scXHvzTFhscEuXi8x3A7tW+7xM98D4NN8d3OwqkYXtCf2eNSIhOYQ5vqqn9elfK3ug5ijlZ9v4qY6yiK8bOI0sVCV/3LK2i7zLNVuAREiEMUj4eqfsmIVqfx7rXBIJyKTrCF/Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=tHudH2uU; arc=none smtp.client-ip=209.85.216.41
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-36d5fd50d20so1246408a91.1
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Jun 2026 18:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=asu.edu; s=google; t=1782349210; x=1782954010; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VkxKh8nTClgJ/GNm28h2Td42bPvA3cruY4e1e4dfTZQ=;
-        b=tHudH2uUFaqqpB8oiVfFEQ7K5ojiwKOXNCJr54C1FXQ/xs5VJzoCuqs2vtxnL/y2J+
-         PvFLm/AhbpD0roggq70qDk5nc1AoTK5NfVATfGxzketQAAxcCS8+MBcEho2BR7LBx2Lb
-         yTdCtE1qrbL6yqRA+qKzs29ROB1r2DKX+iLETsZMsJKxcUu3CBGzPSCEq0y4LXqjhHYt
-         8UERmYBYW5OdnshDLRzoTVBMnetYIYQOVWFXTY79Gwp4VYlR661jA3adoGgdMs7/T7L7
-         FiKI48j12RzFcp6sILu1qK8Twrt9jhQboCyVB68ydYD0J0iBShJMOjKObYu+wXRbIEs1
-         TJ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782349210; x=1782954010;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VkxKh8nTClgJ/GNm28h2Td42bPvA3cruY4e1e4dfTZQ=;
-        b=Mu1g4oHLHyOrB3ujGCP383hhhx53Izqkl1j7zTVWTvKSPtS8+u19kt8ng9YE1IzNyY
-         nyukOPdAvzh4PWyh26tdGtkS5BTovlahg2BmyZBtPanTuiu5ZoeCCHgrYPF1qsInuyO7
-         C+NnHLCDNcjPzxzXrWpyArBB9iA/q0U5YRvntvHJT+oYCoGOxRtCdkEvhbdz5GugXmod
-         cXvdUn6dEtPkCIM4QMnl7uCSvncIVymAxprew8iHPMriDb2+Xoa6xQ5MZjBoLX4/HqHd
-         RE+egjlPuRZ5c2OLeQHOm46F/aSEfrqkyFX/ZxVOET+0noybbWpekX18RJdlab6LMCPz
-         XKeg==
-X-Forwarded-Encrypted: i=1; AFNElJ8Gk7MSeLz5j5wXY1JQQHvcR/V1me6TRNIDJrGT/CZNhjnGjQBxjCumlyLtXVyHw8d8A+hMz0N1ux9Yeyq24FA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjlzET0XT4uBWMhLbv7mBbpi/yxocYBJfMNRpJMV8gxO+oSWHH
-	nWkfXAV/VaQ883ADJNzU+W8828OM26fa2+gUqUMTf+B82SEYzg/HD/TG7dSxo4wlew==
-X-Gm-Gg: AfdE7cmVb0y7qr1Uyb3crhepx+SvlkpZnvkJgIJ7uKMojSo2bdKFTQ8oDwp1ofmwSd6
-	ID2OvHx1xWNoJ7oaAC3OIvFnTKckr2HHH5nyjLG7CeU2vvgazI2CANiJkdEX3oPoy7YzW9/khk5
-	MZ+obOGyoVB0YCqFpv2PJi4bBSZEoIwHlF3XIrk0agNAazOgMFoJ5cJt0UV7pp+Mz8lTWfJNZaj
-	cpxB9OANHL+s80lhOVB6CN525WUgEX8vUdND1bmkam4Vge7KMGnuF40Q7I43CT7U/dLVmR1AKEZ
-	lO+vC9S9brUnQ6w8OZmTlkBoc6obzI06Ops/Es8D6P0G5zIm9+6zObK9bFIbysc+DcVUnU3jJNg
-	QYECd5F6wGyGA/vKoBF+/HFQAEC7lGZmw71vBvIvCZ7khWAZZPirBvD1tVS1X4MvL4nK70gv3
-X-Received: by 2002:a05:6a20:72a8:b0:3b4:8b89:9fac with SMTP id adf61e73a8af0-3bd4ae35d18mr422542637.23.1782349209864;
-        Wed, 24 Jun 2026 18:00:09 -0700 (PDT)
-Received: from p1.. ([2607:fb90:ec8f:cfa:df4a:3751:5684:c96f])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c92bc1e0a90sm656279a12.15.2026.06.24.18.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2026 18:00:09 -0700 (PDT)
-From: Xiang Mei <xmei5@asu.edu>
-To: Florian Westphal <fw@strlen.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Phil Sutter <phil@nwl.cc>,
-	netfilter-devel@vger.kernel.org
-Cc: kees@kernel.org,
-	horms@kernel.org,
-	Weiming Shi <bestswngs@gmail.com>,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xiang Mei <xmei5@asu.edu>
-Subject: [PATCH nf] netfilter: ipset: fix race between dump and ip_set_list resize
-Date: Wed, 24 Jun 2026 18:00:06 -0700
-Message-ID: <20260625010006.1448558-1-xmei5@asu.edu>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1782356465; c=relaxed/simple;
+	bh=iOx1W5zAagyQBnCJPKhp5RLxhWWIS0l0OlYgJLe7swk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=L5JOBarSP7lReD0j3XIWHyrYZXipTQvO7PljVJE4y5UAw5I8owMPZWvM/eMm+nvjKU/dTNoozHoEB+FxumNYFzjQTGXGIzNpuB5PsmbWjTYQJd8XE4R61erw5p5huzqVRiBdd+n7p+1tX32TIwToBskl49hUvq0M7yR4fljJGhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrvsSS8p; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B5C51F000E9;
+	Thu, 25 Jun 2026 03:01:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782356464;
+	bh=QA7S1YhYp6ZEsHZIL7RaiWi31oy+OEz6zPCT8KWRmf8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=KrvsSS8pNpl+XmBWgDJfKQAohexDoA8zrdhWs1rPQSBBO2R6o21sHt74CPjHQjhbH
+	 tZ6roVLUWSLkD3FHpSsdwjvXXblEgbgUXJBVKIrK07GRJJVQ21xOzM0Fhre/EzZqAh
+	 8mB7Jbh63/Xjj4hM4i+xKjPTX6ZMvNmbHAyklV8w9hB2Macv4ELvvDsU1kKMR7NZcA
+	 9KPufrP09bweZTddOCfgADtamDdQP8eEX0VqGzJz7LdGdQn8f7QYDhyf7GRF09P9ct
+	 PYVnCjBO5QkjVqcjc0e5nvAaLYdeJsnFbAeRYzPNbPe8v+0QniCjUMfnQ6yC5xMJKh
+	 msfDPSj6S/H/Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 93A353AAA6F3;
+	Thu, 25 Jun 2026 03:00:53 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -97,110 +57,108 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 01/14] netfilter: nf_nat: avoid invalid nat_net
+ pointer
+ use on failed nf_nat_init()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178235645227.3097853.18361949927690415910.git-patchwork-notify@kernel.org>
+Date: Thu, 25 Jun 2026 03:00:52 +0000
+References: <20260623221548.701545-2-pablo@netfilter.org>
+In-Reply-To: <20260623221548.701545-2-pablo@netfilter.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, davem@davemloft.net,
+ netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, fw@strlen.de, horms@kernel.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[asu.edu,none];
-	R_DKIM_ALLOW(-0.20)[asu.edu:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13461-lists,netfilter-devel=lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,netfilter.org,vger.kernel.org,asu.edu];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[xmei5@asu.edu,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13462-lists,netfilter-devel=lfdr.de,netdevbpf];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:pablo@netfilter.org,m:kadlec@netfilter.org,m:phil@nwl.cc,m:netfilter-devel@vger.kernel.org,m:kees@kernel.org,m:horms@kernel.org,m:bestswngs@gmail.com,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:xmei5@asu.edu,s:lists@lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:davem@davemloft.net,m:netdev@vger.kernel.org,m:kuba@kernel.org,m:pabeni@redhat.com,m:edumazet@google.com,m:fw@strlen.de,m:horms@kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[xmei5@asu.edu,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[asu.edu:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NO_DN(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:email,grsecurity.net:email,vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2B1046C20C9
+X-Rspamd-Queue-Id: EE3836C280E
 
-The release path of ip_set_dump_do() and ip_set_dump_done() read
-inst->ip_set_list via ip_set_ref_netlink(), a plain rcu_dereference_raw()
-of the array pointer. These run from netlink_recvmsg() without the nfnl
-mutex and without an RCU read-side critical section.
+Hello:
 
-A concurrent ip_set_create() can grow the array: it publishes the new
-array, calls synchronize_net() and then kvfree()s the old one. Since the
-dump paths read the array outside any RCU reader, synchronize_net() does
-not wait for them and the old array can be freed while they still index
-into it, causing a use-after-free.
+This series was applied to netdev/net.git (main)
+by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-The dumped set itself stays pinned via set->ref_netlink, so only the
-array load needs protecting. Take rcu_read_lock() around it, matching
-ip_set_get_byname() and __ip_set_put_byindex().
+On Wed, 24 Jun 2026 00:15:34 +0200 you wrote:
+> From: Mathias Krause <minipli@grsecurity.net>
+> 
+> We ran into below KASAN splat, which is mostly uninteresting, beside
+> for having nf_nat_register_fn() in the call chain as a cause for the
+> offending access:
+> 
+> ==================================================================
+> BUG: KASAN: slab-out-of-bounds in nf_nat_register_fn+0x5f9/0x640
+> Read of size 8 at addr ffff890031e54c20 by task iptables/9510
+> 
+> [...]
 
-  BUG: KASAN: slab-use-after-free in ip_set_dump_do (net/netfilter/ipset/ip_set_core.c:1697)
-  Read of size 8 at addr ffff88800b5c4018 by task exploit/150
-  Call Trace:
-   ...
-   kasan_report (mm/kasan/report.c:595)
-   ip_set_dump_do (net/netfilter/ipset/ip_set_core.c:1697)
-   netlink_dump (net/netlink/af_netlink.c:2325)
-   netlink_recvmsg (net/netlink/af_netlink.c:1976)
-   sock_recvmsg (net/socket.c:1159)
-   __sys_recvfrom (net/socket.c:2315)
-   ...
-  Oops: general protection fault, probably for non-canonical address ... KASAN NOPTI
-  KASAN: maybe wild-memory-access in range [0x02d6...d0-0x02d6...d7]
-  RIP: 0010:ip_set_dump_do (net/netfilter/ipset/ip_set_core.c:1698)
-  Kernel panic - not syncing: Fatal exception
+Here is the summary with links:
+  - [net,01/14] netfilter: nf_nat: avoid invalid nat_net pointer use on failed nf_nat_init()
+    https://git.kernel.org/netdev/net/c/069cfe3de2a5
+  - [net,02/14] netfilter: nf_conncount: prevent connlimit drops for early confirmed ct
+    https://git.kernel.org/netdev/net/c/c8b6f36f7669
+  - [net,03/14] netfilter: flowtable: Validate iph->ihl in nf_flow_ip4_tunnel_proto()
+    https://git.kernel.org/netdev/net/c/84460b644329
+  - [net,04/14] netfilter: x_tables.h: fix all kernel-doc warnings
+    https://git.kernel.org/netdev/net/c/22f9dbed18bc
+  - [net,05/14] netfilter: nft_synproxy: stop bypassing the priv->info snapshot
+    https://git.kernel.org/netdev/net/c/11d4bc4e26fb
+  - [net,06/14] selftests: netfilter: conntrack_sctp_collision.sh: Introduce SCTP INIT collision test
+    https://git.kernel.org/netdev/net/c/a49a8e51eebc
+  - [net,07/14] netfilter: nft_compat: ebtables emulation must reject non-bridge targets
+    https://git.kernel.org/netdev/net/c/9dbba7e694ec
+  - [net,08/14] selftests: nft_queue.sh: add a bridge queue test
+    https://git.kernel.org/netdev/net/c/8a2cfe7951f6
+  - [net,09/14] netfilter: ctnetlink: do not allow to reset helper on existing conntrack
+    https://git.kernel.org/netdev/net/c/aaa0cd698ffa
+  - [net,10/14] netfilter: conntrack: add deprecation warnings for irc and pptp trackers
+    https://git.kernel.org/netdev/net/c/57f940017a77
+  - [net,11/14] netfilter: nf_conntrack_expect: store master_tuple in expectation
+    https://git.kernel.org/netdev/net/c/979c13114c0b
+  - [net,12/14] netfilter: nf_conntrack_expect: run expectation eviction with no helper
+    https://git.kernel.org/netdev/net/c/be57dd9c1c17
+  - [net,13/14] netfilter: nft_ct: expectation timeouts are passed in milliseconds
+    https://git.kernel.org/netdev/net/c/6fb421bd07f1
+  - [net,14/14] netfilter: nf_conntrack_helper: cap maximum number of expectation at helper registration
+    https://git.kernel.org/netdev/net/c/397c8300972f
 
-Fixes: 8a02bdd50b2e ("netfilter: ipset: Fix calling ip_set() macro at dumping")
-Reported-by: Weiming Shi <bestswngs@gmail.com>
-Assisted-by: Claude:claude-opus-4-8
-Signed-off-by: Xiang Mei <xmei5@asu.edu>
----
- net/netfilter/ipset/ip_set_core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index a531b654b8d9..6cfad152d7d1 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -1480,7 +1480,11 @@ ip_set_dump_done(struct netlink_callback *cb)
- 		struct ip_set_net *inst =
- 			(struct ip_set_net *)cb->args[IPSET_CB_NET];
- 		ip_set_id_t index = (ip_set_id_t)cb->args[IPSET_CB_INDEX];
--		struct ip_set *set = ip_set_ref_netlink(inst, index);
-+		struct ip_set *set;
-+
-+		rcu_read_lock();
-+		set = ip_set_ref_netlink(inst, index);
-+		rcu_read_unlock();
- 
- 		if (set->variant->uref)
- 			set->variant->uref(set, cb, false);
-@@ -1686,7 +1690,9 @@ ip_set_dump_do(struct sk_buff *skb, struct netlink_callback *cb)
- release_refcount:
- 	/* If there was an error or set is done, release set */
- 	if (ret || !cb->args[IPSET_CB_ARG0]) {
-+		rcu_read_lock();
- 		set = ip_set_ref_netlink(inst, index);
-+		rcu_read_unlock();
- 		if (set->variant->uref)
- 			set->variant->uref(set, cb, false);
- 		pr_debug("release set %s\n", set->name);
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
