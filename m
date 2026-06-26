@@ -1,172 +1,144 @@
-Return-Path: <netfilter-devel+bounces-13476-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13477-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id I2jZFdJYPmoREQkAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13476-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jun 2026 12:47:46 +0200
+	id zPJbKc1hPmrQEwkAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13477-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jun 2026 13:26:05 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A43C56CC2AB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jun 2026 12:47:45 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3320B6CC6A4
+	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jun 2026 13:26:05 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=ZghjreI3;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13476-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13476-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=Hh6TXr3D;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13477-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13477-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9AA22300A38D
-	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jun 2026 10:47:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9537C304EBB2
+	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jun 2026 11:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0C43E5589;
-	Fri, 26 Jun 2026 10:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41813F1ADF;
+	Fri, 26 Jun 2026 11:24:56 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B4037F72E
-	for <netfilter-devel@vger.kernel.org>; Fri, 26 Jun 2026 10:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DE93EDE5D
+	for <netfilter-devel@vger.kernel.org>; Fri, 26 Jun 2026 11:24:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782470856; cv=none; b=HqSJPcxHTfVOJudGTJYRHlfAHNvinKIND6/ZzHLDyc+8bTWSgKAUnsnz8uocS91vDU13wYPlnO/p2rzjmF/QT+OgW5WEXhy454xaWFso/uhQtZNin2HXoP6ZJM/4ciQpQ03vXqVLMqHBdqV2tM/zoBNP+jdYNOEYJbLiKM/rOLw=
+	t=1782473096; cv=none; b=B39409k+CCmmBFK+ikUwNfjOokke7ZfWf/DhaajKOaM8go//m48Fou+gdhvt4/vMaGonxIDzPMkVXnC9d3YMD/sz9oVqo6NivrunqMoXGxldATaAXIyLBRdoP3vqeep1JWtE4Z1A6j4SaBYlPv7P/yX6B8j2LuCYRasI/gcrtvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782470856; c=relaxed/simple;
-	bh=Lnjbi8giISGJm0qJrrvpNRnRL0cMTn31IY910Bu6OBU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nsV/yiYkLNPaOhPk4fdktsOqhuUHP71sCwgxx59h7Xi6kbakumJHGKDuvLjLRDnc7VG68i46ntnw5ma7bqMPY0AOoj/v36h2Z2N8QFY/dg3bwNGknHB8NVhAha+W5V+0mx4WPLJZaYFjmzC08R8+iKms1wFO3cpaOVnX7xbvr28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ZghjreI3; arc=none smtp.client-ip=217.70.190.124
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 9CCEE60581;
-	Fri, 26 Jun 2026 12:47:30 +0200 (CEST)
+	s=arc-20240116; t=1782473096; c=relaxed/simple;
+	bh=zOpF02azcuyoQAtHJFXA43CFs0vJPjcWisO9ZFR3x2w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N96byPCV8P85co9SEi3IiKjukZLo4UgSHS3abKvjWt0gZcYdaSJmcOj52QOh4sW6hmnhp+OZjckQzFC4Zm6dB47+2bK78YAAHYq3gvhk8TBCi15WENo6NCdxkTUHTs7VXgDHh+055ZjYk2FaXKpdLGxxRiR8Aql6iS1yzmgEupQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Hh6TXr3D; arc=none smtp.client-ip=217.70.190.124
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id E106160590;
+	Fri, 26 Jun 2026 13:24:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1782470850;
-	bh=LjKlyQW6bVgo7iFpSJRsLUABMkIrpqoAMnpXTmLJhS4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZghjreI3mllf+hXSunTzT7w36j7Dd8JsuKwpzeIIp4uz9wTqiiDgDyZEgMVeu2oms
-	 7OqvC+4d2/jUBzjPIkgu7NC7Up6DXr872ly/XJtN3j7mz4R4pMP+xzxlCV3wNTy2y7
-	 gcao9ZCllMgoJFZSUl6Tvuq+Vinw66hO4PPrwDcFHrlsYoTfP5Aj/VskYUjXX1VW3Q
-	 CZNSOBapsnSxVoDwOQ5CGgtMXANEIhAGlIT9hMSYBx3/bLClmRqdV/K0jQfRaHXAdW
-	 iUJZHAM0cLfm804ANg8mf1Tl4ezr5uzJw8dQiJ2FnG2HLgUFgvXeqMj/TG1QpDLzoQ
-	 CVWX+NQG//0qw==
-Date: Fri, 26 Jun 2026 12:47:28 +0200
+	s=2025; t=1782473093;
+	bh=5iGrjpRuxAE+UZ9hvc3t6M5NJ5Rz8Q2XwbZ/1OHWNdU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Hh6TXr3DB/MnIVKwg0yugjmMsssmViP+vYbTZ2/tDMm05Rfp52HZJauC4tLFoZdwZ
+	 yl2L2bUo84/eY+v1iP2CSLfkZymzE9z+cut69Enu5woGLAmKC3abByPy9w8jSMnSPf
+	 gGh3MkuSv4yVZQKyyYFKXgZp0Y0nMjfbshavXalm3A6l5nG49DIh5PPXdUQvFoVWL8
+	 K1xu6rHysAbD7IyiUZbLeF5VskM1lIGWDwU6rfIKmJHBDp9JoPHq+JFcKpxOA2ZHly
+	 Uvg51LhZlUjF5O7tgWGXDGOEKJGa1at/fzQQRupjo+buTjrDhGWvSIFq6qIy0SI8Gm
+	 U0NqXw6dHsizw==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Ren Wei <n05ec@lzu.edu.cn>
-Cc: netfilter-devel@vger.kernel.org, fw@strlen.de, phil@nwl.cc,
-	alin.nastac@gmail.com, yuantan098@gmail.com, yifanwucs@gmail.com,
-	tomapufckgml@gmail.com, bird@lzu.edu.cn, chzhengyang2023@lzu.edu.cn
-Subject: Re: [PATCH nf 1/1] netfilter: nf_conntrack_sip: guard against
- missing skb dst
-Message-ID: <aj5YwOF4Kc71OTdf@chamomile>
-References: <cover.1782349677.git.chzhengyang2023@lzu.edu.cn>
- <47e6e0bdba06326388cd7778403326ff78faf8f0.1782349677.git.chzhengyang2023@lzu.edu.cn>
+To: netfilter-devel@vger.kernel.org
+Cc: n05ec@lzu.edu.cn
+Subject: [PATCH nf] netfilter: nf_conntrack_sip: validate skb_dst() before accessing it
+Date: Fri, 26 Jun 2026 13:24:49 +0200
+Message-ID: <20260626112449.848283-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <47e6e0bdba06326388cd7778403326ff78faf8f0.1782349677.git.chzhengyang2023@lzu.edu.cn>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:n05ec@lzu.edu.cn,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,m:phil@nwl.cc,m:alin.nastac@gmail.com,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:bird@lzu.edu.cn,m:chzhengyang2023@lzu.edu.cn,m:alinnastac@gmail.com,s:lists@lfdr.de];
-	DMARC_NA(0.00)[netfilter.org];
-	TAGGED_FROM(0.00)[bounces-13476-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13477-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:n05ec@lzu.edu.cn,s:lists@lfdr.de];
+	DMARC_NA(0.00)[netfilter.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	FREEMAIL_CC(0.00)[vger.kernel.org,strlen.de,nwl.cc,gmail.com,lzu.edu.cn];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TAGGED_RCPT(0.00)[netfilter-devel];
-	TO_DN_SOME(0.00)[];
+	TO_DN_NONE(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,netfilter.org:dkim,netfilter.org:from_mime]
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:dkim,netfilter.org:email,netfilter.org:mid,netfilter.org:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A43C56CC2AB
+X-Rspamd-Queue-Id: 3320B6CC6A4
 
-On Fri, Jun 26, 2026 at 02:49:37PM +0800, Ren Wei wrote:
-> From: Zhengyang Chen <chzhengyang2023@lzu.edu.cn>
-> 
-> set_expected_rtp_rtcp() dereferences skb_dst(skb)->dev when
-> sip_external_media is enabled. The SIP helper can run from tc ingress
-> before routing has attached a dst to the skb, so skb_dst(skb) can be
-> NULL and the helper crashes while parsing SDP media expectations.
+tc ingress and openvswitch do not guarantee routing information to be
+available. These subsystems use the conntrack helper infrastructure, and
+the SIP helper relies on the skb_dst() to be present if
+sip_external_media is set to 1 (which is disabled by default as a module
+parameter).
 
-If SIP helper can run from tc ingress, then this has not ever worked?
-Else tc needs to be fixed to set a router to skb before calling the
-helper.
+This effectively disables the sip_external_media toggle for these
+subsystems without resulting in a crash.
 
-I don't think this fix belong here.
+Fixes: cae3a2627520 ("openvswitch: Allow attaching helpers to ct action")
+Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
+Reported-by: Ren Wei <n05ec@lzu.edu.cn>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_conntrack_sip.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> Handle a missing skb dst by skipping the same-interface external-media
-> optimization. Still release the routed media dst when one was obtained,
-> and keep the existing expectation setup path unchanged.
-> 
-> Fixes: a3419ce3356c ("netfilter: nf_conntrack_sip: add sip_external_media logic")
-> Cc: stable@vger.kernel.org
-> Reported-by: Yuan Tan <yuantan098@gmail.com>
-> Reported-by: Yifan Wu <yifanwucs@gmail.com>
-> Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-> Reported-by: Xin Liu <bird@lzu.edu.cn>
-> Assisted-by: Codex:gpt-5.4
-> Signed-off-by: Zhengyang Chen <chzhengyang2023@lzu.edu.cn>
-> Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
-> 
-> ---
->  net/netfilter/nf_conntrack_sip.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
-> index 5ec3a4a4bbd7..302dc60c5381 100644
-> --- a/net/netfilter/nf_conntrack_sip.c
-> +++ b/net/netfilter/nf_conntrack_sip.c
-> @@ -956,7 +956,8 @@ static int set_expected_rtp_rtcp(struct sk_buff *skb, unsigned int protoff,
->  			return NF_ACCEPT;
->  		saddr = &ct->tuplehash[!dir].tuple.src.u3;
->  	} else if (sip_external_media) {
-> -		struct net_device *dev = skb_dst(skb)->dev;
-> +		struct dst_entry *skbdst = skb_dst(skb);
-> +		struct net_device *dev = skbdst ? skbdst->dev : NULL;
->  		struct dst_entry *dst = NULL;
->  		struct flowi fl;
->  
-> @@ -977,12 +978,14 @@ static int set_expected_rtp_rtcp(struct sk_buff *skb, unsigned int protoff,
->  		/* Don't predict any conntracks when media endpoint is reachable
->  		 * through the same interface as the signalling peer.
->  		 */
-> -		if (dst) {
-> +		if (dst && dev) {
->  			bool external_media = (dst->dev == dev);
->  
->  			dst_release(dst);
->  			if (external_media)
->  				return NF_ACCEPT;
-> +		} else if (dst) {
-> +			dst_release(dst);
->  		}
->  	}
->  
-> -- 
-> 2.43.0
-> 
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index 5ec3a4a4bbd7..f3f90a866338 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -956,7 +956,6 @@ static int set_expected_rtp_rtcp(struct sk_buff *skb, unsigned int protoff,
+ 			return NF_ACCEPT;
+ 		saddr = &ct->tuplehash[!dir].tuple.src.u3;
+ 	} else if (sip_external_media) {
+-		struct net_device *dev = skb_dst(skb)->dev;
+ 		struct dst_entry *dst = NULL;
+ 		struct flowi fl;
+ 
+@@ -978,7 +977,11 @@ static int set_expected_rtp_rtcp(struct sk_buff *skb, unsigned int protoff,
+ 		 * through the same interface as the signalling peer.
+ 		 */
+ 		if (dst) {
+-			bool external_media = (dst->dev == dev);
++			const struct dst_entry *this_dst = skb_dst(skb);
++			bool external_media = false;
++
++			if (this_dst && dst->dev == this_dst->dev)
++				external_media = true;
+ 
+ 			dst_release(dst);
+ 			if (external_media)
+-- 
+2.47.3
+
 
