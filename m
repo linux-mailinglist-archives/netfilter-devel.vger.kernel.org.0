@@ -1,156 +1,158 @@
-Return-Path: <netfilter-devel+bounces-13520-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13521-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 7ZJaLHffQmp3GAoAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13520-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 23:11:19 +0200
+	id UYbzBv3vQmpnJAoAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13521-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 00:21:49 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 310D86DECD0
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 23:11:19 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EA356DF068
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 00:21:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=KoZBzmuW;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13520-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13520-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=TTJrwIKc;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13521-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13521-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EED47303D376
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 21:11:17 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0D1823006D47
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 22:21:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F603C870E;
-	Mon, 29 Jun 2026 21:11:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176143101A7;
+	Mon, 29 Jun 2026 22:21:44 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5613C4B9B;
-	Mon, 29 Jun 2026 21:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 358F92C236B
+	for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2026 22:21:42 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782767477; cv=none; b=rRFimtr1YC/bgUWnL69RR4KfTEjn6d9+QWTc2lttHwerOKFqIC0PzsodA8RfqOI80vO4KuUEiFcatYmfPxiKy+Kpi8VbnxQlEar0d4OrDnrpq2Lf8Peax9hZp1P2l46vOfOAGF3vKs5u7duAj29APXHy0XXxz6Xe7kwkUaBldLA=
+	t=1782771704; cv=none; b=dRcOt3N5DkwhT2LyLUOt8v43GDq2hwCF9ugBy27kF0+G7fHbRMYrnUOM1Tl+eA2qDFH792MVeRt+DZEldg9ofPzxXr0gpxHnwBCnpA2FUDkiquiyAF4I0aXtt9FRmWep4fxBCa7q3vQ10OAZwOlbOwwHWeHDsBCFJu4myBHTbtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782767477; c=relaxed/simple;
-	bh=QCv23orYfmj+39HvVUtEgBCVVNhDYOBaErD6pCq+jxY=;
+	s=arc-20240116; t=1782771704; c=relaxed/simple;
+	bh=Ut8PtEHXcAS4k1PY/dR1wKZTzdVe7HHzu+IWuVjq3Gs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jyZOXmHL6smTzzVBnj4NauJF3G4OvZJchKmIk6Ofm8Et37DTUHo5+n9pAD0shIUNTCCTUe/Fn3RvbD9bzvnO1ws+8uK4ksGJJo4EBp/exc5Vra0GrcKUt7v/fIajfG6i0K2YeDsSaUf26KdQ/0l1jGiXOJM0muSa+FfnEi8sau0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KoZBzmuW; arc=none smtp.client-ip=192.198.163.18
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782767464; x=1814303464;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QCv23orYfmj+39HvVUtEgBCVVNhDYOBaErD6pCq+jxY=;
-  b=KoZBzmuWtfqCnP04MeimsKZqZFaWzIZV9Hz+6E2kAsm0Lp/6MTmIOcyF
-   BGgiN756yp2RcSFVnen9f4CHqD6lw9GZ6S754nFRjktBmbIqouLi3bZ0k
-   jyxEP7F4+KG6OD3OlOzUxPV8uly4pRalcVJj0PZNFL9uS1LdczcqB8Oj6
-   3bUfWhgRzK3KD/BjD1+TNfj1PEVlpJmBii2bxEvISGcZXgEj5tRbpuQFZ
-   IdK/oj2gNuD4Ct4Zxni/bRefl/ZOqy7P6YOPwqEYKrdRg82EbabvW1ElG
-   gqksUmwWqQgTAXSdY/PKFDISPbojpu2nPjxk7jT453baeQiJlGrIrv7JY
-   w==;
-X-CSE-ConnectionGUID: FY70OiNxQ0y4+05TA7dtAA==
-X-CSE-MsgGUID: jv3ysrJzSgqptuM+mbbWwg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11832"; a="82583934"
-X-IronPort-AV: E=Sophos;i="6.24,232,1774335600"; 
-   d="scan'208";a="82583934"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2026 14:10:57 -0700
-X-CSE-ConnectionGUID: vgnLbmsMSmy2DPed4xFb6w==
-X-CSE-MsgGUID: ZTlDUNgpRkmf/NWsTjvSwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,232,1774335600"; 
-   d="scan'208";a="248699222"
-Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 29 Jun 2026 14:10:53 -0700
-Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1weJFi-000000007lV-0yVb;
-	Mon, 29 Jun 2026 21:10:50 +0000
-Date: Tue, 30 Jun 2026 05:10:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: xietangxin <xietangxin@h-partners.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, gaoxingwang <gaoxingwang1@huawei.com>,
-	huyizhen <huyizhen2@huawei.com>, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net] netfilter: nf_nat_masquerade: recalculate TCP TS
- offset when port is randomized
-Message-ID: <202606300522.3jMZ6dLb-lkp@intel.com>
-References: <20260629093408.3927103-1-xietangxin@h-partners.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bIUhdksf3FOxD3CeBy4ZYcAWZmiUUKKqwvmsimN9vzFpafPG/tNB4sHkMAbR0Q2iRl2ySAbiC3Q9gJ6TzmDrIYoXVuly3pCYpylEIourXdt0/rW+FnOvV9hqZ7hkcwarVD8DNrTj5qqAth1R1iO0C2ghz6JRZun2eeOU6+n/1cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=TTJrwIKc; arc=none smtp.client-ip=217.70.190.124
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 983F560575;
+	Tue, 30 Jun 2026 00:21:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1782771699;
+	bh=VZA5e3xGgcNekzcICXJLSTgR/NX3BEf5N01GDsj0C/c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TTJrwIKcWxvXBMFJFUl8dJ2SeZ0qCTiKVyu1LOoihMiZ72HH0DeIJld1jhjf7Qi1z
+	 px1QdJC3d2mjF2djz+ZJYhrhGq8dwz/DU6H8zpXwezQ8j3GCwHtUdpKo8koevHoadv
+	 rndInsRldhLSefF+WQaeAqzZgtq4UFY25LlcnFaUVuHRhBRr3mmt/kTKyQqK6V71es
+	 TFtVM28V8d9YRdMKcG3afISjKwafJKWBWjuK3aYthVu9pHzvhjjRYc/kRHxPws+ima
+	 8y5Dj+my6Y+54topkr7hEcSVp5HrsT9OVzsc45ZGNmLjYs11NmCN4tJezqR6N4FZ8J
+	 PX4hiV6sdua/g==
+Date: Tue, 30 Jun 2026 00:21:36 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter: nf_conntrack_expect: zero at allocation
+ time
+Message-ID: <akLv8CI5rUwa5krL@chamomile>
+References: <20260625001356.16478-1-fw@strlen.de>
+ <aj5h9eFJE1glpYfz@chamomile>
+ <aj5pc-9CKwnuG5iE@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260629093408.3927103-1-xietangxin@h-partners.com>
+In-Reply-To: <aj5pc-9CKwnuG5iE@strlen.de>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13520-lists,netfilter-devel=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FORGED_SENDER(0.00)[lkp@intel.com,netfilter-devel@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:xietangxin@h-partners.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:oe-kbuild-all@lists.linux.dev,m:gaoxingwang1@huawei.com,m:huyizhen2@huawei.com,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWO(0.00)[2];
+	DMARC_NA(0.00)[netfilter.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13521-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,intel.com:dkim,intel.com:email,intel.com:mid,intel.com:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 310D86DECD0
+X-Rspamd-Queue-Id: 0EA356DF068
 
-Hi xietangxin,
+Hi Florian,
 
-kernel test robot noticed the following build errors:
+On Fri, Jun 26, 2026 at 01:58:43PM +0200, Florian Westphal wrote:
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > On Thu, Jun 25, 2026 at 02:13:53AM +0200, Florian Westphal wrote:
+> > > There are occasional LLM hints wrt. leaking uninitialized data to
+> > > userspace via ctnetlink.  Just zero at allocation time, expectations are
+> > > not frequently used these days.
+> > 
+> > Fine with me. IIRC hints came because of real issue, ie. paths where
+> > I was missing to initial something.
+> 
+> 
+> > > @@ -389,6 +389,7 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
+> > >  #if IS_ENABLED(CONFIG_NF_NAT)
+> > >  	memset(&exp->saved_addr, 0, sizeof(exp->saved_addr));
+> > >  	memset(&exp->saved_proto, 0, sizeof(exp->saved_proto));
+> > > +	exp->dir = 0;
+> > 
+> > Hm. But now area is expect is zeroed, right?
+> > 
+> > Maybe nf_ct_expect_init() needs to be updated to remove needless
+> > zeroing too?
+> 
+> See:
+> > > Intentionally keeps _init as-is because we could theoretically support
+> > > re-init, so add the missing exp->dir there.
+> 
+> If you say we are guaranteed to always have:
+> 
+> exp = nf_ct_expect_alloc(ct);
+> nf_ct_expect_init(exp)
 
-[auto build test ERROR on net/main]
+IIRC, this API was already around when I came here...
 
-url:    https://github.com/intel-lab-lkp/linux/commits/xietangxin/netfilter-nf_nat_masquerade-recalculate-TCP-TS-offset-when-port-is-randomized/20260629-173037
-base:   net/main
-patch link:    https://lore.kernel.org/r/20260629093408.3927103-1-xietangxin%40h-partners.com
-patch subject: [PATCH net] netfilter: nf_nat_masquerade: recalculate TCP TS offset when port is randomized
-config: arm-randconfig-004-20260630 (https://download.01.org/0day-ci/archive/20260630/202606300522.3jMZ6dLb-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260630/202606300522.3jMZ6dLb-lkp@intel.com/reproduce)
+> then we could remove it.  But then I'd question why we even have this
+> alloc / init split and not:
+> 
+> exp = nf_ct_expect_new(rtp_exp, NF_CT_EXPECT_CLASS_DEFAULT, nf_ct_l3num(ct),
+>                        &ct->tuplehash[!dir].tuple.src.u3,
+>                        &ct->tuplehash[!dir].tuple.dst.u3,
+>                        IPPROTO_UDP, NULL, &rtp_port);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202606300522.3jMZ6dLb-lkp@intel.com/
+... so yes, that's possible.
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+IIRC, there are only two spots that opencode the expectation
+initilization:
 
->> ERROR: modpost: "secure_tcpv6_seq_and_ts_off" [net/netfilter/nf_nat.ko] undefined!
+- ctnetlink_alloc_expect()
+- nf_conntrack_broadcast.c
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Let me complete my series to turn exp->master into a cookie. I started
+a series for nf-next to achieve this, I am ready to post the initial
+preparation patches that reduce the number of exp->master references
+in the tree.
 
