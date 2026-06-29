@@ -1,47 +1,50 @@
-Return-Path: <netfilter-devel+bounces-13506-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13507-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id KRkwA+9tQmrb6wkAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13506-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 15:06:55 +0200
+	id GVvCDe5tQmra6wkAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13507-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 15:06:54 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5F986DAC0A
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 15:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B17FB6DAC05
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 15:06:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13506-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13506-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13507-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13507-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D64AB302FE95
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 12:58:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 15C943047046
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jun 2026 12:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB59401A3C;
-	Mon, 29 Jun 2026 12:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FD74028EB;
+	Mon, 29 Jun 2026 12:58:38 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D63D3FE363
-	for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2026 12:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282BF3FE363
+	for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2026 12:58:37 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782737914; cv=none; b=ZtHyTJQTn8wEpji756Grt2BVI0wPr+q8SrEiLvVv7v1fHm8rfyeF6H254MZolO+VMlXTxc/PC+/m0s2zn+cihru7ufMvjo9t9A1VEvEUOTPegALIW+szGUJxj2ZVKLf99VaIbfk9lqBzr+lX8tt+oQlw6UNQYYU11BL7N1J16T0=
+	t=1782737918; cv=none; b=ss+XeYq7nCUkqW5aJkQl1lhoYzQUXIvqS44m66jmPiEK68PqpMHaRQHVGK+nu1lxj2cXJbOtwmQL2pSRWhaM2raLbeyYC1REZYnLQ3l/MqW+neMWq+tTLJdDN93YEiOqxDNWMIKc5asUxixInm4OOqAB/48KxH27qNPYdlwicgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782737914; c=relaxed/simple;
-	bh=G14ViOcAZ00AYAgNoUKDC/nmF0ePGHQuWObxlIw4t68=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PTnNCS2FsbRIepsUANqTiQVEWixlZjQ/F3ampu4k+D6LylDQQTeDBJspFnm7C2kDbEA/0OIIe7p4cdDuSswYwRsu0/rBumkP6Pb+s+a+Tu1OX4bE+Pzpd/5VMitTUZUquyyzV/16NllyGmn+ESveWAD8z0EObrfLk0luPQytxjk=
+	s=arc-20240116; t=1782737918; c=relaxed/simple;
+	bh=/0HDhDCXAwzyrkmLZYhcwEjUun84mUowbuAboleF1QA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dwertdtsjgXJyEZdGinbhYAwupimzGMHPypPIDf6tBTlWe/Tnh2bg4rudXiYWs3julv091P0aj2/AAZWz4X1WyvJRqSRBFZxsIZjgD1d4li631mJuojwJN3XRgTSw357fkTAQZtQqr6sgrmmi9iFsm1iZv/U7/xaUFrjFfEQemQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 428096032C; Mon, 29 Jun 2026 14:58:31 +0200 (CEST)
+	id 85B7F6032C; Mon, 29 Jun 2026 14:58:35 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next v2 0/3] netfilter: conntrack: remove obsolete module parameters
-Date: Mon, 29 Jun 2026 14:58:20 +0200
-Message-ID: <20260629125823.1749-1-fw@strlen.de>
+Subject: [PATCH nf-next v2 1/3] netfilter: nf_conntrack_helper: do not hash by tuple
+Date: Mon, 29 Jun 2026 14:58:21 +0200
+Message-ID: <20260629125823.1749-2-fw@strlen.de>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260629125823.1749-1-fw@strlen.de>
+References: <20260629125823.1749-1-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -63,7 +66,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	DMARC_NA(0.00)[strlen.de];
 	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13506-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13507-lists,netfilter-devel=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	RCPT_COUNT_TWO(0.00)[2];
@@ -79,51 +82,134 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,strlen.de:mid,strlen.de:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,strlen.de:email,strlen.de:mid,strlen.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A5F986DAC0A
+X-Rspamd-Queue-Id: B17FB6DAC05
 
-v2: build breakage fix in 2/3.
+Long time ago helpers were auto-assigned to connections based on
+port/protocol match. For this reason, nf_conntrack_helper still contains
+a full tuple.
 
-1) Switch nf_conntrack_helper hashing from full tuple to name and L4
-   protocol. Prepares for tuple removal.
+Nowadays the only relevant entries in the tuple are the l3 and l4 protocol
+numbers.
 
-2) Remove tuple from conntrack helper definitions and eliminate redundant
-   protocol registrations. Add netlink policy validation to prevent protocol
-   number truncation.
+Prepare for tuple removal and switch to hashing name and l4 protocol.
+l3num cannot be used because helpers can also register for "unspec"
+protocol.
 
-3) Remove obsolete conntrack module parameters.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ v2: no changes.
+ net/netfilter/nf_conntrack_helper.c | 67 +++++++++++++----------------
+ 1 file changed, 31 insertions(+), 36 deletions(-)
 
-Florian Westphal (4):
-  netfilter: nf_conntrack_helper: do not hash by tuple
-  netfilter: conntrack: get rid of tuple in helper definitions
-  netfilter: conntrack: remove obsolete module parameters
-  netfilter: nft_ct: support expectation creation for natted flows
-
- include/linux/netfilter/nf_conntrack_h323.h |  2 -
- include/linux/netfilter/nf_conntrack_pptp.h |  2 -
- include/linux/netfilter/nf_conntrack_sane.h |  2 -
- include/linux/netfilter/nf_conntrack_tftp.h |  2 -
- include/net/netfilter/nf_conntrack_helper.h | 10 ++-
- net/ipv4/netfilter/nf_nat_snmp_basic_main.c |  2 +-
- net/netfilter/nf_conntrack_amanda.c         |  4 +-
- net/netfilter/nf_conntrack_broadcast.c      |  2 -
- net/netfilter/nf_conntrack_ftp.c            | 32 +++------
- net/netfilter/nf_conntrack_h323_main.c      | 10 +--
- net/netfilter/nf_conntrack_helper.c         | 77 +++++++++------------
- net/netfilter/nf_conntrack_irc.c            | 27 +++-----
- net/netfilter/nf_conntrack_netbios_ns.c     |  2 -
- net/netfilter/nf_conntrack_ovs.c            |  6 +-
- net/netfilter/nf_conntrack_pptp.c           |  2 +-
- net/netfilter/nf_conntrack_sane.c           | 34 +++------
- net/netfilter/nf_conntrack_sip.c            | 45 ++++--------
- net/netfilter/nf_conntrack_snmp.c           |  4 +-
- net/netfilter/nf_conntrack_tftp.c           | 33 +++------
- net/netfilter/nfnetlink_cthelper.c          | 21 +++---
- net/netfilter/nft_ct.c                      | 15 ++++
- net/sched/act_ct.c                          |  4 +-
- 22 files changed, 125 insertions(+), 213 deletions(-)
-
+diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
+index 500509b17663..5ad5429352a7 100644
+--- a/net/netfilter/nf_conntrack_helper.c
++++ b/net/netfilter/nf_conntrack_helper.c
+@@ -40,12 +40,16 @@ static unsigned int nf_ct_helper_count __read_mostly;
+ static DEFINE_MUTEX(nf_ct_nat_helpers_mutex);
+ static struct list_head nf_ct_nat_helpers __read_mostly;
+ 
+-/* Stupid hash, but collision free for the default registrations of the
+- * helpers currently in the kernel. */
+-static unsigned int helper_hash(const struct nf_conntrack_tuple *tuple)
++static unsigned int helper_hash(const char *name, u8 protonum)
+ {
+-	return (((tuple->src.l3num << 8) | tuple->dst.protonum) ^
+-		(__force __u16)tuple->src.u.all) % nf_ct_helper_hsize;
++	static u32 seed;
++	u32 initval;
++
++	get_random_once(&seed, sizeof(seed));
++
++	initval = seed ^ protonum;
++
++	return jhash(name, strlen(name), initval) % nf_ct_helper_hsize;
+ }
+ 
+ struct nf_conntrack_helper *
+@@ -54,18 +58,21 @@ __nf_conntrack_helper_find(const char *name, u16 l3num, u8 protonum)
+ 	struct nf_conntrack_helper *h;
+ 	unsigned int i;
+ 
+-	for (i = 0; i < nf_ct_helper_hsize; i++) {
+-		hlist_for_each_entry_rcu(h, &nf_ct_helper_hash[i], hnode) {
+-			if (strcmp(h->name, name))
+-				continue;
++	if (!nf_ct_helper_hash)
++		return NULL;
+ 
+-			if (h->tuple.src.l3num != NFPROTO_UNSPEC &&
+-			    h->tuple.src.l3num != l3num)
+-				continue;
++	i = helper_hash(name, protonum);
+ 
+-			if (h->tuple.dst.protonum == protonum)
+-				return h;
+-		}
++	hlist_for_each_entry_rcu(h, &nf_ct_helper_hash[i], hnode) {
++		if (strcmp(h->name, name))
++			continue;
++
++		if (h->tuple.src.l3num != NFPROTO_UNSPEC &&
++		    h->tuple.src.l3num != l3num)
++			continue;
++
++		if (h->tuple.dst.protonum == protonum)
++			return h;
+ 	}
+ 	return NULL;
+ }
+@@ -363,9 +370,8 @@ EXPORT_SYMBOL_GPL(nf_ct_helper_log);
+ 
+ int __nf_conntrack_helper_register(struct nf_conntrack_helper *me)
+ {
+-	struct nf_conntrack_tuple_mask mask = { .src.u.all = htons(0xFFFF) };
+-	unsigned int h = helper_hash(&me->tuple);
+ 	struct nf_conntrack_helper *cur;
++	unsigned int h;
+ 	int ret = 0, i;
+ 
+ 	BUG_ON(me->expect_class_max >= NF_CT_MAX_EXPECT_CLASSES);
+@@ -382,29 +388,18 @@ int __nf_conntrack_helper_register(struct nf_conntrack_helper *me)
+ 			return -EINVAL;
+ 	}
+ 
++	h = helper_hash(me->name, me->tuple.dst.protonum);
+ 	mutex_lock(&nf_ct_helper_mutex);
+-	for (i = 0; i < nf_ct_helper_hsize; i++) {
+-		hlist_for_each_entry(cur, &nf_ct_helper_hash[i], hnode) {
+-			if (!strcmp(cur->name, me->name) &&
+-			    (cur->tuple.src.l3num == NFPROTO_UNSPEC ||
+-			     cur->tuple.src.l3num == me->tuple.src.l3num) &&
+-			    cur->tuple.dst.protonum == me->tuple.dst.protonum) {
+-				ret = -EBUSY;
+-				goto out;
+-			}
++	hlist_for_each_entry(cur, &nf_ct_helper_hash[h], hnode) {
++		if (!strcmp(cur->name, me->name) &&
++		    (cur->tuple.src.l3num == NFPROTO_UNSPEC ||
++		     cur->tuple.src.l3num == me->tuple.src.l3num) &&
++		    cur->tuple.dst.protonum == me->tuple.dst.protonum) {
++			ret = -EBUSY;
++			goto out;
+ 		}
+ 	}
+ 
+-	/* avoid unpredictable behaviour for auto_assign_helper */
+-	if (!(me->flags & NF_CT_HELPER_F_USERSPACE)) {
+-		hlist_for_each_entry(cur, &nf_ct_helper_hash[h], hnode) {
+-			if (nf_ct_tuple_src_mask_cmp(&cur->tuple, &me->tuple,
+-						     &mask)) {
+-				ret = -EBUSY;
+-				goto out;
+-			}
+-		}
+-	}
+ 	refcount_set(&me->ct_refcnt, 1);
+ 	hlist_add_head_rcu(&me->hnode, &nf_ct_helper_hash[h]);
+ 	nf_ct_helper_count++;
 -- 
 2.53.0
 
