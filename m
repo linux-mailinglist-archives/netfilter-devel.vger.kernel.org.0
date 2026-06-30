@@ -1,108 +1,66 @@
-Return-Path: <netfilter-devel+bounces-13539-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13540-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XE9kGBxpQ2pMYAoAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13539-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 08:58:36 +0200
+	id MC0dJy+CQ2pUZgoAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13540-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 10:45:35 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E8C36E0F00
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 08:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 620B86E1C8A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 10:45:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=q5NsRlNl;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13539-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13539-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=nIr3D04D;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13540-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13540-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 111EB301475B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 06:58:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D1961300C028
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2026 08:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ABC73D1CA5;
-	Tue, 30 Jun 2026 06:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48BC3370E4;
+	Tue, 30 Jun 2026 08:45:33 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FDD393DCA
-	for <netfilter-devel@vger.kernel.org>; Tue, 30 Jun 2026 06:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4C038D;
+	Tue, 30 Jun 2026 08:45:31 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782802687; cv=none; b=biv7BqQP9OJkyypKWCoXuK7b8R1FufXlsSY9BoXabGdotCpwKyFo9qMQlEeASG/FcmTRLunro4Hg1oE7vT1USKIoiwDhQ5Dw/C66SLOiKwjuGNiR3VQcteH+TNuo8pbOE4egQR/mDRI5xtPa3kSQ8sR1X+xh6X+fIjvyDxmPwfs=
+	t=1782809133; cv=none; b=aL53hKZuhMRgF1nM3UrGIbuh5JjMuYsB97shn1HAFtA2W20BeowkjZDz78k9A+RecevsodlakuK5FcNPLGY176cc+3dU79dizOZE4uUPHemHay44ga+MRaCAppajIdqLcvTXy3uH2VL0HFdg1E2RXo1hqIYLWKt7+OUzaaZVkKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782802687; c=relaxed/simple;
-	bh=FLmf68CizDgbkWkilfIYmqlhpJjGjSd3CzUEP2obw5s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RG7knsgHThmnixe+w94Y3EwEaL7mv1ueIhLNdpkRxCU7PwI7GCHNUEQrytEKmLWdmorZmA3UYpcHQyrv6CADrEjlZhGiXh8iHRy0ER4tiF/94wRTlkQmeyQDewuztnvgBpHVh+hQfnl+xLu+GmubSJAkWRO3assTIZG6AdOBR1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=q5NsRlNl; arc=none smtp.client-ip=209.85.221.44
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4728c12ba97so1633473f8f.0
-        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2026 23:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782802684; x=1783407484; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B0BtFT/DLMwlAC+IMAnaYdEaIQ9JUWZrSmMLsMhq+s0=;
-        b=q5NsRlNlUkMAEiavEO9KRDa3HQ/p5o7+VmZ8xxC7z0DoTTvDqIWcyzoPPCsZ4qejeW
-         KHz4G1/YNECbigUoYDirPCiYpYm2CTPeTwoL2o7l1GY8EoUX7XsFWI1o24DjNxb+2Cbj
-         3IeTyTerG9ErtpFC6KOqlHZEHjuvUG+LAEdF9rEH+8T/UFR/7Sr5BPtHfRTmDHUGwk8k
-         qeJv7rZAq9wjWhPV1gkB1ji+v9+Tt6+SSMbGiVZg0HrU7aXuc4qD9ubJx2PpjlY2xOM7
-         lOxCiJV3+wkboTfJIGMImN6AVzGl4dU4qdG/vrMv2M/2xYaLcm20hHkpVseLnsqm/g+z
-         InGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782802684; x=1783407484;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=B0BtFT/DLMwlAC+IMAnaYdEaIQ9JUWZrSmMLsMhq+s0=;
-        b=E0ObtnvWj5307n4NEr//JNRjErEoYigkCKlwHeXITAia2GCQSr1vc1Z4qacSxIbVzC
-         tK/yBZTwG4LS/p8E6pJyN4PxBIOUBXe/1n2cv+Ovrp+uWa+DW+6PcDplhO1vjUbcJCVb
-         vcjnNL6Ovcxw/46XofXYi9kGVhy4aD1I3M+Z/PvD5PaxdgTsYBcihe/TUJzBxJj8KYLC
-         QiHPXnHZHjnNkBPeLbVo/xArF+VgfSlhq1IACDwUd45+muHNz/7Irgat/aDnsqOcmYuE
-         zRr1bopo/QMKNogXExq0TN+TmW/ZS3pQVjMkU8FLRc5Kr8iyh4tcZNhCdanqsvwgTpEd
-         rNLg==
-X-Gm-Message-State: AOJu0YzpvywcuvOEiYiGSH3s0Nm6Sm149G4npm65SNw25ySyJucU/Ak2
-	mJrIk1OD+Tp4R325kEpE5Fs/rY9KM9BAmgDkXBoFjiRN/ZdvtbbfNkI5kypiOWwF
-X-Gm-Gg: AfdE7ckxis8Bh5m+InDZM1yP4CFDbfMifarvUC4a0XKTnTG6gLViIcmIQWUXuAAyEOj
-	sBJCVvph4M1YS12kFIGA48LO/R7hS3iaNxts3wc+Mhm8d0RngbWpToDh7A0HxNyO6Nz+f029QYA
-	L6Bmlz73Ges/iOk4NuNLHsnBFAwYrl0TBUtTOP29NE2WmR7CrbegNJ0VXHc8B0KzsVEurGuZrSU
-	c/K1Vjr3fYKb1mWS9SOOGFcaQG2wjSeqx1MAY89+rikc189/eleTFn4aJD6+Vy80YlbydL83MUA
-	kGP7eQesQd8Yv4hipp0ezEgCU4cd2Bey+9gTYi1+MJlXDMHdWXvT7BabDonnAKthmmFhdNtSZAe
-	FxU6FwJu5IEJ+RJH9acmVOCahenQbk4XCHYFA+aqOs4pKWQDMhuoPxGCcCRKynpkYdzd6TQa25X
-	XOTdHxoZA=
-X-Received: by 2002:a05:6000:8e:b0:45d:3aa3:7f76 with SMTP id ffacd0b85a97d-47552a67d8bmr2211230f8f.33.1782802684104;
-        Mon, 29 Jun 2026 23:58:04 -0700 (PDT)
-Received: from fedora ([46.205.218.111])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4756636cf26sm4570949f8f.19.2026.06.29.23.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jun 2026 23:58:03 -0700 (PDT)
-From: Daniel Pawlik <pawlik.dan@gmail.com>
-To: netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: pablo@netfilter.org,
-	fw@strlen.de,
-	phil@nwl.cc,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	andrew+netdev@lunn.ch,
-	razor@blackwall.org,
-	idosch@nvidia.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	bridge@lists.linux.dev,
-	coreteam@netfilter.org,
+	s=arc-20240116; t=1782809133; c=relaxed/simple;
+	bh=I4Pnz4BFZhOUQEXvABQHM5+XoJIu89iqbkkiGgFOw7M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Al7LwrJcQ7NT3iIowI8FK04HzE/Ci7UbXPAa/hUpEWW1ePubAFHgUguQsCkBcueQWpq7naSTlrywRq8A/3BEyjxFurNCMas+7F152Qy3a2V7OejIgOKYk9Nq3ew3Hc0lI0DfOV3Pxtqr331ZpMea5T5SOKp275XkwhaOu+gMoOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=nIr3D04D; arc=none smtp.client-ip=217.70.190.124
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 7B7476019C;
+	Tue, 30 Jun 2026 10:45:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1782809128;
+	bh=2QDs7p8/Xz3WWuXQy2Gd1QNRcYz9tg+di8ISRSUsTm4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nIr3D04DQLaD3VEweCFcD8bAzLB9Sl/otEDmhxRtRCmCNg6UZu2BraOttxuCB4JjT
+	 avuVGtmT8XalBIQAmnTtLDX5J55yPos9H13ACWCs0qUcMZ6dArTLHKO6YwBzpN3S9S
+	 o9wuW8B2U/1+mSiv5zGQq8ngt0YaHRNIdTh9cdrWYUCtVVuvpOIA1IjdLJ9HKcMSmr
+	 xAgSuxARDNG032H5+cvRHSIaRJ0qAIPYj/kCSb7pQmhV7DZ+fSTR2pffNRQgwodbwb
+	 XwOLSrAF1oel/uY8RvUEQ2rhNL9QBPbV093oDVGXWTpPKJf3F9a2wQT7NDyuqK1Q/o
+	 IVuSOBQN2VrPw==
+Date: Tue, 30 Jun 2026 10:45:24 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Daniel Pawlik <pawlik.dan@gmail.com>
+Cc: netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, fw@strlen.de,
+	phil@nwl.cc, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+	andrew+netdev@lunn.ch, razor@blackwall.org, idosch@nvidia.com,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	bridge@lists.linux.dev, coreteam@netfilter.org,
 	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	rchen14b@gmail.com,
-	lorenzo@kernel.org,
-	Daniel Pawlik <pawlik.dan@gmail.com>
-Subject: [PATCH 5/5] netfilter: nf_flow_table_path: add VLAN passthrough support
-Date: Tue, 30 Jun 2026 08:57:35 +0200
-Message-ID: <20260630065735.3341614-6-pawlik.dan@gmail.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260630065735.3341614-1-pawlik.dan@gmail.com>
+	linux-arm-kernel@lists.infradead.org, rchen14b@gmail.com,
+	lorenzo@kernel.org
+Subject: Re: [PATCH v2 0/5] netfilter: nf_flow_table_path: L2 bridge offload
+Message-ID: <akOCJI-2kAAwOQzz@chamomile>
 References: <20260630065735.3341614-1-pawlik.dan@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -110,123 +68,139 @@ List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260630065735.3341614-1-pawlik.dan@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-13539-lists,netfilter-devel=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:netdev@vger.kernel.org,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:andrew+netdev@lunn.ch,m:razor@blackwall.org,m:idosch@nvidia.com,m:matthias.bgg@gmail.com,m:angelogioacchino.delregno@collabora.com,m:bridge@lists.linux.dev,m:coreteam@netfilter.org,m:linux-mediatek@lists.infradead.org,m:linux-arm-kernel@lists.infradead.org,m:rchen14b@gmail.com,m:lorenzo@kernel.org,m:pawlik.dan@gmail.com,m:andrew@lunn.ch,m:matthiasbgg@gmail.com,m:pawlikdan@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[pawlikdan@gmail.com,netfilter-devel@vger.kernel.org];
-	FREEMAIL_CC(0.00)[netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,lunn.ch,blackwall.org,nvidia.com,gmail.com,collabora.com,lists.linux.dev,lists.infradead.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:pawlik.dan@gmail.com,m:netfilter-devel@vger.kernel.org,m:netdev@vger.kernel.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:andrew+netdev@lunn.ch,m:razor@blackwall.org,m:idosch@nvidia.com,m:matthias.bgg@gmail.com,m:angelogioacchino.delregno@collabora.com,m:bridge@lists.linux.dev,m:coreteam@netfilter.org,m:linux-mediatek@lists.infradead.org,m:linux-arm-kernel@lists.infradead.org,m:rchen14b@gmail.com,m:lorenzo@kernel.org,m:pawlikdan@gmail.com,m:andrew@lunn.ch,m:matthiasbgg@gmail.com,s:lists@lfdr.de];
+	DMARC_NA(0.00)[netfilter.org];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pawlikdan@gmail.com,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,lunn.ch,blackwall.org,nvidia.com,gmail.com,collabora.com,lists.linux.dev,netfilter.org,lists.infradead.org];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13540-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel,netdev];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mediatek.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[netfilter.org:dkim,netfilter.org:from_mime,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mediatek.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1E8C36E0F00
+X-Rspamd-Queue-Id: 620B86E1C8A
 
-From: Ryan Chen <rchen14b@gmail.com>
+Hi,
 
-VLAN passthrough packets can be offloaded when bridge-nf-filter-vlan-tagged
-is enabled. When a packet has a VLAN tag and the bridge does not have VLAN
-filtering enabled (passthrough mode), record the VLAN encap info so the
-hardware flow offload entry includes the correct VLAN tag.
+On Tue, Jun 30, 2026 at 08:57:30AM +0200, Daniel Pawlik wrote:
+> This series adds L2 bridge offload support to nft_flow_offload, allowing
+> bridged IPv4/IPv6 flows to be accelerated by the flowtable fast path
+> without requiring L3 routing.
+> 
+> Background
+> ----------
+> Hardware flow offload engines (e.g. MediaTek PPE) can accelerate bridged
+> traffic but require that nft_flow_offload detect and handle bridged flows
+> differently from routed ones: no routing table lookup, MAC addresses from
+> the Ethernet header, and VLAN context pre-populated from the bridge port.
+> 
+> v2: Fix missing Returns: tags in kernel-doc comments for the three new
+>     bridge helpers (br_fdb_has_forwarding_entry_rcu,
+>     br_vlan_get_offload_info_rcu, br_vlan_is_enabled_rcu).
+> 
+> Patches
+> -------
+> 1/5  net: export __dev_fill_forward_path
+>      Refactors dev_fill_forward_path() to expose __dev_fill_forward_path()
+>      which accepts a caller-supplied net_device_path_ctx, needed to
+>      pre-populate VLAN state before the forward path walk.
+> 
+> 2/5  net: bridge: add flow offload helpers
+>      Adds br_fdb_has_forwarding_entry_rcu(), br_vlan_get_offload_info_rcu()
+>      and br_vlan_is_enabled_rcu() to expose bridge state to nft_flow_offload
+>      without requiring inclusion of net/bridge/br_private.h.
+> 
+> 3/5  netfilter: nf_flow_table_path: add L2 bridge offload
+>      Core of the series. Adds nft_flow_offload_is_bridging() detection,
+>      nft_flow_route_bridging() which avoids nf_route() (fails for
+>      bridged-only subnets), MAC/VLAN pre-population for bridged flows,
+>      and a dst leak fix. nft_flow_route() becomes a thin dispatcher.
+> 
+> 4/5  netfilter: nf_flow_table_path: handle DEV_PATH_MTK_WDMA in path info
+>      Fixes zero-source-MAC in PPE entries when a bridged flow traverses
+>      MT7996/MT7915 WiFi WDMA hardware.
+> 
+> 5/5  netfilter: nf_flow_table_path: add VLAN passthrough support
+>      Records VLAN encap info for passthrough-mode bridge ports so hardware
+>      offload entries include the correct VLAN tag.
+> 
+> Rebase note
+> -----------
+> Originally developed against OpenWrt pending-6.18 patches by Ryan Chen
+> <rchen14b@gmail.com> and Bo-Cun Chen <bc-bocun.chen@mediatek.com>.
+> Rebased to current upstream: path discovery infrastructure moved to
+> nf_flow_table_path.c in commit 93d7a7ed0734 ("netfilter: flowtable: move
+> path discovery infrastructure to its own file"), so all netfilter changes
+> now land in that file rather than nft_flow_offload.c.
+> 
+> How to enable bridge offload
+> -----------------------------
+> 1. Load kmod-br-netfilter so that bridged IP traffic traverses the
+>    netfilter forward chain.
+> 
+> 2. Enable netfilter hooks on the bridge:
+>      echo 1 > /sys/class/net/<br>/bridge/nf_call_iptables
+>      echo 1 > /sys/class/net/<br>/bridge/nf_call_ip6tables
 
-Without this change, VLAN-tagged bridged traffic cannot be offloaded by PPE
-because the VLAN encap information is missing from the flow entry.
+This requires br_netfilter which is a no go.
 
-Enable with: echo 1 > /proc/sys/net/bridge/bridge-nf-filter-vlan-tagged
+Sorry, but we should really target at the native nf_conntrack_bridge
+support.
 
-Based on a MediaTek SDK patch by Chak-Kei Lam <chak-kei.lam@mediatek.com>.
-Signed-off-by: Ryan Chen <rchen14b@gmail.com>
-Signed-off-by: Daniel Pawlik <pawlik.dan@gmail.com>
----
- net/netfilter/nf_flow_table_path.c | 32 ++++++++++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
+> 3. Register bridge member interfaces in the nft flowtable:
+>      table inet filter {
+>          flowtable f {
+>              hook ingress priority filter
+>              devices = { eth0, wlan0 }
+>          }
+>          chain forward {
+>              type filter hook forward priority filter
+>              meta l4proto { tcp, udp } flow add @f
+>          }
+>      }
 
-diff --git a/net/netfilter/nf_flow_table_path.c b/net/netfilter/nf_flow_table_path.c
-index 580aa1db3cb4..d15c425c88c4 100644
---- a/net/netfilter/nf_flow_table_path.c
-+++ b/net/netfilter/nf_flow_table_path.c
-@@ -17,6 +17,7 @@
- #include <net/netfilter/nf_flow_table.h>
- #include <linux/if_bridge.h>
- #include <linux/if_ether.h>
-+#include <linux/if_vlan.h>
- #include <net/route.h>
- #include <net/ip6_route.h>
- 
-@@ -136,6 +137,29 @@ struct nft_forward_info {
- 	enum flow_offload_xmit_type xmit_type;
- };
- 
-+static void nft_fill_vlan_passthrough_info(const struct nft_pktinfo *pkt,
-+					   struct nft_forward_info *info)
-+{
-+	if (!skb_vlan_tag_present(pkt->skb))
-+		return;
-+
-+	rcu_read_lock();
-+	/* when bridge VLAN filtering is enabled, the bridge handles the tag */
-+	if (netif_is_bridge_port(pkt->skb->dev) &&
-+	    !br_vlan_is_enabled_rcu(pkt->skb->dev)) {
-+		if (info->num_encaps >= NF_FLOW_TABLE_ENCAP_MAX) {
-+			info->indev = NULL;
-+		} else {
-+			info->encap[info->num_encaps].id =
-+				skb_vlan_tag_get_id(pkt->skb);
-+			info->encap[info->num_encaps].proto =
-+				pkt->skb->vlan_proto;
-+			info->num_encaps++;
-+		}
-+	}
-+	rcu_read_unlock();
-+}
-+
- static int nft_dev_path_info(const struct net_device_path_stack *stack,
- 			     struct nft_forward_info *info,
- 			     unsigned char *ha, struct nf_flowtable *flowtable)
-@@ -326,8 +350,12 @@ static int nft_dev_forward_path(const struct nft_pktinfo *pkt,
- 		nft_br_vlan_dev_fill_forward_path(pkt, &ctx);
- 	}
- 
--	if (nft_dev_fill_forward_path(&ctx, route, dst, ct, dir, ha, &stack) < 0 ||
--	    nft_dev_path_info(&stack, &info, ha, &ft->data) < 0)
-+	if (nft_dev_fill_forward_path(&ctx, route, dst, ct, dir, ha, &stack) < 0)
-+		return -ENOENT;
-+
-+	nft_fill_vlan_passthrough_info(pkt, &info);
-+
-+	if (nft_dev_path_info(&stack, &info, ha, &ft->data) < 0)
- 		return -ENOENT;
- 
- 	if (!nft_flowtable_find_dev(info.indev, ft))
--- 
-2.54.0
+Yes, but br_netfilter makes no sense for nftables.
 
+br_netfilter was made to fill gap at the time ebtables was lagging a
+lot behind iptables in terms of features. And getting ebtables on pair
+with iptables in functionality was not feasible either, because it
+required many new extensions that were specific of the bridge family,
+which probably was not a big deal, but it also required to get
+the ebtables command line tool on pair with iptables userspace, which
+has received more development attention/effort that the bridge tool.
+
+All of this does not stand true anymore with nftables, where the
+bridge family capabilities are at pair with the inet families.
+
+I am looking now at the native flowtable bridge support, I will get
+back to you with updates.
 
