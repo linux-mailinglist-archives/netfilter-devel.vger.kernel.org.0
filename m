@@ -1,134 +1,150 @@
-Return-Path: <netfilter-devel+bounces-13575-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13576-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id rDNxArUhRWo27goAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13575-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 16:18:29 +0200
+	id ogCMOD9KRWqX+AoAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13576-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 19:11:27 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8894B6EE9E0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 16:18:28 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 403046F0327
+	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 19:11:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13575-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13575-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=DUWWnY3N;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13576-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13576-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 478FD302B5B8
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Jul 2026 14:18:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1351230048CB
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Jul 2026 17:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABDA345CD0;
-	Wed,  1 Jul 2026 14:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BB4389459;
+	Wed,  1 Jul 2026 17:10:40 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F559342CBA;
-	Wed,  1 Jul 2026 14:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43F237881D;
+	Wed,  1 Jul 2026 17:10:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782915477; cv=none; b=tsESK4aIswAJa0qEuSqdyrJ+LD0F6FqPtkTI8UsKqKim2c1GdRUvbtl9cd2+r1YX79gYt9Qzy/jtXZLNS7F5tejF6oc/MNap/htDGy4kTwqGX0zCPMyNJlcZBi5Z02H/ryXKMWtnAe7KdcI08gIiBsT+ywtvLq5oyAjNga8fxnY=
+	t=1782925840; cv=none; b=XuHetZSdPOux9jXYyqqNASGH4lQ17IqUvFv/uKLWRbvTw3EyqF3OI5FgDzcDqGVHP+pULEUHjZz5nHor76+FMeYO8L2jqwyb2IgHE1OJunyqh+ppD0hFThlsTURoeBXVZ2tAN3kfabhow0p5fBs/dbPYWOGhuCfaLKdqjFrTWaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782915477; c=relaxed/simple;
-	bh=k6LECcbTjET81JRiNv3dKbsSJKWjbcnf+gM1BZK6ML0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dpc4K7s4M5O+uKfo9kAeahYGFrDASLlAlE6EL40XAgWK/voJ7jCG1a6het5zOGCnMhZ8IHXvvUfyNk8be+j8inZi3nmawLV4ukHMlsVdgz98L5aV/T23L9nD7nlCDaqRnj4chnOMMIsgKT9sOn7OSvKUFaSb1YbEkm2VgA/sgo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 935F76064B; Wed, 01 Jul 2026 16:17:50 +0200 (CEST)
-Date: Wed, 1 Jul 2026 16:17:45 +0200
-From: Florian Westphal <fw@strlen.de>
-To: xietangxin <xietangxin@h-partners.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Phil Sutter <phil@nwl.cc>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	gaoxingwang <gaoxingwang1@huawei.com>,
-	huyizhen <huyizhen2@huawei.com>, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net] netfilter: nf_nat_masquerade: recalculate TCP TS
- offset when port is randomized
-Message-ID: <akUhid7_3iHovivd@strlen.de>
-References: <20260629093408.3927103-1-xietangxin@h-partners.com>
- <akKN4cywAsFRdefX@strlen.de>
- <0ad60f06-387e-49bc-9e26-3dcebf182cb4@h-partners.com>
+	s=arc-20240116; t=1782925840; c=relaxed/simple;
+	bh=h866r80oAAouOTBSCidev3WeFJbSABkts1Ea7byzu1g=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=cgmbRokn1UHWzKhpVkvgI8AEedNiPvXAbQhyv7mhjmKDphYxV7dmS2tPPqj3VurEtAaHbY2KE7YtQ5Zt73tLaBnqKq7mjKFerELD830ur17VuknWPfFSdx4vVFgcbho9rAQ0ZXtcWH/YyNPYUHYa5Tgdxfbc3ssun98gfo6Tcmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUWWnY3N; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B751F000E9;
+	Wed,  1 Jul 2026 17:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782925839;
+	bh=HUDgVJ499vbywMasekvTE9hogfK8wQhIIYPBtIVOn+I=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=DUWWnY3Nj0qWiNQJZzrXb888bRCuXLKz5ACIovPoDfI6js6pYn97q1KTYF9+q9Dg4
+	 2uQXAkffGErP4Rffkjr0cREQ4MJW8c09qjROn3qGmYDm0NSkilBubbwnXOuC4CpXej
+	 0htQLUdzmXb7/+d9OeX/ooph5yflEdR+8nuedYPeVlBDfOs3C4SvJTEQBGlN/pR3wF
+	 D2i48c3cy/MTWAI1whGlSzV4S8oYStjLclCJm3dsSJFVFeXpdVoMsWNzhWeu7h96Jf
+	 5NGfz6MhSubsTWAPsMohcWC5JsBRLzZV2iCyJZJK3oFzk6XtT73CBohkIw7yclITsh
+	 OqSmUHZkbMK2Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 199353926272;
+	Wed,  1 Jul 2026 17:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ad60f06-387e-49bc-9e26-3dcebf182cb4@h-partners.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/9] netfilter: nf_conntrack_expect: zero at
+ allocation
+ time
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178292582264.1213092.416770887913754964.git-patchwork-notify@kernel.org>
+Date: Wed, 01 Jul 2026 17:10:22 +0000
+References: <20260630045243.2657-2-fw@strlen.de>
+In-Reply-To: <20260630045243.2657-2-fw@strlen.de>
+To: Florian Westphal <fw@strlen.de>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, netfilter-devel@vger.kernel.org,
+ pablo@netfilter.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[strlen.de];
-	FORGED_RECIPIENTS(0.00)[m:xietangxin@h-partners.com,m:pablo@netfilter.org,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:gaoxingwang1@huawei.com,m:huyizhen2@huawei.com,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-13575-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-13576-lists,netfilter-devel=lfdr.de,netdevbpf];
+	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[patchwork-bot@kernel.org,netfilter-devel@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FROM_NO_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,h-partners.com:email]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8894B6EE9E0
+X-Rspamd-Queue-Id: 403046F0327
 
-xietangxin <xietangxin@h-partners.com> wrote:
-> Shifting the helper down to nf_nat_l4proto_unique_tuple() as you suggested
-> encounters a structural roadblock. we don't have access to the skb there.
-> Adding skb to all intermediate callers (like nf_nat_setup_info, get_unique_tuple)
-> would severely pollute the core NAT APIs.
+Hello:
 
-Right, propagating the skb is too much code churn.
+This series was applied to netdev/net.git (main)
+by Florian Westphal <fw@strlen.de>:
 
-> would it be acceptable to place this logic in nf_nat_inet_fn() before do_nat?
+On Tue, 30 Jun 2026 06:52:35 +0200 you wrote:
+> There are occasional LLM hints wrt. leaking uninitialized data to
+> userspace via ctnetlink.  Just zero at allocation time,
+> expectations are not frequently used these days.
 > 
->  963 do_nat:
->              ..here
+> Intentionally keeps _init as-is because we could theoretically
+> support re-init, so add the missing exp->dir there.
+> 
+> [...]
 
-This is hit for every packet, not just the first one after
-nf_nat_setup_info().  I suggest a slightly earlier spot in the
-same function.
+Here is the summary with links:
+  - [net,1/9] netfilter: nf_conntrack_expect: zero at allocation time
+    https://git.kernel.org/netdev/net/c/241ccd2fed90
+  - [net,2/9] netfilter: nft_set_pipapo: don't leak bad clone into future transaction
+    https://git.kernel.org/netdev/net/c/47e65eff5069
+  - [net,3/9] netfilter: ipset: fix race between dump and ip_set_list resize
+    https://git.kernel.org/netdev/net/c/7cd9103283b2
+  - [net,4/9] netfilter: nf_conntrack_sip: validate skb_dst() before accessing it
+    https://git.kernel.org/netdev/net/c/e5e24a365a5e
+  - [net,5/9] netfilter: nfnetlink_cthelper: cap to maximum number of expectation per master
+    https://git.kernel.org/netdev/net/c/bf5355cfdede
+  - [net,6/9] netfilter: nft_fib: reject fib expression on the netdev egress hook
+    https://git.kernel.org/netdev/net/c/d07955dd34ec
+  - [net,7/9] netfilter: nfnetlink_queue: restrict writes to network header
+    https://git.kernel.org/netdev/net/c/54f34607d184
+  - [net,8/9] netfilter: nftables: restrict linklayer and network header writes
+    https://git.kernel.org/netdev/net/c/df07998dfd40
+  - [net,9/9] netfilter: nftables: restrict checkum update offset
+    https://git.kernel.org/netdev/net/c/c3716a3c4346
 
- 936                                 ret = e->hooks[i].hook(e->hooks[i].priv, skb,
- 937                                                        state);
- 938                                 if (ret != NF_ACCEPT)
- 939                                         return ret;
- 940                                 if (nf_nat_initialized(ct, maniptype))
- 941                                         goto do_nat;
- 942                         }
- 943 null_bind:
- 944                         ret = nf_nat_alloc_null_binding(ct, state->hook);
- 945                         if (ret != NF_ACCEPT)
- 946                                 return ret;
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
- .... Here.
 
- 947                 } else {
-
-This spot runs only for new connections, right after a nf_nat_setup_info() call.
 
