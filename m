@@ -1,179 +1,113 @@
-Return-Path: <netfilter-devel+bounces-13557-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13558-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id mmfGBZWZRGp2xgoAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13557-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 06:37:41 +0200
+	id CjqxLRGgRGp/yAoAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13558-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 07:05:21 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1F76E9B5D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 06:37:40 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03E7E6E9C5E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 01 Jul 2026 07:05:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13557-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13557-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13558-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13558-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 04411300C03A
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Jul 2026 04:37:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EF86D303B182
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Jul 2026 05:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680B537189A;
-	Wed,  1 Jul 2026 04:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEA2383C65;
+	Wed,  1 Jul 2026 05:04:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8E13672B3
-	for <netfilter-devel@vger.kernel.org>; Wed,  1 Jul 2026 04:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DFC1376A03;
+	Wed,  1 Jul 2026 05:04:49 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782880658; cv=none; b=s63CScBDXVn1n5Jul6TP+TWdoA7e8yEaHHKPfjcF5KXIL910BAwAAZ6yetniUQSNY+C0Zxd9tYeBC4uHz3FadOL2uAMK4stIGwMJ2CxD3olctlJMHDU3DbIgfjuxKai9Vtn49Oa1o4X7N03GfKeFD8g2TEFMZ/FcwMHVl4GpzhY=
+	t=1782882291; cv=none; b=EZKP1687CJzjA9eiw/lVUwW8Z0AyIOqA2PAm7SHglTbIVv13eC4psO6P5LY2d6hWn3ALZuBDRmGn1NsiwyXYvc+/kI0J17p5nxj9dtEAL4vw0mG9YKbId3/yJpAerNzT7P82fxswnI2Za7m6QQYrjU/q+GsGkRJQdsEeE9MrszU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782880658; c=relaxed/simple;
-	bh=mZbX0ppyiWdHh7bFp7sMlR+aquWJUqXIqMET75mBIHM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=THmRJmz7/IEDAHfKO0S5htlHzoLJKXd18XcZY3W/yd1Ql8gG/PCCWgcEK+CVE26njgXarTXMnMBDH2qx/qd8eVpb/wO1tbPEPPkZcwL+mHvqH4qdH1rXADqD8x3YwnpIqA2Ae2b71Jsauz8sQn9C+SnCh2t6y5TpccCzfzh2fsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+	s=arc-20240116; t=1782882291; c=relaxed/simple;
+	bh=3/bcfk5R6s6mYvlAKkoTCNkE7xr7VCgPLci3LmO7QZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i7WXJrzBKRUZWc7kX7YMLtCSq3Z4Sxstc4WUH5g3kRaCow2zKzRD2QadtZ3CX7kgpu3anMtlts6pTKy7YCbzNAhTXGLv3tlsqN/93c03G6v0NaKpXgXcyKsFgnC3U6tu7fRwP1cEzdvxsZuNBy7+5T5DsbZD/71ETu2bsSAYCjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 04D1A6038C; Wed, 01 Jul 2026 06:37:33 +0200 (CEST)
+	id DBEA56038C; Wed, 01 Jul 2026 07:04:47 +0200 (CEST)
+Date: Wed, 1 Jul 2026 07:04:47 +0200
 From: Florian Westphal <fw@strlen.de>
-To: <netfilter-devel@vger.kernel.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next v4] netfilter: nft_ct: support expectation creation for natted flows
-Date: Wed,  1 Jul 2026 06:37:27 +0200
-Message-ID: <20260701043727.26493-1-fw@strlen.de>
-X-Mailer: git-send-email 2.54.0
+To: netdev@vger.kernel.org
+Cc: Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, netfilter-devel@vger.kernel.org,
+	pablo@netfilter.org
+Subject: Re: [PATCH net 5/9] netfilter: nfnetlink_cthelper: cap to maximum
+ number of expectation per master
+Message-ID: <akSf7y4cm8S485nh@strlen.de>
+References: <20260630045243.2657-1-fw@strlen.de>
+ <20260630045243.2657-6-fw@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260630045243.2657-6-fw@strlen.de>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13558-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
-	TAGGED_FROM(0.00)[bounces-13557-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:fw@strlen.de,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	R_DKIM_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,strlen.de:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,netfilter.org:email,sashiko.dev:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5A1F76E9B5D
+X-Rspamd-Queue-Id: 03E7E6E9C5E
 
-This feature only works for connections originating from the host
-and only if there no source address rewrite.
+Florian Westphal <fw@strlen.de> wrote:
+> From: Pablo Neira Ayuso <pablo@netfilter.org>
+> 
+> If userspace helper policy updates sets maximum number of expectation to
+> zero, cap it to NF_CT_EXPECT_MAX_CNT (255) on updates too.
+> 
+> Fixes: 397c8300972f ("netfilter: nf_conntrack_helper: cap maximum number of expectation at helper registration")
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> Signed-off-by: Florian Westphal <fw@strlen.de>
 
-Add the needed nat glue to have the expectation follow the original
-nat binding.
+Pablo, can you please check
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- v4: yet another NF_NAT=n build failure aka missing ifdef, no other change.
- v3: switch to nf_ct_helper_expectfn_(un)register
- v2: zap stale expectations on rmmod
+https://sashiko.dev/#/message/20260630045243.2657-6-fw%40strlen.de
 
- net/netfilter/nft_ct.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+?
 
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 03a88c77e0f0..358b9287e12e 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -1297,6 +1297,17 @@ static int nft_ct_expect_obj_dump(struct sk_buff *skb,
- 	return 0;
- }
- 
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+static void nft_ct_nat_follow_master(struct nf_conn *ct, struct nf_conntrack_expect *this)
-+{
-+	const struct nf_ct_helper_expectfn *expfn;
-+
-+	expfn = nf_ct_helper_expectfn_find_by_name("nat-follow-master");
-+	if (expfn)
-+		expfn->expectfn(ct, this);
-+}
-+#endif
-+
- static void nft_ct_expect_obj_eval(struct nft_object *obj,
- 				   struct nft_regs *regs,
- 				   const struct nft_pktinfo *pkt)
-@@ -1342,6 +1353,13 @@ static void nft_ct_expect_obj_eval(struct nft_object *obj,
- 		          priv->l4proto, NULL, &priv->dport);
- 	exp->timeout += priv->timeout;
- 
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+	if (ct->status & IPS_NAT_MASK) {
-+		exp->saved_proto.tcp.port = priv->dport;
-+		exp->dir = !dir;
-+		exp->expectfn = nft_ct_nat_follow_master;
-+	}
-+#endif
- 	if (nf_ct_expect_related(exp, 0) != 0)
- 		regs->verdict.code = NF_DROP;
- 
-@@ -1375,6 +1393,13 @@ static struct nft_object_type nft_ct_expect_obj_type __read_mostly = {
- 	.owner		= THIS_MODULE,
- };
- 
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+static struct nf_ct_helper_expectfn nft_ct_nat __read_mostly = {
-+	.name = "nft_ct-follow-master",
-+	.expectfn = nft_ct_nat_follow_master,
-+};
-+#endif
-+
- static int __init nft_ct_module_init(void)
- {
- 	int err;
-@@ -1400,6 +1425,9 @@ static int __init nft_ct_module_init(void)
- 	err = nft_register_obj(&nft_ct_timeout_obj_type);
- 	if (err < 0)
- 		goto err4;
-+#endif
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+	nf_ct_helper_expectfn_register(&nft_ct_nat);
- #endif
- 	return 0;
- 
-@@ -1425,6 +1453,13 @@ static void __exit nft_ct_module_exit(void)
- 	nft_unregister_obj(&nft_ct_helper_obj_type);
- 	nft_unregister_expr(&nft_notrack_type);
- 	nft_unregister_expr(&nft_ct_type);
-+
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+	nf_ct_helper_expectfn_unregister(&nft_ct_nat);
-+	synchronize_rcu();
-+	nf_ct_helper_expectfn_destroy(&nft_ct_nat);
-+	synchronize_rcu();
-+#endif
- }
- 
- module_init(nft_ct_module_init);
--- 
-2.54.0
-
+AFAICS the comment is correct, but it should be handled in a
+followup patch rather than a v2.
 
