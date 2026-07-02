@@ -1,49 +1,90 @@
-Return-Path: <netfilter-devel+bounces-13581-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13582-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id nQRSExAVRmoKJgsAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13581-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 09:36:48 +0200
+	id 6z9XHuA7RmrsMQsAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13582-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 12:22:24 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873FF6F440F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 09:36:46 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA9C16F5D40
+	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 12:22:23 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=lsq3XlS5;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13581-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13581-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=mails.tsinghua.edu.cn;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Ne+i796L;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=B1FeCalO;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=f6hBD1pY;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=4Bt5iqpv;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13582-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13582-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=suse.de;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C9317300D35B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Jul 2026 07:35:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 44A09314892B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Jul 2026 10:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315A8395DBE;
-	Thu,  2 Jul 2026 07:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CCD480326;
+	Thu,  2 Jul 2026 10:11:12 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.229.168.213])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5333739479C;
-	Thu,  2 Jul 2026 07:35:39 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F9D47DD4A
+	for <netfilter-devel@vger.kernel.org>; Thu,  2 Jul 2026 10:11:09 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782977749; cv=none; b=JCr4yMMj/8v6UYg8ZNszmA9JLDJzsY8bVuRA7Rkuirn3ZUuG3836OczKY4LS62oSa+lW9TrDhgbEqc7r50VTPtc9vy397xg04k5VbE35PbRibhUR8hBHhXZEpsAmoqu0SdmO0igJylG6gw4Z5IWxz5+AnoSzuFAdN7pp9wb6uMI=
+	t=1782987072; cv=none; b=Q/EKWj2qeD4ZoSpy99UAigPpzkBxKgJ5G9ksAc9fwBkiOVPEREor72xYG05gm5S0Fk2bNxggwNn96nGhoAG8nFP1UKirPpTEKwomVx5vZjQ+CrcFyvoS73jIKvNxwsmBNVFqyCvVayVETan7Byzb4S0TMiI3kmGPnDAqNhZfEAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782977749; c=relaxed/simple;
-	bh=iW9ysl5y5O9nXf3eQSumHnZWJGFMPjKOmBT9b0boYDQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rx2DQhQamS8X/xYUEua15NR6BA4dKH588YguAxxjE9Bip6doGHXCkOL6+Gq+sc7DPKV6oGClsouOY4N+x7c7J1dXP/V7PN04jPLrNUF2Exp4TujhgghkX1wFepgP+aXt68f1W3SuAL/x0unOfyhtvn3lQdv3rcuJDzeqVrn92x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=lsq3XlS5; arc=none smtp.client-ip=52.229.168.213
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
-	Date:Message-ID:MIME-Version:Content-Transfer-Encoding; bh=cuQyn
-	oEYzp+ML2ERoQuf6W9kyau/3ne/pNDm9z3eBB4=; b=lsq3XlS55eTjFw1AI7T5Q
-	POJ3fzE9fX9zSyzTwMrYrOB5agClbcw9J/ycmP9LxEvToJZTknbAzVY8mYWWKxN7
-	XyO/MS7AH824BTTToGJohWt/kOnVa85Orf0vOkABGGG0jZI/YO+5IzBVDvnswfk/
-	dvh3wukwDx5Vr+ZppxWyZw=
-Received: from localhost.localdomain (unknown [101.5.13.242])
-	by web3 (Coremail) with SMTP id ygQGZQDnMY+QFEZqxwHeAg--.2837S2;
-	Thu, 02 Jul 2026 15:34:41 +0800 (CST)
-From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-To: netdev@vger.kernel.org
-Cc: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>,
+	s=arc-20240116; t=1782987072; c=relaxed/simple;
+	bh=ikk1fuxsPajwPBSmiBJUt4APtxDWqqLCg+u79Heljkc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E+7L31bDu58OAS7yibjqV/Sg1UBEFIab4v4nz55RFKA01tBjKkxkR6cvOnbK55kzGp5l2Z6GqRFJvlwLpVPs1Y2mSzNDcfZGjinBzZ/ZjFROMzKhG7CpjWHYl6U7WqVKepOnAl5FgfibQ9qHdd886s2BeYCpEIMsKomG3VQR+0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ne+i796L; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=B1FeCalO; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=f6hBD1pY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4Bt5iqpv; arc=none smtp.client-ip=195.135.223.131
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EEABE75AE7;
+	Thu,  2 Jul 2026 10:11:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1782987068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nwBam1Mu5tQiZpwXSkkzPWsysU7mQvcSyfKYuwaMZd8=;
+	b=Ne+i796LZxQiRrOGulhlPmiw3LFuySz+/aExN+R5Yakfyk9X1qQzcstlEOtXQQKMg2wF7a
+	Ck1VLzdL7SyF8Zl1QPHJhxIQYo6YfoNLjiS1jIXF96F13yjjECX7StKltDo4sN1tCltnhM
+	MQi/VMigwn54stRloYOUTFnz8zR0xBw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1782987068;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nwBam1Mu5tQiZpwXSkkzPWsysU7mQvcSyfKYuwaMZd8=;
+	b=B1FeCalOc0PYgDrQeoi5JtvQ39tnhqLI3dHAS/N2GtuvlCj0XwlI/eVkDldluzFjcdHaHY
+	duXgtMkxno+32GCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1782987067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nwBam1Mu5tQiZpwXSkkzPWsysU7mQvcSyfKYuwaMZd8=;
+	b=f6hBD1pY+0qf2IPSp614iwiEXww+cGK+6iFAqwPaq5r12xEobVCUpPDoFSdeJ69hVL4biE
+	mFlsUu7uuSgFWTf2RHbV4p5XlKWSjL/rC2wfg7cMxlk/G/WGK90Kkw261HliAkoJJ1sYj+
+	BtEnNW41Cuc2WtngaTtIdwoMXmyTcvQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1782987067;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nwBam1Mu5tQiZpwXSkkzPWsysU7mQvcSyfKYuwaMZd8=;
+	b=4Bt5iqpvWkLSScfEvyNV6xR0a5W3dNuCjzn8ZFq/ybEzFQPMaHW1letMuWTAVHloBpdyzJ
+	MDDazEK+wBEsZMBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C2B54779AA;
+	Thu,  2 Jul 2026 10:11:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id b6c0LDs5RmpZJwAAD6G6ig
+	(envelope-from <iluceno@suse.de>); Thu, 02 Jul 2026 10:11:07 +0000
+From: Ismael Luceno <iluceno@suse.de>
+To: linux-kernel@vger.kernel.org
+Cc: Ismael Luceno <iluceno@suse.de>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Tejun Heo <tj@kernel.org>,
 	Simon Horman <horms@verge.net.au>,
 	Julian Anastasov <ja@ssi.bg>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
@@ -53,20 +94,14 @@ Cc: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	lvs-devel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
-	Ao Wang <wangao@seu.edu.cn>,
-	Xuewei Feng <fengxw06@126.com>,
-	Qi Li <qli01@tsinghua.edu.cn>,
-	Ke Xu <xuke@tsinghua.edu.cn>
-Subject: [PATCH net v2] ipvs: fix PMTU for GUE/GRE tunnel ICMP errors
-Date: Thu,  2 Jul 2026 15:34:28 +0800
-Message-ID: <20260702073430.67680-1-zhaoyz24@mails.tsinghua.edu.cn>
-X-Mailer: git-send-email 2.46.2
+	netdev@vger.kernel.org (open list:IPVS),
+	lvs-devel@vger.kernel.org (open list:IPVS),
+	netfilter-devel@vger.kernel.org (open list:NETFILTER),
+	coreteam@netfilter.org (open list:NETFILTER)
+Subject: [PATCH v2 nf-next] ipvs: Move defense_work and est_reload_work to system_dfl_long_wq
+Date: Thu,  2 Jul 2026 12:10:50 +0200
+Message-ID: <20260702101100.24256-2-iluceno@suse.de>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -74,134 +109,109 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:ygQGZQDnMY+QFEZqxwHeAg--.2837S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF1kZryfXF17Ar4Dur1Utrb_yoW5Zryxpa
-	y0k397ArZ7JF17Ww1vqrW7Z3y3KrZ7JFWxurZ5K34UZ3Z0gF1rtFZYy3yYgFn0v3y8Kryr
-	tF1qy3yUA3Z8A3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9v1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
-	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4
-	x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-	z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4
-	CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26r4r
-	Kr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc
-	8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxVW8ZVWrXwCY02Av
-	z4vE14v_GF4l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8Ww4UJr1UMxC20s
-	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-	JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-	W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1yv35UUUUU==
-X-CM-SenderInfo: 52kd05r2suqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAQEPAWpEyCnrEgACs6
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[mails.tsinghua.edu.cn,quarantine];
-	R_DKIM_ALLOW(-0.20)[mails.tsinghua.edu.cn:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13581-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13582-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:zhaoyz24@mails.tsinghua.edu.cn,m:horms@verge.net.au,m:ja@ssi.bg,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:lvs-devel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[zhaoyz24@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:linux-kernel@vger.kernel.org,m:iluceno@suse.de,m:marco.crivellari@suse.com,m:tj@kernel.org,m:horms@verge.net.au,m:ja@ssi.bg,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FORGED_SENDER(0.00)[iluceno@suse.de,netfilter-devel@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[mails.tsinghua.edu.cn,verge.net.au,ssi.bg,netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,vger.kernel.org,seu.edu.cn,126.com,tsinghua.edu.cn];
-	DKIM_TRACE(0.00)[mails.tsinghua.edu.cn:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhaoyz24@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[iluceno@suse.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,tsinghua.edu.cn:email,mails.tsinghua.edu.cn:dkim,mails.tsinghua.edu.cn:mid,mails.tsinghua.edu.cn:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.de:dkim,suse.de:email,suse.de:mid,suse.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 873FF6F440F
+X-Rspamd-Queue-Id: DA9C16F5D40
 
-When an ICMP Fragmentation Needed error is received for a tunneled IPVS
-connection, ip_vs_in_icmp() recomputes the MTU that the original packet
-can use by subtracting the tunnel overhead from the reported next-hop
-MTU.
+Under synflood conditions binding these handlers to system_long_wq may
+pin them to a saturated CPU.
 
-The current code always subtracts sizeof(struct iphdr), which is only
-the IPIP overhead. For GUE and GRE tunnels, ipvs_udp_decap() and
-ipvs_gre_decap() already compute the additional tunnel header length,
-but that value is scoped to the decapsulation block and is lost before
-the ICMP_FRAG_NEEDED handling. As a result, the ICMP error sent back to
-the client advertises an MTU that is too large, so PMTUD can fail to
-converge for GUE/GRE-tunneled real servers.
+We've observed improved throughtput on a DPDK/VPP application with this
+change, which we attribute to the reduced context switching.
 
-With a reported next-hop MTU of 1400, a GUE tunnel currently returns
-1380 to the client. The correct value is 1368:
+Neither handler has per-CPU data dependencies nor cache locality
+requirements that would prevent this change.
 
-  1400 - sizeof(struct iphdr) - sizeof(struct udphdr) -
-  sizeof(struct guehdr)
-
-Hoist the tunnel header length into the main ip_vs_in_icmp() scope and
-subtract sizeof(struct iphdr) + ulen in the Fragmentation Needed path.
-The IPIP path keeps ulen as 0, so its existing 1400 - 20 = 1380 result
-is unchanged.
-
-Fixes: 508f744c0de3 ("ipvs: strip udp tunnel headers from icmp errors")
-Cc: stable@vger.kernel.org
-Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
-Reported-by: Ao Wang <wangao@seu.edu.cn>
-Reported-by: Xuewei Feng <fengxw06@126.com>
-Reported-by: Qi Li <qli01@tsinghua.edu.cn>
-Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
-Assisted-by: Claude-Code:GLM-5.2
-Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+Signed-off-by: Ismael Luceno <iluceno@suse.de>
 ---
-Changes in v2:
-  - Use the short first hunk context so patch applies without fuzz.
-  - Adjust Assisted-by to checkpatch's agent-name format.
-  - Suggested by Julian.
-  - Link to v1: https://lore.kernel.org/netdev/20260701065941.46249-1-zhaoyz24@mails.tsinghua.edu.cn/
----
- net/netfilter/ipvs/ip_vs_core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+CC: Marco Crivellari <marco.crivellari@suse.com>
+CC: Tejun Heo <tj@kernel.org>
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index d40b404c1bf6..906f2c361676 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -1767,6 +1767,7 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 	bool tunnel, new_cp = false;
- 	union nf_inet_addr *raddr;
- 	char *outer_proto = "IPIP";
-+	int ulen = 0;
- 
- 	*related = 1;
- 
-@@ -1831,7 +1832,6 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 		   /* Error for our tunnel must arrive at LOCAL_IN */
- 		   (skb_rtable(skb)->rt_flags & RTCF_LOCAL)) {
- 		__u8 iproto;
--		int ulen;
- 
- 		/* Non-first fragment has no UDP/GRE header */
- 		if (unlikely(cih->frag_off & htons(IP_OFFSET)))
-@@ -1936,8 +1936,8 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 				if (dest_dst)
- 					mtu = dst_mtu(dest_dst->dst_cache);
- 			}
--			if (mtu > 68 + sizeof(struct iphdr))
--				mtu -= sizeof(struct iphdr);
-+			if (mtu > 68 + sizeof(struct iphdr) + ulen)
-+				mtu -= sizeof(struct iphdr) + ulen;
- 			info = htonl(mtu);
- 		}
- 		/* Strip outer IP, ICMP and IPIP/UDP/GRE, go to IP header of
+Changes since v1:
+* Rebased on nf-next
+* Reworded commit message
 
+ net/netfilter/ipvs/ip_vs_ctl.c | 6 +++---
+ net/netfilter/ipvs/ip_vs_est.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index bcf40b8c41cf..d7e669efab4d 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -235,7 +235,7 @@ #define DEFENSE_TIMER_PERIOD	1*HZ
+ 	update_defense_level(ipvs);
+ 	if (atomic_read(&ipvs->dropentry))
+ 		ip_vs_random_dropentry(ipvs);
+-	queue_delayed_work(system_long_wq, &ipvs->defense_work,
++	queue_delayed_work(system_dfl_long_wq, &ipvs->defense_work,
+ 			   DEFENSE_TIMER_PERIOD);
+ }
+ #endif
+@@ -290,7 +290,7 @@ #define DEFENSE_TIMER_PERIOD	1*HZ
+ 	atomic_set(&ipvs->est_genid_done, genid);
+ 
+ 	if (repeat)
+-		queue_delayed_work(system_long_wq, &ipvs->est_reload_work,
++		queue_delayed_work(system_dfl_long_wq, &ipvs->est_reload_work,
+ 				   delay);
+ 
+ unlock:
+@@ -5126,7 +5126,7 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
+ 		goto err;
+ 
+ 	/* Schedule defense work */
+-	queue_delayed_work(system_long_wq, &ipvs->defense_work,
++	queue_delayed_work(system_dfl_long_wq, &ipvs->defense_work,
+ 			   DEFENSE_TIMER_PERIOD);
+ 
+ 	return 0;
+diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+index ab09f5182951..78964aa861e9 100644
+--- a/net/netfilter/ipvs/ip_vs_est.c
++++ b/net/netfilter/ipvs/ip_vs_est.c
+@@ -243,7 +243,7 @@ #define pr_fmt(fmt) "IPVS: " fmt
+ 	/* Bump the kthread configuration genid if stopping is requested */
+ 	if (restart)
+ 		atomic_inc(&ipvs->est_genid);
+-	queue_delayed_work(system_long_wq, &ipvs->est_reload_work, 0);
++	queue_delayed_work(system_dfl_long_wq, &ipvs->est_reload_work, 0);
+ }
+ 
+ /* Start kthread task with current configuration */
 
