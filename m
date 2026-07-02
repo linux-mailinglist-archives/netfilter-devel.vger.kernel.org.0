@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-13588-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13590-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AfesHW1DRmp6NAsAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13588-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 12:54:37 +0200
+	id LStrOYZDRmqGNAsAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13590-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 12:55:02 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B8C6F63FF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 12:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76EA26F6413
+	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 12:55:02 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13588-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13588-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13590-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13590-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7FDD93068F09
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Jul 2026 10:50:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7976E306B3EB
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Jul 2026 10:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C853C4557;
-	Thu,  2 Jul 2026 10:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65FF3C2B8F;
+	Thu,  2 Jul 2026 10:50:40 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277C23C5826;
-	Thu,  2 Jul 2026 10:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13C93C661A;
+	Thu,  2 Jul 2026 10:50:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782989432; cv=none; b=S47qHu1sj/dsxQEaiq3CscT9Sq2Oxj6xbi35Ir+CbkRmP2NF194vc36Xw00+7G3Atfu9KG8Jv5p/fnJ0a806WWgqGS4Po7atEiNiU+j2EEBzxbYbvjY8JnnXHzOnRJqfjPPzFAs8jKJdNz9eYO0UtUbc7KFl0j8n31KAdxXXUoU=
+	t=1782989440; cv=none; b=SwKpj8kLpGeBhXd+g6WLXJ32J3XHCH3yWrikV+h09zyOjI4MF23bNPeo8E/bEGvrM5blOmiHmcffVpXMRHFS330BpZaPJ/NYxo4Vjm9EDeZTs/w2EoidSHXE8I5lCVGpTLPpTv0DEkNu09ukp4lzQbHaGBAg6YDq5S5MGFDYR+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782989432; c=relaxed/simple;
-	bh=PtPp87kPvvPlmL5UceFuXYr/VHMRtKEOWmn76xCRSQo=;
+	s=arc-20240116; t=1782989440; c=relaxed/simple;
+	bh=BEVLRaNL3omsuuBN1cVn05yN0wyxjrfpJAQTZBNgMQk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rlt9w35XZwmTA8GSYM/O89eWbYAJF3d9JJxk8Eu8uTaP50EJYtYHFlW929R44VJyH3jeqDpTKdonGGdfqR+iRhFuZwSe2YJ1G6Q8QyADePl+yLlYEczdwbWQ2supBB/8l13Y6i4whpEjptI/0jgnRqgYEDUuxuzBEmr3Nybjcmo=
+	 MIME-Version; b=o1v4/h9qHDIVb2gbg3hWlInDzJtq5UPKEUDaFPwtrCE6SIshDzfOZ2tb6PJV9f1qOie/Dqp0Dj2fhLqi7Bz/FO73T1TzuMk+HOOgRAvy7wJWyMXFiVae6BJs73lpxLFvm1ad5t4zcntIlnnllGWhdZFHAuuPAceQ1yYDt2lW+0I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id AE0D6601F0; Thu, 02 Jul 2026 12:50:29 +0200 (CEST)
+	id 3876B601F0; Thu, 02 Jul 2026 12:50:38 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net-next 04/12] netfilter: avoid strcpy usage
-Date: Thu,  2 Jul 2026 12:49:55 +0200
-Message-ID: <20260702105003.13550-5-fw@strlen.de>
+Subject: [PATCH net-next 06/12] netfilter: xt_tcpmss: add checkentry for parameter validation
+Date: Thu,  2 Jul 2026 12:49:57 +0200
+Message-ID: <20260702105003.13550-7-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260702105003.13550-1-fw@strlen.de>
 References: <20260702105003.13550-1-fw@strlen.de>
@@ -67,7 +67,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13588-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13590-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
 	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -87,51 +87,49 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:email,strlen.de:mid,strlen.de:from_mime,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 03B8C6F63FF
+X-Rspamd-Queue-Id: 76EA26F6413
 
-From: David Laight <david.laight.linux@gmail.com>
+From: Feng Wu <wufengwufengwufeng@gmail.com>
 
-Replacing strcpy() with strscpy() ensures that overflow of the target
-buffer cannot happen.
+Add tcpmss_mt_check() that validates mss_min <= mss_max and
+invert <= 1.
 
-[ fw@strlen.de: cleanup. netlink policy rejects too large inputs,
-  xt_recent validates content and length before the copy ]
-
-Signed-off-by: David Laight <david.laight.linux@gmail.com>
+Signed-off-by: Feng Wu <wufengwufengwufeng@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nfnetlink_cttimeout.c | 2 +-
- net/netfilter/xt_recent.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/xt_tcpmss.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/net/netfilter/nfnetlink_cttimeout.c b/net/netfilter/nfnetlink_cttimeout.c
-index 170d3db860c5..66c2016f6049 100644
---- a/net/netfilter/nfnetlink_cttimeout.c
-+++ b/net/netfilter/nfnetlink_cttimeout.c
-@@ -168,7 +168,7 @@ static int cttimeout_new_timeout(struct sk_buff *skb,
- 	if (ret < 0)
- 		goto err_free_timeout_policy;
+diff --git a/net/netfilter/xt_tcpmss.c b/net/netfilter/xt_tcpmss.c
+index b9da8269161d..b08b077d7f0a 100644
+--- a/net/netfilter/xt_tcpmss.c
++++ b/net/netfilter/xt_tcpmss.c
+@@ -78,10 +78,23 @@ tcpmss_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	return false;
+ }
  
--	strcpy(timeout->name, nla_data(cda[CTA_TIMEOUT_NAME]));
-+	nla_strscpy(timeout->name, cda[CTA_TIMEOUT_NAME], sizeof(timeout->name));
- 	timeout->timeout->l3num = l3num;
- 	timeout->timeout->l4proto = l4proto;
- 	refcount_set(&timeout->timeout->refcnt, 1);
-diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
-index f72752fa4374..d34831ce3adf 100644
---- a/net/netfilter/xt_recent.c
-+++ b/net/netfilter/xt_recent.c
-@@ -400,7 +400,7 @@ static int recent_mt_check(const struct xt_mtchk_param *par,
- 	t->nstamps_max_mask = nstamp_mask;
- 
- 	memcpy(&t->mask, &info->mask, sizeof(t->mask));
--	strcpy(t->name, info->name);
-+	strscpy(t->name, info->name);
- 	INIT_LIST_HEAD(&t->lru_list);
- 	for (i = 0; i < ip_list_hash_size; i++)
- 		INIT_LIST_HEAD(&t->iphash[i]);
++static int tcpmss_mt_check(const struct xt_mtchk_param *par)
++{
++	const struct xt_tcpmss_match_info *info = par->matchinfo;
++
++	if (info->mss_min > info->mss_max)
++		return -EINVAL;
++	if (info->invert > 1)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static struct xt_match tcpmss_mt_reg[] __read_mostly = {
+ 	{
+ 		.name		= "tcpmss",
+ 		.family		= NFPROTO_IPV4,
++		.checkentry	= tcpmss_mt_check,
+ 		.match		= tcpmss_mt,
+ 		.matchsize	= sizeof(struct xt_tcpmss_match_info),
+ 		.proto		= IPPROTO_TCP,
 -- 
 2.54.0
 
