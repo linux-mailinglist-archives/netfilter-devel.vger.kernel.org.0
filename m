@@ -1,216 +1,157 @@
-Return-Path: <netfilter-devel+bounces-13598-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13599-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 1sG8GLFMRmq0PQsAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13598-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 13:34:09 +0200
+	id GpdQFk9dRmovRwsAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13599-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 14:45:03 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D11D26F6C4E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 13:34:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB596F7D26
+	for <lists+netfilter-devel@lfdr.de>; Thu, 02 Jul 2026 14:45:02 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=ssi.bg header.s=ssi header.b=yCrjjBRw;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13598-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13598-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=ssi.bg;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=X+sGuk3T;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13599-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13599-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 76BFD302E625
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Jul 2026 11:32:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7111E302261B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Jul 2026 12:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A9C412294;
-	Thu,  2 Jul 2026 11:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EA447DFB6;
+	Thu,  2 Jul 2026 12:33:24 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28394189DD;
-	Thu,  2 Jul 2026 11:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B0747D93C
+	for <netfilter-devel@vger.kernel.org>; Thu,  2 Jul 2026 12:33:21 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782991902; cv=none; b=r88YPtFoLqKvK2PHkH202q+78HcDwtE9/IkdPDs53kI4noWt0LZ2sCTgRpksPbLTjNuXZzI+J/YmLy8rTpi9139wBtpPeQOr62037rystVTUxlRaweuBavZA2BfiWJkgNtxxQVYC151NSAjR0Vu5mrJUa9ceZl3T1PfrL35h+N0=
+	t=1782995604; cv=none; b=JilyHbo2PB8I13fDazljQr+/+mAgWzDnDouHJ5KkzoVl3qAEfkFk3wJstUHPtZRHILGTLWVru9Mca2qJwE8wOCf6S3ik81uxSrA/No1B2mk/grNcnk+fX5Xc1BBgMTEBVdRH/9tf0jI0axDm0MVApo5OCr/uea1LUL6UDGL5lG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782991902; c=relaxed/simple;
-	bh=tXGbtkdTZWAv2pqpZGDXd8E3ARFn2KxITER5JobuThU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=G4RksqvHGS3Ud7cGOGkarkv4i1QG5u8to5WYw4A7t/8+r8qgV9QwTOnk8/AP6Zf8Af3odEA5eA3evI8Cv5Dof4wFttomxw8jxPECeOylW/MckuWEmYk822T1Dx5u9aoaCurk+ZLyHfL9bQrRY8Efuw60UuueGX7H6BL1MR6DIJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=yCrjjBRw; arc=none smtp.client-ip=193.238.174.39
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id C0191229E7;
-	Thu, 02 Jul 2026 14:31:32 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-type:content-type:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=vNIDsZvLWhESGHi31+8av3uZRVUZwCUmNhPwcwKeGuY=; b=yCrjjBRw9gkC
-	LC0pjNMVHtdLgT+4Z7rzrnM45BFpaAYiM1fTte9FYqoza4tc7UhtwWV5yKLzdJFu
-	yS6z3o/hlGo1Ig5qIxdv+Ozdokki15BT/xRE2fbrMUJA5cy7ikGFc997M458VIy3
-	/pzXisJostq8f8Yn70GP1BwAnPiJQCcZa60K7uqETuRgTRXTAY/J5/mShiRPIBNH
-	9ja+3JvqKfUssVsF91rSdYfKTLV3/ScVZbKjWCougWdrEf4fDXoMGpj2UxNysA28
-	dWK7/dli4y236S0Aw/E9By1Uhh799Y3wtCrHqwg6eQ+EPR+5W41iZ19t5XzKXbBv
-	7UT2cVNSY4F+pk+cDyolaMiLDhacfPlelmxWet3200LZB0Wo8Uq/v/Hh0uJo2BTL
-	Baw43tgfw9HGGQ77Ne6Vi0vb+/pkPQrQnVc6hDaFiSwXLqf6wCXbKwq97YougY+z
-	MQgR/BcjqELSCnEzOHF86PtXfBoaWO/OJJrLcg0Rmn8LSJIofO4YmHAXxQ01lmCw
-	YPnSD1Gw5hTCIdKvJhB38jGiHQxrgo6EbFWQsDHEmtRD5Z/d/abbcredtURottvE
-	vQsDL5vuT80dMFCTzcBOP9SIe2itXhfyxe7Ygdogc8M1RiT9Cyjn4rLMZeLgzuEP
-	pPThQRfH7D540qdMGw0pr7mSZ4qVF70=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Thu, 02 Jul 2026 14:31:32 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 7602C60B21;
-	Thu,  2 Jul 2026 14:31:31 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.2/8.18.2) with ESMTP id 662BVT4K038906;
-	Thu, 2 Jul 2026 14:31:29 +0300
-Date: Thu, 2 Jul 2026 14:31:29 +0300 (EEST)
-From: Julian Anastasov <ja@ssi.bg>
-To: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-cc: netdev@vger.kernel.org, Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
-        Ao Wang <wangao@seu.edu.cn>, Xuewei Feng <fengxw06@126.com>,
-        Qi Li <qli01@tsinghua.edu.cn>, Ke Xu <xuke@tsinghua.edu.cn>
-Subject: Re: [PATCH net v2] ipvs: fix PMTU for GUE/GRE tunnel ICMP errors
-In-Reply-To: <20260702073430.67680-1-zhaoyz24@mails.tsinghua.edu.cn>
-Message-ID: <c6664a17-eea8-edf3-30bc-9997265c9b57@ssi.bg>
-References: <20260702073430.67680-1-zhaoyz24@mails.tsinghua.edu.cn>
+	s=arc-20240116; t=1782995604; c=relaxed/simple;
+	bh=L/9RjfMSoGGczuCmSsc1TZhkWQ2jSiEzF+jSOPgI1Pw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S9HO9SmkZN+nxSzEPkz/zget1E1hN6RUklUOq7+BM1Vgt9jLWJEBQjU+82dl6SRL+UX8hIepMyOPmf1A8i1R8eIMSkhgnTl2FeSwwUoidMPO32vMzoB8L6427z/QtLvmZ7NPjKO/5YcXd0ng2J9rVSRQjXFaQCoiZSlBXhO0lqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=X+sGuk3T; arc=none smtp.client-ip=217.70.190.124
+Received: from localhost.localdomain (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 8F31C6057B;
+	Thu,  2 Jul 2026 14:33:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1782995593;
+	bh=IrIqCy7gQz9HZUk89Auf+MlsOdvCQDv7uR7EjyKu5kQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=X+sGuk3TUYB+XdhZs9DNOsIlPu0eckcgrUUZbOvhNceQexKFuccUFlwDISAPgTzal
+	 n63ZpMbWTj4bhGnE96JA7RhbYsVoO2fcTNlE5GO7Q9wqIFnE4ltQ2ebMK9xfvPm6Gx
+	 79AlK+cqbsvuQbhlJqFbJpNWc2omS36HB9XevgK8KO47/eHiwmcFeCjnOmQwncNE/J
+	 RONinwiJ1dymBrpxDyicTJhaDDEILjhj+8bassy6jYJGcG+eCMVfIB7zdpOA39JJUx
+	 Ki93tlb7JM9LV8HgUVxWJR/dVLpS8uVf3rA6ti/wnxLe2HisIGT9X0XrGTlJu4NbEt
+	 6hfi8yRBbnotw==
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: fw@strlen.de
+Subject: [PATCH nf] netfilter: nft_set_rbtree: get command skips end element with open interval
+Date: Thu,  2 Jul 2026 14:33:09 +0200
+Message-ID: <20260702123309.349594-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,verge.net.au,netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,mails.tsinghua.edu.cn,seu.edu.cn,126.com,tsinghua.edu.cn];
-	TAGGED_FROM(0.00)[bounces-13598-lists,netfilter-devel=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FORGED_RECIPIENTS(0.00)[m:zhaoyz24@mails.tsinghua.edu.cn,m:netdev@vger.kernel.org,m:horms@verge.net.au,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:lvs-devel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13599-lists,netfilter-devel=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[netfilter.org];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[netfilter.org:+];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D11D26F6C4E
+X-Rspamd-Queue-Id: BCB596F7D26
 
+The get command on intervals provide partial matches such as subranges
+for usability reasons. However, an open interval has no closing end
+element. If the closing element matches within the range of the open
+internal, ie. its closest match is the start element of the open range,
+then, return 0 but offer no matching element to userspace through
+netlink as a special case. Userspace provides at least a matching start
+element in this case and the closing end element matching the open
+interal is ignored.
 
-	Hello,
+Another possibility is to report the matching start element of the open
+interval for this end interval. However, this results in duplicated
+matching being listed in userspace because userspace does not expect a
+start element as response to a end element.
 
-On Thu, 2 Jul 2026, Yizhou Zhao wrote:
+Fixes: 2aa34191f06f ("netfilter: nft_set_rbtree: use binary search array in get command")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c  | 3 +++
+ net/netfilter/nft_set_rbtree.c | 8 ++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-> When an ICMP Fragmentation Needed error is received for a tunneled IPVS
-> connection, ip_vs_in_icmp() recomputes the MTU that the original packet
-> can use by subtracting the tunnel overhead from the reported next-hop
-> MTU.
-> 
-> The current code always subtracts sizeof(struct iphdr), which is only
-> the IPIP overhead. For GUE and GRE tunnels, ipvs_udp_decap() and
-> ipvs_gre_decap() already compute the additional tunnel header length,
-> but that value is scoped to the decapsulation block and is lost before
-> the ICMP_FRAG_NEEDED handling. As a result, the ICMP error sent back to
-> the client advertises an MTU that is too large, so PMTUD can fail to
-> converge for GUE/GRE-tunneled real servers.
-> 
-> With a reported next-hop MTU of 1400, a GUE tunnel currently returns
-> 1380 to the client. The correct value is 1368:
-> 
->   1400 - sizeof(struct iphdr) - sizeof(struct udphdr) -
->   sizeof(struct guehdr)
-> 
-> Hoist the tunnel header length into the main ip_vs_in_icmp() scope and
-> subtract sizeof(struct iphdr) + ulen in the Fragmentation Needed path.
-> The IPIP path keeps ulen as 0, so its existing 1400 - 20 = 1380 result
-> is unchanged.
-> 
-> Fixes: 508f744c0de3 ("ipvs: strip udp tunnel headers from icmp errors")
-> Cc: stable@vger.kernel.org
-> Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-> Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
-> Reported-by: Ao Wang <wangao@seu.edu.cn>
-> Reported-by: Xuewei Feng <fengxw06@126.com>
-> Reported-by: Qi Li <qli01@tsinghua.edu.cn>
-> Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
-> Assisted-by: Claude-Code:GLM-5.2
-> Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-
-	Looks good to me for the nf tree, thanks!
-
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
-> ---
-> Changes in v2:
->   - Use the short first hunk context so patch applies without fuzz.
->   - Adjust Assisted-by to checkpatch's agent-name format.
->   - Suggested by Julian.
->   - Link to v1: https://lore.kernel.org/netdev/20260701065941.46249-1-zhaoyz24@mails.tsinghua.edu.cn/
-> ---
->  net/netfilter/ipvs/ip_vs_core.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index d40b404c1bf6..906f2c361676 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -1767,6 +1767,7 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
->  	bool tunnel, new_cp = false;
->  	union nf_inet_addr *raddr;
->  	char *outer_proto = "IPIP";
-> +	int ulen = 0;
->  
->  	*related = 1;
->  
-> @@ -1831,7 +1832,6 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
->  		   /* Error for our tunnel must arrive at LOCAL_IN */
->  		   (skb_rtable(skb)->rt_flags & RTCF_LOCAL)) {
->  		__u8 iproto;
-> -		int ulen;
->  
->  		/* Non-first fragment has no UDP/GRE header */
->  		if (unlikely(cih->frag_off & htons(IP_OFFSET)))
-> @@ -1936,8 +1936,8 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
->  				if (dest_dst)
->  					mtu = dst_mtu(dest_dst->dst_cache);
->  			}
-> -			if (mtu > 68 + sizeof(struct iphdr))
-> -				mtu -= sizeof(struct iphdr);
-> +			if (mtu > 68 + sizeof(struct iphdr) + ulen)
-> +				mtu -= sizeof(struct iphdr) + ulen;
->  			info = htonl(mtu);
->  		}
->  		/* Strip outer IP, ICMP and IPIP/UDP/GRE, go to IP header of
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 4884f7f7aaee..a9eaf9455c77 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6563,6 +6563,9 @@ static int nft_get_set_elem(struct nft_ctx *ctx, const struct nft_set *set,
+ 	if (err < 0)
+ 		return err;
+ 
++	if (!elem.priv)
++		return 0;
++
+ 	err = -ENOMEM;
+ 	skb = nlmsg_new(NLMSG_GOODSIZE, GFP_ATOMIC);
+ 	if (skb == NULL)
+diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
+index 018bbb6df4ce..6222e9bb57bc 100644
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -184,10 +184,14 @@ nft_rbtree_get(const struct net *net, const struct nft_set *set,
+ 	if (!interval || nft_set_elem_expired(interval->from))
+ 		return ERR_PTR(-ENOENT);
+ 
+-	if (flags & NFT_SET_ELEM_INTERVAL_END)
++	if (flags & NFT_SET_ELEM_INTERVAL_END) {
++		if (!interval->to)
++			return NULL;
++
+ 		rbe = container_of(interval->to, struct nft_rbtree_elem, ext);
+-	else
++	} else {
+ 		rbe = container_of(interval->from, struct nft_rbtree_elem, ext);
++	}
+ 
+ 	return &rbe->priv;
+ }
+-- 
+2.47.3
 
 
