@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-13625-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13626-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id vbi6IGC0R2ondwAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13625-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Jul 2026 15:08:48 +0200
+	id GUR0CLCzR2r8dgAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13626-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Jul 2026 15:05:52 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D12C0702AF6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Jul 2026 15:08:47 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 182FF702A70
+	for <lists+netfilter-devel@lfdr.de>; Fri, 03 Jul 2026 15:05:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13625-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13625-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13626-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13626-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E4E203175840
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jul 2026 12:58:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2CB4B302C3F6
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jul 2026 12:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03BC3D5C1D;
-	Fri,  3 Jul 2026 12:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BFF3D6476;
+	Fri,  3 Jul 2026 12:57:51 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35CA43D565F;
-	Fri,  3 Jul 2026 12:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6863838A73F;
+	Fri,  3 Jul 2026 12:57:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783083467; cv=none; b=BAxWT9HShbqyriOh3n1HjJrCrSFqHmQqZtd4JAfNmiV7HIOzt08iFYEltD0NCe/cC8U5GhxYWAP7e6GHv4U+wbFBQmMnw9kYauPW00QnLz+Ldm8KlpQeemq4Ip1j/663VavEaqFN6UnjHRSz+BN0Va7+pQEo8I3x1bUGLzhBgVM=
+	t=1783083471; cv=none; b=YaEu5ofr5YVIpx29O81P3TtBUhVRbR2kUV1Tg00OyDJTd/Xc+WfYfP8q1eJLYRRcaDhOSMxB2ui8ra/Fq9ukXf51t0iKtMd5ifRHdoxXoRLs/eeQgQ/SmvSzjr+/kClnMOpWK4x9Dk0BNZZg2qUm1PtVm1Zf82/oJvM9pXgBALk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783083467; c=relaxed/simple;
-	bh=Kb4ALTYf/Y/FAGkyAUjv28OX9CCgO8l7KlnuD2ffyrU=;
+	s=arc-20240116; t=1783083471; c=relaxed/simple;
+	bh=xG4CRMAZXD1Tv8UbdnuLSEYPPwzLRtZq7Ph/7fJvWaY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ezs9dAptll2Q+Ocmf/ZsL5/PkP1lUt0gctJhgEuMEQ/t1u5wyfdFXteSozeXz4cvWe0h18eZ682TKj28a6Ov15Xxb+Cwjg9VJfv2GjRY6dcrP7mp8+Qh/crqL3pLxifg5qSLT5oRi6WovzdlVAzeSihJ+X47Tnrd7G/+IHbq0C4=
+	 MIME-Version; b=NrsfT9/3pu0BoqVMozg3+iEVbrSEvHlzzVvlF6iDGJF/7VtimvW4aUMb77waZhZOxIfwL6RTWG9ihXNLTRLPhiSIWdEQPcDoGlfbT9OR53z/1GdOqRS+kQyvSOIWfwrDVGdO20bapMQlO6gCp3+DHeVyyoezboCL+1Wh5L0wYvo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 3911560687; Fri, 03 Jul 2026 14:57:44 +0200 (CEST)
+	id 7E29D6078D; Fri, 03 Jul 2026 14:57:48 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 7/9] ipvs: fix PMTU for GUE/GRE tunnel ICMP errors
-Date: Fri,  3 Jul 2026 14:57:07 +0200
-Message-ID: <20260703125709.16493-8-fw@strlen.de>
+Subject: [PATCH net 8/9] ipvs: reset full ip_vs_seq structs in ip_vs_conn_new
+Date: Fri,  3 Jul 2026 14:57:08 +0200
+Message-ID: <20260703125709.16493-9-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260703125709.16493-1-fw@strlen.de>
 References: <20260703125709.16493-1-fw@strlen.de>
@@ -62,21 +62,21 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13625-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13626-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -87,37 +87,40 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ssi.bg:email,tsinghua.edu.cn:email,vger.kernel.org:from_smtp,seu.edu.cn:email,strlen.de:from_mime,strlen.de:email,strlen.de:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[seu.edu.cn:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,strlen.de:from_mime,strlen.de:email,strlen.de:mid,vger.kernel.org:from_smtp,tsinghua.edu.cn:email,in_seq.delta:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D12C0702AF6
+X-Rspamd-Queue-Id: 182FF702A70
 
 From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 
-When an ICMP Fragmentation Needed error is received for a tunneled IPVS
-connection, ip_vs_in_icmp() recomputes the MTU that the original packet
-can use by subtracting the tunnel overhead from the reported next-hop
-MTU.
+Commit 9a05475cebdd ("ipvs: avoid kmem_cache_zalloc in
+ip_vs_conn_new") changed ip_vs_conn_new() to allocate an ip_vs_conn
+object with kmem_cache_alloc().  The function then initializes many
+fields explicitly, but only resets in_seq.delta and out_seq.delta in the
+two struct ip_vs_seq members.
 
-The current code always subtracts sizeof(struct iphdr), which is only
-the IPIP overhead. For GUE and GRE tunnels, ipvs_udp_decap() and
-ipvs_gre_decap() already compute the additional tunnel header length,
-but that value is scoped to the decapsulation block and is lost before
-the ICMP_FRAG_NEEDED handling. As a result, the ICMP error sent back to
-the client advertises an MTU that is too large, so PMTUD can fail to
-converge for GUE/GRE-tunneled real servers.
+That leaves init_seq and previous_delta uninitialized.  This is normally
+harmless while the corresponding IP_VS_CONN_F_IN_SEQ or
+IP_VS_CONN_F_OUT_SEQ flag is clear.  For connections learned from a sync
+message, however, ip_vs_proc_conn() preserves those flags from
+IP_VS_CONN_F_BACKUP_MASK and passes opt=NULL when the message omits
+IPVS_OPT_SEQ_DATA.  In that case the new connection can be hashed with
+SEQ flags set but with the rest of in_seq/out_seq still containing stale
+slab data.
 
-With a reported next-hop MTU of 1400, a GUE tunnel currently returns
-1380 to the client. The correct value is 1368:
+When a packet for such a connection is later handled by an IPVS
+application helper, vs_fix_seq() and vs_fix_ack_seq() use
+previous_delta and init_seq to rewrite TCP sequence numbers.  A malformed
+sync message can therefore make forwarded packets carry stale slab bytes
+in their TCP seq/ack numbers, and can also corrupt the forwarded TCP
+flow.
 
-  1400 - sizeof(struct iphdr) - sizeof(struct udphdr) -
-  sizeof(struct guehdr)
+Reset both struct ip_vs_seq members completely before publishing the
+connection.  This matches the existing "reset struct ip_vs_seq" comment
+and keeps the sequence-adjustment gates inactive unless valid sequence
+data is installed later.
 
-Hoist the tunnel header length into the main ip_vs_in_icmp() scope and
-subtract sizeof(struct iphdr) + ulen in the Fragmentation Needed path.
-The IPIP path keeps ulen as 0, so its existing 1400 - 20 = 1380 result
-is unchanged.
-
-Fixes: 508f744c0de3 ("ipvs: strip udp tunnel headers from icmp errors")
+Fixes: 9a05475cebdd ("ipvs: avoid kmem_cache_zalloc in ip_vs_conn_new")
 Cc: stable@vger.kernel.org
 Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
@@ -127,43 +130,26 @@ Reported-by: Qi Li <qli01@tsinghua.edu.cn>
 Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
 Assisted-by: Claude-Code:GLM-5.2
 Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-Acked-by: Julian Anastasov <ja@ssi.bg>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/netfilter/ipvs/ip_vs_conn.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index d40b404c1bf6..906f2c361676 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -1767,6 +1767,7 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 	bool tunnel, new_cp = false;
- 	union nf_inet_addr *raddr;
- 	char *outer_proto = "IPIP";
-+	int ulen = 0;
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index cb36641f8d1c..6ed2622363f0 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1420,8 +1420,8 @@ ip_vs_conn_new(const struct ip_vs_conn_param *p, int dest_af,
+ 	cp->app = NULL;
+ 	cp->app_data = NULL;
+ 	/* reset struct ip_vs_seq */
+-	cp->in_seq.delta = 0;
+-	cp->out_seq.delta = 0;
++	memset(&cp->in_seq, 0, sizeof(cp->in_seq));
++	memset(&cp->out_seq, 0, sizeof(cp->out_seq));
  
- 	*related = 1;
- 
-@@ -1831,7 +1832,6 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 		   /* Error for our tunnel must arrive at LOCAL_IN */
- 		   (skb_rtable(skb)->rt_flags & RTCF_LOCAL)) {
- 		__u8 iproto;
--		int ulen;
- 
- 		/* Non-first fragment has no UDP/GRE header */
- 		if (unlikely(cih->frag_off & htons(IP_OFFSET)))
-@@ -1936,8 +1936,8 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 				if (dest_dst)
- 					mtu = dst_mtu(dest_dst->dst_cache);
- 			}
--			if (mtu > 68 + sizeof(struct iphdr))
--				mtu -= sizeof(struct iphdr);
-+			if (mtu > 68 + sizeof(struct iphdr) + ulen)
-+				mtu -= sizeof(struct iphdr) + ulen;
- 			info = htonl(mtu);
- 		}
- 		/* Strip outer IP, ICMP and IPIP/UDP/GRE, go to IP header of
+ 	if (unlikely(flags & IP_VS_CONN_F_NO_CPORT)) {
+ 		int af_id = ip_vs_af_index(cp->af);
 -- 
 2.54.0
 
