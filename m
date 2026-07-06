@@ -1,46 +1,47 @@
-Return-Path: <netfilter-devel+bounces-13661-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13663-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id RNKHNiSGS2oLTAEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13661-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 06 Jul 2026 12:40:36 +0200
+	id EZzzEM+KS2q8VAEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13663-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 06 Jul 2026 13:00:31 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B972770F580
-	for <lists+netfilter-devel@lfdr.de>; Mon, 06 Jul 2026 12:40:35 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86E4070F952
+	for <lists+netfilter-devel@lfdr.de>; Mon, 06 Jul 2026 13:00:30 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=l+Q1gYUw;
+	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=fpxHrP1w;
 	dmarc=pass (policy=quarantine) header.from=mails.tsinghua.edu.cn;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13661-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13661-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13663-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13663-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D705E30609F5
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jul 2026 10:17:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A358F39BD2A1
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jul 2026 10:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE6CA2046BA;
-	Mon,  6 Jul 2026 10:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8024F3D7A14;
+	Mon,  6 Jul 2026 10:17:16 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net (zg8tmja5ljk3lje4mi4ymjia.icoremail.net [209.97.182.222])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F59827EFE9;
-	Mon,  6 Jul 2026 10:17:08 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.175.55.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4803AFD10;
+	Mon,  6 Jul 2026 10:17:13 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783333032; cv=none; b=CLiLkZP44CBZSkKxd9/a293STFk1R6zqT5dG5F5qV32lL1VkLA52Hg+M9tQRBvMmRjWuL5MYrp/OWDu2MN5eZW6u775Rn8qtt6ksDfycalHitX/YwUG0PW429M47/xTWr1d3pGv4f1q1MG0zzzkqg46MuPGmxU7NrqQNdt3eVoc=
+	t=1783333036; cv=none; b=A3jP1bakxmm1F5VOwh0zTPuwx1nMgL7bXm3YZTDZVj3Ql/tlFg5wOCqproB8TRcIyGjkZayjQzIC1sY4jsPQMKVooS1Jslx73J//YfHShGv3h368jQTOWrgyGniV3zFrXafJ5yMRAhjIa3p0nZyKEdrl9XKe71MA8vWB3ui+XsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783333032; c=relaxed/simple;
-	bh=VCwZrRwTQmEgvu4RfMg740sUgjTmkta7dux4gUN6ax8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FEx8Wr6p/iavK1dabVN165t0d8ZQMYjQpWvy3B0skW6/PLXAvXrEgJia7AtSNYx6zFg7fCXb7saajNWpL1jchIUc41GWc38SIG9F5De9YjZl6PmfpFip7z/fd1BE7IfvtMjXm1ZmsoqM27Yd/LlvzX9lEGQ0KGCqfmlREjXS0aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=l+Q1gYUw; arc=none smtp.client-ip=209.97.182.222
+	s=arc-20240116; t=1783333036; c=relaxed/simple;
+	bh=qICby/EZvhDetA176hMRHG3ne6QLxzFOyFvBy00l8E8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CDu0uR0lFfNbuKmisLAQAqORXBV0Hxu/DPirJK3S9uuvY8LhYYVUCs9Vy3jAx0XVAEUrcyrRyKxD9jwSC7EHMx2iEje4XitTNL9PRixsSUmRS2Kq1kK0IFXbus+hwHt9s9qTL+/W5huEoBLVMNGVX/c3STW51ZwxGidrmWJWftE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=fpxHrP1w; arc=none smtp.client-ip=52.175.55.52
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
-	Date:Message-ID:MIME-Version:Content-Transfer-Encoding; bh=CGMXO
-	jZBJ7c5b38ucaL2dUKfGAjGD3ZKFalqvM5Qhx8=; b=l+Q1gYUw0PCMQdJxmKhpb
-	B5PFBSd0zMnfXpyCHPjiSODFQOF0PMPOq5qMd5x9Gv7CU28RsYXdlO34c6N/RZoM
-	SPeYmPVU5xEyFB9qdInJFX9LZPsNHz0AK91U4nQKr4oZdoMi9Suy87UblvyHR3Z3
-	ZYAVmhBiveLKc6HAYYHBX4=
+	Date:Message-ID:In-Reply-To:References:MIME-Version:
+	Content-Transfer-Encoding; bh=9JbnW5Okng3foJ6unJ3wB4uY7Yori1laW6
+	9wnkeiIXc=; b=fpxHrP1wKyRYXDqZC32x8OoDs1GpkTDZxwuedws9AWmp9zATAI
+	p5iExbQQL49iMjVimyfpCKom/5HSBQLbWivk+CdwIKwwgOWxzSrs4qJgj+gfGeZl
+	dnKJZTjjCU3MHMKtLRblkbyJUqRFXAlM9Cii1j44rCsPI2bdPwsM7RIsQ=
 Received: from localhost.localdomain (unknown [101.5.13.242])
-	by web4 (Coremail) with SMTP id ywQGZQD3CJ6GgEtq_fjIAg--.37800S2;
-	Mon, 06 Jul 2026 18:16:39 +0800 (CST)
+	by web4 (Coremail) with SMTP id ywQGZQD3CJ6GgEtq_fjIAg--.37800S3;
+	Mon, 06 Jul 2026 18:16:43 +0800 (CST)
 From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 To: netdev@vger.kernel.org
 Cc: coreteam@netfilter.org,
@@ -63,10 +64,12 @@ Cc: coreteam@netfilter.org,
 	xuke@tsinghua.edu.cn,
 	yangyx22@mails.tsinghua.edu.cn,
 	Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-Subject: [PATCH nf v2 0/3] ipvs: use parsed transport offsets in state handlers
-Date: Mon,  6 Jul 2026 18:16:21 +0800
-Message-ID: <20260706101624.69471-1-zhaoyz24@mails.tsinghua.edu.cn>
+Subject: [PATCH nf v2 1/3] ipvs: pass parsed transport offset to state handlers
+Date: Mon,  6 Jul 2026 18:16:22 +0800
+Message-ID: <20260706101624.69471-2-zhaoyz24@mails.tsinghua.edu.cn>
 X-Mailer: git-send-email 2.46.2
+In-Reply-To: <20260706101624.69471-1-zhaoyz24@mails.tsinghua.edu.cn>
+References: <20260706101624.69471-1-zhaoyz24@mails.tsinghua.edu.cn>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -74,10 +77,10 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:ywQGZQD3CJ6GgEtq_fjIAg--.37800S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urW7XFyUur43ur1rZw1fZwb_yoW8Jw13pa
-	sa93yagrZrKFyIvrsrArs7Ga4rCan8Gay7XayrK3s5tFy0vr45tF90k3yrKayUurZ7t347
-	Ar1Yvw43Zr4kJr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:ywQGZQD3CJ6GgEtq_fjIAg--.37800S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4xtF4kJw4fWF48Jw43Wrg_yoW7Jw45pF
+	15Aa43WrWUGrZ3tw1kJrWxAr98Gw18Wry29rZ8Cas3A3WDtrn5tFnYyayaka1rCrWvka43
+	Jwn0q3y5A34kArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUU9m1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
 	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4
 	x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
@@ -91,7 +94,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7urW7XFyUur43ur1rZw1fZwb_yoW8Jw13pa
 	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
 	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
 	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUEkskUUUUU=
-X-CM-SenderInfo: 52kd05r2suqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAQEAAWpLXR9AnAAAs+
+X-CM-SenderInfo: 52kd05r2suqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAQYAAWpLXR9AogAAsH
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -99,11 +102,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[mails.tsinghua.edu.cn,quarantine];
 	R_DKIM_ALLOW(-0.20)[mails.tsinghua.edu.cn:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13661-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13663-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[zhaoyz24@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
@@ -122,42 +125,131 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mails.tsinghua.edu.cn:from_mime,mails.tsinghua.edu.cn:dkim,mails.tsinghua.edu.cn:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,tsinghua.edu.cn:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B972770F580
+X-Rspamd-Queue-Id: 86E4070F952
 
-IPVS parses packets into struct ip_vs_iphdr before scheduling and state
-handling.  For IPv6, iph.len contains the real transport-header offset
-after ipv6_find_hdr() has skipped any extension headers.
+IPVS callers already parse the packet into struct ip_vs_iphdr before
+updating connection state. For IPv6 this records the real
+transport-header offset after extension headers in iph.len.
 
-TCP and SCTP state handlers still recompute their own transport offsets.
-They use sizeof(struct ipv6hdr) for IPv6, so packets with extension
-headers make the state machines read the wrong bytes.
+Pass this parsed transport offset through ip_vs_set_state() and the
+protocol state_transition() callback so protocol handlers can use the
+same packet context as scheduling and NAT handling. This patch only
+changes the common callback plumbing and adapts the protocol callback
+signatures; TCP and SCTP start using the value in follow-up patches.
 
-Pass the parsed transport offset through the common IPVS state handling
-callback, then use it in the TCP and SCTP state lookups.
-
-Changes in v2:
-- Pass the parsed transport offset through ip_vs_set_state() and the
-  protocol callbacks.
-- Fix TCP state handling as well as SCTP.
-- Avoid reparsing the skb in SCTP state handling.
-- Split the common plumbing, TCP fix and SCTP fix into a 3-patch series.
-
-Yizhou Zhao (3):
-  ipvs: pass parsed transport offset to state handlers
-  ipvs: use parsed transport offset in TCP state lookup
-  ipvs: use parsed transport offset in SCTP state lookup
-
+Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+---
  include/net/ip_vs.h                   |  3 ++-
  net/netfilter/ipvs/ip_vs_core.c       | 10 +++++-----
- net/netfilter/ipvs/ip_vs_proto_sctp.c | 18 +++++++-----------
- net/netfilter/ipvs/ip_vs_proto_tcp.c  | 11 +++--------
+ net/netfilter/ipvs/ip_vs_proto_sctp.c |  3 ++-
+ net/netfilter/ipvs/ip_vs_proto_tcp.c  |  3 ++-
  net/netfilter/ipvs/ip_vs_proto_udp.c  |  3 ++-
- 5 files changed, 19 insertions(+), 26 deletions(-)
+ 5 files changed, 13 insertions(+), 9 deletions(-)
 
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index 49297fec448a..417ff51f62fc 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -752,7 +752,8 @@ struct ip_vs_protocol {
+ 
+ 	void (*state_transition)(struct ip_vs_conn *cp, int direction,
+ 				 const struct sk_buff *skb,
+-				 struct ip_vs_proto_data *pd);
++				 struct ip_vs_proto_data *pd,
++				 unsigned int iph_len);
+ 
+ 	int (*register_app)(struct netns_ipvs *ipvs, struct ip_vs_app *inc);
+ 
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index d40b404c1bf6..bd90f03fe3a4 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -398,10 +398,10 @@ ip_vs_conn_stats(struct ip_vs_conn *cp, struct ip_vs_service *svc)
+ static inline void
+ ip_vs_set_state(struct ip_vs_conn *cp, int direction,
+ 		const struct sk_buff *skb,
+-		struct ip_vs_proto_data *pd)
++		struct ip_vs_proto_data *pd, unsigned int iph_len)
+ {
+ 	if (likely(pd->pp->state_transition))
+-		pd->pp->state_transition(cp, direction, skb, pd);
++		pd->pp->state_transition(cp, direction, skb, pd, iph_len);
+ }
+ 
+ static inline int
+@@ -803,7 +803,7 @@ int ip_vs_leave(struct ip_vs_service *svc, struct sk_buff *skb,
+ 		ip_vs_in_stats(cp, skb);
+ 
+ 		/* set state */
+-		ip_vs_set_state(cp, IP_VS_DIR_INPUT, skb, pd);
++		ip_vs_set_state(cp, IP_VS_DIR_INPUT, skb, pd, iph->len);
+ 
+ 		/* transmit the first SYN packet */
+ 		ret = cp->packet_xmit(skb, cp, pd->pp, iph);
+@@ -1484,7 +1484,7 @@ handle_response(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+ 
+ after_nat:
+ 	ip_vs_out_stats(cp, skb);
+-	ip_vs_set_state(cp, IP_VS_DIR_OUTPUT, skb, pd);
++	ip_vs_set_state(cp, IP_VS_DIR_OUTPUT, skb, pd, iph->len);
+ 	skb->ipvs_property = 1;
+ 	if (!(cp->flags & IP_VS_CONN_F_NFCT))
+ 		ip_vs_notrack(skb);
+@@ -2233,7 +2233,7 @@ ip_vs_in_hook(void *priv, struct sk_buff *skb, const struct nf_hook_state *state
+ 	IP_VS_DBG_PKT(11, af, pp, skb, iph.off, "Incoming packet");
+ 
+ 	ip_vs_in_stats(cp, skb);
+-	ip_vs_set_state(cp, IP_VS_DIR_INPUT, skb, pd);
++	ip_vs_set_state(cp, IP_VS_DIR_INPUT, skb, pd, iph.len);
+ 	if (cp->packet_xmit)
+ 		ret = cp->packet_xmit(skb, cp, pp, &iph);
+ 		/* do not touch skb anymore */
+diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+index 63c78a1f3918..394367b7b388 100644
+--- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
++++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+@@ -468,7 +468,8 @@ set_sctp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
+ 
+ static void
+ sctp_state_transition(struct ip_vs_conn *cp, int direction,
+-		const struct sk_buff *skb, struct ip_vs_proto_data *pd)
++		const struct sk_buff *skb, struct ip_vs_proto_data *pd,
++		unsigned int iph_len)
+ {
+ 	spin_lock_bh(&cp->lock);
+ 	set_sctp_state(pd, cp, direction, skb);
+diff --git a/net/netfilter/ipvs/ip_vs_proto_tcp.c b/net/netfilter/ipvs/ip_vs_proto_tcp.c
+index 8cc0a8ce6241..2d3f6aeafe52 100644
+--- a/net/netfilter/ipvs/ip_vs_proto_tcp.c
++++ b/net/netfilter/ipvs/ip_vs_proto_tcp.c
+@@ -579,7 +579,8 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
+ static void
+ tcp_state_transition(struct ip_vs_conn *cp, int direction,
+ 		     const struct sk_buff *skb,
+-		     struct ip_vs_proto_data *pd)
++		     struct ip_vs_proto_data *pd,
++		     unsigned int iph_len)
+ {
+ 	struct tcphdr _tcph, *th;
+ 
+diff --git a/net/netfilter/ipvs/ip_vs_proto_udp.c b/net/netfilter/ipvs/ip_vs_proto_udp.c
+index f9de632e38cd..58f9e255927e 100644
+--- a/net/netfilter/ipvs/ip_vs_proto_udp.c
++++ b/net/netfilter/ipvs/ip_vs_proto_udp.c
+@@ -444,7 +444,8 @@ static const char * udp_state_name(int state)
+ static void
+ udp_state_transition(struct ip_vs_conn *cp, int direction,
+ 		     const struct sk_buff *skb,
+-		     struct ip_vs_proto_data *pd)
++		     struct ip_vs_proto_data *pd,
++		     unsigned int iph_len)
+ {
+ 	if (unlikely(!pd)) {
+ 		pr_err("UDP no ns data\n");
 -- 
 2.34.1
 
