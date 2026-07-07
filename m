@@ -1,203 +1,143 @@
-Return-Path: <netfilter-devel+bounces-13699-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13703-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XIduAa9STWqCyQEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13699-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Jul 2026 21:25:35 +0200
+	id EA5vCgVZTWrZygEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13703-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Jul 2026 21:52:37 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981D771F309
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Jul 2026 21:25:34 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F67271F6A6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Jul 2026 21:52:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=ssi.bg header.s=ssi header.b=PyXjxGrQ;
-	dmarc=pass (policy=reject) header.from=ssi.bg;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13699-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13699-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b="B3AP22/A";
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13703-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13703-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E01B93021E4B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jul 2026 19:18:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8802B300D720
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jul 2026 19:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B38FF322533;
-	Tue,  7 Jul 2026 19:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001523B994A;
+	Tue,  7 Jul 2026 19:52:28 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2022D876A;
-	Tue,  7 Jul 2026 19:18:47 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783451929; cv=none; b=U+VywhXRyDJ0/UmUdsxPn8Y6ZwAK1Z+uZPW3bwTGe47UBTzHSI3tOZDGXTGWBvNKeQ9NtCG2OSvB3sflLqZMknCq7u2+V02fY6YgU2j5gjxxRypiY/bz27Rl0fjHtYYYT+DOczs/Wz2wm6DDVxFutzazIsa7CfL+hM2cL6WViYE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783451929; c=relaxed/simple;
-	bh=84RAJy1+m4IDIpbc/Vr19KuJOpMAkhJJBnJ4PFLm/yY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=qO8OWjTXvccjYEfpiy2tYcN0J0asDIxIC2SGqW/B1TVhM32LHg4cVv/csVQ85caR5DwmVV7D6uw06H0hIDZ8XPZ8HymBq4DY4aYqniPB/Osabo6XIgTBpvZm/1QAsif7FJY15DH772+R3tnGrO7JXMecvJg/a8IqkQ9+EpwljOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=PyXjxGrQ; arc=none smtp.client-ip=193.238.174.39
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 512BC2121F;
-	Tue, 07 Jul 2026 22:18:44 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-type:content-type:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=RWeYm4FQ+YZWg9e8z0ezoKNKTxN0sebs0a4TpewL3uQ=; b=PyXjxGrQFt+h
-	h5EO+BlT99UkJFRP/r+SJRH3z1CXcQvz4Fp61Fsy3Aujg6L8EmvtZZ7OCsjOM0nZ
-	QbDRXnbzRJGBXiyxb2EcEkUnYdJwDyclbK3TDIbe9U4mlgqV25J3En96EzM+lD6E
-	I3oV5pcreqUA90E7Q5lihGpaLhTCeL6GJrxTdz0DfVcDKM4BtHHLq1teo4dz2SVg
-	VKlZe9Ghx2eWMv2+uDp0eDSZPbuxVVNyabGtJnGq7hUmY1DNZICDL1xEd675nZS3
-	ggJjCECIyTLZrEMP6xSLjZKBithvRkQ6j09kxWLlq2VlyrPaiyiZjOFWKMyMkTJT
-	z1jWgDEaSqckjhca80LQr/R8fxmzpjsv1/XSyaK7BwB5/JprqXh2h2H5VSaOku6+
-	3Q/2FgRIwiuZt9a+1gIDDX7mq3EfWef6KdmZ+sKtLDsTNkqn3L6V8E1uzVmR6iW7
-	uo3Tg5E1EzmfPMwLVG0s8v7/0WIim6f1GtZh6S8ZUhtLXt6ez2T3OXU2t5Aq+G+J
-	q6PHNuzPm4xbkUTFxb27eGj6RR36PzHnkYruxr+mKEXA8RDgTkJ/K413nYEFfM2H
-	O0NbAnJO9lGM0a+RBarQuZO61dDj3Lvq1yRPwUVzoEr89JjpzQJKiFTK8+vFFk4r
-	eM4qGV2mDCt/BoxR1Qe4SSSuQzrteCI=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 07 Jul 2026 22:18:44 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 393C161C4F;
-	Tue,  7 Jul 2026 22:18:39 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.2/8.18.2) with ESMTP id 667JIQNR076297;
-	Tue, 7 Jul 2026 22:18:28 +0300
-Date: Tue, 7 Jul 2026 22:18:26 +0300 (EEST)
-From: Julian Anastasov <ja@ssi.bg>
-To: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-cc: Simon Horman <horms@verge.net.au>, David Ahern <dsahern@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        Alexander Frolkin <avf@eldamar.org.uk>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        stable@vger.kernel.org, Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
-        Ao Wang <wangao@seu.edu.cn>, Xuewei Feng <fengxw06@126.com>,
-        Qi Li <qli01@tsinghua.edu.cn>, Ke Xu <xuke@tsinghua.edu.cn>
-Subject: Re: [PATCH nf] ipvs: make destination flags atomic
-In-Reply-To: <20260707085706.96322-1-zhaoyz24@mails.tsinghua.edu.cn>
-Message-ID: <41c3d792-af7d-5582-5057-ac3df5f7bfd6@ssi.bg>
-References: <20260707085706.96322-1-zhaoyz24@mails.tsinghua.edu.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE023BE644;
+	Tue,  7 Jul 2026 19:52:26 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783453948; cv=pass; b=R2nSUy4AhrG9zjwAyoKo5qtjKvPGb1K1K3g1z0NCrrQuJ9FEzgPtedUw2ocum8s2LP5kSeIdqniUqPSS2TUowXJyQcVoOry/qaJH4rm7Nh1P8S5DQ0cdWbpJ6mdawSuwTFWGu7mC+X2+hz6KH8lghpdzNdcLoYQ8xRJ32iFdTgI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783453948; c=relaxed/simple;
+	bh=mQwXGZluo0e/rOz6em/H3KPFLAzljDc4xuigN/YjoWw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZD6u84doNbiRr9EjibsomyPzAVNzR3u4Bhrxy9jVE0hnTVzkTHNIsdVhDHaaNhvFyhiwgi8EEXeJYJ9lucJuMjgDuwy1wHKjedvOFnIHLPpeEqxwB540TTyZiiWPWaYmvwWy1o+Rvr7KI6ErlwpRU8Kbk0zs+kFGm/EFvClFKKc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=B3AP22/A; arc=pass smtp.client-ip=136.143.169.17
+ARC-Seal: i=1; a=rsa-sha256; t=1783453886; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=IjjF0DTdO5cT/dT4SLrpDA5Ha/QFyV6hnjlStruEB7YvmxcVMD4BtjdmfYK4nYFM+TR9GjBYZU55CJYFBoIZz+1YjpkCSQhuDcGusl6Oe0mFau9pakYkKC1dVtjJ9ToMmHyNkvVpufxpqXKWf4ePGaMdvGY/k8guTIf0eD6LOyM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1783453886; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=STRIjG+QS7Hua/lM7GQwd7GhTYTw8rS7AqdX4cPkG5c=; 
+	b=PIATY/mDGl5RLpR1f8XcNe+M3m7esmNdRG81VOpTs1y1hV4WupWwkXAqqKOSVbw12T8MCdShtgvZ1j0sNtn/MBxOBEqT3aVNHgfyFJA2/inXyEBTgWpFrgjEHJ+rxcd0y3TlRqgkF5KRIzpm9+w9q6qrMxUm6KQy4TA7Jvkm6i8=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=carlosgrillet.me;
+	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
+	dmarc=pass header.from=<carlos@carlosgrillet.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783453886;
+	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=STRIjG+QS7Hua/lM7GQwd7GhTYTw8rS7AqdX4cPkG5c=;
+	b=B3AP22/AFfWxaHJ0cB1oVTAJPcduG315s9f4zWFILYkkwyJFVZkKJDGvH6T2DEku
+	Smoi8UWvP8wneB2SPhODmXCqVI6fogHQjq1b0fYBf5RxaeB127tVn55CjJZwP+k2Z1k
+	Z7PQnrqEvyMZ2CKRaPeIXkNzG+zjwDbvc+T1KfK4=
+Received: by mx.zoho.eu with SMTPS id 1783453883610391.61290214611824;
+	Tue, 7 Jul 2026 21:51:23 +0200 (CEST)
+From: Carlos Grillet <carlos@carlosgrillet.me>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>,
+	Simon Horman <horms@verge.net.au>,
+	Julian Anastasov <ja@ssi.bg>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	lvs-devel@vger.kernel.org
+Subject: [PATCH nf-next 0/4] netfilter: replace u_int*_t with kernel int types (batch 3)
+Date: Tue,  7 Jul 2026 21:51:05 +0200
+Message-ID: <20260707195111.34899-1-carlos@carlosgrillet.me>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[carlosgrillet.me:s=zmail];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13699-lists,netfilter-devel=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[verge.net.au,kernel.org,nvidia.com,davemloft.net,google.com,redhat.com,netfilter.org,strlen.de,nwl.cc,eldamar.org.uk,vger.kernel.org,mails.tsinghua.edu.cn,seu.edu.cn,126.com,tsinghua.edu.cn];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,ssi.bg:from_mime,ssi.bg:email,ssi.bg:mid,ssi.bg:dkim];
-	FORGED_SENDER(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FORGED_RECIPIENTS(0.00)[m:zhaoyz24@mails.tsinghua.edu.cn,m:horms@verge.net.au,m:dsahern@kernel.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:avf@eldamar.org.uk,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:horms@verge.net.au,m:ja@ssi.bg,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[carlosgrillet.me];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13703-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[carlosgrillet.me:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,carlosgrillet.me:from_mime,carlosgrillet.me:dkim,carlosgrillet.me:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 981D771F309
+X-Rspamd-Queue-Id: 8F67271F6A6
 
+This patch series replaces POSIX u_int8_t/u_int16_t/u_int32_t with the
+preferred kernel types u8/u16/u32 across several netfilter files and
+updates the corresponding header definition.
 
-	Hello,
+This continues the work started in:
+https://lore.kernel.org/all/20260616182948.96865-1-carlos@carlosgrillet.me
 
-On Tue, 7 Jul 2026, Yizhou Zhao wrote:
+No functional changes.
 
-> is_unavailable() in the SH scheduler reads dest->flags from the packet
-> scheduling path while holding only the RCU read lock.  The same word is
-> updated by read-modify-write operations from connection accounting and
-> destination update paths, for example ip_vs_bind_dest(),
-> ip_vs_unbind_dest(), and __ip_vs_update_dest().
-> 
-> The RCU read lock only protects the destination lifetime; it does not
-> serialize accesses to dest->flags.  A racing plain load or RMW update can
-> therefore observe stale state or lose an AVAILABLE/OVERLOAD bit update,
-> which can make the scheduler choose an overloaded destination or report no
-> available destination even though one should be usable.
+Carlos Grillet (4):
+  netfilter: ip_vs_core: replace u_int32_t with u32
+  netfilter: nf_conntrack_sip: replace u_int16_t with u16
+  netfilter: nf_nat_amanda: replace u_int16_t with u16
+  netfilter: nfnetlink_osf: replace u_int8_t with u8
 
-	While the patch correctly serializes the concurrent
-modifications for the flags, we can not claim that the scheduler
-will not choose an overloaded or unavailable destination.
-The patch does not change the fact that we can work with
-stale data.
+ include/linux/netfilter/nfnetlink_osf.h | 2 +-
+ net/netfilter/ipvs/ip_vs_core.c         | 2 +-
+ net/netfilter/nf_conntrack_sip.c        | 2 +-
+ net/netfilter/nf_nat_amanda.c           | 2 +-
+ net/netfilter/nfnetlink_osf.c           | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-	We can compare 3 solutions, from fast to slow:
-
-1. atomic_read or test_bit
-	- no memory barriers for the readers
-	- no memory ordering (=> stale data)
-
-	PRO:
-	- serializes RMW operations
-
-	CON:
-	- readers can use old values
-	- writers may need to synchronize while changing
-	the flags, eg. to check the thresholds and update the
-	flags in atomic way. We do not do this.
-
-2. Use refcount_inc_not_zero(&dest->available) from readers
-
-	- and put the ref immediately or later:
-
-	smp_mb__before_atomic();
-	refcount_dec(&dest->available);
-
-	- alternative: RMW such as atomic_fetch_add
-
-	- writers can synchronize by using the IP_VS_DEST_F_AVAILABLE
-	flag and then to inc/dec &dest->available when the
-	flag changes
-	- the same can be done for &dest->not_overloaded and
-	IP_VS_DEST_F_OVERLOAD
-	- PRO: readers are serialized perfectly with the
-	changed value, new packets will detect the changes
-	immediately
-	- CON:
-		- 2 full memory barriers for the readers
-		- writers may need to synchronize while changing
-		the flags
-
-3. read_lock/write_lock
-	- PRO: can modify more things under write lock
-	- CON: full memory barriers
-
-	With this patch you choose solution 1.
-The other solutions can be expensive for the fast path.
-Lets fix the commit message. Also, it is better to fix the
-scripts/checkpatch.pl warnings about the 'if' conditions,
-even if they are not introduced now.
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+-- 
+2.55.0
 
 
