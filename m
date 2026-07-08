@@ -1,57 +1,50 @@
-Return-Path: <netfilter-devel+bounces-13749-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13750-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +23IJeNrTmqMMQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13749-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 17:25:23 +0200
+	id 7XsXHBdsTmqiMQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13750-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 17:26:15 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE115727F85
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 17:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9E1727FB0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 17:26:14 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=xW4i8IH0;
-	dmarc=pass (policy=none) header.from=linuxfoundation.org;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13749-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13749-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13750-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13750-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DF10F315C661
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 14:55:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C021430E838C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 14:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8953B7765;
-	Wed,  8 Jul 2026 14:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657F73AD50F;
+	Wed,  8 Jul 2026 14:56:36 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD73390228;
-	Wed,  8 Jul 2026 14:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5501E3B71C7
+	for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2026 14:56:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783522525; cv=none; b=lECXL9R5ViXOWkYZtHH/c6Yqy7yV4VozRShKqNm5hBhBNGk/mIethq+zhmN8ktuOwjPf1UAm98tQgwuRgzUGAbHf/6zQcV6HZgxIId8gvt3JGPtW0PK9xnGNC0+Aj1/CTqYD44cxBzjcNKRx8aDV4oh3+d2CVti0iJ8aWQH/OH4=
+	t=1783522596; cv=none; b=Pb1/SpF5PvFshRd9XZIFdldCqoELWtELmem2St/JOPnfiNhEj7Y/urPRZI0fGJrqtDljtuZPFNkG5dHGfkhKVzcESU21FLUQVSCrKTHRZyQoYyzh/HQRjtc6o7jiysVcmTtmTC4HFOfhjPNMuObUfn3MsaX35ayYsP4eE9U6J4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783522525; c=relaxed/simple;
-	bh=8FhydZ5T6HRYZO1CUeYB4dyiCSrzViAcpUgRLUr8FGE=;
+	s=arc-20240116; t=1783522596; c=relaxed/simple;
+	bh=d53hDIMiIofWRYrOwXy+zbiy518ScHwjHUbpcZj6ewg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lDqECGGqAv/K8iNiHQgOYUbpAzz6KaspXfStnSid8Nsf05jpJ7X0LhAPlfWcG/6wZC3Wk5A6tgzq5mp5wceh+fMJGL7nNW9bs2yukhARnpVquKjwvMqKeBSlHPVaX21hUp0GjQA25VGEO0noaX1JgDcOnzHxdhDoRblOzJ/62Lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xW4i8IH0; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AE281F000E9;
-	Wed,  8 Jul 2026 14:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1783522523;
-	bh=N4tk33+gGzEvWhx3TAYATpFb6wxOHUQmG8/nMmeWOk0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=xW4i8IH00Xp6ZAjNrt4/A3qUb/gBuHTe/GlvTkuACu4a9Pz0zHAJa6o5Zjifg3gJ7
-	 RZjLOgySpbzaGfHe1VBkUx6uoZ7r9my1/m1uZVWhbuNgeO+eZ7cckcAXUw1lPNde4o
-	 QVN2IHGaRvCryL30/1DVjQWiXXoyUMZ7O05dyy0E=
-Date: Wed, 8 Jul 2026 16:55:20 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Yuan Tan <yuantan098@gmail.com>
-Cc: linux-kernel@vger.kernel.org, workflows@vger.kernel.org,
-	jhs@mojatatu.com, sven@narfation.org, netdev@vger.kernel.org,
-	netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [RFC] VEGA: a syzbot-like workflow for LLM-found kernel bugs
-Message-ID: <2026070828-carried-extortion-789e@gregkh>
-References: <20260708092247.4188498-1-yuantan098@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gx12Uz8ub6atAPOcoyXo+G0O0fIhCNStm6/JxpqOluDoAbjCoKykH8DJtiM1xC1LLP8WDyNwYLlfmvJnMBEYMnnwFTIy6xHfkAgPJ/09NT3+DaRs071NkC8/lIKhBye4ZSAXr0N7eUAHSOopxaJ/n9uXgIQLDWeW/Rb+dG/8ddw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 9130B60F16; Wed, 08 Jul 2026 16:56:32 +0200 (CEST)
+Date: Wed, 8 Jul 2026 16:56:31 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Carlos Grillet <carlos@carlosgrillet.me>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Phil Sutter <phil@nwl.cc>,
+	netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next 0/4] netfilter: replace u_int*_t with kernel int
+ types (batch 3)
+Message-ID: <ak5lH1UnFth6oreP@strlen.de>
+References: <20260707195111.34899-1-carlos@carlosgrillet.me>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -60,117 +53,77 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260708092247.4188498-1-yuantan098@gmail.com>
+In-Reply-To: <20260707195111.34899-1-carlos@carlosgrillet.me>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:yuantan098@gmail.com,m:linux-kernel@vger.kernel.org,m:workflows@vger.kernel.org,m:jhs@mojatatu.com,m:sven@narfation.org,m:netdev@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:linux-crypto@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-13749-lists,netfilter-devel=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,netfilter-devel@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[strlen.de];
+	TAGGED_FROM(0.00)[bounces-13750-lists,netfilter-devel=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:carlos@carlosgrillet.me,m:pablo@netfilter.org,m:phil@nwl.cc,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TAGGED_RCPT(0.00)[netfilter-devel];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxfoundation.org:from_mime,linuxfoundation.org:dkim,gregkh:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,carlosgrillet.me:email,strlen.de:mid,strlen.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: DE115727F85
+X-Rspamd-Queue-Id: AF9E1727FB0
 
-On Wed, Jul 08, 2026 at 02:22:47AM -0700, Yuan Tan wrote:
-> Hi all,
+Carlos Grillet <carlos@carlosgrillet.me> wrote:
+> This patch series replaces POSIX u_int8_t/u_int16_t/u_int32_t with the
+> preferred kernel types u8/u16/u32 across several netfilter files and
+> updates the corresponding header definition.
 > 
-> We would like to ask for feedback on a proposed workflow for reporting Linux
-> kernel bugs found by an LLM-assisted code auditing tool that we have
-> been developing since earlier this year.
+> This continues the work started in:
+> https://lore.kernel.org/all/20260616182948.96865-1-carlos@carlosgrillet.me
 > 
-> Since February, we have been developing an LLM-driven kernel code auditing
-> tool called VEGA. It started as a side project, but the results became much
-> substantial than we expected: VEGA has found hundreds of valid bugs in Linux
-> kernel.
+> No functional changes.
 > 
-> That immediately created a practical problem: we do not want to dump a large
-> pile of bug reports onto mail lists and annoy the maintainers.
+> Carlos Grillet (4):
+>   netfilter: ip_vs_core: replace u_int32_t with u32
 
-True, which is why we all end up with long lists of issues/patches at
-the moment.  The initial reaction is "we need a dashboard for everyone
-to collab around!" like you did here, but I'd like to say this is not
-the best thing to do at all.
+This one is fine, its the only occurence.
 
-syzbot can get away with a dashboard because someone is tending to it,
-triaging the "serious" bugs before they become public, and only letting
-the "would be nice to fix one day" type issues remain.  That's a huge
-resource commitment that Google has made here, and that's great, but I
-doubt that anyone else will have those resources to do this type of
-thing.
+>   netfilter: nf_conntrack_sip: replace u_int16_t with u16
 
-Instead, let's just work to get these things fixed.  We all have
-hundreds of patches/reports in our internal systems right now,
-attempting to triage/rank/coordinate would just waste time.  In other
-words, just grind through them, send patches out, and get these fixed.
+No need to send a v2, I "fixed" this locally, but this
+could have been
+'netfilter: nf_conntrack: replace u_int16_t with u16'
 
-I'm doing this now, and I know many others are as well.  We are all
-running "different" tools, and so we find different issues, so we can
-all just keep sending patches as we get them done.  It's going to take a
-lot of effort (I've somehow convinced 8 interns to help me out with this
-this summer), but once we get it done, we'll be much better off.
+ nf_conntrack_core.c    |    4 ++--
+ nf_conntrack_irc.c     |    4 ++--
+ nf_conntrack_netlink.c |    6 +++---
+ nf_conntrack_pptp.c    |    8 ++++----
+ nf_conntrack_sip.c     |    2 +-
+ 5 files changed, 12 insertions(+), 12 deletions(-)
 
-> The first thing we tried was to fix as many as we could ourselves. We
-> started working with a group of student volunteers. Most of them are
-> college students, so we have been training them, reviewing their patches,
-> and trying to build an internal review process before anything is sent to
-> the mailing list. The goal is to turn these findings into useful fixes, and
-> also to help new contributors grow into people who can reduce maintainer
-> workload instead of adding to it.
-> 
-> The process was not perfect. Some patches were not good enough, and we also
-> made some mistakes early on when deciding what should be called a security
-> issue.  Our internal review process has been improving with the help of the
-> community.
+>   netfilter: nf_nat_amanda: replace u_int16_t with u16
+>   netfilter: nfnetlink_osf: replace u_int8_t with u8
 
-That's great, keep it up!
+I'm not applying these two.  Please find a way to make
+larger logical changesets.
 
-> But the remaining queue is still too large for us to handle.
-> 
-> Recently Jamal pointed out problems around our tags. That made me realize
-> that we should probably stop treating this as an ad-hoc patch effort and
-> build something closer to syzbot: public, reproducible, trackable,
-> deduplicated, and useful to maintainers.
+These one-lines are just extra churn.
+E.g. make one patch for nf_nat.
 
-Again, I think that effort is going to be larger than just getting the
-patches fixed and pushed out.  It also turns into a central
-point-of-failure, which is what we do not want to have at all for the
-kernel.
-
-But hey, I could be totally wrong.  Maybe some generous company that is
-involved in unleashing this hell on us would be so kind as to pony up to
-do the work to create this and help fix the issues that their tools are
-finding.  Just like Google did in the past, there is precedent, but for
-some reason people don't like learning from history...
-
-It's going to be a long 18 months...
-
-greg k-h
+Or address all of u8/18/u32 in same change.
 
