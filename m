@@ -1,78 +1,70 @@
-Return-Path: <netfilter-devel+bounces-13702-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13705-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id lYG/MwJZTWrXygEAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13702-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Jul 2026 21:52:34 +0200
+	id DaB9GS/gTWrP/QEAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13705-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 07:29:19 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF2EE71F6A0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 07 Jul 2026 21:52:33 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEAB9721CBF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 07:29:18 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=carlosgrillet.me header.s=zmail header.b="el5LPWP/";
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13702-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13702-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=l6ln1pnu;
+	dmarc=pass (policy=quarantine) header.from=mails.tsinghua.edu.cn;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13705-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13705-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A79B530086B6
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jul 2026 19:52:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6EFB3007F74
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 05:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62FAF3BED78;
-	Tue,  7 Jul 2026 19:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D1C3B9D97;
+	Wed,  8 Jul 2026 05:28:08 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from sender-op-o17.zoho.eu (sender-op-o17.zoho.eu [136.143.169.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9F63B42DB
-	for <netfilter-devel@vger.kernel.org>; Tue,  7 Jul 2026 19:52:25 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783453947; cv=pass; b=mDLmN/EnPInFapfS8Zdq5mOIO3VZAQBhhucGpGGtObH4wQuFGgF/saLqN5swRVh9Ua3laEbTCyfJi0TaLH86tlwmU2mSohn36NFV1ohVU6H2eKvukDp8iBmOwEO8QIp3hdbRc/qFK3V9GwF4/jHjnHrMT/wS+yzi/5H86l04w8c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783453947; c=relaxed/simple;
-	bh=scB7ypqBgqkiRte7mKOkKRltOE07loqucZudwbis/0A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=StQIQODGoydRdYMk1afAsNOgfSj1BdT3U8yC/oMc1R4Sxyss64ksOL4mZkoYABEmjik7QDEdv5VK7rCiHOl/MlCvnsMVqmcnyyrkqNwUbCffvXfUusA8GhvNgVUvCCuOXtk1I1Ovi/XhQ+nHRFx0JOrVSVL8F5YbAfbIA7Mfzo8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=carlosgrillet.me; spf=pass smtp.mailfrom=carlosgrillet.me; dkim=pass (1024-bit key) header.d=carlosgrillet.me header.i=carlos@carlosgrillet.me header.b=el5LPWP/; arc=pass smtp.client-ip=136.143.169.17
-ARC-Seal: i=1; a=rsa-sha256; t=1783453894; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=EeKu6D+XGZEI/eaBBDR+woAtZP81vCFAkGwVKHuorDMnv+XZ7TaPJBwpxG2aq6OzfyOd2AlwCy6G49iBFQl+zij96TMA8fcIJfq1uVdXMrHqmAjGUWQwDoVOcN6wH+4zBNK0Ga2Y8KpybG81D8q3nfrFkPemsSgpxbZjs2L5C9w=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1783453894; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=luS/Mu16YvAN7KlUBG+ZtPKjUL/3alwz5jLEoHft+xE=; 
-	b=aObuOQTY5H8A2h/48gP6FBkYgOG52fC8P0CZPUaQCZQ+rWtI5irHNGINoRcOKgSHE1O7m3ZK0lV7CNfdfFhIT4y+DaUNK1yoFmkQswuc/WTno0xTEMkgoT3YiXuWigul0rKoUtBkX5n+GBYB2MpXr83jkXB/BDGKtCnmOxF1dCs=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=carlosgrillet.me;
-	spf=pass  smtp.mailfrom=carlos@carlosgrillet.me;
-	dmarc=pass header.from=<carlos@carlosgrillet.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1783453894;
-	s=zmail; d=carlosgrillet.me; i=carlos@carlosgrillet.me;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=luS/Mu16YvAN7KlUBG+ZtPKjUL/3alwz5jLEoHft+xE=;
-	b=el5LPWP/PykR/z7DHyxDne3jjY9feRPGlWtT6U9HGoJJhNwkUTKUpdlQKewcLP23
-	XWC76bCjJAi3hMIjg83Ou66HuYNBfai9auoljKLg93+C04SclBO/uRodRZfZ7BuFqP9
-	pvjN5rek00U1n0Hs/9tyfTSWPQLWlqV5CrHFybaQ=
-Received: by mx.zoho.eu with SMTPS id 1783453891863504.45466547053843;
-	Tue, 7 Jul 2026 21:51:31 +0200 (CEST)
-From: Carlos Grillet <carlos@carlosgrillet.me>
-To: Pablo Neira Ayuso <pablo@netfilter.org>,
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.76.78.106])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A133B9D9B;
+	Wed,  8 Jul 2026 05:28:02 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783488488; cv=none; b=HUNaQHXCtaIpusJ8727RfKy2Bp36nCOLC04lrxN2osaz9GX0VS2HVSYLBcrpltjGNGS03sOCTasP3oRqw4rr+ZNbtb9PRGBhJn24JAM38hPpvMwYXaQ3ocCQv1CnA3iYSfCgDWBHXyP/Tp37zIa5f1GmoeJUYpZ5fycjhVH/wx8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783488488; c=relaxed/simple;
+	bh=Tk/SIKN81NVDuX2stQgrEZFJK2nWKRLk8SvQKPTSZ3E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OsRnCH24sC2VSyYdNt79a7+C1QlOeFyeGI/PtaCz7wmKT6i6Uc+KgRhC8wGLVoXWp7oZtflHoNji7m5rhsdQbB4znSIfJzaZZyuC/ZAcj5C4OlUtQ23A4EgyuUJ9sNs5CJgSCvMFsy8wNNeKPdVoa0So0zYRn+KNN8FHeDTvwj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=l6ln1pnu; arc=none smtp.client-ip=13.76.78.106
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
+	Date:Message-ID:MIME-Version:Content-Transfer-Encoding; bh=U0Et5
+	gxWdJSPtba9Rc9sxcUYbgY5trVM/vydxYE7rrU=; b=l6ln1pnu/vRxkC5K83wYe
+	du07UKyn0SenuEp3eHTCumEep/rSCnCsdOf7p2kvHEV8peZVlm+ZTFkIq3jTjQy2
+	zXHTHuEgA6q5Ah+UJeU4USC6zUoaTHf+i3O+PjuOwZOSmtfYfL0kMNvDz0XbvQGT
+	6NtgJRkJ3STAyuJ2u+UdZU=
+Received: from localhost.localdomain (unknown [211.102.241.101])
+	by web2 (Coremail) with SMTP id yQQGZQAnAprF301qtzPPAg--.34710S2;
+	Wed, 08 Jul 2026 13:27:34 +0800 (CST)
+From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+To: netfilter-devel@vger.kernel.org
+Cc: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>,
 	Phil Sutter <phil@nwl.cc>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>
-Cc: netfilter-devel@vger.kernel.org,
+	Simon Horman <horms@kernel.org>,
 	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH nf-next 4/4] netfilter: nfnetlink_osf: replace u_int8_t with u8
-Date: Tue,  7 Jul 2026 21:51:09 +0200
-Message-ID: <20260707195111.34899-5-carlos@carlosgrillet.me>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260707195111.34899-1-carlos@carlosgrillet.me>
-References: <20260707195111.34899-1-carlos@carlosgrillet.me>
+	Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
+	Ao Wang <wangao@seu.edu.cn>,
+	Xuewei Feng <fengxw06@126.com>,
+	Qi Li <qli01@tsinghua.edu.cn>,
+	Ke Xu <xuke@tsinghua.edu.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH nf v2] netfilter: nf_conncount: fix zone comparison in tuple dedup
+Date: Wed,  8 Jul 2026 13:27:28 +0800
+Message-ID: <20260708052730.18354-1-zhaoyz24@mails.tsinghua.edu.cn>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -80,80 +72,138 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+X-CM-TRANSID:yQQGZQAnAprF301qtzPPAg--.34710S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw1rXr4UWF4fZryktF17Awb_yoWrXFWfpr
+	WYkrZayFZ7XrZFk3s7Zw17AF13Jws8AFy3JFn5A3yqvws0gas0yayxt343A3WDuF4DXF17
+	ZF45Wr1jyan8ArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUP014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wrylc2xSY4AK67
+	AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
+	1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sREK0PPUU
+	UUU==
+X-CM-SenderInfo: 52kd05r2suqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAQECAWpNfDKVPAAAsD
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[carlosgrillet.me:s=zmail];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
+	DMARC_POLICY_ALLOW(-0.50)[mails.tsinghua.edu.cn,quarantine];
+	R_DKIM_ALLOW(-0.20)[mails.tsinghua.edu.cn:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13705-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FORWARDED(0.00)[lists@lfdr.de];
-	DMARC_NA(0.00)[carlosgrillet.me];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER(0.00)[zhaoyz24@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:zhaoyz24@mails.tsinghua.edu.cn,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13702-lists,netfilter-devel=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[mails.tsinghua.edu.cn,netfilter.org,strlen.de,nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,vger.kernel.org,seu.edu.cn,126.com,tsinghua.edu.cn];
+	DKIM_TRACE(0.00)[mails.tsinghua.edu.cn:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[carlos@carlosgrillet.me,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[zhaoyz24@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[carlosgrillet.me:+];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,carlosgrillet.me:from_mime,carlosgrillet.me:email,carlosgrillet.me:mid,carlosgrillet.me:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tsinghua.edu.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,seu.edu.cn:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CF2EE71F6A0
+X-Rspamd-Queue-Id: AEAB9721CBF
 
-Use preferred kernel integer type u8 instead of the POSIX u_int8_t
-variant and update the corresponding header definition.
+The "already exists" dedup logic in __nf_conncount_add() decides
+whether a connection has already been counted and can be skipped instead
+of incrementing the connlimit count.  It compares the conntrack zone of a
+list entry with the zone of the connection being added using
+nf_ct_zone_id() and nf_ct_zone_equal(), passing conn->zone.dir or
+zone->dir as the direction argument.
 
-No functional change.
+Those helpers take enum ip_conntrack_dir values: IP_CT_DIR_ORIGINAL is 0
+and IP_CT_DIR_REPLY is 1.  However, zone->dir is a u8 bitmask:
+NF_CT_ZONE_DIR_ORIG is 1, NF_CT_ZONE_DIR_REPL is 2 and
+NF_CT_DEFAULT_ZONE_DIR is 3.  Passing that bitmask as the enum direction
+shifts the meaning of every non-zero value.  An ORIG-only zone passes 1
+and is tested as REPLY, while REPL-only and default zones pass 2 or 3 and
+test bits beyond the valid direction range.  In those cases
+nf_ct_zone_id() can fall back to NF_CT_DEFAULT_ZONE_ID instead of using
+the real zone id, so different zones can be treated as equal and dedup
+collapses to tuple equality alone.
 
-Signed-off-by: Carlos Grillet <carlos@carlosgrillet.me>
+nf_conncount stores and compares the original-direction tuple for a
+connection.  If an skb already has an attached conntrack entry,
+get_ct_or_tuple_from_skb() explicitly copies
+ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple, regardless of the packet's
+ctinfo.  Therefore the zone comparison in the tuple dedup path must use
+IP_CT_DIR_ORIGINAL as well; the zone direction bitmask describes where a
+zone id applies, not which direction this conncount tuple represents.
+
+Fix the two dedup comparisons by passing IP_CT_DIR_ORIGINAL directly.
+Do not special-case NF_CT_DEFAULT_ZONE_DIR and do not compare raw zone
+ids: using the existing helpers with IP_CT_DIR_ORIGINAL preserves the
+direction-aware NF_CT_DEFAULT_ZONE_ID fallback.  A default bidirectional
+zone contains the ORIG bit, so it naturally returns the real zone id;
+reply-only zones continue to fall back for original-direction tuple
+comparisons.
+
+Fixes: 21ba8847f857 ("netfilter: nf_conncount: Fix garbage collection with zones")
+Fixes: b36e4523d4d5 ("netfilter: nf_conncount: fix garbage collection confirm race")
+Cc: stable@vger.kernel.org
+Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
+Reported-by: Ao Wang <wangao@seu.edu.cn>
+Reported-by: Xuewei Feng <fengxw06@126.com>
+Reported-by: Qi Li <qli01@tsinghua.edu.cn>
+Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
+Assisted-by: Claude-Code:GLM-5.2
+Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 ---
- include/linux/netfilter/nfnetlink_osf.h | 2 +-
- net/netfilter/nfnetlink_osf.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+- Use IP_CT_DIR_ORIGINAL directly instead of adding a helper to map
+  zone->dir to an enum direction, suggested by Florian Westphal.
+- Link to v1: https://lore.kernel.org/netfilter-devel/20260706114820.74006-1-zhaoyz24@mails.tsinghua.edu.cn/
+---
+diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
+index 91582069f6d2..e9ea6d9466e7 100644
+--- a/net/netfilter/nf_conncount.c
++++ b/net/netfilter/nf_conncount.c
+@@ -211,8 +211,8 @@ static int __nf_conncount_add(struct net *net,
+ 			/* Not found, but might be about to be confirmed */
+ 			if (PTR_ERR(found) == -EAGAIN) {
+ 				if (nf_ct_tuple_equal(&conn->tuple, &tuple) &&
+-				    nf_ct_zone_id(&conn->zone, conn->zone.dir) ==
+-				    nf_ct_zone_id(zone, zone->dir))
++				    nf_ct_zone_id(&conn->zone, IP_CT_DIR_ORIGINAL) ==
++				    nf_ct_zone_id(zone, IP_CT_DIR_ORIGINAL))
+ 					goto out_put; /* already exists */
+ 			} else {
+ 				collect++;
+@@ -223,7 +223,7 @@ static int __nf_conncount_add(struct net *net,
+ 		found_ct = nf_ct_tuplehash_to_ctrack(found);
+ 
+ 		if (nf_ct_tuple_equal(&conn->tuple, &tuple) &&
+-		    nf_ct_zone_equal(found_ct, zone, zone->dir)) {
++		    nf_ct_zone_equal(found_ct, zone, IP_CT_DIR_ORIGINAL)) {
+ 			/*
+ 			 * We should not see tuples twice unless someone hooks
+ 			 * this into a table without "-p tcp --syn".
 
-diff --git a/include/linux/netfilter/nfnetlink_osf.h b/include/linux/netfilter/nfnetlink_osf.h
-index 788613f36935..d720abf59ca8 100644
---- a/include/linux/netfilter/nfnetlink_osf.h
-+++ b/include/linux/netfilter/nfnetlink_osf.h
-@@ -26,7 +26,7 @@ struct nf_osf_data {
- 	const char *version;
- };
- 
--bool nf_osf_match(const struct sk_buff *skb, u_int8_t family,
-+bool nf_osf_match(const struct sk_buff *skb, u8 family,
- 		  int hooknum, struct net_device *in, struct net_device *out,
- 		  const struct nf_osf_info *info, struct net *net,
- 		  const struct list_head *nf_osf_fingers);
-diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-index 92002079f8ea..88382e2108eb 100644
---- a/net/netfilter/nfnetlink_osf.c
-+++ b/net/netfilter/nfnetlink_osf.c
-@@ -179,7 +179,7 @@ static const struct tcphdr *nf_osf_hdr_ctx_init(struct nf_osf_hdr_ctx *ctx,
- }
- 
- bool
--nf_osf_match(const struct sk_buff *skb, u_int8_t family,
-+nf_osf_match(const struct sk_buff *skb, u8 family,
- 	     int hooknum, struct net_device *in, struct net_device *out,
- 	     const struct nf_osf_info *info, struct net *net,
- 	     const struct list_head *nf_osf_fingers)
--- 
-2.55.0
+--
+2.47.3
 
 
