@@ -1,53 +1,53 @@
-Return-Path: <netfilter-devel+bounces-13717-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13718-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id C00cDcQcTmrdDQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13717-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:47:48 +0200
+	id xU90LBcdTmrrDQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13718-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:49:11 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D59D723DC9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:47:47 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B6E723DF7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:49:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=q8b2I+IS;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b="qRIpuNf/";
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13717-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13717-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13718-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13718-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E1490300DF45
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 09:47:45 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D41B83010D2F
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 09:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBCC23ED6F;
-	Wed,  8 Jul 2026 09:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B4A33F8A6;
+	Wed,  8 Jul 2026 09:48:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1749A202963;
-	Wed,  8 Jul 2026 09:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65B732860B;
+	Wed,  8 Jul 2026 09:48:53 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783504064; cv=none; b=F3ZtpQ1GZpf0X+nUZhxWKeVXJ6cVtidLBH1CskL6eoSpg+scFI4k1IO3mk/m7KbzYx9Ndh7nV5PZDMNUs8LI0+qoIDSCck0TNOMNJf7fcPg8IXWGk3EJvdx22cqSdWj5eErbkdp4p5iX78sIeghsJiwV15DaEONh76GZXOTeNuA=
+	t=1783504135; cv=none; b=FSjxB7TZvV/NgLVSegBshFufXTxt3HO83uFzz+AvjhFnZ1/9CChmOP5S1SVAKOMXw0FxsNUCME/ErOh9LLCHW9SbOY7AXRuf5n4oVbdvGBTgjMmSdAjN3rCZdohN2dkyKnmp++OiVlXG69uM5PEeaPMCHsvA1Z3vwpqtcFadOdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783504064; c=relaxed/simple;
-	bh=2UgdhvCGhKgRQkmJRc96GJIV6llQ7T3t1zDzDxlGnZg=;
+	s=arc-20240116; t=1783504135; c=relaxed/simple;
+	bh=X5xuPPkM4pw2HH1LwZVPuqZvsbhgyekRtZKLwkDx22Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u1aj0g4EBI1Sxlqc1pILG8xJvBboX8ceQB9nKyiibTQc4ytIHEAlEEtgIYWH8NxCJEp9veHxsmYEW4+fssCIeAg2/Kb+p7qMPCNmoBoOx33qk7tq9Dpt2zGgJvi1MSoITz+CB3STz3VzZ4wWNMd0g2bDta1e+Q+3ZCrpJVPYRMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=q8b2I+IS; arc=none smtp.client-ip=217.70.190.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=sCzmHCQTPlJTeee1C1SBc8LUF6xT1x0/Z/d4kccA/6Qct/2K4f++WAZBqfN/mALoXiJWLZ/cVyHHoD8HADhk9M2jE60yhsS2BfgHkYC6d/MkRvQuFEl9TQESVpZZh+nvCXDfL78sq1ZYxpplDQx8gud1Oo71ilpbTMZLvzuGsz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=qRIpuNf/; arc=none smtp.client-ip=217.70.190.124
 Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 2976560193;
-	Wed,  8 Jul 2026 11:47:41 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 1053960193;
+	Wed,  8 Jul 2026 11:48:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1783504061;
-	bh=2UgdhvCGhKgRQkmJRc96GJIV6llQ7T3t1zDzDxlGnZg=;
+	s=2025; t=1783504132;
+	bh=UpErLOvc7LypcUmI0780VM1aFUUZM+RYAVzEWgLm5xA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q8b2I+IS6HDoQPBSTyVBsFQKp5IoijQCkAoyHVuUPhJN5svd8ODqibHf/SJsjJo+N
-	 iHlgcBdTWp0pBBy2kjA7lTZG10La17/cvipw1Y/1tRXTVsXAynfmsX/Zo1YvyujVqr
-	 fkOfrO4mRzdxVZN+AI1H7D8Pa9BDqQpYBkDUQJVh/4fdcH+EwVeT5neTr/UqpkTrRN
-	 llplN2oyn+NkdNmzLH/IRaCDo3X0M//FWM7LcvMxfVbt+0sb7UDk57LfK7WPhU7f3n
-	 nnsKBCpLli81YGBeMGTTeEn/DJl+zETx/GjiImTx3xDG5gv+MBUgn02JWPTvVBpqs4
-	 2E4hpf6MRQ2Mg==
-Date: Wed, 8 Jul 2026 11:47:38 +0200
+	b=qRIpuNf/dF83w9J6TtQmzlvSWfQ3G1P3DskDtizIcaXbreOgXiEsNEERvHoA3y4yY
+	 lCCwMyRak/zSK9ebaUTPCuBUESS+cAu9GYN8Vy180Eji5gif9ygiLE7PQfkoTdO/Jx
+	 oVaD9+/jbsZWMgYIB7Pm3XCCIYZACUDggdh+iEm8asksjmav7y1d3RQBoTA8l02fDD
+	 z8ESgkeQD3T/G9QKHGk+d5bY+XScnZcQ9JdfYnjVYw9brH10Ts0cFj1eAxc+BXkE2i
+	 S/hcLlKpT8Ue2FZukY/NegtndsnB/iIO/e6s+QE/cd7u8mrMhfjcSpXfQzfHArD2E+
+	 oGXjPtu3OxM8g==
+Date: Wed, 8 Jul 2026 11:48:49 +0200
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: Eric Woudstra <ericwouds@gmail.com>
 Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
@@ -65,9 +65,11 @@ Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
 	Krishna Kumar <krikku@gmail.com>,
 	Martin Karsten <mkarsten@uwaterloo.ca>, netdev@vger.kernel.org,
 	netfilter-devel@vger.kernel.org, bridge@lists.linux.dev
-Subject: Re: [PATCH v12 nf-next 0/7] netfilter: Add bridge-fastpath
-Message-ID: <ak4culZgTe8CNSva@chamomile>
+Subject: Re: [PATCH v12 nf-next 3/7] netfilter: nf_flow_table_offload: Add
+ nf_flow_rule_bridge()
+Message-ID: <ak4dAXHDmTDRr7-b@chamomile>
 References: <20260707091045.967678-1-ericwouds@gmail.com>
+ <20260707091045.967678-4-ericwouds@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -76,14 +78,14 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260707091045.967678-1-ericwouds@gmail.com>
+In-Reply-To: <20260707091045.967678-4-ericwouds@gmail.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -104,30 +106,75 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-13717-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13718-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	DKIM_TRACE(0.00)[netfilter.org:+];
 	TAGGED_RCPT(0.00)[netfilter-devel,netdev];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,chamomile:mid,netfilter.org:from_mime,netfilter.org:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,chamomile:mid,blackwall.org:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,netfilter.org:from_mime,netfilter.org:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1D59D723DC9
+X-Rspamd-Queue-Id: C8B6E723DF7
 
-Hi Eric,
+Hi,
 
-On Tue, Jul 07, 2026 at 11:10:38AM +0200, Eric Woudstra wrote:
-> This patchset makes it possible to set up a software fastpath between
-> bridged interfaces. One patch adds the flow rule for the hardware
-> fastpath. This creates the possibility to have a hardware offloaded
-> fastpath between bridged interfaces. More patches are added to solve
-> issues found with the existing code.
+On Tue, Jul 07, 2026 at 11:10:41AM +0200, Eric Woudstra wrote:
+> Add nf_flow_rule_bridge().
+> 
+> It only calls the common rule and adds the redirect.
 
-Thanks for your series.
+I decided to use the new _unsupp() function, so we don't pretend
+bridge hw offload is already supported. We will need a driver before
+we can add this, this stub does not provide much. I guess your goal
+was just to avoid a crash here.
 
-I posted an alternative series, including one of your patches for the
-bridge vlan filtering support (which is still untested on my side):
-
-https://lore.kernel.org/netfilter-devel/20260708093250.1187068-1-pablo@netfilter.org/T/#m270aedab59bf39f1bc4452d1d8d739a2b1b0bc45
+> Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
+> Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
+> ---
+>  include/net/netfilter/nf_flow_table.h |  3 +++
+>  net/netfilter/nf_flow_table_offload.c | 13 +++++++++++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+> index 7b23b245a5a86..5c6e3b65ae85b 100644
+> --- a/include/net/netfilter/nf_flow_table.h
+> +++ b/include/net/netfilter/nf_flow_table.h
+> @@ -368,6 +368,9 @@ void nf_flow_table_offload_flush_cleanup(struct nf_flowtable *flowtable);
+>  int nf_flow_table_offload_setup(struct nf_flowtable *flowtable,
+>  				struct net_device *dev,
+>  				enum flow_block_command cmd);
+> +int nf_flow_rule_bridge(struct net *net, struct flow_offload *flow,
+> +			enum flow_offload_tuple_dir dir,
+> +			struct nf_flow_rule *flow_rule);
+>  int nf_flow_rule_route_ipv4(struct net *net, struct flow_offload *flow,
+>  			    enum flow_offload_tuple_dir dir,
+>  			    struct nf_flow_rule *flow_rule);
+> diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+> index 002ec15d988bd..5566ebda7b7d3 100644
+> --- a/net/netfilter/nf_flow_table_offload.c
+> +++ b/net/netfilter/nf_flow_table_offload.c
+> @@ -740,6 +740,19 @@ nf_flow_rule_route_common(struct net *net, const struct flow_offload *flow,
+>  	return 0;
+>  }
+>  
+> +int nf_flow_rule_bridge(struct net *net, struct flow_offload *flow,
+> +			enum flow_offload_tuple_dir dir,
+> +			struct nf_flow_rule *flow_rule)
+> +{
+> +	if (nf_flow_rule_route_common(net, flow, dir, flow_rule) < 0)
+> +		return -1;
+> +
+> +	flow_offload_redirect(net, flow, dir, flow_rule);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(nf_flow_rule_bridge);
+> +
+>  int nf_flow_rule_route_ipv4(struct net *net, struct flow_offload *flow,
+>  			    enum flow_offload_tuple_dir dir,
+>  			    struct nf_flow_rule *flow_rule)
+> -- 
+> 2.53.0
+> 
 
