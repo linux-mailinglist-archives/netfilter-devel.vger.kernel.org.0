@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-13733-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13734-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id nyS7Hg1bTmrQLAIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13733-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 16:13:33 +0200
+	id 03U6Hh5aTmqQLAIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13734-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 16:09:34 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4219B7272C8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 16:13:33 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B367271FF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 16:09:34 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13733-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13733-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13734-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13734-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 278293049F7A
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 14:03:40 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0250A3034090
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 14:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED9884189C5;
-	Wed,  8 Jul 2026 14:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB8F416D05;
+	Wed,  8 Jul 2026 14:03:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF76380FF4;
-	Wed,  8 Jul 2026 14:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B543FBEC4;
+	Wed,  8 Jul 2026 14:03:42 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783519418; cv=none; b=FNV+vjpLRFmBF+p/ms+YCJ1bh0KbV4hQQHijznIRnrHkl9HzMMeDT3zdMV3vghe1+CuKwaX9fz9sBWyJBneCqPdaJyfMrL+K7Lrw6YlTu/z7f60zCY6TzXyGKi+3rtlEHDpInHYFLrXrnujsct8fv4yzBmUMwEDpmxGxCenK2mU=
+	t=1783519423; cv=none; b=WVlrSrPU5TH4rcZ4p0hJndRWAf0q5B4ySvDbC6/4HhmM1Kx3JNUpjpyJbgi+M/BHCs4skmHn5qOAf+RWcHX8cVuiRWMfPuL6+GDZNAXVaqhW5Jl1Ke9aYcbKyC+/ml3Z1FbPYDcacZwOZrqKeRiRmr832WvGOvjnBCT3cbKecEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783519418; c=relaxed/simple;
-	bh=DxJqZLLdzpL1pm/8LsFefQqmbDOjFIOXZ2uxWg8ValI=;
+	s=arc-20240116; t=1783519423; c=relaxed/simple;
+	bh=tGBLdw5Xy1zshtM3lf24fX4xCfN1o24SQRbto1utn1o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CqAmDpdedYxu0TWAOYEJug7s4mqVPw/zmhoGMTh4ElIgl7J3C8TEx5bidTt0MUnIHjD74jyfV3c857IJqg++DKLctp8ijwv9n5TRKdY9pqcz38j7koMrBZSM5g+sCUlKKgRGUUqF6dUAA0c9xUt+NJXLvKAPz+7P4/xJPyG49MA=
+	 MIME-Version; b=NE/qp6eEqpLR8Kj8nTKc/THnPoK7DtFvoShqFPY9DEgv5l4f5BHFcM5rX8p06GhrrauCfCslkMcTbmzLGiERGW1JdkFtlzFqyKOCDod0rOvaPrKE23B5GO17FZk722qePjOtOZlmjV4k77io6kfHpwyPMRwsL3m6WdIzfnMU04k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 54A906059E; Wed, 08 Jul 2026 16:03:36 +0200 (CEST)
+	id 938A76059E; Wed, 08 Jul 2026 16:03:40 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 04/17] netfilter: ebtables: module names must be null-terminated
-Date: Wed,  8 Jul 2026 16:02:56 +0200
-Message-ID: <20260708140309.19633-5-fw@strlen.de>
+Subject: [PATCH net 05/17] netfilter: nft_lookup: fix catchall element handling with inverted lookups
+Date: Wed,  8 Jul 2026 16:02:57 +0200
+Message-ID: <20260708140309.19633-6-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260708140309.19633-1-fw@strlen.de>
 References: <20260708140309.19633-1-fw@strlen.de>
@@ -62,7 +62,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -73,9 +73,9 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-13733-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13734-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -88,32 +88,51 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4219B7272C8
+X-Rspamd-Queue-Id: 26B367271FF
 
-We need to explicitly check the length, else we may pass non-null
-terminated string to request_module().
+From: Tamaki Yanagawa <ty@000ty.net>
 
-Cc: stable@vger.kernel.org
-Fixes: bcf493428840 ("netfilter: ebtables: Fix extension lookup with identical name")
+nft_lookup_eval() decides whether a lookup matched (`found`) from the
+direct set lookup and priv->invert before falling back to the
+catchall element used by interval sets (e.g. nft_set_rbtree) for the
+open-ended default range. Since `found` is never recomputed after
+`ext` is replaced by the catchall lookup, inverted lookups
+(NFT_LOOKUP_F_INV, "!= @set") can wrongly match or wrongly skip the
+catchall element, producing the wrong verdict. Fold the catchall
+lookup into `ext` before computing `found`, matching the order
+already used by nft_objref_map_eval().
+
+Fixes: aaa31047a6d2 ("netfilter: nftables: add catch-all set element support")
+Signed-off-by: Tamaki Yanagawa <ty@000ty.net>
+Assisted-by: Claude:claude-sonnet-5
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/bridge/netfilter/ebtables.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nft_lookup.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index 48187598cdd0..96c9a8f57c87 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -403,6 +403,9 @@ ebt_check_match(struct ebt_entry_match *m, struct xt_mtchk_param *par,
- 	    left - sizeof(struct ebt_entry_match) < m->match_size)
- 		return -EINVAL;
+diff --git a/net/netfilter/nft_lookup.c b/net/netfilter/nft_lookup.c
+index ba512e94b402..19887439847d 100644
+--- a/net/netfilter/nft_lookup.c
++++ b/net/netfilter/nft_lookup.c
+@@ -103,13 +103,13 @@ void nft_lookup_eval(const struct nft_expr *expr,
+ 	bool found;
  
-+	if (strnlen(m->u.name, XT_EXTENSION_MAXNAMELEN) == XT_EXTENSION_MAXNAMELEN)
-+		return -EINVAL;
+ 	ext = nft_set_do_lookup(net, set, &regs->data[priv->sreg]);
++	if (!ext)
++		ext = nft_set_catchall_lookup(net, set);
 +
- 	match = xt_find_match(NFPROTO_BRIDGE, m->u.name, m->u.revision);
- 	if (IS_ERR(match) || match->family != NFPROTO_BRIDGE) {
- 		if (!IS_ERR(match))
+ 	found = !!ext ^ priv->invert;
+ 	if (!found) {
+-		ext = nft_set_catchall_lookup(net, set);
+-		if (!ext) {
+-			regs->verdict.code = NFT_BREAK;
+-			return;
+-		}
++		regs->verdict.code = NFT_BREAK;
++		return;
+ 	}
+ 
+ 	if (ext) {
 -- 
 2.54.0
 
