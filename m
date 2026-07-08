@@ -1,56 +1,56 @@
-Return-Path: <netfilter-devel+bounces-13712-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13713-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0atVD10ZTmrODAIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13712-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:33:17 +0200
+	id hwK2DysaTmokDQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13713-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:36:43 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5D17723C52
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:33:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A906723CC0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 11:36:42 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=rk+tjEBg;
+	dkim=pass header.d=netfilter.org header.s=2025 header.b=iyfdjtY0;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13712-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13712-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13713-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13713-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 794A1301486D
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 09:31:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 478E930103B4
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 09:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A16B414A34;
-	Wed,  8 Jul 2026 09:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16F63419302;
+	Wed,  8 Jul 2026 09:33:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 032F94014AB
-	for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2026 09:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823D03FCB1E
+	for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2026 09:33:01 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783503110; cv=none; b=B4TPPl6cI72xOgBUlppp0dNbaxaCvKLGu1rhyGklQm36ZVX7OW2zKPgy5zsKljpvx5ahnbXBLmPEX2HlTc0FnqCu02N45NiFd8h0Jc2MwJ4sEzWqNSnPi+vJ39a0ju3nz5KebL1qNzr4FkiGEqb3uVVxYCUvZu2aHMv6aTr7XdY=
+	t=1783503188; cv=none; b=lFZJH0dOl4OLBDfPTTkMdO+KS6f5q5ByzeVYmOIzzOHZEYmZznii+4BovUU7YgE3dN5eCc0hUF7MW7ZIWQHQ2huBW26c/1cwCDg4WSbO6C1TZjVxy3vaZbPzDOvan4FRKQ2LMCnCjCFZfFTVX0Jcfw08NtMzNKtAlW8BXggUvjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783503110; c=relaxed/simple;
+	s=arc-20240116; t=1783503188; c=relaxed/simple;
 	bh=LimfHNhKbzGj41cNpuGnOzVAlvSDxXYFowW8stUMmGo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Mm27IhVSdFqHI1SmqSgpp4plf1LSa4cnJCjmnZ/t1oj+QLYzpb+S6EHAyupPAnY3MbKPi2KmNbrzR1K7ibOAQLEmgXoPPrv+61oDr91Ghaw6fGY/kyCEIglrd8P78clzcaDc0cHYN6df+wZM5kIkvoXiPUSJJm8V5iZ8R8XFT1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=rk+tjEBg; arc=none smtp.client-ip=217.70.190.124
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=EJ+Mfe2KA6/QJMmmH+AHnJ+I4e8wh00sfoXzd5bnJFOqgOF67ygG84cF/qGwcSJb0IBSpGgKssdh5WIB0h9Seo2/wN6Iw9ol4rbWq8DalmqspvxmLMJZ+WAR5DjQ7ThhbmcHXO6E1yAktBn3m9PDIdHToCrnaU+XwTo08yA4OFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=iyfdjtY0; arc=none smtp.client-ip=217.70.190.124
 Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 3A7B3601BC
-	for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2026 11:31:40 +0200 (CEST)
+	by mail.netfilter.org (Postfix) with ESMTPSA id 40AAE6057C
+	for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2026 11:32:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1783503100;
+	s=2025; t=1783503176;
 	bh=0mdV7mm6RiiR4cIHSloM9vWmiJg/yyyRgEBQ1G1DsRY=;
 	h=From:To:Subject:Date:From;
-	b=rk+tjEBgxwbavA+ZD4zLS8KEBiwJMQ+t1HEipB53G25Rk/YPKIsRVnc/Pws8fc79j
-	 M6WZHybk607jP/jX0TbcSnTMlq+C+R4EnlsPch6h7Qv6gjeqk1DEcKZonvL9+dpkYi
-	 jNIp+55w5akSrMYLEgMAeHoB0TkMM204/ftu5TBydI3yxbPPfVALfSq79ywk4q8l4M
-	 GiV7q8vVahoTGBTALrsgcpriI+Lr550WI9q4mlQ/Whl9vYwrQeCXnoBSdgY5CWe2zO
-	 4K9Qs60SrXfE6CdyPG9GVaPyLwvVjgv4Zxd+GEHDYvshgCFGrmIhE6JtOTU5eW1N0o
-	 /W16gJFtLQ6Vw==
+	b=iyfdjtY0DPmr0uxo7dj/ypPhmNGPtrENT9uLjyrdlphuUbAtfwBaD67cH3A3gAah7
+	 xoXWj5PXpYR/gyqcoQkQPTvBhOVKI2WfVKxo74Q5A3fKevoA+ySRF04DpLVFSgTFmm
+	 1d1jkesbhAbtYGGeewUyWvONYTMJN+Eyiky5cUCawGnxaRWwYu3ja3WtPXEufsS3tC
+	 3TO2K7pVIl24gNa+hChB//wEjF6XMfDvGeFMpa7iRjCTyeL6bD/fhCqhN7qqHCQkle
+	 oBnID2qIlLPNZEHVITxCWED7VIYHFEdmj5dYonBKfsazmKsDKbUKNdmnAhPwAfbBtY
+	 N+TjI7d7tmkQg==
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf,v1 1/4] bridge: Add filling forward path from port to port
-Date: Wed,  8 Jul 2026 11:31:32 +0200
-Message-ID: <20260708093135.1186934-1-pablo@netfilter.org>
+Subject: [PATCH nf-next,v1 1/4] bridge: Add filling forward path from port to port
+Date: Wed,  8 Jul 2026 11:32:47 +0200
+Message-ID: <20260708093250.1187068-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
@@ -64,22 +64,22 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13712-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13713-lists,netfilter-devel=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	RCPT_COUNT_ONE(0.00)[1];
 	MIME_TRACE(0.00)[0:+];
 	DMARC_NA(0.00)[netfilter.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_ONE(0.00)[1];
+	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
 	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -91,9 +91,9 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,blackwall.org:email,netfilter.org:from_mime,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,blackwall.org:email,netfilter.org:from_mime,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A5D17723C52
+X-Rspamd-Queue-Id: 8A906723CC0
 
 From: Eric Woudstra <ericwouds@gmail.com>
 
