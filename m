@@ -1,143 +1,306 @@
-Return-Path: <netfilter-devel+bounces-13756-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13757-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XrtOIfB0TmqJNAIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13756-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 18:04:00 +0200
+	id ODhiBWp4TmqrNQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13757-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 18:18:50 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64665728699
-	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 18:03:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B57987289A6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 08 Jul 2026 18:18:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=BuL7Jx1L;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13756-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13756-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=ssi.bg header.s=ssi header.b="rGhaM8I/";
+	dmarc=pass (policy=reject) header.from=ssi.bg;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13757-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13757-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4751C3039616
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 15:42:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9E43D3042909
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2026 15:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF1D34A78F;
-	Wed,  8 Jul 2026 15:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A123F12C8;
+	Wed,  8 Jul 2026 15:53:38 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3C62EF64F;
-	Wed,  8 Jul 2026 15:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF802EF64F;
+	Wed,  8 Jul 2026 15:53:35 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783525373; cv=none; b=o+RfKLDX1XHpFm/gNJy6NYGlNLzo8C1OeTk/fVCyKY+XdxtBtg0Bh7XKVK24+ScrM7jc7iwQBZ72QYjzw/xhXd11+qnWF7tv8bciNZZi/cxHBFEIy+Ai9V4dV5LkfWmJ+nmB/Sy4fVZUP4UnayGKGDPNKIROoZ9A2/netEahpGo=
+	t=1783526018; cv=none; b=pbZ4bRdG/v28OFSp3j3Ij3QI9Zp47TxmDL1BpF2ulQz2mSN+qvCSrMAFGrdxoS0d0euG7msGMXsDTr7zv9v8wmiAm2ug8aJEmXY3T5iMYGskxe/3LbxS5PTrHj+ru+aK2Meywb1Cyc/BO/zzKR2v/QBQnkNw7XJE7k8aW7a/XEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783525373; c=relaxed/simple;
-	bh=n5q1N+F+EtpYBlqFVelOGH+V9eik0CiVbOF5G+JRUlM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FRX4niv+XfgWF2x5IDpOlwappKiyBRQYIgdudL/ktB85LlFWZl7FntNMQ4kypV3vPWk3pCDWWTTX59vtIHziaxf1OkLFFVHlZ1lYFMejMLHrN2qLQ7t+gkwEHWePdtq6RBUIoI0hvcdzJFLdDtlVaA2O3WMNR2/0VVa69li8sg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BuL7Jx1L; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCD101F000E9;
-	Wed,  8 Jul 2026 15:42:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783525372;
-	bh=myM5TVBym+J7VoDATrItCwAsgA0Kf6ZymjUmGE93LlM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=BuL7Jx1LxY/yiPjkgDR5OPXH+zWsx1gCpMmVvDa62XvKL3f/pa2LOUXUpzoCrRrM4
-	 JfU1OapOnmLmQbIwJb56euDRGCCX0qi+Av9zT5xlOm0WAVYz46fMXkOaU5RU4dyigc
-	 Ij8GZFAWl2LRefEMfBzPwq+XkdUWn20WAl9F80i5QKGIEZ7Neiph9yvXoR9HhpZfWl
-	 7naZmxb/abWJQRFznl4PsCW5R+NwoA9UQn/yfZrzZDFdpSYHqp/YXd3qwESsg4VfHR
-	 FkMTksjQNsarrGDTcgfwwtRpYgi+maKBGk6QcGxuQCF9blUyHwPcH6OqtlrlNxIwg2
-	 YE60v2Ix4lAzQ==
-Message-ID: <309e7b6b-c5a0-4404-97a9-72de45e507ff@kernel.org>
-Date: Wed, 8 Jul 2026 09:42:51 -0600
+	s=arc-20240116; t=1783526018; c=relaxed/simple;
+	bh=0Mge3JAgIP+E0X+MesrXp8TixEJc4l6be13natFqp4w=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Vz2cXP7C18vlqqBWxHH8mlE9JQuD1yv1UeLXYZXt0g90wwcAOi1936iVEEpWcgc6FlUlqZlbJ3D2/+iFNRewsgnXJDvfEdPGQPFDE5pnfd/4l21PcqFhq/j208XTpmIH4rdO2IbGcn/9gwNCMwzYJEhdwKlnhSR9CYQ0kBpaJbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=rGhaM8I/; arc=none smtp.client-ip=193.238.174.39
+Received: from mx.ssi.bg (localhost [127.0.0.1])
+	by mx.ssi.bg (Potsfix) with ESMTP id C88EE20252;
+	Wed, 08 Jul 2026 18:53:32 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
+	:content-type:content-type:date:from:from:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
+	 bh=IrBFyo4X9p4vQcBuAXEscbyeWrGozHn+zcsBI+OqvLA=; b=rGhaM8I/EwgW
+	HvSp6hduo21Rar8HkjRO+WuJ2VuHDC7d9dlomU8UF5YtzUV0ZLUBZ4BDZ08MF/w0
+	QJ7eBHhkZ2e1NoYOCraLJ3pYyMxAKJ5BcMYPOQg806+fBw5l5XpfcrW5dwNDch6u
+	1VC8zjSgewpLyAqLebPHaAlK+2c69PL+0FXofnBLcK5lSGeQl8I+47LGd2CywkeP
+	rDOM3CO93CCJk8z73uWAATYexH7/Um7MV5KmHhEEk8buXJ5MwjYPByGVNGabhuVn
+	bgs30xxlohn3+P/jo2HLU6Dvbk1OwD3Eqa8gfi4/UnCcY+EzsI5dsOfxXq3sa/B2
+	5r2jTdci421Kgtas6DtmX3bXaiF2DHQ6HU4a26NBvB14ub+IFWzaNMweT0OBw2vs
+	I4sQZRbDVyCcwa9HeDjmRxRxzn3b3ma31pVETQ2eSgL06lotDaEBUgVNwZGIlYNm
+	M9qrrq1JHtZKbAUczLfVwQLqq2JvtYF8+pycZ82cZ50lHdYG0tyLJ2SP3c6+nN6B
+	N0kVBOAgkgF4GL6Um+5+uQfBzTigZuKuiruGLTwj6BPVFoTAlxc3GVmjz1aEQD7N
+	HzEXw0pyQQseqVouHpUp4bs4FYPm9GAlUxk/iF8BCDzA91VlGRBDOQYIDzOAVH6J
+	uxDfS/k6eoCCalWOWvg+8UwnkSsj4Go=
+Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
+	by mx.ssi.bg (Potsfix) with ESMTPS;
+	Wed, 08 Jul 2026 18:53:32 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by box.ssi.bg (Potsfix) with ESMTPSA id 5F34C6029E;
+	Wed,  8 Jul 2026 18:53:25 +0300 (EEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.18.2/8.18.2) with ESMTP id 668FrEwS064811;
+	Wed, 8 Jul 2026 18:53:16 +0300
+Date: Wed, 8 Jul 2026 18:53:14 +0300 (EEST)
+From: Julian Anastasov <ja@ssi.bg>
+To: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+cc: Simon Horman <horms@verge.net.au>, David Ahern <dsahern@kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        Alexander Frolkin <avf@eldamar.org.uk>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        stable@vger.kernel.org, Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
+        Ao Wang <wangao@seu.edu.cn>, Xuewei Feng <fengxw06@126.com>,
+        Qi Li <qli01@tsinghua.edu.cn>, Ke Xu <xuke@tsinghua.edu.cn>
+Subject: Re: [PATCH nf] ipvs: make destination flags atomic
+In-Reply-To: <91509A0C-9E4A-4F0E-A45C-ABD29396067E@mails.tsinghua.edu.cn>
+Message-ID: <afcdb34c-ec10-de8e-083c-624bcedca90e@ssi.bg>
+References: <20260707085706.96322-1-zhaoyz24@mails.tsinghua.edu.cn> <41c3d792-af7d-5582-5057-ac3df5f7bfd6@ssi.bg> <91509A0C-9E4A-4F0E-A45C-ABD29396067E@mails.tsinghua.edu.cn>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: ipip: use tunnel parameters for
- fill_forward_path route lookup
-Content-Language: en-US
-To: Lorenzo Bianconi <lorenzo@kernel.org>, Ido Schimmel <idosch@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>,
- Florian Westphal <fw@strlen.de>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-References: <20260708-ipip-route-lookup-fill_forward_path-v1-1-b77df74822ed@kernel.org>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20260708-ipip-route-lookup-fill_forward_path-v1-1-b77df74822ed@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
+	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13757-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13756-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:lorenzo@kernel.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:pablo@netfilter.org,m:fw@strlen.de,m:netdev@vger.kernel.org,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[dsahern@kernel.org,netfilter-devel@vger.kernel.org];
+	FREEMAIL_CC(0.00)[verge.net.au,kernel.org,nvidia.com,davemloft.net,google.com,redhat.com,netfilter.org,strlen.de,nwl.cc,eldamar.org.uk,vger.kernel.org,mails.tsinghua.edu.cn,seu.edu.cn,126.com,tsinghua.edu.cn];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ssi.bg:from_mime,ssi.bg:email,ssi.bg:mid,ssi.bg:dkim,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	FORGED_SENDER(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FORGED_RECIPIENTS(0.00)[m:zhaoyz24@mails.tsinghua.edu.cn,m:horms@verge.net.au,m:dsahern@kernel.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:avf@eldamar.org.uk,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[ssi.bg:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dsahern@kernel.org,netfilter-devel@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TAGGED_RCPT(0.00)[netfilter-devel];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[netfilter-devel];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 64665728699
+X-Rspamd-Queue-Id: B57987289A6
 
-On 7/8/26 5:25 AM, Lorenzo Bianconi wrote:
-> Pass source address, DSCP and output interface from the tunnel
-> configuration to ip_route_output() in ipip_fill_forward_path(), aligning
-> the route lookup with the slow path in ipip_tunnel_xmit().
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  net/ipv4/ipip.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/ipv4/ipip.c b/net/ipv4/ipip.c
-> index b643194f57d2..d1aa048a6099 100644
-> --- a/net/ipv4/ipip.c
-> +++ b/net/ipv4/ipip.c
-> @@ -360,8 +360,9 @@ static int ipip_fill_forward_path(struct net_device_path_ctx *ctx,
->  	const struct iphdr *tiph = &tunnel->parms.iph;
->  	struct rtable *rt;
->  
-> -	rt = ip_route_output(dev_net(ctx->dev), tiph->daddr, 0, 0, 0,
-> -			     RT_SCOPE_UNIVERSE);
-> +	rt = ip_route_output(dev_net(ctx->dev), tiph->daddr, tiph->saddr,
-> +			     inet_dsfield_to_dscp(tiph->tos),
-> +			     tunnel->parms.link, RT_SCOPE_UNIVERSE);
->  	if (IS_ERR(rt))
->  		return PTR_ERR(rt);
->  
-> 
-> ---
-> base-commit: 155c68aef2397f8c5d72ef10acf48ae159bf1869
-> change-id: 20260708-ipip-route-lookup-fill_forward_path-6a8a1f45084c
-> 
-> Best regards,
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+	Hello,
+
+On Wed, 8 Jul 2026, Yizhou Zhao wrote:
+
+> > On Jul 8, 2026, at 03:18, Julian Anastasov <ja@ssi.bg> wrote:
+> > 
+> > On Tue, 7 Jul 2026, Yizhou Zhao wrote:
+> > 
+> 
+> We have posted a v2 patch at:
+> https://lore.kernel.org/netfilter-devel/20260708060454.20534-1-zhaoyz24@mails.tsinghua.edu.cn/
+> 
+> The v2 patch updates the commit message with more conservative
+> wording, and fixes the checkpatch logical-continuation warnings.
+
+	After looking again at the code, I think we can
+do it in different way:
+
+- IP_VS_DEST_F_AVAILABLE and IP_VS_DEST_F_OVERLOAD are defined
+in include/uapi/linux/ip_vs.h but we never export them to user
+space. So, we are free to change them. We can move them to 
+include/net/ip_vs.h, see below...
+
+- IP_VS_DEST_F_AVAILABLE is changed only under service_mutex,
+so we can keep its usage
+
+- IP_VS_DEST_F_OVERLOAD needs different access methods.
+We can add 'unsigned long flags2;', may be after l_threshold.
+And to switch to such usage (F_OVERLOAD -> FL_OVERLOAD):
+
+	- test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)
+	- set_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)
+
+		Sometimes if (test_bit()) clear_bit() can avoid
+		full memory barrier in ip_vs_dest_update_overload()
+
+	- clear_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)
+		test_bit() guard can help here too
+
+	As there are other races involved, something like
+this can be a starting point for such change. It tries harder
+to update the overload flag on dest edit/add but it does not
+include the proposed bitops:
+
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index 49297fec448a..b34631270e24 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -1906,6 +1906,8 @@ static inline void ip_vs_dest_put_and_free(struct ip_vs_dest *dest)
+ 		kfree(dest);
+ }
+ 
++void ip_vs_dest_update_overload(struct ip_vs_dest *dest);
++
+ /* IPVS sync daemon data and function prototypes
+  * (from ip_vs_sync.c)
+  */
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index d19caf66afeb..3fd221996e6e 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1087,6 +1087,26 @@ static inline int ip_vs_dest_totalconns(struct ip_vs_dest *dest)
+ 		+ atomic_read(&dest->inactconns);
+ }
+ 
++__always_inline void ip_vs_dest_update_overload(struct ip_vs_dest *dest)
++{
++	int conns, l, u;
++
++	u = READ_ONCE(dest->u_threshold);
++	if (!u)
++		goto unset;
++	conns = ip_vs_dest_totalconns(dest);
++	if (conns >= u) {
++		dest->flags |= IP_VS_DEST_F_OVERLOAD;
++		return;
++	}
++	l = READ_ONCE(dest->l_threshold) ? : (u * 3 / 4);
++	if (conns >= l && l)
++		return;
++
++unset:
++	dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
++}
++
+ /*
+  *	Bind a connection entry with a virtual service destination
+  *	Called just after a new connection entry is created.
+@@ -1161,9 +1181,7 @@ ip_vs_bind_dest(struct ip_vs_conn *cp, struct ip_vs_dest *dest)
+ 		atomic_inc(&dest->persistconns);
+ 	}
+ 
+-	if (dest->u_threshold != 0 &&
+-	    ip_vs_dest_totalconns(dest) >= dest->u_threshold)
+-		dest->flags |= IP_VS_DEST_F_OVERLOAD;
++	ip_vs_dest_update_overload(dest);
+ }
+ 
+ 
+@@ -1257,16 +1275,8 @@ static inline void ip_vs_unbind_dest(struct ip_vs_conn *cp)
+ 		atomic_dec(&dest->persistconns);
+ 	}
+ 
+-	if (dest->l_threshold != 0) {
+-		if (ip_vs_dest_totalconns(dest) < dest->l_threshold)
+-			dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
+-	} else if (dest->u_threshold != 0) {
+-		if (ip_vs_dest_totalconns(dest) * 4 < dest->u_threshold * 3)
+-			dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
+-	} else {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
+-			dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
+-	}
++	if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		ip_vs_dest_update_overload(dest);
+ 
+ 	ip_vs_dest_put(dest);
+ }
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index bcf40b8c41cf..2871116e46ec 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -1315,6 +1315,7 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
+ 	struct ip_vs_service *old_svc;
+ 	struct ip_vs_scheduler *sched;
+ 	int conn_flags;
++	bool upd_thresh;
+ 
+ 	/* We cannot modify an address and change the address family */
+ 	BUG_ON(!add && udest->af != dest->af);
+@@ -1370,10 +1371,12 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
+ 	/* set the dest status flags */
+ 	dest->flags |= IP_VS_DEST_F_AVAILABLE;
+ 
+-	if (udest->u_threshold == 0 || udest->u_threshold > dest->u_threshold)
+-		dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
+-	dest->u_threshold = udest->u_threshold;
+-	dest->l_threshold = udest->l_threshold;
++	upd_thresh = READ_ONCE(dest->u_threshold) != udest->u_threshold ||
++		     READ_ONCE(dest->l_threshold) != udest->l_threshold;
++	WRITE_ONCE(dest->u_threshold, udest->u_threshold);
++	WRITE_ONCE(dest->l_threshold, udest->l_threshold);
++	if (upd_thresh)
++		ip_vs_dest_update_overload(dest);
+ 
+ 	dest->af = udest->af;
+ 
+@@ -3667,8 +3670,8 @@ __ip_vs_get_dest_entries(struct netns_ipvs *ipvs, const struct ip_vs_get_dests *
+ 			entry.port = dest->port;
+ 			entry.conn_flags = atomic_read(&dest->conn_flags);
+ 			entry.weight = atomic_read(&dest->weight);
+-			entry.u_threshold = dest->u_threshold;
+-			entry.l_threshold = dest->l_threshold;
++			entry.u_threshold = READ_ONCE(dest->u_threshold);
++			entry.l_threshold = READ_ONCE(dest->l_threshold);
+ 			entry.activeconns = atomic_read(&dest->activeconns);
+ 			entry.inactconns = atomic_read(&dest->inactconns);
+ 			entry.persistconns = atomic_read(&dest->persistconns);
+@@ -4277,8 +4280,10 @@ static int ip_vs_genl_fill_dest(struct sk_buff *skb, struct ip_vs_dest *dest)
+ 			 dest->tun_port) ||
+ 	    nla_put_u16(skb, IPVS_DEST_ATTR_TUN_FLAGS,
+ 			dest->tun_flags) ||
+-	    nla_put_u32(skb, IPVS_DEST_ATTR_U_THRESH, dest->u_threshold) ||
+-	    nla_put_u32(skb, IPVS_DEST_ATTR_L_THRESH, dest->l_threshold) ||
++	    nla_put_u32(skb, IPVS_DEST_ATTR_U_THRESH,
++			READ_ONCE(dest->u_threshold)) ||
++	    nla_put_u32(skb, IPVS_DEST_ATTR_L_THRESH,
++			READ_ONCE(dest->l_threshold)) ||
+ 	    nla_put_u32(skb, IPVS_DEST_ATTR_ACTIVE_CONNS,
+ 			atomic_read(&dest->activeconns)) ||
+ 	    nla_put_u32(skb, IPVS_DEST_ATTR_INACT_CONNS,
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
 
