@@ -1,145 +1,145 @@
-Return-Path: <netfilter-devel+bounces-13788-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13789-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id rHu0MMCIT2ryiwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13788-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 13:40:48 +0200
+	id 5qUqExmLT2r3jAIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13789-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 13:50:49 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4E7E7307C2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 13:40:47 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894BB73099C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 13:50:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=jeWqdXWL;
+	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13788-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13788-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13789-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13789-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D2BBF3001A4B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 11:40:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E855300C93F
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 11:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA5B3FFF91;
-	Thu,  9 Jul 2026 11:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60E040BCBB;
+	Thu,  9 Jul 2026 11:46:39 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9C13859D7
-	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 11:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5AF18C008;
+	Thu,  9 Jul 2026 11:46:36 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783597241; cv=none; b=k4mtZIA3amOQ3lwI/Sazm5NxTerQfuSKu84qeFTKzdHG+XsqYnlBQ7oJzo0G7Ng4tduue7SzZpcnUYXZHlM0396DRK6QNK4kX3fwMLDrlp6sDVmcao44O70zM/SCDi3V9IHYRLDtVuUpbqJkRhyK3LIXHsdav68OHV+bizdQPhM=
+	t=1783597599; cv=none; b=g21eSbd40AJwLihlDYuriau2LkbngWvWnrSw8RVQg8q3XZQQtUUXkyKmBMTQaaOX7bkMD2Dys9gfwr2DpWq4Ej485SxlMowuJUGyC39ZFXf8Xaw1DGzghI72IjkvwdLgdBl2+IRCIt1ZVNS4fyn/tiBjQnXg+GF1sGOL2zpciUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783597241; c=relaxed/simple;
-	bh=jhOXFRDhRDE9UWehd+Ep5Rn4mlTjoYo/MLMzmXqFtU4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=a9CButd/B+WSMwf1yVulo9bRgBlM+sh2DLPV2zOh4AxJtlYaxawyqhVcaXMx+zaL5lsl9juX0a0nStoJKZEW1jI1hM+MIBHM25ngkweGoIKFBCqNrJu4V9GLEYvAUd1KK1wqiVNIliUxPLbdxgxNiQ9jJYwGtf0f4hh3BBALsYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=jeWqdXWL; arc=none smtp.client-ip=217.70.190.124
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 73F6D6057E
-	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 13:40:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1783597229;
-	bh=BwRsCYCT+NIINNC1MMc6JKO8sohapTYaZBwEF761hFY=;
-	h=From:To:Subject:Date:From;
-	b=jeWqdXWLp5Z9fF1n5xisEyXqA/VEbeQTCOmzippKRawghEkTxq7vuwFkyAZWJsfgs
-	 FPV1uBJY+J7tdDqX+yv/+GCjTFxBRL6R2R/+Qq5pu1Zz2WlJzLy0juuqbx8wHq0v44
-	 I1nK+ehHlLaqb3CMx0Bn3KebDuWLbSuPa4QEiARpAoWsZ1qJn5NcBEpXbgN2ccaCyd
-	 Zl2gwRVKEzyYFDi765zG22SrRUaU4SwDhORBuR6/kUM3apZFrWzS8uj91CPsUHjSk5
-	 w8j0SqYgOiMY3WcyX7UcfGdshNpQK/zHn16OENFGlYPjACWshHWvdMFUd8ETvWo9xT
-	 tmAUsq1ktReSA==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: flowtable: use correct direction to set up tunnel route
-Date: Thu,  9 Jul 2026 13:40:25 +0200
-Message-ID: <20260709114025.1294044-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1783597599; c=relaxed/simple;
+	bh=twmEzHea4QAYe+6lVhj7Zqe+nc0w7Ixcq9xJL1Mm1WI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bE4l8EVOhtds8cZLkMfbU3g3dOAwYK8P72wVLhR0/XH+OEv1nEYl47Zo+mNtLU8RxWP2l3o6I++0WZvH0tFLDqD+PEnyFT+JMkZAjy0yy0tQfwEclD0//EJJ9JQQf0Vlj8J2KP7UrRwBOI8/1R3eXNU6oVacLOdJwLKbpz1Eszo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 0F4F260293; Thu, 09 Jul 2026 13:46:27 +0200 (CEST)
+Date: Thu, 9 Jul 2026 13:46:26 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Julian Anastasov <ja@ssi.bg>
+Cc: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>,
+	Simon Horman <horms@verge.net.au>, David Ahern <dsahern@kernel.org>,
+	Ido Schimmel <idosch@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>, Phil Sutter <phil@nwl.cc>,
+	Alexander Frolkin <avf@eldamar.org.uk>, netdev@vger.kernel.org,
+	lvs-devel@vger.kernel.org,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	stable@vger.kernel.org,
+	Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
+	Ao Wang <wangao@seu.edu.cn>, Xuewei Feng <fengxw06@126.com>,
+	Qi Li <qli01@tsinghua.edu.cn>, Ke Xu <xuke@tsinghua.edu.cn>
+Subject: Re: [PATCH nf] ipvs: make destination flags atomic
+Message-ID: <ak-KErd1a0NHGN-D@strlen.de>
+References: <20260707085706.96322-1-zhaoyz24@mails.tsinghua.edu.cn>
+ <41c3d792-af7d-5582-5057-ac3df5f7bfd6@ssi.bg>
+ <91509A0C-9E4A-4F0E-A45C-ABD29396067E@mails.tsinghua.edu.cn>
+ <afcdb34c-ec10-de8e-083c-624bcedca90e@ssi.bg>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <afcdb34c-ec10-de8e-083c-624bcedca90e@ssi.bg>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13788-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[netfilter.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:ja@ssi.bg,m:zhaoyz24@mails.tsinghua.edu.cn,m:horms@verge.net.au,m:dsahern@kernel.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:phil@nwl.cc,m:avf@eldamar.org.uk,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	TAGGED_FROM(0.00)[bounces-13789-lists,netfilter-devel=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[mails.tsinghua.edu.cn,verge.net.au,kernel.org,nvidia.com,davemloft.net,google.com,redhat.com,netfilter.org,nwl.cc,eldamar.org.uk,vger.kernel.org,seu.edu.cn,126.com,tsinghua.edu.cn];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,netfilter.org:from_mime,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ssi.bg:email,vger.kernel.org:from_smtp,strlen.de:mid,strlen.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A4E7E7307C2
+X-Rspamd-Queue-Id: 894BB73099C
 
-The layer 2 encapsulation and layer 3 tunnel information in the xmit
-path is taken from the other tuple, because the tunnel information that
-is included in the tuple for hashtable lookups is also used to perform
-the egress encapsulation in the transmit path.
+Julian Anastasov <ja@ssi.bg> wrote:
+> 	After looking again at the code, I think we can
+> do it in different way:
+> 
+> - IP_VS_DEST_F_AVAILABLE and IP_VS_DEST_F_OVERLOAD are defined
+> in include/uapi/linux/ip_vs.h but we never export them to user
+> space. So, we are free to change them. We can move them to 
+> include/net/ip_vs.h, see below...
+> 
+> - IP_VS_DEST_F_AVAILABLE is changed only under service_mutex,
+> so we can keep its usage
+> 
+> - IP_VS_DEST_F_OVERLOAD needs different access methods.
+> We can add 'unsigned long flags2;', may be after l_threshold.
+> And to switch to such usage (F_OVERLOAD -> FL_OVERLOAD):
+> 
+> 	- test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)
+> 	- set_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)
+> 
+> 		Sometimes if (test_bit()) clear_bit() can avoid
+> 		full memory barrier in ip_vs_dest_update_overload()
+> 
+> 	- clear_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)
+> 		test_bit() guard can help here too
+> 
+> 	As there are other races involved, something like
+> this can be a starting point for such change. It tries harder
+> to update the overload flag on dest edit/add but it does not
+> include the proposed bitops:
+>
+> diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+> index 49297fec448a..b34631270e24 100644
 
-This patch uses the correct direction when setting up the tunnel, the
-original proposed patch to address this fix uses the reversed direction.
+Who is supposed to do what?
 
-While at it, remove the redundant check to call dst_release() to drop
-the reference on the dst that was obtained from the forward path, which
-is not useful in the direct xmit path unless tunneling is performed.
-
-Fixes: fa7395c02d95 ("netfilter: flowtable: support IPIP tunnel with direct xmit")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_flow_table_core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 2a829b5e8240..b66e65439341 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -127,18 +127,18 @@ static int flow_offload_fill_route(struct flow_offload *flow,
- 
- 	switch (route->tuple[dir].xmit_type) {
- 	case FLOW_OFFLOAD_XMIT_DIRECT:
--		if (flow_tuple->tun_num) {
-+		if (route->tuple[!dir].in.num_tuns) {
- 			flow_tuple->dst_cache = dst;
- 			flow_tuple->dst_cookie =
- 				flow_offload_dst_cookie(flow_tuple);
-+		} else {
-+			dst_release(dst);
- 		}
- 		memcpy(flow_tuple->out.h_dest, route->tuple[dir].out.h_dest,
- 		       ETH_ALEN);
- 		memcpy(flow_tuple->out.h_source, route->tuple[dir].out.h_source,
- 		       ETH_ALEN);
- 		flow_tuple->out.ifidx = route->tuple[dir].out.ifindex;
--		if (!flow_tuple->tun_num)
--			dst_release(dst);
- 		break;
- 	case FLOW_OFFLOAD_XMIT_XFRM:
- 	case FLOW_OFFLOAD_XMIT_NEIGH:
--- 
-2.47.3
-
+I.e., are you going to submit this officially as replacement
+for the v2 of this patch or do you expect the sumbitters of
+this patch to rework their v2 along these lines?
 
