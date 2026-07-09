@@ -1,63 +1,66 @@
-Return-Path: <netfilter-devel+bounces-13803-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13800-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hJDqNTv7T2rlrQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13803-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 21:49:15 +0200
+	id dyayB5b6T2rIrQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13800-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 21:46:30 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE027352D8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 21:49:15 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F195735292
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 21:46:29 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=JNHMjOFN;
+	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b=HyigjiCy;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13803-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13803-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13800-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13800-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8BF8D301E956
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 19:46:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0174130066AE
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 19:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832FB2E92BA;
-	Thu,  9 Jul 2026 19:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2860377EB9;
+	Thu,  9 Jul 2026 19:46:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A20B1459FA
-	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 19:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6625E4499BD
+	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 19:46:25 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783626388; cv=none; b=PTHOFz6XzGRcNAsposKANkTqHM7xaSQAAp1Ukp76hVeqYPPuIOnW4/SUKDwy5ZxuFuFnwhmPLjqouFsh8FV/9jwPnIQF2O6Xwxb/VZdVBKjX9doDRvyT86dJY8FZ1pwi2soz2kXrFWRd9xUPok7U03v8TKzf5uy+wdRI5s0yVzg=
+	t=1783626387; cv=none; b=U6tnDxJn7pLoSO8o9JS5eUWEDCoHsTKUcMbtaN75yjoH2LGrUemGdOJi2IaNTE7ivQXAFbf+jgHFXfKeHHxyyloFBgsJBcmJVXLZxQaCZ2PsML+iTjK/kRIN6x/unHjMjSqLCcBONCoN4pshmFG6ZeCMvdiuD0bIHY9zcHW0HLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783626388; c=relaxed/simple;
-	bh=oKgFxt2mIkdrMgHeyAEe8iLpRy+8wQySaHRO8TbonOU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=refZ2VlkrY0lLVYuZaNVc5qESjbcyJ2GN2sRGp3NwqIrGmu/VIn7E7xfmmkRg9OJ38VOyYW7ONneCcExcMRJ3ILVrfsLzf8E/laW3s2ST/j3PPUah5LC/yOdIS/tMtAHV1JnFcmYilXZWSqxUKKbxDip+9YvCLpK6Ma6jYNgNJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=JNHMjOFN; arc=none smtp.client-ip=151.80.46.58
+	s=arc-20240116; t=1783626387; c=relaxed/simple;
+	bh=eUgn+Ix42DAH5mteojrUvSz2cOTlYAeBa2kFy+tvknI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=grlfEqKZp3OiInkr6RN9QBIhBupQb2HYXcLeJXmlJa0HraQl5niPzH1nJLcZElNCG6J2g6B7R3hdovcW1Dsmn6VPwWhm2oW4bcfT/ugXlEJ8nLDRlh1xKyq0mEV+5O52X8cz3W0iA4igzsQKnaZSVlRoMeD5nJMIEBl3dIT5e3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=HyigjiCy; arc=none smtp.client-ip=151.80.46.58
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=OAOKyJPXfyhzrw0nANA4NaAvAG1NpQNfXcYMwSZ3PE4=; b=JNHMjOFN5PeTtTR/58JDEK4FzQ
-	exH2mrBjbfOqkIvg/o+p3PONx5KULQWafFx6Wj8u2KDQ+ZMUsYDCnZ22JS6X1hj8LfWokY80w+lcy
-	YkhKymzF2xePFXZAA/A+51ASOWc/toYQMmu5E8JlrOh7dtApG8zxslBYGru7qfelnT74zAdXCxENH
-	wygjkvqjbnts0zeRuUeZN7v/9VHKwqidpirGEIPMDFQWADF5TQuteHPs5aM1oTOlKQn5RFxxbC+aR
-	293w6uz+QaXv8wHiCECxVvNMjH623ISeEk2RccDcfMdEZ1vlYlRoHYGgHGdLiWJVC+bbshva9MaxM
-	qhK73bGA==;
+	bh=KmeeT316pEyQzpYpsbTQx1IoLPkQx5uJqSqXVa/B7iM=; b=HyigjiCyJJxuaSF/cJmbAhxs37
+	SPzBRMxAheC7sBBP0Me8H2zqjqvwdWBxcaTOpW18PsFaEmlgsLY1/L6/o4uVT31T/6ZnZqlQCcryv
+	KitIP1EpiXzoZWLXLGVi8Mu+IX1xEIp7yGw82huPpLK+u4FZGAKebGffRrJEOzxje0Ho7ck0RAKaU
+	CwzATou6G7D4uBHTWiWrHMRYFLj6r3ZGaAhALYNBpxt7eXTFjBzi/omCknnd9dC+gfIrD69dZZHsK
+	1PwHrsNj93AsYby9+AXCJCOLr/GF4yzo2hhsZQ9GPFTmb0KISjk9mmuKGRY120zwUaHGyS/PCIq/H
+	Xtql4wNA==;
 Received: from localhost ([::1] helo=xic)
 	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
 	(envelope-from <phil@nwl.cc>)
-	id 1whuhO-000000002j4-3Otg;
-	Thu, 09 Jul 2026 21:46:18 +0200
+	id 1whuhN-000000002il-1AQv;
+	Thu, 09 Jul 2026 21:46:17 +0200
 From: Phil Sutter <phil@nwl.cc>
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter-devel@vger.kernel.org,
 	Florian Westphal <fw@strlen.de>
-Subject: [nf-next PATCH v2 0/5] Address Sashiko review of NAT hook dump code
-Date: Thu,  9 Jul 2026 21:46:07 +0200
-Message-ID: <20260709194612.1995795-1-phil@nwl.cc>
+Subject: [nf-next PATCH v2 1/5] netfilter: nfnetlink_hook: Fix for EINTR due to index too large
+Date: Thu,  9 Jul 2026 21:46:08 +0200
+Message-ID: <20260709194612.1995795-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260709194612.1995795-1-phil@nwl.cc>
+References: <20260709194612.1995795-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -71,68 +74,134 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13803-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13800-lists,netfilter-devel=lfdr.de];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
 	DMARC_NA(0.00)[nwl.cc];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[nwl.cc:-];
 	RCPT_COUNT_THREE(0.00)[3];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:mid,nwl.cc:from_mime,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,nwl.cc:from_mime,nwl.cc:email,nwl.cc:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2EE027352D8
+X-Rspamd-Queue-Id: 8F195735292
 
-Changes since v1:
-- New patch 1
-- Fixed three aspects of patch 3
-- Fixed two issues of patch 5
+When resuming a multipart dump and e->num_hook_entries has become lower
+than the stored index, nfnl_hook_dump_one is not called and therefore
+nl_dump_check_consistent will be passed an invalid nlmsghdr pointer.
 
-Patch 1 fixes a bug (actually, two) in old code. Latter patches benefit
-from the fix it implements.
+Detect the situation and put an empty message to carry NLM_F_DUMP_INTR
+flag.
 
-Patch 2 is mere preparation to add the missing case handling to
-nfnl_hook_dump_nat().
+This will help fix for concurrent NAT hook changes while dumping as well
+since nfnl_hook_dump_nat will also abort before putting a single message
+in that case.
 
-Patch 3 fixes for missing READ_ONCE() calls when addressing hook ops
-array elements.
+The old code did assign NLM_F_DUMP_INTR to garbage in (or beyond) nlskb
+with uninterrupted dumps, too: The mandatory last call saw 'i ==
+e->num_hook_entries' and therefore incremented cb->seq. This patch makes
+this a non-error (and the function will just return 0 without further
+action).
 
-Patch 4 adds missing multipart dump support to nfnl_hook_dump_nat.
+Fixes: e2cf17d3774c ("netfilter: add new hook nfnl subsystem")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ net/netfilter/nfnetlink_hook.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-Patch 5 adds code to detect and mitigate concurrent hook updates while
-amidst a multipart dump to nfnl_hook_dump_nat.
-
-Link: https://sashiko.dev/#/patchset/20260702105003.13550-2-fw%40strlen.de
-
-Phil Sutter (5):
-  netfilter: nfnetlink_hook: Fix for EINTR due to index too large
-  netfilter: nfnetlink_hook: Pass cb object to nfnl_hook_dump_nat()
-  netfilter: nfnetlink_hook: Address hook ops using READ_ONCE()
-  netfilter: nfnetlink_hook: Handle multipart NAT hook dumps
-  netfilter: nfnetlink_hook: Fix for concurrent NAT hooks dump and
-    change
-
- net/netfilter/nfnetlink_hook.c | 75 +++++++++++++++++++++++-----------
- 1 file changed, 52 insertions(+), 23 deletions(-)
-
+diff --git a/net/netfilter/nfnetlink_hook.c b/net/netfilter/nfnetlink_hook.c
+index 95005e9a6066..755d8f148db3 100644
+--- a/net/netfilter/nfnetlink_hook.c
++++ b/net/netfilter/nfnetlink_hook.c
+@@ -188,13 +188,21 @@ static int nfnl_hook_put_nft_ft_info(struct sk_buff *nlskb,
+ 	return 0;
+ }
+ 
++static struct nlmsghdr *nfnl_put_get_hook_msg(struct sk_buff *nlskb,
++					      unsigned int seq, int family)
++{
++	u16 event = nfnl_msg_type(NFNL_SUBSYS_HOOK, NFNL_MSG_HOOK_GET);
++	unsigned int portid = NETLINK_CB(nlskb).portid;
++
++	return nfnl_msg_put(nlskb, portid, seq, event,
++			   NLM_F_MULTI, family, NFNETLINK_V0, 0);
++}
++
+ static int nfnl_hook_dump_one(struct sk_buff *nlskb,
+ 			      const struct nfnl_dump_hook_data *ctx,
+ 			      const struct nf_hook_ops *ops, int priority,
+ 			      int family, unsigned int seq)
+ {
+-	u16 event = nfnl_msg_type(NFNL_SUBSYS_HOOK, NFNL_MSG_HOOK_GET);
+-	unsigned int portid = NETLINK_CB(nlskb).portid;
+ 	struct nlmsghdr *nlh;
+ 	int ret = -EMSGSIZE;
+ 	u32 hooknum;
+@@ -202,8 +210,7 @@ static int nfnl_hook_dump_one(struct sk_buff *nlskb,
+ 	char sym[KSYM_SYMBOL_LEN];
+ 	char *module_name;
+ #endif
+-	nlh = nfnl_msg_put(nlskb, portid, seq, event,
+-			   NLM_F_MULTI, family, NFNETLINK_V0, 0);
++	nlh = nfnl_put_get_hook_msg(nlskb, seq, family);
+ 	if (!nlh)
+ 		goto nla_put_failure;
+ 
+@@ -366,7 +373,7 @@ static int nfnl_hook_dump(struct sk_buff *nlskb,
+ {
+ 	struct nfgenmsg *nfmsg = nlmsg_data(cb->nlh);
+ 	struct nfnl_dump_hook_data *ctx = cb->data;
+-	int err, family = nfmsg->nfgen_family;
++	int err = 0, family = nfmsg->nfgen_family;
+ 	struct net *net = sock_net(nlskb->sk);
+ 	struct nf_hook_ops * const *ops;
+ 	const struct nf_hook_entries *e;
+@@ -378,14 +385,14 @@ static int nfnl_hook_dump(struct sk_buff *nlskb,
+ 	if (!e)
+ 		goto done;
+ 
+-	if (IS_ERR(e)) {
++	if (IS_ERR(e) ||
++	    i > e->num_hook_entries ||
++	    (unsigned long)e != ctx->headv) {
+ 		cb->seq++;
++		err = -EINTR;
+ 		goto done;
+ 	}
+ 
+-	if ((unsigned long)e != ctx->headv || i >= e->num_hook_entries)
+-		cb->seq++;
+-
+ 	ops = nf_hook_entries_get_hook_ops(e);
+ 
+ 	for (; i < e->num_hook_entries; i++) {
+@@ -401,6 +408,8 @@ static int nfnl_hook_dump(struct sk_buff *nlskb,
+ 	}
+ 
+ done:
++	if (err && !nlskb->len)
++		nfnl_put_get_hook_msg(nlskb, cb->nlh->nlmsg_seq, family);
+ 	nl_dump_check_consistent(cb, nlmsg_hdr(nlskb));
+ 	rcu_read_unlock();
+ 	cb->args[0] = i;
 -- 
 2.54.0
 
