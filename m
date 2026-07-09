@@ -1,48 +1,48 @@
-Return-Path: <netfilter-devel+bounces-13810-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13811-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 5ek6B9H+T2qZrgIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13810-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 22:04:33 +0200
+	id eozGHNX+T2qargIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13811-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 22:04:37 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 697947353F2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 22:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCA297353F5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 22:04:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13810-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13810-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13811-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13811-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7B69A3016ED8
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 20:04:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E9BC1301546B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 20:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0743E2EE611;
-	Thu,  9 Jul 2026 20:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2841C3126B0;
+	Thu,  9 Jul 2026 20:04:34 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938A729E116
-	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 20:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D253429E116
+	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 20:04:32 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783627469; cv=none; b=o1R10HYINBrxRlvrvDk8BcumcfT1jXjaOD0Czr1R+8+WjfP7GRfExc5xl1ul3eqjyji9XEII4gUt1H8MGo+p4tZuhJTGWSw2F/nRiXsFRp/Gj/QNaU9D1X7rEeGI6ljwCYjj1HISr7i8Su4l8Xw1ijlOL7CYCuaS2WavzPWrXyk=
+	t=1783627474; cv=none; b=CPCAG7J6ZixuUlAdmtt0wouGhVBqKNDyWqkAwa5VKQVzqTxc/KF64Ntpmlt9jBnDlrNxWqn3mq8c1LPGBxZyavMzKI0/2RGFqrZKkgTQsv/VorWzTS7AB1YiEjtc8x18UXp7MkOREr7/2eTOg+pNapuyKaD3hmBFjxTnj3fBM+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783627469; c=relaxed/simple;
-	bh=4RQwp8g4pXikjbvayxHHO9X1Fu4B5Kg0Jz1pr6+lw3E=;
+	s=arc-20240116; t=1783627474; c=relaxed/simple;
+	bh=VXND2wIDGCEyyM6ubFN5hepJI+iq8bI1UXE8G5Ez6SM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aOUzfJq+OgdtrdocBXRI5MPdDiUnauGQ1QQbN1D8cG83IeJVAALM4QIY2reon0FVY+PJVPj40hPo0tM3rkjP/Oy0XqR1ejKQjUSGrO4x9mYk0mMPFrIJCNCiC22EuWnTgt+VDvX2s4i08zO1HeChDYNdgtalJIgUkyg87Dt0DfM=
+	 MIME-Version; b=eHoZsFKHlmdndeqJdveoGqHbqwSZGIwZABhhAS98dtjuw6q4Gdd7j8If9SAEdmS9uLH0F8ZzCr/YtVE0lzaLPrhk3g2FDDoKB+uplw7cONMMbDa1v79eJALGLff3JkJBQbK5qOHcYKLFmeN/Tdg/AS38lGtl5nJukLpIXDr+9g0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 0928B602A9; Thu, 09 Jul 2026 22:04:27 +0200 (CEST)
+	id 45D8F602A9; Thu, 09 Jul 2026 22:04:31 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netfilter-devel@vger.kernel.org>
 Cc: kadlec@netfilter.org,
 	Florian Westphal <fw@strlen.de>
-Subject: [PATCH ipset 5/7] tests: setlist_ns.sh: use local ipset binary and don't rely on userns
-Date: Thu,  9 Jul 2026 22:03:56 +0200
-Message-ID: <20260709200358.15504-6-fw@strlen.de>
+Subject: [PATCH ipset 6/7] tests: make setlist_resize.sh more verbose on error
+Date: Thu,  9 Jul 2026 22:03:57 +0200
+Message-ID: <20260709200358.15504-7-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260709200358.15504-1-fw@strlen.de>
 References: <20260709200358.15504-1-fw@strlen.de>
@@ -64,7 +64,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[strlen.de];
-	TAGGED_FROM(0.00)[bounces-13810-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13811-lists,netfilter-devel=lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:kadlec@netfilter.org,m:fw@strlen.de,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
@@ -83,92 +83,93 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:from_mime,strlen.de:email,strlen.de:mid,runtest.sh:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:from_mime,strlen.de:email,strlen.de:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 697947353F2
+X-Rspamd-Queue-Id: DCA297353F5
 
-The script runs command in network+user namespace with remapped uid0.
+Instead of just existing, tell where we failed.
+Use -x and take advantage of $IPSET_TMP to capture the
+full output.
 
-In case this fails (e.g. because user namespaces are disabled), we
-should re-try with plain "-n" before giving up and returning an error.
-
-Also, in case 'ipset' isn't in $PATH, this fails.
-Let runtest.sh export the ipset binary to use and refer to that.
-
-While at it, parallelize the test and also run it 124 times, not just
-4 times - missing $() resulted in 'for x in a b c d ..'.
+On success, remove the file.
+cleanup handler will dump the content in case we failed somewhere.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
-
-x
 ---
- tests/runtest.sh    |  1 +
- tests/setlist_ns.sh | 29 +++++++++++++++++++++++++----
- 2 files changed, 26 insertions(+), 4 deletions(-)
+ tests/setlist_resize.sh | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/tests/runtest.sh b/tests/runtest.sh
-index 766335fda768..ba4683f59e5d 100755
---- a/tests/runtest.sh
-+++ b/tests/runtest.sh
-@@ -22,6 +22,7 @@ tests="$tests comment setlist restore"
- if [ "$IPSET_UNSHARED" = "" ]; then
- 	# Re-execute in new network namespace
- 	export IPSET_UNSHARED="yes"
-+	export IPSET_BIN="$ipset"
- 	sysctl net.netfilter.nf_log_all_netns=1
- 	exec unshare -n -- "$0" "$@"
- fi
-diff --git a/tests/setlist_ns.sh b/tests/setlist_ns.sh
-index 9e47d65e95dc..67232acdd906 100755
---- a/tests/setlist_ns.sh
-+++ b/tests/setlist_ns.sh
-@@ -2,21 +2,42 @@
+diff --git a/tests/setlist_resize.sh b/tests/setlist_resize.sh
+index db347ca06517..393048adac38 100755
+--- a/tests/setlist_resize.sh
++++ b/tests/setlist_resize.sh
+@@ -1,22 +1,41 @@
+ #!/bin/sh
  
  set -e
- 
-+[ -z "$IPSET_BIN" ] && IPSET_BIN=ipset
+-# set -x
+-# exec > setlist.res
+-# exec 2>&1
 +
- CMD=$(cat <<EOF
- for x in \$(seq 0 127); do
-     echo "create h\$x hash:ip"
-     echo "create l\$x list:set timeout 10 comment"
--done | ipset restore
-+done | $IPSET_BIN restore
- for x in \$(seq 0 127); do
-     for y in \$(seq 0 127); do
-         echo "add l\$x h\$y timeout 1000 comment \"l\$x h\$y\""
-     done
--done | ipset restore
-+done | $IPSET_BIN restore
- # Wait for GC
- sleep 15
- EOF
- )
- 
--for x in seq 0 123; do
--    unshare -Urn bash -c "$CMD"
-+# First try with user namespaces and remapped-root.
-+options="-Urn"
-+if ! unshare "$options" bash -c "$CMD"; then
-+	# Doesn't work - try with plain network namespaces.
-+	if unshare -n bash -c "$CMD"; then
-+		# "-Ur" unsupported
-+		options="-n"
-+	else
-+		# Either network namespaces are not
-+		# supported at all or $CMD is failing.
-+		exit 1
++cleanup() {
++	exec 1>&3
++	exec 2>&4
++	if [ -r "$IPSET_TMP/setlist.res" ]; then
++		cat "$IPSET_TMP/setlist.res"
++		rm -f "$IPSET_TMP/setlist.res"
 +	fi
-+fi
++}
++trap cleanup EXIT
 +
-+parallel=16
-+for x in $(seq 1 123); do
-+    unshare "$options" bash -c "$CMD" &
++exec 3>&1
++exec 4>&2
++exec > "$IPSET_TMP/setlist.res" 2>&1
 +
-+    [ $((x % $parallel)) -eq 0 ] && wait
++set -x
+ 
+ ipset=${IPSET_BIN:-../src/ipset}
+ 
+ loop=8
+ 
++fail() {
++	echo "FAILED: $0 $@"
++	exit 1
++}
++
+ n=0
+ while [ $n -le 9 ]; do
+     egrep '^(ip_set_|xt_set)' /proc/modules | while read x y; do
+-    	rmmod $x >/dev/null 2>&1
++    	rmmod $x || :
+     done
+     if [ "`egrep '^(ip_set_|xt_set)' /proc/modules`" ]; then
+     	sleep 1s
+     else
++    	echo "Modules unloaded after $n attempts."
+     	n=10
+     fi
+ done
+@@ -35,7 +54,7 @@ for x in `seq 1 $loop`; do
+     create 1 &
+     create 2 &
+     wait
+-    test `$ipset l -n | wc -l` -eq 1024 || exit 1
++    test `$ipset l -n | wc -l` -eq 1024 || fail "expected 1024 sets"
+     $ipset x
+     # Wait for destroy to be finished and reference counts releases
+     n=0
+@@ -53,7 +72,10 @@ for x in `seq 1 $loop`; do
+     	lsmod
+     	echo $ref
+     fi
+-    test "$ref" -eq 0 || exit 1
++    test "$ref" -eq 0 || fail "ref was $ref"
+     rmmod ip_set_hash_ip >/dev/null 2>&1
+     rmmod ip_set >/dev/null 2>&1
  done
 +
-+wait
++rm -f "$IPSET_TMP/setlist.res"
++cleanup
 -- 
 2.54.0
 
