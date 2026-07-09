@@ -1,66 +1,48 @@
-Return-Path: <netfilter-devel+bounces-13802-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13805-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id m82gHzf7T2rkrQIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13802-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 21:49:11 +0200
+	id 4GkZLLz+T2qMrgIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13805-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 22:04:12 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE7647352D5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 21:49:10 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC1A7353DC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 22:04:12 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=nwl.cc header.s=mail2022 header.b="b/LKsl1m";
+	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13802-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13802-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13805-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13805-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6CE66301D040
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 19:46:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A8C07301B037
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 20:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F34C4499BD;
-	Thu,  9 Jul 2026 19:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08F5282F10;
+	Thu,  9 Jul 2026 20:04:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661FB44998E
-	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 19:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0075449981
+	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 20:04:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783626388; cv=none; b=OLOByxBvnBGrvbK5ZbOw5V47QifnT/Cwt6Z/RCXUY99s1sXe7eBh65C8Q76z7elO2MlZ7ecc/T+czc7nBGel8q3ayi2rmFXO0rrNPICvHxoPN0HHphSheDi+SHg/34/6b9eLlWt30P6Xl1psUN5JsMlMSBY9hi+y3sa/SXKIh7U=
+	t=1783627450; cv=none; b=e6Bz7nl//ajhg7bjB1xi8AraNHaVo+JFnQbqNvZPvmxIF9T/o9bHi5xY+KxA09oxhnNb10xAce2R6VCoocXt+j9Eaidl3OfzZjC4lH/R5iu80GmZAk6Ae/991tal7YimykA+LLiE1dNY/4DARNwBBj0CyD+TfG94EpkIWUE96yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783626388; c=relaxed/simple;
-	bh=VXfOxB9DkS6y/xrzhqqFwdHgeE3o+5mpU+bxsvmWWf4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aYuScC3bsXPyOGWHbWQnXlj8W4e7Rdbp3oIaFuxpfheohgdKwVYP5FilczwLRUbgtd5f2ZaNTHXRxDK/4/4Hgck4tWbdN2Z3OuYHqLNCltXD8WqdtIxVciQK61W+4jnalc9G7/KHLjPA0HlLtVzwaWuVVjrbesAIkzUfvVDO7u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=b/LKsl1m; arc=none smtp.client-ip=151.80.46.58
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-	s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=OAgX7v1SroL2pBxqX4cgsicm+HGhxsVhluY8cPvZovc=; b=b/LKsl1m329dF2GhTCcpYATkjw
-	DqzxQnJ5qHFgJIY37CUCt870o9ndVS8nFXXHkySVOT/RD2lx6uNv7jPmIq/mwBFsDO3hzpC4uFqe2
-	kJOtVI2jpwmOGnbrIS0LEN56px2KszDLO2XDVd8vQ3cXDxJ7rAWQfdyt2bPt7HA1+d+TBPcGYPwGS
-	EJedXrKBGuxtd4uG3/x9deaBawlt3Vmpk1/1rvI5CaceFIFv8e5Leesb11v3M3L43RMdOaOBvp1mH
-	+AWpuqdvteeUpWPKRyEtZMNcJKUndJESOVg6s6mYor2Z9qweExb8gzni0dtMo6C1HTuR+QIwirj4U
-	RR9OAlvg==;
-Received: from localhost ([::1] helo=xic)
-	by orbyte.nwl.cc with esmtp (Exim 4.98.2)
-	(envelope-from <phil@nwl.cc>)
-	id 1whuhO-000000002iy-1ILT;
-	Thu, 09 Jul 2026 21:46:18 +0200
-From: Phil Sutter <phil@nwl.cc>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org,
+	s=arc-20240116; t=1783627450; c=relaxed/simple;
+	bh=5HKjGEuE8dtpLjVIAemkaVLhEcnvBZ0GB2zBNawWwVY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rcq1IDFxYyCO7QKyMl3GwkKkZ6OgF3u1zw/CAe2CBqhY461tYpBe1n7TOsMwueFnd4RrLxiAzpXuLCnuG1AlviaLj3PUCA/Z+x1qgOwakhJ+37FLJSp4dSpGjcompmF90JQW6sFZPfPM4A+EUBy3Do7qsjixW8g1q3vMbpsLwBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id B207A602A9; Thu, 09 Jul 2026 22:04:05 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: kadlec@netfilter.org,
 	Florian Westphal <fw@strlen.de>
-Subject: [nf-next PATCH v2 5/5] netfilter: nfnetlink_hook: Fix for concurrent NAT hooks dump and change
-Date: Thu,  9 Jul 2026 21:46:12 +0200
-Message-ID: <20260709194612.1995795-6-phil@nwl.cc>
+Subject: [PATCH ipset 0/7] test updates
+Date: Thu,  9 Jul 2026 22:03:51 +0200
+Message-ID: <20260709200358.15504-1-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260709194612.1995795-1-phil@nwl.cc>
-References: <20260709194612.1995795-1-phil@nwl.cc>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -69,105 +51,147 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.04 / 15.00];
-	R_DKIM_REJECT(1.00)[nwl.cc:s=mail2022];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13802-lists,netfilter-devel=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[nwl.cc];
+	DMARC_NA(0.00)[strlen.de];
+	TAGGED_FROM(0.00)[bounces-13805-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:kadlec@netfilter.org,m:fw@strlen.de,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[nwl.cc:-];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_NEQ_ENVFROM(0.00)[phil@nwl.cc,netfilter-devel@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nwl.cc:from_mime,nwl.cc:email,nwl.cc:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,checkpatch.pl:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,setlist_resize.sh:url,strlen.de:mid,strlen.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CE7647352D5
+X-Rspamd-Queue-Id: 3AC1A7353DC
 
-If hooks are added or deleted, the nf_hook_entries buffer is reallocated
-and the RCU-protected pointer updated. If a dump requires multiple parts
-(exceeding sk_buff space) the second invocation may see a different
-nf_hook_entries pointer than the first one. Detect this just like the
-outer nfnl_hook_dump function does, by storing the pointer value in
-context. If it changes, signal user space it must restart.
+Hi Jozsef,
 
-As with the stored loop counter, that stored pointer value must be
-manually zeroed upon successful loop completion since this inner
-function may run multiple times for different nf_hook_ops but with same
-context.
+This contains various enhancments for the ipsets tests/runtest.sh.
 
-Fixes: b010e2a4a9ac ("netfilter: nfnetlink_hook: Dump nat type chains")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Fix a stupid typo introduced last minute when resolving checkpatch.pl
-  complaints
-- If 'e' becomes zero, it also indicates an interrupted dump
----
- net/netfilter/nfnetlink_hook.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+The largest enhancement is the removal of the sendip dependency,
+in the last patch -- this adds a sendip emulation via scapy.
+Note that 'sendip' will be used if present and the bundled scapy
+sendip.py otherwise.
 
-diff --git a/net/netfilter/nfnetlink_hook.c b/net/netfilter/nfnetlink_hook.c
-index e3b5d21eeb2e..95873c7a524f 100644
---- a/net/netfilter/nfnetlink_hook.c
-+++ b/net/netfilter/nfnetlink_hook.c
-@@ -55,6 +55,7 @@ static int nf_netlink_dump_start_rcu(struct sock *nlsk, struct sk_buff *skb,
- struct nfnl_dump_hook_data {
- 	char devname[IFNAMSIZ];
- 	unsigned long headv;
-+	unsigned long natv;
- 	u8 hook;
- };
- 
-@@ -355,6 +356,15 @@ static int nfnl_hook_dump_nat(struct sk_buff *nlskb,
- 	unsigned int i = cb->args[1];
- 	int err = 0;
- 
-+	if (!ctx->natv)
-+		ctx->natv = (unsigned long)e;
-+
-+	if ((e && i >= e->num_hook_entries) ||
-+	    ctx->natv != (unsigned long)e) {
-+		cb->seq++;
-+		return -EINTR;
-+	}
-+
- 	if (!e)
- 		return 0;
- 
-@@ -369,8 +379,10 @@ static int nfnl_hook_dump_nat(struct sk_buff *nlskb,
- 			break;
- 	}
- 
--	if (!err)
-+	if (!err) {
-+		ctx->natv = 0;
- 		i = 0;
-+	}
- 	cb->args[1] = i;
- 	return err;
- }
+Main motivation was to make runtest.sh work with my CI pipeline.
+This uses nipa (https://github.com/linux-netdev/nipa.git).
+Test scripts spawn kernels via virtme-ng.
+
+1) resolve the above. Add a temporary directory, export IPSET_TMPDIR
+to all scripts and use that in the tests to write files there instead
+of cwd.
+
+2) make test setup simpler: re-exec runtest.sh in a new namespace if
+IPSET_UNSHARED is unset (the default).  A dummy eth0 device for tests
+is added in the new namespace.  This makes ./runtest.sh self-contained,
+no extra work needed.  Also avoids clashes with the test network
+addresses used by test scripts.
+
+3) diff.sh: preserve file names in diff output: use the new temporary
+directory to store the postprocessed dump files before compare.
+This isn't needed but it helps to spot the cause of failures more
+easily, as the failing dump name is preserved in the diff output.
+
+4) check_klog.sh: Enable direct fallback to dmesg without error messages.
+Not needed either, but it un-clutters stderr in my environment.
+
+5) Use the local ipset binary instead of host binary.
+Allow fallback to plain "unshare -n" if user namespaces are not
+supported. Parallelize the test and increase iteration count to 124.
+'unshare -Unr' doesn't work in my setup but 'unshare -n' does and it
+should be good enough.  Note the script will still unse unshare -Unr
+by default, it only falls back once the first try fails.
+
+6) Make setlist_resize.sh more verbose on error:
+Capture command output to a temporary file, then dump log on failure.
+This also fixes a spurious error, the script uses 'set -e' and
+occasionally the first 'rmmod' try fails here which made the script
+exit too early.
+
+7) Add scapy-based sendip emulation to runtest.sh.  Fall bacl
+to a scapy-based alternative if sendip isn't found in PATH.
+
+Florian Westphal (7):
+  tests: make runtest.sh work with readonly-cwd
+  tests: runtest.sh: run inside namespace
+  tests: diff.sh: preserve file name
+  tests: check_klog.sh: unclutter stderr
+  tests: setlist_ns.sh: use local ipset binary and don't rely on userns
+  tests: make setlist_resize.sh more verbose on error
+  tests: runtest.sh: add sendip emulation via scapy
+
+ README                      |  13 +--
+ tests/big_sort.sh           |   8 +-
+ tests/bitmap:ip.t           |  30 +++----
+ tests/check_klog.sh         |  11 ++-
+ tests/check_sendip_packets  |   2 +-
+ tests/comment.t             |  32 ++++----
+ tests/diff.sh               |  13 ++-
+ tests/hash:ip,mark.t        |   8 +-
+ tests/hash:ip,port,ip.t     |   8 +-
+ tests/hash:ip,port,net.t    |   4 +-
+ tests/hash:ip,port.t        |  32 ++++----
+ tests/hash:ip.t             |  30 +++----
+ tests/hash:ip6,mark.t       |   8 +-
+ tests/hash:ip6,port,ip6.t   |   8 +-
+ tests/hash:ip6,port,net6.t  |   4 +-
+ tests/hash:ip6,port.t       |   8 +-
+ tests/hash:ip6.t            |  32 ++++----
+ tests/hash:mac.t            |  16 ++--
+ tests/hash:net,iface.t      |  12 +--
+ tests/hash:net,net.t        |  32 ++++----
+ tests/hash:net,port,net.t   |   4 +-
+ tests/hash:net,port.t       |   8 +-
+ tests/hash:net.t            |  16 ++--
+ tests/hash:net6,net6.t      |   8 +-
+ tests/hash:net6,port,net6.t |   4 +-
+ tests/hash:net6,port.t      |  16 ++--
+ tests/hash:net6.t           |   8 +-
+ tests/ignore.sh             |   2 +-
+ tests/iphash.t              |  20 ++---
+ tests/ipmap.t               |  28 +++----
+ tests/ipmarkhash.t          |   8 +-
+ tests/ipporthash.t          |   8 +-
+ tests/ipportiphash.t        |   8 +-
+ tests/ipportnethash.t       |   8 +-
+ tests/iptables.sh           |   8 +-
+ tests/iptree.t              |   4 +-
+ tests/iptreemap.t           |   4 +-
+ tests/macipmap.t            |  16 ++--
+ tests/match_target.t        |   2 +-
+ tests/nethash.t             |   4 +-
+ tests/portmap.t             |  16 ++--
+ tests/restore.t             |   2 +-
+ tests/runtest.sh            |  52 +++++++++++-
+ tests/sendip.py             | 154 ++++++++++++++++++++++++++++++++++++
+ tests/sendip.sh             |   8 +-
+ tests/setlist.t             |  28 +++----
+ tests/setlist_ns.sh         |  29 ++++++-
+ tests/setlist_resize.sh     |  34 ++++++--
+ tests/sort.sh               |   6 +-
+ 49 files changed, 541 insertions(+), 283 deletions(-)
+ create mode 100755 tests/sendip.py
+
 -- 
 2.54.0
-
 
