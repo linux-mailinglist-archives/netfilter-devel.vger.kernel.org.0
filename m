@@ -1,351 +1,198 @@
-Return-Path: <netfilter-devel+bounces-13771-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13772-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uA5wHldAT2qecwIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13771-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 08:31:51 +0200
+	id dmI2LrpFT2o2dQIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13772-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 08:54:50 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D397E72D2E4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 08:31:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1500672D626
+	for <lists+netfilter-devel@lfdr.de>; Thu, 09 Jul 2026 08:54:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b="lZZsMNO/";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13771-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13771-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=intel.com header.s=Intel header.b=HBq7xuGw;
+	dmarc=pass (policy=none) header.from=intel.com;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13772-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13772-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 872DA3007E3B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 06:30:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 091FE30191BA
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jul 2026 06:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266BF3AD52D;
-	Thu,  9 Jul 2026 06:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CA93D3CF2;
+	Thu,  9 Jul 2026 06:53:21 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5EF3CDBB7
-	for <netfilter-devel@vger.kernel.org>; Thu,  9 Jul 2026 06:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2BF3CC7D8;
+	Thu,  9 Jul 2026 06:53:20 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783578644; cv=none; b=MIKslxs44EiwEGwQyiCVah79lAGa/sFKkJLIk3l8mRKSs3cwTLxNunjc6oDFSssuwyW5NoMePsPb0vpeWr3D49C8At5/5wyfuHSiQrV+FVwADnlGaFy75CR/Qix4DgzrBrAQLpC0GW+laGnPti6P5teNr0QqBjrR5HwIodGwldM=
+	t=1783580001; cv=none; b=PO1CQkMFb3Ity7EJGyw6CvKqFTu5mGIHDm6grnwOlxvtVnJOGMznEUxQ3js4+rmi79x61djy5xTKaDOwlE/eeusSweagNcHEW71sK7ilJJgeTtjgTC59L0cxdKm4691HXGVF/bJNV6plBvbAVGV8xJ4TZm6PbMjU/OWRGEwsrhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783578644; c=relaxed/simple;
-	bh=7iyGFkX/KVZ2dRRCt8MLBEDmWyxHFZZgQiTUzgZCRpg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UMFYRy4PUhAJQ0kZgxwKhyXYoVSuDuRHowswRiG3gwgOYUdM5zg41f+LPg+XwR1KGr6B50Tt+ID07wXWUZl80zTlKYe3mkC+cXKIh5oM/d711LmJLADJJ+e0wpFeEkgbQtISfFrYxrsF7yrWNp/XMsUfPQXiXRDdl2doJmJGRuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZZsMNO/; arc=none smtp.client-ip=209.85.210.179
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-8484a0b998fso1448577b3a.2
-        for <netfilter-devel@vger.kernel.org>; Wed, 08 Jul 2026 23:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783578642; x=1784183442; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=3gd7QqaANUrhoi2BRtAEvQ24FdV1dl/9cG/AY/sVUI8=;
-        b=lZZsMNO/C6c8nDY3sq5qNnSjYrxMChPpyH5HkVNaFwa1HUrh26K6qlPzNf5Dvp8PTw
-         jx3jQw+ARDbqsGxxOQmq60yzdatadXHyy2sUVgpxXT0zQ70H5R++0CxHvgix+MncdjFW
-         Kg1ktLhamaTqrv3XZezZUb5R9TiHm3rumqrhKnSj8vj1QkalX4TeNVyQzrBOYwoyBlMv
-         iS00G9BlexdMad2wbzW47AAShbCFsl2n2Vg2rYSZN4FxB30y9JTY92q+4AE5bFy/bV5e
-         2Ixke3ngtnBGR8sedmL6zIHx64NhsCHkFAq159XCJ44IUq8eqrwhIxOAPG0rB9n/K0Eu
-         NWoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783578642; x=1784183442;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=3gd7QqaANUrhoi2BRtAEvQ24FdV1dl/9cG/AY/sVUI8=;
-        b=NeL+47mdd5KuKdrZr7jHBPaVNCJ5LBGiSNov5BvdJ8ZvbnIGxdRiWcKzJYJCHd4Xlz
-         IQajkdmjt//uGHcZBPjBp+TKv9bRk2vGIfyRpJ2R9vSQhSFRKHrX5cG3nXihBHYu6lGv
-         IJmREqRixsdjcbXavWo42kTw07X8CIhiheaDHorcvRxxnnRBMESc0B6vp0B5ujMvFdYD
-         BXwNQpjFOS7ZA4/s1nMG8SRmQ748PoPm6KvHrFDgIs6Fq/ePfj/DI4R1Z0zFF1xTjQwa
-         oRkEKXEpqfB6xT4tGoXj9pSi9s5MpI/jWN8h19cMoDSjzAx3NawzYEqSTF3/JjsvUSme
-         i3hA==
-X-Forwarded-Encrypted: i=1; AHgh+RpdPgpUWHm+mSOlUe35U5RgBhecY9s+cWJMTYu64IiggrP5lwxpHCmzl80rD+Fu0bsc0MPY7jANDz8Y2g/XDrk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwpJuzaPmzMOwZYd6eXdU2k3O6O4ay5pNnh1EPJ1yjRftCcAM0k
-	56TEG6h43p5ENWYtKS/VImk/PKCWw+2Utj+BMFqcJYbXXEfT6BOsnNYkSbt3An2LldwxTw==
-X-Gm-Gg: AfdE7ck8LLvZmBYckHrc1Iml6lUeCzsOv/s2iByNVsxL9HE2jwzt5jZFjYLbPvEz3ma
-	J6s2u0CwAisL9gv3zyPKNDqyTg+mpjEhicQ5kOAxAKVRU5CiYj4VKghoC5RT9oLOsVMOBD5hNCt
-	L6EsOifxUJ3TonfF5zTEbiMB6neacgCwEUFqWJ9T0OtPwqMAQ2oT4kY+Ojj2yoOGtiCf6/cmYLZ
-	o3HX+UjHzbmrdZgbHGI3na3X4Yc24eSTh/l3uctpPWukoVCxEJZ4B53UN38qOJOiMQejg994Zhk
-	yNuOBi2C0G4aQktKjcBfiOaeGBRSe5DfKjkJlE+Hfmw9So7OXoOxYItA7Lyc/ZYLPTNPz2u1DcV
-	roghZ1j/eKWzqVqe5MC610gdTn7PL/GeLH9aYuLXTVTXayEfmzoUICOrSi4NQ3siI2wjM4fChw1
-	kCSu/5pvhupJEOd0Rfo+yPSQ==
-X-Received: by 2002:a05:6a00:3486:b0:848:2f77:e2dd with SMTP id d2e1a72fcca58-8484392ec4emr5740542b3a.70.1783578641852;
-        Wed, 08 Jul 2026 23:30:41 -0700 (PDT)
-Received: from c79home.localdomain ([14.127.26.222])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-847f6b9e12csm8087708b3a.21.2026.07.08.23.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2026 23:30:40 -0700 (PDT)
-From: Zhixing Chen <running910@gmail.com>
-To: Florian Westphal <fw@strlen.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Phil Sutter <phil@nwl.cc>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	Zhixing Chen <running910@gmail.com>
-Subject: [PATCH nf] netfilter: ip6tables: set hotdrop for malformed extension header matches
-Date: Thu,  9 Jul 2026 14:30:12 +0800
-Message-Id: <20260709063012.33160-1-running910@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1783580001; c=relaxed/simple;
+	bh=QGNQisF2MPBayaIvehXT+6AWuqILnIRGPpuPyRtE9GA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tUMtzZxHvsPz/UEA4yBxlTgFLGOSfk4hQ2/ZdzdoAIOvybY9TS4Kldvx+mruK8uLE/DSEoPSvrq6HSSSC6d1nWDKSFDifL7LGSJx6El+0SPeBwKJJ3YbX1CqkEM25kPew+agOT9JCJv4UPda0Cs8bbbHVZ7m+0AbUbbYaQwPKSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HBq7xuGw; arc=none smtp.client-ip=192.198.163.16
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1783580000; x=1815116000;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QGNQisF2MPBayaIvehXT+6AWuqILnIRGPpuPyRtE9GA=;
+  b=HBq7xuGw364VduR9CZApZl8fIFnc5qeV/94GGz8pxv2Xzv2OyXWR4Iyk
+   ZvyQdgmlun/kgzKRwqq5M0p/hduwWDAbQNHLlapLFmf9H114Dno74Edmm
+   eceG5oSX7EvO+KK/e9EiVmqgc7wb2p+MkgJLWYb6AyRMbXarmOsQQwWOj
+   Pxx8UxBJI3Y8yg9ZmhRtNgqEhesM1d3/tyfKrgMqajt6AZ3NZKDI2XG5c
+   hKIX9SbgezrXw/qRvaPTjnp8KNpIuOGMr8/cvzmhihsGjn+Pc7L1uBc7z
+   ZMqvUSaBlKjQhbn1xH80Vw46VjGhggQoJnG+zz64zIkA68IYYNRna6Du6
+   A==;
+X-CSE-ConnectionGUID: MFmP4kKSQICVYFIEr4wmpQ==
+X-CSE-MsgGUID: sIRBDw4YSjCB6zqSMXNqyA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="71772653"
+X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
+   d="scan'208";a="71772653"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2026 23:53:20 -0700
+X-CSE-ConnectionGUID: 0vYIzVo7QxaDRr2DMkpqrg==
+X-CSE-MsgGUID: Kl53URpBSTWHFzo5vQSWWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
+   d="scan'208";a="253408237"
+Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 08 Jul 2026 23:53:16 -0700
+Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1whicl-00000000HMd-25U4;
+	Thu, 09 Jul 2026 06:53:12 +0000
+Date: Thu, 9 Jul 2026 14:52:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ahmed Zaki <anzaki@gmail.com>, netfilter-devel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	pablo@netfilter.org, fw@strlen.de, kuba@kernel.org,
+	edumazet@google.com, davem@davemloft.net, pabeni@redhat.com,
+	horms@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter: flowtable: tear down HW offloaded flows on
+ FIB route changes
+Message-ID: <202607091427.MRtlNy5G-lkp@intel.com>
+References: <20260708205404.911832-1-anzaki@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260708205404.911832-1-anzaki@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-4.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[nwl.cc,davemloft.net,google.com,kernel.org,redhat.com,vger.kernel.org,netfilter.org,gmail.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-13771-lists,netfilter-devel=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:pablo@netfilter.org,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:running910@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[running910@gmail.com,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[12];
 	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13772-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:anzaki@gmail.com,m:netfilter-devel@vger.kernel.org,m:llvm@lists.linux.dev,m:oe-kbuild-all@lists.linux.dev,m:pablo@netfilter.org,m:fw@strlen.de,m:kuba@kernel.org,m:edumazet@google.com,m:davem@davemloft.net,m:pabeni@redhat.com,m:horms@kernel.org,m:netdev@vger.kernel.org,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[lkp@intel.com,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[running910@gmail.com,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,intel.com:from_mime,intel.com:email,intel.com:mid,intel.com:dkim,01.org:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D397E72D2E4
+X-Rspamd-Queue-Id: 1500672D626
 
-The hbh, srh and ipv6header matches have paths that return false for
-malformed IPv6 extension header packets without setting hotdrop.
+Hi Ahmed,
 
-For hbh, strict option parsing stops when the option type or length field
-cannot be read, or when advancing to the next requested option would
-exceed the available header data. Mark these packets for hotdrop instead
-of treating them as a rule mismatch.
+kernel test robot noticed the following build warnings:
 
-For srh, keep a missing SRH as a normal mismatch, but set hotdrop when
-header lookup fails for other reasons, when the SRH fixed header is not
-present, when the advertised SRH length exceeds the available skb data, or
-when SID selector reads fail.
+[auto build test WARNING on netfilter-nf/main]
 
-For ipv6header, set hotdrop when the next extension header is not fully
-present or when the advertised extension header length exceeds the
-available skb data.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ahmed-Zaki/netfilter-flowtable-tear-down-HW-offloaded-flows-on-FIB-route-changes/20260709-050000
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git main
+patch link:    https://lore.kernel.org/r/20260708205404.911832-1-anzaki%40gmail.com
+patch subject: [PATCH nf] netfilter: flowtable: tear down HW offloaded flows on FIB route changes
+config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20260709/202607091427.MRtlNy5G-lkp@intel.com/config)
+compiler: clang version 23.0.0git (https://github.com/llvm/llvm-project b3e6e6dabdc02153552a64fc74ff5c7532447eed)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260709/202607091427.MRtlNy5G-lkp@intel.com/reproduce)
 
-Returning false treats the packet as a rule mismatch. Set hotdrop for
-these malformed packets so they cannot bypass rules intended to drop
-packets with these IPv6 extension headers.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202607091427.MRtlNy5G-lkp@intel.com/
 
-Signed-off-by: Zhixing Chen <running910@gmail.com>
----
+All warnings (new ones prefixed by >>):
 
-This is a follow-up to the previous IPv6 extension header hotdrop fix:
-https://lore.kernel.org/netfilter-devel/20260703125709.16493-6-fw@strlen.de/
+>> net/netfilter/nf_flow_table_core.c:833:3: warning: label followed by a declaration is a C23 extension [-Wc23-extensions]
+     833 |                 struct fib_entry_notifier_info *fen;
+         |                 ^
+   net/netfilter/nf_flow_table_core.c:843:3: warning: label followed by a declaration is a C23 extension [-Wc23-extensions]
+     843 |                 struct fib6_entry_notifier_info *fen6;
+         |                 ^
+   2 warnings generated.
 
----
- net/ipv6/netfilter/ip6t_hbh.c        | 21 +++++++++-----
- net/ipv6/netfilter/ip6t_ipv6header.c | 10 +++++--
- net/ipv6/netfilter/ip6t_srh.c        | 42 ++++++++++++++++++++++------
- 3 files changed, 54 insertions(+), 19 deletions(-)
 
-diff --git a/net/ipv6/netfilter/ip6t_hbh.c b/net/ipv6/netfilter/ip6t_hbh.c
-index 6d1a5d2026a6..a67f7d0fe93f 100644
---- a/net/ipv6/netfilter/ip6t_hbh.c
-+++ b/net/ipv6/netfilter/ip6t_hbh.c
-@@ -104,8 +104,10 @@ hbh_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 				break;
- 			tp = skb_header_pointer(skb, ptr, sizeof(_opttype),
- 						&_opttype);
--			if (tp == NULL)
--				break;
-+			if (!tp) {
-+				par->hotdrop = true;
-+				return false;
-+			}
- 
- 			/* Type check */
- 			if (*tp != (optinfo->opts[temp] & 0xFF00) >> 8) {
-@@ -120,13 +122,17 @@ hbh_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 				u16 spec_len;
- 
- 				/* length field exists ? */
--				if (hdrlen < 2)
--					break;
-+				if (hdrlen < 2) {
-+					par->hotdrop = true;
-+					return false;
-+				}
- 				lp = skb_header_pointer(skb, ptr + 1,
- 							sizeof(_optlen),
- 							&_optlen);
--				if (lp == NULL)
--					break;
-+				if (!lp) {
-+					par->hotdrop = true;
-+					return false;
-+				}
- 				spec_len = optinfo->opts[temp] & 0x00FF;
- 
- 				if (spec_len != 0x00FF && spec_len != *lp) {
-@@ -147,7 +153,8 @@ hbh_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 			if ((ptr > skb->len - optlen || hdrlen < optlen) &&
- 			    temp < optinfo->optsnr - 1) {
- 				pr_debug("new pointer is too large!\n");
--				break;
-+				par->hotdrop = true;
-+				return false;
- 			}
- 			ptr += optlen;
- 			hdrlen -= optlen;
-diff --git a/net/ipv6/netfilter/ip6t_ipv6header.c b/net/ipv6/netfilter/ip6t_ipv6header.c
-index c52ff929c93b..0568eb99eb1c 100644
---- a/net/ipv6/netfilter/ip6t_ipv6header.c
-+++ b/net/ipv6/netfilter/ip6t_ipv6header.c
-@@ -53,8 +53,10 @@ ipv6header_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 			break;
- 		}
- 		/* Is there enough space for the next ext header? */
--		if (len < (int)sizeof(struct ipv6_opt_hdr))
-+		if (len < (int)sizeof(struct ipv6_opt_hdr)) {
-+			par->hotdrop = true;
- 			return false;
-+		}
- 		/* ESP -> evaluate */
- 		if (nexthdr == NEXTHDR_ESP) {
- 			temp |= MASK_ESP;
-@@ -99,8 +101,10 @@ ipv6header_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 		nexthdr = hp->nexthdr;
- 		len -= hdrlen;
- 		ptr += hdrlen;
--		if (ptr > skb->len)
--			break;
-+		if (ptr > skb->len) {
-+			par->hotdrop = true;
-+			return false;
-+		}
- 	}
- 
- 	if (nexthdr != NEXTHDR_NONE && nexthdr != NEXTHDR_ESP)
-diff --git a/net/ipv6/netfilter/ip6t_srh.c b/net/ipv6/netfilter/ip6t_srh.c
-index db0fd64d8986..33a659b9b0e3 100644
---- a/net/ipv6/netfilter/ip6t_srh.c
-+++ b/net/ipv6/netfilter/ip6t_srh.c
-@@ -27,16 +27,25 @@ static bool srh_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 	struct ipv6_sr_hdr *srh;
- 	struct ipv6_sr_hdr _srh;
- 	int hdrlen, srhoff = 0;
-+	int err;
- 
--	if (ipv6_find_hdr(skb, &srhoff, IPPROTO_ROUTING, NULL, NULL) < 0)
-+	err = ipv6_find_hdr(skb, &srhoff, IPPROTO_ROUTING, NULL, NULL);
-+	if (err < 0) {
-+		if (err != -ENOENT)
-+			par->hotdrop = true;
- 		return false;
-+	}
- 	srh = skb_header_pointer(skb, srhoff, sizeof(_srh), &_srh);
--	if (!srh)
-+	if (!srh) {
-+		par->hotdrop = true;
- 		return false;
-+	}
- 
- 	hdrlen = ipv6_optlen(srh);
--	if (skb->len - srhoff < hdrlen)
-+	if (skb->len - srhoff < hdrlen) {
-+		par->hotdrop = true;
- 		return false;
-+	}
- 
- 	if (srh->type != IPV6_SRCRT_TYPE_4)
- 		return false;
-@@ -121,16 +130,25 @@ static bool srh1_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 	struct in6_addr _psid, _nsid, _lsid;
- 	struct ipv6_sr_hdr *srh;
- 	struct ipv6_sr_hdr _srh;
-+	int err;
- 
--	if (ipv6_find_hdr(skb, &srhoff, IPPROTO_ROUTING, NULL, NULL) < 0)
-+	err = ipv6_find_hdr(skb, &srhoff, IPPROTO_ROUTING, NULL, NULL);
-+	if (err < 0) {
-+		if (err != -ENOENT)
-+			par->hotdrop = true;
- 		return false;
-+	}
- 	srh = skb_header_pointer(skb, srhoff, sizeof(_srh), &_srh);
--	if (!srh)
-+	if (!srh) {
-+		par->hotdrop = true;
- 		return false;
-+	}
- 
- 	hdrlen = ipv6_optlen(srh);
--	if (skb->len - srhoff < hdrlen)
-+	if (skb->len - srhoff < hdrlen) {
-+		par->hotdrop = true;
- 		return false;
-+	}
- 
- 	if (srh->type != IPV6_SRCRT_TYPE_4)
- 		return false;
-@@ -206,8 +224,10 @@ static bool srh1_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 		psidoff = srhoff + sizeof(struct ipv6_sr_hdr) +
- 			  ((srh->segments_left + 1) * sizeof(struct in6_addr));
- 		psid = skb_header_pointer(skb, psidoff, sizeof(_psid), &_psid);
--		if (!psid)
-+		if (!psid) {
-+			par->hotdrop = true;
- 			return false;
-+		}
- 		if (NF_SRH_INVF(srhinfo, IP6T_SRH_INV_PSID,
- 				ipv6_masked_addr_cmp(psid, &srhinfo->psid_msk,
- 						     &srhinfo->psid_addr)))
-@@ -221,8 +241,10 @@ static bool srh1_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 		nsidoff = srhoff + sizeof(struct ipv6_sr_hdr) +
- 			  ((srh->segments_left - 1) * sizeof(struct in6_addr));
- 		nsid = skb_header_pointer(skb, nsidoff, sizeof(_nsid), &_nsid);
--		if (!nsid)
-+		if (!nsid) {
-+			par->hotdrop = true;
- 			return false;
-+		}
- 		if (NF_SRH_INVF(srhinfo, IP6T_SRH_INV_NSID,
- 				ipv6_masked_addr_cmp(nsid, &srhinfo->nsid_msk,
- 						     &srhinfo->nsid_addr)))
-@@ -233,8 +255,10 @@ static bool srh1_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- 	if (srhinfo->mt_flags & IP6T_SRH_LSID) {
- 		lsidoff = srhoff + sizeof(struct ipv6_sr_hdr);
- 		lsid = skb_header_pointer(skb, lsidoff, sizeof(_lsid), &_lsid);
--		if (!lsid)
-+		if (!lsid) {
-+			par->hotdrop = true;
- 			return false;
-+		}
- 		if (NF_SRH_INVF(srhinfo, IP6T_SRH_INV_LSID,
- 				ipv6_masked_addr_cmp(lsid, &srhinfo->lsid_msk,
- 						     &srhinfo->lsid_addr)))
--- 
-2.34.1
+vim +833 net/netfilter/nf_flow_table_core.c
 
+   804	
+   805	/* Called with rcu_read_lock() */
+   806	static int nf_flow_table_fib_event(struct notifier_block *nb,
+   807					   unsigned long event, void *ptr)
+   808	{
+   809		struct nf_flowtable *flow_table =
+   810			container_of(nb, struct nf_flowtable, fib_nb);
+   811		struct fib_notifier_info *info = ptr;
+   812		struct nf_flow_fib_event *ev;
+   813	
+   814		switch (event) {
+   815		case FIB_EVENT_ENTRY_REPLACE:
+   816		case FIB_EVENT_ENTRY_APPEND:
+   817		case FIB_EVENT_ENTRY_DEL:
+   818			break;
+   819		default:
+   820			return NOTIFY_DONE;
+   821		}
+   822	
+   823		/* Skip events for an address family this table cannot hold. */
+   824		if (!nf_flowtable_fib_family_match(flow_table, info->family))
+   825			return NOTIFY_DONE;
+   826	
+   827		ev = kzalloc(sizeof(*ev), GFP_ATOMIC);
+   828		if (!ev)
+   829			return NOTIFY_DONE;
+   830	
+   831		switch (info->family) {
+   832		case NFPROTO_IPV4:
+ > 833			struct fib_entry_notifier_info *fen;
+   834	
+   835			fen = container_of(info, struct fib_entry_notifier_info, info);
+   836			ev->family     = NFPROTO_IPV4;
+   837			ev->addr.ip4   = htonl(fen->dst);
+   838			ev->prefix_len = fen->dst_len;
+   839			break;
+   840	
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
