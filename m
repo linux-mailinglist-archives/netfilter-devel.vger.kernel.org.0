@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13832-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id LV4yOSgFUWo9+AIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:43:52 +0200
+	id PR5PFTgFUWpB+AIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13832-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:44:08 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E40073BDB1
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:43:52 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C1A873BDBF
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:44:07 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13832-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13832-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7598130209C8
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 14:37:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0645E307ED9B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 14:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDF13D649F;
-	Fri, 10 Jul 2026 14:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317CD399368;
+	Fri, 10 Jul 2026 14:38:00 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098B0348C6E;
-	Fri, 10 Jul 2026 14:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8169A395AF2;
+	Fri, 10 Jul 2026 14:37:58 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783694275; cv=none; b=V8K192PipqmoVTkjiHV7/8wgUW68beBg0Ty0U588AR2VXaSRL5o50NLGox8IjhNhvuTYL6KPWZSMsWsSs038PCYMoujqPheb//6GobD2sRUyuX7oVDlrXes566HZzqM+D0Dce96hrRCJQASCxF7+Ja1++7cNQv0fZKltT9KVa5Y=
+	t=1783694280; cv=none; b=pO2G+t4rxCQXH90SWPoOdDApuolR+rmizI28vMTwLFLNTVTTEfHdiDsqL471DxHUQgIX2kC83h0KYX7fwmeKmPbtd+J7KXG1lx0Bh4QsVzILYi0Q8+99om3ZfJqdtjLZJA97AY74Ya0FAq7w+DhZhlAzLbu8m/F8VmWTdAQuV18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783694275; c=relaxed/simple;
-	bh=/T5XlWGP2PLa/f5cETS2ktMuZeb/SjA9TIEitRMNBNA=;
+	s=arc-20240116; t=1783694280; c=relaxed/simple;
+	bh=/Ctx3z1mNapdwHFWdi6evZ+I2Pcur1bztsXZU79kmKs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TN/qNUKKkzdvtnEPczB7CER7eZOg9wn55vzeU1LGo/LcPngXNJfvQPTRKI+PsVuY7zf97kcPlxdNIEq20emng4bgAOERWxcYdhDurhy9Q985/J70O7WRAWULTu9HdiMl++sOaa9rTvejA/59wIiIZsfNNlJt5LbYverS+MAnrbI=
+	 MIME-Version; b=eV7F20/oWyo/bUMavPdXOkXlAnH8nNGAGFcXeCvr2650oNjcGfo4YqewaJSDcFfrx0IBR2NuAWlvamU/CnGXUob4ikbI/xnKhAl7c8RT6ZlJnsZxqLUXJw3/24+ibHNI71R2IrwnRrvhiHn+ZpFEYQxnC6HNoECvYWDf4ipHyr0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 527706059A; Fri, 10 Jul 2026 16:37:51 +0200 (CEST)
+	id 94624605B5; Fri, 10 Jul 2026 16:37:55 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 2/9] netfilter: ecache: fix inverted time_after() check
-Date: Fri, 10 Jul 2026 16:37:26 +0200
-Message-ID: <20260710143733.29741-3-fw@strlen.de>
+Subject: [PATCH net 3/9] netfilter: bridge: fix stale prevhdr pointer in br_ip6_fragment()
+Date: Fri, 10 Jul 2026 16:37:27 +0200
+Message-ID: <20260710143733.29741-4-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260710143733.29741-1-fw@strlen.de>
 References: <20260710143733.29741-1-fw@strlen.de>
@@ -62,12 +62,12 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13830-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13832-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
 	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -76,7 +76,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -87,73 +87,82 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,seu.edu.cn:email,tsinghua.edu.cn:email,strlen.de:from_mime,strlen.de:email,strlen.de:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,strlen.de:from_mime,strlen.de:email,strlen.de:mid,vger.kernel.org:from_smtp,asu.edu:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7E40073BDB1
+X-Rspamd-Queue-Id: 9C1A873BDBF
 
-From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+From: "Xiang Mei (Microsoft)" <xmei5@asu.edu>
 
-ecache_work_evict_list() redelivers DESTROY events for conntracks that
-were moved to the per-netns dying_list after event delivery failed.  It
-sets a 10ms deadline:
+br_ip6_fragment() gets prevhdr, a pointer into the skb head, from
+ip6_find_1stfragopt(), then calls skb_checksum_help().  For a cloned skb
+skb_checksum_help() reallocates the head via pskb_expand_head(), leaving
+prevhdr dangling.  It is later dereferenced in ip6_frag_next(), causing a
+use-after-free write.
 
-    stop = jiffies + ECACHE_MAX_JIFFIES
+Save prevhdr's offset before skb_checksum_help() and recompute it after,
+like commit ef0efcd3bd3f ("ipv6: Fix dangling pointer when ipv6
+fragment").
 
-but then tests:
+  BUG: KASAN: slab-use-after-free in ip6_frag_next (net/ipv6/ip6_output.c:857)
+  Write of size 1 at addr ffff888013ff5016 by task exploit/141
+  Call Trace:
+   ...
+   kasan_report (mm/kasan/report.c:595)
+   ip6_frag_next (net/ipv6/ip6_output.c:857)
+   br_ip6_fragment (net/ipv6/netfilter.c:212)
+   nf_ct_bridge_post (net/bridge/netfilter/nf_conntrack_bridge.c:407)
+   nf_hook_slow (net/netfilter/core.c:619)
+   br_forward_finish (net/bridge/br_forward.c:66)
+   __br_forward (net/bridge/br_forward.c:115)
+   maybe_deliver (net/bridge/br_forward.c:191)
+   br_flood (net/bridge/br_forward.c:245)
+   br_handle_frame_finish (net/bridge/br_input.c:229)
+   br_handle_frame (net/bridge/br_input.c:442)
+   ...
+   packet_sendmsg (net/packet/af_packet.c:3114)
+   ...
+   do_syscall_64 (arch/x86/entry/syscall_64.c:94)
+   entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:121)
+  Kernel panic - not syncing: Fatal exception in interrupt
 
-    time_after(stop, jiffies)
-
-This condition is true while the deadline is still in the future, so the
-worker returns STATE_RESTART after the first successful redelivery in the
-usual case.  ecache_work() maps STATE_RESTART to delay 0, which turns the
-redelivery path into one dying conntrack per workqueue dispatch and makes
-the sent > 16 batching/cond_resched() path effectively unreachable.
-
-A conntrack netlink listener whose receive queue is congested can make
-DESTROY event delivery fail with -ENOBUFS.  With sustained conntrack
-churn, entries then accumulate on the dying_list and are only drained at
-the degraded one-entry-per-dispatch rate once delivery succeeds again,
-wasting CPU on back-to-back workqueue reschedules and prolonging
-conntrack memory/resource pressure.
-
-In a KASAN QEMU test with CONFIG_NF_CONNTRACK_EVENTS=y and
-nf_conntrack.enable_hooks=1, a congested DESTROY listener caused 8192
-nf_ct_delete() calls to return false and move entries to the dying_list.
-After closing the listener, the unfixed kernel needed 7670 ecache_work()
-entries to destroy 7669 conntracks.  With this change, the same 8192
-entries were destroyed by 2 ecache_work() entries.
-
-Swap the comparison so the worker restarts only after the deadline has
-expired.
-
-Fixes: 2ed3bf188b33 ("netfilter: ecache: use dedicated list for event redelivery")
+Fixes: 764dd163ac92 ("netfilter: nf_conntrack_bridge: add support for IPv6")
 Cc: stable@vger.kernel.org
-Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
-Reported-by: Ao Wang <wangao@seu.edu.cn>
-Reported-by: Xuewei Feng <fengxw06@126.com>
-Reported-by: Qi Li <qli01@tsinghua.edu.cn>
-Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
-Assisted-by: Claude-Code:GLM-5.2
-Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+Reported-by: AutonomousCodeSecurity@microsoft.com
+Signed-off-by: Xiang Mei (Microsoft) <xmei5@asu.edu>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conntrack_ecache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/netfilter.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
-index 9df159448b89..cc8d8e85169f 100644
---- a/net/netfilter/nf_conntrack_ecache.c
-+++ b/net/netfilter/nf_conntrack_ecache.c
-@@ -77,7 +77,7 @@ static enum retry_state ecache_work_evict_list(struct nf_conntrack_net *cnet)
- 		hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
- 		hlist_nulls_add_head(&ct->tuplehash[IP_CT_DIR_REPLY].hnnode, &evicted_list);
+diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
+index 6d80f85e55fa..a7025ec87035 100644
+--- a/net/ipv6/netfilter.c
++++ b/net/ipv6/netfilter.c
+@@ -120,7 +120,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+ 	ktime_t tstamp = skb->tstamp;
+ 	struct ip6_frag_state state;
+ 	u8 *prevhdr, nexthdr = 0;
+-	unsigned int mtu, hlen;
++	unsigned int mtu, hlen, nexthdr_offset;
+ 	int hroom, err = 0;
+ 	__be32 frag_id;
  
--		if (time_after(stop, jiffies)) {
-+		if (time_after(jiffies, stop)) {
- 			ret = STATE_RESTART;
- 			break;
- 		}
+@@ -129,6 +129,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+ 		goto blackhole;
+ 	hlen = err;
+ 	nexthdr = *prevhdr;
++	nexthdr_offset = prevhdr - skb_network_header(skb);
+ 
+ 	mtu = skb->dev->mtu;
+ 	if (frag_max_size > mtu ||
+@@ -147,6 +148,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+ 	    (err = skb_checksum_help(skb)))
+ 		goto blackhole;
+ 
++	prevhdr = skb_network_header(skb) + nexthdr_offset;
+ 	hroom = LL_RESERVED_SPACE(skb->dev);
+ 	if (skb_has_frag_list(skb)) {
+ 		unsigned int first_len = skb_pagelen(skb);
 -- 
 2.54.0
 
