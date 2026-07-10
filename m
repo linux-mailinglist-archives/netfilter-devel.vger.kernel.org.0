@@ -1,41 +1,41 @@
-Return-Path: <netfilter-devel+bounces-13831-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id KVcPLtgDUWrf9wIAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13831-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:38:16 +0200
+	id LV4yOSgFUWo9+AIAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:43:52 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4513B73BCE6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:38:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E40073BDB1
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 16:43:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13831-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13831-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13830-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 812B03013034
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 14:38:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7598130209C8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jul 2026 14:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A3636CDFD;
-	Fri, 10 Jul 2026 14:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDF13D649F;
+	Fri, 10 Jul 2026 14:37:55 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E028D39B481;
-	Fri, 10 Jul 2026 14:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098B0348C6E;
+	Fri, 10 Jul 2026 14:37:53 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783694277; cv=none; b=GtyeOLaNLDcG06tyTzD4+Xp4qZyRDDcgkCmsPKnLdCdYnaf3zv03Ysfo2QZdr5ZkDP6D0ek0MbQpY7pzUPQjj+Fxbykp7w85f64dJ7YYx/7wZ1uzM1Og6vlzVArMtD5VSW8Z+iSGga9K8OZqKcdQFMQMMQs1iEHRH5f/Xo4cow4=
+	t=1783694275; cv=none; b=V8K192PipqmoVTkjiHV7/8wgUW68beBg0Ty0U588AR2VXaSRL5o50NLGox8IjhNhvuTYL6KPWZSMsWsSs038PCYMoujqPheb//6GobD2sRUyuX7oVDlrXes566HZzqM+D0Dce96hrRCJQASCxF7+Ja1++7cNQv0fZKltT9KVa5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783694277; c=relaxed/simple;
-	bh=W1Pk5SCMaV9uZyG5tOuXChx3zlQVoIfOF0K2QTSdwok=;
+	s=arc-20240116; t=1783694275; c=relaxed/simple;
+	bh=/T5XlWGP2PLa/f5cETS2ktMuZeb/SjA9TIEitRMNBNA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wab6ZKoCVfnBLvKqWcK7reC1fT5tIaI7cnfiBtpg7uzkWEUJCwDCQ5V4bKr4O+B+ozpcKQ3Z/cW2Bo3KxW52e86/D/2UlOHpBh4OXTqKvCorQDDAdu7b6HiH1c+qxj6YixwSfNkFCDtGhXLhZ//071D49VkhoAXhoOwrZlICOeg=
+	 MIME-Version; b=TN/qNUKKkzdvtnEPczB7CER7eZOg9wn55vzeU1LGo/LcPngXNJfvQPTRKI+PsVuY7zf97kcPlxdNIEq20emng4bgAOERWxcYdhDurhy9Q985/J70O7WRAWULTu9HdiMl++sOaa9rTvejA/59wIiIZsfNNlJt5LbYverS+MAnrbI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 11E6C60503; Fri, 10 Jul 2026 16:37:47 +0200 (CEST)
+	id 527706059A; Fri, 10 Jul 2026 16:37:51 +0200 (CEST)
 From: Florian Westphal <fw@strlen.de>
 To: <netdev@vger.kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>,
@@ -44,9 +44,9 @@ Cc: Paolo Abeni <pabeni@redhat.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	<netfilter-devel@vger.kernel.org>,
 	pablo@netfilter.org
-Subject: [PATCH net 1/9] netfilter: xt_nat: reject unsupported target families
-Date: Fri, 10 Jul 2026 16:37:25 +0200
-Message-ID: <20260710143733.29741-2-fw@strlen.de>
+Subject: [PATCH net 2/9] netfilter: ecache: fix inverted time_after() check
+Date: Fri, 10 Jul 2026 16:37:26 +0200
+Message-ID: <20260710143733.29741-3-fw@strlen.de>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260710143733.29741-1-fw@strlen.de>
 References: <20260710143733.29741-1-fw@strlen.de>
@@ -62,12 +62,12 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13831-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13830-lists,netfilter-devel=lfdr.de];
 	DMARC_NA(0.00)[strlen.de];
 	FORGED_RECIPIENTS(0.00)[m:netdev@vger.kernel.org,m:pabeni@redhat.com,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -76,7 +76,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
@@ -87,62 +87,73 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,icloud.com:email,strlen.de:from_mime,strlen.de:email,strlen.de:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,seu.edu.cn:email,tsinghua.edu.cn:email,strlen.de:from_mime,strlen.de:email,strlen.de:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4513B73BCE6
+X-Rspamd-Queue-Id: 7E40073BDB1
 
-From: Wyatt Feng <bronzed_45_vested@icloud.com>
+From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 
-xt_nat SNAT and DNAT target handlers assume IP-family conntrack state
-is present and can dereference a NULL pointer when instantiated from an
-unsupported family through nft_compat. A bridge-family compat rule can
-therefore trigger a NULL-dereference in nf_nat_setup_info().
+ecache_work_evict_list() redelivers DESTROY events for conntracks that
+were moved to the per-netns dying_list after event delivery failed.  It
+sets a 10ms deadline:
 
-Reject non-IP families in xt_nat_checkentry() so unsupported targets
-cannot be installed. Keep NFPROTO_INET allowed for valid inet NAT
-compat users and leave the runtime fast path unchanged.
+    stop = jiffies + ECACHE_MAX_JIFFIES
 
-[ The crash was fixed via
-  9dbba7e694ec ("netfilter: nft_compat: ebtables emulation must reject non-bridge targets"),
-  so this patch is no longer critical.
-  Nevertheless, NAT is only relevant for ipv4/ipv6, so this extra
-  family check is a good idea in any case. ]
+but then tests:
 
-Fixes: c7232c9979cb ("netfilter: add protocol independent NAT core")
+    time_after(stop, jiffies)
+
+This condition is true while the deadline is still in the future, so the
+worker returns STATE_RESTART after the first successful redelivery in the
+usual case.  ecache_work() maps STATE_RESTART to delay 0, which turns the
+redelivery path into one dying conntrack per workqueue dispatch and makes
+the sent > 16 batching/cond_resched() path effectively unreachable.
+
+A conntrack netlink listener whose receive queue is congested can make
+DESTROY event delivery fail with -ENOBUFS.  With sustained conntrack
+churn, entries then accumulate on the dying_list and are only drained at
+the degraded one-entry-per-dispatch rate once delivery succeeds again,
+wasting CPU on back-to-back workqueue reschedules and prolonging
+conntrack memory/resource pressure.
+
+In a KASAN QEMU test with CONFIG_NF_CONNTRACK_EVENTS=y and
+nf_conntrack.enable_hooks=1, a congested DESTROY listener caused 8192
+nf_ct_delete() calls to return false and move entries to the dying_list.
+After closing the listener, the unfixed kernel needed 7670 ecache_work()
+entries to destroy 7669 conntracks.  With this change, the same 8192
+entries were destroyed by 2 ecache_work() entries.
+
+Swap the comparison so the worker restarts only after the deadline has
+expired.
+
+Fixes: 2ed3bf188b33 ("netfilter: ecache: use dedicated list for event redelivery")
 Cc: stable@vger.kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Zhengchuan Liang <zcliangcn@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Assisted-by: Codex:GPT-5.4
-Signed-off-by: Wyatt Feng <bronzed_45_vested@icloud.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
+Reported-by: Ao Wang <wangao@seu.edu.cn>
+Reported-by: Xuewei Feng <fengxw06@126.com>
+Reported-by: Qi Li <qli01@tsinghua.edu.cn>
+Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
+Assisted-by: Claude-Code:GLM-5.2
+Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/xt_nat.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ net/netfilter/nf_conntrack_ecache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/xt_nat.c b/net/netfilter/xt_nat.c
-index b4f7bbc3f3ca..51c7f7ce88d9 100644
---- a/net/netfilter/xt_nat.c
-+++ b/net/netfilter/xt_nat.c
-@@ -26,6 +26,15 @@ static int xt_nat_checkentry_v0(const struct xt_tgchk_param *par)
+diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
+index 9df159448b89..cc8d8e85169f 100644
+--- a/net/netfilter/nf_conntrack_ecache.c
++++ b/net/netfilter/nf_conntrack_ecache.c
+@@ -77,7 +77,7 @@ static enum retry_state ecache_work_evict_list(struct nf_conntrack_net *cnet)
+ 		hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
+ 		hlist_nulls_add_head(&ct->tuplehash[IP_CT_DIR_REPLY].hnnode, &evicted_list);
  
- static int xt_nat_checkentry(const struct xt_tgchk_param *par)
- {
-+	switch (par->family) {
-+	case NFPROTO_IPV4:
-+	case NFPROTO_IPV6:
-+	case NFPROTO_INET:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
- 	return nf_ct_netns_get(par->net, par->family);
- }
- 
+-		if (time_after(stop, jiffies)) {
++		if (time_after(jiffies, stop)) {
+ 			ret = STATE_RESTART;
+ 			break;
+ 		}
 -- 
 2.54.0
 
