@@ -1,59 +1,98 @@
-Return-Path: <netfilter-devel+bounces-13881-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13882-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 3xlMDFMlVGohiwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13881-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 01:37:55 +0200
+	id cDBTLIAmVGpJiwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13882-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 01:42:56 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F03D7463F1
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 01:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F20174640C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 01:42:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=oOdKYbx5;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13881-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13881-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=asu.edu header.s=google header.b=KazK+9mv;
+	dmarc=pass (policy=none) header.from=asu.edu;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13882-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13882-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2A9B2300C01B
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 23:37:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6F2E53028031
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 23:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C7C37A856;
-	Sun, 12 Jul 2026 23:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD2038E5F9;
+	Sun, 12 Jul 2026 23:42:10 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5569827B35B
-	for <netfilter-devel@vger.kernel.org>; Sun, 12 Jul 2026 23:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B75D38AC61
+	for <netfilter-devel@vger.kernel.org>; Sun, 12 Jul 2026 23:42:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783899472; cv=none; b=Rb7PsKHNowpHViw3jCVByP9t8RejBa3FgUMvMW9MSQZ8GfvvciWiITA0DIA0jSxrfJuLH2/sQygYkE4zcMnN1VEcbx+kiQql0PCxT3oOWxGcIhUZpeBdt/zJfng2WQ5d/S3dKBNT8cHCGS6X+olgwrccd6MkaSIHMZsUwm1JM8s=
+	t=1783899730; cv=none; b=IfmSBv5+XT4ErCBvBTONpnVzi7abzF1Fvymz0cv0bH3OdDrrZQhL2DbJrd5ypqg8wWWcjKtLGlmdLwsXyKTxl56aCgWm3sk74j3Ej7ox+K9zABmDBqCosxihWb3mnWtP5GH6CD2UqYjvf80prXDO8vyKyvFT/z2MBfB/TwX0rSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783899472; c=relaxed/simple;
-	bh=Q7I/0jeT8+WMLWeoEHwyE+8z8MQ1cXTWvSuZjyB+grw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rdIlYYh3yYQJXceZE+FmcIwIg6v6IwSmFAplfX3J5UvEyaVEUaWr8dtFEAwESL8jwskJsjZ5Dsudeq2mrmgbcWpgGe4d6gmBBNfSE9i+FgIVvIBuYyx2AMGKH2mkgApPwlPAHLsPxJfXsXgfpvdOBOAwzSWL1/lK+HIWX0DybEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=oOdKYbx5; arc=none smtp.client-ip=217.70.190.124
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 3896360193;
-	Mon, 13 Jul 2026 01:37:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1783899468;
-	bh=uGmQUcNChqd5zuR/IL2xSyQrOpt6C0iRtKTM1mlrCc8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=oOdKYbx5D0zHHaiUgNd+FaCaOh9H5xV1h9KCcA/Zv0v/3laOhY1F2SwUpTKFTu//M
-	 qXAM0u+Kd9cU3s63SyyJE8a+66cSKKgxe00eojSBtwpiVJHPN8sRrHzKL/970h7exT
-	 PL5XG6bUiCW1iqusPZJ/Oss3XplCKwM/Qu36K1O+/MGn9+aMHzT6HSJDiChwoP1ch4
-	 PNw4s3PcNPVppsVBozfLaDErQvczc3xcswrBXyyfwweP1wB6UqT7K+Fr2Il4orw2do
-	 id4m+AGURPMQMGX9hLD3wmWVhklYOEktlSP5eXvVcff/O97P0Z1YA79P8bV6PCpVmU
-	 Rcmg8HQg7FB7g==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: fw@strlen.de,
-	iostreampy@proton.me
-Subject: [PATCH nf,v2] netfilter: nf_conntrack_expect: add and use nf_ct_expect_related_pair()
-Date: Mon, 13 Jul 2026 01:37:44 +0200
-Message-ID: <20260712233744.1585130-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1783899730; c=relaxed/simple;
+	bh=dLgwcnW4YtgNTCb07VpBnEanlIde5YMvtskoZ4n/0XU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p+Uvc+wEiETimKmLYXV02VkFYAjAKzdNBmzmBwnNoSTujtBowRWQLEFYPjPS97HvV2HqxSdtjnHBB51fgjgJDnNMAlImPVoBYfhF//HC+4xDkZni1+tNpp5vZinWOZuDx4/d0LsVnel+wI7QAbPw9qzXieSKbSYNM8pkrfFmlIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asu.edu; spf=pass smtp.mailfrom=asu.edu; dkim=pass (2048-bit key) header.d=asu.edu header.i=@asu.edu header.b=KazK+9mv; arc=none smtp.client-ip=209.85.210.170
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-84864086bfeso2498997b3a.1
+        for <netfilter-devel@vger.kernel.org>; Sun, 12 Jul 2026 16:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=asu.edu; s=google; t=1783899728; x=1784504528; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=LOSvs3VNPQa+toUMC3FY+7NtrOSPXGuDizFuqw88H7U=;
+        b=KazK+9mvzIm6kSf3mVKRNikwhV7qsyX9veCDhOWDpUb9sAwhzJc4bHYcID+0WJ3cPH
+         etJZ0eBrAl8c2+pg04d6scPGVR0SMBW9ldkxB2KFaeF4Eoq2m2qlEibLZVanv3YmQBfd
+         KE4sMxlqXtCKacaJED2LFdJUkQQx3i3O1rnCGiJJzTDOQ618/FVbARBrqF72Z4rqf1vL
+         I9WRd/mmkSqTTlA2RDwfR/XxHll5GJVsUe9xONpa6IKl5+FXTYiOGtn3JiUUccxcomrh
+         yqyAcRqM+GVUopQiqvvoEtfrXvTsk7mKrrWnvZG4DrCP66JpNEOHSuB6aX6Ysq99lYJ2
+         l1pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783899728; x=1784504528;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=LOSvs3VNPQa+toUMC3FY+7NtrOSPXGuDizFuqw88H7U=;
+        b=tQgvjxCI8vrQ5QohvrbaB4KWcms7dKY/CxVRKR6iiq81qlt9lCglal4pupXtI4YvQb
+         fyJDapZSKmXXMbu2TyRiIWzuYK0iaKHxzcpubuHh8NINe2MLP8A+WRPW4W/+mr2UGOgN
+         u6IcpM1P+QkWrQMA00uSCpSS1gkb8zpnHbfJziPMol6M3h/F+501B+8k5ez4Qrgv9jO/
+         0jtJcYodM5u8NcrkW40QTcXS3G67z5xIhQw3lrD9HZEGPv0Dh/XhYXnuVDIiONBU+xyD
+         Gra40s6w6O8FV4tRKlMWmZx0ZtQJSpnvXEvRUK64lGohqoTQnSz6XaL+e1xPES1O0cL6
+         o29Q==
+X-Gm-Message-State: AOJu0YyUxinizV4oCB6SdaKfHyH2zETRYMEg2mG+esP+WSbA82X6UNTY
+	8pbprLkY8Ac8I4UHvd5BvqDLtXxGZ4CpEF4QVYz4GBjFwTIMaXDFRWDBfGum3q1V1Q==
+X-Gm-Gg: AfdE7ckOokiawgRs/2yTWL6OTpNtVUZ11Sdul2o3ucrsely698E/YgnJeoDsGUEDWUV
+	GLAiXMfbx3es8UbmHvEbRra3NFwij8NKW4iWvwb5tETOGtLHoyWsezN/HGWf8I89j1e18FNC8dI
+	ior41AP4DwqbXkiH8SAoLVPCUhYMLE8VmLoBVv34pEUOPmd0Qju7uzTPbDETj5iK5XuzFUHpOhO
+	dPnVaWwjxCYGbbmKhYJa2voXMdCVlcjI9pwa4IEiWrfF4crW1PNWpdl9TL0wI1E3/2RUuS3zS1H
+	YMAC9/jut3pkL7V/Z6phIjxKsb2bUsYcM6Z/o5F9EB4WF0NytS/lpSzHvQ91ZhDAfr7gPjvZeAC
+	1vWgpOdQhjDSmjTSCsRfQxnn6ulHw8ktdHYd2hA8OzFa5Z/UzEWyE4P5UaLSfj6ZT1i5WjSY5ZQ
+	==
+X-Received: by 2002:a05:6a00:4484:b0:848:3f07:c5a2 with SMTP id d2e1a72fcca58-8488974f8cdmr6076086b3a.4.1783899727744;
+        Sun, 12 Jul 2026 16:42:07 -0700 (PDT)
+Received: from p1.. ([2607:fb90:ec82:d7be:f961:4fa0:51a9:cde5])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ca79ac0e269sm5756646a12.3.2026.07.12.16.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2026 16:42:07 -0700 (PDT)
+From: Xiang Mei <xmei5@asu.edu>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>
+Cc: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Patrick McHardy <kaber@trash.net>,
+	Weiming Shi <bestswngs@gmail.com>,
+	Xiang Mei <xmei5@asu.edu>
+Subject: [PATCH nf] netfilter: nf_conntrack_sip: widen NAT rewrite delta to s32 in sip_help_tcp()
+Date: Sun, 12 Jul 2026 16:42:01 -0700
+Message-ID: <20260712234201.3213635-1-xmei5@asu.edu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -62,250 +101,123 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[asu.edu,none];
+	R_DKIM_ALLOW(-0.20)[asu.edu:s=google];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13881-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,m:iostreampy@proton.me,s:lists@lfdr.de];
-	DMARC_NA(0.00)[netfilter.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13882-lists,netfilter-devel=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,trash.net,gmail.com,asu.edu];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER(0.00)[xmei5@asu.edu,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kaber@trash.net,m:bestswngs@gmail.com,m:xmei5@asu.edu,s:lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[xmei5@asu.edu,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[asu.edu:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,proton.me:email,netfilter.org:from_mime,netfilter.org:email,netfilter.org:mid,netfilter.org:dkim,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,asu.edu:from_mime,asu.edu:email,asu.edu:mid,asu.edu:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6F03D7463F1
+X-Rspamd-Queue-Id: 3F20174640C
 
-Add a new function to insert a pair of expectations, this is required by
-the SIP and H323 NAT helpers. The spinlock is held to check if there is
-a slot for both expectations, in such case, insert them.
+sip_help_tcp() stores the size change of each NAT-rewritten SIP message
+in s16 diff and accumulates it in s16 tdiff, but a single message can
+grow by more than S16_MAX while the packet stays under the 65535
+enlarge_skb() limit: nf_nat_sip() rewrites every matching URI, and a long
+Contact list expands the message by tens of kilobytes. diff then wraps,
+and "datalen = datalen + diff - msglen" yields a huge unsigned datalen,
+so the next iteration's ct_sip_get_header() reads past the linearized skb
+tail.
 
-This removes the need for nf_ct_unexpect_related() inside the loop to
-find a pair of consecutive ports, otherwise inserting expectations whose
-dead flag is already set on can happen.
+Widen diff, tdiff and the seq_adjust hook to s32. Both are bounded by the
+65535 byte packet limit, and the seqadj core is already s32
+(nf_ct_seqadj_set() takes s32), so no previously accepted input is
+rejected.
 
-Fixes: b8b09dc2bf35 ("netfilter: nf_conntrack_expect: use conntrack GC to reap expectations")
-Reported-by: Jaeyeong Lee <iostreampy@proton.me>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+  BUG: KASAN: use-after-free in ct_sip_get_header (net/netfilter/nf_conntrack_sip.c:464)
+  Read of size 1 at addr ffff888010800000 by task ksoftirqd/1/25
+   ct_sip_get_header (net/netfilter/nf_conntrack_sip.c:464)
+   sip_help_tcp (net/netfilter/nf_conntrack_sip.c:1694)
+   nf_confirm (net/netfilter/nf_conntrack_proto.c:183)
+   nf_hook_slow (net/netfilter/core.c:619)
+   ip6_output (net/ipv6/ip6_output.c:246)
+   ip6_forward (net/ipv6/ip6_output.c:690)
+   ipv6_rcv (net/ipv6/ip6_input.c:351)
+   __netif_receive_skb_one_core (net/core/dev.c:6212)
+   process_backlog (net/core/dev.c:6676)
+   __napi_poll (net/core/dev.c:7735)
+   net_rx_action (net/core/dev.c:7955)
+   handle_softirqs (kernel/softirq.c:622)
+   run_ksoftirqd (kernel/softirq.c:1076)
+   ...
+
+Fixes: f5b321bd37fb ("netfilter: nf_conntrack_sip: add TCP support")
+Reported-by: Weiming Shi <bestswngs@gmail.com>
+Assisted-by: Claude:claude-opus-4-8
+Signed-off-by: Xiang Mei <xmei5@asu.edu>
 ---
-v2: address sashiko comments on maximum number of expectations check
-    overflow and the missing safety check for null master_help.
+ include/linux/netfilter/nf_conntrack_sip.h | 2 +-
+ net/netfilter/nf_conntrack_sip.c           | 2 +-
+ net/netfilter/nf_nat_sip.c                 | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
- include/net/netfilter/nf_conntrack_expect.h |  3 ++
- net/ipv4/netfilter/nf_nat_h323.c            | 22 ++++-------
- net/netfilter/nf_conntrack_expect.c         | 41 +++++++++++++++++++--
- net/netfilter/nf_nat_sip.c                  | 20 +++-------
- 4 files changed, 53 insertions(+), 33 deletions(-)
-
-diff --git a/include/net/netfilter/nf_conntrack_expect.h b/include/net/netfilter/nf_conntrack_expect.h
-index c024345c9bd8..26d6babd92fc 100644
---- a/include/net/netfilter/nf_conntrack_expect.h
-+++ b/include/net/netfilter/nf_conntrack_expect.h
-@@ -161,6 +161,9 @@ static inline int nf_ct_expect_related(struct nf_conntrack_expect *expect,
- 	return nf_ct_expect_related_report(expect, 0, 0, flags);
- }
+diff --git a/include/linux/netfilter/nf_conntrack_sip.h b/include/linux/netfilter/nf_conntrack_sip.h
+index dbc614dfe0d5..aafa0c04f917 100644
+--- a/include/linux/netfilter/nf_conntrack_sip.h
++++ b/include/linux/netfilter/nf_conntrack_sip.h
+@@ -115,7 +115,7 @@ struct nf_nat_sip_hooks {
+ 			    unsigned int *datalen);
  
-+int nf_ct_expect_related_pair(struct nf_conntrack_expect *expect[],
-+			      unsigned int flag);
-+
- struct nf_conn_help;
- void nf_ct_expectation_gc(struct nf_conn_help *master_help);
+ 	void (*seq_adjust)(struct sk_buff *skb,
+-			   unsigned int protoff, s16 off);
++			   unsigned int protoff, s32 off);
  
-diff --git a/net/ipv4/netfilter/nf_nat_h323.c b/net/ipv4/netfilter/nf_nat_h323.c
-index 183e8a3ff2ba..6bcd6734769b 100644
---- a/net/ipv4/netfilter/nf_nat_h323.c
-+++ b/net/ipv4/netfilter/nf_nat_h323.c
-@@ -182,6 +182,7 @@ static int nat_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
- 			struct nf_conntrack_expect *rtp_exp,
- 			struct nf_conntrack_expect *rtcp_exp)
- {
-+	struct nf_conntrack_expect *rtp_pair[2] = { rtp_exp, rtcp_exp };
- 	struct nf_ct_h323_master *info = nfct_help_data(ct);
- 	int dir = CTINFO2DIR(ctinfo);
- 	int i;
-@@ -227,22 +228,13 @@ static int nat_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
- 		int ret;
- 
- 		rtp_exp->tuple.dst.u.udp.port = htons(nated_port);
--		ret = nf_ct_expect_related(rtp_exp, 0);
-+		rtcp_exp->tuple.dst.u.udp.port = htons(nated_port + 1);
-+		ret = nf_ct_expect_related_pair(rtp_pair, 0);
- 		if (ret == 0) {
--			rtcp_exp->tuple.dst.u.udp.port =
--			    htons(nated_port + 1);
--			ret = nf_ct_expect_related(rtcp_exp, 0);
--			if (ret == 0)
--				break;
--			else if (ret == -EBUSY) {
--				nf_ct_unexpect_related(rtp_exp);
--				continue;
--			} else if (ret < 0) {
--				nf_ct_unexpect_related(rtp_exp);
--				nated_port = 0;
--				break;
--			}
--		} else if (ret != -EBUSY) {
-+			break;
-+		} else if (ret == -EBUSY) {
-+			continue;
-+		} else if (ret < 0) {
- 			nated_port = 0;
- 			break;
- 		}
-diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
-index 7ae68d60586a..0ecd8cecd4a2 100644
---- a/net/netfilter/nf_conntrack_expect.c
-+++ b/net/netfilter/nf_conntrack_expect.c
-@@ -460,13 +460,14 @@ static void evict_oldest_expect(struct nf_conn_help *master_help,
- 
- static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect,
- 				       struct nf_conn_help *master_help,
--				       unsigned int flags)
-+				       unsigned int flags, unsigned int new_expects)
- {
- 	const struct nf_conntrack_expect_policy *p;
- 	struct nf_conntrack_expect *i;
- 	struct nf_conntrack_net *cnet;
- 	struct nf_conntrack_helper *helper;
- 	struct net *net = nf_ct_exp_net(expect);
-+	unsigned int num_expects;
- 	struct hlist_node *next;
- 	unsigned int h;
- 	int ret = 0;
-@@ -492,19 +493,22 @@ static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect,
- 			goto out;
- 		}
- 	}
-+
-+	num_expects = master_help->expecting[expect->class];
-+
- 	/* Will be over limit? */
- 	helper = rcu_dereference_protected(master_help->helper,
- 					   lockdep_is_held(&nf_conntrack_expect_lock));
- 	if (helper) {
- 		p = &helper->expect_policy[expect->class];
--		if (master_help->expecting[expect->class] >= p->max_expected)
-+		if (num_expects + new_expects >= p->max_expected)
- 			evict_oldest_expect(master_help, expect, p);
- 	} else {
- 		const struct nf_conntrack_expect_policy default_exp_policy = {
- 			.max_expected = NF_CT_EXPECT_MAX_CNT,
- 		};
- 
--		if (master_help->expecting[expect->class] >= default_exp_policy.max_expected)
-+		if (num_expects + new_expects >= default_exp_policy.max_expected)
- 			evict_oldest_expect(master_help, expect, &default_exp_policy);
- 	}
- 
-@@ -530,7 +534,7 @@ int nf_ct_expect_related_report(struct nf_conntrack_expect *expect,
- 		goto out;
- 	}
- 
--	ret = __nf_ct_expect_check(expect, master_help, flags);
-+	ret = __nf_ct_expect_check(expect, master_help, flags, 1);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -546,6 +550,35 @@ int nf_ct_expect_related_report(struct nf_conntrack_expect *expect,
- }
- EXPORT_SYMBOL_GPL(nf_ct_expect_related_report);
- 
-+int nf_ct_expect_related_pair(struct nf_conntrack_expect *expect[],
-+			      unsigned int flags)
-+{
-+	struct nf_conn_help *master_help;
-+	int i, ret;
-+
-+	spin_lock_bh(&nf_conntrack_expect_lock);
-+	master_help = nfct_help(expect[0]->master);
-+	if (!master_help || master_help != nfct_help(expect[1]->master)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	for (i = 0; i < 2; i++) {
-+		ret = __nf_ct_expect_check(expect[i], master_help, flags, 2);
-+		if (ret < 0)
-+			goto out;
-+	}
-+
-+	for (i = 0; i < 2; i++) {
-+		nf_ct_expect_insert(expect[i], master_help);
-+		nf_ct_expect_event_report(IPEXP_NEW, expect[i], 0, 0);
-+	}
-+out:
-+	spin_unlock_bh(&nf_conntrack_expect_lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(nf_ct_expect_related_pair);
-+
- void nf_ct_expect_iterate_destroy(bool (*iter)(struct nf_conntrack_expect *e, void *data),
- 				  void *data)
- {
+ 	unsigned int (*expect)(struct sk_buff *skb,
+ 			       unsigned int protoff,
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index f3f90a866338..e4a70d1d77b0 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -1663,7 +1663,7 @@ static int sip_help_tcp(struct sk_buff *skb, unsigned int protoff,
+ 	unsigned int matchoff, matchlen;
+ 	unsigned int msglen, origlen;
+ 	const char *dptr, *end;
+-	s16 diff, tdiff = 0;
++	s32 diff, tdiff = 0;
+ 	int ret = NF_ACCEPT;
+ 	unsigned long clen;
+ 	bool term;
 diff --git a/net/netfilter/nf_nat_sip.c b/net/netfilter/nf_nat_sip.c
-index aea02f6aff09..9e9ff986ece5 100644
+index aea02f6aff09..a93eaf0f7d30 100644
 --- a/net/netfilter/nf_nat_sip.c
 +++ b/net/netfilter/nf_nat_sip.c
-@@ -592,6 +592,7 @@ static unsigned int nf_nat_sdp_media(struct sk_buff *skb, unsigned int protoff,
- 				     unsigned int medialen,
- 				     union nf_inet_addr *rtp_addr)
+@@ -321,7 +321,7 @@ static unsigned int nf_nat_sip(struct sk_buff *skb, unsigned int protoff,
+ }
+ 
+ static void nf_nat_sip_seq_adjust(struct sk_buff *skb, unsigned int protoff,
+-				  s16 off)
++				  s32 off)
  {
-+	struct nf_conntrack_expect *rtp_pair[2] = { rtp_exp, rtcp_exp };
  	enum ip_conntrack_info ctinfo;
  	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
- 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
-@@ -622,24 +623,15 @@ static unsigned int nf_nat_sdp_media(struct sk_buff *skb, unsigned int protoff,
- 		int ret;
- 
- 		rtp_exp->tuple.dst.u.udp.port = htons(port);
--		ret = nf_ct_expect_related(rtp_exp,
--					   NF_CT_EXP_F_SKIP_MASTER);
--		if (ret == -EBUSY)
--			continue;
--		else if (ret < 0) {
--			port = 0;
--			break;
--		}
- 		rtcp_exp->tuple.dst.u.udp.port = htons(port + 1);
--		ret = nf_ct_expect_related(rtcp_exp,
--					   NF_CT_EXP_F_SKIP_MASTER);
-+
-+		ret = nf_ct_expect_related_pair(rtp_pair,
-+						NF_CT_EXP_F_SKIP_MASTER);
- 		if (ret == 0)
- 			break;
--		else if (ret == -EBUSY) {
--			nf_ct_unexpect_related(rtp_exp);
-+		else if (ret == -EBUSY)
- 			continue;
--		} else if (ret < 0) {
--			nf_ct_unexpect_related(rtp_exp);
-+		else if (ret < 0) {
- 			port = 0;
- 			break;
- 		}
 -- 
-2.47.3
+2.43.0
 
 
