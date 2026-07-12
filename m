@@ -1,130 +1,187 @@
-Return-Path: <netfilter-devel+bounces-13859-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13860-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /ScgLlAsU2paYQMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13859-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 07:55:28 +0200
+	id 08CuJCFDU2qQZQMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13860-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 09:32:49 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EADB8743F6C
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 07:55:27 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B215F744119
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 09:32:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=LmR6witP;
-	dmarc=pass (policy=none) header.from=linuxfoundation.org;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13859-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13859-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=proton.me header.s=protonmail header.b=Ul4hlkgL;
+	dmarc=pass (policy=quarantine) header.from=proton.me;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13860-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13860-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8852F3011F36
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 05:55:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A5743011109
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jul 2026 07:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1ACC2D7814;
-	Sun, 12 Jul 2026 05:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E90E2C0294;
+	Sun, 12 Jul 2026 07:32:45 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB7A25B090
-	for <netfilter-devel@vger.kernel.org>; Sun, 12 Jul 2026 05:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B3A1E0DD8
+	for <netfilter-devel@vger.kernel.org>; Sun, 12 Jul 2026 07:32:37 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783835725; cv=none; b=WI0UtmpnntyV8MZxk3v/DKKfn432BnjqYlDTKico0Clujtof4vLugxmDl7ptZUmFDrQ7GIQ1bY1ZLlbLNUTR33GELXpEVs6ng9XfwDovvu4FaEK58lCNNamv8uDD1FhQUAjSLGR1kxAtqz6mHioHhUMBWc6hWXGiO+H+0r8utcE=
+	t=1783841565; cv=none; b=aZ/dSlGvr8n24TDK14ncwhCRwJyTT6FQ42TPhaEZEYZNOCKXA+pxYwvphMM+9uuGKLSlIi6cYcRimYoS/JsjMDIgMr+y79yx+RyCzO81fAZA0wFZLXdq/5TcqaPzHFxc2OXymhzWmno4AMdvSGBoXc6o6uOQ8l7xVc6NjNBG0w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783835725; c=relaxed/simple;
-	bh=FHIqMzZe0AXToo6ubAtAolb75BO/wYxos9q5qax0qAU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UxDoiCMnGUDQr3UdLie9UabbBxwFHG9FDJSN+WGTv3Gn/UayIm0pY4FNzwm7eg3ZWj9N0NBLQaHMYG74LjzBlQBsVP85JOkdYZ3AS2UQVJt7x94wrire0r4aMKXdeKRYQDN/prhNpY7wDj8VsC1UkOUCrTVuvno9nx+jDun/en8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LmR6witP; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8013E1F000E9;
-	Sun, 12 Jul 2026 05:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1783835724;
-	bh=GlMEjvpkD3e4x+OXZj7W0SoGpxx/Z1MxVDlKF7QM3c4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=LmR6witPUgxBN+uFGy32vUrjbgadJSzdIQ0UzjsPxsjoQM0zpcC38pc3oW2qVCmJW
-	 4Pgz9PWNnsYGpvG+IX4gE6SP9mRDtaZN5EODY3DHhjVi/T11jbj5fLfQ9Dk5oEL9Tz
-	 capVpRcZClGdIijdZlqm5j8MJNRtV6w6WwrD/AMo=
-Date: Sun, 12 Jul 2026 07:54:05 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: Jaeyeong Lee <iostreampy@proton.me>, netfilter-devel@vger.kernel.org,
-	pablo@netfilter.org, phil@nwl.cc
-Subject: Re: [PATCH nf] netfilter: nf_nat: do not reuse an unexpected
- expectation on RTCP clash
-Message-ID: <2026071235-geometric-snowdrift-bb4c@gregkh>
-References: <aQrSf6maL27cH2V4V9ELFdSqdtCWQ-B5iZr8fjR2Wz7zAJ7L32oW50bdrePoTMnJ4CRjDrns-jNMNFHGWNUxYe3UcV91AK99Ilncjab2uDk=@proton.me>
- <2026071134-turkey-detonator-0d87@gregkh>
- <178377968720.33756.12204817361601593230@proton.me>
- <alJva5_-K55ouKGh@strlen.de>
+	s=arc-20240116; t=1783841565; c=relaxed/simple;
+	bh=kfsMJQNLH3l0a06WfEBmzcIn+k2AO8aTdUd6cbohKpo=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=SAJqXfegT8C8+h78m5BrDqm+4iIJhXn3LhOGLzn6QitzkDnvfpoMUOq/EAFGczKvvdPtQQ2bBjRlZlLEwyNivTF3StzhnDYg506D2JRn8Vbk/r/SH6VXhCoOOVRdSS1btbnxEIlgN8m8XLLbxhzBekrx3+wqfq3YJE/I2Qcp5fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Ul4hlkgL; arc=none smtp.client-ip=185.70.43.22
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1783841555; x=1784100755;
+	bh=t6YKoDCWnfd7Owjag+TIs+QOCqTpIqtiO2bhLjBbFLo=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=Ul4hlkgLJe+pUTIhJVjPE6BHH39yuDgQpAY60Pn7ETinkZqxDp07eoaQARFBCgM8n
+	 +gyYPJ9JXm2Qbyq1rBjBPc6JkSyCh2fCi8llzGK2A70GO+0xcYvNZHpcWrGtkpp8PK
+	 kQ6WvBvRIcLqQumR74RNpoRzoSqlFvWbH6L5OcQqdD5OjRbKWQOp4EBT3EKP2OM3gL
+	 ESGO/EE+4rSmwRvNk93cQnDbKZLN0VGBT4SeCAr05wUUBcDx+J4ZJDUCG4ypfsGWWd
+	 sSEKERVEGOB6goTQfEwtK4WqkGCKGz12dQoatK9KKNKgnkEJtcAvZjN1c+kane8giR
+	 vLJX0fpFfo7PA==
+Date: Sun, 12 Jul 2026 07:32:31 +0000
+To: netfilter-devel@vger.kernel.org
+From: Jaeyeong Lee <iostreampy@proton.me>
+Cc: fw@strlen.de, pablo@netfilter.org, phil@nwl.cc, gregkh@linuxfoundation.org
+Subject: [PATCH nf v2 1/2] netfilter: nf_nat: stop reusing DEAD RTP expectations
+Message-ID: <20260712163225.bdf9b106-1-iostreampy@proton.me>
+Feedback-ID: 96968035:user:proton
+X-Pm-Message-ID: 671c529854549afe01f78826974c5246d4a12547
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alJva5_-K55ouKGh@strlen.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
+	DMARC_POLICY_ALLOW(-0.50)[proton.me,quarantine];
+	R_DKIM_ALLOW(-0.20)[proton.me:s=protonmail];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,netfilter-devel@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-13859-lists,netfilter-devel=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:fw@strlen.de,m:iostreampy@proton.me,m:netfilter-devel@vger.kernel.org,m:pablo@netfilter.org,m:phil@nwl.cc,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13860-lists,netfilter-devel=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:fw@strlen.de,m:pablo@netfilter.org,m:phil@nwl.cc,m:gregkh@linuxfoundation.org,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[iostreampy@proton.me,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[iostreampy@proton.me,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[proton.me:+];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[5];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linuxfoundation.org:from_mime,linuxfoundation.org:dkim,proton.me:email]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,proton.me:from_mime,proton.me:email,proton.me:mid,proton.me:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EADB8743F6C
+X-Rspamd-Queue-Id: B215F744119
 
-On Sat, Jul 11, 2026 at 06:29:31PM +0200, Florian Westphal wrote:
-> Jaeyeong Lee <iostreampy@proton.me> wrote:
-> > Since commit b8b09dc2bf35 ("netfilter: nf_conntrack_expect: use conntrack
-> > GC to reap expectations") nf_ct_unexpect_related() no longer unlinks the
-> > expectation from the global hash and from the per-master list. It only
-> > marks it with NF_CT_EXPECT_DEAD and defers the unlink to the conntrack GC
-> 
-> [..]
-> 
-> > and then continues the loop, reusing the very same rtp_exp object:
-> > 
-> > 	ret = nf_ct_expect_related(rtcp_exp, ...);
-> > 	...
-> 
-> I think this function should WARN_ON_ONCE when one tries to reinsert a
-> dead expectation (and return -EINVAL or another appropriate error).
-> 
-> (This is indenpendent of the real fix).
+Commit b8b09dc2bf35 ("netfilter: nf_conntrack_expect: use conntrack
+GC to reap expectations") changed nf_ct_unexpect_related() to mark an
+expectation NF_CT_EXPECT_DEAD and leave it linked until an expectation
+walker unlinks it. The insertion reference is retained until that
+unlink.
 
-If you do that, then the machine will reboot, loosing everything.  Are
-you sure you want that to happen?  Why not just properly handle the
-issue if it possibly could happen?
+The SIP and H.323 NAT RTP/RTCP port searches still continue after
+marking rtp_exp DEAD when insertion of rtcp_exp fails with -EBUSY. The
+next iteration mutates rtp_exp and passes the same object to
+nf_ct_expect_related() again.
 
-thanks,
+If the new RTP tuple hashes to a different expectation bucket, the hash
+walk in __nf_ct_expect_check() does not encounter the old DEAD link.
+While the master is below its policy limit, no master-list eviction walk
+runs either. nf_ct_expect_insert() can then add the already-linked hnode
+and lnode again and take a second insertion reference, corrupting the
+expectation lists. A later unlink or GC walk can revisit stale linkage
+and cause a use-after-free.
 
-greg k-h
+Treat a DEAD expectation as terminal. On any RTCP insertion error, mark
+rtp_exp DEAD and stop the port search instead of mutating and reinserting
+it. The callers still drop both allocation references; the linked RTP
+insertion reference is released when a walker or master teardown unlinks
+it.
+
+For SIP this follows the existing port =3D=3D 0 path and drops the packet.
+H.323 follows its existing no-port path without completing a usable
+RTP/RTCP expectation pair or rewriting the signalling address.
+
+This gives up retrying the next RTP/RTCP port pair after RTP insertion
+succeeds but RTCP insertion fails. That search is best effort and is not
+required for correctness.
+
+Fixes: b8b09dc2bf35 ("netfilter: nf_conntrack_expect: use conntrack GC to r=
+eap expectations")
+Signed-off-by: Jaeyeong Lee <iostreampy@proton.me>
+---
+Changes in v2:
+- Stop the port search on RTCP -EBUSY and merge the now-identical error
+  paths.
+- Clarify when a DEAD expectation can reach insertion while still linked.
+- Add the core DEAD-reinsertion check as a separate patch, as suggested
+  by Florian Westphal.
+
+v1: https://lore.kernel.org/netfilter-devel/178377968720.33756.122048173616=
+01593230@proton.me/
+
+ net/ipv4/netfilter/nf_nat_h323.c | 5 +----
+ net/netfilter/nf_nat_sip.c       | 5 +----
+ 2 files changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/net/ipv4/netfilter/nf_nat_h323.c b/net/ipv4/netfilter/nf_nat_h=
+323.c
+index 183e8a3ff2ba..f09fa7704b90 100644
+--- a/net/ipv4/netfilter/nf_nat_h323.c
++++ b/net/ipv4/netfilter/nf_nat_h323.c
+@@ -234,10 +234,7 @@ static int nat_rtp_rtcp(struct sk_buff *skb, struct nf=
+_conn *ct,
+ =09=09=09ret =3D nf_ct_expect_related(rtcp_exp, 0);
+ =09=09=09if (ret =3D=3D 0)
+ =09=09=09=09break;
+-=09=09=09else if (ret =3D=3D -EBUSY) {
+-=09=09=09=09nf_ct_unexpect_related(rtp_exp);
+-=09=09=09=09continue;
+-=09=09=09} else if (ret < 0) {
++=09=09=09else if (ret < 0) {
+ =09=09=09=09nf_ct_unexpect_related(rtp_exp);
+ =09=09=09=09nated_port =3D 0;
+ =09=09=09=09break;
+diff --git a/net/netfilter/nf_nat_sip.c b/net/netfilter/nf_nat_sip.c
+index aea02f6aff09..5878b4a6a438 100644
+--- a/net/netfilter/nf_nat_sip.c
++++ b/net/netfilter/nf_nat_sip.c
+@@ -635,10 +635,7 @@ static unsigned int nf_nat_sdp_media(struct sk_buff *s=
+kb, unsigned int protoff,
+ =09=09=09=09=09   NF_CT_EXP_F_SKIP_MASTER);
+ =09=09if (ret =3D=3D 0)
+ =09=09=09break;
+-=09=09else if (ret =3D=3D -EBUSY) {
+-=09=09=09nf_ct_unexpect_related(rtp_exp);
+-=09=09=09continue;
+-=09=09} else if (ret < 0) {
++=09=09else if (ret < 0) {
+ =09=09=09nf_ct_unexpect_related(rtp_exp);
+ =09=09=09port =3D 0;
+ =09=09=09break;
+--=20
+2.43.0
+
 
