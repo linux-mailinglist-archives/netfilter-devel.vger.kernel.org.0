@@ -1,228 +1,175 @@
-Return-Path: <netfilter-devel+bounces-13894-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13895-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id EH51IM7QVGrkfAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13894-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 13:49:34 +0200
+	id xUZeIsDRVGoJfQAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13895-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 13:53:36 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E791974A87D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 13:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D940274A8D8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 13:53:34 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=UTaxJwbd;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13894-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13894-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=none;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13895-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13895-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3C7E33041A18
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 11:47:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AEF2F301A912
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 11:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0053ED13E;
-	Mon, 13 Jul 2026 11:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F2F37C936;
+	Mon, 13 Jul 2026 11:53:32 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com [74.125.224.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF8838837F
-	for <netfilter-devel@vger.kernel.org>; Mon, 13 Jul 2026 11:47:21 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783943243; cv=pass; b=TdtEAEnqLoYO7BbnfmuOsw7Xh8848/Tu/lsrmZgoNYVqu1ApAytTNEU69Gm0gbeH33cEIqBPTfVTl2obtHP2p0Xp7ZpYKfGsHJcDWtDODOEOHZEh5/seC6FkJAgJenG1G9f+m0D+CYBlWpD8ZJBzL9F1EEzn+bKNkyqbgnEuGq8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783943243; c=relaxed/simple;
-	bh=FJvHgNJ+u1s3bTz5io0pb5lMjKMTaANdHOHouaUaXnA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NZALT+0xyuPFd/eLg12uJXycKpoJDCdGps/GjCVVGjhzkUq1qRwyNKVtKsdROFzlhd9POz8jr7shjPahM8d+Jd8OwTipu19bBLGlOarB2mKYPlFEtzzKP6HzflqtdyRy8+OmO7MhsquyUP1Kliq0rJh0jAmhycY6ZGy8JPaLL/A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UTaxJwbd; arc=pass smtp.client-ip=74.125.224.47
-Received: by mail-yx1-f47.google.com with SMTP id 956f58d0204a3-66771ded50aso4888734d50.1
-        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jul 2026 04:47:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783943240; cv=none;
-        d=google.com; s=arc-20260327;
-        b=NJpltZ0CbsWIGoPPnAM4pwXM/NuhjhERbp3Ef0l0hYffJXREALW2hP6SfK5FShDSja
-         dLvTJbdRsFn8MyD/Z3tou6t9elG6DFhJf0SPDUpXOczoRlRbqSpQxq/G4HeKlKe80ish
-         lG5Q1dLgpLHySYsaP0lfhFa7UD4u0jHrXfjaI0yYHvY9aZQOFgwil0fQmQ/NwaoBXhxM
-         EednDFNkZ5yYSvJlJ6xzTN8//hIs4ufPQZbPeM2dsx2FdKfdrRc9ahJlG9RUdOHijaDn
-         aWL8OaAIXgUBhQmxh1d6C/akfORAHZceZMaiSCisccW6bQvTVUsntA5LB4mNgZ+w/SWC
-         Ldiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=rdMYVzU/X8PutzF06aSzT2bUqJiTzcUYC7SD9sAf8y4=;
-        fh=sWunJObW40wC9mQ4a7QrK/qy7kji+583Qr+lrn42S9U=;
-        b=NxnLJl1t9Eon93qrFcEhR/KsxsAJoNTbwNAJ15nSKQ//0KvMst/S5Jkw6WDktzzVjL
-         uzn3NF9fGby8NwWF7Hb3ejPwVvgGxQ+j6F7GOI3dS6OhAnqMCNcAnPsyJlTyGpjYXwX6
-         Q2JNariZTBMf23aKc/ICIn9FGrb2sAOBPspSxQFaaEMYJoYJugNKj8DvdGlW5mXryfzk
-         CNB6aJ0y9g7og5/UYmyPwKMbXHptrvFuWKpHNs9iYBjsK2JoiNUA/q/VgLEZdxTqkJTC
-         IMsEpxaY6f2tQgYLFNkXmLiv01zRT7sXbo5wg66W/H2Bi92nkvOXnXKOM+FN9J/fClit
-         ql/Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783943240; x=1784548040; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=rdMYVzU/X8PutzF06aSzT2bUqJiTzcUYC7SD9sAf8y4=;
-        b=UTaxJwbdXXyvnbWXbScxL6sSu/Rh3Uj9ojHSsZ//Ku1QLzmASCCU8CxFSmQW4hlSwN
-         d91obJoUnNiVmAnvDS5AL2nnV/Uu77pYY2F7txsdNkr0mSK1erdCinmSETb0T1SeDmVD
-         n5GoK/Pf84R1pCVAkAzX70Vosv2dkp+DeWzo7znGNkz5LIRFOFq+Oeo4y7eWChKmjBTr
-         nWyHe7GKtkJpQ3/M6ivxlgnOd9zrNOeMfMYKwC/fNrtzTkVKDeYa5hku7Qv5sfqYC5At
-         3wj/htNwPLOjWluuASyHEML+LO5OKsytoOwOG1TUwVBReqZAqUB74WjkhOnRsKlL01Wv
-         rJPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783943240; x=1784548040;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=rdMYVzU/X8PutzF06aSzT2bUqJiTzcUYC7SD9sAf8y4=;
-        b=R4UwFlqCLFIXb3zhuO4T8vkwQvxl3AB1xzs1Anxkf+LiefQajwBTEz0eMhEBUBmvrW
-         kFIeKBsp9rAQ1oblJq3+fBwrjPg9xx5OCWIE8f2+9sK00md8sVKkqp1ugjyJQB9+GVzm
-         bK+m9F15K2LVT9ILhjR7UIJEnplO+MUMMTjPGHsICAyJrUUC4UgsjDEu5iicnkJ106sD
-         KM05zYhj2ddlhd9SsfEA4lRkNn4VpghyBu+f5Z8QQnJGKkTkwBMj9u6GBCzIIs6pVkss
-         8fsFRIgF2yZPGFPXP8qXdHFK6zdemmPCtrG3IA8K+2kkqF6FfjIt69CXPH8JOJ78U42f
-         q06g==
-X-Gm-Message-State: AOJu0YxH1ZcYPXoCmAp4XM6ZgDIBzGLw2XPSJ9YlQAjPOaa1Nf7eAYtU
-	bhTbBVm84z9OUqV85daO05SEuMfkboQz616AXGtxwyLGjkk+M9tBmGSdIAU9d55Bokb439DyVjN
-	vXRiRT4d28xNVjaiJjUwovxm2k4iPrxuH7LewMI8=
-X-Gm-Gg: AfdE7cka6A/80QOd0SFT0rmQyMn5JWDaBZGodzjhYRxHhHAf6R+ZiayjLV+pW//UKor
-	EXj2N6137ocRv9ROd5rVrtkCCkaRicKdym5wDEQgBx6kECm/5P8T0Om2pNGlsP03WC5hQacrErW
-	dFbTHskvNZTiOCwRIlrscl8pUKQ0f3uL/FyAIiJPBoBDUEDta6BF7MZKF+1Gn3fBf+7D0YCX5jH
-	R+rLl4zYUo0uuTpJD5njMIZNnpifscQAFqBMx63E+JRYYK1kdpHS3sHLWtRUv60zVLojSYkyMU=
-X-Received: by 2002:a05:690e:408b:b0:667:e33b:6043 with SMTP id
- 956f58d0204a3-667e33b6a48mr4240491d50.101.1783943239994; Mon, 13 Jul 2026
- 04:47:19 -0700 (PDT)
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C833F39E9;
+	Mon, 13 Jul 2026 11:53:27 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783943612; cv=none; b=BhfVA6d+eHRZ6PcvuObzE9mpcLelrhO/4U2pmAenG2I25MqF6hvO2tYQ8jPtdVT2pmJZ282MGYPIsmgcxwWfhYzECoDejWIONrecqLq3rdizMwb8aLLOD6iQF5sNVf6VgPvCF+v+UJ+YNV11wlMV2HTGBSC8mLne9Vv/I34H4rw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783943612; c=relaxed/simple;
+	bh=HcC9fbJwHBUodaXK7DZTeCe/9fbTO4P8SJK02Imzqss=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=e2jdWOeseQnC0rXoTR8Vo20fZHTNaffwAU5oFDKFUo8OQH8GV2rXEpjKazjzLn8PQ3Z724P27MODMdE669+XOQruGq33MnYUuc0KpQ4V75x1FxbwmmHitgF82y5FZn90bn8+LYIlpMvTLp3rHeuDJtZFfae5g1NdAd1d+lUsXz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=162.243.164.118
+Received: from enjou-Legion-Y7000P-2019 (unknown [123.114.53.210])
+	by app1 (Coremail) with SMTP id ygmowAAXOsSU0VRqvicCAQ--.58336S3;
+	Mon, 13 Jul 2026 19:53:01 +0800 (CST)
+From: Ren Wei <n05ec@lzu.edu.cn>
+To: lvs-devel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org
+Cc: horms@verge.net.au,
+	ja@ssi.bg,
+	pablo@netfilter.org,
+	fw@strlen.de,
+	phil@nwl.cc,
+	kaber@trash.net,
+	nick@loadbalancer.org,
+	yuantan098@gmail.com,
+	yifanwucs@gmail.com,
+	tomapufckgml@gmail.com,
+	bird@lzu.edu.cn,
+	roxy520tt@gmail.com,
+	n05ec@lzu.edu.cn
+Subject: [PATCH v2 1/2] ipvs: do not propagate one-packet flag to synced conns
+Date: Mon, 13 Jul 2026 19:52:32 +0800
+Message-ID: <36c8cc69242426e0bc6b618749052a5943735de3.1783917666.git.roxy520tt@gmail.com>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <cover.1783917666.git.roxy520tt@gmail.com>
+References: <cover.1783917666.git.roxy520tt@gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260710075409.1360085-1-pablo@netfilter.org> <CANczwAEqpv+zALby0crkzO5tX63efo-0JrVHVJUWbNgtxsKqSA@mail.gmail.com>
- <alKvX-Q_v6ez4fV3@chamomile> <CANczwAFH_GFK+uTTcpOoogQ8LuY6MRRwe0Q76=rP=F-9bY953g@mail.gmail.com>
- <alPqs8gMuF1uJuTw@chamomile>
-In-Reply-To: <alPqs8gMuF1uJuTw@chamomile>
-From: Ahmed Zaki <anzaki@gmail.com>
-Date: Mon, 13 Jul 2026 05:46:44 -0600
-X-Gm-Features: AVVi8Cf_6SVIWlNioBCPLbAG_Wbp-B_9vNNv-4noQ8BoQuwsPpPwVWjRNi7Ly9E
-Message-ID: <CANczwAHZqSMEnbVFT5YsHjLUHxmT+1vP6XSH1gcMptnNPrZGEw@mail.gmail.com>
-Subject: Re: [PATCH nf,v2] netfilter: flowtable: tear down flow entries with
- stale dst from GC
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:ygmowAAXOsSU0VRqvicCAQ--.58336S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw13uF1Utr17Gr1fuF1UGFg_yoW8tw47pF
+	W8K393GrW7try5KF1kAFyxurW8WF4kGr429r4DGw1rZa1qqrn8tanakFWYv3W8CFZ0kFWY
+	qFs0vw4DCr1UA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9S1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
+	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8WwCFx2IqxV
+	CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+	6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+	WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
+	6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+	1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQEHCWpUn9kElAAAsm
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+X-Spamd-Result: default: False [-0.96 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[anzaki@gmail.com,netfilter-devel@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-13894-lists,netfilter-devel=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
+	TAGGED_FROM(0.00)[bounces-13895-lists,netfilter-devel=lfdr.de];
+	DMARC_NA(0.00)[lzu.edu.cn];
+	FORGED_RECIPIENTS(0.00)[m:lvs-devel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:horms@verge.net.au,m:ja@ssi.bg,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:kaber@trash.net,m:nick@loadbalancer.org,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:bird@lzu.edu.cn,m:roxy520tt@gmail.com,m:n05ec@lzu.edu.cn,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[verge.net.au,ssi.bg,netfilter.org,strlen.de,nwl.cc,trash.net,loadbalancer.org,gmail.com,lzu.edu.cn];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[anzaki@gmail.com,netfilter-devel@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ozlabs.org:url]
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E791974A87D
+X-Rspamd-Queue-Id: D940274A8D8
 
-On Sun, Jul 12, 2026 at 1:27=E2=80=AFPM Pablo Neira Ayuso <pablo@netfilter.=
-org> wrote:
->
-> On Sun, Jul 12, 2026 at 07:39:25AM -0600, Ahmed Zaki wrote:
-> > On Sat, Jul 11, 2026 at 3:02=E2=80=AFPM Pablo Neira Ayuso <pablo@netfil=
-ter.org> wrote:
-> > >
-.
-.
-.
->
-> > > fa7395c02d95 netfilter: flowtable: support IPIP tunnel with direct xm=
-it
-> > > 6c5dcab95f4c netfilter: flowtable: IPIP tunnel hardware offload is no=
-t yet support
-> > > c328b90c17fc netfilter: flowtable: use dst in this direction when pus=
-hing IPIP header
-> > >
-> > > There is also this patch which is needed:
-> > >
-> > > https://patchwork.ozlabs.org/project/netfilter-devel/patch/2026070911=
-4025.1294044-1-pablo@netfilter.org/
-> > >
-> > > which has been included in the last PR this Friday.
-> >
-> > I have some limitations so I can only test with 6.6 or 6.12. I will
-> > try to trim down these patches to
-> > "move dst_cache out of union and use the gc to check all entries" and
-> > will let you know if I see
-> > any more problems.
->
-> You will have to backport the move of dst_cache out of the union.
->
+From: Zhiling Zou <roxy520tt@gmail.com>
 
-yes, and I tested for a couple of hours with no issues. GC was taking
-care of the
-expired dst_cache.
+Synced connections can be created before their destination exists. When
+the destination is later added, ip_vs_bind_dest() copies connection flags
+from the destination into cp->flags.
 
-> > The one thing I believe is still missing is to remove the if condition
-> > in flow_offload_fill_route()
-> > when setting  "flow_tuple->dst_cache/dst_cookie":
-> >
-> > - if (route->tuple[!dir].in.num_tuns) {
-> >
-> > We now need "flow_tuple->dst_cache/dst_cookie" for all DIRECT xmit
-> > even with no tunnels
->
-> How so? ->dst_cache is not available when sending packets to a port
-> behind a master bridge device.
+IP_VS_CONN_F_ONE_PACKET connections are not synced. If a synced
+connection inherits IP_VS_CONN_F_ONE_PACKET while it is already hashed,
+expiry can treat it as a one-packet connection and skip unlinking the
+existing conn_tab node, leaving stale hash nodes pointing at a freed
+struct ip_vs_conn.
 
-Sorry I must be missing something. I do not have a bridge in my setup. I ha=
-ve a
-Mediatek PPE that is offloading from one port to another and there are
-no bridges:
+Drop IP_VS_CONN_F_ONE_PACKET from destination flags when binding synced
+connections.
 
-# nft list ruleset
-table ip fw4 {
-    flowtable f1 {
-        hook ingress priority filter
-        devices =3D { eth0, eth1 }
-        flags offload
-    }
+Fixes: 26ec037f9841 ("IPVS: one-packet scheduling")
+Cc: stable@vger.kernel.org
+Reported-by: Yuan Tan <yuantan098@gmail.com>
+Reported-by: Yifan Wu <yifanwucs@gmail.com>
+Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+Reported-by: Xin Liu <bird@lzu.edu.cn>
+Suggested-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Zhiling Zou <roxy520tt@gmail.com>
+Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
+---
+Changes in v2:
+- Replace the v1 approach that preserved hash-related flags on late
+  destination binding.
+- Drop IP_VS_CONN_F_ONE_PACKET from conn_flags for synced connections,
+  because one-packet connections are not synchronized.
+- Leave forwarding method updates to the follow-up hn1 hashing fix in
+  patch 2.
+- Add Suggested-by for Julian's review suggestion.
 
-chain forward {
-    type filter hook forward priority filter; policy accept;
-    tcp dport 5201 flow add @f1
-    }
-}
+v1 Link: https://lore.kernel.org/all/1b914f41d725bc064c9ba9830dc8169329737270.1782540466.git.roxy520tt@gmail.com/
 
-My previous comment is that in this case, AFAIK, the "xmit_type =3D
-DIRECT" and in order
-to set dst_cache/cookie, the guard "if
-(route->tuple[!dir].in.num_tuns)" needs to be
-taken away (which I did in my 6.6 patch, let me know if you want me to
-send this as ref).
+ net/netfilter/ipvs/ip_vs_conn.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thank you.
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index 6ed2622363f0..0682cec5f0a7 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1014,6 +1014,9 @@ ip_vs_bind_dest(struct ip_vs_conn *cp, struct ip_vs_dest *dest)
+ 	flags = cp->flags;
+ 	/* Bind with the destination and its corresponding transmitter */
+ 	if (flags & IP_VS_CONN_F_SYNC) {
++		/* Synced conns are hashed, so they can not get this flag */
++		conn_flags &= ~IP_VS_CONN_F_ONE_PACKET;
++
+ 		/* if the connection is not template and is created
+ 		 * by sync, preserve the activity flag.
+ 		 */
+-- 
+2.43.0
+
 
