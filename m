@@ -1,47 +1,47 @@
-Return-Path: <netfilter-devel+bounces-13886-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13888-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id tsNBDZu1VGpkpwMAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13886-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 11:53:31 +0200
+	id GQygOM21VGpvpwMAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13888-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 11:54:21 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 854057497FD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 11:53:30 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F130749810
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 11:54:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=MsrA1vj7;
+	dkim=pass header.d=mails.tsinghua.edu.cn header.s=dkim header.b=OoB6Vw87;
 	dmarc=pass (policy=quarantine) header.from=mails.tsinghua.edu.cn;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13886-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13886-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13888-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13888-lists+netfilter-devel=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6FFD3303AB7F
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 09:49:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A51E23034B30
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 09:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48473E3DBB;
-	Mon, 13 Jul 2026 09:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D5C3E3D90;
+	Mon, 13 Jul 2026 09:49:27 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net (zg8tmja5ljk3lje4mi4ymjia.icoremail.net [209.97.182.222])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553A03E44E4;
-	Mon, 13 Jul 2026 09:49:02 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34C73E3167;
+	Mon, 13 Jul 2026 09:49:12 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783936151; cv=none; b=r6CR+8NK2yIO94BInmHPVBSPwjCpS/OFzTRE05ZOVEdQB3/fxhNkI6UIfwQPtcMs4KbaVgxTZZZHTezZuewdM6A9qVJN6JHMSgf0Q8l+cnH97a3m6+WazggBEuxXjr/vOrpiA7tRQ4GEI0xtsQ3z07neUiHHmtUYOM7TCE6+7UA=
+	t=1783936164; cv=none; b=oLHLpctHHCNyhIKeFw5dvUYQx350J19t4nSE89sevA8BC0Tay8eZdkNNtWzX2WETkwWK/GyEgLKJ8V2T6XOrXNOQsjZ/280zNY5AlGE4x4GMJjfMOByohqJBc1QeVLbdj+KPmwn95E+5rG+BUynExKERfdCppdMTn8SmOEJ4YEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783936151; c=relaxed/simple;
-	bh=3/BP5uD5nRa0nxQHzhS+ZEMFFDOehR5f0M7Qj3EYLUw=;
+	s=arc-20240116; t=1783936164; c=relaxed/simple;
+	bh=dyofjdjySQUiBLq2MV6SAFacfOSDOw7gZ1Kn3cktthI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vCjPoYkUywh4Juul5+AsDmxohb8tsaKo+djT1Hv3iZljKfErgoFexgjW+k8j144YQ2g6QAx19VFc8vIDXdYlOUwLgdBBqUaD9d9OcsHYaKS/5wT1d8ja9kZLNhQGMw9FsrCYtOiH0BwHgbkFBwmdSjjSxxU8MeX0xPuKMeq1avE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=MsrA1vj7; arc=none smtp.client-ip=209.97.182.222
+	 MIME-Version; b=Oo9AzFR3zgtQMa5cwSK78T7BeIlpDxHYS3Q1/OmTF9iIlI56wuwxUE5IBJDH+LWlp6p83AVHNXiRMrzpwwZ+j7zp4cZ6odYS7V0bO98+nGQDK9GY9xDtTigm3y9j3uZDFP9So8FxGzgzUCUglsBs90ejk+cM4izShnodK4NZHSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mails.tsinghua.edu.cn; spf=pass smtp.mailfrom=mails.tsinghua.edu.cn; dkim=pass (1024-bit key) header.d=mails.tsinghua.edu.cn header.i=@mails.tsinghua.edu.cn header.b=OoB6Vw87; arc=none smtp.client-ip=52.237.72.81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=mails.tsinghua.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:
 	Date:Message-ID:In-Reply-To:References:MIME-Version:
-	Content-Transfer-Encoding; bh=F+rleY0S+475U+nqz/aNKWhnUEDWwsADbM
-	8b2BXmTuU=; b=MsrA1vj7QwlbC1vjeGPAfUOoI8k4LQ3eNxATyW0vfJOK5C3lal
-	lx6dgUu1b4bi8Uxx0oShuiSL2JahoF7arAaB4eq6hcQlVqwvTzGZWZmJhGYbr+QJ
-	n8OsVzeTNw9h4KDW9krUZ6c1NKYQ97s9+3UG4z/67ahvdJAPvS+1aImy4=
+	Content-Transfer-Encoding; bh=ieNt4KYer9ZaDB5sbELoJIy8l78lrHNfSf
+	D3geeGEHo=; b=OoB6Vw875sXgFo135FhYyTkzXpPs5vr+uayuSmkT21l9kiqsOG
+	IXVgmDwuN/PsCFPo/kaH3JYc5Vw4e6zUQ+71+cwyociR2vgTFS2Wce9YW3aFZcwF
+	CfOJnwgFSlskY4k0cRlYHQcacTeBFP1XBdie6Q2aCWkokYDdWWle2dRM4=
 Received: from localhost.localdomain (unknown [121.229.84.192])
-	by web5 (Coremail) with SMTP id zAQGZQCXT79htFRqkRUmAw--.5011S3;
-	Mon, 13 Jul 2026 17:48:30 +0800 (CST)
+	by web5 (Coremail) with SMTP id zAQGZQCXT79htFRqkRUmAw--.5011S4;
+	Mon, 13 Jul 2026 17:48:45 +0800 (CST)
 From: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 To: David Ahern <dsahern@kernel.org>,
 	Ido Schimmel <idosch@nvidia.com>,
@@ -54,19 +54,21 @@ To: David Ahern <dsahern@kernel.org>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Florian Westphal <fw@strlen.de>,
 	Phil Sutter <phil@nwl.cc>
-Cc: netdev@vger.kernel.org,
+Cc: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>,
+	netdev@vger.kernel.org,
 	lvs-devel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
+	stable@vger.kernel.org,
 	Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
 	Ao Wang <wangao@seu.edu.cn>,
 	Xuewei Feng <fengxw06@126.com>,
 	Qi Li <qli01@tsinghua.edu.cn>,
 	Ke Xu <xuke@tsinghua.edu.cn>
-Subject: [PATCH nf v3 1/2] ipvs: properly update the overload flag on dest edit
-Date: Mon, 13 Jul 2026 17:48:01 +0800
-Message-ID: <82748f09f01858b0d9910f372ed67e9ab539fe35.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn>
+Subject: [PATCH nf v3 2/2] ipvs: use bitops for destination overload state
+Date: Mon, 13 Jul 2026 17:48:02 +0800
+Message-ID: <edc095e05c89cc6481613126de5f2a91ed601fa9.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <cover.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn>
 References: <cover.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn>
@@ -77,24 +79,24 @@ List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zAQGZQCXT79htFRqkRUmAw--.5011S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFyxZrykZr4xCFWrWFyrXrb_yoWxXrykpr
-	WxJasF9r4UWr4DWFs8tFnxZrZ5GF18JFW7WF98KasxJ3ZrArn0qFnakFWDGFsrAFs7AFyf
-	GFW5t34Yka4DJFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9m1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
-	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4
-	x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
-	84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcx
-	kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VW8
-	Ww4UJr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
-	AqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wrylc2xS
-	Y4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GrWkJr1UJwCFx2
-	IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-	6r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUJ8nOUUUUU=
-X-CM-SenderInfo: 52kd05r2suqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAQIHAWpUpbIhPQAAsw
+X-CM-TRANSID:zAQGZQCXT79htFRqkRUmAw--.5011S4
+X-Coremail-Antispam: 1UD129KBjvAXoW3tF47JFWktr15tF1rJw1fWFg_yoW8Wry5Ko
+	W3Z3ZxZw4rArW7tw4ktw43uF4rWr4Igr48CFW7XFsxur9rtr18X39rWa15tanrtFyIga13
+	Z34xXwn8AFsY9r1rn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYH7CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM28lY4IE
+	w2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84
+	ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0D
+	M28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0x
+	vYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_
+	GrWkJr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zV
+	CS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14v26r4a6rW5MxkI
+	ecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4rKr1UJr1l4I
+	8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
+	xVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
+	AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v2
+	0xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+	W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1U73PUUUUU==
+X-CM-SenderInfo: 52kd05r2suqzpdlo2hxwvl0wxkxdhvlgxou0/1tbiAgMHAWpUphggYgAAsF
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -102,20 +104,20 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[mails.tsinghua.edu.cn,quarantine];
 	R_DKIM_ALLOW(-0.20)[mails.tsinghua.edu.cn:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13886-lists,netfilter-devel=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13888-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[zhaoyz24@mails.tsinghua.edu.cn,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FORGED_RECIPIENTS(0.00)[m:dsahern@kernel.org,m:idosch@nvidia.com,m:horms@verge.net.au,m:ja@ssi.bg,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FORGED_RECIPIENTS(0.00)[m:dsahern@kernel.org,m:idosch@nvidia.com,m:horms@verge.net.au,m:ja@ssi.bg,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:zhaoyz24@mails.tsinghua.edu.cn,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,mails.tsinghua.edu.cn,seu.edu.cn,126.com,tsinghua.edu.cn];
+	FREEMAIL_CC(0.00)[mails.tsinghua.edu.cn,vger.kernel.org,netfilter.org,seu.edu.cn,126.com,tsinghua.edu.cn];
 	DKIM_TRACE(0.00)[mails.tsinghua.edu.cn:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -125,182 +127,397 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ssi.bg:email,mails.tsinghua.edu.cn:from_mime,mails.tsinghua.edu.cn:dkim,mails.tsinghua.edu.cn:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,seu.edu.cn:email,tsinghua.edu.cn:email,ssi.bg:email,mails.tsinghua.edu.cn:from_mime,mails.tsinghua.edu.cn:dkim,mails.tsinghua.edu.cn:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 854057497FD
+X-Rspamd-Queue-Id: 2F130749810
 
-From: Julian Anastasov <ja@ssi.bg>
+IPVS destination schedulers read the overload state from packet processing
+paths, while connection accounting and destination updates can change it
+concurrently. IP_VS_DEST_F_OVERLOAD currently shares dest->flags with
+IP_VS_DEST_F_AVAILABLE, so plain read-modify-write operations on the two
+independent states can race and lose either update.
 
-The upper/lower connection thresholds for dest can be changed,
-so use ip_vs_dest_update_overload() to properly update the
-dest overload flag.
+KCSAN reports the race with the SH scheduler and an upper connection
+threshold configured:
 
-The thresholds were not limited, fit them in the 0 .. INT_MAX
-range as already done in ipvsadm.
+  BUG: KCSAN: data-race in __ip_vs_update_dest / ip_vs_sh_schedule
 
-As the thresholds are also read when connections are created
-and expired, use WRITE_ONCE/READ_ONCE to access them.
+IP_VS_DEST_F_AVAILABLE is changed under service_mutex. Keep it in the
+existing flags word, but move the overload state to a separate unsigned
+long and access it with bitops. Use test_bit() in scheduler paths and
+set_bit()/clear_bit() in ip_vs_dest_update_overload(). This serializes the
+overload bit accesses and prevents updates to the available and overload
+states from clobbering each other.
 
-As the lower threshold is optional, use (u - (u >> 2)) to
-calculate the 75% default value based on the upper threshold
-by preserving the integer rounding, as suggested by Yizhou Zhao.
+The destination flags are not exposed by the IPVS sockopt or netlink
+interfaces, so move their definitions out of the UAPI header. Place the
+new overload word next to weight, which keeps the existing flags,
+conn_flags and weight offsets unchanged. On x86-64 this grows struct
+ip_vs_dest from 472 to 480 bytes.
+
+test_bit() does not add reader-side ordering. Schedulers can still observe
+stale destination state, as they could before this change; this does not
+provide a fresh cross-field snapshot.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Cc: stable@vger.kernel.org
+Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
+Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
+Reported-by: Ao Wang <wangao@seu.edu.cn>
+Reported-by: Xuewei Feng <fengxw06@126.com>
+Reported-by: Qi Li <qli01@tsinghua.edu.cn>
+Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
+Assisted-by: Claude-Code:GLM-5.2
+Suggested-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
 ---
- include/net/ip_vs.h             |  2 ++
- net/netfilter/ipvs/ip_vs_conn.c | 43 +++++++++++++++++++++++----------
- net/netfilter/ipvs/ip_vs_ctl.c  | 26 ++++++++++++++------
- 3 files changed, 50 insertions(+), 21 deletions(-)
+ include/net/ip_vs.h              | 8 ++++++++
+ include/uapi/linux/ip_vs.h       | 6 ------
+ net/netfilter/ipvs/ip_vs_conn.c  | 7 ++++---
+ net/netfilter/ipvs/ip_vs_dh.c    | 4 ++--
+ net/netfilter/ipvs/ip_vs_fo.c    | 2 +-
+ net/netfilter/ipvs/ip_vs_lblc.c  | 4 ++--
+ net/netfilter/ipvs/ip_vs_lblcr.c | 8 ++++----
+ net/netfilter/ipvs/ip_vs_lc.c    | 2 +-
+ net/netfilter/ipvs/ip_vs_mh.c    | 2 +-
+ net/netfilter/ipvs/ip_vs_nq.c    | 2 +-
+ net/netfilter/ipvs/ip_vs_ovf.c   | 2 +-
+ net/netfilter/ipvs/ip_vs_rr.c    | 2 +-
+ net/netfilter/ipvs/ip_vs_sed.c   | 4 ++--
+ net/netfilter/ipvs/ip_vs_sh.c    | 2 +-
+ net/netfilter/ipvs/ip_vs_twos.c  | 4 ++--
+ net/netfilter/ipvs/ip_vs_wlc.c   | 4 ++--
+ net/netfilter/ipvs/ip_vs_wrr.c   | 2 +-
+ 17 files changed, 34 insertions(+), 31 deletions(-)
 
 diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index 417ff51f62fc..3fc864a320fb 100644
+index 3fc864a320fb..5e8e55f82b04 100644
 --- a/include/net/ip_vs.h
 +++ b/include/net/ip_vs.h
-@@ -1907,6 +1907,8 @@ static inline void ip_vs_dest_put_and_free(struct ip_vs_dest *dest)
- 		kfree(dest);
- }
+@@ -36,6 +36,13 @@
+ #define IP_VS_HDR_INVERSE	1
+ #define IP_VS_HDR_ICMP		2
  
-+void ip_vs_dest_update_overload(struct ip_vs_dest *dest);
++/* Destination Server Flags */
++#define IP_VS_DEST_F_AVAILABLE	0x0001		/* server is available */
 +
- /* IPVS sync daemon data and function prototypes
-  * (from ip_vs_sync.c)
++enum {
++	IP_VS_DEST_FL_OVERLOAD,
++};
++
+ /* conn_tab limits (as per Kconfig) */
+ #define IP_VS_CONN_TAB_MIN_BITS	8
+ #if BITS_PER_LONG > 32
+@@ -976,6 +983,7 @@ struct ip_vs_dest {
+ 	volatile unsigned int	flags;		/* dest status flags */
+ 	atomic_t		conn_flags;	/* flags to copy to conn */
+ 	atomic_t		weight;		/* server weight */
++	unsigned long		flags2;		/* dest status flags */
+ 	atomic_t		last_weight;	/* server latest weight */
+ 	__u16			tun_type;	/* tunnel type */
+ 	__be16			tun_port;	/* tunnel port */
+diff --git a/include/uapi/linux/ip_vs.h b/include/uapi/linux/ip_vs.h
+index 1ed234e7f251..2c37c6ac7525 100644
+--- a/include/uapi/linux/ip_vs.h
++++ b/include/uapi/linux/ip_vs.h
+@@ -28,12 +28,6 @@
+ #define IP_VS_SVC_F_SCHED_SH_FALLBACK	IP_VS_SVC_F_SCHED1 /* SH fallback */
+ #define IP_VS_SVC_F_SCHED_SH_PORT	IP_VS_SVC_F_SCHED2 /* SH use port */
+ 
+-/*
+- *      Destination Server Flags
+- */
+-#define IP_VS_DEST_F_AVAILABLE	0x0001		/* server is available */
+-#define IP_VS_DEST_F_OVERLOAD	0x0002		/* server is overloaded */
+-
+ /*
+  *      IPVS sync daemon states
   */
 diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index 6ed2622363f0..fa3fbd597f3f 100644
+index fa3fbd597f3f..2591f4e143f8 100644
 --- a/net/netfilter/ipvs/ip_vs_conn.c
 +++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -991,6 +991,33 @@ static inline int ip_vs_dest_totalconns(struct ip_vs_dest *dest)
- 		+ atomic_read(&dest->inactconns);
- }
- 
-+/* Update overload flag based on number of dest conns and lower/upper
-+ * connection thresholds:
-+ * - conns reach u_threshold and exceed it: set the flag
-+ * - conns go below l_threshold (or 75% of u_threshold): clear the flag
-+ */
-+__always_inline void ip_vs_dest_update_overload(struct ip_vs_dest *dest)
-+{
-+	int conns;
-+	u32 l, u;
-+
-+	u = READ_ONCE(dest->u_threshold);
-+	if (!u)
-+		goto unset;
-+	conns = ip_vs_dest_totalconns(dest);
-+	if (conns >= u) {
-+		dest->flags |= IP_VS_DEST_F_OVERLOAD;
-+		return;
-+	}
-+	/* Low threshold defaults to 75% of upper threshold */
-+	l = READ_ONCE(dest->l_threshold) ? : (u - (u >> 2));
-+	if (conns >= l)
-+		return;
-+
-+unset:
-+	dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
-+}
-+
- /*
-  *	Bind a connection entry with a virtual service destination
-  *	Called just after a new connection entry is created.
-@@ -1053,9 +1080,7 @@ ip_vs_bind_dest(struct ip_vs_conn *cp, struct ip_vs_dest *dest)
- 		atomic_inc(&dest->persistconns);
- 	}
- 
--	if (dest->u_threshold != 0 &&
--	    ip_vs_dest_totalconns(dest) >= dest->u_threshold)
+@@ -1006,7 +1006,7 @@ __always_inline void ip_vs_dest_update_overload(struct ip_vs_dest *dest)
+ 		goto unset;
+ 	conns = ip_vs_dest_totalconns(dest);
+ 	if (conns >= u) {
 -		dest->flags |= IP_VS_DEST_F_OVERLOAD;
-+	ip_vs_dest_update_overload(dest);
++		set_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
+ 		return;
+ 	}
+ 	/* Low threshold defaults to 75% of upper threshold */
+@@ -1015,7 +1015,8 @@ __always_inline void ip_vs_dest_update_overload(struct ip_vs_dest *dest)
+ 		return;
+ 
+ unset:
+-	dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
++	if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
++		clear_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
  }
  
- 
-@@ -1149,16 +1174,8 @@ static inline void ip_vs_unbind_dest(struct ip_vs_conn *cp)
+ /*
+@@ -1174,7 +1175,7 @@ static inline void ip_vs_unbind_dest(struct ip_vs_conn *cp)
  		atomic_dec(&dest->persistconns);
  	}
  
--	if (dest->l_threshold != 0) {
--		if (ip_vs_dest_totalconns(dest) < dest->l_threshold)
--			dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
--	} else if (dest->u_threshold != 0) {
--		if (ip_vs_dest_totalconns(dest) * 4 < dest->u_threshold * 3)
--			dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
--	} else {
--		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
--			dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
--	}
-+	if (dest->flags & IP_VS_DEST_F_OVERLOAD)
-+		ip_vs_dest_update_overload(dest);
+-	if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++	if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 		ip_vs_dest_update_overload(dest);
  
  	ip_vs_dest_put(dest);
+diff --git a/net/netfilter/ipvs/ip_vs_dh.c b/net/netfilter/ipvs/ip_vs_dh.c
+index e1f62f6b25e2..364acb6342e2 100644
+--- a/net/netfilter/ipvs/ip_vs_dh.c
++++ b/net/netfilter/ipvs/ip_vs_dh.c
+@@ -196,12 +196,12 @@ static int ip_vs_dh_dest_changed(struct ip_vs_service *svc,
+ 
+ 
+ /*
+- *      If the dest flags is set with IP_VS_DEST_F_OVERLOAD,
++ *      If the dest flags is set with IP_VS_DEST_FL_OVERLOAD,
+  *      consider that the server is overloaded here.
+  */
+ static inline int is_overloaded(struct ip_vs_dest *dest)
+ {
+-	return dest->flags & IP_VS_DEST_F_OVERLOAD;
++	return test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
  }
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index bcf40b8c41cf..62f73d892f97 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -1370,10 +1370,12 @@ __ip_vs_update_dest(struct ip_vs_service *svc, struct ip_vs_dest *dest,
- 	/* set the dest status flags */
- 	dest->flags |= IP_VS_DEST_F_AVAILABLE;
  
--	if (udest->u_threshold == 0 || udest->u_threshold > dest->u_threshold)
--		dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
--	dest->u_threshold = udest->u_threshold;
--	dest->l_threshold = udest->l_threshold;
-+	if (READ_ONCE(dest->u_threshold) != udest->u_threshold ||
-+	    READ_ONCE(dest->l_threshold) != udest->l_threshold) {
-+		WRITE_ONCE(dest->u_threshold, udest->u_threshold);
-+		WRITE_ONCE(dest->l_threshold, udest->l_threshold);
-+		ip_vs_dest_update_overload(dest);
-+	}
  
- 	dest->af = udest->af;
+diff --git a/net/netfilter/ipvs/ip_vs_fo.c b/net/netfilter/ipvs/ip_vs_fo.c
+index d657b47c6511..a59af6c1189a 100644
+--- a/net/netfilter/ipvs/ip_vs_fo.c
++++ b/net/netfilter/ipvs/ip_vs_fo.c
+@@ -29,7 +29,7 @@ ip_vs_fo_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	 * Find virtual server with highest weight and send it traffic
+ 	 */
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (!(dest->flags & IP_VS_DEST_F_OVERLOAD) &&
++		if (!test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) &&
+ 		    atomic_read(&dest->weight) > hw) {
+ 			hweight = dest;
+ 			hw = atomic_read(&dest->weight);
+diff --git a/net/netfilter/ipvs/ip_vs_lblc.c b/net/netfilter/ipvs/ip_vs_lblc.c
+index 15ccb2b2fa1f..ee26be3eb860 100644
+--- a/net/netfilter/ipvs/ip_vs_lblc.c
++++ b/net/netfilter/ipvs/ip_vs_lblc.c
+@@ -414,7 +414,7 @@ __ip_vs_lblc_schedule(struct ip_vs_service *svc)
+ 	 * new connection.
+ 	 */
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
+ 		if (atomic_read(&dest->weight) > 0) {
+ 			least = dest;
+@@ -429,7 +429,7 @@ __ip_vs_lblc_schedule(struct ip_vs_service *svc)
+ 	 */
+   nextstage:
+ 	list_for_each_entry_continue_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
  
-@@ -1486,6 +1488,9 @@ ip_vs_add_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
- 		return -ERANGE;
- 	}
+ 		doh = ip_vs_dest_conn_overhead(dest);
+diff --git a/net/netfilter/ipvs/ip_vs_lblcr.c b/net/netfilter/ipvs/ip_vs_lblcr.c
+index c90ea897c3f7..28858e44225a 100644
+--- a/net/netfilter/ipvs/ip_vs_lblcr.c
++++ b/net/netfilter/ipvs/ip_vs_lblcr.c
+@@ -166,7 +166,7 @@ static inline struct ip_vs_dest *ip_vs_dest_set_min(struct ip_vs_dest_set *set)
+ 	/* select the first destination server, whose weight > 0 */
+ 	list_for_each_entry_rcu(e, &set->list, list) {
+ 		least = e->dest;
+-		if (least->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &least->flags2))
+ 			continue;
  
-+	if (udest->u_threshold > INT_MAX)
-+		return -EINVAL;
-+
- 	if (udest->tun_type == IP_VS_CONN_F_TUNNEL_TYPE_GUE) {
- 		if (udest->tun_port == 0) {
- 			pr_err("%s(): tunnel port is zero\n", __func__);
-@@ -1559,6 +1564,9 @@ ip_vs_edit_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
- 		return -ERANGE;
- 	}
+ 		if ((atomic_read(&least->weight) > 0)
+@@ -181,7 +181,7 @@ static inline struct ip_vs_dest *ip_vs_dest_set_min(struct ip_vs_dest_set *set)
+   nextstage:
+ 	list_for_each_entry_continue_rcu(e, &set->list, list) {
+ 		dest = e->dest;
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
  
-+	if (udest->u_threshold > INT_MAX)
-+		return -EINVAL;
-+
- 	if (udest->tun_type == IP_VS_CONN_F_TUNNEL_TYPE_GUE) {
- 		if (udest->tun_port == 0) {
- 			pr_err("%s(): tunnel port is zero\n", __func__);
-@@ -3667,8 +3675,8 @@ __ip_vs_get_dest_entries(struct netns_ipvs *ipvs, const struct ip_vs_get_dests *
- 			entry.port = dest->port;
- 			entry.conn_flags = atomic_read(&dest->conn_flags);
- 			entry.weight = atomic_read(&dest->weight);
--			entry.u_threshold = dest->u_threshold;
--			entry.l_threshold = dest->l_threshold;
-+			entry.u_threshold = READ_ONCE(dest->u_threshold);
-+			entry.l_threshold = READ_ONCE(dest->l_threshold);
- 			entry.activeconns = atomic_read(&dest->activeconns);
- 			entry.inactconns = atomic_read(&dest->inactconns);
- 			entry.persistconns = atomic_read(&dest->persistconns);
-@@ -4277,8 +4285,10 @@ static int ip_vs_genl_fill_dest(struct sk_buff *skb, struct ip_vs_dest *dest)
- 			 dest->tun_port) ||
- 	    nla_put_u16(skb, IPVS_DEST_ATTR_TUN_FLAGS,
- 			dest->tun_flags) ||
--	    nla_put_u32(skb, IPVS_DEST_ATTR_U_THRESH, dest->u_threshold) ||
--	    nla_put_u32(skb, IPVS_DEST_ATTR_L_THRESH, dest->l_threshold) ||
-+	    nla_put_u32(skb, IPVS_DEST_ATTR_U_THRESH,
-+			READ_ONCE(dest->u_threshold)) ||
-+	    nla_put_u32(skb, IPVS_DEST_ATTR_L_THRESH,
-+			READ_ONCE(dest->l_threshold)) ||
- 	    nla_put_u32(skb, IPVS_DEST_ATTR_ACTIVE_CONNS,
- 			atomic_read(&dest->activeconns)) ||
- 	    nla_put_u32(skb, IPVS_DEST_ATTR_INACT_CONNS,
+ 		doh = ip_vs_dest_conn_overhead(dest);
+@@ -577,7 +577,7 @@ __ip_vs_lblcr_schedule(struct ip_vs_service *svc)
+ 	 * new connection.
+ 	 */
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
+ 
+ 		if (atomic_read(&dest->weight) > 0) {
+@@ -593,7 +593,7 @@ __ip_vs_lblcr_schedule(struct ip_vs_service *svc)
+ 	 */
+   nextstage:
+ 	list_for_each_entry_continue_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
+ 
+ 		doh = ip_vs_dest_conn_overhead(dest);
+diff --git a/net/netfilter/ipvs/ip_vs_lc.c b/net/netfilter/ipvs/ip_vs_lc.c
+index 38cc38c5d8bb..c4e4e91e3e6d 100644
+--- a/net/netfilter/ipvs/ip_vs_lc.c
++++ b/net/netfilter/ipvs/ip_vs_lc.c
+@@ -38,7 +38,7 @@ ip_vs_lc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	 */
+ 
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if ((dest->flags & IP_VS_DEST_F_OVERLOAD) ||
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) ||
+ 		    atomic_read(&dest->weight) == 0)
+ 			continue;
+ 		doh = ip_vs_dest_conn_overhead(dest);
+diff --git a/net/netfilter/ipvs/ip_vs_mh.c b/net/netfilter/ipvs/ip_vs_mh.c
+index 020863047562..23ffc51ca088 100644
+--- a/net/netfilter/ipvs/ip_vs_mh.c
++++ b/net/netfilter/ipvs/ip_vs_mh.c
+@@ -80,7 +80,7 @@ static inline void generate_hash_secret(hsiphash_key_t *hash1,
+ static inline bool is_unavailable(struct ip_vs_dest *dest)
+ {
+ 	return atomic_read(&dest->weight) <= 0 ||
+-	       dest->flags & IP_VS_DEST_F_OVERLOAD;
++	       test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
+ }
+ 
+ /* Returns hash value for IPVS MH entry */
+diff --git a/net/netfilter/ipvs/ip_vs_nq.c b/net/netfilter/ipvs/ip_vs_nq.c
+index ada158c610ce..d6fbb9e50e4b 100644
+--- a/net/netfilter/ipvs/ip_vs_nq.c
++++ b/net/netfilter/ipvs/ip_vs_nq.c
+@@ -72,7 +72,7 @@ ip_vs_nq_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+ 
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD ||
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) ||
+ 		    !atomic_read(&dest->weight))
+ 			continue;
+ 
+diff --git a/net/netfilter/ipvs/ip_vs_ovf.c b/net/netfilter/ipvs/ip_vs_ovf.c
+index c5c67df80a0b..104de8c24a4f 100644
+--- a/net/netfilter/ipvs/ip_vs_ovf.c
++++ b/net/netfilter/ipvs/ip_vs_ovf.c
+@@ -33,7 +33,7 @@ ip_vs_ovf_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	*/
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+ 		w = atomic_read(&dest->weight);
+-		if ((dest->flags & IP_VS_DEST_F_OVERLOAD) ||
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) ||
+ 		    atomic_read(&dest->activeconns) > w ||
+ 		    w == 0)
+ 			continue;
+diff --git a/net/netfilter/ipvs/ip_vs_rr.c b/net/netfilter/ipvs/ip_vs_rr.c
+index 4125ee561cdc..c38bee987d14 100644
+--- a/net/netfilter/ipvs/ip_vs_rr.c
++++ b/net/netfilter/ipvs/ip_vs_rr.c
+@@ -66,7 +66,7 @@ ip_vs_rr_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 		list_for_each_entry_continue_rcu(dest,
+ 						 &svc->destinations,
+ 						 n_list) {
+-			if (!(dest->flags & IP_VS_DEST_F_OVERLOAD) &&
++			if (!test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) &&
+ 			    atomic_read(&dest->weight) > 0)
+ 				/* HIT */
+ 				goto out;
+diff --git a/net/netfilter/ipvs/ip_vs_sed.c b/net/netfilter/ipvs/ip_vs_sed.c
+index 245a323c84cd..0ce425f9748a 100644
+--- a/net/netfilter/ipvs/ip_vs_sed.c
++++ b/net/netfilter/ipvs/ip_vs_sed.c
+@@ -75,7 +75,7 @@ ip_vs_sed_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	 */
+ 
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (!(dest->flags & IP_VS_DEST_F_OVERLOAD) &&
++		if (!test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) &&
+ 		    atomic_read(&dest->weight) > 0) {
+ 			least = dest;
+ 			loh = ip_vs_sed_dest_overhead(least);
+@@ -90,7 +90,7 @@ ip_vs_sed_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	 */
+   nextstage:
+ 	list_for_each_entry_continue_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
+ 		doh = ip_vs_sed_dest_overhead(dest);
+ 		if ((__s64)loh * atomic_read(&dest->weight) >
+diff --git a/net/netfilter/ipvs/ip_vs_sh.c b/net/netfilter/ipvs/ip_vs_sh.c
+index cd67066e3b26..bbdb683b8e86 100644
+--- a/net/netfilter/ipvs/ip_vs_sh.c
++++ b/net/netfilter/ipvs/ip_vs_sh.c
+@@ -73,7 +73,7 @@ struct ip_vs_sh_state {
+ static inline bool is_unavailable(struct ip_vs_dest *dest)
+ {
+ 	return atomic_read(&dest->weight) <= 0 ||
+-	       dest->flags & IP_VS_DEST_F_OVERLOAD;
++	       test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
+ }
+ 
+ /*
+diff --git a/net/netfilter/ipvs/ip_vs_twos.c b/net/netfilter/ipvs/ip_vs_twos.c
+index dbb7f5fd4688..ce5618f02e7d 100644
+--- a/net/netfilter/ipvs/ip_vs_twos.c
++++ b/net/netfilter/ipvs/ip_vs_twos.c
+@@ -52,7 +52,7 @@ static struct ip_vs_dest *ip_vs_twos_schedule(struct ip_vs_service *svc,
+ 
+ 	/* Generate a random weight between [0,sum of all weights) */
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (!(dest->flags & IP_VS_DEST_F_OVERLOAD)) {
++		if (!test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2)) {
+ 			weight = atomic_read(&dest->weight);
+ 			if (weight > 0) {
+ 				total_weight += weight;
+@@ -75,7 +75,7 @@ static struct ip_vs_dest *ip_vs_twos_schedule(struct ip_vs_service *svc,
+ 
+ 	/* Pick two weighted servers */
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
+ 
+ 		weight = atomic_read(&dest->weight);
+diff --git a/net/netfilter/ipvs/ip_vs_wlc.c b/net/netfilter/ipvs/ip_vs_wlc.c
+index 9da445ca09a1..62a4c8149192 100644
+--- a/net/netfilter/ipvs/ip_vs_wlc.c
++++ b/net/netfilter/ipvs/ip_vs_wlc.c
+@@ -47,7 +47,7 @@ ip_vs_wlc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	 */
+ 
+ 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+-		if (!(dest->flags & IP_VS_DEST_F_OVERLOAD) &&
++		if (!test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) &&
+ 		    atomic_read(&dest->weight) > 0) {
+ 			least = dest;
+ 			loh = ip_vs_dest_conn_overhead(least);
+@@ -62,7 +62,7 @@ ip_vs_wlc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 	 */
+   nextstage:
+ 	list_for_each_entry_continue_rcu(dest, &svc->destinations, n_list) {
+-		if (dest->flags & IP_VS_DEST_F_OVERLOAD)
++		if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
+ 			continue;
+ 		doh = ip_vs_dest_conn_overhead(dest);
+ 		if ((__s64)loh * atomic_read(&dest->weight) >
+diff --git a/net/netfilter/ipvs/ip_vs_wrr.c b/net/netfilter/ipvs/ip_vs_wrr.c
+index 2dcff1040da5..b99cbc1d1302 100644
+--- a/net/netfilter/ipvs/ip_vs_wrr.c
++++ b/net/netfilter/ipvs/ip_vs_wrr.c
+@@ -176,7 +176,7 @@ ip_vs_wrr_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ 		list_for_each_entry_continue_rcu(dest,
+ 						 &svc->destinations,
+ 						 n_list) {
+-			if (!(dest->flags & IP_VS_DEST_F_OVERLOAD) &&
++			if (!test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2) &&
+ 			    atomic_read(&dest->weight) >= mark->cw)
+ 				goto found;
+ 			if (dest == stop)
 -- 
 2.34.1
 
