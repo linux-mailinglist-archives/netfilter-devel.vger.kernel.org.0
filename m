@@ -1,60 +1,97 @@
-Return-Path: <netfilter-devel+bounces-13916-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13918-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id pTPNLZUOVWrfjQAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13916-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 18:13:09 +0200
+	id DggyEBMRVWppjgAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13918-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 18:23:47 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 108E774D765
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 18:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B3C574D8F2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 18:23:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=netfilter.org header.s=2025 header.b=WjbNEaAm;
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13916-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13916-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=lsivhO4L;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13918-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13918-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B8C2E3140B1B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 16:07:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 154FD30F8B0C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jul 2026 16:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7B1331EC2;
-	Mon, 13 Jul 2026 16:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7B33F23BB;
+	Mon, 13 Jul 2026 16:18:07 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB6C331EBD
-	for <netfilter-devel@vger.kernel.org>; Mon, 13 Jul 2026 16:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9D63290D0
+	for <netfilter-devel@vger.kernel.org>; Mon, 13 Jul 2026 16:18:05 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783958828; cv=none; b=ZXvmU4/KDu7XfINveb4ZyT3HeW/2+ObNCdEG5uVfyUvvXtE6nU94cGKC2bySOZey39b1mTkefwgV2aQH4zyPCG3ZTs0youW4sh7QC8uYvt5/jyaEDQLfQuTFw8sS8Hi5lY6gHvB8mMKqRlryFR6t7RN9bOWfCwMgjPSpVxoS/Po=
+	t=1783959487; cv=none; b=kwZeUka5TtYY8psZk7vlw+UENXtW1BnDGN1XzTJvK2IeQXVr7TK8NJQjjVPuBr6nIUtK+GKsFFuv6wtfEjPhgD1tAlqgQ+rLxlGhsc2uKkwV6GA/Vv0YDWHWgtjhzkMy1o8oZiDcJka7KHTLck6oOyV1bpu/MZYHOcjIfwwHvcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783958828; c=relaxed/simple;
-	bh=/6ShAaTGo/nNDFEBzkxv79qzJ8KZ82OAzqXky8kSwGk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MWq1b/aTRdpsqPfAm74s+Tj51uUcD2H1aB7jJGUqRlN5zEYhcR3n/DveNo9D72P3LzRl97CAOAF6WYPcc6A77+J+AyffRC6xTyuUMrYMEV0NCtn5X4qF7gih74yrdbHhgEcGY63OBGsrHpjryrh8OIvgHI7+rodh1xLJ1qZbdRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=WjbNEaAm; arc=none smtp.client-ip=217.70.190.124
-Received: from localhost.localdomain (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id CDBAF602A9
-	for <netfilter-devel@vger.kernel.org>; Mon, 13 Jul 2026 18:07:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1783958823;
-	bh=MgIowq5HlH/kfLKpkaomLS+to2yS14kNUzQBz2Iv5EU=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=WjbNEaAmby+yjGAXCLHIV0UF/VXMwn26xWYLAaWImj4nDD/OkNmT7HVwkQdXMdYbY
-	 QRFd5V3Whe4GfbAXVyQIERQJR8P03TrcWujAozjyclZfnSUV52U5GmhJ2jVEzKOKX2
-	 I2qkWf/BpmIi6nNOQNdvtGD5hDxdL+ns/brRFfNkFlINKWnuZuXkSfv4bVyYNq4Y0+
-	 JFVlytaP667edJ9Sc/UayiyttVDY4PNN+DDl5atxD2A5qjsjDAt2mfM7krckGduv4R
-	 hm9GWaQeEXRRHmqhkrWGonO8sBQrFcrlHgfkYC5t9THP7r+v4iIVmg7tgBfoXWUxfQ
-	 cxujWNqnu24aA==
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 2/2] netfilter: nf_conntrack_expect: store event cache in expectation
-Date: Mon, 13 Jul 2026 18:06:58 +0200
-Message-ID: <20260713160658.1711939-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260713160658.1711939-1-pablo@netfilter.org>
-References: <20260713160658.1711939-1-pablo@netfilter.org>
+	s=arc-20240116; t=1783959487; c=relaxed/simple;
+	bh=tGG0MiHN5UuJi2ociiaK6WiVbWCScdsB+jhAN+MFscQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HrVTPAB97x35ZMoX2qfJerAbgmf3yHQ0KbUOZEk48Q7/g85EiseUKjoggcp3tMpJ5rRa8UJAERzHAm2HNT6uke/pJn3fFZvSY+uc/rmWnjVGn5lBrtIT6xPGB1hr3/5YeD4ewNPL77U3pXWwxZN+EUi3gmSxcKuZkgyLQmKIewU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lsivhO4L; arc=none smtp.client-ip=209.85.210.173
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-845c92bc464so51767b3a.2
+        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jul 2026 09:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783959485; x=1784564285; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=gC15aP2K1fPrSjv7xk93lFLdSIjrxFOeu3cF6pP3adg=;
+        b=lsivhO4LBOM5Nhbaonp9n+St27MCZMo9bAjhWVroii5p8C00WXOuktYah8qzD5yRHy
+         Us2fDKfnbyk+OywKaZz9ZMFqc6pn9cvIcJv7addycGgTeFnOVPF54cpzm8ywV0ebZyZ6
+         eCNMIO6pyyYx0K2YlYMv3X1npmmGnQvxUmcr0edGXlbYLwT2enMvTBLdjKimJpI9/rBJ
+         CX12HcSACJS6Ga5uni1heEvaDfl1CJHiqqi/NCKEl+wA0FV03xU04qjRQCHFw5Pp1Duy
+         37EotHlmGD+KrK0glX2Ce6wkZDCtzB6h+KkBRMCPn6gpSOB92h/iGFdAmlrLYZXT3VNA
+         R1tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783959485; x=1784564285;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=gC15aP2K1fPrSjv7xk93lFLdSIjrxFOeu3cF6pP3adg=;
+        b=qqo6OC2mHie8P49IsY/GPuoL+y2rPHenNzavdl7hErtlw1w5zgOvw/sBR7ypQPe9xc
+         grtkrSf31/rdaTGdvgV6nwgpYS77XN9rmZAwmOlsgYVmYqJcV1+D5FoYM8YQRvkK0Eq7
+         jJvYTnkGecLH4LsFXN2UaJRytZ1WOAS3lJz7Y0PQYHtBhv6GsPhu3IFbBx/2lZ2euaeW
+         fl51YdLraecA8RLPx47G7IoWWoh1A+3c2U+fVvDOksOMXWykgo3dzY5+d0+VpbKYxDgr
+         gqwKYyKWKoBM70aotqmz3tNFMC4xhHDkTjYrK07Xy8Ty5pdQ3stqauZlKJ2oXENkIw/5
+         z+wg==
+X-Gm-Message-State: AOJu0Yw2TgkmfUUruHvp060NbbL7sraCqm3H/ocqOPH3OBtEO9jytdxw
+	Xp9s/0Wh8I6/F28bnNiUthbGnLNkwoiTWrFoMQOF6G6RhgwqjQfH7TtD
+X-Gm-Gg: AfdE7cn5oyQj6YuWn0B4SpzkQTIOPDtKqjg3wvtDwjb7RWLBokb1hNjsni2OMLYa+JA
+	Wq/NmwrsWvgWtXo1ukWZFROhEUbxiHKBbLzGSaUd6U0IDmre3GIrXkKU5n7oNfGfyzMvmrJxHkB
+	AguXDoLeFYhYa1SxRcTjbHV68Lqsty70RSmWJou0NmuVK0ejr5qpdykfYsjR1mSXweq6IGsbLn9
+	gfh5uqDeX2t4Ga8wcCdD3BCUd/vYNuo9HzHFz6VruJCit9YzR+n/NMMbuKbcwZg2g0JtDZUlYFc
+	u/cOQ07Yl5z0ThCx7XydNAtH/hkIHJ0eh6xi8huT/59z6ZT5FURiB1nvMPujzuK6Qb4g1v2NKbR
+	xJCO/Dqlg89bUL/1gbnYdY+KezczYz5Qy3OtIk8Rv5GkArFU5dcnZijB3hmqaAWYt3HSZQCjthA
+	t1AVjZlKLRNlXaTuOuHNh5Lvmtkz2O+xQMFZKNhQYLtP5BOpUmm6L7W6UqCg==
+X-Received: by 2002:a05:6a21:4cca:b0:3b4:8a40:85ed with SMTP id adf61e73a8af0-3c11077686bmr9741481637.7.1783959485390;
+        Mon, 13 Jul 2026 09:18:05 -0700 (PDT)
+Received: from fx.tailc0aff1.ts.net ([206.206.192.132])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-313cb804197sm23026406eec.13.2026.07.13.09.18.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2026 09:18:04 -0700 (PDT)
+From: Weiming Shi <bestswngs@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>
+Cc: netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xiang Mei <xmei5@asu.edu>,
+	Weiming Shi <bestswngs@gmail.com>
+Subject: [PATCH nf-next v2] netfilter: ipset: skip extension destroy on hash resize replay
+Date: Mon, 13 Jul 2026 09:15:28 -0700
+Message-ID: <20260713161527.3529006-2-bestswngs@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <PASTE-JOZSEF-MESSAGE-ID-HERE>
+References: <PASTE-JOZSEF-MESSAGE-ID-HERE>
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
@@ -63,171 +100,101 @@ List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[netfilter.org:s=2025];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13916-lists,netfilter-devel=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[netfilter.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_ONE(0.00)[1];
-	DKIM_TRACE(0.00)[netfilter.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,netfilter.org,asu.edu,gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13918-lists,netfilter-devel=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:pablo@netfilter.org,m:kadlec@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:netdev@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:xmei5@asu.edu,m:bestswngs@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[bestswngs@gmail.com,netfilter-devel@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pablo@netfilter.org,netfilter-devel@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[bestswngs@gmail.com,netfilter-devel@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,netfilter.org:from_mime,netfilter.org:mid,netfilter.org:email,netfilter.org:dkim]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,asu.edu:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 108E774D765
+X-Rspamd-Queue-Id: 8B3C574D8F2
 
-Store the event cache in the expectation instead of accessing the
-exp->master cache, as a step forward towards turning the exp->master
-into a cookie.
+During a hash set resize, mtype_resize() copies each element into the
+new table with memcpy(), so the new-table element shares the old-table
+element's comment extension.  An xt_SET delete on the old table during
+the resize destroys that shared comment via ip_set_ext_destroy() and
+queues a replayed delete on h->ad.  After the table swap mtype_resize()
+replays it with mtype_del() on the new table, whose copy still points at
+the freed comment, so ip_set_ext_destroy() frees it a second time:
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+ ODEBUG: activate active (active state 1) object: ... object type: rcu_head
+ WARNING: CPU: 3 PID: 5311 at lib/debugobjects.c:514 debug_print_object
+ Call Trace:
+  <IRQ>
+  kvfree_call_rcu (kernel/rcu/tree.c:3825)
+  ip_set_comment_free (net/netfilter/ipset/ip_set_core.c:397)
+  hash_ip4_del (net/netfilter/ipset/ip_set_hash_gen.h:1098)
+  hash_ip4_kadt (net/netfilter/ipset/ip_set_hash_ip.c:96)
+  ip_set_del (net/netfilter/ipset/ip_set_core.c:813)
+  set_target_v3 (net/netfilter/xt_set.c:412)
+  ipt_do_table (net/ipv4/netfilter/ip_tables.c:346)
+  __ip_local_out (net/ipv4/ip_output.c:119)
+  icmp_push_reply (net/ipv4/icmp.c:397)
+  __icmp_send (net/ipv4/icmp.c:804)
+  __udp4_lib_rcv (net/ipv4/udp.c:2521)
+  ip_local_deliver (net/ipv4/ip_input.c:254)
+  ip_rcv (net/ipv4/ip_input.c:569)
+  </IRQ>
+
+The replay passes a NULL ext (the kernel-side delete that queued it
+already destroyed the extensions), so skip ip_set_ext_destroy() when ext
+is NULL.
+
+Reachable from an unprivileged user namespace.
+
+Fixes: f66ee0410b1c ("netfilter: ipset: Fix \"INFO: rcu detected stall in hash_xxx\" reports")
+Reported-by: Xiang Mei <xmei5@asu.edu>
+Assisted-by: Claude:claude-opus-4-8
+Signed-off-by: Weiming Shi <bestswngs@gmail.com>
 ---
- include/net/netfilter/nf_conntrack_expect.h | 3 +++
- net/netfilter/nf_conntrack_broadcast.c      | 6 ++++++
- net/netfilter/nf_conntrack_ecache.c         | 7 +------
- net/netfilter/nf_conntrack_expect.c         | 5 +++++
- net/netfilter/nf_conntrack_netlink.c        | 5 +++++
- 5 files changed, 20 insertions(+), 6 deletions(-)
+v2: Rebase onto nf-next; drop the second hunk (already fixed there).
 
-diff --git a/include/net/netfilter/nf_conntrack_expect.h b/include/net/netfilter/nf_conntrack_expect.h
-index c024345c9bd8..5d0f5b2f12a7 100644
---- a/include/net/netfilter/nf_conntrack_expect.h
-+++ b/include/net/netfilter/nf_conntrack_expect.h
-@@ -42,6 +42,9 @@ struct nf_conntrack_expect {
- 	/* Expectation class */
- 	unsigned int class;
- 
-+	/* Event filter mask */
-+	u16 event_mask;
-+
- 	/* Function to call after setup and insertion */
- 	void (*expectfn)(struct nf_conn *new,
- 			 struct nf_conntrack_expect *this);
-diff --git a/net/netfilter/nf_conntrack_broadcast.c b/net/netfilter/nf_conntrack_broadcast.c
-index 6ff954f1bfb8..0922e30b6ab0 100644
---- a/net/netfilter/nf_conntrack_broadcast.c
-+++ b/net/netfilter/nf_conntrack_broadcast.c
-@@ -14,6 +14,7 @@
- #include <net/netfilter/nf_conntrack.h>
- #include <net/netfilter/nf_conntrack_helper.h>
- #include <net/netfilter/nf_conntrack_expect.h>
-+#include <net/netfilter/nf_conntrack_ecache.h>
- 
- int nf_conntrack_broadcast_help(struct sk_buff *skb,
- 				struct nf_conn *ct,
-@@ -27,6 +28,7 @@ int nf_conntrack_broadcast_help(struct sk_buff *skb,
- 	struct rtable *rt = skb_rtable(skb);
- 	struct in_device *in_dev;
- 	struct nf_conn_help *help = nfct_help(ct);
-+	struct nf_conntrack_ecache *ecache;
- 	__be32 mask = 0;
- 
- 	if (!help)
-@@ -79,6 +81,10 @@ int nf_conntrack_broadcast_help(struct sk_buff *skb,
- #ifdef CONFIG_NF_CONNTRACK_ZONES
- 	exp->zone = ct->zone;
+ net/netfilter/ipset/ip_set_hash_gen.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
+index 5e4453e9e..bc909ae2d 100644
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -1080,7 +1080,9 @@ mtype_del(struct ip_set *set, void *value, const struct ip_set_ext *ext,
+ 			mtype_del_cidr(set, h,
+ 				       NCIDR_PUT(DCIDR_GET(d->cidr, j)), j);
  #endif
-+	ecache = nf_ct_ecache_find(ct);
-+	if (ecache)
-+		exp->event_mask = ecache->expmask;
-+
- 	nf_ct_expect_related(exp, 0);
- 	nf_ct_expect_put(exp);
- 
-diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
-index 9df159448b89..4c7d1799158d 100644
---- a/net/netfilter/nf_conntrack_ecache.c
-+++ b/net/netfilter/nf_conntrack_ecache.c
-@@ -245,7 +245,6 @@ void nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
- {
- 	struct net *net = nf_ct_exp_net(exp);
- 	struct nf_ct_event_notifier *notify;
--	struct nf_conntrack_ecache *e;
- 
- 	lockdep_nfct_expect_lock_held();
- 
-@@ -254,11 +253,7 @@ void nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
- 	if (!notify)
- 		goto out_unlock;
- 
--	e = nf_ct_ecache_find(exp->master);
--	if (!e)
--		goto out_unlock;
--
--	if (e->expmask & (1 << event)) {
-+	if (exp->event_mask & (1 << event)) {
- 		struct nf_exp_event item = {
- 			.exp	= exp,
- 			.portid	= portid,
-diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
-index 7ae68d60586a..cd9af3620af5 100644
---- a/net/netfilter/nf_conntrack_expect.c
-+++ b/net/netfilter/nf_conntrack_expect.c
-@@ -330,6 +330,7 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
- 	struct nf_conntrack_helper *helper = NULL;
- 	struct nf_conn *ct = exp->master;
- 	struct net *net = read_pnet(&ct->ct_net);
-+	struct nf_conntrack_ecache *ecache;
- 	struct nf_conn_help *help;
- 	int len;
- 
-@@ -342,6 +343,10 @@ void nf_ct_expect_init(struct nf_conntrack_expect *exp, unsigned int class,
- 	exp->class = class;
- 	exp->expectfn = NULL;
- 
-+	ecache = nf_ct_ecache_find(ct);
-+	if (ecache)
-+		exp->event_mask = ecache->expmask;
-+
- 	help = nfct_help(ct);
- 	if (help)
- 		helper = rcu_dereference(help->helper);
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 31cbb1b55b9e..fc3f60099af3 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3524,6 +3524,7 @@ ctnetlink_alloc_expect(const struct nlattr * const cda[], struct nf_conn *ct,
- {
- 	struct net *net = read_pnet(&ct->ct_net);
- 	struct nf_conntrack_helper *helper;
-+	struct nf_conntrack_ecache *ecache;
- 	struct nf_conntrack_expect *exp;
- 	struct nf_conn_help *help;
- 	u32 class = 0;
-@@ -3575,6 +3576,10 @@ ctnetlink_alloc_expect(const struct nlattr * const cda[], struct nf_conn *ct,
- 	exp->mask.src.u3 = mask->src.u3;
- 	exp->mask.src.u.all = mask->src.u.all;
- 
-+	ecache = nf_ct_ecache_find(ct);
-+	if (ecache)
-+		exp->event_mask = ecache->expmask;
-+
- 	if (cda[CTA_EXPECT_NAT]) {
- 		err = ctnetlink_parse_expect_nat(cda[CTA_EXPECT_NAT],
- 						 exp, nf_ct_l3num(ct));
--- 
-2.47.3
+-		ip_set_ext_destroy(set, data);
++		/* On a resize replay the extensions were already destroyed. */
++		if (ext)
++			ip_set_ext_destroy(set, data);
 
+ 		if (t->resizing && ext && ext->target) {
+ 			/* Resize is in process and kernel side del,
+--
+2.43.0
 
