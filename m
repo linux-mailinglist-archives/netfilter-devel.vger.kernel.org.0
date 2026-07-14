@@ -1,320 +1,176 @@
-Return-Path: <netfilter-devel+bounces-13929-lists+netfilter-devel=lfdr.de@vger.kernel.org>
+Return-Path: <netfilter-devel+bounces-13942-lists+netfilter-devel=lfdr.de@vger.kernel.org>
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Zu6LBb4aVmryzAAAu9opvQ
-	(envelope-from <netfilter-devel+bounces-13929-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2026 13:17:18 +0200
+	id edTzOT86VmpE1wAAu9opvQ
+	(envelope-from <netfilter-devel+bounces-13942-lists+netfilter-devel=lfdr.de@vger.kernel.org>)
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2026 15:31:43 +0200
 X-Original-To: lists+netfilter-devel@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9896C753D2D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2026 13:17:17 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A2E175527A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2026 15:31:43 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=ssi.bg header.s=ssi header.b="h3/bqy6Q";
-	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13929-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13929-lists+netfilter-devel=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=ssi.bg;
+	dkim=none;
+	spf=pass (mail.lfdr.de: domain of "netfilter-devel+bounces-13942-lists+netfilter-devel=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="netfilter-devel+bounces-13942-lists+netfilter-devel=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 169D6304C373
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2026 11:17:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1F9AB308945B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2026 13:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF55338B7D4;
-	Tue, 14 Jul 2026 11:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CCD130DEDC;
+	Tue, 14 Jul 2026 13:26:43 +0000 (UTC)
 X-Original-To: netfilter-devel@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBC03655EA;
-	Tue, 14 Jul 2026 11:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED88729D270
+	for <netfilter-devel@vger.kernel.org>; Tue, 14 Jul 2026 13:26:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784027829; cv=none; b=d0J4IwHezLQG+WwXx6cQcoPjUASvq84Ns352ag7R3NdLFN0yl3frYtGrywLZkvnZd4P8gKkXqt6255QEXOBb5CJH4OBiqK2IONyh7IJ+L3TWn09fQA+HLJPDu+Uucrix7/SvUwxYm5chCsn4Jee7lUHKvbuPialNjjHHXjjENwA=
+	t=1784035603; cv=none; b=FEZZ+VuyW72Avz9tt1tjKi3QvcdM8MfO3f+zggT0asxLQfFmHZzO3gR4JYFsjEAjSkeiG+St1qHkKvNPD8NOROJtUGJUcnXGtyG4wHSWt4gVrI5NUWx+apARmxhUGo5YO9/xtvw4InyG5IVkFfM/pEKBTcO4Nt+oZkLXGHs4xeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784027829; c=relaxed/simple;
-	bh=3sznWqZahOX3dGYSqEcnCcyFoW7K0dYNJqYsNgXlrQo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=AW8QCMnlRcP2FXyYMKCfLvQq6cwVGJ8t8qfHacNdiuKLnWNiGSgZQ944nwLSSWC4fuNfJ/lk9QchtEFQbTghYp/uWJXMyBSqfcgvkbZ4X1VC7xYM+B3TeEyLyiKbY5GUuvj3NA2/dII4M+H0w4DJIoEhvkUXHe0XCYOKDmAGj5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=h3/bqy6Q; arc=none smtp.client-ip=193.238.174.39
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id AB82821B1A;
-	Tue, 14 Jul 2026 14:16:59 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-type:content-type:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=2AYue9V/xyYnT/GTe0/pexAq27BPH889PPznAkkDRSE=; b=h3/bqy6Q+bNL
-	5yzOKQCLasFLLpACDDqR4QAxUh8X2ODepl2qoDbZ+5+66XDBsg+smwvwVdE7Rxrk
-	4WCHKT1kzq/nqtfv+meobmEbZLw9CSIE9OB2Xq4se8jiFghyEVZJ9cpSN/i8xei5
-	5JvkSCfxvPTtAWC+UY8S8VdO6kJyZYK1i4ibyWVGskNZtUIXEtruJsCZCxptWXaN
-	ADigaVN5Cveniav4QM3K9GXbfsD3F8Cf/+HkTWe4wUET8bASQ49+ZVIn37gj0Zu+
-	UMaiom3K8UH3+b/UpeSh5zDTlixYcTzSi1un7fKzR+NuEbG1v5sFzwIXESMQQrNm
-	jn5VlwjxzAjjK1PtKP9TBWe0EzZb6qB1zDsugyD+9uSRHcIjO3KzD3sADphCxwBq
-	2XPAYZYyRQJmrBsbhgnOxf5pFmjsUn8gXgPttg7ndAuGANlIduFa10o5UWcMcCEs
-	2G6/05MvN0QRUcUZ6ErpiWGY2SZMmcC6KJoN4m6M5qCEz6IEnjaTH3jtB8pA1rcV
-	4uk76FTb61SoSEqVN7H/kj0gctuj+00PjSf/nnThnQOkOiTKkEy0j1/XjFHxIvST
-	OQ4QVhxd7Njv5z8KGaex4L04hePOYdEz7Qi7hi6ZPdygneU68KvHj09hPEyyJT+P
-	tJrcPj25NyLYUj8qhWRGZk/l9PkiQCk=
-Received: from box.ssi.bg (box.ssi.bg [193.238.174.46])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 14 Jul 2026 14:16:59 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by box.ssi.bg (Potsfix) with ESMTPSA id 310F0608A4;
-	Tue, 14 Jul 2026 14:17:00 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.2/8.18.2) with ESMTP id 66EBGrHQ029875;
-	Tue, 14 Jul 2026 14:16:54 +0300
-Date: Tue, 14 Jul 2026 14:16:53 +0300 (EEST)
-From: Julian Anastasov <ja@ssi.bg>
-To: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-cc: David Ahern <dsahern@kernel.org>, Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <horms@verge.net.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, stable@vger.kernel.org,
-        Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>,
-        Ao Wang <wangao@seu.edu.cn>, Xuewei Feng <fengxw06@126.com>,
-        Qi Li <qli01@tsinghua.edu.cn>, Ke Xu <xuke@tsinghua.edu.cn>
-Subject: Re: [PATCH nf v3 2/2] ipvs: use bitops for destination overload
- state
-In-Reply-To: <edc095e05c89cc6481613126de5f2a91ed601fa9.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn>
-Message-ID: <a82b528b-2710-3978-fc18-ef902fd903e1@ssi.bg>
-References: <cover.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn> <edc095e05c89cc6481613126de5f2a91ed601fa9.1783931964.git.zhaoyz24@mails.tsinghua.edu.cn>
+	s=arc-20240116; t=1784035603; c=relaxed/simple;
+	bh=kUBTtWjkrtBgG8YUGq+GrnwYimrCAahrT2FwiVzqS3g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p3P9k88WOSw5dghFgPLanHJKOv9v8jynFEzeC31CahWlBcstiBDmwyknulggFE3edyk5TTLznG0izAH7WCD9IGgCrL0WtHIKl1B7qN4VXvq2A1hBI27Td8gOy8O/9wpX7CAcxW9wi23uYotzbMNxOOCNkJieKpiW+fok8SGbxaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id CB62160288; Tue, 14 Jul 2026 15:18:40 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: kadlec@netfilter.org,
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH RFC nf-next 00/12] netfilter: ipset: convert to rhashtable
+Date: Tue, 14 Jul 2026 15:18:16 +0200
+Message-ID: <20260714131828.10685-1-fw@strlen.de>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: netfilter-devel@vger.kernel.org
 List-Id: <netfilter-devel.vger.kernel.org>
 List-Subscribe: <mailto:netfilter-devel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter-devel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ssi.bg,reject];
-	R_DKIM_ALLOW(-0.20)[ssi.bg:s=ssi];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13929-lists,netfilter-devel=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,verge.net.au,davemloft.net,google.com,redhat.com,netfilter.org,strlen.de,nwl.cc,vger.kernel.org,mails.tsinghua.edu.cn,seu.edu.cn,126.com,tsinghua.edu.cn];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,seu.edu.cn:email,sashiko.dev:url,ssi.bg:from_mime,ssi.bg:mid,ssi.bg:email,ssi.bg:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	FORGED_SENDER(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	FORGED_RECIPIENTS(0.00)[m:zhaoyz24@mails.tsinghua.edu.cn,m:dsahern@kernel.org,m:idosch@nvidia.com,m:horms@verge.net.au,m:davem@davemloft.net,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:pablo@netfilter.org,m:fw@strlen.de,m:phil@nwl.cc,m:netdev@vger.kernel.org,m:lvs-devel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:coreteam@netfilter.org,m:stable@vger.kernel.org,m:yangyx22@mails.tsinghua.edu.cn,m:wangao@seu.edu.cn,m:fengxw06@126.com,m:qli01@tsinghua.edu.cn,m:xuke@tsinghua.edu.cn,s:lists@lfdr.de];
+	DMARC_NA(0.00)[strlen.de];
+	TAGGED_FROM(0.00)[bounces-13942-lists,netfilter-devel=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:netfilter-devel@vger.kernel.org,m:kadlec@netfilter.org,m:fw@strlen.de,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[ssi.bg:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ja@ssi.bg,netfilter-devel@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fw@strlen.de,netfilter-devel@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	R_DKIM_NA(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[netfilter-devel];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[strlen.de:from_mime,strlen.de:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9896C753D2D
+X-Rspamd-Queue-Id: 4A2E175527A
 
+Hi,
 
-	Hi Yizhou,
+This is an initial RFC patchset to convert the hash types to rhashtable.
+Main conversion is in patch 8.  First patches contain small drive-by
+fixes, patches after 8 contain further simplifications/cleanups.
+Last patch adds back the FORCEADD support dropped in the conversion
+commit (diff was getting too large...).
 
-On Mon, 13 Jul 2026, Yizhou Zhao wrote:
+The next step is to go through the ipset test failures and figure out
+which ones hint at actual bugs and which ones are just harmless cosmetic
+issues (that could be suppressed by tinkering with diff.sh in ipset tests).
 
-> IPVS destination schedulers read the overload state from packet processing
-> paths, while connection accounting and destination updates can change it
-> concurrently. IP_VS_DEST_F_OVERLOAD currently shares dest->flags with
-> IP_VS_DEST_F_AVAILABLE, so plain read-modify-write operations on the two
-> independent states can race and lose either update.
-> 
-> KCSAN reports the race with the SH scheduler and an upper connection
-> threshold configured:
-> 
->   BUG: KCSAN: data-race in __ip_vs_update_dest / ip_vs_sh_schedule
-> 
-> IP_VS_DEST_F_AVAILABLE is changed under service_mutex. Keep it in the
-> existing flags word, but move the overload state to a separate unsigned
-> long and access it with bitops. Use test_bit() in scheduler paths and
-> set_bit()/clear_bit() in ip_vs_dest_update_overload(). This serializes the
-> overload bit accesses and prevents updates to the available and overload
-> states from clobbering each other.
-> 
-> The destination flags are not exposed by the IPVS sockopt or netlink
-> interfaces, so move their definitions out of the UAPI header. Place the
-> new overload word next to weight, which keeps the existing flags,
-> conn_flags and weight offsets unchanged. On x86-64 this grows struct
-> ip_vs_dest from 472 to 480 bytes.
-> 
-> test_bit() does not add reader-side ordering. Schedulers can still observe
-> stale destination state, as they could before this change; this does not
-> provide a fresh cross-field snapshot.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org
-> Reported-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-> Reported-by: Yuxiang Yang <yangyx22@mails.tsinghua.edu.cn>
-> Reported-by: Ao Wang <wangao@seu.edu.cn>
-> Reported-by: Xuewei Feng <fengxw06@126.com>
-> Reported-by: Qi Li <qli01@tsinghua.edu.cn>
-> Reported-by: Ke Xu <xuke@tsinghua.edu.cn>
-> Assisted-by: Claude-Code:GLM-5.2
-> Suggested-by: Julian Anastasov <ja@ssi.bg>
-> Signed-off-by: Yizhou Zhao <zhaoyz24@mails.tsinghua.edu.cn>
-> ---
->  include/net/ip_vs.h              | 8 ++++++++
->  include/uapi/linux/ip_vs.h       | 6 ------
->  net/netfilter/ipvs/ip_vs_conn.c  | 7 ++++---
->  net/netfilter/ipvs/ip_vs_dh.c    | 4 ++--
->  net/netfilter/ipvs/ip_vs_fo.c    | 2 +-
->  net/netfilter/ipvs/ip_vs_lblc.c  | 4 ++--
->  net/netfilter/ipvs/ip_vs_lblcr.c | 8 ++++----
->  net/netfilter/ipvs/ip_vs_lc.c    | 2 +-
->  net/netfilter/ipvs/ip_vs_mh.c    | 2 +-
->  net/netfilter/ipvs/ip_vs_nq.c    | 2 +-
->  net/netfilter/ipvs/ip_vs_ovf.c   | 2 +-
->  net/netfilter/ipvs/ip_vs_rr.c    | 2 +-
->  net/netfilter/ipvs/ip_vs_sed.c   | 4 ++--
->  net/netfilter/ipvs/ip_vs_sh.c    | 2 +-
->  net/netfilter/ipvs/ip_vs_twos.c  | 4 ++--
->  net/netfilter/ipvs/ip_vs_wlc.c   | 4 ++--
->  net/netfilter/ipvs/ip_vs_wrr.c   | 2 +-
->  17 files changed, 34 insertions(+), 31 deletions(-)
-> 
-> diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-> index 3fc864a320fb..5e8e55f82b04 100644
-> --- a/include/net/ip_vs.h
-> +++ b/include/net/ip_vs.h
-> @@ -36,6 +36,13 @@
->  #define IP_VS_HDR_INVERSE	1
->  #define IP_VS_HDR_ICMP		2
->  
-> +/* Destination Server Flags */
-> +#define IP_VS_DEST_F_AVAILABLE	0x0001		/* server is available */
-> +
-> +enum {
-> +	IP_VS_DEST_FL_OVERLOAD,
-> +};
-> +
->  /* conn_tab limits (as per Kconfig) */
->  #define IP_VS_CONN_TAB_MIN_BITS	8
->  #if BITS_PER_LONG > 32
-> @@ -976,6 +983,7 @@ struct ip_vs_dest {
->  	volatile unsigned int	flags;		/* dest status flags */
+Notable likely valid remaining bugs:
+ - iphash: IP: Compare sorted save and restore: [..] FAILED
+ - hash:net,iface.t: Check 10.0.1.1 with eth0:
+ Failed test: ../src/ipset [..] 10.0.1.1,eth0
+ Warning: 10.0.1.1,eth0 is in set test.
 
-	Sashiko has some comments that we should fix somehow:
+I'd like to eventually get rid of more set->lock places, remove all
+usage of rcu_dereference_protected(.. , 1), but thats not too urgent
+atm.
 
-https://sashiko.dev/#/patchset/cover.1783931964.git.zhaoyz24%40mails.tsinghua.edu.cn
+1) Rework ipset CIDR bookkeeping.  I had to remove this one from the last
+nf batch at the last minute because of a buildbot report. See next patch.
 
-	One option is IP_VS_DEST_F_AVAILABLE to become
-IP_VS_DEST_CF_AVAILABLE (CF=Config Flag)
+2) Fix a few nits in patch 1), to be squash-merged.
 
->  	atomic_t		conn_flags;	/* flags to copy to conn */
->  	atomic_t		weight;		/* server weight */
-> +	unsigned long		flags2;		/* dest status flags */
+3) Add small wrappers for hash and bucket sizes to reduce noise in the
+actual conversion patch.
 
-	unsigned long		cfg_flags;
+4) add and use tmtype_del_cidr_all helper to simplify the upcoming
+rewrite.
 
-	We then put IP_VS_DEST_CF_AVAILABLE in this new cache line
-that most of the schedulers will not read until dest is selected.
-DH even should not check the IP_VS_DEST_F_AVAILABLE flag,
-only lblc/lblcr should use this flag.
+5) Use ip_set_init_comment_slow to prevent race conditions in hash ipset
+types. Add lockdep annotations.
 
-	We can preserve IP_VS_DEST_F_OVERLOAD in 'flags',
-even we may not need to use bitops if we start to use
-spin_lock_bh(&dest->dst_lock), as this lock is already
-present in the dest structure. See below...
+6) Same as 5, but for remove: adds ip_set_ext_destroy_slow.
 
->  	atomic_t		last_weight;	/* server latest weight */
->  	__u16			tun_type;	/* tunnel type */
->  	__be16			tun_port;	/* tunnel port */
+7) Add rhashtable boilerplate stubs to ipset. Initialize and destroy the
+rhashtable without ever adding elements.
 
-> diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-> index fa3fbd597f3f..2591f4e143f8 100644
-> --- a/net/netfilter/ipvs/ip_vs_conn.c
-> +++ b/net/netfilter/ipvs/ip_vs_conn.c
-> @@ -1006,7 +1006,7 @@ __always_inline void ip_vs_dest_update_overload(struct ip_vs_dest *dest)
+8) Replace ipset's internal hash table with rhashtable.  FORCEADD is
+removed here, and added back in last patch.
 
-	We can add new arg 'bool locked'. Also, we will
-return false if caller should retry under lock.
-It will happen when we change IP_VS_DEST_F_OVERLOAD and
-require its changes to be synchronized with the
-thresholds and the number of connections.
+9) Use plain rcu_read_lock, not _bh variants.
 
->  		goto unset;
->  	conns = ip_vs_dest_totalconns(dest);
->  	if (conns >= u) {
-> -		dest->flags |= IP_VS_DEST_F_OVERLOAD;
-> +		set_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
+10) Better lockdep annotations in ipset_dereference. Add assertions to
+more places.
 
+11) Remove the last region lock usage in ipset. Move lock responsibility to
+kadt, uadt, and flush callbacks.
 
-	if (conns >= u) {
-		if (!locked)
-			return false;
-		dest->flags |= IP_VS_DEST_F_OVERLOAD;
-		return true;
-	}
+12) Re-add forceadd support for rhashtable in ipset. Implement
+mtype_remove_random() to evict elements when the set is full.
 
->  		return;
->  	}
->  	/* Low threshold defaults to 75% of upper threshold */
-> @@ -1015,7 +1015,8 @@ __always_inline void ip_vs_dest_update_overload(struct ip_vs_dest *dest)
->  		return;
->  
->  unset:
-> -	dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
-> +	if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
-> +		clear_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2);
+Florian Westphal (11):
+  netfilter: ipset: rework cidr bookkeeping fixups
+  netfilter: ipset: add small wrappers for hash and bucket sizes
+  netfilter: ipset: add and use mtype_del_cidr_all helper
+  netfilter: ipset: add and use ip_set_init_comment_slow
+  netfilter: ipset: add and use ip_set_ext_destroy_slow
+  netfilter: ipset: add rhashtable boilerplate stubs
+  netfilter: ipset: replace internal hash table with rhashtable
+  netfilter: ipset: use plain rcu_read_lock
+  netfilter: ipset: use correct lockdep annotation in ipset_dereference
+  netfilter: ipset: remove last region lock usage
+  netfilter: ipset: re-add forceadd support for rhashtable
 
-	if (dest->flags & IP_VS_DEST_F_OVERLOAD) {
-		if (!locked)
-			return false;
-		dest->flags &= ~IP_VS_DEST_F_OVERLOAD;
-	}
-	return true;
+Jozsef Kadlecsik (1):
+  netfilter: ipset: rework cidr bookkeeping
 
->  }
->  
->  /*
-> @@ -1174,7 +1175,7 @@ static inline void ip_vs_unbind_dest(struct ip_vs_conn *cp)
->  		atomic_dec(&dest->persistconns);
->  	}
->  
-> -	if (dest->flags & IP_VS_DEST_F_OVERLOAD)
-> +	if (test_bit(IP_VS_DEST_FL_OVERLOAD, &dest->flags2))
->  		ip_vs_dest_update_overload(dest);
+ include/linux/netfilter/ipset/ip_set.h       |   44 +-
+ net/netfilter/ipset/ip_set_bitmap_gen.h      |    6 +
+ net/netfilter/ipset/ip_set_bitmap_ip.c       |   11 +-
+ net/netfilter/ipset/ip_set_bitmap_ipmac.c    |    9 +-
+ net/netfilter/ipset/ip_set_bitmap_port.c     |   11 +-
+ net/netfilter/ipset/ip_set_core.c            |   35 +-
+ net/netfilter/ipset/ip_set_hash_gen.h        | 1552 ++++++------------
+ net/netfilter/ipset/ip_set_hash_ipportnet.c  |    4 +-
+ net/netfilter/ipset/ip_set_hash_net.c        |    4 +-
+ net/netfilter/ipset/ip_set_hash_netiface.c   |    4 +-
+ net/netfilter/ipset/ip_set_hash_netnet.c     |   12 +-
+ net/netfilter/ipset/ip_set_hash_netport.c    |    4 +-
+ net/netfilter/ipset/ip_set_hash_netportnet.c |   12 +-
+ net/netfilter/ipset/ip_set_list_set.c        |   13 +
+ 14 files changed, 629 insertions(+), 1092 deletions(-)
 
-	if (dest->flags & IP_VS_DEST_F_OVERLOAD) {
-		if (!ip_vs_dest_update_overload(dest, false)) {
-			spin_lock_bh(&dest->dst_lock);
-			ip_vs_dest_update_overload(dest, true);
-			spin_unlock_bh(&dest->dst_lock);
-		}
-	}
-
-	In __ip_vs_update_dest() we will always use lock:
-
-		spin_lock_bh(&dest->dst_lock);
-		WRITE_ONCE(dest->u_threshold, udest->u_threshold);
-		WRITE_ONCE(dest->l_threshold, udest->l_threshold);
-		ip_vs_dest_update_overload(dest, true);
-		spin_unlock_bh(&dest->dst_lock);
-
-	The goal is to avoid the lock for the common case
-when flag does not change. What do you think?
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
-
+-- 
+2.54.0
 
